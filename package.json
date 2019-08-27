@@ -1,5 +1,5 @@
 {
-  "name": "test-workspaced",
+  "name": "tamu-gisc",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -29,18 +29,18 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^8.2.3",
+    "@angular/common": "^8.2.3",
+    "@angular/compiler": "^8.2.3",
+    "@angular/core": "^8.2.3",
+    "@angular/forms": "^8.2.3",
+    "@angular/platform-browser": "^8.2.3",
+    "@angular/platform-browser-dynamic": "^8.2.3",
+    "@angular/router": "^8.2.3",
     "@nrwl/angular": "8.4.12",
-    "@angular/animations": "^8.0.0",
-    "@angular/common": "^8.0.0",
-    "@angular/compiler": "^8.0.0",
-    "@angular/core": "^8.0.0",
-    "@angular/forms": "^8.0.0",
-    "@angular/platform-browser": "^8.0.0",
-    "@angular/platform-browser-dynamic": "^8.0.0",
-    "@angular/router": "^8.0.0",
     "core-js": "^3.2.1",
     "rxjs": "~6.5.2",
-    "zone.js": "^0.10.2"
+    "zone.js": "^0.9.1"
   },
   "devDependencies": {
     "@angular/cli": "8.3.0",
@@ -52,8 +52,8 @@
     "eslint": "6.2.2",
     "typescript": "~3.5.3",
     "prettier": "1.18.2",
-    "@angular/compiler-cli": "^8.0.0",
-    "@angular/language-service": "^8.0.0",
+    "@angular/compiler-cli": "^8.2.3",
+    "@angular/language-service": "^8.2.3",
     "@angular-devkit/build-angular": "^0.803.0",
     "codelyzer": "~5.1.0",
     "jest-preset-angular": "7.1.1",

@@ -1,5 +1,5 @@
 {
-  "npmScope": "test-workspaced",
+  "npmScope": "tamu-gisc",
   "implicitDependencies": {
     "angular.json": "*",
     "package.json": "*",
@@ -7,12 +7,5 @@
     "tslint.json": "*",
     "nx.json": "*"
   },
-  "projects": {
-    "test-app-e2e": {
-      "tags": []
-    },
-    "test-app": {
-      "tags": []
-    }
-  }
+  "projects": {}
 }
