@@ -1,10 +1,9 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
-import { StorageService } from 'angular-webstorage-service';
+import { StorageService, localStorageFactory } from 'angular-webstorage-service';
 
 const STORAGE_KEY = 'default';
 
 export const AppStorage = new InjectionToken<StorageService>('AppStorage');
-
 @Injectable({ providedIn: 'root' })
 export class LocalStoreService {
   constructor(@Inject(AppStorage) private store: StorageService) {}
