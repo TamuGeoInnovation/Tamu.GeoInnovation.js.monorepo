@@ -28,6 +28,9 @@
     },
     "common-ngx-settings": {
       "tags": []
+    },
+    "common-ngx-ui": {
+      "tags": []
     }
   }
 }
