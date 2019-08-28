@@ -1,0 +1,15 @@
+<div [@animate]="animateStatus" (mouseover)="pause()" (mouseleave)="resume()">
+  <div class="status" [style.width.%]="(timer.current / timer.limit) * 100"></div>
+  <div class="content" (click)="action()" [class.actionable]="notification.action">
+    <div>
+      <div class="image">
+        <img [src]="notification.imgUrl" [title]="notification.imgAltText" [alt]="notification.imgAltText" />
+      </div>
+    </div>
+    <div>
+      <div class="title">{{ notification.title }}</div>
+      <div class="description" [innerHTML]="notification.message">This is a test <i class="material-icons">directions</i></div>
+    </div>
+  </div>
+  <div class="close material-icons" tabindex="0" (click)="close()" title="Close">close</div>
+</div>

@@ -11,7 +11,7 @@
     "target": "es2015",
     "module": "esnext",
     "typeRoots": ["node_modules/@types"],
-    "lib": ["es2017", "dom"],
+    "lib": ["esnext", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -21,7 +21,8 @@
       "@tamu-gisc/common/ngx/pipes": ["libs/common/ngx/pipes/src/index.ts"],
       "@tamu-gisc/common/ngx/local-store": ["libs/common/ngx/local-store/src/index.ts"],
       "@tamu-gisc/common/ngx/settings": ["libs/common/ngx/settings/src/index.ts"],
-      "@tamu-gisc/common/ngx/ui": ["libs/common/ngx/ui/src/index.ts"]
+      "@tamu-gisc/common/ngx/ui": ["libs/common/ngx/ui/src/index.ts"],
+      "@tamu-gisc/common/ngx/ui/notification": ["libs/common/ngx/ui/notification/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

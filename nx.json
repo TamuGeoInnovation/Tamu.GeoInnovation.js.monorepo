@@ -31,6 +31,9 @@
     },
     "common-ngx-ui": {
       "tags": []
+    },
+    "common-ngx-ui-notification": {
+      "tags": []
     }
   }
 }
