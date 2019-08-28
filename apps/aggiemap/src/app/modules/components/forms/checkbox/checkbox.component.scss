@@ -1,0 +1,81 @@
+@import 'libs/sass/mixins';
+
+:host {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.icon-container {
+  line-height: 0;
+}
+
+.control-container {
+  margin-left: 0.5rem;
+}
+
+.material-icons {
+  color: #616161;
+
+  &.active {
+    color: #0079c1;
+  }
+}
+
+.description {
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
+  line-height: 1.5;
+  padding-right: 0.25rem;
+  box-sizing: border-box;
+  color: #424242;
+}
+
+input[type='checkbox'] {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+}
+
+.checkbox {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+  position: relative;
+
+  &.has-description {
+    @include align-items(flex-start);
+
+    .icon-container {
+      margin-top: 0.05rem;
+    }
+
+    .control-container {
+      margin-left: 0.7rem;
+    }
+
+    label {
+      font-weight: 600;
+    }
+  }
+
+  &.disabled {
+    input[type='checkbox'] {
+      cursor: not-allowed;
+    }
+
+    color: #757575;
+
+    .material-icons {
+      color: inherit;
+
+      &.active {
+        color: inherit;
+      }
+    }
+  }
+}

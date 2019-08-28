@@ -71,7 +71,15 @@
             "polyfills": "apps/aggiemap/src/polyfills.ts",
             "tsConfig": "apps/aggiemap/tsconfig.app.json",
             "aot": false,
-            "assets": ["apps/aggiemap/src/favicon.ico", "apps/aggiemap/src/assets"],
+            "assets": [
+              "apps/aggiemap/src/favicon.ico",
+              "apps/aggiemap/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
             "styles": ["apps/aggiemap/src/styles.scss"],
             "scripts": []
           },

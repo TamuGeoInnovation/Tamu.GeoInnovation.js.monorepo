@@ -1,0 +1,15 @@
+<div class="checkbox" [ngClass]="{ disabled: disabled, 'has-description': description && description.length > 0 }">
+  <div class="icon-container" [ngSwitch]="checked" (keyup.space)="handleKeyboardEvent()" (keyup.enter)="handleKeyboardEvent()" tabindex="0" role="button" [attr.aria-label]="ariaLabel" [attr.alt]="ariaLabel">
+    <div *ngSwitchCase="true"><i class="material-icons active">check_box</i></div>
+    <div *ngSwitchCase="false"><i class="material-icons">check_box_outline_blank</i></div>
+  </div>
+
+  <div class="control-container">
+    <div>
+      <input #checkboxInput type="checkbox" [name]="name" [checked]="checked" (click)="handleMouseEvent()" [disabled]="disabled" />
+      <label [for]="name">{{ label }}</label>
+    </div>
+
+    <div class="description" *ngIf="description && description.length > 0">{{ description }}</div>
+  </div>
+</div>

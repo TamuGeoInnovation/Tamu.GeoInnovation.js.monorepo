@@ -1,0 +1,20 @@
+<div class="travel-modes">
+  <gisc-trip-planner-mode-toggle [activeModes]="[1, 2]" [iconName]="'directions_walk'" [name]="'Walking'" [label]="'Routing Mode: Walking'"></gisc-trip-planner-mode-toggle>
+
+  <gisc-trip-planner-mode-toggle [activeModes]="[7]" [iconName]="'directions_bike'" [name]="'Biking'" [label]="'Routing Mode: Biking'"></gisc-trip-planner-mode-toggle>
+
+  <!-- <gisc-trip-planner-mode-toggle [activeModes]="[3, 4]" [iconName]="'directions_car'" [name]="'Driving'" [label]="'Routing Mode: Driving'" *ngIf="!VisitorParking"></gisc-trip-planner-mode-toggle> -->
+
+  <gisc-trip-planner-mode-toggle [activeModes]="[3, 4, 8]" [iconName]="'directions_car'" [name]="'Driving'" [label]="'Routing Mode: Driving'"></gisc-trip-planner-mode-toggle>
+
+  <!-- <gisc-trip-planner-mode-toggle [activeModes]="[8]" [iconName]="'directions_car'" [name]="'Visitor Driving'" [label]="'Routing Mode: Visitor Driving'" *ngIf="VisitorParking"></gisc-trip-planner-mode-toggle> -->
+
+  <!-- <gisc-trip-planner-mode-toggle [activeModes]="[5, 6]" [iconName]="'directions_bus'" [name]="'Bus'" [label]="'Routing Mode: Bus'" *ngIf="VisitorParking"></gisc-trip-planner-mode-toggle> -->
+
+  <gisc-trip-planner-mode-toggle [activeModes]="[5, 6]" [iconName]="'directions_bus'" [name]="'Bus'" [label]="'Routing Mode: Bus'"></gisc-trip-planner-mode-toggle>
+
+  <!-- TODO: Determine a travel options UI for mobile -->
+  <!-- <div class="filled" id="direction-accessible-mode" title="ADA Accessible Requirement" alt="Option: ADA Accessible Requirement" type="domElement" [ngClass]="{ disabled: !verifyInputValidity() && accessible, active: accessible }" (click)="verifyInputValidity() ? (accessibleTravel = !accessible) : null" tabindex="0">
+    <i class="material-icons">accessible</i>
+  </div> -->
+</div>

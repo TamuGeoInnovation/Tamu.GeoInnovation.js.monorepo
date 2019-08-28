@@ -1,0 +1,25 @@
+@import 'libs/sass/mixins';
+
+:host {
+  z-index: 9;
+  width: 100%;
+  font-size: 0.85rem;
+  @include flexbox();
+  @include flex-direction(column);
+  @include align-items(center);
+}
+
+search-mobile {
+  top: 0.5rem;
+  z-index: 1;
+  width: 95%;
+
+  // Set default start value for iOS
+  @include transform(translateY(100%));
+}
+
+backdrop {
+  z-index: -1;
+  top: 100% !important;
+  @include transform(translateY(100%));
+}

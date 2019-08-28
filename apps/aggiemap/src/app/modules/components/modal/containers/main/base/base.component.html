@@ -1,0 +1,10 @@
+<div class="container-12">
+  <div class="close mobile" (click)="close()" *ngIf="isMobile">
+    <i class="material-icons" title="Close">arrow_back</i>
+  </div>
+  <div class="close desktop" (click)="close()" *ngIf="!isMobile"><i class="material-icons" title="Close">close</i></div>
+
+  <router-outlet></router-outlet>
+</div>
+
+<backdrop [background]="'rgba(0,0,0,.5)'" [position]="'on-top'" (voidClick)="close()"></backdrop>

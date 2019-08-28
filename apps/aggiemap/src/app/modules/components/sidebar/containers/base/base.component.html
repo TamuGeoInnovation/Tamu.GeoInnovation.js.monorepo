@@ -1,0 +1,29 @@
+<div [@sidebar]="sidebarVisible">
+  <!-- TABS -->
+  <div class="tabs-container left">
+    <div drawer-tab="features" class="esri-component esri-widget" alt="Features" title="Features" tabindex="0" role="button" aria-label="Toggle Features (Search, Layers, Legend)" (click)="routeHandler('')">
+      <div id="menu-button">
+        <i class="material-icons">menu</i>
+      </div>
+    </div>
+
+    <div drawer-tab="directions" class="esri-component esri-widget" alt="Directions" title="Directions" tabindex="0" role="button" aria-label="Toggle directions controls (routing and way-finding)" (click)="routeHandler('trip')">
+      <div id="directions-button">
+        <i class="material-icons">directions</i>
+      </div>
+    </div>
+
+    <div drawer-tab="bus" class="esri-component esri-widget" alt="AggieSpirit" title="Bus" tabindex="0" role="button" aria-label="Toggle bus controls (list and timetable)" (click)="routeHandler('bus')">
+      <div id="bus-button">
+        <i class="material-icons">directions_bus</i>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB CONTENT -->
+  <div class="tabs-content-container">
+    <app-brand></app-brand>
+    <router-outlet></router-outlet>
+    <feature-popup></feature-popup>
+  </div>
+</div>

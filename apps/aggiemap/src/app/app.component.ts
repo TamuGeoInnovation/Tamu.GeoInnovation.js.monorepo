@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
+import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
+
+import { RouterHistoryService } from './modules/services/router-history.service';
 
 @Component({
-  selector: 'tamu-gisc-root',
+  selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'aggiemap';
+  constructor(public analytics: Angulartics2GoogleAnalytics, private history: RouterHistoryService) {
+    analytics.startTracking();
+  }
 }

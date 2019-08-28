@@ -1,0 +1,40 @@
+<div id="direction-results">
+  <!-- Directions Overview  -->
+  <div class="directions-overview" *ngIf="result?.directions && !result?.isProcessing && !result?.isError">
+    <div class="directions-overview-item">
+      <div class="quantity">{{ result?.directions.totalTime.toFixed(0) }}</div>
+      <div class="unit">Minutes</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="directions-overview-item">
+      <div class="quantity">{{ result?.directions.totalLength.toFixed(2) }}</div>
+      <div class="unit">Miles</div>
+    </div>
+  </div>
+
+  <trip-planner-directions-actions *ngIf="result && result?.isFulfilled"></trip-planner-directions-actions>
+
+  <!-- User Instructions  -->
+  <div id="direction-feedback" *ngIf="result?.isProcessing || !result?.directions || result?.isError">
+    <p *ngIf="!result?.directions && !result?.isError && !result?.isProcessing">
+      Please select two points for written step-by-step directions.
+    </p>
+
+    <p class="error" *ngIf="result?.isError && !result?.isProcessing">
+      No reasonable route was found! Please try again with different points.
+    </p>
+
+    <div *ngIf="result?.isProcessing" class="spinning-loader"></div>
+
+    <p *ngIf="result?.isProcessing">Calculating route. Please wait...</p>
+  </div>
+
+  <!-- Directions List -->
+  <div *ngIf="result?.directions && result?.modeSwitches && !result?.isProcessing && !result?.isError">
+    <div class="switch-container" *ngFor="let mode of result?.modeSwitches; let i = index">
+      <trip-planner-mode-switch [modeSwitch]="mode" [result]="result"></trip-planner-mode-switch>
+    </div>
+  </div>
+</div>

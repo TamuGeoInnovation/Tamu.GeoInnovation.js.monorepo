@@ -8,8 +8,8 @@ import { Notification, NotificationService } from '../../services/notification.s
 
 @Component({
   selector: 'tamu-gisc-notification-container',
-  templateUrl: './containers.component.html',
-  styleUrls: ['./containers.component.scss']
+  templateUrl: './notification-container.component.html',
+  styleUrls: ['./notification-container.component.scss']
 })
 export class NotificationContainerComponent implements OnInit {
   public notifications: Observable<Notification[]>;

@@ -1,0 +1,3 @@
+<search-mobile [@offCanvasSlideUpFromTop]="hideSearchBar" [placeholder]="'Tap to begin searching'" [focused]="backdropVisible" [canGeolocate]="geolocation" [leftActionIcon]="searchComponentLeftAction" (leftAction)="handleLeftAction()" (result)="handleResult($event)" (focus)="setFocus()"></search-mobile>
+
+<backdrop [@offCanvasSlideInFromBottom]="backdropVisible" (focus)="setFocus()" [position]="'off-bottom'"></backdrop>

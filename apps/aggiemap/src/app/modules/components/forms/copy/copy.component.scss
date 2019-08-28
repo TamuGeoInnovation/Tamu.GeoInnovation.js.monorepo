@@ -1,0 +1,31 @@
+@import 'libs/sass/mixins';
+@import 'libs/sass/variables';
+
+.copy-element {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  @include align-items(center);
+  background-color: $form-grey;
+  margin-bottom: 0.65rem;
+  padding-left: 1rem;
+  padding-right: 0.5rem;
+  border-radius: 3rem;
+  box-sizing: border-box;
+  overflow: hidden;
+  cursor: pointer;
+
+  &:hover {
+    .copy-text {
+      color: initial;
+    }
+  }
+}
+
+.copy-text {
+  color: #616161;
+  max-width: 80%;
+  white-space: nowrap;
+  overflow: hidden;
+  @include transition(color 0.3s);
+}

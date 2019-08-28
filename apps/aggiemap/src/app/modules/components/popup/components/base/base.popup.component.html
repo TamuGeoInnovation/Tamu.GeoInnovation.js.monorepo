@@ -1,0 +1,34 @@
+<div class="popup-section">
+  <div class="feature-style-1" tabindex="0">{{ data.layer.id }}</div>
+  <div class="feature-style-2" tabindex="0">
+    <span *ngIf="data.attributes.Address">{{ data.attributes.Address }},</span> College Station, TX 77843
+  </div>
+</div>
+
+<div class="popup-section">
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let prop of (data.attributes | keyvalue)">
+        <td>{{ prop.key }}</td>
+        <td>{{ prop.value }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="popup-section">
+  <!-- Copy URL component -->
+  <!-- <copy [text]="shareUrl"></copy> -->
+
+  <!-- Directions To Button -->
+  <div class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.Number" (click)="startDirections(data.attributes.name)">
+    Directions To Here
+  </div>
+</div>

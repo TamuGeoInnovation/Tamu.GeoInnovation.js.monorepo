@@ -1,0 +1,28 @@
+:host {
+  height: inherit;
+}
+
+.table-container {
+  height: calc(100% - 50px);
+  width: 100%;
+  overflow-x: scroll;
+}
+
+th,
+td {
+  padding: 0.5rem;
+  text-align: center;
+}
+
+td {
+  white-space: nowrap;
+}
+
+td {
+  font-size: 0.85rem;
+
+  &.expired {
+    color: #ef5350;
+    text-decoration: line-through;
+  }
+}

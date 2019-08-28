@@ -14,4 +14,4 @@ import { TimeUntilPipe } from './transformation/time-util.pipe';
   imports: [CommonModule],
   exports: [GroupByPipe, OrderByPipe, MarkdownParsePipe, SafeHtmlPipe, TimeUntilPipe]
 })
-export class CommonNgxPipesModule {}
+export class PipesModule {}

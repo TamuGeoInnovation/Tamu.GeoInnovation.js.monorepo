@@ -1,0 +1,23 @@
+<!-- // TODO: Remove dependency on string value -->
+<div class="mode-icon" [ngClass]="{ slow: mode_header == 'Walk' }">
+  <i class="material-icons" *ngIf="mode_icon != null">{{ mode_icon }}</i>
+</div>
+
+<div *ngIf="modeSwitch">
+  <!-- If modeSwitch does not have a result, it means it has no other types of data to display other than the directions list. -->
+  <div *ngIf="!modeSwitch.results">
+    <div class="directions-container">
+      <div class="direction-item" *ngFor="let direction of modeSwitch.directions">
+        <div class="direction-icon">
+          <div [class]="direction.attributes.maneuverType"></div>
+        </div>
+        <p [innerHtml]="direction.attributes | routeDirectionTransformer"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- If mode switch has results, and subsequently contains a `bus` key, display the bus timetable -->
+  <div *ngIf="modeSwitch.results && modeSwitch.results.bus">
+    <gisc-bus-switch [switch]="modeSwitch"></gisc-bus-switch>
+  </div>
+</div>

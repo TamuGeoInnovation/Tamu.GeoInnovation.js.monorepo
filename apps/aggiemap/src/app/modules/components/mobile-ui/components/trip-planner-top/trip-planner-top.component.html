@@ -1,0 +1,16 @@
+<div [@offCanvasSlideUpFromTop]="hide">
+  <div id="top">
+    <div class="action">
+      <i class="material-icons" (click)="returnBaseRoute()">arrow_back</i>
+    </div>
+    <div class="points">
+      <div *ngFor="let stop of (stops | async); let i = index">
+        <input type="text" [placeholder]="'Search location'" [value]="stop?.attributes?.name" (click)="summonOmnisearch(i)" />
+      </div>
+    </div>
+  </div>
+
+  <div id="bottom">
+    <trip-planner-mode-picker-mobile></trip-planner-mode-picker-mobile>
+  </div>
+</div>

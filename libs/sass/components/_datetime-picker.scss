@@ -1,0 +1,92 @@
+@import '../mixins';
+
+dl-date-time-picker {
+  .dl-abdtp-month-view,
+  .dl-abdtp-day-view,
+  .dl-abdtp-hour-view,
+  .dl-abdtp-minute-view {
+    @include flexbox();
+    @include flex-direction(column);
+  }
+
+  .dl-abdtp-month-view,
+  .dl-abdtp-day-view,
+  .dl-abdtp-hour-view,
+  .dl-abdtp-minute-view {
+    // First child represents the calendar header which contains
+    // drilled down month, year, arrow back, and arrow forward
+    & > div:first-child {
+      @include flexbox();
+      @include flex-direction(row);
+      @include justify-content(center);
+      @include align-items(center);
+      margin-top: 0.75rem;
+    }
+
+    // Last child represents the container that has all the time elements for the
+    // selected view (month, days, hours, minutes)
+    & > div:last-child {
+      @include flexbox();
+      @include flex-direction(column);
+
+      // These are the rows for said elements. Without these styles, they are columsn stacked
+      // on top of each other.
+      & > div {
+        @include flexbox();
+        @include flex-direction(row);
+        @include justify-content(space-between);
+      }
+    }
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .dl-abdtp-selected {
+    background: #500000 !important;
+  }
+
+  .dl-abdtp-future,
+  .dl-abdtp-past {
+    color: rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .dl-abdtp-up-button,
+  .dl-abdtp-left-button,
+  .dl-abdtp-right-button {
+    background: none;
+
+    &:hover,
+    &:focus {
+      background: none !important;
+      background-color: rgba(0, 0, 0, 0.04) !important;
+    }
+  }
+
+  .dl-abdtp-left-button span,
+  .dl-abdtp-right-button span {
+    background-size: cover;
+    background-position: center;
+    width: 1.1rem;
+    height: 1.1rem;
+    display: block;
+  }
+
+  // Arrow left and right SVG icons since we're not loading in the entire ionic icon framework just fro two icons.
+  .dl-abdtp-left-button span {
+    background-image: url(/assets/images/datetime-picker/baseline-keyboard_arrow_left-24px.svg);
+    &:hover,
+    &:focus {
+      background-image: url(/assets/images/datetime-picker/baseline-keyboard_arrow_left-24px.svg) !important;
+    }
+  }
+
+  .dl-abdtp-right-button span {
+    background-image: url(/assets/images/datetime-picker/baseline-keyboard_arrow_right-24px.svg);
+    &:hover,
+    &:focus {
+      background-image: url(/assets/images/datetime-picker/baseline-keyboard_arrow_right-24px.svg) !important;
+    }
+  }
+}

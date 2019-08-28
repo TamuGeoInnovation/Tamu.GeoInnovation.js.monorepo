@@ -1,0 +1,11 @@
+<div>
+  <div class="sidebar-component-name">
+    <p>Driving Settings</p>
+  </div>
+
+  <div class="sidebar-component-content-container">
+    <checkbox *ngFor="let option of (settings | async)" [disabled]="false" [label]="option.displayName" [description]="option.description" [checked]="(getOptionValue(option.effect) | async) == true" (changed)="setOptionValue(option, $event)"></checkbox>
+
+    <gisc-select [model]="getOptionValue('parking_pass_permit') | async" [data]="parkingFeatures | async" [displayTemplate]="'attributes.FAC_CODE'" [valueTemplate]="'attributes.FAC_CODE'" (changed)="setOptionValue('parking_pass_permit', $event)" [placeholder]="'Select Your Permit'"></gisc-select>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<div>
+  <div class="accessible-viewfinder" #viewfinder [ngClass]="{ hidden: !accessibleNavigation }"></div>
+  <div class="accessible-viewfinder-features" [ngClass]="{ hidden: !accessibleNavigation }">
+    <div *ngIf="viewFinderFeatures?.length > 0" class="feature-item-container">
+      <div *ngFor="let feature of viewFinderFeatures; let i = index" class="feature-item">
+        <div class="feature-index">
+          <div class="wrapper">
+            <p>{{ i + 1 }}</p>
+          </div>
+        </div>
+        <p class="feature-name">{{ feature.attributes.BldgName }}</p>
+      </div>
+    </div>
+  </div>
+</div>

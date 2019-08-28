@@ -1,0 +1,12 @@
+<div [ngClass]="{ loaded: isActive, loading: isLoading }">
+  <div class="route-overview" (click)="toggleRoute()">
+    <div class="route-number" [style.backgroundColor]="route.Color">{{ route.ShortName }}</div>
+    <div class="route-name">
+      <span class="selected-status" [style.backgroundColor]="route.Color"> </span><span class="route-label">{{ route.Name }}</span>
+    </div>
+  </div>
+
+  <div class="route-timetable" accordion [accordionExpanded]="isActive" [animate]="true" [resize]="true">
+    <gisc-bus-timetable [route]="route" *ngIf="isActive"></gisc-bus-timetable>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+<div class="main-content container12">
+  <div class="column9 trailer-5">
+    <div class="breadcrumbs leader-2 trailer-1">
+      <p><a routerLink="/">Aggie Map</a></p>
+      <p><a href="javascript:void(0)">Feedback</a></p>
+    </div>
+
+    <div class="leader-1 trailer-2">
+      <h1 class="long-border">Feedback / Comment for Aggie Map</h1>
+    </div>
+
+    <p>Send us a line, we want to hear your thoughts and comments on your Aggie Map experience!</p>
+
+    <div id="box" class="feedback-form">
+      <form method="POST" action="../include/incoming.asp">
+        <div class="input-item">
+          <input type="text" name="sender_name" autofocus required />
+          <label for="Name">Name</label>
+        </div>
+
+        <div class="input-item">
+          <input type="email" name="senderinfo" required />
+          <label for="from">Email address</label>
+        </div>
+
+        <div class="input-item last">
+          <textarea name="comments"></textarea>
+          <label for="feedback">Feedback/Comment</label>
+        </div>
+
+        <input type="submit" value="Submit Comment" />
+      </form>
+    </div>
+  </div>
+</div>

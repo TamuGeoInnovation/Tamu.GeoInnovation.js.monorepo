@@ -1,0 +1,105 @@
+@import 'libs/sass/mixins';
+
+:host {
+  width: 100%;
+  position: relative;
+
+  & > div {
+    margin-bottom: 0;
+    overflow: hidden;
+    // box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    border-radius: 1rem;
+
+    // Set the height of the container to be less than the maximum screen height. This enables overflow in the child element
+    &.active {
+      height: calc(100vh - 1.5rem);
+      overflow: auto;
+      box-shadow: none;
+      -webkit-overflow-scrolling: touch; //Preserve mobile momentum scrolling
+      touch-action: pan-y;
+    }
+  }
+}
+
+input {
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  background: #ffffff !important;
+  border: none;
+
+  &:focus {
+    outline: none;
+    border-color: transparent !important;
+  }
+}
+
+.search-results-container {
+  position: relative;
+  top: initial;
+  left: initial;
+  box-shadow: none;
+  padding-top: 0.5rem;
+  padding-bottom: 2rem;
+}
+
+.result-category {
+  margin-bottom: 0.75rem;
+  background: none;
+
+  .category-name {
+    position: relative;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+
+  & > div {
+    background: #ffffff;
+    border-radius: 1rem;
+    border: 1px solid #e0e0e0;
+  }
+}
+
+.result-item {
+  background: initial;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.material-icons {
+  padding: 0.75rem;
+
+  &.left {
+    margin-left: 0;
+  }
+
+  &.right {
+    margin-left: 0;
+  }
+}
+
+.search-actions {
+  margin-bottom: 0.75rem;
+
+  & > div {
+    border-radius: 1rem;
+    border: 1px solid #e0e0e0;
+    background: #ffffff;
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+  }
+
+  .material-icons {
+    position: relative;
+    top: initial;
+    @include transform(none);
+    margin-left: 0.75rem;
+    color: #616161;
+    font-size: 1rem;
+  }
+
+  p {
+    padding-left: 0.5rem;
+  }
+}

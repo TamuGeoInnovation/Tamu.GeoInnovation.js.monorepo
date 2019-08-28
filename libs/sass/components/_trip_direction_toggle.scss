@@ -1,0 +1,89 @@
+%toggle {
+  height: 2rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: 99rem;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: 1px solid transparent;
+  @include flexbox();
+  @include justify-content(center);
+  @include flex-direction(row);
+  @include align-items(center);
+  @include transition(border-color 0.25s, opacity 0.25s);
+
+  &.filled {
+    @include transition(color 0.25s, background 0.25s);
+  }
+
+  &:hover {
+    .material-icons {
+      color: #212121;
+    }
+  }
+
+  // Active colors
+  // Assumes a false error state
+  &.active {
+    color: #0079c1;
+    border: 1px solid #0079c1;
+
+    .material-icons {
+      color: inherit;
+    }
+
+    &.filled {
+      color: #fafafa;
+      background: lighten(#0079c1, 15%);
+      border-color: transparent;
+
+      .material-icons {
+        color: #fafafa;
+      }
+    }
+  }
+
+  &.disabled,
+  &.error {
+    opacity: 0.75;
+    color: #757575;
+  }
+
+  // Disabled colors
+  &.disabled {
+    cursor: not-allowed;
+
+    .material-icons {
+      color: inherit;
+    }
+
+    &.filled {
+      background: #bdbdbd;
+      color: #fafafa;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &.error {
+    &.active {
+      color: #ef5350;
+      border: 1px solid #ef5350;
+    }
+  }
+}
+
+%material-icons {
+  font-size: 1.1rem;
+  color: #6e6e6e;
+  @include transition(color 0.25s);
+}
+
+.eta {
+  margin-left: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}

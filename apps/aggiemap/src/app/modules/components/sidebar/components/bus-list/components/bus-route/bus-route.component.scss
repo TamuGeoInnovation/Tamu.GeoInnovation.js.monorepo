@@ -1,0 +1,104 @@
+@import 'libs/sass/mixins';
+
+$border-radius: 5px;
+
+:host {
+  @include flexbox();
+  @include flex-direction(column);
+  @include align-items(center);
+  width: 100%;
+  margin: 0.4rem 0;
+
+  & > div:first-child {
+    width: 100%;
+  }
+
+  &:hover,
+  .loaded {
+    .route-name {
+      font-weight: 600;
+
+      background: attr(selected-color);
+    }
+  }
+
+  .loading {
+    .route-name {
+      span.selected-status {
+        @include animation(do-progress 15s both normal);
+      }
+    }
+  }
+
+  .loaded {
+    .route-name {
+      span.selected-status {
+        @include animation(do-complete 0.5s both normal);
+      }
+    }
+  }
+
+  .route-overview {
+    @include flexbox();
+    @include flex-direction(row);
+    width: inherit;
+    cursor: pointer;
+  }
+
+  .route-number,
+  .route-name {
+    padding: 0.55rem;
+    box-sizing: border-box;
+  }
+
+  .route-number {
+    color: #fafafa;
+    width: 5rem;
+    text-align: center;
+    font-weight: 600;
+    border-top-left-radius: $border-radius;
+    border-bottom-left-radius: $border-radius;
+  }
+
+  .route-name {
+    background: #fafafa;
+    position: relative;
+    width: inherit;
+    border-top-right-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+    overflow: hidden;
+
+    span.route-label {
+      position: relative;
+      z-index: 1;
+    }
+
+    span.selected-status {
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 0;
+      opacity: 0.25;
+      width: 1px;
+      @include transform-origin(left center);
+      @include transform(scale3d(0, 1, 1));
+    }
+  }
+}
+
+@keyframes do-progress {
+  5% {
+    @include transform(scale3d(50, 1, 1));
+  }
+
+  90% {
+    @include transform(scale3d(150, 1, 1));
+  }
+}
+
+@keyframes do-complete {
+  100% {
+    @include transform(scale3d(300, 1, 1));
+  }
+}
