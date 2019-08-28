@@ -7,5 +7,27 @@
     "tslint.json": "*",
     "nx.json": "*"
   },
-  "projects": {}
+  "projects": {
+    "aggiemap-e2e": {
+      "tags": []
+    },
+    "aggiemap": {
+      "tags": []
+    },
+    "common": {
+      "tags": []
+    },
+    "common-ngx": {
+      "tags": []
+    },
+    "common-ngx-pipes": {
+      "tags": []
+    },
+    "common-ngx-local-store": {
+      "tags": []
+    },
+    "common-ngx-settings": {
+      "tags": []
+    }
+  }
 }

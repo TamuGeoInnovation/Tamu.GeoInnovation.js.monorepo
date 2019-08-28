@@ -1,6 +1,274 @@
 {
   "version": 1,
-  "projects": {},
+  "projects": {
+    "common": {
+      "root": "libs/common",
+      "sourceRoot": "libs/common/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/tsconfig.lib.json", "libs/common/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/jest.config.js",
+            "tsConfig": "libs/common/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "common-ngx": {
+      "projectType": "library",
+      "root": "libs/common/ngx",
+      "sourceRoot": "libs/common/ngx/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/ngx/tsconfig.lib.json", "libs/common/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/ngx/jest.config.js",
+            "tsConfig": "libs/common/ngx/tsconfig.spec.json",
+            "setupFile": "libs/common/ngx/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "aggiemap": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/aggiemap",
+      "sourceRoot": "apps/aggiemap/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/aggiemap",
+            "index": "apps/aggiemap/src/index.html",
+            "main": "apps/aggiemap/src/main.ts",
+            "polyfills": "apps/aggiemap/src/polyfills.ts",
+            "tsConfig": "apps/aggiemap/tsconfig.app.json",
+            "aot": false,
+            "assets": ["apps/aggiemap/src/favicon.ico", "apps/aggiemap/src/assets"],
+            "styles": ["apps/aggiemap/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/aggiemap/src/environments/environment.ts",
+                  "with": "apps/aggiemap/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "aggiemap:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "aggiemap:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "aggiemap:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/aggiemap/tsconfig.app.json", "apps/aggiemap/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/aggiemap/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/aggiemap/jest.config.js",
+            "tsConfig": "apps/aggiemap/tsconfig.spec.json",
+            "setupFile": "apps/aggiemap/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "aggiemap-e2e": {
+      "root": "apps/aggiemap-e2e",
+      "sourceRoot": "apps/aggiemap-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/aggiemap-e2e/cypress.json",
+            "tsConfig": "apps/aggiemap-e2e/tsconfig.e2e.json",
+            "devServerTarget": "aggiemap:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "aggiemap:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/aggiemap-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/aggiemap-e2e/**"]
+          }
+        }
+      }
+    },
+    "common-ngx-pipes": {
+      "projectType": "library",
+      "root": "libs/common/ngx/pipes",
+      "sourceRoot": "libs/common/ngx/pipes/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "libs/common/ngx/pipes/tsconfig.lib.json",
+            "project": "libs/common/ngx/pipes/ng-package.json"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/ngx/pipes/tsconfig.lib.json", "libs/common/ngx/pipes/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/pipes/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/ngx/pipes/jest.config.js",
+            "tsConfig": "libs/common/ngx/pipes/tsconfig.spec.json",
+            "setupFile": "libs/common/ngx/pipes/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "common-ngx-local-store": {
+      "projectType": "library",
+      "root": "libs/common/ngx/local-store",
+      "sourceRoot": "libs/common/ngx/local-store/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "libs/common/ngx/local-store/tsconfig.lib.json",
+            "project": "libs/common/ngx/local-store/ng-package.json"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/ngx/local-store/tsconfig.lib.json", "libs/common/ngx/local-store/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/local-store/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/ngx/local-store/jest.config.js",
+            "tsConfig": "libs/common/ngx/local-store/tsconfig.spec.json",
+            "setupFile": "libs/common/ngx/local-store/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "common-ngx-settings": {
+      "projectType": "library",
+      "root": "libs/common/ngx/settings",
+      "sourceRoot": "libs/common/ngx/settings/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "libs/common/ngx/settings/tsconfig.lib.json",
+            "project": "libs/common/ngx/settings/ng-package.json"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/ngx/settings/tsconfig.lib.json", "libs/common/ngx/settings/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/settings/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/ngx/settings/jest.config.js",
+            "tsConfig": "libs/common/ngx/settings/tsconfig.spec.json",
+            "setupFile": "libs/common/ngx/settings/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    }
+  },
   "cli": {
     "defaultCollection": "@nrwl/angular"
   },
