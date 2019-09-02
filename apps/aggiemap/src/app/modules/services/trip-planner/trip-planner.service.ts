@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   BehaviorSubject,
   combineLatest,
@@ -349,6 +349,49 @@ export class TripPlannerService implements OnDestroy {
 
   private $destroy: Subject<boolean> = new Subject();
 
+  public initializeHanlders() {
+    this._view.on('click', (e: esri.MapViewClickEvent) => {
+      const layer: any = this._map.findLayerById('buildings-layer');
+      // Allow click coordinates only when on the trip planner route
+      if (this.router.url.includes('trip')) {
+        this.mapService.featuresIntersectingPoint(layer, e.mapPoint).then((res) => {
+          // If the query returns a feature in the value use the first item in that list
+          if (res.features.length > 0) {
+            this.setStops([
+              new TripPoint({
+                source: 'map-event',
+                originAttributes: res.features[0].attributes,
+                originGeometry: { latitude: e.mapPoint.latitude, longitude: e.mapPoint.longitude },
+                originParameters: {
+                  type: 'map-event',
+                  value: {
+                    latitude: e.mapPoint.latitude,
+                    longitude: e.mapPoint.longitude
+                  }
+                }
+              })
+            ]);
+          } else {
+            // If the query does not retrun a feature in the value, use the event coordinates.
+            this.setStops([
+              new TripPoint({
+                source: 'map-event',
+                originGeometry: { latitude: e.mapPoint.latitude, longitude: e.mapPoint.longitude },
+                originParameters: {
+                  type: 'map-event',
+                  value: {
+                    latitude: e.mapPoint.latitude,
+                    longitude: e.mapPoint.longitude
+                  }
+                }
+              })
+            ]);
+          }
+        });
+      }
+    });
+  }
+
   /**
    * Updates multiple properties from a key-value object. Example:
    *
@@ -375,6 +418,7 @@ export class TripPlannerService implements OnDestroy {
   }
 
   constructor(
+    private router: Router,
     private moduleProvider: EsriModuleProviderService,
     private mapService: EsriMapService,
     private connectionService: TripPlannerConnectionService,
@@ -413,6 +457,8 @@ export class TripPlannerService implements OnDestroy {
         this._view = results[1].view;
 
         this.loadTripFromURL();
+
+        this.initializeHanlders();
       });
 
     // Subscribe to the trip planner connection service and store the selected connection url when available.

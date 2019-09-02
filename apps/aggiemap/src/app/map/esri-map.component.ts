@@ -1,14 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
-import { Angulartics2 } from 'angulartics2';
 
 import { EsriMapService } from '../modules/services/esri/esri-map.service';
-import { TripPlannerService } from '../modules/services/trip-planner/trip-planner.service';
-import { TripPoint } from '../modules/services/trip-planner/core/trip-planner-core';
 import { ResponsiveService } from '../modules/services/ui/responsive.service';
 import { EsriModuleProviderService } from '../modules/services/esri/esri-module-provider.service';
 import { Connections } from '../../environments/environment';
@@ -30,15 +26,12 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
 
   constructor(
-    private analytics: Angulartics2,
     private mapService: EsriMapService,
-    private plannerService: TripPlannerService,
-    private url: Router,
     private responsiveService: ResponsiveService,
     private moduleProvider: EsriModuleProviderService
   ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.responsiveService
       .getStatus()
       .pipe(takeUntil(this._destroy$))
@@ -66,23 +59,9 @@ export class EsriMapComponent implements OnInit, OnDestroy {
       'Howdy Ags!'
     ];
     (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
-
-    // if (!!navigator.platform.match(/iPhone|iPod|iPad/)) {
-    //   let lastY = 0;
-
-    //   window.addEventListener('touchmove', (e) => {
-    //     console.log(e)
-    //     const { pageY } = e.changedTouches[0]
-    //     const scrollY = window.pageYOffset || window.scrollY || 0;
-    //     if (pageY > lastY && scrollY === 0) {
-    //       e.preventDefault()
-    //     }
-    //     lastY = pageY
-    //   }, { passive: false })
-    // }
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this._destroy$.next();
     this._destroy$.complete();
   }
@@ -93,7 +72,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
    * @returns Instance of Esri Map and View
    * @memberof EsriMapComponent
    */
-  loadMap() {
+  public loadMap() {
     return this.mapService.loadMap(
       {
         basemap: {
@@ -148,48 +127,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
     );
   }
 
-  continue() {
-    this.view.on('click', (e: esri.MapViewClickEvent) => {
-      const layer: any = this.map.findLayerById('buildings-layer');
-      // Allow click coordinates only when on the trip planner route
-      if (this.url.url.includes('trip')) {
-        this.mapService.featuresIntersectingPoint(layer, e.mapPoint).then((res) => {
-          // If the query returns a feature in the value use the first item in that list
-          if (res.features.length > 0) {
-            this.plannerService.setStops([
-              new TripPoint({
-                source: 'map-event',
-                originAttributes: res.features[0].attributes,
-                originGeometry: { latitude: e.mapPoint.latitude, longitude: e.mapPoint.longitude },
-                originParameters: {
-                  type: 'map-event',
-                  value: {
-                    latitude: e.mapPoint.latitude,
-                    longitude: e.mapPoint.longitude
-                  }
-                }
-              })
-            ]);
-          } else {
-            // If the query does not retrun a feature in the value, use the event coordinates.
-            this.plannerService.setStops([
-              new TripPoint({
-                source: 'map-event',
-                originGeometry: { latitude: e.mapPoint.latitude, longitude: e.mapPoint.longitude },
-                originParameters: {
-                  type: 'map-event',
-                  value: {
-                    latitude: e.mapPoint.latitude,
-                    longitude: e.mapPoint.longitude
-                  }
-                }
-              })
-            ]);
-          }
-        });
-      }
-    });
-
+  public continue() {
     // TODO: This is a debugging event used for feature zoom calculation.
     // this.view.on('mouse-wheel', (e) => {
     //   this.moduleProvider.require(['Point', 'GeometryEngine'])
@@ -261,86 +199,13 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Binds normal click and selected keyup handlers for ADA keyboard accessibility.
-   * Can delegate events for dynamic content.
-   *
-   * @param {string} target Target element selector.
-   * @param {*} parent If delegating event, the parent element that exists on DOM load. Else boolean false.
-   * @param {string[]} events String array with events that need binding.
-   * @param {*} cb Callback function that executes once the event is fired.
-   */
-  addAccessibleEventHandlers = (target: string, parent: any, events: string[], cb) => {
-    events.forEach((e) => {
-      if (e == 'click' || e == 'mousedown' || e == 'mouseup') {
-        if (parent) {
-          // If parent provided, delegate event
-          document.querySelector(parent).addEventListener(e, (nativeEvent: MouseEvent) => {
-            if (
-              Array.from((<HTMLElement>nativeEvent.target).classList).includes(target.replace('.', '')) ||
-              (<HTMLElement>nativeEvent.target).id == target.replace('#', '')
-            ) {
-              cb(nativeEvent);
-            }
-          });
-        } else {
-          // Set standard click handler
-          document.querySelector(target).addEventListener(e, cb);
-        }
-      }
-
-      if (e == 'keyup' || e == 'keydown') {
-        /**
-         * Tests whether the pressed key will be considered accessible. Default is SPACE and ENTER
-         *
-         * @param {*} event Keyboard event object
-         * @returns {boolean} Returns Boolean true or false
-         */
-        const isAccessibleKey = (event) => {
-          let ret = false;
-
-          // Keys that will trigger along with click. In this case, SPACE and ENTER should also trigger the click event
-          const accessibleKeys = [13, 32];
-
-          if (accessibleKeys.includes(event.keyCode)) {
-            // Execute callback function
-            ret = true;
-          }
-
-          return ret;
-        };
-
-        // If parent provided, delegate event
-        if (parent) {
-          document.querySelector(parent).addEventListener(e, (nativeEvent: MouseEvent) => {
-            if (isAccessibleKey(nativeEvent)) {
-              if (
-                Array.from((<HTMLElement>nativeEvent.target).classList).includes(target.replace('.', '')) ||
-                (<HTMLElement>nativeEvent.target).id == target.replace('#', '')
-              ) {
-                cb(nativeEvent);
-              }
-            }
-          });
-        } else {
-          // Set specific key handlers to target
-          document.querySelector(target).addEventListener(e, (nativeEvent: KeyboardEvent) => {
-            if (isAccessibleKey(nativeEvent)) {
-              cb(nativeEvent);
-            }
-          });
-        }
-      }
-    });
-  };
-
-  /**
    * Toggles a class on a DOM Element. While the .toggle() method can be used in code,
    * it cannot be used in HTML templates
    *
    * @param {*} event Event object
    * @param {*} className Class to be toggled
    */
-  toggleClass = (event: KeyboardEvent | MouseEvent, className: string) => {
+  public toggleClass = (event: KeyboardEvent | MouseEvent, className: string) => {
     if ((<HTMLElement>event.currentTarget).classList) {
       if ((<HTMLElement>event.currentTarget).classList.contains(className)) {
         (<HTMLElement>event.currentTarget).classList.remove(className);
