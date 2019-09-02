@@ -34,6 +34,9 @@
     },
     "common-ngx-ui-notification": {
       "tags": []
+    },
+    "maps-esri": {
+      "tags": []
     }
   }
 }

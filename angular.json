@@ -341,6 +341,34 @@
           "styleext": "scss"
         }
       }
+    },
+    "maps-esri": {
+      "projectType": "library",
+      "root": "libs/maps/esri",
+      "sourceRoot": "libs/maps/esri/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/maps/esri/tsconfig.lib.json", "libs/maps/esri/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/maps/esri/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/esri/jest.config.js",
+            "tsConfig": "libs/maps/esri/tsconfig.spec.json",
+            "setupFile": "libs/maps/esri/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {
