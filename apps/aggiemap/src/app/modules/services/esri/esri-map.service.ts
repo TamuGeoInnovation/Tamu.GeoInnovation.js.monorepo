@@ -3,7 +3,7 @@ import { EsriModuleProviderService } from './esri-module-provider.service';
 import { AsyncSubject, Observable, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { SearchService } from '../search/search.service';
+import { SearchService } from '@tamu-gisc/search';
 
 import { getEsriGeometryType } from '../../utilities/utils';
 
@@ -299,7 +299,7 @@ export class EsriMapService {
 
         // Object with merged root level properties, native properties, and persistent properties.
         // const props: any = Object.assign(source, ...native, ...persistentProps);
-        const props: any = {...source, ...source.native, ...persistentProps};
+        const props: any = { ...source, ...source.native, ...persistentProps };
 
         // Remove the 'native' property from the object since it's not needed in the layer creation.
         if (props.hasOwnProperty('native')) {
@@ -334,25 +334,21 @@ export class EsriMapService {
             return new GraphicsLayer(props);
           });
         } else if (source.type == 'geojson') {
-          return this.moduleProvider
-            .require(['GeoJSONLayer'])
-            .then(([GeoJSONLayer]: [esri.GeoJSONLayerConstructor]) => {
-              // Delete the type property as it cannot be set on layer creation.
-              delete props.type;
+          return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [esri.GeoJSONLayerConstructor]) => {
+            // Delete the type property as it cannot be set on layer creation.
+            delete props.type;
 
-              // Create and return new geojson layer
-              return new GeoJSONLayer(props);
-            });
+            // Create and return new geojson layer
+            return new GeoJSONLayer(props);
+          });
         } else if (source.type == 'csv') {
-          return this.moduleProvider
-            .require(['CSVLayer'])
-            .then(([CSVLayer]: [esri.CSVLayerConstructor]) => {
-              // Delete the type property as it cannot be set on layer creation.
-              delete props.type;
+          return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [esri.CSVLayerConstructor]) => {
+            // Delete the type property as it cannot be set on layer creation.
+            delete props.type;
 
-              // Create and return new geojson layer
-              return new CSVLayer(props);
-            });
+            // Create and return new geojson layer
+            return new CSVLayer(props);
+          });
         }
       };
 

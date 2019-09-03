@@ -76,6 +76,9 @@
     },
     "common-types": {
       "tags": []
+    },
+    "search": {
+      "tags": []
     }
   }
 }

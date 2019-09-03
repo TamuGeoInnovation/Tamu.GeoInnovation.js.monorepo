@@ -8,7 +8,8 @@ export const environment = {
 };
 
 import { Connections, Definitions as d } from './definitions';
-import { SearchSource } from '../app/modules/services/search/search.service';
+
+import { SearchSource } from '@tamu-gisc/search';
 import { LayerSource, LegendItem } from '../app/types/types';
 
 export * from './definitions';

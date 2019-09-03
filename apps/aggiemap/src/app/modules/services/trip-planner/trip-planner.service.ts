@@ -19,7 +19,9 @@ import { Angulartics2 } from 'angulartics2';
 
 import { EsriMapService, MapServiceInstance } from '../esri/esri-map.service';
 import { EsriModuleProviderService } from '../esri/esri-module-provider.service';
-import { SearchResult, SearchResultItem, SearchService } from '../search/search.service';
+
+import { SearchService, SearchResult, SearchResultItem } from '@tamu-gisc/search';
+
 import { TripPlannerConnection, TripPlannerConnectionService } from './trip-planner-connection.service';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {

@@ -3,7 +3,9 @@ import { of, Observable, from, BehaviorSubject } from 'rxjs';
 import { switchMap, take, filter, reduce } from 'rxjs/operators';
 
 import { EsriModuleProviderService } from '../../esri/esri-module-provider.service';
-import { SearchService, SearchResult, SearchSourceWhereProperties, SearchSource } from '../../search/search.service';
+
+import { SearchService, SearchResult, SearchSource } from '@tamu-gisc/search';
+
 import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common/ngx/settings';
 import { SearchSources } from '../../../../../environments/environment';
 

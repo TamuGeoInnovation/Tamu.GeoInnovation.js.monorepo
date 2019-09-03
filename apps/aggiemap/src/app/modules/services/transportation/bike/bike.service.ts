@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { of, Observable } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 
-import { SearchService, SearchResult } from '../../search/search.service';
+import { SearchService, SearchResult } from '@tamu-gisc/search';
+
 import { relativeDistance, centroidFromEsriGeometry } from '../../../utilities/utils';
 
 import { Point } from '../../../../types/types';

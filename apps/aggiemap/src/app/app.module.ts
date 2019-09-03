@@ -5,8 +5,10 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
 import { AppRoutingModule } from './modules/routing/app-routing.module';
 
+import { Sources } from '@tamu-gisc/search';
 import { NotificationModule, NotificationEvents } from '@tamu-gisc/common/ngx/ui/notification';
-import { EVENTS } from '../environments/environment';
+
+import { EVENTS, SearchSources } from '../environments/environment';
 
 import { AppComponent } from './app.component';
 
@@ -14,6 +16,6 @@ import { AppComponent } from './app.component';
   imports: [AppRoutingModule, Angulartics2Module.forRoot(), NotificationModule],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
-  providers: [{ provide: NotificationEvents, useValue: EVENTS }]
+  providers: [{ provide: NotificationEvents, useValue: EVENTS }, { provide: Sources, useValue: SearchSources }]
 })
 export class AppModule {}

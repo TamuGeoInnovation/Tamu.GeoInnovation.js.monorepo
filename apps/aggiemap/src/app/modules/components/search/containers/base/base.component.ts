@@ -8,7 +8,9 @@ import {
   Input,
   OnDestroy,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  Inject,
+  Optional
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -17,12 +19,13 @@ import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
 import { EsriMapService } from '../../../../services/esri/esri-map.service';
-import { SearchService, SearchResult, SearchResultItem } from '../../../../services/search/search.service';
+
+import { SearchService, SearchResult, SearchResultItem, Sources, SearchSource } from '@tamu-gisc/search';
+
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TripPoint } from '../../../../services/trip-planner/core/trip-planner-core';
 
 import { arrowKeyControl, getGeolocation, TemplateRenderer, isStringCoordinates } from '../../../../utilities/utils';
-import { SearchSources } from '../../../../../../environments/environment';
 
 import esri = __esri;
 
@@ -205,10 +208,11 @@ export class SearchComponent implements OnInit, OnDestroy {
     private analytics: Angulartics2,
     private ns: NotificationService,
     private mapService: EsriMapService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    @Optional() @Inject(Sources) private SearchSources: SearchSource[]
   ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.searchStatus = this.searchService.searching;
 
     // Wait for the map service to load map and view
@@ -252,7 +256,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           } else {
             // Array of search source references to submit search query to.
             // const searchSourceIds = ['building', 'parking-garage', 'parking-lot', 'points-of-interest'];
-            const searchSourceIds = SearchSources.filter((s) => s.searchActive).map((s) => s.source);
+            const searchSourceIds = this.SearchSources.filter((s) => s.searchActive).map((s) => s.source);
 
             // Submit search service query
             this.searchService.search({ sources: searchSourceIds, values: Array(searchSourceIds.length).fill(value) });

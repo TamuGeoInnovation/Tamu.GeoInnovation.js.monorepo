@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Inject, Optional } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { SearchService } from '../../../..//modules/services/search/search.service';
-import { SearchSources } from '../../../../../environments/environment';
+import { SearchService, Sources, SearchSource } from '@tamu-gisc/search';
 
 // Pre-defined search source reference to use in the building department search.
 const searchReference = 'university-departments-exact';
@@ -24,9 +23,9 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(private searchService: SearchService) {
+  constructor(private searchService: SearchService, @Optional() @Inject(Sources) private SearchSources: SearchSource[]) {
     // Check if the defined search source exists.
-    this.source = SearchSources.findIndex((s) => s.source == searchReference);
+    this.source = this.SearchSources.findIndex((s) => s.source == searchReference);
 
     if (this.source == -1) {
       throw new Error(`'${searchReference}' search source was not found in configuration.`);

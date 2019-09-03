@@ -1,15 +1,20 @@
-import { Injectable } from '@angular/core';
+import { Injectable, InjectionToken, Inject, Optional } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+
 import { ReplaySubject, Observable, BehaviorSubject, forkJoin, of, from } from 'rxjs';
-import { map, toArray, concatMap, switchMap } from 'rxjs/operators';
+import { toArray, concatMap, switchMap } from 'rxjs/operators';
 
-import { SearchSources } from '../../../../environments/environment';
-
-import { TemplateRenderer, makeUrlParamsFromObject, makeWhereClause, getObjectPropertyValue } from '../../utilities/utils';
+import { getPropertyValue } from '@tamu-gisc/common/utils/object';
+import { makeWhere } from '@tamu-gisc/common/utils/database';
+import { makeUrlParams } from '@tamu-gisc/common/utils/routing';
 
 import esri = __esri;
 
-@Injectable()
+export const Sources: InjectionToken<any> = new InjectionToken<string>('Sources');
+
+@Injectable({
+  providedIn: 'root'
+})
 export class SearchService {
   private _store: ReplaySubject<SearchResult> = new ReplaySubject(1);
   public store: Observable<SearchResult> = this._store.asObservable();
@@ -17,7 +22,7 @@ export class SearchService {
   private _searching: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public searching: Observable<boolean> = this._searching.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, @Optional() @Inject(Sources) private SearchSources: SearchSource[]) {}
 
   /**
    * Performs parallel searches with the provided search sources.
@@ -48,7 +53,7 @@ export class SearchService {
     // If the source is a string reference, make sure that reference exists.
     // If the source is not a string (because it's a SearchSource), return truthy.
     const allSourcesExist = options.sources.every((ref) =>
-      typeof ref === 'string' ? SearchSources.findIndex((source) => ref == source.source) > -1 : true
+      typeof ref === 'string' ? this.SearchSources.findIndex((source) => ref == source.source) > -1 : true
     );
 
     if (!allSourcesExist) {
@@ -60,7 +65,7 @@ export class SearchService {
     // If the source is a string reference, return the reference source.
     // If the source is a SearchSource, return self
     const sources: SearchSource[] = options.sources.map((src) => {
-      return typeof src == 'string' ? SearchSources.find((s) => s.source == src) : src;
+      return typeof src == 'string' ? this.SearchSources.find((s) => s.source == src) : src;
     });
 
     // Generate an array of http get observables
@@ -324,14 +329,14 @@ export class SearchService {
         : Array((<any>source.queryParams).where.keys.length).fill(options.values[srcIndex]);
 
       // Generate the SQL WHERE clause from defined keys, values, and operators.
-      const where = makeWhereClause(keys, values, operators, wildcards, transformations);
+      const where = makeWhere(keys, values, operators, wildcards, transformations);
 
       // Make shallow copy of the source query params object and set the where value to be the stringified result
-      // from `makeWhereClause`
+      // from `makeWhere`
       const config = { ...source.queryParams, where: where };
 
       // Make URL param query from the config copy.
-      const query = makeUrlParamsFromObject(config, true, '/query');
+      const query = makeUrlParams(config, true, '/query');
 
       return `${query}`;
     }
@@ -368,7 +373,7 @@ export class SearchService {
       const ranked = features
         .map((f) => {
           const points = source.scoringKeys.reduce((acc, curr, i) => {
-            const propValue: string = getObjectPropertyValue(f, curr);
+            const propValue: string = getPropertyValue(f, curr);
 
             if (!propValue) {
               return acc;

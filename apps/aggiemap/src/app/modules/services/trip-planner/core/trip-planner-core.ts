@@ -3,7 +3,8 @@
 import esri = __esri;
 
 import { TripResultProperties } from '../trip-planner.service';
-import { SearchResultBreadcrumbSummary } from '../../search/search.service';
+
+import { SearchResultBreadcrumbSummary } from '@tamu-gisc/search';
 
 import {
   isStringCoordinates,
