@@ -37,6 +37,45 @@
     },
     "maps-esri": {
       "tags": []
+    },
+    "common-utils": {
+      "tags": []
+    },
+    "common-utils-collection": {
+      "tags": []
+    },
+    "common-utils-database": {
+      "tags": []
+    },
+    "common-utils-date": {
+      "tags": []
+    },
+    "common-utils-geometry": {
+      "tags": []
+    },
+    "common-utils-number": {
+      "tags": []
+    },
+    "common-utils-object": {
+      "tags": []
+    },
+    "common-utils-string": {
+      "tags": []
+    },
+    "common-utils-routing": {
+      "tags": []
+    },
+    "common-utils-ui": {
+      "tags": []
+    },
+    "common-utils-geometry-esri": {
+      "tags": []
+    },
+    "common-utils-geometry-generic": {
+      "tags": []
+    },
+    "common-types": {
+      "tags": []
     }
   }
 }

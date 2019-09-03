@@ -23,7 +23,20 @@
       "@tamu-gisc/common/ngx/settings": ["libs/common/ngx/settings/src/index.ts"],
       "@tamu-gisc/common/ngx/ui": ["libs/common/ngx/ui/src/index.ts"],
       "@tamu-gisc/common/ngx/ui/notification": ["libs/common/ngx/ui/notification/src/index.ts"],
-      "@tamu-gisc/maps/esri": ["libs/maps/esri/src/index.ts"]
+      "@tamu-gisc/maps/esri": ["libs/maps/esri/src/index.ts"],
+      "@tamu-gisc/common/utils": ["libs/common/utils/src/index.ts"],
+      "@tamu-gisc/common/utils/collection": ["libs/common/utils/collection/src/index.ts"],
+      "@tamu-gisc/common/utils/database": ["libs/common/utils/database/src/index.ts"],
+      "@tamu-gisc/common/utils/date": ["libs/common/utils/date/src/index.ts"],
+      "@tamu-gisc/common/utils/geometry": ["libs/common/utils/geometry/src/index.ts"],
+      "@tamu-gisc/common/utils/geometry/esri": ["libs/common/utils/geometry/esri/src/index.ts"],
+      "@tamu-gisc/common/utils/geometry/generic": ["libs/common/utils/geometry/generic/src/index.ts"],
+      "@tamu-gisc/common/utils/number": ["libs/common/utils/number/src/index.ts"],
+      "@tamu-gisc/common/utils/object": ["libs/common/utils/object/src/index.ts"],
+      "@tamu-gisc/common/utils/string": ["libs/common/utils/string/src/index.ts"],
+      "@tamu-gisc/common/utils/routing": ["libs/common/utils/routing/src/index.ts"],
+      "@tamu-gisc/common/utils/ui": ["libs/common/utils/ui/src/index.ts"],
+      "@tamu-gisc/common/types": ["libs/common/types/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

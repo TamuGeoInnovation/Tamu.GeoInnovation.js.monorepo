@@ -369,6 +369,301 @@
           "styleext": "scss"
         }
       }
+    },
+    "common-utils": {
+      "root": "libs/common/utils",
+      "sourceRoot": "libs/common/utils/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/utils/tsconfig.lib.json", "libs/common/utils/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/jest.config.js",
+            "tsConfig": "libs/common/utils/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "common-utils-collection": {
+      "root": "libs/common/utils/collection",
+      "sourceRoot": "libs/common/utils/collection/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/common/utils/collection/tsconfig.lib.json",
+              "libs/common/utils/collection/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/collection/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/collection/jest.config.js",
+            "tsConfig": "libs/common/utils/collection/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "common-utils-database": {
+      "root": "libs/common/utils/database",
+      "sourceRoot": "libs/common/utils/database/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/utils/database/tsconfig.lib.json", "libs/common/utils/database/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/database/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/database/jest.config.js",
+            "tsConfig": "libs/common/utils/database/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "common-utils-date": {
+      "root": "libs/common/utils/date",
+      "sourceRoot": "libs/common/utils/date/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/utils/date/tsconfig.lib.json", "libs/common/utils/date/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/date/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/date/jest.config.js",
+            "tsConfig": "libs/common/utils/date/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "common-utils-geometry": {
+      "root": "libs/common/utils/geometry",
+      "sourceRoot": "libs/common/utils/geometry/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/utils/geometry/tsconfig.lib.json", "libs/common/utils/geometry/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/geometry/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/geometry/jest.config.js",
+            "tsConfig": "libs/common/utils/geometry/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "common-utils-number": {
+      "root": "libs/common/utils/number",
+      "sourceRoot": "libs/common/utils/number/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/utils/number/tsconfig.lib.json", "libs/common/utils/number/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/number/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/number/jest.config.js",
+            "tsConfig": "libs/common/utils/number/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "common-utils-object": {
+      "root": "libs/common/utils/object",
+      "sourceRoot": "libs/common/utils/object/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/utils/object/tsconfig.lib.json", "libs/common/utils/object/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/object/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/object/jest.config.js",
+            "tsConfig": "libs/common/utils/object/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "common-utils-string": {
+      "root": "libs/common/utils/string",
+      "sourceRoot": "libs/common/utils/string/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/utils/string/tsconfig.lib.json", "libs/common/utils/string/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/string/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/string/jest.config.js",
+            "tsConfig": "libs/common/utils/string/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "common-utils-routing": {
+      "root": "libs/common/utils/routing",
+      "sourceRoot": "libs/common/utils/routing/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/utils/routing/tsconfig.lib.json", "libs/common/utils/routing/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/routing/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/routing/jest.config.js",
+            "tsConfig": "libs/common/utils/routing/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "common-utils-ui": {
+      "root": "libs/common/utils/ui",
+      "sourceRoot": "libs/common/utils/ui/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/utils/ui/tsconfig.lib.json", "libs/common/utils/ui/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/ui/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/ui/jest.config.js",
+            "tsConfig": "libs/common/utils/ui/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "common-utils-geometry-esri": {
+      "root": "libs/common/utils/geometry/esri",
+      "sourceRoot": "libs/common/utils/geometry/esri/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/common/utils/geometry/esri/tsconfig.lib.json",
+              "libs/common/utils/geometry/esri/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/geometry/esri/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/geometry/esri/jest.config.js",
+            "tsConfig": "libs/common/utils/geometry/esri/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "common-utils-geometry-generic": {
+      "root": "libs/common/utils/geometry/generic",
+      "sourceRoot": "libs/common/utils/geometry/generic/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/common/utils/geometry/generic/tsconfig.lib.json",
+              "libs/common/utils/geometry/generic/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/geometry/generic/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/geometry/generic/jest.config.js",
+            "tsConfig": "libs/common/utils/geometry/generic/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "common-types": {
+      "root": "libs/common/types",
+      "sourceRoot": "libs/common/types/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/types/tsconfig.lib.json", "libs/common/types/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/types/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/types/jest.config.js",
+            "tsConfig": "libs/common/types/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
