@@ -2,8 +2,9 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import { TripModeSwitch } from '../../../../../services/trip-planner/trip-planner.service';
-import { BusStop, TimetableRow, RouteBus, BusService } from '../../../../../services/transportation/bus/bus.service';
-import { timeStringForDate } from '../../../../../utilities/utils';
+import { BusStop, TimetableRow, BusService } from '../../../../../services/transportation/bus/bus.service';
+
+import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 @Component({
   selector: 'gisc-bus-switch',

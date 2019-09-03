@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { getPathFromRouteSnapshot } from '../../../../utilities/utils';
+import { getPathFromRouteSnapshot } from '@tamu-gisc/common/utils/routing';
+
 
 @Component({
   selector: 'app-mobile-sidebar',

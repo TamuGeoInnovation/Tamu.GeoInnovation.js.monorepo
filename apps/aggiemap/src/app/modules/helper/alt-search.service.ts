@@ -3,10 +3,9 @@ import { Injectable, Inject, Optional } from '@angular/core';
 import { EsriMapService } from '../services/esri/esri-map.service';
 import { TripPoint } from '../services/trip-planner/core/trip-planner-core';
 
-import { getObjectPropertyValues } from '../utilities/utils';
+import { getObjectPropertyValues } from '@tamu-gisc/common/utils/object';
 
 import { SearchService, SearchResultBreadcrumbSummary, Sources, SearchSource } from '@tamu-gisc/search';
-
 
 /**
  *

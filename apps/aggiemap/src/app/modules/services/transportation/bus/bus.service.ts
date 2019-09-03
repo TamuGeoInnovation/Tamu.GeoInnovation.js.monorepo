@@ -6,7 +6,9 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { EsriModuleProviderService } from '../../esri/esri-module-provider.service';
 import { TripModeSwitch } from '../../trip-planner/trip-planner.service';
 import { EsriMapService, MapServiceInstance } from '../../esri/esri-map.service';
-import { relativeDistance, dateForTimeString } from '../../../utilities/utils';
+
+import { dateForDateTimeString } from '@tamu-gisc/common/utils/date';
+import { relativeDistance } from '@tamu-gisc/common/utils/geometry/generic';
 
 import toHex from 'colornames';
 
@@ -177,7 +179,7 @@ export class BusService {
             row.push({
               stop_name: key.substr(36), // First 36 characters are the UUID, for some reason
               time: time,
-              datetime: time == null ? null : dateForTimeString(time, date)
+              datetime: time == null ? null : dateForDateTimeString(time, date)
             });
           }
           timetable.push(row);

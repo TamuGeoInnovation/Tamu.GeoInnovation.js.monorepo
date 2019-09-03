@@ -3,7 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateCh
 import { Observable } from 'rxjs';
 
 import { ResponsiveService } from '../../services/ui/responsive.service';
-import { getPathFromRouteSnapshot, routeSubstitute } from '../../utilities/utils';
+import { getPathFromRouteSnapshot, routeSubstitute } from '@tamu-gisc/common/utils/routing';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ import { getPathFromRouteSnapshot, routeSubstitute } from '../../utilities/utils
 export class MobileGuard implements CanActivate, CanActivateChild {
   constructor(private rp: ResponsiveService, private router: Router) {}
 
-  canActivate(
+  public canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
@@ -24,7 +24,7 @@ export class MobileGuard implements CanActivate, CanActivateChild {
     return this.rp.snapshot.isMobile;
   }
 
-  canActivateChild(
+  public canActivateChild(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
@@ -38,7 +38,7 @@ export class MobileGuard implements CanActivate, CanActivateChild {
 export class DesktopGuard implements CanActivate, CanActivateChild {
   constructor(private rp: ResponsiveService, private router: Router) {}
 
-  canActivate(
+  public canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
@@ -51,7 +51,7 @@ export class DesktopGuard implements CanActivate, CanActivateChild {
     return !this.rp.snapshot.isMobile;
   }
 
-  canActivateChild(next, state): Observable<boolean> | Promise<boolean> | boolean {
+  public canActivateChild(next, state): Observable<boolean> | Promise<boolean> | boolean {
     return this.canActivate(next, state);
   }
 }

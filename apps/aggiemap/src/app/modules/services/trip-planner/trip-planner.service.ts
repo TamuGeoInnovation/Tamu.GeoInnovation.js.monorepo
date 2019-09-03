@@ -40,13 +40,9 @@ import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common
 import { LayerSource } from '../../../types/types';
 import { LayerSources } from '../../../../environments/environment';
 
-import {
-  getGeolocation,
-  isStringCoordinates,
-  timeStringForDate,
-  findNearestIndex,
-  pairwiseOverlap
-} from '../../utilities/utils';
+import { findNearestIndex, isCoordinatePair, getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';
+import { pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
+import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 import { brazosCounty } from '../../../map/polygons';
 import * as guid from 'uuid/v4';
@@ -2223,7 +2219,7 @@ export class TripPlannerService implements OnDestroy {
 
       // Identify a param block as either feature abbreviation/number OR coordinate point
       const identifyBlock = (block: string): TripPointProperties['source'] => {
-        if (isStringCoordinates(block)) {
+        if (isCoordinatePair(block)) {
           // If block is coordinate, coordinate poitns will be intersected to determine if a feature
           return 'url-coordinates';
         } else if (block.includes('whereeveriam')) {

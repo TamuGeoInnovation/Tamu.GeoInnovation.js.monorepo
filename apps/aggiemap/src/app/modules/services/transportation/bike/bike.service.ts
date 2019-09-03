@@ -5,7 +5,8 @@ import { switchMap, catchError } from 'rxjs/operators';
 
 import { SearchService, SearchResult } from '@tamu-gisc/search';
 
-import { relativeDistance, centroidFromEsriGeometry } from '../../../utilities/utils';
+import { relativeDistance } from '@tamu-gisc/common/utils/geometry/generic';
+import { centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { Point } from '../../../../types/types';
 
@@ -70,7 +71,7 @@ export class BikeService {
 
             const feature: any = features[smallestIndex];
 
-            return of(centroidFromEsriGeometry(feature.geometry));
+            return of(centroidFromGeometry(feature.geometry));
           } else {
             return of(undefined);
           }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 
-import * as NumberUtils from '../../utilities/utils';
+import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 
 @Injectable()
 export class TripPlannerConnectionService {
@@ -181,7 +181,7 @@ export class TripPlannerConnectionService {
       // Check the number of arguments in the route alias array. Must have a minimum of two.
       if (this._store && this._store.abNetworks.length >= 2) {
         // Get a random number
-        const rand = NumberUtils.getRandomNumber(0, this._store.abNetworks.length);
+        const rand = getRandomNumber(0, this._store.abNetworks.length);
 
         this._newCurrentNetwork = this._store.abNetworks[rand];
 
@@ -275,7 +275,7 @@ export class TripPlannerConnection {
    * @returns URL
    * @memberof RoutingService
    */
-  url(): string {
+  public url(): string {
     return `https://gis.tamu.edu/arcgis/rest/services/${this.name}/${this.type}/Route`;
   }
 }

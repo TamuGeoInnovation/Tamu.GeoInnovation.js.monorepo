@@ -6,12 +6,8 @@ import { TripResultProperties } from '../trip-planner.service';
 
 import { SearchResultBreadcrumbSummary } from '@tamu-gisc/search';
 
-import {
-  isStringCoordinates,
-  coordinatesFromString,
-  centroidFromEsriGeometry,
-  getEsriGeometryType
-} from '../../../utilities/utils';
+import { isCoordinatePair, parseCoordinates } from '@tamu-gisc/common/utils/geometry/generic';
+import { getGeometryType, centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 
 /**
  * Class encapsulating the values required for an instance of a trip request, and the result values.
@@ -150,7 +146,7 @@ export class TripPoint {
               });
             } else if (this.originGeometry.raw) {
               // If the point location of the feature is not found in the GIS data attributes, calculate as last resort.
-              const point = centroidFromEsriGeometry(this.originGeometry.raw);
+              const point = centroidFromGeometry(this.originGeometry.raw);
 
               this.geometry = {
                 latitude: point.latitude,
@@ -164,9 +160,9 @@ export class TripPoint {
             } else if (
               this.originAttributes.name &&
               this.originAttributes.name.length > 0 &&
-              isStringCoordinates(this.originAttributes.name)
+              isCoordinatePair(this.originAttributes.name)
             ) {
-              this.geometry = coordinatesFromString(this.originAttributes.name);
+              this.geometry = parseCoordinates(this.originAttributes.name);
 
               this.addTransformation({
                 type: 'raw-to-geometry',
@@ -203,7 +199,7 @@ export class TripPoint {
             }
           }
         } else if (this.source === 'url-coordinates') {
-          this.geometry = coordinatesFromString(this.originAttributes.name);
+          this.geometry = parseCoordinates(this.originAttributes.name);
 
           this.addTransformation({
             type: 'raw-to-geometry',
@@ -303,7 +299,7 @@ export class TripPoint {
     const attributes: any = { ...this.attributes };
     const geometry: any = { ...this.originGeometry.raw };
 
-    geometry.type = getEsriGeometryType(geometry);
+    geometry.type = getGeometryType(geometry);
 
     return <esri.Graphic>{
       geometry: geometry,

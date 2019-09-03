@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { EsriModuleProviderService } from './esri-module-provider.service';
-import { AsyncSubject, Observable, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
+import { AsyncSubject, Observable, BehaviorSubject } from 'rxjs';
 
+import { EsriModuleProviderService } from './esri-module-provider.service';
 import { SearchService } from '@tamu-gisc/search';
 
-import { getEsriGeometryType } from '../../utilities/utils';
+import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { LayerSource } from '../../../types/types';
 import { LayerSources, SelectionSymbols } from '../../../../environments/environment';
@@ -438,7 +438,7 @@ export class EsriMapService {
             .map((feature) => {
               const ft = { ...feature };
 
-              ft.geometry.type = getEsriGeometryType(feature.geometry);
+              ft.geometry.type = getGeometryType(feature.geometry);
 
               return ft;
             });

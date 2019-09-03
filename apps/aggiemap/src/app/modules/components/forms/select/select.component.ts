@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { getObjectPropertyValue } from '../../../../modules/utilities/utils';
+import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 
 @Component({
   selector: 'gisc-select',
@@ -95,6 +95,6 @@ export class SelectComponent {
    * @memberof SelectComponent
    */
   public getDataItemValue(iterated: any, template: string) {
-    return getObjectPropertyValue(iterated, template);
+    return getPropertyValue(iterated, template);
   }
 }

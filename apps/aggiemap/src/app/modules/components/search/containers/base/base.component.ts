@@ -25,7 +25,9 @@ import { SearchService, SearchResult, SearchResultItem, Sources, SearchSource } 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TripPoint } from '../../../../services/trip-planner/core/trip-planner-core';
 
-import { arrowKeyControl, getGeolocation, TemplateRenderer, isStringCoordinates } from '../../../../utilities/utils';
+import { arrowKeyControl } from '@tamu-gisc/common/utils/ui';
+import { getGeolocation, isCoordinatePair } from '@tamu-gisc/common/utils/geometry/generic';
+import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 
 import esri = __esri;
 
@@ -245,7 +247,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       )
       .subscribe((value) => {
         if (value && value.length > 0) {
-          if (isStringCoordinates(value)) {
+          if (isCoordinatePair(value)) {
             this.setSelected(value, {
               name: value,
               breadcrumbs: {
