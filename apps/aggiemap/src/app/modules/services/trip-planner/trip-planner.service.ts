@@ -347,7 +347,7 @@ export class TripPlannerService implements OnDestroy {
 
   private $destroy: Subject<boolean> = new Subject();
 
-  public initializeHanlders() {
+  public initializeHandlers() {
     this._view.on('click', (e: esri.MapViewClickEvent) => {
       const layer: any = this._map.findLayerById('buildings-layer');
       // Allow click coordinates only when on the trip planner route
@@ -456,7 +456,7 @@ export class TripPlannerService implements OnDestroy {
 
         this.loadTripFromURL();
 
-        this.initializeHanlders();
+        this.initializeHandlers();
       });
 
     // Subscribe to the trip planner connection service and store the selected connection url when available.
@@ -522,7 +522,7 @@ export class TripPlannerService implements OnDestroy {
     const currModes = rule && rule.modes ? rule.modes : undefined;
     const childrenModes = rule && rule.modes && rule.modes.some((u) => u.modes);
 
-    // If current unit has modes and contains furhter children modes, do recursive fn until end is reached.
+    // If current unit has modes and contains further children modes, do recursive fn until end is reached.
     if (currModes && childrenModes) {
       return rule.modes.reduce((acc, curr, index) => {
         const cM = curr.modes;
