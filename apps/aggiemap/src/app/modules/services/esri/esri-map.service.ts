@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AsyncSubject, Observable, BehaviorSubject } from 'rxjs';
 
-import { EsriModuleProviderService } from './esri-module-provider.service';
+import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { SearchService } from '@tamu-gisc/search';
 
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';

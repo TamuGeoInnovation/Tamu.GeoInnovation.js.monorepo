@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { forkJoin, from, Observable, of, BehaviorSubject } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
-import { EsriModuleProviderService } from '../../esri/esri-module-provider.service';
+import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { TripModeSwitch } from '../../trip-planner/trip-planner.service';
 import { EsriMapService, MapServiceInstance } from '../../esri/esri-map.service';
 

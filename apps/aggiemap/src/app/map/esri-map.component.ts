@@ -6,11 +6,9 @@ import { loadModules } from 'esri-loader';
 
 import { EsriMapService } from '../modules/services/esri/esri-map.service';
 import { ResponsiveService } from '../modules/services/ui/responsive.service';
-import { EsriModuleProviderService } from '../modules/services/esri/esri-module-provider.service';
 import { Connections } from '../../environments/environment';
 
 import esri = __esri;
-
 @Component({
   selector: 'app-esri-map',
   templateUrl: './esri-map.component.html',
@@ -25,11 +23,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
 
   @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
 
-  constructor(
-    private mapService: EsriMapService,
-    private responsiveService: ResponsiveService,
-    private moduleProvider: EsriModuleProviderService
-  ) {}
+  constructor(private mapService: EsriMapService, private responsiveService: ResponsiveService) {}
 
   public ngOnInit() {
     this.responsiveService

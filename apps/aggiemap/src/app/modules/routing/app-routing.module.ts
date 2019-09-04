@@ -14,7 +14,7 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
-import { EsriModuleProviderService } from '../../modules/services/esri/esri-module-provider.service';
+import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { EsriMapService } from '../../modules/services/esri/esri-map.service';
 import { LayerListService } from '../../modules/services/ui/layer-list.service';
 import { LegendService } from '../../modules/services/ui/legend.service';

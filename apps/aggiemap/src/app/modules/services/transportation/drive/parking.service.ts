@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { of, Observable, from, BehaviorSubject } from 'rxjs';
 import { switchMap, take, filter, reduce } from 'rxjs/operators';
 
-import { EsriModuleProviderService } from '../../esri/esri-module-provider.service';
+import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
 import { SearchService, SearchResult, SearchSource } from '@tamu-gisc/search';
 
