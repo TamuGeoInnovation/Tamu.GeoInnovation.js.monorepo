@@ -11,9 +11,10 @@ import { NotificationModule, NotificationEvents } from '@tamu-gisc/common/ngx/ui
 import { EVENTS, SearchSources } from '../environments/environment';
 
 import { AppComponent } from './app.component';
+import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 
 @NgModule({
-  imports: [AppRoutingModule, Angulartics2Module.forRoot(), NotificationModule],
+  imports: [AppRoutingModule, Angulartics2Module.forRoot(), NotificationModule, TestingModule],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
   providers: [{ provide: NotificationEvents, useValue: EVENTS }, { provide: Sources, useValue: SearchSources }]

@@ -4,9 +4,7 @@ import { pluck } from 'rxjs/operators';
 
 const _initialState: TestingStore = { isTesting: false };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TestingService {
   private _store: BehaviorSubject<TestingStore> = new BehaviorSubject(_initialState);
   public store: Observable<TestingStore> = this._store.asObservable();
