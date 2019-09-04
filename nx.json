@@ -79,6 +79,9 @@
     },
     "search": {
       "tags": []
+    },
+    "dev-tools-application-testing": {
+      "tags": []
     }
   }
 }

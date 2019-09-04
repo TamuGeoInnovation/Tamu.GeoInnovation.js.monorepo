@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
 
 import { SearchEvent } from '../../../search/containers/base/base.component';
-import { TestingService } from '../../../../services/dev-tools/application-testing.service';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { TripPoint } from '../../../../services/trip-planner/core/trip-planner-core';
 
 @Component({
