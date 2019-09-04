@@ -6,7 +6,7 @@ import { LayerListService } from './layer-list.service';
 import { LegendSources } from '../../../../environments/environment';
 
 import esri = __esri;
-import { LegendItem } from '../../../types/types';
+import { LegendItem } from '@tamu-gisc/common/types';
 
 @Injectable()
 export class LegendService {

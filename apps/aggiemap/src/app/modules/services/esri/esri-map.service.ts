@@ -7,7 +7,7 @@ import { SearchService } from '@tamu-gisc/search';
 
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 
-import { LayerSource } from '../../../types/types';
+import { LayerSource } from '@tamu-gisc/common/types';
 import { LayerSources, SelectionSymbols } from '../../../../environments/environment';
 
 import esri = __esri;

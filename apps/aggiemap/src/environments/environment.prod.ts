@@ -7,10 +7,12 @@ export const environment = {
   production: true
 };
 
-import { Connections, Definitions as d } from './definitions';
 
 import { SearchSource } from '@tamu-gisc/search';
-import { LayerSource, LegendItem } from '../app/types/types';
+import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
+
+import { Connections, Definitions as d } from './definitions';
+
 
 export * from './definitions';
 export * from './notification-events';

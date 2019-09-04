@@ -13,7 +13,7 @@ import { relativeDistance } from '@tamu-gisc/common/utils/geometry/generic';
 import toHex from 'colornames';
 
 import esri = __esri;
-import { Point as LatLon } from '../../../../types/types';
+import { Point as LatLon } from '@tamu-gisc/common/types';
 import { Location } from '@angular/common';
 
 const ROUTE_NUMBER_REGEX = /on ([0-9\-A-Za-z]+)$/;

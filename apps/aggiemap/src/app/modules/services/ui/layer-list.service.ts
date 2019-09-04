@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 import { LayerSources } from '../../../../environments/environment';
 
-import { LayerSource } from '../../../types/types';
+import { LayerSource } from '@tamu-gisc/common/types';
 import esri = __esri;
 
 @Injectable()

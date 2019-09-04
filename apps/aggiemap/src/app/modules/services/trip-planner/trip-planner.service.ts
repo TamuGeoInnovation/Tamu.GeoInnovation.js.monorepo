@@ -37,7 +37,7 @@ import { BikeService } from '../transportation/bike/bike.service';
 import { ParkingService } from '../transportation/drive/parking.service';
 import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common/ngx/settings';
 
-import { LayerSource } from '../../../types/types';
+import { LayerSource } from '@tamu-gisc/common/types';
 import { LayerSources } from '../../../../environments/environment';
 
 import { findNearestIndex, isCoordinatePair, getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';

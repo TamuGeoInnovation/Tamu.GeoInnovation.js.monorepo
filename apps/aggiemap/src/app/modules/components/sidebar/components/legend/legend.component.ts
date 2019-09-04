@@ -11,7 +11,7 @@ import { RouterHistoryService } from '../../../../services/router-history.servic
 import { ResponsiveService, ResponsiveSnapshot } from '../../../../services/ui/responsive.service';
 import { LegendService } from '../../../../services/ui/legend.service';
 
-import { LegendItem } from '../../../../../types/types';
+import { LegendItem } from '@tamu-gisc/common/types';
 
 @Component({
   selector: 'legend',
@@ -37,7 +37,7 @@ export class LegendComponent implements OnInit, OnDestroy {
     private history: RouterHistoryService
   ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.legend = this.legendService.store;
     this.responsive = this.responsiveService.snapshot;
 
@@ -49,7 +49,7 @@ export class LegendComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this._destroy$.next();
     this._destroy$.complete();
   }

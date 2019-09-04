@@ -8,7 +8,7 @@ import { SearchService, SearchResult } from '@tamu-gisc/search';
 import { relativeDistance } from '@tamu-gisc/common/utils/geometry/generic';
 import { centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 
-import { Point } from '../../../../types/types';
+import { Point } from '@tamu-gisc/common/types';
 
 @Injectable()
 export class BikeService {
