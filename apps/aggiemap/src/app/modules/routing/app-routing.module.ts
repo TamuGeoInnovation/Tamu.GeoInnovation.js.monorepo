@@ -22,7 +22,6 @@ import { TripPlannerConnectionService } from '../../modules/services/trip-planne
 import { TripPlannerService } from '../../modules/services/trip-planner/trip-planner.service';
 import { ResponsiveService } from '../../modules/services/ui/responsive.service';
 import { RouterHistoryService } from '../services/router-history.service';
-import { TestingService } from '../../modules/services/dev-tools/application-testing.service';
 import { BusService } from '../services/transportation/bus/bus.service';
 import { BikeService } from '../services/transportation/bike/bike.service';
 import { ParkingService } from '../services/transportation/drive/parking.service';
@@ -283,7 +282,6 @@ const hybridRoutes: Routes = [
     LayerListService,
     LegendService,
     ResponsiveService,
-    TestingService,
     BusService,
     BikeService,
     ParkingService,

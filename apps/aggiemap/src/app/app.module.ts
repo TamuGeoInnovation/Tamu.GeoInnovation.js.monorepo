@@ -14,9 +14,10 @@ import { env } from '@tamu-gisc/common/ngx/ditokens';
 import * as environment from '../environments/environment';
 
 import { AppComponent } from './app.component';
+import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 
 @NgModule({
-  imports: [AppRoutingModule, Angulartics2Module.forRoot(), NotificationModule],
+  imports: [AppRoutingModule, Angulartics2Module.forRoot(), NotificationModule, TestingModule],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
   providers: [

@@ -714,6 +714,37 @@
           "styleext": "scss"
         }
       }
+    },
+    "dev-tools-application-testing": {
+      "projectType": "library",
+      "root": "libs/dev-tools/application-testing",
+      "sourceRoot": "libs/dev-tools/application-testing/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/dev-tools/application-testing/tsconfig.lib.json",
+              "libs/dev-tools/application-testing/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/dev-tools/application-testing/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/dev-tools/application-testing/jest.config.js",
+            "tsConfig": "libs/dev-tools/application-testing/tsconfig.spec.json",
+            "setupFile": "libs/dev-tools/application-testing/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {

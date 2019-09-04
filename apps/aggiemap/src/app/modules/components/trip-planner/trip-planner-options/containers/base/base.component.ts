@@ -10,7 +10,7 @@ import {
   TripPlannerRuleMode,
   TravelOptions
 } from '../../../../../services/trip-planner/trip-planner.service';
-import { TestingService } from '../../../../../services/dev-tools/application-testing.service';
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 @Component({
   selector: 'gisc-trip-planner-options',

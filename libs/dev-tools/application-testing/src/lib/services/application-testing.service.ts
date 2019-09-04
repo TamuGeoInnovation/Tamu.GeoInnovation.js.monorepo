@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
 
-const _initialState: TestingSTore = { isTesting: false };
+const _initialState: TestingStore = { isTesting: false };
 
 @Injectable()
 export class TestingService {
-  private _store: BehaviorSubject<TestingSTore> = new BehaviorSubject(_initialState);
-  public store: Observable<TestingSTore> = this._store.asObservable();
+  private _store: BehaviorSubject<TestingStore> = new BehaviorSubject(_initialState);
+  public store: Observable<TestingStore> = this._store.asObservable();
 
   constructor() {
     this._determineTestingMode();
@@ -30,6 +30,6 @@ export class TestingService {
   }
 }
 
-interface TestingSTore {
+interface TestingStore {
   isTesting: boolean;
 }
