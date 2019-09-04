@@ -10,6 +10,8 @@ import * as WebFont from 'webfontloader';
 import { DesktopGuard, MobileGuard } from '../../modules/routing/guards/device.guard';
 
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
+import { SearchModule } from '@tamu-gisc/search';
+import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
@@ -208,6 +210,8 @@ const hybridRoutes: Routes = [
     PipesModule,
     SkeletonModule,
     EsriMapModule,
+    SearchModule,
+    TestingModule,
     DlDateTimePickerDateModule,
     DlDateTimePickerModule
   ],

@@ -1,6 +1,6 @@
 import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
-export const EVENTS: NotificationProperties[] = [
+export const NotificationEvents: NotificationProperties[] = [
   {
     id: 'changelog-update',
     title: 'Aggiemap Has Been Updated',

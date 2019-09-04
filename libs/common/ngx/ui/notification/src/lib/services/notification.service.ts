@@ -1,9 +1,9 @@
-import { Injectable, InjectionToken, Inject } from '@angular/core';
+import { Injectable, Inject, Optional } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
-export const NotificationEvents: InjectionToken<any> = new InjectionToken<string>('NotificationEvents');
+import { env } from '@tamu-gisc/common/ngx/ditokens';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
@@ -17,12 +17,12 @@ export class NotificationService {
   public readonly notifications: Observable<Notification[]>;
   private _notifications: BehaviorSubject<Notification[]>;
 
-  constructor(private store: LocalStoreService, @Inject(NotificationEvents) private events: any) {
+  constructor(private store: LocalStoreService, @Optional() @Inject(env) private environment: any) {
     this._notifications = new BehaviorSubject([]);
     this.notifications = this._notifications.asObservable();
 
-    if (events) {
-      this._events = events;
+    if (environment.NotificationEvents) {
+      this._events = environment.NotificationEvents;
     }
 
     const notificationsInLocalStorage: LocalStorageObject = this.store.getStorage({

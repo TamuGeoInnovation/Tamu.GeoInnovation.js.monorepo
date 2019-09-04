@@ -7,7 +7,8 @@ import { Angulartics2 } from 'angulartics2';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { SearchService, Sources, SearchSource } from '@tamu-gisc/search';
+import { SearchService, SearchSource } from '@tamu-gisc/search';
+import { env } from '@tamu-gisc/common/ngx/ditokens';
 
 @Component({
   selector: 'search-mobile',
@@ -23,9 +24,9 @@ export class MobileSearchComponent extends SearchComponent {
     private nss: NotificationService,
     private ms: EsriMapService,
     private ss: SearchService,
-    @Optional() @Inject(Sources) private sss: SearchSource[]
+    @Optional() @Inject(env) private en: SearchSource[]
   ) {
-    super(cdr, anltcs, nss, ms, ss, sss);
+    super(cdr, anltcs, nss, ms, ss, en);
   }
 
   public emitLeftActionEvent(): void {

@@ -1,6 +1,5 @@
-import { Injectable, InjectionToken, Inject, Optional } from '@angular/core';
+import { Injectable, Inject, Optional } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { ReplaySubject, Observable, BehaviorSubject, forkJoin, of, from } from 'rxjs';
 import { toArray, concatMap, switchMap } from 'rxjs/operators';
 
@@ -8,21 +7,25 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { makeWhere } from '@tamu-gisc/common/utils/database';
 import { makeUrlParams } from '@tamu-gisc/common/utils/routing';
 
+import { env } from '@tamu-gisc/common/ngx/ditokens';
+
 import esri = __esri;
 
-export const Sources: InjectionToken<any> = new InjectionToken<string>('Sources');
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SearchService {
+  private _sources: SearchSource[];
+
   private _store: ReplaySubject<SearchResult> = new ReplaySubject(1);
   public store: Observable<SearchResult> = this._store.asObservable();
 
   private _searching: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public searching: Observable<boolean> = this._searching.asObservable();
 
-  constructor(private http: HttpClient, @Optional() @Inject(Sources) private SearchSources: SearchSource[]) {}
+  constructor(private http: HttpClient, @Optional() @Inject(env) private environment: any) {
+    if (environment.SearchSources) {
+      this._sources = environment.SearchSources;
+    }
+  }
 
   /**
    * Performs parallel searches with the provided search sources.
@@ -53,7 +56,7 @@ export class SearchService {
     // If the source is a string reference, make sure that reference exists.
     // If the source is not a string (because it's a SearchSource), return truthy.
     const allSourcesExist = options.sources.every((ref) =>
-      typeof ref === 'string' ? this.SearchSources.findIndex((source) => ref == source.source) > -1 : true
+      typeof ref === 'string' ? this._sources.findIndex((source) => ref == source.source) > -1 : true
     );
 
     if (!allSourcesExist) {
@@ -65,7 +68,7 @@ export class SearchService {
     // If the source is a string reference, return the reference source.
     // If the source is a SearchSource, return self
     const sources: SearchSource[] = options.sources.map((src) => {
-      return typeof src == 'string' ? this.SearchSources.find((s) => s.source == src) : src;
+      return typeof src == 'string' ? this._sources.find((s) => s.source == src) : src;
     });
 
     // Generate an array of http get observables

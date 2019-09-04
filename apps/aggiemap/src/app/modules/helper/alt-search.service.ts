@@ -5,7 +5,9 @@ import { TripPoint } from '../services/trip-planner/core/trip-planner-core';
 
 import { getObjectPropertyValues } from '@tamu-gisc/common/utils/object';
 
-import { SearchService, SearchResultBreadcrumbSummary, Sources, SearchSource } from '@tamu-gisc/search';
+import { SearchService, SearchResultBreadcrumbSummary, SearchSource } from '@tamu-gisc/search';
+
+import { env } from '@tamu-gisc/common/ngx/ditokens';
 
 /**
  *
@@ -23,11 +25,17 @@ import { SearchService, SearchResultBreadcrumbSummary, Sources, SearchSource } f
  */
 @Injectable()
 export class AltSearchHelper {
+  private _sources: SearchSource[];
+
   constructor(
     private mapService: EsriMapService,
     private searchService: SearchService,
-    @Optional() @Inject(Sources) private SearchSources: SearchSource[]
-  ) {}
+    @Optional() @Inject(env) private environment: any
+  ) {
+    if (environment.SearchSources) {
+      this._sources = environment.SearchSources;
+    }
+  }
 
   /**
    * From a search result feature selection, determine if the origin search source contains an alt lookup definition.
@@ -40,12 +48,12 @@ export class AltSearchHelper {
    * @memberof AltSearchHelper
    */
   public handleSearchResultFeatureSelection(point: TripPoint): void {
-    const source = this.SearchSources.find(
+    const source = this._sources.find(
       (s) => s.source == (<SearchResultBreadcrumbSummary>point.originParameters.value).source
     );
 
     if (source && source.altLookup) {
-      const altSource = this.SearchSources.find((s) => s.source == source.altLookup.source);
+      const altSource = this._sources.find((s) => s.source == source.altLookup.source);
 
       const values = getObjectPropertyValues(point.attributes, source.altLookup.reference.keys);
 

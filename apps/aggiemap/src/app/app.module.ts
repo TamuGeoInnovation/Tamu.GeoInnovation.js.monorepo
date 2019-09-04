@@ -5,25 +5,17 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
 import { AppRoutingModule } from './modules/routing/app-routing.module';
 
-import { Sources } from '@tamu-gisc/search';
-import { NotificationModule, NotificationEvents } from '@tamu-gisc/common/ngx/ui/notification';
-
-import { EVENTS, SearchSources } from '../environments/environment';
+import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { env } from '@tamu-gisc/common/ngx/ditokens';
 import * as environment from '../environments/environment';
 
 import { AppComponent } from './app.component';
-import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 
 @NgModule({
-  imports: [AppRoutingModule, Angulartics2Module.forRoot(), NotificationModule, TestingModule],
+  imports: [AppRoutingModule, Angulartics2Module.forRoot(), NotificationModule],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
-  providers: [
-    { provide: NotificationEvents, useValue: EVENTS },
-    { provide: Sources, useValue: SearchSources },
-    { provide: env, useValue: environment }
-  ]
+  providers: [{ provide: env, useValue: environment }]
 })
 export class AppModule {}
