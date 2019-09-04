@@ -6,7 +6,7 @@ import * as guid from 'uuid/v4';
 
 import { BasePopupComponent } from '../base/base.popup.component';
 import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
-import { EsriMapService } from '../../../../services/esri/esri-map.service';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 @Component({
   selector: 'buildling-popup-component',

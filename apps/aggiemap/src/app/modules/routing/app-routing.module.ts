@@ -9,18 +9,17 @@ import * as WebFont from 'webfontloader';
 
 import { DesktopGuard, MobileGuard } from '../../modules/routing/guards/device.guard';
 
+import { EsriMapModule } from '@tamu-gisc/maps/esri';
+
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
-import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
-import { EsriMapService } from '../../modules/services/esri/esri-map.service';
 import { LayerListService } from '../../modules/services/ui/layer-list.service';
 import { LegendService } from '../../modules/services/ui/legend.service';
 import { TripPlannerConnectionService } from '../../modules/services/trip-planner/trip-planner-connection.service';
 import { TripPlannerService } from '../../modules/services/trip-planner/trip-planner.service';
-// import { SearchService } from '../../modules/services/search/search.service';
 import { ResponsiveService } from '../../modules/services/ui/responsive.service';
 import { RouterHistoryService } from '../services/router-history.service';
 import { TestingService } from '../../modules/services/dev-tools/application-testing.service';
@@ -209,6 +208,7 @@ const hybridRoutes: Routes = [
     SettingsModule,
     PipesModule,
     SkeletonModule,
+    EsriMapModule,
     DlDateTimePickerDateModule,
     DlDateTimePickerModule
   ],
@@ -280,11 +280,8 @@ const hybridRoutes: Routes = [
     RouterHistoryService,
     TripPlannerConnectionService,
     TripPlannerService,
-    EsriModuleProviderService,
-    EsriMapService,
     LayerListService,
     LegendService,
-    // SearchService,
     ResponsiveService,
     TestingService,
     BusService,

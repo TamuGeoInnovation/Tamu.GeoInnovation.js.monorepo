@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { RenderHostDirective } from '../../../../directives/render-host.directive';
 
 import { PopupService } from '../../services/popup.service';
-import { EsriMapService, HitTestSnapshot } from '../../../../services/esri/esri-map.service';
+import { EsriMapService, HitTestSnapshot } from '@tamu-gisc/maps/esri';
 import esri = __esri;
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, ComponentFactoryResolver, OnDestroy } from '@angular/core';
 import { PopupComponent } from '../base/base.component';
 
-import { EsriMapService } from '../../../../services/esri/esri-map.service';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { PopupService } from '../../services/popup.service';
 import { UIDragService } from '../../../../services/ui/ui-drag.service';
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
-import { EsriMapService } from '../../../services/esri/esri-map.service';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { Subscription } from 'rxjs';
 
 import { LayerSources } from '../../../../../environments/environment';

@@ -10,7 +10,7 @@ import { ParkingKioskPopupComponent } from '../components/parking-kiosk/parking-
 import { ParkingLotPopupComponent } from '../components/parking-lot/parking-lot.component';
 import { AccessiblePopupComponent } from '../components/accessible/accessible.component';
 
-import { HitTestSnapshot } from '../../../services/esri/esri-map.service';
+import { HitTestSnapshot } from '@tamu-gisc/maps/esri';
 import { LayerSources } from '../../../../../environments/environment';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class PopupService {
     { id: 'LactationPopupComponent', component: LactationPopupComponent },
     { id: 'ParkingKioskPopupComponent', component: ParkingKioskPopupComponent },
     { id: 'ParkingLotPopupComponent', component: ParkingLotPopupComponent },
-    { id: 'AccessiblePopupComponent', component: AccessiblePopupComponent },
+    { id: 'AccessiblePopupComponent', component: AccessiblePopupComponent }
   ];
 
   /**

@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { pluck, takeUntil } from 'rxjs/operators';
 
-import { EsriMapService } from '../../services/esri/esri-map.service';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 

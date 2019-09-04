@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
-import { EsriMapService } from '../../../../services/esri/esri-map.service';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
 import { TripPoint } from '../../../../services/trip-planner/core/trip-planner-core';
 

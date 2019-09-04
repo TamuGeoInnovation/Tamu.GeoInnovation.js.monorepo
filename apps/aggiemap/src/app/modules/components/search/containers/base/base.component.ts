@@ -18,7 +18,7 @@ import { tap, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operato
 import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
-import { EsriMapService } from '../../../../services/esri/esri-map.service';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { SearchService, SearchResult, SearchResultItem, Sources, SearchSource } from '@tamu-gisc/search';
 

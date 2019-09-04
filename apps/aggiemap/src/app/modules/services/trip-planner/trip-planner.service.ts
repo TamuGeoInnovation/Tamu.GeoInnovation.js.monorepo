@@ -17,7 +17,7 @@ import { catchError, concatMap, flatMap, map, mergeMap, scan, switchMap, tap, to
 
 import { Angulartics2 } from 'angulartics2';
 
-import { EsriMapService, MapServiceInstance } from '../esri/esri-map.service';
+import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
 import { SearchService, SearchResult, SearchResultItem } from '@tamu-gisc/search';

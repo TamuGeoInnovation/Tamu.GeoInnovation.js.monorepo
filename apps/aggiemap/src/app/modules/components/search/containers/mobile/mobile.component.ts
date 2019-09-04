@@ -4,7 +4,7 @@ import { SearchComponent } from '../base/base.component';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { EsriMapService } from '../../../../services/esri/esri-map.service';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { SearchService, Sources, SearchSource } from '@tamu-gisc/search';

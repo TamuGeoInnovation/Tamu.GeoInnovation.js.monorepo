@@ -32,6 +32,9 @@
     "common-ngx-ui": {
       "tags": []
     },
+    "common-ngx-ditokens": {
+      "tags": []
+    },
     "common-ngx-ui-notification": {
       "tags": []
     },

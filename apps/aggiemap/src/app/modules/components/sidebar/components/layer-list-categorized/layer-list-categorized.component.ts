@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 import { from, Subject } from 'rxjs';
 import { mergeMap, groupBy, reduce, map, toArray, takeUntil } from 'rxjs/operators';
 
-import { EsriMapService } from '../../../../services/esri/esri-map.service';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { LegendService } from '../../../../services/ui/legend.service';
 import { LayerListService, LayerListCategory } from '../../../../services/ui/layer-list.service';
 import { RouterHistoryService } from '../../../../services/router-history.service';

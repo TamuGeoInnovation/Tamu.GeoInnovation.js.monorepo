@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EsriMapService } from '../esri/esri-map.service';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 import { LayerSources } from '../../../../environments/environment';

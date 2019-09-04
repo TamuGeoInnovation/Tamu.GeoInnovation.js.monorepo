@@ -1,6 +1,6 @@
 import { Injectable, Inject, Optional } from '@angular/core';
 
-import { EsriMapService } from '../services/esri/esri-map.service';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPoint } from '../services/trip-planner/core/trip-planner-core';
 
 import { getObjectPropertyValues } from '@tamu-gisc/common/utils/object';

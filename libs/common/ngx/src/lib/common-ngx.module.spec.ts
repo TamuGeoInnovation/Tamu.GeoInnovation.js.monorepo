@@ -1,14 +1,14 @@
 import { async, TestBed } from '@angular/core/testing';
-import { LocalStoreModule } from './common-ngx-local-store.module';
+import { CommonNgxModule } from './common-ngx.module';
 
-describe('LocalStoreModule', () => {
+describe('CommonNgxModule', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [LocalStoreModule]
+      imports: [CommonNgxModule]
     }).compileComponents();
   }));
 
   it('should create', () => {
-    expect(LocalStoreModule).toBeDefined();
+    expect(CommonNgxModule).toBeDefined();
   });
 });

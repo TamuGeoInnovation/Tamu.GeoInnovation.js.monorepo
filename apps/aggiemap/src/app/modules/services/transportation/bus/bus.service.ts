@@ -5,7 +5,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
 
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { TripModeSwitch } from '../../trip-planner/trip-planner.service';
-import { EsriMapService, MapServiceInstance } from '../../esri/esri-map.service';
+import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 import { dateForDateTimeString } from '@tamu-gisc/common/utils/date';
 import { relativeDistance } from '@tamu-gisc/common/utils/geometry/generic';

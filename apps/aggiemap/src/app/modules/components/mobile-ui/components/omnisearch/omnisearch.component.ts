@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { RouterHistoryService } from '../../../../../modules/services/router-history.service';
-import { EsriMapService } from '../../../../services/esri/esri-map.service';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
 import { TripPoint } from '../../../../../modules/services/trip-planner/core/trip-planner-core';
 import { UIDragService } from '../../../../services/ui/ui-drag.service';

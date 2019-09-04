@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ModuleProviderService } from './module-provider.service';
+import { EsriModuleProviderService } from './module-provider.service';
 
-describe('ModuleProviderService', () => {
+describe('EsriModuleProviderService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: ModuleProviderService = TestBed.get(ModuleProviderService);
+    const service: EsriModuleProviderService = TestBed.get(EsriModuleProviderService);
     expect(service).toBeTruthy();
   });
 });

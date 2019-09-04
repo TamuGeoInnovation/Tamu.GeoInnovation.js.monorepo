@@ -4,7 +4,7 @@ import { Observable, Subscription, Subject } from 'rxjs';
 
 import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
 import { TripResult, TripPoint } from '../../../../services/trip-planner/core/trip-planner-core';
-import { EsriMapService } from '../../../../services/esri/esri-map.service';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { UIDragService, UIDragState } from '../../../../services/ui/ui-drag.service';
 
 import { offCanvasSlideUpFromTop } from '../../../../animations/elements';
