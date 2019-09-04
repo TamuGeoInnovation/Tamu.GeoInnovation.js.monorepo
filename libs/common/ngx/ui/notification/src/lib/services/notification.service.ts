@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
-import { env } from '@tamu-gisc/common/ngx/ditokens';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
@@ -17,12 +17,12 @@ export class NotificationService {
   public readonly notifications: Observable<Notification[]>;
   private _notifications: BehaviorSubject<Notification[]>;
 
-  constructor(private store: LocalStoreService, @Optional() @Inject(env) private environment: any) {
+  constructor(private store: LocalStoreService, private environment: EnvironmentService) {
     this._notifications = new BehaviorSubject([]);
     this.notifications = this._notifications.asObservable();
 
-    if (environment.NotificationEvents) {
-      this._events = environment.NotificationEvents;
+    if (this.environment.value('NotificationEvents')) {
+      this._events = this.environment.value('NotificationEvents');
     }
 
     const notificationsInLocalStorage: LocalStorageObject = this.store.getStorage({

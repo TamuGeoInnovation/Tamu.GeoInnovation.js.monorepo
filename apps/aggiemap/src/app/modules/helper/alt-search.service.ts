@@ -7,7 +7,7 @@ import { getObjectPropertyValues } from '@tamu-gisc/common/utils/object';
 
 import { SearchService, SearchResultBreadcrumbSummary, SearchSource } from '@tamu-gisc/search';
 
-import { env } from '@tamu-gisc/common/ngx/ditokens';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 /**
  *
@@ -30,10 +30,10 @@ export class AltSearchHelper {
   constructor(
     private mapService: EsriMapService,
     private searchService: SearchService,
-    @Optional() @Inject(env) private environment: any
+    private environment: EnvironmentService
   ) {
-    if (environment.SearchSources) {
-      this._sources = environment.SearchSources;
+    if (this.environment.value('SearchSources')) {
+      this._sources = this.environment.value('SearchSources');
     }
   }
 

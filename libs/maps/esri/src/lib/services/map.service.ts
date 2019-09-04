@@ -8,7 +8,7 @@ import { SearchService } from '@tamu-gisc/search';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { LayerSource } from '@tamu-gisc/common/types';
-import { env } from '@tamu-gisc/common/ngx/ditokens';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
 
@@ -37,12 +37,8 @@ export class EsriMapService {
     private moduleProvider: EsriModuleProviderService,
     private router: Router,
     private searchService: SearchService,
-    @Optional() @Inject(env) private environment: any
-  ) {
-    if (this.environment === null) {
-      throw new Error(`Esri map service expected an "env" injection token value; is currently null.`);
-    }
-  }
+    private environment: EnvironmentService
+  ) {}
 
   public loadMap(mapProperties: MapProperties, viewProperties: MapViewProperties) {
     // If properties specifies 2d mode, load 2d map view.
@@ -129,7 +125,7 @@ export class EsriMapService {
     this._store.complete();
 
     // Filter list of layers that need to be added on map load
-    this.loadLayers(this.environment.LayerSources.filter((l) => l.loadOnInit));
+    this.loadLayers(this.environment.value('LayerSources').filter((l) => l.loadOnInit));
 
     // Load faeture list from url (e.g. howdy links)
     this.selectFeaturesFromUrl();
@@ -503,12 +499,12 @@ export class EsriMapService {
     const shouldShowPopup = properties.shouldShowPopup || false;
 
     // Source object
-    const source = Object.assign(this.environment.LayerSources.find((src) => src.id == 'selection-layer'));
+    const source = Object.assign(this.environment.value('LayerSources').find((src) => src.id == 'selection-layer'));
 
     // Add the symbol and polygon type to each feature
     const features = graphics.map((ft) => {
       const feature = ft;
-      feature.symbol = this.environment.SelectionSymbols[ft.geometry.type];
+      feature.symbol = this.environment.value('SelectionSymbols')[ft.geometry.type];
 
       return feature;
     });
@@ -564,7 +560,7 @@ export class EsriMapService {
    */
   public clearSelectedFeatures() {
     // Source object
-    const source = Object.assign(this.environment.LayerSources.find((src) => src.id == 'selection-layer'));
+    const source = Object.assign(this.environment.value('LayerSources').find((src) => src.id == 'selection-layer'));
 
     this.findLayerOrCreateFromSource(source).then((layer: esri.GraphicsLayer) => {
       layer.removeAll();

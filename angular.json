@@ -342,25 +342,31 @@
         }
       }
     },
-    "common-ngx-ditokens": {
-      "root": "libs/common/ngx/ditokens",
-      "sourceRoot": "libs/common/ngx/ditokens/src",
+    "common-ngx-environment": {
       "projectType": "library",
-      "schematics": {},
+      "root": "libs/common/ngx/environment",
+      "sourceRoot": "libs/common/ngx/environment/src",
+      "prefix": "tamu-gisc",
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["libs/common/ngx/ditokens/tsconfig.lib.json", "libs/common/ngx/ditokens/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/common/ngx/ditokens/**"]
+            "tsConfig": ["libs/common/ngx/environment/tsconfig.lib.json", "libs/common/ngx/environment/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/environment/**"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "libs/common/ngx/ditokens/jest.config.js",
-            "tsConfig": "libs/common/ngx/ditokens/tsconfig.spec.json"
+            "jestConfig": "libs/common/ngx/environment/jest.config.js",
+            "tsConfig": "libs/common/ngx/environment/tsconfig.spec.json",
+            "setupFile": "libs/common/ngx/environment/src/test-setup.ts"
           }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
         }
       }
     },

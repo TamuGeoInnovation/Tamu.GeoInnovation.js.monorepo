@@ -32,10 +32,10 @@
     "common-ngx-ui": {
       "tags": []
     },
-    "common-ngx-ditokens": {
+    "common-ngx-ui-notification": {
       "tags": []
     },
-    "common-ngx-ui-notification": {
+    "common-ngx-environment": {
       "tags": []
     },
     "maps-esri": {

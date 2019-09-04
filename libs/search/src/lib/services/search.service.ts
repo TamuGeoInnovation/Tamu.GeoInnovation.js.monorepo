@@ -7,7 +7,7 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { makeWhere } from '@tamu-gisc/common/utils/database';
 import { makeUrlParams } from '@tamu-gisc/common/utils/routing';
 
-import { env } from '@tamu-gisc/common/ngx/ditokens';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
 
@@ -21,9 +21,9 @@ export class SearchService {
   private _searching: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public searching: Observable<boolean> = this._searching.asObservable();
 
-  constructor(private http: HttpClient, @Optional() @Inject(env) private environment: any) {
-    if (environment.SearchSources) {
-      this._sources = environment.SearchSources;
+  constructor(private http: HttpClient, private environment: EnvironmentService) {
+    if (this.environment.value('SearchSources')) {
+      this._sources = this.environment.value('SearchSources');
     }
   }
 

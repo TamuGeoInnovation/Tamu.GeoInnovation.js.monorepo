@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { SearchService, SearchSource } from '@tamu-gisc/search';
-import { env } from '@tamu-gisc/common/ngx/ditokens';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 // Pre-defined search source reference to use in the building department search.
 const searchReference = 'university-departments-exact';
@@ -26,9 +26,9 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(private searchService: SearchService, @Optional() @Inject(env) private environment: any) {
-    if (environment.SearchSources) {  
-      this._sources = environment.SearchSources;
+  constructor(private searchService: SearchService, private environment: EnvironmentService) {
+    if (this.environment.value('SearchSources')) {
+      this._sources = this.environment.value('SearchSources');
     }
     // Check if the defined search source exists.
     this.source = this._sources.findIndex((s) => s.source == searchReference);

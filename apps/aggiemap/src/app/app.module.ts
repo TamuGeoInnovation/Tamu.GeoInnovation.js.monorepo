@@ -7,13 +7,13 @@ import { AppRoutingModule } from './modules/routing/app-routing.module';
 
 import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { env } from '@tamu-gisc/common/ngx/ditokens';
+import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import * as environment from '../environments/environment';
 
 import { AppComponent } from './app.component';
 
 @NgModule({
-  imports: [AppRoutingModule, Angulartics2Module.forRoot(), NotificationModule],
+  imports: [AppRoutingModule, Angulartics2Module.forRoot(), EnvironmentModule, NotificationModule],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
   providers: [{ provide: env, useValue: environment }]
