@@ -8,7 +8,7 @@ import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
 import { RouterHistoryService } from '../../../../services/router-history.service';
-import { ResponsiveService, ResponsiveSnapshot } from '../../../../services/ui/responsive.service';
+import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
 import { LegendService } from '../../../../services/ui/legend.service';
 
 import { LegendItem } from '@tamu-gisc/common/types';

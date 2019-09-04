@@ -85,6 +85,9 @@
     },
     "dev-tools-application-testing": {
       "tags": []
+    },
+    "dev-tools-responsive": {
+      "tags": []
     }
   }
 }

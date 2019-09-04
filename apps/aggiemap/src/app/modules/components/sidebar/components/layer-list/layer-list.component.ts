@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
-import { ResponsiveService, ResponsiveSnapshot } from '../../../../services/ui/responsive.service';
+import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
 import { RouterHistoryService } from '../../../../services/router-history.service';
 import { LayerListService } from '../../../../services/ui/layer-list.service';
 import { EsriMapService } from '@tamu-gisc/maps/esri';

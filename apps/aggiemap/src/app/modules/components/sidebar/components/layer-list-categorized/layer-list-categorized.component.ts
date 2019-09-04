@@ -8,7 +8,7 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { LegendService } from '../../../../services/ui/legend.service';
 import { LayerListService, LayerListCategory } from '../../../../services/ui/layer-list.service';
 import { RouterHistoryService } from '../../../../services/router-history.service';
-import { ResponsiveService } from '../../../../services/ui/responsive.service';
+import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 
 import { LayerListComponent } from '../layer-list/layer-list.component';
 

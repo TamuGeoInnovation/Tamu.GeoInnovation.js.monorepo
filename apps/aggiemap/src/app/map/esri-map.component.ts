@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { loadModules } from 'esri-loader';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { ResponsiveService } from '../modules/services/ui/responsive.service';
+import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { Connections } from '../../environments/environment';
 
 import esri = __esri;

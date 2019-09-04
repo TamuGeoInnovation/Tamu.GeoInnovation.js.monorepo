@@ -12,6 +12,7 @@ import { DesktopGuard, MobileGuard } from '../../modules/routing/guards/device.g
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
+import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
@@ -22,7 +23,6 @@ import { LayerListService } from '../../modules/services/ui/layer-list.service';
 import { LegendService } from '../../modules/services/ui/legend.service';
 import { TripPlannerConnectionService } from '../../modules/services/trip-planner/trip-planner-connection.service';
 import { TripPlannerService } from '../../modules/services/trip-planner/trip-planner.service';
-import { ResponsiveService } from '../../modules/services/ui/responsive.service';
 import { RouterHistoryService } from '../services/router-history.service';
 import { BusService } from '../services/transportation/bus/bus.service';
 import { BikeService } from '../services/transportation/bike/bike.service';
@@ -212,6 +212,7 @@ const hybridRoutes: Routes = [
     EsriMapModule,
     SearchModule,
     TestingModule,
+    ResponsiveModule,
     DlDateTimePickerDateModule,
     DlDateTimePickerModule
   ],
@@ -285,7 +286,6 @@ const hybridRoutes: Routes = [
     TripPlannerService,
     LayerListService,
     LegendService,
-    ResponsiveService,
     BusService,
     BikeService,
     ParkingService,

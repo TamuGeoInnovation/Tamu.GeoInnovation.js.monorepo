@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChild, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { ResponsiveService } from '../../services/ui/responsive.service';
+import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { getPathFromRouteSnapshot, routeSubstitute } from '@tamu-gisc/common/utils/routing';
 
 @Injectable({

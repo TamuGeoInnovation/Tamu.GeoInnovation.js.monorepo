@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 
 import { BusService, TSRoute } from '../../../../services/transportation/bus/bus.service';
-import { ResponsiveService, ResponsiveSnapshot } from '../../../../services/ui/responsive.service';
+import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
 
 @Component({
   selector: 'gisc-bus-list',
