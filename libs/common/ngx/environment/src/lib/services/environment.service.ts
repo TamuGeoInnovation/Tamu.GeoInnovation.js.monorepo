@@ -1,10 +1,10 @@
 import { Injectable, InjectionToken, Optional, Inject } from '@angular/core';
 
-export const env = new InjectionToken('environment');
+export const env = new InjectionToken<string>('environment');
 
 @Injectable()
 export class EnvironmentService {
-  private _config: any;
+  private _config;
 
   constructor(@Optional() @Inject(env) private environment) {
     if (environment) {
@@ -17,6 +17,8 @@ export class EnvironmentService {
   public value(property: string) {
     if (this._config[property]) {
       return this._config[property];
+    } else {
+      throw new Error(`Environment does not contain a '${property}' key.`);
     }
   }
 }

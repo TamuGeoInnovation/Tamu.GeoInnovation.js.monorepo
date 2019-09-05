@@ -129,6 +129,15 @@ export interface LayerSource {
    */
   native?: any;
 
+  /**
+   * If provided, will add layer to map with index. This allows layer ordering to prevent occlusion or
+   * modify layer overlap.
+   *
+   * @type {number}
+   * @memberof LayerSource
+   */
+  layerIndex?: number;
+
   category?: string;
 }
 

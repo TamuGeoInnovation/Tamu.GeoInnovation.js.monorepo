@@ -7,8 +7,8 @@ import { AppRoutingModule } from './modules/routing/app-routing.module';
 
 import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import * as environment from '../environments/environment';
+import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 
 import { AppComponent } from './app.component';
 

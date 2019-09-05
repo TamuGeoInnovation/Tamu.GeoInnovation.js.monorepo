@@ -12,7 +12,6 @@ import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 
 import { Connections, Definitions as d } from './definitions';
 
-
 export * from './definitions';
 export * from './notification-events';
 
@@ -27,6 +26,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'hide',
     loadOnInit: true,
     visible: true,
+    layerIndex: 1,
     native: {
       renderer: {
         type: 'simple',
@@ -50,6 +50,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: true,
     visible: true,
+    layerIndex: 2,
     legendItems: [
       {
         id: 'construction-legend',
@@ -122,6 +123,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'hide',
     loadOnInit: true,
     visible: true,
+    layerIndex: 1,
     native: {
       opacity: 0.001,
       labelingInfo: {

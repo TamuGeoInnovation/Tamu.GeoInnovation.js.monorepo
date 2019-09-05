@@ -357,7 +357,7 @@ export class EsriMapService {
       return generateLayer(source).then((layer) => {
         if (layer) {
           // Add layer to map
-          (<esri.Map>this._modules.map).add(layer);
+          (<esri.Map>this._modules.map).add(layer, source.layerIndex ? source.layerIndex : undefined);
 
           // Return layer in case further manipulation is needed.
           return layer;
