@@ -14,7 +14,7 @@ export class RouterHistoryService {
     router.events
       .pipe(
         filter((event) => {
-          return event.constructor.name == 'NavigationEnd';
+          return event.constructor.name === 'NavigationEnd';
         })
       )
       .subscribe((navigationEndEvent) => {

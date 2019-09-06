@@ -89,7 +89,7 @@ export class LayerListComponent implements OnInit, OnDestroy {
       });
     } else {
       // If the list does not contain an initialized layer, attempt and find the source by reference id.
-      const source = LayerSources.find((src) => src.id == listItem.id);
+      const source = LayerSources.find((src) => src.id === listItem.id);
 
       // If source is found, create a layer from it.
       if (source) {

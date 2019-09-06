@@ -43,7 +43,7 @@ export class PopupService {
   public getComponent(snapshot: HitTestSnapshot): any {
     // Handle case if popup component override is provided.
     if (snapshot.popupComponent) {
-      const dicionaryObject = this._dictionary.find((obj) => obj.id == snapshot.popupComponent);
+      const dicionaryObject = this._dictionary.find((obj) => obj.id === snapshot.popupComponent);
 
       // Chck we got a dictionary match by ID
       if (!dicionaryObject) {
@@ -58,7 +58,7 @@ export class PopupService {
       const graphicLayerId = snapshot.graphics[0].layer.id;
 
       // Determined layer source by graphicLayerId
-      const source = LayerSources.find((src) => src.id == graphicLayerId);
+      const source = LayerSources.find((src) => src.id === graphicLayerId);
 
       // Check if there is a source match
       if (!source) {
@@ -70,7 +70,7 @@ export class PopupService {
         return;
       }
 
-      const dicionaryObject = this._dictionary.find((obj) => obj.id == source.popupComponent);
+      const dicionaryObject = this._dictionary.find((obj) => obj.id === source.popupComponent);
 
       // Chck we got a dictionary match by ID
       if (!dicionaryObject) {

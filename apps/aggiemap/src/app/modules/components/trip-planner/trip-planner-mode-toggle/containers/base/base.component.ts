@@ -126,7 +126,7 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
             () => {
               const index =
                 results.findIndex((r) => {
-                  return !r.params || parseInt(r.params.travelMode) == this.travelMode;
+                  return !r.params || parseInt(r.params.travelMode, 10) === this.travelMode;
                 }) > -1;
 
               return index;
@@ -151,7 +151,7 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
         //
         // If the latest result has params travel mode, compare it to the toggle travel mode. If they match,
         // resolve truthy for the trip result.
-        return !latest.result.params || parseInt(latest.result.params.travelMode) == this.travelMode;
+        return !latest.result.params || parseInt(latest.result.params.travelMode, 10) === this.travelMode;
       }),
       map((latest) => {
         // Return only the trip result.
@@ -180,17 +180,17 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
           results.reduce((acc, curr, index) => {
             const newAccumulated = { ...acc };
 
-            if (curr.isError == true || curr.isFulfilled == true || curr.isProcessing == true) {
+            if (curr.isError || curr.isFulfilled || curr.isProcessing) {
               // Result item is pristine.
               newAccumulated.allPristine = false;
             }
 
-            if (curr.params && curr.params.travelMode && this.activeModes.includes(parseInt(curr.params.travelMode))) {
+            if (curr.params && curr.params.travelMode && this.activeModes.includes(parseInt(curr.params.travelMode, 10))) {
               // Current result has params, travel mode, and travel mode is in the toggle modes array.
               newAccumulated.toggleHasResult = true;
             }
 
-            if (newAccumulated.toggleHasResult == false) {
+            if (newAccumulated.toggleHasResult === false) {
               const qualifying = this.tripPlanner.getQualifyingTravelModes(true);
               const toggleModesInQualifying = qualifying.some((m) => {
                 return this.activeModes.includes(m);

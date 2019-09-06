@@ -273,7 +273,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
 
           // If the input value has changed trigger a "dirty" event
-          if (value != this.value) {
+          if (value !== this.value) {
             this.dirty.emit(new SearchEvent({}));
           }
         } else {
@@ -559,7 +559,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.rightAction.emit();
 
       // Default action clearing the input when the right action icon is 'close'
-      if (this.rightActionIcon == 'close') {
+      if (this.rightActionIcon === 'close') {
         this.value = '';
         this.input.next('');
       }

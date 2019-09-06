@@ -45,7 +45,7 @@ export class TripPlannerDirectionsActions implements OnInit, OnDestroy {
       switchMap(() => this.plannerService.getTripResultForTravelMode()),
       takeUntil(this._destroy$)
     ).subscribe((result) => {
-      if (result && result.stops != null && result.stops != undefined) {
+      if (result && result.stops != null) {
         const params = {
           stops: undefined,
           mode: undefined,
@@ -74,7 +74,7 @@ export class TripPlannerDirectionsActions implements OnInit, OnDestroy {
         // Get travel mode from result
         params.mode = result.params && result.params.travelMode ? result.params.travelMode : 1;
 
-        if (result.timeMode != 'now') {
+        if (result.timeMode !== 'now') {
           params.time = result.timeMode;
         }
 

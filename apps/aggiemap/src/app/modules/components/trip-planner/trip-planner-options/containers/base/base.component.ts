@@ -44,7 +44,7 @@ export class TripPlannerOptionsComponent implements OnInit {
             find((modes: TripPlannerRuleMode[]) => {
               // Return the first rule that contains the current mode as one of its options.
               return modes.some((opt) => {
-                return opt.mode == mode;
+                return opt.mode === mode;
               });
             })
           );

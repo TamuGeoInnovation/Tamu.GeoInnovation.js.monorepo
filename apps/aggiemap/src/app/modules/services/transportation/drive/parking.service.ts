@@ -16,7 +16,7 @@ import esri = __esri;
 const allParking = ['all-parking'];
 
 // Search source references used to retrieve a single parking location.
-const oneParking = SearchSources.find((source) => source.source == 'one-parking');
+const oneParking = SearchSources.find((source) => source.source === 'one-parking');
 
 @Injectable({ providedIn: 'root' })
 export class ParkingService {
@@ -79,7 +79,7 @@ export class ParkingService {
           get: {
             target: ['accessible', 'Use_Permit'],
             fn: (accessible, usePermit) => {
-              return accessible == true && usePermit == false ? 1 : 0;
+              return accessible === true && usePermit === false ? 1 : 0;
             }
           }
         }
@@ -136,9 +136,9 @@ export class ParkingService {
         }),
         reduce(
           (acc, curr) => {
-            // Collect the permit features and return only the first ocurrence. This effectively removes duplicate features.
+            // Collect the permit features and return only the first occurrence. This effectively removes duplicate features.
             const existingIndex = acc.findIndex(
-              (feature) => feature && feature.attributes && feature.attributes.FAC_CODE == curr.attributes.FAC_CODE
+              (feature) => feature && feature.attributes && feature.attributes.FAC_CODE === curr.attributes.FAC_CODE
             );
 
             if (existingIndex > -1) {
@@ -152,7 +152,7 @@ export class ParkingService {
         switchMap((filteredPermits) => {
           const grouped = filteredPermits.reduce(
             (acc, curr) => {
-              const isAlphabetic = isNaN(parseInt(curr.attributes.FAC_CODE));
+              const isAlphabetic = isNaN(parseInt(curr.attributes.FAC_CODE, 10));
 
               if (isAlphabetic) {
                 acc.alphabetic = [...acc.alphabetic, curr];

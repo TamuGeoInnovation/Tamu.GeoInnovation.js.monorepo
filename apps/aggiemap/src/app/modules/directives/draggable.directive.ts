@@ -74,17 +74,17 @@ export class DraggableDirective implements AfterViewInit, AfterViewChecked, OnDe
 
   ngAfterViewChecked() {
     // Store the initial offset which will be used to set the base snap point.
-    if (this.el.nativeElement.innerText.trim() != '' && this.initialOffset == undefined) {
+    if (this.el.nativeElement.innerText.trim() !== '' && this.initialOffset === undefined) {
       this.deviceHeight = window.outerHeight > 0 ? window.outerHeight : window.innerHeight;
       this.initialOffset = this.deviceHeight - this.draggable.getRect().top;
     }
 
     // Handle inner content changes that would cause a dragged element to float if the new height is less than the last
-    if (this.el.nativeElement.innerText.trim() != '') {
+    if (this.el.nativeElement.innerText.trim() !== '') {
       const rect = this.draggable.getRect();
 
       if (rect) {
-        if (this.lastContentHeight && this.lastContentHeight != Math.floor(rect.height)) {
+        if (this.lastContentHeight && this.lastContentHeight !== Math.floor(rect.height)) {
           if (this.draggable.getRect().bottom < window.innerHeight) {
             const anchor = this.initialOffset - this.draggable.getRect().height;
 
@@ -149,7 +149,7 @@ export class DraggableDirective implements AfterViewInit, AfterViewChecked, OnDe
 
       // If the limit has been reached, and the action is an upward movement
       // Do not attempt to reposition the element as it has nowhere to go
-      if (event.target.getAttribute('data-y') != limitOffset) {
+      if (event.target.getAttribute('data-y') !== limitOffset) {
         // console.log('speed up', event.speed)
 
         // Limit has not been reached, continue to scroll until the limit is reached
@@ -171,7 +171,7 @@ export class DraggableDirective implements AfterViewInit, AfterViewChecked, OnDe
         } else {
           // If the limit is reached, update the coordinates to by those of maximum element
           // offset and cancel any other events.
-          if (target.getAttribute('data-y') != limitOffset) {
+          if (target.getAttribute('data-y') !== limitOffset) {
             target.style.webkitTransform = target.style.transform = 'translate(0px, ' + limitOffset + 'px)';
 
             target.setAttribute('data-y', limitOffset);

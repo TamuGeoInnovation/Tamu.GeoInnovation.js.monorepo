@@ -47,7 +47,7 @@ export class SearchService {
       return;
     }
 
-    if (options.sources.length == 0) {
+    if (options.sources.length === 0) {
       console.error(`Exptected at least one source. Got ${options.sources.length}.`);
       return;
     }
@@ -56,7 +56,7 @@ export class SearchService {
     // If the source is a string reference, make sure that reference exists.
     // If the source is not a string (because it's a SearchSource), return truthy.
     const allSourcesExist = options.sources.every((ref) =>
-      typeof ref === 'string' ? this._sources.findIndex((source) => ref == source.source) > -1 : true
+      typeof ref === 'string' ? this._sources.findIndex((source) => ref === source.source) > -1 : true
     );
 
     if (!allSourcesExist) {
@@ -68,7 +68,7 @@ export class SearchService {
     // If the source is a string reference, return the reference source.
     // If the source is a SearchSource, return self
     const sources: SearchSource[] = options.sources.map((src) => {
-      return typeof src == 'string' ? this._sources.find((s) => s.source == src) : src;
+      return typeof src === 'string' ? this._sources.find((s) => s.source === src) : src;
     });
 
     // Generate an array of http get observables
@@ -143,7 +143,7 @@ export class SearchService {
         //
         // If there are any, find to which base reponse they belong to and
         // prepend the features.
-        if (responses.scoring && responses.scoring.length == 0) {
+        if (responses.scoring && responses.scoring.length === 0) {
           return of(responses.base);
         } else {
           // Since the response order is guarantee with forkJoin and concatMap,
@@ -164,7 +164,7 @@ export class SearchService {
               //
               // This index will be representative of the array location for a given base reponse
               // and consequently which scoring response belongs to what base response.
-              return sources.findIndex((source) => source.source == s.source);
+              return sources.findIndex((source) => source.source === s.source);
             });
 
           const baseScoringMerged = responses.base.map((r: any, i, a) => {
@@ -183,7 +183,7 @@ export class SearchService {
               // Determine duplication by simple object stringify equivalence.
               r[sources[i].featuresLocation] = r[sources[i].featuresLocation].filter((feature, index, arr) => {
                 const findFirstMatchingIndex = arr.findIndex((f) => {
-                  return JSON.stringify(f) == JSON.stringify(feature);
+                  return JSON.stringify(f) === JSON.stringify(feature);
                 });
 
                 // If the first matching index is equal to the current (smallest) index, it means it's the first
@@ -191,8 +191,8 @@ export class SearchService {
                 //
                 // If not, it means there is another identical object in the array prior to this one.
                 //
-                // Only return the first ocurrence, ignore the rest.
-                return findFirstMatchingIndex == index;
+                // Only return the first occurrence, ignore the rest.
+                return findFirstMatchingIndex === index;
               });
 
               return r;
@@ -294,7 +294,7 @@ export class SearchService {
     //
     // Reference Github Issue: https://github.tamu.edu/AggieMap/dev.aggiemap.tamu.edu/issues/93
     //
-    const srcIndex = indexOverride != undefined ? indexOverride : options.sources.findIndex((s) => s == source.source);
+    const srcIndex = indexOverride != null ? indexOverride : options.sources.findIndex((s) => s === source.source);
 
     if (source.queryParams) {
       // If instead we have query params object which needs to be converted to a url query string.
@@ -382,7 +382,7 @@ export class SearchService {
               return acc;
             }
 
-            if (propValue.toLowerCase() == searchTerm.toLowerCase()) {
+            if (propValue.toLowerCase() === searchTerm.toLowerCase()) {
               return acc + source.scoringKeys.length - i;
             } else {
               return acc;

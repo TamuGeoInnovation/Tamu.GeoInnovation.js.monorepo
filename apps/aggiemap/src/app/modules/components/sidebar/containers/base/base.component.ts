@@ -50,7 +50,7 @@ export class SidebarComponent implements OnInit {
     this._updateCurrentView();
 
     // If selected view name is the same, hide the sidebar
-    if (viewName == this.currentView) {
+    if (viewName === this.currentView) {
       this.sidebarVisible = !this.sidebarVisible;
     } else {
       // If selected view name is different than current, show sidebar (in case it's hidden), store the selected view name as the current, and navigate to that route

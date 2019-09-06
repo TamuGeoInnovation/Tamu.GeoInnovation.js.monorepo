@@ -246,7 +246,7 @@ export class BusService {
          */
         const timetableColumnIndex = (name: string): number => {
           return timetable[0].findIndex((record, i, arr) => {
-            return name == record.stop_name;
+            return name === record.stop_name;
           });
         };
 
@@ -305,7 +305,7 @@ export class BusService {
           // which the rest of the stops can be assigned an approximate time.
           const mappedTimeTableStops: BusStop[] = clonedStops.reduce(
             (acc: { stops: BusStop[]; timetable: TimetableEntry[] }, stop: BusStop, index, arr) => {
-              if (stop.name == acc.timetable[0].stop_name) {
+              if (stop.name === acc.timetable[0].stop_name) {
                 stop.time = acc.timetable[0].datetime;
 
                 acc.stops.splice(index, 1, stop);
@@ -331,7 +331,7 @@ export class BusService {
             // This offset is the number of rows before the departure index, that has an associated time. Depature time index minus the offset
             // will be the lower boundary of a time bracket.
             const lowerLimitOffset =
-              mappedTimeTableStops[first.index].time == undefined
+              mappedTimeTableStops[first.index].time === undefined
                 ? mappedTimeTableStops
                     .slice(0, first.index + 1)
                     .reverse()
@@ -345,7 +345,7 @@ export class BusService {
             // This offset is the number of rows after the arrvail index, that has an associated time. Arrival time index plus the offset
             // will be the upper boundary of a time bracket.
             const upperLimitOffset =
-              mappedTimeTableStops[last.index].time == undefined
+              mappedTimeTableStops[last.index].time === undefined
                 ? mappedTimeTableStops.slice(last.index, mappedTimeTableStops.length).findIndex((stop) => stop.time)
                 : 0;
 
@@ -504,7 +504,7 @@ export class BusService {
 
     // Assuming no wrap around, the arrival stop index must ALWAYS be greater than the departure stop. This is how time works.
     // Furthermore, check to make sure that the "incorrect" arrival stop shares the same stop name as the first row in the stops list.
-    if (arrivalStop.index < departureStop.index && arrivalStop.stop.name == stops[0].name) {
+    if (arrivalStop.index < departureStop.index && arrivalStop.stop.name === stops[0].name) {
       return {
         departure: {
           index: departureStop.index,
@@ -584,7 +584,7 @@ export class BusService {
     // If there are not any, this is a graphic addition for features that don't exist in the layer.
 
     const existingGraphicsForToggledRouteName = existingGraphics
-      ? this._busLayer.getValue().graphics.some((graphic) => graphic.attributes.id == short_name)
+      ? this._busLayer.getValue().graphics.some((graphic) => graphic.attributes.id === short_name)
       : existingGraphics;
 
     if (existingGraphics && existingGraphicsForToggledRouteName) {
@@ -670,10 +670,10 @@ export class BusService {
             })
           });
 
-          if (symbols == null || symbols.indexOf('route') != -1) {
+          if (symbols == null || symbols.indexOf('route') !== -1) {
             this._busLayer.getValue().add(route_graphic);
           }
-          if (symbols == null || symbols.indexOf('stops') != -1) {
+          if (symbols == null || symbols.indexOf('stops') !== -1) {
             this._busLayer.getValue().addMany(stops);
           }
         }
@@ -703,7 +703,7 @@ export class BusService {
               where: `1=1`
             })
             .then((features) => {
-              if (features.features.length == 0) {
+              if (features.features.length === 0) {
                 return [];
               } else {
                 return features.features.map((f) => f.clone());
@@ -711,7 +711,7 @@ export class BusService {
             })
         : undefined;
 
-    if (action == 'remove') {
+    if (action === 'remove') {
       const features = getFeatures();
 
       if (features) {
@@ -721,7 +721,7 @@ export class BusService {
           });
         });
       }
-    } else if (action == 'update') {
+    } else if (action === 'update') {
       Promise.all([
         this.moduleProvider.require(['Point', 'Graphic', 'FeatureLayer', 'PictureMarkerSymbol']),
         this.busesForRoute(short_name).toPromise(),
@@ -825,12 +825,12 @@ export class BusService {
               .filter((bus) => {
                 return (
                   apiBuses.findIndex((apiBus) => {
-                    return apiBus.name == bus.attributes.name;
+                    return apiBus.name === bus.attributes.name;
                   }) > -1
                 );
               })
               .map((bus) => {
-                const apiMatch = apiBuses.find((apiBus) => apiBus.name == bus.attributes.name);
+                const apiMatch = apiBuses.find((apiBus) => apiBus.name === bus.attributes.name);
 
                 bus.attributes.rotation = apiMatch.angle;
                 bus.geometry = new Point({
@@ -842,14 +842,14 @@ export class BusService {
 
             const toAddToMap = apiBuses
               .filter((apiBus) => {
-                return features.findIndex((bus) => apiBus.name == bus.attributes.name) == -1;
+                return features.findIndex((bus) => apiBus.name === bus.attributes.name) === -1;
               })
               .map((apiBus) => {
                 return makeBusGraphic(apiBus);
               });
 
             const toRemoveFromMap = features.filter((bus) => {
-              return apiBuses.findIndex((apiBus) => apiBus.name == bus.attributes.name) == -1;
+              return apiBuses.findIndex((apiBus) => apiBus.name === bus.attributes.name) === -1;
             });
 
             layer.applyEdits({

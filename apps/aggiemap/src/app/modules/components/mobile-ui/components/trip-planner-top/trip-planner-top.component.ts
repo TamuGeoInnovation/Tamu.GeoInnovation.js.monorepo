@@ -72,7 +72,7 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
       this.result = result;
 
       // In the event that the route is cleared and the top is hidden, bring it back down.
-      if (this.result && this.result.result == undefined) {
+      if (this.result && this.result.result === undefined) {
         this.hide = false;
         this.hideOverride = false;
       }

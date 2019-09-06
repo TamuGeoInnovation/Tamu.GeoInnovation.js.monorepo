@@ -31,9 +31,9 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
       this._sources = this.environment.value('SearchSources');
     }
     // Check if the defined search source exists.
-    this.source = this._sources.findIndex((s) => s.source == searchReference);
+    this.source = this._sources.findIndex((s) => s.source === searchReference);
 
-    if (this.source == -1) {
+    if (this.source === -1) {
       throw new Error(`'${searchReference}' search source was not found in configuration.`);
     }
   }

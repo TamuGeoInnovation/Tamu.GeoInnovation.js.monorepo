@@ -42,7 +42,7 @@ export class EsriMapService {
 
   public loadMap(mapProperties: MapProperties, viewProperties: MapViewProperties) {
     // If properties specifies 2d mode, load 2d map view.
-    if (viewProperties.mode == '2d') {
+    if (viewProperties.mode === '2d') {
       this.moduleProvider
         .require(['Map', 'MapView', 'TileLayer', 'Basemap'])
         .then(
@@ -55,7 +55,7 @@ export class EsriMapService {
             this.next(mapProperties, viewProperties, Map, MapView, TileLayer, Basemap);
           }
         );
-    } else if (viewProperties.mode == '3d') {
+    } else if (viewProperties.mode === '3d') {
       // If properties specifies 3d mode, load 3d scene view.
       this.moduleProvider
         .require(['Map', 'SceneView', 'TileLayer', 'Basemap'])
@@ -192,9 +192,9 @@ export class EsriMapService {
 
     // Check if the basemap property is a string, which will autocast
     // Or if the basemap property contains a list of baselayers which need instantiation based on type.
-    if (typeof mProps.basemap == 'string') {
+    if (typeof mProps.basemap === 'string') {
       return mProps;
-    } else if (typeof mProps.basemap == 'object') {
+    } else if (typeof mProps.basemap === 'object') {
       // If there are no baseLayers, break early
       if (!mProps.basemap.baseLayers) {
         throw new Error(`Missing baseLayers property.`);
@@ -210,7 +210,7 @@ export class EsriMapService {
           throw new Error(`Layer type is required.`);
         }
 
-        if (l.type == `TileLayer`) {
+        if (l.type === `TileLayer`) {
           // Remove the type property because it conflicts as a read-only property when instantiating the class.
           delete l.type;
           return new TileLayer(l);
@@ -310,7 +310,7 @@ export class EsriMapService {
         // Delete any additional properties to avoid polluting layer instances
         delete props.loadOnInit;
 
-        if (source.type == 'feature') {
+        if (source.type === 'feature') {
           return this.moduleProvider.require(['FeatureLayer']).then(([FeatureLayer]: [esri.FeatureLayerConstructor]) => {
             // Delete the type property as it cannot be set on layer creation.
             delete props.type;
@@ -318,7 +318,7 @@ export class EsriMapService {
             // Create and return new feature layer
             return new FeatureLayer(props);
           });
-        } else if (source.type == 'scene') {
+        } else if (source.type === 'scene') {
           return this.moduleProvider.require(['SceneLayer']).then(([SceneLayer]: [esri.SceneLayerConstructor]) => {
             // Delete the type property as it cannot be set on layer creation.
             delete props.type;
@@ -326,7 +326,7 @@ export class EsriMapService {
             // Create and return new scene layer
             return new SceneLayer(props);
           });
-        } else if (source.type == 'graphic') {
+        } else if (source.type === 'graphic') {
           return this.moduleProvider.require(['GraphicsLayer']).then(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
             // Delete the type property as it cannot be set on layer creation.
             delete props.type;
@@ -334,7 +334,7 @@ export class EsriMapService {
             // Create and return new graphics layer
             return new GraphicsLayer(props);
           });
-        } else if (source.type == 'geojson') {
+        } else if (source.type === 'geojson') {
           return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [esri.GeoJSONLayerConstructor]) => {
             // Delete the type property as it cannot be set on layer creation.
             delete props.type;
@@ -342,7 +342,7 @@ export class EsriMapService {
             // Create and return new geojson layer
             return new GeoJSONLayer(props);
           });
-        } else if (source.type == 'csv') {
+        } else if (source.type === 'csv') {
           return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [esri.CSVLayerConstructor]) => {
             // Delete the type property as it cannot be set on layer creation.
             delete props.type;
@@ -394,7 +394,7 @@ export class EsriMapService {
   public layerExists(id: string): boolean {
     const map: esri.Map = this._modules.map;
     if (this._modules.map) {
-      return map.findLayerById(id) != undefined ? true : false;
+      return map.findLayerById(id) !== undefined;
     } else {
       throw new Error('Map instances does not exist.');
     }
@@ -446,7 +446,7 @@ export class EsriMapService {
 
           // If the matched feature count is greater than 0, proceed to select them.
           if (features.length > 0) {
-            if (features.length == 1) {
+            if (features.length === 1) {
               this.selectFeatures({
                 graphics: features,
                 shouldShowPopup: true
@@ -499,7 +499,7 @@ export class EsriMapService {
     const shouldShowPopup = properties.shouldShowPopup || false;
 
     // Source object
-    const source = Object.assign(this.environment.value('LayerSources').find((src) => src.id == 'selection-layer'));
+    const source = Object.assign(this.environment.value('LayerSources').find((src) => src.id === 'selection-layer'));
 
     // Add the symbol and polygon type to each feature
     const features = graphics.map((ft) => {
@@ -560,7 +560,7 @@ export class EsriMapService {
    */
   public clearSelectedFeatures() {
     // Source object
-    const source = Object.assign(this.environment.value('LayerSources').find((src) => src.id == 'selection-layer'));
+    const source = Object.assign(this.environment.value('LayerSources').find((src) => src.id === 'selection-layer'));
 
     this.findLayerOrCreateFromSource(source).then((layer: esri.GraphicsLayer) => {
       layer.removeAll();

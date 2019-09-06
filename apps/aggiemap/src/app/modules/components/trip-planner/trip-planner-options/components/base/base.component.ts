@@ -55,7 +55,7 @@ export class TripPlannerOptionsBaseComponent {
     if (key instanceof Object) {
       const effect = key.effect;
 
-      if (!effect || effect.length == 0) {
+      if (!effect || effect.length === 0) {
         throw new Error('No mode effect found.');
       }
 
