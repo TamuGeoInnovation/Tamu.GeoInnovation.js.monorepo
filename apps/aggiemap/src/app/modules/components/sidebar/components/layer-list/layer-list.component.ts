@@ -45,7 +45,7 @@ export class LayerListComponent implements OnInit, OnDestroy {
     private history: RouterHistoryService
   ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.layers = this.layerListService.store;
     this.responsive = this.responsiveService.snapshot;
 
@@ -57,7 +57,7 @@ export class LayerListComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this._destroy$.next();
     this._destroy$.complete();
   }

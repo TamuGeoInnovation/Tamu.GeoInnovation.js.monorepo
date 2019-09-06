@@ -60,7 +60,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
 
   constructor(private moduleProvider: EsriModuleProviderService, private mapService: EsriMapService) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this._mapServiceSubscription = this.mapService.store.subscribe((instance) => {
       this._mapViewEl = instance.view.container;
 
@@ -160,7 +160,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this._mapServiceSubscription.unsubscribe();
   }
 }

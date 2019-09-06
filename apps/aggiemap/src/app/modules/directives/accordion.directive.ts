@@ -58,6 +58,7 @@ export class AccordionDirective implements OnChanges, OnInit, OnDestroy {
     // If accordion animation is true, set the transition properties responsible for animating the max-height property.
     if (this.animate) {
       (<HTMLElement>this.el.nativeElement).style.transition = 'max-height .20s';
+      // tslint:disable-next-line
       (<HTMLElement>this.el.nativeElement).style.webkitTransition = 'max-height .20s';
     }
 

@@ -25,7 +25,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   ]
 })
 export class SidebarComponent implements OnInit {
-  public sidebarVisible: boolean = true;
+  public sidebarVisible = true;
   public currentView: string;
 
   constructor(private router: Router, private route: ActivatedRoute) {
@@ -33,7 +33,7 @@ export class SidebarComponent implements OnInit {
     this.currentView = this._updateCurrentView();
   }
 
-  ngOnInit() {}
+  public ngOnInit() {}
 
   private _updateCurrentView(): string {
     return this.router.url.substring(1, this.router.url.length);

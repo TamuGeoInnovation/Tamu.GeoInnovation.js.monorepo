@@ -66,5 +66,5 @@ export class MainMobileSidebarComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {}
+  public ngOnInit() {}
 }

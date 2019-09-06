@@ -1,7 +1,7 @@
 <div [ngClass]="{ active: focused }">
   <div class="input-action-container" (keydown)="keyControl($event, 'focus', '.focusable')" (focus)="setFocus()">
     <i class="action-icons material-icons left" *ngIf="leftActionIcon" (click)="emitLeftActionEvent()">{{ leftActionIcon }}</i>
-    <i class="action-icons material-icons right" *ngIf="rightActionIcon && value && !(searchStatus | async)" (mousedown)="setFocus(); emitRightActionEvent()">{{ rightActionIcon }}</i>
+    <i class="action-icons material-icons right" *ngIf="rightActionIcon && value && (searchStatus | async) === false" (mousedown)="setFocus(); emitRightActionEvent()">{{ rightActionIcon }}</i>
     <div class="action-icons right lds-ring" *ngIf="(searchStatus | async)">
       <div></div>
       <div></div>

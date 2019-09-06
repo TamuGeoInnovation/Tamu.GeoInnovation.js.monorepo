@@ -14,7 +14,7 @@ export class DraggableDirective implements AfterViewInit, AfterViewChecked, OnDe
    * @type {string}
    * @memberof DraggableDirective
    */
-  @Input('draggableIdentifier') identifier: string;
+  @Input('draggableIdentifier') public identifier: string;
 
   /**
    * Represents y-offset that is initially present when the element is rendered.
@@ -47,7 +47,7 @@ export class DraggableDirective implements AfterViewInit, AfterViewChecked, OnDe
     this.draggable = el;
   }
 
-  ngAfterViewInit() {
+  public ngAfterViewInit() {
     if (!this.identifier) {
       console.warn(
         'Draggable directive was not provided a component identifier. Provide an identifier with the [draggableIdentifier] property.'
@@ -72,7 +72,7 @@ export class DraggableDirective implements AfterViewInit, AfterViewChecked, OnDe
     });
   }
 
-  ngAfterViewChecked() {
+  public ngAfterViewChecked() {
     // Store the initial offset which will be used to set the base snap point.
     if (this.el.nativeElement.innerText.trim() !== '' && this.initialOffset === undefined) {
       this.deviceHeight = window.outerHeight > 0 ? window.outerHeight : window.innerHeight;
@@ -98,7 +98,7 @@ export class DraggableDirective implements AfterViewInit, AfterViewChecked, OnDe
     }
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this.draggable = this.draggable.unset();
   }
 

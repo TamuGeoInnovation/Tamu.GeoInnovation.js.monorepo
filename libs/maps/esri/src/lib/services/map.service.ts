@@ -90,27 +90,19 @@ export class EsriMapService {
     MapProperties: MapProperties,
     ViewProperties: MapViewProperties,
     Map: esri.MapConstructor,
-    MapView: esri.MapViewConstructor,
+    MapView: esri.MapViewConstructor | esri.SceneViewConstructor,
     TileLayer: esri.TileLayerConstructor,
     Basemap: esri.BasemapConstructor
   ): void;
   private next(
-    MapProperties: MapProperties,
-    ViewProperties: MapViewProperties,
-    Map: esri.MapConstructor,
-    MapView: esri.SceneViewConstructor,
-    TileLayer: esri.TileLayerConstructor,
-    Basemap: esri.BasemapConstructor
-  ): void;
-  private next(
-    MapProperties: MapProperties,
+    Properties: MapProperties,
     ViewProperties: MapViewProperties,
     Map: any,
     MapView: any,
     TileLayer: any,
     Basemap: any
   ): void {
-    const basemap = this.makeBasemap(MapProperties, TileLayer, Basemap);
+    const basemap = this.makeBasemap(Properties, TileLayer, Basemap);
     this._modules.map = new Map(basemap);
     const viewProps = this.makeMapView(ViewProperties.properties, this._modules.map);
     this._modules.view = new MapView(viewProps);
@@ -285,22 +277,22 @@ export class EsriMapService {
         }
       });
     } else {
-      const generateLayer = (source: LayerSource): Promise<esri.Layer> => {
+      const generateLayer = (layerSource: LayerSource): Promise<esri.Layer> => {
         // Set of persistent properties, that will be applied to all layer types.
         const persistentProps: any = {
-          outFields: source.native && source.native.outFields ? source.native.outFields : ['*'],
-          minScale: source.native && source.native.minScale ? source.native.minScale : 100000,
-          maxScale: source.native && source.native.maxScale ? source.native.maxScale : 0,
+          outFields: layerSource.native && layerSource.native.outFields ? layerSource.native.outFields : ['*'],
+          minScale: layerSource.native && layerSource.native.minScale ? layerSource.native.minScale : 100000,
+          maxScale: layerSource.native && layerSource.native.maxScale ? layerSource.native.maxScale : 0,
           elevationInfo:
-            source.native && source.native.elevationInfo
-              ? source.native.elevationInfo
+            layerSource.native && layerSource.native.elevationInfo
+              ? layerSource.native.elevationInfo
               : { mode: 'relative-to-ground', offset: 1 },
           popupEnabled: false
         };
 
         // Object with merged root level properties, native properties, and persistent properties.
         // const props: any = Object.assign(source, ...native, ...persistentProps);
-        const props: any = { ...source, ...source.native, ...persistentProps };
+        const props: any = { ...layerSource, ...layerSource.native, ...persistentProps };
 
         // Remove the 'native' property from the object since it's not needed in the layer creation.
         if (props.hasOwnProperty('native')) {
@@ -310,7 +302,7 @@ export class EsriMapService {
         // Delete any additional properties to avoid polluting layer instances
         delete props.loadOnInit;
 
-        if (source.type === 'feature') {
+        if (layerSource.type === 'feature') {
           return this.moduleProvider.require(['FeatureLayer']).then(([FeatureLayer]: [esri.FeatureLayerConstructor]) => {
             // Delete the type property as it cannot be set on layer creation.
             delete props.type;
@@ -318,7 +310,7 @@ export class EsriMapService {
             // Create and return new feature layer
             return new FeatureLayer(props);
           });
-        } else if (source.type === 'scene') {
+        } else if (layerSource.type === 'scene') {
           return this.moduleProvider.require(['SceneLayer']).then(([SceneLayer]: [esri.SceneLayerConstructor]) => {
             // Delete the type property as it cannot be set on layer creation.
             delete props.type;
@@ -326,7 +318,7 @@ export class EsriMapService {
             // Create and return new scene layer
             return new SceneLayer(props);
           });
-        } else if (source.type === 'graphic') {
+        } else if (layerSource.type === 'graphic') {
           return this.moduleProvider.require(['GraphicsLayer']).then(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
             // Delete the type property as it cannot be set on layer creation.
             delete props.type;
@@ -334,7 +326,7 @@ export class EsriMapService {
             // Create and return new graphics layer
             return new GraphicsLayer(props);
           });
-        } else if (source.type === 'geojson') {
+        } else if (layerSource.type === 'geojson') {
           return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [esri.GeoJSONLayerConstructor]) => {
             // Delete the type property as it cannot be set on layer creation.
             delete props.type;
@@ -342,7 +334,7 @@ export class EsriMapService {
             // Create and return new geojson layer
             return new GeoJSONLayer(props);
           });
-        } else if (source.type === 'csv') {
+        } else if (layerSource.type === 'csv') {
           return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [esri.CSVLayerConstructor]) => {
             // Delete the type property as it cannot be set on layer creation.
             delete props.type;

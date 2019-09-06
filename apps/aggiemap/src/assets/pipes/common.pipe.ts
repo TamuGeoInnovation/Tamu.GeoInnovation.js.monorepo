@@ -78,7 +78,7 @@ export class RouteDirectionTransformerPipe implements PipeTransform {
                 ret.displayUnit = 'feet';
 
                 // convert miles to feet and trim decimals (i.e. 343 feet)
-                ret.travelLength = parseInt((ret.travelLength * 5280).toFixed(0));
+                ret.travelLength = parseInt((ret.travelLength * 5280).toFixed(0), 10);
             } else {
                 // Limit mile length to 2 decimal places (i.e. 2.25 miles)
                 ret.travelLength = direction.length.toFixed(2);

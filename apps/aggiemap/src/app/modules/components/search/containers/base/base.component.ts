@@ -355,6 +355,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     // Limit the execution of the process chain only if event key code is not in the not allowed list
     const keysNotAllowed = [9, 18, 16];
 
+    // tslint:disable-next-line
     if (!keysNotAllowed.includes(event.which)) {
       const value = (<HTMLInputElement>event.target).value;
       // this.searchResultsStatus = undefined;
