@@ -41,6 +41,12 @@
     "maps-esri": {
       "tags": []
     },
+    "assets": {
+      "tags": []
+    },
+    "sass": {
+      "tags": []
+    },
     "common-utils": {
       "tags": []
     },

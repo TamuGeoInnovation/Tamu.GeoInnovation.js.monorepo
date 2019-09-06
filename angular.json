@@ -171,6 +171,14 @@
         }
       }
     },
+    "assets": {
+      "root": "libs/assets",
+      "projectType": "library"
+    },
+    "sass": {
+      "root": "libs/sass",
+      "projectType": "library"
+    },
     "common-ngx-pipes": {
       "projectType": "library",
       "root": "libs/common/ngx/pipes",
