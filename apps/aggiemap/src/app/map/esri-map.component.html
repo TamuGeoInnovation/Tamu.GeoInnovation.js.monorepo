@@ -13,8 +13,8 @@
   </div>
 </div>
 
-<!-- Map element -->
-<div #mapViewNode [ngClass]="{ mobile: isMobile }"></div>
+<!-- Map component -->
+<tamu-gisc-esri-map [config]="config" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }"></tamu-gisc-esri-map>
 
 <!-- Router outlet where desktop and mobile controls are rendered -->
 <router-outlet></router-outlet>

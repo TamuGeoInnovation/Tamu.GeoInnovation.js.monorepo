@@ -222,28 +222,6 @@ app-root {
   height: inherit;
 }
 
-app-esri-map {
-  @include flex(1);
-  width: 100%;
-  max-height: 100%;
-  position: relative;
-
-  & > div {
-    height: 100%;
-    width: 100%;
-    min-height: 1px;
-  }
-}
-
-#mapView {
-  border-radius: 4px;
-  -moz-border-radius: 4px;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  position: relative;
-}
-
 .accessible-viewfinder,
 .accessible-viewfinder-features {
   z-index: 999;
@@ -1205,9 +1183,6 @@ button[type='submit'] {
 }
 
 @media only screen and (max-width: 768px) {
-  app-esri-map {
-    height: 100%; // Needed for iOS Safari
-  }
 
   .container12,
   .container16 {

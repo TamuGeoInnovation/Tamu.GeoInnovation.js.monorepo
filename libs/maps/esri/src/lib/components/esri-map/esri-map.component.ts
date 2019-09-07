@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
+
+import { EsriMapService } from '../../services/map.service';
 
 @Component({
   selector: 'tamu-gisc-esri-map',
@@ -6,7 +8,28 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./esri-map.component.scss']
 })
 export class EsriMapComponent implements OnInit {
-  constructor() {}
+  @Input()
+  public config: { basemap: any; view: any };
 
-  public ngOnInit() {}
+  @Output()
+  public loaded: EventEmitter<any> = new EventEmitter();
+
+  @ViewChild('container', { static: true })
+  private container: ElementRef;
+
+  constructor(private mapService: EsriMapService) {}
+
+  public ngOnInit() {
+    if (this.config && this.config.view && this.config.view.properties) {
+      this.config.view.properties.container = this.container.nativeElement;
+    } else {
+      throw new Error(`Incorrectly formed configuration provided.`);
+    }
+
+    this.mapService.loadMap(this.config.basemap, this.config.view);
+
+    this.mapService.store.subscribe((store) => {
+      this.loaded.emit(store);
+    });
+  }
 }

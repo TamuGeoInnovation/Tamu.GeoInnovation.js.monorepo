@@ -1,0 +1,23 @@
+@import '~libs/sass/mixins';
+
+:host {
+  height: 100%;
+  // @include flex(1);
+  // max-height: 100%;
+  // position: relative;
+  // height: 100%;
+  // width: 100%;
+  min-height: 30px;
+
+  & > div {
+    height: 100%;
+    width: 100%;
+    min-height: 1px;
+  }
+}
+
+// @media only screen and (max-width: 768px) {
+//   :host {
+//     height: 100%; // Needed for iOS Safari
+//   }
+// }

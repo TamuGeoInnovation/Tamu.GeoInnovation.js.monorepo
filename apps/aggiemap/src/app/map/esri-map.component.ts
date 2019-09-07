@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
-import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { Connections } from '../../environments/environment';
 
@@ -18,57 +18,13 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
   public view: esri.MapView;
   public isMobile: boolean;
+  public config: any;
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
-
-  constructor(private mapService: EsriMapService, private responsiveService: ResponsiveService) {}
-
-  public ngOnInit() {
-    this.responsiveService
-      .getStatus()
-      .pipe(takeUntil(this._destroy$))
-      .subscribe((value) => {
-        this.isMobile = value;
-      });
-
-    // Trigger load map by service
-    this.loadMap();
-
-    // Subscribe to the service store, and continue execution then
-    this.mapService.store.pipe(takeUntil(this._destroy$)).subscribe((res) => {
-      this.map = res.map;
-      this.view = res.view;
-
-      this.continue();
-    });
-
-    // Set loader phrases and display a random one.
-    const phrases = [
-      'An Aggie does not lie, cheat or steal or tolerate those who do.',
-      'Home of the 12th Man',
-      'Whoop!',
-      "Gig 'Em!",
-      'Howdy Ags!'
-    ];
-    (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
-  }
-
-  public ngOnDestroy() {
-    this._destroy$.next();
-    this._destroy$.complete();
-  }
-
-  /**
-   * Loads and stores map from central service.
-   *
-   * @returns Instance of Esri Map and View
-   * @memberof EsriMapComponent
-   */
-  public loadMap() {
-    return this.mapService.loadMap(
-      {
+  constructor(private responsiveService: ResponsiveService) {
+    this.config = {
+      basemap: {
         basemap: {
           baseLayers: [
             {
@@ -88,10 +44,10 @@ export class EsriMapComponent implements OnInit, OnDestroy {
           title: 'Aggie Basemap'
         }
       },
-      {
+      view: {
         mode: '2d',
         properties: {
-          container: this.mapViewEl.nativeElement,
+          // container: this.mapViewEl.nativeElement,
           map: undefined, // Reference to the map object created before the scene
           center: [-96.344672, 30.61306],
           spatialReference: {
@@ -118,10 +74,34 @@ export class EsriMapComponent implements OnInit, OnDestroy {
           }
         }
       }
-    );
+    };
   }
 
-  public continue() {
+  public ngOnInit() {
+    this.responsiveService
+      .getStatus()
+      .pipe(takeUntil(this._destroy$))
+      .subscribe((value) => {
+        this.isMobile = value;
+      });
+
+    // Set loader phrases and display a random one.
+    const phrases = [
+      'An Aggie does not lie, cheat or steal or tolerate those who do.',
+      'Home of the 12th Man',
+      'Whoop!',
+      "Gig 'Em!",
+      'Howdy Ags!'
+    ];
+    (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
+  }
+
+  public ngOnDestroy() {
+    this._destroy$.next();
+    this._destroy$.complete();
+  }
+
+  public continue(instances: MapServiceInstance) {
     // TODO: This is a debugging event used for feature zoom calculation.
     // this.view.on('mouse-wheel', (e) => {
     //   this.moduleProvider.require(['Point', 'GeometryEngine'])
@@ -155,7 +135,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
 
     loadModules(['esri/widgets/Track', 'esri/widgets/Compass'])
       .then(([Track, Compass]) => {
-        this.view.when(() => {
+        instances.view.when(() => {
           //
           // Loader disable
           //
@@ -171,20 +151,20 @@ export class EsriMapComponent implements OnInit, OnDestroy {
         });
 
         const track: esri.Track = new Track({
-          view: this.view,
+          view: instances.view,
           useHeadingEnabled: true,
           goToLocationEnabled: false
         });
 
         const compass = new Compass({
-          view: this.view
+          view: instances.view
         });
 
         if (this.isMobile) {
-          this.view.ui.add(track, 'bottom-right');
+          instances.view.ui.add(track, 'bottom-right');
         } else {
-          this.view.ui.add(track, 'top-left');
-          this.view.ui.add(compass, 'top-left');
+          instances.view.ui.add(track, 'top-left');
+          instances.view.ui.add(compass, 'top-left');
         }
       })
       .catch((err) => {

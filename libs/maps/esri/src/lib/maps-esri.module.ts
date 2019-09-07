@@ -9,6 +9,7 @@ import { EsriModuleProviderService } from './services/module-provider.service';
 @NgModule({
   imports: [CommonModule],
   declarations: [EsriMapComponent],
-  providers: [EsriModuleProviderService, EsriMapService]
+  providers: [EsriModuleProviderService, EsriMapService],
+  exports: [EsriMapComponent]
 })
 export class EsriMapModule {}
