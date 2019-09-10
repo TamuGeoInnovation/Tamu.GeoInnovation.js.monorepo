@@ -479,7 +479,7 @@ export class EsriMapService {
 
     // If there is a matching key in the dictionary and the current url tree,
     // then proceed submit queries to the search sources for matches.
-    if (keyExists) {
+    if (keyExists && tree.queryParams[keyExists].strip().length > 0) {
       return tree.queryParams[keyExists].split(',');
     } else {
       return [];
