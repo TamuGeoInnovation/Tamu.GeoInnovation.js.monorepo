@@ -1,6 +1,6 @@
 export const Connections = {
-  basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/BaseMap_20190703/MapServer',
-  inforUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_112917/MapServer',
+  basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/BaseMap_20190813/MapServer',
+  inforUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer',
   accessibleUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
   constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer',
   departmentUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
@@ -72,6 +72,13 @@ export const Definitions = {
     name: 'Accessible Entrances',
     url: `${Connections.accessibleUrl}`,
     popupComponent: 'AccessiblePopupComponent'
+  },
+  EMERGENCY_PHONES: {
+    id: 'emergency-phones',
+    layerId: 'emergency-phones-layer',
+    name: 'Emergency Phones',
+    url: `${Connections.inforUrl}/4`,
+    // popupComponent: 'BasePopupComponent'
   },
   BIKE_RACKS: {
     id: 'bike-racks',

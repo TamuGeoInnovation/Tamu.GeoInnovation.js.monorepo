@@ -177,6 +177,24 @@ export const LayerSources: LayerSource[] = [
     ]
   },
   {
+    type: 'feature',
+    id: d.EMERGENCY_PHONES.layerId,
+    title: d.EMERGENCY_PHONES.name,
+    url: d.EMERGENCY_PHONES.url,
+    // popupComponent: d.EMERGENCY_PHONES.popupComponent,
+    listMode: 'show',
+    loadOnInit: true,
+    visible: false,
+    legendItems: [
+      {
+        id: 'emergency-phones-legend',
+        title: 'Emergency Phone',
+        src:
+          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAXCAYAAADgKtSgAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAnxJREFUSIm11U+IVVUcwPHPKeNIq3jQS40xUhTExWwibSBwYzHEGDljjTI5EANugja6kVrMn1xFREKMEtRAihsZdGiR1m4ahBbNRuGBKzcztnjhIvRQclrcnvPe9c3cp9APDpd7z+9+v+ccfpzfJv9jbKpOyTW8FWPek5J6jB6kFFZjtJiSG4SHTwHPr5KnMYpnUwogJe3Pu+TPMUv4u0d4HsEc4fmKbb2ErzFGfpewWgHPH+FbhNFRLl2qwBfxOm6Q97cLOuAx5oGUzE5NCePj9PUxM8P8PKdOVQpewTz5TcI/JXgOKflm61bPHTvG9u3F1507OXmS48e5do3JSW7fXlewHxOYLa98CP0rK4yMcPkyO3asTdbrjI2xbx9DQzQa6wo+JZ8j5PaVv0dREcvLDA8XgnqduTmOHqVWY9cuFhY2FLxcq3mt2fTbI3iMYaBVZu2CvXu5cIGlJc6eXRNcvcqhQ90FzaYB2uAp2VJOWl4uBly8WDxbgt27C8GBA6ysdP4XY96SUueZx66bbItugulpJiYeS91MJ/wP9D2pYHDw8ZyUwt0y/FYv8JZgcLConm3bOHOG06c7Um6V4T/i7V7gJ05w5Mja++HDHfCEX8rwHzCFF6rgi4vcuVNUDcXZHzzI9euQv+eZv0rw8Cd5Bl9UwW/eLOp8YaEQNBotsHuEyVZe+eL6Em9guErQaBSCK1c4fx48jNEHKYVHhVmCh0z+EBkjvQj6+0nJfYynFH5qn+9y5Yb75PfxCT5DbSNBSpZqNR83m+H38tw6zSJkfEX+TtGJ3sEevIgHWCX/GmOYTyn83Gx2p1T00HAP5/4b3Va9YfTQoJ8+/gVFFNSWfmq/aAAAAABJRU5ErkJggg=='
+      }
+    ]
+  },
+  {
     type: 'graphic',
     id: 'selection-layer',
     title: 'Selected Buildings',

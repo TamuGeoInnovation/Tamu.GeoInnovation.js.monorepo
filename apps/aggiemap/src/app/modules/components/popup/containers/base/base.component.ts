@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ComponentFactoryResolver, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { RenderHostDirective } from '../../../../directives/render-host.directive';
@@ -53,6 +53,17 @@ export class PopupComponent implements OnInit, OnDestroy {
    */
   @ViewChild(RenderHostDirective, { static: true }) public viewHost: RenderHostDirective;
 
+  /**
+   * Allows closing the popup with the keyboard `esc` key.
+   *
+   * @param {KeyboardEvent} event
+   * @memberof PopupComponent
+   */
+  @HostListener('window:keyup.esc', ['$event'])
+  public escapeKeydown(event: KeyboardEvent) {
+    this.close();
+  }
+
   constructor(
     private mapService: EsriMapService,
     private popupService: PopupService,
@@ -89,7 +100,7 @@ export class PopupComponent implements OnInit, OnDestroy {
       const component = this.popupService.getComponent({ ...this.snapshot });
 
       if (!component) {
-        console.error(`Popup component could not be resolved.`);
+        console.warn(`Popup component could not be resolved.`);
         this.show = false;
         return;
       }
