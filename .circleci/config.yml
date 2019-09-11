@@ -1,0 +1,11 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10.16
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run build -- --project=aggiemap --prod
+      - run: npm run test
+      - run: npm run lint
