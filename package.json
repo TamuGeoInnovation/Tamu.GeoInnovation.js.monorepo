@@ -48,7 +48,7 @@
     "core-js": "^3.2.1",
     "document-register-element": "1.13.1",
     "esri-loader": "^2.9.1",
-    "geojson-utils": "git+ssh://git@github.tamu.edu/GeoInnovation/js-geojson-utils.git",
+    "geojson-utils": "git+ssh://git@github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.geojsonutils.git",
     "interactjs": "^1.3.4",
     "rxjs": "~6.5.2",
     "snarkdown": "^1.2.2",
