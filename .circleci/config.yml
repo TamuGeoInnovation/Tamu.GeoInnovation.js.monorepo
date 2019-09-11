@@ -7,5 +7,5 @@ jobs:
       - checkout
       - run: npm install
       - run: npm run build -- --project=aggiemap --prod
-      - run: npm run test
+      - run: npm run test -- -w 1
       - run: npm run lint
