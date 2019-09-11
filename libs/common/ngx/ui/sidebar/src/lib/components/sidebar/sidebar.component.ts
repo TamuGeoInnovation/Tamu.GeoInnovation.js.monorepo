@@ -1,19 +1,10 @@
-import {
-  Component,
-  OnInit,
-  Renderer2,
-  ElementRef,
-  ContentChildren,
-  AfterContentInit,
-  QueryList,
-  OnDestroy
-} from '@angular/core';
+import { Component, ContentChildren, AfterContentInit, QueryList, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 
 import { SidebarTabComponent } from '../tab/tab.component';
 import { from, Subject } from 'rxjs';
-import { switchMap, mergeMap, takeUntil } from 'rxjs/operators';
+import { mergeMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'tamu-gisc-sidebar',
@@ -38,7 +29,7 @@ import { switchMap, mergeMap, takeUntil } from 'rxjs/operators';
   ]
   // encapsulation: ViewEncapsulation.None
 })
-export class SidebarComponent implements OnInit, AfterContentInit, OnDestroy {
+export class SidebarComponent implements AfterContentInit, OnDestroy {
   public sidebarVisible = true;
   public currentView: string;
 
@@ -47,12 +38,10 @@ export class SidebarComponent implements OnInit, AfterContentInit, OnDestroy {
   @ContentChildren(SidebarTabComponent)
   public tabs: QueryList<SidebarTabComponent>;
 
-  constructor(private router: Router, private route: ActivatedRoute, private renderer: Renderer2) {
+  constructor(private router: Router, private route: ActivatedRoute) {
     // Set the current view based on the router url on component instantiation
     this.currentView = this._updateCurrentView();
   }
-
-  public ngOnInit() {}
 
   public ngAfterContentInit() {
     from(this.tabs.toArray())
@@ -62,8 +51,10 @@ export class SidebarComponent implements OnInit, AfterContentInit, OnDestroy {
           return e.$clicked;
         })
       )
-      .subscribe((res) => {
-        // TODO: Do routing here.
+      .subscribe((event) => {
+        if (event && event.native && event.native.route !== undefined) {
+          this.routeHandler(event.native.route);
+        }
       });
   }
 
