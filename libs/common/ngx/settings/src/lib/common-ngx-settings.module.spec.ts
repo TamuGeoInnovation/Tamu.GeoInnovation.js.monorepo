@@ -1,14 +1,14 @@
 import { async, TestBed } from '@angular/core/testing';
-import { CommonNgxSettingsModule } from './common-ngx-settings.module';
+import { SettingsModule } from './common-ngx-settings.module';
 
-describe('CommonNgxSettingsModule', () => {
+describe('SettingsModule', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonNgxSettingsModule]
+      imports: [SettingsModule]
     }).compileComponents();
   }));
 
   it('should create', () => {
-    expect(CommonNgxSettingsModule).toBeDefined();
+    expect(SettingsModule).toBeDefined();
   });
 });

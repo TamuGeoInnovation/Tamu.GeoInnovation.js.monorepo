@@ -1,14 +1,14 @@
 import { async, TestBed } from '@angular/core/testing';
-import { CommonNgxUiNotificationModule } from './common-ngx-ui-notification.module';
+import { NotificationModule } from './common-ngx-ui-notification.module';
 
-describe('CommonNgxUiNotificationModule', () => {
+describe('NotificationModule', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonNgxUiNotificationModule]
+      imports: [NotificationModule]
     }).compileComponents();
   }));
 
   it('should create', () => {
-    expect(CommonNgxUiNotificationModule).toBeDefined();
+    expect(NotificationModule).toBeDefined();
   });
 });

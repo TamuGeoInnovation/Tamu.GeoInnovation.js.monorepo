@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TripPlannerOptionsStorageService } from './trip-planner-options-storage.service';
+import { TripPlannerOptionsComponentService } from './trip-planner-options-component.service';
 
-describe('TripPlannerOptionsStorageService', () => {
+describe('TripPlannerOptionsComponentService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: TripPlannerOptionsStorageService = TestBed.get(TripPlannerOptionsStorageService);
+    const service: TripPlannerOptionsComponentService = TestBed.get(TripPlannerOptionsComponentService);
     expect(service).toBeTruthy();
   });
 });

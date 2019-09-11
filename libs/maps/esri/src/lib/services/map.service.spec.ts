@@ -1,12 +1,11 @@
-import { TestBed } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
-import { MapService } from './map.service';
+import { EsriMapService } from './map.service';
 
-describe('MapService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
-
+describe('EsriMapService', () => {
   it('should be created', () => {
-    const service: MapService = TestBed.get(MapService);
-    expect(service).toBeTruthy();
+    inject([EsriMapService], (esriMapService: EsriMapService) => {
+      expect(esriMapService).toBeTruthy();
+    });
   });
 });

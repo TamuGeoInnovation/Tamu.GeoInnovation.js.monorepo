@@ -1,10 +1,18 @@
+const { pathsToModuleNameMapper } = require('ts-jest/utils');
+const { compilerOptions } = require("./tsconfig.json");
+
 module.exports = {
-  testMatch: ['**/+(*.)+(spec|test).+(ts|js)?(x)'],
-  transform: {
-    '^.+\\.(ts|js|html)$': 'ts-jest'
+  globals: {
+    "ts-jest": {
+      tsConfig: "./test/tsconfig.spec.json",
+      stringifyContentPathRegex: '\\.html$',
+      astTransformers: [require.resolve('jest-preset-angular/InlineHtmlStripStylesTransformer')],
+    }
   },
-  resolver: '@nrwl/jest/plugins/resolver',
-  moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageReporters: ['html'],
-  passWithNoTests: true
+  "roots": [
+    "<rootDir>/libs/"
+  ],
+  preset: "jest-preset-angular",
+  setupFilesAfterEnv: ["./test/setupJest.ts"],
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' })
 };

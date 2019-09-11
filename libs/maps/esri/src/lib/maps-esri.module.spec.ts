@@ -1,14 +1,14 @@
 import { async, TestBed } from '@angular/core/testing';
-import { MapsEsriModule } from './maps-esri.module';
+import { EsriMapModule } from './maps-esri.module';
 
-describe('MapsEsriModule', () => {
+describe('EsriMapModule', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MapsEsriModule]
+      imports: [EsriMapModule]
     }).compileComponents();
   }));
 
   it('should create', () => {
-    expect(MapsEsriModule).toBeDefined();
+    expect(EsriMapModule).toBeDefined();
   });
 });
