@@ -41,7 +41,7 @@ export class TripPlannerConnectionsSelectComponent implements OnInit {
    * Sets a new routing network in the routing service in testing mode (dev or localhost).
    *
    */
-  private setRoutingNetwork = (): void => {
+  public setRoutingNetwork = (): void => {
     // Update the current network
     this.connectionService.network = this.currentUrlAlias;
   };
