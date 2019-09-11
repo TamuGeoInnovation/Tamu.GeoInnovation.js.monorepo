@@ -1,0 +1,9 @@
+<div [@sidebar]="sidebarVisible">
+  <!-- PROJECTED TABS -->
+  <ng-content select=".tabs"></ng-content>
+
+  <!-- PROJECTED TAB CONTENT -->
+  <div class="tabs-content-container">
+    <ng-content select=".content"></ng-content>
+  </div>
+</div>

@@ -88,6 +88,9 @@
     },
     "dev-tools-responsive": {
       "tags": []
+    },
+    "common-ngx-ui-sidebar": {
+      "tags": []
     }
   }
 }

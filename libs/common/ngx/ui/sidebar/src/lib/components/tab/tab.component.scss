@@ -1,0 +1,24 @@
+@import 'libs/sass/mixins';
+
+:host {
+  & > div {
+    padding: 0.4rem;
+    box-sizing: border-box;
+    border-radius: 3px;
+    margin-bottom: 0.75rem;
+    line-height: 1;
+    cursor: pointer;
+    @include transition(color 0.3s, background 0.3s);
+
+    color: #6e6e6e; // Set inactive color
+
+    &:hover {
+      background: #f2f2f2;
+    }
+
+    &:hover,
+    &.active {
+      color: #212121; // Set hover and active color
+    }
+  }
+}

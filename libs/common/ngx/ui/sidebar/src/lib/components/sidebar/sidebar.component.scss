@@ -1,0 +1,56 @@
+@import 'libs/sass/mixins';
+
+:host {
+  font-size: 0.88rem;
+}
+
+// Target the top-most div in the component template
+:host > div {
+  position: fixed;
+  background: #ffffff;
+  border-top: 0.5rem solid #744f4f;
+  box-sizing: border-box;
+  height: 100%;
+  width: 22.5rem;
+  padding: 1rem 0.5rem;
+  right: 0;
+  top: 0;
+  z-index: 100;
+  // overflow-y: scroll;
+}
+
+::ng-deep .tabs {
+  position: absolute;
+  top: 0;
+  margin-top: 0.75rem;
+
+  // Position the tabs on the right-side of the container
+  &.right {
+    right: 0;
+    @include transform(translateX(100%));
+
+    // Remove the border-radius on the left of the tabs so it blends with the sidebar
+    & > div {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+
+  // Poosition the tabs on the let-side of the container
+  &.left {
+    left: 0;
+    @include transform(translateX(-100%));
+
+    // Remove the border-radius on the right of the tabs so it blends with the sidebar
+    & > div {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+}
+
+.tabs-content-container {
+  height: inherit;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}

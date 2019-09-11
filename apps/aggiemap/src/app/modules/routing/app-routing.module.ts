@@ -17,6 +17,7 @@ import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
+import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
 import { LayerListService } from '../../modules/services/ui/layer-list.service';
@@ -214,7 +215,8 @@ const hybridRoutes: Routes = [
     TestingModule,
     ResponsiveModule,
     DlDateTimePickerDateModule,
-    DlDateTimePickerModule
+    DlDateTimePickerModule,
+    SidebarModule
   ],
   declarations: [
     BackdropComponent,

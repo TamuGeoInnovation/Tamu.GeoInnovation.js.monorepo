@@ -1,5 +1,5 @@
-<div [@sidebar]="sidebarVisible">
-  <!-- TABS -->
+<!-- <div [@sidebar]="sidebarVisible">
+  
   <div class="tabs-container left">
     <div drawer-tab="features" class="esri-component esri-widget" alt="Features" title="Features" tabindex="0" role="button" aria-label="Toggle Features (Search, Layers, Legend)" (click)="routeHandler('')">
       <div id="menu-button">
@@ -20,10 +20,26 @@
     </div>
   </div>
 
-  <!-- TAB CONTENT -->
+  
   <div class="tabs-content-container">
     <app-brand></app-brand>
     <router-outlet></router-outlet>
     <feature-popup></feature-popup>
   </div>
-</div>
+</div> -->
+
+<tamu-gisc-sidebar>
+  <div class="tabs left">
+    <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'"></tamu-gisc-sidebar-tab>
+
+    <tamu-gisc-sidebar-tab [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'"></tamu-gisc-sidebar-tab>
+
+    <tamu-gisc-sidebar-tab [title]="'Bus Routes'" [description]="'Toggle bus controls (list and timetable)'" [material_icon]="'directions_bus'"></tamu-gisc-sidebar-tab>
+  </div>
+
+  <div class="content">
+    <app-brand></app-brand>
+    <router-outlet></router-outlet>
+    <feature-popup></feature-popup>
+  </div>
+</tamu-gisc-sidebar>
