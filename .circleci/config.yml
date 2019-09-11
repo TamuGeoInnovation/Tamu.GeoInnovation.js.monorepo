@@ -23,3 +23,21 @@ jobs:
       - run:
           name: Run Prettier
           command: npx prettier **/*.ts --check
+  deploy:
+    machine:
+      enabled: true
+    steps:
+      - run:
+          name: Signal Deploy Ready
+          command: curl https://jonjanzen.com/test/deploy?sha=${CIRCLE_SHA1}
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
