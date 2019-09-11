@@ -1,40 +1,14 @@
-<!-- <div [@sidebar]="sidebarVisible">
-  
-  <div class="tabs-container left">
-    <div drawer-tab="features" class="esri-component esri-widget" alt="Features" title="Features" tabindex="0" role="button" aria-label="Toggle Features (Search, Layers, Legend)" (click)="routeHandler('')">
-      <div id="menu-button">
-        <i class="material-icons">menu</i>
-      </div>
-    </div>
+<!-- This component is an application-specific implementation of the generic sidebar component. 
 
-    <div drawer-tab="directions" class="esri-component esri-widget" alt="Directions" title="Directions" tabindex="0" role="button" aria-label="Toggle directions controls (routing and way-finding)" (click)="routeHandler('trip')">
-      <div id="directions-button">
-        <i class="material-icons">directions</i>
-      </div>
-    </div>
-
-    <div drawer-tab="bus" class="esri-component esri-widget" alt="AggieSpirit" title="Bus" tabindex="0" role="button" aria-label="Toggle bus controls (list and timetable)" (click)="routeHandler('bus')">
-      <div id="bus-button">
-        <i class="material-icons">directions_bus</i>
-      </div>
-    </div>
-  </div>
-
-  
-  <div class="tabs-content-container">
-    <app-brand></app-brand>
-    <router-outlet></router-outlet>
-    <feature-popup></feature-popup>
-  </div>
-</div> -->
+We are injecting application-specific sidebar tabs and content -->
 
 <tamu-gisc-sidebar>
   <div class="tabs left">
-    <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'"></tamu-gisc-sidebar-tab>
+    <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''"></tamu-gisc-sidebar-tab>
 
-    <tamu-gisc-sidebar-tab [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'"></tamu-gisc-sidebar-tab>
+    <tamu-gisc-sidebar-tab [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'"></tamu-gisc-sidebar-tab>
 
-    <tamu-gisc-sidebar-tab [title]="'Bus Routes'" [description]="'Toggle bus controls (list and timetable)'" [material_icon]="'directions_bus'"></tamu-gisc-sidebar-tab>
+    <tamu-gisc-sidebar-tab [title]="'Bus Routes'" [description]="'Toggle bus controls (list and timetable)'" [material_icon]="'directions_bus'" [route]="'bus'"></tamu-gisc-sidebar-tab>
   </div>
 
   <div class="content">
