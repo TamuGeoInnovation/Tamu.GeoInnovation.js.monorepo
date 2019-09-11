@@ -7,6 +7,9 @@ module.exports = {
       tsConfig: "./test/tsconfig.spec.json",
       stringifyContentPathRegex: '\\.html$',
       astTransformers: [require.resolve('jest-preset-angular/InlineHtmlStripStylesTransformer')],
+      diagnostics: {
+        ignoreCodes: [151001]
+      }
     }
   },
   "roots": [
