@@ -20,7 +20,7 @@ export class LayerListService {
       // Create a LayerListItem instance for each including the existing layer instance as a class property.
       const existing = res.map.allLayers
         .filter((l) => {
-          return l.listMode == 'show';
+          return l.listMode === 'show';
         })
         .toArray()
         .map((l) => {
@@ -31,7 +31,7 @@ export class LayerListService {
       // Create a LayerListItem instance for each, leavint the layer property undefined.
       // This will be used as a flag to determine whether a layer needs to be lazy-loaded
       const nonExisting = LayerSources.filter((s) => {
-        return s.listMode == 'show' && existing.findIndex((el) => s.id == el.id) == -1;
+        return s.listMode === 'show' && existing.findIndex((el) => s.id === el.id) === -1;
       }).map((l) => {
         return new LayerListItem(l);
       });
@@ -50,7 +50,7 @@ export class LayerListService {
           // Create a copy of the service store and update items if the current event has layers that have
           // been  previously added to the store.
           const updatedLayers = this._store.value.map((lyr) => {
-            const existingIndex = e.added.findIndex((added) => added.id == lyr.id);
+            const existingIndex = e.added.findIndex((added) => added.id === lyr.id);
 
             if (existingIndex > -1) {
               return new LayerListItem({ ...lyr, layer: e.added[existingIndex] });
@@ -61,7 +61,7 @@ export class LayerListService {
 
           // Layers that are not found in the service should simply be added.
           const newLayers = e.added
-            .filter((al) => al.listMode == 'show' && this._store.value.findIndex((cl) => cl.id == al.id) == -1)
+            .filter((al) => al.listMode === 'show' && this._store.value.findIndex((cl) => cl.id === al.id) === -1)
             .map((l: esri.Layer) => {
               return new LayerListItem({ layer: l });
             });
@@ -73,7 +73,7 @@ export class LayerListService {
         // Handle removed layers case
         if (e.removed && e.removed.length > 0) {
           const minusRemoved = this._store.value.filter((l) => {
-            return e.removed.findIndex((rl) => l.id == rl.id) == -1;
+            return e.removed.findIndex((rl) => l.id === rl.id) === -1;
           });
 
           this._store.next(minusRemoved);

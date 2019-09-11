@@ -11,5 +11,5 @@ import { UIDragService } from '../../../../services/ui/ui-drag.service';
 export class MobileUIComponent implements OnInit {
   constructor() {}
 
-  ngOnInit() {}
+  public ngOnInit() {}
 }

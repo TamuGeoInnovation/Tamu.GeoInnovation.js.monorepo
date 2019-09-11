@@ -26,7 +26,7 @@ export class ModalComponent implements OnInit, OnDestroy {
     private responsiveService: ResponsiveService
   ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.isMobile = this.responsiveService.snapshot.isMobile;
 
     this.history
@@ -37,7 +37,7 @@ export class ModalComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this._destroy$.next();
     this._destroy$.complete();
   }

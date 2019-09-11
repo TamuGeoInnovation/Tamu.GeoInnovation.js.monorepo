@@ -6,7 +6,7 @@ import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@
   styleUrls: ['./checkbox.component.scss']
 })
 export class CheckboxComponent {
-  @ViewChild('checkboxInput', { static: true }) ref: ElementRef;
+  @ViewChild('checkboxInput', { static: true }) public ref: ElementRef;
 
   /**
    * Determines the checked state of the checkbox ref element. Dumb component state.

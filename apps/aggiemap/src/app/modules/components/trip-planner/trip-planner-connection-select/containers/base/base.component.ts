@@ -28,7 +28,7 @@ export class TripPlannerConnectionsSelectComponent implements OnInit {
 
   constructor(private connectionService: TripPlannerConnectionService) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     // Subscribe to the routing network list. This populates the list of available networks for
     // testing through the async template pipe
     this.routingAliasesServiceList = this.connectionService.allNetworks;
@@ -41,7 +41,7 @@ export class TripPlannerConnectionsSelectComponent implements OnInit {
    * Sets a new routing network in the routing service in testing mode (dev or localhost).
    *
    */
-  setRoutingNetwork = (): void => {
+  public setRoutingNetwork = (): void => {
     // Update the current network
     this.connectionService.network = this.currentUrlAlias;
   };

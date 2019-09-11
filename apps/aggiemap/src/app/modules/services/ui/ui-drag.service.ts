@@ -56,7 +56,7 @@ export class UIDragService {
    * @memberof UIDragService
    */
   public unregister(identifier: string): void {
-    this._states.next(this._states.value.filter((state) => state.guid != identifier));
+    this._states.next(this._states.value.filter((state) => state.guid !== identifier));
   }
 
   /**
@@ -66,7 +66,7 @@ export class UIDragService {
    */
   public set state(state: UIDragState) {
     const allButProvided = this._states.value.filter((stateItem) => {
-      return stateItem.guid != state.guid;
+      return stateItem.guid !== state.guid;
     });
 
     this._states.next([...allButProvided, ...[state]]);

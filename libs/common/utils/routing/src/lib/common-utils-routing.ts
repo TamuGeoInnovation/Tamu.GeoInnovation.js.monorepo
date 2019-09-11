@@ -54,7 +54,7 @@ export function makeUrlParams(params: object, encode: boolean, prefix?: string) 
  */
 export function routeSubstitute(list: Array<string>, match: string, substitution: string) {
   const l = [...list];
-  const matchIndex = list.findIndex((listItem) => listItem == match);
+  const matchIndex = list.findIndex((listItem) => listItem === match);
 
   if (matchIndex > -1) {
     l[matchIndex] = substitution;

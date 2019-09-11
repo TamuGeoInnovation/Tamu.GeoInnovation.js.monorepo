@@ -67,7 +67,7 @@ export class BikeService {
 
             const smallest = Math.min(...distances);
 
-            const smallestIndex = distances.findIndex((d) => d == smallest);
+            const smallestIndex = distances.findIndex((d) => d === smallest);
 
             const feature: any = features[smallestIndex];
 

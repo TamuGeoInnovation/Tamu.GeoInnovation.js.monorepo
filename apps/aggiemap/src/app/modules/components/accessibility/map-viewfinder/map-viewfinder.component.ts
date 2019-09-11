@@ -60,7 +60,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
 
   constructor(private moduleProvider: EsriModuleProviderService, private mapService: EsriMapService) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this._mapServiceSubscription = this.mapService.store.subscribe((instance) => {
       this._mapViewEl = instance.view.container;
 
@@ -118,7 +118,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
                 rings: mapCoords
               });
 
-              const layerSource = LayerSources.find((source) => source.id == 'buildings-layer');
+              const layerSource = LayerSources.find((source) => source.id === 'buildings-layer');
 
               this.mapService.findLayerOrCreateFromSource(layerSource).then((layer: esri.FeatureLayer) => {
                 layer
@@ -142,11 +142,11 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
           this.viewFinderFeatures.length > 0 &&
           ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].includes(e.key)
         ) {
-          if (this.viewFinderFeatures[parseInt(e.key) - 1]) {
+          if (this.viewFinderFeatures[parseInt(e.key, 10) - 1]) {
             // Clear the results layer
 
             this.mapService.selectFeatures({
-              graphics: [this.viewFinderFeatures[parseInt(e.key) - 1].clone()],
+              graphics: [this.viewFinderFeatures[parseInt(e.key, 10) - 1].clone()],
               shouldShowPopup: true
             });
           }
@@ -160,7 +160,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this._mapServiceSubscription.unsubscribe();
   }
 }

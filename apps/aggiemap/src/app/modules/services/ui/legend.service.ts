@@ -17,7 +17,7 @@ export class LegendService {
     // Handle automatic layer addition and removal legend item display.
     // This does not handle removal on layer visibility change
     layerListService.store.subscribe((value) => {
-      let layersLegendItems: any = value
+      const layersLegendItems: any = value
         .filter((item) => item.layer && item.layer.visible)
         .filter((lyr: any) => lyr.layer.legendItems)
         .map((lyr: any) => lyr.layer.legendItems)
@@ -54,7 +54,7 @@ export class LegendService {
    * @memberof LegendService
    */
   public itemExists(id: string): boolean {
-    return this._store.value.findIndex((item) => item.id == id) > -1 ? true : false;
+    return this._store.value.findIndex((item) => item.id === id) > -1;
   }
 
   /**

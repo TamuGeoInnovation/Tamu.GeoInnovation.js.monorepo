@@ -273,7 +273,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
 
           // If the input value has changed trigger a "dirty" event
-          if (value != this.value) {
+          if (value !== this.value) {
             this.dirty.emit(new SearchEvent({}));
           }
         } else {
@@ -355,6 +355,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     // Limit the execution of the process chain only if event key code is not in the not allowed list
     const keysNotAllowed = [9, 18, 16];
 
+    // tslint:disable-next-line
     if (!keysNotAllowed.includes(event.which)) {
       const value = (<HTMLInputElement>event.target).value;
       // this.searchResultsStatus = undefined;
@@ -559,7 +560,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.rightAction.emit();
 
       // Default action clearing the input when the right action icon is 'close'
-      if (this.rightActionIcon == 'close') {
+      if (this.rightActionIcon === 'close') {
         this.value = '';
         this.input.next('');
       }

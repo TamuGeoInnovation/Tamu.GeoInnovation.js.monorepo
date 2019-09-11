@@ -31,7 +31,7 @@ export class MobileSearchComponent extends SearchComponent {
 
   public emitLeftActionEvent(): void {
     if (this.leftActionIcon) {
-      if (this.leftActionIcon == 'arrow_back') {
+      if (this.leftActionIcon === 'arrow_back') {
         this.loseFocus();
       }
       this.leftAction.emit();

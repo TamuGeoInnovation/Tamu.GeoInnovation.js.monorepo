@@ -40,7 +40,7 @@ export class TripPlannerModeSwitchComponent implements OnInit {
       travelMode = '1';
     }
 
-    const rule = this.tripPlanner.getRuleForModes([parseInt(travelMode)]);
+    const rule = this.tripPlanner.getRuleForModes([parseInt(travelMode, 10)]);
     const mode = this.tripPlanner.getTravelModeFromRule(rule);
 
     this.mode_icon = mode.directions_icon;

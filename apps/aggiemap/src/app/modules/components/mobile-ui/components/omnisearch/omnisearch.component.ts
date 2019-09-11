@@ -126,7 +126,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
   public handleResult(point: TripPoint) {
     if (this.route.snapshot.params.hasOwnProperty('id')) {
       // Add stop to the trip planner service
-      this.plannerService.setStops([Object.assign(point, { index: parseInt(this.route.snapshot.params.id) })]);
+      this.plannerService.setStops([Object.assign(point, { index: parseInt(this.route.snapshot.params.id, 10) })]);
 
       // if (this._lastRoute) {
       //   this.router.navigate([this._lastRoute]);
@@ -193,7 +193,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
   public handleLeftAction() {
     if (this.route.snapshot.params.hasOwnProperty('id')) {
       this.router.navigate(['map/d/trip']);
-    } else if (this.searchComponentLeftAction == 'menu') {
+    } else if (this.searchComponentLeftAction === 'menu') {
       this.router.navigate(['../sidebar'], { relativeTo: this.route });
     } else {
       this.clearFocus();

@@ -502,7 +502,7 @@ export class TripPlannerService implements OnDestroy {
         return mode !== undefined;
       });
 
-    // Create a set with the current tranvel mode first, which will remove any duplicates in the qualifiying filtered modes array.
+    // Create a set with the current travel mode first, which will remove any duplicates in the qualifying filtered modes array.
     // Will ensure that the current travel mode will be calculated first.
     const sorted = new Set([...modes]);
 
@@ -582,7 +582,7 @@ export class TripPlannerService implements OnDestroy {
       // Check if the current flattened rule contains every mode in the constraints list.
       const ruleHasModes = modes.every((cMode) => {
         const modeIndex = flattened.findIndex((m) => {
-          return m && m.mode && m.mode == cMode;
+          return m && m.mode && m.mode === cMode;
         });
 
         // If the current mode equals the current constraint, return true.
@@ -703,7 +703,7 @@ export class TripPlannerService implements OnDestroy {
           whatValueIs = false;
         }
 
-        if (whatValueShouldBe == whatValueIs) {
+        if (whatValueShouldBe === whatValueIs) {
           return true;
         } else {
           return false;
@@ -766,7 +766,7 @@ export class TripPlannerService implements OnDestroy {
   public setTravelOptionsForMode(mode: number): void {
     const rule = this.getRuleForModes([mode]);
 
-    const modeFromRule = this.flattenRule(rule).find((m) => m.mode == mode);
+    const modeFromRule = this.flattenRule(rule).find((m) => m.mode === mode);
 
     if (modeFromRule.determinants) {
       this.updateTravelOptions(modeFromRule.determinants);
@@ -873,7 +873,7 @@ export class TripPlannerService implements OnDestroy {
         const executionTriggeredByModeChange =
           this._Result.value.length > 0
             ? this._Result.value.every((r) => {
-                return r && r.params && r.params.travelMode ? modeNumbers.includes(parseInt(r.params.travelMode)) : false;
+                return r && r.params && r.params.travelMode ? modeNumbers.includes(parseInt(r.params.travelMode, 10)) : false;
               })
             : false;
 
@@ -1118,7 +1118,7 @@ export class TripPlannerService implements OnDestroy {
               // Create a collection of tasks and parameters for every set of paired features. These will be used
               // in the execution of a RouteTask.
               const t = pairedFeatures.map((stops, index) => {
-                const travelMode = index == 0 ? trip.modeSource.mode : trip.modeSource.split.default;
+                const travelMode = index === 0 ? trip.modeSource.mode : trip.modeSource.split.default;
 
                 return {
                   task: new this._Modules.TripTask({
@@ -1193,7 +1193,7 @@ export class TripPlannerService implements OnDestroy {
                         const responseTravelMode = err.details.requestOptions.query.travelMode;
 
                         // Find the matching result base don the response travel mode.
-                        const matchedResult = previousState.find((r) => r.params.travelMode == responseTravelMode);
+                        const matchedResult = previousState.find((r) => r.params.travelMode === responseTravelMode);
 
                         return of(
                           new TripResult({
@@ -1262,9 +1262,7 @@ export class TripPlannerService implements OnDestroy {
               } else {
                 // If request was successful, value will be TripTask result. In which case, create a new Trip Result
                 // and append the result property
-                const matchedResult = previousState.find((r) => {
-                  return r.params.travelMode == (<any>response).routeResults[0].routeName;
-                });
+                const matchedResult = previousState.find((r) => r.params.travelMode.toString() === (<any>response).routeResults[0].routeName);
 
                 return of(true).pipe(
                   switchMap(
@@ -1284,7 +1282,7 @@ export class TripPlannerService implements OnDestroy {
 
                             // If the current graphic has the same speed category as the last accumulated mode switch
                             // keep adding graphics to that object's `graphics` array.
-                            if (newestAccumulated && newestAccumulated.type == currFeatureSpeedCategory) {
+                            if (newestAccumulated && newestAccumulated.type === currFeatureSpeedCategory) {
                               acc[newestAccumulatedIndex] = {
                                 type: newestAccumulated.type,
                                 graphics: [...newestAccumulated.graphics, curr]
@@ -1342,7 +1340,7 @@ export class TripPlannerService implements OnDestroy {
                           });
 
                           if (modeSwitch.type === 'not_walking') {
-                            switch (this.getRuleForModes([parseInt(travelMode)])) {
+                            switch (this.getRuleForModes([parseInt(travelMode, 10)])) {
                               case this.rule_bus:
                                 return this.busService.annotateBusGraphic(modeSwitch);
                               case this.rule_drive:
@@ -1460,7 +1458,7 @@ export class TripPlannerService implements OnDestroy {
                 // If findIndex returns -1, it means that the iterating `previousState` TripResult item
                 // does not exist in the `processed` list. If the value is less than 0, which -1 is, pass
                 // the test, returning the iterating TripResult item.
-                (r) => processed.findIndex((or) => or.params.travelMode == r.params.travelMode) < 0
+                (r) => processed.findIndex((or) => or.params.travelMode === r.params.travelMode) < 0
               );
 
               // Return merged `processed` and `stillProcessing` arrays.
@@ -1653,7 +1651,7 @@ export class TripPlannerService implements OnDestroy {
       map((results) => {
         // Filter out only the trip result for the current state travel mode.
         return results.filter(
-          (result) => (result.params && result.params.travelMode) == this._TravelOptions.value.travel_mode.toString()
+          (result) => (result.params && result.params.travelMode.toString()) === this._TravelOptions.value.travel_mode.toString()
         );
       }),
       mergeMap((results) => {
@@ -1955,7 +1953,7 @@ export class TripPlannerService implements OnDestroy {
             (feature) => feature.attributes.bus != null
           );
           // Only show buses if we are viewing the bus mode and the time mode is now (don't have historical or projected data for buses)
-          if (bus_features.length > 0 && result.timeMode == 'now') {
+          if (bus_features.length > 0 && result.timeMode === 'now') {
             bus_features.forEach((feature) => {
               this.busService.toggleMapRoute(feature.attributes.bus.route_number, ['buses']);
             });
@@ -2141,7 +2139,7 @@ export class TripPlannerService implements OnDestroy {
             } else {
               // If current feature maneuver is of same type as last feature's,
               // combine their time and distance values.
-              if (feature.attributes.maneuverType == directions[directions.length - 1].attributes.maneuverType) {
+              if (feature.attributes.maneuverType === directions[directions.length - 1].attributes.maneuverType) {
                 const prev = directions[directions.length - 1];
 
                 prev.attributes.length += feature.attributes.length;
@@ -2188,7 +2186,7 @@ export class TripPlannerService implements OnDestroy {
     // Check if mode is set in URL params.
     if (this.url.snapshot.queryParams.mode) {
       // Store mode from URL
-      const urlMode: number = parseInt(this.url.snapshot.queryParams.mode);
+      const urlMode: number = parseInt(this.url.snapshot.queryParams.mode, 10);
 
       // Test if a rule with the given mode exists
       const rule = this.getRuleForModes([urlMode]);

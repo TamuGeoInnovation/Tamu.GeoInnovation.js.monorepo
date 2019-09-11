@@ -31,12 +31,12 @@ export class BusListComponent implements OnInit, OnDestroy {
     this.routes = this.busService.getRoutes().pipe(
       switchMap((routes) => {
         const sorted = routes.sort((r1, r2) => {
-          const i1 = parseInt(r1.ShortName);
+          const i1 = parseInt(r1.ShortName, 10);
           if (isNaN(i1)) {
             // Value has a non-number character in it (e.g. 'N')
             return -1000;
           }
-          const i2 = parseInt(r2.ShortName);
+          const i2 = parseInt(r2.ShortName, 10);
           if (isNaN(i2)) {
             // see above
             return 1000;

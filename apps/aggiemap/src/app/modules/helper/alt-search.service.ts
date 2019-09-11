@@ -49,11 +49,11 @@ export class AltSearchHelper {
    */
   public handleSearchResultFeatureSelection(point: TripPoint): void {
     const source = this._sources.find(
-      (s) => s.source == (<SearchResultBreadcrumbSummary>point.originParameters.value).source
+      (s) => s.source === (<SearchResultBreadcrumbSummary>point.originParameters.value).source
     );
 
     if (source && source.altLookup) {
-      const altSource = this._sources.find((s) => s.source == source.altLookup.source);
+      const altSource = this._sources.find((s) => s.source === source.altLookup.source);
 
       const values = getObjectPropertyValues(point.attributes, source.altLookup.reference.keys);
 

@@ -44,7 +44,7 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
    *
    * @memberof ClipboardCopyDirective
    */
-  ngOnChanges(changes: SimpleChanges) {
+  public ngOnChanges(changes: SimpleChanges) {
     if (changes.text) {
       if (changes.text.firstChange) {
         this._initializeHandler();
@@ -62,7 +62,7 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
    *
    * @memberof ClipboardCopyDirective
    */
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this._clipboard.destroy();
   }
 

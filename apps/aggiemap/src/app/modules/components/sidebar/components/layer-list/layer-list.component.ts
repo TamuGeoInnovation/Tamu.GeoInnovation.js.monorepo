@@ -45,7 +45,7 @@ export class LayerListComponent implements OnInit, OnDestroy {
     private history: RouterHistoryService
   ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.layers = this.layerListService.store;
     this.responsive = this.responsiveService.snapshot;
 
@@ -57,7 +57,7 @@ export class LayerListComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this._destroy$.next();
     this._destroy$.complete();
   }
@@ -89,7 +89,7 @@ export class LayerListComponent implements OnInit, OnDestroy {
       });
     } else {
       // If the list does not contain an initialized layer, attempt and find the source by reference id.
-      const source = LayerSources.find((src) => src.id == listItem.id);
+      const source = LayerSources.find((src) => src.id === listItem.id);
 
       // If source is found, create a layer from it.
       if (source) {

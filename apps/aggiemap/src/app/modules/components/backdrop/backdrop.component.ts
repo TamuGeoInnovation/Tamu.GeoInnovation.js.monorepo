@@ -48,7 +48,7 @@ export class BackdropComponent implements OnInit {
 
   constructor(private renderer: Renderer2, private element: ElementRef) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     const rootElement = this.element.nativeElement;
 
     if (this.background) {

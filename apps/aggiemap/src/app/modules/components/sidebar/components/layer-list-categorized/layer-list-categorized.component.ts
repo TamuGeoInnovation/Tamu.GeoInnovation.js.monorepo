@@ -85,7 +85,7 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
       this.categorized = categories.map(
         (cat): LayerListCategory => {
           if (this.categorized && this.categorized.length > 0) {
-            const existingCategory = this.categorized.find((l) => l.title == cat.title);
+            const existingCategory = this.categorized.find((l) => l.title === cat.title);
             if (existingCategory) {
               return {
                 title: cat.title,

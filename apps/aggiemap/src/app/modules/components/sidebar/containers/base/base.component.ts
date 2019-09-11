@@ -25,7 +25,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   ]
 })
 export class SidebarComponent implements OnInit {
-  public sidebarVisible: boolean = true;
+  public sidebarVisible = true;
   public currentView: string;
 
   constructor(private router: Router, private route: ActivatedRoute) {
@@ -33,7 +33,7 @@ export class SidebarComponent implements OnInit {
     this.currentView = this._updateCurrentView();
   }
 
-  ngOnInit() {}
+  public ngOnInit() {}
 
   private _updateCurrentView(): string {
     return this.router.url.substring(1, this.router.url.length);
@@ -50,7 +50,7 @@ export class SidebarComponent implements OnInit {
     this._updateCurrentView();
 
     // If selected view name is the same, hide the sidebar
-    if (viewName == this.currentView) {
+    if (viewName === this.currentView) {
       this.sidebarVisible = !this.sidebarVisible;
     } else {
       // If selected view name is different than current, show sidebar (in case it's hidden), store the selected view name as the current, and navigate to that route

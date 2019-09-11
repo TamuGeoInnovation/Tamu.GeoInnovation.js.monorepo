@@ -53,7 +53,7 @@ export class BusRouteComponent implements OnInit, OnDestroy {
       takeUntil(this._destroy$),
       switchMap((graphics) => {
         const anyGraphicsForProvidedRoute = graphics.some((graphic) => {
-          return graphic.attributes.id == this.route.ShortName;
+          return graphic.attributes.id === this.route.ShortName;
         });
 
         return of(anyGraphicsForProvidedRoute);

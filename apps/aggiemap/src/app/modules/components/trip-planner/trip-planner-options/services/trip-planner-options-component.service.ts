@@ -28,7 +28,7 @@ export class TripPlannerOptionsComponentService {
     }
 
     // Find any constraint matches in the travel mode vs. the _dictionary
-    const dicionaryObject = this._dictionary.find((obj) => constraints.findIndex((c) => c == obj.type) > -1);
+    const dicionaryObject = this._dictionary.find((obj) => constraints.findIndex((c) => c === obj.type) > -1);
 
     if (!dicionaryObject) {
       return;

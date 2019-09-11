@@ -72,7 +72,7 @@ export class TripPlannerConnectionService {
         const defaultRxp = new RegExp('^(Routing/)\\d{8}$');
 
         this._store.allNetworks = res.services
-          .filter((s: TripPlannerServiceType) => s.type == 'NAServer')
+          .filter((s: TripPlannerServiceType) => s.type === 'NAServer')
           .sort()
           .map((s: TripPlannerServiceType) => new TripPlannerConnection({ name: s.name, type: s.type }));
 
@@ -96,7 +96,7 @@ export class TripPlannerConnectionService {
             return (
               a.findIndex((o) => {
                 return o.name.includes(e.name.substring(0, e.name.length - 1));
-              }) == i
+              }) === i
             );
           })
           .sort();

@@ -54,7 +54,7 @@ export class BasePopupComponent implements OnInit, OnDestroy {
     private mapService: EsriMapService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.url = window.location.origin;
     this.shareUrl = `${this.url}/?bldg=${this.data.attributes.Number}`;
 
@@ -65,7 +65,7 @@ export class BasePopupComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._destroy$.next();
     this._destroy$.complete();
   }
