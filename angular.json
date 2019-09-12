@@ -815,6 +815,118 @@
           "styleext": "scss"
         }
       }
+    },
+    "angular-aggiemap-trees": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/angular-aggiemap-trees",
+      "sourceRoot": "apps/angular-aggiemap-trees/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/angular-aggiemap-trees",
+            "index": "apps/angular-aggiemap-trees/src/index.html",
+            "main": "apps/angular-aggiemap-trees/src/main.ts",
+            "polyfills": "apps/angular-aggiemap-trees/src/polyfills.ts",
+            "tsConfig": "apps/angular-aggiemap-trees/tsconfig.app.json",
+            "aot": false,
+            "assets": ["apps/angular-aggiemap-trees/src/favicon.ico", "apps/angular-aggiemap-trees/src/assets"],
+            "styles": ["apps/angular-aggiemap-trees/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/angular-aggiemap-trees/src/environments/environment.ts",
+                  "with": "apps/angular-aggiemap-trees/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "angular-aggiemap-trees:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "angular-aggiemap-trees:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "angular-aggiemap-trees:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/angular-aggiemap-trees/tsconfig.app.json", "apps/angular-aggiemap-trees/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/angular-aggiemap-trees/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/angular-aggiemap-trees/jest.config.js",
+            "tsConfig": "apps/angular-aggiemap-trees/tsconfig.spec.json",
+            "setupFile": "apps/angular-aggiemap-trees/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "angular-aggiemap-trees-e2e": {
+      "root": "apps/angular-aggiemap-trees-e2e",
+      "sourceRoot": "apps/angular-aggiemap-trees-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/angular-aggiemap-trees-e2e/cypress.json",
+            "tsConfig": "apps/angular-aggiemap-trees-e2e/tsconfig.e2e.json",
+            "devServerTarget": "angular-aggiemap-trees:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "angular-aggiemap-trees:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/angular-aggiemap-trees-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/angular-aggiemap-trees-e2e/**"]
+          }
+        }
+      }
     }
   },
   "cli": {
