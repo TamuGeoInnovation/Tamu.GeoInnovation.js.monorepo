@@ -65,6 +65,17 @@ export const LayerSources: LayerSource[] = [
     ]
   },
   {
+    type: 'feature',
+    id: d.TREES.layerId,
+    title: d.TREES.name,
+    url: d.TREES.url,
+    popupComponent: d.TREES.popupComponent,
+    listMode: 'show',
+    loadOnInit: true,
+    visible: true,
+    legendItems: []
+  },
+  {
     type: 'graphic',
     id: 'selection-layer',
     title: 'Selected Buildings',

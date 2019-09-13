@@ -21,5 +21,12 @@ export const Definitions = {
     name: 'Construction Zone',
     url: `${Connections.constructionUrl}`,
     popupComponent: 'ConstructionPopupComponent'
+  },
+  TREES: {
+    id: 'trees',
+    layerId: 'trees_layer',
+    name: 'Trees',
+    url: `${Connections.basemapUrl}/8`,
+    popupComponent: 'BasePopupComponent'
   }
 };
