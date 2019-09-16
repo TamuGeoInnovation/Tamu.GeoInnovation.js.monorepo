@@ -13,7 +13,8 @@ module.exports = {
     }
   },
   "roots": [
-    "<rootDir>/libs/"
+    "<rootDir>/libs/",
+    "<rootDir>/apps/"
   ],
   preset: "jest-preset-angular",
   setupFilesAfterEnv: ["./test/setupJest.ts"],

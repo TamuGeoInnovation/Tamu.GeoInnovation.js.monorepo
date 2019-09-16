@@ -1,12 +1,12 @@
-import { TestBed } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
-import { BikeService } from './bike.service';
+import { Bike, BikeService } from './bike.service';
+import { SelectComponent } from '../../../components/forms/select/select.component';
 
 describe('BikeService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
-
-  it('should be created', () => {
-    const service: BikeService = TestBed.get(BikeService);
-    expect(service).toBeTruthy();
+  it('should create', () => {
+    inject([BikeService], (component: BikeService) => {
+      expect(component).toBeTruthy();
+    });
   });
 });
