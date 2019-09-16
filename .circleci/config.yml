@@ -5,7 +5,21 @@ jobs:
       - image: circleci/node:10.16
     steps:
       - checkout
-      - run: npm install
-      - run: npm run build -- --project=aggiemap --prod
-      - run: npm run test -- -w 1
-      - run: npm run lint
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - run:
+          name: Build AggieMap
+          command: npm run build -- --project=aggiemap --prod
+      - run:
+          name: Build Trees
+          command: npm run build -- --project=angular-aggiemap-trees --prod
+      - run:
+          name: Run Tests
+          command: npm run test -- -w 1
+      - run:
+          name: Run TSLint
+          command: npm run lint
+      - run:
+          name: Signal Deploy Ready
+          command: curl https://jonjanzen.com/test_cd_endpoint
