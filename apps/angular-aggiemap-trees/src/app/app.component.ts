@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'angular-aggiemap-trees';
+  public title = 'angular-aggiemap-trees';
 }
