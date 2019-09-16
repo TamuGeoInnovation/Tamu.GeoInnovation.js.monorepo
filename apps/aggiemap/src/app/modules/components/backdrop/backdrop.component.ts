@@ -33,15 +33,7 @@ export class BackdropComponent implements OnInit {
    * @memberof BackdropComponent
    */
   @Input()
-  public position:
-    | 'off-top'
-    | 'off-right'
-    | 'off-bottom'
-    | 'off-left'
-    | 'on-top'
-    | 'on-right'
-    | 'on-bottom'
-    | 'on-left';
+  public position: 'off-top' | 'off-right' | 'off-bottom' | 'off-left' | 'on-top' | 'on-right' | 'on-bottom' | 'on-left';
 
   @Output()
   public voidClick: EventEmitter<any> = new EventEmitter();

@@ -8,9 +8,8 @@ describe('TripPlannerParkingOptionsBaseComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TripPlannerOptionsBaseComponent ]
-    })
-    .compileComponents();
+      declarations: [TripPlannerOptionsBaseComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

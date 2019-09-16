@@ -8,9 +8,8 @@ describe('BusTimetableComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BusTimetableComponent ]
-    })
-    .compileComponents();
+      declarations: [BusTimetableComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
