@@ -873,7 +873,9 @@ export class TripPlannerService implements OnDestroy {
         const executionTriggeredByModeChange =
           this._Result.value.length > 0
             ? this._Result.value.every((r) => {
-                return r && r.params && r.params.travelMode ? modeNumbers.includes(parseInt(r.params.travelMode, 10)) : false;
+                return r && r.params && r.params.travelMode
+                  ? modeNumbers.includes(parseInt(r.params.travelMode, 10))
+                  : false;
               })
             : false;
 
@@ -1262,7 +1264,9 @@ export class TripPlannerService implements OnDestroy {
               } else {
                 // If request was successful, value will be TripTask result. In which case, create a new Trip Result
                 // and append the result property
-                const matchedResult = previousState.find((r) => r.params.travelMode.toString() === (<any>response).routeResults[0].routeName);
+                const matchedResult = previousState.find(
+                  (r) => r.params.travelMode.toString() === (<any>response).routeResults[0].routeName
+                );
 
                 return of(true).pipe(
                   switchMap(
@@ -1651,7 +1655,8 @@ export class TripPlannerService implements OnDestroy {
       map((results) => {
         // Filter out only the trip result for the current state travel mode.
         return results.filter(
-          (result) => (result.params && result.params.travelMode.toString()) === this._TravelOptions.value.travel_mode.toString()
+          (result) =>
+            (result.params && result.params.travelMode.toString()) === this._TravelOptions.value.travel_mode.toString()
         );
       }),
       mergeMap((results) => {

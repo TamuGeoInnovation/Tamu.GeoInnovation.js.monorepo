@@ -8,9 +8,8 @@ describe('BusSwitchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TripPlannerBusModeSwitchComponent ]
-    })
-    .compileComponents();
+      declarations: [TripPlannerBusModeSwitchComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

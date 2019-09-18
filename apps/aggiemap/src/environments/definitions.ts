@@ -77,7 +77,7 @@ export const Definitions = {
     id: 'emergency-phones',
     layerId: 'emergency-phones-layer',
     name: 'Emergency Phones',
-    url: `${Connections.inforUrl}/4`,
+    url: `${Connections.inforUrl}/4`
     // popupComponent: 'BasePopupComponent'
   },
   BIKE_RACKS: {

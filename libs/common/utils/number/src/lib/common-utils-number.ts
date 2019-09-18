@@ -8,7 +8,6 @@ export function isEven(number: number): boolean {
   return number % 2 === 0;
 }
 
-
 /**
  * Gets a random number between two numbers, including them.
  *

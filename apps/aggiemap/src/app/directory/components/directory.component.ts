@@ -10,4 +10,3 @@ export class DirectoryComponent implements OnInit {
 
   public ngOnInit() {}
 }
- 

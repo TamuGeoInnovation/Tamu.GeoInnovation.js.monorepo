@@ -57,4 +57,3 @@ export function getObjectPropertyValues(lookup: any, properties: any, join?: any
     return values;
   }
 }
-

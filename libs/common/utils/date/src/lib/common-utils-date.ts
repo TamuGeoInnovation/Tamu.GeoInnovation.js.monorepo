@@ -8,7 +8,6 @@ export function dateForDateTimeString(time: string, baseDate?: Date): Date {
   return date;
 }
 
-
 export function timeStringForDate(date: Date): string {
   let hours = date.getHours();
   let ampm = 'AM';
