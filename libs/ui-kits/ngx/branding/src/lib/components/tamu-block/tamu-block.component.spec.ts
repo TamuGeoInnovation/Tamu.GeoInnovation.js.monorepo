@@ -8,9 +8,8 @@ describe('TamuBlockComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TamuBlockBrandingComponent ]
-    })
-    .compileComponents();
+      declarations: [TamuBlockBrandingComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
