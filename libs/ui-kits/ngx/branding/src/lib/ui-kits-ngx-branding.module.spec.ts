@@ -1,14 +1,14 @@
 import { async, TestBed } from '@angular/core/testing';
-import { UiKitsNgxBrandingModule } from './ui-kits-ngx-branding.module';
+import { TamuBrandingModule } from './ui-kits-ngx-branding.module';
 
-describe('UiKitsNgxBrandingModule', () => {
+describe('TamuBrandingModule', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [UiKitsNgxBrandingModule]
+      imports: [TamuBrandingModule]
     }).compileComponents();
   }));
 
   it('should create', () => {
-    expect(UiKitsNgxBrandingModule).toBeDefined();
+    expect(TamuBrandingModule).toBeDefined();
   });
 });

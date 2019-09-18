@@ -836,7 +836,15 @@
             "polyfills": "apps/angular-aggiemap-trees/src/polyfills.ts",
             "tsConfig": "apps/angular-aggiemap-trees/tsconfig.app.json",
             "aot": false,
-            "assets": ["apps/angular-aggiemap-trees/src/favicon.ico", "apps/angular-aggiemap-trees/src/assets"],
+            "assets": [
+              "apps/angular-aggiemap-trees/src/favicon.ico",
+              "apps/angular-aggiemap-trees/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
             "styles": ["apps/angular-aggiemap-trees/src/styles.scss"],
             "scripts": []
           },
