@@ -106,6 +106,9 @@
     },
     "ui-kits-ngx-branding": {
       "tags": []
+    },
+    "maps-feature-layer-filter": {
+      "tags": []
     }
   }
 }

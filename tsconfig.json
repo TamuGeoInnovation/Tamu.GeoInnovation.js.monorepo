@@ -42,7 +42,8 @@
       "@tamu-gisc/dev-tools/application-testing": ["libs/dev-tools/application-testing/src/index.ts"],
       "@tamu-gisc/dev-tools/responsive": ["libs/dev-tools/responsive/src/index.ts"],
       "@tamu-gisc/common/ngx/ui/sidebar": ["libs/common/ngx/ui/sidebar/src/index.ts"],
-      "@tamu-gisc/ui-kits/ngx/branding": ["libs/ui-kits/ngx/branding/src/index.ts"]
+      "@tamu-gisc/ui-kits/ngx/branding": ["libs/ui-kits/ngx/branding/src/index.ts"],
+      "@tamu-gisc/maps/feature/layer-filter": ["libs/maps/feature/layer-filter/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

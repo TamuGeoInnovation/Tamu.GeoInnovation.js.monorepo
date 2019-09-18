@@ -963,6 +963,37 @@
           "styleext": "scss"
         }
       }
+    },
+    "maps-feature-layer-filter": {
+      "projectType": "library",
+      "root": "libs/maps/feature/layer-filter",
+      "sourceRoot": "libs/maps/feature/layer-filter/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/maps/feature/layer-filter/tsconfig.lib.json",
+              "libs/maps/feature/layer-filter/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/layer-filter/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/layer-filter/jest.config.js",
+            "tsConfig": "libs/maps/feature/layer-filter/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/layer-filter/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {
