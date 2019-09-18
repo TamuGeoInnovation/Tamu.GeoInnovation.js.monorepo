@@ -836,7 +836,15 @@
             "polyfills": "apps/angular-aggiemap-trees/src/polyfills.ts",
             "tsConfig": "apps/angular-aggiemap-trees/tsconfig.app.json",
             "aot": false,
-            "assets": ["apps/angular-aggiemap-trees/src/favicon.ico", "apps/angular-aggiemap-trees/src/assets"],
+            "assets": [
+              "apps/angular-aggiemap-trees/src/favicon.ico",
+              "apps/angular-aggiemap-trees/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
             "styles": ["apps/angular-aggiemap-trees/src/styles.scss"],
             "scripts": []
           },
@@ -925,6 +933,34 @@
             "tsConfig": ["apps/angular-aggiemap-trees-e2e/tsconfig.e2e.json"],
             "exclude": ["**/node_modules/**", "!apps/angular-aggiemap-trees-e2e/**"]
           }
+        }
+      }
+    },
+    "ui-kits-ngx-branding": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/branding",
+      "sourceRoot": "libs/ui-kits/ngx/branding/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ui-kits/ngx/branding/tsconfig.lib.json", "libs/ui-kits/ngx/branding/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/branding/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/branding/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/branding/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/branding/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
         }
       }
     }

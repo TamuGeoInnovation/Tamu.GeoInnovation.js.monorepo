@@ -17,6 +17,7 @@ import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
+import { TamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
@@ -43,7 +44,6 @@ import { AsyncContentLoadedDirective } from '../directives/async-content-loaded'
 
 // Esri Map Child Components
 import { SidebarComponent } from '../../modules/components/sidebar/containers/base/base.component';
-import { BrandComponent } from '../../modules/components/brand/brand.component';
 import { SearchComponent } from '../../modules/components/search/containers/base/base.component';
 import { TripPlannerComponent } from '../../modules/components/sidebar/components/trip-planner/trip-planner.component';
 import { ReferenceComponent } from '../../modules/components/sidebar/components/reference/reference.component';
@@ -216,7 +216,8 @@ const hybridRoutes: Routes = [
     ResponsiveModule,
     DlDateTimePickerDateModule,
     DlDateTimePickerModule,
-    SidebarModule
+    SidebarModule,
+    TamuBrandingModule
   ],
   declarations: [
     BackdropComponent,
@@ -225,7 +226,6 @@ const hybridRoutes: Routes = [
     RouteDirectionTransformerPipe,
     SearchResultPipe,
     SidebarComponent,
-    BrandComponent,
     SearchComponent,
     TripPlannerComponent,
     ReferenceComponent,

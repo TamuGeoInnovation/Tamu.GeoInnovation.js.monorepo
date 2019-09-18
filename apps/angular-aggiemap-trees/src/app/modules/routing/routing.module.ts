@@ -11,6 +11,8 @@ import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 
+import { TamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
+
 import { MapComponent } from '../../components/map/map.component';
 
 const routes: Routes = [{ path: '', component: MapComponent }];
@@ -34,7 +36,8 @@ WebFont.load({
     HttpClientModule,
     EsriMapModule,
     SearchModule,
-    SidebarModule
+    SidebarModule,
+    TamuBrandingModule
   ],
   exports: [RouterModule]
 })
