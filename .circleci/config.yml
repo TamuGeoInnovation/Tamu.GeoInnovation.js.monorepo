@@ -16,7 +16,7 @@ jobs:
           command: npm run build -- --project=angular-aggiemap-trees --prod
       - run:
           name: Run Tests
-          command: npm run test -- -w 1 --coverage --coverageReporters=text-lcov | ./node_modeules/coveralls/bin/coveralls.js
+          command: npm run test -- -w 1 --coverage --coverageReporters=text-lcov | ./node_modules/coveralls/bin/coveralls.js
       - run:
           name: Run TSLint
           command: npm run lint
