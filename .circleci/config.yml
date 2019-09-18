@@ -20,6 +20,3 @@ jobs:
       - run:
           name: Run TSLint
           command: npm run lint
-      - run:
-          name: Signal Deploy Ready
-          command: curl https://jonjanzen.com/test_cd_endpoint
