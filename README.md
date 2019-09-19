@@ -1,8 +1,7 @@
 # AggieMap & Friends Monorepo
 
-![CircleCI](https://img.shields.io/circleci/build/github/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/master)
-![Coveralls github](https://img.shields.io/coveralls/github/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo)
-![https://aggiemap.tamu.edu](https://img.shields.io/website?url=https%3A%2F%2Faggiemap.tamu.edu)
+![CircleCI](https://img.shields.io/circleci/build/github/TamuBikeShare/TamuBikeShareOptimization/master)
+![Coveralls github](https://img.shields.io/coveralls/github/TamuBikeShare/TamuBikeShareOptimization)
 
 
 ![AggieMap Logo](/libs/assets/images/logo/TAM-PrimaryMarkBB.svg)
