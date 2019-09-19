@@ -10,7 +10,7 @@ import * as guid from 'uuid/v4';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
 import { LayerListService, LayerListItem } from '@tamu-gisc/maps/feature/layer-list';
 
-import { RouterHistoryService } from '../../../../services/router-history.service';
+import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 

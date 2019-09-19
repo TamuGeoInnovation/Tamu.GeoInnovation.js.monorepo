@@ -13,6 +13,7 @@ import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
+import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
@@ -26,7 +27,6 @@ import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 
 import { TripPlannerConnectionService } from '../../modules/services/trip-planner/trip-planner-connection.service';
 import { TripPlannerService } from '../../modules/services/trip-planner/trip-planner.service';
-import { RouterHistoryService } from '../services/router-history.service';
 import { BusService } from '../services/transportation/bus/bus.service';
 import { BikeService } from '../services/transportation/bike/bike.service';
 import { ParkingService } from '../services/transportation/drive/parking.service';
@@ -209,6 +209,7 @@ const hybridRoutes: Routes = [
     FormsModule,
     HttpClientModule,
     SettingsModule,
+    CommonNgxRouterModule,
     PipesModule,
     SkeletonModule,
     EsriMapModule,
@@ -286,7 +287,6 @@ const hybridRoutes: Routes = [
     AsyncContentLoadedDirective
   ],
   providers: [
-    RouterHistoryService,
     TripPlannerConnectionService,
     TripPlannerService,
     BusService,

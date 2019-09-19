@@ -115,6 +115,9 @@
     },
     "maps-feature-legend": {
       "tags": []
+    },
+    "common-ngx-router": {
+      "tags": []
     }
   }
 }

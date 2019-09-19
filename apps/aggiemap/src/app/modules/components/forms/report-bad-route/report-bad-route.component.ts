@@ -6,7 +6,7 @@ import { takeUntil, switchMap, pluck } from 'rxjs/operators';
 
 import { TripPlannerService } from '../../../services/trip-planner/trip-planner.service';
 import { TripResult } from '../../../../modules/services/trip-planner/core/trip-planner-core';
-import { RouterHistoryService } from '../../../..//modules/services/router-history.service';
+import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { Angulartics2 } from 'angulartics2';

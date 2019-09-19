@@ -7,7 +7,7 @@ import { mergeMap, groupBy, reduce, map, toArray, takeUntil } from 'rxjs/operato
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { LayerListService, LayerListCategory } from '@tamu-gisc/maps/feature/layer-list';
-import { RouterHistoryService } from '../../../../services/router-history.service';
+import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 
 import { LayerListComponent } from '../layer-list/layer-list.component';

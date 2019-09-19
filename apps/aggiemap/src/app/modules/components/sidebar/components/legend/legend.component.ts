@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
-import { RouterHistoryService } from '../../../../services/router-history.service';
+import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 

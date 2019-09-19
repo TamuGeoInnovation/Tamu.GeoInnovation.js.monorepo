@@ -1053,6 +1053,34 @@
           "styleext": "scss"
         }
       }
+    },
+    "common-ngx-router": {
+      "projectType": "library",
+      "root": "libs/common/ngx/router",
+      "sourceRoot": "libs/common/ngx/router/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/ngx/router/tsconfig.lib.json", "libs/common/ngx/router/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/router/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/ngx/router/jest.config.js",
+            "tsConfig": "libs/common/ngx/router/tsconfig.spec.json",
+            "setupFile": "libs/common/ngx/router/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {
