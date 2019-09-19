@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { LayerListService } from './layer-list.service';
+import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
 import { LegendSources } from '../../../../environments/environment';
 

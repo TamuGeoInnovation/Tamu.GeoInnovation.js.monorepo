@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { Observable, BehaviorSubject } from 'rxjs';
 
-import { LayerSources } from '../../../../environments/environment';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import esri = __esri;
@@ -12,7 +12,9 @@ export class LayerListService {
   private _store: BehaviorSubject<LayerListItem[]> = new BehaviorSubject([]);
   public store: Observable<LayerListItem[]> = this._store.asObservable();
 
-  constructor(private mapService: EsriMapService) {
+  constructor(private mapService: EsriMapService, private environment: EnvironmentService) {
+    const LayerSources = this.environment.value('LayerSources');
+
     mapService.store.subscribe((res) => {
       // Perform a check against the map instance to add existing layers. Layers added after this
       // point will be handled by the change event.

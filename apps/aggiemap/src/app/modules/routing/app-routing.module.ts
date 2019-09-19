@@ -21,7 +21,7 @@ import { TamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
-import { LayerListService } from '../../modules/services/ui/layer-list.service';
+import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendService } from '../../modules/services/ui/legend.service';
 import { TripPlannerConnectionService } from '../../modules/services/trip-planner/trip-planner-connection.service';
 import { TripPlannerService } from '../../modules/services/trip-planner/trip-planner.service';
@@ -211,6 +211,7 @@ const hybridRoutes: Routes = [
     PipesModule,
     SkeletonModule,
     EsriMapModule,
+    LayerListModule,
     SearchModule,
     TestingModule,
     ResponsiveModule,
@@ -286,7 +287,6 @@ const hybridRoutes: Routes = [
     RouterHistoryService,
     TripPlannerConnectionService,
     TripPlannerService,
-    LayerListService,
     LegendService,
     BusService,
     BikeService,

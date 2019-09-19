@@ -8,12 +8,11 @@ import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
+import { LayerListService, LayerListItem } from '@tamu-gisc/maps/feature/layer-list';
+
 import { RouterHistoryService } from '../../../../services/router-history.service';
-import { LayerListService } from '../../../../services/ui/layer-list.service';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { LegendService } from '../../../../services/ui/legend.service';
-
-import { LayerListItem } from '../../../../services/ui/layer-list.service';
 
 import { LayerSources } from '../../../../../../environments/environment';
 

@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
+import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
+
 @Component({
   selector: 'tamu-gisc-layer-filter',
   templateUrl: './layer-filter.component.html',
@@ -14,7 +16,11 @@ export class LayerFilterComponent implements OnInit {
   @Input()
   public layer: string;
 
-  constructor() {}
+  constructor(private layerList: LayerListService) {}
 
-  public ngOnInit() {}
+  public ngOnInit() {
+    this.layerList.store.subscribe((res) => {
+      debugger;
+    });
+  }
 }
