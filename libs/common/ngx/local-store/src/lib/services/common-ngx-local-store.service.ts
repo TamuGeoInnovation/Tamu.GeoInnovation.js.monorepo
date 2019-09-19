@@ -50,19 +50,6 @@ export class LocalStoreService {
   }
 
   /**
-   * Updates the entire storageKey value.
-   *
-   * @param config Config
-   */
-  public updateStorage(config: ValueConfig) {
-    const storeKey = config.primaryKey || STORAGE_KEY;
-
-    const stored = this.getStorage({ primaryKey: storeKey });
-
-    this.store.set(storeKey, { ...stored, ...config.subKey });
-  }
-
-  /**
    * Gets the value of a key in an optionally provided object stored in Local Storage referenced by storage key.
    * If no storage key reference is provided, the application default storage will be used.
    *
