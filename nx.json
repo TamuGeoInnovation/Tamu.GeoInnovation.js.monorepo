@@ -109,6 +109,9 @@
     },
     "maps-feature-layer-filter": {
       "tags": []
+    },
+    "maps-feature-layer-list": {
+      "tags": []
     }
   }
 }
