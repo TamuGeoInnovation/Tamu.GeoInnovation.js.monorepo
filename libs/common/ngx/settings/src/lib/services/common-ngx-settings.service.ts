@@ -172,14 +172,6 @@ export class SettingsService {
       const newStore = { ...storeSettings, ...providedMatching };
 
       this._Store.next(newStore);
-
-      // Reduce the store to only the settings that are marked as persistent.
-      const persistent = this.getPersistenCompoundtSettings(newStore);
-
-      // Create a flat simple settings tree from the persistent settings.
-      const flattened = this.compoundToSimpleSettingsTree(persistent);
-
-      this.storage.updateStorage({ ...this._localStorageSettings, value: flattened });
     }
 
     // If the length of the the keys in the provided settings and the service store settings differ, send
