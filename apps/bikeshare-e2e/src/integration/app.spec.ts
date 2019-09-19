@@ -1,6 +1,6 @@
 import { getGreeting } from '../support/app.po';
 
-describe('aggiemap', () => {
+describe('bikeshare', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display welcome message', () => {
