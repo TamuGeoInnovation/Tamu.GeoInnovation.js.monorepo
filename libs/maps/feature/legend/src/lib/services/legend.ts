@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
-import { LegendSources } from '../../../../environments/environment';
+import { LegendItem } from '@tamu-gisc/common/types';
 
 import esri = __esri;
-import { LegendItem } from '@tamu-gisc/common/types';
 
 @Injectable()
 export class LegendService {
   private _store: BehaviorSubject<LegendItem[]> = new BehaviorSubject([]);
   public store: Observable<LegendItem[]> = this._store.asObservable();
 
-  constructor(private layerListService: LayerListService) {
+  constructor(private layerListService: LayerListService, private environment: EnvironmentService) {
+    const LegendSources = this.environment.value('LegendSources');
     // Handle automatic layer addition and removal legend item display.
     // This does not handle removal on layer visibility change
     layerListService.store.subscribe((value) => {

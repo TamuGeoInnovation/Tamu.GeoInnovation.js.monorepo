@@ -44,7 +44,8 @@
       "@tamu-gisc/common/ngx/ui/sidebar": ["libs/common/ngx/ui/sidebar/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/branding": ["libs/ui-kits/ngx/branding/src/index.ts"],
       "@tamu-gisc/maps/feature/layer-filter": ["libs/maps/feature/layer-filter/src/index.ts"],
-      "@tamu-gisc/maps/feature/layer-list": ["libs/maps/feature/layer-list/src/index.ts"]
+      "@tamu-gisc/maps/feature/layer-list": ["libs/maps/feature/layer-list/src/index.ts"],
+      "@tamu-gisc/maps/feature/legend": ["libs/maps/feature/legend/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

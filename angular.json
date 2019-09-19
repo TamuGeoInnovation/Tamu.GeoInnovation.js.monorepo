@@ -1025,6 +1025,34 @@
           "styleext": "scss"
         }
       }
+    },
+    "maps-feature-legend": {
+      "projectType": "library",
+      "root": "libs/maps/feature/legend",
+      "sourceRoot": "libs/maps/feature/legend/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/maps/feature/legend/tsconfig.lib.json", "libs/maps/feature/legend/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/legend/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/legend/jest.config.js",
+            "tsConfig": "libs/maps/feature/legend/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/legend/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {

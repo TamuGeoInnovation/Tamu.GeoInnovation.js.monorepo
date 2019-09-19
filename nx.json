@@ -112,6 +112,9 @@
     },
     "maps-feature-layer-list": {
       "tags": []
+    },
+    "maps-feature-legend": {
+      "tags": []
     }
   }
 }

@@ -5,7 +5,7 @@ import { from, Subject } from 'rxjs';
 import { mergeMap, groupBy, reduce, map, toArray, takeUntil } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { LegendService } from '../../../../services/ui/legend.service';
+import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { LayerListService, LayerListCategory } from '@tamu-gisc/maps/feature/layer-list';
 import { RouterHistoryService } from '../../../../services/router-history.service';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';

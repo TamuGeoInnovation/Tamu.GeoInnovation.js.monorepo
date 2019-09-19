@@ -12,7 +12,7 @@ import { LayerListService, LayerListItem } from '@tamu-gisc/maps/feature/layer-l
 
 import { RouterHistoryService } from '../../../../services/router-history.service';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { LegendService } from '../../../../services/ui/legend.service';
+import { LegendService } from '@tamu-gisc/maps/feature/legend';
 
 import { LayerSources } from '../../../../../../environments/environment';
 
