@@ -1,0 +1,64 @@
+@import 'libs/sass/mixins';
+
+#direction-results {
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+
+  p {
+    margin-top: 0;
+  }
+
+  div {
+    margin-bottom: 0.5rem;
+  }
+
+  div.button {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+}
+
+#direction-feedback {
+  p {
+    text-align: center;
+  }
+}
+
+.directions-overview {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+  @include justify-content(space-around);
+  text-align: center;
+  margin-bottom: 0 !important;
+
+  .directions-overview-item {
+    .quantity {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .unit {
+      font-size: 0.8rem;
+      margin-top: 0.75rem;
+      color: #757575;
+    }
+  }
+
+  .divider {
+    height: 3rem;
+    width: 1px;
+    background: #e0e0e0;
+  }
+}
+
+.submit-bad-route {
+  margin: 0.75rem 0 0.5rem 0;
+  color: #ef5350;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+  width: 100%;
+  display: block;
+  cursor: pointer;
+}

@@ -1,0 +1,19 @@
+<!-- This component is an application-specific implementation of the generic sidebar component. 
+
+We are injecting application-specific sidebar tabs and content -->
+
+<tamu-gisc-sidebar>
+  <div class="tabs left">
+    <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''"></tamu-gisc-sidebar-tab>
+
+    <tamu-gisc-sidebar-tab [title]="'Directions'" [description]="'Toggle directions controls (routing and way-finding)'" [material_icon]="'directions'" [route]="'trip'"></tamu-gisc-sidebar-tab>
+
+    <tamu-gisc-sidebar-tab [title]="'Bus Routes'" [description]="'Toggle bus controls (list and timetable)'" [material_icon]="'directions_bus'" [route]="'bus'"></tamu-gisc-sidebar-tab>
+  </div>
+
+  <div class="content">
+    <tamu-gisc-tamu-block></tamu-gisc-tamu-block>
+    <router-outlet></router-outlet>
+    <feature-popup></feature-popup>
+  </div>
+</tamu-gisc-sidebar>

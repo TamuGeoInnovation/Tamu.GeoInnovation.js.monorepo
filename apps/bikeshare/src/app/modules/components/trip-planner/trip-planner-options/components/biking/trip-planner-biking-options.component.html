@@ -1,0 +1,9 @@
+<div>
+  <div class="sidebar-component-name">
+    <p>Biking Settings</p>
+  </div>
+
+  <div class="sidebar-component-content-container">
+    <checkbox *ngFor="let option of (settings | async)" [disabled]="false" [label]="option.displayName" [description]="option.description" [checked]="(getOptionValue(option.effect) | async) == true" (changed)="setOptionValue(option, $event)"></checkbox>
+  </div>
+</div>

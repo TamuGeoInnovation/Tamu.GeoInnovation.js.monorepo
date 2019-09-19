@@ -1,0 +1,20 @@
+<div>
+  <div class="directions-action-item" (click)="eventClearAll()" (keyup.space)="eventClearAll()" (keyup.enter)="eventClearAll()" tabindex="0">
+    <div class="material-icons">replay</div>
+    <p>Start Over</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="directions-action-item copy-button" [class.copying]="animating | async" clipboard-copy [text]="shareUrl" (copying)="animating = $event; eventCopyTrip()" tabindex="0" copy-label="Copied!">
+    <div class="material-icons">share</div>
+    <p>Share</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="directions-action-item" (click)="reportBadRoute()" (keyup.space)="reportBadRoute()" (keyup.enter)="reportBadRoute()" tabindex="0">
+    <div class="material-icons">thumbs_up_down</div>
+    <p>Feedback</p>
+  </div>
+</div>

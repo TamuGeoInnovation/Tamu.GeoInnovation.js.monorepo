@@ -1,0 +1,120 @@
+<div class="container12 flex justify-center">
+  <div class="column9">
+    <div class="breadcrumbs leader-2 trailer-1">
+      <p><a routerLink="/">Aggie Map</a></p>
+      <p><a href="javascript:void(0)">Map Instructions</a></p>
+    </div>
+
+    <div class="leader-1 trailer-2">
+      <h1 class="long-border">Aggie Map Usage Instructions</h1>
+    </div>
+
+    <div>
+      <p class="bold">Accessible Usage</p>
+      <p>
+        Following university policy, Aggie Map is committed to making all features and information is accessible to all users. This application provides accommodations for screen readers and keyboard navigation. This page is provided for users requiring guided instruction through screen readers.
+      </p>
+
+      <p class="semi-bold">Visual Layout</p>
+      <p>
+        Aggie Map is an interactive mapping application. The biggest focus is the map which covers the majority of the screen.
+      </p>
+
+      <p>
+        The map controls are found on the top left corner laid out from top to bottom. Each has a specific function. Their tab order and function are as follow:
+      </p>
+
+      <ul class="bullet">
+        <li>Zoom In</li>
+        <li>Zoom Out</li>
+        <li>Location Tracker &mdash; Triggering it fetches the location of your device and adds a point on the map.</li>
+        <li>Orientation Compass &mdash; Triggering it resets map orientation if rotation is other than default.</li>
+        <li>Print &mdash; Triggering it opens a print dialog with exporting and printing options.</li>
+      </ul>
+
+      <p>
+        The right-hand side of the application houses a sidebar with two tabs. Each tab can be triggered to view the content described by the tab label.
+      </p>
+
+      <p>
+        The first tab labeled "Features" contains feature search and general map information. These include, in tab order from top to bottom:
+      </p>
+
+      <ul class="bullet">
+        <li>
+          Input search field &mdash; Begin typing here and receive auto-complete suggestions accessible with the up/arrow keyboard keys.
+        </li>
+        <li>
+          Layers &mdash; List of additional map layers which add or remove graphics on the map upon triggering them.
+        </li>
+        <li>Legend &mdash; List of symbology icons and descriptions used in map to represent features and land use.</li>
+      </ul>
+
+      <p>
+        The second tab labeled "Directions" contains way-finding functionality: These include, in tab order from top to bottom:
+      </p>
+
+      <ul class="bullet">
+        <li>
+          Starting point input field &mdash; There are multiple ways to set a starting point, typing and selecting from dropdown is easiest for users depending on keyboard navigation.
+        </li>
+        <li>
+          Ending point input field &mdash; There are multiple ways to set a destination point, typing and selecting from dropdown is easiest for users depending on keyboard navigation.
+        </li>
+        <li>
+          Routing mode selection &mdash; This element consists of several horizontally laid out icons with each setting a different routing mode. These are, from left to right, walking and cycling.
+        </li>
+        <li>
+          Accessible friendly directions routing mode checkbox &mdash; Enables or disables routing through accessible paths. Defaults to disabled. Only available while routing in walking mode.
+        </li>
+      </ul>
+
+      <p>
+        The selected feature popup also resides on the right-hand side but it is not part of the sidebar and does not have its own independent tab since popups can be dismissed completely. Selecting a feature is covered further in this text. The tab order is as follows:
+      </p>
+
+      <ul class="bullet">
+        <li>Close &mdash; Trigerring will dismiss the popup re-focus on the map.</li>
+        <li>Feature name</li>
+        <li>Numerical feature code</li>
+        <li>Feature address</li>
+        <li>
+          Feature permalink &mdash; URL unique to this building. Providing this URL in the browser address bar will load map with feature centered on it.
+        </li>
+        <li>
+          Copy URL &mdash; Convenient button, that when triggered, will copy the aforementioned permalink to your clipboard.
+        </li>
+        <li>
+          Directions To Here &mdash; Triggering will attempt to compute the best route between your current location gathered from your device and the selected feature.
+        </li>
+        <li>Feature Image &mdash; If available, an image of the feature.</li>
+      </ul>
+
+      <p class="semi-bold">Keyboard Navigation</p>
+      <p>
+        Keyboard controls have been added to this application, making it possible for users requiring on keyboard navigation to access all of the features provided. In addition, the tabbing order for Aggie Map has been optimized for easy and fast navigation.
+      </p>
+
+      <p>Basic navigation is as follows:</p>
+
+      <p><code>TAB</code> &mdash; Go to next element.</p>
+      <p><code>SHIFT + TAB</code> &mdash; Go to previous element.</p>
+      <p><code>ENTER OR SPACE</code> &mdash; Simulate a click on elements that have functionality associated with them.</p>
+      <p><code>UP OR DOWN</code> arrow keys in input fields &mdash; If the input field generates suggestions as you type, these keys will focus on that list.</p>
+      <p><code>UP, RIGHT, DOWN, LEFT</code> arrow keys on map &mdash; Pan the map in the direction of the arrow key (North, East, South, West respectively).</p>
+      <p><code>A OR D</code> keys on map &mdash; Rotate the map. <code>A</code> rotates clockwise. <code>D</code> rotates counter-clockwise.</p>
+
+      <p>
+        Selecting a map feature can be done by setting focus on the map and begin panning the map with the keyboard arrow keys. A viewfinder will become visible on the center of the screen with a white box below it describing the features within the viewfinder. As you pan, the list will update. Each feature on the list will carry a number besides it corresponding to a keyboard number. Pressing the respective number will select the feature, highlight it on the map, and open the popup.
+      </p>
+
+      <p class="bold">Questions</p>
+      <p>
+        If you have any questions about the practices of this site, please contact us using our provided
+        <a href="https://aggiemap.tamu.edu/feedback.asp" target="_blank" aria-label="Feedback for link. Opens in new tab.">feedback form</a>.
+      </p>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

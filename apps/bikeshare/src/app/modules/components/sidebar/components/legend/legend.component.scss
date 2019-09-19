@@ -1,0 +1,21 @@
+@import 'libs/sass/components/sidebar';
+
+.legend-item {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+
+  margin-bottom: 0.8rem;
+  font-size: 0.875rem;
+}
+
+.image-container {
+  margin-right: 0.5rem;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+img {
+  height: 100%;
+  width: 100%;
+}

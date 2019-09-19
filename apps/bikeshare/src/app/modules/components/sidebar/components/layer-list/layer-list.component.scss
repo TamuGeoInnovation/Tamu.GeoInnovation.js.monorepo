@@ -1,0 +1,29 @@
+@import 'libs/sass/components/sidebar';
+
+.layer-item {
+  cursor: pointer;
+  color: #6e6e6e;
+  font-size: 0.875rem;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    height: 0.4rem;
+    width: 0.4rem;
+    border-radius: 99rem;
+    border: 1px solid #6e6e6e;
+    margin-right: 0.5rem;
+  }
+
+  &.loaded {
+    color: initial;
+
+    &::before {
+      background: #6e6e6e;
+    }
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}

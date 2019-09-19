@@ -1,0 +1,1251 @@
+/* ==========================================================================
+    main.scss - Contains all front-end styles for the web application
+    Application: Texas A&M Aggie Map
+    Author: Edgar Hernandez - TAMU GeoInnovation Services © 2018
+   ========================================================================== */
+
+//
+//
+// Note: This project requires a SASS compiler. Changes made here will be compiled into the <main.css> file utilized by the browser.
+// For more information on LESS visit: https://sass-lang.com/
+//
+// As it stands, this project is built with Angular and SASS compiled and bundled by Webpack.
+//
+//
+
+//  ==========================================================================
+//   GRID
+//  ==========================================================================
+
+@import 'libs/sass/1140';
+
+//  ==========================================================================
+//   VARIABLES
+//  ==========================================================================
+
+@import 'libs/sass/variables';
+
+//  ==========================================================================
+//   SASS Mixins
+//  ==========================================================================
+
+@import 'libs/sass/mixins';
+
+//  ==========================================================================
+//   QUICKFLEXBOX CLASSES
+//  ==========================================================================
+
+@import 'libs/sass/dom_flexbox';
+
+//  ==========================================================================
+//   Spacing Classes
+//  ==========================================================================
+
+@import 'libs/sass/spacing';
+
+//  ==========================================================================
+//   Spacing Classes
+//  ==========================================================================
+
+@import 'libs/sass/components/datetime-picker';
+
+//  ==========================================================================
+//   DEFAULTS
+//  ==========================================================================
+
+html,
+body {
+  font-size: 16px;
+  font-family: $moriston-fStack;
+  margin: 0;
+  padding: 0;
+  top: 0px;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  //Disable pull to refresh
+  overscroll-behavior-y: contain;
+}
+
+body.scroll {
+  -webkit-overflow-scrolling: touch; //Preserve mobile momentum scrolling
+  overflow-y: scroll;
+}
+
+.infowindow .window .top .right .user .titlebar .title {
+  font-family: $secondary-fStack;
+  font-weight: bold;
+  font-size: 14pt;
+  font-size: 18pt;
+}
+
+body p {
+  padding-bottom: 0.75rem;
+  color: inherit;
+  position: inherit;
+  font-weight: inherit;
+
+  &.large {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #616161;
+  }
+}
+
+ul {
+  display: block;
+  margin-bottom: 1rem !important;
+
+  &.bullet {
+    list-style: disc;
+    list-style-position: outside;
+    margin-left: 2rem;
+  }
+}
+
+li {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  color: inherit;
+  position: relative;
+}
+
+p,
+li,
+a {
+  line-height: 1.7;
+}
+
+a {
+  color: #500000;
+  text-decoration: underline;
+  font-size: inherit;
+  font-weight: 500;
+
+  &.no-decor {
+    text-decoration: none !important;
+  }
+}
+
+a:link {
+  color: #500000;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #500000;
+  text-decoration: underline;
+}
+
+a:hover,
+a:active,
+a:focus {
+  color: #500000;
+}
+
+a:visited {
+  text-decoration: none;
+  text-decoration: underline;
+}
+
+select {
+  width: 100%;
+  padding: 0.5rem;
+}
+
+#footer a {
+  // color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+#footer a:visited {
+  // color: #ffffff;
+  text-decoration: none;
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: 300;
+}
+
+h2 {
+  font-size: 2.1875rem;
+  font-weight: 400;
+  margin-top: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+
+h3 {
+  font-size: 1.875rem;
+  font-weight: 300;
+  margin-top: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+
+h4 {
+  font-size: 1.875rem;
+  font-weight: 300;
+  margin-top: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $tungsten-fStack;
+  line-height: 1.2;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+
+  &.short-border {
+    display: inline-block;
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 0.5rem;
+  }
+
+  &.long-border {
+    display: block;
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 0.5rem;
+  }
+}
+
+app-root {
+  @include flexbox();
+  @include flex-direction(column);
+  height: inherit;
+}
+
+.accessible-viewfinder,
+.accessible-viewfinder-features {
+  z-index: 999;
+}
+
+.accessible-viewfinder {
+  position: fixed;
+  height: 15rem;
+  width: 15rem;
+  left: 50%;
+  top: 50%;
+  border: 2px solid #2979ff;
+  @include transform(translateX(-50%) translateY(-50%));
+}
+
+.accessible-viewfinder-features {
+  position: fixed;
+  background: #f5f5f5;
+  width: 40rem;
+  height: 8.5rem;
+  overflow: hidden;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  left: 50%;
+  top: calc(50% + 15rem);
+  border-radius: 3px;
+  @include transform(translateX(-50%) translateY(-50%));
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(center);
+
+  .feature-item-container {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(flex-start);
+    @include flex-wrap(wrap);
+  }
+
+  .feature-item {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(center);
+    @include align-items(center);
+    font-size: 0.75rem;
+    padding: 0.5rem;
+
+    p {
+      padding-bottom: 0;
+    }
+
+    .feature-index {
+      margin-right: 0.5rem;
+
+      .wrapper {
+        width: 1.5rem;
+        height: 1.5rem;
+        border: 1px solid #bdbdbd;
+        border-radius: 5px;
+        @include flexbox();
+        @include flex-direction(row);
+        @include justify-content(center);
+        @include align-items(center);
+      }
+
+      p {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.breadcrumbs {
+  @include flexbox();
+  @include flex-direction(row);
+  font-size: 0.8rem;
+  font-weight: 500;
+
+  & > p {
+    color: #9e9e9e;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+
+  & > p:last-child {
+    color: #626262;
+  }
+
+  & > p:not(:last-child) {
+    &::after {
+      content: '>';
+      display: inline-block;
+      position: relative;
+      margin: 0 0.5rem;
+      color: #9e9e9e;
+    }
+  }
+}
+
+.profile-container {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(flex-start);
+
+  & > .profile {
+    padding: 0 1rem;
+
+    &:first-child {
+      padding-left: 0;
+    }
+  }
+
+  & > .profile > .name {
+    font-weight: 500;
+  }
+
+  & > .profile > .title {
+    font-size: 0.85rem;
+    color: #757575;
+    max-width: 10rem;
+  }
+}
+
+.address {
+  p {
+    padding-bottom: 0rem;
+  }
+}
+
+input[type='text'],
+input[type='email'],
+textarea {
+  font-family: $moriston-fStack;
+  background-color: $form-grey;
+  border: 1px solid transparent;
+  color: #323232;
+  outline: none;
+  box-sizing: border-box;
+  font-size: 0.9rem;
+  @include transition(border-color 0.25s);
+
+  &:focus {
+    border-color: #6150508e;
+  }
+}
+
+input[type='text'] {
+  padding: 0.5rem 0.75rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+textarea,
+input[type='email'] {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.feedback-form {
+  width: 50%;
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 0.75rem;
+
+    &:focus {
+      & + label {
+        color: black;
+      }
+    }
+
+    &[type='submit'] {
+      display: inline-block;
+      width: auto;
+      padding: 0.75rem 1rem;
+      background: #500000;
+      color: #f5f5f5;
+      cursor: pointer;
+
+      &:focus {
+        background: lighten(#500000, 5%);
+      }
+    }
+  }
+
+  textarea {
+    min-height: 10rem;
+  }
+
+  label {
+    font-weight: 500;
+    color: #616161;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+  }
+}
+
+.input-item {
+  margin: 2.5rem 0;
+  position: relative;
+
+  label {
+    position: absolute;
+    top: -1.6rem;
+    left: 0;
+  }
+
+  &.last {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.link,
+.action {
+  color: #0079c1;
+  cursor: pointer;
+  padding-bottom: 0;
+}
+
+.help {
+  position: fixed;
+  bottom: 0.75rem;
+  left: 1rem;
+  height: 1rem;
+  width: 1rem;
+  z-index: 1;
+  color: #6e6e6e;
+  background-color: #ffffff;
+  padding: 0.5rem;
+  border-radius: 99rem;
+  cursor: pointer;
+  @include transition(color 0.3s);
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(center);
+  @include align-items(center);
+
+  span {
+    font-size: 20px;
+  }
+
+  &:hover {
+    color: #2e2e2e;
+  }
+
+  &.active {
+    .topics {
+      display: initial;
+    }
+  }
+}
+
+.help .topics {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background: #ffffff;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  display: none;
+
+  a {
+    text-decoration: none;
+    color: #616161;
+
+    &:hover,
+    &:focus {
+      color: #212121;
+    }
+  }
+
+  p {
+    font-size: 0.8rem;
+    padding-bottom: 0.25rem;
+    position: relative;
+    white-space: nowrap;
+  }
+}
+
+//  ==========================================================================
+//   NEW LISTS
+//  ==========================================================================
+/*BUTTONS */
+
+.mapButton {
+  display: inline-block;
+}
+
+.semi-bold {
+  font-weight: 500;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.hidden {
+  display: none;
+}
+
+.loader {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: #500000;
+  z-index: 9999;
+  opacity: 1;
+  text-align: center;
+  color: #ffffff;
+  @include transition(opacity 0.3s);
+
+  .content {
+    width: 20rem;
+    font-family: $primary-fStack;
+  }
+
+  .progress-bar {
+    margin-top: 2rem;
+    background: #ffffff;
+    height: 0.3rem;
+    width: 100%;
+    border-radius: 99rem;
+    @include transition(all 0.3s);
+    @include transform(translateZ(0));
+
+    &.anim {
+      @include animation(do-progress 15s forwards);
+    }
+  }
+
+  p {
+    margin-top: 1.5rem;
+    font-family: $moriston-fStack;
+    font-size: 0.8rem;
+    font-weight: 300;
+    font-style: italic;
+    color: #eeeeee;
+  }
+
+  &.fade-out {
+    opacity: 0;
+  }
+}
+
+@keyframes do-progress {
+  0% {
+    max-width: 0%;
+  }
+
+  100% {
+    max-width: 90%;
+  }
+}
+
+.handle {
+  height: 0.25rem;
+  width: 2rem;
+  background: #bdbdbd;
+  border-radius: 99rem;
+  position: absolute;
+  left: 50%;
+  top: 0.65rem;
+  @include transform(translateX(-50%));
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+
+//  ==========================================================================
+//   ESRI SPECIFIC
+//  ==========================================================================
+body.mapping {
+  @include flexbox();
+  @include flex-direction(column);
+
+  app-root {
+    @include flex(1);
+  }
+}
+
+.esri-zoom .esri-widget--button:last-child {
+  border-top: solid 1px rgba(50, 50, 50, 0.25);
+}
+
+.esri-component.esri-attribution.esri-widget {
+  display: none;
+}
+
+.copy-val {
+  position: absolute;
+  height: 0;
+  width: 0;
+  opacity: 0;
+  display: block;
+  z-index: -999999;
+}
+
+.copy-link {
+  overflow: hidden !important;
+  white-space: nowrap;
+  margin-right: 0.15rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  max-width: 80%;
+}
+
+.component-name {
+  font-weight: 600;
+  border-bottom: #e0e0e0 1px solid;
+  padding-bottom: 0.5rem;
+}
+
+.toggle-dots {
+  display: none;
+  @include flex-direction(row);
+  @include justify-content(center);
+  position: absolute;
+  bottom: 0.25rem;
+  left: 0;
+  width: 100%;
+
+  & > div {
+    height: 0.5rem;
+    width: 0.5rem;
+    border-radius: 99rem;
+    background: #bdbdbd;
+    margin: 0.5rem 0.3rem;
+
+    &.active {
+      background: #616161;
+    }
+  }
+}
+
+.esri-component.esri-track.esri-widget--button.esri-widget {
+  margin-left: 0;
+  border-radius: 99rem;
+  padding: 1.25rem;
+
+  span {
+    font-size: 1.25rem;
+  }
+}
+
+//  ==========================================================================
+//   Directions Icons
+//  ==========================================================================
+.esriDMTBearLeft {
+  background-image: url(/assets/images/maneurvers/bear-left.png);
+}
+
+.esriDMTStraight {
+  background-image: url(/assets/images/maneurvers/straight.png);
+}
+
+.esriDMTBearRight {
+  background-image: url(/assets/images/maneurvers/bear-right.png);
+}
+
+.esriDMTForkLeft {
+  background-image: url(/assets/images/maneurvers/fork-left.png);
+}
+
+.esriDMTForkRight {
+  background-image: url(/assets/images/maneurvers/fork-right.png);
+}
+
+.esriDMTTurnLeft {
+  background-image: url(/assets/images/maneurvers/left.png);
+}
+
+.esriDMTTurnRight {
+  background-image: url(/assets/images/maneurvers/right.png);
+}
+
+.esriDMTSharpLeft {
+  background-image: url(/assets/images/maneurvers/sharp-left.png);
+}
+
+.esriDMTSharpRight {
+  background-image: url(/assets/images/maneurvers/sharp-right.png);
+}
+
+.esriDMTSharpForkLeft {
+  background-image: url(/assets/images/maneurvers/fork-left.png);
+}
+
+.esriDMTForkRight {
+  background-image: url(/assets/images/maneurvers/fork-right.png);
+}
+
+.esriDMTTurnLeftRight {
+  background-image: url(/assets/images/maneurvers/left-right.png);
+}
+
+.esriDMTTurnRightLeft {
+  background-image: url(/assets/images/maneurvers/right-left.png);
+}
+
+.esriDMTTurnLeftLeft {
+  background-image: url(/assets/images/maneurvers/left-left.png);
+}
+
+.esriDMTTurnRightRight {
+  background-image: url(/assets/images/maneurvers/right-right.png);
+}
+
+.esriDMTDepart {
+  background-image: url(/assets/images/maneurvers/start.png);
+}
+
+.esriDMTStop {
+  background-image: url(/assets/images/maneurvers/end.png);
+}
+
+//  ==========================================================================
+//   APPLICATION STATUS
+//  ==========================================================================
+.error {
+  color: #f44336;
+  font-weight: 400;
+}
+
+//  ==========================================================================
+//   BUTTONS AND INPUT BOXES
+//  ==========================================================================
+.button,
+button[type='submit'] {
+  line-height: initial;
+  padding: 0.9rem;
+  text-align: center;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  width: 100%;
+  border-radius: 99rem;
+  cursor: pointer;
+
+  background: #0079c1;
+  color: #ffffff;
+
+  &:hover {
+    background: #005e95;
+  }
+
+  &.secondary {
+    background: none;
+    border-color: #0079c1;
+    color: darken(#0079c1, 7%);
+
+    &:hover {
+      background: #f5f5f5;
+      color: darken(#0079c1, 10%);
+    }
+  }
+}
+
+//  ==========================================================================
+//   Toast Notification
+//  ==========================================================================
+.notification {
+  background: #323232;
+  font-size: 0.9rem;
+  min-width: 288px;
+  max-width: 568px;
+  max-height: 70px;
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  border-radius: 2px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  color: #ffffff;
+  box-sizing: border-box;
+  padding: 0.9em 1.5em;
+  text-align: left;
+  z-index: 99999;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
+
+  &.action {
+    padding-right: 0;
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+    @include justify-content(space-between);
+  }
+
+  & > span,
+  a {
+    position: relative;
+    display: inline;
+    vertical-align: text-top;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  .action {
+    font-weight: 400;
+    font-size: 1.075em;
+    color: #ffff00;
+    padding-left: 2rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    padding-right: 2rem;
+  }
+}
+
+.toast {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(center);
+  @include align-items(center);
+  position: fixed;
+  background: #ffffff;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15); // opacity: 0;
+  padding: 1.5rem 1.5rem;
+  box-sizing: border-box;
+  bottom: 0;
+  left: 50%;
+  z-index: 1;
+  @include transition(transform 0.15s cubic-bezier(0.25, 0, 0.25, 1));
+  @include transform(translateX(-50%) translateY(110%));
+
+  .description {
+    font-size: 0.9rem;
+    max-width: 30rem;
+    color: #616161;
+  }
+
+  .image {
+    margin-right: 1rem;
+
+    img {
+      width: 2.5rem;
+      height: auto;
+    }
+  }
+
+  .close {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    font-size: 0.9rem;
+    border-radius: 99rem;
+    padding: 0.25rem;
+    cursor: pointer;
+
+    &:hover {
+      background: #e0e0e0;
+    }
+  }
+
+  &.slide-in {
+    @include transform(translateX(-50%) translateY(-25%));
+  }
+}
+
+.notification.animate-out {
+  -webkit-animation-direction: reverse;
+  animation-direction: reverse;
+}
+
+.notification.animate-in,
+.notification.animate-out {
+  -webkit-animation-name: animScale;
+  animation-name: animScale;
+  -webkit-animation-duration: 0.25s;
+  animation-duration: 0.25s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+@-webkit-keyframes animScale {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 40px, 0);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes animScale {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 40px, 0);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+}
+
+.description i {
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
+//  ==========================================================================
+//   Loader
+//  ==========================================================================
+.spinning-loader {
+  margin: 10px auto 0 auto;
+  font-size: 10px;
+  position: relative;
+  text-indent: -9999em;
+  border-top: 0.3em solid rgba(0, 0, 0, 0.2);
+  border-right: 0.3em solid rgba(0, 0, 0, 0.2);
+  border-bottom: 0.3em solid rgba(0, 0, 0, 0.2);
+  border-left: 0.3em solid transparent;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 0.75s infinite linear;
+  animation: load8 0.75s infinite linear;
+}
+
+.spinning-loader,
+.spinning-loader:after {
+  border-radius: 50%;
+  width: 2em;
+  height: 2em;
+}
+
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+//  ==========================================================================
+//   Action feedback
+//  ==========================================================================
+
+.copy-button {
+  color: $main-blue;
+  padding: 0.8rem 0.75rem;
+  font-weight: 600;
+  width: initial;
+  position: relative;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::before {
+    content: attr(copy-label);
+    font-size: 0.6rem;
+    left: 50%;
+    top: 50%;
+    @include transform(translateX(-50%) translateY(-50%));
+    opacity: 0;
+    position: absolute;
+    color: lighten($main-blue, 5%);
+  }
+
+  &.copying {
+    &::before {
+      @include animation(float-text 0.7s);
+    }
+  }
+}
+
+@include keyframes(float-text) {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+    @include transform(translateX(-50%) translateY(-175%));
+  }
+
+  100% {
+    opacity: 0;
+    @include transform(translateX(-50%) translateY(-250%));
+  }
+}
+
+// Changelog Markdown styles
+// As to not remove view encapsulation for those component styles
+.markdown {
+  line-height: 1.4;
+
+  h2,
+  h3 {
+    font-size: 1rem;
+    font-family: $moriston-fStack;
+    text-transform: none;
+    letter-spacing: initial;
+    font-weight: 600;
+    color: #424242;
+  }
+
+  h2 {
+    margin-top: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  h3 {
+    font-size: 0.95rem;
+    margin-left: 0.75rem;
+    margin-bottom: 0.5rem;
+
+    & ~ p {
+      margin-left: 0.75rem;
+      display: block;
+    }
+
+    & ~ ul {
+      margin-left: 1.25rem;
+    }
+  }
+
+  p {
+    padding-bottom: 0.5rem;
+  }
+
+  code {
+    font-family: 'Consolas';
+    font-size: 0.95rem;
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    line-height: 1;
+    border-radius: 5px;
+    background: #eeeeee;
+    color: #ef5350;
+  }
+
+  ul {
+    // margin-bottom: .25rem !important;
+    font-size: 0.95rem;
+    list-style-position: inside;
+
+    li {
+      padding: 0;
+
+      ul {
+        margin-left: 1.25rem;
+        margin-bottom: 0 !important;
+      }
+    }
+  }
+
+  .changelong-event-body-media {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(center);
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+
+    & > a {
+      @include flexbox();
+      @include flex-direction(row);
+      @include align-items(center);
+      text-decoration: none;
+      font-size: 0.8rem;
+      text-align: center;
+      color: #616161;
+      font-weight: 400;
+      max-width: 47%;
+      margin: 0 1.5rem;
+    }
+
+    figure {
+      margin: 0;
+      font-style: italic;
+      @include flexbox();
+      @include flex-direction(column);
+      @include align-items(center);
+    }
+
+    figcaption {
+      font-size: 0.8rem;
+      text-align: center;
+      color: #616161;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      max-height: 25vh;
+      height: auto;
+      width: auto;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .material-icons {
+    font-size: 0.8rem;
+  }
+}
+
+//  ==========================================================================
+//   MEDIA QUERIES MEDIUM
+//  ==========================================================================
+
+@media only screen and (max-width: 960px) {
+  app-footer #footer {
+    .footer-toggle.context-show {
+      @include flexbox();
+    }
+
+    .footer-content {
+      max-height: 0;
+      display: block;
+      overflow: hidden;
+      will-change: max-height;
+      @include transition(max-height 0.3s);
+    }
+
+    .footer-content.active {
+      max-height: 9rem;
+    }
+
+    .footer-toggle.context-hide.active {
+      @include flexbox();
+      padding-bottom: 0.5rem;
+    }
+
+    .footer-toggle.context-show.active {
+      display: none;
+    }
+  }
+
+  .toast {
+    width: 60%;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+
+  .container12,
+  .container16 {
+    width: 87% !important;
+  }
+
+  .column1,
+  .column2,
+  .column3,
+  .column4,
+  .column5,
+  .column6,
+  .column7,
+  .column8,
+  .column9,
+  .column10,
+  .column11,
+  .column12 {
+    width: 100% !important;
+  }
+
+  .feedback-form {
+    width: 65%;
+  }
+
+  // Hide main header and footer for mobile view
+  body app-header {
+    display: none;
+  }
+
+  body app-footer {
+    display: none;
+  }
+
+  .notification {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  .toast {
+    width: 100%;
+
+    &.slide-in {
+      @include transform(translateX(-50%) translateY(0));
+    }
+  }
+}
+
+@media only screen and (max-width: 478px) {
+  .profile-container {
+    @include flex-direction(column);
+
+    .profile {
+      padding: 0.5rem 0;
+    }
+  }
+}
+
+@media only screen and (max-width: 350px) {
+  .loader {
+    .content {
+      width: 75%;
+    }
+  }
+}

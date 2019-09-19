@@ -1,0 +1,65 @@
+@import 'libs/sass/mixins';
+
+.travel-modes {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-around);
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.checkbox {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+  position: relative;
+
+  input[type='checkbox'] {
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  label {
+    font-size: 0.88rem;
+    margin-left: 0.35rem;
+    font-family: 'Avenir Next W00';
+  }
+
+  &.disabled {
+    color: #757575;
+
+    .material-icons {
+      color: inherit;
+
+      &.active {
+        color: inherit;
+      }
+    }
+  }
+
+  .icon-container {
+    line-height: 0;
+  }
+
+  .material-icons {
+    color: #616161;
+
+    &.active {
+      color: #0079c1;
+    }
+  }
+}
+
+.options-container {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  @include align-items(center);
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}

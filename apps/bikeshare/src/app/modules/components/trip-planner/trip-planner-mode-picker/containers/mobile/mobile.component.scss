@@ -1,0 +1,21 @@
+@import 'libs/sass/mixins';
+@import 'libs/sass/components/trip_direction_toggle';
+
+.travel-modes {
+  margin-top: 0.4rem;
+  margin-bottom: 0.6rem;
+  @include align-items(center);
+
+  & > div {
+    // From trip_direction_toggle partial
+    @extend %toggle;
+
+    // From mixins
+    @include no-select();
+
+    .material-icons {
+      // From trip_direction_toggle partial
+      @extend %material-icons;
+    }
+  }
+}

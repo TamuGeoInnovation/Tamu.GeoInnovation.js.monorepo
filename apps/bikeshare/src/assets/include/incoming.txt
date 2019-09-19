@@ -1,0 +1,57 @@
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style>
+body, html {
+  height: 100%;width:100%;
+}
+#donebox {
+width:100%;
+  height: 100%;background-image:url('/images/endcommentgb.png');
+}
+</style>
+</head>
+<%
+Dim ObjSendMail
+Set ObjSendMail = CreateObject("CDO.Message") 
+'Dim asdf,bbb,cccMark A. Hussey, Interim President <president@tamu.edu>
+'asdf=Request.Form("senderinfo")
+abbb=Request("sender_name")
+bbb=Request("senderinfo")
+ccc=Request("comments")
+'senderEmail = Request.Form["From"]
+'commentEmail = Request.Form["feedback"]
+
+ObjSendMail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendusing") = 2 'Send the message using the network (SMTP over the network).
+ObjSendMail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserver") ="smtp-relay.tamu.edu"
+ObjSendMail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = 25 ' or 587
+ObjSendMail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpusessl") = 1
+ObjSendMail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") = 60
+
+'ObjSendMail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate") = 0 'basic (clear-text) authentication
+'ObjSendMail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendusername") ="aggiemap@tamu.edu" 'your Google apps mailbox address
+'ObjSendMail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendpassword") ="" 'Google apps password for that mailbox
+
+ObjSendMail.Configuration.Fields.Update
+
+
+ObjSendMail.Subject = "Aggiemap Feedback"
+ObjSendMail.From = bbb
+ObjSendMail.To = "aggiemap@tamu.edu"
+ObjSendMail.Cc = "cmatus@tamu.edu"
+objSendMail.BCC = "fhwang@tamu.edu"
+'ObjSendMail.From = ObjSendMail.From & "<br>Sender: " & bbb
+'ObjSendMail.SenderName = abbb
+
+ObjSendMail.HTMLBody = "From " & abbb & "<br><hr>" & ccc
+'ObjSendMail.TextBody = ccc
+ObjSendMail.BodyPart.Charset = "utf-8"
+
+ObjSendMail.Send
+Set ObjSendMail = Nothing 
+%>
+
+<div id=donebox>
+Thank your for your comment!
+<a href="/index.html">Back to Map</a></div>
+<script>window.location = "/index.html";</script>

@@ -1,0 +1,4 @@
+<div [class.active]="copying | async" [text]="coordText" (copying)="copying = $event" *ngIf="coords?.latitude && coords.longitude" class="point-coords" clipboard-copy alt="Copy" title="Copy">
+  <p>Latitude: {{ coords.latitude }}</p>
+  <p>Longitude: {{ coords.longitude }}</p>
+</div>

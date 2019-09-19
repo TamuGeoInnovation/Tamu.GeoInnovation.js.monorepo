@@ -9,11 +9,8 @@ jobs:
           name: Install Dependencies
           command: npm install
       - run:
-          name: Build AggieMap
-          command: npm run build -- --project=aggiemap --prod
-      - run:
-          name: Build Trees
-          command: npm run build -- --project=angular-aggiemap-trees --prod
+          name: Build BikeShare
+          command: npm run build -- --project=bikeshare --prod
       - run:
           name: Run Tests
           command: npm run test -- -w 1 --coverage --coverageReporters=text-lcov | ./node_modules/coveralls/bin/coveralls.js

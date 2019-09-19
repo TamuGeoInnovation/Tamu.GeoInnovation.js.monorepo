@@ -1,0 +1,28 @@
+<div>
+  <div class="sidebar-component-name">
+    <p>General</p>
+  </div>
+
+  <div class="sidebar-component-content-container">
+    <!-- // TODO: For disabled state, check siblings for any existing accessible mode. -->
+    <checkbox (changed)="updateOption('accessible', $event)" [checked]="(getOptionvalue('accessible') | async)" [disabled]="(currentRuleAccessibility | async) === false" [label]="'Accessible Friendly Directions'" [description]="'Will attempt to calculate a route with accessible access such as ramps, doors, etc.'"></checkbox>
+
+    <checkbox *ngIf="(isDev | async)" (changed)="updateOption('nearest_door', $event)" [checked]="(getOptionvalue('nearest_door') | async)" [disabled]="true" [label]="'Use Nearest Door'" [description]="'Overrides trip start and end points using an algorithm that finds the nearest doors (if building intersect) between them.'"></checkbox>
+
+    <checkbox *ngIf="(isDev | async)" (changed)="updateOption('a_b_networks', $event)" [checked]="(getOptionvalue('a_b_networks') | async)" [disabled]="true" [label]="'Use A/B Networks'" [description]="'If A/B networks are available, select a random one on each trip calculation. Manual network selection will disable this feature.'"></checkbox>
+
+    <checkbox *ngIf="(isDev | async)" (changed)="updateOption('polygon_barriers', $event)" [checked]="(getOptionvalue('polygon_barriers') | async)" [disabled]="true" [label]="'Use Polygon Barriers'" [description]="'If selected, every trip calculation will include the construction layer as polygon barriers in the request.'"></checkbox>
+  </div>
+</div>
+
+<!-- <div *ngIf="(ModeOptions | async) && (ModeOptions | async)?.length > 0">
+  <div class="sidebar-component-name">
+    <p>Mode Specific</p>
+  </div>
+
+  <div class="sidebar-component-content-container">
+    <checkbox *ngFor="let option of (ModeOptions | async)" (changed)="updateOption(option, $event)" [disabled]="false" [checked]="(getOptionvalue('parking_pass') | async)" [label]="option.displayName" [description]="option.description"></checkbox>
+  </div>
+</div> -->
+
+<ng-template render-host></ng-template>

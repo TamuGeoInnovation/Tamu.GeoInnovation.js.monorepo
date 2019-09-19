@@ -1,0 +1,10 @@
+<div class="sidebar-component-name">
+  <span class="material-icons" *ngIf="responsive?.isMobile" (click)="backAction()">arrow_back</span>
+  <p>Layers</p>
+</div>
+
+<div class="sidebar-component-content-container">
+  <p *ngFor="let item of (layers | async)" class="layer-item" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible }" (click)="toggleLayer(item)">
+    {{ item.title }}
+  </p>
+</div>

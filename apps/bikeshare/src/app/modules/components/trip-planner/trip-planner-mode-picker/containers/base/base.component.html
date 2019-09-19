@@ -1,0 +1,20 @@
+<div class="travel-modes">
+  <gisc-trip-planner-mode-toggle [activeModes]="[1, 2]" [iconName]="'directions_walk'" [name]="'Walking'" [label]="'Routing Mode: Walking'"></gisc-trip-planner-mode-toggle>
+
+  <gisc-trip-planner-mode-toggle [activeModes]="[7]" [iconName]="'directions_bike'" [name]="'Biking'" [label]="'Routing Mode: Biking'"></gisc-trip-planner-mode-toggle>
+
+  <gisc-trip-planner-mode-toggle [activeModes]="[3, 4, 8]" [iconName]="'directions_car'" [name]="'Driving'" [label]="'Routing Mode: Driving'"></gisc-trip-planner-mode-toggle>
+
+  <gisc-trip-planner-mode-toggle [activeModes]="[5, 6]" [iconName]="'directions_bus'" [name]="'Bus'" [label]="'Routing Mode: Bus'"></gisc-trip-planner-mode-toggle>
+</div>
+
+<div class="options-container">
+  <div>
+    <!-- Trip from and to input components. By default, two blanks are automatically generated given that a trip has a minimum of two points -->
+    <trip-planner-time-picker></trip-planner-time-picker>
+  </div>
+
+  <div>
+    <p class="action bold" [routerLink]="['./options']">Options</p>
+  </div>
+</div>

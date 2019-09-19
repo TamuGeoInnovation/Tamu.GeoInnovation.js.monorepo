@@ -1,0 +1,71 @@
+@import 'libs/sass/mixins';
+
+:host > div:first-child {
+  width: 100%;
+  padding: 1rem 0.5rem;
+  padding-bottom: 0.25rem;
+  padding-top: 0.5rem;
+  background: #ffffff;
+  box-sizing: border-box;
+  border-bottom-right-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  @include flexbox();
+  @include flex-direction(column);
+
+  // Set default start value for iOS
+  @include transform(translateY(100%));
+}
+
+#top {
+  @include flexbox();
+  @include flex-direction(row);
+
+  & > div:nth-child(2) {
+    @include flex(2);
+  }
+}
+
+#bottom {
+  @include flexbox();
+  @include flex-direction(column);
+}
+
+.points {
+  @include flexbox();
+  @include flex-direction(column);
+
+  & > div {
+    position: relative;
+  }
+
+  span {
+    position: absolute;
+    font-size: 0.75rem;
+    top: 50%;
+    padding: 0.25rem;
+    width: 0.5rem;
+    display: block;
+    background: #bdbdbd;
+    color: #fafafa;
+    border-radius: 99rem;
+    @include transform(translateY(-50%));
+  }
+}
+
+.action {
+  color: #757575;
+
+  .material-icons {
+    font-size: 1.25rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+input {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 1rem;
+  background: none;
+  border: 1px solid #e0e0e0;
+  width: 100%;
+}

@@ -1,0 +1,4 @@
+<select [(ngModel)]="model" (change)="changeEvent($event)" [disabled]="disabled">
+  <option value="undefined">{{ placeholder ? placeholder : 'Select an option' }}</option>
+  <option *ngFor="let item of data" [value]="getDataItemValue(item, valueTemplate)">{{ getDataItemValue(item, displayTemplate) }}</option>
+</select>

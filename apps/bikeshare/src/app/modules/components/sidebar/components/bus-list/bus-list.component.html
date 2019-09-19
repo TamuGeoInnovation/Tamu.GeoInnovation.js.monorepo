@@ -1,0 +1,18 @@
+<div class="sidebar-component-name">
+  <span class="material-icons" *ngIf="responsive?.isMobile" (click)="backAction()">arrow_back</span>
+  <p>AggieSpirit Bus Routes</p>
+</div>
+
+<div class="sidebar-component-content-container">
+  <div *ngIf="loaded !== true" class="flex flex-column justify-center align-center leader-2 trailer-2">
+    <div class="spinning-loader"></div>
+  </div>
+
+  <div class="group" *ngFor="let group of (routes | async | groupBy: 'Group.Name':'Group' | orderBy: 'identity.Order')">
+    <p class="group-name">{{ group.identity.Name }}</p>
+
+    <div class="routes">
+      <gisc-bus-route *ngFor="let route of group.items" [route]="route"></gisc-bus-route>
+    </div>
+  </div>
+</div>

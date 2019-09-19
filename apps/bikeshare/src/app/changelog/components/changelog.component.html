@@ -1,0 +1,39 @@
+<div class="container12 flex justify-center">
+  <div class="column9">
+    <div class="breadcrumbs leader-2 trailer-1">
+      <p><a routerLink="/">Aggie Map</a></p>
+      <p><a href="javascript:void(0)">Changelog</a></p>
+    </div>
+
+    <div class="leader-1 trailer-2">
+      <h1 class="long-border">Changelog &mdash; See What's New</h1>
+    </div>
+
+    <div *ngFor="let event of events" class="changelog-event">
+      <div class="changelog-event-date">
+        <div>
+          {{ event.date | date }}
+        </div>
+      </div>
+      <div class="changelog-event-body">
+        <h3>{{ event.title }}</h3>
+
+        <div class="changelog-event-tag-container">
+          <span *ngFor="let tag of event.keywords">{{ tag }}</span>
+        </div>
+
+        <div class="changelog-event-body-description markdown" [innerHTML]="event.description | safeHtml"></div>
+        <div class="changelong-event-body-media" *ngIf="event.media && event.media.length > 0">
+          <a *ngFor="let item of event.media" [href]="item.url" target="_blank">
+            <figure>
+              <img [src]="item.url" [alt]="item.title" [title]="item.title" />
+              <figcaption>{{ item.title }}</figcaption>
+            </figure>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

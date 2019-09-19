@@ -1,0 +1,21 @@
+<div>
+  <div>
+    <!-- Trip from and to input components. By default, two blanks are automatically generated given that a trip has a minimum of two points -->
+    <search *ngFor="let stop of (stops | async)" (result)="setSearchResultAsTripStop($event)" (dirty)="eventClearRoute($event)" (empty)="eventClearStop($event)" [placeholder]="'Choose point or click on the map'" [canGeolocate]="true" [value]="stop?.attributes?.name" [index]="stop.index" [rightActionIcon]="'close'"></search>
+  </div>
+
+  <!-- Trip planner connection service dropdown select element. Used in localhost and dev testing modes -->
+  <trip-planner-connection-select *ngIf="(dev | async)"></trip-planner-connection-select>
+
+  <!-- Trip planner mode picker element. Sets the routing mode for the trip planner service.-->
+  <trip-planner-mode-picker></trip-planner-mode-picker>
+
+  <!-- FOR TESTING -->
+  <!-- <div *ngFor="let stop of stops | async">
+        <p>{{stop?.attributes?.name}}</p>
+        <div>{{stop?.attributes | json}}</div>
+        &nbsp;
+    </div> -->
+
+  <trip-planner-directions></trip-planner-directions>
+</div>

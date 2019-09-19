@@ -1,0 +1,43 @@
+<div class="directions-container">
+  <div class="direction-embed" *ngIf="busStopsList.length > 0">
+    <div [ngClass]="{ 'has-misc': lingerMinutes != null || timetable.length > 0 }">
+      <p>
+        Ride <strong>Aggie Spirit</strong> route <strong>{{ routeNumber }}</strong> from <strong>{{ now.stops[now.first].name }}</strong> at <strong>{{ getDateString(now.stops[now.first].time) }}</strong
+        >.
+      </p>
+
+      <p *ngIf="lingerMinutes != null">Estimated {{ lingerMinutes }} minute wait at bus stop.</p>
+
+      <p *ngIf="timetable.length > 1">
+        Also departs at
+        <span *ngFor="let block of timetable.slice(1, 3); let i = index"
+          ><strong>{{ getDateString(block.stops[block.first].time) }}</strong> {{ i == timetable.slice(1, 3).length - 2 ? 'and ' : '' }}</span
+        >
+      </p>
+    </div>
+
+    <div class="stops-accordion" *ngIf="busStopsList.length > 0">
+      <p class="title" (click)="timeTableExpanded = !timeTableExpanded" [ngClass]="{ expanded: timeTableExpanded }"><i class="material-icons">keyboard_arrow_right</i> {{ stopCount }} Stops</p>
+
+      <div accordion [accordionExpanded]="timeTableExpanded" [animate]="true" *ngIf="busStopsList.length > 1">
+        <ul>
+          <li *ngFor="let stop of busStopsList">
+            {{ stop.name }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <p>
+        Get off at <strong>{{ now.stops[now.last].name }}</strong> at ~{{ getDateString(now.stops[now.last].time) }}.
+      </p>
+    </div>
+
+    <div *ngIf="timetable.length <= 0">
+      Board at <b>{{ busStops[0].name }}</b
+      >, ride for <b>{{ stopCount + 1 }}</b> stop{{ stopCount !== 0 ? 's' : '' }} and get off at <b>{{ busStops[1].name }}</b>
+    </div>
+    <!-- <div class="bus-load" *ngIf="passenger_load != null && bus_count != null">{{ passenger_load }}% full across {{ bus_count }} buses.</div> -->
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<div *ngIf="loaded !== true" class="flex flex-column justify-center align-center">
+  <div class="spinning-loader"></div>
+</div>
+
+<div class="table-container" *ngIf="(timetable | async) as tt">
+  <!-- Display error if there are no time rows in the time table -->
+  <div *ngIf="tt.length == 0" class="card pre-1 post-1 leader-1 flex flex-column justify-center align-center">
+    <i class="material-icons">error_outline</i>
+    <p>No running service for this route.</p>
+  </div>
+
+  <!-- Show the time table if there are more than 0 time rows -->
+  <table *ngIf="tt.length > 0">
+    <thead>
+      <tr>
+        <!-- Set the column titles -->
+        <th *ngFor="let stop of tt[0]">{{ stop.stop_name }}</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <!-- Timetable rows -->
+      <tr *ngFor="let row of tt">
+        <!-- Time slots. Append the 'expired' class to expired time slots to style them differently -->
+        <td *ngFor="let stop of row" [ngClass]="{ expired: nowDate > stop.datetime }">{{ stop.datetime | date: 'shortTime' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

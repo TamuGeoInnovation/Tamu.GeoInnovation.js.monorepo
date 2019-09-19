@@ -1,0 +1,19 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+  position: relative;
+}
+
+select {
+  @include flex(1);
+  border: none;
+  margin-right: 0.75rem;
+}
+
+.date-time-display {
+  font-weight: 600;
+  cursor: pointer;
+}

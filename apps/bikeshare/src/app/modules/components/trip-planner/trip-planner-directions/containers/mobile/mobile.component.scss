@@ -1,0 +1,47 @@
+:host {
+  position: absolute;
+  background: #ffffff;
+  top: calc(100% - 5.25rem);
+  border-top-right-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
+  overflow: hidden;
+  font-size: 0.9rem;
+  touch-action: none;
+  pointer-events: initial;
+  width: 100%;
+  z-index: 10;
+  padding-top: 0.5rem;
+}
+
+#direction-results {
+  padding: 0 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 2rem;
+  border-top: none;
+  margin-top: 0;
+  box-sizing: border-box;
+}
+
+.directions-overview {
+  padding: 0.5rem;
+  padding-top: 0.25rem;
+
+  .quantity {
+    font-size: 1.75rem !important;
+  }
+
+  .unit {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+  }
+}
+
+.directions-overview-item {
+  margin-bottom: 0 !important;
+}
+
+.directions-container {
+  .direction-icon {
+    margin-right: 0.5rem !important;
+  }
+}

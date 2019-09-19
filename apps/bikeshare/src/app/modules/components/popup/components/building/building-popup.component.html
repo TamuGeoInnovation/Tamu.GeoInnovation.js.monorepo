@@ -1,0 +1,36 @@
+<div class="popup-section">
+  <div class="feature-style-1" tabindex="0">{{ data.attributes.BldgName }}</div>
+  <div class="feature-style-2" tabindex="0" *ngIf="data.attributes.Number">Building {{ data.attributes.Number }}</div>
+  <div class="feature-style-2" tabindex="0">
+    <span *ngIf="data.attributes.Address">{{ data.attributes.Address }},</span> College Station, TX 77843
+  </div>
+</div>
+
+<div class="popup-section">
+  <!-- Copy URL component -->
+  <copy [text]="shareUrl"></copy>
+
+  <!-- Directions To Button -->
+  <div class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.Number" (click)="startDirections()">
+    Directions To Here
+  </div>
+
+  <!-- Building proctors link -->
+  <a href="https://proctorlist.tamu.edu/MainProctorBuildings/Details/{{data.attributes.Number.split('.')[0]}}?utm_source=aggiemap" class='no-decor' target="_blank" tabindex='0' role='button' [attr.building]="data.attributes.Number" (click)="buildingProctorClick()">
+    <div id="building-proctors" class="button secondary" [attr.building]="data.attributes.Number">
+      Building Proctors
+    </div>
+  </a>
+</div>
+
+<div class="popup-section">
+  <div class="feature-style-1" tabindex="0">Departments & Offices</div>
+
+  <building-department-list [buildingNumber]="data.attributes.Number"></building-department-list>
+</div>
+
+<div class="popup-section">
+  <div class="image" tabindex="0" aria-label="Image of feature">
+    <img alt="" src="https://aggiemap.tamu.edu/images/compressed_test/{{ data.attributes.Number }}.jpg" />
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<div class="sidebar-component-name">
+  <span class="material-icons" *ngIf="responsive?.isMobile" (click)="backAction()">arrow_back</span>
+  <p>Legend</p>
+</div>
+
+<div class="sidebar-component-content-container">
+  <div class="legend-item" *ngFor="let item of (legend | async)" (click)="analyticsReport(item)">
+    <div class="image-container">
+      <img [src]="item.src" [alt]="item.title" />
+    </div>
+    <div>{{ item.title }}</div>
+  </div>
+</div>

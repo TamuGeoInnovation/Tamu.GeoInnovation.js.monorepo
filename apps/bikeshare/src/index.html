@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Aggie Map - Texas A&amp;M University</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="The Official Texas A&M Aggie Map, a tool made for students, staff, faculty, and visitors for finding administration and classroom buildings, parking lots, and campus facilities." />
+    <meta name="keywords" content="about, tamu, aggiemap, aggie, map, texas a&m, a&m, tamu campus, texas a&m campus, a&m campus" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#332c2c" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="HandheldFriendly" content="true" />
+
+    <!-- Localhost -->
+    <base href="/" />
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <script>
+      var dojoConfig = {
+        has: {
+          'esri-featurelayer-webgl': 1
+        }
+      };
+    </script>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.12/esri/css/main.css" type="text/css" />
+  </head>
+
+  <body>
+    <app-root></app-root>
+
+    <script>
+      // If the host name includes dev or localhost, use the dev tracking code. If it doesn't include either of those, use live.
+      // var analyticsTag = window.location.host.includes('dev') || window.location.host.includes('localhost') ? 'UA-46251775-7' : 'UA-46251775-4';
+      var analyticsTag = 'UA-46251775-4';
+
+      (function(i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        (i[r] =
+          i[r] ||
+          function() {
+            (i[r].q = i[r].q || []).push(arguments);
+          }),
+          (i[r].l = 1 * new Date());
+        (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m);
+      })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+      ga('create', analyticsTag, 'auto');
+    </script>
+  </body>
+</html>

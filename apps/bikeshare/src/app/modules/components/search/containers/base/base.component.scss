@@ -1,0 +1,160 @@
+@import 'libs/sass/mixins';
+
+:host {
+  & > div {
+    width: 100%;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    background: rgba(241, 243, 244, 1);
+    border-radius: 1rem;
+    box-shadow: 0 3px 3px 0px rgba(0, 0, 0, 0);
+    outline: none;
+    @include transition(box-shadow 0.3s, background 0.3s);
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 1px 3px 3px 0px rgba(0, 0, 0, 0.075);
+    }
+
+    &:focus {
+      border-color: #6150508e;
+      background: rgba(241, 243, 244, 0.5);
+    }
+  }
+}
+
+input,
+p {
+  padding: 0.5rem 0.75rem;
+}
+
+::placeholder,
+.action-icons {
+  color: #9e9e9e;
+}
+
+p {
+  padding: 10px 12px;
+}
+
+.search-results-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.result-category {
+  background: #f2f2f2;
+
+  .category-name {
+    padding: 3px 12px;
+    font-weight: bold;
+  }
+}
+
+.result-item,
+.my-location {
+  background: #ffffff;
+  cursor: pointer;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+
+  &:hover,
+  &:focus {
+    background: #eeeee7;
+  }
+}
+
+.margin-left {
+  padding-left: 2.5rem;
+}
+
+.margin-right {
+  padding-right: 2.5rem;
+}
+
+.input-action-container {
+  position: relative;
+
+  i:hover {
+    cursor: pointer;
+  }
+}
+
+.action-icons {
+  position: absolute;
+  font-size: 1.25rem;
+  top: 50%;
+  @include transform(translateY(-50%));
+
+  &.left {
+    margin-left: 0.8rem;
+  }
+
+  &.right {
+    margin-right: 0.8rem;
+    right: 0;
+  }
+}
+
+.lds-ring {
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  opacity: 0;
+  @include animation(lds-appear 0.5s);
+}
+
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 0.75em;
+  height: 0.75em;
+  margin: 0.1em;
+  border: 0.1em solid #fff;
+  border-radius: 50%;
+  border-color: #9e9e9e transparent transparent transparent;
+  @include animation(lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite);
+}
+
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@include keyframes(lds-ring) {
+  0% {
+    @include transform(rotate(0deg));
+  }
+
+  100% {
+    @include transform(rotate(360deg));
+  }
+}
+
+@include keyframes(lds-appear) {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

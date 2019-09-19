@@ -1,0 +1,36 @@
+<div class="help" title="Instructions and policies" tabindex="0" role="button" aria-label="Click for map usage instructions and policies" *ngIf="!isMobile" (click)="toggleClass($event, 'active')" (keydown.space)="toggleClass($event, 'active')" (keydown.enter)="toggleClass($event, 'active')">
+  <span class="material-icons">help</span>
+  <div class="topics">
+    <p><a title="" routerLink="/instructions" tabindex="0">Map Instructions</a></p>
+    <p><a title="" routerLink="/directory" tabindex="0">Building Directory</a></p>
+    <p><a title="" href="https://aggiemap.tamu.edu/feedback.asp" tabindex="0">Feedback</a></p>
+    <p><a title="" routerLink="/about" tabindex="0">About</a></p>
+    <p><a title="" href="https://aggiemap.tamu.edu/movein/" tabindex="0">Move-in Parking App</a></p>
+    <p><a title="" href="https://aggiemap.tamu.edu/graduation/arrival" tabindex="0">Graduation Parking App</a></p>
+    <p><a title="" href="https://www.tamu.edu/statements/index.html" tabindex="0">Site Policies</a></p>
+    <p><a title="" href="http://itaccessibility.tamu.edu" tabindex="0">Accessibilty Policy</a></p>
+    <p><a title="" routerLink="/privacy" tabindex="0">Privacy &amp; Security</a></p>
+    <p><a title="" routerLink="/changelog" tabindex="0">Changelog</a></p>
+  </div>
+</div>
+
+<!-- Map component -->
+<tamu-gisc-esri-map [config]="config" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }"></tamu-gisc-esri-map>
+
+<!-- Router outlet where desktop and mobile controls are rendered -->
+<router-outlet></router-outlet>
+
+<!-- Mobile keyboard viewfinder/feature list -->
+<map-viewfinder *ngIf="!isMobile"></map-viewfinder>
+
+<!-- Map click coordinates, copy to click -->
+<map-click-coordinates *ngIf="!isMobile"></map-click-coordinates>
+
+<!-- Application Loader -->
+<div class="loader flex flex-column justify-center align-center">
+  <div class="content">
+    <img src="./assets/images/logo/TAM-PrimaryMarkBB-AggieMapp-white.svg" alt="Texas A&M" />
+    <div class="progress-bar anim" style="max-width:100%"></div>
+    <p class="phrase"></p>
+  </div>
+</div>
