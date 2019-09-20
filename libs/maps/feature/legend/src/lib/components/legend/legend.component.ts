@@ -9,12 +9,12 @@ import * as guid from 'uuid/v4';
 
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
-import { LegendService } from '@tamu-gisc/maps/feature/legend';
+import { LegendService } from '../../services/legend.service';
 
 import { LegendItem } from '@tamu-gisc/common/types';
 
 @Component({
-  selector: 'legend',
+  selector: 'tamu-gisc-legend',
   templateUrl: './legend.component.html',
   styleUrls: ['./legend.component.scss']
 })

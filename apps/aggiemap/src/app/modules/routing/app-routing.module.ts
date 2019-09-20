@@ -22,8 +22,8 @@ import { TamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
-import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
-import { LegendModule } from '@tamu-gisc/maps/feature/legend';
+import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
+import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
 
 import { TripPlannerConnectionService } from '../../modules/services/trip-planner/trip-planner-connection.service';
 import { TripPlannerService } from '../../modules/services/trip-planner/trip-planner.service';
@@ -55,9 +55,6 @@ import { CheckboxComponent } from '../../modules/components/forms/checkbox/check
 import { SelectComponent } from '../components/forms/select/select.component';
 import { TripPlannerDirectionsComponent } from '../../modules/components/trip-planner/trip-planner-directions/containers/base/base.component';
 import { TripPlannerDirectionsMobileComponent } from '../../modules/components/trip-planner/trip-planner-directions/containers/mobile/mobile.component';
-import { LayerListComponent } from '../../modules/components/sidebar/components/layer-list/layer-list.component';
-import { LayerListCategorizedComponent } from '../components/sidebar/components/layer-list-categorized/layer-list-categorized.component';
-import { LegendComponent } from '../../modules/components/sidebar/components/legend/legend.component';
 import { PopupComponent } from '../../modules/components/popup/containers/base/base.component';
 import { PopupMobileComponent } from '../../modules/components/popup/containers/mobile/mobile.component';
 import { BuildingPopupComponent } from '../../modules/components/popup/components/building/building-popup.component';
@@ -249,9 +246,6 @@ const hybridRoutes: Routes = [
     TripPlannerOptionsBaseComponent,
     TripPlannerParkingOptionsComponent,
     TripPlannerBikingOptionsComponent,
-    LayerListComponent,
-    LayerListCategorizedComponent,
-    LegendComponent,
     PopupComponent,
     PopupMobileComponent,
     CopyComponent,
