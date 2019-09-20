@@ -19,7 +19,7 @@ export class LayerFilterComponent implements OnInit {
   constructor(private layerList: LayerListService) {}
 
   public ngOnInit() {
-    this.layerList.store.subscribe((res) => {
+    this.layerList.layers('visible').subscribe((res) => {
       debugger;
     });
   }

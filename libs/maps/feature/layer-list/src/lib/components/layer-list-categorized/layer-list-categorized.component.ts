@@ -4,8 +4,7 @@ import { Location } from '@angular/common';
 import { from, Subject } from 'rxjs';
 import { mergeMap, groupBy, reduce, map, toArray, takeUntil } from 'rxjs/operators';
 
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-// import { LegendService } from '@tamu-gisc/maps/feature/legend';
+import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { LayerListService, LayerListCategory } from '../../services/layer-list.service';
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
@@ -28,7 +27,6 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
   constructor(
     private lyrs: LayerListService,
     private ms: EsriMapService,
-    // private legs: LegendService,
     private anl: Angulartics2,
     private res: ResponsiveService,
     private loc: Location,
@@ -45,7 +43,8 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
 
     // Create a subscription to the layer list store value
     // and transform the value into a layer list category object array.
-    this.lyrs.store
+    this.lyrs
+      .layers()
       .pipe(
         mergeMap((arr) =>
           from(arr).pipe(

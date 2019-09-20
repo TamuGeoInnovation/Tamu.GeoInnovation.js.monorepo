@@ -12,6 +12,7 @@ import { SearchModule } from '@tamu-gisc/search';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 
 import { TamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
+import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
 
 import { MapComponent } from '../../components/map/map.component';
@@ -39,7 +40,8 @@ WebFont.load({
     SearchModule,
     SidebarModule,
     TamuBrandingModule,
-    LayerFilterModule
+    LayerFilterModule,
+    LayerListModule
   ],
   exports: [RouterModule]
 })

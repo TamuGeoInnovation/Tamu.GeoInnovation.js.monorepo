@@ -8,13 +8,11 @@ import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { LayerListService, LayerListItem } from '../../services/layer-list.service';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
 
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
-
-// import { LegendService } from '@tamu-gisc/maps/feature/legend';
 
 import esri = __esri;
 
@@ -36,21 +34,19 @@ export class LayerListComponent implements OnInit, OnDestroy {
   constructor(
     private layerListService: LayerListService,
     private mapService: EsriMapService,
-    // private legendService: LegendService,
     private analytics: Angulartics2,
     private responsiveService: ResponsiveService,
     private location: Location,
     private router: Router,
     private route: ActivatedRoute,
     private history: RouterHistoryService,
-    private environment: EnvironmentService,
-    private moduleProvider: EsriModuleProviderService
+    private environment: EnvironmentService
   ) {}
 
   public ngOnInit() {
     this._layerSources = this.environment.value('LayerSources');
 
-    this.layers = this.layerListService.store;
+    this.layers = this.layerListService.layers();
     this.responsive = this.responsiveService.snapshot;
 
     this.history
@@ -59,19 +55,6 @@ export class LayerListComponent implements OnInit, OnDestroy {
       .subscribe((event: any) => {
         this._lastRoute = event.url;
       });
-
-    this.mapService.store.subscribe((instance) => {
-      this.moduleProvider.require(['LayerListViewModel']).then((modules: [esri.LayerListViewModelConstructor]) => {
-        const [LayerListViewModel] = modules;
-
-        const viewmodel = new LayerListViewModel({ view: instance.view });
-
-        viewmodel.watch('operationalItems.length', (e) => {
-          viewmodel;
-          debugger;
-        });
-      });
-    });
   }
 
   public ngOnDestroy() {

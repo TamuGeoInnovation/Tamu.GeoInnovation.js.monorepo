@@ -17,7 +17,7 @@ export class LegendService {
     const LegendSources = this.environment.value('LegendSources');
     // Handle automatic layer addition and removal legend item display.
     // This does not handle removal on layer visibility change
-    layerListService.store.subscribe((value) => {
+    this.layerListService.layers('visible').subscribe((value) => {
       const layersLegendItems: any = value
         .filter((item) => item.layer && item.layer.visible)
         .filter((lyr: any) => lyr.layer.legendItems)

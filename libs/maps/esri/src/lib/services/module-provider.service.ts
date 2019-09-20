@@ -169,6 +169,10 @@ export class EsriModuleProviderService {
     {
       class: 'esri/widgets/LayerList/LayerListViewModel',
       name: 'LayerListViewModel'
+    },
+    {
+      class: 'esri/core/Handles',
+      name: 'Handles'
     }
   ];
 

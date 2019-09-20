@@ -1,26 +1,36 @@
-import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Observable, BehaviorSubject, from, fromEventPattern, merge, NEVER } from 'rxjs';
+import { mergeMap, filter, switchMap } from 'rxjs/operators';
 
-import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import esri = __esri;
 
 @Injectable()
-export class LayerListService {
+export class LayerListService implements OnDestroy {
   private _store: BehaviorSubject<LayerListItem[]> = new BehaviorSubject([]);
-  public store: Observable<LayerListItem[]> = this._store.asObservable();
 
-  constructor(private mapService: EsriMapService, private environment: EnvironmentService) {
+  private _handles: esri.Handles;
+
+  constructor(
+    private moduleProvider: EsriModuleProviderService,
+    private mapService: EsriMapService,
+    private environment: EnvironmentService
+  ) {
     const LayerSources = this.environment.value('LayerSources');
 
-    mapService.store.subscribe((res) => {
+    from(this.moduleProvider.require(['Handles'])).subscribe(([HandlesConstructor]: [esri.HandlesConstructor]) => {
+      this._handles = new HandlesConstructor();
+    });
+
+    this.mapService.store.subscribe((res) => {
       // Perform a check against the map instance to add existing layers. Layers added after this
       // point will be handled by the change event.
 
       // Create a LayerListItem instance for each including the existing layer instance as a class property.
-      const existing = res.map.allLayers
+      const existing: LayerListItem[] = res.map.allLayers
         .filter((l) => {
           return l.listMode === 'show';
         })
@@ -30,9 +40,9 @@ export class LayerListService {
         });
 
       // Determine layers in layer sources that are listed as show, but are being makred as lazy loaded.
-      // Create a LayerListItem instance for each, leavint the layer property undefined.
+      // Create a LayerListItem instance for each, leaving the layer property undefined.
       // This will be used as a flag to determine whether a layer needs to be lazy-loaded
-      const nonExisting = LayerSources.filter((s) => {
+      const nonExisting: LayerListItem[] = LayerSources.filter((s) => {
         return s.listMode === 'show' && existing.findIndex((el) => s.id === el.id) === -1;
       }).map((l) => {
         return new LayerListItem(l);
@@ -46,7 +56,7 @@ export class LayerListService {
         // Handle added layers case
         if (e.added) {
           // Each event only has the layers for that particular event. It does not include layers in
-          // previous events, so some processing must be don to ensure all layers added are either added
+          // previous events, so some processing must be done to ensure all layers added are either added
           // or updated properly in the service state.
 
           // Create a copy of the service store and update items if the current event has layers that have
@@ -82,6 +92,72 @@ export class LayerListService {
         }
       });
     });
+  }
+
+  public ngOnDestroy() {
+    // Clean up all layer handle references.
+    this._handles.removeAll();
+  }
+
+  /**
+   * Returns a collection of LayerListItems and emits whenever there is a change (add/removal)
+   * in map layers. Does not notify on layer property changes, by default.
+   *
+   * For the subscriber to receive notifications on property changes, provide a string or an
+   * array of property paths to the layers to be watched. If the property is valid, whenever
+   * it changes, it will trigger a subscription event.
+   *
+   */
+  public layers(watchProperties?: string | string[]): Observable<LayerListItem[]> {
+    return (
+      merge(
+        this._store.pipe(
+          switchMap((list) => from(list)),
+          // Do not process any layer list items with an undefined layer definition.
+          filter((item) => item.layer !== undefined),
+          mergeMap((item) => {
+            if (watchProperties) {
+              const handleKey = `${item.id}-${
+                typeof watchProperties === 'string' ? watchProperties.toString() : watchProperties.join('-')
+              }`;
+
+              /**
+               * Adds a watch handler to the layer for the property provided if it does not exist yet.
+               *
+               * Function gets called when a new layer is added to the map.
+               *
+               */
+              const add = (handler) => {
+                if (!this._handles.has(handleKey)) {
+                  const handle = item.layer.watch(watchProperties, handler);
+                  this._handles.add(handle, handleKey);
+                }
+              };
+
+              /**
+               * Destroys a property watch handler for a layer by handleKey if it exists.
+               *
+               * Function executed whenever the source observable is unsubscribed from.
+               *
+               */
+              const remove = (handler): void => {
+                if (this._handles.has(handleKey)) {
+                  this._handles.remove(handleKey);
+                }
+              };
+
+              // For every item, attempt to create a layer
+              return fromEventPattern(add, remove);
+            } else {
+              return NEVER;
+            }
+          })
+        ),
+        this._store
+      )
+        // Normalize either emission by mapping to the exposed store observable.
+        .pipe(switchMap(() => this._store.asObservable()))
+    );
   }
 }
 
