@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, BehaviorSubject, from, fromEventPattern, merge, NEVER } from 'rxjs';
-import { mergeMap, filter, switchMap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, from, fromEventPattern, merge, NEVER, MonoTypeOperatorFunction } from 'rxjs';
+import { mergeMap, filter, switchMap, scan } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -108,17 +108,18 @@ export class LayerListService implements OnDestroy {
    * it changes, it will trigger a subscription event.
    *
    */
-  public layers(watchProperties?: string | string[]): Observable<LayerListItem[]> {
+  public layers(props?: ILayerSubscriptionProperties): Observable<LayerListItem[]> {
     return (
       merge(
         this._store.pipe(
-          switchMap((list) => from(list)),
-          // Do not process any layer list items with an undefined layer definition.
-          filter((item) => item.layer !== undefined),
+          this.filterLayers(props, true),
+          switchMap((filtered) => from(filtered)),
           mergeMap((item) => {
-            if (watchProperties) {
+            if (props && props.watchProperties) {
               const handleKey = `${item.id}-${
-                typeof watchProperties === 'string' ? watchProperties.toString() : watchProperties.join('-')
+                typeof props.watchProperties === 'string'
+                  ? props.watchProperties.toString()
+                  : props.watchProperties.join('-')
               }`;
 
               /**
@@ -129,7 +130,7 @@ export class LayerListService implements OnDestroy {
                */
               const add = (handler) => {
                 if (!this._handles.has(handleKey)) {
-                  const handle = item.layer.watch(watchProperties, handler);
+                  const handle = item.layer.watch(props.watchProperties, handler);
                   this._handles.add(handle, handleKey);
                 }
               };
@@ -156,8 +157,70 @@ export class LayerListService implements OnDestroy {
         this._store
       )
         // Normalize either emission by mapping to the exposed store observable.
-        .pipe(switchMap(() => this._store.asObservable()))
+        .pipe(
+          switchMap(() => this._store.asObservable()),
+          this.filterLayers(props, false)
+        )
     );
+  }
+
+  /**
+   * Custom RxJS operator that filters a collection of LayerListItem's
+   *
+   * @param {ILayerSubscriptionProperties} props The `layers` property is used from this object
+   * to reduce the original collection.
+   * @param {boolean} filterLazy If `true` will ignore lazy load layers during the filtering. This is used internally
+   * to prevent errors and unecessary layer watch handles from being created. When `false`, all layers will be processed,
+   * and will not filter out layers marked for lazy loading which is useful to get a full list of layers for UI presentation,
+   * for example.
+   */
+  private filterLayers(props: ILayerSubscriptionProperties, filterLazy: boolean): MonoTypeOperatorFunction<LayerListItem[]> {
+    return (input$) =>
+      input$.pipe(
+        switchMap((list) => from(list)),
+        filter((item) => {
+          if (item.layer === undefined && filterLazy) {
+            return false;
+          }
+
+          if (props === undefined || props.layers === undefined) {
+            return true;
+          }
+
+          if (typeof props.layers === 'string') {
+            return props.layers === item.id;
+          } else if (props.layers instanceof Array) {
+            return props.layers.includes(item.id);
+          } else {
+            throw new Error(`Unexpected input parameter: ${JSON.stringify(props.layers)}`);
+          }
+        }),
+        // Since the source observable (service store), never completes a simple toArray() will not work here.
+        //
+        // It's possible to achieve the same end-result with the scan operator that collects stream emissions over time.
+        scan((acc, curr) => {
+          // Check if the accumulated value contains the current layer by id
+          const existingIndex = acc.findIndex((layer) => layer.id === curr.id);
+
+          // If the existing index already has a defined layer, return the current accumulated value
+          // Since layers will always be references, their state value is handled by the API.
+          // We only need to make sure that our LayerListItem has the layer definition.
+          if (existingIndex > -1 && acc[existingIndex].layer !== undefined) {
+            return acc;
+          }
+
+          // If it does exist, and we reached this block it means the existingIndex LayerListItem does not have a layer
+          // reference. In that case, apply the reference.
+          //
+          // If the existingIndex is out of bounds (-1), then the LayerListItem does not exist in the accumulator. In this case, add it.
+          if (existingIndex > -1 && acc[existingIndex].layer === undefined) {
+            acc.splice(existingIndex, 1, curr);
+            return [...acc];
+          } else {
+            return [...acc, curr];
+          }
+        }, [])
+      );
   }
 }
 
@@ -191,4 +254,24 @@ export interface LayerListCategory {
   title: string;
   layers: LayerListItem[];
   expanded: boolean;
+}
+
+export interface ILayerSubscriptionProperties {
+  /**
+   * Lqyer ID or ID's that will be returned with the subscription.
+   *
+   * Will default to return all layers.
+   *
+   * @type {(string | string[])}
+   * @memberof ILayerSubscriptionProperties
+   */
+  layers?: string | string[];
+
+  /**
+   * List of layer properties that trigger a state emission.
+   *
+   * @type {(string | string[])}
+   * @memberof ILayerSubscriptionProperties
+   */
+  watchProperties?: string | string[];
 }

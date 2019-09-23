@@ -14,6 +14,8 @@ import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { TamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
+import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
+import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 
 import { MapComponent } from '../../components/map/map.component';
 
@@ -41,7 +43,9 @@ WebFont.load({
     SidebarModule,
     TamuBrandingModule,
     LayerFilterModule,
-    LayerListModule
+    LayerListModule,
+    ResponsiveModule,
+    CommonNgxRouterModule
   ],
   exports: [RouterModule]
 })

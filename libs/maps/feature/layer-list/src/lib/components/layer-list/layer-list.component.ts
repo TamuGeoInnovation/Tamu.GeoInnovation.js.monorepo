@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Angulartics2 } from 'angulartics2';
+// import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -34,7 +34,7 @@ export class LayerListComponent implements OnInit, OnDestroy {
   constructor(
     private layerListService: LayerListService,
     private mapService: EsriMapService,
-    private analytics: Angulartics2,
+    // private analytics: Angulartics2,
     private responsiveService: ResponsiveService,
     private location: Location,
     private router: Router,
@@ -79,14 +79,14 @@ export class LayerListComponent implements OnInit, OnDestroy {
         }
       };
 
-      // Reporting string with existing layer details.
-      this.analytics.eventTrack.next({
-        action: 'Layer Toggle',
-        properties: {
-          category: 'UI Interaction',
-          label: JSON.stringify(label)
-        }
-      });
+      // // Reporting string with existing layer details.
+      // this.analytics.eventTrack.next({
+      //   action: 'Layer Toggle',
+      //   properties: {
+      //     category: 'UI Interaction',
+      //     label: JSON.stringify(label)
+      //   }
+      // });
     } else {
       // If the list does not contain an initialized layer, attempt and find the source by reference id.
       const source = this._layerSources.find((src) => src.id === listItem.id);
@@ -103,14 +103,14 @@ export class LayerListComponent implements OnInit, OnDestroy {
             }
           };
 
-          // Report the event when we have a layer value
-          this.analytics.eventTrack.next({
-            action: 'Layer Toggle',
-            properties: {
-              category: 'UI Interaction',
-              label: JSON.stringify(label)
-            }
-          });
+          // // Report the event when we have a layer value
+          // this.analytics.eventTrack.next({
+          //   action: 'Layer Toggle',
+          //   properties: {
+          //     category: 'UI Interaction',
+          //     label: JSON.stringify(label)
+          //   }
+          // });
         });
       }
     }

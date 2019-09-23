@@ -27,7 +27,7 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
   constructor(
     private lyrs: LayerListService,
     private ms: EsriMapService,
-    private anl: Angulartics2,
+    // private anl: Angulartics2,
     private res: ResponsiveService,
     private loc: Location,
     private rtr: Router,
@@ -35,7 +35,8 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
     private hs: RouterHistoryService,
     private env: EnvironmentService
   ) {
-    super(lyrs, ms, anl, res, loc, rtr, rt, hs, env);
+    // super(lyrs, ms, anl, res, loc, rtr, rt, hs, env);
+    super(lyrs, ms, res, loc, rtr, rt, hs, env);
   }
 
   public ngOnInit() {
