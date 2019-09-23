@@ -1,6 +1,6 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, BehaviorSubject, from, fromEventPattern, merge, NEVER, MonoTypeOperatorFunction } from 'rxjs';
-import { mergeMap, filter, switchMap, scan } from 'rxjs/operators';
+import { Injectable, OnDestroy, Input } from '@angular/core';
+import { Observable, BehaviorSubject, from, fromEventPattern, merge, NEVER, MonoTypeOperatorFunction, of } from 'rxjs';
+import { mergeMap, filter, switchMap, scan, find, take, toArray } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -158,14 +158,52 @@ export class LayerListService implements OnDestroy {
       )
         // Normalize either emission by mapping to the exposed store observable.
         .pipe(
-          switchMap(() => this._store.asObservable()),
+          this.mapLayerChangeEvent(),
           this.filterLayers(props, false)
         )
     );
   }
 
   /**
-   * Custom RxJS operator that filters a collection of LayerListItem's
+   * RxJS operator responsible for normalizing and  mapping a layer change event emission to a LayerListItem collection.
+   *
+   * The `layers` method subscribes to both layer add/removal activity on the map OR layer property watches. Since their respective
+   * emissions are different, they have to be normalized before any subscribers can process the value.
+   *
+   */
+  private mapLayerChangeEvent(): MonoTypeOperatorFunction<LayerListItem[] | esri.WatchCallback> {
+    return ($input) =>
+      $input.pipe(
+        switchMap((collection) => {
+          // Check if the array is a collection of LayerListItem
+          // One of two conditions must be met:
+          //
+          // Collection is of length zero, which means there are no layers added to the map yet. We still  want an emission out
+          // of an empty LayerListItem colleciton. In addition, if the collection is empty it cannot be an esri WatchCallback because
+          // the length of that array is known.
+          if (collection.length === 0 || (<LayerListItem[]>collection).some((i) => i instanceof LayerListItem)) {
+            return of(collection);
+          } else {
+            // If the collection is not a list of LayerListItem, then it is a collection with esri WatchCallback values.
+            //
+            // To avoid multiple emissions for every layer despite having a single WatchHandle event, limit the LayerListItem
+            // collection to be only the affeted LayerListItems
+            return this._store.asObservable().pipe(
+              take(1),
+              switchMap((list) => from(list)),
+              filter((item) => {
+                // Item at index 3 is the `target` layer object reference that contains an id property.
+                return item.id === collection[3].id;
+              }),
+              toArray()
+            );
+          }
+        })
+      );
+  }
+
+  /**
+   * RxJS operator that filters a collection of LayerListItem's
    *
    * @param {ILayerSubscriptionProperties} props The `layers` property is used from this object
    * to reduce the original collection.
