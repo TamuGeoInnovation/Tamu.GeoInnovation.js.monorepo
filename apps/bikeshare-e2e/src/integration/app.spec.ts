@@ -4,6 +4,6 @@ describe('bikeshare', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display welcome message', () => {
-    getGreeting().contains('Welcome to aggiemap!');
+    getGreeting().contains('Welcome to bikeshare!');
   });
 });
