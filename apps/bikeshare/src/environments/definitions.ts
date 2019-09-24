@@ -4,6 +4,8 @@ export const Connections = {
   departmentUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
   tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
   bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
+  bikeLocationsUrl: 'http://APIURL/bikes',
+  tripUrl: 'http://APIURL/trips'
 };
 
 export const Definitions = {
@@ -26,5 +28,35 @@ export const Definitions = {
     layerId: 'bike-racks-layer',
     name: 'Bike Racks',
     url: `${Connections.bikeRacksUrl}`
+  },
+  BIKE_LOCATIONS: {
+    id: 'bike-locations',
+    layerId: 'bike-locations-layer',
+    name: 'VeoRide Bikes',
+    url: `${Connections.bikeLocationsUrl}`
+  },
+  BIKE_HEATMAP: {
+    id: 'bike-heatmap',
+    layerId: 'bike-heatmap-layer',
+    name: 'Bike Location Heatmap',
+    url: `${Connections.bikeLocationsUrl}`
+  },
+  IDLE_HEATMAP: {
+    id: 'idle-bike-heatmap',
+    layerId: 'idle-bike-heatmap-layer',
+    name: 'Idle Bike Heatmap',
+    url: `${Connections.bikeLocationsUrl}`
+  },
+  ORIGIN_BIKE_HEATMAP: {
+    id: 'origin-trip-heatmap',
+    layerId: 'origin-trip-heatmap',
+    name: 'Origin Trip Heatmap',
+    url: `${Connections.tripUrl}/origin`
+  },
+  DESTINATION_BIKE_HEATMAP: {
+    id: 'destination-trip-heatmap',
+    layerId: 'destination-trip-layer',
+    name: 'Destination Trip Heatmap',
+    url: `${Connections.tripUrl}/destination`
   }
 };
