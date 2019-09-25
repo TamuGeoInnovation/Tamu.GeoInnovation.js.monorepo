@@ -1,25 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { inject } from '@angular/core/testing';
 
 import { LayerFilterComponent } from './layer-filter.component';
 
 describe('LayerFilterComponent', () => {
-  let component: LayerFilterComponent;
-  let fixture: ComponentFixture<LayerFilterComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LayerFilterComponent ]
-    })
-    .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LayerFilterComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should be created', () => {
+    inject([LayerFilterComponent], (component: LayerFilterComponent) => {
+      expect(component).toBeTruthy();
+    });
   });
 });

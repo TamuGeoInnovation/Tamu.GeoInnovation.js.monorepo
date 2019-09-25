@@ -14,12 +14,12 @@ import { SearchModule } from '@tamu-gisc/search';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
-import { UiKitsNgxFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
-import { TamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
+import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
@@ -217,8 +217,8 @@ const hybridRoutes: Routes = [
     DlDateTimePickerDateModule,
     DlDateTimePickerModule,
     SidebarModule,
-    TamuBrandingModule,
-    UiKitsNgxFormsModule
+    UITamuBrandingModule,
+    UIFormsModule
   ],
   declarations: [
     BackdropComponent,
