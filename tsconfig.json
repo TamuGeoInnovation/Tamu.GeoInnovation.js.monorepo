@@ -11,6 +11,7 @@
     "target": "es2015",
     "module": "esnext",
     "typeRoots": ["node_modules/@types"],
+    "types": ["arcgis-js-api"],
     "lib": ["esnext", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
