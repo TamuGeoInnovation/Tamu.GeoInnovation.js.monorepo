@@ -90,12 +90,13 @@ export class SelectComponent {
   /**
    * Calls a utility function that evaluates the template against the iterated data item.
    *
-   * @param {*} iterated
-   * @param {string} template
-   * @returns
-   * @memberof SelectComponent
+   * If no value template is provided, return will be the object reference.
    */
   public getDataItemValue(iterated: any, template: string) {
-    return getPropertyValue(iterated, template);
+    if (template !== undefined) {
+      return getPropertyValue(iterated, template);
+    } else {
+      return iterated;
+    }
   }
 }

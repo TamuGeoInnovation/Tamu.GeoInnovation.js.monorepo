@@ -1,5 +1,9 @@
-<p>{{ (layer | async)?.title }} Filter</p>
+<div class="sidebar-component-name">
+  <p>{{ (layer | async)?.title }} Filter</p>
+</div>
 
-<tamu-gisc-select [data]="(layer | async)?.layer?.fields" [displayTemplate]="'name'" [valueTemplate]="'type'" [placeholder]="'Select Attribute'" (changed)="field.next($event)"></tamu-gisc-select>
+<tamu-gisc-select [data]="(layer | async)?.layer?.fields" [displayTemplate]="'name'" [placeholder]="'Select Attribute'" (changed)="field.next($event)"></tamu-gisc-select>
 
-<tamu-gisc-select [data]="allowedOperators | async" [displayTemplate]="'description'" [valueTemplate]="'op'" [placeholder]="'Select Operator'"></tamu-gisc-select>
+<tamu-gisc-select [data]="allowedOperators | async" [displayTemplate]="'description'" [valueTemplate]="'op'" [placeholder]="'Select Operator'" (changed)="operator.next($event)"></tamu-gisc-select>
+
+<tamu-gisc-select [data]="fieldUniqueValues | async" [displayTemplate]="'value'" [valueTemplate]="'value'" [placeholder]="'Select Value'" (changed)="value.next($event)"></tamu-gisc-select>
