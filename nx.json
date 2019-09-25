@@ -112,6 +112,21 @@
     },
     "bikeshare": {
       "tags": []
+    },
+    "maps-feature-layer-filter": {
+      "tags": []
+    },
+    "maps-feature-layer-list": {
+      "tags": []
+    },
+    "maps-feature-legend": {
+      "tags": []
+    },
+    "common-ngx-router": {
+      "tags": []
+    },
+    "ui-kits-ngx-forms": {
+      "tags": []
     }
   }
 }

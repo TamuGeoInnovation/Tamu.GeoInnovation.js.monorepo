@@ -4,6 +4,6 @@
   </div>
 
   <div class="sidebar-component-content-container">
-    <checkbox *ngFor="let option of (settings | async)" [disabled]="false" [label]="option.displayName" [description]="option.description" [checked]="(getOptionValue(option.effect) | async) == true" (changed)="setOptionValue(option, $event)"></checkbox>
+    <tamu-gisc-checkbox *ngFor="let option of (settings | async)" [disabled]="false" [label]="option.displayName" [description]="option.description" [checked]="(getOptionValue(option.effect) | async) == true" (changed)="setOptionValue(option, $event)"></tamu-gisc-checkbox>
   </div>
 </div>

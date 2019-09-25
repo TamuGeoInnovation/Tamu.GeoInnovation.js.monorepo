@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
-import { RouterHistoryService } from './modules/services/router-history.service';
+import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 
 @Component({
   selector: 'app-root',

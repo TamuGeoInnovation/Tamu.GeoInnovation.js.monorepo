@@ -13,19 +13,21 @@ import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
+import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
-import { TamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
+import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
-import { LayerListService } from '../../modules/services/ui/layer-list.service';
-import { LegendService } from '../../modules/services/ui/legend.service';
+import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
+import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
+
 import { TripPlannerConnectionService } from '../../modules/services/trip-planner/trip-planner-connection.service';
 import { TripPlannerService } from '../../modules/services/trip-planner/trip-planner.service';
-import { RouterHistoryService } from '../services/router-history.service';
 import { BusService } from '../services/transportation/bus/bus.service';
 import { BikeService } from '../services/transportation/bike/bike.service';
 import { ParkingService } from '../services/transportation/drive/parking.service';
@@ -50,13 +52,8 @@ import { ReferenceComponent } from '../../modules/components/sidebar/components/
 import { TripPlannerConnectionsSelectComponent } from '../../modules/components/trip-planner/trip-planner-connection-select/containers/base/base.component';
 import { TripPlannerModePickerComponent } from '../../modules/components/trip-planner/trip-planner-mode-picker/containers/base/base.component';
 import { TripPlannerModePickerMobileComponent } from '../../modules/components/trip-planner/trip-planner-mode-picker/containers/mobile/mobile.component';
-import { CheckboxComponent } from '../../modules/components/forms/checkbox/checkbox.component';
-import { SelectComponent } from '../components/forms/select/select.component';
 import { TripPlannerDirectionsComponent } from '../../modules/components/trip-planner/trip-planner-directions/containers/base/base.component';
 import { TripPlannerDirectionsMobileComponent } from '../../modules/components/trip-planner/trip-planner-directions/containers/mobile/mobile.component';
-import { LayerListComponent } from '../../modules/components/sidebar/components/layer-list/layer-list.component';
-import { LayerListCategorizedComponent } from '../components/sidebar/components/layer-list-categorized/layer-list-categorized.component';
-import { LegendComponent } from '../../modules/components/sidebar/components/legend/legend.component';
 import { PopupComponent } from '../../modules/components/popup/containers/base/base.component';
 import { PopupMobileComponent } from '../../modules/components/popup/containers/mobile/mobile.component';
 import { BuildingPopupComponent } from '../../modules/components/popup/components/building/building-popup.component';
@@ -208,16 +205,20 @@ const hybridRoutes: Routes = [
     FormsModule,
     HttpClientModule,
     SettingsModule,
+    CommonNgxRouterModule,
     PipesModule,
     SkeletonModule,
     EsriMapModule,
+    LayerListModule,
+    LegendModule,
     SearchModule,
     TestingModule,
     ResponsiveModule,
     DlDateTimePickerDateModule,
     DlDateTimePickerModule,
     SidebarModule,
-    TamuBrandingModule
+    UITamuBrandingModule,
+    UIFormsModule
   ],
   declarations: [
     BackdropComponent,
@@ -234,8 +235,6 @@ const hybridRoutes: Routes = [
     BusTimetableComponent,
     TripPlannerConnectionsSelectComponent,
     TripPlannerModePickerComponent,
-    CheckboxComponent,
-    SelectComponent,
     TripPlannerOptionsComponent,
     TripPlannerDirectionsComponent,
     TripPlannerDirectionsMobileComponent,
@@ -245,9 +244,6 @@ const hybridRoutes: Routes = [
     TripPlannerOptionsBaseComponent,
     TripPlannerParkingOptionsComponent,
     TripPlannerBikingOptionsComponent,
-    LayerListComponent,
-    LayerListCategorizedComponent,
-    LegendComponent,
     PopupComponent,
     PopupMobileComponent,
     CopyComponent,
@@ -283,11 +279,8 @@ const hybridRoutes: Routes = [
     AsyncContentLoadedDirective
   ],
   providers: [
-    RouterHistoryService,
     TripPlannerConnectionService,
     TripPlannerService,
-    LayerListService,
-    LegendService,
     BusService,
     BikeService,
     ParkingService,

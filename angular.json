@@ -964,6 +964,7 @@
         }
       }
     },
+<<<<<<< HEAD
     "bikeshare": {
       "projectType": "application",
       "schematics": {
@@ -1081,6 +1082,150 @@
             "tsConfig": ["apps/bikeshare-e2e/tsconfig.e2e.json"],
             "exclude": ["**/node_modules/**", "!apps/bikeshare-e2e/**"]
           }
+        }
+      }
+    },
+    "maps-feature-layer-filter": {
+      "projectType": "library",
+      "root": "libs/maps/feature/layer-filter",
+      "sourceRoot": "libs/maps/feature/layer-filter/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/maps/feature/layer-filter/tsconfig.lib.json",
+              "libs/maps/feature/layer-filter/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/layer-filter/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/layer-filter/jest.config.js",
+            "tsConfig": "libs/maps/feature/layer-filter/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/layer-filter/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "maps-feature-layer-list": {
+      "projectType": "library",
+      "root": "libs/maps/feature/layer-list",
+      "sourceRoot": "libs/maps/feature/layer-list/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/maps/feature/layer-list/tsconfig.lib.json",
+              "libs/maps/feature/layer-list/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/layer-list/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/layer-list/jest.config.js",
+            "tsConfig": "libs/maps/feature/layer-list/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/layer-list/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "maps-feature-legend": {
+      "projectType": "library",
+      "root": "libs/maps/feature/legend",
+      "sourceRoot": "libs/maps/feature/legend/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/maps/feature/legend/tsconfig.lib.json", "libs/maps/feature/legend/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/legend/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/legend/jest.config.js",
+            "tsConfig": "libs/maps/feature/legend/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/legend/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "common-ngx-router": {
+      "projectType": "library",
+      "root": "libs/common/ngx/router",
+      "sourceRoot": "libs/common/ngx/router/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/ngx/router/tsconfig.lib.json", "libs/common/ngx/router/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/router/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/bikeshare/jest.config.js",
+            "tsConfig": "apps/bikeshare/tsconfig.spec.json",
+            "setupFile": "apps/bikeshare/src/test-setup.ts"
+          },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "ui-kits-ngx-forms": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/forms",
+      "sourceRoot": "libs/ui-kits/ngx/forms/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ui-kits/ngx/forms/tsconfig.lib.json", "libs/ui-kits/ngx/forms/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/forms/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/forms/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/forms/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/forms/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
         }
       }
     }

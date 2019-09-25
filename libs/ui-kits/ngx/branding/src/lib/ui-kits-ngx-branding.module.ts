@@ -8,4 +8,4 @@ import { TamuBlockBrandingComponent } from './components/tamu-block/tamu-block.c
   declarations: [TamuBlockBrandingComponent],
   exports: [TamuBlockBrandingComponent]
 })
-export class TamuBrandingModule {}
+export class UITamuBrandingModule {}
