@@ -1,0 +1,10 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flexbox();
+  @include flex-direction(column);
+}
+
+tamu-gisc-select {
+  margin: 0.25rem 0;
+}

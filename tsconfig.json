@@ -24,6 +24,7 @@
       "@tamu-gisc/common/ngx/ui": ["libs/common/ngx/ui/src/index.ts"],
       "@tamu-gisc/common/ngx/ui/notification": ["libs/common/ngx/ui/notification/src/index.ts"],
       "@tamu-gisc/common/ngx/environment": ["libs/common/ngx/environment/src/index.ts"],
+      "@tamu-gisc/common/ngx/router": ["libs/common/ngx/router/src/index.ts"],
       "@tamu-gisc/maps/esri": ["libs/maps/esri/src/index.ts"],
       "@tamu-gisc/common/utils": ["libs/common/utils/src/index.ts"],
       "@tamu-gisc/common/utils/collection": ["libs/common/utils/collection/src/index.ts"],
@@ -42,7 +43,11 @@
       "@tamu-gisc/dev-tools/application-testing": ["libs/dev-tools/application-testing/src/index.ts"],
       "@tamu-gisc/dev-tools/responsive": ["libs/dev-tools/responsive/src/index.ts"],
       "@tamu-gisc/common/ngx/ui/sidebar": ["libs/common/ngx/ui/sidebar/src/index.ts"],
-      "@tamu-gisc/ui-kits/ngx/branding": ["libs/ui-kits/ngx/branding/src/index.ts"]
+      "@tamu-gisc/ui-kits/ngx/branding": ["libs/ui-kits/ngx/branding/src/index.ts"],
+      "@tamu-gisc/maps/feature/layer-filter": ["libs/maps/feature/layer-filter/src/index.ts"],
+      "@tamu-gisc/maps/feature/layer-list": ["libs/maps/feature/layer-list/src/index.ts"],
+      "@tamu-gisc/maps/feature/legend": ["libs/maps/feature/legend/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/forms": ["libs/ui-kits/ngx/forms/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

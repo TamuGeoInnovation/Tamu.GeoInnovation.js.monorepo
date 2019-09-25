@@ -49,6 +49,35 @@
   }
 }
 
+::ng-deep {
+  &.sidebar-component-name {
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.7rem;
+    border-bottom: 1px solid #e0e0e0;
+
+    p {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #323232;
+      padding-bottom: 0;
+    }
+
+    .material-icons {
+      font-size: 1.25rem;
+      margin-right: 0.4rem;
+    }
+  }
+
+  &.sidebar-component-content-container {
+    padding-left: 0.5rem;
+    box-sizing: border-box;
+  }
+}
+
 .tabs-content-container {
   height: inherit;
   overflow-y: scroll;

@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
-import { RouterHistoryService } from '../../../../../services/router-history.service';
+import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 
 @Component({
   selector: 'modal',
