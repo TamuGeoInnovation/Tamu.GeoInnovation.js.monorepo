@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-
+import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
 @Component({
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-  constructor() {}
+  constructor(private selector: FeatureSelectorService) {}
 
   public config = {
     basemap: {
@@ -58,5 +58,9 @@ export class MapComponent implements OnInit {
     }
   };
 
-  public ngOnInit() {}
+  public ngOnInit() {
+    this.selector.feature.subscribe((res) => {
+      debugger;
+    });
+  }
 }

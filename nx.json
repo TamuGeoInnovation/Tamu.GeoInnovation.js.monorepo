@@ -121,6 +121,9 @@
     },
     "ui-kits-ngx-forms": {
       "tags": []
+    },
+    "maps-feature-feature-selector": {
+      "tags": []
     }
   }
 }
