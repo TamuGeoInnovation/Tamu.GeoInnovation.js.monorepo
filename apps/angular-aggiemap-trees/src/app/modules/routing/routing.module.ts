@@ -11,7 +11,7 @@ import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 
-import { TamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
+import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
@@ -41,7 +41,7 @@ WebFont.load({
     EsriMapModule,
     SearchModule,
     SidebarModule,
-    TamuBrandingModule,
+    UITamuBrandingModule,
     LayerFilterModule,
     LayerListModule,
     ResponsiveModule,

@@ -1081,6 +1081,34 @@
           "styleext": "scss"
         }
       }
+    },
+    "ui-kits-ngx-forms": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/forms",
+      "sourceRoot": "libs/ui-kits/ngx/forms/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ui-kits/ngx/forms/tsconfig.lib.json", "libs/ui-kits/ngx/forms/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/forms/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/forms/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/forms/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/forms/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {

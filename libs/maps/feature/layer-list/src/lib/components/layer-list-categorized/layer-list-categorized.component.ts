@@ -14,13 +14,15 @@ import { LayerListComponent } from '../layer-list/layer-list.component';
 
 import { Angulartics2 } from 'angulartics2';
 
+import esri = __esri;
+
 @Component({
   selector: 'tamu-gisc-layer-list-categorized',
   templateUrl: './layer-list-categorized.component.html',
   styleUrls: ['../layer-list/layer-list.component.scss']
 })
 export class LayerListCategorizedComponent extends LayerListComponent implements OnInit, OnDestroy {
-  public categorized: Array<LayerListCategory>;
+  public categorized: Array<LayerListCategory<esri.Layer>>;
 
   private _$destroy: Subject<any> = new Subject();
 
@@ -63,7 +65,7 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
           )
         )
       )
-      .subscribe((categories: LayerListCategory[]) => {
+      .subscribe((categories: LayerListCategory<esri.Layer>[]) => {
         // Once we have all the layer categories (LayerListCategory objects), transfer any expanded properties to keep
         // expanded categories expanded after the re-render triggered by model update.
         this.merge(categories);
@@ -82,10 +84,10 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
    * @param {LayerListCategory[]} categories
    * @memberof LayerListCategorizedComponent
    */
-  public merge(categories: LayerListCategory[]) {
+  public merge(categories: LayerListCategory<esri.Layer>[]) {
     if (categories && categories.length > 0) {
       this.categorized = categories.map(
-        (cat): LayerListCategory => {
+        (cat): LayerListCategory<esri.Layer> => {
           if (this.categorized && this.categorized.length > 0) {
             const existingCategory = this.categorized.find((l) => l.title === cat.title);
             if (existingCategory) {

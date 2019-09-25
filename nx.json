@@ -118,6 +118,9 @@
     },
     "common-ngx-router": {
       "tags": []
+    },
+    "ui-kits-ngx-forms": {
+      "tags": []
     }
   }
 }

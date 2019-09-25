@@ -14,6 +14,7 @@ import { SearchModule } from '@tamu-gisc/search';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
+import { UiKitsNgxFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
@@ -51,8 +52,6 @@ import { ReferenceComponent } from '../../modules/components/sidebar/components/
 import { TripPlannerConnectionsSelectComponent } from '../../modules/components/trip-planner/trip-planner-connection-select/containers/base/base.component';
 import { TripPlannerModePickerComponent } from '../../modules/components/trip-planner/trip-planner-mode-picker/containers/base/base.component';
 import { TripPlannerModePickerMobileComponent } from '../../modules/components/trip-planner/trip-planner-mode-picker/containers/mobile/mobile.component';
-import { CheckboxComponent } from '../../modules/components/forms/checkbox/checkbox.component';
-import { SelectComponent } from '../components/forms/select/select.component';
 import { TripPlannerDirectionsComponent } from '../../modules/components/trip-planner/trip-planner-directions/containers/base/base.component';
 import { TripPlannerDirectionsMobileComponent } from '../../modules/components/trip-planner/trip-planner-directions/containers/mobile/mobile.component';
 import { PopupComponent } from '../../modules/components/popup/containers/base/base.component';
@@ -218,7 +217,8 @@ const hybridRoutes: Routes = [
     DlDateTimePickerDateModule,
     DlDateTimePickerModule,
     SidebarModule,
-    TamuBrandingModule
+    TamuBrandingModule,
+    UiKitsNgxFormsModule
   ],
   declarations: [
     BackdropComponent,
@@ -235,8 +235,6 @@ const hybridRoutes: Routes = [
     BusTimetableComponent,
     TripPlannerConnectionsSelectComponent,
     TripPlannerModePickerComponent,
-    CheckboxComponent,
-    SelectComponent,
     TripPlannerOptionsComponent,
     TripPlannerDirectionsComponent,
     TripPlannerDirectionsMobileComponent,

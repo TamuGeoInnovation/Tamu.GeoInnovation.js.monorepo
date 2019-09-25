@@ -1,1 +1,5 @@
-<p>layer-filter works!</p>
+<p>{{ (layer | async)?.title }} Filter</p>
+
+<tamu-gisc-select [data]="(layer | async)?.layer?.fields" [displayTemplate]="'name'" [valueTemplate]="'type'" [placeholder]="'Select Attribute'" (changed)="field.next($event)"></tamu-gisc-select>
+
+<tamu-gisc-select [data]="allowedOperators | async" [displayTemplate]="'description'" [valueTemplate]="'op'" [placeholder]="'Select Operator'"></tamu-gisc-select>

@@ -62,7 +62,7 @@ export class LayerListComponent implements OnInit, OnDestroy {
     this._destroy$.complete();
   }
 
-  public toggleLayer(listItem: LayerListItem): void {
+  public toggleLayer(listItem: LayerListItem<esri.Layer>): void {
     // If the list item contains an initialized layer, flip the visible value.
     if (listItem.layer) {
       listItem.layer.visible = !listItem.layer.visible;

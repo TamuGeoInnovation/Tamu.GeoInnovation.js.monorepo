@@ -10,7 +10,7 @@ import esri = __esri;
 
 @Injectable()
 export class LayerListService implements OnDestroy {
-  private _store: BehaviorSubject<LayerListItem[]> = new BehaviorSubject([]);
+  private _store: BehaviorSubject<LayerListItem<esri.Layer>[]> = new BehaviorSubject([]);
 
   private _handles: esri.Handles;
 
@@ -30,7 +30,7 @@ export class LayerListService implements OnDestroy {
       // point will be handled by the change event.
 
       // Create a LayerListItem instance for each including the existing layer instance as a class property.
-      const existing: LayerListItem[] = res.map.allLayers
+      const existing: LayerListItem<esri.Layer>[] = res.map.allLayers
         .filter((l) => {
           return l.listMode === 'show';
         })
@@ -42,7 +42,7 @@ export class LayerListService implements OnDestroy {
       // Determine layers in layer sources that are listed as show, but are being makred as lazy loaded.
       // Create a LayerListItem instance for each, leaving the layer property undefined.
       // This will be used as a flag to determine whether a layer needs to be lazy-loaded
-      const nonExisting: LayerListItem[] = LayerSources.filter((s) => {
+      const nonExisting: LayerListItem<esri.Layer>[] = LayerSources.filter((s) => {
         return s.listMode === 'show' && existing.findIndex((el) => s.id === el.id) === -1;
       }).map((l) => {
         return new LayerListItem(l);
@@ -108,7 +108,7 @@ export class LayerListService implements OnDestroy {
    * it changes, it will trigger a subscription event.
    *
    */
-  public layers(props?: ILayerSubscriptionProperties): Observable<LayerListItem[]> {
+  public layers(props?: ILayerSubscriptionProperties): Observable<LayerListItem<esri.Layer>[]> {
     return (
       merge(
         this._store.pipe(
@@ -171,7 +171,7 @@ export class LayerListService implements OnDestroy {
    * emissions are different, they have to be normalized before any subscribers can process the value.
    *
    */
-  private mapLayerChangeEvent(): MonoTypeOperatorFunction<LayerListItem[] | esri.WatchCallback> {
+  private mapLayerChangeEvent(): MonoTypeOperatorFunction<LayerListItem<esri.Layer>[] | esri.WatchCallback> {
     return ($input) =>
       $input.pipe(
         switchMap((collection) => {
@@ -181,7 +181,7 @@ export class LayerListService implements OnDestroy {
           // Collection is of length zero, which means there are no layers added to the map yet. We still  want an emission out
           // of an empty LayerListItem colleciton. In addition, if the collection is empty it cannot be an esri WatchCallback because
           // the length of that array is known.
-          if (collection.length === 0 || (<LayerListItem[]>collection).some((i) => i instanceof LayerListItem)) {
+          if (collection.length === 0 || (<LayerListItem<esri.Layer>[]>collection).some((i) => i instanceof LayerListItem)) {
             return of(collection);
           } else {
             // If the collection is not a list of LayerListItem, then it is a collection with esri WatchCallback values.
@@ -212,7 +212,10 @@ export class LayerListService implements OnDestroy {
    * and will not filter out layers marked for lazy loading which is useful to get a full list of layers for UI presentation,
    * for example.
    */
-  private filterLayers(props: ILayerSubscriptionProperties, filterLazy: boolean): MonoTypeOperatorFunction<LayerListItem[]> {
+  private filterLayers(
+    props: ILayerSubscriptionProperties,
+    filterLazy: boolean
+  ): MonoTypeOperatorFunction<LayerListItem<esri.Layer>[]> {
     return (input$) =>
       input$.pipe(
         switchMap((list) => from(list)),
@@ -262,19 +265,19 @@ export class LayerListService implements OnDestroy {
   }
 }
 
-export class LayerListItem {
+export class LayerListItem<T> {
   public id: LayerSource['id'];
   public title: LayerSource['title'];
-  public layer: esri.Layer;
+  public layer: T;
   public category: LayerSource['category'];
 
-  constructor(props: { id?: string; title?: string; layer?: esri.Layer; category?: string }) {
+  constructor(props: { id?: string; title?: string; layer?: T; category?: string }) {
     this.layer = props.layer;
 
     // If a layer is provided, inherit layer properties, else set
     if (props.layer) {
-      this.id = props.layer.id;
-      this.title = props.layer.title;
+      this.id = (props.layer as any).id;
+      this.title = (props.layer as any).title;
       this.category = props.category;
     } else {
       this.id = props.id || '';
@@ -284,13 +287,13 @@ export class LayerListItem {
   }
 }
 
-export interface LayerListStore {
-  categories: LayerListCategory[];
+export interface LayerListStore<T> {
+  categories: LayerListCategory<T>[];
 }
 
-export interface LayerListCategory {
+export interface LayerListCategory<T> {
   title: string;
-  layers: LayerListItem[];
+  layers: LayerListItem<T>[];
   expanded: boolean;
 }
 
