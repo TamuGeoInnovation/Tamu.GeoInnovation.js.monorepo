@@ -110,7 +110,7 @@ export class LayerFilterComponent implements OnInit {
   /**
    * Generated definitionExpression applied to the layer to filter displayed features.
    */
-  public filterExpression = combineLatest(this.field, this.operator, this.value)
+  public filterExpression = combineLatest([this.field, this.operator, this.value])
     .pipe(
       switchMap((values) => {
         const [field, operator, value] = values;
@@ -118,7 +118,7 @@ export class LayerFilterComponent implements OnInit {
 
         return of(where);
       }),
-      switchMap((where) => combineLatest(of(where), this.layer.pipe(pluck('layer')))),
+      switchMap((where) => combineLatest([of(where), this.layer.pipe(pluck('layer'))])),
       tap((args) => {
         const [w, l] = args;
 
