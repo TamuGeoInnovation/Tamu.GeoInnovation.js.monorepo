@@ -63,10 +63,5 @@ export class MapComponent implements OnInit {
     }
   };
 
-  public ngOnInit() {
-    // Initializes collector stream
-    this.collector.init({ identifier: 'OBJECTID', deleteDuplicates: true, layers: ['trees_layer'] });
-
-    this.collected = this.collector.collection;
-  }
+  public ngOnInit() {}
 }
