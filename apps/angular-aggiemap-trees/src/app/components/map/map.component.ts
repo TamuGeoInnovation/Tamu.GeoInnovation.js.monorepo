@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FeatureCollectorService } from '@tamu-gisc/maps/feature/feature-selector';
+import { interval } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'tamu-gisc-map',
@@ -61,14 +63,10 @@ export class MapComponent implements OnInit {
 
   public ngOnInit() {
     // Initializes collector stream
-    this.collector.init({ size: 5 });
+    this.collector.init();
 
     this.collector.collection.subscribe((res) => {
       debugger;
     });
-
-    setTimeout(() => {
-      this.collector.reset();
-    }, 5000);
   }
 }
