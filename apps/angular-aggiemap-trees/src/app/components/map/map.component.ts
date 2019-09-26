@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
+import { FeatureCollectorService } from '@tamu-gisc/maps/feature/feature-selector';
+
 @Component({
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-  constructor(private selector: FeatureSelectorService) {}
+  constructor(private collector: FeatureCollectorService) {}
 
   public config = {
     basemap: {
@@ -59,8 +60,15 @@ export class MapComponent implements OnInit {
   };
 
   public ngOnInit() {
-    this.selector.feature.subscribe((res) => {
+    // Initializes collector stream
+    this.collector.init({ size: 5 });
+
+    this.collector.collection.subscribe((res) => {
       debugger;
     });
+
+    setTimeout(() => {
+      this.collector.reset();
+    }, 5000);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable, OnInit, OnDestroy } from '@angular/core';
 
 import { of, fromEventPattern, Observable, from } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, shareReplay } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
@@ -35,7 +35,8 @@ export class FeatureSelectorService implements OnInit, OnDestroy {
             return of(hitTestResult.results);
           })
         );
-      })
+      }),
+      shareReplay(1)
     );
   }
 
