@@ -15,16 +15,50 @@ export class FeatureCollectorService extends FeatureSelectorService {
   }
 
   public init(options?: IFeatureCollectionOptions): void {
-    this.create();
-  }
-
-  private create() {
     this.collection = this._$resetSignal.pipe(
       startWith(true),
       switchMap(() =>
         this.feature.pipe(
-          scan((acc, curr) => {
-            return [...acc, ...curr];
+          scan((collected, eventGraphics) => {
+            let layerFiltered;
+
+            if (eventGraphics.length === 0) {
+              return collected;
+            }
+
+            if (options && options.layers !== undefined) {
+              layerFiltered = eventGraphics.filter((graphic) => {
+                if (options.layers instanceof Array) {
+                  return options.layers.includes(graphic.layer.id);
+                } else if (typeof options.layers === 'string') {
+                  return options.layers === graphic.layer.id;
+                }
+              });
+            } else {
+              layerFiltered = eventGraphics;
+            }
+
+            if (options && options.deleteDuplicates && options.identifier !== undefined) {
+              const minusDuplicates = collected.filter((collectedGrahpic) => {
+                return (
+                  layerFiltered.findIndex(
+                    (g) => g.attributes[options.identifier] === collectedGrahpic.attributes[options.identifier]
+                  ) === -1
+                );
+              });
+
+              const newFeatures = layerFiltered.filter((eventGraphic) => {
+                return (
+                  collected.findIndex(
+                    (cg) => cg.attributes[options.identifier] === eventGraphic.attributes[options.identifier]
+                  ) === -1
+                );
+              });
+
+              return [...minusDuplicates, ...newFeatures];
+            } else {
+              return [...collected, ...layerFiltered];
+            }
           }, [])
         )
       )
@@ -50,9 +84,11 @@ export interface IFeatureCollectionOptions {
   identifier?: string;
 
   /**
-   * When true, duplicate features will be updated or deleted by splicing the collection.
+   * When true, duplicate features will be deleted by splicing the collection.
+   *
+   * Requires `identifier`.
    */
-  spliceDuplicates?: boolean;
+  deleteDuplicates?: boolean;
 
   /**
    * String Layer ID references for which the collector should limit feature collection from.

@@ -11,6 +11,8 @@ import { tap } from 'rxjs/operators';
 export class MapComponent implements OnInit {
   constructor(private collector: FeatureCollectorService) {}
 
+  public collected;
+
   public config = {
     basemap: {
       basemap: {
@@ -63,10 +65,8 @@ export class MapComponent implements OnInit {
 
   public ngOnInit() {
     // Initializes collector stream
-    this.collector.init();
+    this.collector.init({ identifier: 'OBJECTID', deleteDuplicates: true, layers: ['trees_layer'] });
 
-    this.collector.collection.subscribe((res) => {
-      debugger;
-    });
+    this.collected = this.collector.collection;
   }
 }
