@@ -4,8 +4,8 @@ export const Connections = {
   departmentUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
   tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
   bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
-  bikeLocationsUrl: 'http://APIURL/bikes',
-  tripUrl: 'http://APIURL/trips'
+  bikeLocationsUrl: 'http://18.189.207.133:5000/bikes',
+  tripUrl: 'http://18.189.207.133:5000/trips'
 };
 
 export const Definitions = {
