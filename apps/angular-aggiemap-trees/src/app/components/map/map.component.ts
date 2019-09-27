@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FeatureCollectorService } from '@tamu-gisc/maps/feature/feature-selector';
-import { interval } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'tamu-gisc-map',
@@ -9,7 +6,7 @@ import { tap } from 'rxjs/operators';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-  constructor(private collector: FeatureCollectorService) {}
+  constructor() {}
 
   public collected;
 

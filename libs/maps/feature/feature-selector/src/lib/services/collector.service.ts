@@ -5,10 +5,12 @@ import { scan, startWith, switchMap } from 'rxjs/operators';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { FeatureSelectorService } from './selector.service';
 
+import esri = __esri;
+
 @Injectable()
 export class FeatureCollectorService extends FeatureSelectorService {
-  public collection: Observable<any>;
-  private _$resetSignal: Subject<any> = new Subject();
+  public collection: Observable<esri.Graphic[]>;
+  private _$resetSignal: Subject<boolean> = new Subject();
 
   constructor(private ms: EsriMapService) {
     super(ms);
@@ -19,6 +21,7 @@ export class FeatureCollectorService extends FeatureSelectorService {
       startWith(true),
       switchMap(() =>
         this.feature.pipe(
+          startWith([]),
           scan((collected, eventGraphics) => {
             let layerFiltered;
 

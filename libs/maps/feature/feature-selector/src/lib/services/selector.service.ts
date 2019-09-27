@@ -1,4 +1,4 @@
-import { Injectable, OnInit, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 
 import { of, fromEventPattern, Observable, from } from 'rxjs';
 import { switchMap, shareReplay } from 'rxjs/operators';
