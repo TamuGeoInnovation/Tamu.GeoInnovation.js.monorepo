@@ -124,6 +124,9 @@
     },
     "maps-feature-feature-selector": {
       "tags": []
+    },
+    "charts": {
+      "tags": []
     }
   }
 }

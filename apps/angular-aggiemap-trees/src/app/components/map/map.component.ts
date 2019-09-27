@@ -8,8 +8,6 @@ import { Component, OnInit } from '@angular/core';
 export class MapComponent implements OnInit {
   constructor() {}
 
-  public collected;
-
   public config = {
     basemap: {
       basemap: {

@@ -1140,6 +1140,34 @@
           "styleext": "scss"
         }
       }
+    },
+    "charts": {
+      "projectType": "library",
+      "root": "libs/charts",
+      "sourceRoot": "libs/charts/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/charts/tsconfig.lib.json", "libs/charts/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/charts/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/charts/jest.config.js",
+            "tsConfig": "libs/charts/tsconfig.spec.json",
+            "setupFile": "libs/charts/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {

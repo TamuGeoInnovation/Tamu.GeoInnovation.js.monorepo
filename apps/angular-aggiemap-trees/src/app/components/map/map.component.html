@@ -12,6 +12,10 @@
 
     <tamu-gisc-layer-filter [reference]="'trees_layer'"></tamu-gisc-layer-filter>
 
-    <tamu-gisc-slection-summary [deleteDuplicates]="true" [identifier]="'OBJECTID'" [layers]="'trees_layer'"></tamu-gisc-slection-summary>
+    <tamu-gisc-slection-summary [deleteDuplicates]="true" [identifier]="'OBJECTID'" [layers]="'trees_layer'">
+      <div class="charts">
+        <tamu-gisc-line-chart></tamu-gisc-line-chart>
+      </div>
+    </tamu-gisc-slection-summary>
   </div>
 </tamu-gisc-sidebar>
