@@ -14,7 +14,7 @@ export class LocalStoreService {
    * @param config Object
    * @returns If no local storage reference provided in config, application default storage will be used.
    */
-  public getStorage(config: StorageConfig): any {
+  public getStorage<T>(config: StorageConfig): T | undefined {
     const storeKey = config.primaryKey || STORAGE_KEY;
 
     const content = this.store.get(storeKey);
@@ -34,7 +34,7 @@ export class LocalStoreService {
    *
    * @param  config Object
    */
-  public setStorageObjectKeyValue(config: ValueConfig): void {
+  public setStorageObjectKeyValue<T>(config: ValueConfig<T>): void {
     const storeKey = config.primaryKey || STORAGE_KEY;
 
     let content = this.store.get(storeKey);
@@ -56,7 +56,7 @@ export class LocalStoreService {
    * @param config Object
    * @returns Undefined if key does not exist, else key value
    */
-  public getStorageObjectKeyValue(config: ValueConfig): any {
+  public getStorageObjectKeyValue<T>(config: ValueConfig<T>): T | undefined {
     const storeKey = config.primaryKey || STORAGE_KEY;
 
     const content = this.store.get(storeKey);
@@ -99,9 +99,9 @@ export interface StorageConfig {
    *   }
    * ````
    */
-  subKey?: any;
+  subKey?: string;
 }
 
-export interface ValueConfig extends StorageConfig {
-  value?: any;
+export interface ValueConfig<T> extends StorageConfig {
+  value?: T;
 }

@@ -23,7 +23,7 @@ export class SettingsService {
    * @param config Initialization configuration
    * @returns Initialized settings observable
    */
-  public init(config: SettingsInitializationConfig): Observable<any> {
+  public init(config: SettingsInitializationConfig): Observable<CompoundSettings> {
     // Stored settings will be a flat
     const storageInjected: CompoundSettings = Object.keys(config.settings).reduce(
       (acc, curr) => {
@@ -72,8 +72,8 @@ export class SettingsService {
    *
    * Handles an `undefined` value before, which the service state must not be.
    */
-  private getStorage(config: StorageConfig): any {
-    const storage = this.storage.getStorage(config);
+  private getStorage(config: StorageConfig): SimpleSettingTree {
+    const storage: SimpleSettingTree | null = this.storage.getStorage(config);
 
     if (storage) {
       return storage;
@@ -210,8 +210,8 @@ export class SettingsService {
             // if we only have to worry about one type.
             const targets: string[] =
               settings[setting].effects.get.target instanceof Array
-                ? (settings[setting].effects.get.target as any)
-                : [settings[setting].effects.get.target];
+                ? (settings[setting].effects.get.target as string[])
+                : [settings[setting].effects.get.target as string];
 
             // Checks that all targets exist in settings store.
             const allTargetsExist = targets.every((target) => {

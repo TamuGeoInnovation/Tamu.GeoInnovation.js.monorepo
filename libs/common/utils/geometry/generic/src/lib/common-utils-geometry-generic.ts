@@ -5,13 +5,14 @@ import { getSmallestIndex } from '@tamu-gisc/common/utils/number';
 import { centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 
 import * as gju from 'geojson-utils';
+import esri = __esri;
 
 /**
  * Gets user geolocation if user allows.
  */
 export function getGeolocation(asObservable?: false): Promise<Coordinates>;
 export function getGeolocation(asObservable?: true): Observable<Coordinates>;
-export function getGeolocation(asObservable?: any): Promise<any> | Observable<any> {
+export function getGeolocation(asObservable?: boolean): Promise<Coordinates> | Observable<Coordinates> {
   const promise: Promise<Coordinates> = new Promise((r, rj) => {
     window.navigator.geolocation.getCurrentPosition(
       (e) => {
@@ -25,7 +26,7 @@ export function getGeolocation(asObservable?: any): Promise<any> | Observable<an
 
   if (asObservable) {
     return from(promise);
-  } else {
+  } else if (asObservable as false) {
     return promise;
   }
 }
@@ -88,11 +89,14 @@ export function parseCoordinates(input: string): Point {
 /**
  * Calculates the relative distance of a collection of points relative to a reference.
  *
- * @param reference Reference point used to calculated distance fromt/to
+ * @param reference Reference point used to calculated distance from/to
  * @param points Collection of points.
  * @returns Calculated distances.
  */
-export function relativeDistance(reference: Point, points: any[]): number[] {
+export function relativeDistance(
+  reference: Point,
+  points: { geometry: esri.Geometry | esri.Polygon | esri.Multipoint | esri.Point | esri.Polyline | Point }[]
+): number[] {
   const distances = points.reduce((acc, curr) => {
     const currGeometry = centroidFromGeometry(curr.geometry);
 
