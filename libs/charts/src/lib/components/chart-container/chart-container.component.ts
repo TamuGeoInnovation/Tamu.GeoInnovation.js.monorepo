@@ -1,21 +1,38 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 
 import Chart from 'chart.js';
+import { Subject, Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'tamu-gisc-chart-container',
   templateUrl: './chart-container.component.html',
   styleUrls: ['./chart-container.component.scss']
 })
-export class ChartContainerComponent {
+export class ChartContainerComponent implements OnDestroy {
   @ViewChild('chartContainer', { static: true })
   public container: ElementRef;
 
   private _chart: Chart;
+  private _$destroy: Subject<boolean> = new Subject();
 
   constructor() {}
 
-  public create(config?: any) {
+  public ngOnDestroy() {
+    this._$destroy.next();
+    this._$destroy.complete();
+  }
+
+  public create(config?: Observable<any> | any) {
+    if (config && config instanceof Observable) {
+      // Handle observable data sources
+      config.pipe(takeUntil(this._$destroy)).subscribe((c) => {
+        debugger;
+      });
+    } else {
+      // Do regular chart creation.
+      debugger;
+    }
     // if chart instance, update data
     if (this._chart) {
       debugger;
@@ -63,4 +80,12 @@ export class ChartContainerComponent {
       });
     }
   }
+}
+
+export interface ChartConfig {
+  type: 'line' | 'bar' | 'radar' | 'pie' | 'doughnut' | 'polarArea' | 'bubble' | 'scatter';
+
+  data: any;
+
+  options: any;
 }

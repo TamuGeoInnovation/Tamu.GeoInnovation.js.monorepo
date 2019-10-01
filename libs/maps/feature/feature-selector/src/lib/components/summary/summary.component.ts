@@ -23,10 +23,10 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
   @Input()
   public identifier: string;
 
+  public collection: Observable<esri.Graphic[]>;
+
   @ContentChildren(BaseChartComponent, { descendants: true })
   public chartComponents: QueryList<BaseChartComponent>;
-
-  public collection: Observable<esri.Graphic[]>;
 
   constructor(private collector: FeatureCollectorService) {}
 
