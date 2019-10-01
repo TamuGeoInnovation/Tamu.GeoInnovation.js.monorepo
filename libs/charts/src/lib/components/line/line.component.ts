@@ -1,7 +1,7 @@
-import { Component, forwardRef, AfterViewInit, OnInit } from '@angular/core';
-import { delay, switchMap, toArray, take, scan, reduce } from 'rxjs/operators';
+import { Component, forwardRef, AfterViewInit } from '@angular/core';
+import { switchMap, reduce, take, scan } from 'rxjs/operators';
 import { BaseChartComponent } from '../base/base.component';
-import { of, from } from 'rxjs';
+import { of, from, interval, Subject } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-line-chart',
@@ -10,22 +10,21 @@ import { of, from } from 'rxjs';
   providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => LineChartComponent) }]
 })
 export class LineChartComponent extends BaseChartComponent implements AfterViewInit {
+  public test: Subject<any> = new Subject();
+
   constructor() {
     super();
   }
 
   public ngAfterViewInit() {
-    this.$processed = this.data.pipe(
-      take(1),
-      switchMap((list) => from(list)),
-      switchMap((el) => {
-        return of(el);
-      }),
-      reduce((acc, curr) => {
-        return [...acc, curr];
+    super.ngAfterViewInit();
+
+    this.chartData = this.source.pipe(
+      scan((acc, curr) => {
+        return [...curr];
       }, [])
     );
 
-    this.chart.create(this.$processed);
+    this.chart.create(this.chartData);
   }
 }

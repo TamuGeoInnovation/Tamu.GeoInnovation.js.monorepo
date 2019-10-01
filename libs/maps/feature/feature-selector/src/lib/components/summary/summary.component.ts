@@ -42,7 +42,7 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
 
   public ngAfterContentInit() {
     this.chartComponents.forEach((component) => {
-      component.data = this.collection;
+      component.source = this.collection;
     });
   }
 }
