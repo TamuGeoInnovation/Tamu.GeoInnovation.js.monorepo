@@ -48,11 +48,4 @@ describe('LocalStoreService', () => {
     const service: LocalStoreService = TestBed.get(LocalStoreService);
     expect(service.getStorage({ primaryKey: 'noExist' })).toBeUndefined();
   });
-
-  it('can update storage', () => {
-    const service: LocalStoreService = TestBed.get(LocalStoreService);
-    const key = 'notifications';
-    service.updateStorage({ primaryKey: key });
-    expect(service.getStorage({ primaryKey: key })).toEqual({});
-  });
 });
