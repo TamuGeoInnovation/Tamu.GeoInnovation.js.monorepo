@@ -26,7 +26,7 @@ export function getGeolocation(asObservable?: boolean): Promise<Coordinates> | O
 
   if (asObservable) {
     return from(promise);
-  } else if (asObservable as false) {
+  } else {
     return promise;
   }
 }
