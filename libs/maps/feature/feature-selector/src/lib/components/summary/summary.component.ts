@@ -25,11 +25,19 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
 
   public collection: Observable<esri.Graphic[]>;
 
+  /**
+   * Query for a list of BaseChartComponent subclasses such as LineChartComponent, BarChartCompoonent,
+   * etc, that all extend from the BaseChartComponent. Collector collection will be injected as their
+   * data source instead of template property binding.
+   */
   @ContentChildren(BaseChartComponent, { descendants: true })
   public chartComponents: QueryList<BaseChartComponent>;
 
   constructor(private collector: FeatureCollectorService) {}
 
+  /**
+   * Set up the SelectionSummaryComponent feature collector.
+   */
   public ngOnInit() {
     this.collector.init({
       layers: this.layers,
@@ -40,6 +48,9 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
     this.collection = this.collector.collection;
   }
 
+  /**
+   * Content children are available at this lifecycle hook. Inject data source.
+   */
   public ngAfterContentInit() {
     this.chartComponents.forEach((component) => {
       component.source = this.collection;

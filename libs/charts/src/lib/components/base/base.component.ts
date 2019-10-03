@@ -21,10 +21,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   public yPath: string;
 
   @Input()
-  public xFunction: 'unique' | MonoTypeOperatorFunction<any>;
-
-  @Input()
-  public yFunction: 'count' | MonoTypeOperatorFunction<any>;
+  public transformation: 'categorical' | 'ratio';
 
   @ViewChild(ChartContainerComponent, { static: true })
   public chart: ChartContainerComponent;
@@ -33,12 +30,22 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
 
   constructor() {}
 
+  /**
+   * ChartContainerComponents within subclass templates will be avilable here.
+   *
+   * Perform simple check to make sure we can proceed with chart generation.
+   */
   public ngOnInit() {
     if (this.chart === undefined) {
       throw new Error('Subclass does not contain chart container.');
     }
   }
 
+  /**
+   * Bound or injected data will be avaiable for use at this lifecycle hook.
+   *
+   * Every subclass will create chart config at this point in time.
+   */
   public ngAfterViewInit() {
     if (this.source === undefined) {
       throw new Error('No chart data source provided.');

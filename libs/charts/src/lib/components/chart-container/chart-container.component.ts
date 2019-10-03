@@ -28,6 +28,7 @@ export class ChartContainerComponent implements OnDestroy {
       // Handle observable data sources
       config.pipe(takeUntil(this._$destroy)).subscribe((c) => {
         debugger;
+        console.log(c);
       });
     } else {
       // Do regular chart creation.

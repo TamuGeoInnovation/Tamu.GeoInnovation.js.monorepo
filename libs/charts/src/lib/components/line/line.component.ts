@@ -1,7 +1,9 @@
 import { Component, forwardRef, AfterViewInit } from '@angular/core';
-import { switchMap, reduce, take, scan } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { scan } from 'rxjs/operators';
+
 import { BaseChartComponent } from '../base/base.component';
-import { of, from, interval, Subject } from 'rxjs';
+import { count } from '../../operators/common/common-chart-operators';
 
 @Component({
   selector: 'tamu-gisc-line-chart',
@@ -19,9 +21,10 @@ export class LineChartComponent extends BaseChartComponent implements AfterViewI
   public ngAfterViewInit() {
     super.ngAfterViewInit();
 
+    // Simple test data reducer
     this.chartData = this.source.pipe(
       scan((acc, curr) => {
-        return [...curr];
+        return count(curr, this.xPath);
       }, [])
     );
 

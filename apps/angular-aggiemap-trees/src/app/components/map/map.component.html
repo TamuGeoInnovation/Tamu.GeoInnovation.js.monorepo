@@ -14,7 +14,7 @@
 
     <tamu-gisc-slection-summary [deleteDuplicates]="true" [identifier]="'OBJECTID'" [layers]="'trees_layer'">
       <div class="charts">
-        <tamu-gisc-line-chart [xPath]="'attributes.Species'" [yPath]="'attributes.Species'" [xFunction]="'unique'" [yFunction]="'counts'"></tamu-gisc-line-chart>
+        <tamu-gisc-line-chart [xPath]="'attributes.Species'" [yPath]="'attributes.Species'" [transformation]="'unique'"></tamu-gisc-line-chart>
       </div>
     </tamu-gisc-slection-summary>
   </div>
