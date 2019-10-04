@@ -2,8 +2,8 @@ import { Component, forwardRef, AfterViewInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { scan } from 'rxjs/operators';
 
-import { BaseChartComponent } from '../base/base.component';
 import { op } from '../../operators/common/common-chart-operators';
+import { BaseChartComponent } from '../base/base.component';
 import { BarChartConfiguration } from '../chart-container/chart-container.component';
 
 @Component({
