@@ -17,10 +17,6 @@ export function getPropertyValue<T>(lookup: object, property: string): T {
   const path = property.split('.');
   let value = JSON.parse(JSON.stringify(lookup));
 
-  if (path.length === 0) {
-    return undefined;
-  }
-
   // Recursively test if the next item in the properties array exists in the lookup object.
   // If the property exists, replace the current value and repeat until all path keys are
   // exhausted or until the key no longer exists.
@@ -51,7 +47,7 @@ export function getObjectPropertyValues(lookup: object, properties: string[], jo
 export function getObjectPropertyValues<T>(lookup: object, properties: string[], join?: boolean): string | T[] {
   const values = properties.map((property) => getPropertyValue<T>(lookup, property));
 
-  if (join && values.every((value) => value instanceof String)) {
+  if (join && values.every((value) => typeof value === 'string')) {
     return values.join(' ');
   } else {
     return values;
