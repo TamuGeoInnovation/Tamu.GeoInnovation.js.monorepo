@@ -9,17 +9,13 @@
  * @param lookup Source object
  * @param property Dot notation string representing the location of the property
  */
-export function getPropertyValue(lookup: object, property: string): any {
+export function getPropertyValue<T>(lookup: object, property: string): T {
   if (!lookup || !property) {
     return undefined;
   }
 
   const path = property.split('.');
   let value = JSON.parse(JSON.stringify(lookup));
-
-  if (path.length === 0) {
-    return undefined;
-  }
 
   // Recursively test if the next item in the properties array exists in the lookup object.
   // If the property exists, replace the current value and repeat until all path keys are
@@ -46,12 +42,12 @@ export function getPropertyValue(lookup: object, property: string): any {
  *
  * Returns a concatenated value string if `join` is provided AND is true.
  */
-export function getObjectPropertyValues(lookup: object, properties: string[], join?: false): string[];
+export function getObjectPropertyValues<T>(lookup: object, properties: string[], join?: false): T[];
 export function getObjectPropertyValues(lookup: object, properties: string[], join?: true): string;
-export function getObjectPropertyValues(lookup: any, properties: any, join?: any): any {
-  const values = properties.map((property) => getPropertyValue(lookup, property));
+export function getObjectPropertyValues<T>(lookup: object, properties: string[], join?: boolean): string | T[] {
+  const values = properties.map((property) => getPropertyValue<T>(lookup, property));
 
-  if (join) {
+  if (join && values.every((value) => typeof value === 'string')) {
     return values.join(' ');
   } else {
     return values;

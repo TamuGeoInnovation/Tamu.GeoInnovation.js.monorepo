@@ -2,7 +2,7 @@ import { Point } from '@tamu-gisc/common/types';
 import esri = __esri;
 
 import { default as tCentroid } from '@turf/centroid';
-import { polygon as tPolygon } from '@turf/helpers';
+import { polygon as tPolygon, Feature as tFeature, Point as tPoint } from '@turf/helpers';
 
 /**
  * Attempts to determine a singular point (latitude and longitude) utilizing
@@ -12,18 +12,17 @@ import { polygon as tPolygon } from '@turf/helpers';
  * @param feature Esri geometry
  */
 export function centroidFromGeometry(
-  feature: esri.Geometry | esri.Polygon | esri.Multipoint | esri.Point | esri.Polyline
-): Point;
-export function centroidFromGeometry(feature: any): Point {
-  if (feature.rings) {
+  feature: esri.Geometry | esri.Polygon | esri.Multipoint | esri.Point | esri.Polyline | Point
+): Point {
+  if ('rings' in feature) {
     // If geometry is polygon
     return centroidFromPolygonGeometry(feature);
-  } else if (feature.points) {
+  } else if ('points' in feature) {
     // If geometry is a multipoint set
     return pointFromMultiPointGeometry(feature);
-  } else if ((feature.x && feature.y) || (feature.latitude && feature.longitude)) {
+  } else if (('x' in feature && 'y' in feature) || ('latitude' in feature && 'longitude' in feature)) {
     return pointFromPointGeometry(feature);
-  } else if (feature.paths) {
+  } else if ('paths' in feature) {
     return pointFromPolylineGeometry(feature);
   } else {
     throw new Error('Could not get centroid from search geometry because type could not be identified.');
@@ -43,7 +42,7 @@ export function centroidFromPolygonGeometry(feature: esri.Polygon): Point {
     };
   } else if (feature.rings) {
     // Result type is a Turf Point
-    const p: any = tCentroid(tPolygon([...(feature as esri.Polygon).rings]));
+    const p: tFeature<tPoint> = tCentroid(tPolygon([...(feature as esri.Polygon).rings]));
 
     if (p && p.geometry && p.geometry.coordinates) {
       return {
@@ -71,16 +70,15 @@ export function centroidFromPolygonGeometry(feature: esri.Polygon): Point {
  * @export
  * @param  geometry String representing geometry type.
  */
-export function getGeometryType(geometry: esri.Geometry): string;
-export function getGeometryType(geometry: any): any {
+export function getGeometryType(geometry: esri.Geometry): string {
   if (geometry) {
-    if ((geometry.latitude && geometry.longitude) || (geometry.y && geometry.x)) {
+    if (('latitude' in geometry && 'longitude' in geometry) || ('y' in geometry && 'x' in geometry)) {
       return 'point';
-    } else if (geometry.points) {
+    } else if ('points' in geometry) {
       return 'multipoint';
-    } else if (geometry.rings) {
+    } else if ('rings' in geometry) {
       return 'polygon';
-    } else if (geometry.paths) {
+    } else if ('paths' in geometry) {
       return 'polyline';
     } else {
       throw new Error('Could not resolve geometry type.');
@@ -93,7 +91,7 @@ export function getGeometryType(geometry: any): any {
 export function pointFromMultiPointGeometry(feature: esri.Multipoint): Point {
   if (feature.points && feature.points.length > 0) {
     // Get the first point in the feature
-    const p: any = feature.points[0];
+    const p: number[] = feature.points[0];
 
     return {
       latitude: p[1],
@@ -104,8 +102,8 @@ export function pointFromMultiPointGeometry(feature: esri.Multipoint): Point {
   }
 }
 
-export function pointFromPointGeometry(feature: esri.Point): Point {
-  if (feature && feature.x && feature.y) {
+export function pointFromPointGeometry(feature: esri.Point | Point): Point {
+  if (feature && 'x' in feature && 'y' in feature) {
     return {
       latitude: feature.y,
       longitude: feature.x

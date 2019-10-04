@@ -279,7 +279,7 @@ export class EsriMapService {
     } else {
       const generateLayer = (layerSource: LayerSource): Promise<esri.Layer> => {
         // Set of persistent properties, that will be applied to all layer types.
-        const persistentProps: any = {
+        const persistentProps = {
           outFields: layerSource.native && layerSource.native.outFields ? layerSource.native.outFields : ['*'],
           minScale: layerSource.native && layerSource.native.minScale ? layerSource.native.minScale : 100000,
           maxScale: layerSource.native && layerSource.native.maxScale ? layerSource.native.maxScale : 0,
@@ -292,7 +292,7 @@ export class EsriMapService {
 
         // Object with merged root level properties, native properties, and persistent properties.
         // const props: any = Object.assign(source, ...native, ...persistentProps);
-        const props: any = { ...layerSource, ...layerSource.native, ...persistentProps };
+        const props = { ...layerSource, ...layerSource.native, ...persistentProps };
 
         // Remove the 'native' property from the object since it's not needed in the layer creation.
         if (props.hasOwnProperty('native')) {
@@ -618,6 +618,11 @@ export class EsriMapService {
       }
     });
   }
+}
+
+export interface MapConfig {
+  basemap: MapProperties;
+  view: MapViewProperties;
 }
 
 interface MapProperties extends esri.MapProperties {

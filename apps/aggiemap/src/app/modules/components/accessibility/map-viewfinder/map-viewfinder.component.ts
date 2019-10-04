@@ -100,7 +100,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
             ];
 
             // Transform screen point coordinates to map point coordinates
-            const mapCoords: any = screenCoords
+            const mapCoords: number[][] = screenCoords
               .map((point) => {
                 return instance.view.toMap({
                   x: point[0],
@@ -115,7 +115,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
             this.moduleProvider.require(['Polygon']).then(([Polygon]: [esri.PolygonConstructor]) => {
               // Create a polygon that will be used to query the feature layer to get intersecting features
               const polygon = new Polygon({
-                rings: mapCoords
+                rings: [mapCoords]
               });
 
               const layerSource = LayerSources.find((source) => source.id === 'buildings-layer');
