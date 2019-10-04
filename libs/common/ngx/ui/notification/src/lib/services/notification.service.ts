@@ -42,7 +42,7 @@ export class NotificationService {
       this.store.setStorageObjectKeyValue({
         primaryKey: this._localStorageSettings.storageKey,
         subKey: this._localStorageSettings.subKey,
-        value: this.diffNotifications([...notificationsInLocalStorage.data], this._events as any)
+        value: this.diffNotifications([...notificationsInLocalStorage.data], this._events as NotificationProperties[])
       });
     }
 
@@ -106,9 +106,9 @@ export class NotificationService {
    *
    * If any one condition against the preferred object does not pass, the whole test will fail.
    */
-  private diffObject(preferred: any, fallback: any): boolean {
+  private diffObject(preferred: object, fallback: object): boolean {
     const keyLengthIsSame = Object.keys(fallback).length === Object.keys(preferred).length;
-    // Return false if he current latest key lenght is different than the stored
+    // Return false if he current latest key length is different than the stored
     if (!keyLengthIsSame) {
       return false;
     }
@@ -210,8 +210,8 @@ export class NotificationService {
     // Create a new notification array for the client-stored notifications and update the acknoledge property
     // if the current notification object if it exists. In this way, it will not be be returned as an active
     // notification.
-    const local: LocalStorageObject = this.store
-      .getStorage({ primaryKey: this._localStorageSettings.storageKey })
+    const local: NotificationProperties[] = this.store
+      .getStorage<LocalStorageObject>({ primaryKey: this._localStorageSettings.storageKey })
       .data.map((n: Notification) => {
         if (n.id !== notificaiton.id) {
           return n;
@@ -243,7 +243,7 @@ export class NotificationService {
    * If no match found, logs a warning in the console.
    */
   public preset(id: string): void {
-    // Attempt to find notificaiton event by ID from the latest EVENTS object
+    // Attempt to find notification event by ID from the latest EVENTS object
     const match: NotificationProperties = this._events.find((n) => n.id === id);
 
     // If the referenced event by id was found, append it to the store and give the updated value to the subject

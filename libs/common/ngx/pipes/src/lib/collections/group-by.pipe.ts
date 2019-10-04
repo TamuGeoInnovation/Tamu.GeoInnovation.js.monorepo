@@ -10,7 +10,11 @@ import { Pipe, PipeTransform } from '@angular/core';
  */
 @Pipe({ name: 'groupBy' })
 export class GroupByPipe implements PipeTransform {
-  public transform(collection: Array<any>, path: string, categoryIdentifierKeyPath?: string): Array<any> {
+  public transform<T extends object>(
+    collection: Array<T>,
+    path: string,
+    categoryIdentifierKeyPath?: string
+  ): Array<T | { items?: T; identity?: T }> {
     // Return early if no collection
     if (!collection || collection.length === 0) {
       return collection;

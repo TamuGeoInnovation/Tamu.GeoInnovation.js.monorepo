@@ -33,7 +33,7 @@ export class SidebarComponent implements AfterContentInit, OnDestroy {
   public sidebarVisible = true;
   public currentView: string;
 
-  private _$destroy: Subject<any> = new Subject();
+  private _$destroy: Subject<null> = new Subject();
 
   @ContentChildren(SidebarTabComponent)
   public tabs: QueryList<SidebarTabComponent>;

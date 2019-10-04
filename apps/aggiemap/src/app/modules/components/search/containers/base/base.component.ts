@@ -121,39 +121,39 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Event emitter that will emit when the value has changed and is no longer the same as initial.
    */
   @Output()
-  public dirty: EventEmitter<any> = new EventEmitter();
+  public dirty: EventEmitter<SearchEvent> = new EventEmitter();
 
   /**
    * Event emitter that will emit when the input box in the template is set focus
    */
   @Output()
-  public focus: EventEmitter<any> = new EventEmitter();
+  public focus: EventEmitter<boolean> = new EventEmitter();
 
   /**
    * Event emitter that will emit when the input box in the template loses focus
    */
   @Output()
-  public blur: EventEmitter<any> = new EventEmitter();
+  public blur: EventEmitter<boolean> = new EventEmitter();
 
   /**
    * Event emitter that will emit when the value has been cleared.
    */
   @Output()
-  public empty: EventEmitter<any> = new EventEmitter();
+  public empty: EventEmitter<SearchEvent> = new EventEmitter();
 
   /**
    * Event emitter that will emit when the left side action icon is pressed.
    * Up to the parent component on how to handle interaction.
    */
   @Output()
-  public leftAction: EventEmitter<any> = new EventEmitter();
+  public leftAction: EventEmitter<boolean> = new EventEmitter();
 
   /**
    * Event emitter that will emit when the right side action icon is pressed.
    * Up to the parent component on how to handle interaction.
    */
   @Output()
-  public rightAction: EventEmitter<any> = new EventEmitter();
+  public rightAction: EventEmitter<boolean> = new EventEmitter();
 
   // ===========================================================================
 

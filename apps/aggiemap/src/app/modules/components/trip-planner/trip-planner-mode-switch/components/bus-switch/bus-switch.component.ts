@@ -15,7 +15,7 @@ export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
   @Input()
   public switch: TripModeSwitch;
 
-  private $destroy: Subject<any> = new Subject();
+  private $destroy: Subject<boolean> = new Subject();
 
   public busStops: Array<BusStop> = [];
   public busStopsList: Array<BusStop> = [];

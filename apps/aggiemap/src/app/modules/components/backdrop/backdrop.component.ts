@@ -36,7 +36,7 @@ export class BackdropComponent implements OnInit {
   public position: 'off-top' | 'off-right' | 'off-bottom' | 'off-left' | 'on-top' | 'on-right' | 'on-bottom' | 'on-left';
 
   @Output()
-  public voidClick: EventEmitter<any> = new EventEmitter();
+  public voidClick: EventEmitter<MouseEvent> = new EventEmitter();
 
   constructor(private renderer: Renderer2, private element: ElementRef) {}
 
