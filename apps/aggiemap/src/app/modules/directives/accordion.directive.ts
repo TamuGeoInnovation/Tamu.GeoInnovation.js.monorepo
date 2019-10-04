@@ -1,4 +1,5 @@
 import { Directive, ElementRef, Input, OnChanges, SimpleChanges, OnInit, OnDestroy } from '@angular/core';
+import { Observer } from 'rxjs';
 
 @Directive({
   selector: '[accordion]'
@@ -45,7 +46,7 @@ export class AccordionDirective implements OnChanges, OnInit, OnDestroy {
    * @type {*}
    * @memberof AccordionDirective
    */
-  private mutationObserver: any;
+  private mutationObserver: MutationObserver;
 
   constructor(private el: ElementRef) {}
 
@@ -67,7 +68,8 @@ export class AccordionDirective implements OnChanges, OnInit, OnDestroy {
     if (this.resize) {
       this.mutationObserver = new MutationObserver((mutations: MutationRecord[]) => {
         this.setAccordionHeight();
-      }).observe(this.el.nativeElement, {
+      });
+      this.mutationObserver.observe(this.el.nativeElement, {
         childList: true,
         attributes: false,
         subtree: true
@@ -81,7 +83,7 @@ export class AccordionDirective implements OnChanges, OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    // Dipose of any mutation observers on component destroy.
+    // Dispose of any mutation observers on component destroy.
     if (this.mutationObserver) {
       this.mutationObserver.disconnect();
     }

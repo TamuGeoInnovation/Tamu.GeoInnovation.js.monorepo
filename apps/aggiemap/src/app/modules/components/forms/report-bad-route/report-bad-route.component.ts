@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterEvent } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil, switchMap, pluck } from 'rxjs/operators';
@@ -50,7 +50,7 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
     this.history
       .last()
       .pipe(takeUntil(this._destroy$))
-      .subscribe((event: any) => {
+      .subscribe((event: RouterEvent) => {
         this._lastRoute = event.url;
       });
   }

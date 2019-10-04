@@ -10,7 +10,7 @@ export class OrderByPipe implements PipeTransform {
    * @param path Dot-notation location in each object in which comparison value is found.
    * @param direction Defaults to `asc`.
    */
-  public transform(collection: Array<any>, path: string, direction?: 'asc' | 'desc'): Array<any> {
+  public transform<T extends object>(collection: Array<T>, path: string, direction?: 'asc' | 'desc'): Array<T> {
     // Return early if no collection
     if (collection && collection.length > 0) {
       const sorted = collection.sort((first, second) => {
