@@ -23,6 +23,131 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   public path: string;
 
   /**
+   * Describes the format of the `source` collection format.
+   *
+   * The collection can represent a `single` dataset or `multi`ple datasets.
+   *
+   *
+   * In the case of `single` mode, each item in the collection represents a value for the dataset.
+   *
+   * **Example**:
+   *
+   * ```js
+   *  [
+   *      // Value 1
+   *      {
+   *        attributes: {
+   *           name: 'Name of object',
+   *           value: 2
+   *        }
+   *      },
+   *      // Value 2
+   *      {...},
+   *      // Value 3
+   *      {...}
+   *  ]
+   *
+   * ```
+   *
+   * In the case of `multi` mode, each item in the collection represents a dataset. The children within that dadtaset
+   * represent the values.
+   *
+   * **Example**:
+   *
+   * ```js
+   *  [
+   *      // Dataset 1
+   *      [
+   *         // Value 1
+   *         {
+   *           attributes: {
+   *             name: 'Name of object',
+   *             value: 2
+   *          }
+   *        },
+   *        // Value 2
+   *        {...},
+   *        // Value 3
+   *        {...}
+   *      ],
+   *       // Dataset 2
+   *      [
+   *        // Value 1
+   *        {...},
+   *        // Value 2
+   *        {...}
+   *      ],
+   *      // Dataset 3
+   *      [...]
+   *  ]
+   *
+   * ```
+   */
+  @Input()
+  public mode: 'single' | 'multi';
+
+  /**
+   * Resolvable dataset item property path, used as a value entry in a dataset.
+   *
+   * Expects a `string[]` when `mode` is set to `single`. Each path represents a path for a matching transformation,
+   * if any/required. If a given transformation index does not accept a path or is to be omitted, provide the `null` keyword
+   * in place of a valid path.
+   *
+   * Expects a `string[][]` when `mode` is set to `multi`. Each top-level collection represents a dataset. Within each dataset,
+   * each path represents a path for a matching transformation if any/required. If a given transformation index does not accept
+   * a path or is to be omitted, provide the `null` keyword in place of a valid path.
+   *
+   * Dot notation is supported.
+   *
+   * **Example**
+   *
+   * Given the dataset:
+   *
+   * ```js
+   *  [
+   *      // Dataset item 1
+   *      {
+   *        attributes: {
+   *           name: 'Name of object',
+   *           value: 2
+   *        }
+   *      },
+   *      // Dataset item 2
+   *      {...},
+   *      // Dataset item 3
+   *      {...}
+   *  ]
+   * ```
+   *
+   * With one transofmration applied, providing `['attributes.name']` as the path will resolve to "Name of object" for the Dataset item 1.
+   *
+   */
+  @Input()
+  public paths: Array<string> | Array<Array<string>>;
+
+  /**
+   * Describes a series of transformational operations performed on the `source` collection that ultimately reduce it to a
+   * series of dataset values.
+   *
+   * Expects a `string[]` when `mode` is set to `single`.
+   *
+   * Expects a `string[][]` when `mode` is set to `multi`.
+   *
+   *
+   * If no transformations provided, the resolved `path` value will be used.
+   *
+   * Supported transformations:
+   *
+   *  - categorize
+   *  - count
+   *
+   * Each of the transformatinos in the transformation collection will be executed sequentially.
+   * This allows creating transformation pipelines by consuming the output of one transformation into the next.
+   */
+  @Input()
+  public transformations: Array<string> | Array<Array<string>>;
+
+  /**
    * Chart title.
    */
   @Input()
@@ -32,12 +157,6 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   public transformation: 'categorical' | 'ratio';
 
   /**
-   * Transformed `source` data into a `ChartConfiguration` format passed to the `ChartContainerComponent` responsible
-   * for rendering the chart.
-   */
-  public chartData: Observable<any>;
-
-  /**
    * Lays out the structure of a base configuration.
    *
    * Subclasses are responsible for creating datasets and appending
@@ -45,6 +164,12 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
    * container.
    */
   public baseConfig: ChartConfiguration;
+
+  /**
+   * Transformed `source` data into a `ChartConfiguration` format passed to the `ChartContainerComponent` responsible
+   * for rendering the chart.
+   */
+  public chartData: Observable<ChartConfiguration>;
 
   /**
    * ChartContaer component reference.

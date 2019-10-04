@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { scan } from 'rxjs/operators';
 
 import { BaseChartComponent } from '../base/base.component';
-import { count } from '../../operators/common/common-chart-operators';
+import { op } from '../../operators/common/common-chart-operators';
 import { BarChartConfiguration } from '../chart-container/chart-container.component';
 
 @Component({
@@ -27,7 +27,7 @@ export class LineChartComponent extends BaseChartComponent implements AfterViewI
     // Simple test data reducer
     this.chartData = this.source.pipe(
       scan((acc, curr) => {
-        const counts = count(curr, this.path);
+        const counts = op.count(curr, this.path);
 
         this.baseConfig.updateData({
           labels: counts.labels,
