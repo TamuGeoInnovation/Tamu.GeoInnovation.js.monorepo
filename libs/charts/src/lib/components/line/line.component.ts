@@ -4,6 +4,7 @@ import { scan } from 'rxjs/operators';
 
 import { BaseChartComponent } from '../base/base.component';
 import { count } from '../../operators/common/common-chart-operators';
+import { BarChartConfiguration } from '../chart-container/chart-container.component';
 
 @Component({
   selector: 'tamu-gisc-line-chart',
@@ -21,10 +22,24 @@ export class LineChartComponent extends BaseChartComponent implements AfterViewI
   public ngAfterViewInit() {
     super.ngAfterViewInit();
 
+    this.baseConfig = new BarChartConfiguration();
+
     // Simple test data reducer
     this.chartData = this.source.pipe(
       scan((acc, curr) => {
-        return count(curr, this.xPath);
+        const counts = count(curr, this.path);
+
+        this.baseConfig.updateData({
+          labels: counts.labels,
+          datasets: [
+            {
+              label: 'Test label',
+              data: counts.data
+            }
+          ]
+        });
+
+        return this.baseConfig;
       }, [])
     );
 
