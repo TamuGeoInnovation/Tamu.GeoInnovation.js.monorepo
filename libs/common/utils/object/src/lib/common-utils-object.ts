@@ -9,7 +9,7 @@
  * @param lookup Source object
  * @param property Dot notation string representing the location of the property
  */
-export function getPropertyValue(lookup: object, property: string): string {
+export function getPropertyValue<T>(lookup: object, property: string): T {
   if (!lookup || !property) {
     return undefined;
   }
@@ -46,12 +46,12 @@ export function getPropertyValue(lookup: object, property: string): string {
  *
  * Returns a concatenated value string if `join` is provided AND is true.
  */
-export function getObjectPropertyValues(lookup: object, properties: string[], join?: false): string[];
+export function getObjectPropertyValues<T>(lookup: object, properties: string[], join?: false): T[];
 export function getObjectPropertyValues(lookup: object, properties: string[], join?: true): string;
-export function getObjectPropertyValues(lookup: object, properties: string[], join?: boolean): string | string[] {
-  const values = properties.map((property) => getPropertyValue(lookup, property));
+export function getObjectPropertyValues<T>(lookup: object, properties: string[], join?: boolean): string | T[] {
+  const values = properties.map((property) => getPropertyValue<T>(lookup, property));
 
-  if (join) {
+  if (join && values.every((value) => value instanceof String)) {
     return values.join(' ');
   } else {
     return values;

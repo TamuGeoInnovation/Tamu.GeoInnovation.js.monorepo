@@ -6,6 +6,7 @@ import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
 import { TripPlannerRuleMode, TripPlannerService } from '../../../../../services/trip-planner/trip-planner.service';
+import { CompoundSettings } from '@tamu-gisc/common/ngx/settings';
 
 @Component({
   selector: 'gisc-trip-planner-options-base',
@@ -18,7 +19,7 @@ export class TripPlannerOptionsBaseComponent {
    * @type {*}
    * @memberof TripPlannerParkingOptionsComponent
    */
-  public settings?: Observable<string>;
+  public settings?: Observable<CompoundSettings>;
 
   public travelOptions = this.tripPlanner.TravelOptions;
 
@@ -32,7 +33,7 @@ export class TripPlannerOptionsBaseComponent {
    * @param {*} value
    * @memberof TripPlannerParkingOptionsBaseComponent
    */
-  public setOptionValue(key: string | TripPlannerRuleMode, value: string) {
+  public setOptionValue<T>(key: string | TripPlannerRuleMode, value: T) {
     /**
      * Creates a flat object with keys derived from the provided string array,
      * and value with the scoped parent function value.
@@ -88,7 +89,7 @@ export class TripPlannerOptionsBaseComponent {
    * @returns {Observable<any>}
    * @memberof TripPlannerParkingOptionsBaseComponent
    */
-  public getOptionValue(key): Observable<string> {
+  public getOptionValue(key): Observable<CompoundSettings> {
     return this.travelOptions.pipe(pluck(key));
   }
 }

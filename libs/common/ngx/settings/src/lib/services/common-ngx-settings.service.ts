@@ -568,7 +568,7 @@ interface SettingEffectsSetFunction {
   fn(value?): any;
 }
 
-interface CompoundSettings {
+export interface CompoundSettings {
   [key: string]: {
     storage: StorageConfig;
     persistent?: boolean;
