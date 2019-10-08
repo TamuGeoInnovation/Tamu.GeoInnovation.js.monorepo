@@ -7,12 +7,12 @@ import { BaseChartComponent } from '../base/base.component';
 import { BarChartConfiguration } from '../chart-container/chart-container.component';
 
 @Component({
-  selector: 'tamu-gisc-line-chart',
-  templateUrl: './line.component.html',
-  styleUrls: ['../base/base.component.scss', './line.component.scss'],
-  providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => LineChartComponent) }]
+  selector: 'tamu-gisc-bar-chart',
+  templateUrl: './bar.component.html',
+  styleUrls: ['../base/base.component.scss', './bar.component.scss'],
+  providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => BarChartComponent) }]
 })
-export class LineChartComponent extends BaseChartComponent implements AfterViewInit {
+export class BarChartComponent extends BaseChartComponent implements AfterViewInit {
   public test: Subject<any> = new Subject();
 
   constructor() {
