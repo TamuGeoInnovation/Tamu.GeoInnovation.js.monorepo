@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Observable, Subject, from, combineLatest, of } from 'rxjs';
 import { pluck, shareReplay, switchMap, filter, toArray, reduce, take, tap } from 'rxjs/operators';
 
@@ -18,9 +18,20 @@ export class LayerFilterComponent implements OnInit {
    * Layer ID reference.
    *
    * The layer must exist as part of the `LayerSources` definition in the application enviroinment.
+   *
+   * Used to query and retrieve valid attributes and valies.
    */
   @Input()
   public reference: string;
+
+  @Input()
+  public setDefinitionExpression: boolean;
+
+  @Input()
+  public executeFilterQuery: boolean;
+
+  @Output()
+  public completeFilter: EventEmitter<string> = new EventEmitter();
 
   /**
    * Resolved layer from layer list service.
@@ -120,12 +131,15 @@ export class LayerFilterComponent implements OnInit {
       }),
       switchMap((where) => combineLatest([of(where), this.layer.pipe(pluck('layer'))])),
       tap((args) => {
-        const [w, l] = args;
+        if (Boolean(this.setDefinitionExpression)) {
+          const [w, l] = args;
 
-        l.definitionExpression = w;
+          l.definitionExpression = w;
+        }
       })
     )
     .subscribe((res) => {
+      this.completeFilter.emit(res[0]);
       console.log(`Definition Expression set to ${res[0]}`);
     });
 

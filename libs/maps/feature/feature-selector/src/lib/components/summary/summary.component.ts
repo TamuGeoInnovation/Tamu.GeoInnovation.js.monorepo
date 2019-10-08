@@ -15,6 +15,9 @@ import esri = __esri;
 })
 export class SelectionSummaryComponent implements OnInit, AfterContentInit {
   @Input()
+  public selfCollect: boolean;
+
+  @Input()
   public layers: string | string[];
 
   @Input()
@@ -23,6 +26,7 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
   @Input()
   public identifier: string;
 
+  @Input()
   public collection: Observable<esri.Graphic[]>;
 
   /**
@@ -39,13 +43,15 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
    * Set up the SelectionSummaryComponent feature collector.
    */
   public ngOnInit() {
-    this.collector.init({
-      layers: this.layers,
-      deleteDuplicates: this.deleteDuplicates,
-      identifier: this.identifier
-    });
+    if (Boolean(this.selfCollect)) {
+      this.collector.init({
+        layers: this.layers,
+        deleteDuplicates: this.deleteDuplicates,
+        identifier: this.identifier
+      });
 
-    this.collection = this.collector.collection;
+      this.collection = this.collector.collection;
+    }
   }
 
   /**
