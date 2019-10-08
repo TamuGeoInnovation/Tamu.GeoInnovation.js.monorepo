@@ -148,6 +148,12 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   public transformations: Array<string> | Array<Array<string>>;
 
   /**
+   * Series display labels for a dataset.
+   */
+  @Input()
+  public labels: Array<string>;
+
+  /**
    * Chart title.
    */
   @Input()

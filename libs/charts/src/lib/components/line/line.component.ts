@@ -27,22 +27,76 @@ export class LineChartComponent extends BaseChartComponent implements AfterViewI
     // Simple test data reducer
     this.chartData = this.source.pipe(
       scan((acc, curr) => {
-        const counts = op.count(curr, this.path);
+        // Asserting transformations as an `any` array, otherwise compiler does not like its original
+        // union type.
+        const p = (<Array<any>>this.transformations)
+          .map((transformation, index) => {
+            const transformed = {
+              value: this.valueForTransformationSet(transformation, curr).value,
+              label: this.labels[index]
+            };
 
-        this.baseConfig.updateData({
-          labels: counts.labels,
-          datasets: [
+            return transformed;
+          }, [])
+          .reduce(
+            (datasets, dataset) => {
+              return {
+                labels: dataset.value.labels,
+                datasets: [
+                  ...datasets.datasets,
+                  {
+                    label: dataset.label,
+                    data: dataset.value.data
+                  }
+                ]
+              };
+            },
             {
-              label: 'Test label',
-              data: counts.data
+              labels: undefined,
+              datasets: []
             }
-          ]
-        });
+          );
+
+        this.baseConfig.updateData(p);
 
         return this.baseConfig;
       }, [])
     );
 
     this.chart.create(this.chartData);
+  }
+
+  public valueForTransformationSet(
+    set: string | Array<string>,
+    collection: Array<any>,
+    setDepth?: number,
+    setIndex?: number
+  ) {
+    if (set instanceof Array) {
+      return set.reduce(
+        (acc, curr, i) => {
+          const evaluated = {
+            value: this.valueForTransformationSet(curr, acc.value, acc.depth, i),
+            depth: acc.depth + 1
+          };
+
+          return evaluated;
+        },
+        {
+          depth: 0,
+          value: collection
+        }
+      );
+    } else {
+      if (op.hasOwnProperty(set)) {
+        const params = this.paths[setIndex][setDepth];
+
+        const result = op[set](collection, params);
+
+        return result;
+      } else {
+        throw new Error('Invalid chart operation.');
+      }
+    }
   }
 }
