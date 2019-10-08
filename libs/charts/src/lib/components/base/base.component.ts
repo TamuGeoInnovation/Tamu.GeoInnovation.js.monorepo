@@ -1,7 +1,9 @@
 import { Component, ViewChild, Input, AfterViewInit, OnInit } from '@angular/core';
-
-import { ChartContainerComponent, ChartConfiguration } from '../chart-container/chart-container.component';
 import { Observable } from 'rxjs';
+import { scan } from 'rxjs/operators';
+
+import { op } from '../../operators/common/common-chart-operators';
+import { ChartContainerComponent, ChartConfiguration } from '../chart-container/chart-container.component';
 
 @Component({
   template: '',
@@ -13,14 +15,6 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
    */
   @Input()
   public source: Observable<any>;
-
-  /**
-   * Resolvable collection item property path, whose value is the basis for the provided transformation type.
-   *
-   * Dot notation supported.
-   */
-  @Input()
-  public path: string;
 
   /**
    * Describes the format of the `source` collection format.
@@ -159,9 +153,6 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   @Input()
   public title: string;
 
-  @Input()
-  public transformation: 'categorical' | 'ratio';
-
   /**
    * Lays out the structure of a base configuration.
    *
@@ -208,6 +199,99 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   public ngAfterViewInit() {
     if (this.source === undefined) {
       throw new Error('No chart data source provided.');
+    }
+
+    // On eveery source emission, execute the transformers which creates a data config specific
+    // to the subclass calling the method.
+    //
+    // Generated config is returned by the scan operator which will trigger chart container to
+    // create/update chart data.
+    this.chartData = this.source.pipe(
+      scan((acc, curr) => {
+        // Asserting transformations as an `any` array, otherwise compiler does not like its original
+        // union type.
+        const p = (<Array<any>>this.transformations)
+          .map((transformation, index) => {
+            const transformed = {
+              value: this.valueForTransformationSet(transformation, curr).value,
+              label: this.labels[index]
+            };
+
+            return transformed;
+          }, [])
+          .reduce(
+            (datasets, dataset) => {
+              return {
+                labels: dataset.value.labels,
+                datasets: [
+                  ...datasets.datasets,
+                  {
+                    label: dataset.label,
+                    data: dataset.value.data
+                  }
+                ]
+              };
+            },
+            {
+              labels: undefined,
+              datasets: []
+            }
+          );
+
+        // Call the sub-class updateData() method that will reformat data output into a suitable format
+        // based on its chart type.
+        this.baseConfig.updateData(p);
+
+        // Emit generated config.
+        return this.baseConfig;
+      }, [])
+    );
+
+    this.chart.create(this.chartData);
+  }
+
+  /**
+   * For a provided transfromation set, will iterate through inner children and execute any operators with
+   * respective `paths`.
+   *
+   * @param {(string | Array<string>)} set - Transformation set
+   * @param {Array<T>} collection - Initial collection (seed), or the previou value if it's in a recursive call.
+   * @param {number} [setIndex] - The transformation set index. Represents the index of the current dataset
+   * being processed.
+   * @param {number} [setDepth] - The transformation index. Represents the index of the current transformation, relative
+   * to the dataset index.
+   */
+  private valueForTransformationSet<T>(
+    set: string | Array<string>,
+    collection: Array<T>,
+    setIndex?: number,
+    setDepth?: number
+  ) {
+    if (set instanceof Array) {
+      return set.reduce(
+        (acc, curr, i) => {
+          const evaluated = {
+            value: this.valueForTransformationSet(curr, acc.value, i, acc.depth),
+            depth: acc.depth + 1
+          };
+
+          return evaluated;
+        },
+        {
+          depth: 0,
+          value: collection
+        }
+      );
+    } else {
+      if (op.hasOwnProperty(set)) {
+        const params = this.paths[setIndex][setDepth];
+
+        const result = op[set](collection, params);
+
+        return result;
+      } else {
+        throw new Error(`Invalid chart operator: ${set}`);
+      }
     }
   }
 }
