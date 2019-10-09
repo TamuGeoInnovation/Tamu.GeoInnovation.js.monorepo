@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 
+import esri = __esri;
+import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
+  public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
+
   constructor() {}
 
   public config = {
