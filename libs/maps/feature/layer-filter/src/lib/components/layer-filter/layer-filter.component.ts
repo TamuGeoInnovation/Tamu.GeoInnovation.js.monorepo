@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Observable, Subject, from, combineLatest, of } from 'rxjs';
+import { Observable, Subject, from, combineLatest, of, iif, forkJoin } from 'rxjs';
 import { pluck, shareReplay, switchMap, filter, toArray, reduce, take, tap } from 'rxjs/operators';
 
 import { LayerListService, LayerListItem } from '@tamu-gisc/maps/feature/layer-list';
@@ -31,7 +31,10 @@ export class LayerFilterComponent implements OnInit {
   public executeFilterQuery: boolean;
 
   @Output()
-  public completeFilter: EventEmitter<string> = new EventEmitter();
+  public filterCompleted: EventEmitter<string> = new EventEmitter();
+
+  @Output()
+  public filterQueryResults: EventEmitter<esri.Graphic[]> = new EventEmitter();
 
   /**
    * Resolved layer from layer list service.
@@ -130,17 +133,30 @@ export class LayerFilterComponent implements OnInit {
         return of(where);
       }),
       switchMap((where) => combineLatest([of(where), this.layer.pipe(pluck('layer'))])),
-      tap((args) => {
+      switchMap(([where, layer]) =>
+        forkJoin([
+          of(where),
+          of(layer),
+          iif(
+            () => Boolean(this.executeFilterQuery),
+            from((layer.queryFeatures({ where: where, outFields: ['*'] }) as any) as Promise<esri.FeatureSet>),
+            of(false)
+          )
+        ])
+      ),
+      tap(([where, layer, queryResult]) => {
         if (Boolean(this.setDefinitionExpression)) {
-          const [w, l] = args;
-
-          l.definitionExpression = w;
+          layer.definitionExpression = where;
         }
       })
     )
-    .subscribe((res) => {
-      this.completeFilter.emit(res[0]);
-      console.log(`Definition Expression set to ${res[0]}`);
+    .subscribe(([where, layer, queryResult]) => {
+      this.filterCompleted.emit(where);
+
+      if (Boolean(queryResult)) {
+        this.filterQueryResults.emit((<esri.FeatureSet>queryResult).features);
+      }
+      console.log(`Definition Expression set to ${where}`);
     });
 
   public ngOnInit() {

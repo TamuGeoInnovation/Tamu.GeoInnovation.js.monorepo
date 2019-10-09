@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { BaseChartComponent } from '@tamu-gisc/charts';
 

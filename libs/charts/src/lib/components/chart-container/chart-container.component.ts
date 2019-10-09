@@ -36,10 +36,8 @@ export class ChartContainerComponent implements OnDestroy {
           this._chart.update();
         }
       });
-    } else {
-      // Do regular chart creation.
-      debugger;
     }
+    
     // // if chart instance, update data
     // if (this._chart) {
     //   debugger;
