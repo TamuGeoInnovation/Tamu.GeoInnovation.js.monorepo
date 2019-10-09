@@ -13,7 +13,7 @@ export class BusTimetableComponent implements OnInit {
   @Input()
   public route: TSRoute;
 
-  public timetable: Observable<any>;
+  public timetable: Observable<TimetableEntry[][]>;
 
   /**
    * Emits once when the componet has received time table data.

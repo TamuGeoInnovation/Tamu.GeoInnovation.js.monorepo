@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
-import { MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { Connections } from '../../environments/environment';
 
@@ -18,7 +18,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
   public view: esri.MapView;
   public isMobile: boolean;
-  public config: any;
+  public config: MapConfig;
 
   private _destroy$: Subject<boolean> = new Subject();
 

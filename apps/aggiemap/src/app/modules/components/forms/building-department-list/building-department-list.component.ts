@@ -20,7 +20,7 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
 
   public result;
 
-  private source: any;
+  private source: number;
 
   private _sources: SearchSource[];
 

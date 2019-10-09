@@ -7,7 +7,7 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
  *
  * Output: [['a', 'b'], ['b', 'c'], ['c', 'd']]
  */
-export function pairwiseOverlap(elements: any[]): any[] {
+export function pairwiseOverlap<T>(elements: T[]): T[][] {
   return elements.reduce((pairs, current, index, arr) => {
     if (arr.length <= 1) {
       throw new Error(`Insufficient elements to pair.`);

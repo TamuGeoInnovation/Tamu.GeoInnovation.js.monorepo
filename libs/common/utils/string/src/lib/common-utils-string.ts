@@ -37,7 +37,7 @@ export class TemplateRenderer {
     } else if (this.template && this.lookup) {
       return this.template.replace(/\{{.*?\}}/g, (match: string, index: number, orig: string) => {
         // Remove template braces before setting value from lookup object.
-        return getPropertyValue(this.lookup, match.replace('{{', '').replace('}}', ''));
+        return getPropertyValue<string>(this.lookup, match.replace('{{', '').replace('}}', ''));
       });
     }
   }
