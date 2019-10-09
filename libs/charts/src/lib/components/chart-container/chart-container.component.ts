@@ -76,7 +76,7 @@ export class ChartContainerComponent implements OnDestroy {
   }
 
   private createOrUpdate(config: ChartConfiguration) {
-    if (config && config instanceof Observable) {
+    if (this._chart === undefined) {
       // Handle observable data sources
       this._chart = new Chart((<HTMLCanvasElement>this.container.nativeElement).getContext('2d'), config);
     } else {

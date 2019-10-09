@@ -7,7 +7,7 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
  *
  * Output: [['a', 'b'], ['b', 'c'], ['c', 'd']]
  */
-export function pairwiseOverlap(elements: any[]): any[] {
+export function pairwiseOverlap<T>(elements: T[]): T[][] {
   return elements.reduce((pairs, current, index, arr) => {
     if (arr.length <= 1) {
       throw new Error(`Insufficient elements to pair.`);
@@ -43,7 +43,11 @@ export function groupBy<T extends object>(
   }
 
   const groupedObj = collection.reduce((acc, curr) => {
-    const propValue = getPropertyValue(curr, path);
+    const propValue: string = getPropertyValue(curr, path);
+    // TODO: This might need a test. Values that return a false boolean will not pass this expression even though the
+    // property and value exist.
+    //
+    // Example: acc[propValue], where the value is `false`, will always follow falsy if case.
     if (acc[propValue]) {
       acc[propValue] = [...acc[propValue], curr];
     } else {
@@ -55,7 +59,7 @@ export function groupBy<T extends object>(
 
   return Object.keys(groupedObj).map((g) => {
     if (groupIdentityPath) {
-      const identity = getPropertyValue(groupedObj[g][0], groupIdentityPath);
+      const identity: string = getPropertyValue(groupedObj[g][0], groupIdentityPath);
 
       if (identity) {
         return {

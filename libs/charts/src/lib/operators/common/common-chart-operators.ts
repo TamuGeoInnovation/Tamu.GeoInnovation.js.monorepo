@@ -37,7 +37,7 @@ export function average<T extends Array<T>>(collection: Array<Group<T>>, path: s
     (acc, curr: Group<T>) => {
       if (curr.items && curr.items.length > 0) {
         // Evaluate the path for each of collection items.
-        const pathValues = curr.items.map((item) => getPropertyValue(item, path));
+        const pathValues = curr.items.map((item) => getPropertyValue<number>(item, path));
 
         // Test if any of the evalued path values are undefined or not a number.
         // If this is the case, we need to throw an error because we cannot sum
