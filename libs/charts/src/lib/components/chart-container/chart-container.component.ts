@@ -27,22 +27,12 @@ export class ChartContainerComponent implements OnDestroy {
     if (config && config instanceof Observable) {
       // Handle observable data sources
       config.pipe(takeUntil(this._$destroy)).subscribe((c) => {
-        if (this._chart === undefined) {
-          this._chart = new Chart((<HTMLCanvasElement>this.container.nativeElement).getContext('2d'), c);
-        } else {
-          this._chart.config.type = c.type;
-          this._chart.config.data = c.data;
-
-          this._chart.update();
-        }
+        this.createOrUpdate(c);
       });
+    } else if (config && config instanceof ChartConfiguration) {
+      this.createOrUpdate(config);
     }
-    
-    // // if chart instance, update data
-    // if (this._chart) {
-    //   debugger;
-    // } else {
-    //   // If no chart instance, create
+
     //   this._chart = new Chart((<HTMLCanvasElement>this.container.nativeElement).getContext('2d'), {
     //     type: 'bar',
     //     data: {
@@ -83,7 +73,18 @@ export class ChartContainerComponent implements OnDestroy {
     //       }
     //     }
     //   });
-    // }
+  }
+
+  private createOrUpdate(config: ChartConfiguration) {
+    if (config && config instanceof Observable) {
+      // Handle observable data sources
+      this._chart = new Chart((<HTMLCanvasElement>this.container.nativeElement).getContext('2d'), config);
+    } else {
+      this._chart.config.type = config.type;
+      this._chart.config.data = config.data;
+
+      this._chart.update();
+    }
   }
 }
 
