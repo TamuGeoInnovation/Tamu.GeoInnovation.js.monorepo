@@ -173,6 +173,10 @@ export class EsriModuleProviderService {
     {
       class: 'esri/core/Handles',
       name: 'Handles'
+    },
+    {
+      class: 'esri/widgets/Sketch/SketchViewModel',
+      name: 'SketchViewModel'
     }
   ];
 
