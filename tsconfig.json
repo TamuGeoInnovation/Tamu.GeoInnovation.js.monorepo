@@ -47,7 +47,9 @@
       "@tamu-gisc/maps/feature/layer-filter": ["libs/maps/feature/layer-filter/src/index.ts"],
       "@tamu-gisc/maps/feature/layer-list": ["libs/maps/feature/layer-list/src/index.ts"],
       "@tamu-gisc/maps/feature/legend": ["libs/maps/feature/legend/src/index.ts"],
-      "@tamu-gisc/ui-kits/ngx/forms": ["libs/ui-kits/ngx/forms/src/index.ts"]
+      "@tamu-gisc/ui-kits/ngx/forms": ["libs/ui-kits/ngx/forms/src/index.ts"],
+      "@tamu-gisc/maps/feature/feature-selector": ["libs/maps/feature/feature-selector/src/index.ts"],
+      "@tamu-gisc/charts": ["libs/charts/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

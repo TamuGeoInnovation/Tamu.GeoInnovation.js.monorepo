@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { getObjectPropertyValue } from './group-by.pipe';
+import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 
 @Pipe({ name: 'orderBy' })
 export class OrderByPipe implements PipeTransform {
@@ -14,8 +14,8 @@ export class OrderByPipe implements PipeTransform {
     // Return early if no collection
     if (collection && collection.length > 0) {
       const sorted = collection.sort((first, second) => {
-        const firstValue = getObjectPropertyValue(first, path);
-        const secondValue = getObjectPropertyValue(second, path);
+        const firstValue: any = getPropertyValue(first, path);
+        const secondValue: any = getPropertyValue(second, path);
 
         if (firstValue === undefined || secondValue === undefined) {
           return 0;

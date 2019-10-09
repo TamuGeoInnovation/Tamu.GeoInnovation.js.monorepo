@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Observable, Subject, from, combineLatest, of } from 'rxjs';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Observable, Subject, from, combineLatest, of, iif, forkJoin } from 'rxjs';
 import { pluck, shareReplay, switchMap, filter, toArray, reduce, take, tap } from 'rxjs/operators';
 
 import { LayerListService, LayerListItem } from '@tamu-gisc/maps/feature/layer-list';
@@ -18,9 +18,23 @@ export class LayerFilterComponent implements OnInit {
    * Layer ID reference.
    *
    * The layer must exist as part of the `LayerSources` definition in the application enviroinment.
+   *
+   * Used to query and retrieve valid attributes and valies.
    */
   @Input()
   public reference: string;
+
+  @Input()
+  public setDefinitionExpression: boolean;
+
+  @Input()
+  public executeFilterQuery: boolean;
+
+  @Output()
+  public filterCompleted: EventEmitter<string> = new EventEmitter();
+
+  @Output()
+  public filterQueryResults: EventEmitter<esri.Graphic[]> = new EventEmitter();
 
   /**
    * Resolved layer from layer list service.
@@ -119,14 +133,30 @@ export class LayerFilterComponent implements OnInit {
         return of(where);
       }),
       switchMap((where) => combineLatest([of(where), this.layer.pipe(pluck('layer'))])),
-      tap((args) => {
-        const [w, l] = args;
-
-        l.definitionExpression = w;
+      switchMap(([where, layer]) =>
+        forkJoin([
+          of(where),
+          of(layer),
+          iif(
+            () => Boolean(this.executeFilterQuery),
+            from((layer.queryFeatures({ where: where, outFields: ['*'] }) as any) as Promise<esri.FeatureSet>),
+            of(false)
+          )
+        ])
+      ),
+      tap(([where, layer, queryResult]) => {
+        if (Boolean(this.setDefinitionExpression)) {
+          layer.definitionExpression = where;
+        }
       })
     )
-    .subscribe((res) => {
-      console.log(`Definition Expression set to ${res[0]}`);
+    .subscribe(([where, layer, queryResult]) => {
+      this.filterCompleted.emit(where);
+
+      if (Boolean(queryResult)) {
+        this.filterQueryResults.emit((<esri.FeatureSet>queryResult).features);
+      }
+      console.log(`Definition Expression set to ${where}`);
     });
 
   public ngOnInit() {
