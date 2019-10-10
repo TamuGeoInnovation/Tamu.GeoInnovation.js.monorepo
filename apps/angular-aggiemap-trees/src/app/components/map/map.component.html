@@ -12,7 +12,7 @@
 
     <tamu-gisc-layer-filter [reference]="'trees_layer'" [setDefinitionExpression]="true" [executeFilterQuery]="true" (filterQueryResults)="filterFeatures.next($event)"></tamu-gisc-layer-filter>
 
-    <tamu-gisc-map-draw [reference]="'drawing-layer'"></tamu-gisc-map-draw>
+    <tamu-gisc-map-draw [reference]="'drawing-layer'" [defaultUpdateTool]="'reshape'"></tamu-gisc-map-draw>
 
     <tamu-gisc-slection-summary [selfCollect]="false" [collection]="filterFeatures" [deleteDuplicates]="true" [identifier]="'OBJECTID'" [layers]="'trees_layer'">
       <div class="charts">
