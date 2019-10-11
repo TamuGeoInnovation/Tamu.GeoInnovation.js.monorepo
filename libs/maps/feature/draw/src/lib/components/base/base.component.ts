@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { from, Subject, combineLatest } from 'rxjs';
 import { takeUntil, pluck, filter, switchMap, take } from 'rxjs/operators';
 
@@ -67,6 +67,9 @@ export class BaseComponent implements OnInit, OnDestroy {
   @Input()
   public redoTool = true;
 
+  @Output()
+  public drawFeatures: EventEmitter<esri.Graphic[]> = new EventEmitter();
+
   private _$destroy: Subject<boolean> = new Subject();
   private _$loaded: Subject<boolean> = new Subject();
   private _activeToolWatchHandle: esri.WatchHandle;
@@ -102,6 +105,18 @@ export class BaseComponent implements OnInit, OnDestroy {
             this._$loaded.next();
 
             this.model = new SketchViewModel({ view: mapInstance.view, layer, updateOnGraphicClick: !this.updateTools });
+
+            this.model.on('create', (event) => {
+              if (event.state === 'complete') {
+                this.drawFeatures.emit(event.target.layer.graphics.toArray());
+              }
+            });
+
+            this.model.on('update', (event) => {
+              if (event.state === 'complete') {
+                this.drawFeatures.emit(event.target.layer.graphics.toArray());
+              }
+            });
 
             this._activeToolWatchHandle = this.model.watch('activeTool', (tool) => {
               if (tool === null) {
@@ -188,4 +203,6 @@ export class BaseComponent implements OnInit, OnDestroy {
       this.model[action]();
     }
   }
+
+  public emitDrawnLayers() {}
 }
