@@ -21,12 +21,51 @@ export class BaseComponent implements OnInit, OnDestroy {
   public reference: string;
 
   @Input()
-  public allowedTools: string[];
-
-  @Input()
-  public defaultUpdateTool: string;
+  public defaultUpdateTool = 'transform';
 
   public activeUpdateTool: string;
+
+  // Update group/tools default rendering states
+
+  @Input()
+  public updateTools = true;
+
+  @Input()
+  public transformTool = true;
+
+  @Input()
+  public reshapeTool = true;
+
+  // Create group/tools  default rendering states
+
+  @Input()
+  public createTools = true;
+
+  @Input()
+  public pointTool = true;
+
+  @Input()
+  public polylineTool = true;
+
+  @Input()
+  public polygonTool = true;
+
+  @Input()
+  public rectangleTool = true;
+
+  @Input()
+  public circleTool = true;
+
+  // Verion group/tools  default rendering states
+
+  @Input()
+  public versionTools = true;
+
+  @Input()
+  public undoTool = true;
+
+  @Input()
+  public redoTool = true;
 
   private _$destroy: Subject<boolean> = new Subject();
   private _$loaded: Subject<boolean> = new Subject();
@@ -61,35 +100,35 @@ export class BaseComponent implements OnInit, OnDestroy {
             // the layer reference stream from emitting again, which would in turn force the
             // combineLatest stream to emit and create additional view models.
             this._$loaded.next();
-            this.model = new SketchViewModel({ view: mapInstance.view, layer, updateOnGraphicClick: false });
 
-            this.model.on('update', (event) => {
-              this.activeUpdateTool = event.tool;
-            });
+            this.model = new SketchViewModel({ view: mapInstance.view, layer, updateOnGraphicClick: !this.updateTools });
 
-            this._activeToolWatchHandle = this.model.watch('activeTool', (v) => {
-              if (v === null) {
+            this._activeToolWatchHandle = this.model.watch('activeTool', (tool) => {
+              if (tool === null) {
                 this.activeUpdateTool = this.defaultUpdateTool;
               } else {
-                this.activeUpdateTool = v;
+                this.activeUpdateTool = tool;
               }
             });
           }
         );
 
-      this.selector.feature
-        .pipe(
-          switchMap((graphics) => from(graphics)),
-          filter((graphic) => Boolean(graphic.layer) && graphic.layer.id === this.reference),
-          takeUntil(this._$destroy)
-        )
-        .subscribe((res) => {
-          // Only start the update process if the sketch model is not currently in the middle of another
-          // operation.
-          if (this.model.state !== 'active') {
-            this.model.update(res, { tool: this.activeUpdateTool });
-          }
-        });
+      // If our update tools are disabled, default to the default model updating implementation.
+      if (this.updateTools) {
+        this.selector.feature
+          .pipe(
+            switchMap((graphics) => from(graphics)),
+            filter((graphic) => Boolean(graphic.layer) && graphic.layer.id === this.reference),
+            takeUntil(this._$destroy)
+          )
+          .subscribe((res) => {
+            // Only start the update process if the sketch model is not currently in the middle of another
+            // operation.
+            if (this.model.state !== 'active') {
+              this.model.update(res, { tool: this.activeUpdateTool });
+            }
+          });
+      }
     } else {
       throw new Error('Drawing reference layer not provided.');
     }
@@ -138,6 +177,15 @@ export class BaseComponent implements OnInit, OnDestroy {
       if (this.model.state === 'active') {
         this.model.cancel();
       }
+    }
+  }
+
+  /**
+   * Handles undo/redo actions.
+   */
+  public versionAction(action: string) {
+    if (Boolean(this.model[action])) {
+      this.model[action]();
     }
   }
 }

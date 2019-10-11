@@ -36,4 +36,13 @@
       background: #616161;
     }
   }
+
+  &.version {
+    p {
+      color: #bdbdbd;
+    }
+    p.available {
+      color: #212121;
+    }
+  }
 }
