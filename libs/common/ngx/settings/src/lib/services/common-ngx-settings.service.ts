@@ -347,7 +347,7 @@ export class SettingsService {
    *  }
    * ```
    */
-  private compoundToSimpleSettingsBranch(settings): SimpleSettingBranch {
+  private compoundToSimpleSettingsBranch(settings: CompoundSettings): SimpleSettingBranch {
     return Object.keys(settings).reduce((acc, curr) => {
       acc[curr] = settings[curr].value;
       return acc;
@@ -358,7 +358,7 @@ export class SettingsService {
    * RxJS Operator wrapper for `flattenSettings()`
    */
   private compoundToSimpleSettingsBranch$() {
-    return (source) =>
+    return (source: Observable<CompoundSettings>) =>
       source.pipe(
         switchMap((settings) => {
           return of(this.compoundToSimpleSettingsBranch(settings));
@@ -373,7 +373,7 @@ export class SettingsService {
    *
    * @param  [settings] If not provided, the service store value will be used.
    */
-  private getPersistentCompoundSettingsKeys(settings?: CompoundSettings | Settings) {
+  private getPersistentCompoundSettingsKeys(settings?: CompoundSettings | Settings): string[] {
     const cached = settings || this._Store.getValue();
 
     return Object.keys(cached).filter((key) => {
@@ -385,7 +385,7 @@ export class SettingsService {
    * Filters the provided settings if they are defined as persistent in storage.
    *
    */
-  private getPersistenCompoundtSettings(settings: CompoundSettings): CompoundSettings {
+  private getPersistentCompoundSettings(settings: CompoundSettings): CompoundSettings {
     return Object.keys(settings).reduce((acc, curr) => {
       if (settings[curr].persistent) {
         acc[curr] = settings[curr];

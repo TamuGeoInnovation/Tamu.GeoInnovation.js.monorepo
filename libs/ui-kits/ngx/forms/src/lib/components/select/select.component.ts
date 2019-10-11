@@ -92,9 +92,9 @@ export class SelectComponent {
    *
    * If no value template is provided, return will be the object reference.
    */
-  public getDataItemValue(iterated: any, template: string) {
+  public getDataItemValue<T extends object>(iterated: T, template?: string): T | object {
     if (template !== undefined) {
-      return getPropertyValue(iterated, template);
+      return getPropertyValue<T>(iterated, template);
     } else {
       return iterated;
     }
