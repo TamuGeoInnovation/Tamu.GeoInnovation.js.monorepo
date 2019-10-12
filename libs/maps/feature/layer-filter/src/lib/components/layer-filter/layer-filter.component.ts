@@ -1,6 +1,18 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Observable, Subject, from, combineLatest, of, iif, forkJoin, merge } from 'rxjs';
-import { pluck, shareReplay, switchMap, filter, toArray, reduce, take, tap, map, mergeAll, startWith } from 'rxjs/operators';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Observable, Subject, from, combineLatest, of, iif, forkJoin } from 'rxjs';
+import {
+  pluck,
+  shareReplay,
+  switchMap,
+  filter,
+  toArray,
+  reduce,
+  take,
+  tap,
+  map,
+  startWith,
+  takeUntil
+} from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { LayerListService, LayerListItem } from '@tamu-gisc/maps/feature/layer-list';
@@ -13,7 +25,7 @@ import esri = __esri;
   templateUrl: './layer-filter.component.html',
   styleUrls: ['./layer-filter.component.scss']
 })
-export class LayerFilterComponent implements OnInit {
+export class LayerFilterComponent implements OnInit, OnDestroy {
   constructor(
     private layerList: LayerListService,
     private moduleProvider: EsriModuleProviderService,
@@ -52,7 +64,7 @@ export class LayerFilterComponent implements OnInit {
    */
   public layer: Observable<esri.FeatureLayer>;
 
-  private layerView: Observable<esri.LayerView>;
+  private layerView: Observable<esri.FeatureLayerView>;
 
   private mapView: Observable<esri.View>;
 
@@ -151,32 +163,7 @@ export class LayerFilterComponent implements OnInit {
     startWith('1=1')
   );
 
-  //   switchMap((where) => combineLatest([of(where), this.layer.pipe(pluck('layer'))])),
-  //   switchMap(([where, layer]) =>
-  //     forkJoin([
-  //       of(where),
-  //       of(layer),
-  //       iif(
-  //         () => Boolean(this.executeFilterQuery),
-  //         from((layer.queryFeatures({ where: where, outFields: ['*'] }) as any) as Promise<esri.FeatureSet>),
-  //         of(false)
-  //       )
-  //     ])
-  //   ),
-  //   tap(([where, layer, queryResult]) => {
-  //     if (Boolean(this.setDefinitionExpression)) {
-  //       layer.definitionExpression = where;
-  //     }
-  //   })
-  // )
-  // .subscribe(([where, layer, queryResult]) => {
-  //   this.filterCompleted.emit(where);
-
-  //   if (Boolean(queryResult)) {
-  //     this.filterQueryResults.emit((<esri.FeatureSet>queryResult).features);
-  //   }
-  //   console.log(`Definition Expression set to ${where}`);
-  // });
+  private _$destroy: Subject<boolean> = new Subject();
 
   public ngOnInit() {
     // Get FeatureFilter class
@@ -197,7 +184,7 @@ export class LayerFilterComponent implements OnInit {
     // Once the map view and layer are loaded, get the layerview for the feature layer.
     this.layerView = combineLatest([this.mapView, this.layer]).pipe(
       switchMap(([view, layer]) => {
-        return from((view.whenLayerView(layer) as any) as Promise<esri.LayerView>);
+        return from((view.whenLayerView(layer) as any) as Promise<esri.FeatureLayerView>);
       })
     );
 
@@ -218,19 +205,41 @@ export class LayerFilterComponent implements OnInit {
         }),
         switchMap(([featureFilter, layer, layerview]) => {
           return forkJoin([
-            featureFilter,
-            layer
-            // TODO: Requires ArcGIS JS 4.12
-            // iif(
-            //   () => this.executeFilterQuery,
-            //   from((layer.queryFeatures(featureFilter.createQuery()) as any) as Promise<esri.FeatureSet>)
-            // )
+            of(featureFilter),
+            of(layerview),
+            iif(
+              () => this.executeFilterQuery,
+              of(true).pipe(
+                switchMap(() => {
+                  const query = featureFilter.createQuery();
+                  query.outFields = ['*'];
+
+                  return from((layer.queryFeatures(query) as any) as Promise<esri.FeatureSet>);
+                })
+              ),
+              of(false)
+            )
           ]);
-        })
+        }),
+        tap(([featureFilter, layerview, queryResults]) => {
+          if (typeof queryResults !== 'boolean') {
+            this.filterQueryResults.emit(queryResults.features);
+          }
+
+          if (this.setDefinitionExpression) {
+            layerview.filter = featureFilter;
+          }
+
+          console.log(`Definition expression set to ${featureFilter.where}`);
+        }),
+        takeUntil(this._$destroy)
       )
-      .subscribe((res) => {
-        debugger;
-      });
+      .subscribe(([featureFilter, layerView, queryResults]) => {});
+  }
+
+  public ngOnDestroy() {
+    this._$destroy.next();
+    this._$destroy.complete();
   }
 }
 
