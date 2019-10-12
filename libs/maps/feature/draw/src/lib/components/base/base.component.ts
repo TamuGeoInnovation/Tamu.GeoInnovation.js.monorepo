@@ -25,6 +25,16 @@ export class BaseComponent implements OnInit, OnDestroy {
 
   public activeUpdateTool: string;
 
+  /**
+   * Describes the emission format for the drawn features. By default (`false`) the component
+   * will emit individual graphics for each feature.
+   *
+   * If `true` is provided, the component is limited to exporting only a single type of geometry,
+   * due to the single-geometry type limitation per graphic.
+   */
+  @Input()
+  public collapseGraphics: false;
+
   // Update group/tools default rendering states
 
   @Input()
@@ -68,7 +78,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   public redoTool = true;
 
   @Output()
-  public drawFeatures: EventEmitter<esri.Graphic[]> = new EventEmitter();
+  public export: EventEmitter<esri.Graphic[] | esri.Graphic> = new EventEmitter();
 
   private _$destroy: Subject<boolean> = new Subject();
   private _$loaded: Subject<boolean> = new Subject();
@@ -108,13 +118,13 @@ export class BaseComponent implements OnInit, OnDestroy {
 
             this.model.on('create', (event) => {
               if (event.state === 'complete') {
-                this.drawFeatures.emit(event.target.layer.graphics.toArray());
+                this.emitDrawn(event.target.layer.graphics);
               }
             });
 
             this.model.on('update', (event) => {
               if (event.state === 'complete') {
-                this.drawFeatures.emit(event.target.layer.graphics.toArray());
+                this.emitDrawn(event.target.layer.graphics);
               }
             });
 
@@ -204,5 +214,57 @@ export class BaseComponent implements OnInit, OnDestroy {
     }
   }
 
-  public emitDrawnLayers() {}
+  public emitDrawn(features: esri.Collection<esri.Graphic>) {
+    if (this.collapseGraphics) {
+      const collection = features.toArray();
+
+      if (collection.length > 0) {
+        const cloned = collection[0].clone();
+        const geometryTypes = collection.reduce((acc, curr) => {
+          const t = curr.geometry.type;
+          if (acc.includes(t)) {
+            return acc;
+          } else {
+            return [...acc, t];
+          }
+        }, []);
+
+        if (geometryTypes.length === 1) {
+          let geometryProp;
+
+          // TODO: rings and paths should work fine. Multipoint and point will need tweaking.
+          if (cloned.geometry.hasOwnProperty('rings')) {
+            geometryProp = 'rings';
+          } else if (cloned.geometry.hasOwnProperty('paths')) {
+            geometryProp = 'paths';
+          } else if (cloned.geometry.hasOwnProperty('multipoint')) {
+            geometryProp = 'multipoint';
+          } else if (cloned.geometry.hasOwnProperty('point')) {
+            geometryProp = 'point';
+          }
+
+          const collapsedGeometry = collection.map((graphic) => {
+            return graphic.geometry[geometryProp][0];
+          });
+
+          // Apply collapsed geometry to cloned graphic.
+          cloned.geometry[geometryProp] = collapsedGeometry;
+
+          // Reset some uneeded properties.
+          cloned.layer = undefined;
+          cloned.attributes = undefined;
+
+          this.export.emit(cloned);
+        } else {
+          console.warn(
+            `Drawn feature condensation is set to ${this.collapseGraphics}. Multiple geometry types were identified. Will not emit geometry.`
+          );
+        }
+      } else {
+        this.export.emit(collection);
+      }
+    } else {
+      this.export.emit(features.toArray());
+    }
+  }
 }

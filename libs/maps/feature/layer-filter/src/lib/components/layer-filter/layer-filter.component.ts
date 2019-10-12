@@ -230,7 +230,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
             layerview.filter = featureFilter;
           }
 
-          console.log(`Definition expression set to ${featureFilter.where}`);
+          console.log(`Filter expression set to: ${featureFilter.where}`);
         }),
         takeUntil(this._$destroy)
       )

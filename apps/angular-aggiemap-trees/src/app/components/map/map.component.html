@@ -12,9 +12,7 @@
 
     <tamu-gisc-layer-filter [reference]="'trees_layer'" [setDefinitionExpression]="true" [executeFilterQuery]="true" [filterGeometry]="spatialFeatures" [spatialRelationship]="'intersects'" (filterQueryResults)="filterFeatures.next($event)"></tamu-gisc-layer-filter>
 
-    <tamu-gisc-map-draw [reference]="'drawing-layer'" [defaultUpdateTool]="'reshape'" (drawFeatures)="spatialFeatures.next($event)"></tamu-gisc-map-draw>
-
-    {{ spatialFeatures | async }}
+    <tamu-gisc-map-draw [reference]="'drawing-layer'" [defaultUpdateTool]="'reshape'" [collapseGraphics]="true" (export)="spatialFeatures.next($event)"></tamu-gisc-map-draw>
 
     <tamu-gisc-slection-summary [selfCollect]="false" [collection]="filterFeatures" [deleteDuplicates]="true" [identifier]="'OBJECTID'" [layers]="'trees_layer'">
       <div class="charts">
