@@ -139,15 +139,21 @@ export interface IChartConfiguration {
   type?: string;
 
   data?: {
-    labels?: Array<any>;
     datasets?: {
       label: string;
-      data: Array<any>;
       backgroundColor?: Array<string>;
       borderColor?: Array<string>;
       borderWidth?: number;
     }[];
   };
 
-  options?: any;
+  options?: {
+    scales: {
+      yAxes: {
+        ticks: {
+          beginAtZero: boolean;
+        };
+      }[];
+    };
+  };
 }
