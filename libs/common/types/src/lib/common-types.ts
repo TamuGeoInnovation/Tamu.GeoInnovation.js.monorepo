@@ -1,4 +1,6 @@
 import esri = __esri;
+import QueryProperties = __esri.QueryProperties;
+import Graphic = __esri.Graphic;
 
 /**
  * Basic representation of a geographic point with longitude (x) and latitude(y) values

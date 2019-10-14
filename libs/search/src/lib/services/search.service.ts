@@ -4,7 +4,7 @@ import { ReplaySubject, Observable, BehaviorSubject, forkJoin, of, from } from '
 import { toArray, concatMap, switchMap } from 'rxjs/operators';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
-import { makeWhere } from '@tamu-gisc/common/utils/database';
+import { CompoundOperator, makeWhere } from '@tamu-gisc/common/utils/database';
 import { makeUrlParams } from '@tamu-gisc/common/utils/routing';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -40,7 +40,9 @@ export class SearchService {
   public search(options: SearchPropertiesObservable): Observable<SearchResult>;
   public search(options: SearchPropertiesPromise): Promise<SearchResult>;
   public search(options: SearchProperties): SearchResult;
-  public search(options: any): any {
+  public search(
+    options: SearchPropertiesObservable | SearchPropertiesPromise | SearchProperties
+  ): SearchResult | Promise<SearchResult> | Observable<SearchResult> {
     // Check we don't have an array for sources
     if (!(options.sources instanceof Array)) {
       console.error(`Method expected a source array.`);
@@ -167,7 +169,7 @@ export class SearchService {
               return sources.findIndex((source) => source.source === s.source);
             });
 
-          const baseScoringMerged = responses.base.map((r: any, i, a) => {
+          const baseScoringMerged = responses.base.map((r, i, a) => {
             if (baseIndexes.includes(i)) {
               // This index will correspond to the array location of scoring responses.
               const indexOfScoringResponse = baseIndexes.indexOf(i);
@@ -204,7 +206,7 @@ export class SearchService {
           return of(baseScoringMerged);
         }
       }),
-      switchMap((result: Array<any>) => {
+      switchMap((result: Array<unknown>) => {
         // Create a single SearchResult class instance, where the results of all http results will be placed in
         // the results property.
         return of(
@@ -246,7 +248,7 @@ export class SearchService {
 
       // The default return for this method is an observable.
       // If `returnAsPromise` is not specified OR it's set to false, return the observable value.
-      if (options.returnAsPromise === undefined || options.returnAsPromise !== true) {
+      if (!('returnAsPromise' in options) || options.returnAsPromise !== true) {
         return this._store.asObservable();
       }
 
@@ -257,7 +259,7 @@ export class SearchService {
     } else {
       // If method call was not stateful, return the request stream and let callee handle response.
 
-      if (options.returnAsPromise === undefined || options.returnAsPromise !== true) {
+      if (!('returnAsPromise' in options) || options.returnAsPromise !== true) {
         // Handle default obserfable return type.
         return requestStream;
       } else if (options.returnAsPromise !== undefined && options.returnAsPromise === true) {
@@ -306,18 +308,18 @@ export class SearchService {
 
       //
       // Uses keys from source config
-      const keys = (<any>source.queryParams).where.keys;
+      const keys = source.queryParams.where.keys;
       //
       // Uses operators from source config
-      const operators = (<any>source.queryParams).where.operators;
+      const operators = source.queryParams.where.operators;
 
       //
       // Uses wildcards (if any) from source config
-      const wildcards = (<any>source.queryParams).where.wildcards;
+      const wildcards = source.queryParams.where.wildcards;
 
       //
       // Uses transformations (if any) from source config
-      const transformations = (<any>source.queryParams).where.transformations;
+      const transformations = source.queryParams.where.transformations;
 
       //
       // Creates a value that matches the number of query param keys.
@@ -329,7 +331,7 @@ export class SearchService {
       // exact number of matching values for the keys in options.keys.
       const values = Array.isArray(options.values[srcIndex])
         ? <Array<string>>options.values[srcIndex]
-        : Array((<any>source.queryParams).where.keys.length).fill(options.values[srcIndex]);
+        : Array(source.queryParams.where.keys.length).fill(options.values[srcIndex]);
 
       // Generate the SQL WHERE clause from defined keys, values, and operators.
       const where = makeWhere(keys, values, operators, wildcards, transformations);
@@ -365,11 +367,11 @@ export class SearchService {
    * @memberof SearchService
    */
   private scoreResults(
-    features: Array<any>,
+    features: Array<object>,
     sources: SearchSource[],
     responseIndex: number | 0,
     searchTerm: string
-  ): Array<any> {
+  ): Array<unknown> {
     const source = sources[responseIndex];
 
     if (source && source.scoringKeys) {
@@ -392,7 +394,7 @@ export class SearchService {
           // Return the feature, appending a points property that will be used for sorting.
           return { ...f, _score: points };
         })
-        .sort((a: any, b: any) => {
+        .sort((a: { _score: number }, b: { _score: number }) => {
           // Sort results by point count.
           return b._score - a._score;
         })
@@ -591,7 +593,7 @@ export interface SearchSource {
  *
  * @interface SearchSourceQueryParamsProperties
  */
-interface SearchSourceQueryParamsProperties {
+export interface SearchSourceQueryParamsProperties {
   /**
    * Specifies the return format.
    *
@@ -619,7 +621,7 @@ interface SearchSourceQueryParamsProperties {
    * - 4326
    * - 102100
    *
-   * @type {(4326 | 102100 | number)}
+   * @type {number}
    */
   outSR?: 4326 | 102100 | number;
 
@@ -628,7 +630,7 @@ interface SearchSourceQueryParamsProperties {
    *
    * Cases where it might not be needed are when the feature will not be mapped.
    *
-   * @type {true}
+   * @type {boolean}
    */
   returnGeometry?: true;
 
@@ -734,12 +736,6 @@ interface CrossSearchQueryProperties {
   lookup?: CrossSearchQueryLookupProperties;
 }
 
-interface CompoundOperator {
-  logial?: Array<'AND' | 'BETWEEN' | 'IN' | 'NOT IN' | 'LIKE' | 'NOT LIKE' | 'NOT' | 'OR'>;
-
-  comparison?: Array<'IS NULL' | '=' | '>' | '>=' | '<=' | '<' | '!='>;
-}
-
 /**
  * Defines the keys in the resulting initial search query result,for which values will be used in subsequent
  * search query.
@@ -822,7 +818,7 @@ interface CrossSearchQueryLookupProperties {
  * Describes the properties utilized by the searchMany class member.
  *
  *
- * @interface SearchManyProperties
+ * @interface SearchProperties
  */
 interface SearchProperties {
   /**
@@ -831,7 +827,7 @@ interface SearchProperties {
    * @type {string[]}
    * @memberof SearchManyProperties
    */
-  sources: string[] | SearchSource[];
+  sources: (string | SearchSource)[];
 
   /**
    * An array of values OR an array of string-containing arrays used when parameterizing query for any given source.

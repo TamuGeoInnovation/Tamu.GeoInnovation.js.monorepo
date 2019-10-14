@@ -7,7 +7,7 @@ export const environment = {
 };
 
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
-import { SearchSource } from '@tamu-gisc/search';
+import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/search';
 
 import { Connections, Definitions as d } from './definitions';
 
@@ -86,7 +86,7 @@ export const LayerSources: LayerSource[] = [
   }
 ];
 
-const commonQueryParams: any = {
+const commonQueryParams: SearchSourceQueryParamsProperties = {
   f: 'json',
   resultRecordCount: 5,
   outFields: '*',

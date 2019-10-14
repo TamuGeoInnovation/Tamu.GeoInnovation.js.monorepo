@@ -187,8 +187,8 @@ export class EsriModuleProviderService {
    * @memberof EsriModuleProviderService
    */
   public require(modules: string[]): Promise<any[]>;
-  public require(modules: string[], asObject: boolean): any;
-  public require(modules: any, asObject?: any): any {
+  public require(modules: string[], asObject: true): any;
+  public require(modules: string[], asObject?: boolean): any {
     // n is an alias for module name
     const classNames = modules.map((n) => {
       if (n === undefined || n === '') {

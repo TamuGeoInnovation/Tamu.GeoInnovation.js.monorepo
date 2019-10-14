@@ -28,7 +28,7 @@ export class BusService {
   private waypoint_map = [];
 
   private _map: esri.Map;
-  private _view: esri.MapView;
+  private _view: esri.MapView | esri.SceneView;
 
   private _busLayer: BehaviorSubject<esri.GraphicsLayer> = new BehaviorSubject({} as any);
   public busLayer: Observable<esri.GraphicsLayer> = this._busLayer.asObservable();

@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
+import { LayerListItem, LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
-import { LegendItem } from '@tamu-gisc/common/types';
+import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 
 import esri = __esri;
+import Layer = __esri.Layer;
 
 @Injectable()
 export class LegendService {
@@ -18,10 +19,10 @@ export class LegendService {
     // Handle automatic layer addition and removal legend item display.
     // This does not handle removal on layer visibility change
     this.layerListService.layers({ watchProperties: 'visible' }).subscribe((value) => {
-      const layersLegendItems: any = value
+      const layersLegendItems = value
         .filter((item) => item.layer && item.layer.visible)
-        .filter((lyr: any) => lyr.layer.legendItems)
-        .map((lyr: any) => lyr.layer.legendItems)
+        .filter((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
+        .map((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
         .map((obj) => obj[0]);
 
       this._store.next([...LegendSources, ...layersLegendItems]);
@@ -36,13 +37,13 @@ export class LegendService {
    */
   public toggleLayerLegendItems(layer: esri.Layer): void {
     // Check if the layer has legend items to begin with.
-    if ((<any>layer).legendItems && (<any>layer).legendItems.length > 0) {
+    if ((<LayerSource>(<unknown>layer)).legendItems && (<LayerSource>(<unknown>layer)).legendItems.length > 0) {
       // If the layer visibility is true, add the legend item.
       if (layer.visible) {
-        this.addMany(<LegendItem[]>(<any>layer).legendItems);
+        this.addMany((<LayerSource>(<unknown>layer)).legendItems);
       } else {
         // If the layer visibilty is false, remove the legend item.
-        this.removeMany(<LegendItem[]>(<any>layer).legendItems);
+        this.removeMany((<LayerSource>(<unknown>layer)).legendItems);
       }
     }
   }

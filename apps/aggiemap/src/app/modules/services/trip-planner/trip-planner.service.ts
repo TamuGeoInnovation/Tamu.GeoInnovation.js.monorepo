@@ -311,7 +311,7 @@ export class TripPlannerService implements OnDestroy {
 
   private _map: esri.Map;
 
-  private _view: esri.MapView;
+  private _view: esri.MapView | esri.SceneView;
 
   /**
    * Stores observable subscription to the trip planner connection service current network.

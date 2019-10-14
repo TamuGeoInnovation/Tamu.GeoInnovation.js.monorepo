@@ -544,7 +544,7 @@ interface SettingEffectsGetFunction {
    * @param valueOrValues A single value if the target setting is a string. An array of
    * values if the target is an array of strings.
    */
-  fn(...valueOrValues: any[]): any;
+  fn(...valueOrValues: (string | number | boolean)[]): string | number | boolean;
 }
 
 interface SettingEffectsSetFunction {
@@ -565,7 +565,7 @@ interface SettingEffectsSetFunction {
    *
    * @param [value] Value of the target setting.
    */
-  fn(value?): any;
+  fn(value?): string | number | boolean;
 }
 
 export interface CompoundSettings {
