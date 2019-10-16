@@ -13,6 +13,8 @@ import {
 } from '../../../../../services/trip-planner/trip-planner.service';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { TripPlannerOptionsBaseComponent } from '../../components/base/base.component';
+import { TripPlannerParkingOptionsComponent } from '../../components/parking/trip-planner-parking-options.component';
+import { TripPlannerBikingOptionsComponent } from '../../components/biking/trip-planner-biking-options.component';
 
 @Component({
   selector: 'gisc-trip-planner-options',
@@ -118,7 +120,9 @@ export class TripPlannerOptionsComponent implements OnInit {
     }
 
     // Resolve component
-    const factory = this.componentResolver.resolveComponentFactory(component);
+    const factory = this.componentResolver.resolveComponentFactory<
+      TripPlannerParkingOptionsComponent | TripPlannerBikingOptionsComponent
+    >(component);
 
     // Get reference to the view container (host)
     const container = this.viewHost.viewContainerRef;
@@ -131,6 +135,6 @@ export class TripPlannerOptionsComponent implements OnInit {
 
     // Pass in feature data to the created component
     // Will only handle a single feature for now.
-    (<any>resolvedComponent.instance).settings = this.ModeOptions;
+    resolvedComponent.instance.settings = this.ModeOptions;
   }
 }

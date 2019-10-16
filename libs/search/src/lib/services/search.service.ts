@@ -607,7 +607,7 @@ export interface SearchSourceQueryParamsProperties {
    *
    * @type {number}
    */
-  resultRecordCount?: number;
+  resultRecordCount?: number | '*';
 
   /**
    * Attributes that should be included in any given feature.
@@ -633,7 +633,7 @@ export interface SearchSourceQueryParamsProperties {
    *
    * @type {boolean}
    */
-  returnGeometry?: true;
+  returnGeometry?: boolean;
 
   /**
    * Spatial relationship of the query. Default should be `esriSpatialRelIntersects`

@@ -9,7 +9,7 @@ import { TripPlannerOptionsBaseComponent } from '../components/base/base.compone
 export class TripPlannerOptionsComponentService {
   constructor(private tripPlanner: TripPlannerService) {}
 
-  private _dictionary: { type: string; component: any }[] = [
+  private _dictionary = [
     { type: 'parking_pass', component: TripPlannerParkingOptionsComponent },
     { type: 'bike_share', component: TripPlannerBikingOptionsComponent }
   ];

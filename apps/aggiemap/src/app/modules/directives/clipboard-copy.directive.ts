@@ -4,6 +4,7 @@ import { Observable, timer } from 'rxjs';
 import { mapTo, startWith } from 'rxjs/operators';
 
 import * as Clipboard from 'clipboard';
+import ClipboardJS from 'clipboard';
 
 @Directive({
   selector: '[clipboard-copy]'
@@ -30,7 +31,7 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
    * @type {*}
    * @memberof ClipboardCopyDirective
    */
-  private _clipboard: any;
+  private _clipboard: ClipboardJS;
 
   constructor(private el: ElementRef) {}
 
