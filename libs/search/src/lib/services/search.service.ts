@@ -10,7 +10,6 @@ import { makeUrlParams } from '@tamu-gisc/common/utils/routing';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
-import { ParkingFeature } from '../../../../../apps/aggiemap/src/app/modules/services/transportation/drive/parking.service';
 
 @Injectable()
 export class SearchService {
