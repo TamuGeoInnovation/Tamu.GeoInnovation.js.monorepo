@@ -126,10 +126,17 @@ export interface LayerSource {
   /**
    * Any other native properties that will be supplied as constructor properties for the layer.
    *
+   * TODO improve type checking.
+   *
    * @type {{}}
    * @memberof LayerSourceProperties
    */
-  native?: any;
+  native?: {
+    [s: string]:
+      | string
+      | number
+      | { [s: string]: string | { [s: string]: string | number | number[] | { [s: string]: string } } };
+  };
 
   /**
    * If provided, will add layer to map with index. This allows layer ordering to prevent occlusion or
