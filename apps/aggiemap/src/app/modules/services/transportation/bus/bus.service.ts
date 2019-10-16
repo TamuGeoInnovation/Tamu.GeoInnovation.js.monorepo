@@ -30,7 +30,7 @@ export class BusService {
   private _map: esri.Map;
   private _view: esri.MapView | esri.SceneView;
 
-  private _busLayer: BehaviorSubject<esri.GraphicsLayer> = new BehaviorSubject({} as any);
+  private _busLayer: BehaviorSubject<esri.GraphicsLayer> = new BehaviorSubject(null);
   public busLayer: Observable<esri.GraphicsLayer> = this._busLayer.asObservable();
 
   private _busLayerGraphics: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
@@ -355,7 +355,8 @@ export class BusService {
             // We now have two points with known times and the number of stops between them.
             // Continue to associate estimated times for the provided poitns that did not have an associate time (arrival, departure, or both).
 
-            const timeBracketTime = mappedTimeTableStops[upperLimitIndex].time - mappedTimeTableStops[lowerLimitIndex].time;
+            const timeBracketTime =
+              mappedTimeTableStops[upperLimitIndex].time.getTime() - mappedTimeTableStops[lowerLimitIndex].time.getTime();
 
             const timeBracketStopCount = upperLimitIndex - lowerLimitIndex;
 
@@ -808,7 +809,7 @@ export class BusService {
                     rotationType: 'geographic'
                   }
                 ]
-              } as any
+              } as esri.RendererProperties
             });
 
             this._map.add(featureLayer);
@@ -1000,7 +1001,7 @@ export interface Waypoint {
 export interface BusStop {
   name: string;
   point: esri.Point;
-  time?: any;
+  time?: Date;
 }
 
 export interface BusStopWithIndex {

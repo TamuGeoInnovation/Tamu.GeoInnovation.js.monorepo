@@ -512,7 +512,7 @@ export const SearchSources: SearchSource[] = [
   }
 ];
 
-export const SelectionSymbols: any = {
+export const SelectionSymbols = {
   polygon: {
     type: 'simple-fill',
     style: 'solid',

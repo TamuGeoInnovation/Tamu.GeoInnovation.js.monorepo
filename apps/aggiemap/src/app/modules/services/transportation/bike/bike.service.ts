@@ -69,7 +69,7 @@ export class BikeService {
 
             const smallestIndex = distances.findIndex((d) => d === smallest);
 
-            const feature: any = features[smallestIndex];
+            const feature = features[smallestIndex];
 
             return of(centroidFromGeometry(feature.geometry));
           } else {
