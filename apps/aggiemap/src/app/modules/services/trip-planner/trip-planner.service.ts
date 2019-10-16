@@ -29,9 +29,11 @@ import {
   TripPoint,
   TripPointProperties,
   TripPointOriginTransformationsParams,
-  TripPointOriginParams
+  TripPointOriginParams,
+  TripPointGeometry,
+  TripPointAttributes
 } from './core/trip-planner-core';
-import { BusService } from '../transportation/bus/bus.service';
+import { BusService, TimetableRow } from '../transportation/bus/bus.service';
 import { InrixService } from '../transportation/drive/inrix.service';
 import { BikeService } from '../transportation/bike/bike.service';
 import { ParkingService } from '../transportation/drive/parking.service';
@@ -50,6 +52,8 @@ import * as gju from 'geojson-utils';
 import { minBy } from 'lodash';
 
 import esri = __esri;
+import typeUniqueValueInfo = __esri.typeUniqueValueInfo;
+import SearchProperties = __esri.SearchProperties;
 
 @Injectable()
 export class TripPlannerService implements OnDestroy {
@@ -258,7 +262,7 @@ export class TripPlannerService implements OnDestroy {
 
   private _TravelOptions: BehaviorSubject<TravelOptions> = new BehaviorSubject({});
 
-  public readonly TravelOptions: Observable<any> = this._TravelOptions.asObservable();
+  public readonly TravelOptions: Observable<TravelOptions> = this._TravelOptions.asObservable();
 
   /**
    * A container which will contain any number of RouteTask stops
@@ -349,7 +353,7 @@ export class TripPlannerService implements OnDestroy {
 
   public initializeHandlers() {
     this._view.on('click', (e: esri.MapViewClickEvent) => {
-      const layer: any = this._map.findLayerById('buildings-layer');
+      const layer = this._map.findLayerById('buildings-layer') as esri.FeatureLayer;
       // Allow click coordinates only when on the trip planner route
       if (this.router.url.includes('trip')) {
         this.mapService.featuresIntersectingPoint(layer, e.mapPoint).then((res) => {
@@ -444,20 +448,32 @@ export class TripPlannerService implements OnDestroy {
     // additional methods when both streams complete.
     zip(moduleProvider.require(['RouteTask', 'RouteParameters', 'FeatureSet', 'Graphic'], true), mapService.store)
       .pipe(takeUntil(this.$destroy))
-      .subscribe((results: [any, MapServiceInstance]) => {
-        this._Modules.TripTask = results[0].RouteTask;
-        this._Modules.TripParameters = results[0].RouteParameters;
-        this._Modules.FeatureSet = results[0].FeatureSet;
-        this._Modules.Graphic = results[0].Graphic;
+      .subscribe(
+        (
+          results: [
+            {
+              RouteTask: esri.RouteTask;
+              RouteParameters: esri.RouteParameters;
+              FeatureSet: esri.FeatureSet;
+              Graphic: esri.Graphic;
+            },
+            MapServiceInstance
+          ]
+        ) => {
+          this._Modules.TripTask = results[0].RouteTask;
+          this._Modules.TripParameters = results[0].RouteParameters;
+          this._Modules.FeatureSet = results[0].FeatureSet;
+          this._Modules.Graphic = results[0].Graphic;
 
-        // Locally store instance of map and view, allowing direct map and view manipulation
-        this._map = results[1].map;
-        this._view = results[1].view;
+          // Locally store instance of map and view, allowing direct map and view manipulation
+          this._map = results[1].map;
+          this._view = results[1].view;
 
-        this.loadTripFromURL();
+          this.loadTripFromURL();
 
-        this.initializeHandlers();
-      });
+          this.initializeHandlers();
+        }
+      );
 
     // Subscribe to the trip planner connection service and store the selected connection url when available.
     this._currentNetworkSubscrption = this.connectionService.currentNetwork
@@ -651,9 +667,9 @@ export class TripPlannerService implements OnDestroy {
    */
   public getTravelModeFromRule(rule: TripPlannerRule, numberOnly?: false): TripPlannerRuleMode;
   public getTravelModeFromRule(rule: TripPlannerRule, numberOnly?: true): number;
-  public getTravelModeFromRule(rule: TripPlannerRule, numberOnly?: Boolean): any {
+  public getTravelModeFromRule(rule: TripPlannerRule, numberOnly?: boolean): TripPlannerRuleMode | number {
     // Reduce travel options to only that that are enumerable. This will leave behind only options that can
-    // be simply checked against truthy/falsy values by virtue of sipmly existing in the travel mode.
+    // be simply checked against truthy/falsy values by virtue of simply existing in the travel mode.
     //
     // Condition is set in the travel mode (e.g. accessible = true). That condition must be met in state
     // value to be eligible to become a potential mode result. If the state condition is not met, it is rejected.
@@ -1010,7 +1026,7 @@ export class TripPlannerService implements OnDestroy {
                     // and splice it into the other stops.
                     const parkingStop = new TripPoint({
                       source: 'coordinates',
-                      originAttributes: result[nearest].attributes as any,
+                      originAttributes: result[nearest].attributes as TripPointAttributes,
                       originGeometry: { ...nearestGeometry },
                       originParameters: {
                         type: 'coordinates',
@@ -1190,7 +1206,7 @@ export class TripPlannerService implements OnDestroy {
                   concatMap((t) => {
                     // Execute inner trip task with own trip params
                     return from(t.task.solve(t.params)).pipe(
-                      catchError((err): any => {
+                      catchError((err) => {
                         // Get the travel mode for the failed request found in the error object.
                         const responseTravelMode = err.details.requestOptions.query.travelMode;
 
@@ -1265,7 +1281,7 @@ export class TripPlannerService implements OnDestroy {
                 // If request was successful, value will be TripTask result. In which case, create a new Trip Result
                 // and append the result property
                 const matchedResult = previousState.find(
-                  (r) => r.params.travelMode.toString() === (<any>response).routeResults[0].routeName
+                  (r) => r.params.travelMode.toString() === response.routeResults[0].routeName
                 );
 
                 return of(true).pipe(
@@ -1392,7 +1408,7 @@ export class TripPlannerService implements OnDestroy {
                       features[features.length - 1].attributes.text = `Finish at ${lastStopName} at ${lastTime}`;
                     }
 
-                    const features_length = (<any>features).length;
+                    const features_length = features.length;
                     // Overwrite total travel time to be the relative time of the last item in the features array.
                     // This ensures it applies the addtiional time padding such as bus linger time and traffic multipliers.
                     if (features_length > 0 && features[0].attributes.relativeTime != null) {
@@ -1473,7 +1489,7 @@ export class TripPlannerService implements OnDestroy {
           // (res) => {
           //   console.log('emit');
           // })
-          (res: Array<any>) => {
+          (res) => {
             this.result = res.flat();
           },
           (err) => {
@@ -2234,7 +2250,11 @@ export class TripPlannerService implements OnDestroy {
       };
 
       // Categorize blocks for querying.
-      const categorizedBlocks: Array<any> = blocks.map((block, index) => {
+      const categorizedBlocks: {
+        category: TripPointProperties['source'];
+        index: number;
+        value: string;
+      }[] = blocks.map((block, index) => {
         return {
           category: identifyBlock(block),
           index: index,
@@ -2289,7 +2309,7 @@ export class TripPlannerService implements OnDestroy {
       // For any query blocks, geolocation blocks perform a single geolocation check and generate trip points
       // using the same returned geolocation API response.
       const geolocationCategory = of(categorizedGeolocationBlocks).pipe(
-        switchMap((blks): any => {
+        switchMap((blks) => {
           if (blks.length > 0) {
             return getGeolocation(true);
           } else {
@@ -2501,19 +2521,17 @@ export class TripPlannerService implements OnDestroy {
       }
     );
 
-    const groupPromises: Array<Promise<TripPoint>> = overlappedGroups
+    const groupPromises = overlappedGroups
       .map((group: TripPoint[], index: number) => {
+        // In the first group, both points will be transformed
         if (index === 0) {
-          // In the first group, both points will be transformed
-          if (index === 0) {
-            return [
-              this.findNearestDoorForTripPoint(group[0], group[1]),
-              this.findNearestDoorForTripPoint(group[1], group[0])
-            ];
-          }
+          return [
+            this.findNearestDoorForTripPoint(group[0], group[1]),
+            this.findNearestDoorForTripPoint(group[1], group[0])
+          ];
         } else {
           // On any other group other than the first, only the second point will be transformed, relative to the first.
-          return this.findNearestDoorForTripPoint(group[1], group[0]);
+          return [this.findNearestDoorForTripPoint(group[1], group[0])];
         }
       })
       .reduce((acc, val) => acc.concat(val));
@@ -2616,8 +2634,8 @@ export class TripPlannerService implements OnDestroy {
                   const transformationDefinition: TripPointOriginTransformationsParams = {
                     type: 'nearest-door',
                     value: {
-                      latitude: (<any>ret.geometry).latitude,
-                      longitude: (<any>ret.geometry).longitude
+                      latitude: (<TripPointGeometry>ret.geometry).latitude,
+                      longitude: (<TripPointGeometry>ret.geometry).longitude
                     }
                   };
 
@@ -2625,8 +2643,8 @@ export class TripPlannerService implements OnDestroy {
                   const transformed = stop;
 
                   transformed.addTransformation(transformationDefinition);
-                  transformed.geometry.latitude = (<any>ret.geometry).latitude;
-                  transformed.geometry.longitude = (<any>ret.geometry).longitude;
+                  transformed.geometry.latitude = (<TripPointGeometry>ret.geometry).latitude;
+                  transformed.geometry.longitude = (<TripPointGeometry>ret.geometry).longitude;
 
                   resolve(transformed);
                 });
@@ -2655,7 +2673,7 @@ export class TripPlannerService implements OnDestroy {
  * @extends {esri.RouteResult}
  */
 export interface RouteResult extends esri.RouteResult {
-  routeResults?: Array<any>;
+  routeResults?: esri.DirectionsFeatureSet;
 }
 
 /**
@@ -2721,12 +2739,21 @@ export interface TripModeSwitch {
    * The result of determination calculations, if any, based on the requested travel mode.
    *
    * For example, bus modes will typically include some bus scheduling properties that will be used
-   * for UI display or futher calculations.
+   * for UI display or further calculations.
    *
    * @type {*}
    * @memberof TripModeSwitch
    */
-  results?: any;
+  results?: {
+    bus?: {
+      route_number: string;
+      linger_minutes: number;
+      timetable: TimetableRow[];
+      stop_count: number;
+      stops_list: unknown[];
+    };
+    relativeTime?: number;
+  };
 }
 
 /**
@@ -2747,7 +2774,7 @@ export interface TripResultProperties {
   isProcessing?: boolean;
 
   /**
-   * Describes if the trip result is in an erorred state.
+   * Describes if the trip result is in an error state.
    *
    * @type {boolean}
    * @memberof TripResultProperties
@@ -2755,12 +2782,12 @@ export interface TripResultProperties {
   isError?: boolean;
 
   /**
-   * If the trip request fails, property will be popluated with the error object.
+   * If the trip request fails, property will be populated with the error object.
    *
    * @type {*}
    * @memberof TripResultProperties
    */
-  error?: any;
+  error?: EsriError;
 
   /**
    * Reflects the finalized state of the result.
@@ -2775,7 +2802,7 @@ export interface TripResultProperties {
    * @type {*}
    * @memberof TripResultProperties
    */
-  isFulfilled?: any;
+  isFulfilled?: boolean;
 
   /**
    * Describes the trip request attempt count at the point of an error or success.
@@ -2968,7 +2995,11 @@ export interface TripPlannerRuleMode {
    * @type {*}
    * @memberof TripPlannerRuleMode
    */
-  determinants?: any;
+  determinants?: {
+    accessible?: boolean;
+    parking_pass?: boolean;
+    bike_share?: boolean;
+  };
 
   /**
    * Travel option key string array that describes the effects when the travel option has a view model and the mode is "selected".
@@ -3013,3 +3044,7 @@ export interface TravelOptions {
 }
 
 export type TimeModeOption = 'now' | 'leave' | 'arrive';
+
+interface EsriError extends Error {
+  details: esri.EsriErrorDetails;
+}
