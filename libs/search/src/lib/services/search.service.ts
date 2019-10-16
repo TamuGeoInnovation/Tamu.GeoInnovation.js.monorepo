@@ -216,7 +216,7 @@ export class SearchService {
                 name: sources[index].name,
                 // features: r[sources[index].featuresLocation] ? r[sources[index].featuresLocation] : [],
                 features: r[sources[index].featuresLocation]
-                  ? this.scoreResults(r[sources[index].featuresLocation], sources, index, options.values[index])
+                  ? this.scoreResults(r[sources[index].featuresLocation], sources, index, options.values[index] as string)
                   : [],
                 displayTemplate: sources[index].displayTemplate,
                 breadcrumbs: {
@@ -841,7 +841,7 @@ interface SearchProperties {
    * @type {string[]}
    * @memberof SearchManyProperties
    */
-  values?: any[] | any[][];
+  values?: (string | number)[] | (string | number)[][];
 
   /**
    * Specifies whether the method will update the service state.
