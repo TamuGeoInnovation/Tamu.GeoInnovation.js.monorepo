@@ -5,7 +5,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 
 import { SearchService, SearchResult } from '@tamu-gisc/search';
 
-import { relativeDistance } from '@tamu-gisc/common/utils/geometry/generic';
+import { relativeDistance, RelativeDistancePoint } from '@tamu-gisc/common/utils/geometry/generic';
 import { centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { Point } from '@tamu-gisc/common/types';
@@ -59,7 +59,7 @@ export class BikeService {
         stateful: false
       })
       .pipe(
-        switchMap((result: SearchResult) => {
+        switchMap((result: SearchResult<RelativeDistancePoint>) => {
           if (result && result.results && result.results.length > 0) {
             const features = result.features();
 

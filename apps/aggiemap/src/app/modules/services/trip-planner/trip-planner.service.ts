@@ -2265,8 +2265,8 @@ export class TripPlannerService implements OnDestroy {
             throwError('No query categories.');
           }
         }),
-        map((res: SearchResult) => {
-          return res.results.map((result: SearchResultItem, index) => {
+        map((res: SearchResult<esri.Graphic>) => {
+          return res.results.map((result: SearchResultItem<esri.Graphic>, index) => {
             return new TripPoint({
               index: categorizedQueryBlocks[index].index,
               source: categorizedQueryBlocks[index].category,

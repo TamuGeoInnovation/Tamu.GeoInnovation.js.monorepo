@@ -10,13 +10,14 @@ import { makeUrlParams } from '@tamu-gisc/common/utils/routing';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
+import { ParkingFeature } from '../../../../../apps/aggiemap/src/app/modules/services/transportation/drive/parking.service';
 
 @Injectable()
 export class SearchService {
   private _sources: SearchSource[];
 
-  private _store: ReplaySubject<SearchResult> = new ReplaySubject(1);
-  public store: Observable<SearchResult> = this._store.asObservable();
+  private _store: ReplaySubject<SearchResult<esri.Graphic>> = new ReplaySubject(1);
+  public store: Observable<SearchResult<esri.Graphic>> = this._store.asObservable();
 
   private _searching: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public searching: Observable<boolean> = this._searching.asObservable();
@@ -37,12 +38,12 @@ export class SearchService {
    * @returns {void}
    * @memberof SearchService
    */
-  public search(options: SearchPropertiesObservable): Observable<SearchResult>;
-  public search(options: SearchPropertiesPromise): Promise<SearchResult>;
-  public search(options: SearchProperties): SearchResult;
+  public search(options: SearchPropertiesObservable): Observable<SearchResult<esri.Graphic>>;
+  public search(options: SearchPropertiesPromise): Promise<SearchResult<esri.Graphic>>;
+  public search(options: SearchProperties): SearchResult<esri.Graphic>;
   public search(
     options: SearchPropertiesObservable | SearchPropertiesPromise | SearchProperties
-  ): SearchResult | Promise<SearchResult> | Observable<SearchResult> {
+  ): SearchResult<esri.Graphic> | Promise<SearchResult<esri.Graphic>> | Observable<SearchResult<esri.Graphic>> {
     // Check we don't have an array for sources
     if (!(options.sources instanceof Array)) {
       console.error(`Method expected a source array.`);
@@ -212,7 +213,7 @@ export class SearchService {
         return of(
           new SearchResult({
             results: result.map((r, index: number) => {
-              return <SearchResultItem>{
+              return <SearchResultItem<esri.Graphic>>{
                 name: sources[index].name,
                 // features: r[sources[index].featuresLocation] ? r[sources[index].featuresLocation] : [],
                 features: r[sources[index].featuresLocation]
@@ -410,10 +411,10 @@ export class SearchService {
   }
 }
 
-export class SearchResult {
-  public results: SearchResultsProperties['results'];
+export class SearchResult<T> {
+  public results: SearchResultsProperties<T>['results'];
 
-  constructor(props: SearchResultsProperties) {
+  constructor(props: SearchResultsProperties<T>) {
     this.results = props.results || [];
   }
 
@@ -423,7 +424,7 @@ export class SearchResult {
    * @returns
    * @memberof SearchResult
    */
-  public features(): esri.Graphic[] {
+  public features(): T[] {
     return this.results
       .map((resultItem, arr, ind) => {
         return resultItem.features;
@@ -887,7 +888,7 @@ interface SearchPropertiesPromise extends SearchProperties {
  *
  * @interface SearchResultItem
  */
-export interface SearchResultItem {
+export interface SearchResultItem<T> {
   /**
    * Readable name for the source.
    *
@@ -933,7 +934,7 @@ export interface SearchResultItem {
    * @type {*}
    * @memberof SearchResultItem
    */
-  features?: any;
+  features?: T[];
 
   /**
    * Metadata representing the origin (source id and searched term) data used to initialize a search query and
@@ -945,8 +946,8 @@ export interface SearchResultItem {
   breadcrumbs: SearchResultBreadcrumbSummary;
 }
 
-export interface SearchResultsProperties {
-  results?: SearchResultItem[];
+export interface SearchResultsProperties<T> {
+  results?: SearchResultItem<T>[];
 }
 
 /**

@@ -418,15 +418,15 @@ export class EsriMapService {
           // Process every search result and filter out those containing at least one feature
           // and return it as the match.
 
-          const features = res.results
+          const features: esri.Graphic[] = res.results
             .filter((result) => result.features.length > 0)
             .map((result) => result.features[0])
             .map((feature) => {
               const ft = { ...feature };
 
-              ft.geometry.type = getGeometryType(feature.geometry);
+              (<{ type: unknown }>ft.geometry).type = getGeometryType(feature.geometry);
 
-              return ft;
+              return ft as esri.Graphic;
             });
 
           // If the matched feature count is greater than 0, proceed to select them.

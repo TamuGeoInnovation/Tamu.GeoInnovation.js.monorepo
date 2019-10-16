@@ -11,9 +11,7 @@ import { polygon as tPolygon, Feature as tFeature, Point as tPoint } from '@turf
  * @export
  * @param feature Esri geometry
  */
-export function centroidFromGeometry(
-  feature: esri.Geometry | esri.Polygon | esri.Multipoint | esri.Point | esri.Polyline | Point
-): Point {
+export function centroidFromGeometry(feature: FeatureUnion): Point {
   if ('rings' in feature) {
     // If geometry is polygon
     return centroidFromPolygonGeometry(feature);
@@ -128,3 +126,5 @@ export function pointFromPolylineGeometry(feature: esri.Polyline): Point {
     throw new Error('Feature provided does not contain paths.');
   }
 }
+
+export type FeatureUnion = esri.Geometry | esri.Polygon | esri.Multipoint | esri.Point | esri.Polyline | Point;

@@ -177,7 +177,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * Search results list
    */
-  public searchResults: SearchResult;
+  public searchResults: SearchResult<unknown>;
 
   /**
    * Resolved search status, indicates if the resolved search result includes at least one feature.
@@ -373,7 +373,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    * @param {esri.Graphic} feature
    * @memberof SearchComponent
    */
-  public setSelected(feature: esri.Graphic | string, parentResult: SearchResultItem) {
+  public setSelected(feature: esri.Graphic | string, parentResult: SearchResultItem<unknown>) {
     const isString = typeof feature === 'string';
     const result = new TripPoint({
       source: 'search',
