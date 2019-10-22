@@ -1,15 +1,17 @@
-<!-- This component is an application-specific implementation of the generic sidebar component. 
+<!-- This component is an application-specific implementation of the generic sidebar component.
 
 We are injecting application-specific sidebar tabs and content -->
 
 <tamu-gisc-sidebar>
   <div class="tabs left">
-    <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''"></tamu-gisc-sidebar-tab>
+    <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'"
+      [material_icon]="'menu'" [route]="''"></tamu-gisc-sidebar-tab>
   </div>
 
   <div class="content">
     <tamu-gisc-tamu-block></tamu-gisc-tamu-block>
     <router-outlet></router-outlet>
     <feature-popup></feature-popup>
+    <date-picker></date-picker>
   </div>
 </tamu-gisc-sidebar>
