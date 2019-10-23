@@ -58,8 +58,8 @@ export class BusService {
 
       // TODO: Probably have to dispose of this event handlers on service destroy.
       // Detect bus layer changes and set graphics as the service value.
-      busLayer.graphics.on('change', (event: any) => {
-        return this._busLayerGraphics.next((<esri.Collection<esri.Graphic>>event.target).clone().toArray());
+      busLayer.graphics.on('change', (event) => {
+        return this._busLayerGraphics.next(Array.from(event.added));
       });
     });
   }
@@ -430,11 +430,11 @@ export class BusService {
     const route_number = re_match[1];
     return this.stopsForRoute(route_number).pipe(
       switchMap((stops: BusStop[]) => {
-        const first: BusStopWithIndex = this.getStopAtPoint(stops, (<any>firstGraphic.geometry).paths[0][0]);
+        const first: BusStopWithIndex = this.getStopAtPoint(stops, (<esri.Polyline>firstGraphic.geometry).paths[0][0]);
 
         const last: BusStopWithIndex = this.getStopAtPoint(
           stops,
-          (<any>lastGraphic.geometry).paths[0][(<any>lastGraphic.geometry).paths[0].length - 1]
+          (<esri.Polyline>lastGraphic.geometry).paths[0][(<esri.Polyline>lastGraphic.geometry).paths[0].length - 1]
         );
 
         const endpoints = this.getTripDepartureArrivalStops(stops, first, last);
@@ -726,7 +726,7 @@ export class BusService {
       Promise.all([
         this.moduleProvider.require(['Point', 'Graphic', 'FeatureLayer', 'PictureMarkerSymbol']),
         this.busesForRoute(short_name).toPromise(),
-        getFeatures() as any
+        (getFeatures() as unknown) as Promise<esri.Graphic[]>
       ]).then(
         (
           result: [
@@ -744,18 +744,18 @@ export class BusService {
 
           const makeBusGraphic = (bus) => {
             return new Graphic({
-              geometry: {
+              geometry: ({
                 type: 'point',
                 latitude: bus.point.latitude,
                 longitude: bus.point.longitude
-              },
+              } as unknown) as esri.GeometryProperties,
               attributes: {
                 name: bus.name,
                 route: short_name,
                 type: 'buses',
                 rotation: bus.angle
               }
-            } as any);
+            });
           };
 
           // If no features, add.
