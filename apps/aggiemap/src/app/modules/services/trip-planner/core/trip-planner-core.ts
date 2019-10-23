@@ -296,10 +296,10 @@ export class TripPoint {
    * @memberof TripPoint
    */
   public toEsriGraphic(): esri.Graphic {
-    const attributes: any = { ...this.attributes };
-    const geometry: any = { ...this.originGeometry.raw };
+    const attributes = { ...this.attributes };
+    const geometry: esri.Geometry = this.originGeometry.raw.clone();
 
-    geometry.type = getGeometryType(geometry);
+    ((geometry as unknown) as { type: string }).type = getGeometryType(geometry);
 
     return <esri.Graphic>{
       geometry: geometry,
@@ -315,11 +315,11 @@ export class TripPoint {
    * @memberof TripPoint
    */
   public getIdentifier(): string {
-    const attr: any = this.attributes;
+    const attr = (this.attributes as unknown) as TripPointAttributesMaybeIdentifiable;
     if (attr.Number && attr.Number !== '') {
       // Test building number
       return attr.Number;
-    } else if (attr.BldgAbbr && attr.BldgAbbr != null && attr.BldgAbbr !== '') {
+    } else if (attr.BldgAbbr && attr.BldgAbbr !== '') {
       // Test building abbreviation
       return attr.BldgAbbr;
     } else {
@@ -596,4 +596,9 @@ export interface TripPointProperties {
    * @memberof TripPointProperties
    */
   geometry?: TripPointGeometry;
+}
+
+interface TripPointAttributesMaybeIdentifiable extends TripPointAttributes {
+  Number?: string;
+  BldgAbbr?: string;
 }
