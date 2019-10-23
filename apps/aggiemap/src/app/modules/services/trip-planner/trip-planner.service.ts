@@ -124,7 +124,7 @@ export class TripPlannerService implements OnDestroy {
    * @type {*}
    * @memberof TripPlannerService
    */
-  private _Modules: any = {};
+  private _Modules: Partial<TripPlannerModules> = {};
 
   public readonly rule_walk: TripPlannerRule = {
     modes: [
@@ -452,10 +452,10 @@ export class TripPlannerService implements OnDestroy {
         (
           results: [
             {
-              RouteTask: esri.RouteTask;
-              RouteParameters: esri.RouteParameters;
-              FeatureSet: esri.FeatureSet;
-              Graphic: esri.Graphic;
+              RouteTask: esri.RouteTaskConstructor;
+              RouteParameters: esri.RouteParametersConstructor;
+              FeatureSet: esri.FeatureSetConstructor;
+              Graphic: esri.GraphicConstructor;
             },
             MapServiceInstance
           ]
@@ -916,7 +916,7 @@ export class TripPlannerService implements OnDestroy {
                 wkid: 4326
               },
               stops: undefined,
-              travelMode: result.mode
+              travelMode: result.mode.toString()
             })
           });
         });
@@ -1075,15 +1075,15 @@ export class TripPlannerService implements OnDestroy {
                         stopName: feature.attributes.name
                         // stopName: feature.attributes.name
                       },
-                      geometry: {
+                      geometry: ({
                         type: 'point',
                         latitude: feature.geometry.latitude,
                         longitude: feature.geometry.longitude
-                      }
+                      } as unknown) as esri.GeometryProperties
                     });
                   })
                 }),
-                travelMode: stopsAndMode.mode.mode,
+                travelMode: stopsAndMode.mode.mode.toString(),
                 returnDirections: true,
                 returnZ: false
               }),
@@ -1112,11 +1112,11 @@ export class TripPlannerService implements OnDestroy {
                             routeName: trip.modeSource.mode,
                             stopName: feature.attributes.name
                           },
-                          geometry: {
+                          geometry: ({
                             type: 'point',
                             latitude: feature.geometry.latitude,
                             longitude: feature.geometry.longitude
-                          }
+                          } as unknown) as esri.GeometryProperties
                         });
                       })
                     }),
@@ -1157,15 +1157,15 @@ export class TripPlannerService implements OnDestroy {
                             routeName: trip.modeSource.mode,
                             stopName: feature.attributes.name
                           },
-                          geometry: {
+                          geometry: ({
                             type: 'point',
                             latitude: feature.geometry.latitude,
                             longitude: feature.geometry.longitude
-                          }
+                          } as unknown) as esri.GeometryProperties
                         });
                       })
                     }),
-                    travelMode: travelMode,
+                    travelMode: travelMode.toString(),
                     returnDirections: true,
                     returnZ: false
                   })
@@ -1209,7 +1209,7 @@ export class TripPlannerService implements OnDestroy {
                 from(rq.tasks).pipe(
                   concatMap((t) => {
                     // Execute inner trip task with own trip params
-                    return from(t.task.solve(t.params)).pipe(
+                    return from((t.task.solve(t.params) as undefined) as Promise<unknown>).pipe(
                       catchError((err) => {
                         // Get the travel mode for the failed request found in the error object.
                         const responseTravelMode = err.details.requestOptions.query.travelMode;
@@ -1234,7 +1234,7 @@ export class TripPlannerService implements OnDestroy {
               ]);
             }),
             mergeMap((responses) => {
-              const results: any = responses.flat();
+              const results = (responses.flat() as unknown[]) as RouteResult[];
 
               // If any one of the route result responses at this stage is of type TripResult, it is a result an error condition.
               const anyError = results.find((r) => r instanceof TripResult);
@@ -1243,7 +1243,7 @@ export class TripPlannerService implements OnDestroy {
               if (anyError) {
                 // Make shallow copy of response trip result.
                 // This already contains the trip result error.
-                const failedResult = new TripResult(results[0]);
+                const failedResult = new TripResult((results[0] as unknown) as TripResultProperties);
 
                 // Report failed trip result.
                 this.tripTaskFail(failedResult);
@@ -1285,7 +1285,7 @@ export class TripPlannerService implements OnDestroy {
                 // If request was successful, value will be TripTask result. In which case, create a new Trip Result
                 // and append the result property
                 const matchedResult = previousState.find(
-                  (r) => r.params.travelMode.toString() === response.routeResults[0].routeName
+                  (r) => r.params.travelMode.toString() === (response as RouteResult).routeResults[0].routeName
                 );
 
                 return of(true).pipe(
@@ -2514,15 +2514,16 @@ export class TripPlannerService implements OnDestroy {
     // For example an input of 5 stops: [p1, p2, p3, p4, p5]
     // Results in a grouping: [[p1, p2], [p2, p3], [p3, p4], [p4, p5]]
     // This is necessary to calculate nearest door relative to a reference point
-    const overlappedGroups: any = stops.reduce(
-      (prev: TripPoint | TripPoint[], current: TripPoint, index: number, arr: TripPoint[]): any => {
+    const overlappedGroups = stops.reduce(
+      (prev: TripPoint[][], current: TripPoint, index: number, arr: TripPoint[]): TripPoint[][] => {
         if (index === 1) {
-          return [[prev, current]];
+          return [[(prev as unknown) as TripPoint, current]];
         } else if (index !== arr.length) {
           prev[index - 1] = [arr[index - 1], current];
           return prev;
         }
-      }
+      },
+      []
     );
 
     const groupPromises = overlappedGroups
@@ -2568,7 +2569,7 @@ export class TripPlannerService implements OnDestroy {
 
     return new Promise((resolve) => {
       try {
-        const buildingNumber = (<any>stop.attributes).Bldg_Number;
+        const buildingNumber = (stop.attributes as TripPointAttributesWithBldgNumber).Bldg_Number;
         return this.mapService.findLayerOrCreateFromSource(source).then(
           (layer: esri.FeatureLayer): Promise<TripPoint> => {
             return (layer
@@ -3053,4 +3054,15 @@ export type TimeModeOption = 'now' | 'leave' | 'arrive';
 
 interface EsriError extends Error {
   details: esri.EsriErrorDetails;
+}
+
+interface TripPointAttributesWithBldgNumber extends TripPointAttributes {
+  Bldg_Number: string;
+}
+
+interface TripPlannerModules {
+  TripTask: esri.RouteTaskConstructor;
+  TripParameters: esri.RouteParametersConstructor;
+  FeatureSet: esri.FeatureSetConstructor;
+  Graphic: esri.GraphicConstructor;
 }
