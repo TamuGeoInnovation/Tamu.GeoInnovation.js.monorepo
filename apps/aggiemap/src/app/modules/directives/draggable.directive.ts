@@ -39,12 +39,12 @@ export class DraggableDirective implements AfterViewInit, AfterViewChecked, OnDe
    * @type {*}
    * @memberof DraggableDirective
    */
-  private draggable: any;
+  private draggable: FixedInteractable;
 
   private lastContentHeight: number;
 
   constructor(private el: ElementRef, private dragService: UIDragService) {
-    this.draggable = el;
+    // this.draggable = el;
   }
 
   public ngAfterViewInit() {
@@ -54,7 +54,7 @@ export class DraggableDirective implements AfterViewInit, AfterViewChecked, OnDe
       );
     }
 
-    this.draggable = <any>interact('.draggable').draggable({
+    this.draggable = <FixedInteractable>interact('.draggable').draggable({
       inertia: true,
       restrict: {
         restriction: 'self'
@@ -202,4 +202,10 @@ export class DraggableDirective implements AfterViewInit, AfterViewChecked, OnDe
   public getDragPercentage(): number {
     return 100 - (this.draggable.getRect().top / (this.deviceHeight - this.initialOffset)) * 100;
   }
+}
+
+// As far as I can tell, in the version of interactjs we're using the TypeScript bindings are wrong
+interface FixedInteractable extends interact.Interactable {
+  getRect(): interact.Rect & interact.Rect2;
+  unset(): FixedInteractable;
 }
