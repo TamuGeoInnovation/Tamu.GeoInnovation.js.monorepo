@@ -507,12 +507,16 @@ export class TripPlannerService implements OnDestroy {
    */
   public getQualifyingTravelModes(returnNumbersOnly?: false): TripPlannerRuleMode[];
   public getQualifyingTravelModes(returnNumbersOnly?: true): number[];
-  public getQualifyingTravelModes(returnNumbersOnly?: any): any {
+  public getQualifyingTravelModes(returnNumbersOnly?: boolean): (TripPlannerRuleMode | number)[] {
     const numberOnly = returnNumbersOnly || false;
 
     const modes = this._Rules.value
       .map((rule) => {
-        return this.getTravelModeFromRule(rule, numberOnly);
+        if (numberOnly) {
+          return this.getTravelModeFromRule(rule, numberOnly);
+        } else if (!numberOnly) {
+          return this.getTravelModeFromRule(rule);
+        }
       })
       .filter((mode) => {
         return mode !== undefined;
@@ -2565,97 +2569,99 @@ export class TripPlannerService implements OnDestroy {
     return new Promise((resolve) => {
       try {
         const buildingNumber = (<any>stop.attributes).Bldg_Number;
-        return this.mapService.findLayerOrCreateFromSource(source).then((layer: esri.FeatureLayer): any => {
-          return layer
-            .queryFeatures({
-              where: `BldgNumber = '${buildingNumber}'`,
-              returnGeometry: true,
-              outSpatialReference: {
-                wkid: 4326
-              },
-              outFields: ['*']
-            })
-            .then((res) => {
-              // Filter out the doors that are suitable for routing depending on ADA routing mode
-              return res.features.filter((door) => {
-                // Door classifications
-                //
-                // 0= Non-Routable Entrance (Restricted, Courtyard)
-                // 1= Non-ADA Entrance
-                // 2= ADA Manual Entrance
-                // 3= ADA Assisted/Automatic
-                if (this._TravelOptions.value.accessible) {
-                  return door.attributes.Routing_Class === 2 || door.attributes.Routing_Class === 3;
-                } else {
-                  return (
-                    door.attributes.Routing_Class === 1 ||
-                    door.attributes.Routing_Class === 2 ||
-                    door.attributes.Routing_Class === 3
-                  );
-                }
-              });
-            })
-            .then((doors) => {
-              if (doors.length > 0) {
-                // If doors found, find the one with shortest straight line distance from the provided point
-                const distanceRef = [];
-                const distanceValue = [];
-
-                this.moduleProvider.require(['Point'], true).then((modules: { Point: esri.PointConstructor }) => {
-                  doors.forEach((door) => {
-                    // Point used to calculate euclidian distance between it and the reference point
-                    const currentPoint = new modules.Point({
-                      latitude: door.geometry['latitude'],
-                      longitude: door.geometry['longitude']
-                    });
-
-                    const relativePoint = new modules.Point({
-                      latitude: relativeTo.geometry.latitude,
-                      longitude: relativeTo.geometry.longitude
-                    });
-
-                    distanceRef.push({
-                      distance: currentPoint.distance(relativePoint),
-                      fid: door.attributes['GIS.FCOR.Bldg_Entrance.FID']
-                    });
-
-                    distanceValue.push(currentPoint.distance(relativePoint));
-                  });
-
-                  // Get the index of the smallest value in the distances array
-                  const min = minBy(distanceRef, (o) => {
-                    return o.distance;
-                  });
-
-                  const ret: esri.Graphic = doors.find((feature) => {
-                    return feature.attributes['GIS.FCOR.Bldg_Entrance.FID'] === min.fid;
-                  });
-
-                  const transformationDefinition: TripPointOriginTransformationsParams = {
-                    type: 'nearest-door',
-                    value: {
-                      latitude: (<TripPointGeometry>ret.geometry).latitude,
-                      longitude: (<TripPointGeometry>ret.geometry).longitude
-                    }
-                  };
-
-                  // Return the door with the shortest calculated shortest distance
-                  const transformed = stop;
-
-                  transformed.addTransformation(transformationDefinition);
-                  transformed.geometry.latitude = (<TripPointGeometry>ret.geometry).latitude;
-                  transformed.geometry.longitude = (<TripPointGeometry>ret.geometry).longitude;
-
-                  resolve(transformed);
+        return this.mapService.findLayerOrCreateFromSource(source).then(
+          (layer: esri.FeatureLayer): Promise<TripPoint> => {
+            return (layer
+              .queryFeatures({
+                where: `BldgNumber = '${buildingNumber}'`,
+                returnGeometry: true,
+                outSpatialReference: {
+                  wkid: 4326
+                },
+                outFields: ['*']
+              })
+              .then((res) => {
+                // Filter out the doors that are suitable for routing depending on ADA routing mode
+                return res.features.filter((door) => {
+                  // Door classifications
+                  //
+                  // 0= Non-Routable Entrance (Restricted, Courtyard)
+                  // 1= Non-ADA Entrance
+                  // 2= ADA Manual Entrance
+                  // 3= ADA Assisted/Automatic
+                  if (this._TravelOptions.value.accessible) {
+                    return door.attributes.Routing_Class === 2 || door.attributes.Routing_Class === 3;
+                  } else {
+                    return (
+                      door.attributes.Routing_Class === 1 ||
+                      door.attributes.Routing_Class === 2 ||
+                      door.attributes.Routing_Class === 3
+                    );
+                  }
                 });
-              } else {
+              })
+              .then((doors) => {
+                if (doors.length > 0) {
+                  // If doors found, find the one with shortest straight line distance from the provided point
+                  const distanceRef = [];
+                  const distanceValue = [];
+
+                  this.moduleProvider.require(['Point'], true).then((modules: { Point: esri.PointConstructor }) => {
+                    doors.forEach((door) => {
+                      // Point used to calculate euclidian distance between it and the reference point
+                      const currentPoint = new modules.Point({
+                        latitude: door.geometry['latitude'],
+                        longitude: door.geometry['longitude']
+                      });
+
+                      const relativePoint = new modules.Point({
+                        latitude: relativeTo.geometry.latitude,
+                        longitude: relativeTo.geometry.longitude
+                      });
+
+                      distanceRef.push({
+                        distance: currentPoint.distance(relativePoint),
+                        fid: door.attributes['GIS.FCOR.Bldg_Entrance.FID']
+                      });
+
+                      distanceValue.push(currentPoint.distance(relativePoint));
+                    });
+
+                    // Get the index of the smallest value in the distances array
+                    const min = minBy(distanceRef, (o) => {
+                      return o.distance;
+                    });
+
+                    const ret: esri.Graphic = doors.find((feature) => {
+                      return feature.attributes['GIS.FCOR.Bldg_Entrance.FID'] === min.fid;
+                    });
+
+                    const transformationDefinition: TripPointOriginTransformationsParams = {
+                      type: 'nearest-door',
+                      value: {
+                        latitude: (<TripPointGeometry>ret.geometry).latitude,
+                        longitude: (<TripPointGeometry>ret.geometry).longitude
+                      }
+                    };
+
+                    // Return the door with the shortest calculated shortest distance
+                    const transformed = stop;
+
+                    transformed.addTransformation(transformationDefinition);
+                    transformed.geometry.latitude = (<TripPointGeometry>ret.geometry).latitude;
+                    transformed.geometry.longitude = (<TripPointGeometry>ret.geometry).longitude;
+
+                    resolve(transformed);
+                  });
+                } else {
+                  resolve(stop);
+                }
+              })
+              .catch(() => {
                 resolve(stop);
-              }
-            })
-            .catch(() => {
-              resolve(stop);
-            });
-        });
+              }) as unknown) as Promise<TripPoint>;
+          }
+        );
       } catch (err) {
         console.warn(`Potential error in nearest door: `, err.message);
         // If any error in the chain, resolve with the original stop;
