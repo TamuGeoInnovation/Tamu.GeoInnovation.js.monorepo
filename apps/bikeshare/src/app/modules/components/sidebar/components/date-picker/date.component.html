@@ -1,11 +1,10 @@
-<label>
-  Date Time Range From:
-  <input [owlDateTimeTrigger]="dt12" [owlDateTime]="dt12" [(ngModel)]="selectedMoments" [selectMode]="'rangeFrom'">
-  <owl-date-time #dt12></owl-date-time>
-</label>
+<div class="example-wrapper">
+  <h2>Range Selection</h2>
 
-<label>
-  Date Time Range To:
-  <input [owlDateTimeTrigger]="dt13" [owlDateTime]="dt13" [(ngModel)]="selectedMoments" [selectMode]="'rangeTo'">
-  <owl-date-time #dt13></owl-date-time>
-</label>
+  <label>
+    Date Time:
+    <input placeholder="Date Time Range:" [style.width]="'350px'" [(ngModel)]="dateTimeRange" [selectMode]="'range'"
+      [owlDateTimeTrigger]="dtRange1" [owlDateTime]="dtRange1">
+    <owl-date-time #dtRange1></owl-date-time>
+  </label>
+</div>
