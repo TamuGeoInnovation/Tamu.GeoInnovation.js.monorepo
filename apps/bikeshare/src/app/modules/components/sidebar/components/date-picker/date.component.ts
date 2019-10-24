@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
-/**
- * @title Basic DateTime Picker
- */
 @Component({
   selector: 'date-picker',
+  templateUrl: './date.component.html',
   styleUrls: ['./date.component.scss'],
-  templateUrl: 'date.component.html'
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DateRange {
-  public selectedMoments = [new Date(2018, 1, 12, 10, 30), new Date(2018, 3, 21, 20, 30)];
+export class DateComponent implements OnInit {
+  public dateTimeRange: Date[];
+
+  constructor() {}
+
+  public ngOnInit() {}
 }

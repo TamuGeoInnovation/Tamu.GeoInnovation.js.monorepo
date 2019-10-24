@@ -108,7 +108,7 @@ import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-boot
 import { TooltipComponent } from '../components/elements/tooltip/tooltip.component';
 
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-import { DateRange } from '../components/sidebar/components/date-picker/date.component';
+import { DateComponent } from '../components/sidebar/components/date-picker/date.component';
 
 WebFont.load({
   google: {
@@ -295,7 +295,7 @@ export const MY_NATIVE_FORMATS = {
     DraggableDirective,
     AccordionDirective,
     AsyncContentLoadedDirective,
-    DateRange
+    DateComponent
   ],
   providers: [
     RouterHistoryService,
