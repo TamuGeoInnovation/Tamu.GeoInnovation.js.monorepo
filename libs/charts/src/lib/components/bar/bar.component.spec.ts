@@ -1,11 +1,13 @@
-import { inject } from '@angular/core/testing';
+import { async, inject, TestBed } from '@angular/core/testing';
 
 import { BarChartComponent } from './bar.component';
 
 describe('BarChartComponent', () => {
-  it('should create', () => {
-    inject([BarChartComponent], (component: BarChartComponent) => {
-      expect(component).toBeTruthy();
-    });
-  });
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({ providers: [BarChartComponent] }).compileComponents();
+  }));
+
+  it('should create', inject([BarChartComponent], (component: BarChartComponent) => {
+    expect(component).toBeTruthy();
+  }));
 });
