@@ -1,13 +1,26 @@
-import { inject, TestBed } from '@angular/core/testing';
+import { async, inject, TestBed } from '@angular/core/testing';
 
 import { SearchResult, SearchService } from './search.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 
 describe('SearchService', () => {
-  it('should be created', () => {
-    inject([SearchService], (searchService: SearchService) => {
-      expect(searchService).toBeTruthy();
-    });
-  });
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        SearchService,
+        {
+          provide: env,
+          useValue: { SearchSources: [] }
+        }
+      ],
+      imports: [HttpClientTestingModule, EnvironmentModule]
+    }).compileComponents();
+  }));
+
+  it('should be created', inject([SearchService], (searchService: SearchService) => {
+    expect(searchService).toBeTruthy();
+  }));
 });
 
 describe('SearchResult', () => {
