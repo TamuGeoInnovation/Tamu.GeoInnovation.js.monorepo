@@ -127,7 +127,7 @@ export class BarChartConfiguration extends ChartConfiguration {
 }
 
 export class LineChartConfiguration extends ChartConfiguration {
-  constructor(args: IChartConfiguration) {
+  constructor(args?: IChartConfiguration) {
     super(args);
 
     this.type = 'line';

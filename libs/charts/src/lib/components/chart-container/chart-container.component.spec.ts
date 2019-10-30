@@ -1,24 +1,30 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 
-import { ChartContainerComponent } from './chart-container.component';
+import { BarChartConfiguration, ChartContainerComponent, LineChartConfiguration } from './chart-container.component';
 
 describe('ChartContainerComponent', () => {
-  let component: ChartContainerComponent;
-  let fixture: ComponentFixture<ChartContainerComponent>;
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ChartContainerComponent]
+      providers: [ChartContainerComponent]
     }).compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ChartContainerComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
+  it('should create', inject([ChartContainerComponent], (component: ChartContainerComponent) => {
     expect(component).toBeTruthy();
+    expect(component.ngOnDestroy()).toBeUndefined();
+  }));
+});
+
+describe('BarChartConfiguration', () => {
+  it('should create', () => {
+    const config = new BarChartConfiguration();
+    expect(config.type).toEqual('bar');
+  });
+});
+
+describe('LineChartConfiguration', () => {
+  it('should create', () => {
+    const config = new LineChartConfiguration();
+    expect(config.type).toEqual('line');
   });
 });
