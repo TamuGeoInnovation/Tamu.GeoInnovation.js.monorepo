@@ -11,9 +11,12 @@ describe('SelectComponent', () => {
     expect(component).toBeTruthy();
   }));
 
-  it('getDataItemValue should handle template being undefined', inject([SelectComponent], (component: SelectComponent<string>) => {
-    expect(component.getDataItemValue({ test: 'value' })).toEqual({ test: 'value' });
-  }));
+  it('getDataItemValue should handle template being undefined', inject(
+    [SelectComponent],
+    (component: SelectComponent<string>) => {
+      expect(component.getDataItemValue({ test: 'value' })).toEqual({ test: 'value' });
+    }
+  ));
 
   it('getDataItemValue should handle correct inputs', inject([SelectComponent], (component: SelectComponent<string>) => {
     expect(component.getDataItemValue({ test: 'value' }, 'test')).toEqual('value');
