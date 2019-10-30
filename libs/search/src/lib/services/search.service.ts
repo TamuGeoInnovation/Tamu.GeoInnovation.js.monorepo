@@ -50,7 +50,7 @@ export class SearchService {
     }
 
     if (options.sources.length === 0) {
-      console.error(`Exptected at least one source. Got ${options.sources.length}.`);
+      console.error(`Expected at least one source. Got ${options.sources.length}.`);
       return;
     }
 
@@ -820,7 +820,7 @@ interface CrossSearchQueryLookupProperties {
  *
  * @interface SearchProperties
  */
-interface SearchProperties {
+export interface SearchProperties {
   /**
    * A string array of valid search sources.
    *
