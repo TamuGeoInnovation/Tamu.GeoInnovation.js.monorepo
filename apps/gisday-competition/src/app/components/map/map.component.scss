@@ -1,0 +1,5 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flex(1);
+}

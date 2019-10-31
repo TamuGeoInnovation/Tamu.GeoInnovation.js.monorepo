@@ -1,1 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+
+//  ==========================================================================
+//   GRID
+//  ==========================================================================
+
+@import 'libs/sass/1140';
+
+//  ==========================================================================
+//   SASS Mixins
+//  ==========================================================================
+
+@import 'libs/sass/mixins';
+
+html {
+  height: 100%;
+  width: 100%;
+  font-family: 'Moriston';
+  font-size: 16px;
+}
+
+body {
+  height: inherit;
+  width: inherit;
+}
