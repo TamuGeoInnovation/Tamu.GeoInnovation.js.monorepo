@@ -1189,7 +1189,15 @@
             "polyfills": "apps/gisday-competition/src/polyfills.ts",
             "tsConfig": "apps/gisday-competition/tsconfig.app.json",
             "aot": false,
-            "assets": ["apps/gisday-competition/src/favicon.ico", "apps/gisday-competition/src/assets"],
+            "assets": [
+              "apps/gisday-competition/src/favicon.ico",
+              "apps/gisday-competition/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
             "styles": ["apps/gisday-competition/src/styles.scss"],
             "scripts": []
           },
