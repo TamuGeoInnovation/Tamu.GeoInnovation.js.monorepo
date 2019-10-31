@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { RouterModule, Routes } from '@angular/router';
 
@@ -7,8 +8,16 @@ import * as WebFont from 'webfontloader';
 
 import { HttpClientModule } from '@angular/common/http';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
+import { SearchModule } from '@tamu-gisc/search';
+import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
+import { FeaetureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
+import { ChartsModule } from '@tamu-gisc/charts';
 
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
+import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
+import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
+import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
+import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 
 import { MapComponent } from '../../components/map/map.component';
 
@@ -27,13 +36,22 @@ WebFont.load({
 
 
 @NgModule({
-  declarations: [],
+  declarations: [MapComponent],
   imports: [
     CommonModule,
     RouterModule.forRoot(routes),
+    BrowserAnimationsModule,
     HttpClientModule,
     EsriMapModule,
+    SearchModule,
+    SidebarModule,
     UITamuBrandingModule,
+    LayerFilterModule,
+    LayerListModule,
+    ResponsiveModule,
+    CommonNgxRouterModule,
+    FeaetureSelectorModule,
+    ChartsModule
   ],
   exports: [RouterModule]
 })
