@@ -127,6 +127,12 @@
     },
     "charts": {
       "tags": []
+    },
+    "gisday-competition-e2e": {
+      "tags": []
+    },
+    "gisday-competition": {
+      "tags": []
     }
   }
 }
