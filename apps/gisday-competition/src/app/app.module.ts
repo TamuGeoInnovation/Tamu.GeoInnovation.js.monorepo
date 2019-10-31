@@ -1,12 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { AppRoutingModule } from './modules/routing/routing.module';
+
 import { AppComponent } from './app.component';
-import { RouterModule } from '@angular/router';
+import { MapComponent } from './components/map/map.component';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, RouterModule.forRoot([], { initialNavigation: 'enabled' })],
+  declarations: [AppComponent, MapComponent],
+  imports: [BrowserModule, AppRoutingModule],
   providers: [],
   bootstrap: [AppComponent]
 })

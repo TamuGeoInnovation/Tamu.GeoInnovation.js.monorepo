@@ -12,6 +12,11 @@
 1. Clone this repo
 2. `npm install` from the root of the directory
 
+# Creating a new app
+
+1. Use `ng g app myapp --style=scss` to scaffold the app
+2. `ng serve --aot --project=myapp` to start the local server
+
 # Running AggieMap
 
 Run `ng serve --project=aggiemap --aot` to start a local webserver at https://localhost:4200.
