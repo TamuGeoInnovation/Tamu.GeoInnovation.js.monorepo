@@ -1,6 +1,6 @@
-<tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
+<tamu-gisc-esri-map [config]="config" [ngClass]="{ mobile: isMobile }"></tamu-gisc-esri-map>
 
-<tamu-gisc-sidebar>
+<tamu-gisc-sidebar [sidebarVisible]="false">
   <div class="tabs left">
     <tamu-gisc-sidebar-tab [route]="''"></tamu-gisc-sidebar-tab>
   </div>
