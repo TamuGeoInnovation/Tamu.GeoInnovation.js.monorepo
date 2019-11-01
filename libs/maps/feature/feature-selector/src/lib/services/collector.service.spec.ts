@@ -6,6 +6,6 @@ describe('FeatureCollectorService', () => {
   it('should be created', () => {
     inject([FeatureCollectorService], (service: FeatureCollectorService) => {
       expect(service).toBeTruthy();
-    })
+    });
   });
 });
