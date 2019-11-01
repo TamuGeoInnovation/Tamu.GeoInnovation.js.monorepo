@@ -46,44 +46,44 @@ export const LayerSources: LayerSource[] = [
       }
     }
   },
-  {
-    type: 'feature',
-    id: d.CONSTRUCTION.layerId,
-    title: d.CONSTRUCTION.name,
-    url: d.CONSTRUCTION.url,
-    popupComponent: d.CONSTRUCTION.popupComponent,
-    listMode: 'show',
-    loadOnInit: true,
-    visible: true,
-    legendItems: [
-      {
-        id: 'construction-legend',
-        title: 'Construction Area',
-        src:
-          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAENJREFUOI1jYaAyYKGZgf9DGf5TahjjagZGFnQBcg2DOYgFmyAlgLYupAYYYgaORsogNHA0Uig3kJIwhAUXC7oApQAAQ8kZ9+L+/N4AAAAASUVORK5CYII='
-      }
-    ]
-  },
-  {
-    type: 'feature',
-    id: d.TREES.layerId,
-    title: d.TREES.name,
-    url: d.TREES.url,
-    popupComponent: d.TREES.popupComponent,
-    listMode: 'show',
-    loadOnInit: true,
-    visible: true,
-    legendItems: []
-  },
-  {
-    type: 'graphic',
-    id: 'selection-layer',
-    title: 'Selected Buildings',
-    listMode: 'hide',
-    loadOnInit: false,
-    visible: true,
-    popupComponent: 'BuildingPopupComponent'
-  }
+  // {
+  //   type: 'feature',
+  //   id: d.CONSTRUCTION.layerId,
+  //   title: d.CONSTRUCTION.name,
+  //   url: d.CONSTRUCTION.url,
+  //   popupComponent: d.CONSTRUCTION.popupComponent,
+  //   listMode: 'show',
+  //   loadOnInit: true,
+  //   visible: true,
+  //   legendItems: [
+  //     {
+  //       id: 'construction-legend',
+  //       title: 'Construction Area',
+  //       src:
+  //         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAENJREFUOI1jYaAyYKGZgf9DGf5TahjjagZGFnQBcg2DOYgFmyAlgLYupAYYYgaORsogNHA0Uig3kJIwhAUXC7oApQAAQ8kZ9+L+/N4AAAAASUVORK5CYII='
+  //     }
+  //   ]
+  // },
+  // {
+  //   type: 'feature',
+  //   id: d.TREES.layerId,
+  //   title: d.TREES.name,
+  //   url: d.TREES.url,
+  //   popupComponent: d.TREES.popupComponent,
+  //   listMode: 'show',
+  //   loadOnInit: true,
+  //   visible: true,
+  //   legendItems: []
+  // },
+  // {
+  //   type: 'graphic',
+  //   id: 'selection-layer',
+  //   title: 'Selected Buildings',
+  //   listMode: 'hide',
+  //   loadOnInit: false,
+  //   visible: true,
+  //   popupComponent: 'BuildingPopupComponent'
+  // }
 ];
 
 const commonQueryParams: any = {

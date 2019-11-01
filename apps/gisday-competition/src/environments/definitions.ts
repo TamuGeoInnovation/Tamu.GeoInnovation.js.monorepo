@@ -15,18 +15,18 @@ export const Definitions = {
     url: `${Connections.basemapUrl}/1`,
     popupComponent: 'BuildingPopupComponent'
   },
-  CONSTRUCTION: {
-    id: 'construction_zone',
-    layerId: 'construction_zone-layer',
-    name: 'Construction Zone',
-    url: `${Connections.constructionUrl}`,
-    popupComponent: 'ConstructionPopupComponent'
-  },
-  TREES: {
-    id: 'trees',
-    layerId: 'trees_layer',
-    name: 'Trees',
-    url: `${Connections.basemapUrl}/8`,
-    popupComponent: 'BasePopupComponent'
-  }
+  // CONSTRUCTION: {
+  //   id: 'construction_zone',
+  //   layerId: 'construction_zone-layer',
+  //   name: 'Construction Zone',
+  //   url: `${Connections.constructionUrl}`,
+  //   popupComponent: 'ConstructionPopupComponent'
+  // },
+  // TREES: {
+  //   id: 'trees',
+  //   layerId: 'trees_layer',
+  //   name: 'Trees',
+  //   url: `${Connections.basemapUrl}/8`,
+  //   popupComponent: 'BasePopupComponent'
+  // }
 };
