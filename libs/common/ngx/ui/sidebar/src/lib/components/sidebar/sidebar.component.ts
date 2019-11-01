@@ -15,8 +15,8 @@ import { mergeMap, takeUntil } from 'rxjs/operators';
       state(
         'true',
         style({
-          transform: 'translateX(0)'
-        })
+          transform: 'translateX({{xLimit}})'
+        }), {params: {xLimit: 0}}
       ),
       state(
         'false',
@@ -32,6 +32,9 @@ import { mergeMap, takeUntil } from 'rxjs/operators';
 export class SidebarComponent implements AfterContentInit, OnDestroy {
   @Input()
   public sidebarVisible: boolean;
+
+  @Input()
+  public visibleLimitX: string;
 
   public currentView: string;
 
