@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 import esri = __esri;
 import { BehaviorSubject } from 'rxjs';
@@ -9,8 +9,41 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class MapComponent implements OnInit {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
+  public imageUrl = "https://ers.texas.gov/ERSWebsite/Media/Images/Global/ers-logo-300.png";
 
-  constructor() {}
+  @ViewChild('player', {
+    static: true
+  })
+  public videoElement;
+
+  public video: any;
+
+  constructor() {
+    const supported = 'mediaDevices' in navigator;
+    const constraints: MediaStreamConstraints = {
+      audio: false,
+      video: {
+        facingMode: "environment",
+      },
+    }
+    navigator.mediaDevices.enumerateDevices()
+      .then(devices => {
+        console.log("Devices", devices);
+      })
+    if (supported) {
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream) => {
+          this.video.srcObject = stream;
+        })
+        .catch(err => {
+          console.error(err);
+          alert(err);
+        })
+    } else {
+      alert("getUserMedia() is not supported by your browser");
+    }
+
+  }
 
   public config = {
     basemap: {
@@ -62,5 +95,7 @@ export class MapComponent implements OnInit {
     }
   };
 
-  public ngOnInit() {}
+  public ngOnInit() {
+    this.video = this.videoElement.nativeElement;
+  }
 }

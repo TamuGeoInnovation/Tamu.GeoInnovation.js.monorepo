@@ -15,7 +15,10 @@
 # Creating a new app
 
 1. Use `ng g app myapp --style=scss` to scaffold the app
-2. `ng serve --aot --project=myapp` to start the local server
+
+# Viewing on mobile device
+
+1. Use `ng serve --aot --project=myapp --host 0.0.0.0`
 
 # Running AggieMap
 
