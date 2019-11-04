@@ -7,7 +7,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SubmissionComponent implements OnInit {
 
-  constructor() { }
+  public dataSource = [{
+    name: "HELLO",
+    value: "hello",
+  },{
+    name: "GOODBYE",
+    value: "goodbye",
+  }];
+
+  constructor() { 
+    // this.dataSource.push({
+    //   name: "HELLO",
+    //   value: "hello",
+    // });
+    // this.dataSource.push({
+    //   name: "GOODBYE",
+    //   value: "goodbye",
+    // });
+  }
 
   ngOnInit() {
   }

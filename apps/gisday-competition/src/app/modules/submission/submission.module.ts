@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms'
+
 import { SubmissionComponent } from './components/submission.component';
 
 const routes: Routes = [{
@@ -14,6 +16,7 @@ const routes: Routes = [{
   imports: [
     RouterModule.forChild(routes),
     CommonModule,
+    UIFormsModule
   ]
 })
 export class SubmissionModule { }
