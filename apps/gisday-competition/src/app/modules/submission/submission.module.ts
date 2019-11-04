@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms'
@@ -16,6 +17,7 @@ const routes: Routes = [{
   imports: [
     RouterModule.forChild(routes),
     CommonModule,
+    FormsModule,
     UIFormsModule
   ]
 })

@@ -1,1 +1,10 @@
-<p>How would you catagorize this sign?</p><tamu-gisc-select [valueTemplate]="'name'" [displayTemplate]="'name'" [data]="dataSource"></tamu-gisc-select>
+<p>How would you catagorize this sign?</p>
+<tamu-gisc-select (changed)="onSelectionType($event)" [valueTemplate]="'value'" [displayTemplate]="'name'" [data]="dataSource"></tamu-gisc-select>
+
+<p>Do you have any additional comments or information?</p>
+<div class="input-action-container" ngDefaultControl [(ngModel)]="signDetails">
+    <i class="action-icons material-icons left ng-star-inserted">create</i>
+    <input aria-autocomplete="list" aria-owns="search-results-container" role="textbox" type="text" class="margin-left margin-right" placeholder="Additional information">
+</div>
+
+<div type="button" (click)="verifySubmissionContents()">Submit</div>
