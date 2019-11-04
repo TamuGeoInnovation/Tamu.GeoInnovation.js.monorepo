@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { LocationService } from '../providers/location.service';
-import { ISubmission } from '../entity/submission.entity';
 import { SubmissionService } from '../providers/submission.service';
+
 
 @Component({
   selector: 'tamu-gisc-submission',
@@ -74,6 +74,7 @@ export class SubmissionComponent implements OnInit {
   public signType: string;
   public signDetails: string;
   public canvasCtx: CanvasRenderingContext2D;
+  public file: File;
 
   constructor(
     public readonly locationService: LocationService,
@@ -86,12 +87,11 @@ export class SubmissionComponent implements OnInit {
 
   onPhotoTaken(e) {
     this.canvasCtx = this.imagePreviewRef.nativeElement.getContext('2d');
-    let file = null;
     let image = new Image();
     const fileList: FileList = e.target.files;
     for (let i = 0; i < fileList.length; i++) {
       if (fileList[i].type.match(/^image\//)) {
-        file = fileList[i];
+        this.file = fileList[i];
         break;
       }
     }
@@ -99,8 +99,8 @@ export class SubmissionComponent implements OnInit {
       this.canvasCtx.drawImage(image, 0, 0, 700, 300);
     }
 
-    if (file !== null) {
-      image.src = URL.createObjectURL(file);
+    if (this.file !== null) {
+      image.src = URL.createObjectURL(this.file);
       // contex.drawImage(file, 0, 0);
     }
   }
@@ -122,21 +122,20 @@ export class SubmissionComponent implements OnInit {
   }
 
   submitSubmission() {
-    const sub: ISubmission = {
-      userGuid: "",
-      description: this.signDetails,
-      signType: this.signType,
-      local: {
-        lat: this.locationService.currentLocal.lat,
-        lon: this.locationService.currentLocal.lon,
-        timestamp: this.locationService.currentLocal.timestamp,
-        accuracy: this.locationService.currentLocal.accuracy,
-        heading: this.locationService.currentLocal.heading,
-        altitude: this.locationService.currentLocal.altitude,
-        speed: this.locationService.currentLocal.speed,
-      }
-    }
-    this.submissionService.postSubmission(sub).subscribe(result => {
+    const data: FormData = new FormData();
+    data.append("UserGuid", "21062b5d-7063-46e0-9ea2-e5371ae4df11");
+    data.append("Description", this.signDetails);
+    data.append("SignType", this.signType);
+    data.append("Lat", this.locationService.currentLocal.lat);
+    data.append("Lon", this.locationService.currentLocal.lon);
+    data.append("Accuracy", this.locationService.currentLocal.timestamp);
+    data.append("Timestamp", this.locationService.currentLocal.accuracy);
+    data.append("Heading", this.locationService.currentLocal.heading);
+    data.append("Altitude", this.locationService.currentLocal.altitude);
+    data.append("Speed", this.locationService.currentLocal.speed);
+    data.append('photoA', this.file)
+
+    this.submissionService.postSubmission(data).subscribe(result => {
       console.log(result);
     })
   }

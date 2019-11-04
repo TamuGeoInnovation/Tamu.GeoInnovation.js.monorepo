@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http'; 
 
 import { RouterModule, Routes } from '@angular/router';
 
@@ -31,6 +32,7 @@ WebFont.load({
   imports: [
     CommonModule,
     RouterModule.forRoot(routes),
+    HttpClientModule,
     BrowserAnimationsModule,
     ResponsiveModule,
     CommonNgxRouterModule,
