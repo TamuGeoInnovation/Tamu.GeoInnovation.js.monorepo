@@ -12,7 +12,7 @@ import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
 
-import { MapComponent } from '../../components/map/map.component';
+import { MapComponent } from './components/map.component';
 
 const routes: Routes = [{
   path: '', component: MapComponent
