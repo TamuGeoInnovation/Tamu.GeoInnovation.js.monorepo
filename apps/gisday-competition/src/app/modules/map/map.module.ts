@@ -12,12 +12,18 @@ import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
 
 import { MapComponent } from '../../components/map/map.component';
+import { Routes, RouterModule } from '@angular/router';
+
+const routes: Routes = [{
+  path: '', component: MapComponent
+}]
 
 
 @NgModule({
   declarations: [MapComponent],
   exports: [MapComponent],
   imports: [
+    RouterModule.forChild(routes),
     CommonModule,
     HttpClientModule,
     EsriMapModule,
