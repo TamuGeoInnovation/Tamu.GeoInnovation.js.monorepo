@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
-import { LeaderboardComponent } from '../../components/leaderboard/leaderboard.component';
+import { LeaderboardComponent } from './components/leaderboard.component';
 
 const routes: Routes = [{
   path: '', component: LeaderboardComponent
