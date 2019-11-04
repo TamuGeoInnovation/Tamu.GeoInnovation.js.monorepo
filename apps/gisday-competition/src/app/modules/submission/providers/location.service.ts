@@ -1,4 +1,5 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import { IGeoLocal } from '../entity/submission.entity';
 
 @Injectable({
   providedIn: 'root'
@@ -6,27 +7,35 @@ import { Injectable, OnDestroy, OnInit } from '@angular/core';
 export class LocationService implements OnDestroy {
   public supportsGeolocation: boolean;
   public watchId: number = 0;
+  public currentLocal: IGeoLocal;
 
   constructor() { 
     if (navigator.geolocation) {
       this.supportsGeolocation = true;
-      this.watchId = navigator.geolocation.watchPosition(this.locationUpdate, this.locationError, {
-        timeout: 10000, // I'm assuming this is milliseconds (10 seconds)
+      this.watchId = navigator.geolocation.watchPosition((position) => {
+        this.currentLocal = {
+          lat: `${position.coords.latitude}`,
+          lon: `${position.coords.longitude}`,
+          timestamp: Date.now().toString(),
+          accuracy: `${position.coords.accuracy}`,
+        }
+      }, this.locationError, {
+        timeout: 10 * 1000, // I'm assuming this is milliseconds (10 seconds)
         enableHighAccuracy: true,
-        maximumAge: 20000, // I'm assuming this is milliseconds (20 seconds)
+        maximumAge: 20 * 1000, // I'm assuming this is milliseconds (20 seconds)
       });
     } else {
       this.supportsGeolocation = false;
     }
   }
 
-  locationUpdate(position) {
-    console.log(position.coords);
-    // alert("Lat: " + position.coords.latitude + "\nLon: " + position.coords.longitude);
-  }
-
   locationError(err) {
-    console.error(err);
+    console.error(err.code);
+    // error.code can be:
+    //   0: unknown error
+    //   1: permission denied
+    //   2: position unavailable (error response from location provider)
+    //   3: timed out
   }
 
   ngOnDestroy() {

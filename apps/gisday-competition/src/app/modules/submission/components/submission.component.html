@@ -1,4 +1,6 @@
-<input type="file" accept="image/*" capture="environment">
+<p>Take a picture of the sign</p>
+<canvas #imagePreview></canvas>
+<input type="file" (change)="onPhotoTaken($event)" accept="image/*" capture="environment">
 
 <p>How would you catagorize this sign?</p>
 <tamu-gisc-select (changed)="onSelectionType($event)" [valueTemplate]="'value'" [displayTemplate]="'name'" [data]="dataSource"></tamu-gisc-select>
@@ -9,4 +11,4 @@
     <input aria-autocomplete="list" aria-owns="search-results-container" role="textbox" type="text" class="margin-left margin-right" placeholder="Additional information">
 </div>
 
-<div type="button" (click)="verifySubmissionContents()">Submit</div>
+<div type="button" (click)="verifySubmissionContents()">Submit (Yes this is a button)</div>

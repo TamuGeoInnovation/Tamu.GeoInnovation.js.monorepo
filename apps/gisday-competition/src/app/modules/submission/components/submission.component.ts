@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { LocationService } from '../providers/location.service';
+import { ISubmission } from '../entity/submission.entity';
+import { SubmissionService } from '../providers/submission.service';
 
 @Component({
   selector: 'tamu-gisc-submission',
@@ -63,13 +65,44 @@ export class SubmissionComponent implements OnInit {
     value: "buildingnumber",
   }];
 
+  @ViewChild('imagePreview', {
+    read: ElementRef,
+    static: true
+  })
+  public imagePreviewRef: ElementRef;
+
   public signType: string;
   public signDetails: string;
+  public canvasCtx: CanvasRenderingContext2D;
 
-  constructor(public readonly locationService: LocationService) { }
+  constructor(
+    public readonly locationService: LocationService,
+    public readonly submissionService: SubmissionService,
+  ) { }
 
   ngOnInit() {
 
+  }
+
+  onPhotoTaken(e) {
+    this.canvasCtx = this.imagePreviewRef.nativeElement.getContext('2d');
+    let file = null;
+    let image = new Image();
+    const fileList: FileList = e.target.files;
+    for (let i = 0; i < fileList.length; i++) {
+      if (fileList[i].type.match(/^image\//)) {
+        file = fileList[i];
+        break;
+      }
+    }
+    image.onload = () => {
+      this.canvasCtx.drawImage(image, 0, 0, 700, 300);
+    }
+
+    if (file !== null) {
+      image.src = URL.createObjectURL(file);
+      // contex.drawImage(file, 0, 0);
+    }
   }
 
   onSelectionType(selectedSignType: string) {
@@ -78,6 +111,40 @@ export class SubmissionComponent implements OnInit {
 
   verifySubmissionContents() {
     console.log(this.signType, this.signDetails)
+    if (this.signType && this.signDetails) {
+      this.submitSubmission()
+      // alert("SENDING YOUR SUB");
+      // this.resetSubmission();
+      // alert(this.locationService.currentLocal.lat + ", " + this.locationService.currentLocal.lon);
+    } else {
+      // some information was not provided
+    }
+  }
+
+  submitSubmission() {
+    const sub: ISubmission = {
+      userGuid: "",
+      description: this.signDetails,
+      signType: this.signType,
+      local: {
+        lat: this.locationService.currentLocal.lat,
+        lon: this.locationService.currentLocal.lon,
+        timestamp: this.locationService.currentLocal.timestamp,
+        accuracy: this.locationService.currentLocal.accuracy,
+        heading: this.locationService.currentLocal.heading,
+        altitude: this.locationService.currentLocal.altitude,
+        speed: this.locationService.currentLocal.speed,
+      }
+    }
+    this.submissionService.postSubmission(sub).subscribe(result => {
+      console.log(result);
+    })
+  }
+
+  resetSubmission() {
+    this.signType = undefined;
+    this.signDetails = undefined;
+    this.canvasCtx.clearRect(0, 0, 700, 300);
   }
 
 }
