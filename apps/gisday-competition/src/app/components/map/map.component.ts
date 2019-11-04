@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-
-import esri = __esri;
 import { BehaviorSubject } from 'rxjs';
+import esri = __esri;
+
 @Component({
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
@@ -17,35 +17,7 @@ export class MapComponent implements OnInit {
 
   public video: any;
 
-  constructor() {
-    const supported = 'mediaDevices' in navigator;
-    const constraints: MediaStreamConstraints = {
-      audio: false,
-      video: {
-        facingMode: {
-          ideal: "environment", // works on webcam, not phone
-          // exact: "environment" //works on phone, not webcam
-        }
-      },
-    }
-    navigator.mediaDevices.enumerateDevices()
-      .then(devices => {
-        console.log("Devices", devices);
-      })
-    if (supported) {
-      navigator.mediaDevices.getUserMedia(constraints)
-        .then((stream) => {
-          this.video.srcObject = stream;
-        })
-        .catch(err => {
-          console.error(err);
-          alert(err);
-        })
-    } else {
-      alert("getUserMedia() is not supported by your browser");
-    }
-
-  }
+  constructor() { }
 
   public config = {
     basemap: {
@@ -99,5 +71,28 @@ export class MapComponent implements OnInit {
 
   public ngOnInit() {
     this.video = this.videoElement.nativeElement;
+    const supported = 'mediaDevices' in navigator;
+    const constraints: MediaStreamConstraints = {
+      audio: false,
+      video: true, // webcam
+      // video: {
+      //   facingMode: {
+      //     // ideal: "environment", // works on webcam, not phone
+      //     exact: "environment" //works on phone, not webcam
+      //   }
+      // },
+    }
+    if (supported) {
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream) => {
+          this.video.srcObject = stream;
+        })
+        .catch(err => {
+          console.error(err);
+          alert(err);
+        })
+    } else {
+      alert("getUserMedia() is not supported by your browser");
+    }
   }
 }

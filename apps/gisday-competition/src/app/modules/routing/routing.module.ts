@@ -13,9 +13,13 @@ import { MapComponent } from '../../components/map/map.component';
 import { SubmissionComponent } from '../../components/submission/submission.component';
 import { LeaderboardComponent } from '../../components/leaderboard/leaderboard.component';
 
+import { MapModule } from '../../modules/map/map.module';
+import { SubmissionModule } from '../../modules/submission/submission.module';
+import { LeaderboardModule } from '../../modules/leaderboard/leaderboard.module';
+
 
 const routes: Routes = [
-  { path: 'map', component: MapComponent },
+  { path: 'map', loadChildren: () => import('../map/map.module').then(m => m.MapModule) },
   { path: 'submission', component: SubmissionComponent },
   { path: 'leaderboard', component: LeaderboardComponent },
 ];
