@@ -8,25 +8,65 @@ import { Component, OnInit } from '@angular/core';
 export class SubmissionComponent implements OnInit {
 
   public dataSource = [{
-    name: "HELLO",
-    value: "hello",
+    name: "Fire lane sign",
+    value: "firelane",
   },{
-    name: "GOODBYE",
-    value: "goodbye",
+    name: "Visitor parking sign",
+    value: "visitorparking",
+  }, {
+    name: "Speed limit sign",
+    value: "speedlimit",
+  }, {
+    name: "Building entrance sign",
+    value: "buildingentrance",
+  }, {
+    name: "Building loading zone sign",
+    value: "buildingloadingzone",
+  }, {
+    name: "Motorcycle parking sign",
+    value: "motorcycleparking",
+  }, {
+    name: "Ramp sign",
+    value: "ramp",
+  }, {
+    name: "Accessible parking sign",
+    value: "accessibleparking",
+  }, {
+    name: "Numbered parking sign",
+    value: "numberedparking",
+  }, {
+    name: "Parking lot number sign",
+    value: "parkinglotnumber",
+  }, {
+    name: "University business permit parking sign",
+    value: "universitybusinessparking",
+  }, {
+    name: "Fire department connector (F.D.C.) sign",
+    value: "firedepartmentconnector",
+  }, {
+    name: "Building overview sign",
+    value: "buildingoverview",
+  }, {
+    name: "Loading zone parking sign",
+    value: "loadingzone",
+  }, {
+    name: "No parking sign",
+    value: "noparking",
+  }, {
+    name: "Parking garage sign",
+    value: "parkinggarage",
+  }, {
+    name: "Stop sign",
+    value: "stop",
+  }, {
+    name: "Building number sign",
+    value: "buildingnumber",
   }];
 
-  constructor() { 
-    // this.dataSource.push({
-    //   name: "HELLO",
-    //   value: "hello",
-    // });
-    // this.dataSource.push({
-    //   name: "GOODBYE",
-    //   value: "goodbye",
-    // });
-  }
+  constructor() { }
 
   ngOnInit() {
+
   }
 
 }
