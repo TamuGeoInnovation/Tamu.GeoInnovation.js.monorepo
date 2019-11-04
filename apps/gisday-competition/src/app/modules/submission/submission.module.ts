@@ -7,6 +7,7 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms'
 
 import { SubmissionComponent } from './components/submission.component';
 import { LocationService } from './providers/location.service';
+import { SubmissionService } from './providers/submission.service';
 
 const routes: Routes = [{
   path: '', component: SubmissionComponent
@@ -21,6 +22,6 @@ const routes: Routes = [{
     FormsModule,
     UIFormsModule
   ],
-  providers: [LocationService]
+  providers: [LocationService, SubmissionService]
 })
 export class SubmissionModule { }
