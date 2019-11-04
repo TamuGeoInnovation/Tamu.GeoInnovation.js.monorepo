@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LocationService } from '../providers/location.service';
 
 @Component({
   selector: 'tamu-gisc-submission',
@@ -65,7 +66,7 @@ export class SubmissionComponent implements OnInit {
   public signType: string;
   public signDetails: string;
 
-  constructor() { }
+  constructor(public readonly locationService: LocationService) { }
 
   ngOnInit() {
 
