@@ -9,7 +9,6 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class MapComponent implements OnInit {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
-  public imageUrl = "https://ers.texas.gov/ERSWebsite/Media/Images/Global/ers-logo-300.png";
 
   @ViewChild('player', {
     static: true
@@ -23,7 +22,10 @@ export class MapComponent implements OnInit {
     const constraints: MediaStreamConstraints = {
       audio: false,
       video: {
-        facingMode: "environment",
+        facingMode: {
+          ideal: "environment", // works on webcam, not phone
+          // exact: "environment" //works on phone, not webcam
+        }
       },
     }
     navigator.mediaDevices.enumerateDevices()

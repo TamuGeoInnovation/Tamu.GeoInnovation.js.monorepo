@@ -6,23 +6,19 @@ import { RouterModule, Routes } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
 
-import { HttpClientModule } from '@angular/common/http';
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/search';
-import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
-import { FeaetureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
-import { ChartsModule } from '@tamu-gisc/charts';
-
-import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
-import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
-import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 
 import { MapComponent } from '../../components/map/map.component';
+import { SubmissionComponent } from '../../components/submission/submission.component';
+import { LeaderboardComponent } from '../../components/leaderboard/leaderboard.component';
 
 
-const routes: Routes = [{ path: '', component: MapComponent }];
+const routes: Routes = [
+  { path: 'map', component: MapComponent },
+  { path: 'submission', component: SubmissionComponent },
+  { path: 'leaderboard', component: LeaderboardComponent },
+];
 
 WebFont.load({
   google: {
@@ -36,22 +32,13 @@ WebFont.load({
 
 
 @NgModule({
-  declarations: [MapComponent],
+  declarations: [],
   imports: [
     CommonModule,
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
-    HttpClientModule,
-    EsriMapModule,
-    SearchModule,
-    SidebarModule,
-    UITamuBrandingModule,
-    LayerFilterModule,
-    LayerListModule,
     ResponsiveModule,
     CommonNgxRouterModule,
-    FeaetureSelectorModule,
-    ChartsModule
   ],
   exports: [RouterModule]
 })
