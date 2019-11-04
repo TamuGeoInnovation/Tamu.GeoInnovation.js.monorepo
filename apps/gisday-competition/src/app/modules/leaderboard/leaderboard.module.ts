@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-
+import { LeaderboardComponent } from '../../components/leaderboard/leaderboard.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [LeaderboardComponent],
+  exports: [LeaderboardComponent],
   imports: [
     CommonModule
   ]

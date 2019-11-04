@@ -7,11 +7,9 @@ import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import * as environment from '../environments/environment';
 
 import { AppComponent } from './app.component';
-import { SubmissionComponent } from './components/submission/submission.component';
-import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
 
 @NgModule({
-  declarations: [AppComponent, SubmissionComponent, LeaderboardComponent],
+  declarations: [AppComponent],
   imports: [BrowserModule, AppRoutingModule, EnvironmentModule],
   providers: [{ provide: env, useValue: environment }],
   bootstrap: [AppComponent]
