@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./submission.component.scss']
 })
 export class SubmissionComponent implements OnInit {
-
   public dataSource = [{
     name: "Fire lane sign",
     value: "firelane",
@@ -63,10 +62,21 @@ export class SubmissionComponent implements OnInit {
     value: "buildingnumber",
   }];
 
+  public signType: string;
+  public signDetails: string;
+
   constructor() { }
 
   ngOnInit() {
 
+  }
+
+  onSelectionType(selectedSignType: string) {
+    this.signType = selectedSignType;
+  }
+
+  verifySubmissionContents() {
+    console.log(this.signType, this.signDetails)
   }
 
 }
