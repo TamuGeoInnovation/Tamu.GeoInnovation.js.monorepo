@@ -1,0 +1,27 @@
+@import 'libs/sass/mixins';
+
+:host,
+#viewport {
+  height: inherit;
+  width: inherit;
+}
+
+:host {
+  background: #fafafa;
+  display: flex;
+}
+
+router-outlet{
+  display: none;
+  visibility: hidden;
+}
+
+#viewport {
+  @include flexbox();
+  @include flex-direction(column);
+  @include justify-content(space-between);
+
+  &>:first-child{
+    flex-grow: 0;
+  }
+}

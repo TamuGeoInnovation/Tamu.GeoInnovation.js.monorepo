@@ -1288,6 +1288,37 @@
           }
         }
       }
+    },
+    "ui-kits-ngx-navigation-mobile-tab": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/navigation/mobile-tab",
+      "sourceRoot": "libs/ui-kits/ngx/navigation/mobile-tab/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/navigation/mobile-tab/tsconfig.lib.json",
+              "libs/ui-kits/ngx/navigation/mobile-tab/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/mobile-tab/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tab/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/navigation/mobile-tab/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/navigation/mobile-tab/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {

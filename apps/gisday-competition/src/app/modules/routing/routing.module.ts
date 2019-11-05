@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http'; 
+import { HttpClientModule } from '@angular/common/http';
 
 import { RouterModule, Routes } from '@angular/router';
 
@@ -11,9 +11,10 @@ import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 
 const routes: Routes = [
-  { path: 'map', loadChildren: () => import('../map/map.module').then(m => m.MapModule) },
-  { path: 'submission', loadChildren: () => import('../submission/submission.module').then(m => m.SubmissionModule) },
-  { path: 'leaderboard', loadChildren: () => import('../leaderboard/leaderboard.module').then(m => m.LeaderboardModule) },
+  { path: '', redirectTo: '/map', pathMatch: 'full' },
+  { path: 'map', loadChildren: () => import('../map/map.module').then((m) => m.MapModule) },
+  { path: 'submission', loadChildren: () => import('../submission/submission.module').then((m) => m.SubmissionModule) },
+  { path: 'leaderboard', loadChildren: () => import('../leaderboard/leaderboard.module').then((m) => m.LeaderboardModule) }
 ];
 
 WebFont.load({
@@ -26,7 +27,6 @@ WebFont.load({
   }
 });
 
-
 @NgModule({
   declarations: [],
   imports: [
@@ -35,8 +35,8 @@ WebFont.load({
     HttpClientModule,
     BrowserAnimationsModule,
     ResponsiveModule,
-    CommonNgxRouterModule,
+    CommonNgxRouterModule
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

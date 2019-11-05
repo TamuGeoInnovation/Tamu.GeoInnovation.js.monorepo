@@ -7,10 +7,11 @@ import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import * as environment from '../environments/environment';
 
 import { AppComponent } from './app.component';
+import { UINavigationMobileTabModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tab';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, EnvironmentModule],
+  imports: [BrowserModule, AppRoutingModule, EnvironmentModule, UINavigationMobileTabModule],
   providers: [{ provide: env, useValue: environment }],
   bootstrap: [AppComponent]
 })
