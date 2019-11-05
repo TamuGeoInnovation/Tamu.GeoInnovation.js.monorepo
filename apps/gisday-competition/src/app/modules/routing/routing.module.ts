@@ -19,11 +19,7 @@ const routes: Routes = [
 
 WebFont.load({
   google: {
-    families: ['Material Icons']
-  },
-  custom: {
-    families: ['Moriston', 'Tungsten'],
-    urls: ['assets/fonts/moriston_pro/moriston_pro.css', 'assets/fonts/tungsten/tungsten.css']
+    families: ['Material Icons', 'Open Sans:300,600', 'Oswald:300,400']
   }
 });
 
