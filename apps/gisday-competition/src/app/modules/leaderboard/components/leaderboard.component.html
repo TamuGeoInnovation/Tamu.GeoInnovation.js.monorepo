@@ -1,1 +1,5 @@
-<p>leaderboard works!</p>
+<div *ngIf="(leaders$ | async) as leaders">
+    <div *ngFor="let leader of leaders">
+        <p>{{leader.firstName}} {{leader.lastName}}: {{leader.points}}</p>
+    </div>
+</div>
