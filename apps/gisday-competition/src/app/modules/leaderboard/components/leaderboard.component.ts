@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable, from, of } from 'rxjs';
+
 import { LeaderboardService, LeaderboardItem } from '../providers/leaderboard.service';
-import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'tamu-gisc-leaderboard',
@@ -9,12 +11,17 @@ import { Observable } from 'rxjs';
 })
 export class LeaderboardComponent implements OnInit {
   public leaders$: Observable<LeaderboardItem[]>;
-  constructor(
-    private readonly leaderboardService: LeaderboardService
-  ) { }
+  constructor(private readonly leaderboardService: LeaderboardService) {}
 
-  ngOnInit() {
-    this.leaders$ = this.leaderboardService.generateFakeData(5000);
+  public ngOnInit() {
+    this.leaders$ = this.leaderboardService.generateFakeData(30).pipe(
+      switchMap((list) => {
+        return of(
+          list.sort((a, b) => {
+            return b.points - a.points;
+          })
+        );
+      })
+    );
   }
-
 }

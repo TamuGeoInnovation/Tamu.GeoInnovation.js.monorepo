@@ -19,7 +19,7 @@ const routes: Routes = [
 
 WebFont.load({
   google: {
-    families: ['Material Icons', 'Open Sans:300,600', 'Oswald:300,400']
+    families: ['Material Icons', 'Open Sans:300,400,600', 'Oswald:300,400']
   }
 });
 
