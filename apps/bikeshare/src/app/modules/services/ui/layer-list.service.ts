@@ -52,6 +52,15 @@ export class LayerListService {
           const updatedLayers = this._store.value.map((lyr) => {
             const existingIndex = e.added.findIndex((added) => added.id === lyr.id);
 
+            // example of appending a new url to the bike origin layer
+            if (lyr.id === 'origin-trip-heatmap'){
+              var nlayer = LayerSources.filter((s) => {
+                return s.id === 'origin-trip-heatmap';
+              })[0];
+              nlayer.url += '&';
+              return new LayerListItem(nlayer);
+            }
+
             if (existingIndex > -1) {
               return new LayerListItem({ ...lyr, layer: e.added[existingIndex] });
             } else {
