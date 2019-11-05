@@ -1,1 +1,9 @@
-<router-outlet></router-outlet>
+<div id="viewport">
+  <router-outlet></router-outlet>
+
+  <tamu-gisc-mobile-navigation-tab>
+    <tamu-gisc-mobile-nav-tab [route]="'map'">Map</tamu-gisc-mobile-nav-tab>
+    <tamu-gisc-mobile-nav-tab [route]="'submission'">Submission</tamu-gisc-mobile-nav-tab>
+    <tamu-gisc-mobile-nav-tab [route]="'leaderboard'">Leaderboard</tamu-gisc-mobile-nav-tab>
+  </tamu-gisc-mobile-navigation-tab>
+</div>
