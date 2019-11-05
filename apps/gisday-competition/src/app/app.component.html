@@ -2,8 +2,9 @@
   <router-outlet></router-outlet>
 
   <tamu-gisc-mobile-navigation-tab>
-    <tamu-gisc-mobile-nav-tab [route]="'map'">Map</tamu-gisc-mobile-nav-tab>
-    <tamu-gisc-mobile-nav-tab [route]="'submission'">Submission</tamu-gisc-mobile-nav-tab>
-    <tamu-gisc-mobile-nav-tab [route]="'leaderboard'">Leaderboard</tamu-gisc-mobile-nav-tab>
+    <tamu-gisc-mobile-nav-tab [route]="'map'" [icon]="'map'" [label]="'Map'"></tamu-gisc-mobile-nav-tab>
+    <tamu-gisc-mobile-nav-tab [route]="'submission'" [icon]="'add'" [label]="'Submission'"></tamu-gisc-mobile-nav-tab>
+    <tamu-gisc-mobile-nav-tab [route]="'leaderboard'" [icon]="'poll'" [label]="'Leaderboard'">
+    </tamu-gisc-mobile-nav-tab>
   </tamu-gisc-mobile-navigation-tab>
 </div>

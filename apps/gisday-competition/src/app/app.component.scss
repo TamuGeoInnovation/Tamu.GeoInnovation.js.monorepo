@@ -7,11 +7,10 @@
 }
 
 :host {
-  background: #fafafa;
   display: flex;
 }
 
-router-outlet{
+router-outlet {
   display: none;
   visibility: hidden;
 }
@@ -21,7 +20,7 @@ router-outlet{
   @include flex-direction(column);
   @include justify-content(space-between);
 
-  &>:first-child{
+  & > :first-child {
     flex-grow: 0;
   }
 }

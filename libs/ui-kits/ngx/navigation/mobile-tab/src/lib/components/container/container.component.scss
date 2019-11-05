@@ -2,14 +2,14 @@
 
 :host {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.2rem;
   @include flexbox();
   @include flex-direction(row);
-  @include justify-content(space-between);
+  @include justify-content(space-around);
   box-sizing: border-box;
 
   background: #ffffff;
-  border-top: 1px solid #e0e0e0;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  box-shadow: 0 -5px 10px rgba(37, 65, 90, 0.05);
 }
