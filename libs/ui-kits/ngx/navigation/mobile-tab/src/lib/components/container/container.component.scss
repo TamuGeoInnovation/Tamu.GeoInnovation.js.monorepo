@@ -9,7 +9,8 @@
   box-sizing: border-box;
 
   background: #ffffff;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
   box-shadow: 0 -5px 10px rgba(37, 65, 90, 0.05);
+  z-index: 999;
 }

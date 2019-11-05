@@ -1,0 +1,30 @@
+@import 'libs/sass/mixins';
+
+.leaderboard-container {
+  margin-top: 0.5rem;
+}
+
+.leader {
+  background: #ffffff;
+  border-radius: 5px;
+  border: 1px solid #eee;
+  margin: 0.5rem 0;
+  padding: 1rem 1.25rem;
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-around);
+
+  &.header {
+    font-weight: 600;
+  }
+
+  & > div {
+    @include flexbox();
+    @include flex(1);
+
+    &.rank,
+    &.points {
+      @include flex(0.5);
+    }
+  }
+}
