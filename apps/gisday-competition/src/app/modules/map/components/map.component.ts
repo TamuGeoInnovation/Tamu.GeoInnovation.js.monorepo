@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import esri = __esri;
+import { MapService } from '../providers/map.service';
 
 @Component({
   selector: 'tamu-gisc-map',
@@ -10,14 +11,7 @@ import esri = __esri;
 export class MapComponent implements OnInit {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
 
-  @ViewChild('player', {
-    static: true
-  })
-  public videoElement;
-
-  public video: any;
-
-  constructor() { }
+  constructor(private readonly competitionService: MapService) { }
 
   public config = {
     basemap: {
@@ -70,29 +64,8 @@ export class MapComponent implements OnInit {
   };
 
   public ngOnInit() {
-    this.video = this.videoElement.nativeElement;
-    const supported = 'mediaDevices' in navigator;
-    const constraints: MediaStreamConstraints = {
-      audio: false,
-      video: true, // webcam
-      // video: {
-      //   facingMode: {
-      //     // ideal: "environment", // works on webcam, not phone
-      //     exact: "environment" //works on phone, not webcam
-      //   }
-      // },
-    }
-    if (supported) {
-      navigator.mediaDevices.getUserMedia(constraints)
-        .then((stream) => {
-          this.video.srcObject = stream;
-        })
-        .catch(err => {
-          console.error(err);
-          alert(err);
-        })
-    } else {
-      alert("getUserMedia() is not supported by your browser");
-    }
+    this.competitionService.getUserSubmissions("BLAH BLAH").subscribe(results => {
+      console.log(results);
+    });
   }
 }

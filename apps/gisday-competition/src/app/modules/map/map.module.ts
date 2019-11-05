@@ -13,6 +13,7 @@ import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
 
 import { MapComponent } from './components/map.component';
+import { MapService } from './providers/map.service';
 
 const routes: Routes = [{
   path: '', component: MapComponent
@@ -34,6 +35,7 @@ const routes: Routes = [{
     UITamuBrandingModule,
     LayerFilterModule,
     LayerListModule,
-  ]
+  ],
+  providers: [MapService]
 })
 export class MapModule { }
