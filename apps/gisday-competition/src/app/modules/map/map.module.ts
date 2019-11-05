@@ -11,6 +11,7 @@ import { ChartsModule } from '@tamu-gisc/charts';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
+import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 
 import { MapComponent } from './components/map.component';
 import { MapService } from './providers/map.service';
@@ -35,6 +36,7 @@ const routes: Routes = [{
     UITamuBrandingModule,
     LayerFilterModule,
     LayerListModule,
+    // LegendModule,
   ],
   providers: [MapService]
 })
