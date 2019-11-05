@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { LeaderboardComponent } from './components/leaderboard.component';
+import { LeaderboardService } from './providers/leaderboard.service';
 
 const routes: Routes = [{
   path: '', component: LeaderboardComponent
@@ -14,6 +15,7 @@ const routes: Routes = [{
   imports: [
     RouterModule.forChild(routes),
     CommonModule
-  ]
+  ],
+  providers: [LeaderboardService],
 })
 export class LeaderboardModule { }
