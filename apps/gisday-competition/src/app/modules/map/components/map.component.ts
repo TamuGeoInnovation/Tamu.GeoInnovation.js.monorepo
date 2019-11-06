@@ -11,28 +11,11 @@ import { MapService } from '../providers/map.service';
 export class MapComponent implements OnInit {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
 
-  constructor(private readonly competitionService: MapService) { }
+  constructor(private readonly competitionService: MapService) {}
 
   public config = {
     basemap: {
-      basemap: {
-        baseLayers: [
-          {
-            type: 'TileLayer',
-            url: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/BaseMap_20190813/MapServer',
-            spatialReference: {
-              wkid: 102100
-            },
-            listMode: 'hide',
-            visible: true,
-            minScale: 100000,
-            maxScale: 0,
-            title: 'Base Map'
-          }
-        ],
-        id: 'aggie_basemap',
-        title: 'Aggie Basemap'
-      }
+      basemap: 'streets-navigation-vector'
     },
     view: {
       mode: '2d',
@@ -64,7 +47,7 @@ export class MapComponent implements OnInit {
   };
 
   public ngOnInit() {
-    this.competitionService.getUserSubmissions("BLAH BLAH").subscribe(results => {
+    this.competitionService.getUserSubmissions('BLAH BLAH').subscribe((results) => {
       console.log(results);
     });
   }

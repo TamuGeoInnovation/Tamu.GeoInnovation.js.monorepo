@@ -1,5 +1,9 @@
 @import 'libs/sass/mixins';
 
+:host {
+  padding: 1rem;
+}
+
 .statused-form-input-container {
   .label {
     font-size: 0.75rem;
