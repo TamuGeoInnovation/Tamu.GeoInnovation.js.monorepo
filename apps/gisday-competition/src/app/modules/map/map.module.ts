@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { HttpClientModule } from '@angular/common/http';
+import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
@@ -14,12 +15,14 @@ import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
 import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 
 import { MapComponent } from './components/map.component';
-import { MapService } from './providers/map.service';
+import { CompetitionService } from './providers/map.service';
 
-const routes: Routes = [{
-  path: '', component: MapComponent
-}]
-
+const routes: Routes = [
+  {
+    path: '',
+    component: MapComponent
+  }
+];
 
 @NgModule({
   declarations: [MapComponent],
@@ -35,9 +38,10 @@ const routes: Routes = [{
     ChartsModule,
     UITamuBrandingModule,
     LayerFilterModule,
-    LayerListModule,
+    LayerListModule
     // LegendModule,
   ],
-  providers: [MapService]
+
+  providers: [CompetitionService, EsriModuleProviderService]
 })
-export class MapModule { }
+export class MapModule {}
