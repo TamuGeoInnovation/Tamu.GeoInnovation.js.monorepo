@@ -1,6 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, from } from 'rxjs';
+
+import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import esri = __esri;
+
 import { MapService } from '../providers/map.service';
 
 @Component({
@@ -10,8 +13,17 @@ import { MapService } from '../providers/map.service';
 })
 export class MapComponent implements OnInit {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
+  private _personalSubmissionsLayer: esri.FeatureLayer;
+  private _view: esri.MapView;
 
-  constructor(private readonly competitionService: MapService) {}
+  constructor(
+    private readonly competitionService: MapService,
+    private readonly mapService: EsriMapService,
+  ) {
+    from(mapService.store).subscribe((mapInstance: MapServiceInstance) => {
+      this._view = mapInstance.view;
+    });
+  }
 
   public config = {
     basemap: {
@@ -50,5 +62,32 @@ export class MapComponent implements OnInit {
     this.competitionService.getUserSubmissions('BLAH BLAH').subscribe((results) => {
       console.log(results);
     });
+    const points = this.competitionService.generateFakeMapData();
+    // this._personalSubmissionsLayer = new esri.FeatureLayer({
+
+    // })
+    var simpleMarkerSymbol = {
+      type: "simple-marker",
+      color: [226, 119, 40],  // orange
+      outline: {
+        color: [255, 255, 255], // white
+        width: 1
+      }
+    };
+
+    points.map((val, i) => {
+      var point = new esri.Point({
+        latitude: val.latitude,
+        longitude: val.longitude,
+      });
+      var graphic = new esri.Graphic({
+        geometry: point,
+        symbol: simpleMarkerSymbol,
+      })
+      this._view.graphics.add(graphic);
+    });
+    
+
+
   }
 }
