@@ -1,0 +1,64 @@
+@import 'libs/sass/mixins';
+
+.statused-form-input {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+  border: 1px solid #eee;
+  background: #ffffff;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin: 0.75rem 0;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    width: 3pt;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #e0e0e0;
+  }
+
+  .material-icons {
+    color: #7e7e7e;
+  }
+
+  .icon {
+    border-right: 1px solid #e0e0e0;
+    padding-right: 1rem;
+    margin-right: 1rem;
+  }
+
+  .label {
+    font-weight: 600;
+  }
+
+  &.valid {
+    &::before {
+      background: #81c784;
+    }
+  }
+
+  &.invalid {
+    &::before {
+      background: #e57373;
+    }
+  }
+
+  &.dirty {
+    &::before {
+      background: #fff176;
+    }
+  }
+
+  input[type='file'] {
+    position: absolute;
+    z-index: 999;
+    opacity: 0;
+    height: 100%;
+    width: 100%;
+  }
+}
