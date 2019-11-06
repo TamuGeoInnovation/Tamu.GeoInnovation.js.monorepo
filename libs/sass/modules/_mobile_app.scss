@@ -21,5 +21,6 @@
     // Find a way to put this in a base class. Not all views need padding (e.g. maps)
     // padding: 1rem;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
