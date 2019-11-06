@@ -80,6 +80,10 @@ export class SubmissionComponent implements OnInit {
     {
       name: 'Building number sign',
       value: 'buildingnumber'
+    },
+    {
+      name: 'Other (Describe Below)',
+      value: 'other'
     }
   ];
 
@@ -91,16 +95,14 @@ export class SubmissionComponent implements OnInit {
 
   public signType: string;
   public signDetails: string;
-  public canvasCtx: CanvasRenderingContext2D;
   public file: File;
+  public fileUrl: string;
 
   constructor(public readonly locationService: LocationService, public readonly submissionService: SubmissionService) {}
 
   public ngOnInit() {}
 
   public onPhotoTaken(e) {
-    this.canvasCtx = this.imagePreviewRef.nativeElement.getContext('2d');
-    const image = new Image();
     const fileList: FileList = e.target.files;
     for (let i = 0; i < fileList.length; i++) {
       if (fileList[i].type.match(/^image\//)) {
@@ -108,13 +110,9 @@ export class SubmissionComponent implements OnInit {
         break;
       }
     }
-    image.onload = () => {
-      this.canvasCtx.drawImage(image, 0, 0, 700, 300);
-    };
 
     if (this.file !== null) {
-      image.src = URL.createObjectURL(this.file);
-      // contex.drawImage(file, 0, 0);
+      this.fileUrl = URL.createObjectURL(this.file);
     }
   }
 
@@ -126,7 +124,6 @@ export class SubmissionComponent implements OnInit {
     console.log(this.signType, this.signDetails);
     if (this.signType && this.signDetails) {
       this.submitSubmission();
-      // alert("SENDING YOUR SUB");
       // this.resetSubmission();
       // alert(this.locationService.currentLocal.lat + ", " + this.locationService.currentLocal.lon);
     } else {
@@ -156,6 +153,5 @@ export class SubmissionComponent implements OnInit {
   public resetSubmission() {
     this.signType = undefined;
     this.signDetails = undefined;
-    this.canvasCtx.clearRect(0, 0, 700, 300);
   }
 }
