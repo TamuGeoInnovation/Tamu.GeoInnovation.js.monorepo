@@ -24,82 +24,41 @@ export * from './definitions';
 
 export const LayerSources: LayerSource[] = [
   {
-    type: 'feature',
-    id: d.BUILDINGS.layerId,
-    title: d.BUILDINGS.name,
-    url: d.BUILDINGS.url,
-    popupComponent: d.BUILDINGS.popupComponent,
-    listMode: 'hide',
+    type: 'geojson',
+    id: d.SUBMISSIONS.layerId,
+    title: d.SUBMISSIONS.name,
+    url: d.SUBMISSIONS.url,
+    listMode: 'show',
     loadOnInit: true,
     visible: true,
     native: {
       renderer: {
         type: 'simple',
         symbol: {
-          type: 'simple-fill',
-          style: 'solid',
-          color: [0, 0, 0, 0.01],
-          outline: {
-            width: '0'
-          }
+          type: 'simple-marker',
+          style: 'circle',
+          size: 8,
+          color: '#03C4A6'
         }
       }
-    }
-  },
-  // {
-  //   type: 'feature',
-  //   id: d.CONSTRUCTION.layerId,
-  //   title: d.CONSTRUCTION.name,
-  //   url: d.CONSTRUCTION.url,
-  //   popupComponent: d.CONSTRUCTION.popupComponent,
-  //   listMode: 'show',
-  //   loadOnInit: true,
-  //   visible: true,
-  //   legendItems: [
-  //     {
-  //       id: 'construction-legend',
-  //       title: 'Construction Area',
-  //       src:
-  //         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAENJREFUOI1jYaAyYKGZgf9DGf5TahjjagZGFnQBcg2DOYgFmyAlgLYupAYYYgaORsogNHA0Uig3kJIwhAUXC7oApQAAQ8kZ9+L+/N4AAAAASUVORK5CYII='
-  //     }
-  //   ]
-  // },
-  // {
-  //   type: 'feature',
-  //   id: d.TREES.layerId,
-  //   title: d.TREES.name,
-  //   url: d.TREES.url,
-  //   popupComponent: d.TREES.popupComponent,
-  //   listMode: 'show',
-  //   loadOnInit: true,
-  //   visible: true,
-  //   legendItems: []
-  // },
-  // {
-  //   type: 'graphic',
-  //   id: 'selection-layer',
-  //   title: 'Selected Buildings',
-  //   listMode: 'hide',
-  //   loadOnInit: false,
-  //   visible: true,
-  //   popupComponent: 'BuildingPopupComponent'
-  // }
+    },
+  }
 ];
 
-export const LegendSources: LegendItem[] = [
-  {
-    id: 'university-building-legend',
-    title: 'University Building',
-    src:
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAJBJREFUOI1jYaAyYIExAtnZGygxaP3Pnw1wAwPZ2RuE7azruYVFyDLsw/2HDCkvXhirKCvPgruQW1iEQUJJmWwXMv386cPAzOzDQlgpaWDUwFEDRw0cZgZ+uP+QbEO+vn3DwIts4PqfPxsCL1xg+HThAgMDAwODsISEMamGimtooLoQVuIyMDAwMDwkw7VQPQDNmyRazmV6EgAAAABJRU5ErkJggg=='
-  },
-  {
-    id: 'non-university-building-legend',
-    title: 'Non-University Building',
-    src:
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAHFJREFUOI1jYaAyYIExmpqaGigxqK6urgFuYFNTU4OCBGe9EC8bWYY9ff2doampiaGurq4B7kIhXjYGZWk+sl348sMvBrgLqQlGDRw1cNTAYWbg09ffyTbk3edfqAbW1dU1NDU1wYsgcgBKAYssQCkAABa3ILBI1xApAAAAAElFTkSuQmCC'
-  },
-]
+// export const LegendSources: LegendItem[] = [
+//   {
+//     id: 'university-building-legend',
+//     title: 'University Building',
+//     src:
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAJBJREFUOI1jYaAyYIExAtnZGygxaP3Pnw1wAwPZ2RuE7azruYVFyDLsw/2HDCkvXhirKCvPgruQW1iEQUJJmWwXMv386cPAzOzDQlgpaWDUwFEDRw0cZgZ+uP+QbEO+vn3DwIts4PqfPxsCL1xg+HThAgMDAwODsISEMamGimtooLoQVuIyMDAwMDwkw7VQPQDNmyRazmV6EgAAAABJRU5ErkJggg=='
+//   },
+//   {
+//     id: 'non-university-building-legend',
+//     title: 'Non-University Building',
+//     src:
+//       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAHFJREFUOI1jYaAyYIExmpqaGigxqK6urgFuYFNTU4OCBGe9EC8bWYY9ff2doampiaGurq4B7kIhXjYGZWk+sl348sMvBrgLqQlGDRw1cNTAYWbg09ffyTbk3edfqAbW1dU1NDU1wYsgcgBKAYssQCkAABa3ILBI1xApAAAAAElFTkSuQmCC'
+//   },
+// ]
 
 const commonQueryParams: any = {
   f: 'json',

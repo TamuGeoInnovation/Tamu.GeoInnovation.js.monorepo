@@ -4,12 +4,14 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class MapService {
+export class CompetitionService {
 
   constructor(private http: HttpClient) { }
 
   public getUserSubmissions(userGuid: string) {
-    return this.http.get<any>("https://gisday.tamu.edu/Rest/Signage/Get/Submissions?userGuid=21062b5d-7063-46e0-9ea2-e5371ae4df11");
+    // const url = "https://gisday.tamu.edu/Rest/Signage/Get/Submissions?userGuid=21062b5d-7063-46e0-9ea2-e5371ae4df11";
+    const url = "http://localhost/gisday.tamu.edu/Rest/Signage/Get/Submissions?&geoJSON=true";
+    return this.http.get<any>(url);
   }
 
   public generateFakeMapData() {

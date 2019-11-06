@@ -4,7 +4,8 @@ export const Connections = {
   accessibleUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
   constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer',
   departmentUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
-  tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer'
+  tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
+  submissionsUrl: 'http://localhost/gisday.tamu.edu/Rest/Signage/Get/Submissions?geoJSON=true'
 };
 
 export const Definitions = {
@@ -15,18 +16,12 @@ export const Definitions = {
     url: `${Connections.basemapUrl}/1`,
     popupComponent: 'BuildingPopupComponent'
   },
-  // CONSTRUCTION: {
-  //   id: 'construction_zone',
-  //   layerId: 'construction_zone-layer',
-  //   name: 'Construction Zone',
-  //   url: `${Connections.constructionUrl}`,
-  //   popupComponent: 'ConstructionPopupComponent'
-  // },
-  // TREES: {
-  //   id: 'trees',
-  //   layerId: 'trees_layer',
-  //   name: 'Trees',
-  //   url: `${Connections.basemapUrl}/8`,
-  //   popupComponent: 'BasePopupComponent'
-  // }
+  SUBMISSIONS: {
+    id: 'submissions',
+    layerId: 'submissions-layer',
+    name: 'My submissions',
+    url: `${Connections.submissionsUrl}`,
+    popupComponent: 'BuildingPopupComponent'
+  },
+
 };
