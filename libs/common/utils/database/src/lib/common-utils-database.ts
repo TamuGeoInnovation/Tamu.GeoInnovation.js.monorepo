@@ -10,7 +10,7 @@ export function makeWhere(
   operators: (string | CompoundOperator)[],
   wildcards?: string[],
   transformations?: string[]
-) {
+): string {
   // Wildcards container. This will either be generated in-function or be provided from the callee
   let wc;
   let ts;
