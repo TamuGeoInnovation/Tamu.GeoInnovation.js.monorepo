@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
 
 @Component({
   selector: 'date-picker',
@@ -11,5 +11,8 @@ export class DateComponent implements OnInit {
 
   constructor() {}
 
-  public ngOnInit() {}
+  public ngOnInit() {
+    const yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+    this.dateTimeRange = [yesterday, new Date()];
+  }
 }
