@@ -1,5 +1,9 @@
 @import 'libs/sass/mixins';
 
+:host {
+  padding: 1rem;
+}
+
 .leaderboard-container {
   margin-top: 0.5rem;
 }
