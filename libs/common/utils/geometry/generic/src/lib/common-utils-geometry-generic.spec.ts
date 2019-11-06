@@ -1,4 +1,10 @@
-import { getGeolocation, isCoordinatePair, parseCoordinates } from './common-utils-geometry-generic';
+import {
+  findNearestIndex,
+  getGeolocation,
+  isCoordinatePair,
+  parseCoordinates,
+  relativeDistance
+} from './common-utils-geometry-generic';
 
 describe('getGeolocation', () => {
   const coords = {
@@ -54,8 +60,20 @@ describe('isCoordinatePair', () => {
   });
 });
 
+describe('findNearestIndex', () => {
+  it('should find nearest index', () => {
+    expect(findNearestIndex({ latitude: 40, longitude: 50 }, [{ geometry: { latitude: 40, longitude: 50 } }])).toEqual(0);
+  });
+});
+
 describe('parseCoordinates', () => {
   it('should handle valid input', () => {
     expect(parseCoordinates('1234,56')).toEqual({ latitude: 1234, longitude: 56 });
+  });
+});
+
+describe('relativeDistance', () => {
+  it('should output relative distances', () => {
+    expect(relativeDistance({ latitude: 40, longitude: 50 }, [{ geometry: { latitude: 40, longitude: 50 } }])).toEqual([0]);
   });
 });
