@@ -26,7 +26,7 @@ export class OrderByPipe implements PipeTransform {
         } else if (direction === 'desc') {
           return secondValue - firstValue;
         } else {
-          throw new Error(`Invalid or no ordering direction specified`);
+          throw new Error(`Invalid ordering direction specified`);
         }
       });
 
