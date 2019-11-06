@@ -1,26 +1,33 @@
 <h1 class="bordered">New Submission</h1>
 
-<p>Please review the competition <a href="https://gisday.tamu.edu/competitions/Signage/" target="_blank"
-        rel="noopener noreferrer">rules and guidelines.</a></p>
+<div class="block-input">
+    <div class="block-input-presentation" *ngIf="!file">
+        <div class="material-icons">photo_camera</div>
+        <p class="title">Upload Sign Photo</p>
+        <p class="description">Tap to take a picture</p>
+    </div>
 
-<div class="statused-form-input">
-    <div class="material-icons icon">photo_camera</div>
-    <p class="label">Take Picture</p>
-    <input type="file" (change)="onPhotoTaken($event)" accept="image/*" capture="environment">
+    <input type="file" (change)="onPhotoTaken($event)" accept="image/*" capture>
+    <div class="image" *ngIf="file" [ngStyle]="{'background-image': 'url(' + fileUrl + ')'}"></div>
 </div>
 
-<!-- <p>Take a picture of the sign</p> -->
-<!-- <canvas #imagePreview></canvas> -->
-<!-- <input type="file" (change)="onPhotoTaken($event)" accept="image/*" capture="environment"> -->
-
-<p>Sign Type</p>
-<tamu-gisc-select (changed)="onSelectionType($event)" [valueTemplate]="'value'" [displayTemplate]="'name'"
-    [data]="dataSource"></tamu-gisc-select>
-
-<p>Additional Information</p>
-<div class="input-action-container" ngDefaultControl [(ngModel)]="signDetails">
-    <input aria-autocomplete="list" aria-owns="search-results-container" role="textbox" type="text"
-        class="margin-left margin-right" placeholder="Additional information">
+<div class="statused-form-input-container">
+    <p class="label">Sign Type</p>
+    <div class="statused-form-input column">
+        <tamu-gisc-select (changed)="onSelectionType($event)" [valueTemplate]="'value'" [displayTemplate]="'name'"
+            [data]="dataSource"></tamu-gisc-select>
+    </div>
 </div>
 
-<div type="button" (click)="verifySubmissionContents()">Submit (Yes this is a button)</div>
+<div class="statused-form-input-container">
+    <p class="label">Description or Additional Information</p>
+    <div class="statused-form-input">
+        <textarea name="" id="" rows="5" [(ngModel)]="signDetails"></textarea>
+    </div>
+</div>
+
+<p class="rules-text">By submitting, you agree that you have read and understand the competition <a
+        href="https://gisday.tamu.edu/competitions/Signage/" target="_blank" rel="noopener noreferrer">rules and
+        guidelines.</a></p>
+
+<div class="button" role="button" (click)="verifySubmissionContents()">Submit</div>
