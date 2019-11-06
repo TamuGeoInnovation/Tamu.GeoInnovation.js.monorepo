@@ -1,16 +1,26 @@
-
 <h1 class="bordered">New Submission</h1>
-<p>Take a picture of the sign</p>
-<canvas #imagePreview></canvas>
-<input type="file" (change)="onPhotoTaken($event)" accept="image/*" capture="environment">
 
-<p>How would you catagorize this sign?</p>
-<tamu-gisc-select (changed)="onSelectionType($event)" [valueTemplate]="'value'" [displayTemplate]="'name'" [data]="dataSource"></tamu-gisc-select>
+<p>Please review the competition <a href="https://gisday.tamu.edu/competitions/Signage/" target="_blank"
+        rel="noopener noreferrer">rules and guidelines.</a></p>
 
-<p>Do you have any additional comments or information?</p>
+<div class="statused-form-input">
+    <div class="material-icons icon">photo_camera</div>
+    <p class="label">Take Picture</p>
+    <input type="file" (change)="onPhotoTaken($event)" accept="image/*" capture="environment">
+</div>
+
+<!-- <p>Take a picture of the sign</p> -->
+<!-- <canvas #imagePreview></canvas> -->
+<!-- <input type="file" (change)="onPhotoTaken($event)" accept="image/*" capture="environment"> -->
+
+<p>Sign Type</p>
+<tamu-gisc-select (changed)="onSelectionType($event)" [valueTemplate]="'value'" [displayTemplate]="'name'"
+    [data]="dataSource"></tamu-gisc-select>
+
+<p>Additional Information</p>
 <div class="input-action-container" ngDefaultControl [(ngModel)]="signDetails">
-    <i class="action-icons material-icons left ng-star-inserted">create</i>
-    <input aria-autocomplete="list" aria-owns="search-results-container" role="textbox" type="text" class="margin-left margin-right" placeholder="Additional information">
+    <input aria-autocomplete="list" aria-owns="search-results-container" role="textbox" type="text"
+        class="margin-left margin-right" placeholder="Additional information">
 </div>
 
 <div type="button" (click)="verifySubmissionContents()">Submit (Yes this is a button)</div>
