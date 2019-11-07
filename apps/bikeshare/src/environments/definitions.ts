@@ -49,7 +49,7 @@ export const Definitions = {
   },
   ORIGIN_BIKE_HEATMAP: {
     id: 'origin-trip-heatmap',
-    layerId: 'origin-trip-heatmap',
+    layerId: 'origin-trip-layer',
     name: 'Origin Trip Heatmap',
     url: `${Connections.tripUrl}/origin`
   },
