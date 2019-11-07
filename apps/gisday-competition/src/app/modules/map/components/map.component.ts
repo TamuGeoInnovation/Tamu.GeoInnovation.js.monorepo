@@ -1,11 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, from } from 'rxjs';
 
 import { EsriMapService, MapServiceInstance, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
-
-import { CompetitionService } from '../providers/map.service';
 
 @Component({
   selector: 'tamu-gisc-map',
@@ -15,15 +13,8 @@ import { CompetitionService } from '../providers/map.service';
 export class MapComponent implements OnInit {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
 
-  // private _personalSubmissionsLayer: esri.FeatureLayer;
-  // private _view: esri.MapView;
-
-  constructor(
-    private readonly competitionService: CompetitionService,
-    private readonly mapService: EsriMapService,
-    private readonly moduleProvider: EsriModuleProviderService
-  ) {
-    from(mapService.store).subscribe((mapInstance: MapServiceInstance) => {
+  constructor(private readonly mapService: EsriMapService, private readonly moduleProvider: EsriModuleProviderService) {
+    from(this.mapService.store).subscribe((mapInstance: MapServiceInstance) => {
       this.moduleProvider
         .require(['Graphic', 'Point'])
         .then(
@@ -33,9 +24,6 @@ export class MapComponent implements OnInit {
             esri.TrackConstructor,
             esri.CompassConstructor
           ]) => {
-            const points = this.competitionService.generateFakeMapData();
-            // this._personalSubmissionsLayer = new esri.FeatureLayer({
-
             // })
             // var simpleMarkerSymbol = {
             //   type: "simple-marker",
@@ -45,7 +33,6 @@ export class MapComponent implements OnInit {
             //     width: 1
             //   }
             // };
-
             // points.map((val, i) => {
             //   var point = new Point({
             //     latitude: val.latitude,
@@ -57,17 +44,14 @@ export class MapComponent implements OnInit {
             //   })
             //   this._view.graphics.add(graphic);
             // });
-
             // const track: esri.Track = new Track({
             //   view: this._view,
             //   useHeadingEnabled: true,
             //   goToLocationEnabled: false
             // });
-
             // const compass = new Compass({
             //   view: this._view
             // });
-
             // this._view.ui.add(track, 'bottom-right');
             // if (this.isMobile) {
             //   this._view.ui.add(track, 'bottom-right');
@@ -85,37 +69,15 @@ export class MapComponent implements OnInit {
 
   public config = {
     basemap: {
-      basemap: {
-        baseLayers: [
-          {
-            type: 'TileLayer',
-            url: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/BaseMap_20190813/MapServer',
-            spatialReference: {
-              wkid: 102100
-            },
-            listMode: 'hide',
-            visible: true,
-            minScale: 100000,
-            maxScale: 0,
-            title: 'Base Map'
-          }
-        ],
-        id: 'aggie_basemap',
-        title: 'Aggie Basemap'
-      }
+      basemap: 'streets-navigation-vector'
     },
     view: {
       mode: '2d',
       properties: {
-        // container: this.mapViewEl.nativeElement,
         map: undefined, // Reference to the map object created before the scene
         center: [-96.344672, 30.61306],
         spatialReference: {
           wkid: 102100
-        },
-        constraints: {
-          minScale: 100000, // minZoom is the max you can zoom OUT into space
-          maxScale: 0 // maxZoom is the max you can zoom INTO the ground
         },
         zoom: 16,
         popup: {

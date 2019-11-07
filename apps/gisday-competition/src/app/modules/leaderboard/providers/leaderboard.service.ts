@@ -12,7 +12,7 @@ export class LeaderboardService {
   constructor(private http: HttpClient, private environment: EnvironmentService) {}
 
   public getScores(): Observable<ILeaderboardItem[]> {
-    return this.http.get(`${window.location.protocol}//${this.environment.value('LeaderboardUrl')}`).pipe(pluck('items'));
+    return this.http.get(this.environment.value('LeaderboardUrl')).pipe(pluck('items'));
   }
 }
 
