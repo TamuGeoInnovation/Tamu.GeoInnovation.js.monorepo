@@ -9,6 +9,8 @@ import { Connections, Definitions as d } from './definitions';
 
 export * from './definitions';
 
+export const LeaderboardUrl = 'gisday.tamu.edu/Rest/Leaderboard/Get/';
+
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
