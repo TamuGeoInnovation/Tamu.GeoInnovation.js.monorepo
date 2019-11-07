@@ -67,7 +67,7 @@ export class LayerListService {
               const nlayer = LayerSources.filter((s) => {
                 return s.id === lyr.id;
               })[0];
-              nlayer.url += ':' + this.currentDates[0].toISOString() + ':' + this.currentDates[1].toISOString();
+              nlayer.url += '&' + this.currentDates[0].toISOString() + '&' + this.currentDates[1].toISOString();
               return new LayerListItem(nlayer);
             }
 
