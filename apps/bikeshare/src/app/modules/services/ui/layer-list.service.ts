@@ -63,12 +63,11 @@ export class LayerListService {
 
             // example of appending a new url from currentDates data member to the bike origin layer
             // currently only triggered when the layer is first lazy loaded
-            if (lyr.id === 'origin-trip-heatmap') {
+            if (lyr.id === 'origin-trip-layer' || lyr.id === 'destination-trip-layer') {
               const nlayer = LayerSources.filter((s) => {
-                return s.id === 'origin-trip-heatmap';
+                return s.id === lyr.id;
               })[0];
               nlayer.url += ':' + this.currentDates[0].toISOString() + ':' + this.currentDates[1].toISOString();
-
               return new LayerListItem(nlayer);
             }
 
