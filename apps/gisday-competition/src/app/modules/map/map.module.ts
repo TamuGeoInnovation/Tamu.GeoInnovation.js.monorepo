@@ -14,7 +14,6 @@ import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
 
 import { MapComponent } from './components/map.component';
-import { CompetitionService } from './providers/map.service';
 
 const routes: Routes = [
   {
@@ -40,6 +39,6 @@ const routes: Routes = [
     LayerListModule
   ],
 
-  providers: [CompetitionService, EsriModuleProviderService]
+  providers: [EsriModuleProviderService]
 })
 export class MapModule {}
