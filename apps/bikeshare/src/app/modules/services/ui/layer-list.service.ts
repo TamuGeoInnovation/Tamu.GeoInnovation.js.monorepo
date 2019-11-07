@@ -5,12 +5,21 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { LayerSources } from '../../../../environments/environment';
 
 import { LayerSource } from '@tamu-gisc/common/types';
+
 import esri = __esri;
 
 @Injectable()
 export class LayerListService {
   private _store: BehaviorSubject<LayerListItem[]> = new BehaviorSubject([]);
   public store: Observable<LayerListItem[]> = this._store.asObservable();
+
+  private yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+  public currentDates = [this.yesterday, new Date()];
+
+  // Called from the DatePicker Component
+  public changeDate(dateTimeRange: Date[]) {
+    this.currentDates = dateTimeRange;
+  }
 
   constructor(private mapService: EsriMapService) {
     mapService.store.subscribe((res) => {
@@ -52,12 +61,14 @@ export class LayerListService {
           const updatedLayers = this._store.value.map((lyr) => {
             const existingIndex = e.added.findIndex((added) => added.id === lyr.id);
 
-            // example of appending a new url to the bike origin layer
-            if (lyr.id === 'origin-trip-heatmap'){
-              var nlayer = LayerSources.filter((s) => {
+            // example of appending a new url from currentDates data member to the bike origin layer
+            // currently only triggered when the layer is first lazy loaded
+            if (lyr.id === 'origin-trip-heatmap') {
+              const nlayer = LayerSources.filter((s) => {
                 return s.id === 'origin-trip-heatmap';
               })[0];
-              nlayer.url += '&';
+              nlayer.url += ':' + this.currentDates[0].toISOString() + ':' + this.currentDates[1].toISOString();
+
               return new LayerListItem(nlayer);
             }
 
