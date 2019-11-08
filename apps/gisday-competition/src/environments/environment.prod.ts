@@ -9,16 +9,16 @@ import { Connections, Definitions as d, Protocol, HostName } from './definitions
 
 export * from './definitions';
 
-export const LeaderboardUrl = `${Protocol}://${HostName}/gisday.tamu.edu/Rest/Leaderboard/Get/`;
-export const SubmissionsUrl = `${Protocol}://${HostName}/gisday.tamu.edu/Rest/Signage/Get/Submissions/?&geoJSON=true`;
+export const LeaderboardUrl = `${Protocol}/${HostName}/Rest/Leaderboard/Get/`;
+export const SubmissionsUrl = `${Protocol}/${HostName}/Rest/Signage/Get/Submissions/?&geoJSON=true`;
 
-export const AuthLoginUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Login?ret=${Protocol}/${HostName}/gisday.tamu.edu/Login`;
+export const AuthLoginUrl = `${Protocol}/${HostName}/Login?ret=${Protocol}/${HostName}/Login`;
 
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
  *
- * This import should be commented out in production mode because it will have a negative impact
+ * This import should be commented out in production mode because it will have a negatgitive impact
  * on performance if an error is thrown.
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
@@ -38,8 +38,8 @@ export const LayerSources: LayerSource[] = [
         symbol: {
           type: 'simple-marker',
           style: 'circle',
-          size: 8,
-          color: '#03C4A6'
+          size: 10,
+          color: '#ffc5c5'
         }
       }
     }
