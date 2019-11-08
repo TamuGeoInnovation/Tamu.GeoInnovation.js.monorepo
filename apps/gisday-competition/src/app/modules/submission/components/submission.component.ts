@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { combineLatest, Observable, BehaviorSubject, of, timer } from 'rxjs';
-import { switchMap, shareReplay, debounceTime, take } from 'rxjs/operators';
+import { combineLatest, Observable, BehaviorSubject, of, throwError } from 'rxjs';
+import { switchMap, shareReplay, debounceTime, take, catchError } from 'rxjs/operators';
 
 import { LocationService } from '../providers/location.service';
 import { SubmissionService } from '../providers/submission.service';
@@ -116,46 +116,46 @@ export class SubmissionComponent implements OnInit {
           }
         }),
         switchMap(([file, type, details, settings]) => {
-          if (file !== false && this.form.status !== 1) {
-            // FormData gets sent as multi-part form in request.
-            const data: FormData = new FormData();
+          try {
+            if (file !== false && this.form.status !== 1) {
+              // FormData gets sent as multi-part form in request.
+              const data: FormData = new FormData();
 
-            data.append('UserGuid', settings.guid);
-            data.append('Description', details);
-            data.append('SignType', type);
-            data.append('Lat', this.locationService.currentLocal.lat);
-            data.append('Lon', this.locationService.currentLocal.lon);
-            data.append('Accuracy', this.locationService.currentLocal.accuracy);
-            data.append('Timestamp', this.locationService.currentLocal.timestamp);
-            data.append('Heading', this.locationService.currentLocal.heading);
-            data.append('Altitude', this.locationService.currentLocal.altitude);
-            data.append('Speed', this.locationService.currentLocal.speed);
-            data.append('photoA', file);
+              data.append('UserGuid', settings.guid);
+              data.append('Description', details);
+              data.append('SignType', type);
+              data.append('Lat', this.locationService.currentLocal.lat);
+              data.append('Lon', this.locationService.currentLocal.lon);
+              data.append('Accuracy', this.locationService.currentLocal.accuracy);
+              data.append('Timestamp', this.locationService.currentLocal.timestamp);
+              data.append('Heading', this.locationService.currentLocal.heading);
+              data.append('Altitude', this.locationService.currentLocal.altitude);
+              data.append('Speed', this.locationService.currentLocal.speed);
+              data.append('photoA', file);
 
-            this.form.status = 1;
+              this.form.status = 1;
 
-            return this.submissionService.postSubmission(data).pipe(
-              switchMap((res) => {
-                if (res && res.ResultCode && res.ResultCode === '400') {
-                  this.router.navigate(['complete'], { relativeTo: this.route });
-                  return of(true);
-                } else {
-                  this.form.status = -1;
-                  return of(false);
-                }
-              })
-            );
-
-            // // Mock submission
-            // return timer(1000).pipe(
-            //   switchMap(() => {
-            //     this.router.navigate(['complete'], { relativeTo: this.route });
-            //     return of(undefined);
-            //   })
-            // );
-          } else {
-            return of(false);
+              return this.submissionService.postSubmission(data).pipe(
+                switchMap((res) => {
+                  if (res && res.ResultCode && res.ResultCode === '400') {
+                    this.router.navigate(['complete'], { relativeTo: this.route });
+                    return of(true);
+                  } else {
+                    this.form.status = -1;
+                    return of(false);
+                  }
+                })
+              );
+            } else {
+              return of(false);
+            }
+          } catch (err) {
+            return throwError('Error submitting.');
           }
+        }),
+        catchError((err) => {
+          this.form.status = -1;
+          return of(err);
         })
       )
       .subscribe((res) => {});

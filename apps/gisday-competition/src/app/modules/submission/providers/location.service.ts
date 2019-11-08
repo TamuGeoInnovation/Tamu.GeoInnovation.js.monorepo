@@ -34,7 +34,7 @@ export class LocationService implements OnDestroy {
   }
 
   public locationError(err) {
-    console.error(err.code);
+    console.dir(err);
     // error.code can be:
     //   0: unknown error
     //   1: permission denied
