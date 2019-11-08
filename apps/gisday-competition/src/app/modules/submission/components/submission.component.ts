@@ -4,6 +4,7 @@ import { switchMap, shareReplay, debounceTime, take } from 'rxjs/operators';
 
 import { LocationService } from '../providers/location.service';
 import { SubmissionService } from '../providers/submission.service';
+import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 
 @Component({
   selector: 'tamu-gisc-submission',
@@ -57,7 +58,11 @@ export class SubmissionComponent implements OnInit {
     status: 'Submit'
   };
 
-  constructor(private locationService: LocationService, private submissionService: SubmissionService) {}
+  constructor(
+    private locationService: LocationService,
+    private submissionService: SubmissionService,
+    private settings: SettingsService
+  ) {}
 
   public ngOnInit() {
     this.form.valid = combineLatest([this.file, this.signType, this.signDetails.pipe(debounceTime(200))]).pipe(
@@ -92,15 +97,20 @@ export class SubmissionComponent implements OnInit {
         take(1),
         switchMap((v) => {
           if (Boolean(v)) {
-            return combineLatest([this.file, this.signType, this.signDetails]);
+            return combineLatest([
+              this.file,
+              this.signType,
+              this.signDetails,
+              this.settings.getSimpleSettingsBranch('gisday-app')
+            ]);
           } else {
             return of([false, false, false]);
           }
         }),
-        switchMap(([file, type, details]) => {
+        switchMap(([file, type, details, settings]) => {
           if (file !== false) {
             const data: FormData = new FormData();
-            data.append('UserGuid', 'CHANGE ME');
+            data.append('UserGuid', settings.guid);
             data.append('Description', details);
             data.append('SignType', type);
             data.append('Lat', this.locationService.currentLocal.lat);
@@ -118,9 +128,7 @@ export class SubmissionComponent implements OnInit {
           }
         })
       )
-      .subscribe((res) => {
-        debugger;
-      });
+      .subscribe((res) => {});
   }
 
   public resetSubmission() {
