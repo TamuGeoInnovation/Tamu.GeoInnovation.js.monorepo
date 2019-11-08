@@ -1,20 +1,20 @@
 <h1 class="bordered">New Submission</h1>
 
 <div class="block-input">
-    <div class="block-input-presentation" *ngIf="!file">
+    <div class="block-input-presentation" *ngIf="!(file | async)">
         <div class="material-icons">photo_camera</div>
         <p class="title">Upload Sign Photo</p>
         <p class="description">Tap to take a picture</p>
     </div>
 
-    <input type="file" (change)="onPhotoTaken($event)" accept="image/*" capture>
-    <div class="image" *ngIf="file" [ngStyle]="{'background-image': 'url(' + fileUrl + ')'}"></div>
+    <input type="file" name="photo" (change)="onPhotoTaken($event)" accept="image/*" capture>
+    <div class="image" *ngIf="file | async" [ngStyle]="{'background-image': 'url(' + (fileUrl | async) + ')'}"></div>
 </div>
 
 <div class="statused-form-input-container">
     <p class="label">Sign Type</p>
     <div class="statused-form-input column">
-        <tamu-gisc-select (changed)="onSelectionType($event)" [valueTemplate]="'value'" [displayTemplate]="'name'"
+        <tamu-gisc-select (changed)="this.signType.next($event)" [valueTemplate]="'value'" [displayTemplate]="'name'"
             [data]="dataSource"></tamu-gisc-select>
     </div>
 </div>
@@ -22,7 +22,8 @@
 <div class="statused-form-input-container">
     <p class="label">Description or Additional Information</p>
     <div class="statused-form-input">
-        <textarea name="" id="" rows="5" [(ngModel)]="signDetails"></textarea>
+        <textarea name="" id="" rows="5" (keyup)="signDetails.next($event.target.value)" name="description"
+            ([ngModel])="signDetails "></textarea>
     </div>
 </div>
 
@@ -30,4 +31,5 @@
         href="https://gisday.tamu.edu/competitions/Signage/" target="_blank" rel="noopener noreferrer">rules and
         guidelines.</a></p>
 
-<div class="button" role="button" (click)="verifySubmissionContents()">Submit</div>
+<div class="button" role="button" (click)="submitSubmission()" [class.disabled]="!(form.valid | async)">{{form.status}}
+</div>

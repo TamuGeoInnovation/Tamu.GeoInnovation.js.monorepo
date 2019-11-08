@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { combineLatest, Observable, BehaviorSubject, of } from 'rxjs';
+import { switchMap, shareReplay, debounceTime, take } from 'rxjs/operators';
+
 import { LocationService } from '../providers/location.service';
 import { SubmissionService } from '../providers/submission.service';
 
@@ -30,66 +33,94 @@ export class SubmissionComponent implements OnInit {
       value: '4A041D35-A4A9-421A-94F6-FD534C0281DD'
     },
     {
-      name: 'Other',
+      name: 'Other (Describe Below)',
       value: 'D5E20F64-82C1-459B-A73E-F5F73EE5A3A2'
     }
   ];
 
-  public signType: string;
-  public signDetails: string;
-  public file: File;
-  public fileUrl: string;
+  public file: BehaviorSubject<File> = new BehaviorSubject(undefined);
+  public signType: BehaviorSubject<string> = new BehaviorSubject(undefined);
+  public signDetails: BehaviorSubject<string> = new BehaviorSubject(undefined);
 
-  constructor(public readonly locationService: LocationService, public readonly submissionService: SubmissionService) {}
+  public fileUrl: Observable<string> = this.file.pipe(
+    switchMap((f) => {
+      if (Boolean(f)) {
+        return of(URL.createObjectURL(f));
+      } else {
+        of(undefined);
+      }
+    })
+  );
 
-  public ngOnInit() {}
+  public form = {
+    valid: undefined,
+    status: 'Submit'
+  };
+
+  constructor(private locationService: LocationService, private submissionService: SubmissionService) {}
+
+  public ngOnInit() {
+    this.form.valid = combineLatest([this.file, this.signType, this.signDetails.pipe(debounceTime(200))]).pipe(
+      switchMap(([file, type, details]) => {
+        if (Boolean(file)) {
+          if (type && type !== 'D5E20F64-82C1-459B-A73E-F5F73EE5A3A2') {
+            return of(true);
+          } else if (type && type === 'D5E20F64-82C1-459B-A73E-F5F73EE5A3A2' && details) {
+            return of(true);
+          }
+        }
+
+        return of(false);
+      }),
+      shareReplay(1)
+    );
+  }
 
   public onPhotoTaken(e) {
     const fileList: FileList = e.target.files;
     for (let i = 0; i < fileList.length; i++) {
       if (fileList[i].type.match(/^image\//)) {
-        this.file = fileList[i];
+        this.file.next(fileList[i]);
         break;
       }
-    }
-
-    if (this.file !== null) {
-      this.fileUrl = URL.createObjectURL(this.file);
-    }
-  }
-
-  public onSelectionType(selectedSignType: string) {
-    this.signType = selectedSignType;
-  }
-
-  public verifySubmissionContents() {
-    console.log(this.signType, this.signDetails);
-    if (this.signType && this.signDetails) {
-      this.submitSubmission();
-      // this.resetSubmission();
-      // alert(this.locationService.currentLocal.lat + ", " + this.locationService.currentLocal.lon);
-    } else {
-      // some information was not provided
     }
   }
 
   public submitSubmission() {
-    const data: FormData = new FormData();
-    data.append('UserGuid', 'CHANGE ME');
-    data.append('Description', this.signDetails);
-    data.append('SignType', this.signType);
-    data.append('Lat', this.locationService.currentLocal.lat);
-    data.append('Lon', this.locationService.currentLocal.lon);
-    data.append('Accuracy', this.locationService.currentLocal.accuracy);
-    data.append('Timestamp', this.locationService.currentLocal.timestamp);
-    data.append('Heading', this.locationService.currentLocal.heading);
-    data.append('Altitude', this.locationService.currentLocal.altitude);
-    data.append('Speed', this.locationService.currentLocal.speed);
-    data.append('photoA', this.file);
+    this.form.valid
+      .pipe(
+        take(1),
+        switchMap((v) => {
+          if (Boolean(v)) {
+            return combineLatest([this.file, this.signType, this.signDetails]);
+          } else {
+            return of([false, false, false]);
+          }
+        }),
+        switchMap(([file, type, details]) => {
+          if (file !== false) {
+            const data: FormData = new FormData();
+            data.append('UserGuid', 'CHANGE ME');
+            data.append('Description', details);
+            data.append('SignType', type);
+            data.append('Lat', this.locationService.currentLocal.lat);
+            data.append('Lon', this.locationService.currentLocal.lon);
+            data.append('Accuracy', this.locationService.currentLocal.accuracy);
+            data.append('Timestamp', this.locationService.currentLocal.timestamp);
+            data.append('Heading', this.locationService.currentLocal.heading);
+            data.append('Altitude', this.locationService.currentLocal.altitude);
+            data.append('Speed', this.locationService.currentLocal.speed);
+            data.append('photoA', file);
 
-    this.submissionService.postSubmission(data).subscribe((result) => {
-      console.log(result);
-    });
+            return this.submissionService.postSubmission(data);
+          } else {
+            return of(false);
+          }
+        })
+      )
+      .subscribe((res) => {
+        debugger;
+      });
   }
 
   public resetSubmission() {
