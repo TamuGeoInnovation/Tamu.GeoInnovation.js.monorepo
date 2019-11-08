@@ -6,30 +6,34 @@ import { IGeoLocal } from '../entity/submission.entity';
 })
 export class LocationService implements OnDestroy {
   public supportsGeolocation: boolean;
-  public watchId: number = 0;
+  public watchId = 0;
   public currentLocal: IGeoLocal;
 
-  constructor() { 
+  constructor() {
     if (navigator.geolocation) {
       this.supportsGeolocation = true;
-      this.watchId = navigator.geolocation.watchPosition((position) => {
-        this.currentLocal = {
-          lat: `${position.coords.latitude}`,
-          lon: `${position.coords.longitude}`,
-          timestamp: Date.now().toString(),
-          accuracy: `${position.coords.accuracy}`,
+      this.watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          this.currentLocal = {
+            lat: `${position.coords.latitude}`,
+            lon: `${position.coords.longitude}`,
+            timestamp: Date.now().toString(),
+            accuracy: `${position.coords.accuracy}`
+          };
+        },
+        this.locationError,
+        {
+          timeout: 10 * 1000, // I'm assuming this is milliseconds (10 seconds)
+          enableHighAccuracy: true,
+          maximumAge: 20 * 1000 // I'm assuming this is milliseconds (20 seconds)
         }
-      }, this.locationError, {
-        timeout: 10 * 1000, // I'm assuming this is milliseconds (10 seconds)
-        enableHighAccuracy: true,
-        maximumAge: 20 * 1000, // I'm assuming this is milliseconds (20 seconds)
-      });
+      );
     } else {
       this.supportsGeolocation = false;
     }
   }
 
-  locationError(err) {
+  public locationError(err) {
     console.error(err.code);
     // error.code can be:
     //   0: unknown error
@@ -38,7 +42,7 @@ export class LocationService implements OnDestroy {
     //   3: timed out
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     navigator.geolocation.clearWatch(this.watchId);
   }
 }

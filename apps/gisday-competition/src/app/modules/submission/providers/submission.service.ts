@@ -1,18 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ISubmission } from '../entity/submission.entity';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SubmissionService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private environment: EnvironmentService, private http: HttpClient) {}
 
   public postSubmission(submission: FormData) {
-    return this.http.post<any>("https://gisday.tamu.edu/Rest/Signage/Push/Submissions/", submission)
-    // return this.http.post<any>("http://localhost/gisday.tamu.edu/Rest/Signage/Push/Submissions/", submission)
+    return this.http.post<any>(this.environment.value('SubmissionsPostUrl'), submission);
   }
-
-
 }

@@ -11,6 +11,7 @@ export * from './definitions';
 
 export const LeaderboardUrl = `${Protocol}/${HostName}/Rest/Leaderboard/Get/`;
 export const SubmissionsUrl = `${Protocol}/${HostName}/Rest/Signage/Get/Submissions/?&geoJSON=true`;
+export const SubmissionsPostUrl = `${Protocol}/${HostName}/Rest/Signage/Push/Submissions/`;
 
 export const AuthLoginUrl = `${Protocol}/${HostName}/Login?ret=${Protocol}/${HostName}/Login`;
 

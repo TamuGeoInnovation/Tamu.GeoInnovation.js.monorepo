@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LocationService } from '../providers/location.service';
 import { SubmissionService } from '../providers/submission.service';
 
@@ -32,14 +32,8 @@ export class SubmissionComponent implements OnInit {
     {
       name: 'Other',
       value: 'D5E20F64-82C1-459B-A73E-F5F73EE5A3A2'
-    },
+    }
   ];
-
-  @ViewChild('imagePreview', {
-    read: ElementRef,
-    static: true
-  })
-  public imagePreviewRef: ElementRef;
 
   public signType: string;
   public signDetails: string;
@@ -71,7 +65,7 @@ export class SubmissionComponent implements OnInit {
   public verifySubmissionContents() {
     console.log(this.signType, this.signDetails);
     if (this.signType && this.signDetails) {
-      // this.submitSubmission();
+      this.submitSubmission();
       // this.resetSubmission();
       // alert(this.locationService.currentLocal.lat + ", " + this.locationService.currentLocal.lon);
     } else {

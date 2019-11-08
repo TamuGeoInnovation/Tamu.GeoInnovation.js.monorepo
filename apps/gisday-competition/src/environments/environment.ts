@@ -15,6 +15,7 @@ export * from './definitions';
 
 export const LeaderboardUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Rest/Leaderboard/Get/`;
 export const SubmissionsUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Rest/Signage/Get/Submissions/?&geoJSON=true`;
+export const SubmissionsPostUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Rest/Signage/Push/Submissions/`;
 
 export const AuthLoginUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Login?ret=${Protocol}/${HostName}/gisday.tamu.edu/Login`;
 
