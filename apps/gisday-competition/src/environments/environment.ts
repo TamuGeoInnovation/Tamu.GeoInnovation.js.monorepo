@@ -9,12 +9,14 @@ export const environment = {
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 import { SearchSource } from '@tamu-gisc/search';
 
-import { Connections, Definitions as d, Protocol } from './definitions';
+import { Connections, Definitions as d, Protocol, HostName } from './definitions';
 
 export * from './definitions';
 
-export const LeaderboardUrl = `${Protocol}localhost/gisday.tamu.edu/Rest/Leaderboard/Get/`;
-export const SubmissionsUrl = `${Protocol}localhost/gisday.tamu.edu/Rest/Signage/Get/Submissions/?&geoJSON=true`;
+export const LeaderboardUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Rest/Leaderboard/Get/`;
+export const SubmissionsUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Rest/Signage/Get/Submissions/?&geoJSON=true`;
+
+export const AuthLoginUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Login?ret=${Protocol}/${HostName}/gisday.tamu.edu/Login`;
 
 /*
  * For easier debugging in development mode, you can import the following file

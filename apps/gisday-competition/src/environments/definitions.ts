@@ -1,4 +1,5 @@
-export const Protocol = `${window.location.protocol}//`;
+export const Protocol = `${window.location.protocol}/`;
+export const HostName = `${window.location.hostname}/`;
 
 export const Connections = {
   basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/BaseMap_20190913/MapServer',
