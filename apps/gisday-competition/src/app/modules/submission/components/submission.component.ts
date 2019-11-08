@@ -6,6 +6,7 @@ import { switchMap, shareReplay, debounceTime, take } from 'rxjs/operators';
 import { LocationService } from '../providers/location.service';
 import { SubmissionService } from '../providers/submission.service';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
   selector: 'tamu-gisc-submission',
@@ -61,6 +62,7 @@ export class SubmissionComponent implements OnInit {
   };
 
   constructor(
+    private environment: EnvironmentService,
     private locationService: LocationService,
     private submissionService: SubmissionService,
     private settings: SettingsService,
@@ -107,7 +109,7 @@ export class SubmissionComponent implements OnInit {
               this.file,
               this.signType,
               this.signDetails,
-              this.settings.getSimpleSettingsBranch('gisday-app')
+              this.settings.getSimpleSettingsBranch(this.environment.value('LocalStoreSettings').subKey)
             ]);
           } else {
             return of([false, false, false]);
@@ -115,7 +117,9 @@ export class SubmissionComponent implements OnInit {
         }),
         switchMap(([file, type, details, settings]) => {
           if (file !== false && this.form.status !== 1) {
+            // FormData gets sent as multi-part form in request.
             const data: FormData = new FormData();
+
             data.append('UserGuid', settings.guid);
             data.append('Description', details);
             data.append('SignType', type);
@@ -130,25 +134,25 @@ export class SubmissionComponent implements OnInit {
 
             this.form.status = 1;
 
-            // return this.submissionService.postSubmission(data).pipe(
-            //   switchMap((res) => {
-            //     if (res && res.ResultCode && res.ResultCode === '400') {
-            //       this.router.navigate(['complete'], { relativeTo: this.route });
-            //       return of(true);
-            //     } else {
-            //       this.form.status = -1;
-            //       return of(false);
-            //     }
-            //   })
-            // );
-
-            // Mock submission
-            return timer(1000).pipe(
-              switchMap(() => {
-                this.router.navigate(['complete'], { relativeTo: this.route });
-                return of(undefined);
+            return this.submissionService.postSubmission(data).pipe(
+              switchMap((res) => {
+                if (res && res.ResultCode && res.ResultCode === '400') {
+                  this.router.navigate(['complete'], { relativeTo: this.route });
+                  return of(true);
+                } else {
+                  this.form.status = -1;
+                  return of(false);
+                }
               })
             );
+
+            // // Mock submission
+            // return timer(1000).pipe(
+            //   switchMap(() => {
+            //     this.router.navigate(['complete'], { relativeTo: this.route });
+            //     return of(undefined);
+            //   })
+            // );
           } else {
             return of(false);
           }

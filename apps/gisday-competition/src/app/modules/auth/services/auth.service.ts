@@ -21,7 +21,7 @@ export class AuthService {
           }
         },
         storage: {
-          subKey: 'gisday-app'
+          subKey: this.environment.value('LocalStoreSettings').subKey
         }
       })
       .subscribe((settings) => {});
@@ -54,7 +54,7 @@ export class AuthService {
    * Re-directs to login if not authenticated.
    */
   public isAuthenticated(): Observable<boolean> {
-    return this.settings.getSimpleSettingsBranch('gisday-app').pipe(
+    return this.settings.getSimpleSettingsBranch(this.environment.value('LocalStoreSettings').subKey).pipe(
       pluck('guid'),
       switchMap((guid) => {
         return of(guid !== undefined);

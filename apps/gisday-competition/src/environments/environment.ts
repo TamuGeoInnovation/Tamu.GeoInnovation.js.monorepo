@@ -28,6 +28,10 @@ export const AuthLoginUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Login?ret=$
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
 
+export const LocalStoreSettings = {
+  subKey: 'gisday-app'
+};
+
 export const LayerSources: LayerSource[] = [
   {
     type: 'geojson',

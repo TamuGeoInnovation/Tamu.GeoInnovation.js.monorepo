@@ -24,6 +24,10 @@ export const AuthLoginUrl = `${Protocol}/${HostName}/Login?ret=${Protocol}/${Hos
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
 
+export const LocalStoreSettings = {
+  subKey: 'gisday-app'
+};
+
 export const LayerSources: LayerSource[] = [
   {
     type: 'geojson',
