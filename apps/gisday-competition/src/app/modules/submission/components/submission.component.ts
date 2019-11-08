@@ -80,8 +80,8 @@ export class SubmissionComponent implements OnInit {
     data.append('SignType', this.signType);
     data.append('Lat', this.locationService.currentLocal.lat);
     data.append('Lon', this.locationService.currentLocal.lon);
-    data.append('Accuracy', this.locationService.currentLocal.timestamp);
-    data.append('Timestamp', this.locationService.currentLocal.accuracy);
+    data.append('Accuracy', this.locationService.currentLocal.accuracy);
+    data.append('Timestamp', this.locationService.currentLocal.timestamp);
     data.append('Heading', this.locationService.currentLocal.heading);
     data.append('Altitude', this.locationService.currentLocal.altitude);
     data.append('Speed', this.locationService.currentLocal.speed);
