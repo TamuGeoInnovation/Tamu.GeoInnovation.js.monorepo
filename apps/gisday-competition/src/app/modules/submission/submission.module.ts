@@ -3,25 +3,29 @@ import { Routes, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms'
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
-import { SubmissionComponent } from './components/submission.component';
 import { LocationService } from './providers/location.service';
 import { SubmissionService } from './providers/submission.service';
 
-const routes: Routes = [{
-  path: '', component: SubmissionComponent
-}]
+import { SubmissionComponent } from './components/submission.component';
+import { SubmissionCompleteComponent } from './components/complete/complete.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: SubmissionComponent
+  },
+  {
+    path: 'complete',
+    component: SubmissionCompleteComponent
+  }
+];
 
 @NgModule({
-  declarations: [SubmissionComponent],
+  declarations: [SubmissionComponent, SubmissionCompleteComponent],
   exports: [SubmissionComponent],
-  imports: [
-    RouterModule.forChild(routes),
-    CommonModule,
-    FormsModule,
-    UIFormsModule
-  ],
+  imports: [RouterModule.forChild(routes), CommonModule, FormsModule, UIFormsModule],
   providers: [LocationService, SubmissionService]
 })
-export class SubmissionModule { }
+export class SubmissionModule {}

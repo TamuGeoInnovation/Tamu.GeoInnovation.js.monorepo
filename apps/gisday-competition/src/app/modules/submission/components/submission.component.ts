@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { combineLatest, Observable, BehaviorSubject, of } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
+import { combineLatest, Observable, BehaviorSubject, of, timer } from 'rxjs';
 import { switchMap, shareReplay, debounceTime, take } from 'rxjs/operators';
 
 import { LocationService } from '../providers/location.service';
@@ -55,13 +56,16 @@ export class SubmissionComponent implements OnInit {
 
   public form = {
     valid: undefined,
+    // 0 is default, 1 is success, -1 is fail
     status: 0
   };
 
   constructor(
     private locationService: LocationService,
     private submissionService: SubmissionService,
-    private settings: SettingsService
+    private settings: SettingsService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   public ngOnInit() {
@@ -126,7 +130,25 @@ export class SubmissionComponent implements OnInit {
 
             this.form.status = 1;
 
-            return this.submissionService.postSubmission(data);
+            // return this.submissionService.postSubmission(data).pipe(
+            //   switchMap((res) => {
+            //     if (res && res.ResultCode && res.ResultCode === '400') {
+            //       this.router.navigate(['complete'], { relativeTo: this.route });
+            //       return of(true);
+            //     } else {
+            //       this.form.status = -1;
+            //       return of(false);
+            //     }
+            //   })
+            // );
+
+            // Mock submission
+            return timer(1000).pipe(
+              switchMap(() => {
+                this.router.navigate(['complete'], { relativeTo: this.route });
+                return of(undefined);
+              })
+            );
           } else {
             return of(false);
           }
