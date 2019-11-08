@@ -10,81 +10,29 @@ import { SubmissionService } from '../providers/submission.service';
 export class SubmissionComponent implements OnInit {
   public dataSource = [
     {
-      name: 'Fire lane sign',
-      value: 'firelane'
+      name: 'Building Identification',
+      value: '54AAB1B5-F925-459C-9E28-C8722EAF5A0C'
     },
     {
-      name: 'Visitor parking sign',
-      value: 'visitorparking'
+      name: 'Accessible Building Signs',
+      value: 'FD68B430-ED9C-430D-A59A-EF30EC746CE7'
     },
     {
-      name: 'Speed limit sign',
-      value: 'speedlimit'
+      name: 'Memorial Bench & Tree Plaques',
+      value: '8E3679FA-15D4-456A-A596-FD0E14B25EF9'
     },
     {
-      name: 'Building entrance sign',
-      value: 'buildingentrance'
+      name: 'Historical Markers',
+      value: '5617C23F-5B7F-4A6C-BA8E-F40D7417356C'
     },
     {
-      name: 'Building loading zone sign',
-      value: 'buildingloadingzone'
+      name: 'Parking Lot and Vehicular Direction',
+      value: '4A041D35-A4A9-421A-94F6-FD534C0281DD'
     },
     {
-      name: 'Motorcycle parking sign',
-      value: 'motorcycleparking'
+      name: 'Other',
+      value: 'D5E20F64-82C1-459B-A73E-F5F73EE5A3A2'
     },
-    {
-      name: 'Ramp sign',
-      value: 'ramp'
-    },
-    {
-      name: 'Accessible parking sign',
-      value: 'accessibleparking'
-    },
-    {
-      name: 'Numbered parking sign',
-      value: 'numberedparking'
-    },
-    {
-      name: 'Parking lot number sign',
-      value: 'parkinglotnumber'
-    },
-    {
-      name: 'University business permit parking sign',
-      value: 'universitybusinessparking'
-    },
-    {
-      name: 'Fire department connector (F.D.C.) sign',
-      value: 'firedepartmentconnector'
-    },
-    {
-      name: 'Building overview sign',
-      value: 'buildingoverview'
-    },
-    {
-      name: 'Loading zone parking sign',
-      value: 'loadingzone'
-    },
-    {
-      name: 'No parking sign',
-      value: 'noparking'
-    },
-    {
-      name: 'Parking garage sign',
-      value: 'parkinggarage'
-    },
-    {
-      name: 'Stop sign',
-      value: 'stop'
-    },
-    {
-      name: 'Building number sign',
-      value: 'buildingnumber'
-    },
-    {
-      name: 'Other (Describe Below)',
-      value: 'other'
-    }
   ];
 
   @ViewChild('imagePreview', {
@@ -123,7 +71,7 @@ export class SubmissionComponent implements OnInit {
   public verifySubmissionContents() {
     console.log(this.signType, this.signDetails);
     if (this.signType && this.signDetails) {
-      this.submitSubmission();
+      // this.submitSubmission();
       // this.resetSubmission();
       // alert(this.locationService.currentLocal.lat + ", " + this.locationService.currentLocal.lon);
     } else {
@@ -133,7 +81,7 @@ export class SubmissionComponent implements OnInit {
 
   public submitSubmission() {
     const data: FormData = new FormData();
-    data.append('UserGuid', '21062b5d-7063-46e0-9ea2-e5371ae4df11');
+    data.append('UserGuid', 'CHANGE ME');
     data.append('Description', this.signDetails);
     data.append('SignType', this.signType);
     data.append('Lat', this.locationService.currentLocal.lat);

@@ -460,7 +460,7 @@ export class EsriMapService {
    * @memberof EsriMapService
    */
   public getFeatureListFromURL(): string[] {
-    // Diciontary of expected URL parameters that include a list of feature references
+    // Dictionary of expected URL parameters that include a list of feature references
     const buildingParameterDictionary = ['bldg', 'Bldg', 'BldgAbbrv', 'bldgabbrv'];
 
     // Parse the current URL into a URL tree
@@ -471,8 +471,10 @@ export class EsriMapService {
 
     // If there is a matching key in the dictionary and the current url tree,
     // then proceed submit queries to the search sources for matches.
-    if (keyExists && tree.queryParams[keyExists].strip().length > 0) {
-      return tree.queryParams[keyExists].split(',');
+    if (keyExists && tree.queryParams[keyExists].trim().length > 0) {
+      const rawParamList = tree.queryParams[keyExists].split(',');
+      // Filter out duplicate values
+      return rawParamList.filter((value, index, array) => array.indexOf(value) === index);
     } else {
       return [];
     }

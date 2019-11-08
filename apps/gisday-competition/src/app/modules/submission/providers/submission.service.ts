@@ -11,6 +11,7 @@ export class SubmissionService {
 
   public postSubmission(submission: FormData) {
     return this.http.post<any>("https://gisday.tamu.edu/Rest/Signage/Push/Submissions/", submission)
+    // return this.http.post<any>("http://localhost/gisday.tamu.edu/Rest/Signage/Push/Submissions/", submission)
   }
 
 

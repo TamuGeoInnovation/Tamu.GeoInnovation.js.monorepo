@@ -42,8 +42,8 @@ export const LayerSources: LayerSource[] = [
         symbol: {
           type: 'simple-marker',
           style: 'circle',
-          size: 8,
-          color: '#03C4A6'
+          size: 10,
+          color: '#ffc5c5'
         }
       }
     }
