@@ -14,27 +14,27 @@ import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 export class SubmissionComponent implements OnInit {
   public dataSource = [
     {
-      name: 'Building Identification',
+      name: 'Building Identification (5 pts)',
       value: '54AAB1B5-F925-459C-9E28-C8722EAF5A0C'
     },
     {
-      name: 'Accessible Building Signs',
+      name: 'Accessible Building Signs (4 pts)',
       value: 'FD68B430-ED9C-430D-A59A-EF30EC746CE7'
     },
     {
-      name: 'Memorial Bench & Tree Plaques',
+      name: 'Memorial Bench & Tree Plaques (3 pts)',
       value: '8E3679FA-15D4-456A-A596-FD0E14B25EF9'
     },
     {
-      name: 'Historical Markers',
+      name: 'Historical Markers (2 pts)',
       value: '5617C23F-5B7F-4A6C-BA8E-F40D7417356C'
     },
     {
-      name: 'Parking Lot and Vehicular Direction',
+      name: 'Parking Lot and Vehicular Direction (1 pt)',
       value: '4A041D35-A4A9-421A-94F6-FD534C0281DD'
     },
     {
-      name: 'Other (Describe Below)',
+      name: 'Other (Describe Below) (1 pt)',
       value: 'D5E20F64-82C1-459B-A73E-F5F73EE5A3A2'
     }
   ];
@@ -55,7 +55,7 @@ export class SubmissionComponent implements OnInit {
 
   public form = {
     valid: undefined,
-    status: 'Submit'
+    status: 0
   };
 
   constructor(
@@ -69,8 +69,10 @@ export class SubmissionComponent implements OnInit {
       switchMap(([file, type, details]) => {
         if (Boolean(file)) {
           if (type && type !== 'D5E20F64-82C1-459B-A73E-F5F73EE5A3A2') {
+            this.form.status = 0;
             return of(true);
           } else if (type && type === 'D5E20F64-82C1-459B-A73E-F5F73EE5A3A2' && details) {
+            this.form.status = 0;
             return of(true);
           }
         }
@@ -108,7 +110,7 @@ export class SubmissionComponent implements OnInit {
           }
         }),
         switchMap(([file, type, details, settings]) => {
-          if (file !== false) {
+          if (file !== false && this.form.status !== 1) {
             const data: FormData = new FormData();
             data.append('UserGuid', settings.guid);
             data.append('Description', details);
@@ -121,6 +123,8 @@ export class SubmissionComponent implements OnInit {
             data.append('Altitude', this.locationService.currentLocal.altitude);
             data.append('Speed', this.locationService.currentLocal.speed);
             data.append('photoA', file);
+
+            this.form.status = 1;
 
             return this.submissionService.postSubmission(data);
           } else {

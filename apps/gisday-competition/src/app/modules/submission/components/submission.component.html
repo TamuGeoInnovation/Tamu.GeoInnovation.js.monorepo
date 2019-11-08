@@ -31,5 +31,11 @@
         href="https://gisday.tamu.edu/competitions/Signage/" target="_blank" rel="noopener noreferrer">rules and
         guidelines.</a></p>
 
-<div class="button" role="button" (click)="submitSubmission()" [class.disabled]="!(form.valid | async)">{{form.status}}
+<div class="button" role="button" (click)="submitSubmission()"
+    [class.disabled]="!(form.valid | async) || form.status === 1">
+    <div [ngSwitch]="form.status">
+        <div *ngSwitchCase="1">Submitting...</div>
+        <div *ngSwitchCase="-1">Error!</div>
+        <div *ngSwitchDefault>Submit</div>
+    </div>
 </div>
