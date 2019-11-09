@@ -1,5 +1,4 @@
 import { Directive, ElementRef, Input, OnChanges, SimpleChanges, OnInit, OnDestroy } from '@angular/core';
-import { Observer } from 'rxjs';
 
 @Directive({
   selector: '[accordion]'

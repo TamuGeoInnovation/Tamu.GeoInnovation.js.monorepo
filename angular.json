@@ -679,6 +679,28 @@
         }
       }
     },
+    "common-utils-device": {
+      "root": "libs/common/utils/device",
+      "sourceRoot": "libs/common/utils/device/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/utils/device/tsconfig.lib.json", "libs/common/utils/device/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/device/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/device/jest.config.js",
+            "tsConfig": "libs/common/utils/device/tsconfig.spec.json"
+          }
+        }
+      }
+    },
     "common-types": {
       "root": "libs/common/types",
       "sourceRoot": "libs/common/types/src",
@@ -1314,6 +1336,34 @@
             "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tab/jest.config.js",
             "tsConfig": "libs/ui-kits/ngx/navigation/mobile-tab/tsconfig.spec.json",
             "setupFile": "libs/ui-kits/ngx/navigation/mobile-tab/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "ui-kits-ngx-layout": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/layout",
+      "sourceRoot": "libs/ui-kits/ngx/layout/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ui-kits/ngx/layout/tsconfig.lib.json", "libs/ui-kits/ngx/layout/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/layout/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/layout/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/layout/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/layout/src/test-setup.ts"
           }
         }
       },

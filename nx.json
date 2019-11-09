@@ -139,6 +139,9 @@
     },
     "common-utils-device": {
       "tags": []
+    },
+    "ui-kits-ngx-layout": {
+      "tags": []
     }
   }
 }

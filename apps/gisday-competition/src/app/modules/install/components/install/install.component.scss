@@ -7,3 +7,11 @@
   @include justify-content(center);
   @include align-items(center);
 }
+
+h1 {
+  margin-bottom: 1rem;
+}
+
+.app-install {
+  width: 100%;
+}

@@ -71,6 +71,17 @@ a {
   text-decoration: none;
 }
 
+ul {
+  li {
+    margin-left: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &.numbered {
+    list-style: decimal;
+  }
+}
+
 select {
   background: none;
   border: none;
