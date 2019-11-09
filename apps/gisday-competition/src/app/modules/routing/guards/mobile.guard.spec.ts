@@ -1,15 +1,15 @@
 import { TestBed, async, inject } from '@angular/core/testing';
 
-import { MobileGuard } from './mobile.guard';
+import { DeviceGuard } from './device.guard';
 
-describe('MobileGuard', () => {
+describe('DeviceGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [MobileGuard]
+      providers: [DeviceGuard]
     });
   });
 
-  it('should ...', inject([MobileGuard], (guard: MobileGuard) => {
+  it('should ...', inject([DeviceGuard], (guard: DeviceGuard) => {
     expect(guard).toBeTruthy();
   }));
 });
