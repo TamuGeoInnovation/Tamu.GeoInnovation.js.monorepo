@@ -136,6 +136,9 @@
     },
     "ui-kits-ngx-navigation-mobile-tab": {
       "tags": []
+    },
+    "common-utils-device": {
+      "tags": []
     }
   }
 }
