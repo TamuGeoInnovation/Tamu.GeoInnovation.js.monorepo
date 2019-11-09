@@ -1192,6 +1192,7 @@
             "assets": [
               "apps/gisday-competition/src/favicon.ico",
               "apps/gisday-competition/src/assets",
+              "apps/gisday-competition/src/manifest.webmanifest",
               {
                 "glob": "**/*",
                 "input": "./libs/assets/",
@@ -1224,7 +1225,9 @@
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
                 }
-              ]
+              ],
+              "serviceWorker": true,
+              "ngswConfigPath": "apps/gisday-competition/ngsw-config.json"
             }
           }
         },
