@@ -142,6 +142,7 @@ export class SubmissionComponent implements OnInit {
                     return of(true);
                   } else {
                     this.form.status = -1;
+                    console.warn(res);
                     return of(false);
                   }
                 })
@@ -155,6 +156,7 @@ export class SubmissionComponent implements OnInit {
         }),
         catchError((err) => {
           this.form.status = -1;
+          console.warn(err);
           return of(err);
         })
       )
