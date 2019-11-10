@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { getMobileOS, IOperatingSystemIdentity } from '@tamu-gisc/common/utils/device';
+import { Device, IDeviceOSVersion } from '@tamu-gisc/common/utils/device';
 
 @Component({
   selector: 'tamu-gisc-install',
@@ -8,10 +8,12 @@ import { getMobileOS, IOperatingSystemIdentity } from '@tamu-gisc/common/utils/d
   styleUrls: ['./install.component.scss']
 })
 export class InstallComponent implements OnInit {
-  public device: IOperatingSystemIdentity;
+  public device: Device;
+  public deviceOSVersion: IDeviceOSVersion;
   constructor() {}
 
   public ngOnInit() {
-    this.device = getMobileOS();
+    this.device = new Device();
+    this.deviceOSVersion = this.device.OSVersion();
   }
 }

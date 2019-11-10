@@ -10,10 +10,12 @@ import {
 } from '@angular/router';
 import { Observable } from 'rxjs';
 
+import { Device } from '@tamu-gisc/common/utils/device';
+
 @Injectable({ providedIn: 'root' })
 export class DeviceGuard implements CanActivate, CanActivateChild {
   private deviceTests = {
-    standalone: [this.checkAndroidStandalone, this.checkiOSStandalone]
+    standalone: [new Device().standalone]
   };
   constructor(private router: Router) {}
 
@@ -62,28 +64,12 @@ export class DeviceGuard implements CanActivate, CanActivateChild {
 
       // For every mode provided, execute its tests
       const passAllTests: boolean = options.deviceModes.every((mode) => {
-        return this.deviceTests[mode].some((fn) => fn());
+        return this.deviceTests[mode].some(function(fn) {
+          return fn();
+        });
       });
 
       return passAllTests;
-    }
-  }
-
-  /**
-   * Checks device display mode matches the expected standalone value in Android devices.
-   */
-  private checkAndroidStandalone(): boolean {
-    return window.matchMedia('(display-mode: standalone)').matches;
-  }
-
-  /**
-   * Checks device standalone mode expected in iOS devices.
-   */
-  private checkiOSStandalone(): boolean {
-    if (window && window.navigator && (<INavigatorExtension>window.navigator).standalone) {
-      return (<INavigatorExtension>window.navigator).standalone === true;
-    } else {
-      return false;
     }
   }
 }
@@ -110,8 +96,4 @@ export interface IDeviceGuardOptions extends Data {
   deviceIgnoreFailRedirect?: boolean;
 
   deviceModes?: ['standalone'];
-}
-
-interface INavigatorExtension extends Navigator {
-  standalone?: boolean;
 }

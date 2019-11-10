@@ -1,10 +1,10 @@
-<h1>Install GIS Day Competitions on Your <span [ngSwitch]="device.code">
+<h1>Install GIS Day Competitions on Your <span [ngSwitch]="device.identity.code">
         <span *ngSwitchCase="1">Android</span>
         <span *ngSwitchCase="2">iOS</span>
         <span *ngSwitchDefault>Mobile</span>
     </span> Device</h1>
 
-<div [ngSwitch]="device.code" class="app-install">
+<div [ngSwitch]="device.identity.code" class="app-install">
     <!-- Android Instructions -->
     <div *ngSwitchCase="1">
 
@@ -66,27 +66,40 @@
 
     <!-- iOS Instructions -->
     <div *ngSwitchCase="2">
-        <tamu-gisc-accordion [expanded]="true">
-            <tamu-gisc-accordion-title>Instructions</tamu-gisc-accordion-title>
-            <tamu-gisc-accordion-content>
-                <p><strong>1.</strong> Using <strong>Safari</strong>, tap on the <strong>Share</strong> icon:</p>
+        <div *ngIf="deviceOSVersion?.major < 11">
 
-                <img src="assets/images/graphics/ios-share.jpg" alt="iOS Share Icon Screenshot">
+            <p>Your version of iOS ({{deviceOSVersion?.major}}.{{deviceOSVersion?.minor}}.{{deviceOSVersion?.patch}}) is
+                not supported. A minimum iOS version of <strong>11.0.1</strong> is required.</p>
 
-                <p><strong>2.</strong> From the actions menu, select "Add to Home Screen":</p>
+            <p *ngIf="deviceOSVersion?.major">It appears you are on
+                version {{deviceOSVersion?.major}}.{{deviceOSVersion?.minor}}.{{deviceOSVersion?.patch}}</p>
+        </div>
 
-                <img src="assets/images/graphics/ios-add-homescreen.jpg" alt="iOS Add to Homescreen Action Screenshot">
+        <div *ngIf="deviceOSVersion?.major >= 11">
+            <tamu-gisc-accordion [expanded]="true">
+                <tamu-gisc-accordion-title>Instructions</tamu-gisc-accordion-title>
+                <tamu-gisc-accordion-content>
+                    <br>
+                    <p><strong>1.</strong> Using <strong>Safari</strong>, tap on the <strong>Share</strong> icon:</p>
 
-                <p><strong>3.</strong> Tap <strong>Add</strong> on the confirmation page:</p>
+                    <img src="assets/images/graphics/ios-share.jpg" alt="iOS Share Icon Screenshot">
 
-                <img src="assets/images/graphics/ios-add-homescreen-confirm.jpg"
-                    alt="iOS Add to Homescreen Confirm Screenshot">
+                    <p><strong>2.</strong> From the actions menu, select "Add to Home Screen":</p>
 
-                <p><strong>4.</strong> Safari will close and focus on the installed App:</p>
+                    <img src="assets/images/graphics/ios-add-homescreen.jpg"
+                        alt="iOS Add to Homescreen Action Screenshot">
 
-                <img src="assets/images/graphics/ios-installed.jpg" alt="iOS Installed on Homescreen Screenshot">
-            </tamu-gisc-accordion-content>
-        </tamu-gisc-accordion>
+                    <p><strong>3.</strong> Tap <strong>Add</strong> on the confirmation page:</p>
+
+                    <img src="assets/images/graphics/ios-add-homescreen-confirm.jpg"
+                        alt="iOS Add to Homescreen Confirm Screenshot">
+
+                    <p><strong>4.</strong> Safari will close and focus on the installed App:</p>
+
+                    <img src="assets/images/graphics/ios-installed.jpg" alt="iOS Installed on Homescreen Screenshot">
+                </tamu-gisc-accordion-content>
+            </tamu-gisc-accordion>
+        </div>
     </div>
 
     <!-- All Others Instructions -->
