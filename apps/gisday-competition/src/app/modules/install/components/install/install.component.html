@@ -65,7 +65,29 @@
     </div>
 
     <!-- iOS Instructions -->
-    <div *ngSwitchCase="2">Install on your</div>
+    <div *ngSwitchCase="2">
+        <tamu-gisc-accordion [expanded]="true">
+            <tamu-gisc-accordion-title>Instructions</tamu-gisc-accordion-title>
+            <tamu-gisc-accordion-content>
+                <p><strong>1.</strong> Using <strong>Safari</strong>, tap on the <strong>Share</strong> icon:</p>
+
+                <img src="assets/images/graphics/ios-share.jpg" alt="iOS Share Icon Screenshot">
+
+                <p><strong>2.</strong> From the actions menu, select "Add to Home Screen":</p>
+
+                <img src="assets/images/graphics/ios-add-homescreen.jpg" alt="iOS Add to Homescreen Action Screenshot">
+
+                <p><strong>3.</strong> Tap <strong>Add</strong> on the confirmation page:</p>
+
+                <img src="assets/images/graphics/ios-add-homescreen-confirm.jpg"
+                    alt="iOS Add to Homescreen Confirm Screenshot">
+
+                <p><strong>4.</strong> Safari will close and focus on the installed App:</p>
+
+                <img src="assets/images/graphics/ios-installed.jpg" alt="iOS Installed on Homescreen Screenshot">
+            </tamu-gisc-accordion-content>
+        </tamu-gisc-accordion>
+    </div>
 
     <!-- All Others Instructions -->
     <div *ngSwitchDefault>Visit this page on your <strong>Android</strong> or <strong>iOS</strong> device for App
