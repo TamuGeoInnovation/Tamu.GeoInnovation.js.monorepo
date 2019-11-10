@@ -1,10 +1,24 @@
 export class Device {
-  private OS;
-  private OSOperations;
+  /**
+   * Dictionary of supported device operating systems that can be
+   * detected by this class.
+   */
+  private OS: IOperatingSystems;
+
+  /**
+   * For any given operating system, the a list of supported operations.
+   *
+   * Public member tests reflect on this collection to determine if the identified
+   * operating system supports an operation.
+   */
+  private Operations: IDeviceOSOperations;
+
+  /**
+   * Identified OS at class initialization.
+   */
   public identity: IDeviceOSIdentity;
 
   constructor() {
-    // Supported operating systems
     this.OS = {
       UNKNOWN: {
         code: -1,
@@ -24,8 +38,7 @@ export class Device {
       }
     };
 
-    // Supported operations
-    this.OSOperations = {
+    this.Operations = {
       1: {
         version: this.androidVersion,
         standalone: this.androidStandalone
@@ -69,26 +82,35 @@ export class Device {
     return this.OS.UNKNOWN;
   };
 
-  public OSVersion = () => {
-    if (this.OSOperations[this.identity.code]) {
-      return this.OSOperations[this.identity.code].version();
+  /**
+   * Determines the operating system version of supported devices.
+   *
+   * `null` returned for any devices for which the version operation is unsupported.
+   */
+  public OSVersion = (): IDeviceOSVersion | null => {
+    if (this.Operations[this.identity.code]) {
+      return this.Operations[this.identity.code].version();
     } else {
       console.log('OS Version Identification not Supported for OS');
     }
   };
 
-  public standalone = () => {
-    if (this.OSOperations[this.identity.code]) {
-      return this.OSOperations[this.identity.code].standalone();
+  /**
+   * Tests if the application is running as a PWA or added to home screen, in which case the device
+   * would report as running in "standalone" mode.
+   */
+  public standalone = (): boolean => {
+    if (this.Operations[this.identity.code]) {
+      return this.Operations[this.identity.code].standalone();
     } else {
       console.log('Device standalone not supported by device');
     }
   };
 
-  private testOSVersion = (platformRegex, appVersionRegex): IDeviceOSVersion | null => {
+  private testOSVersion = (platform: RegExp, appVersion: RegExp): IDeviceOSVersion | null => {
     // From: https://stackoverflow.com/a/14223920/1865449
-    if (platformRegex.test(navigator.platform)) {
-      const version = navigator.appVersion.match(appVersionRegex);
+    if (platform.test(navigator.platform)) {
+      const version = navigator.appVersion.match(appVersion);
       return {
         major: !isNaN(parseInt(version[1], 10)) ? parseInt(version[1], 10) : 0,
         minor: !isNaN(parseInt(version[2], 10)) ? parseInt(version[2], 10) : 0,
@@ -99,14 +121,23 @@ export class Device {
     }
   };
 
+  /**
+   * Calls the `testOSVersion` function with iOS-specific RegExp which will return iOS version.
+   */
   private iOSVersion = (): IDeviceOSVersion | null => {
     return this.testOSVersion(/iP(hone|od|ad)/, /OS (\d+)_(\d+)_?(\d+)?/);
   };
 
+  /**
+   * Calls the `testOSVersion` function with Android-specific RegExp which will return Android OS version.
+   */
   private androidVersion = (): IDeviceOSVersion | null => {
     return this.testOSVersion(/Android/, /Android (\d+).(\d+).?(\d+)?/);
   };
 
+  /**
+   * Called by the `standalone` public member whenever the identified device is an iOS device.
+   */
   private iOSStandalone = () => {
     if (window && window.navigator && (<INavigatorExtension>window.navigator).standalone) {
       return (<INavigatorExtension>window.navigator).standalone === true;
@@ -115,9 +146,16 @@ export class Device {
     }
   };
 
+  /**
+   * Called by the `standalone` public member whenever the identified device is an Android device.
+   */
   private androidStandalone = () => {
     return window.matchMedia('(display-mode: standalone)').matches;
   };
+}
+
+export interface IOperatingSystems {
+  [key: string]: IDeviceOSIdentity;
 }
 
 export interface IDeviceOSIdentity {
@@ -126,8 +164,10 @@ export interface IDeviceOSIdentity {
 }
 
 interface IDeviceOSOperations {
-  version?: boolean;
-  standalone?: boolean;
+  [key: number]: {
+    version?: () => IDeviceOSVersion | null;
+    standalone?: () => boolean;
+  };
 }
 
 export interface IDeviceOSVersion {
