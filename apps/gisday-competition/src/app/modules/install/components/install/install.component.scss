@@ -4,7 +4,7 @@
   padding: 1rem;
   @include flexbox();
   @include flex-direction(column);
-  @include justify-content(center);
+  // @include justify-content(center);
   @include align-items(center);
 }
 

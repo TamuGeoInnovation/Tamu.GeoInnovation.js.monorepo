@@ -5,7 +5,7 @@
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "/app/",
-  "start_url": "/app/submission",
+  "start_url": "/app/#/submission",
   "description": "The Official GIS Day VGA Competitions App.",
   "icons": [
     {
