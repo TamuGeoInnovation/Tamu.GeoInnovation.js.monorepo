@@ -15,5 +15,8 @@ h1 {
 .app-install {
   @include flexbox();
   @include flex-direction(column);
-  width: 100%;
+
+  &.mobile {
+    width: 100%;
+  }
 }

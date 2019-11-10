@@ -9,11 +9,11 @@ import { Device, IDeviceOSVersion } from '@tamu-gisc/common/utils/device';
 })
 export class InstallComponent implements OnInit {
   public device: Device;
-  public deviceOSVersion: IDeviceOSVersion;
+  public version: IDeviceOSVersion;
   constructor() {}
 
   public ngOnInit() {
     this.device = new Device();
-    this.deviceOSVersion = this.device.OSVersion();
+    this.version = this.device.OSVersion();
   }
 }

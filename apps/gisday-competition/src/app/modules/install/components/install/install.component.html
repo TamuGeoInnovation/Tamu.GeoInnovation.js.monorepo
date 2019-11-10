@@ -4,7 +4,8 @@
         <span *ngSwitchDefault>Mobile</span>
     </span> Device</h1>
 
-<div [ngSwitch]="device.identity.code" class="app-install">
+<div [ngSwitch]="device.identity.code" class="app-install"
+    [ngClass]="{'mobile': device.identity.code == 1 || device.identity.code == 2}">
     <!-- Android Instructions -->
     <div *ngSwitchCase="1">
 
@@ -66,16 +67,14 @@
 
     <!-- iOS Instructions -->
     <div *ngSwitchCase="2">
-        <div *ngIf="deviceOSVersion?.major < 11">
+        <div *ngIf="version?.major < 11">
 
-            <p>Your version of iOS ({{deviceOSVersion?.major}}.{{deviceOSVersion?.minor}}.{{deviceOSVersion?.patch}}) is
+            <p>Your version of iOS <span
+                    *ngIf="version !== null">({{version?.major}}.{{version?.minor}}.{{version?.patch}})</span> is
                 not supported. A minimum iOS version of <strong>11.0.1</strong> is required.</p>
-
-            <p *ngIf="deviceOSVersion?.major">It appears you are on
-                version {{deviceOSVersion?.major}}.{{deviceOSVersion?.minor}}.{{deviceOSVersion?.patch}}</p>
         </div>
 
-        <div *ngIf="deviceOSVersion?.major >= 11">
+        <div *ngIf="version?.major >= 11">
             <tamu-gisc-accordion [expanded]="true">
                 <tamu-gisc-accordion-title>Instructions</tamu-gisc-accordion-title>
                 <tamu-gisc-accordion-content>
