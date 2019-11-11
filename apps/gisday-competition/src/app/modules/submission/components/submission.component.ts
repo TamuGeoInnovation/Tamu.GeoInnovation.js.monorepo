@@ -3,6 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { combineLatest, Observable, BehaviorSubject, of, throwError } from 'rxjs';
 import { switchMap, shareReplay, debounceTime, take, catchError } from 'rxjs/operators';
 
+import { Angulartics2 } from 'angulartics2';
+
 import { LocationService } from '../providers/location.service';
 import { SubmissionService } from '../providers/submission.service';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
@@ -67,7 +69,8 @@ export class SubmissionComponent implements OnInit {
     private submissionService: SubmissionService,
     private settings: SettingsService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private analytics: Angulartics2
   ) {}
 
   public ngOnInit() {
@@ -142,7 +145,14 @@ export class SubmissionComponent implements OnInit {
                     return of(true);
                   } else {
                     this.form.status = -1;
-                    console.warn(res);
+
+                    this.analytics.eventTrack.next({
+                      action: 'Create',
+                      properties: {
+                        category: 'Routing',
+                        label: JSON.stringify(res)
+                      }
+                    });
                     return of(false);
                   }
                 })
@@ -151,12 +161,28 @@ export class SubmissionComponent implements OnInit {
               return of(false);
             }
           } catch (err) {
+            this.analytics.eventTrack.next({
+              action: 'Error',
+              properties: {
+                category: 'Submission',
+                label: JSON.stringify(err)
+              }
+            });
+
             return throwError('Error submitting.');
           }
         }),
         catchError((err) => {
           this.form.status = -1;
-          console.warn(err);
+
+          this.analytics.eventTrack.next({
+            action: 'Create',
+            properties: {
+              category: 'Routing',
+              label: JSON.stringify(err)
+            }
+          });
+
           return of(err);
         })
       )

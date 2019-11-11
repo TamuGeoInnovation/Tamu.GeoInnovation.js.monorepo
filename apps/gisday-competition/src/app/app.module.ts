@@ -1,6 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { Angulartics2Module } from 'angulartics2';
+import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
+
 import { AppRoutingModule } from './modules/routing/routing.module';
 
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -15,6 +18,7 @@ import { UINavigationMobileTabModule } from '@tamu-gisc/ui-kits/ngx/navigation/m
   imports: [
     BrowserModule,
     AppRoutingModule,
+    Angulartics2Module.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
     EnvironmentModule,
     UINavigationMobileTabModule
