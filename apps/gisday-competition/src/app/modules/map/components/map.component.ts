@@ -79,7 +79,7 @@ export class MapComponent implements OnInit {
         spatialReference: {
           wkid: 102100
         },
-        zoom: 16,
+        zoom: 15,
         popup: {
           dockOptions: {
             buttonEnabled: false,
