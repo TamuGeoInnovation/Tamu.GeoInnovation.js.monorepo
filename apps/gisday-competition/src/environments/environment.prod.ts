@@ -9,7 +9,7 @@ import { Connections, Definitions as d, Protocol, HostName } from './definitions
 
 export * from './definitions';
 
-export const LeaderboardUrl = `${Protocol}/${HostName}/Rest/Leaderboard/Get/`;
+export const LeaderboardUrl = `${Protocol}/${HostName}/Rest/Leaderboard/Get`;
 export const SubmissionsUrl = `${Protocol}/${HostName}/Rest/Signage/Get/Submissions/?&geoJSON=true`;
 export const SubmissionsPostUrl = `${Protocol}/${HostName}/Rest/Signage/Push/Submissions/`;
 

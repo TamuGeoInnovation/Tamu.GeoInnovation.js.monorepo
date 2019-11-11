@@ -13,7 +13,7 @@ import { Connections, Definitions as d, Protocol, HostName } from './definitions
 
 export * from './definitions';
 
-export const LeaderboardUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Rest/Leaderboard/Get/`;
+export const LeaderboardUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Rest/Leaderboard/Get`;
 export const SubmissionsUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Rest/Signage/Get/Submissions/?&geoJSON=true`;
 export const SubmissionsPostUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Rest/Signage/Push/Submissions/`;
 
