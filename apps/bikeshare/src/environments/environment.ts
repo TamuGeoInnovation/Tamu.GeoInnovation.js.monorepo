@@ -82,10 +82,10 @@ export const LayerSources: LayerSource[] = [
         type: 'heatmap',
         colorStops: [
           { ratio: 0, color: 'rgba(255, 255, 255, 0)' },
-          { ratio: 0.2, color: 'rgba(255, 255, 255, 1)' },
-          { ratio: 0.5, color: 'rgba(255, 140, 0, 1)' },
-          { ratio: 0.8, color: 'rgba(255, 140, 0, 1)' },
-          { ratio: 1, color: 'rgba(255, 0, 0, 1)' }
+          { ratio: 0.2, color: 'rgba(90, 90, 40, 1)' },
+          { ratio: 0.5, color: 'rgba(110, 110, 40, 1)' },
+          { ratio: 0.8, color: 'rgba(140, 140, 40, 1)' },
+          { ratio: 1, color: 'rgba(255, 255, 0, 1)' }
         ],
         minPixelIntensity: 0,
         maxPixelIntensity: 20,
@@ -106,8 +106,8 @@ export const LayerSources: LayerSource[] = [
         type: 'heatmap',
         colorStops: [
           { ratio: 0, color: 'rgba(255, 255, 255, 0)' },
-          { ratio: 0.2, color: 'rgba(255, 255, 255, 1)' },
-          { ratio: 0.5, color: 'rgba(255, 140, 0, 1)' },
+          { ratio: 0.2, color: 'rgba(255, 70, 0, 1)' },
+          { ratio: 0.5, color: 'rgba(255, 110, 0, 1)' },
           { ratio: 0.8, color: 'rgba(255, 140, 0, 1)' },
           { ratio: 1, color: 'rgba(255, 0, 0, 1)' }
         ],
@@ -129,14 +129,14 @@ export const LayerSources: LayerSource[] = [
       renderer: {
         type: 'heatmap',
         colorStops: [
-          { ratio: 0, color: 'rgba(255, 255, 255, 0)' },
-          { ratio: 0.2, color: 'rgba(255, 255, 255, 1)' },
-          { ratio: 0.5, color: 'rgba(255, 140, 0, 1)' },
-          { ratio: 0.8, color: 'rgba(255, 140, 0, 1)' },
-          { ratio: 1, color: 'rgba(255, 0, 0, 1)' }
+          { ratio: 0, color: 'rgba(85, 6, 6, 0)' },
+          { ratio: 0.2, color: 'rgba(255,0,0, 0.2)' },
+          { ratio: 0.3, color: 'rgba(191,1,1, 0.2)' },
+          { ratio: 0.7, color: 'rgba(155,0,4, 0.2)' },
+          { ratio: 1, color: 'rgba(130,6,6, 0.2)' }
         ],
         minPixelIntensity: 0,
-        maxPixelIntensity: 150,
+        maxPixelIntensity: 40,
         blurRadius: 7
       }
     }
@@ -153,14 +153,14 @@ export const LayerSources: LayerSource[] = [
       renderer: {
         type: 'heatmap',
         colorStops: [
-          { ratio: 0, color: 'rgba(255, 255, 255, 0)' },
-          { ratio: 0.2, color: 'rgba(255, 255, 255, 1)' },
-          { ratio: 0.5, color: 'rgba(0, 140, 255, 1)' },
-          { ratio: 0.8, color: 'rgba(0, 140, 255, 1)' },
-          { ratio: 1, color: 'rgba(255, 0, 0, 1)' }
+          { ratio: 0, color: 'rgba(10, 6, 85, 0)' },
+          { ratio: 0.2, color: 'rgba(0, 212, 255, 0.2)' },
+          { ratio: 0.4, color: 'rgba(0, 128, 230, 0.2)' },
+          { ratio: 0.7, color: 'rgba(1, 66, 198, 0.2)' },
+          { ratio: 1, color: 'rgba(0, 0, 147, 0.2)' }
         ],
         minPixelIntensity: 0,
-        maxPixelIntensity: 150,
+        maxPixelIntensity: 40,
         blurRadius: 7
       }
     }
