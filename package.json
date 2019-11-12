@@ -64,7 +64,7 @@
     "@angular-devkit/build-ng-packagr": "~0.803.17",
     "@angular/cli": "8.3.17",
     "@angular/compiler-cli": "^8.2.13",
-    "@angular/language-service": "^9.0.0-next.7",
+    "@angular/language-service": "^8.2.13",
     "@nrwl/cypress": "8.4.12",
     "@nrwl/jest": "8.4.12",
     "@nrwl/web": "8.4.12",

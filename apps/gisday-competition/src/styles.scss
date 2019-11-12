@@ -111,10 +111,22 @@ textarea {
   border-radius: 99rem;
   text-align: center;
   font-weight: 600;
+  position: relative;
+  overflow: hidden;
   @include transition(color 0.3s, background 0.3s);
 
   &.disabled {
     background: #e0e0e0;
     color: #757575;
+  }
+
+  .progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: rgba(80, 0, 0, 0.5);
+    z-index: 0;
+    @include transition(width 0.3s);
   }
 }

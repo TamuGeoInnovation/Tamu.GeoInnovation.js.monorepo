@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { combineLatest, Observable, BehaviorSubject, of, throwError } from 'rxjs';
+import { combineLatest, Observable, BehaviorSubject, of, throwError, EMPTY } from 'rxjs';
 import { switchMap, shareReplay, debounceTime, take, catchError } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
@@ -9,6 +9,7 @@ import { LocationService } from '../providers/location.service';
 import { SubmissionService } from '../providers/submission.service';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'tamu-gisc-submission',
@@ -60,7 +61,8 @@ export class SubmissionComponent implements OnInit {
   public form = {
     valid: undefined,
     // 0 is default, 1 is success, -1 is fail
-    status: 0
+    status: 0,
+    progress: 0
   };
 
   constructor(
@@ -107,6 +109,7 @@ export class SubmissionComponent implements OnInit {
       .pipe(
         take(1),
         switchMap((v) => {
+          // If form valid status is true, return the observable values for submission
           if (Boolean(v)) {
             return combineLatest([
               this.file,
@@ -139,21 +142,19 @@ export class SubmissionComponent implements OnInit {
               this.form.status = 1;
 
               return this.submissionService.postSubmission(data).pipe(
-                switchMap((res) => {
-                  if (res && res.ResultCode && res.ResultCode === '400') {
-                    this.router.navigate(['complete'], { relativeTo: this.route });
-                    return of(true);
+                switchMap((event) => {
+                  if (event.type === HttpEventType.UploadProgress) {
+                    this.form.progress = event.loaded / event.total;
+                    return EMPTY;
+                  } else if (event.type === HttpEventType.Response) {
+                    if (event && event.body.ResultCode && event.body.ResultCode === '400') {
+                      this.router.navigate(['complete'], { relativeTo: this.route });
+                      return of(true);
+                    } else {
+                      return throwError(event);
+                    }
                   } else {
-                    this.form.status = -1;
-
-                    this.analytics.eventTrack.next({
-                      action: 'Create',
-                      properties: {
-                        category: 'Routing',
-                        label: JSON.stringify(res)
-                      }
-                    });
-                    return of(false);
+                    return EMPTY;
                   }
                 })
               );
@@ -161,24 +162,17 @@ export class SubmissionComponent implements OnInit {
               return of(false);
             }
           } catch (err) {
-            this.analytics.eventTrack.next({
-              action: 'Error',
-              properties: {
-                category: 'Submission',
-                label: JSON.stringify(err)
-              }
-            });
-
-            return throwError('Error submitting.');
+            return throwError(err);
           }
         }),
         catchError((err) => {
           this.form.status = -1;
+          this.form.progress = 0;
 
           this.analytics.eventTrack.next({
-            action: 'Create',
+            action: 'Submission Fail',
             properties: {
-              category: 'Routing',
+              category: 'Error',
               label: JSON.stringify(err)
             }
           });

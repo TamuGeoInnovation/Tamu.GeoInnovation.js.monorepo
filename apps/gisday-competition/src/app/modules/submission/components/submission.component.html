@@ -33,7 +33,8 @@
 
 <div class="button" role="button" (click)="submitSubmission()"
     [class.disabled]="!(form.valid | async) || form.status === 1">
-    <div [ngSwitch]="form.status">
+    <div class="progress" *ngIf="form.status !== -1" [style.width.%]="form.progress * 100"></div>
+    <div class="status-text" [ngSwitch]="form.status">
         <div *ngSwitchCase="1">Submitting...</div>
         <div *ngSwitchCase="-1">Error!</div>
         <div *ngSwitchDefault>Submit</div>
