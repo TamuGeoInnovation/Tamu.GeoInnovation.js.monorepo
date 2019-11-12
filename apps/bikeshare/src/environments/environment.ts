@@ -82,10 +82,10 @@ export const LayerSources: LayerSource[] = [
         type: 'heatmap',
         colorStops: [
           { ratio: 0, color: 'rgba(255, 255, 255, 0)' },
-          { ratio: 0.2, color: 'rgba(90, 90, 40, 1)' },
-          { ratio: 0.5, color: 'rgba(110, 110, 40, 1)' },
-          { ratio: 0.8, color: 'rgba(140, 140, 40, 1)' },
-          { ratio: 1, color: 'rgba(255, 255, 0, 1)' }
+          { ratio: 0.2, color: 'rgba(255, 0, 244, 1)' },
+          { ratio: 0.5, color: 'rgba(214, 2, 227, 1)' },
+          { ratio: 0.8, color: 'rgba(210, 0, 210, 1)' },
+          { ratio: 1, color: 'rgba(117,0,106, 1)' }
         ],
         minPixelIntensity: 0,
         maxPixelIntensity: 20,
