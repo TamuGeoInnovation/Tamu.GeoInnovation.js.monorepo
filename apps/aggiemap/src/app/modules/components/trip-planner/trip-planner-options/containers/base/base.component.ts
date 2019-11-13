@@ -103,7 +103,7 @@ export class TripPlannerOptionsComponent implements OnInit {
     this.plannerService.updateTravelOptions(opt);
   }
 
-  public getOptionvalue(option) {
+  public getOptionvalue<T>(option: string): Observable<T> {
     return this.travelOptions.pipe(pluck(option));
   }
 
