@@ -26,7 +26,7 @@ describe('ContainerComponent', () => {
     }).compileComponents();
   }));
 
-  it('should create and close', (done) => {
+  it('should create and close', () => {
     inject([NotificationContainerComponent], (notificationContainerComponent: NotificationContainerComponent) => {
       expect(notificationContainerComponent).toBeTruthy();
       expect(notificationContainerComponent.ngOnInit()).toBeUndefined();
