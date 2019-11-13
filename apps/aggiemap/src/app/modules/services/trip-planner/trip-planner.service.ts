@@ -13,7 +13,19 @@ import {
   zip,
   Subject
 } from 'rxjs';
-import { catchError, concatMap, flatMap, map, mergeMap, scan, switchMap, tap, toArray, takeUntil } from 'rxjs/operators';
+import {
+  catchError,
+  concatMap,
+  flatMap,
+  map,
+  mergeMap,
+  scan,
+  switchMap,
+  tap,
+  toArray,
+  takeUntil,
+  pluck
+} from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -445,33 +457,24 @@ export class TripPlannerService implements OnDestroy {
     // Combine module provider require and map service store to keep a reference and execute
     // additional methods when both streams complete.
     zip(moduleProvider.require(['RouteTask', 'RouteParameters', 'FeatureSet', 'Graphic'], true), mapService.store)
-      .pipe(takeUntil(this.$destroy))
-      .subscribe(
-        (
-          results: [
-            {
-              RouteTask: esri.RouteTaskConstructor;
-              RouteParameters: esri.RouteParametersConstructor;
-              FeatureSet: esri.FeatureSetConstructor;
-              Graphic: esri.GraphicConstructor;
-            },
-            MapServiceInstance
-          ]
-        ) => {
-          this._Modules.TripTask = results[0].RouteTask;
-          this._Modules.TripParameters = results[0].RouteParameters;
-          this._Modules.FeatureSet = results[0].FeatureSet;
-          this._Modules.Graphic = results[0].Graphic;
+      .pipe(
+        pluck('results'),
+        takeUntil(this.$destroy)
+      )
+      .subscribe(([modules, instance]: [TripPlannerModules, MapServiceInstance]) => {
+        this._Modules.TripTask = modules.RouteTask;
+        this._Modules.TripParameters = modules.RouteParameters;
+        this._Modules.FeatureSet = modules.FeatureSet;
+        this._Modules.Graphic = modules.Graphic;
 
-          // Locally store instance of map and view, allowing direct map and view manipulation
-          this._map = results[1].map;
-          this._view = results[1].view;
+        // Locally store instance of map and view, allowing direct map and view manipulation
+        this._map = instance.map;
+        this._view = instance.view;
 
-          this.loadTripFromURL();
+        this.loadTripFromURL();
 
-          this.initializeHandlers();
-        }
-      );
+        this.initializeHandlers();
+      });
 
     // Subscribe to the trip planner connection service and store the selected connection url when available.
     this._currentNetworkSubscrption = this.connectionService.currentNetwork
@@ -1207,7 +1210,7 @@ export class TripPlannerService implements OnDestroy {
                 from(rq.tasks).pipe(
                   concatMap((t) => {
                     // Execute inner trip task with own trip params
-                    return from((t.task.solve(t.params) as undefined) as Promise<unknown>).pipe(
+                    return from((t.task.solve(t.params) as undefined) as Promise<esri.RouteResult>).pipe(
                       catchError((err) => {
                         // Get the travel mode for the failed request found in the error object.
                         const responseTravelMode = err.details.requestOptions.query.travelMode;
@@ -3063,4 +3066,6 @@ interface TripPlannerModules {
   TripParameters: esri.RouteParametersConstructor;
   FeatureSet: esri.FeatureSetConstructor;
   Graphic: esri.GraphicConstructor;
+  RouteTask: esri.RouteTaskConstructor;
+  RouteParameters: esri.RouteParametersConstructor;
 }
