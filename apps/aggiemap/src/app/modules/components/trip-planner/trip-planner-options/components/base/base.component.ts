@@ -19,7 +19,7 @@ export class TripPlannerOptionsBaseComponent {
    * @type {*}
    * @memberof TripPlannerParkingOptionsComponent
    */
-  public settings?: Observable<unknown>;
+  public settings?: Observable<TripPlannerRuleMode[]>;
 
   public travelOptions = this.tripPlanner.TravelOptions;
 
