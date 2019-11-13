@@ -1,7 +1,7 @@
 import { async, inject, TestBed } from '@angular/core/testing';
 import { SafeHtmlPipe } from './safe-html.pipe';
 
-describe('MarkdownParsePipe', () => {
+describe('SafeHtmlPipe', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       providers: [SafeHtmlPipe]
