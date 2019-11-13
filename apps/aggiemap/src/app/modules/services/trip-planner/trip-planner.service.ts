@@ -52,8 +52,6 @@ import * as gju from 'geojson-utils';
 import { minBy } from 'lodash';
 
 import esri = __esri;
-import typeUniqueValueInfo = __esri.typeUniqueValueInfo;
-import SearchProperties = __esri.SearchProperties;
 
 @Injectable()
 export class TripPlannerService implements OnDestroy {
