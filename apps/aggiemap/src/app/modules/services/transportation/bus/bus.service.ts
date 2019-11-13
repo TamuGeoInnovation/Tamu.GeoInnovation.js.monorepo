@@ -58,8 +58,8 @@ export class BusService {
 
       // TODO: Probably have to dispose of this event handlers on service destroy.
       // Detect bus layer changes and set graphics as the service value.
-      busLayer.graphics.on('change', (event) => {
-        return this._busLayerGraphics.next(Array.from(event.added));
+      busLayer.graphics.on('change', (event: { target: esri.Collection<esri.Graphic> }) => {
+        return this._busLayerGraphics.next(event.target.clone().toArray());
       });
     });
   }
