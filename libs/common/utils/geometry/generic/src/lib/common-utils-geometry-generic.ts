@@ -5,7 +5,6 @@ import { getSmallestIndex } from '@tamu-gisc/common/utils/number';
 import { centroidFromGeometry, FeatureUnion } from '@tamu-gisc/common/utils/geometry/esri';
 
 import * as gju from 'geojson-utils';
-import esri = __esri;
 
 /**
  * Gets user geolocation if user allows.
@@ -37,19 +36,14 @@ export function getGeolocation(asObservable?: boolean): Promise<Coordinates> | O
  * @returns True if string is coordinate pair, false if not
  */
 export function isCoordinatePair(input: string): boolean {
-  let ret = false;
-
-  if (input.includes(',')) {
-    const set = input.split(',');
-
-    if (set.length !== 2) {
-      return;
-    }
-
-    ret = !isNaN(parseFloat(set[0].trim())) && !isNaN(parseFloat(set[1].trim()));
+  if (!input.includes(',')) {
+    return false;
   }
-
-  return ret;
+  const set = input.split(',');
+  if (set.length !== 2) {
+    return false;
+  }
+  return !isNaN(parseFloat(set[0].trim())) && !isNaN(parseFloat(set[1].trim()));
 }
 
 /**

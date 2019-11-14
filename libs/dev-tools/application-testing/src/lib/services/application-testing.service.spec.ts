@@ -10,4 +10,8 @@ describe('TestingService', () => {
   it('should be created', inject([TestingService], (testingService: TestingService) => {
     expect(testingService).toBeTruthy();
   }));
+
+  it('should have the correct testing value', inject([TestingService], (testingService: TestingService) => {
+    expect(testingService.get('isTesting')).toBeTruthy();
+  }));
 });

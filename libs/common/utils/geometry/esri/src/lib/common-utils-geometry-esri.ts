@@ -40,15 +40,13 @@ export function centroidFromPolygonGeometry(feature: esri.Polygon): Point {
     };
   } else if (feature.rings) {
     // Result type is a Turf Point
-    const p: tFeature<tPoint> = tCentroid(tPolygon([...(feature as esri.Polygon).rings]));
+    const p: tFeature<tPoint> = tCentroid(tPolygon([...feature.rings]));
 
     if (p && p.geometry && p.geometry.coordinates) {
       return {
         latitude: p.geometry.coordinates[1],
         longitude: p.geometry.coordinates[0]
       };
-    } else {
-      return undefined;
     }
   } else {
     throw new Error('Feature provided does not contain rings.');

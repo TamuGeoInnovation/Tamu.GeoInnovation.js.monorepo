@@ -4,8 +4,11 @@ import { NotificationContainerComponent } from './notification-container.compone
 import { AppStorage } from '@tamu-gisc/common/ngx/local-store';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { LOCAL_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { Notification } from '../../services/notification.service';
 
 describe('ContainerComponent', () => {
+  const testNotification = new Notification({ id: '1', title: 'test', message: 'no' });
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -16,17 +19,18 @@ describe('ContainerComponent', () => {
         },
         {
           provide: env,
-          useValue: { NotificationEvents: [] }
+          useValue: { NotificationEvents: [testNotification] }
         }
       ],
       imports: [EnvironmentModule, StorageServiceModule]
     }).compileComponents();
   }));
 
-  it('should create', inject(
-    [NotificationContainerComponent],
-    (notificationContainerComponent: NotificationContainerComponent) => {
+  it('should create and close', () => {
+    inject([NotificationContainerComponent], (notificationContainerComponent: NotificationContainerComponent) => {
       expect(notificationContainerComponent).toBeTruthy();
-    }
-  ));
+      expect(notificationContainerComponent.ngOnInit()).toBeUndefined();
+      expect(notificationContainerComponent.close(testNotification)).toBeUndefined();
+    })();
+  });
 });

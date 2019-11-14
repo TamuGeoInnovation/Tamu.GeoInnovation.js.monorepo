@@ -1,4 +1,4 @@
-import { dateForDateTimeString } from './common-utils-date';
+import { dateForDateTimeString, timeStringForDate } from './common-utils-date';
 
 describe('dateForTimeString', () => {
   it('should return valid dates for valid AM strings', () => {
@@ -49,5 +49,19 @@ describe('dateForTimeString', () => {
     expect(() => dateForDateTimeString(null).toTimeString()).toThrow(
       new TypeError("Cannot read property 'startsWith' of null")
     );
+  });
+});
+
+describe('timeStringForDate', () => {
+  it('should handle AM times', () => {
+    const today = new Date();
+    today.setHours(2, 0, 0, 0);
+    expect(timeStringForDate(today)).toEqual('02:00 AM');
+  });
+
+  it('should handle PM times', () => {
+    const today = new Date();
+    today.setHours(16, 0, 0, 0);
+    expect(timeStringForDate(today)).toEqual('04:00 PM');
   });
 });

@@ -201,7 +201,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
       throw new Error('No chart data source provided.');
     }
 
-    // On eveery source emission, execute the transformers which creates a data config specific
+    // On every source emission, execute the transformers which creates a data config specific
     // to the subclass calling the method.
     //
     // Generated config is returned by the scan operator which will trigger chart container to
