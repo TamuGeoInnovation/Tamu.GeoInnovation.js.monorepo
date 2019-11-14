@@ -457,10 +457,7 @@ export class TripPlannerService implements OnDestroy {
     // Combine module provider require and map service store to keep a reference and execute
     // additional methods when both streams complete.
     zip(moduleProvider.require(['RouteTask', 'RouteParameters', 'FeatureSet', 'Graphic'], true), mapService.store)
-      .pipe(
-        pluck('results'),
-        takeUntil(this.$destroy)
-      )
+      .pipe(takeUntil(this.$destroy))
       .subscribe(([modules, instance]: [TripPlannerModules, MapServiceInstance]) => {
         this._Modules.TripTask = modules.RouteTask;
         this._Modules.TripParameters = modules.RouteParameters;
