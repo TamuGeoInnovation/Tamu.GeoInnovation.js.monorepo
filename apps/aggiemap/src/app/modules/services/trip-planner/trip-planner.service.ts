@@ -2514,12 +2514,10 @@ export class TripPlannerService implements OnDestroy {
     // This is necessary to calculate nearest door relative to a reference point
     const overlappedGroups = stops.reduce(
       (prev: TripPoint[][], current: TripPoint, index: number, arr: TripPoint[]): TripPoint[][] => {
-        if (index === 1) {
-          return [[(prev as unknown) as TripPoint, current]];
-        } else if (index !== arr.length) {
-          prev[index - 1] = [arr[index - 1], current];
+        if (index >= arr.length - 1) {
           return prev;
         }
+        return [...prev, [current, arr[index + 1]]];
       },
       []
     );
