@@ -17,7 +17,7 @@ import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
-import { TamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
+import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
@@ -229,7 +229,7 @@ export const MY_NATIVE_FORMATS = {
     DlDateTimePickerDateModule,
     DlDateTimePickerModule,
     SidebarModule,
-    TamuBrandingModule,
+    UITamuBrandingModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule
   ],
