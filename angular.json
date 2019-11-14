@@ -964,7 +964,6 @@
         }
       }
     },
-<<<<<<< HEAD
     "bikeshare": {
       "projectType": "application",
       "schematics": {
