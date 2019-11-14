@@ -1,4 +1,12 @@
-import { Component, ComponentFactoryResolver, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ComponentFactoryResolver,
+  ComponentRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { RenderHostDirective } from '../../../../directives/render-host.directive';
@@ -6,6 +14,7 @@ import { RenderHostDirective } from '../../../../directives/render-host.directiv
 import { PopupService } from '../../services/popup.service';
 import { EsriMapService, HitTestSnapshot } from '@tamu-gisc/maps/esri';
 import esri = __esri;
+import { BasePopupComponent } from '../../components/base/base.popup.component';
 
 @Component({
   selector: 'feature-popup',
@@ -115,11 +124,11 @@ export class PopupComponent implements OnInit, OnDestroy {
       container.clear();
 
       // Create component from resolved component from component factory
-      const resolvedComponent = container.createComponent(factory);
+      const resolvedComponent = container.createComponent(factory) as ComponentRef<BasePopupComponent>;
 
       // Pass in feature data to the created component
       // Will only handle a single feature for now.
-      (<any>resolvedComponent.instance).data = this.snapshot.graphics[0];
+      resolvedComponent.instance.data = this.snapshot.graphics[0];
     }
   }
 

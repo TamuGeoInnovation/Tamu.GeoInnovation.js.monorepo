@@ -18,7 +18,8 @@ describe('SettingsService', () => {
   it('should filter persistent compound settings', () => {
     const service: SettingsService = TestBed.get(SettingsService);
     expect(
-      (service as any).getPersistentCompoundSettings({
+      /* tslint:disable */ (service as any).getPersistentCompoundSettings({
+        /* tslint:enable */
         no: {
           storage: {},
           persistent: false
@@ -42,7 +43,8 @@ describe('SettingsService', () => {
   it('should filter persistent compound settings keys', () => {
     const service: SettingsService = TestBed.get(SettingsService);
     expect(
-      (service as any).getPersistentCompoundSettingsKeys({
+      /* tslint:disable */ (service as any).getPersistentCompoundSettingsKeys({
+        /* tslint:enable */
         no: {
           storage: {},
           persistent: false
@@ -61,7 +63,8 @@ describe('SettingsService', () => {
   it('should reduce compound to simple settings branch', () => {
     const service: SettingsService = TestBed.get(SettingsService);
     expect(
-      (service as any).compoundToSimpleSettingsBranch({
+      /* tslint:disable */ (service as any).compoundToSimpleSettingsBranch({
+        /* tslint:enable */
         bf: {
           storage: {},
           value: false

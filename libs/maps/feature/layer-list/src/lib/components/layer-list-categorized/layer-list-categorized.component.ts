@@ -24,7 +24,7 @@ import esri = __esri;
 export class LayerListCategorizedComponent extends LayerListComponent implements OnInit, OnDestroy {
   public categorized: Array<LayerListCategory<esri.Layer>>;
 
-  private _$destroy: Subject<any> = new Subject();
+  private _$destroy: Subject<unknown> = new Subject();
 
   constructor(
     private lyrs: LayerListService,
@@ -52,7 +52,7 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
         mergeMap((arr) =>
           from(arr).pipe(
             groupBy((item) => item.category),
-            mergeMap((group) => group.pipe(reduce((acc: any, cur: any) => [...acc, cur], []))),
+            mergeMap((group) => group.pipe(reduce((acc, cur) => [...acc, cur], []))),
             map((val) => {
               return {
                 layers: [...val],

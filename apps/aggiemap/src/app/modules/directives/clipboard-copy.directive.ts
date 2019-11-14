@@ -30,7 +30,7 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
    * @type {*}
    * @memberof ClipboardCopyDirective
    */
-  private _clipboard: any;
+  private _clipboard: Clipboard;
 
   constructor(private el: ElementRef) {}
 

@@ -14,8 +14,8 @@ export class OrderByPipe implements PipeTransform {
     // Return early if no collection
     if (collection && collection.length > 0) {
       const sorted = collection.sort((first, second) => {
-        const firstValue: any = getPropertyValue(first, path);
-        const secondValue: any = getPropertyValue(second, path);
+        const firstValue: number = getPropertyValue(first, path);
+        const secondValue: number = getPropertyValue(second, path);
 
         if (firstValue === undefined || secondValue === undefined) {
           return 0;

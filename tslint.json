@@ -37,7 +37,7 @@
     "no-unused-expression": true,
     "no-var-keyword": true,
     "object-literal-sort-keys": false,
-    "no-any": false,
+    "no-any": true,
     "prefer-const": true,
     "radix": true,
     "triple-equals": [true, "allow-null-check"],

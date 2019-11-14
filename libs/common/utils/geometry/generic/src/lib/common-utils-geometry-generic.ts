@@ -2,7 +2,7 @@ import { Observable, from } from 'rxjs';
 import { Point } from '@tamu-gisc/common/types';
 
 import { getSmallestIndex } from '@tamu-gisc/common/utils/number';
-import { centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
+import { centroidFromGeometry, FeatureUnion } from '@tamu-gisc/common/utils/geometry/esri';
 
 import * as gju from 'geojson-utils';
 import esri = __esri;
@@ -93,10 +93,7 @@ export function parseCoordinates(input: string): Point {
  * @param points Collection of points.
  * @returns Calculated distances.
  */
-export function relativeDistance(
-  reference: Point,
-  points: { geometry: esri.Geometry | esri.Polygon | esri.Multipoint | esri.Point | esri.Polyline | Point }[]
-): number[] {
+export function relativeDistance(reference: Point, points: RelativeDistancePoint[]): number[] {
   const distances = points.reduce((acc, curr) => {
     const currGeometry = centroidFromGeometry(curr.geometry);
 
@@ -109,4 +106,8 @@ export function relativeDistance(
   }, []);
 
   return distances;
+}
+
+export interface RelativeDistancePoint {
+  geometry: FeatureUnion;
 }

@@ -7,7 +7,7 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
   styleUrls: ['./select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SelectComponent {
+export class SelectComponent<T> {
   /**
    * Functions as the intial/default or state value of the select element.
    *
@@ -17,7 +17,7 @@ export class SelectComponent {
    * @memberof SelectComponent
    */
   @Input()
-  public model: any;
+  public model: T;
 
   /**
    * Iterable data collection that will be used to generate the dropdown options.
@@ -26,7 +26,7 @@ export class SelectComponent {
    * @memberof SelectComponent
    */
   @Input()
-  public data: any[];
+  public data: T[];
 
   /**
    * Dot-notation string representing the evaluated property used in the display of the option element.
@@ -73,7 +73,7 @@ export class SelectComponent {
    * @memberof SelectComponent
    */
   @Output()
-  public changed: EventEmitter<any> = new EventEmitter();
+  public changed: EventEmitter<T> = new EventEmitter();
 
   constructor() {}
 
@@ -92,9 +92,9 @@ export class SelectComponent {
    *
    * If no value template is provided, return will be the object reference.
    */
-  public getDataItemValue<T extends object>(iterated: T, template?: string): T | object {
+  public getDataItemValue<U extends object>(iterated: U, template?: string): U | object {
     if (template !== undefined) {
-      return getPropertyValue<T>(iterated, template);
+      return getPropertyValue<U>(iterated, template);
     } else {
       return iterated;
     }

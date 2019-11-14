@@ -13,7 +13,19 @@ import {
   zip,
   Subject
 } from 'rxjs';
-import { catchError, concatMap, flatMap, map, mergeMap, scan, switchMap, tap, toArray, takeUntil } from 'rxjs/operators';
+import {
+  catchError,
+  concatMap,
+  flatMap,
+  map,
+  mergeMap,
+  scan,
+  switchMap,
+  tap,
+  toArray,
+  takeUntil,
+  pluck
+} from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -29,9 +41,11 @@ import {
   TripPoint,
   TripPointProperties,
   TripPointOriginTransformationsParams,
-  TripPointOriginParams
+  TripPointOriginParams,
+  TripPointGeometry,
+  TripPointAttributes
 } from './core/trip-planner-core';
-import { BusService } from '../transportation/bus/bus.service';
+import { BusService, TimetableRow } from '../transportation/bus/bus.service';
 import { InrixService } from '../transportation/drive/inrix.service';
 import { BikeService } from '../transportation/bike/bike.service';
 import { ParkingService } from '../transportation/drive/parking.service';
@@ -120,7 +134,7 @@ export class TripPlannerService implements OnDestroy {
    * @type {*}
    * @memberof TripPlannerService
    */
-  private _Modules: any = {};
+  private _Modules: Partial<TripPlannerModules> = {};
 
   public readonly rule_walk: TripPlannerRule = {
     modes: [
@@ -258,7 +272,7 @@ export class TripPlannerService implements OnDestroy {
 
   private _TravelOptions: BehaviorSubject<TravelOptions> = new BehaviorSubject({});
 
-  public readonly TravelOptions: Observable<any> = this._TravelOptions.asObservable();
+  public readonly TravelOptions: Observable<TravelOptions> = this._TravelOptions.asObservable();
 
   /**
    * A container which will contain any number of RouteTask stops
@@ -311,7 +325,7 @@ export class TripPlannerService implements OnDestroy {
 
   private _map: esri.Map;
 
-  private _view: esri.MapView;
+  private _view: esri.MapView | esri.SceneView;
 
   /**
    * Stores observable subscription to the trip planner connection service current network.
@@ -349,7 +363,7 @@ export class TripPlannerService implements OnDestroy {
 
   public initializeHandlers() {
     this._view.on('click', (e: esri.MapViewClickEvent) => {
-      const layer: any = this._map.findLayerById('buildings-layer');
+      const layer = this._map.findLayerById('buildings-layer') as esri.FeatureLayer;
       // Allow click coordinates only when on the trip planner route
       if (this.router.url.includes('trip')) {
         this.mapService.featuresIntersectingPoint(layer, e.mapPoint).then((res) => {
@@ -444,15 +458,15 @@ export class TripPlannerService implements OnDestroy {
     // additional methods when both streams complete.
     zip(moduleProvider.require(['RouteTask', 'RouteParameters', 'FeatureSet', 'Graphic'], true), mapService.store)
       .pipe(takeUntil(this.$destroy))
-      .subscribe((results: [any, MapServiceInstance]) => {
-        this._Modules.TripTask = results[0].RouteTask;
-        this._Modules.TripParameters = results[0].RouteParameters;
-        this._Modules.FeatureSet = results[0].FeatureSet;
-        this._Modules.Graphic = results[0].Graphic;
+      .subscribe(([modules, instance]: [TripPlannerModules, MapServiceInstance]) => {
+        this._Modules.TripTask = modules.RouteTask;
+        this._Modules.TripParameters = modules.RouteParameters;
+        this._Modules.FeatureSet = modules.FeatureSet;
+        this._Modules.Graphic = modules.Graphic;
 
         // Locally store instance of map and view, allowing direct map and view manipulation
-        this._map = results[1].map;
-        this._view = results[1].view;
+        this._map = instance.map;
+        this._view = instance.view;
 
         this.loadTripFromURL();
 
@@ -491,12 +505,16 @@ export class TripPlannerService implements OnDestroy {
    */
   public getQualifyingTravelModes(returnNumbersOnly?: false): TripPlannerRuleMode[];
   public getQualifyingTravelModes(returnNumbersOnly?: true): number[];
-  public getQualifyingTravelModes(returnNumbersOnly?: any): any {
+  public getQualifyingTravelModes(returnNumbersOnly?: boolean): (TripPlannerRuleMode | number)[] {
     const numberOnly = returnNumbersOnly || false;
 
     const modes = this._Rules.value
       .map((rule) => {
-        return this.getTravelModeFromRule(rule, numberOnly);
+        if (numberOnly) {
+          return this.getTravelModeFromRule(rule, numberOnly);
+        } else if (!numberOnly) {
+          return this.getTravelModeFromRule(rule);
+        }
       })
       .filter((mode) => {
         return mode !== undefined;
@@ -651,9 +669,9 @@ export class TripPlannerService implements OnDestroy {
    */
   public getTravelModeFromRule(rule: TripPlannerRule, numberOnly?: false): TripPlannerRuleMode;
   public getTravelModeFromRule(rule: TripPlannerRule, numberOnly?: true): number;
-  public getTravelModeFromRule(rule: TripPlannerRule, numberOnly?: Boolean): any {
+  public getTravelModeFromRule(rule: TripPlannerRule, numberOnly?: boolean): TripPlannerRuleMode | number {
     // Reduce travel options to only that that are enumerable. This will leave behind only options that can
-    // be simply checked against truthy/falsy values by virtue of sipmly existing in the travel mode.
+    // be simply checked against truthy/falsy values by virtue of simply existing in the travel mode.
     //
     // Condition is set in the travel mode (e.g. accessible = true). That condition must be met in state
     // value to be eligible to become a potential mode result. If the state condition is not met, it is rejected.
@@ -896,7 +914,7 @@ export class TripPlannerService implements OnDestroy {
                 wkid: 4326
               },
               stops: undefined,
-              travelMode: result.mode
+              travelMode: result.mode.toString()
             })
           });
         });
@@ -1010,7 +1028,7 @@ export class TripPlannerService implements OnDestroy {
                     // and splice it into the other stops.
                     const parkingStop = new TripPoint({
                       source: 'coordinates',
-                      originAttributes: result[nearest].attributes as any,
+                      originAttributes: result[nearest].attributes as TripPointAttributes,
                       originGeometry: { ...nearestGeometry },
                       originParameters: {
                         type: 'coordinates',
@@ -1055,15 +1073,15 @@ export class TripPlannerService implements OnDestroy {
                         stopName: feature.attributes.name
                         // stopName: feature.attributes.name
                       },
-                      geometry: {
+                      geometry: ({
                         type: 'point',
                         latitude: feature.geometry.latitude,
                         longitude: feature.geometry.longitude
-                      }
+                      } as unknown) as esri.GeometryProperties
                     });
                   })
                 }),
-                travelMode: stopsAndMode.mode.mode,
+                travelMode: stopsAndMode.mode.mode.toString(),
                 returnDirections: true,
                 returnZ: false
               }),
@@ -1092,11 +1110,11 @@ export class TripPlannerService implements OnDestroy {
                             routeName: trip.modeSource.mode,
                             stopName: feature.attributes.name
                           },
-                          geometry: {
+                          geometry: ({
                             type: 'point',
                             latitude: feature.geometry.latitude,
                             longitude: feature.geometry.longitude
-                          }
+                          } as unknown) as esri.GeometryProperties
                         });
                       })
                     }),
@@ -1137,15 +1155,15 @@ export class TripPlannerService implements OnDestroy {
                             routeName: trip.modeSource.mode,
                             stopName: feature.attributes.name
                           },
-                          geometry: {
+                          geometry: ({
                             type: 'point',
                             latitude: feature.geometry.latitude,
                             longitude: feature.geometry.longitude
-                          }
+                          } as unknown) as esri.GeometryProperties
                         });
                       })
                     }),
-                    travelMode: travelMode,
+                    travelMode: travelMode.toString(),
                     returnDirections: true,
                     returnZ: false
                   })
@@ -1189,8 +1207,8 @@ export class TripPlannerService implements OnDestroy {
                 from(rq.tasks).pipe(
                   concatMap((t) => {
                     // Execute inner trip task with own trip params
-                    return from(t.task.solve(t.params)).pipe(
-                      catchError((err): any => {
+                    return from((t.task.solve(t.params) as undefined) as Promise<esri.RouteResult>).pipe(
+                      catchError((err) => {
                         // Get the travel mode for the failed request found in the error object.
                         const responseTravelMode = err.details.requestOptions.query.travelMode;
 
@@ -1214,7 +1232,7 @@ export class TripPlannerService implements OnDestroy {
               ]);
             }),
             mergeMap((responses) => {
-              const results: any = responses.flat();
+              const results = (responses.flat() as unknown[]) as RouteResult[];
 
               // If any one of the route result responses at this stage is of type TripResult, it is a result an error condition.
               const anyError = results.find((r) => r instanceof TripResult);
@@ -1223,7 +1241,7 @@ export class TripPlannerService implements OnDestroy {
               if (anyError) {
                 // Make shallow copy of response trip result.
                 // This already contains the trip result error.
-                const failedResult = new TripResult(results[0]);
+                const failedResult = new TripResult((results[0] as unknown) as TripResultProperties);
 
                 // Report failed trip result.
                 this.tripTaskFail(failedResult);
@@ -1265,7 +1283,7 @@ export class TripPlannerService implements OnDestroy {
                 // If request was successful, value will be TripTask result. In which case, create a new Trip Result
                 // and append the result property
                 const matchedResult = previousState.find(
-                  (r) => r.params.travelMode.toString() === (<any>response).routeResults[0].routeName
+                  (r) => r.params.travelMode.toString() === (response as RouteResult).routeResults[0].routeName
                 );
 
                 return of(true).pipe(
@@ -1365,7 +1383,7 @@ export class TripPlannerService implements OnDestroy {
                     const [modeSwitches, baseDate] = argument;
 
                     // Flatten the modeSwitches graphics.
-                    const features = modeSwitches.reduce((acc, curr) => {
+                    const features: esri.Graphic[] = modeSwitches.reduce((acc, curr) => {
                       if (curr.graphics && curr.graphics.length > 0) {
                         return [...acc, ...curr.graphics];
                       } else {
@@ -1392,9 +1410,9 @@ export class TripPlannerService implements OnDestroy {
                       features[features.length - 1].attributes.text = `Finish at ${lastStopName} at ${lastTime}`;
                     }
 
-                    const features_length = (<any>features).length;
+                    const features_length = features.length;
                     // Overwrite total travel time to be the relative time of the last item in the features array.
-                    // This ensures it applies the addtiional time padding such as bus linger time and traffic multipliers.
+                    // This ensures it applies the additional time padding such as bus linger time and traffic multipliers.
                     if (features_length > 0 && features[0].attributes.relativeTime != null) {
                       (<RouteResult>response).routeResults[0].directions.totalDriveTime =
                         features[features_length - 1].attributes.relativeTime;
@@ -1473,7 +1491,7 @@ export class TripPlannerService implements OnDestroy {
           // (res) => {
           //   console.log('emit');
           // })
-          (res: Array<any>) => {
+          (res) => {
             this.result = res.flat();
           },
           (err) => {
@@ -2234,7 +2252,11 @@ export class TripPlannerService implements OnDestroy {
       };
 
       // Categorize blocks for querying.
-      const categorizedBlocks: Array<any> = blocks.map((block, index) => {
+      const categorizedBlocks: {
+        category: TripPointProperties['source'];
+        index: number;
+        value: string;
+      }[] = blocks.map((block, index) => {
         return {
           category: identifyBlock(block),
           index: index,
@@ -2265,8 +2287,8 @@ export class TripPlannerService implements OnDestroy {
             throwError('No query categories.');
           }
         }),
-        map((res: SearchResult) => {
-          return res.results.map((result: SearchResultItem, index) => {
+        map((res: SearchResult<esri.Graphic>) => {
+          return res.results.map((result: SearchResultItem<esri.Graphic>, index) => {
             return new TripPoint({
               index: categorizedQueryBlocks[index].index,
               source: categorizedQueryBlocks[index].category,
@@ -2289,7 +2311,7 @@ export class TripPlannerService implements OnDestroy {
       // For any query blocks, geolocation blocks perform a single geolocation check and generate trip points
       // using the same returned geolocation API response.
       const geolocationCategory = of(categorizedGeolocationBlocks).pipe(
-        switchMap((blks): any => {
+        switchMap((blks) => {
           if (blks.length > 0) {
             return getGeolocation(true);
           } else {
@@ -2490,30 +2512,27 @@ export class TripPlannerService implements OnDestroy {
     // For example an input of 5 stops: [p1, p2, p3, p4, p5]
     // Results in a grouping: [[p1, p2], [p2, p3], [p3, p4], [p4, p5]]
     // This is necessary to calculate nearest door relative to a reference point
-    const overlappedGroups: any = stops.reduce(
-      (prev: TripPoint | TripPoint[], current: TripPoint, index: number, arr: TripPoint[]): any => {
-        if (index === 1) {
-          return [[prev, current]];
-        } else if (index !== arr.length) {
-          prev[index - 1] = [arr[index - 1], current];
+    const overlappedGroups = stops.reduce(
+      (prev: TripPoint[][], current: TripPoint, index: number, arr: TripPoint[]): TripPoint[][] => {
+        if (index >= arr.length - 1) {
           return prev;
         }
-      }
+        return [...prev, [current, arr[index + 1]]];
+      },
+      []
     );
 
-    const groupPromises: Array<Promise<TripPoint>> = overlappedGroups
+    const groupPromises = overlappedGroups
       .map((group: TripPoint[], index: number) => {
+        // In the first group, both points will be transformed
         if (index === 0) {
-          // In the first group, both points will be transformed
-          if (index === 0) {
-            return [
-              this.findNearestDoorForTripPoint(group[0], group[1]),
-              this.findNearestDoorForTripPoint(group[1], group[0])
-            ];
-          }
+          return [
+            this.findNearestDoorForTripPoint(group[0], group[1]),
+            this.findNearestDoorForTripPoint(group[1], group[0])
+          ];
         } else {
           // On any other group other than the first, only the second point will be transformed, relative to the first.
-          return this.findNearestDoorForTripPoint(group[1], group[0]);
+          return [this.findNearestDoorForTripPoint(group[1], group[0])];
         }
       })
       .reduce((acc, val) => acc.concat(val));
@@ -2546,98 +2565,100 @@ export class TripPlannerService implements OnDestroy {
 
     return new Promise((resolve) => {
       try {
-        const buildingNumber = (<any>stop.attributes).Bldg_Number;
-        return this.mapService.findLayerOrCreateFromSource(source).then((layer: esri.FeatureLayer): any => {
-          return layer
-            .queryFeatures({
-              where: `BldgNumber = '${buildingNumber}'`,
-              returnGeometry: true,
-              outSpatialReference: {
-                wkid: 4326
-              },
-              outFields: ['*']
-            })
-            .then((res) => {
-              // Filter out the doors that are suitable for routing depending on ADA routing mode
-              return res.features.filter((door) => {
-                // Door classifications
-                //
-                // 0= Non-Routable Entrance (Restricted, Courtyard)
-                // 1= Non-ADA Entrance
-                // 2= ADA Manual Entrance
-                // 3= ADA Assisted/Automatic
-                if (this._TravelOptions.value.accessible) {
-                  return door.attributes.Routing_Class === 2 || door.attributes.Routing_Class === 3;
-                } else {
-                  return (
-                    door.attributes.Routing_Class === 1 ||
-                    door.attributes.Routing_Class === 2 ||
-                    door.attributes.Routing_Class === 3
-                  );
-                }
-              });
-            })
-            .then((doors) => {
-              if (doors.length > 0) {
-                // If doors found, find the one with shortest straight line distance from the provided point
-                const distanceRef = [];
-                const distanceValue = [];
-
-                this.moduleProvider.require(['Point'], true).then((modules: { Point: esri.PointConstructor }) => {
-                  doors.forEach((door) => {
-                    // Point used to calculate euclidian distance between it and the reference point
-                    const currentPoint = new modules.Point({
-                      latitude: door.geometry['latitude'],
-                      longitude: door.geometry['longitude']
-                    });
-
-                    const relativePoint = new modules.Point({
-                      latitude: relativeTo.geometry.latitude,
-                      longitude: relativeTo.geometry.longitude
-                    });
-
-                    distanceRef.push({
-                      distance: currentPoint.distance(relativePoint),
-                      fid: door.attributes['GIS.FCOR.Bldg_Entrance.FID']
-                    });
-
-                    distanceValue.push(currentPoint.distance(relativePoint));
-                  });
-
-                  // Get the index of the smallest value in the distances array
-                  const min = minBy(distanceRef, (o) => {
-                    return o.distance;
-                  });
-
-                  const ret: esri.Graphic = doors.find((feature) => {
-                    return feature.attributes['GIS.FCOR.Bldg_Entrance.FID'] === min.fid;
-                  });
-
-                  const transformationDefinition: TripPointOriginTransformationsParams = {
-                    type: 'nearest-door',
-                    value: {
-                      latitude: (<any>ret.geometry).latitude,
-                      longitude: (<any>ret.geometry).longitude
-                    }
-                  };
-
-                  // Return the door with the shortest calculated shortest distance
-                  const transformed = stop;
-
-                  transformed.addTransformation(transformationDefinition);
-                  transformed.geometry.latitude = (<any>ret.geometry).latitude;
-                  transformed.geometry.longitude = (<any>ret.geometry).longitude;
-
-                  resolve(transformed);
+        const buildingNumber = (stop.attributes as TripPointAttributesWithBldgNumber).Bldg_Number;
+        return this.mapService.findLayerOrCreateFromSource(source).then(
+          (layer: esri.FeatureLayer): Promise<TripPoint> => {
+            return (layer
+              .queryFeatures({
+                where: `BldgNumber = '${buildingNumber}'`,
+                returnGeometry: true,
+                outSpatialReference: {
+                  wkid: 4326
+                },
+                outFields: ['*']
+              })
+              .then((res) => {
+                // Filter out the doors that are suitable for routing depending on ADA routing mode
+                return res.features.filter((door) => {
+                  // Door classifications
+                  //
+                  // 0= Non-Routable Entrance (Restricted, Courtyard)
+                  // 1= Non-ADA Entrance
+                  // 2= ADA Manual Entrance
+                  // 3= ADA Assisted/Automatic
+                  if (this._TravelOptions.value.accessible) {
+                    return door.attributes.Routing_Class === 2 || door.attributes.Routing_Class === 3;
+                  } else {
+                    return (
+                      door.attributes.Routing_Class === 1 ||
+                      door.attributes.Routing_Class === 2 ||
+                      door.attributes.Routing_Class === 3
+                    );
+                  }
                 });
-              } else {
+              })
+              .then((doors) => {
+                if (doors.length > 0) {
+                  // If doors found, find the one with shortest straight line distance from the provided point
+                  const distanceRef = [];
+                  const distanceValue = [];
+
+                  this.moduleProvider.require(['Point'], true).then((modules: { Point: esri.PointConstructor }) => {
+                    doors.forEach((door) => {
+                      // Point used to calculate euclidian distance between it and the reference point
+                      const currentPoint = new modules.Point({
+                        latitude: door.geometry['latitude'],
+                        longitude: door.geometry['longitude']
+                      });
+
+                      const relativePoint = new modules.Point({
+                        latitude: relativeTo.geometry.latitude,
+                        longitude: relativeTo.geometry.longitude
+                      });
+
+                      distanceRef.push({
+                        distance: currentPoint.distance(relativePoint),
+                        fid: door.attributes['GIS.FCOR.Bldg_Entrance.FID']
+                      });
+
+                      distanceValue.push(currentPoint.distance(relativePoint));
+                    });
+
+                    // Get the index of the smallest value in the distances array
+                    const min = minBy(distanceRef, (o) => {
+                      return o.distance;
+                    });
+
+                    const ret: esri.Graphic = doors.find((feature) => {
+                      return feature.attributes['GIS.FCOR.Bldg_Entrance.FID'] === min.fid;
+                    });
+
+                    const transformationDefinition: TripPointOriginTransformationsParams = {
+                      type: 'nearest-door',
+                      value: {
+                        latitude: (<TripPointGeometry>ret.geometry).latitude,
+                        longitude: (<TripPointGeometry>ret.geometry).longitude
+                      }
+                    };
+
+                    // Return the door with the shortest calculated shortest distance
+                    const transformed = stop;
+
+                    transformed.addTransformation(transformationDefinition);
+                    transformed.geometry.latitude = (<TripPointGeometry>ret.geometry).latitude;
+                    transformed.geometry.longitude = (<TripPointGeometry>ret.geometry).longitude;
+
+                    resolve(transformed);
+                  });
+                } else {
+                  resolve(stop);
+                }
+              })
+              .catch(() => {
                 resolve(stop);
-              }
-            })
-            .catch(() => {
-              resolve(stop);
-            });
-        });
+              }) as unknown) as Promise<TripPoint>;
+          }
+        );
       } catch (err) {
         console.warn(`Potential error in nearest door: `, err.message);
         // If any error in the chain, resolve with the original stop;
@@ -2655,7 +2676,7 @@ export class TripPlannerService implements OnDestroy {
  * @extends {esri.RouteResult}
  */
 export interface RouteResult extends esri.RouteResult {
-  routeResults?: Array<any>;
+  routeResults?: esri.DirectionsFeatureSet;
 }
 
 /**
@@ -2721,12 +2742,21 @@ export interface TripModeSwitch {
    * The result of determination calculations, if any, based on the requested travel mode.
    *
    * For example, bus modes will typically include some bus scheduling properties that will be used
-   * for UI display or futher calculations.
+   * for UI display or further calculations.
    *
    * @type {*}
    * @memberof TripModeSwitch
    */
-  results?: any;
+  results?: {
+    bus?: {
+      route_number: string;
+      linger_minutes: number;
+      timetable: TimetableRow[];
+      stop_count: number;
+      stops_list: unknown[];
+    };
+    relativeTime?: number;
+  };
 }
 
 /**
@@ -2747,7 +2777,7 @@ export interface TripResultProperties {
   isProcessing?: boolean;
 
   /**
-   * Describes if the trip result is in an erorred state.
+   * Describes if the trip result is in an error state.
    *
    * @type {boolean}
    * @memberof TripResultProperties
@@ -2755,12 +2785,12 @@ export interface TripResultProperties {
   isError?: boolean;
 
   /**
-   * If the trip request fails, property will be popluated with the error object.
+   * If the trip request fails, property will be populated with the error object.
    *
    * @type {*}
    * @memberof TripResultProperties
    */
-  error?: any;
+  error?: EsriError;
 
   /**
    * Reflects the finalized state of the result.
@@ -2775,7 +2805,7 @@ export interface TripResultProperties {
    * @type {*}
    * @memberof TripResultProperties
    */
-  isFulfilled?: any;
+  isFulfilled?: boolean;
 
   /**
    * Describes the trip request attempt count at the point of an error or success.
@@ -2968,7 +2998,11 @@ export interface TripPlannerRuleMode {
    * @type {*}
    * @memberof TripPlannerRuleMode
    */
-  determinants?: any;
+  determinants?: {
+    accessible?: boolean;
+    parking_pass?: boolean;
+    bike_share?: boolean;
+  };
 
   /**
    * Travel option key string array that describes the effects when the travel option has a view model and the mode is "selected".
@@ -3013,3 +3047,20 @@ export interface TravelOptions {
 }
 
 export type TimeModeOption = 'now' | 'leave' | 'arrive';
+
+interface EsriError extends Error {
+  details: esri.EsriErrorDetails;
+}
+
+interface TripPointAttributesWithBldgNumber extends TripPointAttributes {
+  Bldg_Number: string;
+}
+
+interface TripPlannerModules {
+  TripTask: esri.RouteTaskConstructor;
+  TripParameters: esri.RouteParametersConstructor;
+  FeatureSet: esri.FeatureSetConstructor;
+  Graphic: esri.GraphicConstructor;
+  RouteTask: esri.RouteTaskConstructor;
+  RouteParameters: esri.RouteParametersConstructor;
+}

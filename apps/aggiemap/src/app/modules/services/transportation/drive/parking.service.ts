@@ -126,7 +126,7 @@ export class ParkingService {
           (results): Observable<ParkingFeature> => {
             // Return only the features in the search result.
             // Breadcrumming, source data, etc, are not needed from this point on.
-            return from(results.results.map((r) => r.features).flat());
+            return from(results.results.map((r) => r.features as ParkingFeature[]).flat());
           }
         ),
         filter((lot) => {
@@ -293,7 +293,7 @@ export class ParkingService {
               // Parking lots/decks can be multipolygon features. Our utilities only support basic polygons, so
               // this set of features must be converted into Esri Graphics that will calculate the centroid of each.
               const flattened = normalized.map((f) => {
-                return new Graphic({ attributes: f.attributes, geometry: { type: 'polygon', ...f.geometry } } as any);
+                return new Graphic({ attributes: f.attributes, geometry: { type: 'polygon', ...f.geometry } });
               });
 
               if (flattened.length > 0) {

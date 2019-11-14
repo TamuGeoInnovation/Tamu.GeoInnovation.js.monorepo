@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
-import { EsriMapService, MapConfig } from '../../services/map.service';
+import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/map.service';
 
 @Component({
   selector: 'tamu-gisc-esri-map',
@@ -11,7 +11,7 @@ export class EsriMapComponent implements OnInit {
   public config: MapConfig;
 
   @Output()
-  public loaded: EventEmitter<any> = new EventEmitter();
+  public loaded: EventEmitter<MapServiceInstance> = new EventEmitter();
 
   @ViewChild('container', { static: true })
   private container: ElementRef;
