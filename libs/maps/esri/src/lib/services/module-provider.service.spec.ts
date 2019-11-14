@@ -1,11 +1,13 @@
-import { inject, TestBed } from '@angular/core/testing';
+import { async, inject, TestBed } from '@angular/core/testing';
 
 import { EsriModuleProviderService } from './module-provider.service';
 
 describe('EsriModuleProviderService', () => {
-  it('should be created', () => {
-    inject([EsriModuleProviderService], (esriModuleProviderService: EsriModuleProviderService) => {
-      expect(esriModuleProviderService).toBeTruthy();
-    });
-  });
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({ providers: [EsriModuleProviderService] }).compileComponents();
+  }));
+
+  it('should be created', inject([EsriModuleProviderService], (esriModuleProviderService: EsriModuleProviderService) => {
+    expect(esriModuleProviderService).toBeTruthy();
+  }));
 });

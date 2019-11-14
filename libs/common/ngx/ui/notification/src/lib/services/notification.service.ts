@@ -160,7 +160,7 @@ export class NotificationService {
     const flattened = notifications.data.flat();
 
     if (flattened.length === 0) {
-      return;
+      return [];
     }
 
     // For notifications with a range, return those for which the current date is active.

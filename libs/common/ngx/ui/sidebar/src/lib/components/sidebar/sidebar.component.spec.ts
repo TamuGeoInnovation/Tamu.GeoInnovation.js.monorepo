@@ -1,11 +1,14 @@
-import { inject } from '@angular/core/testing';
+import { async, inject, TestBed } from '@angular/core/testing';
 
 import { SidebarComponent } from './sidebar.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SidebarComponent', () => {
-  it('should create', () => {
-    inject([SidebarComponent], (sidebarComponent: SidebarComponent) => {
-      expect(sidebarComponent).toBeTruthy();
-    });
-  });
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({ providers: [SidebarComponent], imports: [RouterTestingModule] }).compileComponents();
+  }));
+
+  it('should create', inject([SidebarComponent], (sidebarComponent: SidebarComponent) => {
+    expect(sidebarComponent).toBeTruthy();
+  }));
 });
