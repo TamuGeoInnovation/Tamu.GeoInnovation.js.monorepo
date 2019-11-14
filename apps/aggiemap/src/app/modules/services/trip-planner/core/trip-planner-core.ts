@@ -297,7 +297,7 @@ export class TripPoint {
    */
   public toEsriGraphic(): esri.Graphic {
     const attributes = { ...this.attributes };
-    const geometry: esri.Geometry = this.originGeometry.raw.clone();
+    const geometry: Partial<esri.Geometry> = { ...this.originGeometry.raw };
 
     ((geometry as unknown) as { type: string }).type = getGeometryType(geometry);
 

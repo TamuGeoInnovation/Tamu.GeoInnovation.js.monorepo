@@ -139,8 +139,10 @@ export interface IChartConfiguration {
   type?: string;
 
   data?: {
+    labels?: Array<unknown>
     datasets?: {
       label: string;
+      data: Array<unknown>
       backgroundColor?: Array<string>;
       borderColor?: Array<string>;
       borderWidth?: number;

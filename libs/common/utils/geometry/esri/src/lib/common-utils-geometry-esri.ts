@@ -68,7 +68,7 @@ export function centroidFromPolygonGeometry(feature: esri.Polygon): Point {
  * @export
  * @param  geometry String representing geometry type.
  */
-export function getGeometryType(geometry: esri.Geometry): string {
+export function getGeometryType(geometry: Partial<esri.Geometry>): string {
   if (geometry) {
     if (('latitude' in geometry && 'longitude' in geometry) || ('y' in geometry && 'x' in geometry)) {
       return 'point';

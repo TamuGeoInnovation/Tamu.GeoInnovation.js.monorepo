@@ -1383,7 +1383,7 @@ export class TripPlannerService implements OnDestroy {
                     const [modeSwitches, baseDate] = argument;
 
                     // Flatten the modeSwitches graphics.
-                    const features = modeSwitches.reduce((acc, curr) => {
+                    const features: esri.Graphic[] = modeSwitches.reduce((acc, curr) => {
                       if (curr.graphics && curr.graphics.length > 0) {
                         return [...acc, ...curr.graphics];
                       } else {
@@ -1412,7 +1412,7 @@ export class TripPlannerService implements OnDestroy {
 
                     const features_length = features.length;
                     // Overwrite total travel time to be the relative time of the last item in the features array.
-                    // This ensures it applies the addtiional time padding such as bus linger time and traffic multipliers.
+                    // This ensures it applies the additional time padding such as bus linger time and traffic multipliers.
                     if (features_length > 0 && features[0].attributes.relativeTime != null) {
                       (<RouteResult>response).routeResults[0].directions.totalDriveTime =
                         features[features_length - 1].attributes.relativeTime;
