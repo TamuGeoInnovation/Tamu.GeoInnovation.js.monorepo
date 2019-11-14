@@ -13,7 +13,6 @@ import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
-import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
@@ -33,6 +32,8 @@ import { BikeService } from '../services/transportation/bike/bike.service';
 import { ParkingService } from '../services/transportation/drive/parking.service';
 import { InrixService } from '../services/transportation/drive/inrix.service';
 import { EsriMapComponent } from '../../map/esri-map.component';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { DateComponent } from '../components/sidebar/components/date-picker/date.component';
 
 // Pipes
 import { RouteDirectionTransformerPipe, SearchResultPipe } from '../../../assets/pipes/common.pipe';
@@ -205,7 +206,6 @@ const hybridRoutes: Routes = [
     FormsModule,
     HttpClientModule,
     SettingsModule,
-    CommonNgxRouterModule,
     PipesModule,
     SkeletonModule,
     EsriMapModule,
@@ -218,7 +218,9 @@ const hybridRoutes: Routes = [
     DlDateTimePickerModule,
     SidebarModule,
     UITamuBrandingModule,
-    UIFormsModule
+    UIFormsModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule
   ],
   declarations: [
     BackdropComponent,
@@ -276,7 +278,8 @@ const hybridRoutes: Routes = [
     ClipboardCopyDirective,
     DraggableDirective,
     AccordionDirective,
-    AsyncContentLoadedDirective
+    AsyncContentLoadedDirective,
+    DateComponent
   ],
   providers: [
     TripPlannerConnectionService,
