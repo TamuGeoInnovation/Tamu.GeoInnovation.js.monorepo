@@ -1193,7 +1193,9 @@
             "jestConfig": "apps/bikeshare/jest.config.js",
             "tsConfig": "apps/bikeshare/tsconfig.spec.json",
             "setupFile": "apps/bikeshare/src/test-setup.ts"
-          },
+          }
+        }
+      },
       "schematics": {
         "@nrwl/angular:component": {
           "styleext": "scss"
