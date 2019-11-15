@@ -23,17 +23,17 @@ jobs:
       - run:
           name: Run Prettier
           command: npx prettier **/*.ts --check
-#  deploy:
-#    machine:
-#      enabled: true
-#    steps:
       - run:
-          name: Generate Artifact
+          name: Generate Build Artifact
           command: |
             cd dist/apps
             zip -r /tmp/aggiemap-dist.zip aggiemap
       - store_artifacts:
           path: /tmp/aggiemap-dist.zip
+  deploy:
+    machine:
+      enabled: true
+    steps:
       - run:
           name: Deploy Dev Build
           command: curl https://dev.aggiemap.tamue.edu/deploy/deploy.aspx?build_number=$CIRCLE_BUILD_NUM
