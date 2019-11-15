@@ -23,10 +23,10 @@ jobs:
       - run:
           name: Run Prettier
           command: npx prettier **/*.ts --check
-  deploy:
-    machine:
-      enabled: true
-    steps:
+#  deploy:
+#    machine:
+#      enabled: true
+#    steps:
       - run:
           name: Generate Artifact
           command: |
