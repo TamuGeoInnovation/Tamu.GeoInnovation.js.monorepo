@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
+import { LayerListService } from '../../../../services/ui/layer-list.service';
 
 @Component({
   selector: 'date-picker',
