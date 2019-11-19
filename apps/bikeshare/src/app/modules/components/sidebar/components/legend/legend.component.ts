@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -7,14 +7,14 @@ import { takeUntil } from 'rxjs/operators';
 import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
-import { RouterHistoryService } from '../../../../services/router-history.service';
+import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
-import { LegendService } from '../../../../services/ui/legend.service';
+import { LegendService } from '../../services/legend.service';
 
 import { LegendItem } from '@tamu-gisc/common/types';
 
 @Component({
-  selector: 'legend',
+  selector: 'tamu-gisc-legend',
   templateUrl: './legend.component.html',
   styleUrls: ['./legend.component.scss']
 })
@@ -44,7 +44,7 @@ export class LegendComponent implements OnInit, OnDestroy {
     this.history
       .last()
       .pipe(takeUntil(this._destroy$))
-      .subscribe((event: any) => {
+      .subscribe((event: RouterEvent) => {
         this._lastRoute = event.url;
       });
   }

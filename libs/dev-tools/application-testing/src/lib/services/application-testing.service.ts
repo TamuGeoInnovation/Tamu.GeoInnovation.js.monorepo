@@ -17,7 +17,7 @@ export class TestingService {
     return this.store.pipe(pluck(property));
   }
 
-  public set(property: string, value: any) {
+  public set(property: string, value: unknown) {
     const state = { ...this._store.value, [property]: value };
 
     this._store.next(state);

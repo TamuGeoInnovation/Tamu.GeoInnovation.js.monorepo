@@ -9,7 +9,8 @@
       <p>{{ category.title }}</p>
     </div>
 
-    <div class="category-item" accordion [accordionExpanded]="category.expanded">
+    <!-- TODO: Include later: accordion [accordionExpanded]="category.expanded" -->
+    <div class="category-item">
       <p *ngFor="let item of category.layers" class="layer-item" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible }" (click)="toggleLayer(item)">
         {{ item.title }}
       </p>

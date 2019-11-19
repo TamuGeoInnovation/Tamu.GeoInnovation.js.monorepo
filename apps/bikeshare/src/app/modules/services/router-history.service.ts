@@ -3,11 +3,11 @@ import { Router, Event } from '@angular/router';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 import { filter, pluck, last, mergeMap, take } from 'rxjs/operators';
 
-const initialHistoryState: RouterHistoryState = { historyEvents: [] };
+const initial: RouterHistoryState = { historyEvents: [] };
 
 @Injectable()
 export class RouterHistoryService {
-  private _state: BehaviorSubject<RouterHistoryState> = new BehaviorSubject(initialHistoryState);
+  private _state: BehaviorSubject<RouterHistoryState> = new BehaviorSubject(initial);
   private _state$: Observable<RouterHistoryState> = this._state.asObservable();
 
   constructor(private router: Router) {

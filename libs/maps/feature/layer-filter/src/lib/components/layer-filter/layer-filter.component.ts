@@ -80,7 +80,7 @@ export class LayerFilterComponent implements OnInit {
    */
   public field: Subject<esri.Field> = new Subject();
   public operator: Subject<string> = new Subject();
-  public value: Subject<any> = new Subject();
+  public value: Subject<string> = new Subject();
 
   /**
    * Observable stream returning an array limiting field
@@ -109,7 +109,7 @@ export class LayerFilterComponent implements OnInit {
             returnDistinctValues: true,
             outFields: [field.name],
             where: '1=1'
-          }) as any) as Promise<esri.FeatureSet>);
+          }) as unknown) as Promise<esri.FeatureSet>);
         }),
         pluck('features'),
         take(1),
@@ -139,7 +139,7 @@ export class LayerFilterComponent implements OnInit {
           of(layer),
           iif(
             () => Boolean(this.executeFilterQuery),
-            from((layer.queryFeatures({ where: where, outFields: ['*'] }) as any) as Promise<esri.FeatureSet>),
+            from((layer.queryFeatures({ where: where, outFields: ['*'] }) as unknown) as Promise<esri.FeatureSet>),
             of(false)
           )
         ])

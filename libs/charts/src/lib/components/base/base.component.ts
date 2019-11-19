@@ -14,7 +14,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
    * A collection of items (esri graphics or otherwise) used in processing to generate the `ChartConfig` datasets.
    */
   @Input()
-  public source: Observable<any>;
+  public source: Observable<unknown[]>;
 
   /**
    * Describes the format of the `source` collection format.
@@ -201,7 +201,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
       throw new Error('No chart data source provided.');
     }
 
-    // On eveery source emission, execute the transformers which creates a data config specific
+    // On every source emission, execute the transformers which creates a data config specific
     // to the subclass calling the method.
     //
     // Generated config is returned by the scan operator which will trigger chart container to
@@ -210,7 +210,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
       scan((acc, curr) => {
         // Asserting transformations as an `any` array, otherwise compiler does not like its original
         // union type.
-        const p = (<Array<any>>this.transformations)
+        const p = (<string[]>this.transformations)
           .map((transformation, index) => {
             const transformed = {
               value: this.valueForTransformationSet(transformation, curr).value,
@@ -244,7 +244,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
 
         // Emit generated config.
         return this.baseConfig;
-      }, [])
+      }, new ChartConfiguration())
     );
 
     this.chart.create(this.chartData);

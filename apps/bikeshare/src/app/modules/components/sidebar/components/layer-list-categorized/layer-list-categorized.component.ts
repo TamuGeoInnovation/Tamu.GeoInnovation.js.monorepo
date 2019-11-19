@@ -1,41 +1,44 @@
-import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { from, Subject } from 'rxjs';
 import { mergeMap, groupBy, reduce, map, toArray, takeUntil } from 'rxjs/operators';
 
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { LegendService } from '../../../../services/ui/legend.service';
-import { LayerListService, LayerListCategory } from '../../../../services/ui/layer-list.service';
-import { RouterHistoryService } from '../../../../services/router-history.service';
+import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import { LayerListService, LayerListCategory } from '../../services/layer-list.service';
+import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { LayerListComponent } from '../layer-list/layer-list.component';
 
 import { Angulartics2 } from 'angulartics2';
 
+import esri = __esri;
+
 @Component({
-  selector: 'layer-list-categorized',
+  selector: 'tamu-gisc-layer-list-categorized',
   templateUrl: './layer-list-categorized.component.html',
   styleUrls: ['../layer-list/layer-list.component.scss']
 })
 export class LayerListCategorizedComponent extends LayerListComponent implements OnInit, OnDestroy {
-  public categorized: Array<LayerListCategory>;
+  public categorized: Array<LayerListCategory<esri.Layer>>;
 
-  private _$destroy: Subject<any> = new Subject();
+  private _$destroy: Subject<unknown> = new Subject();
 
   constructor(
     private lyrs: LayerListService,
     private ms: EsriMapService,
-    private legs: LegendService,
-    private anl: Angulartics2,
+    // private anl: Angulartics2,
     private res: ResponsiveService,
     private loc: Location,
     private rtr: Router,
     private rt: ActivatedRoute,
-    private hs: RouterHistoryService
+    private hs: RouterHistoryService,
+    private env: EnvironmentService
   ) {
-    super(lyrs, ms, legs, anl, res, loc, rtr, rt, hs);
+    // super(lyrs, ms, anl, res, loc, rtr, rt, hs, env);
+    super(lyrs, ms, res, loc, rtr, rt, hs, env);
   }
 
   public ngOnInit() {
@@ -43,12 +46,13 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
 
     // Create a subscription to the layer list store value
     // and transform the value into a layer list category object array.
-    this.lyrs.store
+    this.lyrs
+      .layers()
       .pipe(
         mergeMap((arr) =>
           from(arr).pipe(
             groupBy((item) => item.category),
-            mergeMap((group) => group.pipe(reduce((acc: any, cur: any) => [...acc, cur], []))),
+            mergeMap((group) => group.pipe(reduce((acc, cur) => [...acc, cur], []))),
             map((val) => {
               return {
                 layers: [...val],
@@ -61,7 +65,7 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
           )
         )
       )
-      .subscribe((categories: LayerListCategory[]) => {
+      .subscribe((categories: LayerListCategory<esri.Layer>[]) => {
         // Once we have all the layer categories (LayerListCategory objects), transfer any expanded properties to keep
         // expanded categories expanded after the re-render triggered by model update.
         this.merge(categories);
@@ -80,10 +84,10 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
    * @param {LayerListCategory[]} categories
    * @memberof LayerListCategorizedComponent
    */
-  public merge(categories: LayerListCategory[]) {
+  public merge(categories: LayerListCategory<esri.Layer>[]) {
     if (categories && categories.length > 0) {
       this.categorized = categories.map(
-        (cat): LayerListCategory => {
+        (cat): LayerListCategory<esri.Layer> => {
           if (this.categorized && this.categorized.length > 0) {
             const existingCategory = this.categorized.find((l) => l.title === cat.title);
             if (existingCategory) {

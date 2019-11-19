@@ -1,12 +1,13 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 
 @Component({
-  selector: 'gisc-select',
+  selector: 'tamu-gisc-select',
   templateUrl: './select.component.html',
-  styleUrls: ['./select.component.scss']
+  styleUrls: ['./select.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SelectComponent {
+export class SelectComponent<T> {
   /**
    * Functions as the intial/default or state value of the select element.
    *
@@ -16,7 +17,7 @@ export class SelectComponent {
    * @memberof SelectComponent
    */
   @Input()
-  public model: any;
+  public model: T;
 
   /**
    * Iterable data collection that will be used to generate the dropdown options.
@@ -25,7 +26,7 @@ export class SelectComponent {
    * @memberof SelectComponent
    */
   @Input()
-  public data: any[];
+  public data: T[];
 
   /**
    * Dot-notation string representing the evaluated property used in the display of the option element.
@@ -72,7 +73,7 @@ export class SelectComponent {
    * @memberof SelectComponent
    */
   @Output()
-  public changed: EventEmitter<any> = new EventEmitter();
+  public changed: EventEmitter<T> = new EventEmitter();
 
   constructor() {}
 
@@ -89,12 +90,13 @@ export class SelectComponent {
   /**
    * Calls a utility function that evaluates the template against the iterated data item.
    *
-   * @param {*} iterated
-   * @param {string} template
-   * @returns
-   * @memberof SelectComponent
+   * If no value template is provided, return will be the object reference.
    */
-  public getDataItemValue(iterated: any, template: string) {
-    return getPropertyValue(iterated, template);
+  public getDataItemValue<U extends object>(iterated: U, template?: string): U | object {
+    if (template !== undefined) {
+      return getPropertyValue<U>(iterated, template);
+    } else {
+      return iterated;
+    }
   }
 }

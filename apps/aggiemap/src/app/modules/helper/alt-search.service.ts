@@ -55,7 +55,7 @@ export class AltSearchHelper {
     if (source && source.altLookup) {
       const altSource = this._sources.find((s) => s.source === source.altLookup.source);
 
-      const values = getObjectPropertyValues(point.attributes, source.altLookup.reference.keys);
+      const values = getObjectPropertyValues<string>(point.attributes, source.altLookup.reference.keys);
 
       this.searchService
         .search({
