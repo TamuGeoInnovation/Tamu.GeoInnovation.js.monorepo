@@ -9,6 +9,7 @@ import { AppRoutingModule } from './modules/routing/routing.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import * as environment from '../environments/environment';
+import { NotificationModule, NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { AppComponent } from './app.component';
 import { UINavigationMobileTabModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tab';
@@ -21,9 +22,10 @@ import { UINavigationMobileTabModule } from '@tamu-gisc/ui-kits/ngx/navigation/m
     Angulartics2Module.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
     EnvironmentModule,
-    UINavigationMobileTabModule
+    UINavigationMobileTabModule,
+    NotificationModule
   ],
-  providers: [{ provide: env, useValue: environment }],
+  providers: [NotificationService, { provide: env, useValue: environment }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

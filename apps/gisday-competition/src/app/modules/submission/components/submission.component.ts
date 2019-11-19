@@ -1,22 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { combineLatest, Observable, BehaviorSubject, of, throwError, EMPTY } from 'rxjs';
-import { switchMap, shareReplay, debounceTime, take, catchError } from 'rxjs/operators';
+import { combineLatest, Observable, BehaviorSubject, of, throwError, EMPTY, timer, Subject } from 'rxjs';
+import { switchMap, shareReplay, debounceTime, take, catchError, mergeMap, takeUntil } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { LocationService } from '../providers/location.service';
 import { SubmissionService } from '../providers/submission.service';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { HttpEventType } from '@angular/common/http';
+
+import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-submission',
   templateUrl: './submission.component.html',
   styleUrls: ['./submission.component.scss']
 })
-export class SubmissionComponent implements OnInit {
+export class SubmissionComponent implements OnInit, OnDestroy {
   public dataSource = [
     {
       name: 'Building Identification (5 pts)',
@@ -47,6 +49,7 @@ export class SubmissionComponent implements OnInit {
   public file: BehaviorSubject<File> = new BehaviorSubject(undefined);
   public signType: BehaviorSubject<string> = new BehaviorSubject(undefined);
   public signDetails: BehaviorSubject<string> = new BehaviorSubject(undefined);
+  public location: Position;
 
   public fileUrl: Observable<string> = this.file.pipe(
     switchMap((f) => {
@@ -65,15 +68,32 @@ export class SubmissionComponent implements OnInit {
     progress: 0
   };
 
+  private _destroy$: Subject<boolean> = new Subject();
+  private _trackLocation: TrackLocation;
+
   constructor(
     private environment: EnvironmentService,
-    private locationService: LocationService,
     private submissionService: SubmissionService,
     private settings: SettingsService,
     private router: Router,
     private route: ActivatedRoute,
-    private analytics: Angulartics2
-  ) {}
+    private analytics: Angulartics2,
+    private notification: NotificationService
+  ) {
+    this._trackLocation = new TrackLocation({ enableHighAccuracy: true, maximumAge: 10000, timeout: 2500 });
+
+    this._trackLocation
+      .track()
+      .pipe(takeUntil(this._destroy$))
+      .subscribe(
+        (res) => {
+          this.location = res;
+        },
+        (err) => {
+          this.notification.preset('no_gps');
+        }
+      );
+  }
 
   public ngOnInit() {
     this.form.valid = combineLatest([this.file, this.signType, this.signDetails.pipe(debounceTime(200))]).pipe(
@@ -92,6 +112,12 @@ export class SubmissionComponent implements OnInit {
       }),
       shareReplay(1)
     );
+  }
+
+  public ngOnDestroy() {
+    this._trackLocation.dispose();
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 
   public onPhotoTaken(e) {
@@ -130,13 +156,13 @@ export class SubmissionComponent implements OnInit {
               data.append('UserGuid', settings.guid);
               data.append('Description', details);
               data.append('SignType', type);
-              data.append('Lat', this.locationService.currentLocal.lat);
-              data.append('Lon', this.locationService.currentLocal.lon);
-              data.append('Accuracy', this.locationService.currentLocal.accuracy);
-              data.append('Timestamp', this.locationService.currentLocal.timestamp);
-              data.append('Heading', this.locationService.currentLocal.heading);
-              data.append('Altitude', this.locationService.currentLocal.altitude);
-              data.append('Speed', this.locationService.currentLocal.speed);
+              data.append('Lat', this.location.coords.latitude ? this.location.coords.latitude.toString() : undefined);
+              data.append('Lon', this.location.coords.longitude ? this.location.coords.longitude.toString() : undefined);
+              data.append('Accuracy', this.location.coords.accuracy ? this.location.coords.accuracy.toString() : undefined);
+              data.append('Timestamp', this.location.timestamp ? this.location.timestamp.toString() : undefined);
+              data.append('Heading', this.location.coords.heading ? this.location.coords.heading.toString() : undefined);
+              data.append('Altitude', this.location.coords.altitude ? this.location.coords.altitude.toString() : undefined);
+              data.append('Speed', this.location.coords.speed ? this.location.coords.speed.toString() : undefined);
               data.append('photoA', file);
 
               this.form.status = 1;

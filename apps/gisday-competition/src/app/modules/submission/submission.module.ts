@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
-import { LocationService } from './providers/location.service';
 import { SubmissionService } from './providers/submission.service';
 
 import { SubmissionComponent } from './components/submission.component';
@@ -26,6 +25,6 @@ const routes: Routes = [
   declarations: [SubmissionComponent, SubmissionCompleteComponent],
   exports: [SubmissionComponent],
   imports: [RouterModule.forChild(routes), CommonModule, FormsModule, UIFormsModule],
-  providers: [LocationService, SubmissionService]
+  providers: [SubmissionService]
 })
 export class SubmissionModule {}

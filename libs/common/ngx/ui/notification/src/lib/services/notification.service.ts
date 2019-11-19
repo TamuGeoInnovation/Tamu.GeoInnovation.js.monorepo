@@ -1,23 +1,37 @@
-import { Injectable, Inject, Optional } from '@angular/core';
+import { Injectable, Optional, InjectionToken, Inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-store';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+
+export const notificationStorage = new InjectionToken<string>('StorageKey');
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private _store: Notification[];
-  private _localStorageSettings = {
-    storageKey: 'aggiemap-notifications',
-    subKey: 'data'
-  };
+  private _localStorageSettings: StorageConfig;
   private _events: NotificationProperties[];
 
   public readonly notifications: Observable<Notification[]>;
   private _notifications: BehaviorSubject<Notification[]>;
 
-  constructor(private store: LocalStoreService, private environment: EnvironmentService) {
+  constructor(
+    private store: LocalStoreService,
+    private environment: EnvironmentService,
+    @Optional() @Inject(notificationStorage) private storageKey: string
+  ) {
+    this._localStorageSettings = {
+      primaryKey: undefined,
+      subKey: 'data'
+    };
+
+    if (this.storageKey) {
+      this._localStorageSettings.primaryKey = this.storageKey;
+    } else {
+      this._localStorageSettings.primaryKey = 'app-notifications';
+    }
+
     this._notifications = new BehaviorSubject([]);
     this.notifications = this._notifications.asObservable();
 
@@ -26,21 +40,21 @@ export class NotificationService {
     }
 
     const notificationsInLocalStorage: LocalStorageObject = this.store.getStorage({
-      primaryKey: this._localStorageSettings.storageKey
+      primaryKey: this._localStorageSettings.primaryKey
     });
 
     // If no notifications in local storage, store the full list in the client local storage.
     // This is kept to keep track of what notifications to show at any given time.
-    if (!notificationsInLocalStorage) {
+    if (!notificationsInLocalStorage || !notificationsInLocalStorage.data) {
       this.store.setStorageObjectKeyValue({
-        primaryKey: this._localStorageSettings.storageKey,
+        primaryKey: this._localStorageSettings.primaryKey,
         subKey: this._localStorageSettings.subKey,
         value: this._events
       });
     } else {
       // If there are notification in local storage, update the list in the client side
       this.store.setStorageObjectKeyValue({
-        primaryKey: this._localStorageSettings.storageKey,
+        primaryKey: this._localStorageSettings.primaryKey,
         subKey: this._localStorageSettings.subKey,
         value: this.diffNotifications([...notificationsInLocalStorage.data], this._events as NotificationProperties[])
       });
@@ -49,7 +63,7 @@ export class NotificationService {
     // Store any active notifications. The service will take care of dispatching these to the notification module
     this._store = this.getActiveNotifications(
       this.store.getStorage({
-        primaryKey: this._localStorageSettings.storageKey
+        primaryKey: this._localStorageSettings.primaryKey
       })
     ).map((property) => {
       return new Notification(property);
@@ -60,8 +74,8 @@ export class NotificationService {
   }
 
   /**
-   * Diffs latest and stored (client-side) notification objects and returns a new array of Notificaon
-   * objects which are different (resetting any acknoledgement) or have not been found based on the latest
+   * Diffs latest and stored (client-side) notification objects and returns a new array of Notification
+   * objects which are different (resetting any acknowledgement) or have not been found based on the latest
    * Notification events.
    *
    * @param stored Notification object array from local storage
@@ -80,11 +94,11 @@ export class NotificationService {
         return n;
       }
 
-      // We'd rather keep the one stored in the store because it will already have the `acknoledge` key value set.
+      // We'd rather keep the one stored in the store because it will already have the `acknowledge` key value set.
       // This prevents the same popup
       // appearing every time the user refreshes the application page.
       //
-      // If a popup has already been acknoledged before, and there are no changes with the `latest` object,
+      // If a popup has already been acknowledged before, and there are no changes with the `latest` object,
       // then do not show the popup again.
       const preferredPass = this.diffObject(existsInStored, n);
 
@@ -129,7 +143,7 @@ export class NotificationService {
         // If the current key value is of type Object, diff that object.
         return this.diffObject(preferred[k], fallback[k]);
       } else {
-        // Do not treat a notification object different if the only changed propertyis the acknoledge key
+        // Do not treat a notification object different if the only changed property is the acknowledge key
         if (k === 'acknowledge') {
           return true;
         }
@@ -148,7 +162,7 @@ export class NotificationService {
   }
 
   /**
-   * Gets active notification based on date range and acknoledgement status
+   * Gets active notification based on date range and acknowledgement status
    *
    * @param notifications Notification object array
    */
@@ -174,7 +188,7 @@ export class NotificationService {
   }
 
   /**
-   * Pushes a one-time notificaiton message, triggering any subscribed listeners
+   * Pushes a one-time notification message, triggering any subscribed listeners
    */
   public toast(properties: NotificationProperties): void {
     // const obj: Notification = new Notification(properties.id, properties.title, properties.message, Date.now());
@@ -193,8 +207,8 @@ export class NotificationService {
   /**
    * Removes a notification object from the service store, and updates the notifications subject
    */
-  public remove(notificaiton: Notification): void {
-    // Create a new array without the provided notificaiton object
+  public remove(notification: Notification): void {
+    // Create a new array without the provided notification object
     const filtered = this._store.filter((n) => {
       // Filter criteria will be one of two:
       //
@@ -204,16 +218,16 @@ export class NotificationService {
       //  duplicates of the same ID, but it is highly unlikely that they will ever be generated at
       //  the exact same millisecond.
       //
-      return n.id !== notificaiton.id || (n.id === notificaiton.id && n.timeGenerated !== notificaiton.timeGenerated);
+      return n.id !== notification.id || (n.id === notification.id && n.timeGenerated !== notification.timeGenerated);
     });
 
-    // Create a new notification array for the client-stored notifications and update the acknoledge property
+    // Create a new notification array for the client-stored notifications and update the acknowledge property
     // if the current notification object if it exists. In this way, it will not be be returned as an active
     // notification.
     const local: NotificationProperties[] = this.store
-      .getStorage<LocalStorageObject>({ primaryKey: this._localStorageSettings.storageKey })
+      .getStorage<LocalStorageObject>({ primaryKey: this._localStorageSettings.primaryKey })
       .data.map((n: Notification) => {
-        if (n.id !== notificaiton.id) {
+        if (n.id !== notification.id) {
           return n;
         }
 
@@ -230,7 +244,7 @@ export class NotificationService {
 
     // Update the local client notifications list
     this.store.setStorageObjectKeyValue({
-      primaryKey: this._localStorageSettings.storageKey,
+      primaryKey: this._localStorageSettings.primaryKey,
       subKey: this._localStorageSettings.subKey,
       value: local
     });
@@ -250,9 +264,9 @@ export class NotificationService {
     if (match) {
       const obj = Object.assign({}, match);
 
-      const notif = new Notification(obj);
+      const notification = new Notification(obj);
 
-      this._store = [...this._store, notif];
+      this._store = [...this._store, notification];
       this._notifications.next([...this._store]);
     } else {
       console.warn('Could not emit notification because the referenced item does not exist');
@@ -307,7 +321,7 @@ export interface NotificationProperties {
   message: string;
 
   /**
-   * Describes whether the notification has been acknoledged by the user.
+   * Describes whether the notification has been acknowledged by the user.
    * If false, it will be prompted every time unless it is a preset call.
    */
   acknowledge?: boolean;
