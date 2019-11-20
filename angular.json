@@ -1168,6 +1168,28 @@
           "styleext": "scss"
         }
       }
+    },
+    "two-common": {
+      "root": "libs/two/common",
+      "sourceRoot": "libs/two/common/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/two/common/tsconfig.lib.json", "libs/two/common/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/two/common/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/two/common/jest.config.js",
+            "tsConfig": "libs/two/common/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
