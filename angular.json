@@ -1190,6 +1190,57 @@
           }
         }
       }
+    },
+    "two-nest-data-api": {
+      "root": "apps/two-nest-data-api",
+      "sourceRoot": "apps/two-nest-data-api/src",
+      "projectType": "application",
+      "prefix": "two-nest-data-api",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/two-nest-data-api",
+            "main": "apps/two-nest-data-api/src/main.ts",
+            "tsConfig": "apps/two-nest-data-api/tsconfig.app.json",
+            "assets": ["apps/two-nest-data-api/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-nest-data-api/src/environments/environment.ts",
+                  "with": "apps/two-nest-data-api/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "two-nest-data-api:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/two-nest-data-api/tsconfig.app.json", "apps/two-nest-data-api/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/two-nest-data-api/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/two-nest-data-api/jest.config.js",
+            "tsConfig": "apps/two-nest-data-api/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
@@ -1203,5 +1254,6 @@
     "@nrwl/angular:library": {
       "unitTestRunner": "jest"
     }
-  }
+  },
+  "defaultProject": "two-nest-data-api"
 }
