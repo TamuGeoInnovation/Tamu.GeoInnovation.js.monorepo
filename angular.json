@@ -1241,6 +1241,28 @@
           }
         }
       }
+    },
+    "two-data-api": {
+      "root": "libs/two/data-api",
+      "sourceRoot": "libs/two/data-api/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/two/data-api/tsconfig.lib.json", "libs/two/data-api/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/two/data-api/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/two/data-api/jest.config.js",
+            "tsConfig": "libs/two/data-api/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
