@@ -1,3 +1,5 @@
+import { EntitySchema } from 'typeorm';
+
 export { CNR4 } from './entities/cnr4/cnr4.entity';
 export { CR6 } from './entities/cr6/cr6.entity';
 export { CS655 } from './entities/cs655/cs655.entity';
@@ -7,6 +9,8 @@ export { IRGASON } from './entities/irgason/irgason.entity';
 export { StationInfo } from './entities/station/station.entity';
 export { TCAV } from './entities/tcav/tcav.entity';
 export { TE525 } from './entities/te525/te525.entity';
+
+export { Sites } from './entities/sites/sites.entity';
 
 export {
   DIRECTORY_SERVICE,
