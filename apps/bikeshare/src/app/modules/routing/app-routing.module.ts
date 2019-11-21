@@ -17,7 +17,7 @@ import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
-import { TamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
+import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
@@ -106,6 +106,9 @@ import { BusTimetableComponent } from '../components/sidebar/components/bus-list
 import { TripPlannerTimePickerComponent } from '../components/trip-planner/trip-planner-time-picker/containers/base/base.component';
 import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 import { TooltipComponent } from '../components/elements/tooltip/tooltip.component';
+
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { DateComponent } from '../components/sidebar/components/date-picker/date.component';
 
 WebFont.load({
   google: {
@@ -200,6 +203,15 @@ const hybridRoutes: Routes = [
   }
 ];
 
+export const MY_NATIVE_FORMATS = {
+  fullPickerInput: { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' },
+  datePickerInput: { year: 'numeric', month: 'numeric', day: 'numeric' },
+  timePickerInput: { hour: 'numeric', minute: 'numeric' },
+  monthYearLabel: { year: 'numeric', month: 'short' },
+  dateA11yLabel: { year: 'numeric', month: 'long', day: 'numeric' },
+  monthYearA11yLabel: { year: 'numeric', month: 'long' }
+};
+
 @NgModule({
   imports: [
     RouterModule.forRoot(hybridRoutes),
@@ -217,7 +229,9 @@ const hybridRoutes: Routes = [
     DlDateTimePickerDateModule,
     DlDateTimePickerModule,
     SidebarModule,
-    TamuBrandingModule
+    UITamuBrandingModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule
   ],
   declarations: [
     BackdropComponent,
@@ -280,7 +294,8 @@ const hybridRoutes: Routes = [
     ClipboardCopyDirective,
     DraggableDirective,
     AccordionDirective,
-    AsyncContentLoadedDirective
+    AsyncContentLoadedDirective,
+    DateComponent
   ],
   providers: [
     RouterHistoryService,
