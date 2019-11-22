@@ -11,6 +11,9 @@ export { TCAV } from './entities/tcav/tcav.entity';
 export { TE525 } from './entities/te525/te525.entity';
 
 export { Sites } from './entities/sites/sites.entity';
+export { DataGroups } from './entities/data-groups/data-groups.entity';
+export { Fields } from './entities/fields/fields.entity';
+export { NodeGroups } from './entities/node-groups/node-groups.entity';
 
 export {
   DIRECTORY_SERVICE,
