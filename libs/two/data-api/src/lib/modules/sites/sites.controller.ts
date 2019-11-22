@@ -8,6 +8,10 @@ import { SitesService } from './sites.service';
 @Controller('sites')
 export class SitesController extends BaseController<Sites> {
   constructor(private readonly service: SitesService) {
-    super(service);
+    super(service, {
+      getMatching: {
+        id: 'siteId'
+      }
+    });
   }
 }

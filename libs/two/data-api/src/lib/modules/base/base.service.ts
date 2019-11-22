@@ -8,7 +8,7 @@ export abstract class BaseService<Entity extends BaseEntity> {
     return await this.r.find();
   }
 
-  public async getMany(findOptions?: FindManyOptions) {
+  public async getMany(findOptions?: FindManyOptions<Entity>) {
     console.log('getting many');
     return await this.r.find(findOptions);
   }
