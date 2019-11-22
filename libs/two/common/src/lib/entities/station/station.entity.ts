@@ -20,7 +20,7 @@ export class StationInfo {
   @Column({ name: 'record_id', type: 'mediumint', nullable: true })
   public record_id: number | null = null;
 
-  constructor(row?: any) {
+  constructor(row?) {
     if (row) {
       Object.keys(row).forEach((key, index) => {
         // console.log(key, index);
