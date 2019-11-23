@@ -14,6 +14,7 @@ export { Sites } from './entities/sites/sites.entity';
 export { DataGroups } from './entities/data-groups/data-groups.entity';
 export { Fields } from './entities/fields/fields.entity';
 export { NodeGroups } from './entities/node-groups/node-groups.entity';
+export { DataGroupFlds } from './entities/data-group-fids/data-group-fids.entity';
 
 export {
   DIRECTORY_SERVICE,

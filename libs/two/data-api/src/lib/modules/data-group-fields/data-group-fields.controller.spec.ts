@@ -2,27 +2,27 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Fields } from '@tamu-gisc/two/common';
+import { DataGroupFlds } from '@tamu-gisc/two/common';
 
-import { FieldsController } from './fields.controller';
-import { FieldsService } from './fields.service';
+import { DataGroupFieldsController } from './data-group-fields.controller';
+import { DataGroupFieldsService } from './data-group-fields.service';
 
 describe('Fields Controller', () => {
-  let controller: FieldsController;
+  let controller: DataGroupFieldsController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        FieldsService,
+        DataGroupFieldsService,
         {
-          provide: getRepositoryToken(Fields),
+          provide: getRepositoryToken(DataGroupFlds),
           useClass: Repository
         }
       ],
-      controllers: [FieldsController]
+      controllers: [DataGroupFieldsController]
     }).compile();
 
-    controller = module.get<FieldsController>(FieldsController);
+    controller = module.get<DataGroupFieldsController>(DataGroupFieldsController);
   });
 
   it('should be defined', () => {
