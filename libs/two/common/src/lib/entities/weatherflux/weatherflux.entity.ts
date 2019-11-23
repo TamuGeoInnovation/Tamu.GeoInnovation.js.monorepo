@@ -38,4 +38,7 @@ export class WeatherFlux {
     readonly tcav: TCAV,
     readonly te525: TE525
   ) {}
+
+  @PrimaryGeneratedColumn()
+  public record_id: number;
 }

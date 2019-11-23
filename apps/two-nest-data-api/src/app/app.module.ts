@@ -3,13 +3,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { config } from '../environments/ormconfig';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-
-import { SitesModule, DataGroupsModule, DataGroupFieldsModule, NodeGroupsModule } from '@tamu-gisc/two/data-api';
+import { SitesModule, DataGroupsModule, DataGroupFieldsModule, NodeGroupsModule, DataModule } from '@tamu-gisc/two/data-api';
 @Module({
-  imports: [TypeOrmModule.forRoot(config), SitesModule, DataGroupsModule, DataGroupFieldsModule, NodeGroupsModule],
-  controllers: [AppController],
-  providers: [AppService]
+  imports: [
+    TypeOrmModule.forRoot(config),
+    SitesModule,
+    DataGroupsModule,
+    DataGroupFieldsModule,
+    NodeGroupsModule,
+    DataModule
+  ],
+  controllers: [],
+  providers: []
 })
 export class AppModule {}
