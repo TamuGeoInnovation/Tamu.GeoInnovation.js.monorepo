@@ -10,6 +10,7 @@ export { StationInfo } from './entities/station/station.entity';
 export { TCAV } from './entities/tcav/tcav.entity';
 export { TE525 } from './entities/te525/te525.entity';
 export { WeatherFlux } from './entities/weatherflux/weatherflux.entity';
+export { WeatherfluxExpanded } from './entities/weatherflux/weatherflux-expanded.entity';
 
 export { Sites } from './entities/sites/sites.entity';
 export { DataGroups } from './entities/data-groups/data-groups.entity';
