@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ElementRef, HostListener, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'gisc-tooltip',
+  selector: 'tamu-gisc-tooltip',
   templateUrl: './tooltip.component.html',
   styleUrls: ['./tooltip.component.scss']
 })

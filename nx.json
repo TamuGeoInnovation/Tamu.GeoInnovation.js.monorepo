@@ -136,6 +136,9 @@
     },
     "two-data-api": {
       "tags": []
+    },
+    "ui-kits-ngx-layout": {
+      "tags": []
     }
   }
 }

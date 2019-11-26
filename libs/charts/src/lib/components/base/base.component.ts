@@ -208,35 +208,40 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
     // create/update chart data.
     this.chartData = this.source.pipe(
       scan((acc, curr) => {
+        let p;
         // Asserting transformations as an `any` array, otherwise compiler does not like its original
         // union type.
-        const p = (<string[]>this.transformations)
-          .map((transformation, index) => {
-            const transformed = {
-              value: this.valueForTransformationSet(transformation, curr).value,
-              label: this.labels[index]
-            };
-
-            return transformed;
-          }, [])
-          .reduce(
-            (datasets, dataset) => {
-              return {
-                labels: dataset.value.labels,
-                datasets: [
-                  ...datasets.datasets,
-                  {
-                    label: dataset.label,
-                    data: dataset.value.data
-                  }
-                ]
+        if ('labels' in curr && 'datasets' in curr) {
+          p = curr;
+        } else {
+          p = (<string[]>this.transformations)
+            .map((transformation, index) => {
+              const transformed = {
+                value: this.valueForTransformationSet(transformation, curr).value,
+                label: this.labels[index]
               };
-            },
-            {
-              labels: undefined,
-              datasets: []
-            }
-          );
+
+              return transformed;
+            }, [])
+            .reduce(
+              (datasets, dataset) => {
+                return {
+                  labels: dataset.value.labels,
+                  datasets: [
+                    ...datasets.datasets,
+                    {
+                      label: dataset.label,
+                      data: dataset.value.data
+                    }
+                  ]
+                };
+              },
+              {
+                labels: undefined,
+                datasets: []
+              }
+            );
+        }
 
         // Call the sub-class updateData() method that will reformat data output into a suitable format
         // based on its chart type.

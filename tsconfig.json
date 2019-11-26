@@ -51,7 +51,8 @@
       "@tamu-gisc/maps/feature/feature-selector": ["libs/maps/feature/feature-selector/src/index.ts"],
       "@tamu-gisc/charts": ["libs/charts/src/index.ts"],
       "@tamu-gisc/two/common": ["libs/two/common/src/index.ts"],
-      "@tamu-gisc/two/data-api": ["libs/two/data-api/src/index.ts"]
+      "@tamu-gisc/two/data-api": ["libs/two/data-api/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/layout": ["libs/ui-kits/ngx/layout/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
