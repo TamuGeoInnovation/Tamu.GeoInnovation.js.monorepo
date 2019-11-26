@@ -1,1 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'libs/sass/1140';
+@import 'libs/sass/mixins';
+
+html {
+  line-height: 1.4;
+  font-size: 16px;
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #332c2c;
+  font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 1.75rem;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.container12 {
+  @include flexbox();
+  @include flex-direction(column);
+  padding: 1rem 0;
+}
+
+p {
+  margin-bottom: 0.5rem;
+  &.weight-2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+}
