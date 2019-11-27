@@ -23,7 +23,8 @@ export class DataViewerComponent implements OnInit {
 
   public ngOnInit() {
     this.form = this.formBuilder.group({
-      checkTest: [false]
+      checkTest: [true],
+      checkGroupTest: [[]]
     });
 
     this.sites = this.s.getData().pipe(

@@ -3,16 +3,14 @@
     <h1>TWO Processed Data Viewer</h1>
 
     <form [formGroup]="form">
-      <!-- <div class="form-block">
-      <p class="weight-2">Stations</p>
-      <tamu-gisc-checkbox *ngFor="let site of sites | async" [label]="site.siteName + ' ' +'(' + site.siteCode + ')'">
-      </tamu-gisc-checkbox>
-    </div> -->
       <div class="form-block">
+        <p class="weight-2">Sites</p>
 
-        <p class="weight-2">Test Checkbox</p>
-        <tamu-gisc-checkbox formControlName="checkTest" label="Checkbox Test">
-        </tamu-gisc-checkbox>
+        <tamu-gisc-checkbox-group referenceId='siteId' formControlName="checkGroupTest">
+          <tamu-gisc-checkbox *ngFor="let site of sites | async"
+            [label]="site.siteName + ' ' +'(' + site.siteCode + ')'" [data]='site'>
+          </tamu-gisc-checkbox>
+        </tamu-gisc-checkbox-group>
       </div>
     </form>
   </div>

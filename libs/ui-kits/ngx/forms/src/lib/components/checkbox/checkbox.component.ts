@@ -37,6 +37,18 @@ export class CheckboxComponent implements ControlValueAccessor {
   }
 
   /**
+   * **Optional** on single checkbox components.
+   *
+   * **REQUIRED** on checkbox groups, where a property in this object is referenced and used to create a composite
+   * value of selected items in the list.
+   *
+   *
+   * @type {(string | number | boolean)}
+   */
+  @Input()
+  public data: object;
+
+  /**
    * Determines the interaction state of the component, preventing or allowing user input.
    * `true` disables inputs and changes style to reflect.
    *
@@ -89,7 +101,7 @@ export class CheckboxComponent implements ControlValueAccessor {
    * @memberof CheckboxComponent
    */
   public handleMouseEvent(): void {
-    this.checked = this.ref.nativeElement.checked;
+    this.checked = !this._checked;
   }
 
   /**
@@ -116,5 +128,14 @@ export class CheckboxComponent implements ControlValueAccessor {
 
   public setDisabledState(disabled?: boolean) {
     this.disabled = disabled;
+  }
+
+  /**
+   * **FOR INTERNAL USE ONLY**
+   *
+   * Sets value without calling the Forms API or emitting a `changed` event.
+   */
+  public _setValueNoEmit(value: boolean) {
+    this._checked = value;
   }
 }
