@@ -20,10 +20,6 @@ export class BaseApiService<T> {
   }
 
   public getData(endpoint?: string) {
-    return this.http.get<Array<ClassMembers<T>>>(`${this.api_url}/${this.resource}${endpoint ? '/' + endpoint : ''}`);
+    return this.http.get<Array<T>>(`${this.api_url}/${this.resource}${endpoint ? '/' + endpoint : ''}`);
   }
 }
-
-export type ClassMembers<T> = {
-  [P in keyof T]?: string | number | boolean;
-};

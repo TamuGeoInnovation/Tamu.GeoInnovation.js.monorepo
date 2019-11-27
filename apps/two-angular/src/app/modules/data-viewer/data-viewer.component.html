@@ -6,7 +6,7 @@
       <div class="form-block">
         <p class="weight-2">Sites</p>
 
-        <tamu-gisc-checkbox-group formControlName="checkGroupTest" referenceId='siteId'>
+        <tamu-gisc-checkbox-group formControlName="sitesList" referenceId='siteId'>
           <tamu-gisc-checkbox *ngFor="let site of sites | async"
             [label]="site.siteName + ' ' +'(' + site.siteCode + ')'" [data]='site'>
           </tamu-gisc-checkbox>
@@ -16,13 +16,31 @@
       <div class="form-block">
         <p class="weight-2">Node Type</p>
 
-        <tamu-gisc-select formControlName="selectTest" [data]="nodeGroups | async" [displayTemplate]="'nodeDescription'"
+        <tamu-gisc-select formControlName="nodeType" [data]="nodeGroups | async" [displayTemplate]="'nodeDescription'"
           [valueTemplate]="'node_ID'">
         </tamu-gisc-select>
       </div>
 
+      <div class="form-block" *ngIf="form.controls['nodeType'].valid">
+        <p class="weight-2">Data Group</p>
+
+        <tamu-gisc-select formControlName="dataGroup" [data]="dataGroups | async" [displayTemplate]="'dataGroupName'"
+          [valueTemplate]="'dataGroupID'">
+        </tamu-gisc-select>
+      </div>
+
+      <div class="form-block" *ngIf="form.controls['dataGroup'].valid">
+        <p class="weight-2">Fields</p>
+
+        <tamu-gisc-checkbox-group formControlName="fieldList" referenceId='field.fieldName'>
+          <tamu-gisc-checkbox *ngFor="let field of fields | async"
+            [label]="field.field.fieldName + ' ' + '('+ field.field.fieldUnits +')'" [data]='field'>
+          </tamu-gisc-checkbox>
+        </tamu-gisc-checkbox-group>
+      </div>
+
       <div class="form-block">
-        <button type="submit">Submit</button>
+        <button type="submit" [disabled]="form.invalid">Generate Charts</button>
       </div>
     </form>
   </div>

@@ -26,15 +26,15 @@ export class SelectComponent<T> implements ControlValueAccessor {
    */
   // tslint:disable-next-line:no-input-rename
   @Input('value')
-  private _value: T;
+  private _value: T = undefined;
 
   public get value() {
     return this._value;
   }
 
   public set value(value: T) {
-    this._value = value;
-    this._onChange(value);
+    this._value = value === null ? undefined : value;
+    this._onChange(value === null ? undefined : value);
     this._onTouched();
   }
 

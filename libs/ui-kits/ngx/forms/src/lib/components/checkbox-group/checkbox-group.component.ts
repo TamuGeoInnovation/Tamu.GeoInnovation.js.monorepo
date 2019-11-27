@@ -13,6 +13,7 @@ import { from, of, Subject, merge } from 'rxjs';
 import { switchMap, mergeMap, takeUntil } from 'rxjs/operators';
 
 import { CheckboxComponent } from '../checkbox/checkbox.component';
+import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 
 @Component({
   selector: 'tamu-gisc-checkbox-group',
@@ -86,7 +87,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
             mergeMap((checkbox) => {
               return checkbox.changed.pipe(
                 switchMap((value) => {
-                  return of(checkbox.data[this.referenceId]);
+                  return of(getPropertyValue<string>(checkbox.data, this.referenceId));
                 })
               );
             })
@@ -126,7 +127,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
   private setChildrenValue() {
     if (this.checkboxes && this.checkboxes.length > 0) {
       this.checkboxes.forEach((checkbox) => {
-        if (this.value.includes(checkbox.data[this.referenceId])) {
+        if (this.value.includes(getPropertyValue<string>(checkbox.data, this.referenceId))) {
           setTimeout(() => {
             // Update child checked status, bypassing forms api and self event emission because
             // to prevent a subsequent self-value change which would loop back to the checkbox
