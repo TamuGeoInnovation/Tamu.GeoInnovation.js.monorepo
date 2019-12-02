@@ -1,9 +1,9 @@
 import { getGreeting } from '../support/app.po';
 
-describe('angular-aggiemap-trees', () => {
+describe('bikeshare', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display welcome message', () => {
-    getGreeting().contains('Welcome to angular-aggiemap-trees!');
+    getGreeting().contains('Welcome to bikeshare!');
   });
 });
