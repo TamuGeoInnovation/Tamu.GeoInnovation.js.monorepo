@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-//import { LayerListService } from '../../../../services/ui/layer-list.service';
+import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
 @Component({
   selector: 'tamu-gisc-date-picker',
@@ -10,8 +10,8 @@ import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core
 export class DateRange implements OnInit {
   public dateTimeRange: Date[];
 
-  //constructor(private layerListService: LayerListService) {}
-  constructor() {}
+  constructor(private layerListService: LayerListService) {}
+  //constructor() {}
 
   public ngOnInit() {
     // Default Dates = last 24h to now
@@ -21,7 +21,7 @@ export class DateRange implements OnInit {
 
   // Called when datePicker is closed
   // Sends the dates to the layer service
-  //public newDate() {
-  //this.layerListService.changeDate(this.dateTimeRange);
-  //}
+  public newDate() {
+    this.layerListService.changeDate(this.dateTimeRange);
+  }
 }

@@ -22,6 +22,7 @@ import { MapComponent } from '../../components/map/map.component';
 
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { DateRange } from '../../components/date-picker/date.component';
+import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [{ path: '', component: MapComponent }];
 
@@ -52,7 +53,8 @@ WebFont.load({
     CommonNgxRouterModule,
     FeaetureSelectorModule,
     OwlDateTimeModule,
-    OwlNativeDateTimeModule
+    OwlNativeDateTimeModule,
+    FormsModule
   ],
   exports: [RouterModule]
 })

@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, Input } from '@angular/core';
+import { Injectable, OnDestroy, Input, SystemJsNgModuleLoader } from '@angular/core';
 import { Observable, BehaviorSubject, from, fromEventPattern, merge, NEVER, MonoTypeOperatorFunction, of } from 'rxjs';
 import { mergeMap, filter, switchMap, scan, find, take, toArray } from 'rxjs/operators';
 
@@ -13,6 +13,32 @@ export class LayerListService implements OnDestroy {
   private _store: BehaviorSubject<LayerListItem<esri.Layer>[]> = new BehaviorSubject([]);
 
   private _handles: esri.Handles;
+
+  private yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+  public currentDates = [this.yesterday, new Date()];
+  // Called from the DatePicker Component
+  public changeDate(dateTimeRange: Date[]) {
+    this.currentDates = dateTimeRange;
+    console.log(this.currentDates);
+
+    const LayerSources = this.environment.value('LayerSources');
+    const updatedLayers = this._store.value.map((lyr) => {
+      // example of appending a new url from currentDates data member to the bike origin layer
+      if (lyr.id === 'origin-trip-layer' || lyr.id === 'destination-trip-layer') {
+        const nlayer = LayerSources.filter((s: { id: string }) => {
+          return s.id === lyr.id;
+        })[0];
+        // append the time requested to the origin/destination layer urls
+        // the split makes sure the append does not happen multiple times
+        nlayer.url =
+          nlayer.url.split('&')[0] + '&' + this.currentDates[0].toISOString() + '&' + this.currentDates[1].toISOString();
+        console.log(nlayer.url);
+        lyr = new LayerListItem(nlayer);
+        return lyr;
+      } else return lyr;
+    });
+    this._store.next([...updatedLayers]);
+  }
 
   constructor(
     private moduleProvider: EsriModuleProviderService,
@@ -63,9 +89,12 @@ export class LayerListService implements OnDestroy {
           // been  previously added to the store.
           const updatedLayers = this._store.value.map((lyr) => {
             const existingIndex = e.added.findIndex((added) => added.id === lyr.id);
-
+            
             if (existingIndex > -1) {
-              return new LayerListItem({ ...lyr, layer: e.added[existingIndex] });
+              return new LayerListItem({
+                ...lyr,
+                layer: e.added[existingIndex]
+              });
             } else {
               return lyr;
             }
