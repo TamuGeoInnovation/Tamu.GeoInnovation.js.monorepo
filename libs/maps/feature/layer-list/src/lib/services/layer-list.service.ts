@@ -30,8 +30,7 @@ export class LayerListService implements OnDestroy {
         })[0];
         // append the time requested to the origin/destination layer urls
         // the split makes sure the append does not happen multiple times
-        nlayer.url =
-          nlayer.url.split('&')[0] + '&' + this.currentDates[0].toISOString() + '&' + this.currentDates[1].toISOString();
+        nlayer.url += '/' + this.currentDates[0].getTime() + '/' + this.currentDates[1].getTime();
         console.log(nlayer.url);
         lyr = new LayerListItem(nlayer);
         return lyr;
@@ -89,7 +88,7 @@ export class LayerListService implements OnDestroy {
           // been  previously added to the store.
           const updatedLayers = this._store.value.map((lyr) => {
             const existingIndex = e.added.findIndex((added) => added.id === lyr.id);
-            
+
             if (existingIndex > -1) {
               return new LayerListItem({
                 ...lyr,
