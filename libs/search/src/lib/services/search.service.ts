@@ -4,7 +4,7 @@ import { ReplaySubject, Observable, BehaviorSubject, forkJoin, of, from } from '
 import { toArray, concatMap, switchMap } from 'rxjs/operators';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
-import { makeWhere } from '@tamu-gisc/common/utils/database';
+import { CompoundOperator, makeWhere } from '@tamu-gisc/common/utils/database';
 import { makeUrlParams } from '@tamu-gisc/common/utils/routing';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -15,8 +15,8 @@ import esri = __esri;
 export class SearchService {
   private _sources: SearchSource[];
 
-  private _store: ReplaySubject<SearchResult> = new ReplaySubject(1);
-  public store: Observable<SearchResult> = this._store.asObservable();
+  private _store: ReplaySubject<SearchResult<esri.Graphic>> = new ReplaySubject(1);
+  public store: Observable<SearchResult<esri.Graphic>> = this._store.asObservable();
 
   private _searching: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public searching: Observable<boolean> = this._searching.asObservable();
@@ -37,10 +37,12 @@ export class SearchService {
    * @returns {void}
    * @memberof SearchService
    */
-  public search(options: SearchPropertiesObservable): Observable<SearchResult>;
-  public search(options: SearchPropertiesPromise): Promise<SearchResult>;
-  public search(options: SearchProperties): SearchResult;
-  public search(options: any): any {
+  public search(options: SearchPropertiesObservable): Observable<SearchResult<esri.Graphic>>;
+  public search(options: SearchPropertiesPromise): Promise<SearchResult<esri.Graphic>>;
+  public search(options: SearchProperties): SearchResult<esri.Graphic>;
+  public search(
+    options: SearchPropertiesObservable | SearchPropertiesPromise | SearchProperties
+  ): SearchResult<esri.Graphic> | Promise<SearchResult<esri.Graphic>> | Observable<SearchResult<esri.Graphic>> {
     // Check we don't have an array for sources
     if (!(options.sources instanceof Array)) {
       console.error(`Method expected a source array.`);
@@ -48,7 +50,7 @@ export class SearchService {
     }
 
     if (options.sources.length === 0) {
-      console.error(`Exptected at least one source. Got ${options.sources.length}.`);
+      console.error(`Expected at least one source. Got ${options.sources.length}.`);
       return;
     }
 
@@ -167,7 +169,7 @@ export class SearchService {
               return sources.findIndex((source) => source.source === s.source);
             });
 
-          const baseScoringMerged = responses.base.map((r: any, i, a) => {
+          const baseScoringMerged = responses.base.map((r, i, a) => {
             if (baseIndexes.includes(i)) {
               // This index will correspond to the array location of scoring responses.
               const indexOfScoringResponse = baseIndexes.indexOf(i);
@@ -204,17 +206,17 @@ export class SearchService {
           return of(baseScoringMerged);
         }
       }),
-      switchMap((result: Array<any>) => {
+      switchMap((result: Array<unknown>) => {
         // Create a single SearchResult class instance, where the results of all http results will be placed in
         // the results property.
         return of(
           new SearchResult({
             results: result.map((r, index: number) => {
-              return <SearchResultItem>{
+              return <SearchResultItem<esri.Graphic>>{
                 name: sources[index].name,
                 // features: r[sources[index].featuresLocation] ? r[sources[index].featuresLocation] : [],
                 features: r[sources[index].featuresLocation]
-                  ? this.scoreResults(r[sources[index].featuresLocation], sources, index, options.values[index])
+                  ? this.scoreResults(r[sources[index].featuresLocation], sources, index, options.values[index] as string)
                   : [],
                 displayTemplate: sources[index].displayTemplate,
                 breadcrumbs: {
@@ -246,7 +248,7 @@ export class SearchService {
 
       // The default return for this method is an observable.
       // If `returnAsPromise` is not specified OR it's set to false, return the observable value.
-      if (options.returnAsPromise === undefined || options.returnAsPromise !== true) {
+      if (!('returnAsPromise' in options) || options.returnAsPromise !== true) {
         return this._store.asObservable();
       }
 
@@ -257,7 +259,7 @@ export class SearchService {
     } else {
       // If method call was not stateful, return the request stream and let callee handle response.
 
-      if (options.returnAsPromise === undefined || options.returnAsPromise !== true) {
+      if (!('returnAsPromise' in options) || options.returnAsPromise !== true) {
         // Handle default obserfable return type.
         return requestStream;
       } else if (options.returnAsPromise !== undefined && options.returnAsPromise === true) {
@@ -306,18 +308,18 @@ export class SearchService {
 
       //
       // Uses keys from source config
-      const keys = (<any>source.queryParams).where.keys;
+      const keys = source.queryParams.where.keys;
       //
       // Uses operators from source config
-      const operators = (<any>source.queryParams).where.operators;
+      const operators = source.queryParams.where.operators;
 
       //
       // Uses wildcards (if any) from source config
-      const wildcards = (<any>source.queryParams).where.wildcards;
+      const wildcards = source.queryParams.where.wildcards;
 
       //
       // Uses transformations (if any) from source config
-      const transformations = (<any>source.queryParams).where.transformations;
+      const transformations = source.queryParams.where.transformations;
 
       //
       // Creates a value that matches the number of query param keys.
@@ -329,7 +331,7 @@ export class SearchService {
       // exact number of matching values for the keys in options.keys.
       const values = Array.isArray(options.values[srcIndex])
         ? <Array<string>>options.values[srcIndex]
-        : Array((<any>source.queryParams).where.keys.length).fill(options.values[srcIndex]);
+        : Array(source.queryParams.where.keys.length).fill(options.values[srcIndex]);
 
       // Generate the SQL WHERE clause from defined keys, values, and operators.
       const where = makeWhere(keys, values, operators, wildcards, transformations);
@@ -365,11 +367,11 @@ export class SearchService {
    * @memberof SearchService
    */
   private scoreResults(
-    features: Array<any>,
+    features: Array<object>,
     sources: SearchSource[],
     responseIndex: number | 0,
     searchTerm: string
-  ): Array<any> {
+  ): Array<unknown> {
     const source = sources[responseIndex];
 
     if (source && source.scoringKeys) {
@@ -392,7 +394,7 @@ export class SearchService {
           // Return the feature, appending a points property that will be used for sorting.
           return { ...f, _score: points };
         })
-        .sort((a: any, b: any) => {
+        .sort((a: { _score: number }, b: { _score: number }) => {
           // Sort results by point count.
           return b._score - a._score;
         })
@@ -408,10 +410,10 @@ export class SearchService {
   }
 }
 
-export class SearchResult {
-  public results: SearchResultsProperties['results'];
+export class SearchResult<T> {
+  public results: SearchResultsProperties<T>['results'];
 
-  constructor(props: SearchResultsProperties) {
+  constructor(props: SearchResultsProperties<T>) {
     this.results = props.results || [];
   }
 
@@ -421,7 +423,7 @@ export class SearchResult {
    * @returns
    * @memberof SearchResult
    */
-  public features(): esri.Graphic[] {
+  public features(): T[] {
     return this.results
       .map((resultItem, arr, ind) => {
         return resultItem.features;
@@ -591,7 +593,7 @@ export interface SearchSource {
  *
  * @interface SearchSourceQueryParamsProperties
  */
-interface SearchSourceQueryParamsProperties {
+export interface SearchSourceQueryParamsProperties {
   /**
    * Specifies the return format.
    *
@@ -604,7 +606,7 @@ interface SearchSourceQueryParamsProperties {
    *
    * @type {number}
    */
-  resultRecordCount?: number;
+  resultRecordCount?: number | '*';
 
   /**
    * Attributes that should be included in any given feature.
@@ -619,7 +621,7 @@ interface SearchSourceQueryParamsProperties {
    * - 4326
    * - 102100
    *
-   * @type {(4326 | 102100 | number)}
+   * @type {number}
    */
   outSR?: 4326 | 102100 | number;
 
@@ -628,9 +630,9 @@ interface SearchSourceQueryParamsProperties {
    *
    * Cases where it might not be needed are when the feature will not be mapped.
    *
-   * @type {true}
+   * @type {boolean}
    */
-  returnGeometry?: true;
+  returnGeometry?: boolean;
 
   /**
    * Spatial relationship of the query. Default should be `esriSpatialRelIntersects`
@@ -734,12 +736,6 @@ interface CrossSearchQueryProperties {
   lookup?: CrossSearchQueryLookupProperties;
 }
 
-interface CompoundOperator {
-  logial?: Array<'AND' | 'BETWEEN' | 'IN' | 'NOT IN' | 'LIKE' | 'NOT LIKE' | 'NOT' | 'OR'>;
-
-  comparison?: Array<'IS NULL' | '=' | '>' | '>=' | '<=' | '<' | '!='>;
-}
-
 /**
  * Defines the keys in the resulting initial search query result,for which values will be used in subsequent
  * search query.
@@ -822,16 +818,16 @@ interface CrossSearchQueryLookupProperties {
  * Describes the properties utilized by the searchMany class member.
  *
  *
- * @interface SearchManyProperties
+ * @interface SearchProperties
  */
-interface SearchProperties {
+export interface SearchProperties {
   /**
    * A string array of valid search sources.
    *
    * @type {string[]}
    * @memberof SearchManyProperties
    */
-  sources: string[] | SearchSource[];
+  sources: (string | SearchSource)[];
 
   /**
    * An array of values OR an array of string-containing arrays used when parameterizing query for any given source.
@@ -845,7 +841,7 @@ interface SearchProperties {
    * @type {string[]}
    * @memberof SearchManyProperties
    */
-  values?: any[] | any[][];
+  values?: (string | number)[] | (string | number)[][];
 
   /**
    * Specifies whether the method will update the service state.
@@ -891,7 +887,7 @@ interface SearchPropertiesPromise extends SearchProperties {
  *
  * @interface SearchResultItem
  */
-export interface SearchResultItem {
+export interface SearchResultItem<T> {
   /**
    * Readable name for the source.
    *
@@ -937,7 +933,7 @@ export interface SearchResultItem {
    * @type {*}
    * @memberof SearchResultItem
    */
-  features?: any;
+  features?: T[];
 
   /**
    * Metadata representing the origin (source id and searched term) data used to initialize a search query and
@@ -949,8 +945,8 @@ export interface SearchResultItem {
   breadcrumbs: SearchResultBreadcrumbSummary;
 }
 
-export interface SearchResultsProperties {
-  results?: SearchResultItem[];
+export interface SearchResultsProperties<T> {
+  results?: SearchResultItem<T>[];
 }
 
 /**

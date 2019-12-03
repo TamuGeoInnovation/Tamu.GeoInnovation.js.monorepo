@@ -85,12 +85,10 @@
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/aggiemap/src/environments/environment.ts",
-                  "with": "apps/aggiemap/src/environments/environment.prod.ts"
-                }
-              ],
+              "fileReplacements": [{
+                "replace": "apps/aggiemap/src/environments/environment.ts",
+                "with": "apps/aggiemap/src/environments/environment.prod.ts"
+              }],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -100,13 +98,11 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                }
-              ]
+              "budgets": [{
+                "type": "initial",
+                "maximumWarning": "2mb",
+                "maximumError": "5mb"
+              }]
             }
           }
         },
@@ -850,12 +846,10 @@
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/angular-aggiemap-trees/src/environments/environment.ts",
-                  "with": "apps/angular-aggiemap-trees/src/environments/environment.prod.ts"
-                }
-              ],
+              "fileReplacements": [{
+                "replace": "apps/angular-aggiemap-trees/src/environments/environment.ts",
+                "with": "apps/angular-aggiemap-trees/src/environments/environment.prod.ts"
+              }],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -865,13 +859,11 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                }
-              ]
+              "budgets": [{
+                "type": "initial",
+                "maximumWarning": "2mb",
+                "maximumError": "5mb"
+              }]
             }
           }
         },
@@ -964,7 +956,6 @@
         }
       }
     },
-<<<<<<< HEAD
     "bikeshare": {
       "projectType": "application",
       "schematics": {
@@ -986,25 +977,23 @@
             "tsConfig": "apps/bikeshare/tsconfig.app.json",
             "aot": false,
             "assets": [
-                "apps/bikeshare/src/favicon.ico",
-                "apps/bikeshare/src/assets",
-                {
-                  "glob": "**/*",
-                  "input": "./libs/assets/",
-                  "output": "./assets"
-                }
+              "apps/bikeshare/src/favicon.ico",
+              "apps/bikeshare/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
             ],
             "styles": ["apps/bikeshare/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/bikeshare/src/environments/environment.ts",
-                  "with": "apps/bikeshare/src/environments/environment.prod.ts"
-                }
-              ],
+              "fileReplacements": [{
+                "replace": "apps/bikeshare/src/environments/environment.ts",
+                "with": "apps/bikeshare/src/environments/environment.prod.ts"
+              }],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -1014,13 +1003,11 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                }
-              ]
+              "budgets": [{
+                "type": "initial",
+                "maximumWarning": "2mb",
+                "maximumError": "5mb"
+              }]
             }
           }
         },
@@ -1191,10 +1178,12 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "apps/bikeshare/jest.config.js",
-            "tsConfig": "apps/bikeshare/tsconfig.spec.json",
-            "setupFile": "apps/bikeshare/src/test-setup.ts"
-          },
+            "jestConfig": "libs/common/ngx/router/jest.config.js",
+            "tsConfig": "libs/common/ngx/router/tsconfig.spec.json",
+            "setupFile": "libs/common/ngx/router/src/test-setup.ts"
+          }
+        }
+      },
       "schematics": {
         "@nrwl/angular:component": {
           "styleext": "scss"

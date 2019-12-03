@@ -104,13 +104,13 @@
     "angular-aggiemap-trees": {
       "tags": []
     },
-    "ui-kits-ngx-branding": {
-      "tags": []
-    },
     "bikeshare-e2e": {
       "tags": []
     },
     "bikeshare": {
+      "tags": []
+    },
+    "ui-kits-ngx-branding": {
       "tags": []
     },
     "maps-feature-layer-filter": {

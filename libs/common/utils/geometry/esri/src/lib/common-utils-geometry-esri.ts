@@ -11,9 +11,7 @@ import { polygon as tPolygon, Feature as tFeature, Point as tPoint } from '@turf
  * @export
  * @param feature Esri geometry
  */
-export function centroidFromGeometry(
-  feature: esri.Geometry | esri.Polygon | esri.Multipoint | esri.Point | esri.Polyline | Point
-): Point {
+export function centroidFromGeometry(feature: FeatureUnion): Point {
   if ('rings' in feature) {
     // If geometry is polygon
     return centroidFromPolygonGeometry(feature);
@@ -42,15 +40,13 @@ export function centroidFromPolygonGeometry(feature: esri.Polygon): Point {
     };
   } else if (feature.rings) {
     // Result type is a Turf Point
-    const p: tFeature<tPoint> = tCentroid(tPolygon([...(feature as esri.Polygon).rings]));
+    const p: tFeature<tPoint> = tCentroid(tPolygon([...feature.rings]));
 
     if (p && p.geometry && p.geometry.coordinates) {
       return {
         latitude: p.geometry.coordinates[1],
         longitude: p.geometry.coordinates[0]
       };
-    } else {
-      return undefined;
     }
   } else {
     throw new Error('Feature provided does not contain rings.');
@@ -70,7 +66,7 @@ export function centroidFromPolygonGeometry(feature: esri.Polygon): Point {
  * @export
  * @param  geometry String representing geometry type.
  */
-export function getGeometryType(geometry: esri.Geometry): string {
+export function getGeometryType(geometry: Partial<esri.Geometry>): string {
   if (geometry) {
     if (('latitude' in geometry && 'longitude' in geometry) || ('y' in geometry && 'x' in geometry)) {
       return 'point';
@@ -128,3 +124,5 @@ export function pointFromPolylineGeometry(feature: esri.Polyline): Point {
     throw new Error('Feature provided does not contain paths.');
   }
 }
+
+export type FeatureUnion = esri.Geometry | esri.Polygon | esri.Multipoint | esri.Point | esri.Polyline | Point;

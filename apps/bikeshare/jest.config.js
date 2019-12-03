@@ -1,9 +1,6 @@
 module.exports = {
-  name: 'bikeshare',
+  name: 'angular-aggiemap-trees',
   preset: '../../jest.config.js',
-  coverageDirectory: '../../coverage/apps/bikeshare',
-  snapshotSerializers: [
-    'jest-preset-angular/AngularSnapshotSerializer.js',
-    'jest-preset-angular/HTMLCommentSerializer.js'
-  ]
+  coverageDirectory: '../../coverage/apps/angular-aggiemap-trees',
+  snapshotSerializers: ['jest-preset-angular/AngularSnapshotSerializer.js', 'jest-preset-angular/HTMLCommentSerializer.js']
 };

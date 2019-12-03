@@ -8,9 +8,13 @@ import { TripPlannerOptionsComponentService } from '../../services/trip-planner-
 import {
   TripPlannerService,
   TripPlannerRuleMode,
-  TravelOptions
+  TravelOptions,
+  TripPlannerRule
 } from '../../../../../services/trip-planner/trip-planner.service';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
+import { TripPlannerOptionsBaseComponent } from '../../components/base/base.component';
+import { TripPlannerParkingOptionsComponent } from '../../components/parking/trip-planner-parking-options.component';
+import { TripPlannerBikingOptionsComponent } from '../../components/biking/trip-planner-biking-options.component';
 
 @Component({
   selector: 'gisc-trip-planner-options',
@@ -19,7 +23,7 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TripPlannerOptionsComponent implements OnInit {
-  public readonly isDev: Observable<any> = this.testingService.get('isTesting').pipe(shareReplay(1));
+  public readonly isDev = this.testingService.get('isTesting').pipe(shareReplay(1)) as Observable<boolean>;
 
   public readonly travelOptions: Observable<TravelOptions> = this.plannerService.TravelOptions;
 
@@ -53,7 +57,7 @@ export class TripPlannerOptionsComponent implements OnInit {
     })
   );
 
-  public readonly ModeOptions: Observable<any> = this.Options.pipe(
+  public readonly ModeOptions: Observable<TripPlannerRuleMode[]> = this.Options.pipe(
     // Because `Options` is a long-lived observable, without taking the first emission it
     // it will never complete and the subscription will will never trigger.
     take(1),
@@ -99,7 +103,7 @@ export class TripPlannerOptionsComponent implements OnInit {
     this.plannerService.updateTravelOptions(opt);
   }
 
-  public getOptionvalue(option): Observable<any> {
+  public getOptionvalue<T>(option: string): Observable<T> {
     return this.travelOptions.pipe(pluck(option));
   }
 
@@ -116,7 +120,9 @@ export class TripPlannerOptionsComponent implements OnInit {
     }
 
     // Resolve component
-    const factory = this.componentResolver.resolveComponentFactory(component);
+    const factory = this.componentResolver.resolveComponentFactory<
+      TripPlannerParkingOptionsComponent | TripPlannerBikingOptionsComponent
+    >(component);
 
     // Get reference to the view container (host)
     const container = this.viewHost.viewContainerRef;
@@ -129,6 +135,6 @@ export class TripPlannerOptionsComponent implements OnInit {
 
     // Pass in feature data to the created component
     // Will only handle a single feature for now.
-    (<any>resolvedComponent.instance).settings = this.ModeOptions;
+    resolvedComponent.instance.settings = this.ModeOptions;
   }
 }

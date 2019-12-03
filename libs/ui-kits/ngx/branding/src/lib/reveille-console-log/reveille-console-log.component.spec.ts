@@ -1,10 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReveilleConsoleLogComponent } from './reveille-console-log.component';
+import { REV_ASCII, ReveilleConsoleLogComponent } from './reveille-console-log.component';
 
 describe('ReveilleConsoleLogComponent', () => {
   let component: ReveilleConsoleLogComponent;
   let fixture: ComponentFixture<ReveilleConsoleLogComponent>;
+
+  let consoleResults = '';
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -13,6 +15,9 @@ describe('ReveilleConsoleLogComponent', () => {
   }));
 
   beforeEach(() => {
+    console.log = (message) => {
+      consoleResults = message;
+    };
     fixture = TestBed.createComponent(ReveilleConsoleLogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -20,5 +25,6 @@ describe('ReveilleConsoleLogComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(consoleResults).toEqual(REV_ASCII);
   });
 });

@@ -7,7 +7,7 @@ export const environment = {
   production: false
 };
 
-import { SearchSource } from '@tamu-gisc/search';
+import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/search';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 
 import { Connections, Definitions as d } from './definitions';
@@ -293,7 +293,7 @@ export const LegendSources: LegendItem[] = [
   }
 ];
 
-const commonQueryParams: any = {
+const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
   f: 'json',
   resultRecordCount: 5,
   outFields: '*',
@@ -515,7 +515,7 @@ export const SearchSources: SearchSource[] = [
   }
 ];
 
-export const SelectionSymbols: any = {
+export const SelectionSymbols = {
   polygon: {
     type: 'simple-fill',
     style: 'solid',

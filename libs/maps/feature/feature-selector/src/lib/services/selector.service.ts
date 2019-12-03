@@ -42,7 +42,7 @@ export class FeatureSelectorService implements OnDestroy {
 
         return fromEventPattern(create, remove).pipe(
           switchMap((event: MouseEvent) => {
-            return from((view.hitTest(event) as any) as Promise<esri.HitTestResult>);
+            return from((view.hitTest(event) as unknown) as Promise<esri.HitTestResult>);
           }),
           switchMap((hitTestResult: esri.HitTestResult) => {
             return of(hitTestResult.results.map((v) => v.graphic));

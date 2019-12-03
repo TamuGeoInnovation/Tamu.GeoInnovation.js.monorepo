@@ -17,7 +17,7 @@ import { LayerSources } from '../../../../../environments/environment';
 export class PopupService {
   constructor() {}
 
-  private _dictionary: any[] = [
+  private _dictionary = [
     { id: 'BasePopupComponent', component: BasePopupComponent },
     { id: 'BuildingPopupComponent', component: BuildingPopupComponent },
     { id: 'ConstructionPopupComponent', component: ConstructionPopupComponent },
@@ -40,7 +40,7 @@ export class PopupService {
    * @returns {*}
    * @memberof PopupService
    */
-  public getComponent(snapshot: HitTestSnapshot): any {
+  public getComponent(snapshot: HitTestSnapshot) {
     // Handle case if popup component override is provided.
     if (snapshot.popupComponent) {
       const dicionaryObject = this._dictionary.find((obj) => obj.id === snapshot.popupComponent);
