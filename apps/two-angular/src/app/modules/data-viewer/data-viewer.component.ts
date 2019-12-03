@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { from, Observable, of, forkJoin } from 'rxjs';
+import { from, Observable, of, forkJoin, combineLatest } from 'rxjs';
 import { switchMap, filter, toArray, shareReplay, startWith, mergeMap, reduce } from 'rxjs/operators';
+
+import * as deepMerge from 'deepmerge';
 
 import { Sites, NodeGroups, DataGroups, DataGroupFlds, WeatherfluxExpanded } from '@tamu-gisc/two/common';
 
@@ -27,22 +29,33 @@ export class DataViewerComponent implements OnInit {
   public fields: Observable<DataGroupFlds[]>;
 
   public chartData;
+
+  // Global chart options
   public chartOptions: Partial<IChartConfiguration['options']> = {
-    fill: 'end',
     scales: {
       xAxes: [
         {
           type: 'time',
+          distribution: 'series',
           time: {
-            unit: 'day',
-            distribution: 'series'
+            unit: 'day'
           }
         }
       ]
     },
     legend: {
       position: 'bottom'
+    },
+    plugins: {
+      colorschemes: {
+        scheme: 'brewer.Paired8'
+      }
     }
+  };
+
+  // Settings applied to each individual dataset
+  public datasetChartOptions = {
+    fill: false
   };
 
   constructor(
@@ -60,7 +73,6 @@ export class DataViewerComponent implements OnInit {
       nodeType: [2, Validators.required],
       dataGroup: [22, Validators.required],
       fieldList: [['TA_1_1_1'], Validators.required],
-      // startDate: [new Date(Date.now() - 604800000), Validators.required],
       startDate: [new Date(1572584400000), Validators.required],
       endDate: [new Date(), Validators.required]
     });
@@ -152,20 +164,38 @@ export class DataViewerComponent implements OnInit {
       }, {}),
       // Flatten the series
       switchMap((grouped) => {
+        return combineLatest([of(grouped), this.fields]);
+      }),
+      switchMap(([grouped, fields]) => {
         const mapped = Object.entries(grouped).map(([key, dataset]) => {
+          const field = fields.find((f) => f.field.fieldName.toLowerCase() === key).field;
+
           return {
             data: {
               datasets: [
-                ...Object.entries(dataset).map(([k, series]) => {
-                  return { ...series, fill: false };
+                ...Object.entries(dataset).map(([k, series], index) => {
+                  return { ...series, ...this.datasetChartOptions };
                 })
               ]
             },
-            options: {
+            options: deepMerge(this.chartOptions, {
               title: {
-                text: key
+                text: field.fieldDescription
+              },
+              scales: {
+                yAxes: [
+                  {
+                    ticks: {
+                      beginAtZero: true
+                    },
+                    scaleLabel: {
+                      display: true,
+                      labelString: `${field.fieldName} (${field.fieldUnits})`
+                    }
+                  }
+                ]
               }
-            }
+            })
           };
         });
 

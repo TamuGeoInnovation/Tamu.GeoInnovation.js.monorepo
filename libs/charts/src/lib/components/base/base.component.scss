@@ -3,4 +3,12 @@
 :host {
   @include flexbox();
   @include flex-direction(column);
+  @include justify-content(center);
+
+  margin-bottom: 2rem;
+}
+
+h3 {
+  text-align: center;
+  margin-bottom: 1rem;
 }
