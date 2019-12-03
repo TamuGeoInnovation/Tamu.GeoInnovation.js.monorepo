@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { from, Observable } from 'rxjs';
-import { switchMap, filter, toArray, shareReplay, startWith } from 'rxjs/operators';
+import { from, Observable, of, forkJoin, combineLatest } from 'rxjs';
+import { switchMap, filter, toArray, shareReplay, startWith, mergeMap, map, flatMap } from 'rxjs/operators';
 
 import { Sites, NodeGroups, DataGroups, DataGroupFlds } from '@tamu-gisc/two/common';
 
@@ -9,6 +9,7 @@ import { SitesService } from './services/sites/sites.service';
 import { NodeTypesService } from './services/node-types/node-types.service';
 import { DataGroupsService } from './services/data-groups/data-groups.service';
 import { FieldsService } from './services/fields/fields.service';
+import { DataService } from './services/data/data.service';
 
 @Component({
   selector: 'tamu-gisc-data-viewer',
@@ -24,11 +25,33 @@ export class DataViewerComponent implements OnInit {
   public dataGroups: Observable<DataGroups[]>;
   public fields: Observable<DataGroupFlds[]>;
 
+  public dumbData = of({
+    datasets: [
+      {
+        label: 'One',
+        data: [
+          { t: new Date(1575172290000), y: 0.2 },
+          { t: new Date(1575258690000), y: 0.75 },
+          { t: new Date(1575345090000), y: 0.9 },
+          { t: new Date(1575431490000), y: 0.9 }
+        ]
+      }
+      // {
+      //   label: 'Two',
+      //   data: [{ x: 1, y: 1 }, { x: 3, y: 0.5 }, { x: 5, y: 0.3 }]
+      // }
+    ]
+    // labels: [1, 2, 3, 4]
+    // labels: [5, 4, 3, 2, 1]
+    // labels: [1, 2, 5, 3, 4]
+  });
+
   constructor(
     private s: SitesService,
     private n: NodeTypesService,
     private d: DataGroupsService,
     private f: FieldsService,
+    private dd: DataService,
     private formBuilder: FormBuilder
   ) {}
 
@@ -78,5 +101,20 @@ export class DataViewerComponent implements OnInit {
 
   public submit() {
     console.dir(this.form.getRawValue());
+
+    let reqs1 = combineLatest([of(this.form.controls.fieldList.value), of(this.form.controls.sitesList.value)])
+      .pipe(
+        switchMap(([f, s]) => {
+          return this.dd.getFieldData({
+            fields: f,
+            sites: s,
+            startDate: this.form.controls.startDate.value,
+            endDate: this.form.controls.endDate.value
+          });
+        })
+      )
+      .subscribe((res) => {
+        debugger;
+      });
   }
 }

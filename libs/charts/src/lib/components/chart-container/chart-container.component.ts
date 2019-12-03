@@ -108,6 +108,14 @@ export class ChartConfiguration {
               beginAtZero: true
             }
           }
+        ],
+        xAxes: [
+          {
+            type: 'time',
+            time: {
+              unit: 'day'
+            }
+          }
         ]
       }
     };
@@ -150,12 +158,22 @@ export interface IChartConfiguration {
   };
 
   options?: {
-    scales: {
-      yAxes: {
-        ticks: {
-          beginAtZero: boolean;
-        };
-      }[];
+    scales?: {
+      yAxes: AxisChartConfiguration[];
+      xAxes?: AxisChartConfiguration[];
     };
+  };
+}
+
+interface AxisChartConfiguration {
+  type?: string;
+  time?: {
+    unit: string;
+  };
+  ticks?: {
+    beginAtZero?: boolean;
+    min?: number;
+    max?: number;
+    stepSize?: number;
   };
 }

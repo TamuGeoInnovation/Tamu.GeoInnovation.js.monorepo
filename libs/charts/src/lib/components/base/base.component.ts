@@ -1,6 +1,6 @@
 import { Component, ViewChild, Input, AfterViewInit, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { scan } from 'rxjs/operators';
+import { Observable, iif, of } from 'rxjs';
+import { scan, switchMap } from 'rxjs/operators';
 
 import { op } from '../../operators/common/common-chart-operators';
 import { ChartContainerComponent, ChartConfiguration } from '../chart-container/chart-container.component';
@@ -211,7 +211,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
         let p;
         // Asserting transformations as an `any` array, otherwise compiler does not like its original
         // union type.
-        if ('labels' in curr && 'datasets' in curr) {
+        if ('datasets' in curr) {
           p = curr;
         } else {
           p = (<string[]>this.transformations)

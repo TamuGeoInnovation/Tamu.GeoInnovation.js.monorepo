@@ -39,13 +39,13 @@
         </tamu-gisc-checkbox-group>
       </div>
 
-      <div class="form-block">
+      <div class="form-block" *ngIf="form.controls['fieldList'].valid">
         <p class="weight-2">Start Date</p>
 
         <tamu-gisc-date-time-picker formControlName="startDate"></tamu-gisc-date-time-picker>
       </div>
 
-      <div class="form-block">
+      <div class="form-block" *ngIf="form.controls['fieldList'].valid">
         <p class="weight-2">End Date</p>
 
         <tamu-gisc-date-time-picker formControlName="endDate"></tamu-gisc-date-time-picker>
@@ -55,5 +55,7 @@
         <button type="submit" [disabled]="form.invalid">Generate Charts</button>
       </div>
     </form>
+
+    <tamu-gisc-line-chart [source]="dumbData"></tamu-gisc-line-chart>
   </div>
 </div>

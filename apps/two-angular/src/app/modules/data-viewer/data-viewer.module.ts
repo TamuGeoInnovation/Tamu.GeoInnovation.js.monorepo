@@ -7,6 +7,7 @@ import { DataViewerComponent } from './data-viewer.component';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { ChartsModule } from '@tamu-gisc/charts';
 
 const routes: Routes = [{ path: '', component: DataViewerComponent }];
 
@@ -18,7 +19,8 @@ const routes: Routes = [{ path: '', component: DataViewerComponent }];
     FormsModule,
     ReactiveFormsModule,
     UIFormsModule,
-    UILayoutModule
+    UILayoutModule,
+    ChartsModule
   ]
 })
 export class DataViewerModule {}
