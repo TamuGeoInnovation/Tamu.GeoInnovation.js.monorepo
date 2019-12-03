@@ -40,6 +40,18 @@
       </div>
 
       <div class="form-block">
+        <p class="weight-2">Start Date</p>
+
+        <tamu-gisc-date-time-picker formControlName="startDate"></tamu-gisc-date-time-picker>
+      </div>
+
+      <div class="form-block">
+        <p class="weight-2">End Date</p>
+
+        <tamu-gisc-date-time-picker formControlName="endDate"></tamu-gisc-date-time-picker>
+      </div>
+
+      <div class="form-block">
         <button type="submit" [disabled]="form.invalid">Generate Charts</button>
       </div>
     </form>

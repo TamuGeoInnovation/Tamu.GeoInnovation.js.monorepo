@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { from, Observable, merge, of } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { switchMap, filter, toArray, shareReplay, startWith } from 'rxjs/operators';
 
-import { Sites, NodeGroups, DataGroups, Fields, DataGroupFlds } from '@tamu-gisc/two/common';
+import { Sites, NodeGroups, DataGroups, DataGroupFlds } from '@tamu-gisc/two/common';
 
 import { SitesService } from './services/sites/sites.service';
 import { NodeTypesService } from './services/node-types/node-types.service';
@@ -37,7 +37,9 @@ export class DataViewerComponent implements OnInit {
       sitesList: [[], Validators.required],
       nodeType: [undefined, Validators.required],
       dataGroup: [undefined, Validators.required],
-      fieldList: [[], Validators.required]
+      fieldList: [[], Validators.required],
+      startDate: [new Date(Date.now() - 604800000), Validators.required],
+      endDate: [new Date(), Validators.required]
     });
 
     this.form.valueChanges.subscribe((changes) => {
