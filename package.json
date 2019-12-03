@@ -52,6 +52,7 @@
     "clipboard": "^2.0.4",
     "colornames": "^1.1.1",
     "core-js": "^3.2.1",
+    "deepmerge": "^4.2.2",
     "document-register-element": "1.13.1",
     "esri-loader": "^2.10.1",
     "geojson-utils": "git+ssh://git@github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.geojsonutils.git",

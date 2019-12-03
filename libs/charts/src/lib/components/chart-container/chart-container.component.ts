@@ -1,8 +1,10 @@
 import { Component, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 
-import Chart from 'chart.js';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+import Chart from 'chart.js';
+import * as deepMerge from 'deepmerge';
 
 @Component({
   selector: 'tamu-gisc-chart-container',
@@ -108,14 +110,6 @@ export class ChartConfiguration {
               beginAtZero: true
             }
           }
-        ],
-        xAxes: [
-          {
-            type: 'time',
-            time: {
-              unit: 'day'
-            }
-          }
         ]
       }
     };
@@ -123,6 +117,12 @@ export class ChartConfiguration {
 
   public updateData(data: IChartConfiguration['data']) {
     this.data = data;
+  }
+
+  public mergeOptions(opts: IChartConfiguration['options']) {
+    const merged = deepMerge(this.options, opts);
+
+    this.options = merged;
   }
 }
 
@@ -144,8 +144,7 @@ export class LineChartConfiguration extends ChartConfiguration {
 
 export interface IChartConfiguration {
   // type?: 'line' | 'bar' | 'radar' | 'pie' | 'doughnut' | 'polarArea' | 'bubble' | 'scatter';
-  type?: string;
-
+  type?: 'line' | 'bar';
   data?: {
     labels?: Array<unknown>;
     datasets?: {
@@ -156,19 +155,24 @@ export interface IChartConfiguration {
       borderWidth?: number;
     }[];
   };
-
   options?: {
+    fill?: boolean | string;
+    backgroundColor?: string;
     scales?: {
-      yAxes: AxisChartConfiguration[];
-      xAxes?: AxisChartConfiguration[];
+      yAxes?: AxisChartOptions[];
+      xAxes?: AxisChartOptions[];
+    };
+    legend?: {
+      position?: 'top' | 'left' | 'bottom' | 'right';
     };
   };
 }
 
-interface AxisChartConfiguration {
+interface AxisChartOptions {
   type?: string;
   time?: {
-    unit: string;
+    unit?: string;
+    distribution?: 'linear' | 'series';
   };
   ticks?: {
     beginAtZero?: boolean;

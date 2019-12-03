@@ -56,6 +56,9 @@
       </div>
     </form>
 
-    <tamu-gisc-line-chart [source]="dumbData"></tamu-gisc-line-chart>
+    <div class="charts" *ngIf="chartData">
+      <tamu-gisc-line-chart [source]="chart.data" [options]="chartOptions" [title]="chart.options.title.text"
+        *ngFor="let chart of chartData | async"></tamu-gisc-line-chart>
+    </div>
   </div>
 </div>
