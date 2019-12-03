@@ -2,7 +2,10 @@
   <label>
     Date Range:
     <input placeholder="Date Time Range:" [style.width]="'350px'" [(ngModel)]="dateTimeRange" [selectMode]="'range'"
-      [owlDateTimeTrigger]="dtRange1" [owlDateTime]="dtRange1">
+      [owlDateTimeTrigger]="dtRange1" [owlDateTime]="dtRange1" [max]="max" #dateTime="ngModel">
     <owl-date-time #dtRange1 (afterPickerClosed)="newDate()"></owl-date-time>
   </label>
+  <div *ngIf="dateTime.invalid && dateTime.errors.owlDateTimeMax">
+    Date Time value must before {{max | date: 'medium'}}
+  </div>
 </div>
