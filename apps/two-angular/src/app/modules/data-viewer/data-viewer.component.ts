@@ -69,10 +69,10 @@ export class DataViewerComponent implements OnInit {
 
   public ngOnInit() {
     this.form = this.formBuilder.group({
-      sitesList: [[1, 3, 4, 5], Validators.required],
-      nodeType: [2, Validators.required],
-      dataGroup: [22, Validators.required],
-      fieldList: [['TA_1_1_1'], Validators.required],
+      sitesList: [[], Validators.required],
+      nodeType: [undefined, Validators.required],
+      dataGroup: [undefined, Validators.required],
+      fieldList: [[], Validators.required],
       startDate: [new Date(1572584400000), Validators.required],
       endDate: [new Date(), Validators.required]
     });
@@ -149,7 +149,7 @@ export class DataViewerComponent implements OnInit {
           acc[seriesKey] = {};
         }
 
-        // If the series key in the accumulated seed does not have a key with the sitecode, create it.
+        // If the series key in the accumulated seed does not have a key with the site code, create it.
         // Individual rows will be inserted into these arrays, representing a chart dataset series. (sites are series of a field chart)
         if (acc[seriesKey][curr.sitecode] === undefined) {
           acc[seriesKey][curr.sitecode] = {
@@ -164,10 +164,12 @@ export class DataViewerComponent implements OnInit {
       }, {}),
       // Flatten the series
       switchMap((grouped) => {
+        // Get the field list along with the grouped. Fields will be used to set labels and chart title.
         return combineLatest([of(grouped), this.fields]);
       }),
       switchMap(([grouped, fields]) => {
         const mapped = Object.entries(grouped).map(([key, dataset]) => {
+          // Find the field from fields list where field name matches the current grouped key (is a lower-cased field name)
           const field = fields.find((f) => f.field.fieldName.toLowerCase() === key).field;
 
           return {

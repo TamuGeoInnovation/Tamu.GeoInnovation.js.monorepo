@@ -3,7 +3,7 @@ import { Component, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Chart, PluginServiceRegistrationOptions } from 'chart.js';
+import { Chart } from 'chart.js';
 import * as deepMerge from 'deepmerge';
 import 'chartjs-plugin-colorschemes';
 

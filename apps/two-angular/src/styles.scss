@@ -44,3 +44,23 @@ p {
 .form-block {
   margin-bottom: 1.5rem;
 }
+
+button {
+  font-size: 1rem;
+  background: #500000;
+  color: #fafafa;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  @include transition(background-color 0.3s, color 0.3s);
+
+  &[disabled] {
+    background: #b0b0b0;
+    color: #212121;
+  }
+
+  &:active {
+    background: lighten(#500000, 3%);
+  }
+}
