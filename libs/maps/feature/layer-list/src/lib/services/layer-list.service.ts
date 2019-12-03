@@ -19,7 +19,7 @@ export class LayerListService implements OnDestroy {
   // Called from the DatePicker Component
   public changeDate(dateTimeRange: Date[]) {
     this.currentDates = dateTimeRange;
-    console.log(this.currentDates);
+    //console.log(this.currentDates);
 
     const LayerSources = this.environment.value('LayerSources');
     const updatedLayers = this._store.value.map((lyr) => {
@@ -30,7 +30,15 @@ export class LayerListService implements OnDestroy {
         })[0];
         // append the time requested to the origin/destination layer urls
         // the split makes sure the append does not happen multiple times
-        nlayer.url += '/' + this.currentDates[0].getTime() + '/' + this.currentDates[1].getTime();
+        nlayer.url =
+          nlayer.url
+            .split('/')
+            .slice(0, 5)
+            .join('/') +
+          '/' +
+          this.currentDates[0].getTime() +
+          '/' +
+          this.currentDates[1].getTime();
         console.log(nlayer.url);
         lyr = new LayerListItem(nlayer);
         return lyr;
