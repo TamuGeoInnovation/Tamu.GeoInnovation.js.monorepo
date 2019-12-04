@@ -1209,8 +1209,9 @@
           "configurations": {
             "production": {
               "optimization": true,
-              "extractLicenses": true,
+              "extractLicenses": false,
               "inspect": false,
+              "sourceMap": false,
               "fileReplacements": [
                 {
                   "replace": "apps/two-nest-data-api/src/environments/environment.ts",
