@@ -1,5 +1,7 @@
+import { Injectable } from '@nestjs/common';
 import { BaseEntity, FindManyOptions, Repository } from 'typeorm';
 
+@Injectable()
 export abstract class BaseService<Entity extends BaseEntity> {
   constructor(private r: Repository<Entity>) {}
 

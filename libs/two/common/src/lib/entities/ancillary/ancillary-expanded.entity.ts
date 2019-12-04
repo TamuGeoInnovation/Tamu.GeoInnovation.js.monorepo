@@ -14,7 +14,7 @@ export class AncillaryExpanded extends BaseEntity {
   @Column({ name: 'siteID', type: 'mediumint', nullable: true })
   public siteid: number;
 
-  @Column({ name: 'Timestamp', type: 'date' })
+  @Column({ name: 'Timestamp', type: 'datetime' })
   public timestamp: Date;
 
   @Column({ name: 'Abs_Rain', type: 'double precision', nullable: true })

@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { WeatherfluxExpanded } from '@tamu-gisc/two/common';
 
 import { DataController } from './data.controller';
-import { DataService } from './data.service';
+import { DataService } from './services/data/data.service';
 
 describe('Data Controller', () => {
   let controller: DataController;

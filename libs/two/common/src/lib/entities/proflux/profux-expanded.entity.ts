@@ -14,7 +14,7 @@ export class ProFluxExpanded extends BaseEntity {
   @Column({ name: 'file_date', type: 'date', select: false })
   public file_date: Date;
 
-  @Column({ name: 'file_time', type: 'date', select: false })
+  @Column({ name: 'file_time', type: 'time', select: false })
   public file_time: Date;
 
   @Column({ name: 'absolute_units_hf', type: 'double precision' })

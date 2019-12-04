@@ -119,6 +119,7 @@ export class DataViewerComponent implements OnInit {
         return from(this.form.controls.sitesList.value).pipe(
           mergeMap((site: string) => {
             return this.dd.getFieldData({
+              node: this.form.controls.nodeType.value,
               fields: [field],
               sites: [site],
               startDate: this.form.controls.startDate.value,

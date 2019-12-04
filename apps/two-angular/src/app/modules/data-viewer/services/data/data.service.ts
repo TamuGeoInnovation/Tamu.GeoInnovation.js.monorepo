@@ -16,10 +16,10 @@ export class DataService extends BaseApiService<WeatherfluxExpanded> {
     this.resource = 'data';
   }
 
-  public getFieldData(options: { sites: string[]; fields: string[]; startDate: Date; endDate: Date }) {
+  public getFieldData(options: { node: number; sites: string[]; fields: string[]; startDate: Date; endDate: Date }) {
     return this.h.get<Array<WeatherfluxExpanded>>(
-      `${this.api_url}/${
-        this.resource
+      `${this.api_url}/${this.resource}/${
+        options.node
       }/${options.sites.toString()}/${options.fields.toString()}/${options.startDate.toISOString()}/${options.endDate.toISOString()}`
     );
   }
