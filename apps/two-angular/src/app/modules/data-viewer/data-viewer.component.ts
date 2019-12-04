@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { from, Observable, of, forkJoin, combineLatest } from 'rxjs';
-import { switchMap, filter, toArray, shareReplay, startWith, mergeMap, reduce } from 'rxjs/operators';
+import { switchMap, filter, toArray, shareReplay, startWith, mergeMap, reduce, tap } from 'rxjs/operators';
 
 import * as deepMerge from 'deepmerge';
 
@@ -58,6 +58,20 @@ export class DataViewerComponent implements OnInit {
     fill: false
   };
 
+  public formState = 0;
+
+  public formStates = {
+    0: {
+      text: 'Generate Charts'
+    },
+    1: {
+      text: 'Loading...'
+    },
+    2: {
+      text: 'Error'
+    }
+  };
+
   constructor(
     private s: SitesService,
     private n: NodeTypesService,
@@ -95,6 +109,8 @@ export class DataViewerComponent implements OnInit {
     this.nodeGroups = this.n.getData().pipe(shareReplay(1));
 
     this.dataGroups = this.form.controls.nodeType.valueChanges.pipe(
+      // Reset the data group form control
+      tap(() => this.form.controls.dataGroup.reset(undefined)),
       startWith(this.form.controls.nodeType.value),
       switchMap((nodeID) => {
         return this.d.getData(nodeID ? nodeID : this.form.controls.nodeType.value);
@@ -103,6 +119,8 @@ export class DataViewerComponent implements OnInit {
     );
 
     this.fields = this.form.controls.dataGroup.valueChanges.pipe(
+      // Reset the field list form control
+      tap(() => this.form.controls.fieldList.reset([])),
       startWith(this.form.controls.dataGroup.value),
       switchMap((groupID) => {
         return this.f.getData(groupID ? groupID : this.form.controls.dataGroup.value);
@@ -114,7 +132,10 @@ export class DataViewerComponent implements OnInit {
   public submit() {
     console.dir(this.form.getRawValue());
 
+    // return;
+
     const dataReqs = from(this.form.controls.fieldList.value).pipe(
+      tap(() => (this.formState = 1)),
       mergeMap((field: string) => {
         return from(this.form.controls.sitesList.value).pipe(
           mergeMap((site: string) => {
@@ -203,7 +224,8 @@ export class DataViewerComponent implements OnInit {
         });
 
         return of(mapped);
-      })
+      }),
+      tap(() => (this.formState = 0))
     );
   }
 }
