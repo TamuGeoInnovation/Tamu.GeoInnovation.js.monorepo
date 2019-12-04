@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, AfterLoad } from 'typeorm';
 
 @Entity({ name: 'ProFlux' })
 export class ProFluxExpanded extends BaseEntity {
@@ -340,4 +340,11 @@ export class ProFluxExpanded extends BaseEntity {
 
   @Column({ name: 'z_minus_d_div_l', type: 'double precision' })
   public z_minus_d_div_l: number;
+
+  protected timestamp: Date;
+
+  @AfterLoad()
+  public computeFields() {
+    this.timestamp = new Date(`${this.file_date}T${this.file_time}`);
+  }
 }

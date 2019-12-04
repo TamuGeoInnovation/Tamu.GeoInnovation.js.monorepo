@@ -18,11 +18,17 @@ export class DataController {
   @Get('1/:stations/:columns/:start/:end')
   public getProFlusData(@Param() params) {
     return this.proflux.getData({
-      select: ['siteid', 'sitecode', 'timestamp', ...params.columns.split(',').map((c) => c.trim().toLowerCase())],
+      select: [
+        'siteid',
+        'sitecode',
+        'file_date',
+        'file_time',
+        ...params.columns.split(',').map((c) => c.trim().toLowerCase())
+      ],
       where: params.stations.split(',').map((s) => {
         return {
           siteid: s,
-          timestamp: Between(params.start, params.end)
+          file_date: Between(params.start, params.end)
         };
       })
     });
