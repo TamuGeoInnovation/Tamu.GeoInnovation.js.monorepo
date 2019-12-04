@@ -14,8 +14,10 @@ export class LayerListService implements OnDestroy {
 
   private _handles: esri.Handles;
 
-  private yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
-  public currentDates = [this.yesterday, new Date()];
+  //private yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+  //public currentDates = [this.yesterday, new Date()];
+  public currentDates = [new Date(2019, 10, 20), new Date(2019, 10, 21)];
+
   // Called from the DatePicker Component
   public changeDate(dateTimeRange: Date[]) {
     this.currentDates = dateTimeRange;
@@ -88,6 +90,7 @@ export class LayerListService implements OnDestroy {
       res.map.allLayers.on('change', (e) => {
         // Handle added layers case
         if (e.added) {
+          this.changeDate(this.currentDates);
           // Each event only has the layers for that particular event. It does not include layers in
           // previous events, so some processing must be done to ensure all layers added are either added
           // or updated properly in the service state.
