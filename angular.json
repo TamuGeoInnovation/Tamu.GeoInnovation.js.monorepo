@@ -1312,7 +1312,15 @@
             "polyfills": "apps/two-angular/src/polyfills.ts",
             "tsConfig": "apps/two-angular/tsconfig.app.json",
             "aot": false,
-            "assets": ["apps/two-angular/src/favicon.ico", "apps/two-angular/src/assets"],
+            "assets": [
+              "apps/two-angular/src/favicon.ico",
+              "apps/two-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
             "styles": ["apps/two-angular/src/styles.scss"],
             "scripts": []
           },
