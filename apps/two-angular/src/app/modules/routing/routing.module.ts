@@ -23,7 +23,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     HttpClientModule,
-    RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
+    RouterModule.forRoot(routes, { initialNavigation: 'enabled', useHash: environment.environment.production }),
     EnvironmentModule
   ],
   providers: [
