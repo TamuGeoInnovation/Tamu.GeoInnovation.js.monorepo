@@ -1,3 +1,5 @@
+@import 'libs/sass/mixins';
+
 :host {
   z-index: 1;
   position: relative;
@@ -11,12 +13,25 @@
   border: 1px solid #f5f5f5;
 }
 
+.center-x {
+  @include transform(translateX(-50%));
+  left: 50%;
+}
+
 .top {
   top: 0;
+
+  &.center {
+    @extend .center-x;
+  }
 }
 
 .bottom {
   top: 100%;
+
+  &.center {
+    @extend .center-x;
+  }
 }
 
 .right {
