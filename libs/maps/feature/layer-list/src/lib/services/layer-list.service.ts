@@ -41,7 +41,12 @@ export class LayerListService implements OnDestroy {
           this.currentDates[0].getTime() +
           '/' +
           this.currentDates[1].getTime();
-        console.log(nlayer.url);
+
+        // When viewing the heatmap over many days, the data overwhelms the map
+        // By making changing the maxPixelIntensity by the number of days, the heatmap keeps the same scale
+        const totalDays = (this.currentDates[1].getTime() - this.currentDates[0].getTime()) / (60 * 60 * 24 * 1000);
+        nlayer.native.renderer.maxPixelIntensity = 40 * totalDays;
+
         lyr = new LayerListItem(nlayer);
         return lyr;
       } else return lyr;
