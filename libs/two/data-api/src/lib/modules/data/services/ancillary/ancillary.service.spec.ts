@@ -1,4 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { AncillaryExpanded } from '@tamu-gisc/two/common';
+
 import { AncillaryService } from './ancillary.service';
 
 describe('AncillaryService', () => {
@@ -6,7 +11,13 @@ describe('AncillaryService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AncillaryService],
+      providers: [
+        AncillaryService,
+        {
+          provide: getRepositoryToken(AncillaryExpanded),
+          useClass: Repository
+        }
+      ]
     }).compile();
 
     service = module.get<AncillaryService>(AncillaryService);

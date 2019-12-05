@@ -32,8 +32,23 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
   public checkboxes: QueryList<CheckboxComponent>;
 
   /**
-   * A property in a checkbox model used as an identifier to generate a list of
-   * selected/checked items.
+   * A property in a checkbox model that is evaluated and used to generate a list of
+   * of unique selected/checked checkboxes.
+   *
+   * For example given the following checkbox model:
+   *
+   * ```js
+   * {
+   *  name: 'bob'
+   * }
+   * ```
+   *
+   * Providing `name` as the referenceId,
+   *
+   * Given the default state of the checkbox group is `[]`, for no selected checkboxes.
+   *
+   * When the 'bob' checkbox is checked, the checkbox group state will update to `['bob']`
+   * to represent that in the checkbox group, 'bob' is active.
    */
   @Input()
   public referenceId: string;
