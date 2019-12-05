@@ -1,6 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { DataViewerComponent } from './data-viewer.component';
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { ChartsModule } from '@tamu-gisc/charts';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { env, EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 describe('DataViewerComponent', () => {
   let component: DataViewerComponent;
@@ -8,9 +14,16 @@ describe('DataViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DataViewerComponent ]
-    })
-    .compileComponents();
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, UIFormsModule, ChartsModule],
+      declarations: [DataViewerComponent],
+      providers: [
+        EnvironmentService,
+        {
+          provide: env,
+          useValue: { api_url: 'http://' }
+        }
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

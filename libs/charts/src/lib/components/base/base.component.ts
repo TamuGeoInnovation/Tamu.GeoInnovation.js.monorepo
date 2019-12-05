@@ -21,7 +21,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   public source: Observable<unknown[]>;
 
   @Input()
-  public options: IChartConfiguration['options'];
+  public options: IChartConfiguration['options'] = {};
 
   /**
    * Describes the format of the `source` collection format.

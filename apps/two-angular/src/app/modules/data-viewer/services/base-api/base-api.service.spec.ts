@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-
-import { BaseApiService } from './base-api.service';
-import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { HttpClientModule } from '@angular/common/http';
 
-describe('BaseApiService', () => {
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+
+import { BaseApiService } from './base-api.service';
+
+describe('BaseApiService', <T>() => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [EnvironmentModule, HttpClientModule],
@@ -12,7 +13,7 @@ describe('BaseApiService', () => {
         {
           provide: env,
           useValue: {
-            api_url: ''
+            api_url: 'http://'
           }
         }
       ]
@@ -20,7 +21,7 @@ describe('BaseApiService', () => {
   );
 
   it('should be created', () => {
-    const service: BaseApiService = TestBed.get(BaseApiService);
+    const service: BaseApiService<T> = TestBed.get(BaseApiService);
     expect(service).toBeTruthy();
   });
 });
