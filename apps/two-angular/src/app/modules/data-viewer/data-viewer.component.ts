@@ -225,7 +225,8 @@ export class DataViewerComponent implements OnInit {
 
         return of(mapped);
       }),
-      tap(() => (this.formState = 0))
+      tap(() => (this.formState = 0)),
+      shareReplay(1)
     );
   }
 }

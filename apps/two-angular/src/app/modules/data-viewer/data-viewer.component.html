@@ -63,9 +63,13 @@
       </div>
     </form>
 
-    <div class="charts" *ngIf="chartData">
+    <div class="charts" *ngIf="chartData && (chartData | async) !== null && (chartData|async).length > 0">
       <tamu-gisc-line-chart [source]="chart.data" [options]="chart.options" [title]="chart.options.title.text"
         *ngFor="let chart of chartData | async"></tamu-gisc-line-chart>
+    </div>
+
+    <div *ngIf="chartData && (chartData | async) !== null && (chartData|async).length === 0">
+      <p><strong>Your selections did not return any data.</strong></p>
     </div>
   </div>
 </div>
