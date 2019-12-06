@@ -24,7 +24,7 @@ describe('CheckboxComponent', () => {
 
   it('should respond to mouse events', (done) => {
     component.changed.subscribe((event) => {
-      expect(event).toEqual(false);
+      expect(event).toEqual(true);
       done();
     });
     component.handleMouseEvent();

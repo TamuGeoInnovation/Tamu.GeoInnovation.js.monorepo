@@ -1,20 +1,52 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, forwardRef } from '@angular/core';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 @Component({
   selector: 'tamu-gisc-checkbox',
   templateUrl: './checkbox.component.html',
-  styleUrls: ['./checkbox.component.scss']
+  styleUrls: ['./checkbox.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => CheckboxComponent),
+      multi: true
+    }
+  ]
 })
-export class CheckboxComponent {
+export class CheckboxComponent implements ControlValueAccessor {
   @ViewChild('checkboxInput', { static: true }) public ref: ElementRef;
 
   /**
-   * Determines the checked state of the checkbox ref element. Dumb component state.
+   * Determines the checked state of the checkbox ref element.
    *
    * Defaults to `false`.
    */
+  // tslint:disable-next-line:no-input-rename
+  @Input('checked')
+  private _checked = false;
+
+  public get checked() {
+    return this._checked;
+  }
+
+  public set checked(c) {
+    this._checked = c;
+    this._onChange(c);
+    this._onTouch();
+    this.changed.emit(c);
+  }
+
+  /**
+   * **Optional** on single checkbox components.
+   *
+   * **REQUIRED** on checkbox groups, where a property in this object is referenced and used to create a composite
+   * value of selected items in the list.
+   *
+   *
+   * @type {(string | number | boolean)}
+   */
   @Input()
-  public checked = false;
+  public data: object;
 
   /**
    * Determines the interaction state of the component, preventing or allowing user input.
@@ -60,13 +92,16 @@ export class CheckboxComponent {
 
   constructor() {}
 
+  private _onChange = (v) => {};
+  private _onTouch = () => {};
+
   /**
    * Mouse event handler, emitting the raw checked value of the reference checkbox
    *
    * @memberof CheckboxComponent
    */
   public handleMouseEvent(): void {
-    this.changed.emit(this.ref.nativeElement.checked);
+    this.checked = !this._checked;
   }
 
   /**
@@ -76,6 +111,31 @@ export class CheckboxComponent {
    * @memberof CheckboxComponent
    */
   public handleKeyboardEvent(): void {
-    this.changed.emit(!this.ref.nativeElement.checked);
+    this.checked = !this.checked;
+  }
+
+  public registerOnChange(fn) {
+    this._onChange = fn;
+  }
+
+  public registerOnTouched(fn) {
+    this._onTouch = fn;
+  }
+
+  public writeValue(val) {
+    this.checked = val;
+  }
+
+  public setDisabledState(disabled?: boolean) {
+    this.disabled = disabled;
+  }
+
+  /**
+   * **FOR INTERNAL USE ONLY**
+   *
+   * Sets value without calling the Forms API or emitting a `changed` event.
+   */
+  public _setValueNoEmit(value: boolean) {
+    this._checked = value;
   }
 }

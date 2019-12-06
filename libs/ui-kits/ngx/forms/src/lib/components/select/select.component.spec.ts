@@ -29,7 +29,7 @@ describe('SelectComponent', () => {
         expect(emitted).toEqual('test');
         done();
       });
-      component.model = 'test';
+      component.value = 'test';
       component.changeEvent(new Event('test'));
     })();
   });

@@ -127,6 +127,24 @@
     },
     "charts": {
       "tags": []
+    },
+    "two-common": {
+      "tags": []
+    },
+    "two-nest-data-api": {
+      "tags": []
+    },
+    "two-data-api": {
+      "tags": []
+    },
+    "ui-kits-ngx-layout": {
+      "tags": []
+    },
+    "two-angular-e2e": {
+      "tags": []
+    },
+    "two-angular": {
+      "tags": []
     }
   }
 }

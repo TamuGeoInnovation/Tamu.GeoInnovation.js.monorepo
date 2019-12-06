@@ -36,10 +36,15 @@ describe('BaseChartComponent', () => {
       baseChartComponent.chart = ({
         create: (config: Observable<ChartConfiguration> | ChartConfiguration) => {
           expect(config).toBeInstanceOf(Observable);
+
           if (!(config instanceof Observable)) {
             return;
           }
+
           config.subscribe((chart_config: ChartConfiguration) => {
+            const val = chart_config;
+
+            
             expect(chart_config).toEqual({
               ...new ChartConfiguration(),
               data: {
@@ -56,6 +61,7 @@ describe('BaseChartComponent', () => {
           });
         }
       } as unknown) as ChartContainerComponent;
+
       baseChartComponent.ngAfterViewInit();
     })();
   });

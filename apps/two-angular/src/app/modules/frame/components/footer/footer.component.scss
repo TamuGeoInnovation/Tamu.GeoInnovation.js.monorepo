@@ -1,0 +1,62 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  color: #ffffff;
+  background-color: #500000;
+  padding: 2rem 0;
+  font-size: 0.9rem;
+}
+
+.footer-section {
+  @include flexbox();
+  @include flex-direction(row);
+  @include flex-wrap(wrap);
+
+  .footer-category {
+    @include flexbox();
+    @include flex-direction(column);
+    margin: 0 1.5rem;
+  }
+}
+
+.links {
+  @include flex(1);
+}
+
+.logo {
+  @include flex(0.75);
+  @include justify-content(center);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  margin-bottom: 0.15rem;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+img {
+  height: 100%;
+}
+
+@media only screen and (max-width: 1946px) {
+  :host {
+    @include flex-direction(column);
+  }
+
+  .links {
+    @include flex(1);
+    @include justify-content(space-between);
+    margin-bottom: 2rem;
+  }
+
+  .logo {
+    @include justify-content(center);
+    @include flex(1);
+  }
+}
