@@ -43,7 +43,10 @@ export class DataController {
           siteid: s,
           timestamp: Between(params.start, params.end)
         };
-      })
+      }),
+      order: {
+        timestamp: 'ASC'
+      }
     });
   }
 
@@ -56,7 +59,10 @@ export class DataController {
           siteid: s,
           timestamp: Between(params.start, params.end)
         };
-      })
+      }),
+      order: {
+        timestamp: 'ASC'
+      }
     });
   }
 
@@ -69,7 +75,10 @@ export class DataController {
           siteid: s,
           timestamp: Between(params.start, params.end)
         };
-      })
+      }),
+      order: {
+        timestamp: 'ASC'
+      }
     });
   }
 }
