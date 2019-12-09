@@ -15,7 +15,7 @@ import esri = __esri;
   providers: [FeatureSelectorService]
 })
 export class BaseComponent implements OnInit, OnDestroy {
-  public model: esri.SketchViewModel;
+  public model: ISketchViewModel;
 
   @Input()
   public reference: string;
@@ -195,7 +195,7 @@ export class BaseComponent implements OnInit, OnDestroy {
    */
   public setUpdateTool(tool: string) {
     if (this.model.activeTool === 'reshape' || this.model.activeTool === 'transform') {
-      (<any>this.model).toggleUpdateTool();
+      this.model.toggleUpdateTool();
     } else {
       this.activeUpdateTool = tool;
 
@@ -267,4 +267,8 @@ export class BaseComponent implements OnInit, OnDestroy {
       this.export.emit(features.toArray());
     }
   }
+}
+
+interface ISketchViewModel extends esri.SketchViewModel {
+  toggleUpdateTool?: () => {};
 }

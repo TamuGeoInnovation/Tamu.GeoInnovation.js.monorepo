@@ -154,7 +154,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
    * Generated definitionExpression that will be used to apply to the feature layer view.
    */
   private filterExpression = combineLatest([this.field, this.operator, this.value]).pipe(
-    map((values: any) => {
+    map((values) => {
       const [field, operator, value] = values;
       const where = makeWhere([field.name], [value], [operator], null, ['UPPER']);
 
@@ -184,7 +184,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
     // Once the map view and layer are loaded, get the layerview for the feature layer.
     this.layerView = combineLatest([this.mapView, this.layer]).pipe(
       switchMap(([view, layer]) => {
-        return from((view.whenLayerView(layer) as any) as Promise<esri.FeatureLayerView>);
+        return from((view.whenLayerView(layer) as unknown) as Promise<esri.FeatureLayerView>);
       })
     );
 
@@ -214,7 +214,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
                   const query = featureFilter.createQuery();
                   query.outFields = ['*'];
 
-                  return from((layer.queryFeatures(query) as any) as Promise<esri.FeatureSet>);
+                  return from((layer.queryFeatures(query) as unknown) as Promise<esri.FeatureSet>);
                 })
               ),
               of(false)
