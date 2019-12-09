@@ -34,9 +34,9 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
   /**
    * Layer ID reference.
    *
-   * The layer must exist as part of the `LayerSources` definition in the application enviroinment.
+   * The layer must exist as part of the `LayerSources` definition in the application environment.
    *
-   * Used to query and retrieve valid attributes and valies.
+   * Used to query and retrieve valid attributes and values.
    */
   @Input()
   public reference: string;
