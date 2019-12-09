@@ -1169,6 +1169,34 @@
         }
       }
     },
+    "maps-feature-draw": {
+      "projectType": "library",
+      "root": "libs/maps/feature/draw",
+      "sourceRoot": "libs/maps/feature/draw/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/maps/feature/draw/tsconfig.lib.json", "libs/maps/feature/draw/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/draw/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/draw/jest.config.js",
+            "tsConfig": "libs/maps/feature/draw/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/draw/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
     "two-common": {
       "root": "libs/two/common",
       "sourceRoot": "libs/two/common/src",

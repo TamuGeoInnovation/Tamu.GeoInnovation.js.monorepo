@@ -1,7 +1,20 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Observable, Subject, from, combineLatest, of, iif, forkJoin } from 'rxjs';
-import { pluck, shareReplay, switchMap, filter, toArray, reduce, take, tap } from 'rxjs/operators';
+import {
+  pluck,
+  shareReplay,
+  switchMap,
+  filter,
+  toArray,
+  reduce,
+  take,
+  tap,
+  map,
+  startWith,
+  takeUntil
+} from 'rxjs/operators';
 
+import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { LayerListService, LayerListItem } from '@tamu-gisc/maps/feature/layer-list';
 import { makeWhere } from '@tamu-gisc/common/utils/database';
 
@@ -12,17 +25,27 @@ import esri = __esri;
   templateUrl: './layer-filter.component.html',
   styleUrls: ['./layer-filter.component.scss']
 })
-export class LayerFilterComponent implements OnInit {
-  constructor(private layerList: LayerListService) {}
+export class LayerFilterComponent implements OnInit, OnDestroy {
+  constructor(
+    private layerList: LayerListService,
+    private moduleProvider: EsriModuleProviderService,
+    private mapService: EsriMapService
+  ) {}
   /**
    * Layer ID reference.
    *
-   * The layer must exist as part of the `LayerSources` definition in the application enviroinment.
+   * The layer must exist as part of the `LayerSources` definition in the application environment.
    *
-   * Used to query and retrieve valid attributes and valies.
+   * Used to query and retrieve valid attributes and values.
    */
   @Input()
   public reference: string;
+
+  @Input()
+  public filterGeometry: Observable<esri.Graphic>;
+
+  @Input()
+  public spatialRelationship: 'intersects' | 'contains' | 'disjoint' = 'intersects';
 
   @Input()
   public setDefinitionExpression: boolean;
@@ -39,7 +62,13 @@ export class LayerFilterComponent implements OnInit {
   /**
    * Resolved layer from layer list service.
    */
-  public layer: Observable<LayerListItem<esri.FeatureLayer>>;
+  public layer: Observable<esri.FeatureLayer>;
+
+  private layerView: Observable<esri.FeatureLayerView>;
+
+  private mapView: Observable<esri.View>;
+
+  private featureFilterModule: Observable<esri.FeatureFilterConstructor>;
 
   /**
    * Field operator definition dictionary.
@@ -76,7 +105,7 @@ export class LayerFilterComponent implements OnInit {
   ];
 
   /**
-   * Subject emitting the user-selected Field.
+   * Subjects emitting the user-selected select values.
    */
   public field: Subject<esri.Field> = new Subject();
   public operator: Subject<string> = new Subject();
@@ -104,8 +133,8 @@ export class LayerFilterComponent implements OnInit {
   public fieldUniqueValues = this.field.pipe(
     switchMap((field) => {
       return this.layer.pipe(
-        switchMap((listitem) => {
-          return from((listitem.layer.queryFeatures({
+        switchMap((layer) => {
+          return from((layer.queryFeatures({
             returnDistinctValues: true,
             outFields: [field.name],
             where: '1=1'
@@ -122,50 +151,95 @@ export class LayerFilterComponent implements OnInit {
   );
 
   /**
-   * Generated definitionExpression applied to the layer to filter displayed features.
+   * Generated definitionExpression that will be used to apply to the feature layer view.
    */
-  public filterExpression = combineLatest([this.field, this.operator, this.value])
-    .pipe(
-      switchMap((values) => {
-        const [field, operator, value] = values;
-        const where = makeWhere([field.name], [value], [operator], null, ['UPPER']);
+  private filterExpression = combineLatest([this.field, this.operator, this.value]).pipe(
+    map((values) => {
+      const [field, operator, value] = values;
+      const where = makeWhere([field.name], [value], [operator], null, ['UPPER']);
 
-        return of(where);
-      }),
-      switchMap((where) => combineLatest([of(where), this.layer.pipe(pluck('layer'))])),
-      switchMap(([where, layer]) =>
-        forkJoin([
-          of(where),
-          of(layer),
-          iif(
-            () => Boolean(this.executeFilterQuery),
-            from((layer.queryFeatures({ where: where, outFields: ['*'] }) as unknown) as Promise<esri.FeatureSet>),
-            of(false)
-          )
-        ])
-      ),
-      tap(([where, layer, queryResult]) => {
-        if (Boolean(this.setDefinitionExpression)) {
-          layer.definitionExpression = where;
-        }
-      })
-    )
-    .subscribe(([where, layer, queryResult]) => {
-      this.filterCompleted.emit(where);
+      return where;
+    }),
+    startWith('1=1')
+  );
 
-      if (Boolean(queryResult)) {
-        this.filterQueryResults.emit((<esri.FeatureSet>queryResult).features);
-      }
-      console.log(`Definition Expression set to ${where}`);
-    });
+  private _$destroy: Subject<boolean> = new Subject();
 
   public ngOnInit() {
+    // Get FeatureFilter class
+    this.featureFilterModule = from(this.moduleProvider.require(['FeatureFilter'])).pipe(pluck('0'));
+
+    // Get only the view from the map service store instance.
+    this.mapView = this.mapService.store.pipe(pluck('view'));
+
     // Initial subscription to the layer list service that will retrieve the referenced layer id
     // and watch provided layer primitive properties.
     this.layer = this.layerList.layers({ layers: this.reference, watchProperties: 'loaded' }).pipe(
-      pluck('0'),
-      shareReplay<LayerListItem<esri.FeatureLayer>>(1)
+      pluck<LayerListItem<esri.Layer>[], esri.FeatureLayer>('0', 'layer'),
+      filter((l) => l !== undefined),
+      take(1),
+      shareReplay(1)
     );
+
+    // Once the map view and layer are loaded, get the layerview for the feature layer.
+    this.layerView = combineLatest([this.mapView, this.layer]).pipe(
+      switchMap(([view, layer]) => {
+        return from((view.whenLayerView(layer) as unknown) as Promise<esri.FeatureLayerView>);
+      })
+    );
+
+    combineLatest([this.filterExpression, this.featureFilterModule, this.filterGeometry])
+      .pipe(
+        switchMap(([where, FeatureFilter, graphic]) => {
+          return forkJoin([
+            of(
+              new FeatureFilter({
+                where: where,
+                geometry: graphic ? graphic.geometry : undefined,
+                spatialRelationship: this.spatialRelationship
+              })
+            ),
+            this.layer,
+            this.layerView
+          ]);
+        }),
+        switchMap(([featureFilter, layer, layerview]) => {
+          return forkJoin([
+            of(featureFilter),
+            of(layerview),
+            iif(
+              () => this.executeFilterQuery,
+              of(true).pipe(
+                switchMap(() => {
+                  const query = featureFilter.createQuery();
+                  query.outFields = ['*'];
+
+                  return from((layer.queryFeatures(query) as unknown) as Promise<esri.FeatureSet>);
+                })
+              ),
+              of(false)
+            )
+          ]);
+        }),
+        tap(([featureFilter, layerview, queryResults]) => {
+          if (typeof queryResults !== 'boolean') {
+            this.filterQueryResults.emit(queryResults.features);
+          }
+
+          if (this.setDefinitionExpression) {
+            layerview.filter = featureFilter;
+          }
+
+          console.log(`Filter expression set to: ${featureFilter.where}`);
+        }),
+        takeUntil(this._$destroy)
+      )
+      .subscribe(([featureFilter, layerView, queryResults]) => {});
+  }
+
+  public ngOnDestroy() {
+    this._$destroy.next();
+    this._$destroy.complete();
   }
 }
 
