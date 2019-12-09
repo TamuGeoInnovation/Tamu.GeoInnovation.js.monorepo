@@ -52,6 +52,9 @@
       "@tamu-gisc/charts": ["libs/charts/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/mobile-tab": ["libs/ui-kits/ngx/navigation/mobile-tab/src/index.ts"],
       "@tamu-gisc/common/utils/device": ["libs/common/utils/device/src/index.ts"],
+      "@tamu-gisc/maps/feature/draw": ["libs/maps/feature/draw/src/index.ts"],
+      "@tamu-gisc/two/common": ["libs/two/common/src/index.ts"],
+      "@tamu-gisc/two/data-api": ["libs/two/data-api/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/layout": ["libs/ui-kits/ngx/layout/src/index.ts"]
     }
   },

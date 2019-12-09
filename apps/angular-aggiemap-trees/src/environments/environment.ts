@@ -7,7 +7,7 @@ export const environment = {
 };
 
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
-import { SearchSource } from '@tamu-gisc/search';
+import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/search';
 
 import { Connections, Definitions as d } from './definitions';
 
@@ -83,10 +83,18 @@ export const LayerSources: LayerSource[] = [
     loadOnInit: false,
     visible: true,
     popupComponent: 'BuildingPopupComponent'
+  },
+  {
+    type: 'graphic',
+    id: 'drawing-layer',
+    title: 'Custom Boundary',
+    listMode: 'show',
+    loadOnInit: true,
+    visible: true
   }
 ];
 
-const commonQueryParams: any = {
+const commonQueryParams: SearchSourceQueryParamsProperties = {
   f: 'json',
   resultRecordCount: 5,
   outFields: '*',

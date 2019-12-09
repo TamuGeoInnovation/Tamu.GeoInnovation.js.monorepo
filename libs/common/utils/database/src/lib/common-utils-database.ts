@@ -3,13 +3,14 @@
  *
  * Includes a uppercase key transformation, as well as automatically uppercasing values.
  */
+
 export function makeWhere(
   keys: string[],
   values: string[],
-  operators: string[],
+  operators: (string | CompoundOperator)[],
   wildcards?: string[],
   transformations?: string[]
-) {
+): string {
   // Wildcards container. This will either be generated in-function or be provided from the callee
   let wc;
   let ts;
@@ -83,4 +84,10 @@ export function makeWhere(
   } else {
     throw new Error('Keys, values, and operators are not of equal length.');
   }
+}
+
+export interface CompoundOperator {
+  logical?: Array<'AND' | 'BETWEEN' | 'IN' | 'NOT IN' | 'LIKE' | 'NOT LIKE' | 'NOT' | 'OR'>;
+
+  comparison?: Array<'IS NULL' | '=' | '>' | '>=' | '<=' | '<' | '!='>;
 }

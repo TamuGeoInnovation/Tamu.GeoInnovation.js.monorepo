@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import { InstallComponent } from './components/install/install.component';
-import { UiKitsNgxLayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 const routes: Routes = [
   {
@@ -14,6 +14,6 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [InstallComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), UiKitsNgxLayoutModule]
+  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule]
 })
 export class InstallModule {}

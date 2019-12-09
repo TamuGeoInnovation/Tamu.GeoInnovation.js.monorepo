@@ -28,9 +28,9 @@ export class BusService {
   private waypoint_map = [];
 
   private _map: esri.Map;
-  private _view: esri.MapView;
+  private _view: esri.MapView | esri.SceneView;
 
-  private _busLayer: BehaviorSubject<esri.GraphicsLayer> = new BehaviorSubject({} as any);
+  private _busLayer: BehaviorSubject<esri.GraphicsLayer> = new BehaviorSubject(null);
   public busLayer: Observable<esri.GraphicsLayer> = this._busLayer.asObservable();
 
   private _busLayerGraphics: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
@@ -58,8 +58,8 @@ export class BusService {
 
       // TODO: Probably have to dispose of this event handlers on service destroy.
       // Detect bus layer changes and set graphics as the service value.
-      busLayer.graphics.on('change', (event: any) => {
-        return this._busLayerGraphics.next((<esri.Collection<esri.Graphic>>event.target).clone().toArray());
+      busLayer.graphics.on('change', (event: { target: esri.Collection<esri.Graphic> }) => {
+        return this._busLayerGraphics.next(event.target.clone().toArray());
       });
     });
   }
@@ -355,7 +355,8 @@ export class BusService {
             // We now have two points with known times and the number of stops between them.
             // Continue to associate estimated times for the provided poitns that did not have an associate time (arrival, departure, or both).
 
-            const timeBracketTime = mappedTimeTableStops[upperLimitIndex].time - mappedTimeTableStops[lowerLimitIndex].time;
+            const timeBracketTime =
+              mappedTimeTableStops[upperLimitIndex].time.getTime() - mappedTimeTableStops[lowerLimitIndex].time.getTime();
 
             const timeBracketStopCount = upperLimitIndex - lowerLimitIndex;
 
@@ -429,11 +430,11 @@ export class BusService {
     const route_number = re_match[1];
     return this.stopsForRoute(route_number).pipe(
       switchMap((stops: BusStop[]) => {
-        const first: BusStopWithIndex = this.getStopAtPoint(stops, (<any>firstGraphic.geometry).paths[0][0]);
+        const first: BusStopWithIndex = this.getStopAtPoint(stops, (<esri.Polyline>firstGraphic.geometry).paths[0][0]);
 
         const last: BusStopWithIndex = this.getStopAtPoint(
           stops,
-          (<any>lastGraphic.geometry).paths[0][(<any>lastGraphic.geometry).paths[0].length - 1]
+          (<esri.Polyline>lastGraphic.geometry).paths[0][(<esri.Polyline>lastGraphic.geometry).paths[0].length - 1]
         );
 
         const endpoints = this.getTripDepartureArrivalStops(stops, first, last);
@@ -725,7 +726,7 @@ export class BusService {
       Promise.all([
         this.moduleProvider.require(['Point', 'Graphic', 'FeatureLayer', 'PictureMarkerSymbol']),
         this.busesForRoute(short_name).toPromise(),
-        getFeatures() as any
+        (getFeatures() as unknown) as Promise<esri.Graphic[]>
       ]).then(
         (
           result: [
@@ -743,18 +744,18 @@ export class BusService {
 
           const makeBusGraphic = (bus) => {
             return new Graphic({
-              geometry: {
+              geometry: ({
                 type: 'point',
                 latitude: bus.point.latitude,
                 longitude: bus.point.longitude
-              },
+              } as unknown) as esri.GeometryProperties,
               attributes: {
                 name: bus.name,
                 route: short_name,
                 type: 'buses',
                 rotation: bus.angle
               }
-            } as any);
+            });
           };
 
           // If no features, add.
@@ -766,6 +767,7 @@ export class BusService {
               objectIdField: 'id',
               source: busGraphics,
               listMode: 'hide',
+              geometryType: 'point',
               fields: [
                 {
                   name: 'id',
@@ -808,7 +810,7 @@ export class BusService {
                     rotationType: 'geographic'
                   }
                 ]
-              } as any
+              } as esri.RendererProperties
             });
 
             this._map.add(featureLayer);
@@ -1000,7 +1002,7 @@ export interface Waypoint {
 export interface BusStop {
   name: string;
   point: esri.Point;
-  time?: any;
+  time?: Date;
 }
 
 export interface BusStopWithIndex {

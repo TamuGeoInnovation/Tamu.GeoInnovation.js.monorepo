@@ -21,4 +21,20 @@ describe('CheckboxComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should respond to mouse events', (done) => {
+    component.changed.subscribe((event) => {
+      expect(event).toEqual(true);
+      done();
+    });
+    component.handleMouseEvent();
+  });
+
+  it('should respond to keyboard events', (done) => {
+    component.changed.subscribe((event) => {
+      expect(event).toEqual(true);
+      done();
+    });
+    component.handleKeyboardEvent();
+  });
 });

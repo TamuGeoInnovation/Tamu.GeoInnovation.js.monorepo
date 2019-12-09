@@ -48,4 +48,21 @@ describe('LocalStoreService', () => {
     const service: LocalStoreService = TestBed.get(LocalStoreService);
     expect(service.getStorage({ primaryKey: 'noExist' })).toBeUndefined();
   });
+
+  it('getStorageObjectKeyValue should get undefined for keys that do not exist', () => {
+    const service: LocalStoreService = TestBed.get(LocalStoreService);
+    expect(service.getStorageObjectKeyValue({ primaryKey: 'noExist' })).toBeUndefined();
+  });
+
+  it('getStorageObjectKeyValue should get values for keys that exist', () => {
+    const service: LocalStoreService = TestBed.get(LocalStoreService);
+    service.setStorageObjectKeyValue({ primaryKey: 'exists', value: { test: 1 } });
+    expect(service.getStorageObjectKeyValue({ primaryKey: 'exists' })).toEqual({ test: 1 });
+  });
+
+  it('getStorageObjectKeyValue should get undefined for sub keys that do not exist', () => {
+    const service: LocalStoreService = TestBed.get(LocalStoreService);
+    service.setStorageObjectKeyValue({ primaryKey: 'exists', value: { test: 1 } });
+    expect(service.getStorageObjectKeyValue({ primaryKey: 'exists', subKey: 'sub' })).toBeUndefined();
+  });
 });

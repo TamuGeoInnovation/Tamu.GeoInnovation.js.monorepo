@@ -8,7 +8,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'searchResult'
 })
 export class SearchResultPipe implements PipeTransform {
-  public transform(value: any, compareValue: string, compareKey: string): {} {
+  public transform(value: Array<{ attributes: {} }>, compareValue: string, compareKey: string): {} {
     const ret = [];
 
     // Simple check to see if data was passed in or not
@@ -27,14 +27,14 @@ export class SearchResultPipe implements PipeTransform {
 }
 
 //
-// For directions returned from an ArcGIS routing service, return feet units if a predifined threshold is met
+// For directions returned from an ArcGIS routing service, return feet units if a predefined threshold is met
 //
 
 @Pipe({
   name: 'routeDirectionTransformer'
 })
 export class RouteDirectionTransformerPipe implements PipeTransform {
-  public transform(value): any {
+  public transform(value) {
     const units = this.resolveUnits(value);
 
     const transformedDirection = this.modifyDirections(value, units);

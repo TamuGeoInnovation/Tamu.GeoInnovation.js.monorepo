@@ -11,6 +11,7 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
+import FeatureLayerProperties = __esri.FeatureLayerProperties;
 
 @Injectable()
 export class EsriMapService {
@@ -22,7 +23,7 @@ export class EsriMapService {
   // ReplaySubject will work but need to declare the number of first emitted values.
   // AsyncSubject allows us to control when to emit map loaded, and emit map and view instances.
   //
-  private _modules: any = {};
+  private _modules: NullableMapServiceInstance = {};
 
   private _store: AsyncSubject<MapServiceInstance> = new AsyncSubject();
 
@@ -78,7 +79,7 @@ export class EsriMapService {
    * This function is used to keep code DRY.
    *
    * @private
-   * @param {MapProperties} MapProperties
+   * @param {MapProperties} Properties
    * @param {MapViewProperties} ViewProperties
    * @param {esri.MapConstructor} Map
    * @param {esri.MapViewConstructor} MapView MapView or SceneView depending on mode
@@ -87,20 +88,12 @@ export class EsriMapService {
    * @memberof EsriMapService
    */
   private next(
-    MapProperties: MapProperties,
+    Properties: MapProperties,
     ViewProperties: MapViewProperties,
     Map: esri.MapConstructor,
     MapView: esri.MapViewConstructor | esri.SceneViewConstructor,
     TileLayer: esri.TileLayerConstructor,
     Basemap: esri.BasemapConstructor
-  ): void;
-  private next(
-    Properties: MapProperties,
-    ViewProperties: MapViewProperties,
-    Map: any,
-    MapView: any,
-    TileLayer: any,
-    Basemap: any
   ): void {
     const basemap = this.makeBasemap(Properties, TileLayer, Basemap);
     this._modules.map = new Map(basemap);
@@ -124,7 +117,7 @@ export class EsriMapService {
 
     // Set up a hit test wrapper that can be subscribed to anywhere in the application.
     this._modules.view.on('click', (e) => {
-      this._modules.view.hitTest(e).then((res: any) => {
+      this._modules.view.hitTest(e).then((res: esri.HitTestResult) => {
         // Clear the hit test object regardless of router state
         this.clearHitTest();
 
@@ -280,11 +273,11 @@ export class EsriMapService {
       const generateLayer = (layerSource: LayerSource): Promise<esri.Layer> => {
         // Set of persistent properties, that will be applied to all layer types.
         const persistentProps = {
-          outFields: layerSource.native && layerSource.native.outFields ? layerSource.native.outFields : ['*'],
-          minScale: layerSource.native && layerSource.native.minScale ? layerSource.native.minScale : 100000,
-          maxScale: layerSource.native && layerSource.native.maxScale ? layerSource.native.maxScale : 0,
+          outFields: layerSource.native && 'outFields' in layerSource.native ? layerSource.native.outFields : ['*'],
+          minScale: layerSource.native && 'minScale' in layerSource.native ? layerSource.native.minScale : 100000,
+          maxScale: layerSource.native && 'maxScale' in layerSource.native ? layerSource.native.maxScale : 0,
           elevationInfo:
-            layerSource.native && layerSource.native.elevationInfo
+            layerSource.native && 'elevationInfo' in layerSource.native
               ? layerSource.native.elevationInfo
               : { mode: 'relative-to-ground', offset: 1 },
           popupEnabled: false
@@ -308,7 +301,7 @@ export class EsriMapService {
             delete props.type;
 
             // Create and return new feature layer
-            return new FeatureLayer(props);
+            return new FeatureLayer(props as esri.FeatureLayerProperties);
           });
         } else if (layerSource.type === 'scene') {
           return this.moduleProvider.require(['SceneLayer']).then(([SceneLayer]: [esri.SceneLayerConstructor]) => {
@@ -316,7 +309,7 @@ export class EsriMapService {
             delete props.type;
 
             // Create and return new scene layer
-            return new SceneLayer(props);
+            return new SceneLayer(props as esri.SceneViewProperties);
           });
         } else if (layerSource.type === 'graphic') {
           return this.moduleProvider.require(['GraphicsLayer']).then(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
@@ -324,7 +317,7 @@ export class EsriMapService {
             delete props.type;
 
             // Create and return new graphics layer
-            return new GraphicsLayer(props);
+            return new GraphicsLayer(props as esri.GraphicsLayerProperties);
           });
         } else if (layerSource.type === 'geojson') {
           return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [esri.GeoJSONLayerConstructor]) => {
@@ -332,7 +325,7 @@ export class EsriMapService {
             delete props.type;
 
             // Create and return new geojson layer
-            return new GeoJSONLayer(props);
+            return new GeoJSONLayer(props as esri.GeoJSONLayerProperties);
           });
         } else if (layerSource.type === 'csv') {
           return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [esri.CSVLayerConstructor]) => {
@@ -340,7 +333,7 @@ export class EsriMapService {
             delete props.type;
 
             // Create and return new geojson layer
-            return new CSVLayer(props);
+            return new CSVLayer(props as esri.CSVLayerProperties);
           });
         }
       };
@@ -425,15 +418,15 @@ export class EsriMapService {
           // Process every search result and filter out those containing at least one feature
           // and return it as the match.
 
-          const features = res.results
+          const features: esri.Graphic[] = res.results
             .filter((result) => result.features.length > 0)
             .map((result) => result.features[0])
             .map((feature) => {
               const ft = { ...feature };
 
-              ft.geometry.type = getGeometryType(feature.geometry);
+              (<{ type: unknown }>ft.geometry).type = getGeometryType(feature.geometry);
 
-              return ft;
+              return ft as esri.Graphic;
             });
 
           // If the matched feature count is greater than 0, proceed to select them.
@@ -647,8 +640,9 @@ interface LayerProperties extends esri.LayerProperties, esri.TileLayerProperties
  */
 export interface MapServiceInstance {
   map: esri.Map;
-  view: esri.MapView;
+  view: esri.MapView | esri.SceneView;
 }
+interface NullableMapServiceInstance extends Partial<MapServiceInstance> {}
 
 /**
  * Defines a graphics collection and any additional options that should be used in the selection.

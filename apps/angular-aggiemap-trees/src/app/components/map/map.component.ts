@@ -10,6 +10,8 @@ import { BehaviorSubject } from 'rxjs';
 export class MapComponent implements OnInit {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
 
+  public spatialFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
+
   constructor() {}
 
   public config = {

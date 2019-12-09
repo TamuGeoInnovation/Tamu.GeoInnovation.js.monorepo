@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -44,7 +44,7 @@ export class LegendComponent implements OnInit, OnDestroy {
     this.history
       .last()
       .pipe(takeUntil(this._destroy$))
-      .subscribe((event: any) => {
+      .subscribe((event: RouterEvent) => {
         this._lastRoute = event.url;
       });
   }

@@ -1,3 +1,4 @@
+
 {
   "npmScope": "tamu-gisc",
   "implicitDependencies": {
@@ -128,6 +129,27 @@
     "charts": {
       "tags": []
     },
+    "maps-feature-draw": {
+      "tags": []
+    },
+    "two-common": {
+      "tags": []
+    },
+    "two-nest-data-api": {
+      "tags": []
+    },
+    "two-data-api": {
+      "tags": []
+    },
+    "ui-kits-ngx-layout": {
+      "tags": []
+    },
+    "two-angular-e2e": {
+      "tags": []
+    },
+    "two-angular": {
+      "tags": []
+    },
     "gisday-competition-e2e": {
       "tags": []
     },
@@ -138,9 +160,6 @@
       "tags": []
     },
     "common-utils-device": {
-      "tags": []
-    },
-    "ui-kits-ngx-layout": {
       "tags": []
     }
   }

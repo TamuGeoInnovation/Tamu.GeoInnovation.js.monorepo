@@ -679,28 +679,6 @@
         }
       }
     },
-    "common-utils-device": {
-      "root": "libs/common/utils/device",
-      "sourceRoot": "libs/common/utils/device/src",
-      "projectType": "library",
-      "schematics": {},
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/common/utils/device/tsconfig.lib.json", "libs/common/utils/device/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/common/utils/device/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/common/utils/device/jest.config.js",
-            "tsConfig": "libs/common/utils/device/tsconfig.spec.json"
-          }
-        }
-      }
-    },
     "common-types": {
       "root": "libs/common/types",
       "sourceRoot": "libs/common/types/src",
@@ -1191,6 +1169,306 @@
         }
       }
     },
+    "maps-feature-draw": {
+      "projectType": "library",
+      "root": "libs/maps/feature/draw",
+      "sourceRoot": "libs/maps/feature/draw/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/maps/feature/draw/tsconfig.lib.json", "libs/maps/feature/draw/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/draw/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/draw/jest.config.js",
+            "tsConfig": "libs/maps/feature/draw/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/draw/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "two-common": {
+      "root": "libs/two/common",
+      "sourceRoot": "libs/two/common/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/two/common/tsconfig.lib.json", "libs/two/common/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/two/common/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/two/common/jest.config.js",
+            "tsConfig": "libs/two/common/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "two-nest-data-api": {
+      "root": "apps/two-nest-data-api",
+      "sourceRoot": "apps/two-nest-data-api/src",
+      "projectType": "application",
+      "prefix": "two-nest-data-api",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/two-nest-data-api",
+            "main": "apps/two-nest-data-api/src/main.ts",
+            "tsConfig": "apps/two-nest-data-api/tsconfig.app.json",
+            "assets": ["apps/two-nest-data-api/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": false,
+              "inspect": false,
+              "sourceMap": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-nest-data-api/src/environments/environment.ts",
+                  "with": "apps/two-nest-data-api/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "two-nest-data-api:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/two-nest-data-api/tsconfig.app.json", "apps/two-nest-data-api/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/two-nest-data-api/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/two-nest-data-api/jest.config.js",
+            "tsConfig": "apps/two-nest-data-api/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "two-data-api": {
+      "root": "libs/two/data-api",
+      "sourceRoot": "libs/two/data-api/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/two/data-api/tsconfig.lib.json", "libs/two/data-api/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/two/data-api/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/two/data-api/jest.config.js",
+            "tsConfig": "libs/two/data-api/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "ui-kits-ngx-layout": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/layout",
+      "sourceRoot": "libs/ui-kits/ngx/layout/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ui-kits/ngx/layout/tsconfig.lib.json", "libs/ui-kits/ngx/layout/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/layout/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/layout/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/layout/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/layout/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "two-angular": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/two-angular",
+      "sourceRoot": "apps/two-angular/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/two-angular",
+            "index": "apps/two-angular/src/index.html",
+            "main": "apps/two-angular/src/main.ts",
+            "polyfills": "apps/two-angular/src/polyfills.ts",
+            "tsConfig": "apps/two-angular/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "apps/two-angular/src/favicon.ico",
+              "apps/two-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
+            "styles": ["apps/two-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-angular/src/environments/environment.ts",
+                  "with": "apps/two-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "two-angular:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "two-angular:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "two-angular:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/two-angular/tsconfig.app.json", "apps/two-angular/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/two-angular/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/two-angular/jest.config.js",
+            "tsConfig": "apps/two-angular/tsconfig.spec.json",
+            "setupFile": "apps/two-angular/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "two-angular-e2e": {
+      "root": "apps/two-angular-e2e",
+      "sourceRoot": "apps/two-angular-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/two-angular-e2e/cypress.json",
+            "tsConfig": "apps/two-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "two-angular:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "two-angular:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/two-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/two-angular-e2e/**"]
+          }
+        }
+      }
+    },
+
+    "common-utils-device": {
+      "root": "libs/common/utils/device",
+      "sourceRoot": "libs/common/utils/device/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/utils/device/tsconfig.lib.json", "libs/common/utils/device/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/device/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/device/jest.config.js",
+            "tsConfig": "libs/common/utils/device/tsconfig.spec.json"
+          }
+        }
+      }
+    },
     "gisday-competition": {
       "projectType": "application",
       "schematics": {
@@ -1344,34 +1622,6 @@
           "styleext": "scss"
         }
       }
-    },
-    "ui-kits-ngx-layout": {
-      "projectType": "library",
-      "root": "libs/ui-kits/ngx/layout",
-      "sourceRoot": "libs/ui-kits/ngx/layout/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/ui-kits/ngx/layout/tsconfig.lib.json", "libs/ui-kits/ngx/layout/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/layout/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/ui-kits/ngx/layout/jest.config.js",
-            "tsConfig": "libs/ui-kits/ngx/layout/tsconfig.spec.json",
-            "setupFile": "libs/ui-kits/ngx/layout/src/test-setup.ts"
-          }
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
-      }
     }
   },
   "cli": {
@@ -1385,5 +1635,6 @@
     "@nrwl/angular:library": {
       "unitTestRunner": "jest"
     }
-  }
+  },
+  "defaultProject": "two-nest-data-api"
 }

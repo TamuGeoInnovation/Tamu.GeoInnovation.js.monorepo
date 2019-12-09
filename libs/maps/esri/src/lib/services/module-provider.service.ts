@@ -91,6 +91,10 @@ export class EsriModuleProviderService {
       name: 'UniqueValueRenderer'
     },
     {
+      class: 'esri/views/layers/support/FeatureFilter',
+      name: 'FeatureFilter'
+    },
+    {
       class: 'esri/widgets/Search',
       name: 'Search'
     },
@@ -173,6 +177,10 @@ export class EsriModuleProviderService {
     {
       class: 'esri/core/Handles',
       name: 'Handles'
+    },
+    {
+      class: 'esri/widgets/Sketch/SketchViewModel',
+      name: 'SketchViewModel'
     }
   ];
 
@@ -186,9 +194,9 @@ export class EsriModuleProviderService {
    * @returns
    * @memberof EsriModuleProviderService
    */
-  public require(modules: string[]): Promise<any[]>;
-  public require(modules: string[], asObject: boolean): any;
-  public require(modules: any, asObject?: any): any {
+  public require(modules: string[]): Promise<object[]>;
+  public require(modules: string[], asObject: true): Promise<object>;
+  public require(modules: string[], asObject?: boolean): Promise<object[] | object> {
     // n is an alias for module name
     const classNames = modules.map((n) => {
       if (n === undefined || n === '') {

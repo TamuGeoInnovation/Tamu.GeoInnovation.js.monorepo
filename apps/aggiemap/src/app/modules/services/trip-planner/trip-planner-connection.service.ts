@@ -57,7 +57,7 @@ export class TripPlannerConnectionService {
 
   private fetchNetworks() {
     this.http.get(this._serviceURL).subscribe(
-      (res: any) => {
+      (res: { services: TripPlannerServiceType[] }) => {
         // Regex expression that checks against the allowed format for a service name.
         // Name must match the following pattern:
         //

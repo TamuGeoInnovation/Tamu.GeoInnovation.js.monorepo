@@ -15,6 +15,7 @@ import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
@@ -102,7 +103,6 @@ import { BusTimetableComponent } from '../components/sidebar/components/bus-list
 
 import { TripPlannerTimePickerComponent } from '../components/trip-planner/trip-planner-time-picker/containers/base/base.component';
 import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
-import { TooltipComponent } from '../components/elements/tooltip/tooltip.component';
 
 WebFont.load({
   google: {
@@ -218,7 +218,8 @@ const hybridRoutes: Routes = [
     DlDateTimePickerModule,
     SidebarModule,
     UITamuBrandingModule,
-    UIFormsModule
+    UIFormsModule,
+    UILayoutModule
   ],
   declarations: [
     BackdropComponent,
@@ -271,7 +272,6 @@ const hybridRoutes: Routes = [
     MainMobileSidebarComponent,
     MapClickCoordinatesComponent,
     BuildingDepartmentListComponent,
-    TooltipComponent,
     RenderHostDirective,
     ClipboardCopyDirective,
     DraggableDirective,

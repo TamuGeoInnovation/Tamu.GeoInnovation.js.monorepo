@@ -1,13 +1,6 @@
 import { Component } from '@angular/core';
 
-@Component({
-  selector: 'tamu-gisc-reveille-console-log',
-  templateUrl: './reveille-console-log.component.html',
-  styleUrls: ['./reveille-console-log.component.scss']
-})
-export class ReveilleConsoleLogComponent {
-  constructor() {
-    console.log(`                                                            -:.  -yh+\`                              
+export const REV_ASCII = `                                                            -:.  -yh+\`                              
                                                            \`hdhy+hy/yh-                             
                                                            /dh.-yd- \`sh.                            
                                                            yds:s\`/h: .do                            
@@ -56,6 +49,15 @@ export class ReveilleConsoleLogComponent {
   \`hhy\` -yyhs//oyyyhy+++o++/.    \`.:+ydys-\`\`\`\`\`\`\`\`\`\`\`\`\`\`\`.ohh-            \`:shhs+//+shh/            
    /hho.\`\`---.  \`.---\` .-\`\`\` \`/+oosyhhhdhyyyyyyyyyyyyyyyyhh+.                .:/+osso/.             
     :yhhso/::/++ossoo//+hhysssydddoo+/::/+++/:::----------\`                                         
-      -/+ssssso+//+osssssoosssso+/-`);
+      -/+ssssso+//+osssssoosssso+/-`;
+
+@Component({
+  selector: 'tamu-gisc-reveille-console-log',
+  templateUrl: './reveille-console-log.component.html',
+  styleUrls: ['./reveille-console-log.component.scss']
+})
+export class ReveilleConsoleLogComponent {
+  constructor() {
+    console.log(REV_ASCII);
   }
 }

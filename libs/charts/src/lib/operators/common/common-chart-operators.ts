@@ -8,7 +8,7 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
  *
  * Expects a flat, unordered collection.
  */
-export function categorize<T extends Array<T>>(collection: Array<T>, key: string) {
+export function categorize<T extends object>(collection: Array<T>, key: string) {
   return groupBy(collection, key, key);
 }
 
@@ -16,7 +16,7 @@ export function categorize<T extends Array<T>>(collection: Array<T>, key: string
  * Expects a collection of Groups, where each contains n-features and an identifying key, and then
  * counts the number of items in each group, returning the identity key as a label.
  */
-export function count<T extends Array<T>>(collection: Array<Group<T>>, path: string) {
+export function count<T extends object>(collection: Array<Group<T>>) {
   return collection.reduce(
     (acc, curr: Group<T>) => {
       if (curr.items) {
@@ -32,14 +32,14 @@ export function count<T extends Array<T>>(collection: Array<Group<T>>, path: str
   );
 }
 
-export function average<T extends Array<T>>(collection: Array<Group<T>>, path: string) {
+export function average<T extends object>(collection: Array<Group<T>>, path: string) {
   return collection.reduce(
     (acc, curr: Group<T>) => {
       if (curr.items && curr.items.length > 0) {
         // Evaluate the path for each of collection items.
         const pathValues = curr.items.map((item) => getPropertyValue<number>(item, path));
 
-        // Test if any of the evalued path values are undefined or not a number.
+        // Test if any of the evaluated path values are undefined or not a number.
         // If this is the case, we need to throw an error because we cannot sum
         // against those values.
         const anyInvalid = pathValues.findIndex((v) => v === undefined || isNaN(v));

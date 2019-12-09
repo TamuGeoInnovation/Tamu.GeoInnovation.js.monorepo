@@ -1,0 +1,9 @@
+<tamu-gisc-tooltip [position]="'bottom left'" [width]="'20rem'">
+  <tamu-gisc-tooltip-trigger>
+    <p><span class="material-icons">calendar_today</span> {{value}}</p>
+  </tamu-gisc-tooltip-trigger>
+
+  <dl-date-time-picker [startDate]="value.getTime()" [maxView]="'month'" [minView]="'minute'" [startView]="'day'"
+    [minuteStep]="5" (change)="handleDlTimePickerChange($event);">
+  </dl-date-time-picker>
+</tamu-gisc-tooltip>
