@@ -213,11 +213,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
     //
     // Generated config is returned by the scan operator which will trigger chart container to
     // create/update chart data.
-    this.chartData = iif(
-      () => this.source.constructor.name !== 'Observable',
-      of((this.source as unknown) as unknown[]),
-      this.source
-    ).pipe(
+    this.chartData = iif(() => 'subscribe' in this.source, this.source, of((this.source as unknown) as unknown[])).pipe(
       scan((acc, curr) => {
         let p;
         // Asserting transformations as an `any` array, otherwise compiler does not like its original
