@@ -767,6 +767,7 @@ export class BusService {
               objectIdField: 'id',
               source: busGraphics,
               listMode: 'hide',
+              geometryType: 'point',
               fields: [
                 {
                   name: 'id',

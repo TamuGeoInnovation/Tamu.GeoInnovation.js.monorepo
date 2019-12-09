@@ -91,6 +91,10 @@ export class EsriModuleProviderService {
       name: 'UniqueValueRenderer'
     },
     {
+      class: 'esri/views/layers/support/FeatureFilter',
+      name: 'FeatureFilter'
+    },
+    {
       class: 'esri/widgets/Search',
       name: 'Search'
     },
@@ -173,6 +177,10 @@ export class EsriModuleProviderService {
     {
       class: 'esri/core/Handles',
       name: 'Handles'
+    },
+    {
+      class: 'esri/widgets/Sketch/SketchViewModel',
+      name: 'SketchViewModel'
     }
   ];
 

@@ -83,6 +83,14 @@ export const LayerSources: LayerSource[] = [
     loadOnInit: false,
     visible: true,
     popupComponent: 'BuildingPopupComponent'
+  },
+  {
+    type: 'graphic',
+    id: 'drawing-layer',
+    title: 'Custom Boundary',
+    listMode: 'show',
+    loadOnInit: true,
+    visible: true
   }
 ];
 

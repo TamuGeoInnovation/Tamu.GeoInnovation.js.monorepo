@@ -13,6 +13,8 @@ import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { FeaetureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
 import { ChartsModule } from '@tamu-gisc/charts';
 
+import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
+
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
@@ -49,7 +51,8 @@ WebFont.load({
     ResponsiveModule,
     CommonNgxRouterModule,
     FeaetureSelectorModule,
-    ChartsModule
+    ChartsModule,
+    MapDrawingModule
   ],
   exports: [RouterModule]
 })

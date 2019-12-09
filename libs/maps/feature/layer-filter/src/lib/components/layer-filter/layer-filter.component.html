@@ -2,7 +2,7 @@
   <p>{{ (layer | async)?.title }} Filter</p>
 </div>
 
-<tamu-gisc-select [data]="(layer | async)?.layer?.fields" [displayTemplate]="'name'" [placeholder]="'Select Attribute'" (changed)="field.next($event)"></tamu-gisc-select>
+<tamu-gisc-select [data]="(layer | async)?.fields" [displayTemplate]="'name'" [placeholder]="'Select Attribute'" (changed)="field.next($event)"></tamu-gisc-select>
 
 <tamu-gisc-select [data]="allowedOperators | async" [displayTemplate]="'description'" [valueTemplate]="'op'" [placeholder]="'Select Operator'" [disabled]="(allowedOperators | async) === null" (changed)="operator.next($event)"></tamu-gisc-select>
 
