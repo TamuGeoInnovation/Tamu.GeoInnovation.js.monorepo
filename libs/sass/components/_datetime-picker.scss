@@ -43,8 +43,10 @@ dl-date-time-picker {
     text-align: center;
   }
 
-  .dl-abdtp-selected {
+  .dl-abdtp-selected,
+  .dl-abdtp-active {
     background: #500000 !important;
+    color: #ffffff !important;
   }
 
   .dl-abdtp-future,

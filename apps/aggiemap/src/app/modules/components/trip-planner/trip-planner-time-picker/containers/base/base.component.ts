@@ -31,7 +31,7 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   public requestedTime: Date;
   public oldTime: Date;
 
-  public dateTimePickerVisible: boolean;
+  public dateTimePickerVisible = false;
 
   /**
    * Subject that triggers on ngOnDestroy lifecycle hook to any active manual observable subscriptions.
@@ -104,4 +104,4 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
       this.plannerService.updateTravelOptions({ requested_time: newRequestedTime });
     }
   }
-}
+} 

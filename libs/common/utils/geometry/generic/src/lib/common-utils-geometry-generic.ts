@@ -2,10 +2,9 @@ import { Observable, from } from 'rxjs';
 import { Point } from '@tamu-gisc/common/types';
 
 import { getSmallestIndex } from '@tamu-gisc/common/utils/number';
-import { centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
+import { centroidFromGeometry, FeatureUnion } from '@tamu-gisc/common/utils/geometry/esri';
 
 import * as gju from 'geojson-utils';
-import esri = __esri;
 
 /**
  * Gets user geolocation if user allows.
@@ -37,19 +36,14 @@ export function getGeolocation(asObservable?: boolean): Promise<Coordinates> | O
  * @returns True if string is coordinate pair, false if not
  */
 export function isCoordinatePair(input: string): boolean {
-  let ret = false;
-
-  if (input.includes(',')) {
-    const set = input.split(',');
-
-    if (set.length !== 2) {
-      return;
-    }
-
-    ret = !isNaN(parseFloat(set[0].trim())) && !isNaN(parseFloat(set[1].trim()));
+  if (!input.includes(',')) {
+    return false;
   }
-
-  return ret;
+  const set = input.split(',');
+  if (set.length !== 2) {
+    return false;
+  }
+  return !isNaN(parseFloat(set[0].trim())) && !isNaN(parseFloat(set[1].trim()));
 }
 
 /**
@@ -93,10 +87,7 @@ export function parseCoordinates(input: string): Point {
  * @param points Collection of points.
  * @returns Calculated distances.
  */
-export function relativeDistance(
-  reference: Point,
-  points: { geometry: esri.Geometry | esri.Polygon | esri.Multipoint | esri.Point | esri.Polyline | Point }[]
-): number[] {
+export function relativeDistance(reference: Point, points: RelativeDistancePoint[]): number[] {
   const distances = points.reduce((acc, curr) => {
     const currGeometry = centroidFromGeometry(curr.geometry);
 
@@ -109,4 +100,8 @@ export function relativeDistance(
   }, []);
 
   return distances;
+}
+
+export interface RelativeDistancePoint {
+  geometry: FeatureUnion;
 }

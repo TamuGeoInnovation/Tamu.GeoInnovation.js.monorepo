@@ -52,7 +52,7 @@ export class LayerListService implements OnDestroy {
       this._store.next([...existing, ...nonExisting]);
 
       // Event handler that listens for layer changes in the map instance
-      res.map.allLayers.on('change', (e: any) => {
+      res.map.allLayers.on('change', (e) => {
         // Handle added layers case
         if (e.added) {
           // Each event only has the layers for that particular event. It does not include layers in
@@ -265,7 +265,7 @@ export class LayerListService implements OnDestroy {
   }
 }
 
-export class LayerListItem<T> {
+export class LayerListItem<T extends esri.Layer> {
   public id: LayerSource['id'];
   public title: LayerSource['title'];
   public layer: T;
@@ -276,8 +276,8 @@ export class LayerListItem<T> {
 
     // If a layer is provided, inherit layer properties, else set
     if (props.layer) {
-      this.id = (props.layer as any).id;
-      this.title = (props.layer as any).title;
+      this.id = props.layer.id;
+      this.title = props.layer.title;
       this.category = props.category;
     } else {
       this.id = props.id || '';
@@ -287,11 +287,11 @@ export class LayerListItem<T> {
   }
 }
 
-export interface LayerListStore<T> {
+export interface LayerListStore<T extends esri.Layer> {
   categories: LayerListCategory<T>[];
 }
 
-export interface LayerListCategory<T> {
+export interface LayerListCategory<T extends esri.Layer> {
   title: string;
   layers: LayerListItem<T>[];
   expanded: boolean;

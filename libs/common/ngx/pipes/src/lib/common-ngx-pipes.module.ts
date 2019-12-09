@@ -7,7 +7,7 @@ import { OrderByPipe } from './collections/order-by.pipe';
 import { MarkdownParsePipe } from './parsing/markdown-parse.pipe';
 import { SafeHtmlPipe } from './sanitation/safe-html.pipe';
 
-import { TimeUntilPipe } from './transformation/time-util.pipe';
+import { TimeUntilPipe } from './transformation/time-until.pipe';
 
 @NgModule({
   declarations: [GroupByPipe, OrderByPipe, MarkdownParsePipe, SafeHtmlPipe, TimeUntilPipe],

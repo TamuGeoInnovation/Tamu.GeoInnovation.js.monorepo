@@ -11,7 +11,7 @@ export function getPathFromRouteSnapshot(snapshot: ActivatedRouteSnapshot): stri
     .filter((segment) => segment);
 }
 
-export function makeUrlParams(params: object, encode: boolean, prefix?: string) {
+export function makeUrlParams(params: object, encode: boolean, prefix?: string): string {
   if (!params) {
     throw new Error('Could not make URL params because no params were provided.');
   }
@@ -52,7 +52,7 @@ export function makeUrlParams(params: object, encode: boolean, prefix?: string) 
  * @param {string} substitution Substitute path segment if match is found
  * @returns
  */
-export function routeSubstitute(list: Array<string>, match: string, substitution: string) {
+export function routeSubstitute(list: Array<string>, match: string, substitution: string): Array<string> {
   const l = [...list];
   const matchIndex = list.findIndex((listItem) => listItem === match);
 

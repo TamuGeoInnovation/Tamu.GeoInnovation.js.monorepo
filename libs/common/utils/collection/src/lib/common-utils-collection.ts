@@ -32,11 +32,7 @@ export function pairwiseOverlap<T>(elements: T[]): T[][] {
  * into the resulting grouped object. Supports dot notation.
  * @returns
  */
-export function groupBy<T extends object>(
-  collection: Array<T>,
-  path: string,
-  groupIdentityPath?: string
-): Array<Group<T> | T> {
+export function groupBy<T extends object>(collection: Array<T>, path: string, groupIdentityPath?: string): Array<Group<T>> {
   // Return early if no collection
   if (!collection || collection.length === 0) {
     return collection;
