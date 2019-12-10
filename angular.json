@@ -1,56 +1,6 @@
 {
   "version": 1,
   "projects": {
-    "common": {
-      "root": "libs/common",
-      "sourceRoot": "libs/common/src",
-      "projectType": "library",
-      "schematics": {},
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/common/tsconfig.lib.json", "libs/common/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/common/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/common/jest.config.js",
-            "tsConfig": "libs/common/tsconfig.spec.json"
-          }
-        }
-      }
-    },
-    "common-ngx": {
-      "projectType": "library",
-      "root": "libs/common/ngx",
-      "sourceRoot": "libs/common/ngx/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/common/ngx/tsconfig.lib.json", "libs/common/ngx/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/common/ngx/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/common/ngx/jest.config.js",
-            "tsConfig": "libs/common/ngx/tsconfig.spec.json",
-            "setupFile": "libs/common/ngx/src/test-setup.ts"
-          }
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
-      }
-    },
     "aggiemap": {
       "projectType": "application",
       "schematics": {
@@ -284,34 +234,6 @@
         }
       }
     },
-    "common-ngx-ui": {
-      "projectType": "library",
-      "root": "libs/common/ngx/ui",
-      "sourceRoot": "libs/common/ngx/ui/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/common/ngx/ui/tsconfig.lib.json", "libs/common/ngx/ui/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/common/ngx/ui/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/common/ngx/ui/jest.config.js",
-            "tsConfig": "libs/common/ngx/ui/tsconfig.spec.json",
-            "setupFile": "libs/common/ngx/ui/src/test-setup.ts"
-          }
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
-      }
-    },
     "common-ngx-ui-notification": {
       "projectType": "library",
       "root": "libs/common/ngx/ui/notification",
@@ -403,28 +325,6 @@
       "schematics": {
         "@nrwl/angular:component": {
           "styleext": "scss"
-        }
-      }
-    },
-    "common-utils": {
-      "root": "libs/common/utils",
-      "sourceRoot": "libs/common/utils/src",
-      "projectType": "library",
-      "schematics": {},
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/common/utils/tsconfig.lib.json", "libs/common/utils/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/common/utils/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/common/utils/jest.config.js",
-            "tsConfig": "libs/common/utils/tsconfig.spec.json"
-          }
         }
       }
     },

@@ -15,12 +15,6 @@
     "aggiemap": {
       "tags": []
     },
-    "common": {
-      "tags": []
-    },
-    "common-ngx": {
-      "tags": []
-    },
     "common-ngx-pipes": {
       "tags": []
     },
@@ -28,9 +22,6 @@
       "tags": []
     },
     "common-ngx-settings": {
-      "tags": []
-    },
-    "common-ngx-ui": {
       "tags": []
     },
     "common-ngx-ui-notification": {
@@ -46,9 +37,6 @@
       "tags": []
     },
     "sass": {
-      "tags": []
-    },
-    "common-utils": {
       "tags": []
     },
     "common-utils-collection": {
