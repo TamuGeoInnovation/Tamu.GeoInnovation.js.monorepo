@@ -9,9 +9,13 @@ export class SubmissionService {
   constructor(private environment: EnvironmentService, private http: HttpClient) {}
 
   public postSubmission(submission: FormData) {
-    return this.http.post<any>(this.environment.value('SubmissionsPostUrl'), submission, {
+    return this.http.post<SubmissionResult>(this.environment.value('SubmissionsPostUrl'), submission, {
       reportProgress: true,
       observe: 'events'
     });
   }
+}
+
+export interface SubmissionResult {
+  ResultCode: string;
 }

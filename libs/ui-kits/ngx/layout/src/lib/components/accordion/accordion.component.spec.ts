@@ -24,9 +24,6 @@ describe('AccordionComponent', () => {
   let fixture: ComponentFixture<TestComponent>;
   let component: TestComponent;
 
-  let title: AccordionTitleComponent;
-  let content: AccordionContentComponent;
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TestComponent, AccordionComponent, AccordionTitleComponent, AccordionContentComponent]

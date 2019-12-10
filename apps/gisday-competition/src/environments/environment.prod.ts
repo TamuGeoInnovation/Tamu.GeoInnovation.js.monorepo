@@ -3,7 +3,7 @@ export const environment = {
 };
 
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
-import { SearchSource } from '@tamu-gisc/search';
+import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/search';
 
 import { Connections, Definitions as d, Protocol, HostName } from './definitions';
 import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
@@ -63,7 +63,7 @@ export const LayerSources: LayerSource[] = [
   }
 ];
 
-const commonQueryParams: any = {
+const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
   f: 'json',
   resultRecordCount: 5,
   outFields: '*',
