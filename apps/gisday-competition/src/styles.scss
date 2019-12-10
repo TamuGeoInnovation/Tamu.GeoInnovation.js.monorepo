@@ -1,0 +1,132 @@
+/* You can add global styles to this file, and also import other style files */
+
+//  ==========================================================================
+//   SASS Mixins
+//  ==========================================================================
+
+@import 'libs/sass/mixins';
+
+//  ==========================================================================
+//   GRID AND RESETS
+//  ==========================================================================
+
+@import 'libs/sass/1140';
+
+//  ==========================================================================
+//   Mobile App Styles
+//  ==========================================================================
+@import 'libs/sass/modules/mobile_app';
+
+html {
+  height: 100%;
+  width: 100%;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  color: #332c2c;
+}
+
+body {
+  height: inherit;
+  width: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Oswald', sans-serif;
+  margin-bottom: 0.25em;
+  font-weight: 300;
+  position: relative;
+  display: inline-block;
+
+  &.bordered {
+    margin-bottom: 1em;
+
+    &:after {
+      content: '';
+      position: absolute;
+      background: #e4002b;
+      height: 2pt;
+      width: 50%;
+      left: 0;
+      bottom: -0.5em;
+    }
+  }
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 1.75rem;
+}
+
+a {
+  font-weight: 600;
+  color: #1e88e5;
+  text-decoration: none;
+}
+
+p,
+li {
+  margin-bottom: 0.5rem;
+}
+
+img {
+  margin: 1rem 0;
+}
+
+ul {
+  li {
+    margin-left: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &.numbered {
+    list-style: decimal;
+  }
+}
+
+select {
+  background: none;
+  border: none;
+  padding: 0.5rem 0 !important;
+}
+
+textarea {
+  font-family: 'Open Sans', sans-serif;
+  border: none;
+  width: 100%;
+}
+
+.button {
+  width: inherit;
+  padding: 0.75rem;
+  background: #582020;
+  color: #ffffff;
+  border-radius: 99rem;
+  text-align: center;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+  @include transition(color 0.3s, background 0.3s);
+
+  &.disabled {
+    background: #e0e0e0;
+    color: #757575;
+  }
+
+  .progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: rgba(80, 0, 0, 0.5);
+    z-index: 0;
+    @include transition(width 0.3s);
+  }
+}

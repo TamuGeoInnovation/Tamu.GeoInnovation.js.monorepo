@@ -1,0 +1,53 @@
+@import 'libs/sass/mixins';
+
+:host {
+  padding: 1rem;
+}
+
+.leaderboard-container {
+  margin-top: 0.5rem;
+}
+
+.leader {
+  background: #ffffff;
+  border-radius: 5px;
+  border: 1px solid #eee;
+  margin: 0.5rem 0;
+  padding: 1rem 1.25rem;
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-around);
+  position: relative;
+  overflow: hidden;
+
+  &.header {
+    font-weight: 600;
+  }
+
+  &.me {
+    font-weight: 600;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 2pt;
+      background: #e4002b;
+    }
+  }
+
+  & > div {
+    @include flexbox();
+    @include flex(1);
+
+    &.rank {
+      margin-left: 0.5rem;
+    }
+
+    &.rank,
+    &.points {
+      @include flex(0.5);
+    }
+  }
+}

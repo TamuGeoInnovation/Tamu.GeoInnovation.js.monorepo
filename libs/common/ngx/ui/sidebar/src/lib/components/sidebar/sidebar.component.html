@@ -1,4 +1,4 @@
-<div [@sidebar]="sidebarVisible">
+<div [@sidebar]="{value: sidebarVisible, params: {xLimit: visibleLimitX}}">
   <!-- PROJECTED TABS -->
   <ng-content select=".tabs"></ng-content>
 

@@ -1,0 +1,20 @@
+@import 'libs/sass/mixins';
+
+:host {
+  width: 100%;
+  padding: 0.2rem;
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-around);
+  @include flex-shrink(0);
+  box-sizing: border-box;
+
+  // Push up navigation on iPhones without hardware buttons (safe area)
+  margin-bottom: calc(env(safe-area-inset-bottom) / 2);
+
+  background: #ffffff;
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+  box-shadow: 0 -3px 10px rgba(37, 65, 90, 0.05);
+  z-index: 100;
+}

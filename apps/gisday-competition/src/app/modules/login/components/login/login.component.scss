@@ -1,0 +1,20 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flexbox();
+  @include flex-direction(column);
+  @include justify-content(center);
+  @include align-items(center);
+
+  text-align: center;
+}
+
+p {
+  color: #424242;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.button {
+  width: 50%;
+}

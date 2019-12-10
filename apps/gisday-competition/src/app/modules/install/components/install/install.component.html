@@ -1,0 +1,121 @@
+<h1>Install GIS Day Competitions on Your <span [ngSwitch]="device.identity.code">
+        <span *ngSwitchCase="1">Android</span>
+        <span *ngSwitchCase="2">iOS</span>
+        <span *ngSwitchDefault>Mobile</span>
+    </span> Device</h1>
+
+<div [ngSwitch]="device.identity.code" class="app-install"
+    [ngClass]="{'mobile': device.identity.code == 1 || device.identity.code == 2}">
+    <!-- Android Instructions -->
+    <div *ngSwitchCase="1">
+
+        <tamu-gisc-accordion [expanded]="true">
+            <tamu-gisc-accordion-title>Instructions</tamu-gisc-accordion-title>
+            <tamu-gisc-accordion-content>
+                <ul class="numbered">
+                    <li>Tap on the "<strong>Add GIS Day Competition to Home screen</strong>" prompt below to install on
+                        your
+                        device.</li>
+                    <li>Look for <strong>GIS Day Competitions</strong> in your phone's app drawer.</li>
+                </ul>
+            </tamu-gisc-accordion-content>
+        </tamu-gisc-accordion>
+
+        <tamu-gisc-accordion>
+            <tamu-gisc-accordion-title>I don't see the prompt. What can I do?</tamu-gisc-accordion-title>
+            <tamu-gisc-accordion-content>
+                <p>The automatic "Add to Home screen" prompt looks like the following:</p>
+
+                <img src="assets/images/graphics/add-homescreen-android.jpg" alt="Add to home screen prompt example">
+
+                <p>If this prompt does not appear on your device, complete the following steps to install it manually:
+                </p>
+
+                <p><strong>1.</strong> On a supported Android browser (e.g. Chrome), tap on the ellipsis on the top
+                    right corner of the browser to open the context menu:</p>
+
+                <img src="assets/images/graphics/chrome-more.jpg" alt="Chrome options context menu button">
+
+                <p><strong>2.</strong> Tap on the <strong>Add to Home screen</strong> option:</p>
+
+                <img src="assets/images/graphics/chrome-context-add-home.jpg" alt="Chrome options context menu">
+
+                <p><strong>3.</strong> Tap <strong>Add</strong> on the confirmation popup:</p>
+
+                <img src="assets/images/graphics/chrome-modal-add-home.jpg" alt="Chrome add to home confirmation popup">
+
+                <p><strong>4.</strong> Look for the <strong>GIS Day Competitions</strong> App on your home screen or app
+                    drawer:</p>
+
+                <img src="assets/images/graphics/home-screen.jpg" alt="Chrome add to home confirmation popup">
+            </tamu-gisc-accordion-content>
+        </tamu-gisc-accordion>
+
+        <tamu-gisc-accordion>
+            <tamu-gisc-accordion-title>What permissions will this App require?</tamu-gisc-accordion-title>
+            <tamu-gisc-accordion-content>
+                <ul class="numbered">
+                    <li><strong>Location</strong>: Every submission will require device latitude, longitude, and other
+                        geographic data
+                        provided by the Location sensors on your device.</li>
+                    <li><strong>Camera</strong>: Every submission requires camera access to provide an image of the
+                        feature.</li>
+                </ul>
+            </tamu-gisc-accordion-content>
+        </tamu-gisc-accordion>
+    </div>
+
+    <!-- iOS Instructions -->
+    <div *ngSwitchCase="2">
+        <div *ngIf="version?.major < 11">
+
+            <p>Your version of iOS <span
+                    *ngIf="version !== null">({{version?.major}}.{{version?.minor}}.{{version?.patch}})</span> is
+                not supported. A minimum iOS version of <strong>11.0.1</strong> is required.</p>
+        </div>
+
+        <div *ngIf="version?.major >= 11">
+            <tamu-gisc-accordion [expanded]="true">
+                <tamu-gisc-accordion-title>Instructions</tamu-gisc-accordion-title>
+                <tamu-gisc-accordion-content>
+                    <br>
+                    <p><strong>1.</strong> Using <strong>Safari</strong>, tap on the <strong>Share</strong> icon:</p>
+
+                    <img src="assets/images/graphics/ios-share.jpg" alt="iOS Share Icon Screenshot">
+
+                    <p><strong>2.</strong> From the actions menu, select "Add to Home Screen":</p>
+
+                    <img src="assets/images/graphics/ios-add-homescreen.jpg"
+                        alt="iOS Add to Homescreen Action Screenshot">
+
+                    <p><strong>3.</strong> Tap <strong>Add</strong> on the confirmation page:</p>
+
+                    <img src="assets/images/graphics/ios-add-homescreen-confirm.jpg"
+                        alt="iOS Add to Homescreen Confirm Screenshot">
+
+                    <p><strong>4.</strong> Safari will close and focus on the installed App:</p>
+
+                    <img src="assets/images/graphics/ios-installed.jpg" alt="iOS Installed on Homescreen Screenshot">
+                </tamu-gisc-accordion-content>
+            </tamu-gisc-accordion>
+
+            <tamu-gisc-accordion>
+                <tamu-gisc-accordion-title>What permissions will this App require?</tamu-gisc-accordion-title>
+                <tamu-gisc-accordion-content>
+                    <ul class="numbered">
+                        <li><strong>Location</strong>: Every submission will require device latitude, longitude, and
+                            other
+                            geographic data
+                            provided by the Location sensors on your device.</li>
+                        <li><strong>Camera</strong>: Every submission requires camera access to provide an image of the
+                            feature.</li>
+                    </ul>
+                </tamu-gisc-accordion-content>
+            </tamu-gisc-accordion>
+        </div>
+    </div>
+
+    <!-- All Others Instructions -->
+    <div *ngSwitchDefault>Visit this page on your <strong>Android</strong> or <strong>iOS</strong> device for App
+        installation.</div>
+</div>

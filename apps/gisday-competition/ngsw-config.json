@@ -1,0 +1,57 @@
+{
+  "$schema": "../../node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": ["/favicon.ico", "/index.html", "/manifest.webmanifest", "/*.css", "/*.js"]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": ["/assets/**", "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"]
+      }
+    },
+    {
+      "name": "google-fonts",
+      "installMode": "lazy",
+      "updateMode": "lazy",
+      "resources": { "urls": ["https://fonts.googleapis.com/**", "https://fonts.gstatic.com/**"] }
+    },
+    {
+      "name": "arcgis-js",
+      "installMode": "lazy",
+      "updateMode": "lazy",
+      "resources": {
+        "urls": ["https://js.arcgis.com/**", "https://www.arcgis.com/sharing/**", "https://cdn.arcgis.com/sharing/**"]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api",
+      "urls": ["https://gisday.tamu.edu/Rest/**"],
+      "cacheConfig": {
+        "maxSize": 10,
+        "maxAge": "5m",
+        "strategy": "freshness",
+        "timeout": "10s"
+      }
+    },
+    {
+      "name": "tiles",
+      "urls": ["https://basemaps.arcgis.com/arcgis/rest/services/**"],
+      "cacheConfig": {
+        "maxSize": 3000,
+        "maxAge": "30d",
+        "strategy": "performance",
+        "timeout": "5s"
+      }
+    }
+  ]
+}

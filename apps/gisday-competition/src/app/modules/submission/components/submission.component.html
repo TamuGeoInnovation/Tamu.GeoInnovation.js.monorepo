@@ -1,0 +1,41 @@
+<h1 class="bordered">New Submission</h1>
+
+<div class="block-input">
+    <div class="block-input-presentation" *ngIf="(file | async) === undefined">
+        <div class="material-icons">photo_camera</div>
+        <p class="title">Upload Sign Photo</p>
+        <p class="description">Tap to take a picture</p>
+    </div>
+
+    <input type="file" name="photo" (change)="onPhotoTaken($event)" accept="image/*" capture>
+    <div class="image" *ngIf="file | async" [ngStyle]="{'background-image': 'url(' + (fileUrl | async) + ')'}"></div>
+</div>
+
+<div class="statused-form-input-container">
+    <p class="label">Sign Type</p>
+    <div class="statused-form-input column">
+        <tamu-gisc-select (changed)="this.signType.next($event)" [valueTemplate]="'value'" [displayTemplate]="'name'"
+            [data]="dataSource"></tamu-gisc-select>
+    </div>
+</div>
+
+<div class="statused-form-input-container">
+    <p class="label">Description or Additional Information</p>
+    <div class="statused-form-input">
+        <textarea name="" id="" rows="4" (keyup)="signDetails.next($event.target.value)" name="description"></textarea>
+    </div>
+</div>
+
+<p class="rules-text">By submitting, you agree that you have read and understand the competition <a
+        href="https://gisday.tamu.edu/competitions/Signage/" target="_blank" rel="noopener noreferrer">rules and
+        guidelines.</a></p>
+
+<div class="button" role="button" (click)="submitSubmission()"
+    [class.disabled]="(form.valid | async) === false || form.status === 1">
+    <div class="progress" *ngIf="form.status !== -1" [style.width.%]="form.progress * 100"></div>
+    <div class="status-text" [ngSwitch]="form.status">
+        <div *ngSwitchCase="1">Submitting...</div>
+        <div *ngSwitchCase="-1">Error!</div>
+        <div *ngSwitchDefault>Submit</div>
+    </div>
+</div>

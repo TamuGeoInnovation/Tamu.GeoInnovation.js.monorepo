@@ -1,3 +1,4 @@
+
 {
   "npmScope": "tamu-gisc",
   "implicitDependencies": {
@@ -147,6 +148,18 @@
       "tags": []
     },
     "two-angular": {
+      "tags": []
+    },
+    "gisday-competition-e2e": {
+      "tags": []
+    },
+    "gisday-competition": {
+      "tags": []
+    },
+    "ui-kits-ngx-navigation-mobile-tab": {
+      "tags": []
+    },
+    "common-utils-device": {
       "tags": []
     }
   }

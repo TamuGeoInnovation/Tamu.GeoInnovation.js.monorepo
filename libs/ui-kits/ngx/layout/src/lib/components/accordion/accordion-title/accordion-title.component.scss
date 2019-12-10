@@ -1,0 +1,18 @@
+@import 'libs/sass/mixins';
+
+.title-container {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  @include align-items(center);
+
+  padding: 1rem 0.75rem;
+  background: #f5f5f5;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.material-icons {
+  font-size: 1rem;
+  color: #616161;
+}

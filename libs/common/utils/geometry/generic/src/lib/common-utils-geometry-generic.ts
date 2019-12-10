@@ -1,4 +1,6 @@
-import { Observable, from } from 'rxjs';
+import { Observable, from, of, BehaviorSubject } from 'rxjs';
+import { skip } from 'rxjs/operators';
+
 import { Point } from '@tamu-gisc/common/types';
 
 import { getSmallestIndex } from '@tamu-gisc/common/utils/number';
@@ -27,6 +29,45 @@ export function getGeolocation(asObservable?: boolean): Promise<Coordinates> | O
     return from(promise);
   } else {
     return promise;
+  }
+}
+
+export class TrackLocation {
+  private _trackID: number;
+  private _options: PositionOptions;
+  private _location: BehaviorSubject<Position>;
+
+  constructor(options?: PositionOptions) {
+    this._options = { ...options };
+
+    this._location = new BehaviorSubject(undefined);
+  }
+
+  /**
+   *  Returns an observable wrapper around the native geolocation API.
+   */
+  public track(): Observable<Position> {
+    this._trackID = navigator.geolocation.watchPosition(
+      (position: Position) => {
+        this._location.next(position);
+      },
+      (error) => {
+        this._location.error(error);
+        this.dispose();
+      },
+      this._options
+    );
+
+    return this._location.asObservable().pipe(skip(1));
+  }
+
+  /**
+   *  Releases any geolocation watch handlers.
+   */
+  public dispose() {
+    if (this._trackID !== undefined) {
+      navigator.geolocation.clearWatch(this._trackID);
+    }
   }
 }
 
@@ -82,6 +123,7 @@ export function parseCoordinates(input: string): Point {
 
 /**
  * Calculates the relative distance of a collection of points relative to a reference.
+ *
  *
  * @param reference Reference point used to calculated distance from/to
  * @param points Collection of points.

@@ -1,7 +1,8 @@
 import { async, TestBed } from '@angular/core/testing';
+
 import { UILayoutModule } from './ui-kits-ngx-layout.module';
 
-describe('UiKitsNgxLayoutModule', () => {
+describe('UILayoutModule', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [UILayoutModule]

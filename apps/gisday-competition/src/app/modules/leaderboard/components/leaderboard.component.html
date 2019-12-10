@@ -1,0 +1,22 @@
+<div>
+    <h1 class="bordered">Leaderboard</h1>
+</div>
+
+<div class="leaderboard-container" *ngIf="(leaders$ | async) as leaders">
+    <div class="leader header">
+        <div class="rank">Rank</div>
+        <div class="identity">Participant</div>
+        <div class="points">Points</div>
+    </div>
+
+    <div class="leader" *ngFor="let leader of leaders; let i = index;" [ngClass]="{me: (me$ | async) == leader.userGuid}">
+        <div class="rank">{{i+1}}</div>
+        <div class="identity">
+            <div [ngSwitch]="me$ | async">
+                <div *ngSwitchCase="leader.userGuid">You</div>
+                <div *ngSwitchDefault>{{leader.identifier}}</div>
+            </div>
+        </div>
+        <div class="points">{{leader.points}}</div>
+    </div>
+</div>

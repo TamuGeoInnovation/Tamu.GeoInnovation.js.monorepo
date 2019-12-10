@@ -39,7 +39,7 @@ export const NotificationEvents: NotificationProperties[] = [
     title: 'Outside County Limits',
     acknowledge: false,
     message:
-      'Sorry, Aggiemap currently does not support direction enpoints outside the Brazos County limits. Please make sure start and end points are within the county limits and try again.',
+      'Sorry, Aggiemap currently does not support direction endpoints outside the Brazos County limits. Please make sure start and end points are within the county limits and try again.',
     imgUrl: './assets/images/out-of-bounds.svg',
     imgAltText: 'Out of Bounds Icon'
   },
@@ -48,7 +48,7 @@ export const NotificationEvents: NotificationProperties[] = [
     title: 'Trip Calculation Error',
     acknowledge: false,
     message:
-      "Could not calculate trip with requested points. The Aggiemap team has been notified and will be working to fix the problem. If you haven't given up already, please try again with a slighty different set of points.",
+      "Could not calculate trip with requested points. The Aggiemap team has been notified and will be working to fix the problem. If you haven't given up already, please try again with a slightly different set of points.",
     imgUrl: './assets/images/out-of-bounds.svg',
     imgAltText: 'Trip Fail Icon'
   },
@@ -56,7 +56,7 @@ export const NotificationEvents: NotificationProperties[] = [
     id: 'feedback_submit',
     title: 'Feedback Submitted',
     acknowledge: false,
-    message: 'Thank you! Your feedback has been sumitted successfully and the Aggiemap team notified.',
+    message: 'Thank you! Your feedback has been submitted successfully and the Aggiemap team notified.',
     imgUrl: './assets/images/like.svg',
     imgAltText: 'Feedback Icon'
   }

@@ -1445,6 +1445,183 @@
           }
         }
       }
+    },
+
+    "common-utils-device": {
+      "root": "libs/common/utils/device",
+      "sourceRoot": "libs/common/utils/device/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/utils/device/tsconfig.lib.json", "libs/common/utils/device/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/device/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/device/jest.config.js",
+            "tsConfig": "libs/common/utils/device/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "gisday-competition": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/gisday-competition",
+      "sourceRoot": "apps/gisday-competition/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/gisday-competition",
+            "index": "apps/gisday-competition/src/index.html",
+            "main": "apps/gisday-competition/src/main.ts",
+            "polyfills": "apps/gisday-competition/src/polyfills.ts",
+            "tsConfig": "apps/gisday-competition/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "apps/gisday-competition/src/favicon.ico",
+              "apps/gisday-competition/src/assets",
+              "apps/gisday-competition/src/manifest.webmanifest",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
+            "styles": ["apps/gisday-competition/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/gisday-competition/src/environments/environment.ts",
+                  "with": "apps/gisday-competition/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ],
+              "serviceWorker": true,
+              "ngswConfigPath": "apps/gisday-competition/ngsw-config.json"
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "gisday-competition:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "gisday-competition:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "gisday-competition:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/gisday-competition/tsconfig.app.json", "apps/gisday-competition/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/gisday-competition/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/gisday-competition/jest.config.js",
+            "tsConfig": "apps/gisday-competition/tsconfig.spec.json",
+            "setupFile": "apps/gisday-competition/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "gisday-competition-e2e": {
+      "root": "apps/gisday-competition-e2e",
+      "sourceRoot": "apps/gisday-competition-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/gisday-competition-e2e/cypress.json",
+            "tsConfig": "apps/gisday-competition-e2e/tsconfig.e2e.json",
+            "devServerTarget": "gisday-competition:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "gisday-competition:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/gisday-competition-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/gisday-competition-e2e/**"]
+          }
+        }
+      }
+    },
+    "ui-kits-ngx-navigation-mobile-tab": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/navigation/mobile-tab",
+      "sourceRoot": "libs/ui-kits/ngx/navigation/mobile-tab/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/navigation/mobile-tab/tsconfig.lib.json",
+              "libs/ui-kits/ngx/navigation/mobile-tab/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/mobile-tab/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tab/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/navigation/mobile-tab/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/navigation/mobile-tab/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {

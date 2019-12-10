@@ -1,0 +1,26 @@
+//  This style sheet expects three top-level elements, in the following order:
+//
+//  1. Router outlet
+//  2. Projected route component
+//  3. Tab navigation component
+//
+
+@import 'libs/sass/mixins';
+
+#mobile-app-viewport {
+  @include flexbox();
+  @include flex-direction(column);
+  @include justify-content(space-between);
+
+  height: inherit;
+  width: inherit;
+
+  // Target the kprojected route component
+  & > :nth-child(2) {
+    @include flex-grow(1);
+    // Find a way to put this in a base class. Not all views need padding (e.g. maps)
+    // padding: 1rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
