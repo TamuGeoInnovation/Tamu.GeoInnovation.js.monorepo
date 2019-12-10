@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+
 import { InstallComponent } from './install.component';
 
 describe('InstallComponent', () => {
@@ -8,9 +10,9 @@ describe('InstallComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ InstallComponent ]
-    })
-    .compileComponents();
+      imports: [UILayoutModule],
+      declarations: [InstallComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

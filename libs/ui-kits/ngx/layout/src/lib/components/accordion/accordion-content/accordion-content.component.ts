@@ -18,7 +18,11 @@ import { IAccordionModel } from '../accordion.component';
 })
 export class AccordionContentComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
   @Input()
-  public model: IAccordionModel;
+  public model: IAccordionModel = {
+    animate: false,
+    expanded: false,
+    resize: false
+  };
 
   /**
    * If `resize` is set to `true`, this will be set to the mutation observer so that the directive

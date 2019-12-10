@@ -11,7 +11,11 @@ export class AccordionTitleComponent implements OnInit {
   public toggle: EventEmitter<boolean> = new EventEmitter();
 
   @Input()
-  public model: IAccordionModel;
+  public model: IAccordionModel = {
+    animate: false,
+    expanded: false,
+    resize: false
+  };
 
   @HostListener('click', ['$event'])
   private _onClick() {

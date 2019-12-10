@@ -1,4 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 
 import { LeaderboardComponent } from './leaderboard.component';
 
@@ -8,9 +12,15 @@ describe('LeaderboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LeaderboardComponent ]
-    })
-    .compileComponents();
+      imports: [HttpClientTestingModule, EnvironmentModule, SettingsModule],
+      declarations: [LeaderboardComponent],
+      providers: [
+        {
+          provide: env,
+          useValue: { LocalStoreSettings: {}, LeaderboardUrl: 'https://' }
+        }
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
