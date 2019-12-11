@@ -80,7 +80,7 @@ export interface LayerSource {
    * @type {string}
    * @memberof LayerSourceProperties
    */
-  listMode: string;
+  listMode: 'show' | 'hide';
 
   /**
    * Determines whether the layer will be loaded on application load.

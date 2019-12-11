@@ -148,6 +148,12 @@
     },
     "ui-kits-ngx-navigation-mobile-tab": {
       "tags": []
+    },
+    "signage-angular-e2e": {
+      "tags": []
+    },
+    "signage-angular": {
+      "tags": []
     }
   }
 }
