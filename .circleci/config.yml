@@ -31,10 +31,19 @@ jobs:
           command: npm install
       - run:
           name: Build AggieMap
-          command: npm run build aggiemap -- --prod
+          command: npm run build aggiemap-angular -- --prod
       - run:
           name: Build Trees
-          command: npm run build angular-aggiemap-trees -- --prod
+          command: npm run build trees-angular -- --prod
+      - run:
+          name: Build GIS Day Competitions
+          command: npm run build gisday-competitions-angular -- --prod
+      - run:
+          name: Build TWO Angular
+          command: npm run build two-angular -- --prod
+      - run:
+          name: Build TWO NestJS Data API
+          command: npm run build two-data-api-nest -- --prod
   test:
     docker:
       - image: circleci/node:10.16

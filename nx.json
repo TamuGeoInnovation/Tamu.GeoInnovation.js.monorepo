@@ -8,16 +8,16 @@
     "nx.json": "*"
   },
   "projects": {
-    "aggiemap": {
+    "aggiemap-angular": {
       "tags": []
     },
-    "aggiemap-e2e": {
+    "aggiemap-angular-e2e": {
       "tags": []
     },
-    "angular-aggiemap-trees": {
+    "trees-angular": {
       "tags": []
     },
-    "angular-aggiemap-trees-e2e": {
+    "trees-angular-e2e": {
       "tags": []
     },
     "assets": {
@@ -92,10 +92,10 @@
     "dev-tools-responsive": {
       "tags": []
     },
-    "gisday-competition": {
+    "gisday-competitions-angular": {
       "tags": []
     },
-    "gisday-competition-e2e": {
+    "gisday-competitions-angular-e2e": {
       "tags": []
     },
     "maps-esri": {
@@ -134,7 +134,7 @@
     "two-data-api": {
       "tags": []
     },
-    "two-nest-data-api": {
+    "two-data-api-nest": {
       "tags": []
     },
     "ui-kits-ngx-branding": {

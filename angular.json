@@ -1,11 +1,11 @@
 {
   "version": 1,
   "projects": {
-    "aggiemap": {
+    "aggiemap-angular": {
       "prefix": "tamu-gisc",
       "projectType": "application",
-      "root": "apps/aggiemap",
-      "sourceRoot": "apps/aggiemap/src",
+      "root": "apps/aggiemap-angular",
+      "sourceRoot": "apps/aggiemap-angular/src",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -21,8 +21,8 @@
               ],
               "fileReplacements": [
                 {
-                  "replace": "apps/aggiemap/src/environments/environment.ts",
-                  "with": "apps/aggiemap/src/environments/environment.prod.ts"
+                  "replace": "apps/aggiemap-angular/src/environments/environment.ts",
+                  "with": "apps/aggiemap-angular/src/environments/environment.prod.ts"
                 }
               ],
               "aot": true,
@@ -36,14 +36,14 @@
             }
           },
           "options": {
-            "index": "apps/aggiemap/src/index.html",
-            "main": "apps/aggiemap/src/main.ts",
-            "outputPath": "dist/apps/aggiemap",
-            "polyfills": "apps/aggiemap/src/polyfills.ts",
-            "tsConfig": "apps/aggiemap/tsconfig.app.json",
+            "index": "apps/aggiemap-angular/src/index.html",
+            "main": "apps/aggiemap-angular/src/main.ts",
+            "outputPath": "dist/apps/aggiemap-angular",
+            "polyfills": "apps/aggiemap-angular/src/polyfills.ts",
+            "tsConfig": "apps/aggiemap-angular/tsconfig.app.json",
             "assets": [
-              "apps/aggiemap/src/favicon.ico",
-              "apps/aggiemap/src/assets",
+              "apps/aggiemap-angular/src/favicon.ico",
+              "apps/aggiemap-angular/src/assets",
               {
                 "glob": "**/*",
                 "input": "./libs/assets/",
@@ -51,40 +51,40 @@
               }
             ],
             "scripts": [],
-            "styles": ["apps/aggiemap/src/styles.scss"],
+            "styles": ["apps/aggiemap-angular/src/styles.scss"],
             "aot": false
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "aggiemap:build"
+            "browserTarget": "aggiemap-angular:build"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/aggiemap/**"],
-            "tsConfig": ["apps/aggiemap/tsconfig.app.json", "apps/aggiemap/tsconfig.spec.json"]
+            "exclude": ["**/node_modules/**", "!apps/aggiemap-angular/**"],
+            "tsConfig": ["apps/aggiemap-angular/tsconfig.app.json", "apps/aggiemap-angular/tsconfig.spec.json"]
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "aggiemap:build:production"
+              "browserTarget": "aggiemap-angular:build:production"
             }
           },
           "options": {
-            "browserTarget": "aggiemap:build"
+            "browserTarget": "aggiemap-angular:build"
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "apps/aggiemap/jest.config.js",
-            "setupFile": "apps/aggiemap/src/test-setup.ts",
-            "tsConfig": "apps/aggiemap/tsconfig.spec.json"
+            "jestConfig": "apps/aggiemap-angular/jest.config.js",
+            "setupFile": "apps/aggiemap-angular/src/test-setup.ts",
+            "tsConfig": "apps/aggiemap-angular/tsconfig.spec.json"
           }
         }
       },
@@ -94,38 +94,38 @@
         }
       }
     },
-    "aggiemap-e2e": {
+    "aggiemap-angular-e2e": {
       "projectType": "application",
-      "root": "apps/aggiemap-e2e",
-      "sourceRoot": "apps/aggiemap-e2e/src",
+      "root": "apps/aggiemap-angular-e2e",
+      "sourceRoot": "apps/aggiemap-angular-e2e/src",
       "architect": {
         "e2e": {
           "builder": "@nrwl/cypress:cypress",
           "configurations": {
             "production": {
-              "devServerTarget": "aggiemap:serve:production"
+              "devServerTarget": "aggiemap-angular:serve:production"
             }
           },
           "options": {
-            "cypressConfig": "apps/aggiemap-e2e/cypress.json",
-            "devServerTarget": "aggiemap:serve",
-            "tsConfig": "apps/aggiemap-e2e/tsconfig.e2e.json"
+            "cypressConfig": "apps/aggiemap-angular-e2e/cypress.json",
+            "devServerTarget": "aggiemap-angular:serve",
+            "tsConfig": "apps/aggiemap-angular-e2e/tsconfig.e2e.json"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/aggiemap-e2e/**"],
-            "tsConfig": ["apps/aggiemap-e2e/tsconfig.e2e.json"]
+            "exclude": ["**/node_modules/**", "!apps/aggiemap-angular-e2e/**"],
+            "tsConfig": ["apps/aggiemap-angular-e2e/tsconfig.e2e.json"]
           }
         }
       }
     },
-    "angular-aggiemap-trees": {
+    "trees-angular": {
       "prefix": "tamu-gisc",
       "projectType": "application",
-      "root": "apps/angular-aggiemap-trees",
-      "sourceRoot": "apps/angular-aggiemap-trees/src",
+      "root": "apps/trees-angular",
+      "sourceRoot": "apps/trees-angular/src",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -141,8 +141,8 @@
               ],
               "fileReplacements": [
                 {
-                  "replace": "apps/angular-aggiemap-trees/src/environments/environment.ts",
-                  "with": "apps/angular-aggiemap-trees/src/environments/environment.prod.ts"
+                  "replace": "apps/trees-angular/src/environments/environment.ts",
+                  "with": "apps/trees-angular/src/environments/environment.prod.ts"
                 }
               ],
               "aot": true,
@@ -156,14 +156,14 @@
             }
           },
           "options": {
-            "index": "apps/angular-aggiemap-trees/src/index.html",
-            "main": "apps/angular-aggiemap-trees/src/main.ts",
-            "outputPath": "dist/apps/angular-aggiemap-trees",
-            "polyfills": "apps/angular-aggiemap-trees/src/polyfills.ts",
-            "tsConfig": "apps/angular-aggiemap-trees/tsconfig.app.json",
+            "index": "apps/trees-angular/src/index.html",
+            "main": "apps/trees-angular/src/main.ts",
+            "outputPath": "dist/apps/trees-angular",
+            "polyfills": "apps/trees-angular/src/polyfills.ts",
+            "tsConfig": "apps/trees-angular/tsconfig.app.json",
             "assets": [
-              "apps/angular-aggiemap-trees/src/favicon.ico",
-              "apps/angular-aggiemap-trees/src/assets",
+              "apps/trees-angular/src/favicon.ico",
+              "apps/trees-angular/src/assets",
               {
                 "glob": "**/*",
                 "input": "./libs/assets/",
@@ -171,40 +171,40 @@
               }
             ],
             "scripts": [],
-            "styles": ["apps/angular-aggiemap-trees/src/styles.scss"],
+            "styles": ["apps/trees-angular/src/styles.scss"],
             "aot": false
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-aggiemap-trees:build"
+            "browserTarget": "trees-angular:build"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/angular-aggiemap-trees/**"],
-            "tsConfig": ["apps/angular-aggiemap-trees/tsconfig.app.json", "apps/angular-aggiemap-trees/tsconfig.spec.json"]
+            "exclude": ["**/node_modules/**", "!apps/trees-angular/**"],
+            "tsConfig": ["apps/trees-angular/tsconfig.app.json", "apps/trees-angular/tsconfig.spec.json"]
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "angular-aggiemap-trees:build:production"
+              "browserTarget": "trees-angular:build:production"
             }
           },
           "options": {
-            "browserTarget": "angular-aggiemap-trees:build"
+            "browserTarget": "trees-angular:build"
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "apps/angular-aggiemap-trees/jest.config.js",
-            "setupFile": "apps/angular-aggiemap-trees/src/test-setup.ts",
-            "tsConfig": "apps/angular-aggiemap-trees/tsconfig.spec.json"
+            "jestConfig": "apps/trees-angular/jest.config.js",
+            "setupFile": "apps/trees-angular/src/test-setup.ts",
+            "tsConfig": "apps/trees-angular/tsconfig.spec.json"
           }
         }
       },
@@ -214,29 +214,29 @@
         }
       }
     },
-    "angular-aggiemap-trees-e2e": {
+    "trees-angular-e2e": {
       "projectType": "application",
-      "root": "apps/angular-aggiemap-trees-e2e",
-      "sourceRoot": "apps/angular-aggiemap-trees-e2e/src",
+      "root": "apps/trees-angular-e2e",
+      "sourceRoot": "apps/trees-angular-e2e/src",
       "architect": {
         "e2e": {
           "builder": "@nrwl/cypress:cypress",
           "configurations": {
             "production": {
-              "devServerTarget": "angular-aggiemap-trees:serve:production"
+              "devServerTarget": "trees-angular:serve:production"
             }
           },
           "options": {
-            "cypressConfig": "apps/angular-aggiemap-trees-e2e/cypress.json",
-            "devServerTarget": "angular-aggiemap-trees:serve",
-            "tsConfig": "apps/angular-aggiemap-trees-e2e/tsconfig.e2e.json"
+            "cypressConfig": "apps/trees-angular-e2e/cypress.json",
+            "devServerTarget": "trees-angular:serve",
+            "tsConfig": "apps/trees-angular-e2e/tsconfig.e2e.json"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/angular-aggiemap-trees-e2e/**"],
-            "tsConfig": ["apps/angular-aggiemap-trees-e2e/tsconfig.e2e.json"]
+            "exclude": ["**/node_modules/**", "!apps/trees-angular-e2e/**"],
+            "tsConfig": ["apps/trees-angular-e2e/tsconfig.e2e.json"]
           }
         }
       }
@@ -851,17 +851,17 @@
         }
       }
     },
-    "gisday-competition": {
+    "gisday-competitions-angular": {
       "prefix": "tamu-gisc",
       "projectType": "application",
-      "root": "apps/gisday-competition",
-      "sourceRoot": "apps/gisday-competition/src",
+      "root": "apps/gisday-competitions-angular",
+      "sourceRoot": "apps/gisday-competitions-angular/src",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "configurations": {
             "production": {
-              "ngswConfigPath": "apps/gisday-competition/ngsw-config.json",
+              "ngswConfigPath": "apps/gisday-competitions-angular/ngsw-config.json",
               "outputHashing": "all",
               "budgets": [
                 {
@@ -872,8 +872,8 @@
               ],
               "fileReplacements": [
                 {
-                  "replace": "apps/gisday-competition/src/environments/environment.ts",
-                  "with": "apps/gisday-competition/src/environments/environment.prod.ts"
+                  "replace": "apps/gisday-competitions-angular/src/environments/environment.ts",
+                  "with": "apps/gisday-competitions-angular/src/environments/environment.prod.ts"
                 }
               ],
               "aot": true,
@@ -888,15 +888,15 @@
             }
           },
           "options": {
-            "index": "apps/gisday-competition/src/index.html",
-            "main": "apps/gisday-competition/src/main.ts",
-            "outputPath": "dist/apps/gisday-competition",
-            "polyfills": "apps/gisday-competition/src/polyfills.ts",
-            "tsConfig": "apps/gisday-competition/tsconfig.app.json",
+            "index": "apps/gisday-competitions-angular/src/index.html",
+            "main": "apps/gisday-competitions-angular/src/main.ts",
+            "outputPath": "dist/apps/gisday-competitions-angular",
+            "polyfills": "apps/gisday-competitions-angular/src/polyfills.ts",
+            "tsConfig": "apps/gisday-competitions-angular/tsconfig.app.json",
             "assets": [
-              "apps/gisday-competition/src/favicon.ico",
-              "apps/gisday-competition/src/assets",
-              "apps/gisday-competition/src/manifest.webmanifest",
+              "apps/gisday-competitions-angular/src/favicon.ico",
+              "apps/gisday-competitions-angular/src/assets",
+              "apps/gisday-competitions-angular/src/manifest.webmanifest",
               {
                 "glob": "**/*",
                 "input": "./libs/assets/",
@@ -904,40 +904,40 @@
               }
             ],
             "scripts": [],
-            "styles": ["apps/gisday-competition/src/styles.scss"],
+            "styles": ["apps/gisday-competitions-angular/src/styles.scss"],
             "aot": false
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "gisday-competition:build"
+            "browserTarget": "gisday-competitions-angular:build"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/gisday-competition/**"],
-            "tsConfig": ["apps/gisday-competition/tsconfig.app.json", "apps/gisday-competition/tsconfig.spec.json"]
+            "exclude": ["**/node_modules/**", "!apps/gisday-competitions-angular/**"],
+            "tsConfig": ["apps/gisday-competitions-angular/tsconfig.app.json", "apps/gisday-competitions-angular/tsconfig.spec.json"]
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "gisday-competition:build:production"
+              "browserTarget": "gisday-competitions-angular:build:production"
             }
           },
           "options": {
-            "browserTarget": "gisday-competition:build"
+            "browserTarget": "gisday-competitions-angular:build"
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "apps/gisday-competition/jest.config.js",
-            "setupFile": "apps/gisday-competition/src/test-setup.ts",
-            "tsConfig": "apps/gisday-competition/tsconfig.spec.json"
+            "jestConfig": "apps/gisday-competitions-angular/jest.config.js",
+            "setupFile": "apps/gisday-competitions-angular/src/test-setup.ts",
+            "tsConfig": "apps/gisday-competitions-angular/tsconfig.spec.json"
           }
         }
       },
@@ -947,29 +947,29 @@
         }
       }
     },
-    "gisday-competition-e2e": {
+    "gisday-competitions-angular-e2e": {
       "projectType": "application",
-      "root": "apps/gisday-competition-e2e",
-      "sourceRoot": "apps/gisday-competition-e2e/src",
+      "root": "apps/gisday-competitions-angular-e2e",
+      "sourceRoot": "apps/gisday-competitions-angular-e2e/src",
       "architect": {
         "e2e": {
           "builder": "@nrwl/cypress:cypress",
           "configurations": {
             "production": {
-              "devServerTarget": "gisday-competition:serve:production"
+              "devServerTarget": "gisday-competitions-angular:serve:production"
             }
           },
           "options": {
-            "cypressConfig": "apps/gisday-competition-e2e/cypress.json",
-            "devServerTarget": "gisday-competition:serve",
-            "tsConfig": "apps/gisday-competition-e2e/tsconfig.e2e.json"
+            "cypressConfig": "apps/gisday-competitions-angular-e2e/cypress.json",
+            "devServerTarget": "gisday-competitions-angular:serve",
+            "tsConfig": "apps/gisday-competitions-angular-e2e/tsconfig.e2e.json"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/gisday-competition-e2e/**"],
-            "tsConfig": ["apps/gisday-competition-e2e/tsconfig.e2e.json"]
+            "exclude": ["**/node_modules/**", "!apps/gisday-competitions-angular-e2e/**"],
+            "tsConfig": ["apps/gisday-competitions-angular-e2e/tsconfig.e2e.json"]
           }
         }
       }
@@ -1349,11 +1349,11 @@
       },
       "schematics": {}
     },
-    "two-nest-data-api": {
-      "prefix": "two-nest-data-api",
+    "two-data-api-nest": {
+      "prefix": "two-data-api-nest",
       "projectType": "application",
-      "root": "apps/two-nest-data-api",
-      "sourceRoot": "apps/two-nest-data-api/src",
+      "root": "apps/two-data-api-nest",
+      "sourceRoot": "apps/two-data-api-nest/src",
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -1361,8 +1361,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "apps/two-nest-data-api/src/environments/environment.ts",
-                  "with": "apps/two-nest-data-api/src/environments/environment.prod.ts"
+                  "replace": "apps/two-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/two-data-api-nest/src/environments/environment.prod.ts"
                 }
               ],
               "extractLicenses": false,
@@ -1372,30 +1372,30 @@
             }
           },
           "options": {
-            "main": "apps/two-nest-data-api/src/main.ts",
-            "outputPath": "dist/apps/two-nest-data-api",
-            "tsConfig": "apps/two-nest-data-api/tsconfig.app.json",
-            "assets": ["apps/two-nest-data-api/src/assets"]
+            "main": "apps/two-data-api-nest/src/main.ts",
+            "outputPath": "dist/apps/two-data-api-nest",
+            "tsConfig": "apps/two-data-api-nest/tsconfig.app.json",
+            "assets": ["apps/two-data-api-nest/src/assets"]
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/two-nest-data-api/**"],
-            "tsConfig": ["apps/two-nest-data-api/tsconfig.app.json", "apps/two-nest-data-api/tsconfig.spec.json"]
+            "exclude": ["**/node_modules/**", "!apps/two-data-api-nest/**"],
+            "tsConfig": ["apps/two-data-api-nest/tsconfig.app.json", "apps/two-data-api-nest/tsconfig.spec.json"]
           }
         },
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "two-nest-data-api:build"
+            "buildTarget": "two-data-api-nest:build"
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "apps/two-nest-data-api/jest.config.js",
-            "tsConfig": "apps/two-nest-data-api/tsconfig.spec.json"
+            "jestConfig": "apps/two-data-api-nest/jest.config.js",
+            "tsConfig": "apps/two-data-api-nest/tsconfig.spec.json"
           }
         }
       },
@@ -1529,5 +1529,5 @@
       "unitTestRunner": "jest"
     }
   },
-  "defaultProject": "two-nest-data-api"
+  "defaultProject": "two-data-api-nest"
 }
