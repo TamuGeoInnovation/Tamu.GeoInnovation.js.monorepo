@@ -1,13 +1,13 @@
 import { Directive, AfterViewInit, ElementRef, AfterViewChecked, OnDestroy, Input } from '@angular/core';
 
-import { UIDragService, UIDragState } from '../services/ui/ui-drag.service';
+import { DragService, UIDragState } from '../../services/drag/drag.service';
 
 import * as interact from 'interactjs';
 
 @Directive({
   selector: '[draggable]'
 })
-export class DraggableDirective implements AfterViewInit, AfterViewChecked, OnDestroy {
+export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy {
   /**
    * Unique component identifier generated when the component register with the UI drag service.
    *
@@ -43,7 +43,7 @@ export class DraggableDirective implements AfterViewInit, AfterViewChecked, OnDe
 
   private lastContentHeight: number;
 
-  constructor(private el: ElementRef, private dragService: UIDragService) {
+  constructor(private el: ElementRef, private dragService: DragService) {
     // this.draggable = el;
   }
 
@@ -134,7 +134,7 @@ export class DraggableDirective implements AfterViewInit, AfterViewChecked, OnDe
         // Set transition
         target.style.webkitTransform = target.style.transform = 'translate(0px, ' + y + 'px)';
 
-        // Set peristent values
+        // Set persistent values
         target.setAttribute('data-y', y);
       } else {
         target.style.webkitTransform = target.style.transform = 'translate(0px, ' + '0px)';

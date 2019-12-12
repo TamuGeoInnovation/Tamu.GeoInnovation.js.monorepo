@@ -16,6 +16,8 @@ import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { UIStructuralLayoutModule } from '@tamu-gisc/ui-kits/ngx/layout/structural';
 
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
@@ -39,9 +41,7 @@ import { EsriMapComponent } from '../../map/esri-map.component';
 import { RouteDirectionTransformerPipe, SearchResultPipe } from '../../../assets/pipes/common.pipe';
 
 // Directives
-import { RenderHostDirective } from '../../modules/directives/render-host.directive';
 import { ClipboardCopyDirective } from '../../modules/directives/clipboard-copy.directive';
-import { DraggableDirective } from '../../modules/directives/draggable.directive';
 import { AccordionDirective } from '../directives/accordion.directive';
 import { AsyncContentLoadedDirective } from '../directives/async-content-loaded';
 
@@ -219,7 +219,9 @@ const hybridRoutes: Routes = [
     SidebarModule,
     UITamuBrandingModule,
     UIFormsModule,
-    UILayoutModule
+    UILayoutModule,
+    UIDragModule,
+    UIStructuralLayoutModule
   ],
   declarations: [
     BackdropComponent,
@@ -272,9 +274,7 @@ const hybridRoutes: Routes = [
     MainMobileSidebarComponent,
     MapClickCoordinatesComponent,
     BuildingDepartmentListComponent,
-    RenderHostDirective,
     ClipboardCopyDirective,
-    DraggableDirective,
     AccordionDirective,
     AsyncContentLoadedDirective
   ],

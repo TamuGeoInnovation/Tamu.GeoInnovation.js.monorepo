@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, ComponentFactoryResolver, ViewChild
 import { Observable, from, of } from 'rxjs';
 import { switchMap, filter, toArray, take, shareReplay, find, pluck } from 'rxjs/operators';
 
-import { RenderHostDirective } from '../../../../../directives/render-host.directive';
+import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout/structural';
 import { TripPlannerOptionsComponentService } from '../../services/trip-planner-options-component.service';
 
 import {

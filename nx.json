@@ -154,6 +154,15 @@
     },
     "signage-angular": {
       "tags": []
+    },
+    "maps-feature-popup": {
+      "tags": []
+    },
+    "ui-kits-ngx-interactions-draggable": {
+      "tags": []
+    },
+    "ui-kits-ngx-layout-structural": {
+      "tags": []
     }
   }
 }

@@ -8,7 +8,7 @@ import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
 import { TripPoint } from '../../../../../modules/services/trip-planner/core/trip-planner-core';
-import { UIDragService } from '../../../../services/ui/ui-drag.service';
+import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
 import { AltSearchHelper } from '../../../../../modules/helper/alt-search.service';
 
@@ -73,7 +73,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
     private location: Location,
     private mapService: EsriMapService,
     private plannerService: TripPlannerService,
-    private dragService: UIDragService,
+    private dragService: DragService,
     private helper: AltSearchHelper
   ) {
     // Set default search icon on search component on omnisearch initialize.

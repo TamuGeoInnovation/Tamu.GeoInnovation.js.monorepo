@@ -5,7 +5,7 @@ import { Observable, Subscription, Subject } from 'rxjs';
 import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
 import { TripResult, TripPoint } from '../../../../services/trip-planner/core/trip-planner-core';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { UIDragService, UIDragState } from '../../../../services/ui/ui-drag.service';
+import { DragService, UIDragState } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
 import { offCanvasSlideUpFromTop } from '../../../../animations/elements';
 import { switchMap, takeUntil, take, pluck } from 'rxjs/operators';
@@ -58,7 +58,7 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private tripPlanner: TripPlannerService,
     private mapService: EsriMapService,
-    private dragService: UIDragService
+    private dragService: DragService
   ) {}
 
   public ngOnInit(): void {

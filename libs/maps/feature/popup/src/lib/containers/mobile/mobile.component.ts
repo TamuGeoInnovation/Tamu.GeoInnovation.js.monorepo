@@ -2,12 +2,11 @@ import { Component, ComponentFactoryResolver, OnDestroy } from '@angular/core';
 import { PopupComponent } from '../base/base.component';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { PopupService } from '../../services/popup.service';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
-import { PopupService } from '../../services/popup.service';
-
 @Component({
-  selector: 'feature-popup-mobile',
+  selector: 'tamu-gisc-feature-mobile-popup',
   templateUrl: './mobile.component.html',
   styleUrls: ['./mobile.component.scss'],
   providers: [PopupService]

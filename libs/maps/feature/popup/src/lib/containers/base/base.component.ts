@@ -18,7 +18,7 @@ import { BasePopupComponent } from '../../components/base/base.popup.component';
 import esri = __esri;
 
 @Component({
-  selector: 'feature-popup',
+  selector: 'tamu-gisc-feature-popup',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
   providers: [PopupService]

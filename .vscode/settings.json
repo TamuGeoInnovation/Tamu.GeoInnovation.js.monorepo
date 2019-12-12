@@ -31,5 +31,6 @@
     "typescriptreact",
     "yaml",
     "yml"
-  ]
+  ],
+  "jest.autoEnable": false
 }

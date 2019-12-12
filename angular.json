@@ -1643,6 +1643,96 @@
           }
         }
       }
+    },
+    "maps-feature-popup": {
+      "projectType": "library",
+      "root": "libs/maps/feature/popup",
+      "sourceRoot": "libs/maps/feature/popup/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/maps/feature/popup/tsconfig.lib.json", "libs/maps/feature/popup/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/popup/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/popup/jest.config.js",
+            "tsConfig": "libs/maps/feature/popup/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/popup/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "ui-kits-ngx-interactions-draggable": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/interactions/draggable",
+      "sourceRoot": "libs/ui-kits/ngx/interactions/draggable/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/interactions/draggable/tsconfig.lib.json",
+              "libs/ui-kits/ngx/interactions/draggable/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/interactions/draggable/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/interactions/draggable/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/interactions/draggable/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/interactions/draggable/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "ui-kits-ngx-layout-structural": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/layout/structural",
+      "sourceRoot": "libs/ui-kits/ngx/layout/structural/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/layout/structural/tsconfig.lib.json",
+              "libs/ui-kits/ngx/layout/structural/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/layout/structural/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/layout/structural/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/layout/structural/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/layout/structural/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {
