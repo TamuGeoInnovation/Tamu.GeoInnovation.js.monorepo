@@ -1,5 +1,7 @@
-import { LayerSource } from '@tamu-gisc/common/types';
 import { SearchSource } from '@tamu-gisc/search';
+import { LayerSource } from '@tamu-gisc/common/types';
+
+import { Popups } from '@tamu-gisc/signage';
 
 export const environment = {
   production: true
@@ -14,7 +16,8 @@ export const LayerSources: LayerSource[] = [
     url: 'https://gisday.tamu.edu/Rest/Signage/Get/Submissions/?geoJSON=true',
     listMode: 'show',
     title: 'Signage Points',
-    loadOnInit: true
+    loadOnInit: true,
+    popupComponent: Popups.SignComponent
   },
   {
     type: 'graphic',

@@ -13,7 +13,7 @@ import { EsriMapService, HitTestSnapshot } from '@tamu-gisc/maps/esri';
 import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout/structural';
 
 import { PopupService } from '../../services/popup.service';
-import { BasePopupComponent } from '../../components/base/base.popup.component';
+import { BasePopupComponent } from '../../components/base/base.component';
 
 import esri = __esri;
 

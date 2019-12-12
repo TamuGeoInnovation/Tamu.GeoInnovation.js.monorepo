@@ -113,7 +113,7 @@ export interface LayerSource {
    */
   popupTemplate?: esri.PopupTemplateProperties;
 
-  popupComponent?: string;
+  popupComponent?: any;
 
   /**
    * Legend items that are shown disabled in the legend as the layer visibility is on/off

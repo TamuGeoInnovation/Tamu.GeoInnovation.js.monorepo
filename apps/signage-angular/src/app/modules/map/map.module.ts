@@ -14,9 +14,11 @@ import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
-import { FeaetureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
+import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
 import { ChartsModule } from '@tamu-gisc/charts';
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
+import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
+import { SignageModule } from '@tamu-gisc/signage';
 
 const routes: Routes = [{ path: '', component: MapComponent }];
 
@@ -32,9 +34,11 @@ const routes: Routes = [{ path: '', component: MapComponent }];
     ResponsiveModule,
     CommonNgxRouterModule,
     LayerFilterModule,
-    FeaetureSelectorModule,
+    FeatureSelectorModule,
     ChartsModule,
-    MapDrawingModule
+    MapDrawingModule,
+    MapPopupModule,
+    SignageModule
   ],
   declarations: [MapComponent]
 })

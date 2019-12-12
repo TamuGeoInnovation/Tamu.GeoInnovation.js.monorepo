@@ -1,14 +1,14 @@
 import { async, TestBed } from '@angular/core/testing';
-import { MapPopupModule } from './maps-feature-popup.module';
+import { SignageModule } from './signage.module';
 
-describe('MapPopupModule', () => {
+describe('SignageModule', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MapPopupModule]
+      imports: [SignageModule]
     }).compileComponents();
   }));
 
   it('should create', () => {
-    expect(MapPopupModule).toBeDefined();
+    expect(SignageModule).toBeDefined();
   });
 });

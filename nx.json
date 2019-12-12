@@ -163,6 +163,9 @@
     },
     "ui-kits-ngx-layout-structural": {
       "tags": []
+    },
+    "signage": {
+      "tags": []
     }
   }
 }

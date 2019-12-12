@@ -1,7 +1,7 @@
 import { async, inject, TestBed } from '@angular/core/testing';
 
 import { SelectionSummaryComponent } from './summary.component';
-import { FeaetureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
+import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SearchModule } from '@tamu-gisc/search';
@@ -19,7 +19,7 @@ describe('SelectionSummaryComponent', () => {
         }
       ],
       imports: [
-        FeaetureSelectorModule,
+        FeatureSelectorModule,
         EsriMapModule,
         RouterTestingModule,
         SearchModule,

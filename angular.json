@@ -1733,6 +1733,34 @@
           "styleext": "scss"
         }
       }
+    },
+    "signage": {
+      "projectType": "library",
+      "root": "libs/signage",
+      "sourceRoot": "libs/signage/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/signage/tsconfig.lib.json", "libs/signage/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/signage/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/signage/jest.config.js",
+            "tsConfig": "libs/signage/tsconfig.spec.json",
+            "setupFile": "libs/signage/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {
