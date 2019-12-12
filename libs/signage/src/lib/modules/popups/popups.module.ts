@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { SignComponent } from './sign/sign.component';
+import { SignPopupComponent } from './sign/sign.component';
 
 @NgModule({
-  declarations: [SignComponent],
+  declarations: [SignPopupComponent],
   imports: [CommonModule],
-  entryComponents: [SignComponent]
+  entryComponents: [SignPopupComponent]
 })
 export class PopupsModule {}
 
-export const Popups = { SignComponent };
+export const Popups = { SignPopupComponent };

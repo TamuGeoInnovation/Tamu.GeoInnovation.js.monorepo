@@ -10,7 +10,7 @@ import { BasePopupComponent } from '@tamu-gisc/maps/feature/popup';
   templateUrl: './sign.component.html',
   styleUrls: ['./sign.component.scss']
 })
-export class SignComponent extends BasePopupComponent implements OnInit {
+export class SignPopupComponent extends BasePopupComponent implements OnInit {
   public details: Observable<ISignagePhoto>;
 
   constructor(private http: HttpClient) {

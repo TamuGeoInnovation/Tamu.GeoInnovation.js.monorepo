@@ -30,7 +30,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     title: 'Signage Points',
     loadOnInit: true,
-    popupComponent: Popups.SignComponent
+    popupComponent: Popups.SignPopupComponent
   },
   {
     type: 'graphic',
@@ -38,6 +38,14 @@ export const LayerSources: LayerSource[] = [
     title: 'Custom Boundary',
     listMode: 'show',
     loadOnInit: true,
+    visible: true
+  },
+  {
+    type: 'graphic',
+    id: 'selection-layer',
+    title: 'Selected Buildings',
+    listMode: 'hide',
+    loadOnInit: false,
     visible: true
   }
 ];
