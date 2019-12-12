@@ -10,7 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
-import { FeaetureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
+import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
 import { ChartsModule } from '@tamu-gisc/charts';
 
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
@@ -50,7 +50,7 @@ WebFont.load({
     LayerListModule,
     ResponsiveModule,
     CommonNgxRouterModule,
-    FeaetureSelectorModule,
+    FeatureSelectorModule,
     ChartsModule,
     MapDrawingModule
   ],
