@@ -1,0 +1,7 @@
+<div class="title-container">
+  <ng-content></ng-content>
+  <div [ngSwitch]="model.expanded">
+    <div *ngSwitchCase="true" class="material-icons">remove</div>
+    <div *ngSwitchDefault class="material-icons">add</div>
+  </div>
+</div>

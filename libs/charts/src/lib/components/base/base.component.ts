@@ -1,9 +1,13 @@
 import { Component, ViewChild, Input, AfterViewInit, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, iif, of } from 'rxjs';
 import { scan } from 'rxjs/operators';
 
 import { op } from '../../operators/common/common-chart-operators';
-import { ChartContainerComponent, ChartConfiguration } from '../chart-container/chart-container.component';
+import {
+  ChartContainerComponent,
+  ChartConfiguration,
+  IChartConfiguration
+} from '../chart-container/chart-container.component';
 
 @Component({
   template: '',
@@ -11,15 +15,18 @@ import { ChartContainerComponent, ChartConfiguration } from '../chart-container/
 })
 export class BaseChartComponent implements OnInit, AfterViewInit {
   /**
-   * A collection of items (esri graphics or otherwise) used in processing to generate the `ChartConfig` datasets.
+   * A collection of items (esri graphics or otherwise) used in processing to generate the `ChartConfig` data sets.
    */
   @Input()
   public source: Observable<unknown[]>;
 
+  @Input()
+  public options: IChartConfiguration['options'] = {};
+
   /**
    * Describes the format of the `source` collection format.
    *
-   * The collection can represent a `single` dataset or `multi`ple datasets.
+   * The collection can represent a `single` dataset or `multi`ple data sets.
    *
    *
    * In the case of `single` mode, each item in the collection represents a value for the dataset.
@@ -43,7 +50,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
    *
    * ```
    *
-   * In the case of `multi` mode, each item in the collection represents a dataset. The children within that dadtaset
+   * In the case of `multi` mode, each item in the collection represents a dataset. The children within that data set
    * represent the values.
    *
    * **Example**:
@@ -113,7 +120,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
    *  ]
    * ```
    *
-   * With one transofmration applied, providing `['attributes.name']` as the path will resolve to "Name of object" for the Dataset item 1.
+   * With one transformation applied, providing `['attributes.name']` as the path will resolve to "Name of object" for the Dataset item 1.
    *
    */
   @Input()
@@ -135,7 +142,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
    *  - categorize
    *  - count
    *
-   * Each of the transformatinos in the transformation collection will be executed sequentially.
+   * Each of the transformations in the transformation collection will be executed sequentially.
    * This allows creating transformation pipelines by consuming the output of one transformation into the next.
    */
   @Input()
@@ -156,7 +163,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   /**
    * Lays out the structure of a base configuration.
    *
-   * Subclasses are responsible for creating datasets and appending
+   * Subclasses are responsible for creating data sets and appending
    * them to the base config which is later passed down to the chart
    * container.
    */
@@ -169,7 +176,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   public chartData: Observable<ChartConfiguration>;
 
   /**
-   * ChartContaer component reference.
+   * ChartContainer component reference.
    *
    * BaseChart sub-classes must include a chart container component in their template.
    *
@@ -181,7 +188,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   constructor() {}
 
   /**
-   * `ChartContainerComponent`'s inside template subcless will be avilable here.
+   * `ChartContainerComponent`'s inside template sub-class will be available here.
    *
    * Perform simple check to make sure we can proceed with chart generation.
    */
@@ -192,7 +199,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Bound or injected data will be avaiable for use on this lifecycle hook.
+   * Bound or injected data will be available for use on this life cycle hook.
    *
    * Every subclass will create chart config at this point in time.
    */
@@ -206,41 +213,48 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
     //
     // Generated config is returned by the scan operator which will trigger chart container to
     // create/update chart data.
-    this.chartData = this.source.pipe(
+    this.chartData = iif(() => 'subscribe' in this.source, this.source, of((this.source as unknown) as unknown[])).pipe(
       scan((acc, curr) => {
+        let p;
         // Asserting transformations as an `any` array, otherwise compiler does not like its original
         // union type.
-        const p = (<string[]>this.transformations)
-          .map((transformation, index) => {
-            const transformed = {
-              value: this.valueForTransformationSet(transformation, curr).value,
-              label: this.labels[index]
-            };
-
-            return transformed;
-          }, [])
-          .reduce(
-            (datasets, dataset) => {
-              return {
-                labels: dataset.value.labels,
-                datasets: [
-                  ...datasets.datasets,
-                  {
-                    label: dataset.label,
-                    data: dataset.value.data
-                  }
-                ]
+        if ('datasets' in curr) {
+          p = curr;
+        } else {
+          p = (<string[]>this.transformations)
+            .map((transformation, index) => {
+              const transformed = {
+                value: this.valueForTransformationSet(transformation, curr).value,
+                label: this.labels[index]
               };
-            },
-            {
-              labels: undefined,
-              datasets: []
-            }
-          );
+
+              return transformed;
+            }, [])
+            .reduce(
+              (datasets, dataset) => {
+                return {
+                  labels: dataset.value.labels,
+                  datasets: [
+                    ...datasets.datasets,
+                    {
+                      label: dataset.label,
+                      data: dataset.value.data
+                    }
+                  ]
+                };
+              },
+              {
+                labels: undefined,
+                datasets: []
+              }
+            );
+        }
 
         // Call the sub-class updateData() method that will reformat data output into a suitable format
         // based on its chart type.
         this.baseConfig.updateData(p);
+
+        this.baseConfig.mergeOptions(this.options);
 
         // Emit generated config.
         return this.baseConfig;
@@ -251,11 +265,11 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * For a provided transfromation set, will iterate through inner children and execute any operators with
+   * For a provided transformation set, will iterate through inner children and execute any operators with
    * respective `paths`.
    *
    * @param {(string | Array<string>)} set - Transformation set
-   * @param {Array<T>} collection - Initial collection (seed), or the previou value if it's in a recursive call.
+   * @param {Array<T>} collection - Initial collection (seed), or the previous value if it's in a recursive call.
    * @param {number} [setIndex] - The transformation set index. Represents the index of the current dataset
    * being processed.
    * @param {number} [setDepth] - The transformation index. Represents the index of the current transformation, relative

@@ -1,4 +1,4 @@
-import { Component, ContentChildren, AfterContentInit, QueryList, OnDestroy } from '@angular/core';
+import { Component, ContentChildren, Input, AfterContentInit, QueryList, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 
@@ -15,8 +15,8 @@ import { mergeMap, takeUntil } from 'rxjs/operators';
       state(
         'true',
         style({
-          transform: 'translateX(0)'
-        })
+          transform: 'translateX({{xLimit}})'
+        }), {params: {xLimit: 0}}
       ),
       state(
         'false',
@@ -30,7 +30,12 @@ import { mergeMap, takeUntil } from 'rxjs/operators';
   // encapsulation: ViewEncapsulation.None
 })
 export class SidebarComponent implements AfterContentInit, OnDestroy {
-  public sidebarVisible = true;
+  @Input()
+  public sidebarVisible: boolean;
+
+  @Input()
+  public visibleLimitX: string;
+
   public currentView: string;
 
   private _$destroy: Subject<null> = new Subject();

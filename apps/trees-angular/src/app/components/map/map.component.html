@@ -1,0 +1,23 @@
+<tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
+
+<tamu-gisc-sidebar>
+  <div class="tabs left">
+    <tamu-gisc-sidebar-tab [route]="''"></tamu-gisc-sidebar-tab>
+  </div>
+
+  <div class="content">
+    <tamu-gisc-tamu-block></tamu-gisc-tamu-block>
+
+    <tamu-gisc-layer-list></tamu-gisc-layer-list>
+
+    <tamu-gisc-layer-filter [reference]="'trees_layer'" [setDefinitionExpression]="true" [executeFilterQuery]="true" [filterGeometry]="spatialFeatures" [spatialRelationship]="'intersects'" (filterQueryResults)="filterFeatures.next($event)"></tamu-gisc-layer-filter>
+
+    <tamu-gisc-map-draw [reference]="'drawing-layer'" [defaultUpdateTool]="'reshape'" [collapseGraphics]="true" (export)="spatialFeatures.next($event)"></tamu-gisc-map-draw>
+
+    <tamu-gisc-slection-summary [selfCollect]="false" [collection]="filterFeatures" [deleteDuplicates]="true" [identifier]="'OBJECTID'" [layers]="'trees_layer'">
+      <div class="charts">
+        <tamu-gisc-bar-chart [paths]="[['attributes.Species', 'identity'], ['attributes.Species', 'attributes.Height']]" [transformations]="[['categorize', 'count'], ['categorize', 'average']]" [labels]="['Species', 'Avg. Height']"></tamu-gisc-bar-chart>
+      </div>
+    </tamu-gisc-slection-summary>
+  </div>
+</tamu-gisc-sidebar>

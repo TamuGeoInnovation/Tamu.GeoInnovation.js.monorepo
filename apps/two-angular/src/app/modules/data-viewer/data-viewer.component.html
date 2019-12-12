@@ -1,0 +1,75 @@
+<div class="container12">
+  <div class="column10">
+    <h1>TWO Realtime Data Viewer</h1>
+    <a href="http://18.191.0.210/#">Click Here</a>
+  </div>
+</div>
+
+<div class="container12">
+  <div class="column10">
+    <h1>TWO Processed Data Viewer</h1>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-block">
+        <p class="weight-2">Sites</p>
+
+        <tamu-gisc-checkbox-group formControlName="sitesList" referenceId='siteId'>
+          <tamu-gisc-checkbox *ngFor="let site of sites | async"
+            [label]="site.siteName + ' ' +'(' + site.siteCode + ')'" [data]='site'>
+          </tamu-gisc-checkbox>
+        </tamu-gisc-checkbox-group>
+      </div>
+
+      <div class="form-block">
+        <p class="weight-2">Node Type</p>
+
+        <tamu-gisc-select formControlName="nodeType" [data]="nodeGroups | async" [displayTemplate]="'nodeDescription'"
+          [valueTemplate]="'node_ID'">
+        </tamu-gisc-select>
+      </div>
+
+      <div class="form-block" *ngIf="form.controls['nodeType'].valid">
+        <p class="weight-2">Data Group</p>
+
+        <tamu-gisc-select formControlName="dataGroup" [data]="dataGroups | async" [displayTemplate]="'dataGroupName'"
+          [valueTemplate]="'dataGroupID'">
+        </tamu-gisc-select>
+      </div>
+
+      <div class="form-block" *ngIf="form.controls['dataGroup'].valid">
+        <p class="weight-2">Fields</p>
+
+        <tamu-gisc-checkbox-group formControlName="fieldList" referenceId='field.fieldName'>
+          <tamu-gisc-checkbox *ngFor="let field of fields | async"
+            [label]="field.field.fieldName + ' ' + '('+ field.field.fieldUnits +')'" [data]='field'>
+          </tamu-gisc-checkbox>
+        </tamu-gisc-checkbox-group>
+      </div>
+
+      <div class="form-block" *ngIf="form.controls['dataGroup'].valid">
+        <p class="weight-2">Start Date</p>
+
+        <tamu-gisc-date-time-picker formControlName="startDate"></tamu-gisc-date-time-picker>
+      </div>
+
+      <div class="form-block" *ngIf="form.controls['dataGroup'].valid">
+        <p class="weight-2">End Date</p>
+
+        <tamu-gisc-date-time-picker formControlName="endDate"></tamu-gisc-date-time-picker>
+      </div>
+
+      <div class="form-block">
+        <button type="submit" [disabled]="form.invalid">{{formStates[formState].text}}</button>
+      </div>
+    </form>
+
+    <div class="charts" *ngIf="chartData && (chartData | async) !== null && (chartData|async).length > 0">
+      <tamu-gisc-line-chart [source]="chart.data" [options]="chart.options" [title]="chart.options.title.text"
+        *ngFor="let chart of chartData | async"></tamu-gisc-line-chart>
+    </div>
+
+    <div *ngIf="chartData && (chartData | async) !== null && (chartData|async).length === 0">
+      <p><strong>Your selections did not return any data.</strong></p>
+    </div>
+  </div>
+</div>

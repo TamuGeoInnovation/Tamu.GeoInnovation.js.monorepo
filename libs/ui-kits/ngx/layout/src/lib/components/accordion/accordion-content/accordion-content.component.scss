@@ -1,0 +1,16 @@
+@import 'libs/sass/mixins';
+
+.content-container {
+  display: none;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 400;
+
+  &.expanded:not(.animate) {
+    display: block;
+  }
+
+  &.animate {
+    @include transition(max-height 0.2s);
+  }
+}

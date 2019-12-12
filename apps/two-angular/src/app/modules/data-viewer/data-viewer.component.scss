@@ -1,0 +1,7 @@
+@import 'libs/sass/mixins';
+
+.charts {
+  & > tamu-gisc-line-chart {
+    margin-bottom: 3rem;
+  }
+}

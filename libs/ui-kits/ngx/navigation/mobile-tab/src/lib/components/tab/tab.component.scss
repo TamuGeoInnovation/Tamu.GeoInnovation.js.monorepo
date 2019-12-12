@@ -1,0 +1,30 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flexbox();
+  @include flex-direction(column);
+  @include align-items(center);
+  @include flex(1);
+  padding: 0.5rem;
+  color: #bdbdbd;
+}
+
+.tab-icon {
+  font-size: 1.75rem;
+  margin-bottom: 0.3rem;
+}
+
+.tab-label {
+  font-size: 0.75rem;
+
+  &.active {
+    font-weight: bold;
+  }
+}
+
+.tab-icon,
+.tab-label {
+  &.active {
+    color: #845a5a;
+  }
+}

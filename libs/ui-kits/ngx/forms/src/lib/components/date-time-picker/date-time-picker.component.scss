@@ -1,0 +1,14 @@
+@import 'libs/sass/mixins';
+
+tamu-gisc-tooltip-trigger {
+  p {
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+  }
+
+  .material-icons {
+    margin-right: 0.5rem;
+    font-size: 1.25rem;
+  }
+}

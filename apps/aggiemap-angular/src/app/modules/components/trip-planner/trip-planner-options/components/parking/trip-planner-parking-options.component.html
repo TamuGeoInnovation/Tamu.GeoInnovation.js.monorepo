@@ -1,0 +1,15 @@
+<div>
+  <div class="sidebar-component-name">
+    <p>Driving Settings</p>
+  </div>
+
+  <div class="sidebar-component-content-container">
+    <tamu-gisc-checkbox *ngFor="let option of settings | async" [disabled]="false" [label]="option.displayName"
+      [description]="option.description" [checked]="(getOptionValue(option.effect) | async) == true"
+      (changed)="setOptionValue(option, $event)"></tamu-gisc-checkbox>
+
+    <tamu-gisc-select [value]="getOptionValue('parking_pass_permit') | async" [data]="parkingFeatures | async"
+      [displayTemplate]="'attributes.FAC_CODE'" [valueTemplate]="'attributes.FAC_CODE'"
+      (changed)="setOptionValue('parking_pass_permit', $event)" [placeholder]="'Select Your Permit'"></tamu-gisc-select>
+  </div>
+</div>

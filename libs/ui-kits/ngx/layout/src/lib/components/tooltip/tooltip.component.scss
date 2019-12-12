@@ -1,0 +1,43 @@
+@import 'libs/sass/mixins';
+
+:host {
+  z-index: 1;
+  position: relative;
+}
+
+.tooltip-container {
+  position: absolute;
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 5px 10px 20px -5px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f5f5f5;
+}
+
+.center-x {
+  @include transform(translateX(-50%));
+  left: 50%;
+}
+
+.top {
+  top: 0;
+
+  &.center {
+    @extend .center-x;
+  }
+}
+
+.bottom {
+  top: 100%;
+
+  &.center {
+    @extend .center-x;
+  }
+}
+
+.right {
+  right: 0;
+}
+
+.left {
+  left: 0;
+}
