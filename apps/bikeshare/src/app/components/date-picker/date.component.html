@@ -1,8 +1,7 @@
 <div class="date-wrapper">
   <label>
     Origin/Destination Date Range:
-    <input placeholder="Date Time Range:" [style.width]="'350px'" [(ngModel)]="dateTimeRange" [selectMode]="'range'"
-      [owlDateTimeTrigger]="dtRange1" [owlDateTime]="dtRange1" [max]="max" #dateTime="ngModel">
+    <input placeholder="Date Time Range:" [style.width]="'350px'" [(ngModel)]="dateTimeRange" [selectMode]="'range'" [owlDateTimeTrigger]="dtRange1" [owlDateTime]="dtRange1" #dateTime="ngModel" />
     <owl-date-time #dtRange1 (afterPickerClosed)="newDate()"></owl-date-time>
   </label>
 </div>

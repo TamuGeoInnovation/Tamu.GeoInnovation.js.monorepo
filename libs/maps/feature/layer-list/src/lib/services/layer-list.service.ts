@@ -14,14 +14,12 @@ export class LayerListService implements OnDestroy {
 
   private _handles: esri.Handles;
 
-  //private yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
-  //public currentDates = [this.yesterday, new Date()];
-  public currentDates = [new Date(2019, 10, 20), new Date(2019, 10, 21)];
+  private yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+  public currentDates = [this.yesterday, new Date()];
 
   // Called from the DatePicker Component
   public changeDate(dateTimeRange: Date[]) {
     this.currentDates = dateTimeRange;
-    //console.log(this.currentDates);
 
     const LayerSources = this.environment.value('LayerSources');
     const updatedLayers = this._store.value.map((lyr) => {
