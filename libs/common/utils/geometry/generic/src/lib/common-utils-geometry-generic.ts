@@ -7,7 +7,6 @@ import { getSmallestIndex } from '@tamu-gisc/common/utils/number';
 import { centroidFromGeometry, FeatureUnion } from '@tamu-gisc/common/utils/geometry/esri';
 
 import * as gju from 'geojson-utils';
-import esri = __esri;
 
 /**
  * Gets user geolocation if user allows.

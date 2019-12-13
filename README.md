@@ -1,7 +1,8 @@
 # AggieMap & Friends Monorepo
 
-![CircleCI](https://img.shields.io/circleci/build/github/TamuBikeShare/TamuBikeShareOptimization/master)
-![Coveralls github](https://img.shields.io/coveralls/github/TamuBikeShare/TamuBikeShareOptimization)
+![CircleCI](https://img.shields.io/circleci/build/github/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/master)
+![Coveralls github](https://img.shields.io/coveralls/github/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo)
+![https://aggiemap.tamu.edu](https://img.shields.io/website?url=https%3A%2F%2Faggiemap.tamu.edu)
 
 
 ![AggieMap Logo](/libs/assets/images/logo/TAM-PrimaryMarkBB.svg)
@@ -21,9 +22,9 @@
 
 # Running AggieMap
 
-Run `ng serve --project=bikeshare --aot` to start a local webserver at https://localhost:4200.
+Run `ng serve --project=aggiemap --aot` to start a local webserver at https://localhost:4200.
 
-As you make changes to the project, the local webserver will automatically rebuild and, if the bikeshare application is open in a webbrowser, the page will reload automatically
+As you make changes to the project, the local webserver will automatically rebuild and, if AggieMap is open in a webbrowser, the page will reload automatically
 
 # Submitting Pull Requests
 
