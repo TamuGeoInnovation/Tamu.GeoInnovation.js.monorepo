@@ -1,13 +1,13 @@
 <div [ngClass]="{ loaded: isActive, loading: isLoading }">
   <tamu-gisc-accordion [expanded]="isActive">
-    <tamu-gisc-accordion-title>
+    <tamu-gisc-accordion-header>
       <div class="route-overview" (click)="toggleRoute()">
         <div class="route-number" [style.backgroundColor]="route.Color">{{ route.ShortName }}</div>
         <div class="route-name">
           <span class="selected-status" [style.backgroundColor]="route.Color"> </span><span class="route-label">{{ route.Name }}</span>
         </div>
       </div>
-    </tamu-gisc-accordion-title>
+    </tamu-gisc-accordion-header>
 
     <tamu-gisc-accordion-content>
       <gisc-bus-timetable [route]="route" *ngIf="isActive"></gisc-bus-timetable>

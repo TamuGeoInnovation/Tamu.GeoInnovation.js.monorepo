@@ -10,7 +10,7 @@
     <div *ngSwitchCase="1">
 
         <tamu-gisc-accordion [expanded]="true">
-            <tamu-gisc-accordion-title>Instructions</tamu-gisc-accordion-title>
+            <tamu-gisc-accordion-header>Instructions</tamu-gisc-accordion-header>
             <tamu-gisc-accordion-content>
                 <ul class="numbered">
                     <li>Tap on the "<strong>Add GIS Day Competition to Home screen</strong>" prompt below to install on
@@ -22,7 +22,7 @@
         </tamu-gisc-accordion>
 
         <tamu-gisc-accordion>
-            <tamu-gisc-accordion-title>I don't see the prompt. What can I do?</tamu-gisc-accordion-title>
+            <tamu-gisc-accordion-header>I don't see the prompt. What can I do?</tamu-gisc-accordion-header>
             <tamu-gisc-accordion-content>
                 <p>The automatic "Add to Home screen" prompt looks like the following:</p>
 
@@ -52,7 +52,7 @@
         </tamu-gisc-accordion>
 
         <tamu-gisc-accordion>
-            <tamu-gisc-accordion-title>What permissions will this App require?</tamu-gisc-accordion-title>
+            <tamu-gisc-accordion-header>What permissions will this App require?</tamu-gisc-accordion-header>
             <tamu-gisc-accordion-content>
                 <ul class="numbered">
                     <li><strong>Location</strong>: Every submission will require device latitude, longitude, and other
@@ -76,7 +76,7 @@
 
         <div *ngIf="version?.major >= 11">
             <tamu-gisc-accordion [expanded]="true">
-                <tamu-gisc-accordion-title>Instructions</tamu-gisc-accordion-title>
+                <tamu-gisc-accordion-header>Instructions</tamu-gisc-accordion-header>
                 <tamu-gisc-accordion-content>
                     <br>
                     <p><strong>1.</strong> Using <strong>Safari</strong>, tap on the <strong>Share</strong> icon:</p>
@@ -100,7 +100,7 @@
             </tamu-gisc-accordion>
 
             <tamu-gisc-accordion>
-                <tamu-gisc-accordion-title>What permissions will this App require?</tamu-gisc-accordion-title>
+                <tamu-gisc-accordion-header>What permissions will this App require?</tamu-gisc-accordion-header>
                 <tamu-gisc-accordion-content>
                     <ul class="numbered">
                         <li><strong>Location</strong>: Every submission will require device latitude, longitude, and

@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, ContentChild, AfterContentInit, OnInit } 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { AccordionTitleComponent } from './accordion-title/accordion-title.component';
+import { AccordionHeaderComponent } from './accordion-header/accordion-header.component';
 import { AccordionContentComponent } from './accordion-content/accordion-content.component';
 
 @Component({
@@ -29,8 +29,8 @@ export class AccordionComponent implements OnInit, AfterContentInit {
 
   private _model: IAccordionModel;
 
-  @ContentChild(AccordionTitleComponent, { static: true })
-  private _title: AccordionTitleComponent;
+  @ContentChild(AccordionHeaderComponent, { static: true })
+  private _title: AccordionHeaderComponent;
 
   @ContentChild(AccordionContentComponent, { static: true })
   private _content: AccordionContentComponent;
