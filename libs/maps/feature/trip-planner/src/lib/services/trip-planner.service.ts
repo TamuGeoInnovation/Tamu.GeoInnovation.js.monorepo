@@ -52,7 +52,7 @@ import { ParkingService } from '../services/transportation/drive/parking.service
 
 import esri = __esri;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TripPlannerService implements OnDestroy {
   private settingsConfig: SettingsInitializationConfig = {
     storage: {

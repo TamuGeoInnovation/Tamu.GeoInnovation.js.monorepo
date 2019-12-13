@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class TripPlannerConnectionService {
   private _allNetworks: BehaviorSubject<TripPlannerConnection[]>;
   private _abNetworks: BehaviorSubject<TripPlannerConnection[]>;

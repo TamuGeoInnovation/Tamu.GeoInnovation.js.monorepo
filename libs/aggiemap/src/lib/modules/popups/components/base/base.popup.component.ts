@@ -7,8 +7,7 @@ import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
-import { TripPoint } from '../../../../services/trip-planner/core/trip-planner-core';
+import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
 import esri = __esri;
 

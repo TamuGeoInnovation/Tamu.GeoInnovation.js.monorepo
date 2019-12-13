@@ -3,14 +3,14 @@ import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
 
-import { GeneralDirectionsPopupComponent } from '../base/base.popup.component';
-import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
+import { GeneralDirectionsPopupComponent } from '../base/base.popup.component';
 
 @Component({
   selector: 'parking-lot-popup-component',
   templateUrl: './parking-lot.component.html',
-  styleUrls: ['../../containers/base/base.component.scss']
+  styleUrls: ['../base/base.popup.component.scss']
 })
 export class ParkingLotPopupComponent extends GeneralDirectionsPopupComponent {
   constructor(

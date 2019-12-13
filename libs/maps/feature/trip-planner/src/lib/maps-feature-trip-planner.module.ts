@@ -23,8 +23,6 @@ import { TripPlannerParkingOptionsComponent } from './components/trip-planner-op
 import { TripPlannerOptionsComponent } from './components/trip-planner-options/containers/base/base.component';
 import { TripPlannerTimePickerComponent } from './components/trip-planner-time-picker/containers/base/base.component';
 
-import { TripPlannerService } from './services/trip-planner.service';
-import { TripPlannerConnectionService } from './services/trip-planner-connection.service';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
@@ -58,7 +56,6 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
     TripPlannerOptionsComponent,
     TripPlannerTimePickerComponent
   ],
-  providers: [TripPlannerService, TripPlannerConnectionService],
   exports: [
     TripPlannerConnectionsSelectComponent,
     TripPlannerDirectionsComponent,

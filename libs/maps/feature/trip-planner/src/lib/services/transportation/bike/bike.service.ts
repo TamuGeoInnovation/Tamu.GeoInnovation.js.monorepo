@@ -10,7 +10,7 @@ import { centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { Point } from '@tamu-gisc/common/types';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class BikeService {
   constructor(private http: HttpClient, private search: SearchService) {}
 

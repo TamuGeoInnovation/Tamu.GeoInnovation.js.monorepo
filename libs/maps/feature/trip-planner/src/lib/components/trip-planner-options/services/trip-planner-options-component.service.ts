@@ -4,7 +4,7 @@ import { TripPlannerService } from '../../../services/trip-planner.service';
 import { TripPlannerParkingOptionsComponent } from '../components/parking/trip-planner-parking-options.component';
 import { TripPlannerBikingOptionsComponent } from '../components/biking/trip-planner-biking-options.component';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TripPlannerOptionsComponentService {
   constructor(private tripPlanner: TripPlannerService) {}
 
