@@ -18,25 +18,16 @@ import esri = __esri;
 export class GeneralDirectionsPopupComponent implements OnInit, OnDestroy {
   /**
    * Data set by the parent popup component.
-   *
-   * @type {esri.Graphic}
-   * @memberof BuildingPopupComponent
    */
   public data: esri.Graphic;
 
   /**
    * Current href string, used in UI
-   *
-   * @type {string}
-   * @memberof BuildingPopupComponent
    */
   public url: string;
 
   /**
    * Composed URL passed into the copy component
-   *
-   * @type {string}
-   * @memberof BuildingPopupComponent
    */
   public shareUrl: string;
 

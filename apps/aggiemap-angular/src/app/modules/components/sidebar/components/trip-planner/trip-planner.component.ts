@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
+
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
+import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { SearchEvent } from '../../../search/containers/base/base.component';
-import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
-import { TripPoint } from '../../../../services/trip-planner/core/trip-planner-core';
 
 @Component({
   selector: 'app-trip-planner',

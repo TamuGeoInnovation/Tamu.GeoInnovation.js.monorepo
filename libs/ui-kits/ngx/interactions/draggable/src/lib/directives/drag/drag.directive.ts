@@ -18,9 +18,6 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
 
   /**
    * Represents y-offset that is initially present when the element is rendered.
-   *
-   * @type {number}
-   * @memberof PopupMobileComponent
    */
   public initialOffset: number;
 

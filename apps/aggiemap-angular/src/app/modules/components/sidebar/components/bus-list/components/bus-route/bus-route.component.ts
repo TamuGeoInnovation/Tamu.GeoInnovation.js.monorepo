@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { TSRoute, BusService } from '../../../../../../services/transportation/bus/bus.service';
+import { TSRoute, BusService } from '@tamu-gisc/maps/feature/trip-planner';
 import { switchMap, takeUntil, shareReplay, distinctUntilChanged } from 'rxjs/operators';
 import { of, Subject, timer, Observable, NEVER } from 'rxjs';
 

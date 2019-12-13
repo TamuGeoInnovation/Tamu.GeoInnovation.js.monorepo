@@ -6,8 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
-import { TripPoint } from '../../../../../modules/services/trip-planner/core/trip-planner-core';
+import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
 import { AltSearchHelper } from '../../../../../modules/helper/alt-search.service';

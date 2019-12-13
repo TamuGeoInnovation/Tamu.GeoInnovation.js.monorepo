@@ -8,9 +8,7 @@ import {
   Input,
   OnDestroy,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Inject,
-  Optional
+  ChangeDetectorRef
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -18,18 +16,14 @@ import { tap, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operato
 import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
-
+import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { SearchService, SearchResult, SearchResultItem, SearchSource } from '@tamu-gisc/search';
-
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { TripPoint } from '../../../../services/trip-planner/core/trip-planner-core';
-
 import { arrowKeyControl } from '@tamu-gisc/common/utils/ui';
 import { getGeolocation, isCoordinatePair } from '@tamu-gisc/common/utils/geometry/generic';
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
-
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
 

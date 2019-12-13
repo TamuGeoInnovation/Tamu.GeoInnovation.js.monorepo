@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-
-import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
-import { TripResult } from '../../../../services/trip-planner/core/trip-planner-core';
-import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 import { switchMap, takeUntil, pluck } from 'rxjs/operators';
+
+import { TripPlannerService, TripResult } from '@tamu-gisc/maps/feature/trip-planner';
+import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
 @Component({
   selector: 'app-trip-planner-bottom',

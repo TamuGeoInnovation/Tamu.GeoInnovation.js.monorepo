@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
+
 import { AltSearchHelper } from '../../../../helper/alt-search.service';
-import { TripPoint } from '../../../../services/trip-planner/core/trip-planner-core';
+import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
 /**
  * Desktop sidebar component that displays the main search component as well as layer list and legend.

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import * as guid from 'uuid/v4';
 
 @Component({
-  selector: 'copy',
+  selector: 'tamu-gisc-copy-field',
   templateUrl: './copy.component.html',
   styleUrls: ['./copy.component.scss']
 })

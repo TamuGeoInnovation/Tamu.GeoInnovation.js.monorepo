@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output } from '@angular/core';
 import { Observable, from } from 'rxjs';
 import { tap, shareReplay, switchMap, filter, toArray } from 'rxjs/operators';
 
-import { BusService, TSRoute, TimetableEntry } from '../../../../../../services/transportation/bus/bus.service';
+import { BusService, TSRoute, TimetableEntry } from '@tamu-gisc/maps/feature/trip-planner';
 
 @Component({
   selector: 'gisc-bus-timetable',

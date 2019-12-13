@@ -1,14 +1,16 @@
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 import * as WebFont from 'webfontloader';
+import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 
 import { DesktopGuard, MobileGuard } from '../../modules/routing/guards/device.guard';
 
+// Modules
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
@@ -18,31 +20,32 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 import { UIStructuralLayoutModule } from '@tamu-gisc/ui-kits/ngx/layout/structural';
-
-import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
-
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
+import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
+import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
+import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
+import { AggiemapModule } from '@tamu-gisc/aggiemap';
+import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
+import { PopupsModule } from '@tamu-gisc/aggiemap';
+import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
-import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
-import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
-
-import { EsriMapComponent } from '../../map/esri-map.component';
-
 // Pipes
-import { RouteDirectionTransformerPipe, SearchResultPipe } from '../../../assets/pipes/common.pipe';
+import { SearchResultPipe } from '../../../assets/pipes/common.pipe';
 
 // Directives
 import { AsyncContentLoadedDirective } from '../directives/async-content-loaded';
 
-// Esri Map Child Components
+// Components
+import { EsriMapComponent } from '../../map/esri-map.component';
 import { SidebarComponent } from '../../modules/components/sidebar/containers/base/base.component';
 import { SearchComponent } from '../../modules/components/search/containers/base/base.component';
 import { TripPlannerComponent } from '../../modules/components/sidebar/components/trip-planner/trip-planner.component';
 import { ReferenceComponent } from '../../modules/components/sidebar/components/reference/reference.component';
-import { CopyComponent } from '../../modules/components/forms/copy/copy.component';
 
 import { MobileUIComponent } from '../../modules/components/mobile-ui/containers/main/mobile-ui.component';
 import { MobileSearchComponent } from '../../modules/components/search/containers/mobile/mobile.component';
@@ -60,17 +63,9 @@ import { ModalComponent } from '../../modules/components/modal/containers/main/b
 
 import { MapClickCoordinatesComponent } from '../../modules/components/map-coordinates/map-click-coordinates.component';
 
-import { BuildingDepartmentListComponent } from '../components/forms/building-department-list/building-department-list.component';
 import { BusListComponent } from '../components/sidebar/components/bus-list/bus-list.component';
 import { BusRouteComponent } from '../components/sidebar/components/bus-list/components/bus-route/bus-route.component';
 import { BusTimetableComponent } from '../components/sidebar/components/bus-list/components/bus-timetable/bus-timetable.component';
-
-import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
-
-import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
-import { AggiemapModule } from '@tamu-gisc/aggiemap';
-import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
-import { PopupsModule } from 'libs/aggiemap/src/lib/modules/popups/popups.module';
 
 WebFont.load({
   google: {
@@ -185,15 +180,16 @@ const hybridRoutes: Routes = [
     UILayoutModule,
     UIDragModule,
     UIStructuralLayoutModule,
+    UIClipboardModule,
     MapsFeatureTripPlannerModule,
     AggiemapModule,
+    MapPopupModule,
     PopupsModule
   ],
   declarations: [
     BackdropComponent,
     ModalComponent,
     EsriMapComponent,
-    RouteDirectionTransformerPipe,
     SearchResultPipe,
     SidebarComponent,
     SearchComponent,
@@ -202,7 +198,6 @@ const hybridRoutes: Routes = [
     BusListComponent,
     BusRouteComponent,
     BusTimetableComponent,
-    CopyComponent,
     MobileUIComponent,
     MobileSearchComponent,
     TripPlannerTopComponent,
@@ -213,21 +208,8 @@ const hybridRoutes: Routes = [
     MobileSidebarComponent,
     MainMobileSidebarComponent,
     MapClickCoordinatesComponent,
-    BuildingDepartmentListComponent,
     AsyncContentLoadedDirective
   ],
-  // entryComponents: [
-  //   BuildingPopupComponent,
-  //   ConstructionPopupComponent,
-  //   PoiPopupComponent,
-  //   RestroomPopupComponent,
-  //   LactationPopupComponent,
-  //   ParkingKioskPopupComponent,
-  //   ParkingLotPopupComponent,
-  //   AccessiblePopupComponent
-  //   TripPlannerParkingOptionsComponent,
-  //   TripPlannerBikingOptionsComponent
-  // ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

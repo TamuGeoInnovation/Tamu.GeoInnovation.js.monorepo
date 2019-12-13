@@ -1,14 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, Subscription, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { switchMap, takeUntil, pluck } from 'rxjs/operators';
 
-import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
-import { TripResult, TripPoint } from '../../../../services/trip-planner/core/trip-planner-core';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { TripPlannerService, TripResult, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService, UIDragState } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
 import { offCanvasSlideUpFromTop } from '../../../../animations/elements';
-import { switchMap, takeUntil, take, pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'trip-planner-top-mobile',

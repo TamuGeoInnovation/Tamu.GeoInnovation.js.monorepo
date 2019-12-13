@@ -576,7 +576,7 @@ export interface SearchSource {
    * @type {string}
    * @memberof SearchSource
    */
-  popupComponent?: string;
+  popupComponent?: any;
 
   /**
    * A list of dot notation feature properties/attributes in order or raking priority used

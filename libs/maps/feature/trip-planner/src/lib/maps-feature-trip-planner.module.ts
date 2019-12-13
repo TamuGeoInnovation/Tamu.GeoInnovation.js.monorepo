@@ -26,6 +26,7 @@ import { TripPlannerTimePickerComponent } from './components/trip-planner-time-p
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+import { RouteDirectionTransformerPipe } from './core/route-direction-transformer.pipe';
 
 @NgModule({
   imports: [
@@ -54,7 +55,8 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
     TripPlannerBikingOptionsComponent,
     TripPlannerParkingOptionsComponent,
     TripPlannerOptionsComponent,
-    TripPlannerTimePickerComponent
+    TripPlannerTimePickerComponent,
+    RouteDirectionTransformerPipe
   ],
   exports: [
     TripPlannerConnectionsSelectComponent,
@@ -71,7 +73,9 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
     TripPlannerBikingOptionsComponent,
     TripPlannerParkingOptionsComponent,
     TripPlannerOptionsComponent,
-    TripPlannerTimePickerComponent
-  ]
+    TripPlannerTimePickerComponent,
+    RouteDirectionTransformerPipe
+  ],
+  entryComponents: [TripPlannerParkingOptionsComponent, TripPlannerBikingOptionsComponent]
 })
 export class MapsFeatureTripPlannerModule {}

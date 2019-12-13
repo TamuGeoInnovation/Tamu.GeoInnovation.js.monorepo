@@ -1,7 +1,10 @@
 export * from './lib/maps-feature-trip-planner.module';
 
+// Cores
 export * from './lib/core/trip-planner-core';
+export * from './lib/core/route-direction-transformer.pipe';
 
+// Components
 export * from './lib/components/trip-planner-connection-select/containers/base/base.component';
 export * from './lib/components/trip-planner-directions/containers/base/base.component';
 export * from './lib/components/trip-planner-directions/containers/mobile/mobile.component';
@@ -18,6 +21,7 @@ export * from './lib/components/trip-planner-options/components/parking/trip-pla
 export * from './lib/components/trip-planner-options/containers/base/base.component';
 export * from './lib/components/trip-planner-time-picker/containers/base/base.component';
 
+// Services
 export * from './lib/services/trip-planner.service';
 export * from './lib/services/trip-planner-connection.service';
 export * from './lib/services/transportation/bike/bike.service';
