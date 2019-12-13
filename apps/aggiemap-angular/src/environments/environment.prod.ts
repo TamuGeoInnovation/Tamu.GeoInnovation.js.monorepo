@@ -11,6 +11,7 @@ import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/sear
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 
 import { Connections, Definitions as d } from './definitions';
+import * as polygons from './polygons';
 
 export * from './definitions';
 export * from './notification-events';

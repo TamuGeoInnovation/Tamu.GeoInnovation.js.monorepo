@@ -14,6 +14,7 @@ import { Connections, Definitions as d } from './definitions';
 
 export * from './definitions';
 export * from './notification-events';
+export * from './polygons';
 
 // Persistent layer definitions that will be processed by a factory and added to the map.
 export const LayerSources: LayerSource[] = [

@@ -166,6 +166,15 @@
     },
     "signage": {
       "tags": []
+    },
+    "aggiemap": {
+      "tags": []
+    },
+    "maps-feature-trip-planner": {
+      "tags": []
+    },
+    "ui-kits-ngx-interactions-clipboard-copy": {
+      "tags": []
     }
   }
 }

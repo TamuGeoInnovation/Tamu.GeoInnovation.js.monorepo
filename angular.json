@@ -1761,6 +1761,96 @@
           "styleext": "scss"
         }
       }
+    },
+    "aggiemap": {
+      "projectType": "library",
+      "root": "libs/aggiemap",
+      "sourceRoot": "libs/aggiemap/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/aggiemap/tsconfig.lib.json", "libs/aggiemap/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/aggiemap/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/aggiemap/jest.config.js",
+            "tsConfig": "libs/aggiemap/tsconfig.spec.json",
+            "setupFile": "libs/aggiemap/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "maps-feature-trip-planner": {
+      "projectType": "library",
+      "root": "libs/maps/feature/trip-planner",
+      "sourceRoot": "libs/maps/feature/trip-planner/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/maps/feature/trip-planner/tsconfig.lib.json",
+              "libs/maps/feature/trip-planner/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/trip-planner/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/trip-planner/jest.config.js",
+            "tsConfig": "libs/maps/feature/trip-planner/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/trip-planner/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "ui-kits-ngx-interactions-clipboard-copy": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/interactions/clipboard-copy",
+      "sourceRoot": "libs/ui-kits/ngx/interactions/clipboard-copy/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/interactions/clipboard-copy/tsconfig.lib.json",
+              "libs/ui-kits/ngx/interactions/clipboard-copy/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/interactions/clipboard-copy/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/interactions/clipboard-copy/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/interactions/clipboard-copy/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/interactions/clipboard-copy/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {

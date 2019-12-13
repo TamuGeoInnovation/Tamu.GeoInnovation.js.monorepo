@@ -137,8 +137,7 @@ const hybridRoutes: Routes = [
           { path: '', component: ReferenceComponent },
           { path: 'bus', component: BusListComponent },
           { path: 'trip', component: TripPlannerComponent },
-          { path: 'trip/options', component: TripPlannerOptionsComponent },
-          { path: 'moveinout', component: ReferenceComponent }
+          { path: 'trip/options', component: TripPlannerOptionsComponent }
         ]
       },
       {
@@ -181,10 +180,6 @@ const hybridRoutes: Routes = [
         children: [{ path: 'bad-route', component: ReportBadRouteComponent }]
       }
     ]
-  },
-  {
-    path: 'movein',
-    loadChildren: () => import('../../modules/standalone/movein/movein..module').then((m) => m.MoveinoutModule)
   },
   { path: 'about', loadChildren: () => import('../../about/about.module').then((m) => m.AboutModule) },
   { path: 'changelog', loadChildren: () => import('../../changelog/changelog.module').then((m) => m.ChangelogModule) },
