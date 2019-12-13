@@ -1821,28 +1821,28 @@
         }
       }
     },
-    "ui-kits-ngx-interactions-clipboard-copy": {
+    "ui-kits-ngx-interactions-clipboard": {
       "projectType": "library",
-      "root": "libs/ui-kits/ngx/interactions/clipboard-copy",
-      "sourceRoot": "libs/ui-kits/ngx/interactions/clipboard-copy/src",
+      "root": "libs/ui-kits/ngx/interactions/clipboard",
+      "sourceRoot": "libs/ui-kits/ngx/interactions/clipboard/src",
       "prefix": "tamu-gisc",
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "libs/ui-kits/ngx/interactions/clipboard-copy/tsconfig.lib.json",
-              "libs/ui-kits/ngx/interactions/clipboard-copy/tsconfig.spec.json"
+              "libs/ui-kits/ngx/interactions/clipboard/tsconfig.lib.json",
+              "libs/ui-kits/ngx/interactions/clipboard/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/interactions/clipboard-copy/**"]
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/interactions/clipboard/**"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "libs/ui-kits/ngx/interactions/clipboard-copy/jest.config.js",
-            "tsConfig": "libs/ui-kits/ngx/interactions/clipboard-copy/tsconfig.spec.json",
-            "setupFile": "libs/ui-kits/ngx/interactions/clipboard-copy/src/test-setup.ts"
+            "jestConfig": "libs/ui-kits/ngx/interactions/clipboard/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/interactions/clipboard/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/interactions/clipboard/src/test-setup.ts"
           }
         }
       },

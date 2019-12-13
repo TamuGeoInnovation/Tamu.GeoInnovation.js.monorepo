@@ -6,7 +6,7 @@ import { mapTo, startWith } from 'rxjs/operators';
 import * as Clipboard from 'clipboard';
 
 @Directive({
-  selector: '[clipboard-copy]'
+  selector: '[clipboard]'
 })
 export class ClipboardCopyDirective implements OnChanges, OnDestroy {
   /**

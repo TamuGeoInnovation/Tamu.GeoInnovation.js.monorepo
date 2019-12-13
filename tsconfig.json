@@ -62,7 +62,7 @@
       "@tamu-gisc/signage": ["libs/signage/src/index.ts"],
       "@tamu-gisc/aggiemap": ["libs/aggiemap/src/index.ts"],
       "@tamu-gisc/maps/feature/trip-planner": ["libs/maps/feature/trip-planner/src/index.ts"],
-      "@tamu-gisc/ui-kits/ngx/interactions/clipboard-copy": ["libs/ui-kits/ngx/interactions/clipboard-copy/src/index.ts"]
+      "@tamu-gisc/ui-kits/ngx/interactions/clipboard": ["libs/ui-kits/ngx/interactions/clipboard/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

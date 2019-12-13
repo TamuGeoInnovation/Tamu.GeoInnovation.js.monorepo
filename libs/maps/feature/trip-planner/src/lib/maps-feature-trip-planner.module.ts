@@ -26,7 +26,7 @@ import { TripPlannerTimePickerComponent } from './components/trip-planner-time-p
 import { TripPlannerService } from './services/trip-planner.service';
 import { TripPlannerConnectionService } from './services/trip-planner-connection.service';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard-copy';
+import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 @NgModule({
