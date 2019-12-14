@@ -6,12 +6,43 @@ import { BehaviorSubject, Observable } from 'rxjs';
 // event emitter, it does not work with any components extending the accordion header component.
 @Injectable()
 export class AccordionService {
-  private _expanded: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public expanded: Observable<boolean> = this._expanded.asObservable();
+  private _state: BehaviorSubject<IAccordionModel> = new BehaviorSubject({ expanded: false, animate: false, resize: false });
+  public state: Observable<IAccordionModel> = this._state.asObservable();
 
-  constructor() {}
-
-  public toggle() {
-    this._expanded.next(!this._expanded.getValue());
+  /**
+   *  Updates the accordion component state, by object spreading (New -> Old).
+   */
+  public update(settings: IAccordionModel) {
+    this._state.next({ ...this._state.getValue(), ...settings });
   }
+
+  /**
+   *  Flips the value of the provided accordion  model key.
+   */
+  public toggle(property: keyof IAccordionModel) {
+    const updated = this._state.getValue();
+
+    updated[property] = !updated[property];
+
+    this._state.next(updated);
+  }
+}
+
+export interface IAccordionModel {
+  expanded: boolean;
+
+  /**
+   * If `true`, detects accordion children content changes and fires off an accordion resize.
+   *
+   * Defaults to `false`.
+   */
+  resize: boolean;
+
+  /**
+   * Determines if the accordion animate when expanding or collapsing.
+   *
+   * Animation is not always ideal, especially when components are re-rendered on change
+   * detection cycles which would cause the accordion to flash open or closed abruptly.
+   */
+  animate: boolean;
 }

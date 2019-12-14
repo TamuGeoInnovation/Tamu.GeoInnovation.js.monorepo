@@ -1,5 +1,4 @@
-import { Component, OnInit, HostListener, Input } from '@angular/core';
-import { IAccordionModel } from '../accordion.component';
+import { Component, OnInit, HostListener } from '@angular/core';
 
 import { AccordionService } from '../services/accordion.service';
 
@@ -9,18 +8,11 @@ import { AccordionService } from '../services/accordion.service';
   styleUrls: ['./accordion-header.component.scss']
 })
 export class AccordionHeaderComponent implements OnInit {
-  @Input()
-  public model: IAccordionModel = {
-    animate: false,
-    expanded: false,
-    resize: false
-  };
-
-  public expanded = this.comm.expanded;
+  public state = this.comm.state;
 
   @HostListener('click', ['$event'])
   private _onClick() {
-    this.comm.toggle();
+    this.comm.toggle('expanded');
   }
 
   constructor(private comm: AccordionService) {}

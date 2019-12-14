@@ -1,6 +1,6 @@
 <div class="title-container">
   <ng-content></ng-content>
-  <div [ngSwitch]="expanded | async">
+  <div [ngSwitch]="(state | async)?.expanded">
     <div *ngSwitchCase="true" class="material-icons">remove</div>
     <div *ngSwitchDefault class="material-icons">add</div>
   </div>

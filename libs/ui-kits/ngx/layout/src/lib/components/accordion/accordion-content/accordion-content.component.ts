@@ -9,9 +9,9 @@ import {
   AfterViewInit,
   ViewChild
 } from '@angular/core';
-import { IAccordionModel } from '../accordion.component';
 
 import { AccordionService } from '../services/accordion.service';
+import { IAccordionModel } from '../services/accordion.service';
 
 @Component({
   selector: 'tamu-gisc-accordion-content',
@@ -26,7 +26,7 @@ export class AccordionContentComponent implements OnInit, OnChanges, OnDestroy, 
     resize: false
   };
 
-  public expanded = this.comm.expanded;
+  public state = this.comm.state;
 
   /**
    * If `resize` is set to `true`, this will be set to the mutation observer so that the directive
