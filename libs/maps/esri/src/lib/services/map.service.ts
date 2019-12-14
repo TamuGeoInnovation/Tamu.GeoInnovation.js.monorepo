@@ -633,10 +633,7 @@ interface LayerProperties extends esri.LayerProperties, esri.TileLayerProperties
 }
 
 /**
- * Locally stored esri map and view class insntances
- *
- * @export
- * @interface MapServiceInstance
+ * Locally stored esri map and view class instances
  */
 export interface MapServiceInstance {
   map: esri.Map;
