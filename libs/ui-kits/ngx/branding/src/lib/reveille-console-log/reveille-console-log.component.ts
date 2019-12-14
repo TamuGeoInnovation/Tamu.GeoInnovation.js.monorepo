@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
+import { first } from 'rxjs/operators';
+
 export const REV_ASCII = `                                                            -:.  -yh+\`                              
                                                            \`hdhy+hy/yh-                             
                                                            /dh.-yd- \`sh.                            
@@ -57,7 +60,14 @@ export const REV_ASCII = `                                                      
   styleUrls: ['./reveille-console-log.component.scss']
 })
 export class ReveilleConsoleLogComponent {
-  constructor() {
-    console.log(REV_ASCII);
+  constructor(private testing: TestingService) {
+    this.testing
+      .get('isTesting')
+      .pipe(first())
+      .subscribe((r) => {
+        if (!r) {
+          console.log(REV_ASCII);
+        }
+      });
   }
 }

@@ -31,7 +31,7 @@ export class LayerListService implements OnDestroy {
   ) {
     const LayerSources = this.environment.value('LayerSources');
 
-    forkJoin(from(this.moduleProvider.require(['Handles'])), this.mapService.store).subscribe(
+    forkJoin([from(this.moduleProvider.require(['Handles'])), this.mapService.store]).subscribe(
       ([[HandlesConstructor], res]: [[esri.HandlesConstructor], MapServiceInstance]) => {
         this._handles = new HandlesConstructor();
 
@@ -48,7 +48,7 @@ export class LayerListService implements OnDestroy {
             return new LayerListItem({ layer: l });
           });
 
-        // Determine layers in layer sources that are listed as show, but are being makred as lazy loaded.
+        // Determine layers in layer sources that are listed as show, but are being marked as lazy loaded.
         // Create a LayerListItem instance for each, leaving the layer property undefined.
         // This will be used as a flag to determine whether a layer needs to be lazy-loaded
         const nonExisting: LayerListItem<esri.Layer>[] = LayerSources.filter((s) => {
