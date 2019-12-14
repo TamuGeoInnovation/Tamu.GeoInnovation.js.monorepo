@@ -5,10 +5,13 @@ import { takeUntil } from 'rxjs/operators';
 import { AccordionHeaderComponent } from './accordion-header/accordion-header.component';
 import { AccordionContentComponent } from './accordion-content/accordion-content.component';
 
+import { AccordionService } from './services/accordion.service';
+
 @Component({
   selector: 'tamu-gisc-accordion',
   templateUrl: './accordion.component.html',
-  styleUrls: ['./accordion.component.scss']
+  styleUrls: ['./accordion.component.scss'],
+  providers: [AccordionService]
 })
 export class AccordionComponent implements OnInit, AfterContentInit {
   /**
@@ -37,7 +40,7 @@ export class AccordionComponent implements OnInit, AfterContentInit {
 
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private el: ElementRef) {}
+  constructor(private el: ElementRef, private comm: AccordionService) {}
 
   public ngOnInit() {
     this._model = {
@@ -50,10 +53,6 @@ export class AccordionComponent implements OnInit, AfterContentInit {
   public ngAfterContentInit() {
     this._content.model = this._model;
     this._title.model = this._model;
-
-    this._title.toggle.pipe(takeUntil(this._$destroy)).subscribe(() => {
-      this._model.expanded = !this._model.expanded;
-    });
   }
 }
 

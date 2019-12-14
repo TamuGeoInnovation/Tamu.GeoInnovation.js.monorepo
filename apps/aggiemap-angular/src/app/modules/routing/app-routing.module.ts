@@ -11,6 +11,7 @@ import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-boot
 import { DesktopGuard, MobileGuard } from '../../modules/routing/guards/device.guard';
 
 // Modules
+import { AggiemapModule } from '@tamu-gisc/aggiemap';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
@@ -27,7 +28,6 @@ import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/lay
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
 import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
-import { AggiemapModule } from '@tamu-gisc/aggiemap';
 import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
 import { PopupsModule } from '@tamu-gisc/aggiemap';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
@@ -182,9 +182,9 @@ const hybridRoutes: Routes = [
     UIStructuralLayoutModule,
     UIClipboardModule,
     MapsFeatureTripPlannerModule,
-    AggiemapModule,
     MapPopupModule,
-    PopupsModule
+    PopupsModule,
+    AggiemapModule
   ],
   declarations: [
     BackdropComponent,

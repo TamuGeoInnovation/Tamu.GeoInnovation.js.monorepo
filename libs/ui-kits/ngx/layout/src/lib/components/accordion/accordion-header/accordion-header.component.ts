@@ -1,5 +1,7 @@
-import { Component, OnInit, Output, EventEmitter, HostListener, Input } from '@angular/core';
+import { Component, OnInit, HostListener, Input } from '@angular/core';
 import { IAccordionModel } from '../accordion.component';
+
+import { AccordionService } from '../services/accordion.service';
 
 @Component({
   selector: 'tamu-gisc-accordion-header',
@@ -7,9 +9,6 @@ import { IAccordionModel } from '../accordion.component';
   styleUrls: ['./accordion-header.component.scss']
 })
 export class AccordionHeaderComponent implements OnInit {
-  @Output()
-  public toggle: EventEmitter<boolean> = new EventEmitter();
-
   @Input()
   public model: IAccordionModel = {
     animate: false,
@@ -17,12 +16,14 @@ export class AccordionHeaderComponent implements OnInit {
     resize: false
   };
 
+  public expanded = this.comm.expanded;
+
   @HostListener('click', ['$event'])
   private _onClick() {
-    this.toggle.emit();
+    this.comm.toggle();
   }
 
-  constructor() {}
+  constructor(private comm: AccordionService) {}
 
   public ngOnInit() {}
 }
