@@ -98,7 +98,7 @@ export class EsriMapService {
     const basemap = this.makeBasemap(Properties, TileLayer, Basemap);
     this._modules.map = new Map(basemap);
     const viewProps = this.makeMapView(ViewProperties.properties, this._modules.map);
-    this._modules.view = new MapView(viewProps as esri.MapView);
+    this._modules.view = new MapView(viewProps);
 
     // Set the value of the async subject
     this._store.next({
@@ -301,7 +301,7 @@ export class EsriMapService {
             delete props.type;
 
             // Create and return new feature layer
-            return new FeatureLayer(props as unknown as esri.FeatureLayerProperties);
+            return new FeatureLayer(props as esri.FeatureLayerProperties);
           });
         } else if (layerSource.type === 'scene') {
           return this.moduleProvider.require(['SceneLayer']).then(([SceneLayer]: [esri.SceneLayerConstructor]) => {
@@ -317,7 +317,7 @@ export class EsriMapService {
             delete props.type;
 
             // Create and return new graphics layer
-            return new GraphicsLayer(props as unknown as esri.GraphicsLayerProperties);
+            return new GraphicsLayer(props as esri.GraphicsLayerProperties);
           });
         } else if (layerSource.type === 'geojson') {
           return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [esri.GeoJSONLayerConstructor]) => {
@@ -325,7 +325,7 @@ export class EsriMapService {
             delete props.type;
 
             // Create and return new geojson layer
-            return new GeoJSONLayer(props as unknown as esri.GeoJSONLayerProperties);
+            return new GeoJSONLayer(props as esri.GeoJSONLayerProperties);
           });
         } else if (layerSource.type === 'csv') {
           return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [esri.CSVLayerConstructor]) => {
@@ -333,7 +333,7 @@ export class EsriMapService {
             delete props.type;
 
             // Create and return new geojson layer
-            return new CSVLayer(props as unknown as esri.CSVLayerProperties);
+            return new CSVLayer(props as esri.CSVLayerProperties);
           });
         }
       };
