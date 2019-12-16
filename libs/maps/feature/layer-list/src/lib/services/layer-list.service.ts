@@ -1,6 +1,6 @@
-import { Injectable, OnDestroy, Input, SystemJsNgModuleLoader } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, BehaviorSubject, from, fromEventPattern, merge, NEVER, MonoTypeOperatorFunction, of } from 'rxjs';
-import { mergeMap, filter, switchMap, scan, find, take, toArray } from 'rxjs/operators';
+import { mergeMap, filter, switchMap, scan, take, toArray } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -13,44 +13,6 @@ export class LayerListService implements OnDestroy {
   private _store: BehaviorSubject<LayerListItem<esri.Layer>[]> = new BehaviorSubject([]);
 
   private _handles: esri.Handles;
-
-  private yesterday = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
-  public currentDates = [this.yesterday, new Date()];
-
-  // Called from the DatePicker Component
-  public changeDate(dateTimeRange: Date[]) {
-    this.currentDates = dateTimeRange;
-
-    const LayerSources = this.environment.value('LayerSources');
-    const updatedLayers = this._store.value.map((lyr) => {
-      // example of appending a new url from currentDates data member to the bike origin layer
-      if (lyr.id === 'origin-trip-layer' || lyr.id === 'destination-trip-layer') {
-        const nlayer = LayerSources.filter((s: { id: string }) => {
-          return s.id === lyr.id;
-        })[0];
-        // append the time requested to the origin/destination layer urls
-        // the split makes sure the append does not happen multiple times
-        nlayer.url =
-          nlayer.url
-            .split('/')
-            .slice(0, 5)
-            .join('/') +
-          '/' +
-          this.currentDates[0].getTime() +
-          '/' +
-          this.currentDates[1].getTime();
-
-        // When viewing the heatmap over many days, the data overwhelms the map
-        // By making changing the maxPixelIntensity by the number of days, the heatmap keeps the same scale
-        const totalDays = (this.currentDates[1].getTime() - this.currentDates[0].getTime()) / (60 * 60 * 24 * 1000);
-        nlayer.native.renderer.maxPixelIntensity = 40 * totalDays;
-
-        lyr = new LayerListItem(nlayer);
-        return lyr;
-      } else return lyr;
-    });
-    this._store.next([...updatedLayers]);
-  }
 
   constructor(
     private moduleProvider: EsriModuleProviderService,
@@ -93,7 +55,6 @@ export class LayerListService implements OnDestroy {
       res.map.allLayers.on('change', (e) => {
         // Handle added layers case
         if (e.added) {
-          this.changeDate(this.currentDates);
           // Each event only has the layers for that particular event. It does not include layers in
           // previous events, so some processing must be done to ensure all layers added are either added
           // or updated properly in the service state.
@@ -104,10 +65,7 @@ export class LayerListService implements OnDestroy {
             const existingIndex = e.added.findIndex((added) => added.id === lyr.id);
 
             if (existingIndex > -1) {
-              return new LayerListItem({
-                ...lyr,
-                layer: e.added[existingIndex]
-              });
+              return new LayerListItem({ ...lyr, layer: e.added[existingIndex] });
             } else {
               return lyr;
             }

@@ -136,7 +136,7 @@ export interface LayerSource {
       | string
       | number
       | { [s: string]: string | { [s: string]: string | number | number[] | { [s: string]: string } } }
-      | { [s: string]: string | string[] | number | { [s: string]: string | string[] | number | { [s: string]: string } }[] };
+      // | { [s: string]: string | string[] | number | { [s: string]: string | string[] | number | { [s: string]: string } }[] };
     };
 
   /**

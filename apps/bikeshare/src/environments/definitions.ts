@@ -48,14 +48,14 @@ export const Definitions = {
     url: `${Connections.bikeLocationsUrl}`
   },
   ORIGIN_BIKE_HEATMAP: {
-    id: 'origin-trip-heatmap',
-    layerId: 'origin-trip-layer',
+    id: 'origin-trip-heatmap-date',
+    layerId: 'origin-trip-heatmap-date-layer',
     name: 'Origin Trip Heatmap',
     url: `${Connections.tripUrl}/origin`
   },
   DESTINATION_BIKE_HEATMAP: {
-    id: 'destination-trip-heatmap',
-    layerId: 'destination-trip-layer',
+    id: 'destination-trip-heatmap-date',
+    layerId: 'destination-trip-heatmap-date-layer',
     name: 'Destination Trip Heatmap',
     url: `${Connections.tripUrl}/destination`
   }

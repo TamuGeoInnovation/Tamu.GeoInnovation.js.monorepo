@@ -25,7 +25,7 @@ export * from './definitions';
 export const LayerSources: LayerSource[] = [
   {
     type: 'feature',
-    id: d.BUILDINGS.layerId,
+    id: d.BUILDINGS.id,
     title: d.BUILDINGS.name,
     url: d.BUILDINGS.url,
     popupComponent: d.BUILDINGS.popupComponent,
@@ -49,7 +49,7 @@ export const LayerSources: LayerSource[] = [
   },
   {
     type: 'geojson',
-    id: d.BIKE_LOCATIONS.layerId,
+    id: d.BIKE_LOCATIONS.id,
     title: d.BIKE_LOCATIONS.name,
     url: d.BIKE_LOCATIONS.url,
     listMode: 'show',
@@ -77,7 +77,7 @@ export const LayerSources: LayerSource[] = [
   },
   {
     type: 'geojson',
-    id: d.BIKE_HEATMAP.layerId,
+    id: d.BIKE_HEATMAP.id,
     title: d.BIKE_HEATMAP.name,
     url: d.BIKE_HEATMAP.url,
     listMode: 'show',
@@ -101,7 +101,7 @@ export const LayerSources: LayerSource[] = [
   },
   {
     type: 'geojson',
-    id: d.IDLE_HEATMAP.layerId,
+    id: d.IDLE_HEATMAP.id,
     title: d.IDLE_HEATMAP.name,
     url: d.IDLE_HEATMAP.url,
     listMode: 'show',
@@ -125,7 +125,7 @@ export const LayerSources: LayerSource[] = [
   },
   {
     type: 'geojson',
-    id: d.ORIGIN_BIKE_HEATMAP.layerId,
+    id: d.ORIGIN_BIKE_HEATMAP.id,
     title: d.ORIGIN_BIKE_HEATMAP.name,
     url: d.ORIGIN_BIKE_HEATMAP.url,
     listMode: 'show',
@@ -149,7 +149,7 @@ export const LayerSources: LayerSource[] = [
   },
   {
     type: 'geojson',
-    id: d.DESTINATION_BIKE_HEATMAP.layerId,
+    id: d.DESTINATION_BIKE_HEATMAP.id,
     title: d.DESTINATION_BIKE_HEATMAP.name,
     url: d.DESTINATION_BIKE_HEATMAP.url,
     listMode: 'show',
