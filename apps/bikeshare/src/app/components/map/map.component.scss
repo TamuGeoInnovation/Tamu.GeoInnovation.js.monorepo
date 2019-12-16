@@ -1,6 +1,3 @@
-@import 'libs/sass/mixins';
-@import "~ng-pick-datetime/assets/style/picker.min.css";
-
 :host {
   @include flex(1);
 }
