@@ -21,7 +21,7 @@ export class DateRange implements OnInit {
     this.dateTimeRange = [yesterday, new Date()];
   }
 
-  public newDate(value) {
+  public newDate() {
     this.dateChanged.emit([...this.dateTimeRange]);
   }
 }
