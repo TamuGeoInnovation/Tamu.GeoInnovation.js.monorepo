@@ -1,6 +1,6 @@
-import { Injectable, OnDestroy, Input } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, BehaviorSubject, from, fromEventPattern, merge, NEVER, MonoTypeOperatorFunction, of } from 'rxjs';
-import { mergeMap, filter, switchMap, scan, find, take, toArray } from 'rxjs/operators';
+import { mergeMap, filter, switchMap, scan, take, toArray } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';

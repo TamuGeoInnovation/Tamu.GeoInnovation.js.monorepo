@@ -26,6 +26,12 @@
     "charts": {
       "tags": []
     },
+    "bikeshare-e2e": {
+      "tags": []
+    },
+    "bikeshare": {
+      "tags": []
+    },
     "common-ngx-environment": {
       "tags": []
     },

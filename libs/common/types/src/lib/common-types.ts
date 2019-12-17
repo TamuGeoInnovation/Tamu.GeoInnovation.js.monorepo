@@ -135,8 +135,9 @@ export interface LayerSource {
     [s: string]:
       | string
       | number
-      | { [s: string]: string | { [s: string]: string | number | number[] | { [s: string]: string } } };
-  };
+      | { [s: string]: string | { [s: string]: string | number | number[] | { [s: string]: string } } }
+      // | { [s: string]: string | string[] | number | { [s: string]: string | string[] | number | { [s: string]: string } }[] };
+    };
 
   /**
    * If provided, will add layer to map with index. This allows layer ordering to prevent occlusion or
