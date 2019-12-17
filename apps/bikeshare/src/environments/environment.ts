@@ -13,6 +13,8 @@ import { Connections, Definitions as d } from './definitions';
 
 export * from './definitions';
 
+import esri = __esri;
+
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
@@ -23,6 +25,15 @@ export * from './definitions';
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
 
 export const LayerSources: LayerSource[] = [
+  {
+    type: 'graphic',
+    id: 'test',
+    title: 'test',
+    listMode: 'hide',
+    loadOnInit: false,
+    graphics: [],
+    native: {}
+  },
   {
     type: 'feature',
     id: d.BUILDINGS.id,
@@ -44,7 +55,7 @@ export const LayerSources: LayerSource[] = [
             width: '0'
           }
         }
-      }
+      } as esri.SimpleRendererProperties
     }
   },
   {
@@ -64,7 +75,7 @@ export const LayerSources: LayerSource[] = [
           size: 8,
           color: '#03C4A6'
         }
-      }
+      } as esri.SimpleRendererProperties
     },
     legendItems: [
       {
@@ -96,7 +107,7 @@ export const LayerSources: LayerSource[] = [
         minPixelIntensity: 0,
         maxPixelIntensity: 20,
         blurRadius: 5
-      }
+      } as esri.HeatmapRendererProperties
     }
   },
   {
@@ -120,7 +131,7 @@ export const LayerSources: LayerSource[] = [
         minPixelIntensity: 0,
         maxPixelIntensity: 150,
         blurRadius: 7
-      }
+      } as esri.HeatmapRendererProperties
     }
   },
   {
@@ -144,7 +155,7 @@ export const LayerSources: LayerSource[] = [
         minPixelIntensity: 0,
         maxPixelIntensity: 40,
         blurRadius: 7
-      }
+      } as esri.HeatmapRendererProperties
     }
   },
   {
@@ -168,7 +179,7 @@ export const LayerSources: LayerSource[] = [
         minPixelIntensity: 0,
         maxPixelIntensity: 40,
         blurRadius: 7
-      }
+      } as esri.HeatmapRendererProperties
     }
   }
 ];
