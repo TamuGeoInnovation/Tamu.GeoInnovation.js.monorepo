@@ -10,35 +10,122 @@ export interface Point {
   longitude: number;
 }
 
+//
+// Symbol Typings
+//
+interface CIMSymbolOptions {
+  type: 'cim' & esri.CIMSymbolProperties;
+}
+interface FillSymbolOptions {
+  symbol:
+    | ({ type: 'simple-fill' } & esri.SimpleFillSymbolProperties)
+    | { type: 'picture-fill' } & esri.PictureFillSymbolProperties;
+}
+
+interface LineSymbolOptions {
+  symbol: { type: 'simple-line' } & esri.SimpleLineSymbolProperties;
+}
+
+interface MarkerSymbolOptions {
+  symbol:
+    | ({ type: 'simple-marker' } & esri.SimpleMarkerSymbolProperties)
+    | { type: 'picture-marker' } & esri.PictureMarkerSymbolProperties;
+}
+
+interface MarkerSymbolOptions {
+  symbol:
+    | ({ type: 'simple-marker' } & esri.SimpleMarkerSymbolProperties)
+    | { type: 'picture-marker' } & esri.PictureMarkerSymbolProperties;
+}
+
+interface Symbol3DOptions {
+  symbol:
+    | ({ type: 'point-3d' } & esri.PointSymbol3DProperties)
+    | ({ type: 'line-3d' } & esri.LineSymbol3DProperties)
+    | ({ type: 'polygon-3d' } & esri.PolygonSymbol3DProperties)
+    | ({ type: 'mesh-3d' } & esri.MeshSymbol3DProperties)
+    | ({ type: 'label-3d' } & esri.LabelSymbol3DProperties);
+}
+
+interface TextSymbolOptions {
+  symbol: { type: 'text' } & esri.TextSymbolProperties;
+}
+
+interface WebStyleSymbolOptions {
+  symbol: { type: 'web-style' } & esri.WebStyleSymbolProperties;
+}
+
+type Symbols =
+  | CIMSymbolOptions
+  | FillSymbolOptions
+  | LineSymbolOptions
+  | MarkerSymbolOptions
+  | Symbol3DOptions
+  | TextSymbolOptions
+  | WebStyleSymbolOptions;
+
+//
+// Renderer Typings
+//
+interface ClassBreakRendererNativeOptions {
+  renderer?: esri.ClassBreaksRendererProperties & { type: 'class-breaks' };
+}
+
+interface DotDensityRendererNativeOptions {
+  renderer?: esri.DotDensityRendererProperties & { type: 'dot-density' };
+}
+
+interface SimpleRendererNativeOptions {
+  renderer?: esri.SimpleRendererProperties & { type: 'simple' } & Symbols;
+}
+
+interface HeatmapRendererNativeOptions {
+  renderer?: { type: 'heatmap' } & esri.HeatmapRendererProperties;
+}
+
+// TODO: Add plucked symbols
+interface UniqueValueRendererNativeOptions {
+  renderer?: esri.UniqueValueRendererProperties & { type: 'unique-value' };
+}
+
+type RendererNativeOptions =
+  | ClassBreakRendererNativeOptions
+  | DotDensityRendererNativeOptions
+  | SimpleRendererNativeOptions
+  | HeatmapRendererNativeOptions
+  | UniqueValueRendererNativeOptions;
+
+//
+// Layer Source Type Typings
+//
+
 interface GraphicLayerSourceProperties {
   type: 'graphic';
-
   /**
    * Graphics used in the creation of the layer
    */
   graphics?: esri.Graphic[];
-
   native?: esri.GraphicsLayerProperties;
 }
 
 interface FeatureLayerSourceProperties {
   type: 'feature';
-  native?: esri.FeatureLayerProperties;
+  native?: esri.FeatureLayerProperties & RendererNativeOptions;
 }
 
 interface SceneLayerSourceProperties {
   type: 'scene';
-  native?: esri.SceneLayerProperties;
+  native?: esri.SceneLayerProperties & RendererNativeOptions;
 }
 
 interface GeoJSONLayerSourceProperties {
   type: 'geojson';
-  native?: esri.GeoJSONLayerProperties;
+  native?: esri.GeoJSONLayerProperties & RendererNativeOptions;
 }
 
 interface CSVLayerSourceProperties {
   type: 'csv';
-  native?: esri.CSVLayerProperties;
+  native?: esri.CSVLayerProperties & RendererNativeOptions;
 }
 
 export type LayerSourceType =
