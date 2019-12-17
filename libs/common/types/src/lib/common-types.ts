@@ -11,84 +11,144 @@ export interface Point {
 }
 
 //
-// Symbol Typings
+// Base Symbol Typings
 //
-interface CIMSymbolOptions {
+interface CIMSymbol {
   type: 'cim' & esri.CIMSymbolProperties;
 }
-interface FillSymbolOptions {
-  symbol:
-    | ({ type: 'simple-fill' } & esri.SimpleFillSymbolProperties)
-    | { type: 'picture-fill' } & esri.PictureFillSymbolProperties;
-}
 
-interface LineSymbolOptions {
-  symbol: { type: 'simple-line' } & esri.SimpleLineSymbolProperties;
-}
+type SimpleFillSymbol = { type: 'simple-fill' } & esri.SimpleFillSymbolProperties;
 
-interface MarkerSymbolOptions {
-  symbol:
-    | ({ type: 'simple-marker' } & esri.SimpleMarkerSymbolProperties)
-    | { type: 'picture-marker' } & esri.PictureMarkerSymbolProperties;
-}
+type PictureFillSymbol = { type: 'picture-fill' } & esri.PictureFillSymbolProperties;
 
-interface MarkerSymbolOptions {
-  symbol:
-    | ({ type: 'simple-marker' } & esri.SimpleMarkerSymbolProperties)
-    | { type: 'picture-marker' } & esri.PictureMarkerSymbolProperties;
-}
+type SimpleLineSymbol = { type: 'simple-line' } & esri.SimpleLineSymbolProperties;
 
-interface Symbol3DOptions {
-  symbol:
-    | ({ type: 'point-3d' } & esri.PointSymbol3DProperties)
-    | ({ type: 'line-3d' } & esri.LineSymbol3DProperties)
-    | ({ type: 'polygon-3d' } & esri.PolygonSymbol3DProperties)
-    | ({ type: 'mesh-3d' } & esri.MeshSymbol3DProperties)
-    | ({ type: 'label-3d' } & esri.LabelSymbol3DProperties);
-}
+type SimpleMarkerSymbol = { type: 'simple-marker' } & esri.SimpleMarkerSymbolProperties;
 
-interface TextSymbolOptions {
-  symbol: { type: 'text' } & esri.TextSymbolProperties;
-}
+type PictureMarkerSymbol = { type: 'picture-marker' } & esri.PictureMarkerSymbolProperties;
 
-interface WebStyleSymbolOptions {
-  symbol: { type: 'web-style' } & esri.WebStyleSymbolProperties;
-}
+type Point3DSymbol = { type: 'point-3d' } & esri.PointSymbol3DProperties;
+
+type Line3DSymbol = { type: 'line-3d' } & esri.LineSymbol3DProperties;
+
+type Polygon3DSymbol = { type: 'polygon-3d' } & esri.PolygonSymbol3DProperties;
+
+type Mesh3DSymbol = { type: 'mesh-3d' } & esri.MeshSymbol3DProperties;
+
+type Label3DSymbol = { type: 'label-3d' } & esri.LabelSymbol3DProperties;
+
+type TextSymbol = { type: 'text' } & esri.TextSymbolProperties;
+
+type WebStyleSymbol = { type: 'web-style' } & esri.WebStyleSymbolProperties;
 
 type Symbols =
-  | CIMSymbolOptions
-  | FillSymbolOptions
-  | LineSymbolOptions
-  | MarkerSymbolOptions
-  | Symbol3DOptions
-  | TextSymbolOptions
-  | WebStyleSymbolOptions;
+  | SimpleFillSymbol
+  | PictureFillSymbol
+  | SimpleLineSymbol
+  | SimpleMarkerSymbol
+  | PictureMarkerSymbol
+  | Point3DSymbol
+  | Line3DSymbol
+  | Polygon3DSymbol
+  | Mesh3DSymbol
+  | Label3DSymbol
+  | TextSymbol
+  | WebStyleSymbol;
+
+//
+// Autocasting Symbol Typings
+//
+//
+interface FillSymbolAutoCastOptions {
+  symbol: SimpleFillSymbol & esri.SimpleFillSymbolProperties | PictureFillSymbol & esri.PictureFillSymbolProperties;
+}
+
+interface LineSymbolAutoCastOptions {
+  symbol: SimpleLineSymbol & esri.SimpleLineSymbolProperties;
+}
+
+interface MarkerSymbolAutoCastOptions {
+  symbol: SimpleMarkerSymbol & esri.SimpleMarkerSymbolProperties | PictureMarkerSymbol & esri.PictureMarkerSymbolProperties;
+}
+
+interface Symbol3DAutoCastOptions {
+  symbol:
+    | Point3DSymbol & esri.PointSymbol3DProperties
+    | Line3DSymbol & esri.LineSymbol3DProperties
+    | Polygon3DSymbol & esri.PolygonSymbol3DProperties
+    | Mesh3DSymbol & esri.MeshSymbol3DProperties
+    | Label3DSymbol & esri.LabelSymbol3DProperties;
+}
+
+interface TextSymbolAutoCastOptions {
+  symbol: TextSymbol & esri.TextSymbolProperties;
+}
+
+interface WebStyleSymbolAutoCastOptions {
+  symbol: WebStyleSymbol & esri.WebStyleSymbolProperties;
+}
+
+type AutoCastSymbols =
+  | CIMSymbol
+  | FillSymbolAutoCastOptions
+  | LineSymbolAutoCastOptions
+  | MarkerSymbolAutoCastOptions
+  | Symbol3DAutoCastOptions
+  | TextSymbolAutoCastOptions
+  | WebStyleSymbolAutoCastOptions;
 
 //
 // Renderer Typings
 //
+
+/**
+ * Auto-castable class break renderer interface inheriting most of the Esri Class Break Renderer properties except some which
+ * are overwritten where they support auto-casting.
+ */
 interface ClassBreakRendererNativeOptions {
-  renderer?: esri.ClassBreaksRendererProperties & { type: 'class-breaks' };
+  renderer?: {
+    type: 'class-breaks';
+    backgroundFillSymbol?: SimpleFillSymbol | PictureFillSymbol | Polygon3DSymbol;
+  } & Omit<esri.ClassBreaksRendererProperties, 'backgroundFillSymbol'>;
 }
 
+/**
+ * Auto-castable dot density renderer interface inheriting most of the Esri Dot Density Renderer properties except some which
+ * are overwritten where they support auto-casting.
+ */
 interface DotDensityRendererNativeOptions {
-  renderer?: esri.DotDensityRendererProperties & { type: 'dot-density' };
+  renderer?: {
+    type: 'dot-density';
+    visualVariables?: esri.VisualVariableProperties[];
+  } & Omit<esri.DotDensityRendererProperties, 'visualVariables'>;
 }
 
-interface SimpleRendererNativeOptions {
-  renderer?: esri.SimpleRendererProperties & { type: 'simple' } & Symbols;
-}
-
+/**
+ * Auto-castable heatmanp renderer options, inheriting Esri's Heatmap Renderer properties.
+ */
 interface HeatmapRendererNativeOptions {
   renderer?: { type: 'heatmap' } & esri.HeatmapRendererProperties;
 }
-
-// TODO: Add plucked symbols
-interface UniqueValueRendererNativeOptions {
-  renderer?: esri.UniqueValueRendererProperties & { type: 'unique-value' };
+/**
+ * Auto-castable simple renderer interface inheriting most of the Esri Simple Renderer properties except some which
+ * are overwritten where they support auto-casting.
+ */
+interface SimpleRendererNativeOptions {
+  renderer?: { type: 'simple'; symbol?: Symbols } & Omit<esri.SimpleRendererProperties, 'symbol'>;
 }
 
-type RendererNativeOptions =
+/**
+ * Auto-castable unique value interface inheriting most of the Esri Unique Value Renderer properties except some which are overwritten
+ * where they support auto-casting.
+ */
+interface UniqueValueRendererNativeOptions {
+  renderer?: {
+    type: 'unique-value';
+    backgroundFillSymbol?: SimpleFillSymbol | PictureFillSymbol | Polygon3DSymbol;
+  } & Omit<esri.UniqueValueRendererProperties, 'backgroundFillSymbol'>;
+}
+
+type RendererAutoCastNativeOptions =
   | ClassBreakRendererNativeOptions
   | DotDensityRendererNativeOptions
   | SimpleRendererNativeOptions
@@ -110,22 +170,26 @@ interface GraphicLayerSourceProperties {
 
 interface FeatureLayerSourceProperties {
   type: 'feature';
-  native?: esri.FeatureLayerProperties & RendererNativeOptions;
+  native?: { labelingInfo?: { symbol?: TextSymbol | Label3DSymbol & Omit<esri.LabelClassProperties, 'symbol'> }[] } & Omit<
+    esri.FeatureLayerProperties,
+    'labelingInfo'
+  > &
+    RendererAutoCastNativeOptions;
 }
 
 interface SceneLayerSourceProperties {
   type: 'scene';
-  native?: esri.SceneLayerProperties & RendererNativeOptions;
+  native?: esri.SceneLayerProperties & RendererAutoCastNativeOptions;
 }
 
 interface GeoJSONLayerSourceProperties {
   type: 'geojson';
-  native?: esri.GeoJSONLayerProperties & RendererNativeOptions;
+  native?: esri.GeoJSONLayerProperties & RendererAutoCastNativeOptions;
 }
 
 interface CSVLayerSourceProperties {
   type: 'csv';
-  native?: esri.CSVLayerProperties & RendererNativeOptions;
+  native?: esri.CSVLayerProperties & RendererAutoCastNativeOptions;
 }
 
 export type LayerSourceType =
