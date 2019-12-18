@@ -224,7 +224,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
           p = (<string[]>this.transformations)
             .map((transformation, index) => {
               const transformed = {
-                value: this.valueForTransformationSet(transformation, curr).value,
+                value: this.evaluateTransformSet(transformation, this.paths[index], curr).value,
                 label: this.labels[index]
               };
 
@@ -265,42 +265,36 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * For a provided transformation set, will iterate through inner children and execute any operators with
-   * respective `paths`.
+   * For a provided transformation set, will execute the transformation function with the paths as
+   * transformation function parameters.
    *
-   * @param {(string | Array<string>)} set - Transformation set
-   * @param {Array<T>} collection - Initial collection (seed), or the previous value if it's in a recursive call.
-   * @param {number} [setIndex] - The transformation set index. Represents the index of the current dataset
-   * being processed.
-   * @param {number} [setDepth] - The transformation index. Represents the index of the current transformation, relative
-   * to the dataset index.
+   * @param set - Transformation(s)
+   * @param paths - Path(s), which function as transformation function parameters
+   * @param collection - Initial collection (seed), or the previous value if it's in a recursive function call.
    */
-  private valueForTransformationSet<T>(
-    set: string | Array<string>,
-    collection: Array<T>,
-    setIndex?: number,
-    setDepth?: number
-  ) {
+  private evaluateTransformSet<T>(set: string | Array<string>, paths: string | Array<string>, collection: Array<T>) {
+    // If the transformation set is an array, a further function call is required to evaluate it completely.
     if (set instanceof Array) {
       return set.reduce(
         (acc, curr, i) => {
           const evaluated = {
-            value: this.valueForTransformationSet(curr, acc.value, i, acc.depth),
-            depth: acc.depth + 1
+            value: this.evaluateTransformSet(curr, paths[i], acc.value)
           };
 
           return evaluated;
         },
         {
-          depth: 0,
           value: collection
         }
       );
     } else {
+      // If the transformation provided is a primitive (string), then execute the named function providing the paths as parameters.
       if (op.hasOwnProperty(set)) {
-        const params = this.paths[setIndex][setDepth];
+        // Parameters can be single primitive values or multiple. Normalize before named function call.
+        const params = paths instanceof Array ? paths : [paths];
 
-        const result = op[set](collection, params);
+        // Execute the named function providing params array as param overloads.
+        const result = op[set](collection, ...params);
 
         return result;
       } else {

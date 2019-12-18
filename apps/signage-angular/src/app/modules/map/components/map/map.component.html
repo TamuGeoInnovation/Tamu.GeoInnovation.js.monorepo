@@ -16,7 +16,7 @@
 
     <tamu-gisc-selection-summary [selfCollect]="false" [collection]="filterFeatures" [deleteDuplicates]="true" [identifier]="'guid'" [layers]="'signage-layer'">
       <div class="charts">
-        <tamu-gisc-bar-chart [paths]="[['attributes.signTypeName', 'identity'], ['attributes.signTypeName', 'identity']]" [transformations]="[['categorize', 'count'], ['categorize', 'count']]" [labels]="['Type', 'Number']"></tamu-gisc-bar-chart>
+        <tamu-gisc-bar-chart [paths]="[['attributes.signTypeName', 'identity']]" [transformations]="[['categorize', 'count']]" [labels]="['Type', 'Number']"></tamu-gisc-bar-chart>
       </div>
     </tamu-gisc-selection-summary>
 
