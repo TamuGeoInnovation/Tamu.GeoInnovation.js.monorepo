@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
 @Component({
-  selector: 'tamu-gisc-date-picker',
+  selector: 'tamu-gisc-owl-date-picker',
   templateUrl: './date.component.html',
   styleUrls: ['./date.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
