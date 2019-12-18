@@ -109,7 +109,7 @@ export class MapComponent implements OnInit, OnDestroy {
         const totalDays = (currentEnd.getTime() - currentStart.getTime()) / (60 * 60 * 24 * 1000);
 
         // tslint:disable-next-line:no-any
-        (source.native.renderer as any).maxPixelIntensity = 40 * totalDays;
+        (source.native as any).renderer.maxPixelIntensity = 40 * totalDays;
         return source;
       });
 
