@@ -128,13 +128,15 @@ export const LayerSources: LayerSource[] = [
     visible: true,
     layerIndex: 1,
     native: {
-      opacity: 0.001,
-      labelingInfo: {
-        symbol: {
-          type: 'text',
-          color: [0, 0, 0, 0.001]
+      opacity: 0.0,
+      labelingInfo: [
+        {
+          symbol: {
+            type: 'text',
+            color: [0, 0, 0, 0]
+          }
         }
-      }
+      ]
     }
   },
   {
