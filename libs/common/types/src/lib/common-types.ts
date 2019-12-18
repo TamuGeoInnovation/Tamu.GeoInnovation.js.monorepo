@@ -58,7 +58,6 @@ type Symbols =
 //
 // Autocasting Symbol Typings
 //
-//
 interface FillSymbolAutoCastOptions {
   symbol: SimpleFillSymbol & esri.SimpleFillSymbolProperties | PictureFillSymbol & esri.PictureFillSymbolProperties;
 }
@@ -105,48 +104,40 @@ type AutoCastSymbols =
  * Auto-castable class break renderer interface inheriting most of the Esri Class Break Renderer properties except some which
  * are overwritten where they support auto-casting.
  */
-interface ClassBreakRendererNativeOptions {
-  renderer?: {
-    type: 'class-breaks';
-    backgroundFillSymbol?: SimpleFillSymbol | PictureFillSymbol | Polygon3DSymbol;
-  } & Omit<esri.ClassBreaksRendererProperties, 'backgroundFillSymbol'>;
-}
+type ClassBreakRendererNativeOptions = Omit<esri.ClassBreaksRendererProperties, 'backgroundFillSymbol'> & {
+  type: 'class-breaks';
+  backgroundFillSymbol?: SimpleFillSymbol | PictureFillSymbol | Polygon3DSymbol;
+};
 
 /**
  * Auto-castable dot density renderer interface inheriting most of the Esri Dot Density Renderer properties except some which
  * are overwritten where they support auto-casting.
  */
-interface DotDensityRendererNativeOptions {
-  renderer?: {
-    type: 'dot-density';
-    visualVariables?: esri.VisualVariableProperties[];
-  } & Omit<esri.DotDensityRendererProperties, 'visualVariables'>;
-}
+type DotDensityRendererNativeOptions = Omit<esri.DotDensityRendererProperties, 'visualVariables'> & {
+  type: 'dot-density';
+  visualVariables?: esri.VisualVariableProperties[];
+};
 
 /**
  * Auto-castable heatmanp renderer options, inheriting Esri's Heatmap Renderer properties.
  */
-interface HeatmapRendererNativeOptions {
-  renderer?: { type: 'heatmap' } & esri.HeatmapRendererProperties;
-}
+type HeatmapRendererNativeOptions = esri.HeatmapRendererProperties & { type: 'heatmap' };
 /**
  * Auto-castable simple renderer interface inheriting most of the Esri Simple Renderer properties except some which
  * are overwritten where they support auto-casting.
  */
-interface SimpleRendererNativeOptions {
-  renderer?: { type: 'simple'; symbol?: Symbols } & Omit<esri.SimpleRendererProperties, 'symbol'>;
-}
+type SimpleRendererNativeOptions = Omit<esri.SimpleRendererProperties, 'symbol'> & {
+  type: 'simple';
+} & AutoCastSymbols;
 
 /**
  * Auto-castable unique value interface inheriting most of the Esri Unique Value Renderer properties except some which are overwritten
  * where they support auto-casting.
  */
-interface UniqueValueRendererNativeOptions {
-  renderer?: {
-    type: 'unique-value';
-    backgroundFillSymbol?: SimpleFillSymbol | PictureFillSymbol | Polygon3DSymbol;
-  } & Omit<esri.UniqueValueRendererProperties, 'backgroundFillSymbol'>;
-}
+type UniqueValueRendererNativeOptions = Omit<esri.UniqueValueRendererProperties, 'backgroundFillSymbol'> & {
+  type: 'unique-value';
+  backgroundFillSymbol?: SimpleFillSymbol | PictureFillSymbol | Polygon3DSymbol;
+};
 
 type RendererAutoCastNativeOptions =
   | ClassBreakRendererNativeOptions
@@ -159,6 +150,30 @@ type RendererAutoCastNativeOptions =
 // Layer Source Type Typings
 //
 
+interface FeatureLayerSourceProperties {
+  type: 'feature';
+
+  native?: Omit<esri.FeatureLayerProperties, 'renderer' | 'labelingInfo'> & {
+    labelingInfo?: ({ symbol?: TextSymbol | Label3DSymbol } & Omit<esri.LabelClassProperties, 'symbol'>)[];
+    renderer?: RendererAutoCastNativeOptions;
+  };
+}
+
+interface SceneLayerSourceProperties {
+  type: 'scene';
+  native?: Omit<esri.SceneLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
+}
+
+interface GeoJSONLayerSourceProperties {
+  type: 'geojson';
+  native?: Omit<esri.GeoJSONLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
+}
+
+interface CSVLayerSourceProperties {
+  type: 'csv';
+  native?: Omit<esri.CSVLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
+}
+
 interface GraphicLayerSourceProperties {
   type: 'graphic';
   /**
@@ -168,36 +183,12 @@ interface GraphicLayerSourceProperties {
   native?: esri.GraphicsLayerProperties;
 }
 
-interface FeatureLayerSourceProperties {
-  type: 'feature';
-  native?: { labelingInfo?: { symbol?: TextSymbol | Label3DSymbol & Omit<esri.LabelClassProperties, 'symbol'> }[] } & Omit<
-    esri.FeatureLayerProperties,
-    'labelingInfo'
-  > &
-    RendererAutoCastNativeOptions;
-}
-
-interface SceneLayerSourceProperties {
-  type: 'scene';
-  native?: esri.SceneLayerProperties & RendererAutoCastNativeOptions;
-}
-
-interface GeoJSONLayerSourceProperties {
-  type: 'geojson';
-  native?: esri.GeoJSONLayerProperties & RendererAutoCastNativeOptions;
-}
-
-interface CSVLayerSourceProperties {
-  type: 'csv';
-  native?: esri.CSVLayerProperties & RendererAutoCastNativeOptions;
-}
-
 export type LayerSourceType =
-  | GraphicLayerSourceProperties
   | FeatureLayerSourceProperties
   | SceneLayerSourceProperties
   | GeoJSONLayerSourceProperties
-  | CSVLayerSourceProperties;
+  | CSVLayerSourceProperties
+  | GraphicLayerSourceProperties;
 
 /**
  * Describes the properties for each layer source used by a layer factory to add layers to the map as required.
@@ -218,7 +209,7 @@ export type LayerSource = LayerSourceType & {
   /**
    * Determines whether the layer will be listed by the layer component.
    */
-  listMode: string;
+  listMode: 'show' | 'hide';
 
   /**
    * Determines whether the layer will be loaded on application load.

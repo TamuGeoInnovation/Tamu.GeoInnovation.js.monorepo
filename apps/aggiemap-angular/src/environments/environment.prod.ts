@@ -26,6 +26,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'hide',
     loadOnInit: true,
     visible: true,
+    layerIndex: 1,
     native: {
       renderer: {
         type: 'simple',
@@ -49,6 +50,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: true,
     visible: true,
+    layerIndex: 2,
     legendItems: [
       {
         id: 'construction-legend',
@@ -121,14 +123,17 @@ export const LayerSources: LayerSource[] = [
     listMode: 'hide',
     loadOnInit: true,
     visible: true,
+    layerIndex: 1,
     native: {
-      opacity: 0.001,
-      labelingInfo: {
-        symbol: {
-          type: 'text',
-          color: [0, 0, 0, 0.001]
+      opacity: 0.0,
+      labelingInfo: [
+        {
+          symbol: {
+            type: 'text',
+            color: [0, 0, 0, 0]
+          }
         }
-      }
+      ]
     }
   },
   {
