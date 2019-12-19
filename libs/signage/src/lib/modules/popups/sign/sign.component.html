@@ -4,10 +4,10 @@
   </div>
 
   <div>
-    <p>Submitted on: {{ data.attributes.Added }}</p>
-    <p>Sign Type: {{ data.attributes.signTypeName }}</p>
+    <p>Submitted on: {{ data?.attributes.Added }}</p>
+    <p>Sign Type: {{ data?.attributes.signTypeName }}</p>
     <p>
-      Description: <span *ngIf="data.attributes.description === 'undefined'">None</span> <span *ngIf="data.attributes.description !== 'undefined'">{{ data.attributes.description }}</span>
+      Description: <span *ngIf="data?.attributes.description === 'undefined'">None</span> <span *ngIf="data?.attributes.description !== 'undefined'">{{ data?.attributes.description }}</span>
     </p>
   </div>
 </div>

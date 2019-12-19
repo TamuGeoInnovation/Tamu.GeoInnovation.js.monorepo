@@ -3,7 +3,6 @@ import { async, inject, TestBed } from '@angular/core/testing';
 import { BaseChartComponent } from './base.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ChartConfiguration, ChartContainerComponent } from '../chart-container/chart-container.component';
-import { exitCodeFromResult } from '@angular/compiler-cli';
 
 describe('BaseChartComponent', () => {
   beforeEach(async(() => {
@@ -68,7 +67,7 @@ describe('BaseChartComponent', () => {
 
   it('should error with invalid transformation', inject([BaseChartComponent], (baseChartComponent: BaseChartComponent) => {
     expect(() =>
-      ((baseChartComponent as unknown) as { valueForTransformationSet: Function }).valueForTransformationSet('invalid')
+      ((baseChartComponent as unknown) as { evaluateTransformSet: Function }).evaluateTransformSet('invalid')
     ).toThrowError(new Error('Invalid chart operator: invalid'));
   }));
 });

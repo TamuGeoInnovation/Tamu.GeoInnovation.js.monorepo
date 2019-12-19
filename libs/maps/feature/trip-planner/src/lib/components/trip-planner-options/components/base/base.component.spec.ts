@@ -38,7 +38,7 @@ describe('TripPlannerParkingOptionsBaseComponent', () => {
         InrixService,
         {
           provide: env,
-          useValue: { SearchSources: [], NotificationEvents: [] }
+          useValue: { SearchSources: [], NotificationEvents: [], LayerSources: [], RegionalBoundary: {} }
         },
         {
           provide: AppStorage,

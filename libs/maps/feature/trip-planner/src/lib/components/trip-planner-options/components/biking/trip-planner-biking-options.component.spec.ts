@@ -30,7 +30,7 @@ describe('TripPlannerBikingOptionsComponent', () => {
         InrixService,
         {
           provide: env,
-          useValue: { SearchSources: [], NotificationEvents: [] }
+          useValue: { SearchSources: [], NotificationEvents: [], LayerSources: [], RegionalBoundary: {} }
         },
         {
           provide: AppStorage,

@@ -1,25 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
 
 import { BusListHeaderComponent } from './bus-list-header.component';
+import { AccordionService } from '@tamu-gisc/ui-kits/ngx/layout';
 
-describe('BusListHeaderComponent', () => {
-  let component: BusListHeaderComponent;
-  let fixture: ComponentFixture<BusListHeaderComponent>;
-
+describe('BusListHeaderComponent (isolated)', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BusListHeaderComponent ]
-    })
-    .compileComponents();
+      providers: [BusListHeaderComponent, AccordionService]
+    }).compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BusListHeaderComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
+  it('should create', inject([BusListHeaderComponent], (component: BusListHeaderComponent) => {
     expect(component).toBeTruthy();
-  });
+  }));
 });

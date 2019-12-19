@@ -17,7 +17,7 @@ import esri = __esri;
 
 const ROUTE_NUMBER_REGEX = /on ([0-9\-A-Za-z]+)$/;
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class BusService {
   private base_url = 'https://nodes.geoservices.tamu.edu/api/route';
 
@@ -43,7 +43,7 @@ export class BusService {
     private mapService: EsriMapService,
     private location: Location
   ) {
-    from(mapService.store).subscribe((mapInstance: MapServiceInstance) => {
+    from(this.mapService.store).subscribe((mapInstance: MapServiceInstance) => {
       this._map = mapInstance.map;
       this._view = mapInstance.view;
 
