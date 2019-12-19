@@ -6,6 +6,7 @@ import { mapTo, startWith } from 'rxjs/operators';
 import * as Clipboard from 'clipboard';
 
 @Directive({
+  // tslint:disable-next-line:directive-selector
   selector: '[clipboard-copy]'
 })
 export class ClipboardCopyDirective implements OnChanges, OnDestroy {

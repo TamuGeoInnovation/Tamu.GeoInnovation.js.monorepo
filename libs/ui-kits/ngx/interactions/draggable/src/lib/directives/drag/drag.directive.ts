@@ -5,6 +5,7 @@ import { DragService, UIDragState } from '../../services/drag/drag.service';
 import * as interact from 'interactjs';
 
 @Directive({
+  // tslint:disable-next-line:directive-selector
   selector: '[draggable]'
 })
 export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy {
