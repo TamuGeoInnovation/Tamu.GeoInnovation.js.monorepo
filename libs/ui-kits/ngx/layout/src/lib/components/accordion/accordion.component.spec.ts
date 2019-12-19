@@ -4,6 +4,7 @@ import { AccordionComponent } from './accordion.component';
 import { Component, ViewChild } from '@angular/core';
 import { AccordionHeaderComponent } from './accordion-header/accordion-header.component';
 import { AccordionContentComponent } from './accordion-content/accordion-content.component';
+import { AccordionService } from './services/accordion.service';
 
 // Mock testing component to emulate ContentChildren title and content components.
 @Component({
@@ -26,7 +27,8 @@ describe('AccordionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TestComponent, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent]
+      declarations: [TestComponent, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent],
+      providers: [AccordionService]
     }).compileComponents();
   }));
 
