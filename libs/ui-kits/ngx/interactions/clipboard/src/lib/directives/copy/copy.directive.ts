@@ -21,6 +21,9 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
   @Output()
   public copying: EventEmitter<Observable<boolean>> = new EventEmitter();
 
+  @Output()
+  public error: EventEmitter<boolean> = new EventEmitter();
+
   /**
    * Clipboard JS class container.
    *
@@ -71,14 +74,18 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
       text: (trigger) => {
         return this.text;
       }
-    }).on('success', (e) => {
-      // On clipboard copy success, emit timer stream that can be used to display UI effects.
-      this.copying.emit(
-        timer(750).pipe(
-          mapTo(false),
-          startWith(true)
-        )
-      );
-    });
+    })
+      .on('success', (e) => {
+        // On clipboard copy success, emit timer stream that can be used to display UI effects.
+        this.copying.emit(
+          timer(750).pipe(
+            mapTo(false),
+            startWith(true)
+          )
+        );
+      })
+      .on('error', (e) => {
+        this.error.emit(true);
+      });
   }
 }
