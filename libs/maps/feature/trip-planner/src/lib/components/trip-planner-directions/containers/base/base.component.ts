@@ -9,7 +9,7 @@ import { TripPlannerService } from '../../../../services/trip-planner.service';
 import { TripResult } from '../../../../core/trip-planner-core';
 
 @Component({
-  selector: 'trip-planner-directions',
+  selector: 'tamu-gisc-trip-planner-directions',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss']
 })

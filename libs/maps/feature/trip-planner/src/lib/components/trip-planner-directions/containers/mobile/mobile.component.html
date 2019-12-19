@@ -16,12 +16,12 @@
     </div>
   </div>
 
-  <trip-planner-directions-actions-mobile></trip-planner-directions-actions-mobile>
+  <tamu-gisc-trip-planner-directions-actions-mobile></tamu-gisc-trip-planner-directions-actions-mobile>
 
   <!-- Directions List -->
   <div *ngIf="result?.directions && result?.modeSwitches && !result?.isProcessing && !result?.isError">
     <div class="switch-container" *ngFor="let mode of result?.modeSwitches; let i = index">
-      <trip-planner-mode-switch [modeSwitch]="mode" [result]="result"></trip-planner-mode-switch>
+      <tamu-gisc-trip-planner-mode-switch [modeSwitch]="mode" [result]="result"></tamu-gisc-trip-planner-mode-switch>
     </div>
   </div>
 </div>

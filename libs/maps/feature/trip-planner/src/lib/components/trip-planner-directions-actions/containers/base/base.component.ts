@@ -9,7 +9,7 @@ import * as guid from 'uuid/v4';
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 
 @Component({
-  selector: 'trip-planner-directions-actions',
+  selector: 'tamu-gisc-trip-planner-directions-actions',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

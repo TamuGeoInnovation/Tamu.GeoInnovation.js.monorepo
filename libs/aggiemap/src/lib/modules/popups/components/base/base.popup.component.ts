@@ -12,7 +12,7 @@ import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-plan
 import esri = __esri;
 
 @Component({
-  selector: 'base-popup-component',
+  selector: 'tamu-gisc-base-popup-component',
   templateUrl: './base.popup.component.html'
 })
 export class GeneralDirectionsPopupComponent implements OnInit, OnDestroy {

@@ -5,7 +5,7 @@ import { TripPlannerOptionsBaseComponent } from '../base/base.component';
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 
 @Component({
-  selector: 'gisc-trip-planner-biking-options',
+  selector: 'tamu-gisc-trip-planner-biking-options',
   templateUrl: './trip-planner-biking-options.component.html',
   styleUrls: ['../../containers/base/base.component.scss']
 })

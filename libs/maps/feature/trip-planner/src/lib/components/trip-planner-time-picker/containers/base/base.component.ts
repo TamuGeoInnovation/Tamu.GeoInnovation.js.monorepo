@@ -7,7 +7,7 @@ import { DlDateTimePickerChange } from 'angular-bootstrap-datetimepicker';
 import { TimeModeOption, TripPlannerService } from '../../../../services/trip-planner.service';
 
 @Component({
-  selector: 'trip-planner-time-picker',
+  selector: 'tamu-gisc-trip-planner-time-picker',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss']
 })

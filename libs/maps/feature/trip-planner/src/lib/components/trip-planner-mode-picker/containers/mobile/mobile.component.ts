@@ -5,7 +5,7 @@ import { TripPlannerService } from '../../../../services/trip-planner.service';
 import { TripPlannerModePickerComponent } from '../base/base.component';
 
 @Component({
-  selector: 'trip-planner-mode-picker-mobile',
+  selector: 'tamu-gisc-trip-planner-mode-picker-mobile',
   templateUrl: './mobile.component.html',
   styleUrls: ['../base/base.component.scss', './mobile.component.scss']
 })

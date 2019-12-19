@@ -11,7 +11,7 @@ import { TripPlannerParkingOptionsComponent } from '../../components/parking/tri
 import { TripPlannerBikingOptionsComponent } from '../../components/biking/trip-planner-biking-options.component';
 
 @Component({
-  selector: 'gisc-trip-planner-options',
+  selector: 'tamu-gisc-trip-planner-options',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

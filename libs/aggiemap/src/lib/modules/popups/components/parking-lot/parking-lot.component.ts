@@ -8,7 +8,7 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { GeneralDirectionsPopupComponent } from '../base/base.popup.component';
 
 @Component({
-  selector: 'parking-lot-popup-component',
+  selector: 'tamu-gisc-parking-lot-popup-component',
   templateUrl: './parking-lot.component.html',
   styleUrls: ['../base/base.popup.component.scss']
 })

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { TripPlannerService } from '../../../../services//trip-planner.service';
 
 @Component({
-  selector: 'trip-planner-mode-picker',
+  selector: 'tamu-gisc-trip-planner-mode-picker',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss']
 })

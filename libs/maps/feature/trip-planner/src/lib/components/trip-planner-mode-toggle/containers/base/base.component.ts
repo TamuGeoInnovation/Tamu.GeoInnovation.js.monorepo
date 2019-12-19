@@ -6,7 +6,7 @@ import { TripPlannerService } from '../../../../services/trip-planner.service';
 import { TripResult } from '../../../../core/trip-planner-core';
 
 @Component({
-  selector: 'gisc-trip-planner-mode-toggle',
+  selector: 'tamu-gisc-trip-planner-mode-toggle',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

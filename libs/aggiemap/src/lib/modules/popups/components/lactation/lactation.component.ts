@@ -9,7 +9,7 @@ import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 import { GeneralDirectionsPopupComponent } from '../base/base.popup.component';
 
 @Component({
-  selector: 'lactation-popup-component',
+  selector: 'tamu-gisc-lactation-popup-component',
   templateUrl: './lactation.component.html',
   styleUrls: ['../base/base.popup.component.scss']
 })

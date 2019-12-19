@@ -10,7 +10,7 @@ import { CompoundSettings } from '@tamu-gisc/common/ngx/settings';
 import { TripPlannerRuleMode, TripPlannerService } from '../../../../services/trip-planner.service';
 
 @Component({
-  selector: 'gisc-trip-planner-options-base',
+  selector: 'tamu-gisc-trip-planner-options-base',
   template: ''
 })
 export class TripPlannerOptionsBaseComponent {

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { TripPlannerConnectionService, TripPlannerConnection } from '../../../../services/trip-planner-connection.service';
 
 @Component({
-  selector: 'trip-planner-connection-select',
+  selector: 'tamu-gisc-trip-planner-connection-select',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss']
 })

@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  <trip-planner-directions-actions *ngIf="result && result?.isFulfilled"></trip-planner-directions-actions>
+  <tamu-gisc-trip-planner-directions-actions *ngIf="result && result?.isFulfilled"></tamu-gisc-trip-planner-directions-actions>
 
   <!-- User Instructions  -->
   <div id="direction-feedback" *ngIf="result?.isProcessing || !result?.directions || result?.isError">
@@ -34,7 +34,7 @@
   <!-- Directions List -->
   <div *ngIf="result?.directions && result?.modeSwitches && !result?.isProcessing && !result?.isError">
     <div class="switch-container" *ngFor="let mode of result?.modeSwitches; let i = index">
-      <trip-planner-mode-switch [modeSwitch]="mode" [result]="result"></trip-planner-mode-switch>
+      <tamu-gisc-trip-planner-mode-switch [modeSwitch]="mode" [result]="result"></tamu-gisc-trip-planner-mode-switch>
     </div>
   </div>
 </div>

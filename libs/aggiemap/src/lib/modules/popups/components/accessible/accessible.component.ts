@@ -9,7 +9,7 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { GeneralDirectionsPopupComponent } from '../base/base.popup.component';
 
 @Component({
-  selector: 'accessible-popup-component',
+  selector: 'tamu-gisc-accessible-popup-component',
   templateUrl: './accessible.component.html',
   styleUrls: ['../base/base.popup.component.scss']
 })

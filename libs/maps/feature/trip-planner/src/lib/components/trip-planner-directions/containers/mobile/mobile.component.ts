@@ -7,7 +7,7 @@ import { TripPlannerDirectionsComponent } from '../base/base.component';
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 
 @Component({
-  selector: 'trip-planner-directions-mobile',
+  selector: 'tamu-gisc-trip-planner-directions-mobile',
   templateUrl: './mobile.component.html',
   styleUrls: ['../base/base.component.scss', './mobile.component.scss']
 })
