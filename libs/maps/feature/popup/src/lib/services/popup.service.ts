@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Component } from '@angular/core';
 
 import { HitTestSnapshot } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -23,7 +23,7 @@ export class PopupService {
    * @returns {*}
    * @memberof PopupService
    */
-  public getComponent(snapshot: HitTestSnapshot): any {
+  public getComponent(snapshot: HitTestSnapshot) {
     // Handle case if popup component override is provided.
     if (snapshot.popupComponent) {
       return snapshot.popupComponent;

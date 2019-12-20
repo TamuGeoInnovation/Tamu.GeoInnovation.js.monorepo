@@ -1,3 +1,4 @@
+import { Component, ComponentRef } from '@angular/core';
 import esri = __esri;
 
 /**
@@ -242,6 +243,7 @@ export type LayerSource = LayerSourceType & {
    */
   popupTemplate?: esri.PopupTemplateProperties;
 
+  // tslint:disable-next-line:no-any
   popupComponent?: any;
 
   /**

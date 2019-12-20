@@ -32,5 +32,6 @@
     "yaml",
     "yml"
   ],
-  "jest.autoEnable": false
+  "jest.autoEnable": false,
+  "cSpell.enabled": true
 }
