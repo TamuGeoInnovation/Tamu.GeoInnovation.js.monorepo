@@ -7,11 +7,8 @@ import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
-import { FeaetureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
 import { ChartsModule } from '@tamu-gisc/charts';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
-import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
-import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
 
 import { MapComponent } from './components/map.component';
 
@@ -32,11 +29,8 @@ const routes: Routes = [
     EsriMapModule,
     SearchModule,
     SidebarModule,
-    FeaetureSelectorModule,
     ChartsModule,
-    UITamuBrandingModule,
-    LayerFilterModule,
-    LayerListModule
+    UITamuBrandingModule
   ],
 
   providers: [EsriModuleProviderService]
