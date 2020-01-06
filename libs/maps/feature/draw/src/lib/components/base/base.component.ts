@@ -66,7 +66,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   @Input()
   public circleTool = true;
 
-  // Verion group/tools  default rendering states
+  // Version group/tools  default rendering states
 
   @Input()
   public versionTools = true;
@@ -126,6 +126,10 @@ export class BaseComponent implements OnInit, OnDestroy {
               if (event.state === 'complete') {
                 this.emitDrawn(event.target.layer.graphics);
               }
+            });
+
+            this.model.on('delete', (event) => {
+              this.emitDrawn(event.target.layer.graphics);
             });
 
             this._activeToolWatchHandle = this.model.watch('activeTool', (tool) => {
