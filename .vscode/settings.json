@@ -31,5 +31,7 @@
     "typescriptreact",
     "yaml",
     "yml"
-  ]
+  ],
+  "jest.autoEnable": false,
+  "cSpell.enabled": true
 }

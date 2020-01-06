@@ -1,4 +1,4 @@
-import { Injectable, Optional, Inject } from '@angular/core';
+import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AsyncSubject, Observable, BehaviorSubject } from 'rxjs';
 
@@ -11,7 +11,6 @@ import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
-import FeatureLayerProperties = __esri.FeatureLayerProperties;
 
 @Injectable()
 export class EsriMapService {
@@ -633,10 +632,7 @@ interface LayerProperties extends esri.LayerProperties, esri.TileLayerProperties
 }
 
 /**
- * Locally stored esri map and view class insntances
- *
- * @export
- * @interface MapServiceInstance
+ * Locally stored esri map and view class instances
  */
 export interface MapServiceInstance {
   map: esri.Map;
@@ -679,7 +675,7 @@ interface SelectFeaturesProperties {
    * @type {string}
    * @memberof SelectFeaturesProperties
    */
-  popupComponent?: string;
+  popupComponent?: Component;
 }
 
 interface ZoomProperties {
@@ -699,7 +695,7 @@ export interface HitTestSnapshot {
    * @type {string}
    * @memberof HitTestSnapshot
    */
-  popupComponent?: string;
+  popupComponent?: Component;
 }
 
 export interface MapViewProperties {

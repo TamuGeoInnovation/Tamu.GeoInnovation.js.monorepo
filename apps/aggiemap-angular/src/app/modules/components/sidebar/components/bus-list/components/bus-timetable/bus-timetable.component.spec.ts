@@ -1,14 +1,15 @@
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+
+import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
+import { EsriMapModule } from '@tamu-gisc/maps/esri';
+import { SearchModule } from '@tamu-gisc/search';
+import { BusService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BusTimetableComponent } from './bus-timetable.component';
-import { BusService } from '../../../../../../services/transportation/bus/bus.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { RouterTestingModule } from '@angular/router/testing';
-import { SearchModule } from '@tamu-gisc/search';
-import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 
-describe('BusTimetableComponent', () => {
+describe('BusTimetableComponent (isolated)', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, EsriMapModule, RouterTestingModule, SearchModule, EnvironmentModule],
@@ -26,4 +27,48 @@ describe('BusTimetableComponent', () => {
   it('should create', inject([BusTimetableComponent], (component: BusTimetableComponent) => {
     expect(component).toBeTruthy();
   }));
+});
+
+describe('BusTimeTableComponent (integrated)', () => {
+  let fixture: ComponentFixture<BusTimetableComponent>;
+  let component: BusTimetableComponent;
+
+  beforeEach(async () => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, EsriMapModule, RouterTestingModule, SearchModule, EnvironmentModule],
+      declarations: [BusTimetableComponent],
+      providers: [
+        BusService,
+        {
+          provide: env,
+          useValue: { SearchSources: [] }
+        }
+      ]
+    });
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(BusTimetableComponent);
+    component = fixture.componentInstance;
+
+    component.route = {
+      Color: 'color',
+      Description: 'description',
+      Group: {
+        IsGameDay: false,
+        Name: 'name',
+        Order: 0
+      },
+      Icon: 'icon',
+      Key: 'key',
+      Name: 'name',
+      ShortName: 'short name'
+    };
+
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

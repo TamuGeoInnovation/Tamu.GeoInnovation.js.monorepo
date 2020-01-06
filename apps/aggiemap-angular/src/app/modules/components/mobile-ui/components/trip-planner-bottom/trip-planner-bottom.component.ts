@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-
-import { TripPlannerService } from '../../../../services/trip-planner/trip-planner.service';
-import { TripResult } from '../../../../services/trip-planner/core/trip-planner-core';
-import { UIDragService } from '../../../../services/ui/ui-drag.service';
 import { switchMap, takeUntil, pluck } from 'rxjs/operators';
+
+import { TripPlannerService, TripResult } from '@tamu-gisc/maps/feature/trip-planner';
+import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
 @Component({
   selector: 'app-trip-planner-bottom',
@@ -14,7 +13,7 @@ import { switchMap, takeUntil, pluck } from 'rxjs/operators';
 })
 export class TripPlannerBottomComponent implements OnInit, OnDestroy {
   /**
-   * Unique component identifier generated from the drag state service, and provided to the UIDragService.
+   * Unique component identifier generated from the drag state service, and provided to the DragService.
    *
    * @type {string}
    * @memberof TripPlannerBottomComponent
@@ -32,7 +31,7 @@ export class TripPlannerBottomComponent implements OnInit, OnDestroy {
 
   public result: TripResult;
 
-  constructor(private tripPlanner: TripPlannerService, private router: Router, private dragService: UIDragService) {
+  constructor(private tripPlanner: TripPlannerService, private router: Router, private dragService: DragService) {
     this.identifier = dragService.register(this);
   }
 

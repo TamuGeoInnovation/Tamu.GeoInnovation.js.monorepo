@@ -66,7 +66,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   @Input()
   public circleTool = true;
 
-  // Verion group/tools  default rendering states
+  // Version group/tools  default rendering states
 
   @Input()
   public versionTools = true;
@@ -122,10 +122,23 @@ export class BaseComponent implements OnInit, OnDestroy {
               }
             });
 
+            // Handle component graphic emissions on any valid update event type:
+            //
+            // - Shape update complete
+            // - Shape move stop
+            // - Shape reshape stop
             this.model.on('update', (event) => {
-              if (event.state === 'complete') {
+              if (
+                event.state === 'complete' ||
+                (event.toolEventInfo && event.toolEventInfo.type === 'move-stop') ||
+                (event.toolEventInfo && event.toolEventInfo.type === 'reshape-stop')
+              ) {
                 this.emitDrawn(event.target.layer.graphics);
               }
+            });
+
+            this.model.on('delete', (event) => {
+              this.emitDrawn(event.target.layer.graphics);
             });
 
             this._activeToolWatchHandle = this.model.watch('activeTool', (tool) => {

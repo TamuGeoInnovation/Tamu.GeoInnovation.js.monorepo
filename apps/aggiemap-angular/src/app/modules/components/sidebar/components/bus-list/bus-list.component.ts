@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 
-import { BusService, TSRoute } from '../../../../services/transportation/bus/bus.service';
+import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
 
 @Component({

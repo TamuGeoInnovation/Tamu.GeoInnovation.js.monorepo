@@ -154,6 +154,33 @@
     },
     "ui-kits-ngx-navigation-mobile-tab": {
       "tags": []
+    },
+    "signage-angular-e2e": {
+      "tags": []
+    },
+    "signage-angular": {
+      "tags": []
+    },
+    "maps-feature-popup": {
+      "tags": []
+    },
+    "ui-kits-ngx-interactions-draggable": {
+      "tags": []
+    },
+    "ui-kits-ngx-layout-structural": {
+      "tags": []
+    },
+    "signage": {
+      "tags": []
+    },
+    "aggiemap": {
+      "tags": []
+    },
+    "maps-feature-trip-planner": {
+      "tags": []
+    },
+    "ui-kits-ngx-interactions-clipboard": {
+      "tags": []
     }
   }
 }

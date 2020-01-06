@@ -9,7 +9,9 @@ import {
   AfterViewInit,
   ViewChild
 } from '@angular/core';
-import { IAccordionModel } from '../accordion.component';
+
+import { AccordionService } from '../services/accordion.service';
+import { IAccordionModel } from '../services/accordion.service';
 
 @Component({
   selector: 'tamu-gisc-accordion-content',
@@ -24,6 +26,8 @@ export class AccordionContentComponent implements OnInit, OnChanges, OnDestroy, 
     resize: false
   };
 
+  public state = this.comm.state;
+
   /**
    * If `resize` is set to `true`, this will be set to the mutation observer so that the directive
    * can dispose of the observer on component destroy.
@@ -37,7 +41,7 @@ export class AccordionContentComponent implements OnInit, OnChanges, OnDestroy, 
   @ViewChild('content', { static: true })
   public _container: ElementRef;
 
-  constructor() {}
+  constructor(private comm: AccordionService) {}
 
   public ngOnInit() {}
 

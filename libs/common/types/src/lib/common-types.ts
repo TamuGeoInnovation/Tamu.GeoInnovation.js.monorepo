@@ -1,3 +1,4 @@
+import { Component, ComponentRef } from '@angular/core';
 import esri = __esri;
 
 /**
@@ -242,7 +243,8 @@ export type LayerSource = LayerSourceType & {
    */
   popupTemplate?: esri.PopupTemplateProperties;
 
-  popupComponent?: string;
+  // tslint:disable-next-line:no-any
+  popupComponent?: any;
 
   /**
    * Legend items that are shown disabled in the legend as the layer visibility is on/off

@@ -1,14 +1,14 @@
 import { async, TestBed } from '@angular/core/testing';
-import { FeaetureSelectorModule } from './maps-feature-feature-selector.module';
+import { FeatureSelectorModule } from './maps-feature-feature-selector.module';
 
-describe('FeaetureSelectorModule', () => {
+describe('FeatureSelectorModule (isolated)', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [FeaetureSelectorModule]
+      imports: [FeatureSelectorModule]
     }).compileComponents();
   }));
 
   it('should create', () => {
-    expect(FeaetureSelectorModule).toBeDefined();
+    expect(FeatureSelectorModule).toBeDefined();
   });
 });

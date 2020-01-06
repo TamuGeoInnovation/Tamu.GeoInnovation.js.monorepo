@@ -1,0 +1,9 @@
+@import 'libs/sass/mixins';
+@import 'libs/sass/components/popup';
+
+img {
+  @include transform(rotateZ(90deg));
+  margin-top: 3.5rem;
+  max-width: 130%;
+  margin-left: -3rem;
+}

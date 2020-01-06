@@ -55,7 +55,14 @@
       "@tamu-gisc/ui-kits/ngx/branding": ["libs/ui-kits/ngx/branding/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/forms": ["libs/ui-kits/ngx/forms/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/layout": ["libs/ui-kits/ngx/layout/src/index.ts"],
-      "@tamu-gisc/ui-kits/ngx/navigation/mobile-tab": ["libs/ui-kits/ngx/navigation/mobile-tab/src/index.ts"]
+      "@tamu-gisc/ui-kits/ngx/navigation/mobile-tab": ["libs/ui-kits/ngx/navigation/mobile-tab/src/index.ts"],
+      "@tamu-gisc/maps/feature/popup": ["libs/maps/feature/popup/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/interactions/draggable": ["libs/ui-kits/ngx/interactions/draggable/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/layout/structural": ["libs/ui-kits/ngx/layout/structural/src/index.ts"],
+      "@tamu-gisc/signage": ["libs/signage/src/index.ts"],
+      "@tamu-gisc/aggiemap": ["libs/aggiemap/src/index.ts"],
+      "@tamu-gisc/maps/feature/trip-planner": ["libs/maps/feature/trip-planner/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/interactions/clipboard": ["libs/ui-kits/ngx/interactions/clipboard/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

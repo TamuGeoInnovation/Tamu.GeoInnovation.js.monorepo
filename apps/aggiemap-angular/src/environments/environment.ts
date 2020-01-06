@@ -12,8 +12,11 @@ import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 
 import { Connections, Definitions as d } from './definitions';
 
+import { Popups } from '@tamu-gisc/aggiemap';
+
 export * from './definitions';
 export * from './notification-events';
+export * from './polygons';
 
 // Persistent layer definitions that will be processed by a factory and added to the map.
 export const LayerSources: LayerSource[] = [
@@ -183,7 +186,6 @@ export const LayerSources: LayerSource[] = [
     id: d.EMERGENCY_PHONES.layerId,
     title: d.EMERGENCY_PHONES.name,
     url: d.EMERGENCY_PHONES.url,
-    // popupComponent: d.EMERGENCY_PHONES.popupComponent,
     listMode: 'show',
     loadOnInit: true,
     visible: false,
@@ -203,7 +205,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'hide',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BuildingPopupComponent'
+    popupComponent: Popups.BuildingPopupComponent
   },
   {
     type: 'graphic',
@@ -328,7 +330,7 @@ export const SearchSources: SearchSource[] = [
     scoringKeys: ['attributes.BldgAbbr', 'attributes.Number', 'attributes.BldgName'],
     featuresLocation: 'features',
     displayTemplate: '{{attributes.BldgName}} ({{attributes.Number}})',
-    popupComponent: 'BuildingPopupComponent',
+    popupComponent: Popups.BuildingPopupComponent,
     searchActive: true
   },
   {
@@ -344,7 +346,7 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{{attributes.BldgName}} ({{attributes.Number}})',
-    popupComponent: 'BuildingPopupComponent',
+    popupComponent: Popups.BuildingPopupComponent,
     searchActive: false
   },
   {
@@ -460,7 +462,7 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{{attributes.LotName}}',
-    popupComponent: 'BuildingPopupComponent',
+    popupComponent: Popups.BuildingPopupComponent,
     searchActive: true
   },
   {
@@ -478,7 +480,7 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{{attributes.LotName}}',
-    popupComponent: 'ParkingLotPopupComponent',
+    popupComponent: Popups.ParkingLotPopupComponent,
     searchActive: true
   },
   {
@@ -496,7 +498,7 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{{attributes.Name}}',
-    popupComponent: 'PoiPopupComponent',
+    popupComponent: Popups.PoiPopupComponent,
     searchActive: true
   },
   {

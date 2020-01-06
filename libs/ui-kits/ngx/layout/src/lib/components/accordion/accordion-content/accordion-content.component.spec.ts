@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AccordionContentComponent } from './accordion-content.component';
+import { AccordionService } from '../services/accordion.service';
 
 describe('AccordionContentComponent', () => {
   let component: AccordionContentComponent;
@@ -8,9 +9,9 @@ describe('AccordionContentComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AccordionContentComponent ]
-    })
-    .compileComponents();
+      declarations: [AccordionContentComponent],
+      providers: [AccordionService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

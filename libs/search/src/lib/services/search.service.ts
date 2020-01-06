@@ -1,4 +1,4 @@
-import { Injectable, Inject, Optional } from '@angular/core';
+import { Injectable, Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ReplaySubject, Observable, BehaviorSubject, forkJoin, of, from } from 'rxjs';
 import { toArray, concatMap, switchMap } from 'rxjs/operators';
@@ -576,7 +576,8 @@ export interface SearchSource {
    * @type {string}
    * @memberof SearchSource
    */
-  popupComponent?: string;
+  // tslint:disable-next-line: no-any
+  popupComponent?: any;
 
   /**
    * A list of dot notation feature properties/attributes in order or raking priority used

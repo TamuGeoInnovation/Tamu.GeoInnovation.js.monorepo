@@ -4,7 +4,7 @@ import { pluck } from 'rxjs/operators';
 
 const _initialState: TestingStore = { isTesting: false };
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TestingService {
   private _store: BehaviorSubject<TestingStore> = new BehaviorSubject(_initialState);
   public store: Observable<TestingStore> = this._store.asObservable();
@@ -13,7 +13,7 @@ export class TestingService {
     this._determineTestingMode();
   }
 
-  public get(property: string) {
+  public get(property: keyof TestingStore) {
     return this.store.pipe(pluck(property));
   }
 

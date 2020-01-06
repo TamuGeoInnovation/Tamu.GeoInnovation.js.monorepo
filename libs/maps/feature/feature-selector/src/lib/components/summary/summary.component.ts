@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { BaseChartComponent } from '@tamu-gisc/charts';
 
@@ -8,7 +8,7 @@ import { FeatureCollectorService } from '../../services/collector.service';
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-slection-summary',
+  selector: 'tamu-gisc-selection-summary',
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss'],
   providers: [FeatureCollectorService]
@@ -30,7 +30,7 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
   public collection: Observable<esri.Graphic[]>;
 
   /**
-   * Query for a list of BaseChartComponent subclasses such as LineChartComponent, BarChartCompoonent,
+   * Query for a list of BaseChartComponent subclasses such as LineChartComponent, BarChartComponent,
    * etc, that all extend from the BaseChartComponent. Collector collection will be injected as their
    * data source instead of template property binding.
    */

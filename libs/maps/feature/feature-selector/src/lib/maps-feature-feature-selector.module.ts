@@ -12,4 +12,4 @@ import { FeatureCollectorService } from './services/collector.service';
   declarations: [SelectionSummaryComponent],
   exports: [SelectionSummaryComponent]
 })
-export class FeaetureSelectorModule {}
+export class FeatureSelectorModule {}

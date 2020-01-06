@@ -1,0 +1,20 @@
+<div class="popup-section">
+  <div class="feature-style-1">
+    <p>Submission Details</p>
+  </div>
+
+  <div>
+    <p>Submitted on: {{ data?.attributes.Added }}</p>
+    <p>Sign Type: {{ data?.attributes.signTypeName }}</p>
+    <p>
+      Description: <span *ngIf="data?.attributes.description === 'undefined'">None</span> <span *ngIf="data?.attributes.description !== 'undefined'">{{ data?.attributes.description }}</span>
+    </p>
+  </div>
+</div>
+
+<div class="popup-section" *ngIf="(details | async) !== undefined">
+  <div class="feature-style-1">
+    <p>Image</p>
+  </div>
+  <img [src]="'data:image/jpg;base64,' + (details | async)?.imageBase64String" alt="" />
+</div>

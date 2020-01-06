@@ -1034,7 +1034,10 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "exclude": ["**/node_modules/**", "!apps/gisday-competitions-angular/**"],
-            "tsConfig": ["apps/gisday-competitions-angular/tsconfig.app.json", "apps/gisday-competitions-angular/tsconfig.spec.json"]
+            "tsConfig": [
+              "apps/gisday-competitions-angular/tsconfig.app.json",
+              "apps/gisday-competitions-angular/tsconfig.spec.json"
+            ]
           }
         },
         "serve": {
@@ -1623,6 +1626,339 @@
             "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tab/jest.config.js",
             "setupFile": "libs/ui-kits/ngx/navigation/mobile-tab/src/test-setup.ts",
             "tsConfig": "libs/ui-kits/ngx/navigation/mobile-tab/tsconfig.spec.json"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "signage-angular": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/signage-angular",
+      "sourceRoot": "apps/signage-angular/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/signage-angular",
+            "index": "apps/signage-angular/src/index.html",
+            "main": "apps/signage-angular/src/main.ts",
+            "polyfills": "apps/signage-angular/src/polyfills.ts",
+            "tsConfig": "apps/signage-angular/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "apps/signage-angular/src/favicon.ico",
+              "apps/signage-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
+            "styles": ["apps/signage-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/signage-angular/src/environments/environment.ts",
+                  "with": "apps/signage-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "signage-angular:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "signage-angular:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "signage-angular:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/signage-angular/tsconfig.app.json", "apps/signage-angular/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/signage-angular/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/signage-angular/jest.config.js",
+            "tsConfig": "apps/signage-angular/tsconfig.spec.json",
+            "setupFile": "apps/signage-angular/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "signage-angular-e2e": {
+      "root": "apps/signage-angular-e2e",
+      "sourceRoot": "apps/signage-angular-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/signage-angular-e2e/cypress.json",
+            "tsConfig": "apps/signage-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "signage-angular:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "signage-angular:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/signage-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/signage-angular-e2e/**"]
+          }
+        }
+      }
+    },
+    "maps-feature-popup": {
+      "projectType": "library",
+      "root": "libs/maps/feature/popup",
+      "sourceRoot": "libs/maps/feature/popup/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/maps/feature/popup/tsconfig.lib.json", "libs/maps/feature/popup/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/popup/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/popup/jest.config.js",
+            "tsConfig": "libs/maps/feature/popup/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/popup/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "ui-kits-ngx-interactions-draggable": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/interactions/draggable",
+      "sourceRoot": "libs/ui-kits/ngx/interactions/draggable/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/interactions/draggable/tsconfig.lib.json",
+              "libs/ui-kits/ngx/interactions/draggable/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/interactions/draggable/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/interactions/draggable/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/interactions/draggable/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/interactions/draggable/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "ui-kits-ngx-layout-structural": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/layout/structural",
+      "sourceRoot": "libs/ui-kits/ngx/layout/structural/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/layout/structural/tsconfig.lib.json",
+              "libs/ui-kits/ngx/layout/structural/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/layout/structural/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/layout/structural/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/layout/structural/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/layout/structural/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "signage": {
+      "projectType": "library",
+      "root": "libs/signage",
+      "sourceRoot": "libs/signage/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/signage/tsconfig.lib.json", "libs/signage/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/signage/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/signage/jest.config.js",
+            "tsConfig": "libs/signage/tsconfig.spec.json",
+            "setupFile": "libs/signage/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "aggiemap": {
+      "projectType": "library",
+      "root": "libs/aggiemap",
+      "sourceRoot": "libs/aggiemap/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/aggiemap/tsconfig.lib.json", "libs/aggiemap/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/aggiemap/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/aggiemap/jest.config.js",
+            "tsConfig": "libs/aggiemap/tsconfig.spec.json",
+            "setupFile": "libs/aggiemap/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "maps-feature-trip-planner": {
+      "projectType": "library",
+      "root": "libs/maps/feature/trip-planner",
+      "sourceRoot": "libs/maps/feature/trip-planner/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/maps/feature/trip-planner/tsconfig.lib.json",
+              "libs/maps/feature/trip-planner/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/trip-planner/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/trip-planner/jest.config.js",
+            "tsConfig": "libs/maps/feature/trip-planner/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/trip-planner/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "ui-kits-ngx-interactions-clipboard": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/interactions/clipboard",
+      "sourceRoot": "libs/ui-kits/ngx/interactions/clipboard/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/interactions/clipboard/tsconfig.lib.json",
+              "libs/ui-kits/ngx/interactions/clipboard/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/interactions/clipboard/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/interactions/clipboard/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/interactions/clipboard/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/interactions/clipboard/src/test-setup.ts"
           }
         }
       },
