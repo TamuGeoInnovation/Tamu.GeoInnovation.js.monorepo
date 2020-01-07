@@ -63,7 +63,8 @@
       "@tamu-gisc/aggiemap": ["libs/aggiemap/src/index.ts"],
       "@tamu-gisc/maps/feature/trip-planner": ["libs/maps/feature/trip-planner/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/clipboard": ["libs/ui-kits/ngx/interactions/clipboard/src/index.ts"],
-      "@tamu-gisc/maps/feature/accessibility": ["libs/maps/feature/accessibility/src/index.ts"]
+      "@tamu-gisc/maps/feature/accessibility": ["libs/maps/feature/accessibility/src/index.ts"],
+      "@tamu-gisc/maps/feature/coordinates": ["libs/maps/feature/coordinates/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

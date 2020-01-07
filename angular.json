@@ -2002,6 +2002,37 @@
           "styleext": "scss"
         }
       }
+    },
+    "maps-feature-coordinates": {
+      "projectType": "library",
+      "root": "libs/maps/feature/coordinates",
+      "sourceRoot": "libs/maps/feature/coordinates/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/maps/feature/coordinates/tsconfig.lib.json",
+              "libs/maps/feature/coordinates/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/coordinates/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/coordinates/jest.config.js",
+            "tsConfig": "libs/maps/feature/coordinates/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/coordinates/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {

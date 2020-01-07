@@ -32,14 +32,12 @@ import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu
 import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
 import { PopupsModule } from '@tamu-gisc/aggiemap';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
 
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
 // Pipes
 import { SearchResultPipe } from '../../../assets/pipes/common.pipe';
-
-// Directives
-import { AsyncContentLoadedDirective } from '../directives/async-content-loaded';
 
 // Components
 import { EsriMapComponent } from '../../map/esri-map.component';
@@ -60,8 +58,6 @@ import { MainMobileSidebarComponent } from '../../modules/components/mobile-ui/c
 
 import { BackdropComponent } from '../../modules//components/backdrop/backdrop.component';
 import { ModalComponent } from '../../modules/components/modal/containers/main/base/base.component';
-
-import { MapClickCoordinatesComponent } from '../../modules/components/map-coordinates/map-click-coordinates.component';
 
 import { BusListComponent } from '../components/sidebar/components/bus-list/bus-list.component';
 import { BusRouteComponent } from '../components/sidebar/components/bus-list/components/bus-route/bus-route.component';
@@ -185,7 +181,8 @@ const hybridRoutes: Routes = [
     MapsFeatureTripPlannerModule,
     MapPopupModule,
     PopupsModule,
-    AggiemapModule
+    AggiemapModule,
+    MapsFeatureCoordinatesModule
   ],
   declarations: [
     BackdropComponent,
@@ -206,9 +203,7 @@ const hybridRoutes: Routes = [
     TripPlannerBottomComponent,
     ReportBadRouteComponent,
     MobileSidebarComponent,
-    MainMobileSidebarComponent,
-    MapClickCoordinatesComponent,
-    AsyncContentLoadedDirective
+    MainMobileSidebarComponent
   ],
   exports: [RouterModule]
 })

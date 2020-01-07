@@ -447,9 +447,6 @@ input[type='email'] {
 }
 
 .help {
-  position: fixed;
-  bottom: 0.75rem;
-  left: 1rem;
   height: 1rem;
   width: 1rem;
   z-index: 1;
@@ -1183,7 +1180,6 @@ button[type='submit'] {
 }
 
 @media only screen and (max-width: 768px) {
-
   .container12,
   .container16 {
     width: 87% !important;

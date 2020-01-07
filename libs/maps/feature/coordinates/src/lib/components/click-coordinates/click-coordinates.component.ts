@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-
 import { Subject, Observable } from 'rxjs';
 import { pluck, takeUntil } from 'rxjs/operators';
 
@@ -8,11 +7,11 @@ import { EsriMapService } from '@tamu-gisc/maps/esri';
 import esri = __esri;
 
 @Component({
-  selector: 'map-click-coordinates',
-  templateUrl: './map-click-coordinates.component.html',
-  styleUrls: ['./map-click-coordinates.component.scss']
+  selector: 'tamu-gisc-click-coordinates',
+  templateUrl: './click-coordinates.component.html',
+  styleUrls: ['./click-coordinates.component.scss']
 })
-export class MapClickCoordinatesComponent implements OnInit, OnDestroy {
+export class ClickCoordinatesComponent implements OnInit, OnDestroy {
   private destroy$: Subject<boolean> = new Subject();
   public view: esri.MapView;
 
@@ -40,8 +39,6 @@ export class MapClickCoordinatesComponent implements OnInit, OnDestroy {
 
   /**
    * Set up a coordinate stream with a view immediate-click handler.
-   *
-   * @memberof MapClickCoordinatesComponent
    */
   public immediateClickHandler() {
     this.view.on('immediate-click', (event: esri.MapViewImmediateClickEvent) => {

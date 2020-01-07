@@ -184,6 +184,9 @@
     },
     "maps-feature-accessibility": {
       "tags": []
+    },
+    "maps-feature-coordinates": {
+      "tags": []
     }
   }
 }
