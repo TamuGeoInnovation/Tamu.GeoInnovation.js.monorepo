@@ -25,6 +25,7 @@ import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
+import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
 import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
@@ -53,7 +54,6 @@ import { TripPlannerTopComponent } from '../../modules/components/mobile-ui/comp
 import { OmnisearchComponent } from '../../modules/components/mobile-ui/components/omnisearch/omnisearch.component';
 import { TripPlannerBottomComponent } from '../../modules/components/mobile-ui/components/trip-planner-bottom/trip-planner-bottom.component';
 import { ReportBadRouteComponent } from '../../modules/components/forms/report-bad-route/report-bad-route.component';
-import { MapViewfinderComponent } from '../../modules/components/accessibility/map-viewfinder/map-viewfinder.component';
 
 import { MobileSidebarComponent } from '../../modules/components/mobile-ui/components/sidebar/mobile-sidebar.component';
 import { MainMobileSidebarComponent } from '../../modules/components/mobile-ui/components/sidebar/components/main/main.component';
@@ -169,6 +169,7 @@ const hybridRoutes: Routes = [
     EsriMapModule,
     LayerListModule,
     LegendModule,
+    MapsFeatureAccessibilityModule,
     SearchModule,
     TestingModule,
     ResponsiveModule,
@@ -204,7 +205,6 @@ const hybridRoutes: Routes = [
     OmnisearchComponent,
     TripPlannerBottomComponent,
     ReportBadRouteComponent,
-    MapViewfinderComponent,
     MobileSidebarComponent,
     MainMobileSidebarComponent,
     MapClickCoordinatesComponent,

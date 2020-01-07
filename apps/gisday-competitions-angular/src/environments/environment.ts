@@ -98,7 +98,7 @@ export const SearchSources: SearchSource[] = [
     },
     scoringKeys: ['attributes.BldgAbbr', 'attributes.Number', 'attributes.BldgName'],
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.BldgName}} ({{attributes.Number}})',
+    displayTemplate: '{attributes.BldgName} ({attributes.Number})',
     popupComponent: 'BuildingPopupComponent',
     searchActive: true
   },
@@ -114,7 +114,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.BldgName}} ({{attributes.Number}})',
+    displayTemplate: '{attributes.BldgName} ({attributes.Number})',
     popupComponent: 'BuildingPopupComponent',
     searchActive: false
   }

@@ -8,9 +8,6 @@ import { Component, OnInit, Input, Renderer2, ElementRef, Output, EventEmitter }
 export class BackdropComponent implements OnInit {
   /**
    * Background color of the backdrop. Can be a hex string, rgba() string, or web safe color string..
-   *
-   * @type {(string | number[])}
-   * @memberof BackdropComponent
    */
   @Input()
   public background: string;
@@ -28,9 +25,6 @@ export class BackdropComponent implements OnInit {
    * - 'on-right'
    * - 'on-bottom'
    * - 'on-left'
-   *
-   * @type {string}
-   * @memberof BackdropComponent
    */
   @Input()
   public position: 'off-top' | 'off-right' | 'off-bottom' | 'off-left' | 'on-top' | 'on-right' | 'on-bottom' | 'on-left';

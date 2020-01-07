@@ -1,67 +1,78 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
+import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { Subscription } from 'rxjs';
-
-import { LayerSources } from '../../../../../environments/environment';
 
 import esri = __esri;
+
 @Component({
-  selector: 'map-viewfinder',
-  templateUrl: './map-viewfinder.component.html',
-  styleUrls: ['./map-viewfinder.component.scss']
+  selector: 'tamu-gisc-map-viewfinder',
+  templateUrl: './viewfinder.component.html',
+  styleUrls: ['./viewfinder.component.scss']
 })
 export class MapViewfinderComponent implements OnInit, OnDestroy {
   /**
-   * Esri map service subscription used to retrieve view from the store.
+   * Valid layer source ID which features will be focused.
    *
-   * Subscription stored in order to unsubscribe on component destroy to avoid memory leaks.
-   *
-   * @private
-   * @type {Subscription}
-   * @memberof MapViewfinderComponent
+   * Referenced layer id must be that of a feature layer.
    */
-  private _mapServiceSubscription: Subscription;
+  @Input()
+  public layer: string;
 
   /**
-   * Map view DOM reference
-   *
-   * @private
-   * @type {HTMLDivElement}
-   * @memberof MapViewfinderComponent
+   * Display template for listed focused features.
    */
-  private _mapViewEl: HTMLDivElement;
+  @Input()
+  public template: string;
 
   /**
-   * Store for selected features within the viewfinder. Used in temlate to render list.
+   * Determines the maximum number of features that will display in the
+   * list of focused features.
    *
-   * @type {esri.Graphic[]}
-   * @memberof MapViewfinderComponent
+   * Defaults to the maximum of 10 features.
    */
-  public viewFinderFeatures: esri.Graphic[];
+  @Input()
+  public listLimit = 9;
+
+  /**
+   * Store for selected features within the viewfinder. Used in template to render list.
+   */
+  public viewFinderFeatures: IViewfinderResult[];
 
   /**
    * Determines when the view finder is visible.
-   *
-   * @type {boolean}
-   * @memberof MapViewfinderComponent
    */
   public accessibleNavigation = false;
 
   /**
-   * Viewfinder DOM reference.
-   *
-   * @private
-   * @type {ElementRef}
-   * @memberof MapViewfinderComponent
+   * Map view DOM reference
    */
-  @ViewChild('viewfinder', { static: true }) private viewfinder: ElementRef;
+  private _mapViewEl: HTMLDivElement;
 
-  constructor(private moduleProvider: EsriModuleProviderService, private mapService: EsriMapService) {}
+  /**
+   * Viewfinder DOM reference.
+   */
+  @ViewChild('viewfinder', { static: true })
+  private _viewfinder: ElementRef;
+
+  private _$destroy: Subject<boolean> = new Subject();
+
+  constructor(
+    private moduleProvider: EsriModuleProviderService,
+    private mapService: EsriMapService,
+    private environment: EnvironmentService
+  ) {}
 
   public ngOnInit() {
-    this._mapServiceSubscription = this.mapService.store.subscribe((instance) => {
+    const sources = this.environment.value('LayerSources');
+
+    const source = sources.find((s) => s.id === this.layer);
+
+    this.mapService.store.pipe(takeUntil(this._$destroy)).subscribe((instance) => {
       this._mapViewEl = instance.view.container;
 
       instance.view.on('key-up', (e: esri.MapViewKeyDownEvent) => {
@@ -73,9 +84,9 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
           // Else, the feature intersection calculation does not work as there is no pause for rendering
           // in the event loop until the next event cycle
           setTimeout(() => {
-            const viewfinder = this.viewfinder.nativeElement;
+            const viewfinder = this._viewfinder.nativeElement;
 
-            // Get vertice coordinates of the on-screen viewfinder
+            // Get vertices coordinates of the on-screen viewfinder
             const screenCoords = [
               [
                 viewfinder.offsetLeft - viewfinder.offsetWidth / 2,
@@ -118,9 +129,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
                 rings: [mapCoords]
               });
 
-              const layerSource = LayerSources.find((source) => source.id === 'buildings-layer');
-
-              this.mapService.findLayerOrCreateFromSource(layerSource).then((layer: esri.FeatureLayer) => {
+              this.mapService.findLayerOrCreateFromSource(source).then((layer: esri.FeatureLayer) => {
                 layer
                   .queryFeatures({
                     geometry: polygon,
@@ -129,7 +138,14 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
                   })
                   .then((features) => {
                     // Limit viewfinder results by the first 5 returned.
-                    this.viewFinderFeatures = features.features.slice(0, 5);
+                    this.viewFinderFeatures = features.features.slice(0, this.listLimit).map(
+                      (f): IViewfinderResult => {
+                        return {
+                          display: new TemplateRenderer({ template: this.template, lookup: f }).render(),
+                          graphic: f
+                        };
+                      }
+                    );
                   });
               });
             });
@@ -146,7 +162,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
             // Clear the results layer
 
             this.mapService.selectFeatures({
-              graphics: [this.viewFinderFeatures[parseInt(e.key, 10) - 1].clone()],
+              graphics: [this.viewFinderFeatures[parseInt(e.key, 10) - 1].graphic.clone()],
               shouldShowPopup: true
             });
           }
@@ -161,6 +177,12 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._mapServiceSubscription.unsubscribe();
+    this._$destroy.next();
+    this._$destroy.complete();
   }
+}
+
+interface IViewfinderResult {
+  display: string;
+  graphic: esri.Graphic;
 }
