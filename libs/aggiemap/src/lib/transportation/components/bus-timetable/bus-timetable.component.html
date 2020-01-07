@@ -2,7 +2,7 @@
   <div class="spinning-loader"></div>
 </div>
 
-<div class="table-container" *ngIf="(timetable | async) as tt">
+<div class="table-container" *ngIf="timetable | async as tt">
   <!-- Display error if there are no time rows in the time table -->
   <div *ngIf="tt.length == 0" class="card pre-1 post-1 leader-1 flex flex-column justify-center align-center">
     <i class="material-icons">error_outline</i>

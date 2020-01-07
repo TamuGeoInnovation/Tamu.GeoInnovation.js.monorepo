@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, OnDestroy, HostBinding, ViewChild } from '@angular/core';
-import { TSRoute, BusService } from '@tamu-gisc/maps/feature/trip-planner';
-import { switchMap, takeUntil, shareReplay, distinctUntilChanged } from 'rxjs/operators';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { of, Subject, timer, Observable, NEVER } from 'rxjs';
-import { AccordionComponent, AccordionHeaderComponent } from '@tamu-gisc/ui-kits/ngx/layout';
+import { switchMap, takeUntil, shareReplay, distinctUntilChanged } from 'rxjs/operators';
+
+import { TSRoute, BusService } from '@tamu-gisc/maps/feature/trip-planner';
 
 @Component({
-  selector: 'gisc-bus-route',
+  selector: 'tamu-gisc-bus-route',
   templateUrl: './bus-route.component.html',
   styleUrls: ['./bus-route.component.scss']
 })

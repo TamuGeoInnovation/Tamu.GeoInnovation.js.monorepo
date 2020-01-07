@@ -14,34 +14,19 @@ import { RestroomPopupComponent } from './components/restroom/restroom.component
 import { ReferenceModule } from '../reference/reference.module';
 import { PoiPopupComponent } from './components/poi/poi.component';
 
-@NgModule({
-  imports: [CommonModule, UIClipboardModule, ReferenceModule],
-  declarations: [
-    AccessiblePopupComponent,
-    GeneralDirectionsPopupComponent,
-    BuildingPopupComponent,
-    ConstructionPopupComponent,
-    LactationPopupComponent,
-    ParkingKioskPopupComponent,
-    ParkingLotPopupComponent,
-    RestroomPopupComponent,
-    PoiPopupComponent
-  ],
-  entryComponents: [
-    AccessiblePopupComponent,
-    GeneralDirectionsPopupComponent,
-    BuildingPopupComponent,
-    ConstructionPopupComponent,
-    LactationPopupComponent,
-    ParkingKioskPopupComponent,
-    ParkingLotPopupComponent,
-    RestroomPopupComponent,
-    PoiPopupComponent
-  ]
-})
-export class PopupsModule {}
+const PopsArr = [
+  AccessiblePopupComponent,
+  GeneralDirectionsPopupComponent,
+  BuildingPopupComponent,
+  ConstructionPopupComponent,
+  LactationPopupComponent,
+  ParkingKioskPopupComponent,
+  ParkingLotPopupComponent,
+  RestroomPopupComponent,
+  PoiPopupComponent
+];
 
-export const Popups = {
+const PopsObj = {
   AccessiblePopupComponent,
   GeneralDirectionsPopupComponent,
   BuildingPopupComponent,
@@ -52,3 +37,12 @@ export const Popups = {
   RestroomPopupComponent,
   PoiPopupComponent
 };
+
+@NgModule({
+  imports: [CommonModule, UIClipboardModule, ReferenceModule],
+  declarations: PopsArr,
+  entryComponents: PopsArr
+})
+export class PopupsModule {}
+
+export const Popups = PopsObj;

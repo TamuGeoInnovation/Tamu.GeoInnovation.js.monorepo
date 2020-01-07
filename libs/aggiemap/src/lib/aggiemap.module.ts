@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { PopupsModule } from './modules/popups/popups.module';
-import { ReferenceModule } from './modules/reference/reference.module';
+import { PopupsModule } from './popups/popups.module';
+import { ReferenceModule } from './reference/reference.module';
+import { TransportationModule } from './transportation/transportation.module';
 
 @NgModule({
-  imports: [CommonModule, PopupsModule, ReferenceModule],
-  exports: [PopupsModule, ReferenceModule]
+  imports: [CommonModule, PopupsModule, ReferenceModule, TransportationModule]
 })
 export class AggiemapModule {}

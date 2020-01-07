@@ -5,9 +5,6 @@ import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
 /**
  * Desktop sidebar component that displays the main search component as well as layer list and legend.
- *
- * @export
- * @class ReferenceComponent
  */
 @Component({
   selector: 'app-reference',

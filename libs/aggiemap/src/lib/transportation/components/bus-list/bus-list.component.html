@@ -8,11 +8,11 @@
     <div class="spinning-loader"></div>
   </div>
 
-  <div class="group" *ngFor="let group of (routes | async | groupBy: 'Group.Name':'Group' | orderBy: 'identity.Order')">
-    <p class="group-name">{{ group.identity.Name }}</p>
+  <div class="group" *ngFor="let group of routes | async">
+    <p class="group-name">{{ group.identity['Name'] }}</p>
 
     <div class="routes">
-      <gisc-bus-route *ngFor="let route of group.items" [route]="route"></gisc-bus-route>
+      <tamu-gisc-bus-route *ngFor="let route of group.items" [route]="route"></tamu-gisc-bus-route>
     </div>
   </div>
 </div>

@@ -11,7 +11,7 @@ import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-boot
 import { DesktopGuard, MobileGuard } from '../../modules/routing/guards/device.guard';
 
 // Modules
-import { AggiemapModule } from '@tamu-gisc/aggiemap';
+import { AggiemapModule, BusListComponent } from '@tamu-gisc/aggiemap';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
@@ -58,10 +58,6 @@ import { MainMobileSidebarComponent } from '../../modules/components/mobile-ui/c
 
 import { BackdropComponent } from '../../modules//components/backdrop/backdrop.component';
 import { ModalComponent } from '../../modules/components/modal/containers/main/base/base.component';
-
-import { BusListComponent } from '../components/sidebar/components/bus-list/bus-list.component';
-import { BusRouteComponent } from '../components/sidebar/components/bus-list/components/bus-route/bus-route.component';
-import { BusTimetableComponent } from '../components/sidebar/components/bus-list/components/bus-timetable/bus-timetable.component';
 
 WebFont.load({
   google: {
@@ -193,9 +189,6 @@ const hybridRoutes: Routes = [
     SearchComponent,
     TripPlannerComponent,
     ReferenceComponent,
-    BusListComponent,
-    BusRouteComponent,
-    BusTimetableComponent,
     MobileUIComponent,
     MobileSearchComponent,
     TripPlannerTopComponent,

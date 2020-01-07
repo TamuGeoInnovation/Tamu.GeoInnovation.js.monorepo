@@ -5,7 +5,7 @@ import { tap, shareReplay, switchMap, filter, toArray } from 'rxjs/operators';
 import { BusService, TSRoute, TimetableEntry } from '@tamu-gisc/maps/feature/trip-planner';
 
 @Component({
-  selector: 'gisc-bus-timetable',
+  selector: 'tamu-gisc-bus-timetable',
   templateUrl: './bus-timetable.component.html',
   styleUrls: ['./bus-timetable.component.scss']
 })

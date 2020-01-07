@@ -5,14 +5,15 @@ import { switchMap, tap } from 'rxjs/operators';
 
 import { BusService, TSRoute } from '@tamu-gisc/maps/feature/trip-planner';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
+import { groupBy, Group } from '@tamu-gisc/common/utils/collection';
 
 @Component({
-  selector: 'gisc-bus-list',
+  selector: 'tamu-gisc-bus-list',
   templateUrl: './bus-list.component.html',
   styleUrls: ['./bus-list.component.scss']
 })
 export class BusListComponent implements OnInit, OnDestroy {
-  public routes: Observable<TSRoute[]>;
+  public routes: Observable<Group<TSRoute>[]>;
 
   public responsive: ResponsiveSnapshot;
 
@@ -44,7 +45,9 @@ export class BusListComponent implements OnInit, OnDestroy {
           return i1 - i2;
         });
 
-        return of(sorted);
+        const grouped = groupBy(sorted, 'Group.Name', 'Group');
+
+        return of(grouped);
       }),
       tap(() => {
         setTimeout(() => {
