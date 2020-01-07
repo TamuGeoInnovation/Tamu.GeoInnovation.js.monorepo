@@ -31,9 +31,6 @@ export class LegendService {
 
   /**
    * Determines if the provided layer contains legend items and displays/hides them based on layer display value
-   *
-   * @param {esri.Layer} layer
-   * @memberof LegendService
    */
   public toggleLayerLegendItems(layer: esri.Layer): void {
     // Check if the layer has legend items to begin with.
@@ -53,7 +50,6 @@ export class LegendService {
    *
    * @param {string} id Valid legend item id reference
    * @returns {boolean} Returns true if it exists, false if it does not
-   * @memberof LegendService
    */
   public itemExists(id: string): boolean {
     return this._store.value.findIndex((item) => item.id === id) > -1;
@@ -63,9 +59,6 @@ export class LegendService {
    * Updates the service store with an array of items.
    *
    * Checks if the items being added exist before adding anything, to avoid duplicates.
-   *
-   * @param {LegendItem[]} items
-   * @memberof LegendService
    */
   public addMany(items: LegendItem[]): void {
     // List of items that need to be added, that do not exist yet
@@ -76,11 +69,7 @@ export class LegendService {
   }
 
   /**
-   * Updates the service store exclusing the items provided.
-   *
-   *
-   * @param {LegendItem[]} items
-   * @memberof LegendService
+   * Updates the service store excluding the items provided.
    */
   public removeMany(items: LegendItem[]): void {
     // Array of ID's that do not exists, and should be marked for removal.

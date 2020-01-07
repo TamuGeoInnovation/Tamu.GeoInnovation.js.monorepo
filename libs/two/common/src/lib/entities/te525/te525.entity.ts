@@ -27,29 +27,22 @@ export class TE525 extends StationInfo {
   // [prop: string]: number | null;
 
   // @PrimaryGeneratedColumn({ name: "RECORD" })
-  // @IsNotEmpty()
   // record: number | null = null;
 
   /**
    * Total precipitation, sensor 1
+   *
    * Units: mm
-   * @type {(number | null)}
-   * @memberof CR6
    */
   @Column({ name: 'Precip1_tot', type: 'double precision', nullable: true })
-  // @IsNotEmpty()
-  // @IsNumber()
   public precip1_tot: number | null = null;
 
   /**
    * Total precipitation, sensor 2
+   *
    * Units: mm
-   * @type {(number | null)}
-   * @memberof TE525
    */
   @Column({ name: 'Precip2_Tot', type: 'double precision', nullable: true })
-  // @IsNotEmpty()
-  // @IsNumber()
   public precip2_tot: number | null = null;
 
   constructor(row?: WeatherFlux) {

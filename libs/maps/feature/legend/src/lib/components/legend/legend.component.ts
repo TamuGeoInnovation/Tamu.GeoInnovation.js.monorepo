@@ -56,8 +56,6 @@ export class LegendComponent implements OnInit, OnDestroy {
 
   /**
    * Reports any legend clicks to Google Analytics
-   *
-   * @memberof LegendComponent
    */
   public analyticsReport(item: LegendItem): void {
     const label = {

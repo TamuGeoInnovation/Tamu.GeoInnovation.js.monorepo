@@ -20,8 +20,6 @@ export class PopupService {
    *
    * @param {HitTestSnapshot} snapshot Snapshot object containing graphic collection and the
    *  optional component override reference.
-   * @returns {*}
-   * @memberof PopupService
    */
   public getComponent(snapshot: HitTestSnapshot) {
     // Handle case if popup component override is provided.

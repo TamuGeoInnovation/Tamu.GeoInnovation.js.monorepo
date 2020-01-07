@@ -92,7 +92,6 @@ export class TripPoint {
    * Stores the geometry and dattributes that describe a trip endpoint
    *
    * @param {TripPointProperties} props
-   * @memberof TripPoint
    */
   constructor(props: TripPointProperties) {
     this.source = props.source || '';
@@ -261,7 +260,6 @@ export class TripPoint {
    *
    * @private
    * @returns {string} User-readable feature name.
-   * @memberof TripPoint
    */
   private findName(): string {
     // Dictionary of properties used to check if exist in any Trip Point origin attribute object,
@@ -290,9 +288,6 @@ export class TripPoint {
 
   /**
    * Generates esri graphic properties utilizing the trip point normalized attributes and origin geometry.
-   *
-   * @returns {esri.Graphic}
-   * @memberof TripPoint
    */
   public toEsriGraphic(): esri.Graphic {
     const attributes = { ...this.attributes };
@@ -309,9 +304,6 @@ export class TripPoint {
   /**
    * Returns first matching key value from a dictionary of known unique identifier properties
    * and aliases (building name, building number).
-   *
-   * @returns {string}
-   * @memberof TripPoint
    */
   public getIdentifier(): string {
     const attr = (this.attributes as unknown) as TripPointAttributesMaybeIdentifiable;
@@ -334,7 +326,6 @@ export class TripPoint {
    * transformations applied to them.
    *
    * @param {TripPointOriginTransformationsParams} transformation
-   * @memberof TripPoint
    */
   public addTransformation(transformation: TripPointOriginTransformationsParams) {
     if (!this.originParameters) {
@@ -359,9 +350,6 @@ export interface TripPointAttributes {
    *
    * If a specific name is desired, set value for this property else at the time of trip point
    * normalization, the class will attempt to find a suitable name from known keys containing a name.
-   *
-   * @type {string}
-   * @memberof TripPointAttributes
    */
   name: string;
 
@@ -373,9 +361,6 @@ export interface TripPointAttributes {
    * This value will be parsed into a float type.
    *
    * If value is already parsed into float type, set in geometry object instead.
-   *
-   * @type {string}
-   * @memberof TripPointAttributes
    */
   Latitude?: string;
 
@@ -387,9 +372,6 @@ export interface TripPointAttributes {
    * This value will be parsed into a float type.
    *
    * If value is already parsed into float type, set in geometry object instead.
-   *
-   * @type {string}
-   * @memberof TripPointAttributes
    */
   Longitude?: string;
 }
@@ -399,9 +381,6 @@ export interface TripPointGeometry {
    * Float representation for latitude.
    *
    * Used and set in origin events where latitude is provided as a number type
-   *
-   * @type {number}
-   * @memberof TripPointGeometry
    */
   latitude?: number;
 
@@ -409,9 +388,7 @@ export interface TripPointGeometry {
    * Float representation for longitude.
    *
    * Used and set in origin events where longitude is provided as a number type
-   *
-   * @type {number}
-   * @memberof TripPointGeometry
+
    */
   longitude?: number;
 
@@ -420,9 +397,6 @@ export interface TripPointGeometry {
    *
    * For origin events that derive location from attributes (feature query results)
    * where preserving the result geometry (typically polygon) is desired, for additional processing for example.
-   *
-   * @type {esri.Geometry}
-   * @memberof TripPointGeometry
    */
   raw?: esri.Geometry;
 }
@@ -442,23 +416,16 @@ export interface TripPointOriginParams {
   /**
    * Originating source for trip point.
    *
-   * @memberof TripPointOriginParams
    */
   type: TripPointProperties['source'];
 
   /**
    * Origin value used in the creation of the trip point, before any transformations are applied.
-   *
-   * @type {string}
-   * @memberof TripPointOriginParams
    */
   value?: string | TripPointGeometry | SearchResultBreadcrumbSummary;
 
   /**
    * List of applied transformations AFTER and NOT INCLUDING trip point normalization.
-   *
-   * @type {Array < TripPointOriginTransformationsParams >}
-   * @memberof TripPointOriginParams
    */
   transformations?: Array<TripPointOriginTransformationsParams>;
 }
@@ -486,9 +453,6 @@ export interface TripPointProperties {
    * - `coordinates`: Latitude and longitude values. Expects geolocation API Coords
    * - `url-coordinates`: Latitude and longitude string representation of Coords. Expects URL coordinate string value.
    * - `directions-to-here`: Feature popup "Directions to Here" button. Expects feature geometry.
-   *
-   * @type {string}
-   * @memberof TripPointProperties
    */
   source:
     | ''
@@ -508,9 +472,6 @@ export interface TripPointProperties {
    * immutable objects and not references that are modified as such.
    *
    * In cases where there is a list of search components, the index of the component must be provided.
-   *
-   * @type {number}
-   * @memberof TripPointProperties
    */
   index?: number;
 
@@ -520,9 +481,6 @@ export interface TripPointProperties {
    * standardized to ensure predictable properties for generic methods.
    *
    * A trip point will normalize if the source id reference is valid, and geometry is parsed successfully.
-   *
-   * @type {boolean}
-   * @memberof TripPointProperties
    */
   normalized?: boolean;
 
@@ -531,9 +489,6 @@ export interface TripPointProperties {
    * be included in that construction.
    *
    * Default: `true`
-   *
-   * @type {boolean}
-   * @memberof TripPointProperties
    */
   exportable?: boolean;
 
@@ -544,9 +499,7 @@ export interface TripPointProperties {
    * The display name, as one of many possible keys, is found in this object.
    *
    * This object is normalized into an attributes object.
-   *
-   * @type {TripPointAttributes}
-   * @memberof TripPointProperties
+
    */
   originAttributes?: TripPointAttributes;
 
@@ -558,17 +511,11 @@ export interface TripPointProperties {
    * This object must contain point latitude and longitude values.
    *
    * This object is normalized into an geometry object.
-   *
-   * @type {TripPointGeometry}
-   * @memberof TripPointProperties
    */
   originGeometry?: TripPointGeometry;
 
   /**
    * Describes the originating type and value used to instantiate the trip point.
-   *
-   * @type {TripPointOriginParams}
-   * @memberof TripPointProperties
    */
   originParameters?: TripPointOriginParams;
 
@@ -578,9 +525,6 @@ export interface TripPointProperties {
    * `name` property will always be set and available, for use in UI reflection.
    *
    * All other provided properties will be inherited.
-   *
-   * @type {TripPointAttributes}
-   * @memberof TripPointProperties
    */
   attributes?: TripPointAttributes;
 
@@ -590,9 +534,6 @@ export interface TripPointProperties {
    * Float latitude and logitude will be available.
    *
    * All other provided properties will remain and be inherited into the `raw` object
-   *
-   * @type {TripPointGeometry}
-   * @memberof TripPointProperties
    */
   geometry?: TripPointGeometry;
 }

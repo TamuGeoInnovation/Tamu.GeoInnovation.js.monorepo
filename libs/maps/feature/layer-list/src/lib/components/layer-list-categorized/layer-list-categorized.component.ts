@@ -80,9 +80,6 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
   /**
    * Compares and transfers old "expanded" category values to updated categorized
    * layers to prevent categories from collapsing on view re-render
-   *
-   * @param {LayerListCategory[]} categories
-   * @memberof LayerListCategorizedComponent
    */
   public merge(categories: LayerListCategory<esri.Layer>[]) {
     if (categories && categories.length > 0) {

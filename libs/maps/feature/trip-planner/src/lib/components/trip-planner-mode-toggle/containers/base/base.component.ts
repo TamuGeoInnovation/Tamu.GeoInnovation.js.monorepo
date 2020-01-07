@@ -19,9 +19,6 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
    * This allows setting view active state for the toggle.
    *
    * **Defaults to an empty array if none provided.**
-   *
-   * @type {number[]}
-   * @memberof TripPlannerModeToggleComponent
    */
   @Input()
   public activeModes: number[] = [];
@@ -30,9 +27,6 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
    * Material Icon name.
    *
    * Possible list of icons found @ https://material.io/tools/icons/?style=baseline
-   *
-   * @type {string}
-   * @memberof TripPlannerModeToggleComponent
    */
   @Input()
   public iconName: string;
@@ -45,18 +39,12 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
    *  - Biking
    *
    * This name must match one of the TripPlanner service rules.
-   *
-   * @type {string}
-   * @memberof TripPlannerModeToggleComponent
    */
   @Input()
   public name: string;
 
   /**
    * Short text description of the mode. Used for alt and aria label text.
-   *
-   * @type {string}
-   * @memberof TripPlannerModeToggleComponent
    */
   @Input()
   public label: string;
@@ -65,17 +53,11 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
    * Single trip result for the specified travel mode derived from trip planner results collection.
    *
    * Used to display view ETA, errors, unavailability, etc.
-   *
-   * @type {Observable<TripResult>}
-   * @memberof TripPlannerModeToggleComponent
    */
   public status: Observable<TripResult>;
 
   /**
    * Active state determined by the current mode and the service travel mode.
-   *
-   * @type {Observable<boolean>}
-   * @memberof TripPlannerModeToggleComponent
    */
   public active: Observable<boolean>;
 
@@ -89,9 +71,6 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
    *
    * Correctly determining the travel mode for the toggle is critical because it displays at-a-glance result info
    * such as status, eta, and progress.
-   *
-   * @type {Observable<number>}
-   * @memberof TripPlannerModeToggleComponent
    */
   public travelMode: number;
 
@@ -217,8 +196,6 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
 
   /**
    * Calculate the travel mode from string reference and update call the trip planner service to update it.
-   *
-   * @memberof TripPlannerModeToggleComponent
    */
   public setTravelMode = (modeName: string) => {
     this.tripPlanner.calculateTravelMode(this.activeModes.map((mode) => mode), true);

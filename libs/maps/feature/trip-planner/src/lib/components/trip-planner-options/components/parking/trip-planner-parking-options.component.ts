@@ -15,8 +15,6 @@ export class TripPlannerParkingOptionsComponent extends TripPlannerOptionsBaseCo
   /**
    * Retrieves parking features (decks and lots) from parking service and filters by feature name
    * filtering out any which are empty and duplicates.
-   *
-   * @memberof TripPlannerParkingOptionsComponent
    */
   public parkingFeatures = this.parking.getParkingPermits();
 

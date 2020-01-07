@@ -16,10 +16,7 @@ export class BusTimetableComponent implements OnInit {
   public timetable: Observable<TimetableEntry[][]>;
 
   /**
-   * Emits once when the componet has received time table data.
-   *
-   * @type {EventEmitter<boolean>}
-   * @memberof BusTimetableComponent
+   * Emits once when the component has received time table data.
    */
   @Output()
   public loaded: boolean;

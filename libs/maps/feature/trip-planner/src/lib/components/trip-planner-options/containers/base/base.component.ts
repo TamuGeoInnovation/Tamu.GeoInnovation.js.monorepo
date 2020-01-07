@@ -25,9 +25,6 @@ export class TripPlannerOptionsComponent implements OnInit {
 
   /**
    * Available mode options for the currently selected travel mode.
-   *
-   * @type {Observable<TripPlannerRule>}
-   * @memberof TripPlannerOptionsComponent
    */
   public readonly Options: Observable<TripPlannerRuleMode[]> = this.travelOptions.pipe(
     pluck('travel_mode'),
@@ -67,9 +64,6 @@ export class TripPlannerOptionsComponent implements OnInit {
 
   /**
    * Reference to the component content host. Travel option child components will be rendered within,.
-   *
-   * @type {PopupContentHostDirective}
-   * @memberof PopupComponent
    */
   @ViewChild(RenderHostDirective, { static: true }) public viewHost: RenderHostDirective;
 
@@ -103,8 +97,6 @@ export class TripPlannerOptionsComponent implements OnInit {
 
   /**
    * Renders an travel options component, if one exists, for the current travel mode.
-   *
-   * @memberof PopupComponent
    */
   public render() {
     const component = this.componentService.getComponent();

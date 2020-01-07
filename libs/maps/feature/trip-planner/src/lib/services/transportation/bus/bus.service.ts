@@ -65,9 +65,6 @@ export class BusService {
 
   /**
    * Fetches the bus routes and caches the result for faster access while the service remains alive.
-   *
-   * @returns {Observable<TSRoute[]>}
-   * @memberof BusService
    */
   public getRoutes(): Observable<TSRoute[]> {
     const routes_url = this.base_url + '/';
@@ -239,9 +236,6 @@ export class BusService {
          * Since the primary timetable does not include "waypoints", the provided input name
          * is more often times than not, not included in the primary timetable. In this case,
          * the return value will be `-1`, for "not found";
-         *
-         * @param {string} name
-         * @returns {number}
          */
         const timetableColumnIndex = (name: string): number => {
           return timetable[0].findIndex((record, i, arr) => {
@@ -492,7 +486,6 @@ export class BusService {
    * @param {BusStopWithIndex} departureStop Determined departure geographic point, and its index in the bus stops list
    * @param {BusStopWithIndex} arrivalStop Determined arrival geographic point, and its index in the bus stops list
    * @returns {{ departure: BusStopWithIndex; arrival: BusStopWithIndex }}
-   * @memberof BusService
    */
   public getTripDepartureArrivalStops(
     stops: BusStop[],
@@ -683,9 +676,6 @@ export class BusService {
 
   /**
    * Adds, updates, or removes buses (icons) from the map.
-   *
-   * @param {string} short_name
-   * @memberof BusService
    */
   public toggleBusLocations(short_name: string, action: 'update' | 'remove') {
     const layer = this._busLocationsLayer
@@ -868,8 +858,6 @@ export class BusService {
 
   /**
    * Removes all routes, waypoints, and bus markers from the map for any drawn route(s).
-   *
-   * @memberof BusService
    */
   public removeAllFromMap() {
     this._busLayer.getValue().removeAll();
@@ -886,17 +874,11 @@ export interface TSRoute {
    * CSS RGB color string.
    *
    * Example: `rgb(0,84,166)`
-   *
-   * @type {string}
-   * @memberof TSRoute
    */
   Color: string;
 
   /**
    * JSON string with, from what I can tell, redundant information already in the object.
-   *
-   * @type {string}
-   * @memberof TSRoute
    */
   Description: string;
 
@@ -910,9 +892,6 @@ export interface TSRoute {
    * Bus route name.
    *
    * Example: `Elephant walk`
-   *
-   * @type {string}
-   * @memberof TSRoute
    */
   Name: string;
 
@@ -920,9 +899,6 @@ export interface TSRoute {
    * Bus route number
    *
    * Example: `31`
-   *
-   * @type {string}
-   * @memberof TSRoute
    */
   ShortName: string;
 }
@@ -936,25 +912,16 @@ export interface TSRoute {
 export interface TSRouteGroup {
   /**
    * Specifies if the containing bus group is used on game day.
-   *
-   * @type {boolean}
-   * @memberof TSRouteGroup
    */
   IsGameDay: boolean;
 
   /**
    * Containing bus group name.
-   *
-   * @type {string}
-   * @memberof TSRouteGroup
    */
   Name: string;
 
   /**
    * Specifies display order of containing bus group.
-   *
-   * @type {number}
-   * @memberof TSRouteGroup
    */
   Order: number;
 }

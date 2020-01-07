@@ -43,9 +43,6 @@ export class AltSearchHelper {
    * If the alt lookup definition exists, use the result of that query to map/highlight, and invoke popup.
    *
    * If the alt lookup definition does not exist, use the result of the original query to map/highlight, and invoke popup.
-   *
-   * @param {TripPoint} point
-   * @memberof AltSearchHelper
    */
   public handleSearchResultFeatureSelection(point: TripPoint): void {
     const source = this._sources.find(

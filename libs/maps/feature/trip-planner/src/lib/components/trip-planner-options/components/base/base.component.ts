@@ -16,9 +16,6 @@ import { TripPlannerRuleMode, TripPlannerService } from '../../../../services/tr
 export class TripPlannerOptionsBaseComponent {
   /**
    * Data injected by the trip planner parking options component factory.
-   *
-   * @type {*}
-   * @memberof TripPlannerParkingOptionsComponent
    */
   public settings?: Observable<TripPlannerRuleMode[]>;
 
@@ -29,18 +26,12 @@ export class TripPlannerOptionsBaseComponent {
   /**
    * Invokes the trip planner options service which updates the local store value,
    * as well as updating the service state value.
-   *
-   * @param {(string | TripPlannerRuleMode)} key
-   * @param {*} value
-   * @memberof TripPlannerParkingOptionsBaseComponent
+  
    */
   public setOptionValue<T>(key: string | TripPlannerRuleMode, value: T) {
     /**
      * Creates a flat object with keys derived from the provided string array,
      * and value with the scoped parent function value.
-     *
-     * @param {string[]} e
-     * @returns {*}
      */
     const createOptionsObject = (e: string[]): {} => {
       return e.reduce((acc, curr, index) => {
@@ -85,10 +76,6 @@ export class TripPlannerOptionsBaseComponent {
   /**
    * Get a key value from the  options service which values are a
    * reflection of the local store.
-   *
-   * @param {*} key
-   * @returns {Observable<any>}
-   * @memberof TripPlannerParkingOptionsBaseComponent
    */
   public getOptionValue(key): Observable<CompoundSettings> {
     return this.travelOptions.pipe(pluck(key));

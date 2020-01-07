@@ -26,9 +26,6 @@ import esri = __esri;
 export class PopupComponent implements OnInit, OnDestroy {
   /**
    * Holds graphic items from the mapService hitTest observable.
-   *
-   * @type {esri.Graphic[]}
-   * @memberof PopupComponent
    */
   public snapshot: HitTestSnapshot;
 
@@ -38,9 +35,6 @@ export class PopupComponent implements OnInit, OnDestroy {
    * True will render.
    *
    * False will de-render.
-   *
-   * @type {boolean}
-   * @memberof PopupComponent
    */
   public show: boolean;
 
@@ -48,26 +42,16 @@ export class PopupComponent implements OnInit, OnDestroy {
    * Subscription to the mapServices' hitTest observable.
    *
    * Is referenced to unsubscribe on component destroy.
-   *
-   * @private
-   * @type {Subscription}
-   * @memberof PopupComponent
    */
   private _hitTestSubscription: Subscription;
 
   /**
    * Reference to the component content host. Popup child components will be rendered within,.
-   *
-   * @type {PopupContentHostDirective}
-   * @memberof PopupComponent
    */
   @ViewChild(RenderHostDirective, { static: true }) public viewHost: RenderHostDirective;
 
   /**
    * Allows closing the popup with the keyboard `esc` key.
-   *
-   * @param {KeyboardEvent} event
-   * @memberof PopupComponent
    */
   @HostListener('window:keyup.esc', ['$event'])
   public escapeKeydown(event: KeyboardEvent) {
@@ -102,8 +86,6 @@ export class PopupComponent implements OnInit, OnDestroy {
    * This allows more dynamic templating and Angular-specific data service access and other interaction
    * driven events using the framework itself, as opposed to botching together a bunch of
    * document.querySelector() and manual event handlers.
-   *
-   * @memberof PopupComponent
    */
   public render() {
     if (this.snapshot && this.snapshot.graphics && this.snapshot.graphics.length > 0) {
@@ -135,8 +117,6 @@ export class PopupComponent implements OnInit, OnDestroy {
 
   /**
    * Calls map service to clear hit test data, which removes the popup.
-   *
-   * @memberof PopupComponent
    */
   public close() {
     this.mapService.clearHitTest();

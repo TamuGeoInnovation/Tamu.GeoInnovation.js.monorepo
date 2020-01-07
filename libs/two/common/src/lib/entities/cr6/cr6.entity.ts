@@ -26,21 +26,14 @@ import { WeatherFlux } from '../weatherflux/weatherflux.interface';
 export class CR6 extends StationInfo {
   // [prop: string]: number | string | null;
 
-  // /**
-  //  *
-  //  *
-  //  * @type {(number | null)}
-  //  * @memberof CR6
-  //  */
   // @PrimaryGeneratedColumn({ name: "RECORD" })
   // @IsNotEmpty()
   // record: number | null = null;
 
   /**
    * Time of data collection
+   *
    * Units: yyyy-mm-dd hh:mm:ss
-   * @type {(string | null)}
-   * @memberof CR6
    */
   @Column({ name: 'Timestamp', type: 'datetime', nullable: true })
   @IsNotEmpty()

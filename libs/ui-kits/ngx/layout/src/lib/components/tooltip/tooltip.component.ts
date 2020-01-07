@@ -37,9 +37,6 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
 
   /**
    * Detects if interaction clicks are within the component
-   *
-   * @param {*} event
-   * @memberof TooltipComponent
    */
   @HostListener('document:mousedown', ['$event'])
   public clickOutside(event) {

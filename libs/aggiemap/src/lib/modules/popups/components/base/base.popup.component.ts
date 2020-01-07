@@ -66,7 +66,6 @@ export class GeneralDirectionsPopupComponent implements OnInit, OnDestroy {
    * different layers and are handled there.
    *
    * @param {string} analyticsLabel Formatted feature name that will be used to report to Google Analytics
-   * @memberof BasePopupComponent
    */
   public startDirections(analyticsLabel: string): void {
     this.plannerService.setStops([

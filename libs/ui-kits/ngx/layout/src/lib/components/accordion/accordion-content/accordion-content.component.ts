@@ -31,10 +31,6 @@ export class AccordionContentComponent implements OnInit, OnChanges, OnDestroy, 
   /**
    * If `resize` is set to `true`, this will be set to the mutation observer so that the directive
    * can dispose of the observer on component destroy.
-   *
-   * @private
-   * @type {*}
-   * @memberof AccordionDirective
    */
   private mutationObserver: MutationObserver;
 

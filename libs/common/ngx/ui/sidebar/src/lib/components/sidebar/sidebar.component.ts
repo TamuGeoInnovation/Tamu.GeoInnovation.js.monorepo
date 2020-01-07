@@ -74,9 +74,6 @@ export class SidebarComponent implements AfterContentInit, OnDestroy {
 
   /**
    * Navigates to sidebar nested routes, which renders different components and allows url history
-   *
-   * @param {string} viewName
-   * @memberof SidebarComponent
    */
   public routeHandler(viewName: string): void {
     // Update the current view state whenever the route handler is called.

@@ -14,9 +14,6 @@ import { TimeModeOption, TripPlannerService } from '../../../../services/trip-pl
 export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   /**
    * Trip time mode that determines how the trip results are modified.
-   *
-   * @type {Observable<TimeModeOption>}
-   * @memberof TripPlannerTimePickerComponent
    */
   public timeMode: Observable<TimeModeOption> = this.plannerService.TravelOptions.pipe(
     pluck('time_mode'),
@@ -24,10 +21,7 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   );
 
   /**
-   * Date in milliseconds. If a date is set in the trip planner service, it will be converted to miliseconds.
-   *
-   * @type {number}
-   * @memberof TripPlannerTimePickerComponent
+   * Date in milliseconds. If a date is set in the trip planner service, it will be converted to milliseconds.
    */
   public requestedTime: Date;
   public oldTime: Date;
@@ -35,11 +29,7 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   public dateTimePickerVisible = false;
 
   /**
-   * Subject that triggers on ngOnDestroy lifecycle hook to any active manual observable subscriptions.
-   *
-   * @private
-   * @type {Subject<boolean>}
-   * @memberof TripPlannerTimePickerComponent
+   * Subject that triggers on ngOnDestroy life cycle hook to any active manual observable subscriptions.
    */
   private destroy$: Subject<boolean> = new Subject();
 
@@ -64,9 +54,6 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
    * Set component time mode.
    *
    * Arrival and Departure time modes enable the time picker.
-   *
-   * @param {TimeModeOption} newTimeMode
-   * @memberof TripPlannerTimePickerComponent
    */
   public setTimeMode(newTimeMode: TimeModeOption): void {
     this.plannerService.updateTravelOptions({ time_mode: newTimeMode });
@@ -91,9 +78,6 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
    *
    * Once the update is made in the trip planner service state, the component subscriber will be
    * notified and update it here.
-   *
-   * @param {(DlDateTimePickerChange<Date> | Date)} newRequestedTime
-   * @memberof TripPlannerTimePickerComponent
    */
   public setRequestedTime(newRequestedTime: DlDateTimePickerChange<Date> | Date): void {
     if (newRequestedTime instanceof DlDateTimePickerChange) {

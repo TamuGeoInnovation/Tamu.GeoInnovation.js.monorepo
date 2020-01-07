@@ -30,7 +30,6 @@ export function pairwiseOverlap<T>(elements: T[]): T[][] {
  * @param {string} path Object key path which groups will be made against. Supports dot notation.
  * @param {string} [groupIdentityPath] If provided, will append the resolved key path from any ONE of the collection objects
  * into the resulting grouped object. Supports dot notation.
- * @returns
  */
 export function groupBy<T extends object>(collection: Array<T>, path: string, groupIdentityPath?: string): Array<Group<T>> {
   // Return early if no collection

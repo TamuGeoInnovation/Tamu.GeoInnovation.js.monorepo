@@ -12,18 +12,12 @@ import { AccordionComponent, AccordionHeaderComponent } from '@tamu-gisc/ui-kits
 export class BusRouteComponent implements OnInit, OnDestroy {
   /**
    * Provided TSRoute object from the parent component.
-   *
-   * @type {TSRoute}
-   * @memberof BusRouteComponent
    */
   @Input()
   public route: TSRoute;
 
   /**
    * Describes whether or not any given bus route is drawn on the map.
-   *
-   * @type {boolean}
-   * @memberof BusRouteComponent
    */
   public isActive: boolean;
 
@@ -36,10 +30,6 @@ export class BusRouteComponent implements OnInit, OnDestroy {
   /**
    * Emits once per bus route when the component is destroyed, ending all active and manual
    * observable subscriptions.
-   *
-   * @private
-   * @type {Subject<boolean>}
-   * @memberof BusRouteComponent
    */
   private _destroy$: Subject<boolean> = new Subject();
 
@@ -109,8 +99,6 @@ export class BusRouteComponent implements OnInit, OnDestroy {
 
   /**
    * Either removes or adds the bound route features to/from the map.
-   *
-   * @memberof BusRouteComponent
    */
   public toggleRoute(): void {
     if (!this.isLoading) {

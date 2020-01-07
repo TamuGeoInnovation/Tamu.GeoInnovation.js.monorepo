@@ -26,38 +26,25 @@ import { WeatherFlux } from '../weatherflux/weatherflux.interface';
 export class TCAV extends StationInfo {
   // [prop: string]: number | null;
 
-  // /**
-  //  *
-  //  *
-  //  * @type {(number | null)}
-  //  * @memberof TCAV
-  //  */
   // @PrimaryGeneratedColumn({ name: "RECORD" })
-  // @IsNotEmpty()
   // record: number | null = null;
 
   /**
    * Average soil temperature for each TCAV sensor;
    * x is an index for the number of TCAV sensors
+   *
    * Units: deg C
-   * @type {(number | null)}
-   * @memberof TCAV
    */
   @Column({ name: 'TS_1_1_1', type: 'double precision', nullable: true })
-  // @IsNotEmpty()
-  // @IsNumber()
   public ts_1_1_1: number | null = null;
 
   /**
    * Average soil temperature for each TCAV sensor;
    * x is an index for the number of TCAV sensors
+   *
    * Units: deg C
-   * @type {(number | null)}
-   * @memberof TCAV
    */
   @Column({ name: 'TS_2_1_1', type: 'double precision', nullable: true })
-  // @IsNotEmpty()
-  // @IsNumber()
   public ts_2_1_1: number | null = null;
 
   constructor(row?: WeatherFlux) {

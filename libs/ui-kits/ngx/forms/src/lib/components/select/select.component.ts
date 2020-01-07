@@ -20,9 +20,6 @@ export class SelectComponent<T> implements ControlValueAccessor {
    * Functions as the initial/default or state value of the select element.
    *
    * If no `model` is provided from the parent, the placeholder is automatically selected.
-   *
-   * @type {*}
-   * @memberof SelectComponent
    */
   // tslint:disable-next-line:no-input-rename
   @Input('value')
@@ -40,36 +37,24 @@ export class SelectComponent<T> implements ControlValueAccessor {
 
   /**
    * Iterable data collection that will be used to generate the drop-down options.
-   *
-   * @type {any[]}
-   * @memberof SelectComponent
    */
   @Input()
   public data: T[];
 
   /**
    * Dot-notation string representing the evaluated property used in the display of the option element.
-   *
-   * @type {string}
-   * @memberof SelectComponent
    */
   @Input()
   public displayTemplate: string;
 
   /**
    * Dot-notation string representing the evaluated property used in the option data model.
-   *
-   * @type {string}
-   * @memberof SelectComponent
    */
   @Input()
   public valueTemplate: string;
 
   /**
    * Custom string used as the initial/undefined default option.
-   *
-   * @type {string}
-   * @memberof SelectComponent
    */
   @Input()
   public placeholder?: string;
@@ -78,18 +63,12 @@ export class SelectComponent<T> implements ControlValueAccessor {
    * Determines interactivity availability.
    *
    * Default to `failse`;
-   *
-   * @type {boolean}
-   * @memberof SelectComponent
    */
   @Input()
   public disabled = false;
 
   /**
    * Event emitted when the value of the select input element is changed.
-   *
-   * @type {EventEmitter<any>}
-   * @memberof SelectComponent
    */
   @Output()
   public changed: EventEmitter<T> = new EventEmitter();
@@ -101,9 +80,6 @@ export class SelectComponent<T> implements ControlValueAccessor {
 
   /**
    * Responsible for emitting the model changed event to the parent component.
-   *
-   * @param {Event} event
-   * @memberof SelectComponent
    */
   public changeEvent(event: Event) {
     this.changed.next(this.value);

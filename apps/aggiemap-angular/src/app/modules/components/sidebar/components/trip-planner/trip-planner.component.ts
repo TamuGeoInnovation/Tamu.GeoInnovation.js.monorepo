@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 
-
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
@@ -17,9 +16,6 @@ export class TripPlannerComponent {
 
   /**
    * Planner service observable reference that contains the planner service stops used to create a trip request.
-   *
-   * @type {Observable < TripPoint[] >}
-   * @memberof TripPlannerComponent
    */
   public stops: Observable<TripPoint[]> = this.plannerService.Stops;
 
@@ -27,9 +23,6 @@ export class TripPlannerComponent {
 
   /**
    * Call the planner service to add a result as a trip point to the service stop store
-   *
-   * @param {TripPoint} result Search result emitted from search component
-   * @memberof TripPlannerComponent
    */
   public setSearchResultAsTripStop(result: TripPoint) {
     this.plannerService.setStops([result]);
@@ -37,18 +30,13 @@ export class TripPlannerComponent {
 
   /**
    * Triggered when a search component emits a `dirty` event
-   *
-   * @memberof TripPlannerComponent
    */
   public eventClearRoute() {
     this.plannerService.clearRoute();
   }
 
   /**
-   * Triggered when a search component emits an 'emtpy' event.
-   *
-   * @param {SearchEvent} e
-   * @memberof TripPlannerComponent
+   * Triggered when a search component emits an 'empty' event.
    */
   public eventClearStop(e: SearchEvent) {
     this.plannerService.clearStopAt(e.index);

@@ -162,9 +162,6 @@ export class SearchComponent implements OnInit, OnDestroy {
    * True indicates on-going search that has yet to resolve.
    *
    * False indicates no on-going search or a search that has resolved.
-   *
-   * @type {Observable < boolean >}
-   * @memberof SearchComponent
    */
   public searchStatus: Observable<boolean>;
 
@@ -175,9 +172,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   /**
    * Resolved search status, indicates if the resolved search result includes at least one feature.
-   *
-   * @type {boolean}
-   * @memberof SearchComponent
    */
   public searchResultStatus: boolean;
 
@@ -316,8 +310,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   /**
    * Sets focus on the search results, showing them
-   *
-   * @memberof SearchComponent
    */
   public setFocus(): void {
     this.searchResultsActive = true;
@@ -328,8 +320,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   /**
    * Remove focus from the search results, hiding them
-   *
-   * @memberof SearchComponent
    */
   public loseFocus(): void {
     this.searchResultsActive = false;
@@ -342,7 +332,6 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Event fired on input keyup thatthen sets the next Subject value. Also displays the search results
    *
    * @param {*} event
-   * @memberof SearchComponent
    */
   public change(event: KeyboardEvent): void {
     // Some keyboard keys trigger the change event (e.g. tab).
@@ -363,9 +352,6 @@ export class SearchComponent implements OnInit, OnDestroy {
    *
    * Sets the input value to be the result text, and updates the Subject value to prevent stale
    * suggestions when component is focused on again.
-   *
-   * @param {esri.Graphic} feature
-   * @memberof SearchComponent
    */
   public setSelected(feature: esri.Graphic | string, parentResult: SearchResultItem<unknown>) {
     const isString = typeof feature === 'string';
@@ -405,8 +391,6 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Function wrapper for custom dropdown element arrow navigation.
    *
    * See child function documentation for parameter descriptions.
-   *
-   * @memberof SearchComponent
    */
   public keyControl(e: KeyboardEvent, action: string, target: string): void {
     arrowKeyControl(e, action, target);
@@ -415,8 +399,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * Gets current user location and populates state, handling both success and fail cases
    * (where gelocation is not available or not allowed).
-   *
-   * @memberof SearchComponent
    */
   public geolocate() {
     this.loseFocus();
@@ -520,11 +502,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   /**
    * Uses a template renderer to evaluate the display template with values from the provided feature object.
-   *
-   * @param {object} obj
-   * @param {string} template
-   * @returns
-   * @memberof SearchComponent
    */
   public evaluateDisplayTemplate(obj: object, template: string) {
     return new TemplateRenderer({
@@ -535,8 +512,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   /**
    * Called when the left action icon is pressed. Will emit an event so parent component can handle interaction.
-   *
-   * @memberof SearchComponent
    */
   public emitLeftActionEvent(): void {
     if (this.leftActionIcon) {
@@ -546,8 +521,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   /**
    * Called when the right action icon is pressed. Will emit an event so parent component can handle interaction.
-   *
-   * @memberof SearchComponent
    */
   public emitRightActionEvent(): void {
     if (this.rightActionIcon) {
@@ -572,25 +545,16 @@ export class SearchComponent implements OnInit, OnDestroy {
 export interface SearchEventProperties {
   /**
    * At the time of event emitted, the value of the component.
-   *
-   * @type {string}
-   * @memberof SearchEventProperties
    */
   value?: string;
 
   /**
    * At the time of event emitted, the render index.
-   *
-   * @type {number}
-   * @memberof SearchEventProperties
    */
   index?: number;
 
   /**
    * At the time of the event emitted, whether the component has used user geolocation to populate its state.
-   *
-   * @type {boolean}
-   * @memberof SearchEventProperties
    */
   geolocation?: boolean;
 }
@@ -612,9 +576,6 @@ export class SearchEvent {
    *
    * Event class emitted from the search component on specific events (dirty, empty, etc.),
    * that effectively report component state.
-   *
-   * @param {SearchEventProperties} props
-   * @memberof SearchEvent
    */
   constructor(props: SearchEventProperties) {
     this.value = props.value || undefined;
