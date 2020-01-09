@@ -42,7 +42,8 @@ import { SearchResultPipe } from '../../../assets/pipes/common.pipe';
 // Components
 import { EsriMapComponent } from '../../map/esri-map.component';
 import { SidebarComponent } from '../../modules/components/sidebar/containers/base/base.component';
-import { SearchComponent } from '../../modules/components/search/containers/base/base.component';
+// import { SearchComponent } from '../../modules/components/search/containers/base/base.component';
+import { SearchComponent } from '@tamu-gisc/search';
 import { TripPlannerComponent } from '../../modules/components/sidebar/components/trip-planner/trip-planner.component';
 import { ReferenceComponent } from '../../modules/components/sidebar/components/reference/reference.component';
 
@@ -186,7 +187,7 @@ const hybridRoutes: Routes = [
     EsriMapComponent,
     SearchResultPipe,
     SidebarComponent,
-    SearchComponent,
+    // SearchComponent,
     TripPlannerComponent,
     ReferenceComponent,
     MobileUIComponent,

@@ -5,7 +5,7 @@ import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { getObjectPropertyValues } from '@tamu-gisc/common/utils/object';
 
-import { SearchService, SearchResultBreadcrumbSummary, SearchSource } from '@tamu-gisc/search';
+import { SearchService, SearchSource, ISearchSelection } from '@tamu-gisc/search';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -24,7 +24,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
  * @class AltSearchHelper
  */
 @Injectable()
-export class AltSearchHelper {
+export class AltSearchHelper<T extends object> {
   private _sources: SearchSource[];
 
   constructor(
@@ -44,15 +44,13 @@ export class AltSearchHelper {
    *
    * If the alt lookup definition does not exist, use the result of the original query to map/highlight, and invoke popup.
    */
-  public handleSearchResultFeatureSelection(point: TripPoint): void {
-    const source = this._sources.find(
-      (s) => s.source === (<SearchResultBreadcrumbSummary>point.originParameters.value).source
-    );
+  public handleSearchResultFeatureSelection(result: ISearchSelection<T>): void {
+    const source = this._sources.find((s) => s.source === result.result.breadcrumbs.source);
 
     if (source && source.altLookup) {
       const altSource = this._sources.find((s) => s.source === source.altLookup.source);
 
-      const values = getObjectPropertyValues<string>(point.attributes, source.altLookup.reference.keys);
+      const values = getObjectPropertyValues<string>(result.selection, source.altLookup.reference.keys);
 
       this.searchService
         .search({

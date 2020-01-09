@@ -1,0 +1,43 @@
+<div>
+  <div class="input-action-container" (keydown)="keyControl($event, 'focus', '.focusable')" (focus)="setFocus()">
+    <i class="action-icons material-icons left" *ngIf="leftActionIcon" (mousedown)="setFocus(); emitLeftActionEvent()">{{ leftActionIcon }}</i>
+    <i class="action-icons material-icons right" *ngIf="rightActionIcon && value && (searchStatus | async) === false" (mousedown)="setFocus(); emitRightActionEvent()">{{ rightActionIcon }}</i>
+    <div class="action-icons right lds-ring" *ngIf="(searchStatus | async)">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+
+    <input #search type="text" (keyup)="change($event)" (focus)="setFocus()" (blur)="loseFocus()" [value]="value" [placeholder]="placeholder" aria-owns="search-results-container" aria-autocomplete="both" aria-autocomplete="list" role="textbox" [ngClass]="{ 'margin-left': leftActionIcon, 'margin-right': rightActionIcon }" />
+  </div>
+
+  <div class="search-results-container" role="listbox" (keydown)="keyControl($event, 'focus', '.focusable')">
+    <div *ngIf="searchActionsActive">
+      <div class="my-location" *ngIf="canGeolocate">
+        <p (mousedown)="geolocate()" (keydown.space)="geolocate()" (keydown.enter)="geolocate()" (focus)="setFocus()" (blur)="loseFocus()" class="focusable" tabindex="-1" role="option">
+          Current Location
+        </p>
+      </div>
+    </div>
+
+    <div class="result-categories" *ngIf="searchResultsActive && searchResults && searchResults.results.length > 0">
+      <div class="result-category" *ngFor="let result of searchResults?.results">
+        <div *ngIf="result.features && result.features.length > 0">
+          <p class="category-name">{{ result.name }}</p>
+          <div class="result-item" *ngFor="let feature of result.features">
+            <p (mousedown)="setSelected(feature, result)" (keydown.space)="setSelected(feature, result)" (keydown.enter)="setSelected(feature, result)" (keydown.esc)="loseFocus()" (focus)="setFocus()" (blur)="loseFocus()" class="focusable" tabindex="-1" role="option">
+              {{ evaluateDisplayTemplate(feature, result.displayTemplate) | titlecase }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-categories" *ngIf="searchResultsActive && searchResults && !searchResultStatus">
+        <div class="result-category">
+          <p class="category-name">No results found for "{{ search.value }}".</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

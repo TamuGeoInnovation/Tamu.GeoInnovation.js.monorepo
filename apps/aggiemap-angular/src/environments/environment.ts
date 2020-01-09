@@ -369,7 +369,7 @@ export const SearchSources: SearchSource[] = [
     altLookup: {
       source: 'building-exact',
       reference: {
-        keys: ['HOME1']
+        keys: ['attributes.HOME1']
       }
     }
   },
