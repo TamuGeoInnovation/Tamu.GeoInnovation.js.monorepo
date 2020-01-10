@@ -9,14 +9,12 @@ import { makeUrlParams } from '@tamu-gisc/common/utils/routing';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import esri = __esri;
-
 @Injectable()
-export class SearchService {
+export class SearchService<T> {
   private _sources: SearchSource[];
 
-  private _store: ReplaySubject<SearchResult<esri.Graphic>> = new ReplaySubject(1);
-  public store: Observable<SearchResult<esri.Graphic>> = this._store.asObservable();
+  private _store: ReplaySubject<SearchResult<T>> = new ReplaySubject(1);
+  public store: Observable<SearchResult<T>> = this._store.asObservable();
 
   private _searching: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public searching: Observable<boolean> = this._searching.asObservable();
@@ -33,12 +31,12 @@ export class SearchService {
    * Sets service state to a single instance of SearchResult, containing
    * the results of all source queries, which notifies all subscribers.
    */
-  public search(options: SearchPropertiesObservable): Observable<SearchResult<esri.Graphic>>;
-  public search(options: SearchPropertiesPromise): Promise<SearchResult<esri.Graphic>>;
-  public search(options: SearchProperties): SearchResult<esri.Graphic>;
+  public search(options: SearchPropertiesObservable): Observable<SearchResult<T>>;
+  public search(options: SearchPropertiesPromise): Promise<SearchResult<T>>;
+  public search(options: SearchProperties): SearchResult<T>;
   public search(
     options: SearchPropertiesObservable | SearchPropertiesPromise | SearchProperties
-  ): SearchResult<esri.Graphic> | Promise<SearchResult<esri.Graphic>> | Observable<SearchResult<esri.Graphic>> {
+  ): SearchResult<T> | Promise<SearchResult<T>> | Observable<SearchResult<T>> {
     // Check we don't have an array for sources
     if (!(options.sources instanceof Array)) {
       console.error(`Method expected a source array.`);
@@ -208,7 +206,7 @@ export class SearchService {
         return of(
           new SearchResult({
             results: result.map((r, index: number) => {
-              return <SearchResultItem<esri.Graphic>>{
+              return <SearchResultItem<T>>{
                 name: sources[index].name,
                 // features: r[sources[index].featuresLocation] ? r[sources[index].featuresLocation] : [],
                 features: r[sources[index].featuresLocation]
@@ -216,7 +214,7 @@ export class SearchService {
                   : [],
                 displayTemplate: sources[index].displayTemplate,
                 breadcrumbs: {
-                  source: sources[index].source,
+                  source: sources[index],
                   value: options.values[index]
                 }
               };
@@ -828,10 +826,10 @@ export interface SearchResultBreadcrumbSummary {
    * Empty string in cases where the search value is not set (using interface for type adherence) or the value is
    * inherited through some other event and thus no further search query needed (e.g. map view click event).
    */
-  source: string;
+  source: Partial<SearchSource>;
 
   /**
    * Term used to perform the search query or a value representation of the result from an inherited event.
    */
-  value: string;
+  value: string | unknown;
 }

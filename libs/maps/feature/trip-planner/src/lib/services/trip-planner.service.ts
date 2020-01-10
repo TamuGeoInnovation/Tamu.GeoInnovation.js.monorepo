@@ -47,9 +47,6 @@ import { InrixService } from '../services/transportation/drive/inrix.service';
 import { BikeService } from '../services/transportation/bike/bike.service';
 import { ParkingService } from '../services/transportation/drive/parking.service';
 
-// TODO: Put this polygon in the host environment
-// import { brazosCounty } from '../../../map/polygons';
-
 import esri = __esri;
 
 @Injectable({ providedIn: 'root' })
@@ -399,10 +396,10 @@ export class TripPlannerService implements OnDestroy {
     private analytics: Angulartics2,
     private ns: NotificationService,
     private url: ActivatedRoute,
-    private search: SearchService,
+    private search: SearchService<esri.Graphic>,
     private busService: BusService,
     private bikeService: BikeService,
-    private parkingService: ParkingService,
+    private parkingService: ParkingService<esri.Graphic>,
     private inrixService: InrixService,
     private settings: SettingsService,
     private environment: EnvironmentService
@@ -2109,7 +2106,7 @@ export class TripPlannerService implements OnDestroy {
    * Attempts to execute trip task from URL parameters
    *
    */
-  public loadTripFromURL() {
+  public loadTripFromURL<T extends esri.Graphic>() {
     // Check if mode is set in URL params.
     if (this.url.snapshot.queryParams.mode) {
       // Store mode from URL
@@ -2191,8 +2188,8 @@ export class TripPlannerService implements OnDestroy {
             throwError('No query categories.');
           }
         }),
-        map((res: SearchResult<esri.Graphic>) => {
-          return res.results.map((result: SearchResultItem<esri.Graphic>, index) => {
+        map((res: SearchResult<T>) => {
+          return res.results.map((result: SearchResultItem<T>, index) => {
             return new TripPoint({
               index: categorizedQueryBlocks[index].index,
               source: categorizedQueryBlocks[index].category,

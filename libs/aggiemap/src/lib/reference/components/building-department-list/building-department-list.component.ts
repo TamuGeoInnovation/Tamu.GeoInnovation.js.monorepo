@@ -5,6 +5,8 @@ import { takeUntil } from 'rxjs/operators';
 import { SearchService, SearchSource } from '@tamu-gisc/search';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
+import esri = __esri;
+
 // Pre-defined search source reference to use in the building department search.
 const searchReference = 'university-departments-exact';
 
@@ -26,7 +28,7 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(private searchService: SearchService, private environment: EnvironmentService) {
+  constructor(private searchService: SearchService<esri.Graphic>, private environment: EnvironmentService) {
     if (this.environment.value('SearchSources')) {
       this._sources = this.environment.value('SearchSources');
     }

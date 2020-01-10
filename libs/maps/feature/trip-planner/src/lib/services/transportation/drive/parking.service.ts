@@ -17,7 +17,7 @@ const allParking = ['all-parking'];
 let oneParking: SearchSource;
 
 @Injectable({ providedIn: 'root' })
-export class ParkingService {
+export class ParkingService<T> {
   private _ParkingOptions = new BehaviorSubject<ParkingOptions>({});
   public ParkingOptions = this._ParkingOptions.asObservable();
 
@@ -87,7 +87,7 @@ export class ParkingService {
 
   constructor(
     private moduleProvider: EsriModuleProviderService,
-    private search: SearchService,
+    private search: SearchService<esri.Graphic>,
     private settings: SettingsService,
     private environment: EnvironmentService
   ) {

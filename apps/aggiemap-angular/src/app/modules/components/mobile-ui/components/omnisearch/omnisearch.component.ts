@@ -13,6 +13,9 @@ import { AltSearchHelper } from '../../../../../modules/helper/alt-search.servic
 
 import { offCanvasSlideInFromBottom, offCanvasSlideUpFromTop } from '../../../../animations/elements';
 
+import esri = __esri;
+import { SearchSelection } from '@tamu-gisc/search';
+
 @Component({
   selector: 'omnisearch',
   templateUrl: './omnisearch.component.html',
@@ -60,7 +63,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
     private mapService: EsriMapService,
     private plannerService: TripPlannerService,
     private dragService: DragService,
-    private helper: AltSearchHelper
+    private helper: AltSearchHelper<esri.Graphic>
   ) {
     // Set default search icon on search component on omnisearch initialize.
     this.searchComponentLeftAction = 'menu';
@@ -105,13 +108,26 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
    * - Add stop to the trip planner service
    *
    * Determination depends on the current url params.
-   *
-   * @param {TripPoint} point
    */
-  public handleResult(point: TripPoint) {
+  public handleResult(selected: SearchSelection<esri.Graphic>) {
     if (this.route.snapshot.params.hasOwnProperty('id')) {
       // Add stop to the trip planner service
-      this.plannerService.setStops([Object.assign(point, { index: parseInt(this.route.snapshot.params.id, 10) })]);
+      // this.plannerService.setStops([Object.assign(point, { index: parseInt(this.route.snapshot.params.id, 10) })]);
+
+      const tPoint = new TripPoint({
+        index: parseInt(this.route.snapshot.params.id, 10),
+        source: selected.type,
+        originAttributes: selected.selection.attributes,
+        originGeometry: {
+          raw: selected.selection.geometry
+        },
+        originParameters: {
+          type: 'search',
+          value: selected.result.breadcrumbs
+        }
+      });
+
+      this.plannerService.setStops([tPoint]);
 
       // if (this._lastRoute) {
       //   this.router.navigate([this._lastRoute]);
@@ -131,7 +147,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
       //   popupComponent: componentOverride ? componentOverride.popupComponent : undefined
       // });
 
-      this.helper.handleSearchResultFeatureSelection(point);
+      this.helper.handleSearchResultFeatureSelection(selected);
 
       this.clearFocus();
     }

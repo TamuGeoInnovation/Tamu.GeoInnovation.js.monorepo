@@ -2,7 +2,10 @@ import { Component } from '@angular/core';
 
 import { AltSearchHelper } from '../../../../helper/alt-search.service';
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
-import { ISearchSelection } from '@tamu-gisc/search';
+import { SearchSelection } from '@tamu-gisc/search';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
+
+import esri = __esri;
 
 /**
  * Desktop sidebar component that displays the main search component as well as layer list and legend.
@@ -13,10 +16,18 @@ import { ISearchSelection } from '@tamu-gisc/search';
   styleUrls: ['./reference.component.scss'],
   providers: [AltSearchHelper]
 })
-export class ReferenceComponent<T extends object> {
-  constructor(private helper: AltSearchHelper<T>) {}
+export class ReferenceComponent<T extends esri.Graphic> {
+  constructor(private helper: AltSearchHelper<T>, private mapService: EsriMapService) {}
 
-  public onSearchResult(result: ISearchSelection<T>) {
-    this.helper.handleSearchResultFeatureSelection(result);
+  public onSearchResult(result: SearchSelection<T>) {
+    this.helper.handleSearchResultFeatureSelection(result).subscribe((res) => {
+      const tPoint = TripPoint.from(res).normalize();
+
+      this.mapService.selectFeatures({
+        graphics: [tPoint.toEsriGraphic()],
+        shouldShowPopup: true,
+        popupComponent: res.result.breadcrumbs.source.popupComponent
+      });
+    });
   }
 }

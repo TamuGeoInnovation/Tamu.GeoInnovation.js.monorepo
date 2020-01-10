@@ -36,7 +36,7 @@ export class EsriMapService {
   constructor(
     private moduleProvider: EsriModuleProviderService,
     private router: Router,
-    private searchService: SearchService,
+    private searchService: SearchService<esri.Graphic>,
     private environment: EnvironmentService
   ) {}
 

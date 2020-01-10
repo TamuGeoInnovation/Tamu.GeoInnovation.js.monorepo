@@ -10,9 +10,11 @@ import { centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { Point } from '@tamu-gisc/common/types';
 
-@Injectable({providedIn: 'root'})
+import esri = __esri;
+
+@Injectable({ providedIn: 'root' })
 export class BikeService {
-  constructor(private http: HttpClient, private search: SearchService) {}
+  constructor(private http: HttpClient, private search: SearchService<esri.Graphic>) {}
 
   /**
    * Returns the coordinates of a nearby bike-share unit.

@@ -2,7 +2,7 @@
 
 import esri = __esri;
 
-import { SearchResultBreadcrumbSummary } from '@tamu-gisc/search';
+import { SearchResultBreadcrumbSummary, SearchSelection } from '@tamu-gisc/search';
 import { isCoordinatePair, parseCoordinates } from '@tamu-gisc/common/utils/geometry/generic';
 import { getGeometryType, centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 
@@ -89,9 +89,7 @@ export class TripPoint {
   /**
    * Creates an instance of TripPoint.
    *
-   * Stores the geometry and dattributes that describe a trip endpoint
-   *
-   * @param {TripPointProperties} props
+   * Stores the geometry and attributes that describe a trip endpoint
    */
   constructor(props: TripPointProperties) {
     this.source = props.source || '';
@@ -101,6 +99,33 @@ export class TripPoint {
     this.originAttributes = props.originAttributes || { name: '' };
     this.originGeometry = props.originGeometry || { latitude: 0, longitude: 0 };
     this.originParameters = props.originParameters || undefined;
+  }
+
+  public static from<T extends esri.Graphic>(input: SearchSelection<T>): TripPoint {
+    const isString = typeof input.selection === 'string';
+
+    const result = new TripPoint({
+      source: input.type,
+      index: input.index,
+      originAttributes: input.selection.attributes ? { ...input.selection.attributes } : { ...input.selection },
+      originGeometry:
+        !isString && input.selection && input.selection.geometry
+          ? {
+              raw: Object.assign({}, input.selection.geometry)
+            }
+          : (input.selection as TripPointGeometry).latitude && (input.selection as TripPointGeometry).longitude
+          ? {
+              latitude: (input.selection as TripPointGeometry).latitude,
+              longitude: (input.selection as TripPointGeometry).longitude
+            }
+          : { latitude: 0, longitude: 0 },
+      originParameters: {
+        type: input.type,
+        value: input && input.result && input.result.breadcrumbs ? input.result.breadcrumbs : undefined
+      }
+    });
+
+    return result;
   }
 
   /**
@@ -226,7 +251,7 @@ export class TripPoint {
         } else if (this.source === 'map-event') {
           // Deal with point from map event (click) that does not include a feature Graphic
           // Attributes will be inherited from the origin attributes object
-          // Gometry will be derived from the origin attributes object. Origin geometry has paths
+          // Geometry will be derived from the origin attributes object. Origin geometry has paths
           // which is not useful for a stop unless the centroid is calculated.
 
           this.geometry = {
@@ -455,7 +480,7 @@ export interface TripPointProperties {
    * - `directions-to-here`: Feature popup "Directions to Here" button. Expects feature geometry.
    */
   source:
-    | ''
+    | string
     | 'search'
     | 'search-geolocation'
     | 'url-geolocation'

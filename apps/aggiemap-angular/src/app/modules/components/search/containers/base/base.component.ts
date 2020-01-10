@@ -17,7 +17,6 @@ import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { SearchService, SearchResult, SearchResultItem, SearchSource } from '@tamu-gisc/search';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -42,7 +41,7 @@ import esri = __esri;
   providers: [SearchService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchComponent implements OnInit, OnDestroy {
+export class SearchComponent<T> implements OnInit, OnDestroy {
   /**
    * Placeholder text for the input.
    *
@@ -201,8 +200,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     private cd: ChangeDetectorRef,
     private analytics: Angulartics2,
     private ns: NotificationService,
-    private mapService: EsriMapService,
-    private searchService: SearchService,
+    private searchService: SearchService<T>,
     private environment: EnvironmentService
   ) {
     if (this.environment.value('SearchSources')) {
@@ -247,7 +245,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             this.setSelected(value, {
               name: value,
               breadcrumbs: {
-                source: '',
+                source: undefined,
                 value: value
               }
             });

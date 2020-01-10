@@ -5,6 +5,9 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { SearchEvent } from '../../../search/containers/base/base.component';
+import { SearchSelection } from '@tamu-gisc/search';
+
+import esri = __esri;
 
 @Component({
   selector: 'app-trip-planner',
@@ -24,8 +27,10 @@ export class TripPlannerComponent {
   /**
    * Call the planner service to add a result as a trip point to the service stop store
    */
-  public setSearchResultAsTripStop(result: TripPoint) {
-    this.plannerService.setStops([result]);
+  public setSearchResultAsTripStop(result: SearchSelection<esri.Graphic>) {
+    const tPoint = TripPoint.from(result).normalize();
+
+    this.plannerService.setStops([tPoint]);
   }
 
   /**

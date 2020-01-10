@@ -80,7 +80,7 @@ export class GeneralDirectionsPopupComponent implements OnInit, OnDestroy {
           type: 'directions-to-here',
           // Value for this is set during normalization else logic would have to be duplicated here.
           value: {
-            source: '',
+            source: undefined,
             value: analyticsLabel
           }
         }

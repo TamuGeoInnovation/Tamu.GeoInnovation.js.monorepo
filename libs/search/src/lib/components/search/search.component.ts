@@ -192,7 +192,7 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
     private cd: ChangeDetectorRef,
     private analytics: Angulartics2,
     private ns: NotificationService,
-    private searchService: SearchService,
+    private searchService: SearchService<T>,
     private environment: EnvironmentService
   ) {
     if (this.environment.value('SearchSources')) {
@@ -237,7 +237,7 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
             this.setSelected((value as unknown) as T, {
               name: value,
               breadcrumbs: {
-                source: '',
+                source: undefined,
                 value: value
               }
             });
@@ -429,7 +429,22 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
           new SearchSelection({
             index: this.index,
             type: 'search-geolocation',
-            selection: { ...res, name: 'Current Location' } as T
+            selection: {
+              name: 'Current Location',
+              latitude: res.latitude,
+              longitude: res.longitude
+            } as T,
+            result: {
+              breadcrumbs: {
+                source: {
+                  source: 'search-geolocation'
+                },
+                value: {
+                  latitude: res.latitude,
+                  longitude: res.longitude
+                }
+              }
+            }
           })
         );
 
@@ -600,13 +615,13 @@ export class SearchEvent {
 }
 
 export class SearchSelection<T extends object> {
-  public source: ISearchSelection<T>['type'];
+  public type: ISearchSelection<T>['type'];
   public selection: ISearchSelection<T>['selection'];
   public result: ISearchSelection<T>['result'];
   public index: ISearchSelection<T>['index'];
 
   constructor(args: ISearchSelection<T>) {
-    this.source = args.type;
+    this.type = args.type;
     this.selection = args.selection;
     this.result = args.result;
     this.index = args.index || 0;
@@ -617,7 +632,7 @@ export interface ISearchSelection<T extends object> {
   /**
    * Index of the input element, if part of a collection.
    */
-  index: number;
+  index?: number;
 
   /**
    * Event trigger type.

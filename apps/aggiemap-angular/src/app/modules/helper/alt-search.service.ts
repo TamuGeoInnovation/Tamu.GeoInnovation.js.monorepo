@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
+import { from, of } from 'rxjs';
 
 import { getObjectPropertyValues } from '@tamu-gisc/common/utils/object';
 
-import { SearchService, SearchSource, ISearchSelection } from '@tamu-gisc/search';
+import { SearchService, SearchSource, SearchResult, SearchSelection } from '@tamu-gisc/search';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -18,20 +16,12 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
  *
  *  - The response features do not contain geometry
  *  - The feature items contain property values that can be related in another table/service that does contain geometry data.
- *
- *
- * @export
- * @class AltSearchHelper
  */
 @Injectable()
 export class AltSearchHelper<T extends object> {
   private _sources: SearchSource[];
 
-  constructor(
-    private mapService: EsriMapService,
-    private searchService: SearchService,
-    private environment: EnvironmentService
-  ) {
+  constructor(private searchService: SearchService<T>, private environment: EnvironmentService) {
     if (this.environment.value('SearchSources')) {
       this._sources = this.environment.value('SearchSources');
     }
@@ -44,45 +34,35 @@ export class AltSearchHelper<T extends object> {
    *
    * If the alt lookup definition does not exist, use the result of the original query to map/highlight, and invoke popup.
    */
-  public handleSearchResultFeatureSelection(result: ISearchSelection<T>): void {
-    const source = this._sources.find((s) => s.source === result.result.breadcrumbs.source);
+  public handleSearchResultFeatureSelection(incoming: SearchSelection<T>) {
+    const source = incoming.result.breadcrumbs.source;
 
     if (source && source.altLookup) {
       const altSource = this._sources.find((s) => s.source === source.altLookup.source);
 
-      const values = getObjectPropertyValues<string>(result.selection, source.altLookup.reference.keys);
+      const values = getObjectPropertyValues<string>(incoming.selection, source.altLookup.reference.keys);
 
-      this.searchService
+      const altSearchResult = this.searchService
         .search({
-          sources: [altSource.source],
+          sources: [altSource],
           values: [values],
-          returnAsPromise: true,
-          stateful: false
+          stateful: false,
+          returnAsPromise: true
         })
-        .then((res) => {
+        .then((res: SearchResult<T>) => {
           if (res.results && res.results[0].features.length > 0) {
-            const altTripPoint = new TripPoint({
-              originAttributes: res.results[0].features[0].attributes,
-              originGeometry: {
-                raw: res.results[0].features[0].geometry
-              },
-              source: 'search',
-              originParameters: { ...point.originParameters }
-            }).normalize();
-
-            this.mapService.selectFeatures({
-              graphics: [altTripPoint.toEsriGraphic()],
-              shouldShowPopup: true,
-              popupComponent: altSource && altSource.popupComponent ? altSource.popupComponent : undefined
+            return new SearchSelection({
+              type: 'search',
+              selection: res.results[0].features[0],
+              result: res.results[0]
             });
           }
         });
+
+      return from(altSearchResult);
     } else {
-      this.mapService.selectFeatures({
-        graphics: [point.toEsriGraphic()],
-        shouldShowPopup: true,
-        popupComponent: source && source.popupComponent ? source.popupComponent : undefined
-      });
+      // Do return here
+      return of(incoming);
     }
   }
 }

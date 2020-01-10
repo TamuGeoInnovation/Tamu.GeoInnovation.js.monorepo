@@ -17,16 +17,15 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   providers: [SearchService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MobileSearchComponent extends SearchComponent {
+export class MobileSearchComponent<T> extends SearchComponent<T> {
   constructor(
     private cdr: ChangeDetectorRef,
     private anltcs: Angulartics2,
     private nss: NotificationService,
-    private ms: EsriMapService,
-    private ss: SearchService,
+    private ss: SearchService<T>,
     private env: EnvironmentService
   ) {
-    super(cdr, anltcs, nss, ms, ss, env);
+    super(cdr, anltcs, nss, ss, env);
   }
 
   public emitLeftActionEvent(): void {
