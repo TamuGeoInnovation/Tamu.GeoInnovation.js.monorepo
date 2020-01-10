@@ -17,12 +17,12 @@ import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-// import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
-import { SearchService, SearchResult, SearchResultItem, SearchSource } from '../../services/search.service';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { arrowKeyControl } from '@tamu-gisc/common/utils/ui';
 import { getGeolocation, isCoordinatePair } from '@tamu-gisc/common/utils/geometry/generic';
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
+
+import { SearchService, SearchResult, SearchResultItem, SearchSource } from '../../services/search.service';
 
 import esri = __esri;
 
@@ -480,7 +480,7 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
   /**
    * Uses a template renderer to evaluate the display template with values from the provided feature object.
    */
-  public evaluateDisplayTemplate<T extends object>(obj: T, template: string) {
+  public evaluateDisplayTemplate(obj: object, template: string) {
     return new TemplateRenderer({
       lookup: obj,
       template: template

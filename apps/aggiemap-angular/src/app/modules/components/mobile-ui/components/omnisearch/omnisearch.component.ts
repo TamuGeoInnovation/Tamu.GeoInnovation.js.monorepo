@@ -8,13 +8,11 @@ import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-
-import { AltSearchHelper } from '../../../../../modules/helper/alt-search.service';
+import { SearchSelection, AltSearchHelper } from '@tamu-gisc/search';
 
 import { offCanvasSlideInFromBottom, offCanvasSlideUpFromTop } from '../../../../animations/elements';
 
 import esri = __esri;
-import { SearchSelection } from '@tamu-gisc/search';
 
 @Component({
   selector: 'omnisearch',

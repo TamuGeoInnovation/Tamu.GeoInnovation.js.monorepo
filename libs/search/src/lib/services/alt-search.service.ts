@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { from, of } from 'rxjs';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { getObjectPropertyValues } from '@tamu-gisc/common/utils/object';
 
-import { SearchService, SearchSource, SearchResult, SearchSelection } from '@tamu-gisc/search';
-
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { SearchService, SearchSource, SearchResult } from '../services/search.service';
+import { SearchSelection } from '../components/search/search.component';
 
 /**
  *
