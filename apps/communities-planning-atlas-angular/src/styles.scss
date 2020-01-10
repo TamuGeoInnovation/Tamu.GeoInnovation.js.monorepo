@@ -1,0 +1,13 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'libs/sass/1140';
+@import 'libs/sass/mixins';
+
+html {
+  height: 100%;
+  font-weight: 100%;
+}
+
+body {
+  height: inherit;
+  width: inherit;
+}

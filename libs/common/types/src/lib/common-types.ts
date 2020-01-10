@@ -1,4 +1,3 @@
-import { Component, ComponentRef } from '@angular/core';
 import esri = __esri;
 
 /**

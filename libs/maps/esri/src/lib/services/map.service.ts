@@ -586,7 +586,26 @@ export interface MapConfig {
 }
 
 interface MapProperties extends esri.MapProperties {
-  basemap: BaseMapProperties | string;
+  basemap:
+    | BaseMapProperties
+    | (
+        | 'streets'
+        | 'topo'
+        | 'satellite'
+        | 'hybrid'
+        | 'dark-gray'
+        | 'gray'
+        | 'national-geographic'
+        | 'oceans'
+        | 'osm'
+        | 'terrain'
+        | 'dark-gray-vector'
+        | 'gray-vector'
+        | 'streets-vector'
+        | 'streets-night-vector'
+        | 'streets-navigation-vector'
+        | 'topo-vector'
+        | 'streets-relief-fector');
 }
 
 interface BaseMapProperties extends esri.BasemapProperties {

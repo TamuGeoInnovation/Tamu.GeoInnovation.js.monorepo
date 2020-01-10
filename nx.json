@@ -187,6 +187,12 @@
     },
     "maps-feature-coordinates": {
       "tags": []
+    },
+    "communities-planning-atlas-angular-e2e": {
+      "tags": []
+    },
+    "communities-planning-atlas-angular": {
+      "tags": []
     }
   }
 }

@@ -2033,6 +2033,134 @@
           "styleext": "scss"
         }
       }
+    },
+    "communities-planning-atlas-angular": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/communities-planning-atlas-angular",
+      "sourceRoot": "apps/communities-planning-atlas-angular/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/communities-planning-atlas-angular",
+            "index": "apps/communities-planning-atlas-angular/src/index.html",
+            "main": "apps/communities-planning-atlas-angular/src/main.ts",
+            "polyfills": "apps/communities-planning-atlas-angular/src/polyfills.ts",
+            "tsConfig": "apps/communities-planning-atlas-angular/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "apps/communities-planning-atlas-angular/src/favicon.ico",
+              "apps/communities-planning-atlas-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
+            "styles": ["apps/communities-planning-atlas-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/communities-planning-atlas-angular/src/environments/environment.ts",
+                  "with": "apps/communities-planning-atlas-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "communities-planning-atlas-angular:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "communities-planning-atlas-angular:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "communities-planning-atlas-angular:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/communities-planning-atlas-angular/tsconfig.app.json",
+              "apps/communities-planning-atlas-angular/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/communities-planning-atlas-angular/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/communities-planning-atlas-angular/jest.config.js",
+            "tsConfig": "apps/communities-planning-atlas-angular/tsconfig.spec.json",
+            "setupFile": "apps/communities-planning-atlas-angular/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "communities-planning-atlas-angular-e2e": {
+      "root": "apps/communities-planning-atlas-angular-e2e",
+      "sourceRoot": "apps/communities-planning-atlas-angular-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/communities-planning-atlas-angular-e2e/cypress.json",
+            "tsConfig": "apps/communities-planning-atlas-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "communities-planning-atlas-angular:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "communities-planning-atlas-angular:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/communities-planning-atlas-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/communities-planning-atlas-angular-e2e/**"]
+          }
+        }
+      }
     }
   },
   "cli": {

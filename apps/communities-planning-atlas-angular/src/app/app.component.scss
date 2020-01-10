@@ -1,0 +1,6 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flexbox();
+  height: inherit;
+}
