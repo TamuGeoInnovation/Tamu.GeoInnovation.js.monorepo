@@ -8,10 +8,11 @@ import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-
-import { AltSearchHelper } from '../../../../../modules/helper/alt-search.service';
+import { SearchSelection, AltSearchHelper } from '@tamu-gisc/search';
 
 import { offCanvasSlideInFromBottom, offCanvasSlideUpFromTop } from '../../../../animations/elements';
+
+import esri = __esri;
 
 @Component({
   selector: 'omnisearch',
@@ -23,41 +24,28 @@ import { offCanvasSlideInFromBottom, offCanvasSlideUpFromTop } from '../../../..
 export class OmnisearchComponent implements OnInit, OnDestroy {
   /**
    * Determines when the backdrop component will be visible
-   *
-   * @type {boolean}
-   * @memberof MobileUiComponent
    */
   public backdropVisible: boolean;
 
   /**
    * Determines when the search bar will slide out of view.
-   *
-   * @type {boolean}
-   * @memberof OmnisearchComponent
    */
   public hideSearchBar: boolean;
 
   /**
-   * Stores as a value, as matericl icon class string. If provided, it will render in the search bar as the left action
-   *
-   * @type {string}
-   * @memberof OmnisearchComponent
+   * Stores as a value, as material icon class string. If provided, it will render in the search bar as the left action
    */
   public searchComponentLeftAction: string;
 
   /**
-   * Stores as a value, as matericl icon class string. If provided, it will render in the search bar as the right action
-   *
-   * @type {string}
-   * @memberof OmnisearchComponent
+   * Stores as a value, as material icon class string. If provided, it will render in the search bar as the right action
    */
   public searchComponentRightAction: string;
 
   /**
-   * Value describing whether the gelocation feature of the search component will be rendered.
+   * Value describing whether the geolocation feature of the search component will be rendered.
    *
    * Value is passed down to child search component.
-   *
    */
   public geolocation: boolean;
 
@@ -73,7 +61,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
     private mapService: EsriMapService,
     private plannerService: TripPlannerService,
     private dragService: DragService,
-    private helper: AltSearchHelper
+    private helper: AltSearchHelper<esri.Graphic>
   ) {
     // Set default search icon on search component on omnisearch initialize.
     this.searchComponentLeftAction = 'menu';
@@ -118,14 +106,25 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
    * - Add stop to the trip planner service
    *
    * Determination depends on the current url params.
-   *
-   * @param {TripPoint} point
-   * @memberof OmnisearchComponent
    */
-  public handleResult(point: TripPoint) {
+  public handleResult(selected: SearchSelection<esri.Graphic>) {
     if (this.route.snapshot.params.hasOwnProperty('id')) {
       // Add stop to the trip planner service
-      this.plannerService.setStops([Object.assign(point, { index: parseInt(this.route.snapshot.params.id, 10) })]);
+
+      const tPoint = new TripPoint({
+        index: parseInt(this.route.snapshot.params.id, 10),
+        source: selected.type,
+        originAttributes: selected.selection.attributes,
+        originGeometry: {
+          raw: selected.selection.geometry
+        },
+        originParameters: {
+          type: 'search',
+          value: selected.result.breadcrumbs
+        }
+      });
+
+      this.plannerService.setStops([tPoint]);
 
       // if (this._lastRoute) {
       //   this.router.navigate([this._lastRoute]);
@@ -135,18 +134,15 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
 
       this.router.navigate(['map/d/trip']);
     } else {
-      // const componentOverride = SearchSources.find((source) => {
-      //   return source.source == ( < SearchResultBreadcrumbSummary > point.originParameters.value).source;
-      // });
-      // // Highlight selected feature
-      // this.mapService.selectFeatures({
-      //   graphics: [point.toEsriGraphic()],
-      //   shouldShowPopup: true,
-      //   popupComponent: componentOverride ? componentOverride.popupComponent : undefined
-      // });
+      this.helper.handleSearchResultFeatureSelection(selected).subscribe((res) => {
+        const tPoint = TripPoint.from(res);
 
-      this.helper.handleSearchResultFeatureSelection(point);
-
+        this.mapService.selectFeatures({
+          graphics: [tPoint.toEsriGraphic()],
+          shouldShowPopup: true,
+          popupComponent: res.result.breadcrumbs.source.popupComponent
+        });
+      });
       this.clearFocus();
     }
   }
@@ -157,7 +153,6 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
    * Method handles all the component-specific model changes that reflect in the UI when the search component
    * is focused such as enabling backdrop and changing action icons.
    *
-   * @memberof OmnisearchComponent
    */
   public setFocus() {
     // Enable the backdrop for the search component search suggestions
@@ -173,7 +168,6 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
    * Method handles all the component-specific model changes that reflect in the UI when the search component
    * is blurred such as enabling backdrop and changing action icons.
    *
-   * @memberof OmnisearchComponent
    */
   public clearFocus() {
     // Disable backdrop
@@ -187,7 +181,6 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
    * Method fired when the child search component emits a left action event, allowing the omnisearch component
    * to determine how to handle the behavior.
    *
-   * @memberof OmnisearchComponent
    */
   public handleLeftAction() {
     if (this.route.snapshot.params.hasOwnProperty('id')) {

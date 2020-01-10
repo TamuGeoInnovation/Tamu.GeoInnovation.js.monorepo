@@ -1,0 +1,40 @@
+:host {
+  @include flex(1);
+}
+
+.map-ui {
+  position: fixed;
+  z-index: 10;
+
+  @include flexbox();
+  @include flex-direction(column);
+
+  // For every map UI element/component except the last, add a margin bottom to space elements.
+  .map-ui-element {
+    &:not(:last-child) {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  &.bottom {
+    bottom: 0.75rem;
+  }
+
+  &.top {
+    top: 0.75rem;
+  }
+
+  &.left {
+    left: 1rem;
+  }
+
+  &.right {
+    right: 1rem;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  :host {
+    overflow: hidden;
+  }
+}

@@ -61,8 +61,6 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
 
   /**
    * Calls analytics event method
-   *
-   * @memberof ReportBadRouteComponent
    */
   public submitBadRoute() {
     const label = {

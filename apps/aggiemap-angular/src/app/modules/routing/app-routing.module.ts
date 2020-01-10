@@ -11,7 +11,7 @@ import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-boot
 import { DesktopGuard, MobileGuard } from '../../modules/routing/guards/device.guard';
 
 // Modules
-import { AggiemapModule } from '@tamu-gisc/aggiemap';
+import { AggiemapModule, BusListComponent } from '@tamu-gisc/aggiemap';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
@@ -25,47 +25,37 @@ import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
+import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
 import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
 import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
 import { PopupsModule } from '@tamu-gisc/aggiemap';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
 
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
 // Pipes
 import { SearchResultPipe } from '../../../assets/pipes/common.pipe';
 
-// Directives
-import { AsyncContentLoadedDirective } from '../directives/async-content-loaded';
-
 // Components
 import { EsriMapComponent } from '../../map/esri-map.component';
 import { SidebarComponent } from '../../modules/components/sidebar/containers/base/base.component';
-import { SearchComponent } from '../../modules/components/search/containers/base/base.component';
 import { TripPlannerComponent } from '../../modules/components/sidebar/components/trip-planner/trip-planner.component';
 import { ReferenceComponent } from '../../modules/components/sidebar/components/reference/reference.component';
 
 import { MobileUIComponent } from '../../modules/components/mobile-ui/containers/main/mobile-ui.component';
-import { MobileSearchComponent } from '../../modules/components/search/containers/mobile/mobile.component';
 import { TripPlannerTopComponent } from '../../modules/components/mobile-ui/components/trip-planner-top/trip-planner-top.component';
 import { OmnisearchComponent } from '../../modules/components/mobile-ui/components/omnisearch/omnisearch.component';
 import { TripPlannerBottomComponent } from '../../modules/components/mobile-ui/components/trip-planner-bottom/trip-planner-bottom.component';
 import { ReportBadRouteComponent } from '../../modules/components/forms/report-bad-route/report-bad-route.component';
-import { MapViewfinderComponent } from '../../modules/components/accessibility/map-viewfinder/map-viewfinder.component';
 
 import { MobileSidebarComponent } from '../../modules/components/mobile-ui/components/sidebar/mobile-sidebar.component';
 import { MainMobileSidebarComponent } from '../../modules/components/mobile-ui/components/sidebar/components/main/main.component';
 
 import { BackdropComponent } from '../../modules//components/backdrop/backdrop.component';
 import { ModalComponent } from '../../modules/components/modal/containers/main/base/base.component';
-
-import { MapClickCoordinatesComponent } from '../../modules/components/map-coordinates/map-click-coordinates.component';
-
-import { BusListComponent } from '../components/sidebar/components/bus-list/bus-list.component';
-import { BusRouteComponent } from '../components/sidebar/components/bus-list/components/bus-route/bus-route.component';
-import { BusTimetableComponent } from '../components/sidebar/components/bus-list/components/bus-timetable/bus-timetable.component';
 
 WebFont.load({
   google: {
@@ -169,6 +159,7 @@ const hybridRoutes: Routes = [
     EsriMapModule,
     LayerListModule,
     LegendModule,
+    MapsFeatureAccessibilityModule,
     SearchModule,
     TestingModule,
     ResponsiveModule,
@@ -184,7 +175,8 @@ const hybridRoutes: Routes = [
     MapsFeatureTripPlannerModule,
     MapPopupModule,
     PopupsModule,
-    AggiemapModule
+    AggiemapModule,
+    MapsFeatureCoordinatesModule
   ],
   declarations: [
     BackdropComponent,
@@ -192,23 +184,15 @@ const hybridRoutes: Routes = [
     EsriMapComponent,
     SearchResultPipe,
     SidebarComponent,
-    SearchComponent,
     TripPlannerComponent,
     ReferenceComponent,
-    BusListComponent,
-    BusRouteComponent,
-    BusTimetableComponent,
     MobileUIComponent,
-    MobileSearchComponent,
     TripPlannerTopComponent,
     OmnisearchComponent,
     TripPlannerBottomComponent,
     ReportBadRouteComponent,
-    MapViewfinderComponent,
     MobileSidebarComponent,
-    MainMobileSidebarComponent,
-    MapClickCoordinatesComponent,
-    AsyncContentLoadedDirective
+    MainMobileSidebarComponent
   ],
   exports: [RouterModule]
 })

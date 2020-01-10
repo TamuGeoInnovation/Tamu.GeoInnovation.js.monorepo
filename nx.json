@@ -181,6 +181,12 @@
     },
     "ui-kits-ngx-interactions-clipboard": {
       "tags": []
+    },
+    "maps-feature-accessibility": {
+      "tags": []
+    },
+    "maps-feature-coordinates": {
+      "tags": []
     }
   }
 }

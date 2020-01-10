@@ -13,7 +13,6 @@ export class TripPlannerModePickerComponent {
    * Calls the trip planner service and sets accessible travel mode based on the provided value
    *
    * @param {value} value `true` to set accessible routing mode, `false` to disable it
-   * @memberof TripPlannerModePickerComponent
    */
   public set accessibleTravel(value: boolean) {
     this.plannerService.updateTravelOptions({ accessible: value });

@@ -279,10 +279,12 @@
           },
           "configurations": {
             "production": {
-              "fileReplacements": [{
-                "replace": "apps/bikeshare/src/environments/environment.ts",
-                "with": "apps/bikeshare/src/environments/environment.prod.ts"
-              }],
+              "fileReplacements": [
+                {
+                  "replace": "apps/bikeshare/src/environments/environment.ts",
+                  "with": "apps/bikeshare/src/environments/environment.prod.ts"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -292,11 +294,13 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "budgets": [{
-                "type": "initial",
-                "maximumWarning": "2mb",
-                "maximumError": "5mb"
-              }]
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
             }
           }
         },
@@ -1959,6 +1963,68 @@
             "jestConfig": "libs/ui-kits/ngx/interactions/clipboard/jest.config.js",
             "tsConfig": "libs/ui-kits/ngx/interactions/clipboard/tsconfig.spec.json",
             "setupFile": "libs/ui-kits/ngx/interactions/clipboard/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "maps-feature-accessibility": {
+      "projectType": "library",
+      "root": "libs/maps/feature/accessibility",
+      "sourceRoot": "libs/maps/feature/accessibility/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/maps/feature/accessibility/tsconfig.lib.json",
+              "libs/maps/feature/accessibility/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/accessibility/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/accessibility/jest.config.js",
+            "tsConfig": "libs/maps/feature/accessibility/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/accessibility/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "maps-feature-coordinates": {
+      "projectType": "library",
+      "root": "libs/maps/feature/coordinates",
+      "sourceRoot": "libs/maps/feature/coordinates/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/maps/feature/coordinates/tsconfig.lib.json",
+              "libs/maps/feature/coordinates/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/coordinates/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/coordinates/jest.config.js",
+            "tsConfig": "libs/maps/feature/coordinates/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/coordinates/src/test-setup.ts"
           }
         }
       },

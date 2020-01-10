@@ -5,9 +5,6 @@ import { loadModules } from 'esri-loader';
 export class EsriModuleProviderService {
   /**
    * Module dictionary, allows to pass simple class names instead of the class path.
-   *
-   * @private
-   * @memberof EsriModuleProviderService
    */
   private dictionary = [
     {
@@ -192,7 +189,6 @@ export class EsriModuleProviderService {
    * @param {string[]} modules Simple module names (e.g. Map, MapView, GraphicLayer)
    * @param {boolean} asObject Will return modules as named objects instead of an array of anonymous functions.
    * @returns
-   * @memberof EsriModuleProviderService
    */
   public require(modules: string[]): Promise<object[]>;
   public require(modules: string[], asObject: true): Promise<object>;

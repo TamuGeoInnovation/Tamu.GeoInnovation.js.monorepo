@@ -17,7 +17,7 @@ const allParking = ['all-parking'];
 let oneParking: SearchSource;
 
 @Injectable({ providedIn: 'root' })
-export class ParkingService {
+export class ParkingService<T> {
   private _ParkingOptions = new BehaviorSubject<ParkingOptions>({});
   public ParkingOptions = this._ParkingOptions.asObservable();
 
@@ -87,7 +87,7 @@ export class ParkingService {
 
   constructor(
     private moduleProvider: EsriModuleProviderService,
-    private search: SearchService,
+    private search: SearchService<esri.Graphic>,
     private settings: SettingsService,
     private environment: EnvironmentService
   ) {
@@ -101,9 +101,6 @@ export class ParkingService {
   /**
    * Retrieves a list of all parking lots and garages, filters duplciates, groups and orders
    * alphabetics and numerics.
-   *
-   * @returns {Observable<ParkingFeature[]>}
-   * @memberof ParkingService
    */
   public getParkingPermits(): Observable<ParkingFeature[]> {
     return this.search
@@ -191,7 +188,6 @@ export class ParkingService {
    * @param {string} id Parking permit number (FAC_CODE).
    * @param {TripPoint[]} stops Trip stops. Used to identify the nearest qualifying parking feature.
    * @returns Parking feature nearest to the provided reference trip point.
-   * @memberof ParkingService
    */
   public getAuthorizedParkingLocations(id: string): Observable<ParkingFeature[]> {
     // Parking options snapshot.
@@ -316,11 +312,7 @@ export class ParkingService {
    *
    * This method separates the key by the periods, and uses the last index of the result.
    *
-   *
-   * @private
    * @param {ParkingFeature[]} features Graphic array
-   * @returns {*}
-   * @memberof ParkingService
    */
   private normalizeAttributeKeys(features: ParkingFeature[]) {
     return features.map((feature) => {
@@ -372,30 +364,22 @@ export interface ParkingFeature extends esri.Graphic {
   attributes: {
     /**
      * Determines if the feature should be displayed on Aggiemap.
-     *
-     * @type {number}
      */
     AggieMap?: number;
 
     /**
      * Loosely matches the permit type code (what should be on a user's parking permit).
-     *
-     * @type {string}
      */
     FAC_CODE?: string;
 
     /**
      * Friendly user lot name
-     *
-     * @type {string}
      */
     LotName?: string;
     /**
      * Represents the number count of university business spots available.
      *
      * If the number is greater than 0, the lot supports business permit parking.
-     *
-     * @type {number}
      */
     UB?: number;
 
@@ -403,8 +387,6 @@ export interface ParkingFeature extends esri.Graphic {
      * Represents the number of handicapped parking spaces. Requires lot permit.
      *
      * If then umber is greater than 0, the lot supports permitted handicapped parking.
-     *
-     * @type {number}
      */
     H_C?: number;
 
@@ -412,15 +394,11 @@ export interface ParkingFeature extends esri.Graphic {
      * Represents the number of visitor handicapped parking spaces. Does not require permit.
      *
      * Might require payment.
-     *
-     * @type {number}
      */
     Visitor_H_C?: number;
 
     /**
-     * Any valid permit lot. This is used during summer with daily, weekly, montly pre-paid passes.
-     *
-     * @type {number}
+     * Any valid permit lot. This is used during summer with daily, weekly, monthly pre-paid passes.
      */
     AVP_Lot?: 0 | 1;
 
@@ -428,36 +406,26 @@ export interface ParkingFeature extends esri.Graphic {
      * If lot is available for parking during break.
      *
      * Assumption made, but not positive: is also any valid permit lot.
-     *
-     * @type {number}
      */
     Break_Lot?: 0 | 1;
 
     /**
      * Lot available for parking with any valid permit.
-     *
-     * @type {number}
      */
     Night_Lot?: 0 | 1;
 
     /**
      * Lot available for parking with a valid daily, weekly, or monthly summer pre-paid permit.
-     *
-     * @type {number}
      */
     PrepaidSumm_Lot?: 0 | 1;
 
     /**
      * Lost available for parking with any valid permit.
-     *
-     * @type {number}
      */
     Summer_Lot?: 0 | 1;
 
     /**
      * Entire lot available with any valid business parking permit.
-     *
-     * @type {number}
      */
     UB_Lot?: 0 | 1;
 
@@ -465,15 +433,11 @@ export interface ParkingFeature extends esri.Graphic {
      * Entire lot available for visitor parking.
      *
      * Might require payment.
-     *
-     * @type {number}
      */
     Visitor_Lot?: 0 | 1;
 
     /**
      * User specified parking permit code.
-     *
-     * @type {(number | string)}
      */
     Permit_Pass?: number | string;
   };

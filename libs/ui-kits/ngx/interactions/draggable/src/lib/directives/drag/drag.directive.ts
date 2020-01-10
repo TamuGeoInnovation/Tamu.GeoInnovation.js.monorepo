@@ -11,9 +11,6 @@ import * as interact from 'interactjs';
 export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy {
   /**
    * Unique component identifier generated when the component register with the UI drag service.
-   *
-   * @type {string}
-   * @memberof DraggableDirective
    */
   @Input('draggableIdentifier') public identifier: string;
 
@@ -23,19 +20,12 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
   public initialOffset: number;
 
   /**
-   * Calcuated inner or outer screen height for both Android and iOS devices.
-   *
-   * @type {number}
-   * @memberof DraggableDirective
+   * Calculated inner or outer screen height for both Android and iOS devices.
    */
   public deviceHeight: number;
 
   /**
    * Draggable event reference. Needs to be stored in variable in order to destroy event handlers on component destroy.
-   *
-   * @private
-   * @type {*}
-   * @memberof DraggableDirective
    */
   private draggable: FixedInteractable;
 
@@ -102,9 +92,6 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
 
   /**
    * Handles element repositioning on element swipe to drag.
-   *
-   * @param {*} event
-   * @memberof DraggableDirective
    */
   private _dragMoveListener(event) {
     // Dispatch acton based on action direction

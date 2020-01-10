@@ -36,7 +36,7 @@ export class EsriMapService {
   constructor(
     private moduleProvider: EsriModuleProviderService,
     private router: Router,
-    private searchService: SearchService,
+    private searchService: SearchService<esri.Graphic>,
     private environment: EnvironmentService
   ) {}
 
@@ -77,14 +77,12 @@ export class EsriMapService {
    *
    * This function is used to keep code DRY.
    *
-   * @private
    * @param {MapProperties} Properties
    * @param {MapViewProperties} ViewProperties
    * @param {esri.MapConstructor} Map
    * @param {esri.MapViewConstructor} MapView MapView or SceneView depending on mode
    * @param {esri.TileLayerConstructor} TileLayer
    * @param {esri.BasemapConstructor} Basemap
-   * @memberof EsriMapService
    */
   private next(
     Properties: MapProperties,
@@ -134,11 +132,6 @@ export class EsriMapService {
    * Generates map a map view object utilizing view properties and the map instance.
    *
    * Internal use only.
-   *
-   * @param {esri.MapViewProperties} viewProperties
-   * @param {esri.Map} map
-   * @returns {esri.MapViewProperties}
-   * @memberof EsriMapService
    */
   private makeMapView(viewProperties: esri.MapViewProperties, map: esri.Map): esri.MapViewProperties {
     // Make a clone of the passed in view properties
@@ -154,12 +147,6 @@ export class EsriMapService {
 
   /**
    * Makes a basemap using custom basemap options or a simple basemap string id name.
-   *
-   * @param {*} mapProperties
-   * @param {esri.TileLayerConstructor} TileLayer
-   * @param {esri.BasemapConstructor} Basemap
-   * @returns {esri.MapProperties}
-   * @memberof EsriMapService
    */
   private makeBasemap(
     mapProperties,
@@ -239,7 +226,6 @@ export class EsriMapService {
    * Loads an array of layers from an array of layer sources, if each does not exist already.
    *
    * @param {LayerSource[]} sources
-   * @memberof EsriMapService
    */
   public loadLayers(sources: LayerSource[]) {
     sources.forEach((source) => {
@@ -255,7 +241,6 @@ export class EsriMapService {
    * If layer does not exist, make layer with source properties and return the layer.
    *
    * @param {LayerSource} source
-   * @memberof EsriMapService
    */
   public findLayerOrCreateFromSource(source: LayerSource): Promise<esri.Layer> {
     const map: esri.Map = this._modules.map;
@@ -354,8 +339,6 @@ export class EsriMapService {
    * Service wrapper for the findLayerById map class method.
    *
    * @param {string} id Layer id reference
-   * @returns {esri.Layer}
-   * @memberof EsriMapService
    */
   public findLayerById(id: string): esri.Layer {
     const map: esri.Map = this._modules.map;
@@ -372,8 +355,6 @@ export class EsriMapService {
    * Checks if the layer id exists in the service map instance.
    *
    * @param {string} id Unique string id for the layer.
-   * @returns {boolean}
-   * @memberof EsriMapService
    */
   public layerExists(id: string): boolean {
     const map: esri.Map = this._modules.map;
@@ -387,7 +368,6 @@ export class EsriMapService {
   /**
    * Sets hit test subject value to an empty array.
    *
-   * @memberof EsriMapService
    */
   public clearHitTest() {
     this._hitTest.next({ graphics: [] });
@@ -399,7 +379,6 @@ export class EsriMapService {
    *
    * Search results then get passed to a selector method that takes care of symbolizing and adding to map.
    *
-   * @memberof EsriMapService
    */
   public selectFeaturesFromUrl() {
     const list = this.getFeatureListFromURL();
@@ -447,9 +426,6 @@ export class EsriMapService {
 
   /**
    * Gets a list of features from url params.
-   *
-   * @returns {string[]}
-   * @memberof EsriMapService
    */
   public getFeatureListFromURL(): string[] {
     // Dictionary of expected URL parameters that include a list of feature references
@@ -478,7 +454,6 @@ export class EsriMapService {
    * If the layer does not exist, it will be created.
    *
    * @param {SelectFeaturesProperties} properties
-   * @memberof EsriMapService
    */
   public selectFeatures(properties: SelectFeaturesProperties) {
     const graphics = properties.graphics || [];
@@ -542,7 +517,6 @@ export class EsriMapService {
   /**
    * Clears all graphics from the selection layer
    *
-   * @memberof EsriMapService
    */
   public clearSelectedFeatures() {
     // Source object
@@ -557,10 +531,6 @@ export class EsriMapService {
    * Invokes native esri zoomTo map view method using the stored service map and view instances.
    *
    *  Zooms to a collection of graphics at a specified zoom.
-   *
-   * @param {ZoomProperties} properties
-   * @returns
-   * @memberof EsriMapService
    */
   public zoomTo(properties: ZoomProperties) {
     return new Promise((r, rj) => {
@@ -576,10 +546,6 @@ export class EsriMapService {
    *
    * Calculates the longest edge of the graphic collection envelope and uses that
    * value to determine a best-fit zoom level.
-   *
-   * @param {Array < esri.Graphic >} graphics
-   * @returns {Promise < number >}
-   * @memberof EsriMapService
    */
   public computeZoomLevel(graphics: Array<esri.Graphic>): Promise<number> {
     return this.moduleProvider.require(['GeometryEngine']).then(([GeometryEngine]: [esri.geometryEngine]) => {
@@ -648,9 +614,6 @@ interface NullableMapServiceInstance extends Partial<MapServiceInstance> {}
 interface SelectFeaturesProperties {
   /**
    * Esri graphic feature array
-   *
-   * @type {esri.Graphic[]}
-   * @memberof selectFeaturesProperties
    */
   graphics: esri.Graphic[];
 
@@ -658,9 +621,6 @@ interface SelectFeaturesProperties {
    * If set to true, will open up popup for the first element in the graphics property.
    *
    * Multiple feature popup is not supported yet.
-   *
-   * @type {boolean}
-   * @memberof selectFeaturesProperties
    */
   shouldShowPopup?: boolean;
 
@@ -671,9 +631,6 @@ interface SelectFeaturesProperties {
    * to the selection layer which in turn defaults to a preset component template specific
    * in the environments file. In those cases, specifying a popup component allows proper
    * or conditional rendering.
-   *
-   * @type {string}
-   * @memberof SelectFeaturesProperties
    */
   popupComponent?: Component;
 }
@@ -689,11 +646,8 @@ export interface HitTestSnapshot {
   /**
    * Cases justifying this property include search result feature selection which default
    * to the selection layer which in turn defaults to a preset component template specific
-   * in the environments file. In those cases, specifying a popup componentallows proper or
+   * in the environments file. In those cases, specifying a popup component allows proper or
    *  conditional rendering.
-   *
-   * @type {string}
-   * @memberof HitTestSnapshot
    */
   popupComponent?: Component;
 }
@@ -705,17 +659,11 @@ export interface MapViewProperties {
    * 2d will use a MapView
    *
    * 3d will use a SceneView
-   *
-   * @type {('2d' | '3d')}
-   * @memberof MapViewProperties
    */
   mode: '2d' | '3d';
 
   /**
    * Native ArcGIS JS MapView Properties
-   *
-   * @type {esri.MapViewProperties}
-   * @memberof MapViewProperties
    */
   properties: esri.MapViewProperties;
 }

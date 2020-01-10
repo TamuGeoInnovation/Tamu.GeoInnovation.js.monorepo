@@ -1,21 +1,14 @@
 <div>
   <div>
     <!-- Trip from and to input components. By default, two blanks are automatically generated given that a trip has a minimum of two points -->
-    <search *ngFor="let stop of (stops | async)" (result)="setSearchResultAsTripStop($event)" (dirty)="eventClearRoute($event)" (empty)="eventClearStop($event)" [placeholder]="'Choose point or click on the map'" [canGeolocate]="true" [value]="stop?.attributes?.name" [index]="stop.index" [rightActionIcon]="'close'"></search>
+    <tamu-gisc-search *ngFor="let stop of stops | async" (result)="setSearchResultAsTripStop($event)" (dirty)="eventClearRoute($event)" (empty)="eventClearStop($event)" [placeholder]="'Choose point or click on the map'" [canGeolocate]="true" [value]="stop?.attributes?.name" [index]="stop.index" [rightActionIcon]="'close'"></tamu-gisc-search>
   </div>
 
   <!-- Trip planner connection service dropdown select element. Used in localhost and dev testing modes -->
-  <tamu-gisc-trip-planner-connection-select *ngIf="(dev | async)"></tamu-gisc-trip-planner-connection-select>
+  <tamu-gisc-trip-planner-connection-select *ngIf="dev | async"></tamu-gisc-trip-planner-connection-select>
 
   <!-- Trip planner mode picker element. Sets the routing mode for the trip planner service.-->
   <tamu-gisc-trip-planner-mode-picker></tamu-gisc-trip-planner-mode-picker>
-
-  <!-- FOR TESTING -->
-  <!-- <div *ngFor="let stop of stops | async">
-        <p>{{stop?.attributes?.name}}</p>
-        <div>{{stop?.attributes | json}}</div>
-        &nbsp;
-    </div> -->
 
   <tamu-gisc-trip-planner-directions></tamu-gisc-trip-planner-directions>
 </div>

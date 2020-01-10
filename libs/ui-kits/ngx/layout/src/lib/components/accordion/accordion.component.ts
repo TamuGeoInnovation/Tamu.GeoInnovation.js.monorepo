@@ -12,9 +12,6 @@ export class AccordionComponent implements AfterContentInit {
   /**
    * Input boolean from the parent component that serves as a collapse/expand toggle
    * for the accordion.
-   *
-   * @type {boolean}
-   * @memberof AccordionDirective
    */
   @Input()
   public expanded = false;

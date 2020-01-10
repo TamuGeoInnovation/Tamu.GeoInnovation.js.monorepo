@@ -10,18 +10,16 @@ import { centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { Point } from '@tamu-gisc/common/types';
 
-@Injectable({providedIn: 'root'})
+import esri = __esri;
+
+@Injectable({ providedIn: 'root' })
 export class BikeService {
-  constructor(private http: HttpClient, private search: SearchService) {}
+  constructor(private http: HttpClient, private search: SearchService<esri.Graphic>) {}
 
   /**
    * Returns the coordinates of a nearby bike-share unit.
    *
    * If no units are found within a reasonable distance, return undefined.
-   *
-   * @param {Point} point
-   * @returns {Observable<Bike>}
-   * @memberof BikeService
    */
   public getNearbyBike(point: Point): Observable<Bike> {
     return this.http
@@ -46,10 +44,6 @@ export class BikeService {
   /**
    * Gets all bike rack points on campus and determines the nearest to the provided
    * point.
-   *
-   * @param {Point} point
-   * @returns {Observable<Point>}
-   * @memberof BikeService
    */
   public getNearestBikeRack(point: Point): Observable<Point> {
     return this.search

@@ -31,9 +31,6 @@ export class RouterHistoryService {
 
   /**
    * Returns an observable with the
-   *
-   * @returns
-   * @memberof RouterHistoryService
    */
   public last(): Observable<Event> {
     return this._state$.pipe(

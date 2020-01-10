@@ -12,9 +12,6 @@ import * as Clipboard from 'clipboard';
 export class ClipboardCopyDirective implements OnChanges, OnDestroy {
   /**
    * Text string that will be copied to clipboard.
-   *
-   * @type {string}
-   * @memberof ClipboardCopyDirective
    */
   @Input()
   public text: string;
@@ -29,10 +26,6 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
    * Clipboard JS class container.
    *
    * Reference allows unbinding on component destroy
-   *
-   * @private
-   * @type {*}
-   * @memberof ClipboardCopyDirective
    */
   private _clipboard: Clipboard;
 
@@ -45,8 +38,6 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
    *
    * This results when the user selects a different travel mode and the directions re-render. At which point, this
    * hook will be called to reset the clipboard text copied on trigger.
-   *
-   * @memberof ClipboardCopyDirective
    */
   public ngOnChanges(changes: SimpleChanges) {
     if (changes.text) {
@@ -62,9 +53,7 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
   /**
    * OnDestroy Hook
    *
-   * On component destroy, release the clipboard evenhandlers.
-   *
-   * @memberof ClipboardCopyDirective
+   * On component destroy, release the clipboard evenT handlers.
    */
   public ngOnDestroy() {
     this._clipboard.destroy();

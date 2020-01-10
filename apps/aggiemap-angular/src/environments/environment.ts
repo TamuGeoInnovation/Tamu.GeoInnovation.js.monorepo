@@ -329,7 +329,7 @@ export const SearchSources: SearchSource[] = [
     },
     scoringKeys: ['attributes.BldgAbbr', 'attributes.Number', 'attributes.BldgName'],
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.BldgName}} ({{attributes.Number}})',
+    displayTemplate: '{attributes.BldgName} ({attributes.Number})',
     popupComponent: Popups.BuildingPopupComponent,
     searchActive: true
   },
@@ -345,7 +345,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.BldgName}} ({{attributes.Number}})',
+    displayTemplate: '{attributes.BldgName} ({attributes.Number})',
     popupComponent: Popups.BuildingPopupComponent,
     searchActive: false
   },
@@ -363,13 +363,13 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.DeptName}}',
+    displayTemplate: '{attributes.DeptName}',
     popupComponent: 'BasePopupComponent',
     searchActive: true,
     altLookup: {
       source: 'building-exact',
       reference: {
-        keys: ['HOME1']
+        keys: ['attributes.HOME1']
       }
     }
   },
@@ -386,7 +386,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.DeptName}}',
+    displayTemplate: '{attributes.DeptName}',
     searchActive: false
   },
   {
@@ -417,7 +417,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.LotName}}',
+    displayTemplate: '{attributes.LotName}',
     searchActive: false
   },
   {
@@ -444,7 +444,7 @@ export const SearchSources: SearchSource[] = [
       `
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.LotName}}',
+    displayTemplate: '{attributes.LotName}',
     searchActive: false
   },
   {
@@ -461,7 +461,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.LotName}}',
+    displayTemplate: '{attributes.LotName}',
     popupComponent: Popups.BuildingPopupComponent,
     searchActive: true
   },
@@ -479,7 +479,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.LotName}}',
+    displayTemplate: '{attributes.LotName}',
     popupComponent: Popups.ParkingLotPopupComponent,
     searchActive: true
   },
@@ -497,7 +497,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.Name}}',
+    displayTemplate: '{attributes.Name}',
     popupComponent: Popups.PoiPopupComponent,
     searchActive: true
   },
@@ -514,7 +514,7 @@ export const SearchSources: SearchSource[] = [
       }
     },
     featuresLocation: 'features',
-    displayTemplate: '{{attributes.Type}}',
+    displayTemplate: '{attributes.Type}',
     searchActive: false
   }
 ];

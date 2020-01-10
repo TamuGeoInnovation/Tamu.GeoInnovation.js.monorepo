@@ -12,8 +12,6 @@ export class MobileSidebarComponent {
 
   /**
    * Returns to the parent route, effectively closing the sidebar.
-   *
-   * @memberof MobileSidebarComponent
    */
   public close() {
     // Get the parent route.

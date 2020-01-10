@@ -41,9 +41,6 @@ export class CheckboxComponent implements ControlValueAccessor {
    *
    * **REQUIRED** on checkbox groups, where a property in this object is referenced and used to create a composite
    * value of selected items in the list.
-   *
-   *
-   * @type {(string | number | boolean)}
    */
   @Input()
   public data: object;
@@ -97,8 +94,6 @@ export class CheckboxComponent implements ControlValueAccessor {
 
   /**
    * Mouse event handler, emitting the raw checked value of the reference checkbox
-   *
-   * @memberof CheckboxComponent
    */
   public handleMouseEvent(): void {
     this.checked = !this._checked;
@@ -107,8 +102,6 @@ export class CheckboxComponent implements ControlValueAccessor {
   /**
    * Keyboard event handler, emitting the inverse value of the reference checkbox due
    * to the fact that keyboard events do not interact directly with the input box.
-   *
-   * @memberof CheckboxComponent
    */
   public handleKeyboardEvent(): void {
     this.checked = !this.checked;

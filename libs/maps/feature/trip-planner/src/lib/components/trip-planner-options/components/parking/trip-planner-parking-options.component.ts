@@ -6,6 +6,8 @@ import { ParkingService } from '../../../../services/transportation/drive/parkin
 import { TripPlannerOptionsBaseComponent } from '../base/base.component';
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 
+import esri = __esri;
+
 @Component({
   selector: 'tamu-gisc-trip-planner-parking-options-component',
   templateUrl: './trip-planner-parking-options.component.html',
@@ -15,12 +17,14 @@ export class TripPlannerParkingOptionsComponent extends TripPlannerOptionsBaseCo
   /**
    * Retrieves parking features (decks and lots) from parking service and filters by feature name
    * filtering out any which are empty and duplicates.
-   *
-   * @memberof TripPlannerParkingOptionsComponent
    */
   public parkingFeatures = this.parking.getParkingPermits();
 
-  constructor(private analytics: Angulartics2, private tp: TripPlannerService, private parking: ParkingService) {
+  constructor(
+    private analytics: Angulartics2,
+    private tp: TripPlannerService,
+    private parking: ParkingService<esri.Graphic>
+  ) {
     super(analytics, tp);
   }
 }

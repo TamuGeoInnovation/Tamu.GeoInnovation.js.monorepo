@@ -21,9 +21,6 @@ export class TripPlannerDirectionsActions implements OnInit, OnDestroy {
    * Passed into clipboard-copy directive which binds a click listener to the element.
    *
    * On event trigger, this text will be copied to the client's clipboard.
-   *
-   * @type {string}
-   * @memberof TripPlannerDirectionsActions
    */
   public shareUrl: string;
 
@@ -102,8 +99,6 @@ export class TripPlannerDirectionsActions implements OnInit, OnDestroy {
    * Component carries a simple button that allows them to call this method.
    *
    * Will submit, through analytics, the details of this result.
-   *
-   * @memberof TripPlannerDirectionsComponent
    */
   public reportBadRoute(): void {
     this.router.navigate(['map/modal/bad-route']);
@@ -111,8 +106,6 @@ export class TripPlannerDirectionsActions implements OnInit, OnDestroy {
 
   /**
    * Call the trip planner service and call the clear method to remove result, stops, and route
-   *
-   * @memberof TripPlannerDirectionsComponent
    */
   public eventClearAll(): void {
     this.plannerService.clearAll();

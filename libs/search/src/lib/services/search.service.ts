@@ -9,14 +9,12 @@ import { makeUrlParams } from '@tamu-gisc/common/utils/routing';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import esri = __esri;
-
 @Injectable()
-export class SearchService {
+export class SearchService<T> {
   private _sources: SearchSource[];
 
-  private _store: ReplaySubject<SearchResult<esri.Graphic>> = new ReplaySubject(1);
-  public store: Observable<SearchResult<esri.Graphic>> = this._store.asObservable();
+  private _store: ReplaySubject<SearchResult<T>> = new ReplaySubject(1);
+  public store: Observable<SearchResult<T>> = this._store.asObservable();
 
   private _searching: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public searching: Observable<boolean> = this._searching.asObservable();
@@ -32,17 +30,13 @@ export class SearchService {
    *
    * Sets service state to a single instance of SearchResult, containing
    * the results of all source queries, which notifies all subscribers.
-   *
-   * @param {SearchProperties} options
-   * @returns {void}
-   * @memberof SearchService
    */
-  public search(options: SearchPropertiesObservable): Observable<SearchResult<esri.Graphic>>;
-  public search(options: SearchPropertiesPromise): Promise<SearchResult<esri.Graphic>>;
-  public search(options: SearchProperties): SearchResult<esri.Graphic>;
+  public search(options: SearchPropertiesObservable): Observable<SearchResult<T>>;
+  public search(options: SearchPropertiesPromise): Promise<SearchResult<T>>;
+  public search(options: SearchProperties): SearchResult<T>;
   public search(
     options: SearchPropertiesObservable | SearchPropertiesPromise | SearchProperties
-  ): SearchResult<esri.Graphic> | Promise<SearchResult<esri.Graphic>> | Observable<SearchResult<esri.Graphic>> {
+  ): SearchResult<T> | Promise<SearchResult<T>> | Observable<SearchResult<T>> {
     // Check we don't have an array for sources
     if (!(options.sources instanceof Array)) {
       console.error(`Method expected a source array.`);
@@ -212,7 +206,7 @@ export class SearchService {
         return of(
           new SearchResult({
             results: result.map((r, index: number) => {
-              return <SearchResultItem<esri.Graphic>>{
+              return <SearchResultItem<T>>{
                 name: sources[index].name,
                 // features: r[sources[index].featuresLocation] ? r[sources[index].featuresLocation] : [],
                 features: r[sources[index].featuresLocation]
@@ -220,7 +214,7 @@ export class SearchService {
                   : [],
                 displayTemplate: sources[index].displayTemplate,
                 breadcrumbs: {
-                  source: sources[index].source,
+                  source: sources[index],
                   value: options.values[index]
                 }
               };
@@ -289,7 +283,6 @@ export class SearchService {
    * @param {number} indexOverride Optional index override that determines which source and
    * which values from the collection are used.
    * @returns {string} Query string.
-   * @memberof SearchService
    */
   private _getUrlQueryParams(options: SearchProperties, source: SearchSource, indexOverride?: number): string {
     // If an index value is provided, use it instead of attempting to determine index.
@@ -363,8 +356,6 @@ export class SearchService {
    * corresponds to the source index that contains definitions for feature property value lookups.
    * @param {string} searchTerm The search term utilized in the search query. Used as the comparison string used
    * to set a score and rank.
-   * @returns
-   * @memberof SearchService
    */
   private scoreResults(
     features: Array<object>,
@@ -419,9 +410,6 @@ export class SearchResult<T> {
 
   /**
    * Extracts and flattens feature results from every search item in the SearchResult.
-   *
-   * @returns
-   * @memberof SearchResult
    */
   public features(): T[] {
     return this.results
@@ -445,25 +433,16 @@ export interface SearchSource {
    * Value that is used to reference a search source, when specififying an array of search sources.
    *
    * Used in SearchService
-   *
-   * @type {string}
-   * @memberof SearchSource
    */
   source: string;
 
   /**
    * Display friendly name used in UI's
-   *
-   * @type {string}
-   * @memberof SearchSource
    */
   name: string;
 
   /**
    * Base URL for the search source
-   *
-   * @type {string}
-   * @memberof SearchSource
    */
   url: string;
 
@@ -472,28 +451,17 @@ export interface SearchSource {
    *
    * Template blocks, if any, will be replaced with provided values using searchOne
    * or searchMany methods in SearchService class.
-   *
-   *
-   *
-   * @type {string}
-   * @memberof SearchSource
    */
   query?: string;
 
   /**
    * SQL `WHERE` component of the query string. If provided, it will be appended to the base query.
-   *
-   * @type {string}
-   * @memberof SearchSource
    */
   where?: string;
 
   /**
    * Used in conjuction with the `where` property. This is the search query minus the where clause.
    * Once generated, the `where` clause will be appended to the base query.
-   *
-   * @type {string}
-   * @memberof SearchSource
    */
   baseQuery?: string;
 
@@ -501,9 +469,6 @@ export interface SearchSource {
    * Query parameter options as JSON.
    *
    * Are compiled into a string at the time of request.
-   *
-   * @type {object}
-   * @memberof SearchSource
    */
   queryParams?: SearchSourceQueryParamsProperties;
 
@@ -517,25 +482,16 @@ export interface SearchSource {
    *
    * - Primary Search contains no geometry, but contains attributes
    * - Secondary search constains geometry, matched by a key in the primary search result attributes
-   *
-   * @type {*}
-   * @memberof SearchSource
    */
   altLookup?: CrossSearchQueryProperties;
 
   /**
    * Dot nation object path describing the location of the results array
-   *
-   * @type {string}
-   * @memberof SearchSource
    */
   featuresLocation: string;
 
   /**
    * Determines if it will be used in search component search queries
-   *
-   * @type {boolean}
-   * @memberof SearchSource
    */
   searchActive?: boolean;
 
@@ -545,9 +501,6 @@ export interface SearchSource {
    * An array of valid dot notation property paths for each result feature.
    *
    * Property paths are evaluated and used in UI presentation, as a single space delimited string.
-   *
-   * @type {string[]}
-   * @memberof SearchSource
    */
   displayFields?: string[];
 
@@ -562,9 +515,6 @@ export interface SearchSource {
    * For example:
    *
    * `{{name}} {{(number)}}` => `Parking Lot (3)`
-   *
-   * @type {string}
-   * @memberof SearchSource
    */
   displayTemplate?: string;
 
@@ -572,9 +522,6 @@ export interface SearchSource {
    * Optional popup component override.
    *
    * Default set by selection-layer
-   *
-   * @type {string}
-   * @memberof SearchSource
    */
   // tslint:disable-next-line: no-any
   popupComponent?: any;
@@ -582,9 +529,6 @@ export interface SearchSource {
   /**
    * A list of dot notation feature properties/attributes in order or raking priority used
    * to sort search results.
-   *
-   * @type {string[]}
-   * @memberof SearchSource
    */
   scoringKeys?: string[];
 }
@@ -597,22 +541,16 @@ export interface SearchSource {
 export interface SearchSourceQueryParamsProperties {
   /**
    * Specifies the return format.
-   *
-   * @type {('json' | 'jsonp')}
    */
   f?: 'json' | 'jsonp';
 
   /**
    * Limits the number of features that are returned by the server.
-   *
-   * @type {number}
    */
   resultRecordCount?: number | '*';
 
   /**
    * Attributes that should be included in any given feature.
-   *
-   * @type {('*' | string)}
    */
   outFields?: '*' | string;
 
@@ -621,8 +559,6 @@ export interface SearchSourceQueryParamsProperties {
    *
    * - 4326
    * - 102100
-   *
-   * @type {number}
    */
   outSR?: 4326 | 102100 | number;
 
@@ -630,32 +566,22 @@ export interface SearchSourceQueryParamsProperties {
    * Specifies whether the query results should contain its geometry component.
    *
    * Cases where it might not be needed are when the feature will not be mapped.
-   *
-   * @type {boolean}
    */
   returnGeometry?: boolean;
 
   /**
    * Spatial relationship of the query. Default should be `esriSpatialRelIntersects`
-   *
-   * @type {('esriSpatialRelIntersects' | string)}
    */
   spatialRel?: string | 'esriSpatialRelIntersects';
 
   /**
    * Where clause properties that dictate how the search query will be constructed.
-   *
-   * @type {SearchSourceWhereProperties}
    */
   where?: SearchSourceWhereProperties;
 
   /**
    * If provided, `where` clause properties used to execute a parallel query where the results
    * of both queries are combined and scoring is performed to deliver more accurate search results.
-   *
-   *
-   * @type {SearchSourceWhereProperties}
-   * @memberof SearchSourceQueryParamsProperties
    */
   scoringWhere?: SearchSourceWhereProperties;
 }
@@ -668,17 +594,11 @@ export interface SearchSourceQueryParamsProperties {
 export interface SearchSourceWhereProperties {
   /**
    * Feature attributes.
-   *
-   * @type {string[]}
-   * @memberof SearchSourceWhereProperties
    */
   keys: string[];
 
   /**
    * Operators that should be applied to each feature attribute.
-   *
-   * @type {(Array<'LIKE' | '='>)}
-   * @memberof SearchSourceWhereProperties
    */
   operators: Array<string | CompoundOperator | 'LIKE' | '=' | '>=' | '<=' | '>' | '<'>;
 
@@ -688,9 +608,6 @@ export interface SearchSourceWhereProperties {
    *  - startsWith -> `'term%'`
    *  - endsWith -> `'%term'`
    *  - startsWith -> `'%term%'`
-   *
-   * @type {(Array<'startsWith' | 'endsWith' | 'includes' | null>)}
-   * @memberof SearchSourceWhereProperties
    */
   wildcards?: Array<'startsWith' | 'endsWith' | 'includes' | null>;
 
@@ -698,9 +615,6 @@ export interface SearchSourceWhereProperties {
    * If provided, determines the transformations applied to keys.
    *
    * Not limited to `UPPER` and `LOWER`. Any SQL function should be supported.
-   *
-   * @type {(Array<'UPPER' | 'LOWER' | null>)}
-   * @memberof SearchSourceWhereProperties
    */
   transformations?: Array<'UPPER' | 'LOWER' | null>;
 }
@@ -713,26 +627,17 @@ export interface SearchSourceWhereProperties {
 interface CrossSearchQueryProperties {
   /**
    * Valid search source that will be used for the secondary search query.
-   *
-   * @type {string}
-   * @memberof CrossSearchQueryProperties
    */
   source: string;
 
   /**
    * Reference keys and values found in the the feature result from an initial query.
    * Values ar used to populate lookup values.
-   *
-   * @type {CrossSearchQueryReferenceProperties}
-   * @memberof CrossSearchQueryProperties
    */
   reference: CrossSearchQueryReferenceProperties;
 
   /**
    * Lookup keys and values used to create search queries, SQL or otherwise.
-   *
-   * @type {CrossSearchQueryLookupProperties}
-   * @memberof CrossSearchQueryProperties
    */
   lookup?: CrossSearchQueryLookupProperties;
 }
@@ -756,9 +661,6 @@ interface CrossSearchQueryProperties {
 interface CrossSearchQueryReferenceProperties {
   /**
    * Collection of key references found in the feature result from an initial query.
-   *
-   * @type {string[]}
-   * @memberof CrossSearchQueryReferenceProperties
    */
   keys: string[];
 
@@ -766,9 +668,6 @@ interface CrossSearchQueryReferenceProperties {
    * Collection of key values.
    *
    * This property is typically populated by internal functions.
-   *
-   * @type {string[]}
-   * @memberof CrossSearchQueryReferenceProperties
    */
   values?: string[];
 }
@@ -787,9 +686,6 @@ interface CrossSearchQueryReferenceProperties {
 interface CrossSearchQueryLookupProperties {
   /**
    *  Collection of keys that will be index-matched with values to create lookup queries, SQL or otherwise.
-   *
-   * @type {string[]}
-   * @memberof CrossSearchQueryLookupProperties
    */
   keys: string[];
 
@@ -800,17 +696,11 @@ interface CrossSearchQueryLookupProperties {
    *
    * - `LIKE`
    * - `=`
-   *
-   * @type {string[]}
-   * @memberof CrossSearchQueryLookupProperties
    */
   operators?: string[];
 
   /**
    * Collection of key values that are used alongside keys collection to create lookup queries, SQL or otherwise.
-   *
-   * @type {string[]}
-   * @memberof CrossSearchQueryLookupProperties
    */
   values?: string[];
 }
@@ -824,9 +714,6 @@ interface CrossSearchQueryLookupProperties {
 export interface SearchProperties {
   /**
    * A string array of valid search sources.
-   *
-   * @type {string[]}
-   * @memberof SearchManyProperties
    */
   sources: (string | SearchSource)[];
 
@@ -838,9 +725,6 @@ export interface SearchProperties {
    *
    * An array or string-containing arrays is used for searches using multiple terms. Each array index will match a
    * source index.Inner array length MUST equal the search source key length.
-   *
-   * @type {string[]}
-   * @memberof SearchManyProperties
    */
   values?: (string | number)[] | (string | number)[][];
 
@@ -852,9 +736,6 @@ export interface SearchProperties {
    * effects.
    *
    * Defaults to true;
-   *
-   * @type {boolean}
-   * @memberof SearchProperties
    */
   stateful?: boolean;
 }
@@ -864,9 +745,6 @@ interface SearchPropertiesObservable extends SearchProperties {
    * Specifies whether the method should return an observable.
    *
    * Will default to false.
-   *
-   * @type {boolean}
-   * @memberof SearchSourcesProperties
    */
   returnObservable?: boolean;
 }
@@ -876,9 +754,6 @@ interface SearchPropertiesPromise extends SearchProperties {
    * Specifies whether the method will return a promise.
    *
    * Will default to false.
-   *
-   * @type {boolean}
-   * @memberof SearchProperties
    */
   returnAsPromise?: boolean;
 }
@@ -893,9 +768,6 @@ export interface SearchResultItem<T> {
    * Readable name for the source.
    *
    * Used in UI representation for the search source.
-   *
-   * @type {string}
-   * @memberof SearchResultItem
    */
   name?: string;
 
@@ -905,9 +777,6 @@ export interface SearchResultItem<T> {
    * An array of valid dot notation property paths for each result feature.
    *
    * Property paths are evaluated and used in UI presentation, as a single space delimited string.
-   *
-   * @type {string[]}
-   * @memberof SearchResultItem
    */
   displayFields?: string[];
 
@@ -922,26 +791,17 @@ export interface SearchResultItem<T> {
    * For example:
    *
    * `{{name}} ({{number}})` => `Parking Lot (3)`
-   *
-   * @type {string}
-   * @memberof SearchResultItem
    */
   displayTemplate?: string;
 
   /**
    * Array of feature results.
-   *
-   * @type {*}
-   * @memberof SearchResultItem
    */
   features?: T[];
 
   /**
    * Metadata representing the origin (source id and searched term) data used to initialize a search query and
    * ultimately, result.
-   *
-   * @type {string}
-   * @memberof SearchResultItem
    */
   breadcrumbs: SearchResultBreadcrumbSummary;
 }
@@ -965,17 +825,11 @@ export interface SearchResultBreadcrumbSummary {
    *
    * Empty string in cases where the search value is not set (using interface for type adherence) or the value is
    * inherited through some other event and thus no further search query needed (e.g. map view click event).
-   *
-   * @type {string}
-   * @memberof SearchResultFeatureSummary
    */
-  source: string;
+  source: Partial<SearchSource>;
 
   /**
    * Term used to perform the search query or a value representation of the result from an inherited event.
-   *
-   * @type {string}
-   * @memberof SearchResultFeatureSummary
    */
-  value: string;
+  value: string | unknown;
 }

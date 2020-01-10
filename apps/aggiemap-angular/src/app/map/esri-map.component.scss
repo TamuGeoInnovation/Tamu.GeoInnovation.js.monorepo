@@ -1,11 +1,2 @@
-@import '~libs/sass/mixins';
-
-:host {
-  @include flex(1);
-}
-
-@media only screen and (max-width: 600px) {
-  :host {
-    overflow: hidden;
-  }
-}
+@import 'libs/sass/mixins';
+@import 'libs/sass/modules/esri_map';

@@ -13,7 +13,19 @@ import {
   zip,
   Subject
 } from 'rxjs';
-import { catchError, concatMap, flatMap, map, mergeMap, scan, switchMap, tap, toArray, takeUntil } from 'rxjs/operators';
+import {
+  catchError,
+  concatMap,
+  flatMap,
+  map,
+  mergeMap,
+  scan,
+  switchMap,
+  tap,
+  toArray,
+  takeUntil,
+  take
+} from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
@@ -46,9 +58,6 @@ import { BusService, TimetableRow } from '../services/transportation/bus/bus.ser
 import { InrixService } from '../services/transportation/drive/inrix.service';
 import { BikeService } from '../services/transportation/bike/bike.service';
 import { ParkingService } from '../services/transportation/drive/parking.service';
-
-// TODO: Put this polygon in the host environment
-// import { brazosCounty } from '../../../map/polygons';
 
 import esri = __esri;
 
@@ -116,10 +125,6 @@ export class TripPlannerService implements OnDestroy {
 
   /**
    * Container for trip planner routing esri modules.
-   *
-   * @private
-   * @type {*}
-   * @memberof TripPlannerService
    */
   private _Modules: Partial<TripPlannerModules> = {};
 
@@ -267,10 +272,6 @@ export class TripPlannerService implements OnDestroy {
 
   /**
    * A container which will contain any number of RouteTask stops
-   *
-   * @private
-   * @type {TripPoint[]}
-   * @memberof TripPlannerService
    */
   private readonly _Stops: BehaviorSubject<TripPoint[]>;
 
@@ -278,18 +279,11 @@ export class TripPlannerService implements OnDestroy {
    * Publicly exposed observable for the trip planner service stops store.
    *
    * Stops used to generate a trip.
-   *
-   * @type {Observable < TripPoint[] >}
-   * @memberof TripPlannerService
    */
   public readonly Stops: Observable<TripPoint[]>;
 
   /**
    * Service container which will contain a route result from a trip directions request
-   *
-   * @private
-   * @type {BehaviorSubject < RouteResult >}
-   * @memberof TripPlannerService
    */
   // private _Result: BehaviorSubject<TripResult> = new BehaviorSubject(undefined);
   private _Result: BehaviorSubject<TripResult[]> = new BehaviorSubject([]);
@@ -298,9 +292,6 @@ export class TripPlannerService implements OnDestroy {
    * Publicly exposed observable for the trip planner service route result
    *
    * Result used to draw the path on the map.
-   *
-   * @type {Observable < RouteResult >}
-   * @memberof TripPlannerService
    */
   // public readonly Result: Observable<TripResult> = this._Result.asObservable();
   public readonly Result: Observable<TripResult[]> = this._Result.asObservable();
@@ -308,9 +299,6 @@ export class TripPlannerService implements OnDestroy {
   /**
    * Represents the url for the current trip planner connection service being used that
    * the RouteTask module will use when executing a route.
-   *
-   * @type {string}
-   * @memberof TripPlannerService
    */
   public connection: TripPlannerConnection;
 
@@ -320,10 +308,6 @@ export class TripPlannerService implements OnDestroy {
 
   /**
    * Stores observable subscription to the trip planner connection service current network.
-   *
-   * @private
-   * @type {Subscription}
-   * @memberof TripPlannerService
    */
   private _currentNetworkSubscription: Subscription;
 
@@ -332,7 +316,6 @@ export class TripPlannerService implements OnDestroy {
    *
    * Executes trip task.
    *
-   * @memberof TripPlannerService
    */
   public set stops(v: TripPoint[]) {
     this._Stops.next(v);
@@ -343,9 +326,7 @@ export class TripPlannerService implements OnDestroy {
   /**
    * Sets service route result object and notifies all subscribers of the change.
    *
-   * @memberof TripPlannerService
    */
-  // public set result(v: TripResult) {
   public set result(v: TripResult[]) {
     this._Result.next(v);
   }
@@ -411,7 +392,6 @@ export class TripPlannerService implements OnDestroy {
    * Also updates state travel mode based on state's last value and new constraints.
    *
    * @param {{}} options
-   * @memberof TripPlannerService
    */
   public updateTravelOptions(options: {}) {
     this.settings.updateSettings(options);
@@ -428,10 +408,10 @@ export class TripPlannerService implements OnDestroy {
     private analytics: Angulartics2,
     private ns: NotificationService,
     private url: ActivatedRoute,
-    private search: SearchService,
+    private search: SearchService<esri.Graphic>,
     private busService: BusService,
     private bikeService: BikeService,
-    private parkingService: ParkingService,
+    private parkingService: ParkingService<esri.Graphic>,
     private inrixService: InrixService,
     private settings: SettingsService,
     private environment: EnvironmentService
@@ -439,6 +419,7 @@ export class TripPlannerService implements OnDestroy {
     this.LayerSources = this.environment.value('LayerSources');
     this.RegionalBoundary = this.environment.value('RegionalBoundary');
 
+    // Update travel options and execute query if all trip requirements are met.
     this.settings.init(this.settingsConfig).subscribe((res: TravelOptions) => {
       if (res) {
         this._TravelOptions.next(res);
@@ -448,6 +429,16 @@ export class TripPlannerService implements OnDestroy {
         this.executeTripTask();
       }
     });
+
+    // Trigger a travel mode calculation after settings have been initialized.
+    // Without this step, travel mode will always be default until a user input triggers
+    // the value calculation.
+    this.settings
+      .init(this.settingsConfig)
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.calculateTravelMode([this._TravelOptions.getValue().travel_mode], true);
+      });
 
     // Combine module provider require and map service store to keep a reference and execute
     // additional methods when both streams complete.
@@ -494,9 +485,6 @@ export class TripPlannerService implements OnDestroy {
 
   /**
    * Returns an array of travel modes that qualify based on state settings (accessibility, etc.).
-   *
-   * @returns {number[]}
-   * @memberof TripPlannerService
    */
   public getQualifyingTravelModes(returnNumbersOnly?: false): TripPlannerRuleMode[];
   public getQualifyingTravelModes(returnNumbersOnly?: true): number[];
@@ -526,10 +514,6 @@ export class TripPlannerService implements OnDestroy {
    * Transforms a travel rule into a one-dimensional array of modes.
    *
    * Recursively extracts ALL nested `modes` arrays.
-   *
-   * @param {*} rule
-   * @returns
-   * @memberof TripPoint
    */
   public flattenRule(rule): TripPlannerRuleMode[] {
     const currModes = rule && rule.modes ? rule.modes : undefined;
@@ -583,10 +567,6 @@ export class TripPlannerService implements OnDestroy {
    *
    * This is helpful in finding a particular rule with potentially overlapping modes, in which each additional
    * constraint can achieve uniqueness.
-   *
-   * @param {number[]} modes
-   * @returns
-   * @memberof TripPlannerService
    */
   public getRuleForModes(modes: number[]): TripPlannerRule {
     const rule = this.rules.find((r) => {
@@ -614,9 +594,6 @@ export class TripPlannerService implements OnDestroy {
 
   /**
    * Returns a TripPlannerRule belonging to the current travel mode.
-   *
-   * @returns {TripPlannerRule}
-   * @memberof TripPlannerService
    */
   public getCurrentRule(): TripPlannerRule {
     return this.getRuleForModes([this._TravelOptions.value.travel_mode]);
@@ -628,11 +605,6 @@ export class TripPlannerService implements OnDestroy {
    * to the constraints.
    *
    * Has the ability to update service travel mode state with the newly calculated value.
-   *
-   * @param {number[]} determinants
-   * @param {boolean} [updateState]
-   * @returns {number}
-   * @memberof TripPlannerService
    */
   public calculateTravelMode(determinants: number[], updateState?: boolean): number {
     const parent = this.getRuleForModes(determinants);
@@ -659,8 +631,6 @@ export class TripPlannerService implements OnDestroy {
    * @param {TripPlannerRule} rule - Valid trip planner rule
    * @param {Boolean} [numberOnly] - Determines if the return value will be the matched mode object or only its mode value as a number.
    * Default to `false`
-   * @returns {*}
-   * @memberof TripPlannerService
    */
   public getTravelModeFromRule(rule: TripPlannerRule, numberOnly?: false): TripPlannerRuleMode;
   public getTravelModeFromRule(rule: TripPlannerRule, numberOnly?: true): number;
@@ -750,7 +720,6 @@ export class TripPlannerService implements OnDestroy {
    * Verifies if selected travel mode is accessible capable (e.g. There is no biking ADA mode)
    *
    * @returns {boolean} `true` if current travel mode is accessible OR has an associated accessible mode. `false` if not
-   * @memberof TripPlannerService
    */
   public verifyRuleAccessibility(): boolean {
     const rule = this.getRuleForModes([this._TravelOptions.value.travel_mode]);
@@ -774,7 +743,6 @@ export class TripPlannerService implements OnDestroy {
    * needs to update to reflect all aspects of the provided travel mode.
    *
    * @param {number} mode
-   * @memberof TripPlannerService
    */
   public setTravelOptionsForMode(mode: number): void {
     const rule = this.getRuleForModes([mode]);
@@ -796,7 +764,6 @@ export class TripPlannerService implements OnDestroy {
    * State setting triggers trip task execution.
    *
    * @param {TripPoint} stops TripPoint class instance
-   * @memberof TripPlannerService
    */
   public setStops(stops: TripPoint[]): void {
     const updateStops = (nStops: TripPoint[]) => {
@@ -863,9 +830,6 @@ export class TripPlannerService implements OnDestroy {
    * If all stop instances are populated and have been normalized run the trip task.
    *
    * If at least one of the stop instances has not been normalized, do not run the trip task.
-   *
-   * @private
-   * @memberof TripPlannerService
    */
   private executeTripTask() {
     try {
@@ -1530,10 +1494,6 @@ export class TripPlannerService implements OnDestroy {
    * Callback executed after a successful trip task.
    *
    * Reports success status to Google Analytics.
-   *
-   * @private
-   * @param {TripResult} result
-   * @memberof TripPlannerService
    */
   private tripTaskSuccess(result: TripResult) {
     // Do not assign new this.result value here as it will be done further down the chain.
@@ -1564,9 +1524,7 @@ export class TripPlannerService implements OnDestroy {
    *
    * Reports result to Google Analytics.
    *
-   * @private
    * @param {TripResult} rs TripResult class instance containing error details
-   * @memberof TripPlannerService
    */
   private tripTaskFail(rs: TripResult) {
     const tripResult = new TripResult(rs);
@@ -1654,9 +1612,6 @@ export class TripPlannerService implements OnDestroy {
    * such as direction aggregation, etc.
    *
    * At the end of the transformation pipeline, draws the trip result route.
-   *
-   * @returns
-   * @memberof TripPlannerService
    */
   public getTripResultForTravelMode() {
     const qualifying = this.getQualifyingTravelModes();
@@ -1696,9 +1651,6 @@ export class TripPlannerService implements OnDestroy {
   /**
    * Accepts a TripPoint array, categorizes, and renders the trip points on the map while
    * applying the correct symbology (start, middle, end.
-   *
-   * @param {TripPoint[]} stops Trip stops array
-   * @memberof EsriMapService
    */
   public drawPoints(stops: TripPoint[]) {
     const id = 'trip-points-layer';
@@ -1756,10 +1708,6 @@ export class TripPlannerService implements OnDestroy {
           /**
            * Generates trip point graphic using stop TripPoint and string symbol reference
            * to avoid copy-pasting the same logic into each case.
-           *
-           * @param {TripPoint} stop
-           * @param {string} symbolRef
-           * @returns {esri.Graphic}
            */
           const makeGraphic = (stop: TripPoint, symbolRef: string): esri.Graphic => {
             return new Graphic({
@@ -1922,9 +1870,6 @@ export class TripPlannerService implements OnDestroy {
 
           /**
            * Returns route segment symbology for appropriate travel mode and view type.
-           *
-           * @param {string} mode
-           * @returns {(esri.Symbol3DProperties | esri.SymbolProperties)}
            */
           const getSymbol = (mode: 'walking' | 'not_walking'): esri.Symbol3DProperties | esri.SymbolProperties => {
             if (this._view.type === '2d') {
@@ -2001,7 +1946,6 @@ export class TripPlannerService implements OnDestroy {
    *
    * Clears the active result.
    *
-   * @memberof TripPlannerService
    */
   public clearAll(): void {
     this.clearRoute();
@@ -2013,7 +1957,6 @@ export class TripPlannerService implements OnDestroy {
    * Removes the drawn route segments from the map.
    *
    *
-   * @memberof TripPlannerService
    */
   public clearRoute(): void {
     const id = 'route-segments-layer';
@@ -2032,7 +1975,6 @@ export class TripPlannerService implements OnDestroy {
   /**
    * Sets the service result to an empty instance, notifying all subscribers.
    *
-   * @memberof TripPlannerService
    */
   private clearResult(): void {
     this.result = [new TripResult({})];
@@ -2043,10 +1985,6 @@ export class TripPlannerService implements OnDestroy {
    *
    * The stop is instead not deleted, because other component states may still contain the original reference.
    * On subsequent task queries, the array indexing must be preserved
-   *
-   * @param {number} index
-   * @returns
-   * @memberof TripPlannerService
    */
   public clearStopAt(index: number): void {
     const id = 'trip-points-layer';
@@ -2087,7 +2025,6 @@ export class TripPlannerService implements OnDestroy {
    *
    * Clears the result.
    *
-   * @memberof TripPlannerService
    */
   public clearAllStops(): void {
     const id = 'trip-points-layer';
@@ -2107,10 +2044,6 @@ export class TripPlannerService implements OnDestroy {
    * Generates empty default stops.
    *
    * Default number of stops is 2, one start and one end.
-   *
-   * @private
-   * @returns {TripPoint[]}
-   * @memberof TripPlannerService
    */
   private generateEmptyDefaultStops(): TripPoint[] {
     return new Array(2).fill(undefined).map((e, i) => {
@@ -2125,8 +2058,6 @@ export class TripPlannerService implements OnDestroy {
    * From a trip result, groups written directions by maneuver
    * type to reduce verbosity while preserving integrity.
    *
-   * @private
-   * @memberof TripPlannerService
    */
   private aggregateDirections(result: TripResult): TripResult {
     if (!result.directions) {
@@ -2197,9 +2128,8 @@ export class TripPlannerService implements OnDestroy {
   /**
    * Attempts to execute trip task from URL parameters
    *
-   * @memberof TripPlannerService
    */
-  public loadTripFromURL() {
+  public loadTripFromURL<T extends esri.Graphic>() {
     // Check if mode is set in URL params.
     if (this.url.snapshot.queryParams.mode) {
       // Store mode from URL
@@ -2281,8 +2211,8 @@ export class TripPlannerService implements OnDestroy {
             throwError('No query categories.');
           }
         }),
-        map((res: SearchResult<esri.Graphic>) => {
-          return res.results.map((result: SearchResultItem<esri.Graphic>, index) => {
+        map((res: SearchResult<T>) => {
+          return res.results.map((result: SearchResultItem<T>, index) => {
             return new TripPoint({
               index: categorizedQueryBlocks[index].index,
               source: categorizedQueryBlocks[index].category,
@@ -2442,8 +2372,6 @@ export class TripPlannerService implements OnDestroy {
       // /**
       //  * Returns a zoom modifier value based on the current viewport to further provide a best
       //  * fit based on the device aspect ratio.
-      //  *
-      //  * @returns {number}
       //  */
       // const zoomModifier = (): number => {
       //   const screenWidth = this.responsiveService.snapshot.screenWidth;
@@ -2497,9 +2425,6 @@ export class TripPlannerService implements OnDestroy {
   /**
    * Accepts an array of TripPoints, performs an overlapping grouping function on the array,
    * and bootstraps a nearest door method for each trip point.
-   *
-   * @param {TripPoint[]} stops
-   * @returns {Promise < TripPoint[] >}
    */
   public getNearestDoors(stops: TripPoint[]): Promise<TripPoint[]> {
     // Group all stops into overlapping sets of two. Resulting in an array of arrays that is of length n-1.
@@ -2551,8 +2476,6 @@ export class TripPlannerService implements OnDestroy {
    * @param {TripPoint} stop The trip stop that will be queried for doors and transformed if any matching door is found.
    * @param {TripPoint} relativeTo The trip point for which relative distance of all doors on the `stop`
    * will be calculated against.
-   * @returns {Promise < TripPoint >}
-   * @memberof TripPlannerService
    */
   public findNearestDoorForTripPoint(stop: TripPoint, relativeTo: TripPoint): Promise<TripPoint> {
     const source: LayerSource = this.LayerSources.find((s) => s.id === 'accessible-entrances-layer');
@@ -2695,9 +2618,6 @@ export interface RouteParameters extends esri.RouteParameters {
 export interface TripModeSwitch {
   /**
    * The speed category that describes a given mode switch.
-   *
-   * @type {('not_walking' | 'walking')}
-   * @memberof TripModeSwitch
    */
   type: 'not_walking' | 'walking';
 
@@ -2707,18 +2627,12 @@ export interface TripModeSwitch {
    *
    * These should not be used directly for user interface presentation. Instead, use either the `directions`
    * or `route` graphics.
-   *
-   * @type {esri.Graphic[]}
-   * @memberof TripModeSwitch
    */
   graphics: esri.Graphic[];
 
   /**
    * Populated at the time of direction aggregation. Represents a list of aggregated directions, each
    * now possessing a unique identifier found in the route graphics which represent the guided instruction.
-   *
-   * @type {esri.Graphic[]}
-   * @memberof TripModeSwitch
    */
   directions?: esri.Graphic[];
 
@@ -2726,9 +2640,6 @@ export interface TripModeSwitch {
    * Populated at the time of direction aggregation. Represents a complete, un-collapsed, list of graphics
    * that make up the drawn trip route. Each contains a guid that can be related to the guided instruction
    * segment.
-   *
-   * @type {esri.Graphic[]}
-   * @memberof TripModeSwitch
    */
   route?: esri.Graphic[];
 
@@ -2737,9 +2648,6 @@ export interface TripModeSwitch {
    *
    * For example, bus modes will typically include some bus scheduling properties that will be used
    * for UI display or further calculations.
-   *
-   * @type {*}
-   * @memberof TripModeSwitch
    */
   results?: {
     bus?: {
@@ -2764,25 +2672,16 @@ export interface TripModeSwitch {
 export interface TripResultProperties {
   /**
    * Describes if the trip result is in a processing state.
-   *
-   * @type {boolean}
-   * @memberof TripResultProperties
    */
   isProcessing?: boolean;
 
   /**
    * Describes if the trip result is in an error state.
-   *
-   * @type {boolean}
-   * @memberof TripResultProperties
    */
   isError?: boolean;
 
   /**
    * If the trip request fails, property will be populated with the error object.
-   *
-   * @type {*}
-   * @memberof TripResultProperties
    */
   error?: EsriError;
 
@@ -2794,10 +2693,6 @@ export interface TripResultProperties {
    * Set to true once no further changes to the trip class instance will be made.
    * The task has either failed or succeeded and any new requests
    * will yield a new trip result.
-   *
-   *
-   * @type {*}
-   * @memberof TripResultProperties
    */
   isFulfilled?: boolean;
 
@@ -2805,67 +2700,43 @@ export interface TripResultProperties {
    * Describes the trip request attempt count at the point of an error or success.
    *
    * Useful metric determining the randomness, if any, if the routing network.
-   *
-   * @type {number}
-   * @memberof TripResultProperties
    */
   tryCount?: number;
 
   /**
    * Original route parameters used in the trip request.
-   *
-   * @type {RouteParameters}
-   * @memberof TripResultProperties
    */
   params?: RouteParameters;
 
   /**
    * If trip request succeeded, property will be populated with aggregated directions.
-   *
-   * @type {esri.DirectionsFeatureSet}
-   * @memberof TripResultProperties
    */
   directions?: esri.DirectionsFeatureSet;
 
   /**
    * If trip request succeeded, property will be populated with the result object.
-   *
-   * @type {RouteResult}
-   * @memberof TripResultProperties
    */
   result?: RouteResult;
 
   /**
    * Instance of the trip planner connection used to perform the trip request against.
-   *
-   * @type {TripPlannerConnection}
-   * @memberof TripResultProperties
    */
   connection?: TripPlannerConnection;
 
   /**
    * Cloned trip points used in the request.
-   *
-   * @type {TripPoint[]}
-   * @memberof TripResultProperties
    */
   stops?: TripPoint[];
 
   /**
    * Trip point origins container as part of a singular trip task result.
    * Allows reporting the breadcrumb events for easier route replication.
-   *
-   * @type {TripPointOriginParams[]}
-   * @memberof TripResultProperties
    */
   stopsSource?: TripPointOriginParams[];
 
   /**
    * Trip planner mode rule determined by the trip planner as the travel mode that is to be
    * used in executing the trip.
-   *
-   * @type {TripPlannerRuleMode}
-   * @memberof TripResultProperties
    */
   modeSource?: TripPlannerRuleMode;
 
@@ -2898,9 +2769,6 @@ export interface TripPlannerRule {
    *
    *  - Driving constraints should not influence a walking rule.
    *  - Bike share constraints should not influence a driving rule.
-   *
-   * @type {string[]}
-   * @memberof TripPlannerRule
    */
   constraints: string[];
 }
@@ -2910,36 +2778,26 @@ export interface TripPlannerRuleMode {
    * Option that determines whether the mode will have a view.
    *
    * Defaults to `false`.
-   *
-   * @type {boolean}
    */
   visible?: boolean;
 
   /**
    * Text description that provides users contextual information on its function.
-   *
-   * @type {string}
    */
   description?: string;
 
   /**
    * A friendly display name for the travel mode option.
-   *
-   * @type {string}
    */
   displayName?: string;
 
   /**
    * Instructional verb used as a header in trip result directions list.
-   *
-   * @type {string}
    */
   directions_verb?: string;
 
   /**
    * Material design icon class name used in trip result direction list.
-   *
-   * @type {string}
    */
   directions_icon?: string;
 
@@ -2947,8 +2805,6 @@ export interface TripPlannerRuleMode {
    * Travel mode value. This value will be passed to the routing network.
    *
    * This property doubles as a mode ID because it should be unique across all possible modes.
-   *
-   * @type {number}
    */
   mode?: number;
 
@@ -2960,15 +2816,10 @@ export interface TripPlannerRuleMode {
    * a travel mode that is not of the same type as the rule mode.
    *
    * This process is a work-around for the routing network's inability to correctly transition between travel modes.
-   *
-   * @type {boolean}
-   * @memberof TripPlannerRuleMode
    */
   split?: {
     /**
      * The default travel mode for the split trip.
-     *
-     * @type {number}
      */
     default?: number;
   };
@@ -2989,8 +2840,6 @@ export interface TripPlannerRuleMode {
    *
    * In order for the determinant to have an effect, the respective option keys must be listed in parent rule
    * `constraints` list.
-   * @type {*}
-   * @memberof TripPlannerRuleMode
    */
   determinants?: {
     accessible?: boolean;
@@ -3011,9 +2860,6 @@ export interface TripPlannerRuleMode {
    * If the interaction value is `true`, then the `travelOptions` value for `parking_pass` is set to `true`.
    *
    * While there may be key overlaps between `determinants` and `effects`, not all `determinants` can be or should be `effects`.
-   *
-   * @type {*}
-   * @memberof TripPlannerRuleMode
    */
   effect?: string;
 }

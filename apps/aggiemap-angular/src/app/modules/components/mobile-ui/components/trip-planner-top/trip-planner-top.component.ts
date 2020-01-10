@@ -19,10 +19,7 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
   /**
    * Animation trigger.
    *
-   * Determines whether the component will slide up whenever the trip directions are dragged past a certain treshold.
-   *
-   * @type {boolean}
-   * @memberof TripPlannerTopComponent
+   * Determines whether the component will slide up whenever the trip directions are dragged past a certain threshold.
    */
   public hide = false;
 
@@ -30,9 +27,6 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
    * Animation trigger override.
    *
    * Determines whether the component will side up regardless of any preset drag thresholds.
-   *
-   * @type {boolean}
-   * @memberof TripPlannerTopComponent
    */
   public hideOverride = false;
 
@@ -42,9 +36,6 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
    * Stores result from trip result subscription.
    *
    * Used to populate dumb input boxes with correct number of stops and their names in UI.
-   *
-   * @type {Observable < TripPoint[] >}
-   * @memberof TripPlannerTopComponent
    */
   public stops: Observable<TripPoint[]>;
 
@@ -105,7 +96,6 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
    * context on what trip point it's handling
    *
    * @param {*} index
-   * @memberof TripPlannerTopComponent
    */
   public summonOmnisearch(index) {
     this.router.navigate(['../../../search', index], { relativeTo: this.route });
@@ -113,8 +103,6 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
 
   /**
    * If back action is pressed, return to the base route map route which will de-render the trip planner component.
-   *
-   * @memberof TripPlannerTopComponent
    */
   public returnBaseRoute() {
     this.tripPlanner.clearAll();

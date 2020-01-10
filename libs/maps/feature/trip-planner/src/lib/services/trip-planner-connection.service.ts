@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class TripPlannerConnectionService {
   private _allNetworks: BehaviorSubject<TripPlannerConnection[]>;
   private _abNetworks: BehaviorSubject<TripPlannerConnection[]>;
@@ -156,7 +156,6 @@ export class TripPlannerConnectionService {
    * Returns the selected A/B network.
    *
    * @returns {TripPlannerConnection} RoutingService instance
-   * @memberof RoutingConnectionService
    */
   public connection(): TripPlannerConnection {
     if (this._override.value) {
@@ -196,8 +195,6 @@ export class TripPlannerConnectionService {
 
   /**
    * Sets the current network by network name reference.
-   *
-   * @memberof RoutingConnectionService
    */
   public set network(name) {
     // Find the network object by name reference
@@ -222,7 +219,6 @@ export class TripPlannerConnectionService {
    *
    * @param {boolean} value `true` will instruct connection() method to return a user-defined network.
    * `false` will instruct conection() method to return a random a/b network.
-   * @memberof TripPlannerConnectionService
    */
   public setOverride(value: boolean) {
     this._override.next(value);
@@ -233,9 +229,6 @@ export class TripPlannerConnectionService {
    * RoutingService based on the provided reference object.
    *
    * Will trigger all subscribers to currentNetwork.
-   *
-   * @private
-   * @memberof RoutingConnectionService
    */
   private set _newCurrentNetwork(ref: TripPlannerConnection) {
     // Copy network properties to assign to new immutable;
@@ -271,9 +264,6 @@ export class TripPlannerConnection {
 
   /**
    * Returns a constructed URL from its name and type properties.
-   *
-   * @returns URL
-   * @memberof RoutingService
    */
   public url(): string {
     return `https://gis.tamu.edu/arcgis/rest/services/${this.name}/${this.type}/Route`;

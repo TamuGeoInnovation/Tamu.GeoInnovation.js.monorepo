@@ -14,18 +14,11 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 export class TripPlannerBottomComponent implements OnInit, OnDestroy {
   /**
    * Unique component identifier generated from the drag state service, and provided to the DragService.
-   *
-   * @type {string}
-   * @memberof TripPlannerBottomComponent
    */
   public identifier: string;
 
   /**
    * Trip planner subscription that allows a simple check to see if a trip task result has been resolved.
-   *
-   * @private
-   * @type {Subscription}
-   * @memberof TripPlannerBottomComponent
    */
   private _destroy$: Subject<boolean> = new Subject();
 

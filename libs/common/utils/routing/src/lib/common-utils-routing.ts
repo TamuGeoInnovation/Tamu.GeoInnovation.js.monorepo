@@ -50,7 +50,6 @@ export function makeUrlParams(params: object, encode: boolean, prefix?: string):
  * @param {Array < string >} list Path segment array
  * @param {string} match Matching path segment
  * @param {string} substitution Substitute path segment if match is found
- * @returns
  */
 export function routeSubstitute(list: Array<string>, match: string, substitution: string): Array<string> {
   const l = [...list];

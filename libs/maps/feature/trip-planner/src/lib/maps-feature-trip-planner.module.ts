@@ -24,6 +24,7 @@ import { TripPlannerOptionsComponent } from './components/trip-planner-options/c
 import { TripPlannerTimePickerComponent } from './components/trip-planner-time-picker/containers/base/base.component';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { UIStructuralLayoutModule } from '@tamu-gisc/ui-kits/ngx/layout/structural';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { RouteDirectionTransformerPipe } from './core/route-direction-transformer.pipe';
@@ -37,6 +38,7 @@ import { RouteDirectionTransformerPipe } from './core/route-direction-transforme
     DlDateTimePickerDateModule,
     UIFormsModule,
     UILayoutModule,
+    UIStructuralLayoutModule,
     UIClipboardModule,
     PipesModule
   ],

@@ -309,20 +309,14 @@ export interface LayerListCategory<T extends esri.Layer> {
 
 export interface ILayerSubscriptionProperties {
   /**
-   * Lqyer ID or ID's that will be returned with the subscription.
+   * Layer ID or ID's that will be returned with the subscription.
    *
    * Will default to return all layers.
-   *
-   * @type {(string | string[])}
-   * @memberof ILayerSubscriptionProperties
    */
   layers?: string | string[];
 
   /**
    * List of layer properties that trigger a state emission.
-   *
-   * @type {(string | string[])}
-   * @memberof ILayerSubscriptionProperties
    */
   watchProperties?: string | string[];
 }

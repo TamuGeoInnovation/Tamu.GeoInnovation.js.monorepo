@@ -16,9 +16,6 @@ export class TripPlannerOptionsComponentService {
   /**
    * Checks the current travel mode constraints from trip planner service and if any match the internal
    * dictionary, the reference popup component is returned.
-   *
-   * @returns {*}
-   * @memberof TripPlannerOptionsService
    */
   public getComponent() {
     const constraints = this.tripPlanner.getCurrentRule().constraints;
