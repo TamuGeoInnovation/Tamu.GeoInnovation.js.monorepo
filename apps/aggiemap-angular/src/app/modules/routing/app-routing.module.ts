@@ -42,13 +42,10 @@ import { SearchResultPipe } from '../../../assets/pipes/common.pipe';
 // Components
 import { EsriMapComponent } from '../../map/esri-map.component';
 import { SidebarComponent } from '../../modules/components/sidebar/containers/base/base.component';
-// import { SearchComponent } from '../../modules/components/search/containers/base/base.component';
-import { SearchComponent } from '@tamu-gisc/search';
 import { TripPlannerComponent } from '../../modules/components/sidebar/components/trip-planner/trip-planner.component';
 import { ReferenceComponent } from '../../modules/components/sidebar/components/reference/reference.component';
 
 import { MobileUIComponent } from '../../modules/components/mobile-ui/containers/main/mobile-ui.component';
-import { MobileSearchComponent } from '../../modules/components/search/containers/mobile/mobile.component';
 import { TripPlannerTopComponent } from '../../modules/components/mobile-ui/components/trip-planner-top/trip-planner-top.component';
 import { OmnisearchComponent } from '../../modules/components/mobile-ui/components/omnisearch/omnisearch.component';
 import { TripPlannerBottomComponent } from '../../modules/components/mobile-ui/components/trip-planner-bottom/trip-planner-bottom.component';
@@ -187,11 +184,9 @@ const hybridRoutes: Routes = [
     EsriMapComponent,
     SearchResultPipe,
     SidebarComponent,
-    // SearchComponent,
     TripPlannerComponent,
     ReferenceComponent,
     MobileUIComponent,
-    MobileSearchComponent,
     TripPlannerTopComponent,
     OmnisearchComponent,
     TripPlannerBottomComponent,

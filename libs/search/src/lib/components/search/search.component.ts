@@ -353,23 +353,6 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
       result: parentResult
     });
 
-    // const result = new TripPoint({
-    //   source: 'search',
-    //   index: this.index,
-    //   originAttributes:
-    //     !isString && feature ? Object.assign({}, (<esri.Graphic>feature).attributes) : Object.assign({}, { name: feature }),
-    //   originGeometry:
-    //     !isString && feature && (<esri.Graphic>feature).geometry
-    //       ? {
-    //           raw: Object.assign({}, (<esri.Graphic>feature).geometry)
-    //         }
-    //       : { latitude: 0, longitude: 0 },
-    //   originParameters: {
-    //     type: 'search',
-    //     value: parentResult.breadcrumbs
-    //   }
-    // }).normalize();
-
     if (feature && !isString) {
       // Update the DOM model value
       this.value = this.evaluateDisplayTemplate(feature, parentResult.displayTemplate);
@@ -407,24 +390,6 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
         this.searchElem.nativeElement.value = 'Current Location';
 
         // Emit search result object to be consumed by parent component
-        // this.result.emit(
-        //   new TripPoint({
-        //     source: 'search-geolocation',
-        //     index: this.index,
-        //     originAttributes: {
-        //       name: 'Current Location'
-        //     },
-        //     originGeometry: Object.assign({}, { latitude: res.latitude, longitude: res.longitude }),
-        //     originParameters: {
-        //       type: 'search-geolocation',
-        //       value: {
-        //         latitude: res.latitude,
-        //         longitude: res.longitude
-        //       }
-        //     }
-        //   })
-        // );
-
         this.result.emit(
           new SearchSelection({
             index: this.index,
@@ -473,24 +438,6 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
         const defaultLongitude = -96.33947;
 
         // Emit search result object to be consumed by parent component
-        // this.result.emit(
-        //   new TripPoint({
-        //     source: 'search-geolocation',
-        //     index: this.index,
-        //     originAttributes: {
-        //       name: name
-        //     },
-        //     originGeometry: Object.assign({}, { latitude: defaultLatitude, longitude: defaultLongitude }),
-        //     originParameters: {
-        //       type: 'search-geolocation',
-        //       value: {
-        //         latitude: defaultLatitude,
-        //         longitude: defaultLongitude
-        //       }
-        //     }
-        //   })
-        // );
-
         this.result.emit(
           new SearchSelection({
             index: this.index,

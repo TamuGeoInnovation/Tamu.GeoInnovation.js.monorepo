@@ -13,7 +13,19 @@ import {
   zip,
   Subject
 } from 'rxjs';
-import { catchError, concatMap, flatMap, map, mergeMap, scan, switchMap, tap, toArray, takeUntil } from 'rxjs/operators';
+import {
+  catchError,
+  concatMap,
+  flatMap,
+  map,
+  mergeMap,
+  scan,
+  switchMap,
+  tap,
+  toArray,
+  takeUntil,
+  take
+} from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';
@@ -407,6 +419,7 @@ export class TripPlannerService implements OnDestroy {
     this.LayerSources = this.environment.value('LayerSources');
     this.RegionalBoundary = this.environment.value('RegionalBoundary');
 
+    // Update travel options and execute query if all trip requirements are met.
     this.settings.init(this.settingsConfig).subscribe((res: TravelOptions) => {
       if (res) {
         this._TravelOptions.next(res);
@@ -416,6 +429,16 @@ export class TripPlannerService implements OnDestroy {
         this.executeTripTask();
       }
     });
+
+    // Trigger a travel mode calculation after settings have been initialized.
+    // Without this step, travel mode will always be default until a user input triggers
+    // the value calculation.
+    this.settings
+      .init(this.settingsConfig)
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.calculateTravelMode([this._TravelOptions.getValue().travel_mode], true);
+      });
 
     // Combine module provider require and map service store to keep a reference and execute
     // additional methods when both streams complete.

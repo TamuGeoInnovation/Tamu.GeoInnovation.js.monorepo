@@ -4,8 +4,7 @@ import { Observable } from 'rxjs';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
-import { SearchEvent } from '../../../search/containers/base/base.component';
-import { SearchSelection } from '@tamu-gisc/search';
+import { SearchSelection, SearchEvent } from '@tamu-gisc/search';
 
 import esri = __esri;
 
@@ -28,7 +27,7 @@ export class TripPlannerComponent {
    * Call the planner service to add a result as a trip point to the service stop store
    */
   public setSearchResultAsTripStop(result: SearchSelection<esri.Graphic>) {
-    const tPoint = TripPoint.from(result).normalize();
+    const tPoint = TripPoint.from(result);
 
     this.plannerService.setStops([tPoint]);
   }

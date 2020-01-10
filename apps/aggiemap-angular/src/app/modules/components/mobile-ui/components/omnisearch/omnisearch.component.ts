@@ -112,7 +112,6 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
   public handleResult(selected: SearchSelection<esri.Graphic>) {
     if (this.route.snapshot.params.hasOwnProperty('id')) {
       // Add stop to the trip planner service
-      // this.plannerService.setStops([Object.assign(point, { index: parseInt(this.route.snapshot.params.id, 10) })]);
 
       const tPoint = new TripPoint({
         index: parseInt(this.route.snapshot.params.id, 10),
@@ -137,18 +136,15 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
 
       this.router.navigate(['map/d/trip']);
     } else {
-      // const componentOverride = SearchSources.find((source) => {
-      //   return source.source == ( < SearchResultBreadcrumbSummary > point.originParameters.value).source;
-      // });
-      // // Highlight selected feature
-      // this.mapService.selectFeatures({
-      //   graphics: [point.toEsriGraphic()],
-      //   shouldShowPopup: true,
-      //   popupComponent: componentOverride ? componentOverride.popupComponent : undefined
-      // });
+      this.helper.handleSearchResultFeatureSelection(selected).subscribe((res) => {
+        const tPoint = TripPoint.from(res);
 
-      this.helper.handleSearchResultFeatureSelection(selected);
-
+        this.mapService.selectFeatures({
+          graphics: [tPoint.toEsriGraphic()],
+          shouldShowPopup: true,
+          popupComponent: res.result.breadcrumbs.source.popupComponent
+        });
+      });
       this.clearFocus();
     }
   }

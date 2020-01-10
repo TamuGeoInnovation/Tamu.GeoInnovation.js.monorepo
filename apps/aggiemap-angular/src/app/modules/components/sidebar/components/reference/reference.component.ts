@@ -21,7 +21,7 @@ export class ReferenceComponent<T extends esri.Graphic> {
 
   public onSearchResult(result: SearchSelection<T>) {
     this.helper.handleSearchResultFeatureSelection(result).subscribe((res) => {
-      const tPoint = TripPoint.from(res).normalize();
+      const tPoint = TripPoint.from(res);
 
       this.mapService.selectFeatures({
         graphics: [tPoint.toEsriGraphic()],
