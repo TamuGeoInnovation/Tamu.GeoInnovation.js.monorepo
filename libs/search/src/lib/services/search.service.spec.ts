@@ -18,11 +18,11 @@ describe('SearchService (no SearchSources)', () => {
     }).compileComponents();
   }));
 
-  it('should be created', inject([SearchService], (searchService: SearchService) => {
+  it('should be created', inject([SearchService], (searchService: SearchService<{}>) => {
     expect(searchService).toBeTruthy();
   }));
 
-  it('should return undefined for invalid configurations', inject([SearchService], (searchService: SearchService) => {
+  it('should return undefined for invalid configurations', inject([SearchService], (searchService: SearchService<{}>) => {
     let console_error_result = '';
     console.error = (message: string) => {
       console_error_result = message;
@@ -38,7 +38,7 @@ describe('SearchService (no SearchSources)', () => {
     expect(console_error_result).toEqual('At least one search source does not exist.');
   }));
 
-  it('should clear correctly', inject([SearchService], (searchService: SearchService) => {
+  it('should clear correctly', inject([SearchService], (searchService: SearchService<{}>) => {
     searchService.clear();
     searchService.store.forEach((value) => {
       expect(value.features()).toHaveLength(0);
@@ -53,14 +53,18 @@ describe('SearchResult', () => {
         {
           features: ['test'],
           breadcrumbs: {
-            source: 'tests',
+            source: {
+              source: 'tests'
+            },
             value: 'probably nothings'
           }
         },
         {
           features: ['test2'],
           breadcrumbs: {
-            source: 'tests',
+            source: {
+              source: 'tests'
+            },
             value: 'probably nothings'
           }
         }

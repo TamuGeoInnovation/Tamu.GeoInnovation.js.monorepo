@@ -1,3 +1,4 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -5,37 +6,26 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { SearchModule } from '@tamu-gisc/search';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { BusService, MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-planner';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-import { AggiemapModule } from '@tamu-gisc/aggiemap';
+import { BusService } from '@tamu-gisc/maps/feature/trip-planner';
 
 import { BusRouteComponent } from './bus-route.component';
-import { BusTimetableComponent } from '../bus-timetable/bus-timetable.component';
 
-describe('BusRouteComponent (integrated)', () => {
+describe('BusRouteComponent (shallow)', () => {
   let fixture: ComponentFixture<BusRouteComponent>;
   let component: BusRouteComponent;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        EsriMapModule,
-        RouterTestingModule,
-        SearchModule,
-        EnvironmentModule,
-        AggiemapModule,
-        MapsFeatureTripPlannerModule,
-        UILayoutModule
-      ],
-      declarations: [BusRouteComponent, BusTimetableComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule, EsriMapModule, SearchModule, EnvironmentModule],
+      declarations: [BusRouteComponent],
       providers: [
         BusService,
         {
           provide: env,
           useValue: { SearchSources: [] }
         }
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
   }));
 
