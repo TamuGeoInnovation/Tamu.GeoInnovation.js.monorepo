@@ -7,6 +7,10 @@ import { EsriMapModule } from '@tamu-gisc/maps/esri';
 
 import { MapComponent } from './map.component';
 import { SearchModule } from '@tamu-gisc/search';
+import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
+import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
+import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
+import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 
 const routes: Routes = [
   {
@@ -16,7 +20,17 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), HttpClientModule, EsriMapModule, SearchModule],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    HttpClientModule,
+    EsriMapModule,
+    SearchModule,
+    SidebarModule,
+    LayerListModule,
+    ResponsiveModule,
+    CommonNgxRouterModule
+  ],
   declarations: [MapComponent],
   exports: [RouterModule]
 })

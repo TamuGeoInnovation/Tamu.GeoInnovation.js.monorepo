@@ -10,7 +10,7 @@ import { MapConfig } from '@tamu-gisc/maps/esri';
 export class MapComponent implements OnInit {
   public config: MapConfig = {
     basemap: {
-      basemap: 'topo-vector'
+      basemap: 'topo'
     },
     view: {
       mode: '2d',
