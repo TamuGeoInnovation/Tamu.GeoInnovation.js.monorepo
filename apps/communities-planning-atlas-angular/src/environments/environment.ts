@@ -17,6 +17,11 @@ export const environment = {
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
 
+const commonLayerProps = {
+  minScale: 10000000,
+  maxScale: 0
+};
+
 export const SearchSources = [];
 
 export const LayerSources: LayerSource[] = [
@@ -28,8 +33,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     url: 'https://texasatlas.arch.tamu.edu/arcgis/rest/services/PubTX/TA_AdminBdys/MapServer/7',
     native: {
-      minScale: 10000000,
-      maxScale: 0,
+      ...commonLayerProps,
       definitionExpression: 'GEOID = 48489',
       renderer: {
         type: 'simple',
@@ -52,13 +56,20 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     url: 'https://texasatlas.arch.tamu.edu/arcgis/rest/services/PubCSA/CA30_CoastalFloodplain/MapServer',
     native: {
-      // renderer: {
-      //   type: 'simple',
-      //   symbol: {
-      //     type: 'simple-fill',
-      //     color: 'blue'
-      //   }
-      // }
+      ...commonLayerProps
+    }
+  },
+  {
+    type: 'feature',
+    id: 'dot-roadways',
+    title: 'TxDOT Roadways',
+    loadOnInit: false,
+    listMode: 'show',
+    url: 'https://texasatlas.arch.tamu.edu/arcgis/rest/services/PubTX/TA_DOT_Roadways/MapServer/5',
+    native: {
+      ...commonLayerProps
     }
   }
 ];
+
+export const DynamicLayerSourceURL = 'https://texasatlas.arch.tamu.edu/arcgis/rest/services';

@@ -11,6 +11,7 @@ import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
+import { LayerSearchModule } from '@tamu-gisc/maps/feature/layer-search';
 
 const routes: Routes = [
   {
@@ -29,7 +30,8 @@ const routes: Routes = [
     SidebarModule,
     LayerListModule,
     ResponsiveModule,
-    CommonNgxRouterModule
+    CommonNgxRouterModule,
+    LayerSearchModule
   ],
   declarations: [MapComponent],
   exports: [RouterModule]

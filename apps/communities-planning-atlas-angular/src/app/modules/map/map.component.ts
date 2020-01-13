@@ -10,13 +10,13 @@ import { MapConfig } from '@tamu-gisc/maps/esri';
 export class MapComponent implements OnInit {
   public config: MapConfig = {
     basemap: {
-      basemap: 'topo'
+      basemap: 'streets-navigation-vector'
     },
     view: {
       mode: '2d',
       properties: {
         center: [-97.657046, 26.450253],
-        zoom: 12
+        zoom: 11
       }
     }
   };
