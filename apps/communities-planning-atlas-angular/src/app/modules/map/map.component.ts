@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
 import { BasePopupComponent } from '@tamu-gisc/maps/feature/popup';
 
 import esri = __esri;
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'tamu-gisc-map',
@@ -29,6 +30,8 @@ export class MapComponent implements OnInit {
 
   public form: FormGroup;
   public map: esri.Map;
+
+  public selected = new BehaviorSubject([]);
 
   constructor(private formBuilder: FormBuilder, private mapService: EsriMapService, private http: HttpClient) {}
 
@@ -61,8 +64,16 @@ export class MapComponent implements OnInit {
     this.mapService.loadLayers([source]);
   }
 
-  public handleDrawSelection(e) {
-    debugger;
+  public async handleDrawSelection(e: esri.Graphic) {
+    const layer = this.mapService.findLayerById('highwater-claims-layer') as esri.FeatureLayer;
+
+    const query = await layer.queryFeatures({
+      spatialRelationship: 'intersects',
+      geometry: e.geometry,
+      outFields: ['*']
+    });
+
+    this.selected.next(query.features);
   }
 }
 

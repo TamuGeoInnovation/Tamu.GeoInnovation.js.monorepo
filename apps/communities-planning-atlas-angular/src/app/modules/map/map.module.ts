@@ -14,6 +14,8 @@ import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
 import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
+import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
+import { ChartsModule } from '@tamu-gisc/charts';
 
 const routes: Routes = [
   {
@@ -36,7 +38,9 @@ const routes: Routes = [
     ResponsiveModule,
     CommonNgxRouterModule,
     MapDrawingModule,
-    MapPopupModule
+    MapPopupModule,
+    FeatureSelectorModule,
+    ChartsModule
   ],
   declarations: [MapComponent],
   exports: [RouterModule]
