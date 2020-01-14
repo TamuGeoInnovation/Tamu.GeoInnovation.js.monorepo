@@ -193,6 +193,9 @@
     },
     "communities-planning-atlas-angular": {
       "tags": []
+    },
+    "communities-planning-atlas-nest": {
+      "tags": []
     }
   }
 }
