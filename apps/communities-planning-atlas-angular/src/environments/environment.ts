@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { BasePopupComponent } from '@tamu-gisc/maps/feature/popup';
 
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
@@ -29,8 +30,6 @@ export const LayerSources: LayerSource[] = [
     type: 'feature',
     id: 'county-boundary',
     title: 'County',
-    loadOnInit: true,
-    listMode: 'show',
     url: 'https://texasatlas.arch.tamu.edu/arcgis/rest/services/PubTX/TA_AdminBdys/MapServer/7',
     native: {
       ...commonLayerProps,
@@ -50,26 +49,21 @@ export const LayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
-    id: 'floodplain',
-    title: 'Floodplain',
-    loadOnInit: false,
-    listMode: 'show',
-    url: 'https://texasatlas.arch.tamu.edu/arcgis/rest/services/PubCSA/CA30_CoastalFloodplain/MapServer',
+    id: 'highwater-claims-layer',
+    title: 'Highwater Claims',
+    url: 'https://texasatlas.arch.tamu.edu/arcgis/rest/services/Pub489/WIL_FEMA_Claims_HighWater/MapServer/1',
+    popupComponent: BasePopupComponent,
     native: {
-      ...commonLayerProps
+      ...commonLayerProps,
+      outFields: ['*']
     }
   },
   {
-    type: 'feature',
-    id: 'dot-roadways',
-    title: 'TxDOT Roadways',
-    loadOnInit: false,
-    listMode: 'show',
-    url: 'https://texasatlas.arch.tamu.edu/arcgis/rest/services/PubTX/TA_DOT_Roadways/MapServer/5',
+    type: 'graphic',
+    id: 'drawing-layer',
+    title: 'Drawn Features',
     native: {
       ...commonLayerProps
     }
   }
 ];
-
-export const DynamicLayerSourceURL = 'https://texasatlas.arch.tamu.edu/arcgis/rest/services';

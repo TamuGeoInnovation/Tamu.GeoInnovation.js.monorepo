@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 
@@ -11,7 +12,8 @@ import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
-import { LayerSearchModule } from '@tamu-gisc/maps/feature/layer-search';
+import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
+import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
 
 const routes: Routes = [
   {
@@ -25,13 +27,16 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
     EsriMapModule,
     SearchModule,
     SidebarModule,
     LayerListModule,
     ResponsiveModule,
     CommonNgxRouterModule,
-    LayerSearchModule
+    MapDrawingModule,
+    MapPopupModule
   ],
   declarations: [MapComponent],
   exports: [RouterModule]

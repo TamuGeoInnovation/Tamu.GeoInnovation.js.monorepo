@@ -208,16 +208,20 @@ export type LayerSource = LayerSourceType & {
 
   /**
    * Determines whether the layer will be listed by the layer component.
+   *
+   * Defaults to `'show'`
    */
-  listMode: 'show' | 'hide';
+  listMode?: 'show' | 'hide';
 
   /**
    * Determines whether the layer will be loaded on application load.
    *
    * A layer can be listed as "show" but not load on init. This will enable layer lazy-loading,
    * meaning layers will only load when requested.
+   *
+   * Defaults to `true`
    */
-  loadOnInit: boolean;
+  loadOnInit?: boolean;
 
   /**
    * URL for the layer service, if applicable.
@@ -231,7 +235,7 @@ export type LayerSource = LayerSourceType & {
   /**
    * Current visible state for a layer.
    *
-   * Will default to false;
+   * Will default to true;
    */
   visible?: boolean;
 

@@ -28,7 +28,7 @@ export class DataViewerComponent implements OnInit {
   public dataGroups: Observable<DataGroups[]>;
   public fields: Observable<DataGroupFlds[]>;
 
-  public chartData;
+  public chartData: Observable<Array<IChartConfiguration>>;
 
   // Global chart options
   public chartOptions: Partial<IChartConfiguration['options']> = {

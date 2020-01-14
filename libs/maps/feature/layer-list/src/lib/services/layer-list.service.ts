@@ -41,7 +41,8 @@ export class LayerListService implements OnDestroy {
         // Create a LayerListItem instance for each including the existing layer instance as a class property.
         const existing: LayerListItem<esri.Layer>[] = res.map.allLayers
           .filter((l) => {
-            return l.listMode === 'show';
+            // Undefined value means "default" value, which is equal to "show"
+            return l.listMode === undefined || l.listMode === 'show';
           })
           .toArray()
           .map((l) => {
@@ -52,7 +53,7 @@ export class LayerListService implements OnDestroy {
         // Create a LayerListItem instance for each, leaving the layer property undefined.
         // This will be used as a flag to determine whether a layer needs to be lazy-loaded
         const nonExisting: LayerListItem<esri.Layer>[] = LayerSources.filter((s) => {
-          return s.listMode === 'show' && existing.findIndex((el) => s.id === el.id) === -1;
+          return (s.listMode === undefined || s.listMode === 'show') && existing.findIndex((el) => s.id === el.id) === -1;
         }).map((l) => {
           return new LayerListItem(l);
         });
@@ -82,7 +83,11 @@ export class LayerListService implements OnDestroy {
 
             // Layers that are not found in the service should simply be added.
             const newLayers = e.added
-              .filter((al) => al.listMode === 'show' && this._store.value.findIndex((cl) => cl.id === al.id) === -1)
+              .filter(
+                (al) =>
+                  (al.listMode === undefined || al.listMode === 'show') &&
+                  this._store.value.findIndex((cl) => cl.id === al.id) === -1
+              )
               .map((l: esri.Layer) => {
                 return new LayerListItem({ layer: l });
               });
