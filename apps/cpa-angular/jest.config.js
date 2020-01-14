@@ -1,6 +1,6 @@
 module.exports = {
-  name: 'communities-planning-atlas-angular',
+  name: 'cpa-angular',
   preset: '../../jest.config.js',
-  coverageDirectory: '../../coverage/apps/communities-planning-atlas-angular',
+  coverageDirectory: '../../coverage/apps/cpa-angular',
   snapshotSerializers: ['jest-preset-angular/AngularSnapshotSerializer.js', 'jest-preset-angular/HTMLCommentSerializer.js']
 };

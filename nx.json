@@ -188,13 +188,16 @@
     "maps-feature-coordinates": {
       "tags": []
     },
-    "communities-planning-atlas-angular-e2e": {
+    "cpa-angular-e2e": {
       "tags": []
     },
-    "communities-planning-atlas-angular": {
+    "cpa-angular": {
       "tags": []
     },
-    "communities-planning-atlas-nest": {
+    "cpa-nest": {
+      "tags": []
+    },
+    "cpa-data-api": {
       "tags": []
     }
   }

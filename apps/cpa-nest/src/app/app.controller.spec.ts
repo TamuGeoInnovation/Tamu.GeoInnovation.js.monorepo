@@ -14,9 +14,9 @@ describe('AppController', () => {
   });
 
   describe('getData', () => {
-    it('should return "Welcome to communities-planning-atlas-nest!"', () => {
+    it('should return "Welcome to cpa-nest!"', () => {
       const appController = app.get<AppController>(AppController);
-      expect(appController.getData()).toEqual({message: 'Welcome to communities-planning-atlas-nest!'});
+      expect(appController.getData()).toEqual({message: 'Welcome to cpa-nest!'});
     });
   });
 });

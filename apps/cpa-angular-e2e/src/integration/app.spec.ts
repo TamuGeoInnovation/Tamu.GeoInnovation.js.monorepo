@@ -1,6 +1,6 @@
 import { getGreeting } from '../support/app.po';
 
-describe('communities-planning-atlas-angular', () => {
+describe('cpa-angular', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display welcome message', () => {
@@ -8,6 +8,6 @@ describe('communities-planning-atlas-angular', () => {
     cy.login('my-email@something.com', 'myPassword');
 
     // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains('Welcome to communities-planning-atlas-angular!');
+    getGreeting().contains('Welcome to cpa-angular!');
   });
 });

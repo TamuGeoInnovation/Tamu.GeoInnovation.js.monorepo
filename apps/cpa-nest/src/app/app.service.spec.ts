@@ -14,8 +14,8 @@ describe('AppService', () => {
   });
 
   describe('getData', () => {
-    it('should return "Welcome to communities-planning-atlas-nest!"', () => {
-      expect(service.getData()).toEqual({message: 'Welcome to communities-planning-atlas-nest!'});
+    it('should return "Welcome to cpa-nest!"', () => {
+      expect(service.getData()).toEqual({message: 'Welcome to cpa-nest!'});
     });
   });
 });
