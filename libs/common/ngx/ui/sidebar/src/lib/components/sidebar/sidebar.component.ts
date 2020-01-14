@@ -1,41 +1,19 @@
-import { Component, ContentChildren, Input, AfterContentInit, QueryList, OnDestroy } from '@angular/core';
+import { Component, ContentChildren, AfterContentInit, QueryList, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { trigger, state, style, animate, transition } from '@angular/animations';
-
-import { SidebarTabComponent } from '../tab/tab.component';
 import { from, Subject } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
+
+import { AbstractSlidingDrawerComponent, slide } from '@tamu-gisc/ui-kits/ngx/layout';
+
+import { SidebarTabComponent } from '../tab/tab.component';
 
 @Component({
   selector: 'tamu-gisc-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
-  animations: [
-    trigger('sidebar', [
-      state(
-        'true',
-        style({
-          transform: 'translateX({{xLimit}})'
-        }), {params: {xLimit: 0}}
-      ),
-      state(
-        'false',
-        style({
-          transform: 'translate(100%)'
-        })
-      ),
-      transition('* => *', [animate('350ms cubic-bezier(0.25, 0, 0.25, 1)')])
-    ])
-  ]
-  // encapsulation: ViewEncapsulation.None
+  animations: [slide]
 })
-export class SidebarComponent implements AfterContentInit, OnDestroy {
-  @Input()
-  public sidebarVisible: boolean;
-
-  @Input()
-  public visibleLimitX: string;
-
+export class SidebarComponent extends AbstractSlidingDrawerComponent implements AfterContentInit, OnDestroy {
   public currentView: string;
 
   private _$destroy: Subject<null> = new Subject();
@@ -44,6 +22,8 @@ export class SidebarComponent implements AfterContentInit, OnDestroy {
   public tabs: QueryList<SidebarTabComponent>;
 
   constructor(private router: Router, private route: ActivatedRoute) {
+    // Call the Abstract component constructor
+    super();
     // Set the current view based on the router url on component instantiation
     this.currentView = this._updateCurrentView();
   }
@@ -81,10 +61,10 @@ export class SidebarComponent implements AfterContentInit, OnDestroy {
 
     // If selected view name is the same, hide the sidebar
     if (viewName === this.currentView) {
-      this.sidebarVisible = !this.sidebarVisible;
+      this.toggleVisibility();
     } else {
       // If selected view name is different than current, show sidebar (in case it's hidden), store the selected view name as the current, and navigate to that route
-      this.sidebarVisible = true;
+      this.visible = true;
       this.currentView = viewName;
 
       this.router.navigate([`./${viewName}`], { relativeTo: this.route });

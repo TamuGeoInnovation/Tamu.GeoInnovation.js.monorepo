@@ -1,0 +1,20 @@
+$border-radius: 1.5rem;
+
+:host {
+  position: absolute;
+  z-index: 101;
+  background: white;
+  height: 100%;
+
+  &.left {
+    left: 0;
+    border-top-right-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+  }
+
+  &.right {
+    right: 0;
+    border-top-left-radius: $border-radius;
+    border-bottom-left-radius: $border-radius;
+  }
+}

@@ -16,6 +16,7 @@ import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
 import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
 import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
 import { ChartsModule } from '@tamu-gisc/charts';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 const routes: Routes = [
   {
@@ -40,7 +41,8 @@ const routes: Routes = [
     MapDrawingModule,
     MapPopupModule,
     FeatureSelectorModule,
-    ChartsModule
+    ChartsModule,
+    UILayoutModule
   ],
   declarations: [MapComponent],
   exports: [RouterModule]

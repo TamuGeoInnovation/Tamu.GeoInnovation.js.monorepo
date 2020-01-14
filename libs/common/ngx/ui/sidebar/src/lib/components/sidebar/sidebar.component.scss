@@ -1,11 +1,8 @@
 @import 'libs/sass/mixins';
 
+// Target the top-most div in the component template
 :host {
   font-size: 0.88rem;
-}
-
-// Target the top-most div in the component template
-:host > div {
   position: fixed;
   background: #ffffff;
   border-top: 0.5rem solid #744f4f;
@@ -13,10 +10,17 @@
   height: 100%;
   width: 22.5rem;
   padding: 1rem 0.5rem;
-  right: 0;
   top: 0;
   z-index: 100;
   // overflow-y: scroll;
+
+  &.left {
+    left: 0;
+  }
+
+  &.right {
+    right: 0;
+  }
 }
 
 ::ng-deep .tabs {
