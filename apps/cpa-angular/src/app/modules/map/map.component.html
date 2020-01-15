@@ -5,16 +5,16 @@
 
   <div class="content">
     <div class="sidebar-component-content-container">
+      <div class="sidebar-component-name">
+        <p>Add Layer From URL</p>
+      </div>
       <form [formGroup]="form" (ngSubmit)="submit()">
-        <div class="sidebar-component-name">
-          <p>Add Layer From URL</p>
+        <div class="form-row">
+          <!-- <input formControlName="url" type="text" name="Layer URL" id="layer_url" placeholder="Layer URL" /> -->
+          <tamu-gisc-textbox formControlName="url" type="text" placeholder="Layer URL" floatLabel="true"></tamu-gisc-textbox>
         </div>
 
-        <div class="form-group">
-          <input formControlName="url" type="text" name="Layer URL" id="layer_url" placeholder="Layer URL" />
-
-          <input type="submit" value="Load" />
-        </div>
+        <input type="submit" value="Load" />
       </form>
     </div>
 
@@ -41,11 +41,55 @@
   </div>
 </tamu-gisc-sidebar>
 
-<tamu-gisc-drawer [width]="'45rem'" [position]="'left'" [offset]="'-5rem'">
+<tamu-gisc-drawer [width]="'45rem'" [position]="'left'">
   <div class="content">
     <h2>Scenario Builder</h2>
 
-    <tamu-gisc-textbox placeholder="Placeholder Value" type="text"></tamu-gisc-textbox>
+    <form [formGroup]="form2" (ngSubmit)="submit2()">
+      <div class="form-section">
+        <div class="form-section-name">
+          <p>General</p>
+        </div>
+        <div class="form-row">
+          <tamu-gisc-textbox formControlName="name" placeholder="Title" type="text" floatLabel="true"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-row">
+          <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" floatLabel="true"></tamu-gisc-textbox>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-name">
+          <p>Map Properties</p>
+        </div>
+
+        <div class="form-row">
+          <tamu-gisc-textbox formControlName="center" placeholder="Map Center" type="text" floatLabel="true"></tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="zoom" placeholder="Map Zoom" type="number" floatLabel="true"></tamu-gisc-textbox>
+        </div>
+      </div>
+
+      <div class="form-section" formGroupName="layers">
+        <div class="form-section-name">
+          <p>Layers</p>
+        </div>
+
+        <div class="form-row" *ngFor="let url of form2['controls'].layers.controls; let i = index">
+          <tamu-gisc-textbox [formControlName]="i" placeholder="Service Layer URL" type="text" floatLabel="true"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-group">
+          <button (click)="addLayer()">Add Layer</button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <button type="submit" [disabled]="!form2.valid">
+          Go go
+        </button>
+      </div>
+    </form>
   </div>
 </tamu-gisc-drawer>
 

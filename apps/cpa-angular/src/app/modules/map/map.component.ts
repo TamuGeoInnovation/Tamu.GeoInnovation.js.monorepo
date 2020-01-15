@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
@@ -29,15 +30,26 @@ export class MapComponent implements OnInit {
   };
 
   public form: FormGroup;
+  public form2: FormGroup;
   public map: esri.Map;
+
+  public form2Layers: Observable<Array<string>>;
 
   public selected = new BehaviorSubject([]);
 
-  constructor(private formBuilder: FormBuilder, private mapService: EsriMapService, private http: HttpClient) {}
+  constructor(private fb: FormBuilder, private mapService: EsriMapService, private http: HttpClient) {}
 
   public ngOnInit() {
-    this.form = this.formBuilder.group({
+    this.form = this.fb.group({
       url: ['', Validators.required]
+    });
+
+    this.form2 = this.fb.group({
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+      center: ['some center', Validators.required],
+      zoom: ['', Validators.required],
+      layers: this.fb.array([this.fb.control('')])
     });
 
     this.mapService.store.subscribe((instances) => {
@@ -62,6 +74,16 @@ export class MapComponent implements OnInit {
     };
 
     this.mapService.loadLayers([source]);
+  }
+
+  public submit2() {
+    const value = this.form2.getRawValue();
+  }
+
+  public addLayer() {
+    (this.form2.controls.layers as FormArray).push(this.fb.control(''));
+
+    console.log(this.form2.get('layers'));
   }
 
   public async handleDrawSelection(e: esri.Graphic) {

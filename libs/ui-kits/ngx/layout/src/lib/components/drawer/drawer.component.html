@@ -1,5 +1,8 @@
-<p (click)="toggleVisibility()">Click to SLIDE</p>
-
 <div class="content">
   <ng-content select=".content"></ng-content>
+</div>
+
+<div class="toggle material-icons" (click)="toggleVisibility()" [ngClass]="{ visible: visible }">
+  <span *ngIf="position === 'left'">chevron_right</span>
+  <span *ngIf="position === 'right'">chevron_left</span>
 </div>

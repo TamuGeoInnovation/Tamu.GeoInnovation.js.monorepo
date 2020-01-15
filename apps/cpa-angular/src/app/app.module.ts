@@ -12,7 +12,7 @@ import { AppComponent } from './app.component';
 
 WebFont.load({
   google: {
-    families: ['Material Icons', 'Public Sans:300,400']
+    families: ['Material Icons', 'Public Sans:300,400,500,600']
   }
 });
 

@@ -11,15 +11,6 @@
   margin-bottom: 0.75rem;
 }
 
-.form-group {
-  @include flexbox();
-}
-
-input[type='text'] {
-  @include flex(1);
-  padding: 0.25rem;
-}
-
 input[type='submit'] {
   padding: 0.25rem;
 }

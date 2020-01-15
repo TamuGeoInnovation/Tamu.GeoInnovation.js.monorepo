@@ -1,0 +1,50 @@
+@import 'libs/sass/mixins';
+
+:host {
+  position: relative;
+  background: #f1f3f4;
+  border-radius: 5pt;
+  border: 1.5pt solid transparent;
+
+  // box-shadow: 3px 3px 3px 0px rgba(65, 101, 123, 0.15);
+
+  &:focus,
+  &:focus-within {
+    border-color: #90caf9;
+  }
+}
+
+input,
+textarea {
+  @include flexbox();
+  width: 100%;
+  position: relative;
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 1rem;
+  padding: 0.6rem 1rem;
+  box-sizing: border-box;
+}
+
+textarea {
+  font-family: inherit;
+  resize: none;
+}
+
+label {
+  position: absolute;
+  color: #757575;
+  left: 1rem;
+  top: 0.5rem;
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform;
+  @include transition(transform 0.2s, font-size 0.15s);
+
+  &.float {
+    transform: translate3d((0, -1.75rem, 0));
+    font-size: 0.85rem;
+    z-index: -1;
+  }
+}

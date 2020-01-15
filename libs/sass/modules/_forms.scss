@@ -1,0 +1,78 @@
+@import 'libs/sass/mixins';
+
+form {
+  @include flexbox();
+  @include flex-direction(column);
+
+  // Add margin top and bottom to the form
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  .form-row {
+    display: inherit;
+    @include flex-direction(row);
+    @include justify-content(space-around);
+
+    // Add top and bottom margin to the form row itself
+    margin-top: 1rem;
+    margin-bottom: 0.7rem;
+
+    // First instance of form-row in a form does not need margin top
+    &:first-child {
+      margin-top: 0;
+    }
+
+    // First instance of form-row in a form does not need margin top
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    // For any element inside a form row. Items in a form row should,
+    // be lined up horizontally
+    //
+    // TODO: This selector is expensive. Create an app selector variable,
+    // that only includes all possible element matchers
+    & > * {
+      @include flex(1);
+      margin-right: 0.5rem;
+      margin-left: 0.5rem;
+
+      // First item in a form row does not need margin left
+      &:first-child {
+        margin-left: 0;
+      }
+
+      // Last item in a form group does not need margin right
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .form-section {
+    display: inherit;
+    @include flex-direction(column);
+    margin-bottom: 1rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-section-name {
+      font-weight: 500;
+      padding-bottom: 0.5rem;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1pt solid #eeeeee;
+
+      p {
+        position: relative;
+        font-size: 0.9rem;
+        font-weight: inherit;
+        color: #525252;
+        text-transform: uppercase;
+        text-emphasis: center;
+      }
+    }
+  }
+}
