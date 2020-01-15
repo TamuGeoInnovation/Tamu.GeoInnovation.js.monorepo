@@ -62,7 +62,7 @@ export class SelectComponent<T> implements ControlValueAccessor {
   /**
    * Determines interactivity availability.
    *
-   * Default to `failse`;
+   * Default to `false`;
    */
   @Input()
   public disabled = false;

@@ -41,7 +41,13 @@
   </div>
 </tamu-gisc-sidebar>
 
-<tamu-gisc-drawer width="30rem" position="left" offset="-1rem"></tamu-gisc-drawer>
+<tamu-gisc-drawer [width]="'45rem'" [position]="'left'" [offset]="'-5rem'">
+  <div class="content">
+    <h2>Scenario Builder</h2>
+
+    <tamu-gisc-textbox placeholder="Placeholder Value" type="text"></tamu-gisc-textbox>
+  </div>
+</tamu-gisc-drawer>
 
 <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
 

@@ -8,12 +8,14 @@ import { SelectComponent } from './components/select/select.component';
 import { CheckboxComponent } from './components/checkbox/checkbox.component';
 import { CheckboxGroupComponent } from './components/checkbox-group/checkbox-group.component';
 import { DateTimePickerComponent } from './components/date-time-picker/date-time-picker.component';
+import { TextboxComponent } from './components/textbox/textbox.component';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { AbstractValueAccessorFormComponent } from './models/abstract-value-accessor-form/abstract-value-accessor-form.component';
 
 @NgModule({
   imports: [CommonModule, FormsModule, UILayoutModule, DlDateTimePickerDateModule, DlDateTimePickerModule],
-  declarations: [SelectComponent, CheckboxComponent, CheckboxGroupComponent, DateTimePickerComponent],
-  exports: [SelectComponent, CheckboxComponent, CheckboxGroupComponent, DateTimePickerComponent]
+  declarations: [SelectComponent, CheckboxComponent, CheckboxGroupComponent, DateTimePickerComponent, TextboxComponent, AbstractValueAccessorFormComponent],
+  exports: [SelectComponent, CheckboxComponent, CheckboxGroupComponent, DateTimePickerComponent, TextboxComponent]
 })
 export class UIFormsModule {}
