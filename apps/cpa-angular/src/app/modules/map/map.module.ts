@@ -19,6 +19,8 @@ import { ChartsModule } from '@tamu-gisc/charts';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
+import { CpaCommonModule } from '@tamu-gisc/cpa/common';
+
 const routes: Routes = [
   {
     path: '',
@@ -44,7 +46,8 @@ const routes: Routes = [
     FeatureSelectorModule,
     ChartsModule,
     UILayoutModule,
-    UIFormsModule
+    UIFormsModule,
+    CpaCommonModule
   ],
   declarations: [MapComponent],
   exports: [RouterModule]

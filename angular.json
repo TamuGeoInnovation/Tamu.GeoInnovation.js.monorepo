@@ -2118,10 +2118,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "apps/cpa-angular/tsconfig.app.json",
-              "apps/cpa-angular/tsconfig.spec.json"
-            ],
+            "tsConfig": ["apps/cpa-angular/tsconfig.app.json", "apps/cpa-angular/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**", "!apps/cpa-angular/**"]
           }
         },
@@ -2200,10 +2197,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "apps/cpa-nest/tsconfig.app.json",
-              "apps/cpa-nest/tsconfig.spec.json"
-            ],
+            "tsConfig": ["apps/cpa-nest/tsconfig.app.json", "apps/cpa-nest/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**", "!apps/cpa-nest/**"]
           }
         },
@@ -2235,6 +2229,34 @@
             "jestConfig": "libs/cpa/data-api/jest.config.js",
             "tsConfig": "libs/cpa/data-api/tsconfig.spec.json"
           }
+        }
+      }
+    },
+    "cpa-common": {
+      "projectType": "library",
+      "root": "libs/cpa/common",
+      "sourceRoot": "libs/cpa/common/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/cpa/common/tsconfig.lib.json", "libs/cpa/common/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/cpa/common/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/cpa/common/jest.config.js",
+            "tsConfig": "libs/cpa/common/tsconfig.spec.json",
+            "setupFile": "libs/cpa/common/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
         }
       }
     }

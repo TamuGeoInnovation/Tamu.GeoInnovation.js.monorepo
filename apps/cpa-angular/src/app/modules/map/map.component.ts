@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -45,30 +45,10 @@ export class MapComponent implements OnInit {
       url: ['', Validators.required]
     });
 
-    this.form2 = this.fb.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
-      center: ['', Validators.required],
-      zoom: ['', Validators.required],
-      layers: this.fb.array([this.fb.control('')])
-    });
-
     this.mapService.store.subscribe((instances) => {
       this.map = instances.map;
       this.view = instances.view as esri.MapView;
     });
-  }
-
-  public setMapCenter(): void {
-    const center = this.view.center;
-
-    this.form2.controls.center.setValue(`${center.longitude.toFixed(4)}, ${center.latitude.toFixed(4)}`);
-  }
-
-  public setMapZoom(): void {
-    const zoom = this.view.zoom;
-
-    this.form2.controls.zoom.setValue(zoom);
   }
 
   public async submit() {
@@ -88,22 +68,6 @@ export class MapComponent implements OnInit {
     };
 
     this.mapService.loadLayers([source]);
-  }
-
-  public createScenario() {
-    const value = this.form2.getRawValue();
-
-    console.dir(value);
-  }
-
-  public addLayer() {
-    (this.form2.controls.layers as FormArray).push(this.fb.control(''));
-
-    console.log(this.form2.get('layers'));
-  }
-
-  public removeLayer(index: number) {
-    (this.form2.controls.layers as FormArray).removeAt(index);
   }
 
   public async handleDrawSelection(e: esri.Graphic) {

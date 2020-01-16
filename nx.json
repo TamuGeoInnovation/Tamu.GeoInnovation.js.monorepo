@@ -199,6 +199,9 @@
     },
     "cpa-data-api": {
       "tags": []
+    },
+    "cpa-common": {
+      "tags": []
     }
   }
 }
