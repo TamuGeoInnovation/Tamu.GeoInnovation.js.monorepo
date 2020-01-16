@@ -10,6 +10,7 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
   @Input()
   public disabled = false;
 
+  // tslint:disable-next-line:no-input-rename
   @Input('value')
   private _value: T = undefined;
 

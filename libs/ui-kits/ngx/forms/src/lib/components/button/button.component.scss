@@ -1,0 +1,38 @@
+@import 'libs/sass/mixins';
+
+$color: rgba(85, 138, 216, 1);
+$sColor: #fafafa;
+
+:host {
+  display: block;
+  border-radius: 1.5rem;
+  // border: 1.5pt solid $color;
+  overflow: hidden;
+  color: $sColor;
+  background: $color;
+
+  @include transition(background 0.3s);
+
+  &.snug {
+    display: inline-block;
+  }
+
+  &:hover {
+    background: darken($color, 10%);
+  }
+
+  &:active {
+    background: darken($color, 25%);
+  }
+}
+
+input {
+  color: inherit;
+  border: none;
+  background: none;
+  padding: 0.9rem 1rem;
+  font-weight: 600;
+  display: block;
+  cursor: pointer;
+  @include transition(color 0.3s);
+}
