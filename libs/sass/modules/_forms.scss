@@ -53,26 +53,43 @@ form {
     display: inherit;
     @include flex-direction(column);
     margin-bottom: 1rem;
+    font-weight: 600;
 
+    // Do not add extra margin to the last instance of form section inside a form.
     &:last-child {
       margin-bottom: 0;
     }
 
-    .form-section-name {
-      font-weight: 600;
-      padding-bottom: 0.5rem;
-      padding: 0.5rem;
-      margin-bottom: 0.5rem;
+    // Two things can exist in a form section toolbar: title and custom actions
+    .form-section-toolbar {
+      display: inherit;
       border-bottom: 1pt solid #eeeeee;
+      margin-bottom: 1.5rem;
 
-      p {
-        position: relative;
-        font-size: 0.9rem;
-        font-weight: inherit;
-        color: #525252;
-        text-transform: uppercase;
-        text-emphasis: center;
+      @include flex-direction(row);
+      @include justify-content(space-between);
+      @include align-items(center);
+
+      .form-section-name,
+      .form-section-actions {
+        padding: 0.5rem;
       }
+
+      .form-section-name {
+        p {
+          position: relative;
+          font-size: 0.9rem;
+          font-weight: inherit;
+          color: #525252;
+          text-transform: uppercase;
+          text-emphasis: center;
+        }
+      }
+    }
+
+    .form-section-body {
+      display: inherit;
+      @include flex-direction(column);
     }
   }
 }

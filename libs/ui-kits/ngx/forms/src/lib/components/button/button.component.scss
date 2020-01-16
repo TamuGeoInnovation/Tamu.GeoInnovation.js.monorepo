@@ -4,7 +4,7 @@ $color: rgba(85, 138, 216, 1);
 $sColor: #fafafa;
 
 :host {
-  display: block;
+  display: inherit;
   border-radius: 1.5rem;
   // border: 1.5pt solid $color;
   overflow: hidden;
@@ -13,9 +13,10 @@ $sColor: #fafafa;
 
   @include transition(background 0.3s);
 
-  &.snug {
-    display: inline-block;
-  }
+  // &.snug {
+  //   // TODO: Deal with snug style
+  //   display: inline-block;
+  // }
 
   &:hover {
     background: darken($color, 10%);
@@ -24,15 +25,24 @@ $sColor: #fafafa;
   &:active {
     background: darken($color, 25%);
   }
+
+  &.disabled {
+    color: #424242;
+    background: #dcdcdc;
+    cursor: not-allowed;
+  }
 }
 
 input {
+  // display: block;
+  display: inherit;
+  @include flex(1);
+  @include justify-content(center);
   color: inherit;
   border: none;
   background: none;
   padding: 0.9rem 1rem;
   font-weight: 600;
-  display: block;
   cursor: pointer;
   @include transition(color 0.3s);
 }

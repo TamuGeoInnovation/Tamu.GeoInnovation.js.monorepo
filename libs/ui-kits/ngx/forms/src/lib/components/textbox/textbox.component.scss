@@ -1,10 +1,14 @@
 @import 'libs/sass/mixins';
 
 :host {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
   position: relative;
   background: #f1f3f4;
   border-radius: 5pt;
   border: 1.5pt solid transparent;
+  padding: 0 1rem;
 
   // box-shadow: 3px 3px 3px 0px rgba(65, 101, 123, 0.15);
 
@@ -23,7 +27,7 @@ textarea {
   background: none;
   outline: none;
   font-size: 1rem;
-  padding: 0.6rem 1rem;
+  padding: 0.6rem 0;
   box-sizing: border-box;
 }
 
@@ -47,4 +51,19 @@ label {
     font-size: 0.85rem;
     z-index: -1;
   }
+}
+
+.textbox-control {
+  @include flex(1);
+}
+
+.textbox-actions {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(center);
+  @include align-items(center);
+
+  // Add clearing space between the input and the text box actions container.
+  // This ensures they're not smashed next to each other.
+  margin-left: 0.5rem;
 }

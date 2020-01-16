@@ -15,3 +15,37 @@ body {
   height: inherit;
   width: inherit;
 }
+
+.material-icons-container {
+  line-height: 0;
+}
+
+.material-icons {
+  color: #bdbdbd;
+  font-size: 1.4rem;
+  @include transition(color 0.3s);
+
+  &.alt {
+    color: hsla(216, 20%, 60%, 1);
+  }
+
+  &.action {
+    cursor: pointer;
+
+    &:hover {
+      color: #616161;
+    }
+
+    &.alt {
+      &:hover {
+        color: hsl(216, 63%, 59%);
+      }
+    }
+
+    &.error {
+      &:hover {
+        color: hsla(10, 100%, 59%, 1);
+      }
+    }
+  }
+}

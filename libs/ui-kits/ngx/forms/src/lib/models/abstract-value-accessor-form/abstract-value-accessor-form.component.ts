@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, ChangeDetectorRef } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 
 @Component({
@@ -20,9 +20,14 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
 
   public set value(v: T) {
     this._value = v === null ? undefined : v;
+
+    this.cd.markForCheck();
+
     this._onChange(v === null ? undefined : v);
     this._onTouched();
   }
+
+  constructor(private cd: ChangeDetectorRef) {}
 
   private _onChange = (v: T) => {};
   private _onTouched = () => {};
