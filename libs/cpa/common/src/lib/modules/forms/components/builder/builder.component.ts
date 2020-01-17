@@ -29,8 +29,10 @@ export class BuilderComponent implements OnInit {
       description: ['', Validators.required],
       center: ['', Validators.required],
       zoom: ['', Validators.required],
-      layers: this.fb.array([this.fb.control('')])
+      layers: this.fb.array([])
     });
+
+    this.addLayer();
   }
 
   public setMapCenter(): void {
@@ -46,7 +48,11 @@ export class BuilderComponent implements OnInit {
   }
 
   public addLayer() {
-    (this.builderForm.controls.layers as FormArray).push(this.fb.control(''));
+    (this.builderForm.controls.layers as FormArray).push(
+      this.fb.group({
+        url: ['']
+      })
+    );
 
     console.log(this.builderForm.get('layers'));
   }

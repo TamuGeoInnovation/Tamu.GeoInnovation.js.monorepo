@@ -60,7 +60,7 @@ form {
     display: inherit;
     @include flex-direction(column);
     margin-bottom: 1rem;
-    font-weight: 600;
+    font-weight: 400;
 
     // Do not add extra margin to the last instance of form section inside a form.
     &:last-child {
@@ -72,6 +72,7 @@ form {
       display: inherit;
       border-bottom: 1pt solid #eeeeee;
       margin-bottom: 1.5rem;
+      font-weight: 600;
 
       @include flex-direction(row);
       @include justify-content(space-between);
