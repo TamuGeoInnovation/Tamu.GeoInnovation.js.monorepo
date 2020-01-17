@@ -11,7 +11,7 @@ import esri = __esri;
   styleUrls: ['./builder.component.scss']
 })
 export class BuilderComponent implements OnInit {
-  public form2: FormGroup;
+  public builderForm: FormGroup;
 
   public view: esri.MapView;
   public map: esri.Map;
@@ -24,7 +24,7 @@ export class BuilderComponent implements OnInit {
       this.map = instances.map;
     });
 
-    this.form2 = this.fb.group({
+    this.builderForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
       center: ['', Validators.required],
@@ -36,27 +36,27 @@ export class BuilderComponent implements OnInit {
   public setMapCenter(): void {
     const center = this.view.center;
 
-    this.form2.controls.center.setValue(`${center.longitude.toFixed(4)}, ${center.latitude.toFixed(4)}`);
+    this.builderForm.controls.center.setValue(`${center.longitude.toFixed(4)}, ${center.latitude.toFixed(4)}`);
   }
 
   public setMapZoom(): void {
     const zoom = this.view.zoom;
 
-    this.form2.controls.zoom.setValue(zoom);
+    this.builderForm.controls.zoom.setValue(zoom);
   }
 
   public addLayer() {
-    (this.form2.controls.layers as FormArray).push(this.fb.control(''));
+    (this.builderForm.controls.layers as FormArray).push(this.fb.control(''));
 
-    console.log(this.form2.get('layers'));
+    console.log(this.builderForm.get('layers'));
   }
 
   public removeLayer(index: number) {
-    (this.form2.controls.layers as FormArray).removeAt(index);
+    (this.builderForm.controls.layers as FormArray).removeAt(index);
   }
 
   public createScenario() {
-    const value = this.form2.getRawValue();
+    const value = this.builderForm.getRawValue();
 
     console.dir(value);
   }

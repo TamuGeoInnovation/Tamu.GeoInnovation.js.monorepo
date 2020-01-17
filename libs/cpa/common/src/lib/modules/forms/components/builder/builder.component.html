@@ -1,6 +1,6 @@
 <h2>CCPA : New Scenario</h2>
 
-<form [formGroup]="form2" (ngSubmit)="createScenario()">
+<form [formGroup]="builderForm" (ngSubmit)="createScenario()">
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-name">
@@ -9,11 +9,11 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-row">
+      <div class="form-collection row">
         <tamu-gisc-textbox formControlName="name" placeholder="Title" type="text" floatLabel="true"> </tamu-gisc-textbox>
       </div>
 
-      <div class="form-row">
+      <div class="form-collection row">
         <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" floatLabel="true"></tamu-gisc-textbox>
       </div>
     </div>
@@ -27,7 +27,7 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-row">
+      <div class="form-collection row">
         <tamu-gisc-textbox formControlName="center" placeholder="Map Center" type="text" floatLabel="true">
           <div class="textbox-actions material-icons-container">
             <span class="material-icons action alt" title="Set Current Center" (click)="setMapCenter()">crop</span>
@@ -55,17 +55,20 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-row" *ngFor="let url of form2['controls'].layers.controls; let i = index">
+      <div class="form-collection column" *ngFor="let url of builderForm['controls'].layers.controls; let i = index">
         <tamu-gisc-textbox [formControlName]="i" placeholder="Service Layer URL" type="text" floatLabel="true">
           <div class="textbox-actions material-icons-container">
+            <span class="material-icons action alt" title="Edit Layer" *ngIf="url.value">edit</span>
             <span class="material-icons action error" title="Delete Layer" (click)="removeLayer(i)">close</span>
           </div>
         </tamu-gisc-textbox>
+
+        <tamu-gisc-layer-configuration *ngIf="url.value" [url]="url.value"></tamu-gisc-layer-configuration>
       </div>
     </div>
   </div>
 
-  <div class="form-row">
-    <tamu-gisc-button type="submit" value="Publish" [disabled]="!form2.valid"></tamu-gisc-button>
+  <div class="form-collection row">
+    <tamu-gisc-button type="submit" value="Publish" [disabled]="!builderForm.valid"></tamu-gisc-button>
   </div>
 </form>

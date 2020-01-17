@@ -59,7 +59,7 @@ export class MapComponent implements OnInit {
     const source: LayerSource = {
       type: 'feature',
       url: value.url,
-      id: (layerInfo.name as string).toLowerCase().replace(/ /g, '-') + '-layer',
+      id: layerInfo.name.toLowerCase().replace(/ /g, '-') + '-layer',
       title: layerInfo.name,
       native: {
         outFields: ['*']

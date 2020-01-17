@@ -8,9 +8,8 @@ form {
   margin-top: 1rem;
   margin-bottom: 1rem;
 
-  .form-row {
+  .form-collection {
     display: inherit;
-    @include flex-direction(row);
     @include justify-content(space-around);
 
     // Add top and bottom margin to the form row itself
@@ -27,25 +26,33 @@ form {
       margin-bottom: 0;
     }
 
-    // For any element inside a form row. Items in a form row should,
-    // be lined up horizontally
-    //
-    // TODO: This selector is expensive. Create an app selector variable,
-    // that only includes all possible element matchers
-    & > * {
-      @include flex(1);
-      margin-right: 0.5rem;
-      margin-left: 0.5rem;
+    &.row {
+      @include flex-direction(row);
 
-      // First item in a form row does not need margin left
-      &:first-child {
-        margin-left: 0;
-      }
+      // For any element inside a form row. Items in a form row should,
+      // be lined up horizontally
+      //
+      // TODO: This selector is expensive. Create an app selector variable,
+      // that only includes all possible element matchers
+      & > * {
+        @include flex(1);
+        margin-right: 0.5rem;
+        margin-left: 0.5rem;
 
-      // Last item in a form group does not need margin right
-      &:last-child {
-        margin-right: 0;
+        // First item in a form row does not need margin left
+        &:first-child {
+          margin-left: 0;
+        }
+
+        // Last item in a form group does not need margin right
+        &:last-child {
+          margin-right: 0;
+        }
       }
+    }
+
+    &.column {
+      @include flex-direction(column);
     }
   }
 

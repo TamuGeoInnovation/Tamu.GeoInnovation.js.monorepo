@@ -6,7 +6,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 
-import { MapComponent } from './map.component';
 import { SearchModule } from '@tamu-gisc/search';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
@@ -18,8 +17,9 @@ import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector'
 import { ChartsModule } from '@tamu-gisc/charts';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-
 import { CpaCommonModule } from '@tamu-gisc/cpa/common';
+
+import { MapComponent } from './map.component';
 
 const routes: Routes = [
   {

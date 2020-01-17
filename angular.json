@@ -2259,6 +2259,34 @@
           "styleext": "scss"
         }
       }
+    },
+    "maps-feature-forms": {
+      "projectType": "library",
+      "root": "libs/maps/feature/forms",
+      "sourceRoot": "libs/maps/feature/forms/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/maps/feature/forms/tsconfig.lib.json", "libs/maps/feature/forms/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/forms/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/forms/jest.config.js",
+            "tsConfig": "libs/maps/feature/forms/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/forms/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {
