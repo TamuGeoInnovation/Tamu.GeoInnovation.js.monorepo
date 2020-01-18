@@ -40,9 +40,17 @@
   </div>
 </tamu-gisc-sidebar>
 
-<tamu-gisc-drawer [width]="'45rem'" [position]="'left'">
+<tamu-gisc-drawer [width]="'45rem'" [position]="'left'" *ngIf="router.url === '/create'">
   <div class="content">
-    <tamu-gisc-builder></tamu-gisc-builder>
+    <!-- Scenario builder loaded from routes -->
+    <router-outlet></router-outlet>
+  </div>
+</tamu-gisc-drawer>
+
+<tamu-gisc-drawer [width]="'35rem'" [position]="'left'" *ngIf="router.url === '/participant'">
+  <div class="content">
+    <!-- Scenario builder loaded from routes -->
+    <router-outlet></router-outlet>
   </div>
 </tamu-gisc-drawer>
 

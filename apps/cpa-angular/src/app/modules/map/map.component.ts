@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
@@ -38,7 +39,7 @@ export class MapComponent implements OnInit {
 
   public selected = new BehaviorSubject([]);
 
-  constructor(private fb: FormBuilder, private mapService: EsriMapService, private http: HttpClient) {}
+  constructor(private fb: FormBuilder, private mapService: EsriMapService, private http: HttpClient, private router: Router) {}
 
   public ngOnInit() {
     this.form = this.fb.group({
