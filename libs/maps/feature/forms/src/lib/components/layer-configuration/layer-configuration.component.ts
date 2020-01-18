@@ -52,7 +52,7 @@ export class LayerConfigurationComponent implements OnInit {
   }
 
   public get configOptions() {
-    return this.config.form;
+    return this.config.form.getRawValue();
   }
 
   /**
@@ -110,6 +110,8 @@ export class LayerConfiguration {
    */
   public static normalizeOptions(obj: object): ILayerConfiguration {
     if (obj instanceof Object) {
+      // Suing this as schema since form builder groups cannot be stringified
+      // without running into a recursive overflow.
       const lookup = {
         name: '',
         type: '',
@@ -148,7 +150,9 @@ export class LayerConfiguration {
   }
 
   /**
-   * Updates form control values from a configuration
+   * Recursively iterates through the provided config object keys, determining if a given key
+   * exists in the form group, and assigning values for those that do.
+   *
    */
   public updateFormValues(config: ILayerConfiguration) {
     if (this.form) {
