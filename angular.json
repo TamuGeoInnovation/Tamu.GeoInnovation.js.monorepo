@@ -2232,25 +2232,25 @@
         }
       }
     },
-    "cpa-common": {
+    "cpa-common-ngx": {
       "projectType": "library",
-      "root": "libs/cpa/common",
-      "sourceRoot": "libs/cpa/common/src",
+      "root": "libs/cpa/common/ngx",
+      "sourceRoot": "libs/cpa/common/ngx/src",
       "prefix": "tamu-gisc",
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["libs/cpa/common/tsconfig.lib.json", "libs/cpa/common/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/cpa/common/**"]
+            "tsConfig": ["libs/cpa/common/ngx/tsconfig.lib.json", "libs/cpa/common/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/cpa/common/ngx/**"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "libs/cpa/common/jest.config.js",
-            "tsConfig": "libs/cpa/common/tsconfig.spec.json",
-            "setupFile": "libs/cpa/common/src/test-setup.ts"
+            "jestConfig": "libs/cpa/common/ngx/jest.config.js",
+            "tsConfig": "libs/cpa/common/ngx/tsconfig.spec.json",
+            "setupFile": "libs/cpa/common/ngx/src/test-setup.ts"
           }
         }
       },
@@ -2285,6 +2285,28 @@
       "schematics": {
         "@nrwl/angular:component": {
           "styleext": "scss"
+        }
+      }
+    },
+    "cpa-common-entities": {
+      "root": "libs/cpa/common/entities",
+      "sourceRoot": "libs/cpa/common/entities/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/cpa/common/entities/tsconfig.lib.json", "libs/cpa/common/entities/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/cpa/common/entities/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/cpa/common/entities/jest.config.js",
+            "tsConfig": "libs/cpa/common/entities/tsconfig.spec.json"
+          }
         }
       }
     }

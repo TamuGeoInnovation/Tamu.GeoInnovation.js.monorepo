@@ -205,6 +205,9 @@
     },
     "maps-feature-forms": {
       "tags": []
+    },
+    "cpa-common-entities": {
+      "tags": []
     }
   }
 }
