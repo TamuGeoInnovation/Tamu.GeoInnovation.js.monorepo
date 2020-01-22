@@ -1,4 +1,45 @@
+<div class="actions">
+  <div class="left-actions">
+    <!-- Test only if the current index is equal to zero. Even though a value lf "-1" is not possible in an array,
+    in this case a value of "-1" represents a non-yet-existing, or possible, item at the end of the array -->
+    <!-- -->
+    <!-- Call `scanNextParticipant` only if the the current index is greater than zero OR if it is equal to "-1".
+      An index greater than zero is straight forward, means we can walk to the previous index.
+      An index equal to "-1" means that the current participant has not submitted any geometry and thus has no scan index. This case is assumed to be at the tail-end of the array, meaning we can start scanning
+      from the last index of the array. -->
+    <div class="action" title="Previous Participant" [ngClass]="{ unavailable: state.currentIndex === 0 }" (click)="state.currentIndex > 0 || state.currentIndex === -1 ? scanParticipantEntry('prev') : undefined">
+      <span class="material-icons">keyboard_arrow_left</span>
+      <p>Previous</p>
+    </div>
+  </div>
+  <div class="right-actions">
+    <!-- Make action available if the current index is a valid array index (not "-1"), OR if the currentIndex is a valid array index but is less than its size -->
+    <!--  -->
+    <!-- Call `scanNextParticipant` only if the currentIndex is not -1. An index equal to the upper array limit would mean we can create a new participant, which is acceptable. -->
+    <div class="action" title="Next Participant" [ngClass]="{ unavailable: state.currentIndex === -1 }" (click)="state.currentIndex !== -1 ? scanParticipantEntry('next') : undefined">
+      <p>Next</p>
+      <span class="material-icons">keyboard_arrow_right</span>
+    </div>
+  </div>
+</div>
+
 <h2>Growth &amp; Economic Development</h2>
 
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<div class="sidebar-component-content-container">
+  <div class="sidebar-component-name">
+    <p>Drawing Tools</p>
+  </div>
+  <tamu-gisc-map-draw [reference]="'drawing-layer'" [collapseGraphics]="true" (export)="handleDrawSelection($event)"></tamu-gisc-map-draw>
+</div>
+
+<div class="sidebar-component-content-container">
+  <div class="sidebar-component-name">
+    <p>Summary & Charts</p>
+  </div>
+
+  <tamu-gisc-selection-summary [collection]="selected">
+    <div class="charts">
+      <tamu-gisc-bar-chart [paths]="[['attributes.Qualifier', 'identity']]" [transformations]="[['categorize', 'count']]" [labels]="['Type']"></tamu-gisc-bar-chart>
+    </div>
+  </tamu-gisc-selection-summary>
+</div>

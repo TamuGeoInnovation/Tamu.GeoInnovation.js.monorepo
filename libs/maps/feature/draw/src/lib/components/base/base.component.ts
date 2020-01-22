@@ -14,7 +14,7 @@ import esri = __esri;
   styleUrls: ['./base.component.scss'],
   providers: [FeatureSelectorService]
 })
-export class BaseComponent implements OnInit, OnDestroy {
+export class BaseDrawComponent implements OnInit, OnDestroy {
   public model: ISketchViewModel;
 
   @Input()
@@ -279,6 +279,70 @@ export class BaseComponent implements OnInit, OnDestroy {
     } else {
       this.export.emit(features.toArray());
     }
+  }
+
+  /**
+   * Draws the provided graphics on the target draw layer.
+   *
+   * Emits a 'create' event.
+   */
+  public draw(graphics: esri.Graphic[]) {
+    this.model.layer.addMany(this.applySymbol(graphics));
+    this.model.emit('create', {
+      type: 'create',
+      state: 'complete',
+      graphics: this.model.layer.graphics
+    });
+  }
+
+  /**
+   * Clears the target draw layer
+   *
+   * Emits a 'delete' event.
+   */
+  public reset() {
+    this.model.layer.removeAll();
+    this.model.emit('delete', {
+      graphics: this.model.layer.graphics,
+      type: 'delete'
+    });
+  }
+
+  /**
+   * For graphics added through the `draw` methods, their symbols will typically
+   * not match the correct symbols used by the SketchView model and so on first render
+   * they will display incorrectly. This method applies the correct symbol for the graphics
+   * before adding them to the target layer.
+   */
+  private applySymbol(graphics: esri.Graphic[]): esri.Graphic[] {
+    const symbol = (type: string | 'point' | 'polygon' | 'polyline'): esri.Symbol => {
+      if (type === 'point') {
+        return this.model.pointSymbol;
+      } else if (type === 'polyline') {
+        return this.model.polylineSymbol;
+      } else if (type === 'polygon') {
+        return this.model.polygonSymbol;
+      }
+    };
+
+    const symbolized = graphics.map((g) => {
+      // Handle graphic instances as well as auto-castable objects.
+      if (g.toJSON === undefined) {
+        const copy = JSON.parse(JSON.stringify(g));
+
+        copy.symbol = symbol(copy.geometry.type);
+
+        return copy;
+      } else {
+        const copy = g.toJSON();
+
+        copy.symbol = symbol(g.geometry.type);
+
+        return copy;
+      }
+    });
+
+    return symbolized;
   }
 }
 

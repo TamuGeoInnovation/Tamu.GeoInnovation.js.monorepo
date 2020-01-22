@@ -1,0 +1,37 @@
+@import 'libs/sass/mixins';
+
+.actions {
+  @include flexbox();
+  @include justify-content(space-between);
+  @include align-items(center);
+  margin-bottom: 1rem;
+
+  .action {
+    @include flexbox();
+    @include flex-direction(row);
+    color: hsla(216, 20%, 60%, 1);
+    cursor: pointer;
+
+    p {
+      padding-bottom: 0;
+    }
+
+    p,
+    .material-icons {
+      color: inherit;
+    }
+
+    &:hover {
+      color: hsl(216, 63%, 59%);
+    }
+
+    &.unavailable {
+      color: #bdbdbd;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.sidebar-component-content-container {
+  margin-bottom: 1rem;
+}

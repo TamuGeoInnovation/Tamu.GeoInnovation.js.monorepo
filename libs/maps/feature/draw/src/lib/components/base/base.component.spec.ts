@@ -7,11 +7,11 @@ import { EsriModuleProviderService, EsriMapModule } from '@tamu-gisc/maps/esri';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { SearchModule } from '@tamu-gisc/search';
 
-import { BaseComponent } from './base.component';
+import { BaseDrawComponent } from './base.component';
 
-describe('BaseComponent', () => {
-  let component: BaseComponent;
-  let fixture: ComponentFixture<BaseComponent>;
+describe('BaseDrawComponent', () => {
+  let component: BaseDrawComponent;
+  let fixture: ComponentFixture<BaseDrawComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -23,7 +23,7 @@ describe('BaseComponent', () => {
         SearchModule,
         LayerListModule
       ],
-      declarations: [BaseComponent],
+      declarations: [BaseDrawComponent],
       providers: [
         EsriModuleProviderService,
         {
@@ -35,7 +35,7 @@ describe('BaseComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BaseComponent);
+    fixture = TestBed.createComponent(BaseDrawComponent);
     component = fixture.componentInstance;
 
     component.reference = 'test-reference';

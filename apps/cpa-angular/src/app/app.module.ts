@@ -6,6 +6,8 @@ import { RouterModule, Routes } from '@angular/router';
 import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
+
 import * as environment from '../environments/environment';
 
 import { AppComponent } from './app.component';
@@ -28,7 +30,8 @@ const routes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
-    EnvironmentModule
+    EnvironmentModule,
+    LocalStoreModule
   ],
   declarations: [AppComponent],
   providers: [

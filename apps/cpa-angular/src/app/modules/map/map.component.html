@@ -4,7 +4,7 @@
   </div>
 
   <div class="content">
-    <div class="sidebar-component-content-container">
+    <!-- <div class="sidebar-component-content-container">
       <div class="sidebar-component-name">
         <p>Add Layer From URL</p>
       </div>
@@ -15,28 +15,9 @@
 
         <tamu-gisc-button type="submit" value="Load"></tamu-gisc-button>
       </form>
-    </div>
+    </div> -->
 
     <tamu-gisc-layer-list-categorized></tamu-gisc-layer-list-categorized>
-
-    <div class="sidebar-component-content-container">
-      <div class="sidebar-component-name">
-        <p>Drawing Tools</p>
-      </div>
-      <tamu-gisc-map-draw [reference]="'drawing-layer'" [collapseGraphics]="true" (export)="handleDrawSelection($event)"></tamu-gisc-map-draw>
-    </div>
-
-    <div class="sidebar-component-content-container">
-      <div class="sidebar-component-name">
-        <p>Summary & Charts</p>
-      </div>
-
-      <tamu-gisc-selection-summary [collection]="selected">
-        <div class="charts">
-          <tamu-gisc-bar-chart [paths]="[['attributes.Qualifier', 'identity']]" [transformations]="[['categorize', 'count']]" [labels]="['Type']"></tamu-gisc-bar-chart>
-        </div>
-      </tamu-gisc-selection-summary>
-    </div>
   </div>
 </tamu-gisc-sidebar>
 
@@ -47,7 +28,7 @@
   </div>
 </tamu-gisc-drawer>
 
-<tamu-gisc-drawer [width]="'35rem'" [position]="'left'" *ngIf="router.url === '/participant'">
+<tamu-gisc-drawer [width]="'30rem'" [position]="'left'" *ngIf="router.url === '/participant'">
   <div class="content">
     <!-- Scenario builder loaded from routes -->
     <router-outlet></router-outlet>

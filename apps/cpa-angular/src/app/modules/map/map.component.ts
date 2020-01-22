@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { LayerSource } from '@tamu-gisc/common/types';
@@ -37,9 +37,12 @@ export class MapComponent implements OnInit {
 
   public form2Layers: Observable<Array<string>>;
 
-  public selected = new BehaviorSubject([]);
-
-  constructor(private fb: FormBuilder, private mapService: EsriMapService, private http: HttpClient, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private mapService: EsriMapService,
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
   public ngOnInit() {
     this.form = this.fb.group({
@@ -52,36 +55,24 @@ export class MapComponent implements OnInit {
     });
   }
 
-  public async submit() {
-    const value = this.form.getRawValue();
+  // public async submit() {
+  //   const value = this.form.getRawValue();
 
-    const layerInfo: ILayerInfo = await this.http.get(`${value.url}?f=json`).toPromise();
+  //   const layerInfo: ILayerInfo = await this.http.get(`${value.url}?f=json`).toPromise();
 
-    const source: LayerSource = {
-      type: 'feature',
-      url: value.url,
-      id: layerInfo.name.toLowerCase().replace(/ /g, '-') + '-layer',
-      title: layerInfo.name,
-      native: {
-        outFields: ['*']
-      },
-      popupComponent: BasePopupComponent
-    };
+  //   const source: LayerSource = {
+  //     type: 'feature',
+  //     url: value.url,
+  //     id: layerInfo.name.toLowerCase().replace(/ /g, '-') + '-layer',
+  //     title: layerInfo.name,
+  //     native: {
+  //       outFields: ['*']
+  //     },
+  //     popupComponent: BasePopupComponent
+  //   };
 
-    this.mapService.loadLayers([source]);
-  }
-
-  public async handleDrawSelection(e: esri.Graphic) {
-    const layer = this.mapService.findLayerById('highwater-claims-layer') as esri.FeatureLayer;
-
-    const query = await layer.queryFeatures({
-      spatialRelationship: 'intersects',
-      geometry: e.geometry,
-      outFields: ['*']
-    });
-
-    this.selected.next(query.features);
-  }
+  //   this.mapService.loadLayers([source]);
+  // }
 }
 
 interface ILayerInfo extends Object {
