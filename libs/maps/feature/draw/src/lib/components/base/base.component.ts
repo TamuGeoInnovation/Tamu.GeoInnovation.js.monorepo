@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { from, Subject, combineLatest } from 'rxjs';
-import { takeUntil, pluck, filter, switchMap, take } from 'rxjs/operators';
+import { takeUntil, pluck, filter, switchMap } from 'rxjs/operators';
 
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { EsriModuleProviderService, EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
@@ -245,7 +245,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
         if (geometryTypes.length === 1) {
           let geometryProp;
 
-          // TODO: rings and paths should work fine. Multipoint and point will need tweaking.
+          // TODO: rings and paths should work fine. Multi point and point will need tweaking.
           if (cloned.geometry.hasOwnProperty('rings')) {
             geometryProp = 'rings';
           } else if (cloned.geometry.hasOwnProperty('paths')) {
@@ -263,7 +263,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
           // Apply collapsed geometry to cloned graphic.
           cloned.geometry[geometryProp] = collapsedGeometry;
 
-          // Reset some uneeded properties.
+          // Reset some unnecessary properties.
           cloned.layer = undefined;
           cloned.attributes = undefined;
 

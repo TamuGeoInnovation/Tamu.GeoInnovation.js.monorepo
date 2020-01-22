@@ -1,15 +1,16 @@
-import { Component, OnInit, ViewContainerRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil, throttleTime, debounce, debounceTime } from 'rxjs/operators';
 
 import * as uuid from 'uuid/v4';
 
 import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-store';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
 
 import esri = __esri;
-import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 
 const storageConfig: StorageConfig = {
   primaryKey: 'ccpa',
@@ -21,25 +22,60 @@ const storageConfig: StorageConfig = {
   templateUrl: './participant.component.html',
   styleUrls: ['./participant.component.scss']
 })
-export class ParticipantComponent implements OnInit {
+export class ParticipantComponent implements OnInit, OnDestroy {
   public form: FormGroup;
 
   public participantGuid: string;
+
   public state = {
     currentIndex: 0,
     limitSize: 0
   };
 
+  /**
+   * Stores the results of the features emitted by the draw component.
+   *
+   * Consumed by summary and charts component.
+   */
   public selected = new BehaviorSubject([]);
 
-  // Draw component reference
+  /**
+   * Map draw component reference.
+   *
+   * Needed to call its public `draw` and `reset` methods.
+   */
   @ViewChild(BaseDrawComponent, { static: true })
   private drawComponent: BaseDrawComponent;
+
+  private _$destroy: Subject<boolean> = new Subject();
 
   constructor(private fb: FormBuilder, private mapService: EsriMapService, private storage: LocalStoreService) {}
 
   public ngOnInit() {
     this.initializeParticipant();
+
+    this.form = this.fb.group({
+      name: ['', Validators.required],
+      notes: ['', Validators.required],
+      drawn: [undefined, Validators.required]
+    });
+
+    this.form.statusChanges
+      .pipe(
+        takeUntil(this._$destroy),
+        debounceTime(1000)
+      )
+      .subscribe((status) => {
+        if (status === 'VALID') {
+          console.log('updating');
+          this.updateParticipantLocalStore();
+        }
+      });
+  }
+
+  public ngOnDestroy() {
+    this._$destroy.next();
+    this._$destroy.complete();
   }
 
   public async handleDrawSelection(e: esri.Graphic) {
@@ -56,18 +92,17 @@ export class ParticipantComponent implements OnInit {
         });
 
         this.selected.next(query.features);
-
-        this.updateParticipantLocalStore(e);
+        this.form.controls.drawn.setValue(e);
       } catch (err) {
         console.error(err);
       }
     } else {
       this.selected.next([]);
+      this.form.controls.drawn.setValue(undefined);
     }
   }
 
   public scanParticipantEntry(direction: 'next' | 'prev') {
-    const entries = this.participantEntries;
     const currentIndex = this.participantEntryIndex;
 
     if (direction === 'next') {
@@ -98,16 +133,18 @@ export class ParticipantComponent implements OnInit {
   }
 
   /**
-   * Resets any feature selection.
+   * Resets any selected features.
    *
    * If provided a participant submission, will reset the workspace to
    * its value, restoring drawn features and selections.
+   *
+   * If no participant submission is provided, a new participant guid will be created,
+   * as a placeholder for when new features are drawn on the map.
    */
   public resetWorkspace(submission?: IParticipantSubmission) {
     if (submission === undefined) {
-      console.log('Create placholder');
-
       this.drawComponent.reset();
+      this.form.reset();
       this.initializeParticipant();
     } else {
       this.drawComponent.reset();
@@ -121,10 +158,15 @@ export class ParticipantComponent implements OnInit {
         }
       } as esri.Graphic;
 
+      // Draws submission graphics to the draw component target layer.
       this.drawComponent.draw([autoCastable]);
 
+      // Set/Overwrite form values
+      this.form.controls.name.setValue(submission.name);
+      this.form.controls.notes.setValue(submission.notes);
+
+      // Set the component participant state.
       this.initializeParticipant(submission.guid);
-      console.log('Scan to existing');
     }
   }
 
@@ -161,12 +203,14 @@ export class ParticipantComponent implements OnInit {
   /**
    * Updates the entry value of the current participant guid with the provided geometry.
    */
-  private updateParticipantLocalStore(graphic: esri.Graphic) {
-    const parsed = graphic.toJSON();
+  private updateParticipantLocalStore() {
+    const parsed = (this.form.controls.drawn.value as esri.Graphic).toJSON();
 
     const submission: IParticipantSubmission = {
       guid: this.participantGuid,
-      graphic: parsed
+      graphic: parsed,
+      name: this.form.controls.name.value,
+      notes: this.form.controls.notes.value
     };
 
     const existingValue = this.participantEntries;
@@ -207,4 +251,6 @@ export class ParticipantComponent implements OnInit {
 interface IParticipantSubmission {
   guid: string;
   graphic: esri.Graphic;
+  name?: string;
+  notes?: string;
 }
