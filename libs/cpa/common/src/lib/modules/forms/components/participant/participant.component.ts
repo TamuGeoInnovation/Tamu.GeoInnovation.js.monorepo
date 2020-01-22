@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { takeUntil, throttleTime, debounce, debounceTime } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 
 import * as uuid from 'uuid/v4';
 
@@ -11,6 +11,7 @@ import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
 
 import esri = __esri;
+import { IChartConfigurationOptions } from '@tamu-gisc/charts';
 
 const storageConfig: StorageConfig = {
   primaryKey: 'ccpa',
@@ -30,6 +31,21 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   public state = {
     currentIndex: 0,
     limitSize: 0
+  };
+
+  /**
+   * Partial chart configuration passed to the chart component
+   */
+  public chartOptions: Partial<IChartConfigurationOptions> = {
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true
+          }
+        }
+      ]
+    }
   };
 
   /**
@@ -55,8 +71,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this.initializeParticipant();
 
     this.form = this.fb.group({
-      name: ['', Validators.required],
-      notes: ['', Validators.required],
+      name: [''],
+      notes: [''],
       drawn: [undefined, Validators.required]
     });
 
