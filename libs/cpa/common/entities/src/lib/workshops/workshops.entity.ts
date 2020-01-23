@@ -1,19 +1,42 @@
-import { Entity, BaseEntity, PrimaryColumn, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, JoinTable, ManyToMany } from 'typeorm';
 
-@Entity({ name: 'Workshops' })
-export class Workshops extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
+import { CPABaseEntity } from '../base/cpaBase.entity';
 
-  @PrimaryColumn()
-  public guid: string;
+// import { Scenario } from '../scenarios/scenarios.entity';
 
+@Entity()
+export class Workshop extends CPABaseEntity {
   @Column()
   public title: string;
 
   @Column()
   public description: string;
 
-  @Column()
+  @Column({ nullable: true })
   public date: Date;
+
+  @ManyToMany((type) => Scenario)
+  @JoinTable()
+  public scenarios: Scenario[];
+}
+
+@Entity()
+export class Scenario extends CPABaseEntity {
+  @Column()
+  public title: string;
+
+  @Column()
+  public description: string;
+
+  @Column({ nullable: true })
+  public mapCenter: string;
+
+  @Column({ nullable: true })
+  public zoom: number;
+
+  @Column({ length: 'max', nullable: true })
+  public layers: string;
+
+  @ManyToMany((type) => Workshop)
+  public workshops: Workshop[];
 }

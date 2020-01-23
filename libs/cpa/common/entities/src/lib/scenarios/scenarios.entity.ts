@@ -1,25 +1,28 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, ManyToMany } from 'typeorm';
 
-@Entity({ name: 'Scenarios' })
-export class Scenarios extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
+// import { CPABaseEntity } from '../base/cpaBase.entity';
 
-  @PrimaryColumn()
-  public guid: string;
+// import { Workshop } from '../workshops/workshops.entity';
 
-  @Column()
-  public title: string;
+// @Entity()
+// export class Scenario extends CPABaseEntity {
+//   @Column()
+//   public title: string;
 
-  @Column()
-  public description: string;
+//   @Column()
+//   public description: string;
 
-  @Column()
-  public mapCenter: string;
+//   @Column({ nullable: true })
+//   public mapCenter: string;
 
-  @Column()
-  public zoom: number;
+//   @Column({ nullable: true })
+//   public zoom: number;
 
-  @Column({ length: 'max' })
-  public layers: string;
-}
+//   @Column({ length: 'max', nullable: true })
+//   public layers: string;
+
+//   @ManyToMany((type) => Workshop, (ws) => ws.guid)
+//   public workshops: Workshop[];
+// }
+
+export const dummy = false;

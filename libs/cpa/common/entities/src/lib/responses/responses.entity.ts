@@ -1,13 +1,9 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, PrimaryColumn, Column } from 'typeorm';
+import { Entity, Column } from 'typeorm';
+
+import { CPABaseEntity } from '../base/cpaBase.entity';
 
 @Entity({ name: 'Responses' })
-export class Responses extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
-  @PrimaryColumn()
-  public guid: string;
-
+export class Responses extends CPABaseEntity {
   @Column()
   public workshopGuid: string;
 
