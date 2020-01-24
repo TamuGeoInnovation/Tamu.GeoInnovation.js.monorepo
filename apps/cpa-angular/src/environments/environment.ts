@@ -23,6 +23,8 @@ const commonLayerProps = {
   maxScale: 0
 };
 
+export const api_url = 'http://localhost:3333/api/';
+
 export const SearchSources = [];
 
 export const LayerSources: LayerSource[] = [

@@ -15,6 +15,7 @@ import {
 } from 'typeorm';
 
 import * as guid from 'uuid/v4';
+import { type } from 'os';
 
 @Entity()
 export class CPABaseEntity extends BaseEntity {
@@ -44,7 +45,7 @@ export class Workshop extends CPABaseEntity {
   @Column()
   public title: string;
 
-  @Column()
+  @Column({ type: 'nvarchar', length: 'max' })
   public description: string;
 
   @Column({ nullable: true })
@@ -63,7 +64,7 @@ export class Scenario extends CPABaseEntity {
   @Column()
   public title: string;
 
-  @Column()
+  @Column({ type: 'nvarchar', length: 'max' })
   public description: string;
 
   @Column({ nullable: true })
@@ -72,7 +73,7 @@ export class Scenario extends CPABaseEntity {
   @Column({ nullable: true })
   public zoom: number;
 
-  @Column({ length: 'max', nullable: true })
+  @Column({ type: 'simple-json', nullable: true })
   public layers: string;
 
   @ManyToMany((type) => Workshop, (w) => w.scenarios)

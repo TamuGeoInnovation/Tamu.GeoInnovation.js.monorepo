@@ -3,12 +3,15 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
+import { ScenarioService } from '../../services/scenario.service';
+
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-builder',
   templateUrl: './builder.component.html',
-  styleUrls: ['./builder.component.scss']
+  styleUrls: ['./builder.component.scss'],
+  providers: [ScenarioService]
 })
 export class BuilderComponent implements OnInit {
   public builderForm: FormGroup;
@@ -16,7 +19,7 @@ export class BuilderComponent implements OnInit {
   public view: esri.MapView;
   public map: esri.Map;
 
-  constructor(private fb: FormBuilder, private mapService: EsriMapService) {}
+  constructor(private fb: FormBuilder, private mapService: EsriMapService, private scenario: ScenarioService) {}
 
   public ngOnInit() {
     this.mapService.store.subscribe((instances) => {
@@ -26,9 +29,9 @@ export class BuilderComponent implements OnInit {
 
     // Instantiate builder form
     this.builderForm = this.fb.group({
-      name: ['', Validators.required],
+      title: ['', Validators.required],
       description: ['', Validators.required],
-      center: ['', Validators.required],
+      mapCenter: ['', Validators.required],
       zoom: ['', Validators.required],
       layers: this.fb.array([])
     });
@@ -43,7 +46,7 @@ export class BuilderComponent implements OnInit {
   public setMapCenter(): void {
     const center = this.view.center;
 
-    this.builderForm.controls.center.setValue(`${center.longitude.toFixed(4)}, ${center.latitude.toFixed(4)}`);
+    this.builderForm.controls.mapCenter.setValue(`${center.longitude.toFixed(4)}, ${center.latitude.toFixed(4)}`);
   }
 
   /**
@@ -78,6 +81,8 @@ export class BuilderComponent implements OnInit {
   public createScenario() {
     const value = this.builderForm.getRawValue();
 
-    console.dir(value);
+    this.scenario.createScenario(value).subscribe((res) => {
+      debugger;
+    });
   }
 }
