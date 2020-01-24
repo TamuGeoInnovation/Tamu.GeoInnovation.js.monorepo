@@ -28,11 +28,23 @@ const routes: Routes = [
     children: [
       {
         path: 'create',
-        component: BuilderComponent
+        component: BuilderComponent,
+        children: [
+          {
+            path: ':id',
+            component: BuilderComponent
+          }
+        ]
       },
       {
-        path: 'participant',
-        component: ParticipantComponent
+        path: 'workshop',
+        component: ParticipantComponent,
+        children: [
+          {
+            path: ':id',
+            component: ParticipantComponent
+          }
+        ]
       }
     ]
   }

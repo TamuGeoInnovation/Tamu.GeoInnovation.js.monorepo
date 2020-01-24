@@ -28,7 +28,7 @@
   </div>
 </tamu-gisc-drawer>
 
-<tamu-gisc-drawer [width]="'30rem'" [position]="'left'" *ngIf="router.url === '/participant'">
+<tamu-gisc-drawer [width]="'30rem'" [position]="'left'" *ngIf="router.url.includes('workshop')">
   <div class="content">
     <!-- Scenario builder loaded from routes -->
     <router-outlet></router-outlet>
