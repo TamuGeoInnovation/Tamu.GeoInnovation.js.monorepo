@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Delete, HttpException, Param, Patch } from '@nestjs/common';
-import { getRepository } from 'typeorm';
+import { getRepository, DeepPartial } from 'typeorm';
 
 import { Workshop, Scenario } from '@tamu-gisc/cpa/common/entities';
 
@@ -16,7 +16,7 @@ export class WorkshopsController extends BaseController<Workshop> {
    * Adds a scenario to a workshop
    */
   @Post('scenario')
-  public async addScenario(@Body() body: IScenarioRequestBody) {
+  public async addScenario(@Body() body: IWorkshopScenarioPayload) {
     const existing = await this.service.repository.findOne({ where: { guid: body.workshopGuid }, relations: ['scenarios'] });
 
     if (existing) {
@@ -39,7 +39,7 @@ export class WorkshopsController extends BaseController<Workshop> {
    * Deletes a scenario from a workshop
    */
   @Delete('scenario')
-  public async deleteScenario(@Body() body: IScenarioRequestBody) {
+  public async deleteScenario(@Body() body: IWorkshopScenarioPayload) {
     const existing = await this.service.repository.findOne({ where: { guid: body.workshopGuid }, relations: ['scenarios'] });
 
     if (existing) {
@@ -68,7 +68,7 @@ export class WorkshopsController extends BaseController<Workshop> {
    * Updates an existing workshop record with provided body key-values.
    */
   @Patch(':guid')
-  public async updateOne(@Body() body: IWorkshopRequestBody, @Param() params) {
+  public async updateOne(@Body() body: IWorkshopRequestPayload, @Param() params) {
     try {
       await this.service.repository.update({ guid: params.guid }, { ...body });
       return;
@@ -100,10 +100,10 @@ export class WorkshopsController extends BaseController<Workshop> {
   }
 }
 
-interface IWorkshopRequestBody {
+export interface IWorkshopRequestPayload extends DeepPartial<Workshop> {
   guid: string;
 }
-interface IScenarioRequestBody {
+export interface IWorkshopScenarioPayload {
   scenarioGuid: string;
   workshopGuid: string;
 }

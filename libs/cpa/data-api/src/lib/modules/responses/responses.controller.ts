@@ -16,7 +16,7 @@ export class ResponsesController extends BaseController<Response> {
    * Retrieves a specific existing scenario user response.
    */
   @Get(':guid')
-  public async getOne(@Param() params: IResponseRequest) {
+  public async getOne(@Param() params: IResponseRequestPayload) {
     return this.service.getOne({ where: { guid: params.guid }, relations: ['scenario'] });
   }
 
@@ -24,7 +24,7 @@ export class ResponsesController extends BaseController<Response> {
    * Updates an existing scenario user response.
    */
   @Patch(':guid')
-  public async update(@Param() params: IResponseRequest, @Body() body: IResponseRequest) {
+  public async update(@Param() params: IResponseRequestPayload, @Body() body: IResponseRequestPayload) {
     return this.service.repository.update({ guid: params.guid }, { ...body });
   }
 
@@ -32,12 +32,12 @@ export class ResponsesController extends BaseController<Response> {
    * Deletes an existing scenario user response.
    */
   @Delete(':guid')
-  public async delete(@Param() params: IResponseRequest) {
+  public async delete(@Param() params: IResponseRequestPayload) {
     return this.service.repository.delete({ guid: params.guid });
   }
 
   /**
-   * Returns a list of all scenario user responses and its associated scenario
+   * Returns a list of all scenario user responses and its associated scenario.
    */
   @Get('')
   public getAll() {
@@ -45,10 +45,10 @@ export class ResponsesController extends BaseController<Response> {
   }
 
   /**
-   * Inserts a scenario user response
+   * Inserts a scenario user response.
    */
   @Post('')
-  public async insert(@Body() body: IResponseRequest) {
+  public async insert(@Body() body: IResponseRequestPayload) {
     const workshop = await getRepository(Workshop).findOne({ guid: body.workshopGuid });
     const scenario = await getRepository(Scenario).findOne({ guid: body.scenarioGuid });
 
@@ -62,7 +62,7 @@ export class ResponsesController extends BaseController<Response> {
   }
 }
 
-export interface IResponseRequest extends DeepPartial<Response> {
-  workshopGuid?: string;
+export interface IResponseRequestPayload extends DeepPartial<Response> {
   scenarioGuid?: string;
+  workshopGuid?: string;
 }

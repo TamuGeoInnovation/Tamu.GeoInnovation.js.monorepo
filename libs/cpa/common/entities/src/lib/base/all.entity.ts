@@ -1,6 +1,43 @@
-import { Entity, Column, JoinTable, ManyToMany, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  PrimaryColumn,
+  UpdateDateColumn,
+  CreateDateColumn,
+  BeforeUpdate,
+  BeforeInsert,
+  Column,
+  ManyToMany,
+  JoinTable,
+  OneToMany,
+  ManyToOne
+} from 'typeorm';
 
-import { CPABaseEntity } from '../base/cpaBase.entity';
+import * as guid from 'uuid/v4';
+
+@Entity()
+export class CPABaseEntity extends BaseEntity {
+  @PrimaryGeneratedColumn('increment')
+  public id: number;
+
+  @PrimaryColumn()
+  public guid: string;
+
+  @UpdateDateColumn()
+  public updated: Date;
+
+  @CreateDateColumn()
+  public created: Date;
+
+  @BeforeUpdate()
+  @BeforeInsert()
+  private generateGuid(): void {
+    if (this.guid === undefined) {
+      this.guid = guid();
+    }
+  }
+}
 
 @Entity()
 export class Workshop extends CPABaseEntity {
@@ -56,9 +93,9 @@ export class Response extends CPABaseEntity {
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public shapes: string;
 
-  @ManyToOne((type) => Scenario, (s) => s.responses)
+  @ManyToOne((type) => Scenario, (s) => s.responses, { onDelete: 'CASCADE' })
   public scenario: Scenario;
 
-  @ManyToOne((type) => Workshop, (w) => w.responses)
+  @ManyToOne((type) => Workshop, (w) => w.responses, { onDelete: 'CASCADE' })
   public workshop: Workshop;
 }
