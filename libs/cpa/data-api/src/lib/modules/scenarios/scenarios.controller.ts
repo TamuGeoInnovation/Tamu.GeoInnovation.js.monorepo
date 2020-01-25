@@ -1,4 +1,4 @@
-import { Controller, Patch, Param, Body, Delete, Get } from '@nestjs/common';
+import { Controller, Patch, Param, Body, Delete } from '@nestjs/common';
 
 import { Scenario } from '@tamu-gisc/cpa/common/entities';
 
@@ -30,3 +30,7 @@ export class ScenariosController extends BaseController<Scenario> {
 }
 
 export interface IScenariosRequestPayload extends DeepPartial<Scenario> {}
+
+export interface IScenariosResponse extends Omit<DeepPartial<Scenario>, 'layers'> {
+  layers: { url: string; info: object }[];
+}

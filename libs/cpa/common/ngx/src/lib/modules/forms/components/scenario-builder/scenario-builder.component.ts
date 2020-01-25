@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { tap } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
@@ -44,10 +45,10 @@ export class ScenarioBuilderComponent implements OnInit {
     });
 
     if (this.route.snapshot.params.guid) {
-      this.scenario.getScenario(this.route.snapshot.params.guid).subscribe((r) => {
+      this.scenario.getOne(this.route.snapshot.params.guid).subscribe((r) => {
         this.builderForm.patchValue(r);
 
-        ((r.layers as unknown) as Array<unknown>).forEach((l: any) => {
+        r.layers.forEach((l) => {
           this.addLayer(l);
         });
       });
@@ -97,10 +98,19 @@ export class ScenarioBuilderComponent implements OnInit {
     const value = this.builderForm.getRawValue();
 
     if (this.route.snapshot.params.guid) {
-      this.scenario.updateScenario(this.route.snapshot.params.guid, this.builderForm.value).subscribe((updateStatus) => {});
+      this.scenario
+        .update(this.route.snapshot.params.guid, this.builderForm.value)
+        .pipe(
+          tap(() => {
+            this.builderForm.disable();
+          })
+        )
+        .subscribe((updateStatus) => {
+          this.builderForm.enable();
+        });
     } else {
       console.log('create new scenario');
-      this.scenario.createScenario(value).subscribe((res) => {
+      this.scenario.create(value).subscribe((res) => {
         this.router.navigate([res.guid], { relativeTo: this.route });
       });
     }
