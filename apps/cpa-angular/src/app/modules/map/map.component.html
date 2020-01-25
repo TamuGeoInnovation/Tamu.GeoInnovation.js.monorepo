@@ -4,36 +4,12 @@
   </div>
 
   <div class="content">
-    <!-- <div class="sidebar-component-content-container">
-      <div class="sidebar-component-name">
-        <p>Add Layer From URL</p>
-      </div>
-      <form [formGroup]="form" (ngSubmit)="submit()">
-        <div class="form-collection row">
-          <tamu-gisc-textbox formControlName="url" type="text" placeholder="Layer URL" floatLabel="true"></tamu-gisc-textbox>
-        </div>
-
-        <tamu-gisc-button type="submit" value="Load"></tamu-gisc-button>
-      </form>
-    </div> -->
-
     <tamu-gisc-layer-list-categorized></tamu-gisc-layer-list-categorized>
   </div>
 </tamu-gisc-sidebar>
 
-<tamu-gisc-drawer [width]="'45rem'" [position]="'left'" *ngIf="router.url === '/create'">
-  <div class="content">
-    <!-- Scenario builder loaded from routes -->
-    <router-outlet></router-outlet>
-  </div>
-</tamu-gisc-drawer>
-
-<tamu-gisc-drawer [width]="'30rem'" [position]="'left'" *ngIf="router.url.includes('workshop')">
-  <div class="content">
-    <!-- Scenario builder loaded from routes -->
-    <router-outlet></router-outlet>
-  </div>
-</tamu-gisc-drawer>
+<!-- Viewer and builder sidebar renders here -->
+<router-outlet></router-outlet>
 
 <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
 

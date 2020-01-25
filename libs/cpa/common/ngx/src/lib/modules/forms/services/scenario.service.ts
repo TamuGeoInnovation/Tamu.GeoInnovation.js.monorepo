@@ -15,10 +15,18 @@ export class ScenarioService {
   }
 
   public createScenario(scenario: IScenariosRequestPayload) {
-    return this.http.post(this.resource, scenario);
+    return this.http.post<IScenariosRequestPayload>(this.resource, scenario);
   }
 
   public getScenarios() {
-    return this.http.get(this.resource);
+    return this.http.get<IScenariosRequestPayload[]>(this.resource);
+  }
+
+  public getScenario(guid: string) {
+    return this.http.get<IScenariosRequestPayload>(`${this.resource}/${guid}`);
+  }
+
+  public updateScenario(guid: string, scenario: IScenariosRequestPayload) {
+    return this.http.patch(`${this.resource}/${guid}`, scenario);
   }
 }

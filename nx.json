@@ -200,13 +200,13 @@
     "cpa-data-api": {
       "tags": []
     },
-    "cpa-common": {
-      "tags": []
-    },
     "maps-feature-forms": {
       "tags": []
     },
     "cpa-common-entities": {
+      "tags": []
+    },
+    "cpa-common-ngx": {
       "tags": []
     }
   }

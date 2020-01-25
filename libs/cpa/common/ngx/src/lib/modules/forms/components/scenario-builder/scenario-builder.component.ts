@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
@@ -9,17 +10,23 @@ import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-builder',
-  templateUrl: './builder.component.html',
-  styleUrls: ['./builder.component.scss'],
+  templateUrl: './scenario-builder.component.html',
+  styleUrls: ['./scenario-builder.component.scss'],
   providers: [ScenarioService]
 })
-export class BuilderComponent implements OnInit {
+export class ScenarioBuilderComponent implements OnInit {
   public builderForm: FormGroup;
 
   public view: esri.MapView;
   public map: esri.Map;
 
-  constructor(private fb: FormBuilder, private mapService: EsriMapService, private scenario: ScenarioService) {}
+  constructor(
+    private fb: FormBuilder,
+    private mapService: EsriMapService,
+    private scenario: ScenarioService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   public ngOnInit() {
     this.mapService.store.subscribe((instances) => {
@@ -36,8 +43,18 @@ export class BuilderComponent implements OnInit {
       layers: this.fb.array([])
     });
 
-    // Adds an initial layer group to the layers form array.
-    this.addLayer();
+    if (this.route.snapshot.params.guid) {
+      this.scenario.getScenario(this.route.snapshot.params.guid).subscribe((r) => {
+        this.builderForm.patchValue(r);
+
+        ((r.layers as unknown) as Array<unknown>).forEach((l: any) => {
+          this.addLayer(l);
+        });
+      });
+    } else {
+      // Adds an initial layer group to the layers form array.
+      this.addLayer();
+    }
   }
 
   /**
@@ -63,12 +80,10 @@ export class BuilderComponent implements OnInit {
    *
    * Allows adding multiple layers to the scenario.
    */
-  public addLayer() {
-    (this.builderForm.controls.layers as FormArray).push(
-      this.fb.group({
-        url: ['']
-      })
-    );
+  public addLayer(url?: object) {
+    const props = url && typeof url === 'object' ? { ...url } : { url: '' };
+
+    (this.builderForm.controls.layers as FormArray).push(this.fb.group(props));
   }
 
   /**
@@ -81,8 +96,13 @@ export class BuilderComponent implements OnInit {
   public createScenario() {
     const value = this.builderForm.getRawValue();
 
-    this.scenario.createScenario(value).subscribe((res) => {
-      debugger;
-    });
+    if (this.route.snapshot.params.guid) {
+      this.scenario.updateScenario(this.route.snapshot.params.guid, this.builderForm.value).subscribe((updateStatus) => {});
+    } else {
+      console.log('create new scenario');
+      this.scenario.createScenario(value).subscribe((res) => {
+        this.router.navigate([res.guid], { relativeTo: this.route });
+      });
+    }
   }
 }

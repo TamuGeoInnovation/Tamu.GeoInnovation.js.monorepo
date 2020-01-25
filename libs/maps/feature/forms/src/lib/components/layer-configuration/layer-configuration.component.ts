@@ -97,7 +97,30 @@ export class LayerConfiguration {
     if (args !== undefined) {
       if (args instanceof FormGroup) {
         this.form = args;
-        this.form.addControl('info', this.fb.group(this._groupProperties));
+
+        // Check if the info property exists in the form.
+        // If it has, it has been casted as a type of AbstractControl, but
+        // info needs to be a FormGroup.
+        if (this.form.controls.hasOwnProperty('info')) {
+          // Normalize the input args
+          const values = LayerConfiguration.normalizeOptions(this.form.controls.info.value);
+
+          // Remove the current form control to ensure the layer config control is that of
+          // FormGroup and not of any other type subclass of AbstractControl.
+          this.form.removeControl('info');
+
+          // Add the new info control as a type of FormGroup. This will instantiate with default values.
+          this.form.addControl('info', this.fb.group(this._groupProperties));
+
+          // Update the form values with the normalized input args.
+          this.form.controls.info.patchValue(LayerConfiguration.normalizeOptions(values));
+        } else {
+          // If the input FormGroup does not have an existing `info` control, make one
+          // with default values.
+          this.form.addControl('info', this.fb.group(this._groupProperties));
+        }
+      } else {
+        this.form.controls.info.patchValue(LayerConfiguration.normalizeOptions(args));
       }
     } else {
       this.form = this.fb.group(this._groupProperties);
