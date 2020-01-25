@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { tap } from 'rxjs/operators';
+import { tap, map, shareReplay } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { ScenarioService } from '../../services/scenario.service';
 
 import esri = __esri;
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-builder',
@@ -21,6 +22,8 @@ export class ScenarioBuilderComponent implements OnInit {
   public view: esri.MapView;
   public map: esri.Map;
 
+  public isExisting: Observable<boolean>;
+
   constructor(
     private fb: FormBuilder,
     private mapService: EsriMapService,
@@ -30,6 +33,11 @@ export class ScenarioBuilderComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
+    this.isExisting = this.route.params.pipe(
+      map((params) => Boolean(params['guid'])),
+      shareReplay(1)
+    );
+
     this.mapService.store.subscribe((instances) => {
       this.view = instances.view as esri.MapView;
       this.map = instances.map;
@@ -109,7 +117,6 @@ export class ScenarioBuilderComponent implements OnInit {
           this.builderForm.enable();
         });
     } else {
-      console.log('create new scenario');
       this.scenario.create(value).subscribe((res) => {
         this.router.navigate([res.guid], { relativeTo: this.route });
       });

@@ -1,4 +1,4 @@
-<h2>CCPA : New Scenario</h2>
+<h2>CCPA : <ng-container *ngIf="isExisting | async">Scenario Details</ng-container> <ng-container *ngIf="!(isExisting | async)">New Scenario</ng-container></h2>
 
 <form [formGroup]="builderForm" (ngSubmit)="createScenario()">
   <div class="form-section">
@@ -78,6 +78,12 @@
   </div>
 
   <div class="form-collection row">
-    <tamu-gisc-button type="submit" value="Publish" [disabled]="!builderForm.valid"></tamu-gisc-button>
+    <ng-container *ngIf="!(isExisting | async)">
+      <tamu-gisc-button type="submit" value="Publish" [disabled]="!builderForm.valid"></tamu-gisc-button>
+    </ng-container>
+
+    <ng-container *ngIf="isExisting | async">
+      <tamu-gisc-button type="submit" value="Update" [disabled]="!builderForm.valid"></tamu-gisc-button>
+    </ng-container>
   </div>
 </form>

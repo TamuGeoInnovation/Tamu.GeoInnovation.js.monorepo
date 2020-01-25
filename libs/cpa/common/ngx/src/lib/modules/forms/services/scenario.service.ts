@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { IScenariosRequestPayload, IScenariosResponse } from '@tamu-gisc/cpa/data-api';
-import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'

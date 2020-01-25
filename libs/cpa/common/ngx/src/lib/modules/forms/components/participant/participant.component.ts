@@ -9,9 +9,9 @@ import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-st
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
+import { IChartConfigurationOptions } from '@tamu-gisc/charts';
 
 import esri = __esri;
-import { IChartConfigurationOptions } from '@tamu-gisc/charts';
 
 const storageConfig: StorageConfig = {
   primaryKey: 'ccpa',
