@@ -13,6 +13,7 @@ import { ChartsModule } from '@tamu-gisc/charts';
 
 import { ScenarioBuilderComponent } from './components/scenario-builder/scenario-builder.component';
 import { ParticipantComponent } from './components/participant/participant.component';
+import { WorkshopBuilderComponent } from './components/workshop-builder/workshop-builder.component';
 
 @NgModule({
   imports: [
@@ -27,7 +28,7 @@ import { ParticipantComponent } from './components/participant/participant.compo
     FeatureSelectorModule,
     ChartsModule
   ],
-  declarations: [ScenarioBuilderComponent, ParticipantComponent],
-  exports: [ScenarioBuilderComponent, ParticipantComponent]
+  declarations: [ScenarioBuilderComponent, ParticipantComponent, WorkshopBuilderComponent],
+  exports: [ScenarioBuilderComponent, ParticipantComponent, WorkshopBuilderComponent]
 })
 export class CPAFormsModule {}

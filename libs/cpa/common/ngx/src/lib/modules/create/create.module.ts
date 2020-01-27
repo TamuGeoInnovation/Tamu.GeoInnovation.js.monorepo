@@ -9,6 +9,8 @@ import { ScenarioBuilderComponent } from '../forms/components/scenario-builder/s
 
 import { CreateComponent } from './create.component';
 import { OverviewComponent } from './components/overview/overview.component';
+import { WorkshopListComponent } from './components/workshop-list/workshop-list.component';
+import { WorkshopBuilderComponent } from '../forms/components/workshop-builder/workshop-builder.component';
 
 const routes: Routes = [
   {
@@ -18,6 +20,18 @@ const routes: Routes = [
       {
         path: '',
         component: OverviewComponent
+      },
+      {
+        path: 'workshops',
+        component: WorkshopListComponent
+      },
+      {
+        path: 'workshops/create',
+        component: WorkshopBuilderComponent
+      },
+      {
+        path: 'workshops/edit/:guid',
+        component: WorkshopBuilderComponent
       },
       {
         path: 'scenarios',
@@ -33,7 +47,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule, CPAFormsModule],
-  declarations: [CreateComponent, OverviewComponent],
+  declarations: [CreateComponent, OverviewComponent, WorkshopListComponent],
   exports: [RouterModule]
 })
 export class CpaCreateModule {}

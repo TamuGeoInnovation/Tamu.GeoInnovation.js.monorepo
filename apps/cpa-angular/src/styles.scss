@@ -2,6 +2,7 @@
 @import 'libs/sass/1140';
 @import 'libs/sass/mixins';
 @import 'libs/sass/modules/forms';
+@import 'libs/sass/dom_flexbox';
 
 html {
   height: 100%;
@@ -56,6 +57,24 @@ p {
       &:hover {
         color: hsla(10, 100%, 59%, 1);
       }
+    }
+  }
+}
+
+.view-container {
+  margin-top: 1rem;
+}
+
+.record-item {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  @include align-content(center);
+  padding: 0.15rem 0;
+
+  .material-icons-container {
+    .material-icons {
+      padding: 0 0.25rem;
     }
   }
 }

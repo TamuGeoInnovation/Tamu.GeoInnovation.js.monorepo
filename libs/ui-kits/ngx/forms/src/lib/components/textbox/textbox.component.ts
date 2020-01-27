@@ -29,7 +29,7 @@ export class TextboxComponent extends AbstractValueAccessorFormComponent<string>
    * Responsible for rendering the correct input element (input vs textarea), and setting its associated type attribute.
    */
   @Input()
-  public type: 'email' | 'number' | 'password' | 'tel' | 'text' | 'url';
+  public type: 'email' | 'number' | 'password' | 'tel' | 'text' | 'url' | 'textarea';
 
   /**
    * Used for `textarea` type, binding to its rows attribute.

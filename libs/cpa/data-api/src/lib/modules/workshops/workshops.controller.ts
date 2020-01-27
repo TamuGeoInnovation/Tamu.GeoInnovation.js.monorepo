@@ -38,12 +38,15 @@ export class WorkshopsController extends BaseController<Workshop> {
   /**
    * Deletes a scenario from a workshop
    */
-  @Delete('scenario')
-  public async deleteScenario(@Body() body: IWorkshopScenarioPayload) {
-    const existing = await this.service.repository.findOne({ where: { guid: body.workshopGuid }, relations: ['scenarios'] });
+  @Delete('scenario/:workshopGuid/:scenarioGuid')
+  public async deleteScenario(@Param() params: IWorkshopScenarioPayload) {
+    const existing = await this.service.repository.findOne({
+      where: { guid: params.workshopGuid },
+      relations: ['scenarios']
+    });
 
     if (existing) {
-      existing.scenarios = existing.scenarios.filter((s) => s.guid !== body.scenarioGuid);
+      existing.scenarios = existing.scenarios.filter((s) => s.guid !== params.scenarioGuid);
 
       return await existing.save();
     } else {
