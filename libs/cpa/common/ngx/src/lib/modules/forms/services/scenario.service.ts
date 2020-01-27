@@ -29,4 +29,8 @@ export class ScenarioService {
   public update(guid: string, scenario: IScenariosRequestPayload) {
     return this.http.patch(`${this.resource}/${guid}`, scenario);
   }
+
+  public delete(guid: string) {
+    return this.http.delete(`${this.resource}/${guid}`);
+  }
 }

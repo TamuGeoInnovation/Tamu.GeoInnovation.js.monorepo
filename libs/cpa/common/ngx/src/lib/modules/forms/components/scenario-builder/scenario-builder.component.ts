@@ -118,7 +118,7 @@ export class ScenarioBuilderComponent implements OnInit {
         });
     } else {
       this.scenario.create(value).subscribe((res) => {
-        this.router.navigate([res.guid], { relativeTo: this.route });
+        this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
       });
     }
   }
