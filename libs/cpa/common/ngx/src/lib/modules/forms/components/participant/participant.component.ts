@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Subject, Observable, forkJoin } from 'rxjs';
-import { takeUntil, debounceTime, shareReplay, switchMap, pluck, take } from 'rxjs/operators';
+import { takeUntil, debounceTime, shareReplay, switchMap, pluck, take, skip } from 'rxjs/operators';
 
 import * as uuid from 'uuid/v4';
 
@@ -84,17 +84,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       drawn: [undefined, Validators.required]
     });
 
-    this.form.statusChanges
-      .pipe(
-        takeUntil(this._$destroy),
-        debounceTime(1000)
-      )
-      .subscribe((status) => {
-        if (status === 'VALID') {
-          this.updateParticipantStore();
-        }
-      });
-
     if (this.route.snapshot.params['guid']) {
       this.workshop = this.ws.getWorkshop(this.route.snapshot.params['guid']).pipe(shareReplay(1));
 
@@ -115,6 +104,26 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         if (res) {
           this.resetWorkspace((res as unknown) as IParticipantSubmission);
         }
+
+        // Need to resub to the form status change stream.
+        // Need to first terminate the existing stream to avoid multi-casting on the same
+        // subscription.
+        this._$destroy.next();
+
+        // Create a subscription to the form and ignore the first emission, which will almost always be
+        // the form population by value patching from existing submissions. Want to avoid calling
+        // the update method when not necessary.
+        this.form.statusChanges
+          .pipe(
+            skip(1),
+            debounceTime(1000),
+            takeUntil(this._$destroy)
+          )
+          .subscribe((status) => {
+            if (status === 'VALID') {
+              this.updateParticipantStore();
+            }
+          });
       });
     }
   }

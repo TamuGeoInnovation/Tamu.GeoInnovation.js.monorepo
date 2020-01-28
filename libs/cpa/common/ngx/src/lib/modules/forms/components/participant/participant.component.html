@@ -7,7 +7,7 @@
       An index greater than zero is straight forward, means we can walk to the previous index.
       An index equal to "-1" means that the current participant has not submitted any geometry and thus has no scan index. This case is assumed to be at the tail-end of the array, meaning we can start scanning
       from the last index of the array. -->
-    <div class="action" title="Previous Participant" [ngClass]="{ unavailable: (responseIndex | async) === 0 }" (click)="scan('prev')">
+    <div class="action" title="Previous Participant" [ngClass]="{ unavailable: (responseIndex | async) === 0 }" (click)="scan('prev')" #scanner>
       <span class="material-icons">keyboard_arrow_left</span>
       <p>Previous</p>
     </div>
@@ -18,7 +18,7 @@
     <!--  -->
     <!-- Call `scanNextParticipant` only if the currentIndex is not -1. An index equal to the upper array limit would mean we can create a new participant, which is acceptable. -->
 
-    <div class="action" title="Next Participant" [ngClass]="{ unavailable: (responseIndex | async) === -1 || !form.valid }" (click)="scan('next')">
+    <div class="action" title="Next Participant" [ngClass]="{ unavailable: (responseIndex | async) === -1 || !form.valid }" (click)="scan('next')" #scanner>
       <p>Next</p>
       <span class="material-icons">keyboard_arrow_right</span>
     </div>
