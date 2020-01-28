@@ -1,33 +1,27 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject, Observable, combineLatest } from 'rxjs';
-import { takeUntil, debounceTime, shareReplay, switchMap, pluck } from 'rxjs/operators';
+import { BehaviorSubject, Subject, Observable, forkJoin } from 'rxjs';
+import { takeUntil, debounceTime, shareReplay, switchMap, pluck, take } from 'rxjs/operators';
 
 import * as uuid from 'uuid/v4';
+
 import { ResponseService } from '../../services/response.service';
 import { WorkshopService } from '../../services/workshop.service';
 
 import { IWorkshopRequestPayload, IResponseResponse, IResponseRequestPayload } from '@tamu-gisc/cpa/data-api';
-import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-store';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
 import { IChartConfigurationOptions } from '@tamu-gisc/charts';
 
 import esri = __esri;
-import { ScenarioService } from '../../services/scenario.service';
-
-const storageConfig: StorageConfig = {
-  primaryKey: 'ccpa',
-  subKey: 'participants-submissions'
-};
 
 @Component({
   selector: 'tamu-gisc-participant',
   templateUrl: './participant.component.html',
   styleUrls: ['./participant.component.scss'],
-  providers: [ResponseService, WorkshopService, ScenarioService]
+  providers: [ResponseService, WorkshopService]
 })
 export class ParticipantComponent implements OnInit, OnDestroy {
   public workshop: Observable<IWorkshopRequestPayload>;
@@ -76,10 +70,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private mapService: EsriMapService,
-    private storage: LocalStoreService,
     private ws: WorkshopService,
     private rs: ResponseService,
-    private ss: ScenarioService,
     private route: ActivatedRoute
   ) {}
 
@@ -99,8 +91,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       )
       .subscribe((status) => {
         if (status === 'VALID') {
-          console.log('updating');
-          this.updateParticipantLocalStore();
+          this.updateParticipantStore();
         }
       });
 
@@ -113,11 +104,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         shareReplay(1)
       );
 
-      this.responses = combineLatest([this.workshop, this.scenario]).pipe(
+      this.responses = forkJoin([this.workshop, this.scenario]).pipe(
         switchMap(([workshop, scenario]) => {
           return this.rs.getResponsesForWorkshopAndScenario(workshop.guid, scenario.guid);
-        }),
-        shareReplay(1)
+        })
       );
 
       // Reset the workspace with the response object at the responseIndex.
@@ -159,7 +149,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   public scan(direction: 'next' | 'prev') {
-    combineLatest([this.responseIndex, this.responses]).subscribe(([index, responses]) => {
+    // Need to take a single emission, otherwise the response index value push will cause a
+    forkJoin([this.responseIndex.pipe(take(1)), this.responses]).subscribe(([index, responses]) => {
       if (direction === 'prev' && (index > 0 || index === -1)) {
         // Cannot walk to an index less than 0
         if (index > 0) {
@@ -170,7 +161,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           // is created but no value added to local store.
           this.responseIndex.next(responses.length - 1);
         }
-      } else if (direction === 'next' && (index === -1 && this.form.valid)) {
+      } else if (direction === 'next' && (index === -1 || this.form.valid)) {
         // If the current guid has an entry index that is less than the total participant entries - 2,
         // meaning "there is at least one more non-placeholder participant entries in the array",
         // scan to that one.
@@ -178,9 +169,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         // If the current guid has an entry index that is less than the total participant entries -1,
         // meaning "there are no more non-placeholder participant entries in the array", create a new
         // placeholder submission
-        if (index <= this.participantEntries.length - 2) {
+        if (index <= responses.length - 2) {
           this.responseIndex.next(index + 1);
-        } else if (index <= this.participantEntries.length - 1) {
+        } else if (index <= responses.length - 1) {
           // Create a new participant placeholder
           this.resetWorkspace();
         }
@@ -227,55 +218,35 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Simple wrapper for local store call that returns the list of participant entries from local store.
-   */
-  private get participantEntries(): IParticipantSubmission[] {
-    return this.storage.getStorageObjectKeyValue(storageConfig);
-  }
-
-  /**
-   * Returns the entry index of the current participant guid.
-   *
-   * Returns `-1` if none found.
-   */
-  private get participantEntryIndex(): number {
-    return this.participantEntries.findIndex((s) => s.guid === this.participantGuid);
-  }
-
-  /**
    * Updates the entry value of the current participant guid with the provided geometry.
    */
-  private updateParticipantLocalStore() {
-    this.scenario.subscribe((scenario) => {
+  private updateParticipantStore() {
+    forkJoin([this.scenario, this.responses]).subscribe(([scenario, responses]) => {
       const parsed = (this.form.controls.drawn.value as esri.Graphic).toJSON();
 
       const submission: IResponseRequestPayload = {
         guid: this.participantGuid,
-        shapes: parsed,
         name: this.form.controls.name.value,
         notes: this.form.controls.notes.value,
-        workshopGuid: this.route.snapshot.params['guid'],
-        scenarioGuid: scenario.guid
+        shapes: parsed
       };
 
-      const existingValue = this.participantEntries;
-      const existingIndex = this.participantEntryIndex;
+      const existing = responses.findIndex((r) => r.guid === this.participantGuid);
 
-      if (existingIndex > -1) {
+      if (existing > -1) {
         // If there is an existing submission for the current participant guid, replace its value with the new geometry.
-        // existingValue.splice(existingIndex, 1, submission);
-        // this.storage.setStorageObjectKeyValue({ ...storageConfig, value: existingValue });
+        this.rs.updateResponse(submission.guid, submission).subscribe((updateStatus) => {
+          console.log('updated');
+        });
       } else {
         // If there is no existing submission for the current participant guid, add a dictionary index for the current
         // participant guid.
-        // this.storage.setStorageObjectKeyValue({ ...storageConfig, value: [...existingValue, submission] });
+        submission.scenarioGuid = scenario.guid;
+        submission.workshopGuid = this.route.snapshot.params['guid'];
 
         this.rs.createResponse(submission).subscribe((submissionStatus) => {
-          debugger;
+          console.log('created');
         });
-
-        // this.state.currentIndex = this.participantEntryIndex;
-        // this.state.limitSize = this.participantEntries.length;
       }
     });
   }
@@ -285,14 +256,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       this.participantGuid = guid;
     } else {
       this.participantGuid = uuid();
-    }
-
-    // Initialize the local store for submission persistence
-    if (this.participantEntries === undefined) {
-      this.storage.setStorageObjectKeyValue({ ...storageConfig, value: [] });
-    } else {
-      // this.state.currentIndex = this.participantEntryIndex;
-      // this.state.limitSize = this.participantEntries.length;
     }
   }
 }

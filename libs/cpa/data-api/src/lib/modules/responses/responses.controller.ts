@@ -6,8 +6,6 @@ import { Response, Workshop, Scenario } from '@tamu-gisc/cpa/common/entities';
 import { BaseController } from '../base/base.controller';
 import { ResponsesService } from './responses.service';
 
-import esri = __esri;
-
 @Controller('responses')
 export class ResponsesController extends BaseController<Response> {
   constructor(private service: ResponsesService) {
@@ -16,11 +14,6 @@ export class ResponsesController extends BaseController<Response> {
 
   @Get(':workshopGuid/:scenarioGuid')
   public async getAllForScenarioAndWorkshop(@Param() params) {
-    // const workshop: Workshop = await getRepository(Workshop).findOne({ guid: params.workshopGuid });
-    // const scenario: Scenario = await getRepository(Scenario).findOne({ guid: params.scenarioGuid });
-
-    // debugger;
-
     return this.service.repository.find({ where: { workshopGuid: params.workshopGuid, scenarioGuid: params.scenarioGuid } });
   }
 
@@ -61,15 +54,21 @@ export class ResponsesController extends BaseController<Response> {
    */
   @Post('')
   public async insert(@Body() body: IResponseRequestPayload) {
-    const workshop = await getRepository(Workshop).findOne({ guid: body.workshopGuid });
-    const scenario = await getRepository(Scenario).findOne({ guid: body.scenarioGuid });
+    const existing = await this.service.getOne({ where: { guid: body.guid } });
 
-    if (workshop && scenario) {
-      const entity = { ...body, workshop, scenario };
+    if (existing === undefined) {
+      const workshop = await getRepository(Workshop).findOne({ guid: body.workshopGuid });
+      const scenario = await getRepository(Scenario).findOne({ guid: body.scenarioGuid });
 
-      return this.service.createOne(entity);
+      if (workshop && scenario) {
+        const entity = { ...body, workshop, scenario };
+
+        return this.service.createOne(entity);
+      } else {
+        throw new HttpException('Missing resource.', 404);
+      }
     } else {
-      throw new HttpException('Missing resource.', 404);
+      throw new HttpException('Internal server error.', 500);
     }
   }
 }
@@ -78,5 +77,5 @@ export interface IResponseResponse extends DeepPartial<Response> {}
 export interface IResponseRequestPayload extends Omit<IResponseResponse, 'shapes'> {
   scenarioGuid?: string;
   workshopGuid?: string;
-  shapes: esri.Graphic;
+  shapes: object;
 }
