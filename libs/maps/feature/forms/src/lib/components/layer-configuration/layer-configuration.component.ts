@@ -137,6 +137,7 @@ export class LayerConfiguration {
       // without running into a recursive overflow.
       const lookup = {
         name: '',
+        id: '',
         type: '',
         description: '',
         drawingInfo: {
@@ -204,6 +205,7 @@ export class LayerConfiguration {
   private get _groupProperties() {
     return {
       name: [''],
+      id: [''],
       type: [''],
       description: [''],
       drawingInfo: this.fb.group({
@@ -214,13 +216,15 @@ export class LayerConfiguration {
 }
 
 export interface ILayerConfiguration {
-  name: string;
+  name?: string;
 
-  type: 'Feature Layer' | 'Graphic Layer';
+  layerId?: string;
 
-  description: string;
+  type?: 'Feature Layer' | 'Graphic Layer';
 
-  drawingInfo: {
-    transparency: number;
+  description?: string;
+
+  drawingInfo?: {
+    transparency?: number;
   };
 }

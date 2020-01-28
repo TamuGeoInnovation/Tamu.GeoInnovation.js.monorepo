@@ -149,6 +149,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             return new FeatureLayer({
               url: l.url,
               title: l.info.name,
+              id: l.info.layerId,
               opacity: 1 - parseInt((l.info.drawingInfo.transparency as unknown) as string, 10) / 100
             });
           })
@@ -209,9 +210,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         // If the current guid has an entry index that is less than the total participant entries -1,
         // meaning "there are no more non-placeholder participant entries in the array", create a new
         // placeholder submission
-        if (index <= responses.length - 2) {
+        if (index <= responses.length - 2 && index >= 0) {
           this.responseIndex.next(index + 1);
-        } else if (index <= responses.length - 1) {
+        } else if (index <= responses.length - 1 && this.form.valid) {
           // Create a new participant placeholder
           this.resetWorkspace();
         }
