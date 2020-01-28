@@ -137,7 +137,7 @@ export class LayerConfiguration {
       // without running into a recursive overflow.
       const lookup = {
         name: '',
-        id: '',
+        layerId: '',
         type: '',
         description: '',
         drawingInfo: {
@@ -205,7 +205,7 @@ export class LayerConfiguration {
   private get _groupProperties() {
     return {
       name: [''],
-      id: [''],
+      layerId: [''],
       type: [''],
       description: [''],
       drawingInfo: this.fb.group({

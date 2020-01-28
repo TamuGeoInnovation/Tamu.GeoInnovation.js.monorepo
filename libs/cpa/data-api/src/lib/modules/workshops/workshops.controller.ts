@@ -61,7 +61,7 @@ export class WorkshopsController extends BaseController<Workshop> {
   public async getOne(@Param() params) {
     const existing = await this.service.getOne({ where: { guid: params.guid }, relations: ['scenarios'] });
     if (existing) {
-      return existing;
+      return existing;3
     } else {
       throw new HttpException('Not Found', 404);
     }
