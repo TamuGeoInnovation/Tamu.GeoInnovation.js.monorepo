@@ -90,8 +90,8 @@ export class Response extends CPABaseEntity {
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public notes: string;
 
-  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
-  public shapes: string;
+  @Column({ type: 'simple-json', nullable: true })
+  public shapes: string | object;
 
   @ManyToOne((type) => Scenario, (s) => s.responses, { onDelete: 'CASCADE' })
   public scenario: Scenario;

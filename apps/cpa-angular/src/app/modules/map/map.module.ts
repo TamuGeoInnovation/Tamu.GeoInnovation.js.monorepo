@@ -21,6 +21,10 @@ const routes: Routes = [
     component: MapComponent,
     children: [
       {
+        path: '',
+        redirectTo: 'create'
+      },
+      {
         path: 'create',
         loadChildren: () => import('@tamu-gisc/cpa/common/ngx').then((m) => m.CpaCreateModule)
       },

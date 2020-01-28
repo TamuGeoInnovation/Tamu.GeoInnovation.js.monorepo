@@ -16,6 +16,7 @@
       <div class="record-item">
         <div class="record-title">{{ workshop.title }}</div>
         <div class="record-actions material-icons-container">
+          <span class="material-icons action alt" title="Launch Workshop" [routerLink]="['../../viewer', workshop.guid]" routerLinkActive="router-link-active">launch</span>
           <span class="material-icons action alt" title="Edit Workshop" [routerLink]="['edit', workshop.guid]" routerLinkActive="router-link-active">edit</span>
           <span class="material-icons action error" title="Delete Workshop" (click)="delete(workshop.guid)">delete</span>
         </div>

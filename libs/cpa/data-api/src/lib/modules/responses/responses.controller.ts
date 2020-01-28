@@ -1,15 +1,27 @@
 import { Controller, Post, Body, Get, HttpException, Delete, Param, Patch } from '@nestjs/common';
-import { DeepPartial, getRepository } from 'typeorm';
+import { getRepository, DeepPartial } from 'typeorm';
 
 import { Response, Workshop, Scenario } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseController } from '../base/base.controller';
 import { ResponsesService } from './responses.service';
 
+import esri = __esri;
+
 @Controller('responses')
 export class ResponsesController extends BaseController<Response> {
   constructor(private service: ResponsesService) {
     super(service);
+  }
+
+  @Get(':workshopGuid/:scenarioGuid')
+  public async getAllForScenarioAndWorkshop(@Param() params) {
+    // const workshop: Workshop = await getRepository(Workshop).findOne({ guid: params.workshopGuid });
+    // const scenario: Scenario = await getRepository(Scenario).findOne({ guid: params.scenarioGuid });
+
+    // debugger;
+
+    return this.service.repository.find({ where: { workshopGuid: params.workshopGuid, scenarioGuid: params.scenarioGuid } });
   }
 
   /**
@@ -62,7 +74,9 @@ export class ResponsesController extends BaseController<Response> {
   }
 }
 
-export interface IResponseRequestPayload extends DeepPartial<Response> {
+export interface IResponseResponse extends DeepPartial<Response> {}
+export interface IResponseRequestPayload extends Omit<IResponseResponse, 'shapes'> {
   scenarioGuid?: string;
   workshopGuid?: string;
+  shapes: esri.Graphic;
 }
