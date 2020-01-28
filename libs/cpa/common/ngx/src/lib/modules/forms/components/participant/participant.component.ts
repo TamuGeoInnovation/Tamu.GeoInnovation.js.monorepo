@@ -10,7 +10,7 @@ import { ResponseService } from '../../services/response.service';
 import { WorkshopService } from '../../services/workshop.service';
 
 import { IWorkshopRequestPayload, IResponseResponse, IResponseRequestPayload } from '@tamu-gisc/cpa/data-api';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
 import { IChartConfigurationOptions } from '@tamu-gisc/charts';
@@ -72,7 +72,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     private mapService: EsriMapService,
     private ws: WorkshopService,
     private rs: ResponseService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private ms: EsriMapService,
+    private mp: EsriModuleProviderService
   ) {}
 
   public ngOnInit() {
@@ -126,6 +128,15 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           });
       });
     }
+
+    forkJoin([this.ms.store, this.scenario]).subscribe(([instances, scenario]) => {
+      console.log('centering');
+      const split: number[] = (scenario as any).mapCenter.split(',');
+      instances.view.goTo({
+        target: [split[0], split[1]],
+        zoom: (scenario as any).zoom
+      });
+    });
   }
 
   public ngOnDestroy() {
