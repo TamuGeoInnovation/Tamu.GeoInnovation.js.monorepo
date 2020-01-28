@@ -44,17 +44,6 @@ export const LayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'feature',
-    id: 'highwater-claims-layer',
-    title: 'Highwater Claims',
-    url: 'https://texasatlas.arch.tamu.edu/arcgis/rest/services/Pub489/WIL_FEMA_Claims_HighWater/MapServer/1',
-    popupComponent: BasePopupComponent,
-    native: {
-      ...commonLayerProps,
-      outFields: ['*']
-    }
-  },
-  {
     type: 'graphic',
     id: 'drawing-layer',
     title: 'Drawn Features',

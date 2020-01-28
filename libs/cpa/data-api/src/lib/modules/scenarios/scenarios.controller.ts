@@ -1,10 +1,11 @@
 import { Controller, Patch, Param, Body, Delete } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 
 import { Scenario } from '@tamu-gisc/cpa/common/entities';
+import { ILayerConfiguration } from '@tamu-gisc/maps/feature/forms';
 
 import { BaseController } from '../base/base.controller';
 import { ScenariosService } from './scenarios.service';
-import { DeepPartial } from 'typeorm';
 
 @Controller('scenarios')
 export class ScenariosController extends BaseController<Scenario> {
@@ -32,5 +33,5 @@ export class ScenariosController extends BaseController<Scenario> {
 export interface IScenariosRequestPayload extends DeepPartial<Scenario> {}
 
 export interface IScenariosResponse extends Omit<DeepPartial<Scenario>, 'layers'> {
-  layers: { url: string; info: object }[];
+  layers: { url: string; info: ILayerConfiguration }[];
 }

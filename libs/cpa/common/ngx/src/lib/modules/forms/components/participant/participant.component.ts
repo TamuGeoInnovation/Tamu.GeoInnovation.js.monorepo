@@ -9,8 +9,13 @@ import * as uuid from 'uuid/v4';
 import { ResponseService } from '../../services/response.service';
 import { WorkshopService } from '../../services/workshop.service';
 
-import { IWorkshopRequestPayload, IResponseResponse, IResponseRequestPayload } from '@tamu-gisc/cpa/data-api';
-import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import {
+  IWorkshopRequestPayload,
+  IResponseResponse,
+  IResponseRequestPayload,
+  IScenariosResponse
+} from '@tamu-gisc/cpa/data-api';
+import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
 import { IChartConfigurationOptions } from '@tamu-gisc/charts';
@@ -25,7 +30,7 @@ import esri = __esri;
 })
 export class ParticipantComponent implements OnInit, OnDestroy {
   public workshop: Observable<IWorkshopRequestPayload>;
-  public scenario: Observable<IResponseResponse>;
+  public scenario: Observable<IScenariosResponse>;
   public responses: Observable<IResponseResponse[]>;
 
   public scenarioIndex: BehaviorSubject<number> = new BehaviorSubject(0);
@@ -90,7 +95,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       this.workshop = this.ws.getWorkshop(this.route.snapshot.params['guid']).pipe(shareReplay(1));
 
       this.scenario = this.workshop.pipe(
-        pluck('scenarios'),
+        pluck<IResponseResponse, IScenariosResponse[]>('scenarios'),
         pluck(this.scenarioIndex.value),
         shareReplay(1)
       );
@@ -129,14 +134,29 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       });
     }
 
-    forkJoin([this.ms.store, this.scenario]).subscribe(([instances, scenario]) => {
-      console.log('centering');
-      const split: number[] = (scenario as any).mapCenter.split(',');
-      instances.view.goTo({
-        target: [split[0], split[1]],
-        zoom: (scenario as any).zoom
-      });
-    });
+    // Load scenario layers
+    forkJoin([this.ms.store, this.scenario, this.mp.require(['FeatureLayer'])]).subscribe(
+      ([instances, scenario, [FeatureLayer]]: [MapServiceInstance, IScenariosResponse, [esri.FeatureLayerConstructor]]) => {
+        const split = scenario.mapCenter.split(',').map((coordinate) => parseFloat(coordinate));
+
+        instances.view.goTo({
+          target: [split[0], split[1]],
+          zoom: scenario.zoom
+        });
+
+        const layers = scenario.layers
+          .map((l) => {
+            return new FeatureLayer({
+              url: l.url,
+              title: l.info.name,
+              opacity: 1 - parseInt((l.info.drawingInfo.transparency as unknown) as string, 10) / 100
+            });
+          })
+          .reverse();
+
+        instances.map.addMany(layers);
+      }
+    );
   }
 
   public ngOnDestroy() {

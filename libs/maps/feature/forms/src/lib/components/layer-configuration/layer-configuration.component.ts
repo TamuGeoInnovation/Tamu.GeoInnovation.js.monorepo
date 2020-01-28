@@ -213,7 +213,7 @@ export class LayerConfiguration {
   }
 }
 
-interface ILayerConfiguration {
+export interface ILayerConfiguration {
   name: string;
 
   type: 'Feature Layer' | 'Graphic Layer';
