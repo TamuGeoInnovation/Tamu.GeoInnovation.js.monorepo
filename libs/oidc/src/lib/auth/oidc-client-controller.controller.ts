@@ -3,14 +3,7 @@ import { LoginGuard } from '../guards/login.guard';
 import { OpenIdClient } from './open-id-client';
 
 @Controller('oidc')
-export abstract class OidcClientController {
-  private home: String = '/home';
-
-  constructor(home?: String) {
-    if (home) {
-      this.home = home;
-    }
-  }
+export class OidcClientController {
 
   @UseGuards(LoginGuard)
   @Get('/login')

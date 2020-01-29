@@ -23,7 +23,7 @@ export class OpenIdClient {
   public static client_options: ClientMetadata = {
     client_id: 'gisday',
     client_secret: "D'WUUUAAAAAAAAAAAAAAHHHHHHHHHHHHHHHH!!!!!!!!!",
-    redirect_uris: ['http://localhost:3000/auth/callback'],
+    redirect_uris: ['http://localhost:3000/oidc/auth/callback'],
     response_types: ['code'],
     token_endpoint_auth_method: 'client_secret_basic'
   };

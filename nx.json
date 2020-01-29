@@ -269,6 +269,9 @@
     "oidc": {
 >>>>>>> Start of oidc-client
       "tags": []
+    },
+    "oidc-client-test": {
+      "tags": []
     }
   }
 }
