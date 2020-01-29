@@ -10,7 +10,7 @@ export const ROLE_LEVELS = {
 };
 
 /**
- * The main class in NestJS + openid-client integration. 
+ * The main class in NestJS + openid-client integration.
  * Handles IdP endpoints automatically.
  *
  * @export
@@ -20,18 +20,7 @@ export class OpenIdClient {
   public static strategyName = 'oidc';
   public static client: Client;
   public static issuer: Issuer<Client>;
-  public static client_options: ClientMetadata = {
-    client_id: 'gisday',
-    client_secret: "D'WUUUAAAAAAAAAAAAAAHHHHHHHHHHHHHHHH!!!!!!!!!",
-    redirect_uris: ['http://localhost:3000/oidc/auth/callback'],
-    response_types: ['code'],
-    token_endpoint_auth_method: 'client_secret_basic'
-  };
-  public static params = {
-    scope: 'openid offline_access basic_profile email tamu roles',
-    state: 'texas', // Opaque value set by the RP to maintain state between request and callback
-    prompt: 'consent'
-  };
+  public static params;
   public static code_verifier: string;
   public static code_challenge: string;
 
@@ -42,12 +31,13 @@ export class OpenIdClient {
    * @returns {Promise<Client>}
    * @memberof OpenIdClient
    */
-  public static async build(): Promise<Client> {
+  public static async build(clientMetadata: ClientMetadata, clientParams: {}, issuerUrl: string): Promise<Client> {
+    this.params = clientParams;
     // Shadowed name, I know, dunno how to fix it in this particular case. It's kinda needed. -AH (1/29/20)
-    const { Client } = await Issuer.discover('http://localhost:4001');
+    const { Client } = await Issuer.discover(issuerUrl);
 
     return new Promise((resolve, reject) => {
-      OpenIdClient.client = new Client(OpenIdClient.client_options);
+      OpenIdClient.client = new Client(clientMetadata);
       OpenIdClient.code_verifier = generators.codeVerifier();
       OpenIdClient.code_challenge = generators.codeChallenge(OpenIdClient.code_verifier);
       OpenIdClient.client[custom.clock_tolerance] = 5; // 5 second skew
