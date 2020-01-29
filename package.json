@@ -42,6 +42,7 @@
     "@angular/service-worker": "^8.2.13",
     "@nestjs/common": "^6.8.3",
     "@nestjs/core": "^6.8.3",
+    "@nestjs/passport": "^6.1.1",
     "@nestjs/platform-express": "^6.8.3",
     "@nestjs/typeorm": "^6.2.0",
     "@nrwl/angular": "8.8.0",
