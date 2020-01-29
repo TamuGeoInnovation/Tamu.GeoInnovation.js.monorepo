@@ -1,9 +1,9 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { OpenIdClient } from '../../auth/auth.strategy';
+import { OpenIdClient } from '../auth/open-id-client';
 
 /**
- * NestJS guard used to start the login process using the openid-client library
+ * NestJS guard used to start the login process using the openid-client library.
  *
  * @export
  * @class LoginGuard
@@ -11,7 +11,7 @@ import { OpenIdClient } from '../../auth/auth.strategy';
  */
 @Injectable()
 export class LoginGuard extends AuthGuard(OpenIdClient.strategyName) {
-  async canActivate(context: ExecutionContext) {
+  public async canActivate(context: ExecutionContext) {
     const result = (await super.canActivate(context)) as boolean;
     const request = context.switchToHttp().getRequest();
     await super.logIn(request);

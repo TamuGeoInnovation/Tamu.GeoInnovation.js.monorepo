@@ -66,6 +66,7 @@
     "mysql": "^2.17.1",
     "ng-pick-datetime": "^7.0.0",
     "ngx-highlightjs": "^4.0.2",
+    "openid-client": "^3.12.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "~6.5.3",
     "snarkdown": "^1.2.2",

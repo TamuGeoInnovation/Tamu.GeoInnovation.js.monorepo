@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { ROLE_LEVELS } from '../auth/open-id-client';
 
 /**
- * NestJS guard used to prevent non-admins from accessing admin routes
+ * NestJS guard used to prevent non-admins from accessing admin routes.
  *
  * @export
  * @class AdminRoleGuard
@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
  */
 @Injectable()
 export class AdminRoleGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean | Promise<boolean> {
+  public canActivate(context: ExecutionContext): boolean | Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const isAuthed = request.isAuthenticated();
     let canProceed = false;
@@ -29,7 +29,7 @@ export class AdminRoleGuard implements CanActivate {
 }
 
 /**
- * NestJS guard used to prevent users and guests from accessing manager routes
+ * NestJS guard used to prevent users and guests from accessing manager routes.
  *
  * @export
  * @class ManagerRoleGuard
@@ -37,7 +37,7 @@ export class AdminRoleGuard implements CanActivate {
  */
 @Injectable()
 export class ManagerRoleGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean | Promise<boolean> {
+  public canActivate(context: ExecutionContext): boolean | Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const isAuthed = request.isAuthenticated();
     let canProceed = false;
@@ -56,7 +56,8 @@ export class ManagerRoleGuard implements CanActivate {
 }
 
 /**
- * NestJS guard. May not be necessary.
+ * NestJS guard. 
+ * May not be necessary as it pretty much functions exactly like the login guard at this level
  *
  * @export
  * @class UserRoleGuard
@@ -64,7 +65,7 @@ export class ManagerRoleGuard implements CanActivate {
  */
 @Injectable()
 export class UserRoleGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean | Promise<boolean> {
+  public canActivate(context: ExecutionContext): boolean | Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const isAuthed = request.isAuthenticated();
     let canProceed = false;
