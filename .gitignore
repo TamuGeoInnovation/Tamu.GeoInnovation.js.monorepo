@@ -40,3 +40,6 @@ Thumbs.db
 
 # TypeORM Configurations
 ormconfig.*
+
+# OIDC Configurations
+oidcconfig.*

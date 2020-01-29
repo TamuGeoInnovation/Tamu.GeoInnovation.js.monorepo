@@ -11,7 +11,7 @@ const SQLiteStore = require('connect-sqlite3')(session);
 
 import { OpenIdClient } from '@tamu-gisc/oidc';
 import { AppModule } from './app/app.module';
-import { OIDC_CLIENT_METADATA, OIDC_IDP_ISSUER_URL, OIDC_CLIENT_PARAMS } from './environments/environment';
+import { OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL } from './environments/oidcconfig';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
