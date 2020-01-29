@@ -1,5 +1,5 @@
 export * from './lib/auth/session-serializer';
-export * from './lib/auth/oidc-client-controller.controller';
+export * from './lib/auth/oidc-client.controller';
 export * from './lib/auth/oidc-client.module';
 export * from './lib/auth/open-id-client';
 
