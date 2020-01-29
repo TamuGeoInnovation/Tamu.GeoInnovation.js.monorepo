@@ -2059,6 +2059,28 @@
         }
       }
     },
+    "oidc": {
+      "root": "libs/oidc",
+      "sourceRoot": "libs/oidc/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/oidc/tsconfig.lib.json", "libs/oidc/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/oidc/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/oidc/jest.config.js",
+            "tsConfig": "libs/oidc/tsconfig.spec.json"
+          }
+        }
+      }
+    },
     "cpa-angular": {
       "projectType": "application",
       "schematics": {

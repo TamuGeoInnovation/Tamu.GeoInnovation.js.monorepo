@@ -65,6 +65,7 @@
       "@tamu-gisc/ui-kits/ngx/interactions/clipboard": ["libs/ui-kits/ngx/interactions/clipboard/src/index.ts"],
       "@tamu-gisc/maps/feature/accessibility": ["libs/maps/feature/accessibility/src/index.ts"],
       "@tamu-gisc/maps/feature/coordinates": ["libs/maps/feature/coordinates/src/index.ts"],
+<<<<<<< HEAD
       "@tamu-gisc/common/utils/geometry/geoprocessing": ["libs/common/utils/geometry/geoprocessing/src/index.ts"],
       "@tamu-gisc/cpa/data-api": ["libs/cpa/data-api/src/index.ts"],
       "@tamu-gisc/cpa/common/ngx": ["libs/cpa/common/ngx/src/index.ts"],
@@ -85,6 +86,9 @@
       "@tamu-gisc/covid/common/entities": ["libs/covid/common/entities/src/index.ts"],
       "@tamu-gisc/covid/common/enums": ["libs/covid/common/enums/src/index.ts"],
       "@tamu-gisc/maps/mapbox": ["libs/maps/mapbox/src/index.ts"]
+=======
+      "@tamu-gisc/oidc": ["libs/oidc/src/index.ts"]
+>>>>>>> Start of oidc-client
     }
   },
   "exclude": ["node_modules", "tmp"]
