@@ -208,6 +208,9 @@
     },
     "cpa-common-ngx": {
       "tags": []
+    },
+    "ui-kits-ngx-navigation-breadcrumb": {
+      "tags": []
     }
   }
 }

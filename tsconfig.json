@@ -68,7 +68,8 @@
       "@tamu-gisc/cpa/data-api": ["libs/cpa/data-api/src/index.ts"],
       "@tamu-gisc/cpa/common/ngx": ["libs/cpa/common/ngx/src/index.ts"],
       "@tamu-gisc/maps/feature/forms": ["libs/maps/feature/forms/src/index.ts"],
-      "@tamu-gisc/cpa/common/entities": ["libs/cpa/common/entities/src/index.ts"]
+      "@tamu-gisc/cpa/common/entities": ["libs/cpa/common/entities/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/navigation/breadcrumb": ["libs/ui-kits/ngx/navigation/breadcrumb/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

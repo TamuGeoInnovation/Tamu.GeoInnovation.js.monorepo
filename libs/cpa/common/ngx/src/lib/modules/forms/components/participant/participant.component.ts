@@ -277,7 +277,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       if (existing > -1) {
         // If there is an existing submission for the current participant guid, replace its value with the new geometry.
         this.rs.updateResponse(submission.guid, submission).subscribe((updateStatus) => {
-          console.log('updated');
+          console.log('Updated response');
         });
       } else {
         // If there is no existing submission for the current participant guid, add a dictionary index for the current
@@ -286,7 +286,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         submission.workshopGuid = this.route.snapshot.params['guid'];
 
         this.rs.createResponse(submission).subscribe((submissionStatus) => {
-          console.log('created');
+          console.log('Created response');
         });
       }
     });

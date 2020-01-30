@@ -2309,6 +2309,37 @@
           }
         }
       }
+    },
+    "ui-kits-ngx-navigation-breadcrumb": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/navigation/breadcrumb",
+      "sourceRoot": "libs/ui-kits/ngx/navigation/breadcrumb/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/navigation/breadcrumb/tsconfig.lib.json",
+              "libs/ui-kits/ngx/navigation/breadcrumb/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/breadcrumb/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/navigation/breadcrumb/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/navigation/breadcrumb/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/navigation/breadcrumb/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {
