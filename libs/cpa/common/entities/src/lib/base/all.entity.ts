@@ -60,10 +60,10 @@ export class Workshop extends CPABaseEntity {
 
 @Entity()
 export class Scenario extends CPABaseEntity {
-  @Column()
+  @Column({ nullable: true })
   public title: string;
 
-  @Column({ type: 'nvarchar', length: 'MAX' })
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public description: string;
 
   @Column({ nullable: true })

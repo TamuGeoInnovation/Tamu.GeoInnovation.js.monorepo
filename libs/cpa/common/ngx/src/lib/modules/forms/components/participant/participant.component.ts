@@ -149,8 +149,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             return new FeatureLayer({
               url: l.url,
               title: l.info.name,
-              id: Boolean(l.info.layerId) ? l.info.layerId : undefined,
-              opacity: 1 - parseInt((l.info.drawingInfo.transparency as unknown) as string, 10) / 100
+              id: Boolean(l.info.layerId) ? l.info.layerId : uuid(),
+              opacity: 1 - parseInt((l.info.drawingInfo.transparency as unknown) as string, 10) / 100,
+              listMode: 'show'
             });
           })
           .reverse();
