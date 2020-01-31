@@ -14,6 +14,7 @@ import { ChartsModule } from '@tamu-gisc/charts';
 import { ScenarioBuilderComponent } from './components/scenario-builder/scenario-builder.component';
 import { ParticipantComponent } from './components/participant/participant.component';
 import { WorkshopBuilderComponent } from './components/workshop-builder/workshop-builder.component';
+import { NavigationBreadcrumbModule } from '@tamu-gisc/ui-kits/ngx/navigation/breadcrumb';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { WorkshopBuilderComponent } from './components/workshop-builder/workshop
     MapsFormsModule,
     MapDrawingModule,
     FeatureSelectorModule,
-    ChartsModule
+    ChartsModule,
+    NavigationBreadcrumbModule
   ],
   declarations: [ScenarioBuilderComponent, ParticipantComponent, WorkshopBuilderComponent],
   exports: [ScenarioBuilderComponent, ParticipantComponent, WorkshopBuilderComponent]

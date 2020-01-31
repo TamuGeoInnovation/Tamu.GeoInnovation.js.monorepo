@@ -1,6 +1,6 @@
-<ng-container *ngFor="let crumb of crumbs | async; let i = index; let last = last">
-  <div [ngSwitch]="last">
-    <div *ngSwitchCase="false" [routerLink]="[crumb.path]" routerLinkActive="router-link-active">{{ crumb.text }}</div>
-    <div *ngSwitchCase="true" routerLinkActive="router-link-active">{{ crumb.text }}</div>
-  </div>
+<ng-container *ngFor="let crumb of crumbs | async; let i = index; last as last">
+  <ng-container [ngSwitch]="last">
+    <div *ngSwitchCase="false" [routerLink]="[crumb.path]" class="crumb">{{ crumb.text }}</div>
+    <div *ngSwitchCase="true" class="crumb last">{{ crumb.text }}</div>
+  </ng-container>
 </ng-container>

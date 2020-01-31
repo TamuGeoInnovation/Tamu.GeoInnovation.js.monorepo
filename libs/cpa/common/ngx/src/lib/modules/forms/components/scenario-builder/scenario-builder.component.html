@@ -1,5 +1,7 @@
 <h2>CCPA : <ng-container *ngIf="isExisting | async">Scenario Details</ng-container> <ng-container *ngIf="!(isExisting | async)">New Scenario</ng-container></h2>
 
+<tamu-gisc-breadcrumb></tamu-gisc-breadcrumb>
+
 <form [formGroup]="builderForm" (ngSubmit)="createScenario()">
   <div class="form-section">
     <div class="form-section-toolbar">

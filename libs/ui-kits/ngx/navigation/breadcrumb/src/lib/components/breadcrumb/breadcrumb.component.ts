@@ -300,6 +300,13 @@ export class BreadcrumbComponent implements OnInit {
     }
   }
 
+  /**
+   * Maps a set of active url route path segments into their correct route segments.
+   *
+   * @param moduleResult Module matching result. It's result code is used to determine some mappings
+   * @param sourceSegments Config path segments
+   * @param routeSegments Active route path segments
+   */
   private mapSegments(moduleResult: IModuleResult, sourceSegments: Array<string>, routeSegments: Array<string>): string {
     const mapped = routeSegments.map((sourceSegment, index) => {
       const segmentIsParam = sourceSegment.includes(':');
@@ -313,7 +320,7 @@ export class BreadcrumbComponent implements OnInit {
       if (segmentIsParam) {
         return routeSegments[index];
       } else {
-        return sourceSegment; 
+        return sourceSegment;
       }
     });
 
