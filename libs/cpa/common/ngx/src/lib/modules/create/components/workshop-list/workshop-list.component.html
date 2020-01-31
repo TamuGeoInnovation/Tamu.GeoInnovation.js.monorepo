@@ -2,13 +2,15 @@
   <h2>CCPA: Workshops</h2>
 
   <div class="material-icons-container">
-    <div class="material-icons alt action" title="Add Workshop" [routerLink]="['create']" routerLinkActive="router-link-active">add_circle_outline</div>
+    <div class="material-icons alt action" title="Add Workshop" [routerLink]="['create']">add_circle_outline</div>
   </div>
 </div>
 
 <tamu-gisc-breadcrumb></tamu-gisc-breadcrumb>
 
 <div class="view-container">
+  <div class="spinning-loader" *ngIf="(workshops | async) === null"></div>
+
   <div *ngIf="(workshops | async)?.length === 0">
     <p>There are no workshops. Create one by clicking on the "+" icon.</p>
   </div>
@@ -18,8 +20,8 @@
       <div class="record-item">
         <div class="record-title">{{ workshop.title }}</div>
         <div class="record-actions material-icons-container">
-          <span class="material-icons action alt" title="Launch Workshop" [routerLink]="['../../viewer', workshop.guid]" routerLinkActive="router-link-active">launch</span>
-          <span class="material-icons action alt" title="Edit Workshop" [routerLink]="['edit', workshop.guid]" routerLinkActive="router-link-active">edit</span>
+          <span class="material-icons action alt" title="Launch Workshop" [routerLink]="['../../viewer', workshop.guid]" *ngIf="workshop.scenarios.length > 0">launch</span>
+          <span class="material-icons action alt" title="Edit Workshop" [routerLink]="['edit', workshop.guid]">edit</span>
           <span class="material-icons action error" title="Delete Workshop" (click)="delete(workshop.guid)">delete</span>
         </div>
       </div>

@@ -6,9 +6,6 @@ import { takeUntil, debounceTime, shareReplay, switchMap, pluck, take, skip } fr
 
 import * as uuid from 'uuid/v4';
 
-import { ResponseService } from '../../services/response.service';
-import { WorkshopService } from '../../services/workshop.service';
-
 import {
   IWorkshopRequestPayload,
   IResponseResponse,
@@ -19,6 +16,9 @@ import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
 import { IChartConfigurationOptions } from '@tamu-gisc/charts';
+
+import { ResponseService } from '../../services/response.service';
+import { WorkshopService } from '../../services/workshop.service';
 
 import esri = __esri;
 

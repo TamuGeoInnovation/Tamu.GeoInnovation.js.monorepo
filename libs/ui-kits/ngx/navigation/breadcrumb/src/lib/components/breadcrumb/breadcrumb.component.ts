@@ -138,8 +138,6 @@ export class BreadcrumbComponent implements OnInit {
             // will likely be a sibling
             this.matchRoutes(rootModules, [...params], depth + 1);
           }
-        } else {
-          console.log(`No further routes to match`);
         }
       } else {
         console.log(`Could not match a route to,`, route);

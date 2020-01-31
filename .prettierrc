@@ -9,7 +9,7 @@
       "files": "*.html",
       "options": {
         "printWidth": 9999,
-        "parser": "html"
+        "parser": "angular"
       }
     }
   ]

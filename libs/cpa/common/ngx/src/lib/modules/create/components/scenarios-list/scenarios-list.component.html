@@ -9,6 +9,8 @@
 <tamu-gisc-breadcrumb></tamu-gisc-breadcrumb>
 
 <div class="view-container">
+  <div class="spinning-loader" *ngIf="(scenarios | async) === null"></div>
+
   <div *ngIf="(scenarios | async)?.length === 0">
     <p>There are no workshops. Create one by clicking on the "+" icon.</p>
   </div>

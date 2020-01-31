@@ -19,6 +19,8 @@ const commonLayerProps = {
   maxScale: 0
 };
 
+export const api_url = 'https://nodes.geoservices.tamu.edu/api/cpa/';
+
 export const SearchSources = [];
 
 export const LayerSources: LayerSource[] = [

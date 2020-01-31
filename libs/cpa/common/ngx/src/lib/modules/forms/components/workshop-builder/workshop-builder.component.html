@@ -31,10 +31,10 @@
 
     <div class="form-section-body">
       <div class="form-collection row">
-        <tamu-gisc-select [data]="scenarioList | async" placeholder="Select a scenario to add" [displayTemplate]="'title'" (changed)="submitWorkshop($event)"></tamu-gisc-select>
+        <tamu-gisc-select [data]="scenarioList | async" placeholder="Select a scenario" [displayTemplate]="'title'" (changed)="submitWorkshop($event)"></tamu-gisc-select>
       </div>
 
-      <div class="form-collection column">
+      <div class="form-collection column" *ngIf="form.controls?.scenarios.value.length > 0">
         <div class="record-item" *ngFor="let scenario of form.controls.scenarios.value">
           <div class="record-title">{{ scenario.title }}</div>
           <div class="record-actions material-icons-container">
@@ -42,6 +42,8 @@
           </div>
         </div>
       </div>
+
+      <p *ngIf="form.controls?.scenarios.value.length === 0">There are no associated scenarios with this workshop. Select a scenario from the above list to add.</p>
     </div>
   </div>
 

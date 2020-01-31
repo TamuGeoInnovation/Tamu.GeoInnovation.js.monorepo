@@ -14,7 +14,13 @@ export class ResponsesController extends BaseController<Response> {
 
   @Get(':workshopGuid/:scenarioGuid')
   public async getAllForScenarioAndWorkshop(@Param() params) {
-    return this.service.repository.find({ where: { workshopGuid: params.workshopGuid, scenarioGuid: params.scenarioGuid } });
+    return await this.service.repository
+      .createQueryBuilder('r')
+      .where('r.workshopGuid = :w AND r.scenarioGuid = :s', {
+        w: params.workshopGuid,
+        s: params.scenarioGuid
+      })
+      .getMany();
   }
 
   /**
