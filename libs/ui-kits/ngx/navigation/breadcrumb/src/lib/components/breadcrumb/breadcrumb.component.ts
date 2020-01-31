@@ -39,6 +39,10 @@ export class BreadcrumbComponent implements OnInit {
     });
   }
 
+  public follow(path, index) {
+    this.router.navigate([path]);
+  }
+
   private dropCrumb(crumb: Crumb) {
     const trail = JSON.parse(JSON.stringify(this._crumbs.getValue()));
     const drop = JSON.parse(JSON.stringify(crumb));
