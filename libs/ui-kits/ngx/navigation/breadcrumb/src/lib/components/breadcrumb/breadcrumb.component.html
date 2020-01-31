@@ -1,1 +1,6 @@
-<p>breadcrumb works!</p>
+<ng-container *ngFor="let crumb of crumbs | async; let i = index; let last = last">
+  <div [ngSwitch]="last">
+    <div *ngSwitchCase="false" [routerLink]="[crumb.path]" routerLinkActive="router-link-active">{{ crumb.text }}</div>
+    <div *ngSwitchCase="true" routerLinkActive="router-link-active">{{ crumb.text }}</div>
+  </div>
+</ng-container>
