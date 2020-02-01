@@ -73,6 +73,10 @@ p {
   @include align-content(center);
   padding: 0.4rem 0;
 
+  .record-title {
+    font-weight: 500;
+  }
+
   .material-icons-container {
     .material-icons {
       padding: 0 0.25rem;

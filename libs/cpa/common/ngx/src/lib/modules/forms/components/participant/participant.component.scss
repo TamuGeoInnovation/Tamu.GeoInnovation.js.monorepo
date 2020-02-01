@@ -9,7 +9,8 @@
   .action {
     @include flexbox();
     @include flex-direction(row);
-    color: hsla(216, 20%, 60%, 1);
+    color: hsla(216, 35%, 60%, 1);
+    @include transition(color 0.2s);
     cursor: pointer;
 
     p {
@@ -22,7 +23,7 @@
     }
 
     &:hover {
-      color: hsl(216, 63%, 59%);
+      color: hsl(216, 75%, 59%);
     }
 
     &.unavailable {

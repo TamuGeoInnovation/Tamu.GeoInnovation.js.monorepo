@@ -84,7 +84,7 @@ export class Scenario extends CPABaseEntity {
 
 @Entity()
 export class Response extends CPABaseEntity {
-  @Column()
+  @Column({ nullable: true })
   public name: string;
 
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })

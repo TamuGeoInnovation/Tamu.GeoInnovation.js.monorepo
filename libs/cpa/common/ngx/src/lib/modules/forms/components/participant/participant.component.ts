@@ -1,8 +1,21 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject, Observable, forkJoin } from 'rxjs';
-import { takeUntil, debounceTime, shareReplay, switchMap, pluck, take, skip } from 'rxjs/operators';
+import { BehaviorSubject, Subject, Observable, forkJoin, merge, interval, combineLatest, of } from 'rxjs';
+import {
+  takeUntil,
+  debounceTime,
+  shareReplay,
+  switchMap,
+  pluck,
+  take,
+  throttle,
+  mergeAll,
+  share,
+  skip,
+  withLatestFrom,
+  filter
+} from 'rxjs/operators';
 
 import * as uuid from 'uuid/v4';
 
@@ -29,6 +42,9 @@ import esri = __esri;
   providers: [ResponseService, WorkshopService]
 })
 export class ParticipantComponent implements OnInit, OnDestroy {
+  @Output()
+  public responseSave: EventEmitter<boolean> = new EventEmitter();
+
   public workshop: Observable<IWorkshopRequestPayload>;
   public scenario: Observable<IScenariosResponse>;
   public responses: Observable<IResponseResponse[]>;
@@ -70,6 +86,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   @ViewChild(BaseDrawComponent, { static: true })
   private drawComponent: BaseDrawComponent;
 
+  private _$formReset: Subject<boolean> = new Subject();
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
@@ -100,35 +117,66 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         shareReplay(1)
       );
 
-      this.responses = forkJoin([this.workshop, this.scenario]).pipe(
+      // Fetch new responses from server whenever scenario, response index, or response save signal emits.
+      this.responses = merge(this.scenario, this.responseIndex, this.responseSave).pipe(
+        switchMap((event) => {
+          return forkJoin([this.workshop, this.scenario]);
+        }),
         switchMap(([workshop, scenario]) => {
           return this.rs.getResponsesForWorkshopAndScenario(workshop.guid, scenario.guid);
-        })
+        }),
+        shareReplay(1)
       );
 
-      // Reset the workspace with the response object at the responseIndex.
-      this.responseIndex.pipe(switchMap((index) => this.responses.pipe(pluck(index)))).subscribe((res) => {
-        if (res) {
-          this.resetWorkspace((res as unknown) as IParticipantSubmission);
-        }
+      // Reset workspace whenever there is a new set of responses from the server,
+      // and the current participant guid is different than the response at the
+      // responseIndex.
+      //
+      // This will ensure that the workspace does not reset every time the form
+      // publishes a VALID status change.
+      this.responses
+        .pipe(
+          withLatestFrom(this.responseIndex),
+          filter(([response, index]) => {
+            return response[index] && response[index].guid !== this.participantGuid;
+          }),
+          switchMap(([responses, index]) => {
+            return of(responses[index]);
+          }),
+          takeUntil(this._$destroy)
+        )
+        .subscribe((res) => {
+          if (res) {
+            this.resetWorkspace(res as IParticipantSubmission);
+          }
+        });
 
-        // Need to resub to the form status change stream.
+      // Whenever the responseIndex changes, re-initiate the form statusChanges
+      // subscription. Because a change in the response index also means the
+      // workspace is going to be reset and new form values applied, the form
+      // will trigger a submission form operation on a validity status change.
+      //
+      // This behaviour will cause an inecessary participant submission update
+      // on every responseIndex change. To prevent this, clear the old subscription
+      // and re-initialize a new one on form statusChanges observable.
+      this.responseIndex.pipe(takeUntil(this._$destroy)).subscribe(() => {
+        // Need to resubscribe to the form status change stream.
         // Need to first terminate the existing stream to avoid multi-casting on the same
         // subscription.
-        this._$destroy.next();
+        this._$formReset.next();
 
         // Create a subscription to the form and ignore the first emission, which will almost always be
         // the form population by value patching from existing submissions. Want to avoid calling
         // the update method when not necessary.
         this.form.statusChanges
           .pipe(
-            skip(1),
+            throttle(() => interval(500)),
             debounceTime(1000),
-            takeUntil(this._$destroy)
+            takeUntil(this._$formReset)
           )
           .subscribe((status) => {
             if (status === 'VALID') {
-              this.updateParticipantStore();
+              this.updateOrCreateSubmission();
             }
           });
       });
@@ -162,6 +210,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
+    this._$formReset.next();
+    this._$formReset.complete();
     this._$destroy.next();
     this._$destroy.complete();
   }
@@ -192,7 +242,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   public scan(direction: 'next' | 'prev') {
     // Need to take a single emission, otherwise the response index value push will cause a
-    forkJoin([this.responseIndex.pipe(take(1)), this.responses]).subscribe(([index, responses]) => {
+    forkJoin([this.responseIndex.pipe(take(1)), this.responses.pipe(take(1))]).subscribe(([index, responses]) => {
       if (direction === 'prev' && (index > 0 || index === -1)) {
         // Cannot walk to an index less than 0
         if (index > 0) {
@@ -211,7 +261,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         // If the current guid has an entry index that is less than the total participant entries -1,
         // meaning "there are no more non-placeholder participant entries in the array", create a new
         // placeholder submission
-        if (index <= responses.length - 2 && index >= 0) {
+        if (index >= 0 && index + 1 <= responses.length - 2) {
           this.responseIndex.next(index + 1);
         } else if (index <= responses.length - 1 && this.form.valid) {
           // Create a new participant placeholder
@@ -235,6 +285,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       this.drawComponent.reset();
       this.form.reset();
       this.initializeParticipant();
+      this.responseIndex.next(-1);
     } else {
       this.drawComponent.reset();
       // Create an auto-castable graphic.
@@ -262,8 +313,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   /**
    * Updates the entry value of the current participant guid with the provided geometry.
    */
-  private updateParticipantStore() {
-    forkJoin([this.scenario, this.responses]).subscribe(([scenario, responses]) => {
+  private updateOrCreateSubmission() {
+    forkJoin([this.scenario, this.responses.pipe(take(1))]).subscribe(([scenario, responses]) => {
       const parsed = (this.form.controls.drawn.value as esri.Graphic).toJSON();
 
       const submission: IResponseRequestPayload = {
@@ -273,11 +324,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         shapes: parsed
       };
 
-      const existing = responses.findIndex((r) => r.guid === this.participantGuid);
+      const existing = responses.find((r) => r.guid === this.participantGuid);
 
-      if (existing > -1) {
+      if (existing) {
         // If there is an existing submission for the current participant guid, replace its value with the new geometry.
         this.rs.updateResponse(submission.guid, submission).subscribe((updateStatus) => {
+          this.responseSave.emit();
           console.log('Updated response');
         });
       } else {
@@ -287,6 +339,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         submission.workshopGuid = this.route.snapshot.params['guid'];
 
         this.rs.createResponse(submission).subscribe((submissionStatus) => {
+          this.responseSave.emit();
           console.log('Created response');
         });
       }
