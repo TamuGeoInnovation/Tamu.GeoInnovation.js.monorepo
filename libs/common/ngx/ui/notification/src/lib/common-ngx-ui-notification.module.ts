@@ -7,7 +7,7 @@ import { NotificationContainerComponent } from './components/notification-contai
 import { NotificationItemComponent } from './components/notification-item/notification-item.component';
 
 @NgModule({
-  declarations: [NotificationContainerComponent, NotificationItemComponent, NotificationContainerComponent],
+  declarations: [NotificationContainerComponent, NotificationItemComponent],
   imports: [CommonModule, LocalStoreModule],
   exports: [NotificationContainerComponent, NotificationItemComponent]
 })

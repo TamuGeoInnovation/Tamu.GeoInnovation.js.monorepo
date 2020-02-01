@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject, Observable, forkJoin, merge, interval, combineLatest, of } from 'rxjs';
+import { BehaviorSubject, Subject, Observable, forkJoin, merge, interval, of } from 'rxjs';
 import {
   takeUntil,
   debounceTime,
@@ -10,9 +10,6 @@ import {
   pluck,
   take,
   throttle,
-  mergeAll,
-  share,
-  skip,
   withLatestFrom,
   filter
 } from 'rxjs/operators';
@@ -156,7 +153,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       // workspace is going to be reset and new form values applied, the form
       // will trigger a submission form operation on a validity status change.
       //
-      // This behaviour will cause an inecessary participant submission update
+      // This behavior will cause an unnecessary participant submission update
       // on every responseIndex change. To prevent this, clear the old subscription
       // and re-initialize a new one on form statusChanges observable.
       this.responseIndex.pipe(takeUntil(this._$destroy)).subscribe(() => {

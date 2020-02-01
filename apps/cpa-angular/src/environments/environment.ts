@@ -58,3 +58,5 @@ export const LayerSources: LayerSource[] = [
     }
   }
 ];
+
+export const NotificationEvents = [];

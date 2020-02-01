@@ -191,15 +191,9 @@ export class NotificationService {
    * Pushes a one-time notification message, triggering any subscribed listeners
    */
   public toast(properties: NotificationProperties): void {
-    // const obj: Notification = new Notification(properties.id, properties.title, properties.message, Date.now());
-    const obj: Notification = new Notification({
-      id: properties.id,
-      title: properties.title,
-      message: properties.message,
-      timeGenerated: Date.now()
-    });
+    const n: Notification = new Notification({ ...properties, timeGenerated: Date.now() });
 
-    this._store = [...this._store, obj];
+    this._store = [...this._store, n];
 
     this._notifications.next([...this._store]);
   }

@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
 
+import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 
@@ -31,7 +32,8 @@ const routes: Routes = [
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
     EnvironmentModule,
-    LocalStoreModule
+    LocalStoreModule,
+    NotificationModule
   ],
   declarations: [AppComponent],
   providers: [

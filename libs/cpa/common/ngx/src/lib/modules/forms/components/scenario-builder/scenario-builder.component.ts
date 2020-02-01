@@ -9,6 +9,7 @@ import { ScenarioService } from '../../services/scenario.service';
 
 import esri = __esri;
 import { Observable } from 'rxjs';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-builder',
@@ -29,7 +30,8 @@ export class ScenarioBuilderComponent implements OnInit {
     private mapService: EsriMapService,
     private scenario: ScenarioService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private ns: NotificationService
   ) {}
 
   public ngOnInit() {
@@ -110,15 +112,30 @@ export class ScenarioBuilderComponent implements OnInit {
         .update(this.route.snapshot.params.guid, this.builderForm.value)
         .pipe(
           tap(() => {
+            // Disable the form while the async operation is executed.
             this.builderForm.disable();
           })
         )
         .subscribe((updateStatus) => {
+          // Re-enable the form
           this.builderForm.enable();
+
+          this.ns.toast({
+            message: 'Scenario was updated successfully.',
+            id: 'scenario-update',
+            title: 'Update Scenario'
+          });
         });
     } else {
       this.scenario.create(value).subscribe((res) => {
         this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
+
+        this.ns.toast({
+          message: 'Scenario was created successfully.',
+          id: 'scenario-create',
+          title: 'New Scenario',
+          acknowledge: false
+        });
       });
     }
   }
