@@ -1,18 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {
-  BehaviorSubject,
-  Subject,
-  Observable,
-  forkJoin,
-  merge,
-  interval,
-  of,
-  combineLatest,
-  from,
-  ReplaySubject
-} from 'rxjs';
+import { BehaviorSubject, Subject, Observable, forkJoin, merge, interval, of, combineLatest, from } from 'rxjs';
 import {
   takeUntil,
   debounceTime,
@@ -33,9 +22,9 @@ import {
   IWorkshopRequestPayload,
   IResponseResponse,
   IResponseRequestPayload,
-  IScenariosResponse,
-  IScenariosRequestPayload
+  IScenariosResponse
 } from '@tamu-gisc/cpa/data-api';
+
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
@@ -258,7 +247,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               return new FeatureLayer({
                 url: l.url,
                 title: l.info.name,
-                id: Boolean(l.info.layerId) ? l.info.layerId : uuid(),
+                id: l.info.layerId,
                 opacity: 1 - parseInt((l.info.drawingInfo.transparency as unknown) as string, 10) / 100,
                 listMode: 'show'
               });

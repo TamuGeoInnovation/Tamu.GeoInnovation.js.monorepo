@@ -6,6 +6,8 @@ import { debounceTime, distinctUntilChanged, switchMap, filter } from 'rxjs/oper
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 
+import * as guid from 'uuid/v4';
+
 @Component({
   selector: 'tamu-gisc-layer-configuration',
   templateUrl: './layer-configuration.component.html',
@@ -133,7 +135,7 @@ export class LayerConfiguration {
    */
   public static normalizeOptions(obj: object): ILayerConfiguration {
     if (obj instanceof Object) {
-      // Suing this as schema since form builder groups cannot be stringified
+      // Using this as schema since form builder groups cannot be stringified
       // without running into a recursive overflow.
       const lookup = {
         name: '',
@@ -205,7 +207,11 @@ export class LayerConfiguration {
   private get _groupProperties() {
     return {
       name: [''],
-      layerId: [''],
+      layerId: [
+        guid()
+          .split('-')
+          .pop()
+      ],
       type: [''],
       description: [''],
       drawingInfo: this.fb.group({
