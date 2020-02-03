@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, shareReplay } from 'rxjs/operators';
 
 // import { Angulartics2 } from 'angulartics2';
 import * as guid from 'uuid/v4';

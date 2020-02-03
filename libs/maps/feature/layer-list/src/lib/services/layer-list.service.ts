@@ -10,7 +10,7 @@ import {
   of,
   forkJoin
 } from 'rxjs';
-import { mergeMap, filter, switchMap, scan, take, toArray } from 'rxjs/operators';
+import { mergeMap, filter, switchMap, scan, take, toArray, withLatestFrom } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -223,7 +223,7 @@ export class LayerListService implements OnDestroy {
    * @param {ILayerSubscriptionProperties} props The `layers` property is used from this object
    * to reduce the original collection.
    * @param {boolean} filterLazy If `true` will ignore lazy load layers during the filtering. This is used internally
-   * to prevent errors and unecessary layer watch handles from being created. When `false`, all layers will be processed,
+   * to prevent errors and unnecessary layer watch handles from being created. When `false`, all layers will be processed,
    * and will not filter out layers marked for lazy loading which is useful to get a full list of layers for UI presentation,
    * for example.
    */
@@ -233,7 +233,9 @@ export class LayerListService implements OnDestroy {
   ): MonoTypeOperatorFunction<LayerListItem<esri.Layer>[]> {
     return (input$) =>
       input$.pipe(
-        switchMap((list) => from(list)),
+        switchMap((list) => {
+          return from(list);
+        }),
         filter((item) => {
           if (item.layer === undefined && filterLazy) {
             return false;
@@ -254,7 +256,11 @@ export class LayerListService implements OnDestroy {
         // Since the source observable (service store), never completes a simple toArray() will not work here.
         //
         // It's possible to achieve the same end-result with the scan operator that collects stream emissions over time.
-        scan((acc, curr) => {
+        withLatestFrom(this._store),
+        scan((acc, [curr, store]) => {
+          // Diff the accumulated layers with the store and remove anything from the accumulated that doesn't exist in store.
+          acc = store.map((sl) => acc.find((al) => al.id === sl.id)).filter((l) => l !== undefined);
+
           // Check if the accumulated value contains the current layer by id
           const existingIndex = acc.findIndex((layer) => layer.id === curr.id);
 

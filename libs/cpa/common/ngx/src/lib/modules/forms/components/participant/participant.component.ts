@@ -23,7 +23,8 @@ import {
   throttle,
   withLatestFrom,
   filter,
-  tap
+  tap,
+  skip
 } from 'rxjs/operators';
 
 import * as uuid from 'uuid/v4';
@@ -129,12 +130,20 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             pluck(scenarioIndex)
           );
         }),
+        tap((scenario) => {
+          this.addToScenarioHistory(scenario);
+        }),
         shareReplay(1)
       );
 
-      this.scenario.pipe(takeUntil(this._$destroy)).subscribe((res) => {
-        this.addToScenarioHistory(res);
-      });
+      this.scenario
+        .pipe(
+          skip(1),
+          takeUntil(this._$destroy)
+        )
+        .subscribe((res) => {
+          this.resetWorkspace();
+        });
 
       // Fetch new responses from server whenever scenario, response index, or response save signal emits.
       this.responses = merge(this.scenario, this.responseIndex, this.responseSave).pipe(
@@ -213,6 +222,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         const prevScenario = scenarioHistory.length > 1 ? scenarioHistory[0] : undefined;
         const currScenario = scenarioHistory.length > 1 ? scenarioHistory[1] : scenarioHistory[0];
 
+        if (!currScenario) {
+          return;
+        }
+
         if (prevScenario) {
           const prevLayers = prevScenario.layers
             .map((l) => {
@@ -227,29 +240,33 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           }
         }
 
-        // Parse coordinates form scenario string definition
-        const split = currScenario.mapCenter.split(',').map((coordinate) => parseFloat(coordinate));
+        // Queue the new layers on the next event loop, otherwise any layers that need removed
+        // will not have been removed until then and will not appear in the legend.
+        setTimeout(() => {
+          // Parse coordinates form scenario string definition
+          const split = currScenario.mapCenter.split(',').map((coordinate) => parseFloat(coordinate));
 
-        // Navigate to the parsed coordinates
-        instances.view.goTo({
-          target: [split[0], split[1]],
-          zoom: currScenario.zoom
-        });
+          // Navigate to the parsed coordinates
+          instances.view.goTo({
+            target: [split[0], split[1]],
+            zoom: currScenario.zoom
+          });
 
-        // Create a map of layers from the current scenario to add to the map.
-        const layers = currScenario.layers
-          .map((l) => {
-            return new FeatureLayer({
-              url: l.url,
-              title: l.info.name,
-              id: Boolean(l.info.layerId) ? l.info.layerId : uuid(),
-              opacity: 1 - parseInt((l.info.drawingInfo.transparency as unknown) as string, 10) / 100,
-              listMode: 'show'
-            });
-          })
-          .reverse();
+          // Create a map of layers from the current scenario to add to the map.
+          const layers = currScenario.layers
+            .map((l) => {
+              return new FeatureLayer({
+                url: l.url,
+                title: l.info.name,
+                id: Boolean(l.info.layerId) ? l.info.layerId : uuid(),
+                opacity: 1 - parseInt((l.info.drawingInfo.transparency as unknown) as string, 10) / 100,
+                listMode: 'show'
+              });
+            })
+            .reverse();
 
-        instances.map.addMany(layers);
+          instances.map.addMany(layers);
+        }, 0);
       }
     );
   }
@@ -263,21 +280,24 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   public async handleDrawSelection(e: esri.Graphic) {
     if (e.geometry) {
+      this.form.controls.drawn.setValue(e);
+
       const layer = this.mapService.findLayerById('highwater-claims-layer') as esri.FeatureLayer;
 
-      let query;
+      if (layer) {
+        let query;
 
-      try {
-        query = await layer.queryFeatures({
-          spatialRelationship: 'intersects',
-          geometry: e.geometry,
-          outFields: ['*']
-        });
+        try {
+          query = await layer.queryFeatures({
+            spatialRelationship: 'intersects',
+            geometry: e.geometry,
+            outFields: ['*']
+          });
 
-        this.selected.next(query.features);
-        this.form.controls.drawn.setValue(e);
-      } catch (err) {
-        console.error(err);
+          this.selected.next(query.features);
+        } catch (err) {
+          console.error(err);
+        }
       }
     } else {
       this.selected.next([]);
@@ -327,7 +347,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    */
   public resetWorkspace(submission?: IParticipantSubmission) {
     if (submission === undefined) {
-      this.drawComponent.reset();
+      if (this.drawComponent) {
+        this.drawComponent.reset();
+      }
       this.form.reset();
       this.initializeParticipant();
       this.responseIndex.next(-1);
@@ -359,7 +381,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    * Updates the entry value of the current participant guid with the provided geometry.
    */
   private updateOrCreateSubmission() {
-    forkJoin([this.scenario, this.responses.pipe(take(1))]).subscribe(([scenario, responses]) => {
+    forkJoin([this.scenario.pipe(take(1)), this.responses.pipe(take(1))]).subscribe(([scenario, responses]) => {
       const parsed = (this.form.controls.drawn.value as esri.Graphic).toJSON();
 
       const submission: IResponseRequestPayload = {
