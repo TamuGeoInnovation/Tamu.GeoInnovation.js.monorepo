@@ -5,6 +5,8 @@ export const environment = {
   production: true
 };
 
+export const api_url = 'https://nodes.geoservices.tamu.edu/api/cpa/';
+
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
@@ -18,8 +20,6 @@ const commonLayerProps = {
   minScale: 10000000,
   maxScale: 0
 };
-
-export const api_url = 'https://nodes.geoservices.tamu.edu/api/cpa/';
 
 export const SearchSources = [];
 
@@ -54,3 +54,5 @@ export const LayerSources: LayerSource[] = [
     }
   }
 ];
+
+export const NotificationEvents = [];

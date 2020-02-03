@@ -1,5 +1,13 @@
 @import 'libs/sass/mixins';
 
+h2 {
+  padding-bottom: 0.25rem;
+}
+
+h3 {
+  color: #757575;
+}
+
 .actions {
   @include flexbox();
   @include justify-content(space-between);
@@ -35,4 +43,8 @@
 
 .sidebar-component-content-container {
   margin-bottom: 1rem;
+}
+
+.scenario-description {
+  white-space: pre-line;
 }

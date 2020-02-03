@@ -1,7 +1,18 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject, Observable, forkJoin, merge, interval, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  Observable,
+  forkJoin,
+  merge,
+  interval,
+  of,
+  combineLatest,
+  from,
+  ReplaySubject
+} from 'rxjs';
 import {
   takeUntil,
   debounceTime,
@@ -11,7 +22,8 @@ import {
   take,
   throttle,
   withLatestFrom,
-  filter
+  filter,
+  tap
 } from 'rxjs/operators';
 
 import * as uuid from 'uuid/v4';
@@ -20,7 +32,8 @@ import {
   IWorkshopRequestPayload,
   IResponseResponse,
   IResponseRequestPayload,
-  IScenariosResponse
+  IScenariosResponse,
+  IScenariosRequestPayload
 } from '@tamu-gisc/cpa/data-api';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
@@ -46,6 +59,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   public scenario: Observable<IScenariosResponse>;
   public responses: Observable<IResponseResponse[]>;
 
+  public scenarioHistory: BehaviorSubject<IScenariosResponse[]> = new BehaviorSubject([]);
   public scenarioIndex: BehaviorSubject<number> = new BehaviorSubject(0);
   public responseIndex: BehaviorSubject<number> = new BehaviorSubject(-1);
 
@@ -108,16 +122,24 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.params['guid']) {
       this.workshop = this.ws.getWorkshop(this.route.snapshot.params['guid']).pipe(shareReplay(1));
 
-      this.scenario = this.workshop.pipe(
-        pluck<IResponseResponse, IScenariosResponse[]>('scenarios'),
-        pluck(this.scenarioIndex.value),
+      this.scenario = combineLatest([this.workshop, this.scenarioIndex]).pipe(
+        switchMap(([workshop, scenarioIndex]: [IWorkshopRequestPayload, number]) => {
+          return of(workshop).pipe(
+            pluck<IResponseResponse, IScenariosResponse[]>('scenarios'),
+            pluck(scenarioIndex)
+          );
+        }),
         shareReplay(1)
       );
+
+      this.scenario.pipe(takeUntil(this._$destroy)).subscribe((res) => {
+        this.addToScenarioHistory(res);
+      });
 
       // Fetch new responses from server whenever scenario, response index, or response save signal emits.
       this.responses = merge(this.scenario, this.responseIndex, this.responseSave).pipe(
         switchMap((event) => {
-          return forkJoin([this.workshop, this.scenario]);
+          return forkJoin([this.workshop, this.scenario.pipe(take(1))]);
         }),
         switchMap(([workshop, scenario]) => {
           return this.rs.getResponsesForWorkshopAndScenario(workshop.guid, scenario.guid);
@@ -179,17 +201,43 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       });
     }
 
-    // Load scenario layers
-    forkJoin([this.ms.store, this.scenario, this.mp.require(['FeatureLayer'])]).subscribe(
-      ([instances, scenario, [FeatureLayer]]: [MapServiceInstance, IScenariosResponse, [esri.FeatureLayerConstructor]]) => {
-        const split = scenario.mapCenter.split(',').map((coordinate) => parseFloat(coordinate));
+    // Use ScenarioHistory observable to determine a scenario change which requires the addition of new layers
+    // and/or removal of old scenario layers
+    combineLatest([this.scenarioHistory, this.ms.store, from(this.mp.require(['FeatureLayer']))]).subscribe(
+      ([scenarioHistory, instances, [FeatureLayer]]: [
+        IScenariosResponse[],
+        MapServiceInstance,
+        [esri.FeatureLayerConstructor]
+      ]) => {
+        // Find any layers associated with the current scenario and clear them to prepare to add layers from the next scenario
+        const prevScenario = scenarioHistory.length > 1 ? scenarioHistory[0] : undefined;
+        const currScenario = scenarioHistory.length > 1 ? scenarioHistory[1] : scenarioHistory[0];
 
+        if (prevScenario) {
+          const prevLayers = prevScenario.layers
+            .map((l) => {
+              return instances.map.layers.find((ml) => {
+                return ml.id === l.info.layerId;
+              });
+            })
+            .filter((r) => r !== undefined);
+
+          if (prevLayers.length > 0) {
+            instances.map.removeMany(prevLayers);
+          }
+        }
+
+        // Parse coordinates form scenario string definition
+        const split = currScenario.mapCenter.split(',').map((coordinate) => parseFloat(coordinate));
+
+        // Navigate to the parsed coordinates
         instances.view.goTo({
           target: [split[0], split[1]],
-          zoom: scenario.zoom
+          zoom: currScenario.zoom
         });
 
-        const layers = scenario.layers
+        // Create a map of layers from the current scenario to add to the map.
+        const layers = currScenario.layers
           .map((l) => {
             return new FeatureLayer({
               url: l.url,
@@ -349,6 +397,31 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     } else {
       this.participantGuid = uuid();
     }
+  }
+
+  /**
+   * Manages the history of the ScenarioHistory behavior subject, to only keep a maximum of 2 entires (curr and prev).
+   *
+   * This history is used to add/remove layers for scenarios.
+   */
+  private addToScenarioHistory(scenario: IScenariosResponse) {
+    const prevValue = this.scenarioHistory.getValue();
+
+    const newValue = [...prevValue, scenario].slice(-2);
+
+    this.scenarioHistory.next(newValue);
+  }
+
+  public scanScenario(direction: 'prev' | 'next') {
+    forkJoin([this.scenarioIndex.pipe(take(1)), this.workshop]).subscribe(([scenarioIndex, workshop]) => {
+      if (direction) {
+        if (direction === 'prev') {
+          if (scenarioIndex > 0) this.scenarioIndex.next(scenarioIndex - 1);
+        } else if (direction === 'next') {
+          this.scenarioIndex.next(scenarioIndex + 1);
+        }
+      }
+    });
   }
 }
 

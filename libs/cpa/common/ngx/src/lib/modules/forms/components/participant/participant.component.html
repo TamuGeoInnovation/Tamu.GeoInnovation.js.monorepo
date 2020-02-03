@@ -7,9 +7,9 @@
       An index greater than zero is straight forward, means we can walk to the previous index.
       An index equal to "-1" means that the current participant has not submitted any geometry and thus has no scan index. This case is assumed to be at the tail-end of the array, meaning we can start scanning
       from the last index of the array. -->
-    <div class="action" title="Previous Participant" [ngClass]="{ unavailable: (responseIndex | async) === 0 || (responses | async)?.length === 0 }" (click)="scan('prev')" #scanner>
+    <div class="action" title="Previous Participant" [ngClass]="{ unavailable: (responseIndex | async) === 0 || (responses | async)?.length === 0 }" (click)="scan('prev')">
       <span class="material-icons">keyboard_arrow_left</span>
-      <p>Previous</p>
+      <p>Previous Participant</p>
     </div>
   </div>
 
@@ -18,23 +18,18 @@
     <!--  -->
     <!-- Call `scanNextParticipant` only if the currentIndex is not -1. An index equal to the upper array limit would mean we can create a new participant, which is acceptable. -->
 
-    <div class="action" title="Next Participant" [ngClass]="{ unavailable: !form.valid }" (click)="scan('next')" #scanner>
-      <p>Next</p>
+    <div class="action" title="Next Participant" [ngClass]="{ unavailable: !form.valid }" (click)="scan('next')">
+      <p>Next Participant</p>
       <span class="material-icons">keyboard_arrow_right</span>
     </div>
   </div>
 </div>
 
 <!-- Scenario Title -->
-<h2>{{ (workshop | async)?.title }}</h2>
+<h2>{{ (scenario | async)?.title }}</h2>
+<h3>{{ (workshop | async)?.title }}</h3>
 
-<p>{{ (workshop | async)?.description }}</p>
-
-<!-- <p>Form valid: {{ form.valid }}</p>
-
-<p>Response index: {{ responseIndex | async }}</p>
-
-<p>Responses: {{ (responses | async)?.length }}</p> -->
+<p class="scenario-description">{{ (scenario | async)?.description }}</p>
 
 <form [formGroup]="form">
   <div class="form-section">
@@ -68,3 +63,19 @@
     </div>
   </div>
 </form>
+
+<div class="actions">
+  <div class="left-actions">
+    <div class="action" title="Previous Scenario" [ngClass]="{ unavailable: (scenarioIndex | async) === 0 }" (click)="scanScenario('prev')">
+      <span class="material-icons">keyboard_arrow_left</span>
+      <p>Previous Scenario</p>
+    </div>
+  </div>
+
+  <div class="right-actions">
+    <div class="action" title="Next Scenario" [ngClass]="{ unavailable: (scenarioIndex | async) === (workshop | async)?.scenarios.length - 1 }" (click)="scanScenario('next')">
+      <p>Next Scenario</p>
+      <span class="material-icons">keyboard_arrow_right</span>
+    </div>
+  </div>
+</div>
