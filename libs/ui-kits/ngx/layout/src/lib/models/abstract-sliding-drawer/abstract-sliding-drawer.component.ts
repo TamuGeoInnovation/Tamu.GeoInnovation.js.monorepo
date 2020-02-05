@@ -42,6 +42,13 @@ export class AbstractSlidingDrawerComponent implements OnInit {
   @Input()
   public position: 'left' | 'right' = 'left';
 
+  /**
+   * Describes the host CSS layout position as relative
+   * or absolute
+   */
+  @Input()
+  public layout: 'absolute' | 'relative' = 'absolute';
+
   private _params: Partial<AnimationOptions>;
 
   /**
@@ -71,6 +78,11 @@ export class AbstractSlidingDrawerComponent implements OnInit {
   @HostBinding('class')
   private get _position() {
     return this.position;
+  }
+
+  @HostBinding('class.relative')
+  private get _layout() {
+    return this.layout === 'relative';
   }
 
   public ngOnInit() {

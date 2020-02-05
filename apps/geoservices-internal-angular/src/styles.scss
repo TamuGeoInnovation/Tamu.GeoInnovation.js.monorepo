@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'libs/sass/1140';
+
+$primary-font-family: 'Ubuntu', sans-seri;
+$secondary-font-family: 'Muli', sans-seri;
+
+html {
+  height: 100%;
+  width: 100%;
+  font-size: 16px;
+  line-height: 1.4;
+  font-family: $primary-font-family;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+}
+
+h1 {
+  font-size: 2.75rem;
+  font-family: $secondary-font-family;
+  font-weight: 400;
+}
