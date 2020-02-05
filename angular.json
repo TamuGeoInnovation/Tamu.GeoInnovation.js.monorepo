@@ -2361,7 +2361,15 @@
             "polyfills": "apps/geoservices-internal-angular/src/polyfills.ts",
             "tsConfig": "apps/geoservices-internal-angular/tsconfig.app.json",
             "aot": false,
-            "assets": ["apps/geoservices-internal-angular/src/favicon.ico", "apps/geoservices-internal-angular/src/assets"],
+            "assets": [
+              "apps/geoservices-internal-angular/src/favicon.ico",
+              "apps/geoservices-internal-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
             "styles": ["apps/geoservices-internal-angular/src/styles.scss"],
             "scripts": []
           },
