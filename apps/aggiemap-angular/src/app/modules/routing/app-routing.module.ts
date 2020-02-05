@@ -142,6 +142,10 @@ const hybridRoutes: Routes = [
   {
     path: 'instructions',
     loadChildren: () => import('../../instructions/instructions.module').then((m) => m.InstructionsModule)
+  },
+  {
+    path: '**',
+    redirectTo: 'map'
   }
 ];
 
