@@ -1,3 +1,11 @@
-<p>Account settings component</p>
+<div class="tab-container">
+  <div class="tabs">
+    <div class="tab" [routerLink]="['details']" routerLinkActive="active">Details</div>
+    <div class="tab" [routerLink]="['security']" routerLinkActive="active">Security</div>
+    <div class="tab" [routerLink]="['preferences']" routerLinkActive="active">Preferences</div>
+  </div>
 
-<router-outlet></router-outlet>
+  <div class="tab-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

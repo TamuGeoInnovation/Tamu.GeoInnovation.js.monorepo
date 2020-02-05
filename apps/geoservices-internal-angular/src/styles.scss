@@ -1,8 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'libs/sass/1140';
 
-$primary-font-family: 'Ubuntu', sans-seri;
-$secondary-font-family: 'Muli', sans-seri;
+@import 'libs/sass/mixins';
+
+$primary-font-family: 'Ubuntu', sans-serif;
+$secondary-font-family: 'Muli', sans-serif;
+
+$inactive-color: hsl(223, 15%, 67%);
+$active-color: hsl(223, 75%, 67%);
+$state-transition-color: hsl(223, 60%, 67%);
 
 html {
   height: 100%;
@@ -10,6 +16,7 @@ html {
   font-size: 16px;
   line-height: 1.4;
   font-family: $primary-font-family;
+  color: #424242;
 }
 
 body {
@@ -17,8 +24,75 @@ body {
   width: 100%;
 }
 
-h1 {
-  font-size: 2.75rem;
+h1,
+h2,
+h3,
+h4 {
   font-family: $secondary-font-family;
   font-weight: 400;
+}
+
+h1 {
+  font-size: 2.75rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+.sidebar-menu {
+  .menu-item {
+    @include flexbox();
+    @include flex-direction(row);
+    font-size: 1.05rem;
+    color: $inactive-color;
+    padding: 0.75rem 0.5rem;
+    margin: 0.5rem 0;
+    cursor: pointer;
+
+    &:hover {
+      color: $state-transition-color;
+    }
+    &.active {
+      color: $active-color;
+      font-weight: 500;
+    }
+
+    p {
+      margin: 0 1rem;
+    }
+  }
+}
+
+section {
+  &.internal {
+    .section-header {
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+.tab-container {
+  .tabs {
+    @include flexbox();
+    @include flex-direction(row);
+
+    .tab {
+      padding: 0.25rem 1.5rem;
+      font-size: 1.05rem;
+      border-bottom: 2pt solid;
+      border-color: #e0e0e0;
+      cursor: pointer;
+
+      &.active {
+        border-color: $active-color;
+        font-weight: 500;
+        color: #212121;
+      }
+    }
+  }
+
+  .tab-content {
+    padding: 1rem 0;
+  }
 }
