@@ -211,6 +211,12 @@
     },
     "ui-kits-ngx-navigation-breadcrumb": {
       "tags": []
+    },
+    "geoservices-internal-angular-e2e": {
+      "tags": []
+    },
+    "geoservices-internal-angular": {
+      "tags": []
     }
   }
 }
