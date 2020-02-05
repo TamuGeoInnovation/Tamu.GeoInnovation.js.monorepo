@@ -1,20 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
-import { SecurityComponent } from './security.component';
+import { RefillComponent } from './refill.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: SecurityComponent,
-    pathMatch: 'full'
+    pathMatch: 'full',
+    component: RefillComponent
   }
 ];
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [SecurityComponent],
+  declarations: [RefillComponent],
   exports: [RouterModule]
 })
-export class SecurityModule {}
+export class RefillModule {}

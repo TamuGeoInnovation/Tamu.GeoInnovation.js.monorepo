@@ -17,6 +17,7 @@ html {
   line-height: 1.4;
   font-family: $primary-font-family;
   color: #424242;
+  background: hsla(200, 10%, 99%, 1);
 }
 
 body {
@@ -83,6 +84,7 @@ section {
       border-bottom: 2pt solid;
       border-color: #e0e0e0;
       cursor: pointer;
+      @include no-select;
 
       &.active {
         border-color: $active-color;
