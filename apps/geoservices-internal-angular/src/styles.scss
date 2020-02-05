@@ -77,16 +77,26 @@ section {
   .tabs {
     @include flexbox();
     @include flex-direction(row);
+    position: relative;
+
+    &::before {
+      content: '';
+      width: 100%;
+      height: 2pt;
+      position: absolute;
+      bottom: 0;
+      background: #e0e0e0;
+      z-index: -1;
+    }
 
     .tab {
       padding: 0.25rem 1.5rem;
       font-size: 1.05rem;
-      border-bottom: 2pt solid;
-      border-color: #e0e0e0;
       cursor: pointer;
       @include no-select;
 
       &.active {
+        border-bottom: 2pt solid;
         border-color: $active-color;
         font-weight: 500;
         color: #212121;
