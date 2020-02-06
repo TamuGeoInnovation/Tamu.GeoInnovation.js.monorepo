@@ -3,7 +3,14 @@ import { ajax } from 'rxjs/ajax';
 import { switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/internal/Observable';
 
-import { GeocodeResult } from '../core/types';
+import {
+  GeocodeResult,
+  ICallBack,
+  IGeocodingOptions,
+  IGeocodeApiFourDotZeroOneOptions,
+  DefaultTransformer,
+  ClassDefaults
+} from '../core/types';
 import { GeoservicesError } from '../core/errors';
 
 export class Geocoder {
@@ -176,43 +183,9 @@ export class Geocoder {
   }
 }
 
-interface ICallBack<T> {
-  (error: Error, result: T): void;
-}
-
-enum GEOPROCESSING_RESULT {
-  OBSERVABLE = 'observable',
-  PROMISE = 'promise',
-  CALLBACK = 'callback'
-}
-export interface IGeocodeRequestOptions {
-  /**
-   * Describes the response return type.
-   *
-   * Defaults to 'observable'
-   */
-  returnAs?: 'observable' | 'promise' | 'callback';
-}
-
-export interface IGeocodeApiThreeDotZeroOneOptions {
-  version: 3.01;
-  apiKey: string;
-  parsed?: boolean;
-  streetAddress?: string;
-  city?: string;
-  state?: string;
-  zip?: number;
-  census?: boolean;
-  includeHeader?: boolean;
-  notStore?: boolean;
-}
-
-export interface IGeocodeApiFourDotZeroOneOptions extends Omit<IGeocodeApiThreeDotZeroOneOptions, 'version'> {
-  version: 4.01;
-  tieBreakingStrategy?: 'flipACoin' | 'revertToHierarchy';
-  censusYear?: Array<'1990' | '2000' | '2010' | 'allAvailable'>;
-  format?: 'csv' | 'tsv' | 'xml' | 'json';
-}
+type DefaultOptions = {
+  [P in keyof IGeocodeApiFourDotZeroOneOptions]?: DefaultTransformer<IGeocodeApiFourDotZeroOneOptions[P]>;
+};
 
 interface ISettings {
   urlVersion?: string;
@@ -221,21 +194,4 @@ interface ISettings {
   serviceUrl?: string;
 }
 
-type IGeocodingOptions = IGeocodeApiThreeDotZeroOneOptions | IGeocodeApiFourDotZeroOneOptions;
-
-type DefaultOptions = {
-  [P in keyof IGeocodeApiFourDotZeroOneOptions]?: DefaultTransformer<IGeocodeApiFourDotZeroOneOptions[P]>;
-};
-
-type ClassDefaults<U> = {
-  [P in keyof U]: DefaultTransformer<U[P]>;
-};
-
 interface GeocodingDefaultTransformers extends DefaultOptions, ClassDefaults<ISettings> {}
-
-interface DefaultTransformer<U> {
-  value: U;
-  excludeParams?: boolean;
-  target?: string | string[];
-  fn?: (...args) => void;
-}
