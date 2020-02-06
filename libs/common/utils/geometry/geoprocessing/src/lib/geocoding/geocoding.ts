@@ -1,5 +1,10 @@
+import { of } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
-import { map } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs/internal/Observable';
+
+import { GeocodeResult } from '../core/types';
+import { GeoservicesError } from '../core/errors';
 
 export class Geocoder {
   private _settings: GeocodingDefaultTransformers = {
@@ -53,12 +58,12 @@ export class Geocoder {
 
   private _queryString: string;
 
-  constructor(options: IGeocodeOptions) {
-    if (options === undefined || options.apiOptions === undefined) {
+  constructor(options: IGeocodingOptions) {
+    if (options === undefined) {
       throw new Error('No API options for Geocoder were provided.');
     }
     // Merge the provided options into the settings model.
-    this.patchDefaults({ ...options.apiOptions });
+    this.patchDefaults({ ...options });
 
     // Determine default values based on inputs
     this.calculateDefaults();
@@ -116,23 +121,63 @@ export class Geocoder {
 
   /**
    * Geocode an address.
+   *
+   * Can return response in various the types:
+   *
+   *  - Observable: No method overload
+   *  - Promise: `true` for method overload
+   *  - Callback: Callback function for method overload
+   *
+   *  Defaults to Observable.
    */
-  public geocode() {
-    return ajax({
+  public geocode(promiseOrCallback?: false): Observable<GeocodeResult>;
+  public geocode(promiseOrCallback?: true): Promise<GeocodeResult>;
+  public geocode(promiseOrCallback?: ICallBack<GeocodeResult>): void;
+  public geocode(
+    promiseOrCallback?: undefined | boolean | ICallBack<GeocodeResult>
+  ): Observable<GeocodeResult> | Promise<GeocodeResult> | void {
+    const request = ajax({
       url: this._settings.serviceUrl.value + this._queryString,
       method: 'GET',
       responseType: this._settings.format.value
     }).pipe(
-      map((response) => {
-        return response.response;
+      switchMap((response) => {
+        if (
+          (response.response && response.response.QueryStatusCodeValue === '200') ||
+          (typeof response.response === 'string' && response.response.length > 0) ||
+          (response.response instanceof XMLDocument &&
+            response.response.getElementsByTagName('QueryStatusCodeValue')[0].textContent === '200')
+        ) {
+          return of(response.response);
+        } else {
+          return new GeoservicesError(response.response).throw();
+        }
       })
     );
+
+    if (promiseOrCallback === undefined || (typeof promiseOrCallback === 'boolean' && promiseOrCallback === false)) {
+      return (request as unknown) as Observable<GeocodeResult>;
+    }
+
+    if (typeof promiseOrCallback === 'boolean' && promiseOrCallback === true) {
+      return (request.toPromise() as unknown) as Promise<GeocodeResult>;
+    }
+
+    if (promiseOrCallback instanceof Object) {
+      request.subscribe(
+        (res) => {
+          promiseOrCallback(undefined, (res as unknown) as GeocodeResult);
+        },
+        (err) => {
+          promiseOrCallback(err, undefined);
+        }
+      );
+    }
   }
 }
 
-export interface IGeocodeOptions {
-  requestOptions?: IGeocodeRequestOptions;
-  apiOptions: IGeocodingOptions;
+interface ICallBack<T> {
+  (error: Error, result: T): void;
 }
 
 enum GEOPROCESSING_RESULT {
@@ -141,6 +186,11 @@ enum GEOPROCESSING_RESULT {
   CALLBACK = 'callback'
 }
 export interface IGeocodeRequestOptions {
+  /**
+   * Describes the response return type.
+   *
+   * Defaults to 'observable'
+   */
   returnAs?: 'observable' | 'promise' | 'callback';
 }
 
