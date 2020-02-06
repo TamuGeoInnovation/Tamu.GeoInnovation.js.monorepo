@@ -14,8 +14,8 @@ export interface ICallBack<T> {
  * default values, transformation functions, and target keys whose values
  * are injected into the transformation function, if any
  */
-export type ClassDefaults<U> = {
-  [P in keyof U]: DefaultTransformer<U[P]>;
+export type MappedTransformers<U> = {
+  [P in keyof U]?: ValueTransformer<U[P]>;
 };
 
 /**
@@ -26,7 +26,7 @@ export type ClassDefaults<U> = {
  *
  * @template U Value type
  */
-export interface DefaultTransformer<U> {
+export interface ValueTransformer<U> {
   /**
    * Default value for the key-ed setting.
    *

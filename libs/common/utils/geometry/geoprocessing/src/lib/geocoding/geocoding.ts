@@ -3,127 +3,71 @@ import { ajax } from 'rxjs/ajax';
 import { switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/internal/Observable';
 
+import { APIBuilder } from '../core/builder';
+import { GeoservicesError } from '../core/errors';
+
 import {
   GeocodeResult,
   ICallBack,
   IGeocodingOptions,
   IGeocodeApiFourDotZeroOneOptions,
-  DefaultTransformer,
-  ClassDefaults
+  MappedTransformers
 } from '../core/types';
-import { GeoservicesError } from '../core/errors';
 
-export class Geocoder {
-  private _settings: GeocodingDefaultTransformers = {
-    version: {
-      value: 4.01
-    },
-    format: {
-      value: 'json'
-    },
-    parsed: {
-      value: false,
-      excludeParams: true
-    },
-    urlVersion: {
-      value: '',
-      excludeParams: true,
-      target: 'version',
-      fn: function(v: number) {
-        this.value = `_V0${v.toString().replace('.', '_')}`;
-      }
-    },
-    serviceType: {
-      value: 'GeocoderWebServiceHttpNonParsed',
-      excludeParams: true,
-      target: 'parsed',
-      fn: function(parsed) {
-        if (parsed) {
-          this.value = `GeocoderService`;
-        }
-      }
-    },
-    responseFormat: {
-      value: 'json',
-      excludeParams: true,
-      target: 'format',
-      fn: function(f) {
-        if (f === 'tsv' || f === 'csv') {
-          this.value = 'text';
-        }
-      }
-    },
-    serviceUrl: {
-      value: 'https://geoservices.tamu.edu/Services/Geocode/WebService/',
-      excludeParams: true,
-      target: ['urlVersion', 'serviceType', 'parsed'],
-      fn: function(version, type, parsed) {
-        this.value = `${this.value}${type}${version}${parsed ? '.asmx' : '.aspx'}?`;
-      }
-    }
-  };
-
-  private _queryString: string;
-
+export class Geocoder extends APIBuilder<GeocodingTransformers, IGeocodingOptions> {
   constructor(options: IGeocodingOptions) {
-    if (options === undefined) {
-      throw new Error('No API options for Geocoder were provided.');
-    }
-    // Merge the provided options into the settings model.
-    this.patchDefaults({ ...options });
+    super(options);
 
-    // Determine default values based on inputs
-    this.calculateDefaults();
-
-    // Generate the geocode query string based on patched defaults and calculated defaults.
-    this._queryString = Object.keys(this._settings)
-      .filter((setting) => {
-        // Filter out any setting transformer entries that explicity define exclusion
-        // for building the query string.
-        return !Boolean(this._settings[setting].excludeParams);
-      })
-      .map((key, index) => {
-        return `${key}=${this._settings[key].value}`;
-      })
-      .join('&');
-  }
-
-  /**
-   *
-   */
-  private calculateDefaults() {
-    Object.entries(this._settings).forEach(([key, entry]) => {
-      if (entry.fn) {
-        if (entry.target !== undefined) {
-          // Generate a list of params from target(s)
-          const params =
-            entry.target instanceof Array
-              ? entry.target.map((k) => this._settings[k].value)
-              : [this._settings[entry.target].value];
-
-          entry.fn(...params);
+    this.settings = {
+      version: {
+        value: 4.01
+      },
+      format: {
+        value: 'json'
+      },
+      parsed: {
+        value: false,
+        excludeParams: true
+      },
+      urlVersion: {
+        value: '',
+        excludeParams: true,
+        target: 'version',
+        fn: function(v: number) {
+          this.value = `_V0${v.toString().replace('.', '_')}`;
+        }
+      },
+      serviceType: {
+        value: 'GeocoderWebServiceHttpNonParsed',
+        excludeParams: true,
+        target: 'parsed',
+        fn: function(parsed) {
+          if (parsed) {
+            this.value = `GeocoderService`;
+          }
+        }
+      },
+      responseFormat: {
+        value: 'json',
+        excludeParams: true,
+        target: 'format',
+        fn: function(f) {
+          if (f === 'tsv' || f === 'csv') {
+            this.value = 'text';
+          }
+        }
+      },
+      serviceUrl: {
+        value: 'https://geoservices.tamu.edu/Services/Geocode/WebService/',
+        excludeParams: true,
+        target: ['urlVersion', 'serviceType', 'parsed'],
+        fn: function(version, type, parsed) {
+          this.value = `${this.value}${type}${version}${parsed ? '.asmx' : '.aspx'}?`;
         }
       }
-    });
-  }
+    };
 
-  /**
-   * Updates the default settings value with the provided value if it exists,
-   * else it creates an entry in the settings model.
-   */
-  private patchDefaults(options) {
-    Object.entries(options).forEach(([key, value]) => {
-      // If the default value transformer exists, patch its value with that of the
-      // entry key.
-      if (this._settings[key]) {
-        this._settings[key].value = value;
-      } else {
-        // If the default value transformer does not exist, make a new entry
-        this._settings[key] = {
-          value: value
-        };
-      }
-    });
+    super.setup();
   }
 
   /**
@@ -144,9 +88,9 @@ export class Geocoder {
     promiseOrCallback?: undefined | boolean | ICallBack<GeocodeResult>
   ): Observable<GeocodeResult> | Promise<GeocodeResult> | void {
     const request = ajax({
-      url: this._settings.serviceUrl.value + this._queryString,
+      url: this.settings.serviceUrl.value + this.queryString,
       method: 'GET',
-      responseType: this._settings.format.value
+      responseType: this.settings.format.value
     }).pipe(
       switchMap((response) => {
         if (
@@ -183,15 +127,16 @@ export class Geocoder {
   }
 }
 
-type DefaultOptions = {
-  [P in keyof IGeocodeApiFourDotZeroOneOptions]?: DefaultTransformer<IGeocodeApiFourDotZeroOneOptions[P]>;
-};
-
-interface ISettings {
+/**
+ * Internal class settings used to generate geocoding-specific defaults/values.
+ */
+interface IGeocodingSettings {
   urlVersion?: string;
   serviceType?: string;
   responseFormat?: string;
   serviceUrl?: string;
 }
 
-interface GeocodingDefaultTransformers extends DefaultOptions, ClassDefaults<ISettings> {}
+interface GeocodingTransformers
+  extends MappedTransformers<IGeocodeApiFourDotZeroOneOptions>,
+    MappedTransformers<IGeocodingSettings> {}
