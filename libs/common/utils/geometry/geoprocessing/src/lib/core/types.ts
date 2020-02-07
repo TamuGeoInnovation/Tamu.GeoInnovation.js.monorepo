@@ -261,11 +261,36 @@ export interface GeocodeResult extends GeocoderFourZeroOneResultMetadata {
   ReferenceFeature: GeocodeResultReferenceFeature;
 }
 
+interface ReverseGeocodeResultStreetAddress {
+  TransactionId: string;
+  Version: string;
+  QueryStatusCode: string;
+  TimeTaken: string;
+  Exception: string;
+  ErrorMessage: string;
+  APN: string;
+  StreetAddress: string;
+  City: string;
+  State: string;
+  Zip: string;
+  ZipPlus4: string;
+}
+
+export interface ReverseGeocodeResult {
+  TransactionId: string;
+  Version: string;
+  QueryStatusCode: string;
+  TimeTaken: string;
+  Exception: string;
+  ErrorMessage: string;
+  StreetAddresses: Array<ReverseGeocodeResultStreetAddress>;
+}
+
 //
 // Errors
 //
 export interface NormalizedGeoservicesJsonError {
-  statusCode?: number;
+  statusCode?: number | string;
   error?: string;
   message?: string;
   response?: GeocodeResult;

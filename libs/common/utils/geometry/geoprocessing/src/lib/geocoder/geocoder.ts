@@ -1,6 +1,8 @@
 import { ApiBase } from '../core/base';
 
 import { GeocodeResult, IGeocoderOptions, TransformersMap, IAdvancedGeocoderFourZeroOneOptions } from '../core/types';
+import { of } from 'rxjs';
+import { GeoservicesError } from '../core/errors';
 
 export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, GeocodeResult> {
   constructor(options: IGeocoderOptions) {
@@ -8,7 +10,7 @@ export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, G
 
     this.settings = {
       version: {
-        value: "4.01"
+        value: '4.01'
       },
       format: {
         value: 'json'
@@ -88,6 +90,19 @@ export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, G
     };
 
     this.setup();
+  }
+
+  public handleErrorOrResponse(response) {
+    if (
+      (response.response && response.response.QueryStatusCodeValue === '200') ||
+      (typeof response.response === 'string' && response.response.length > 0) ||
+      (response.response instanceof XMLDocument &&
+        response.response.getElementsByTagName('QueryStatusCodeValue')[0].textContent === '200')
+    ) {
+      return of(response.response);
+    } else {
+      return new GeoservicesError(response.response).throw();
+    }
   }
 }
 

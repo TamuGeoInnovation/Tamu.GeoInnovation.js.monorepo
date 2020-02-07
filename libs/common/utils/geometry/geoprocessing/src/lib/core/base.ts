@@ -1,12 +1,12 @@
 import { Observable, of } from 'rxjs';
-import { ajax } from 'rxjs/ajax';
+import { ajax, AjaxResponse } from 'rxjs/ajax';
 import { switchMap } from 'rxjs/operators';
 
 import { GeoservicesError } from './errors';
 
 import { Transformer, TransformersMap, ICallBack } from './types';
 
-export class ApiBase<T extends TransformersMap<unknown>, U extends object, Res> {
+export abstract class ApiBase<T extends TransformersMap<unknown>, U extends object, Res> {
   private _options: object;
   public settings: T & { serviceUrl: Transformer<string, T>; format: Transformer<string, T> };
   public queryString: string;
@@ -65,16 +65,7 @@ export class ApiBase<T extends TransformersMap<unknown>, U extends object, Res> 
       responseType: this.settings.format.value
     }).pipe(
       switchMap((response) => {
-        if (
-          (response.response && response.response.QueryStatusCodeValue === '200') ||
-          (typeof response.response === 'string' && response.response.length > 0) ||
-          (response.response instanceof XMLDocument &&
-            response.response.getElementsByTagName('QueryStatusCodeValue')[0].textContent === '200')
-        ) {
-          return of(response.response);
-        } else {
-          return new GeoservicesError(response.response).throw();
-        }
+        return this.handleErrorOrResponse(response);
       })
     );
 
@@ -97,6 +88,12 @@ export class ApiBase<T extends TransformersMap<unknown>, U extends object, Res> 
       );
     }
   }
+
+  /**
+   * A per-service definition that delegates response handling to the sub-classes given that return
+   * formats are different across products.
+   */
+  public abstract handleErrorOrResponse(res: AjaxResponse): Observable<Res>;
 
   /**
    *
