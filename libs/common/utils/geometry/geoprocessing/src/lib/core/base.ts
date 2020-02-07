@@ -1,13 +1,19 @@
-import { Transformer, TransformersMap } from './types';
+import { Observable, of } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
+import { switchMap } from 'rxjs/operators';
 
-export class APIBuilder<T extends TransformersMap<unknown>, U extends object> {
+import { GeoservicesError } from './errors';
+
+import { Transformer, TransformersMap, ICallBack } from './types';
+
+export class ApiBase<T extends TransformersMap<unknown>, U extends object, Res> {
   private _options: object;
-  public settings: T;
+  public settings: T & { serviceUrl: Transformer<string, T>; format: Transformer<string, T> };
   public queryString: string;
 
   constructor(options: U) {
     if (options === undefined) {
-      throw new Error('No API options for Geocoder were provided.');
+      throw new Error('No API options were provided.');
     } else {
       this._options = { ...options };
     }
@@ -36,6 +42,60 @@ export class APIBuilder<T extends TransformersMap<unknown>, U extends object> {
         return `${key}=${this.settings[key].value}`;
       })
       .join('&');
+  }
+
+  /**
+   * Geocode an address.
+   *
+   * Can return response in various the types:
+   *
+   *  - Observable: No method overload
+   *  - Promise: `true` for method overload
+   *  - Callback: Callback function for method overload
+   *
+   *  Defaults to Observable.
+   */
+  public execute(promiseOrCallback?: false): Observable<Res>;
+  public execute(promiseOrCallback?: true): Promise<Res>;
+  public execute(promiseOrCallback?: ICallBack<Res>): void;
+  public execute(promiseOrCallback?: undefined | boolean | ICallBack<Res>): Observable<Res> | Promise<Res> | void {
+    const request = ajax({
+      url: this.settings.serviceUrl.value + this.queryString,
+      method: 'GET',
+      responseType: this.settings.format.value
+    }).pipe(
+      switchMap((response) => {
+        if (
+          (response.response && response.response.QueryStatusCodeValue === '200') ||
+          (typeof response.response === 'string' && response.response.length > 0) ||
+          (response.response instanceof XMLDocument &&
+            response.response.getElementsByTagName('QueryStatusCodeValue')[0].textContent === '200')
+        ) {
+          return of(response.response);
+        } else {
+          return new GeoservicesError(response.response).throw();
+        }
+      })
+    );
+
+    if (promiseOrCallback === undefined || (typeof promiseOrCallback === 'boolean' && promiseOrCallback === false)) {
+      return (request as unknown) as Observable<Res>;
+    }
+
+    if (typeof promiseOrCallback === 'boolean' && promiseOrCallback === true) {
+      return (request.toPromise() as unknown) as Promise<Res>;
+    }
+
+    if (promiseOrCallback instanceof Object) {
+      request.subscribe(
+        (res) => {
+          promiseOrCallback(undefined, (res as unknown) as Res);
+        },
+        (err) => {
+          promiseOrCallback(err, undefined);
+        }
+      );
+    }
   }
 
   /**

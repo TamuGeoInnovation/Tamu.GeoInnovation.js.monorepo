@@ -53,8 +53,8 @@ export interface Transformer<U, O> {
    */
   fn?: (...args) => void;
 }
-export interface IGeocodeApiThreeZeroOneOptions {
-  version: 3.01;
+export interface IGeocoderThreeZeroOneOptions {
+  version: '3.01';
   apiKey: string;
   streetAddress?: string;
   city?: string;
@@ -67,9 +67,9 @@ export interface IGeocodeApiThreeZeroOneOptions {
   notStore?: boolean;
 }
 
-export interface IGeocodeApiFourZeroOneOptions
-  extends Omit<IGeocodeApiThreeZeroOneOptions, 'version' | 'format' | 'censusYear' | 'format'> {
-  version: 4.01;
+export interface IGeocoderFourZeroOneOptions
+  extends Omit<IGeocoderThreeZeroOneOptions, 'version' | 'format' | 'censusYear' | 'format'> {
+  version: '4.01';
   allowTies?: boolean;
   tieBreakingStrategy?: 'flipACoin' | 'revertToHierarchy';
   censusYear?: 'allAvailable' | Array<'1990' | '2000' | '2010'>;
@@ -78,7 +78,7 @@ export interface IGeocodeApiFourZeroOneOptions
   format?: 'csv' | 'tsv' | 'xml' | 'json';
 }
 
-export interface IAdvancedGeocodeApiFourZeroOneOptions extends IGeocodeApiFourZeroOneOptions {
+export interface IAdvancedGeocoderFourZeroOneOptions extends IGeocoderFourZeroOneOptions {
   r?: boolean;
   ratts?: Array<'pre' | 'suffix' | 'post' | 'city' | 'zip'>;
   sub?: boolean;
@@ -126,15 +126,27 @@ export interface IAdvancedGeocodeApiFourZeroOneOptions extends IGeocodeApiFourZe
       >;
 }
 
-export type IGeocodingOptions =
-  | IGeocodeApiThreeZeroOneOptions
-  | IGeocodeApiFourZeroOneOptions
-  | IAdvancedGeocodeApiFourZeroOneOptions;
+export type IGeocoderOptions =
+  | IGeocoderThreeZeroOneOptions
+  | IGeocoderFourZeroOneOptions
+  | IAdvancedGeocoderFourZeroOneOptions;
+
+export interface IReverseGeocoderOptions {
+  version?: '4.10';
+  apiKey: string;
+  lat: number;
+  lon: number;
+  state?: string;
+  geom?: boolean;
+  includeHeader?: boolean;
+  notStore?: boolean;
+  format?: 'csv' | 'tsv' | 'xml' | 'json';
+}
 
 //
 // Results
 //
-export interface GeocodeFourZeroOneResultMetadata {
+export interface GeocoderFourZeroOneResultMetadata {
   version: string;
   TransactionId: string;
   Version: string;
@@ -236,7 +248,7 @@ export interface GeocodeResultReferenceFeature extends GecodeResultParsedAddress
   SecondaryIdValue: string;
 }
 
-export interface GeocodeResult extends GeocodeFourZeroOneResultMetadata {
+export interface GeocodeResult extends GeocoderFourZeroOneResultMetadata {
   InputAddress: GeocodeResultInputAddress;
   OutputGeocodes: Array<GeocodeResultOutputGeocode>;
   CensusValues: Array<{
