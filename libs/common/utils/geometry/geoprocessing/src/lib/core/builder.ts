@@ -1,6 +1,6 @@
-import { IGeocodingOptions, ValueTransformer, MappedTransformers } from './types';
+import { Transformer, TransformersMap } from './types';
 
-export abstract class APIBuilder<T extends MappedTransformers<unknown>, U extends object> {
+export abstract class APIBuilder<T extends TransformersMap<unknown>, U extends object> {
   private _options: object;
   public settings: T;
   public queryString: string;
@@ -30,7 +30,7 @@ export abstract class APIBuilder<T extends MappedTransformers<unknown>, U extend
       .filter((setting) => {
         // Filter out any setting transformer entries that explicity define exclusion
         // for building the query string.
-        return !Boolean(this.settings[setting].excludeParams);
+        return !Boolean(this.settings[setting].excludeParams) && this.settings[setting].value !== undefined;
       })
       .map((key, index) => {
         return `${key}=${this.settings[key].value}`;
@@ -42,16 +42,20 @@ export abstract class APIBuilder<T extends MappedTransformers<unknown>, U extend
    *
    */
   private calculateDefaults() {
-    Object.entries(this.settings).forEach(([key, entry]: [string, ValueTransformer<unknown>]) => {
+    Object.entries(this.settings).forEach(([key, entry]: [string, Transformer<unknown>]) => {
       if (entry.fn) {
+        // Get target values
         if (entry.target !== undefined) {
           // Generate a list of params from target(s)
           const params =
             entry.target instanceof Array
-              ? entry.target.map((k) => this.settings[k].value)
+              ? entry.target.map((k) => this.settings[k] ? this.settings[k].value: undefined)
               : [this.settings[entry.target].value];
 
           entry.fn(...params);
+        } else {
+          // No target values to get
+          entry.fn();
         }
       }
     });

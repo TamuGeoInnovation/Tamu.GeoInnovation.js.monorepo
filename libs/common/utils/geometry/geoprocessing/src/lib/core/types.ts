@@ -14,8 +14,8 @@ export interface ICallBack<T> {
  * default values, transformation functions, and target keys whose values
  * are injected into the transformation function, if any
  */
-export type MappedTransformers<U> = {
-  [P in keyof U]?: ValueTransformer<U[P]>;
+export type TransformersMap<U> = {
+  [P in keyof U]?: Transformer<U[P]>;
 };
 
 /**
@@ -26,7 +26,7 @@ export type MappedTransformers<U> = {
  *
  * @template U Value type
  */
-export interface ValueTransformer<U> {
+export interface Transformer<U> {
   /**
    * Default value for the key-ed setting.
    *
@@ -53,27 +53,32 @@ export interface ValueTransformer<U> {
    */
   fn?: (...args) => void;
 }
-export interface IGeocodeApiThreeDotZeroOneOptions {
+export interface IGeocodeApiThreeZeroOneOptions {
   version: 3.01;
   apiKey: string;
-  parsed?: boolean;
   streetAddress?: string;
   city?: string;
   state?: string;
   zip?: number;
   census?: boolean;
+  censusYear?: '1990' | '2000' | '2010';
+  format?: 'csv' | 'tsv' | 'xml' | 'kml' | 'googleMapsUrl';
   includeHeader?: boolean;
   notStore?: boolean;
 }
 
-export interface IGeocodeApiFourDotZeroOneOptions extends Omit<IGeocodeApiThreeDotZeroOneOptions, 'version'> {
+export interface IGeocodeApiFourZeroOneOptions
+  extends Omit<IGeocodeApiThreeZeroOneOptions, 'version' | 'format' | 'censusYear' | 'format'> {
   version: 4.01;
+  allowTies?: boolean;
   tieBreakingStrategy?: 'flipACoin' | 'revertToHierarchy';
-  censusYear?: Array<'1990' | '2000' | '2010' | 'allAvailable'>;
+  censusYear?: 'allAvailable' | Array<'1990' | '2000' | '2010'>;
+  geom?: boolean;
+  verbose?: boolean;
   format?: 'csv' | 'tsv' | 'xml' | 'json';
 }
 
-export interface IAdvancedGeocodeApiFourDotZeroOneOptions extends IGeocodeApiFourDotZeroOneOptions {
+export interface IAdvancedGeocodeApiFourZeroOneOptions extends IGeocodeApiFourZeroOneOptions {
   r?: boolean;
   ratts?: Array<'pre' | 'suffix' | 'post' | 'city' | 'zip'>;
   sub?: boolean;
@@ -122,11 +127,14 @@ export interface IAdvancedGeocodeApiFourDotZeroOneOptions extends IGeocodeApiFou
 }
 
 export type IGeocodingOptions =
-  | IGeocodeApiThreeDotZeroOneOptions
-  | IGeocodeApiFourDotZeroOneOptions
-  | IAdvancedGeocodeApiFourDotZeroOneOptions;
+  | IGeocodeApiThreeZeroOneOptions
+  | IGeocodeApiFourZeroOneOptions
+  | IAdvancedGeocodeApiFourZeroOneOptions;
 
-export interface GeocodeResultMetadata {
+//
+// Results
+//
+export interface GeocodeFourZeroOneResultMetadata {
   version: string;
   TransactionId: string;
   Version: string;
@@ -165,7 +173,93 @@ export interface GeocodeResultOutputGeocode {
   };
 }
 
-export interface GeocodeResult extends GeocodeResultMetadata {
+export interface GeocodeResultCensusValue {
+  CensusYear: 'NineteenNinety' | 'TwoThousand' | 'TwoThousandTen';
+  CensusTimeTaken: string;
+  NAACCRCensusTractCertaintyCode: string;
+  NAACCRCensusTractCertaintyType: string;
+  CensusBlock: string;
+  CensusBlockGroup: string;
+  CensusTract: string;
+  CensusCountyFips: string;
+  CensusStateFips: string;
+  CensusCbsaFips: string;
+  CensusCbsaMicro: string;
+  CensusMcdFips: string;
+  CensusMetDivFips: string;
+  CensusMsaFips: string;
+  CensusPlaceFips: string;
+  ExceptionOccured: string;
+  Exception: string;
+  ErrorMessage: string;
+}
+
+export interface GecodeResultParsedAddress {
+  Name: string;
+  Number: string;
+  NumberFractional: string;
+  PreDirectional: string;
+  PreQualifier: string;
+  PreType: string;
+  PreArticle: string;
+  PostArticle: string;
+  PostQualifier: string;
+  Suffix: string;
+  PostDirectional: string;
+  SuiteType: string;
+  SuiteNumber: string;
+  PostOfficeBoxType: string;
+  PostOfficeBoxNumber: string;
+  City: string;
+  ConsolidatedCity: string;
+  MinorCivilDivision: string;
+  CountySubRegion: string;
+  County: string;
+  State: string;
+  Zip: string;
+  ZipPlus1: string;
+  ZipPlus2: string;
+  ZipPlus3: string;
+  ZipPlus4: string;
+  ZipPlus5: string;
+}
+
+export interface GeocodeResultReferenceFeature extends GecodeResultParsedAddress {
+  Area: string;
+  AreaType: string;
+  GeometrySRID: string;
+  Geometry: string;
+  Source: string;
+  Vintage: string;
+  PrimaryIdField: string;
+  PrimaryIdValue: string;
+  SecondaryIdField: string;
+  SecondaryIdValue: string;
+}
+
+export interface GeocodeResult extends GeocodeFourZeroOneResultMetadata {
   InputAddress: GeocodeResultInputAddress;
   OutputGeocodes: Array<GeocodeResultOutputGeocode>;
+  CensusValues: Array<{
+    CensusValue1: GeocodeResultCensusValue;
+    CensusValue2: GeocodeResultCensusValue;
+    CensusValue3: GeocodeResultCensusValue;
+  }>;
+  ParsedAddress: GecodeResultParsedAddress;
+  MatchedAddress: GecodeResultParsedAddress;
+  ReferenceFeature: GeocodeResultReferenceFeature;
 }
+
+//
+// Errors
+//
+export interface NormalizedGeoservicesJsonError {
+  statusCode?: number;
+  error?: string;
+  message?: string;
+  response?: GeocodeResult;
+}
+
+export type NormalizedGeoservicesTextError = string;
+
+export type NormalizedXMLError = XMLDocument;

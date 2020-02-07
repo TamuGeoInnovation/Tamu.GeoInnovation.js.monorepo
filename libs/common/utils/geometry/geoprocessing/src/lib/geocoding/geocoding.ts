@@ -10,8 +10,8 @@ import {
   GeocodeResult,
   ICallBack,
   IGeocodingOptions,
-  IGeocodeApiFourDotZeroOneOptions,
-  MappedTransformers
+  TransformersMap,
+  IAdvancedGeocodeApiFourZeroOneOptions
 } from '../core/types';
 
 export class Geocoder extends APIBuilder<GeocodingTransformers, IGeocodingOptions> {
@@ -24,6 +24,24 @@ export class Geocoder extends APIBuilder<GeocodingTransformers, IGeocodingOption
       },
       format: {
         value: 'json'
+      },
+      censusYear: {
+        value: undefined,
+        fn: function() {
+          this.value = this.value instanceof Array ? this.value.join('|') : this.value;
+        }
+      },
+      ratts: {
+        value: undefined,
+        fn: function() {
+          this.value = this.value instanceof Array ? this.value.join(',') : this.value;
+        }
+      },
+      souatts: {
+        value: undefined,
+        fn: function() {
+          this.value = this.value instanceof Array ? this.value.join(',') : this.value;
+        }
       },
       parsed: {
         value: false,
@@ -47,6 +65,20 @@ export class Geocoder extends APIBuilder<GeocodingTransformers, IGeocodingOption
           }
         }
       },
+      advancedQuery: {
+        value: '',
+        excludeParams: true,
+        target: ['r', 'ratts', 'sub', 'sou', 'souatts', 'h', 'refs'],
+        fn: function(...args) {
+          // Test if any of advanced geocoding options were provided
+          const anyAdvancedOption = args.findIndex((v) => v !== undefined) > -1;
+
+          if (anyAdvancedOption) {
+            this.value = 'Advanced';
+          }
+        }
+      },
+
       responseFormat: {
         value: 'json',
         excludeParams: true,
@@ -60,9 +92,9 @@ export class Geocoder extends APIBuilder<GeocodingTransformers, IGeocodingOption
       serviceUrl: {
         value: 'https://geoservices.tamu.edu/Services/Geocode/WebService/',
         excludeParams: true,
-        target: ['urlVersion', 'serviceType', 'parsed'],
-        fn: function(version, type, parsed) {
-          this.value = `${this.value}${type}${version}${parsed ? '.asmx' : '.aspx'}?`;
+        target: ['urlVersion', 'serviceType', 'parsed', 'advancedQuery'],
+        fn: function(version, type, parsed, advanced) {
+          this.value = `${this.value}${type}${advanced}${version}${parsed ? '.asmx' : '.aspx'}?`;
         }
       }
     };
@@ -135,8 +167,10 @@ interface IGeocodingSettings {
   serviceType?: string;
   responseFormat?: string;
   serviceUrl?: string;
+  advancedQuery?: string;
+  parsed?: boolean;
 }
 
 interface GeocodingTransformers
-  extends MappedTransformers<IGeocodeApiFourDotZeroOneOptions>,
-    MappedTransformers<IGeocodingSettings> {}
+  extends TransformersMap<IAdvancedGeocodeApiFourZeroOneOptions>,
+    TransformersMap<IGeocodingSettings> {}

@@ -1,6 +1,6 @@
 import { throwError, Observable } from 'rxjs';
 
-import { GeocodeResult } from './types';
+import { GeocodeResult, NormalizedGeoservicesJsonError, NormalizedGeoservicesTextError, NormalizedXMLError } from './types';
 
 export class GeoservicesError {
   private _code: number;
@@ -110,14 +110,3 @@ export class GeoservicesError {
     }
   }
 }
-
-interface NormalizedGeoservicesJsonError {
-  statusCode?: number;
-  error?: string;
-  message?: string;
-  response?: GeocodeResult;
-}
-
-type NormalizedGeoservicesTextError = string;
-
-type NormalizedXMLError = XMLDocument;
