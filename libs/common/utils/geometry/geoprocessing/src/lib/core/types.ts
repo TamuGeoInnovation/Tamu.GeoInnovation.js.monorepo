@@ -143,6 +143,17 @@ export interface IReverseGeocoderOptions {
   format?: 'csv' | 'tsv' | 'xml' | 'json';
 }
 
+export interface ICensusIntersectionOptions {
+  apiKey: string;
+  version: '4.10';
+  censusYear: '1990' | '2000' | '2010';
+  lat: number;
+  lon: number;
+  s?: boolean;
+  format?: 'csv' | 'tsv' | 'xml' | 'json';
+  notStore?: boolean;
+}
+
 //
 // Results
 //
@@ -286,6 +297,37 @@ export interface ReverseGeocodeResult {
   StreetAddresses: Array<ReverseGeocodeResultStreetAddress>;
 }
 
+export interface CensusIntersectionResult {
+  TransactionId: string;
+  Version: string;
+  QueryStatusCode: string;
+  TimeTaken: string;
+  Exception: string;
+  ErrorMessage: string;
+  CensusRecords: Array<CensusIntersectionCensusRecord>;
+}
+
+export interface CensusIntersectionCensusRecord {
+  TransactionId: string;
+  Version: string;
+  QueryStatusCode: string;
+  TimeTaken: string;
+  Exception: string;
+  ErrorMessage: string;
+  CensusYear: string;
+  CensusBlock: string;
+  CensusBlockGroup: string;
+  CensusTract: string;
+  CensusPlaceFips: string;
+  CensusMcdFips: string;
+  CensusMsaFips: string;
+  CensusCbsaFips: string;
+  CensusCbsaMicro: string;
+  CensusMetDivFips: string;
+  CensusCountyFips: string;
+  CensusStateFips: string;
+}
+
 //
 // Errors
 //
@@ -299,3 +341,14 @@ export interface NormalizedGeoservicesJsonError {
 export type NormalizedGeoservicesTextError = string;
 
 export type NormalizedXMLError = XMLDocument;
+
+export enum ApiResponseFormat {
+  /**
+   * Responses where the response contains a text status code **name**
+   */
+  Text = 1,
+  /**
+   * Responses where the response contains a numeric status code
+   */
+  Code = 2
+}

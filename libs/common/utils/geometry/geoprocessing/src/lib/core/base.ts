@@ -4,12 +4,15 @@ import { switchMap } from 'rxjs/operators';
 
 import { GeoservicesError } from './errors';
 
-import { Transformer, TransformersMap, ICallBack } from './types';
+import { Transformer, TransformersMap, ICallBack, ApiResponseFormat } from './types';
 
 export abstract class ApiBase<T extends TransformersMap<unknown>, U extends object, Res> {
   private _options: object;
   public settings: T & { serviceUrl: Transformer<string, T>; format: Transformer<string, T> };
+
   public queryString: string;
+
+  public abstract responseType: ApiResponseFormat;
 
   constructor(options: U) {
     if (options === undefined) {
@@ -65,7 +68,7 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
       responseType: this.settings.format.value
     }).pipe(
       switchMap((response) => {
-        return this.handleErrorOrResponse(response);
+        return this.handleResponse(response);
       })
     );
 
@@ -88,12 +91,6 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
       );
     }
   }
-
-  /**
-   * A per-service definition that delegates response handling to the sub-classes given that return
-   * formats are different across products.
-   */
-  public abstract handleErrorOrResponse(res: AjaxResponse): Observable<Res>;
 
   /**
    *
@@ -135,5 +132,31 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
         };
       }
     });
+  }
+
+  private handleResponse(response: AjaxResponse): Observable<Res> {
+    if (this.responseType === ApiResponseFormat.Text) {
+      if (
+        (response.response && response.response.QueryStatusCode === 'Success') ||
+        (typeof response.response === 'string' && response.response.length > 0) ||
+        (response.response instanceof XMLDocument &&
+          response.response.getElementsByTagName('QueryStatusCodeValue')[0].textContent === '200')
+      ) {
+        return of(response.response);
+      } else {
+        return new GeoservicesError(response.response).throw();
+      }
+    } else if (this.responseType === ApiResponseFormat.Code) {
+      if (
+        (response.response && response.response.QueryStatusCodeValue === '200') ||
+        (typeof response.response === 'string' && response.response.length > 0) ||
+        (response.response instanceof XMLDocument &&
+          response.response.getElementsByTagName('QueryStatusCodeValue')[0].textContent === '200')
+      ) {
+        return of(response.response);
+      } else {
+        return new GeoservicesError(response.response).throw();
+      }
+    }
   }
 }
