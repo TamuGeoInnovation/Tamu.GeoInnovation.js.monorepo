@@ -15,7 +15,7 @@ export interface ICallBack<T> {
  * are injected into the transformation function, if any
  */
 export type TransformersMap<U> = {
-  [P in keyof U]?: Transformer<U[P]>;
+  [P in keyof U]?: Transformer<U[P], U>;
 };
 
 /**
@@ -26,7 +26,7 @@ export type TransformersMap<U> = {
  *
  * @template U Value type
  */
-export interface Transformer<U> {
+export interface Transformer<U, O> {
   /**
    * Default value for the key-ed setting.
    *
@@ -45,7 +45,7 @@ export interface Transformer<U> {
    * String or array of string parent key values whose associated values are passed into
    * the transformation function.
    */
-  target?: string | string[];
+  target?: keyof O | Array<keyof O>;
 
   /**
    * Transformation function. If defined, on default value calculation the `target values
@@ -176,7 +176,6 @@ export interface GeocodeResultOutputGeocode {
 export interface GeocodeResultCensusValue {
   CensusYear: 'NineteenNinety' | 'TwoThousand' | 'TwoThousandTen';
   CensusTimeTaken: string;
-  NAACCRCensusTractCertaintyCode: string;
   NAACCRCensusTractCertaintyType: string;
   CensusBlock: string;
   CensusBlockGroup: string;

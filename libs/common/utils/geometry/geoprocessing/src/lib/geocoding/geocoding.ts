@@ -50,7 +50,7 @@ export class Geocoder extends APIBuilder<GeocodingTransformers, IGeocodingOption
       urlVersion: {
         value: '',
         excludeParams: true,
-        target: 'version',
+        target: ['version'],
         fn: function(v: number) {
           this.value = `_V0${v.toString().replace('.', '_')}`;
         }
@@ -113,10 +113,10 @@ export class Geocoder extends APIBuilder<GeocodingTransformers, IGeocodingOption
    *
    *  Defaults to Observable.
    */
-  public geocode(promiseOrCallback?: false): Observable<GeocodeResult>;
-  public geocode(promiseOrCallback?: true): Promise<GeocodeResult>;
-  public geocode(promiseOrCallback?: ICallBack<GeocodeResult>): void;
-  public geocode(
+  public execute(promiseOrCallback?: false): Observable<GeocodeResult>;
+  public execute(promiseOrCallback?: true): Promise<GeocodeResult>;
+  public execute(promiseOrCallback?: ICallBack<GeocodeResult>): void;
+  public execute(
     promiseOrCallback?: undefined | boolean | ICallBack<GeocodeResult>
   ): Observable<GeocodeResult> | Promise<GeocodeResult> | void {
     const request = ajax({
@@ -171,6 +171,4 @@ interface IGeocodingSettings {
   parsed?: boolean;
 }
 
-interface GeocodingTransformers
-  extends TransformersMap<IAdvancedGeocodeApiFourZeroOneOptions>,
-    TransformersMap<IGeocodingSettings> {}
+interface GeocodingTransformers extends TransformersMap<IAdvancedGeocodeApiFourZeroOneOptions & IGeocodingSettings> {}

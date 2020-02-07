@@ -1,6 +1,6 @@
 import { Transformer, TransformersMap } from './types';
 
-export abstract class APIBuilder<T extends TransformersMap<unknown>, U extends object> {
+export class APIBuilder<T extends TransformersMap<unknown>, U extends object> {
   private _options: object;
   public settings: T;
   public queryString: string;
@@ -42,14 +42,14 @@ export abstract class APIBuilder<T extends TransformersMap<unknown>, U extends o
    *
    */
   private calculateDefaults() {
-    Object.entries(this.settings).forEach(([key, entry]: [string, Transformer<unknown>]) => {
+    Object.entries(this.settings).forEach(([key, entry]: [string, Transformer<unknown, never>]) => {
       if (entry.fn) {
         // Get target values
         if (entry.target !== undefined) {
           // Generate a list of params from target(s)
           const params =
             entry.target instanceof Array
-              ? entry.target.map((k) => this.settings[k] ? this.settings[k].value: undefined)
+              ? entry.target.map((k) => (this.settings[k] ? this.settings[k].value : undefined))
               : [this.settings[entry.target].value];
 
           entry.fn(...params);
