@@ -1,11 +1,11 @@
 import { throwError, Observable } from 'rxjs';
 
-import { GeocodeResult, NormalizedGeoservicesJsonError, NormalizedGeoservicesTextError, NormalizedXMLError } from './types';
+import { INormalizedGeoservicesJsonError, NormalizedGeoservicesTextError, NormalizedXMLError } from './types';
 
-export class GeoservicesError {
+export class GeoservicesError<T extends unknown> {
   private _code: number | string;
-  private _response: object | string | XMLDocument;
-  private _normalized: NormalizedGeoservicesJsonError | NormalizedGeoservicesTextError | NormalizedXMLError;
+  private _response: T | object | string | XMLDocument;
+  private _normalized: INormalizedGeoservicesJsonError<T> | NormalizedGeoservicesTextError | NormalizedXMLError;
 
   constructor(badResponse: Responses | string | XMLDocument) {
     this._response = badResponse;
@@ -21,7 +21,7 @@ export class GeoservicesError {
           : badResponse.QueryStatusCode;
 
       this._normalized = {};
-      this._normalized.response = this._response as GeocodeResult;
+      this._normalized.response = this._response as T;
       this._normalized.message = '';
 
       this._jsonNormalize();

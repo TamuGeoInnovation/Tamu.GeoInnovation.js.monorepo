@@ -1,8 +1,8 @@
 import { ApiBase } from '../core/base';
 
-import { TransformersMap, IReverseGeocoderOptions, GeocodeResult, ApiResponseFormat } from '../core/types';
+import { TransformersMap, IReverseGeocoderOptions, IGeocodeResult, ApiResponseFormat } from '../core/types';
 
-export class ReverseGeocoder extends ApiBase<IReverseGeocoderTransformers, IReverseGeocoderOptions, GeocodeResult> {
+export class ReverseGeocoder extends ApiBase<IReverseGeocoderTransformers, IReverseGeocoderOptions, IGeocodeResult> {
   public responseType = ApiResponseFormat.Text;
 
   constructor(options: IReverseGeocoderOptions) {

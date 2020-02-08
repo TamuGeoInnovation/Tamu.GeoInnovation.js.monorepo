@@ -1,13 +1,13 @@
 import { ApiBase } from '../core/base';
 import {
-  GeocodeResult,
+  IGeocodeResult,
   IGeocoderOptions,
   TransformersMap,
   IAdvancedGeocoderFourZeroOneOptions,
   ApiResponseFormat
 } from '../core/types';
 
-export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, GeocodeResult> {
+export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, IGeocodeResult> {
   public responseType = ApiResponseFormat.Code;
 
   constructor(options: IGeocoderOptions) {

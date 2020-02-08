@@ -1,7 +1,7 @@
 /**
  * Standard callback function signature interface
  */
-export interface ICallBack<T> {
+export interface CallBack<T> {
   (err: Error, res: T): void;
 }
 
@@ -154,10 +154,21 @@ export interface ICensusIntersectionOptions {
   notStore?: boolean;
 }
 
+export interface IKNearestOptions {
+  apiKey: string;
+  version: '4.10';
+  lat: number;
+  lon: number;
+  k: number;
+  table: 'AQMDs' | 'MammographyClinics' | 'RadiationFacilities';
+  format?: 'csv' | 'tsv' | 'json' | 'xml';
+  notStore?: boolean;
+}
+
 //
 // Results
 //
-export interface GeocoderFourZeroOneResultMetadata {
+export interface IGeocoderFourZeroOneResultMetadata {
   version: string;
   TransactionId: string;
   Version: string;
@@ -169,14 +180,14 @@ export interface GeocoderFourZeroOneResultMetadata {
   Exception: string;
 }
 
-export interface GeocodeResultInputAddress {
+export interface IGeocodeResultInputAddress {
   StreetAddress: string;
   City: string;
   State: string;
   Zip: string;
 }
 
-export interface GeocodeResultOutputGeocode {
+export interface IGeocodeResultOutputGeocode {
   OutputGeocode: {
     Latitude: string;
     Longitude: string;
@@ -196,7 +207,7 @@ export interface GeocodeResultOutputGeocode {
   };
 }
 
-export interface GeocodeResultCensusValue {
+export interface IGeocodeResultCensusValue {
   CensusYear: 'NineteenNinety' | 'TwoThousand' | 'TwoThousandTen';
   CensusTimeTaken: string;
   NAACCRCensusTractCertaintyType: string;
@@ -216,7 +227,7 @@ export interface GeocodeResultCensusValue {
   ErrorMessage: string;
 }
 
-export interface GecodeResultParsedAddress {
+export interface IGecodeResultParsedAddress {
   Name: string;
   Number: string;
   NumberFractional: string;
@@ -246,7 +257,7 @@ export interface GecodeResultParsedAddress {
   ZipPlus5: string;
 }
 
-export interface GeocodeResultReferenceFeature extends GecodeResultParsedAddress {
+export interface IGeocodeResultReferenceFeature extends IGecodeResultParsedAddress {
   Area: string;
   AreaType: string;
   GeometrySRID: string;
@@ -259,20 +270,20 @@ export interface GeocodeResultReferenceFeature extends GecodeResultParsedAddress
   SecondaryIdValue: string;
 }
 
-export interface GeocodeResult extends GeocoderFourZeroOneResultMetadata {
-  InputAddress: GeocodeResultInputAddress;
-  OutputGeocodes: Array<GeocodeResultOutputGeocode>;
+export interface IGeocodeResult extends IGeocoderFourZeroOneResultMetadata {
+  InputAddress: IGeocodeResultInputAddress;
+  OutputGeocodes: Array<IGeocodeResultOutputGeocode>;
   CensusValues: Array<{
-    CensusValue1: GeocodeResultCensusValue;
-    CensusValue2: GeocodeResultCensusValue;
-    CensusValue3: GeocodeResultCensusValue;
+    CensusValue1: IGeocodeResultCensusValue;
+    CensusValue2: IGeocodeResultCensusValue;
+    CensusValue3: IGeocodeResultCensusValue;
   }>;
-  ParsedAddress: GecodeResultParsedAddress;
-  MatchedAddress: GecodeResultParsedAddress;
-  ReferenceFeature: GeocodeResultReferenceFeature;
+  ParsedAddress: IGecodeResultParsedAddress;
+  MatchedAddress: IGecodeResultParsedAddress;
+  ReferenceFeature: IGeocodeResultReferenceFeature;
 }
 
-interface ReverseGeocodeResultStreetAddress {
+interface IReverseGeocodeResultStreetAddress {
   TransactionId: string;
   Version: string;
   QueryStatusCode: string;
@@ -287,27 +298,27 @@ interface ReverseGeocodeResultStreetAddress {
   ZipPlus4: string;
 }
 
-export interface ReverseGeocodeResult {
+export interface IReverseGeocodeResult {
   TransactionId: string;
   Version: string;
   QueryStatusCode: string;
   TimeTaken: string;
   Exception: string;
   ErrorMessage: string;
-  StreetAddresses: Array<ReverseGeocodeResultStreetAddress>;
+  StreetAddresses: Array<IReverseGeocodeResultStreetAddress>;
 }
 
-export interface CensusIntersectionResult {
+export interface ICensusIntersectionResult {
   TransactionId: string;
   Version: string;
   QueryStatusCode: string;
   TimeTaken: string;
   Exception: string;
   ErrorMessage: string;
-  CensusRecords: Array<CensusIntersectionCensusRecord>;
+  CensusRecords: Array<ICensusIntersectionCensusRecord>;
 }
 
-export interface CensusIntersectionCensusRecord {
+export interface ICensusIntersectionCensusRecord {
   TransactionId: string;
   Version: string;
   QueryStatusCode: string;
@@ -328,14 +339,37 @@ export interface CensusIntersectionCensusRecord {
   CensusStateFips: string;
 }
 
+export interface IKNearestResult {
+  TransactionId: string;
+  Version: string;
+  QueryStatusCode: string;
+  TimeTaken: string;
+  Exception: string;
+  ErrorMessage: string;
+  NearestFeatures: Array<IKNearestFeatureRecord>;
+}
+
+export interface IKNearestFeatureRecord {
+  TransactionId: string;
+  Version: string;
+  QueryStatusCode: string;
+  TimeTaken: string;
+  Exception: string;
+  ErrorMessage: string;
+  FeatureId: string;
+  Latitude: string;
+  Longitude: string;
+  Distance: string;
+}
+
 //
 // Errors
 //
-export interface NormalizedGeoservicesJsonError {
+export interface INormalizedGeoservicesJsonError<T> {
   statusCode?: number | string;
   error?: string;
   message?: string;
-  response?: GeocodeResult;
+  response?: T;
 }
 
 export type NormalizedGeoservicesTextError = string;

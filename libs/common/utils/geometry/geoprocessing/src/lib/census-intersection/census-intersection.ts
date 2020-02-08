@@ -1,11 +1,11 @@
 import { ApiBase } from '../core/base';
 
-import { TransformersMap, ICensusIntersectionOptions, ApiResponseFormat } from '../core/types';
+import { TransformersMap, ICensusIntersectionOptions, ApiResponseFormat, ICensusIntersectionResult } from '../core/types';
 
 export class CensusIntersection extends ApiBase<
   TransformersMap<ICensusIntersectionOptions>,
   ICensusIntersectionOptions,
-  any
+  ICensusIntersectionResult
 > {
   public responseType = ApiResponseFormat.Text;
 

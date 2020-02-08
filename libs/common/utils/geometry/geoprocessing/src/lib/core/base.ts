@@ -4,7 +4,7 @@ import { switchMap } from 'rxjs/operators';
 
 import { GeoservicesError } from './errors';
 
-import { Transformer, TransformersMap, ICallBack, ApiResponseFormat } from './types';
+import { Transformer, TransformersMap, CallBack, ApiResponseFormat } from './types';
 
 export abstract class ApiBase<T extends TransformersMap<unknown>, U extends object, Res> {
   private _options: object;
@@ -60,8 +60,8 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
    */
   public execute(promiseOrCallback?: false): Observable<Res>;
   public execute(promiseOrCallback?: true): Promise<Res>;
-  public execute(promiseOrCallback?: ICallBack<Res>): void;
-  public execute(promiseOrCallback?: undefined | boolean | ICallBack<Res>): Observable<Res> | Promise<Res> | void {
+  public execute(promiseOrCallback?: CallBack<Res>): void;
+  public execute(promiseOrCallback?: undefined | boolean | CallBack<Res>): Observable<Res> | Promise<Res> | void {
     const request = ajax({
       url: this.settings.serviceUrl.value + this.queryString,
       method: 'GET',
@@ -144,7 +144,7 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
       ) {
         return of(response.response);
       } else {
-        return new GeoservicesError(response.response).throw();
+        return new GeoservicesError<Res>(response.response).throw();
       }
     } else if (this.responseType === ApiResponseFormat.Code) {
       if (
@@ -155,7 +155,7 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
       ) {
         return of(response.response);
       } else {
-        return new GeoservicesError(response.response).throw();
+        return new GeoservicesError<Res>(response.response).throw();
       }
     }
   }
