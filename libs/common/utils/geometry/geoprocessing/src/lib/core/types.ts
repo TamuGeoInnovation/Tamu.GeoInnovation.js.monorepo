@@ -1,9 +1,7 @@
 /**
  * Standard callback function signature interface
  */
-export interface CallBack<T> {
-  (err: Error, res: T): void;
-}
+export type CallBack<T> = (err: Error, res: T) => void;
 
 /**
  * Maps a flat interface and for every key entry,
