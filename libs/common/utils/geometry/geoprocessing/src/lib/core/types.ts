@@ -165,6 +165,17 @@ export interface IKNearestOptions {
   notStore?: boolean;
 }
 
+export interface IAddressParsingOptions {
+  apiKey: string;
+  version: '4.10';
+  nonParsedStreetAddress?: string;
+  nonParsedCity?: string;
+  nonParsedState?: string;
+  nonParsedZip?: string;
+  addressFormat?: 'USPSPublication28' | 'USCensusTiger' | 'LACounty';
+  responseFormat?: 'csv' | 'tsv' | 'xml' | 'json';
+  notStore?: boolean;
+}
 //
 // Results
 //
@@ -360,6 +371,39 @@ export interface IKNearestFeatureRecord {
   Latitude: string;
   Longitude: string;
   Distance: string;
+}
+
+export interface IAddressParsingResult {
+  TransactionId: string;
+  Version: string;
+  QueryStatusCode: string;
+  StreetAddresses: Array<IAddressParsingStreetAddressRecord>;
+}
+
+export interface IAddressParsingStreetAddressRecord {
+  Number: string;
+  NumberFractional: string;
+  PreDirectional: string;
+  PreQualifier: string;
+  PreType: string;
+  PreArticle: string;
+  StreetName: string;
+  Suffix: string;
+  PostArticle: string;
+  PostQualifier: string;
+  PostDirectional: string;
+  SuiteType: string;
+  SuiteNumber: string;
+  City: string;
+  State: string;
+  ZIP: string;
+  ZIPPlus1: string;
+  ZIPPlus2: string;
+  ZIPPlus3: string;
+  ZIPPlus4: string;
+  ZIPPlus5: string;
+  PostOfficeBoxType: string;
+  PostOfficeBoxNumber: string;
 }
 
 //
