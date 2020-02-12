@@ -108,3 +108,11 @@ section {
     padding: 1rem 0;
   }
 }
+
+// Main content container in sidebar layouts
+#root {
+  @include flex(1);
+  padding: 1.75rem 5rem;
+  box-sizing: border-box;
+  max-width: 80rem; // Limit container widths, a little over 1140px
+}

@@ -2,7 +2,8 @@
 
 :host {
   @include flexbox;
-  @include flex-direction(column);
+  @include flex-direction(row);
 
   height: inherit;
+  width: 100%;
 }

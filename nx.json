@@ -217,6 +217,12 @@
     },
     "geoservices-internal-angular": {
       "tags": []
+    },
+    "geoservices-modules-api": {
+      "tags": []
+    },
+    "geoservices-modules-internal": {
+      "tags": []
     }
   }
 }

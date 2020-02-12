@@ -5,23 +5,14 @@ import { RouterModule, Routes } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
 
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-
 import { AppComponent } from './app.component';
+
+import { GeoservicesInternalModule } from '@tamu-gisc/geoservices/modules/internal';
 
 const routes: Routes = [
   {
     path: '',
-    pathMatch: 'full',
-    redirectTo: 'account'
-  },
-  {
-    path: 'account',
-    loadChildren: () => import('./pages/account/account.module').then((m) => m.AccountModule)
-  },
-  {
-    path: 'credits',
-    loadChildren: () => import('./pages/credits/credits.module').then((m) => m.CreditsModule)
+    component: AppComponent
   }
 ];
 
@@ -32,12 +23,7 @@ WebFont.load({
 });
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
-    BrowserAnimationsModule,
-    UILayoutModule
-  ],
+  imports: [BrowserModule, RouterModule.forRoot(routes), BrowserAnimationsModule, GeoservicesInternalModule],
   declarations: [AppComponent],
   providers: [],
   bootstrap: [AppComponent]

@@ -2468,6 +2468,68 @@
           }
         }
       }
+    },
+    "geoservices-modules-api": {
+      "projectType": "library",
+      "root": "libs/geoservices/modules/api",
+      "sourceRoot": "libs/geoservices/modules/api/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/geoservices/modules/api/tsconfig.lib.json",
+              "libs/geoservices/modules/api/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/geoservices/modules/api/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/geoservices/modules/api/jest.config.js",
+            "tsConfig": "libs/geoservices/modules/api/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/modules/api/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "geoservices-modules-internal": {
+      "projectType": "library",
+      "root": "libs/geoservices/modules/internal",
+      "sourceRoot": "libs/geoservices/modules/internal/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/geoservices/modules/internal/tsconfig.lib.json",
+              "libs/geoservices/modules/internal/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/geoservices/modules/internal/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/geoservices/modules/internal/jest.config.js",
+            "tsConfig": "libs/geoservices/modules/internal/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/modules/internal/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {
