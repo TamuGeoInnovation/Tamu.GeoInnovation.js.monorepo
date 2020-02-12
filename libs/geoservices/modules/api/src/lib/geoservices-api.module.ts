@@ -9,7 +9,18 @@ import { GeoservicesApiComponent } from './geoservices-api.component';
 export const routes: Route[] = [
   {
     path: '',
-    component: GeoservicesApiComponent
+    component: GeoservicesApiComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'geocoding'
+      },
+      {
+        path: 'geocoding',
+        loadChildren: () => import('./pages/geocoding/geocoding.module').then((m) => m.GeocodingModule)
+      }
+    ]
   }
 ];
 

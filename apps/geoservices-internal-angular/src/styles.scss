@@ -14,7 +14,7 @@ html {
   height: 100%;
   width: 100%;
   font-size: 16px;
-  line-height: 1.4;
+  line-height: 1.5;
   font-family: $primary-font-family;
   color: #424242;
   background: hsla(200, 10%, 99%, 1);
@@ -41,6 +41,21 @@ h2 {
   font-size: 2rem;
 }
 
+a {
+  color: $active-color;
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
 .sidebar-menu {
   .menu-item {
     @include flexbox();
@@ -63,6 +78,12 @@ h2 {
       margin: 0 1rem;
     }
   }
+}
+
+.sidebar-section-title {
+  color: #9e9e9e;
+  font-size: 0.9rem;
+  margin-top: 0;
 }
 
 section {
