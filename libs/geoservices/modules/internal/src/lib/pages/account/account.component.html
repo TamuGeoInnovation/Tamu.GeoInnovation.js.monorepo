@@ -4,7 +4,7 @@
   <div class="section-content">
     <div class="tab-container">
       <div class="tabs">
-        <div class="tab" [routerLink]="['details']" routerLinkActive="active">Details</div>
+        <div class="tab" [routerLink]="['./']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Details</div>
         <div class="tab" [routerLink]="['security']" routerLinkActive="active">Security</div>
         <div class="tab" [routerLink]="['preferences']" routerLinkActive="active">Preferences</div>
       </div>

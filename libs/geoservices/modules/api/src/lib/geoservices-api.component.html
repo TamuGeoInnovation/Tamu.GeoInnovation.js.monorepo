@@ -1,34 +1,30 @@
 <tamu-gisc-drawer layout="relative" width="20rem">
   <div class="content">
+    <p>API Documentation</p>
     <div class="sidebar-menu">
-      <div class="menu-item" [routerLink]="['account']" routerLinkActive="active" >
+      <div class="menu-item" [routerLink]="['/account']" routerLinkActive="active">
         <span class="material-icons">person</span>
-        <p>Account</p>
+        <p>Geocoding</p>
       </div>
 
-      <div class="menu-item" [routerLink]="['credits']" routerLinkActive="active">
+      <div class="menu-item" [routerLink]="['/credits']" routerLinkActive="active">
         <span class="material-icons">card_membership</span>
-        <p>Credits</p>
+        <p>Reverse Geocoding</p>
       </div>
 
       <div class="menu-item">
         <span class="material-icons">credit_card</span>
-        <p>Billing</p>
+        <p>Address Processing</p>
       </div>
 
       <div class="menu-item">
         <span class="material-icons">memory</span>
-        <p>Processes</p>
+        <p>Census Intersection</p>
       </div>
 
       <div class="menu-item">
         <span class="material-icons">save</span>
-        <p>Databases</p>
-      </div>
-
-      <div class="menu-item">
-        <span class="material-icons">list_alt</span>
-        <p>Transactions</p>
+        <p>K-Nearest</p>
       </div>
     </div>
   </div>

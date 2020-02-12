@@ -1,1 +1,1 @@
-export * from './lib/geoservices-modules-api.module';
+export * from './lib/geoservices-api.module';

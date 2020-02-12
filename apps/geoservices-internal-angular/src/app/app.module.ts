@@ -7,12 +7,19 @@ import * as WebFont from 'webfontloader';
 
 import { AppComponent } from './app.component';
 
-import { GeoservicesInternalModule } from '@tamu-gisc/geoservices/modules/internal';
-
 const routes: Routes = [
   {
     path: '',
-    component: AppComponent
+    pathMatch: 'full',
+    redirectTo: 'internal'
+  },
+  {
+    path: 'internal',
+    loadChildren: () => import('@tamu-gisc/geoservices/modules/internal').then((m) => m.GeoservicesInternalModule)
+  },
+  {
+    path: 'api',
+    loadChildren: () => import('@tamu-gisc/geoservices/modules/api').then((m) => m.GeoservicesApiModule)
   }
 ];
 
@@ -23,7 +30,7 @@ WebFont.load({
 });
 
 @NgModule({
-  imports: [BrowserModule, RouterModule.forRoot(routes), BrowserAnimationsModule, GeoservicesInternalModule],
+  imports: [BrowserModule, RouterModule.forRoot(routes), BrowserAnimationsModule],
   declarations: [AppComponent],
   providers: [],
   bootstrap: [AppComponent]
