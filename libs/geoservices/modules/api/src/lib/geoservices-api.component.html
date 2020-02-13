@@ -1,6 +1,6 @@
-<tamu-gisc-drawer layout="relative" width="20rem">
+<tamu-gisc-drawer layout="fixed" width="20rem">
   <div class="content">
-    <p class="sidebar-section-title">API Documentation</p>
+    <p class="sidebar-section-title">Documentation</p>
     <div class="sidebar-menu">
       <div class="menu-item" [routerLink]="['geocoding']" routerLinkActive="active">
         <span class="material-icons">my_location</span>
@@ -29,6 +29,8 @@
     </div>
   </div>
 </tamu-gisc-drawer>
+
+<div style="width: 20rem;"></div>
 
 <div id="root">
   <router-outlet></router-outlet>

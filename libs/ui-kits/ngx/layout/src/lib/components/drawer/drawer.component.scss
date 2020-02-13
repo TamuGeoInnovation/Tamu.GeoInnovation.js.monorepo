@@ -56,7 +56,15 @@ $border-radius: 1.5rem;
     }
   }
 
-  &.relative {
+  &[layout='fixed'] {
+    position: fixed;
+  }
+
+  &[layout='absolute'] {
+    position: absolute;
+  }
+
+  &[layout='relative'] {
     position: relative;
   }
 }

@@ -3,6 +3,8 @@
 
 @import 'libs/sass/mixins';
 
+@import '~highlight.js/styles/atom-one-dark.css';
+
 $primary-font-family: 'Ubuntu', sans-serif;
 $secondary-font-family: 'Muli', sans-serif;
 
@@ -41,6 +43,10 @@ h2 {
   font-size: 2rem;
 }
 
+h3 {
+  font-size: 1.5rem;
+}
+
 a {
   color: $active-color;
   text-decoration: none;
@@ -54,6 +60,26 @@ a {
 p {
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+ul {
+  list-style-position: inside;
+
+  ul {
+    margin-left: 1rem;
+  }
+
+  li {
+    margin: 0.5rem 0;
+  }
+}
+
+code {
+  border-radius: 10pt;
+
+  &.hljs {
+    padding: 1rem;
+  }
 }
 
 .sidebar-menu {
@@ -84,9 +110,13 @@ p {
   color: #9e9e9e;
   font-size: 0.9rem;
   margin-top: 0;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
 }
 
 section {
+  margin: 2.5rem 0;
+
   &.internal {
     .section-header {
       margin-bottom: 2rem;
@@ -130,10 +160,113 @@ section {
   }
 }
 
+.section-header-api-version {
+  color: $inactive-color;
+}
+
 // Main content container in sidebar layouts
 #root {
   @include flex(1);
-  padding: 1.75rem 5rem;
+  margin: 0rem 5rem;
   box-sizing: border-box;
   max-width: 80rem; // Limit container widths, a little over 1140px
+}
+
+.service-endpoint {
+  @include flexbox;
+  @include flex-direction(row);
+  border: 1.5pt solid;
+  border-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  .service-verb,
+  .service-address {
+    padding: 0.75rem 1rem;
+  }
+
+  .service-address {
+    font-family: monospace;
+  }
+
+  .service-verb {
+    font-weight: 500;
+    border-right: 1.5pt;
+    border-color: inherit;
+    border-style: inherit;
+
+    &.get {
+      color: #4caf50;
+    }
+
+    &.post {
+      color: #ff9800;
+    }
+
+    &.put {
+      color: #03a9f4;
+    }
+
+    &.patch {
+      color: #9e9e9e;
+    }
+
+    &.delete {
+      color: #f44336;
+    }
+  }
+}
+
+table {
+  width: 100%;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+
+  border: 1.5pt solid lighten($inactive-color, 15%);
+  border-collapse: collapse;
+
+  td,
+  th {
+    padding: 1rem;
+  }
+
+  td {
+    border: 1.5pt solid lighten($inactive-color, 15%);
+    border-collapse: collapse;
+  }
+
+  thead {
+    tr {
+      background: #fafafa;
+    }
+
+    th {
+      text-align: left;
+    }
+  }
+
+  tbody {
+    tr {
+      &:nth-child(2n) {
+        background: #fafafa;
+      }
+
+      // Targets the div in the "Description" column of each row
+      td:nth-child(2) {
+        & > div:first-child {
+          @include flexbox();
+          @include flex-direction(row);
+          @include justify-content(space-between);
+
+          & > div:nth-child(2) {
+            white-space: nowrap;
+            margin-left: 1rem;
+          }
+        }
+      }
+    }
+  }
 }

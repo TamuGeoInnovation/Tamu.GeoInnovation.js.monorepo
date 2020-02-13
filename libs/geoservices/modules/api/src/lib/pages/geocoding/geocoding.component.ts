@@ -6,10 +6,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./geocoding.component.scss']
 })
 export class GeocodingComponent implements OnInit {
+  public gist;
 
-  constructor() { }
+  public scriptStyleImport = `<script src="https://geoservices.tamu.edu/api/5.0"></script>`;
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  public ngOnInit() {}
 }
