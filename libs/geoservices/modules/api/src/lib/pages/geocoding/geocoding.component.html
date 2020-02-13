@@ -2,10 +2,6 @@
   <h1 class="section-header">Geocoding API <span class="section-header-api-version">| 5.0.0</span></h1>
 
   <div class="section-content">
-    <p>The Texas A&M Geoservices Geocoder can be used from desktop and/or web applications via the Geocoding Web Service interfaces listed below. The only required information is the API key, which is available in your account profile page. You may want to read the technical details and the known bugs.</p>
-
-    <p>We currently provide geocoding for US addresses only.</p>
-
     <p>The following web services provide access to the Texas A&M Geoservices geocoding system. The versions below are the simplified APIs and offer reduced input parameters and output values than do the <a href="http://" target="_blank" rel="noopener noreferrer">advanced Geocoding APIs</a> which provide additional metadata about the internal working of the Texas A&M Geoservices Geocoder as well as advanced options for requesting specific computational options, reference data sources, output hierarchies, etc. (i.e., all the <a href="http://" target="_blank" rel="noopener noreferrer">science under the hood</a>).</p>
 
     <p>Most people probably don't need or care about the internal workings of geocoding systems, but they are provided in the advanced APIs in hopes that more people start to! If you are brave, <a href="http://" target="_blank" rel="noopener noreferrer">click here to view the advanced versions of the API's</a>.</p>
@@ -59,7 +55,7 @@
         <td>
           <div>
             <div>Your <a href="http://" target="_blank" rel="noopener noreferrer">account</a> API key.</div>
-            <div><a href="http://" target="_blank" rel="noopener noreferrer">More details</a></div>
+            <div><a href="#geocoding-api-param">More details</a></div>
           </div>
         </td>
         <td></td>
@@ -99,7 +95,7 @@
       </tr>
 
       <tr>
-        <td>texas</td>
+        <td>state</td>
         <td>
           <div>
             <div>State abbreviation code</div>
@@ -205,7 +201,147 @@
 <section>
   <h2>Parameter Details</h2>
 
-  <div></div>
+  <div class="parameter-detail-container">
+    <div class="parameter-detail-header" id="geocoding-api-param">
+      <span class="material-icons" title="Link to here">link</span>
+      <h3>apiKey</h3>
+      <div class="parameter-detail-header-badges">
+        <div class="parameter-badge">Required</div>
+      </div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 1.0</p>
+
+      <p>Every geocoding API call requires an accompanying API key and is unique for every registered user on the platform. Each request will deduct one credit from your account balance.</p>
+
+      <p>Find your API key in your <a href="http://" target="_blank" rel="noopener noreferrer">account settings</a>. Don't have an account? <a href="http://" target="_blank" rel="noopener noreferrer">Making</a> an account is fast, easy, and free.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container">
+    <div class="parameter-detail-header">
+      <span class="material-icons" title="Link to here">link</span>
+      <h3>version</h3>
+      <div class="parameter-detail-header-badges">
+        <div class="parameter-badge">Required</div>
+      </div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 1.0</p>
+      <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a geocoding request.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container">
+    <div class="parameter-detail-header">
+      <span class="material-icons" title="Link to here">link</span>
+      <h3>streetAddress</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 1.0</p>
+      <p>Non-parsed street address.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container">
+    <div class="parameter-detail-header">
+      <span class="material-icons" title="Link to here">link</span>
+      <h3>city</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 1.0</p>
+      <p>City value, case-insensitive. Examples:</p>
+      <ul>
+        <li>Los Angeles</li>
+        <li>San Francisco</li>
+        <li>New York</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container">
+    <div class="parameter-detail-header">
+      <span class="material-icons" title="Link to here">link</span>
+      <h3>state</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 1.0</p>
+      <p>Two-letter U.S. state code, case-insensitive. Examples:</p>
+      <ul>
+        <li>CA</li>
+        <li>TX</li>
+        <li>NY</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container">
+    <div class="parameter-detail-header">
+      <span class="material-icons" title="Link to here">link</span>
+      <h3>zip</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 1.0</p>
+      <p>Numeric zip code. Does not support Zip + 4. Examples:</p>
+      <ul>
+        <li>90210</li>
+        <li>90007</li>
+        <li>77840</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container">
+    <div class="parameter-detail-header">
+      <span class="material-icons" title="Link to here">link</span>
+      <h3>allowTies</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 4.0</p>
+      <p>Flag to indicate to return ties as valid results or handle using the tieBreakingStrategy parameter. Ties are allowed by default. if <code>false</code> is provided, a valid strategy for <code>tieBreakingStrategy</code> must also be provided.</p>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container">
+    <div class="parameter-detail-header">
+      <span class="material-icons" title="Link to here">link</span>
+      <h3>tieBreakingStrategy</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 4.0</p>
+      <p>The name of the tie-breaking strategy to use when ties are found. Supported values:</p>
+      <ul>
+        <li>
+          flipACoin
+          <ul>
+            <li>
+              Choose and return one of the ties at random.
+            </li>
+          </ul>
+        </li>
+        <li>
+          revertToHierarchy
+          <ul>
+            <li>Fail on a tie and match to the next level of the geographic hierarchy - parcel, then street, then ZIP, then city, etc.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
 
   <div>
     <!-- <pre [gist]="'de9decbcd2539d5ba399aedc598bcaa6'" (gistLoad)="gist = $event">

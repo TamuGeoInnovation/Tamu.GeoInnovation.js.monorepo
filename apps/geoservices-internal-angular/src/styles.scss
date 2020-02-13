@@ -27,6 +27,16 @@ body {
   width: 100%;
 }
 
+section {
+  margin: 2.5rem 0;
+
+  &.internal {
+    .section-header {
+      margin-bottom: 2rem;
+    }
+  }
+}
+
 h1,
 h2,
 h3,
@@ -63,11 +73,8 @@ p {
 }
 
 ul {
+  margin-left: 1rem;
   list-style-position: inside;
-
-  ul {
-    margin-left: 1rem;
-  }
 
   li {
     margin: 0.5rem 0;
@@ -79,6 +86,57 @@ code {
 
   &.hljs {
     padding: 1rem;
+  }
+}
+
+table {
+  width: 100%;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+
+  border: 1.5pt solid lighten($inactive-color, 15%);
+  border-collapse: collapse;
+
+  td,
+  th {
+    padding: 1rem;
+  }
+
+  td {
+    border: 1.5pt solid lighten($inactive-color, 15%);
+    border-collapse: collapse;
+  }
+
+  thead {
+    tr {
+      background: #fafafa;
+    }
+
+    th {
+      text-align: left;
+    }
+  }
+
+  tbody {
+    tr {
+      &:nth-child(2n) {
+        background: #fafafa;
+      }
+
+      // Targets the div in the "Description" column of each row
+      td:nth-child(2) {
+        & > div:first-child {
+          @include flexbox();
+          @include flex-direction(row);
+          @include justify-content(space-between);
+
+          & > div:nth-child(2) {
+            white-space: nowrap;
+            margin-left: 1rem;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -112,16 +170,6 @@ code {
   margin-top: 0;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
-}
-
-section {
-  margin: 2.5rem 0;
-
-  &.internal {
-    .section-header {
-      margin-bottom: 2rem;
-    }
-  }
 }
 
 .tab-container {
@@ -220,53 +268,56 @@ section {
   }
 }
 
-table {
-  width: 100%;
-  margin: 1rem 0;
-  font-size: 0.95rem;
+.parameter-detail-container {
+  margin: 0.75rem 0 2rem 0;
+  .parameter-detail-header {
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+    border-bottom: 1.5pt solid #e0e0e0;
+    padding-bottom: 0.5rem;
 
-  border: 1.5pt solid lighten($inactive-color, 15%);
-  border-collapse: collapse;
-
-  td,
-  th {
-    padding: 1rem;
-  }
-
-  td {
-    border: 1.5pt solid lighten($inactive-color, 15%);
-    border-collapse: collapse;
-  }
-
-  thead {
-    tr {
-      background: #fafafa;
+    h3,
+    span,
+    .parameter-detail-header-badges {
+      margin-right: 0.4rem;
+      margin-left: 0.4rem;
     }
 
-    th {
-      text-align: left;
-    }
-  }
+    span {
+      cursor: pointer;
+      color: $inactive-color;
 
-  tbody {
-    tr {
-      &:nth-child(2n) {
-        background: #fafafa;
+      &:hover {
+        color: $state-transition-color;
       }
+    }
 
-      // Targets the div in the "Description" column of each row
-      td:nth-child(2) {
-        & > div:first-child {
-          @include flexbox();
-          @include flex-direction(row);
-          @include justify-content(space-between);
+    .parameter-detail-header-badges {
+      @include flexbox();
+      @include flex-direction(row);
+      @include align-items(center);
 
-          & > div:nth-child(2) {
-            white-space: nowrap;
-            margin-left: 1rem;
-          }
+      .parameter-badge {
+        background: $active-color;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 3pt;
+        font-size: 0.75rem;
+        margin: 0 0.3rem;
+
+        &:first-child {
+          margin-left: 0;
+        }
+
+        &:last-child {
+          margin-right: 0;
         }
       }
     }
+  }
+
+  .parameter-detail-content {
+    margin-left: 2rem;
   }
 }
