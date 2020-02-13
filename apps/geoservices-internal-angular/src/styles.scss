@@ -82,10 +82,16 @@ ul {
 }
 
 code {
-  border-radius: 10pt;
+  border-radius: 5pt;
+  background: $inactive-color;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  margin: 0 0.1rem;
+  font-size: 0.9rem;
 
   &.hljs {
     padding: 1rem;
+    margin: initial;
   }
 }
 
@@ -140,6 +146,36 @@ table {
   }
 }
 
+.material-icons {
+  color: #bdbdbd;
+  font-size: 1.4rem;
+  @include transition(color 0.3s);
+
+  &.alt {
+    color: $inactive-color;
+  }
+
+  &.action {
+    cursor: pointer;
+
+    &:hover {
+      color: #616161;
+    }
+
+    &.alt {
+      &:hover {
+        color: $active-color;
+      }
+    }
+
+    &.error {
+      &:hover {
+        color: hsla(10, 100%, 59%, 1);
+      }
+    }
+  }
+}
+
 .sidebar-menu {
   .menu-item {
     @include flexbox();
@@ -156,6 +192,10 @@ table {
     &.active {
       color: $active-color;
       font-weight: 500;
+
+      .material-icons {
+        color: inherit;
+      }
     }
 
     p {
@@ -237,10 +277,29 @@ table {
   }
 
   .service-address {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(center);
+    @include align-items(center);
+
     font-family: monospace;
+
+    .url-actions {
+      display: inherit;
+      @include flex-direction(row);
+
+      span {
+        margin: 0 0.3rem;
+      }
+    }
   }
 
   .service-verb {
+    @include flexbox();
+    @include flex-direction(column);
+    @include justify-content(center);
+    @include align-items(center);
+
     font-weight: 500;
     border-right: 1.5pt;
     border-color: inherit;

@@ -1,5 +1,7 @@
 <section class="internal">
-  <h1 class="section-header">Geocoding API <span class="section-header-api-version">| 5.0.0</span></h1>
+  <h1 class="section-header">
+    Geocoding API <span class="section-header-api-version">| {{ apiVersion }}</span>
+  </h1>
 
   <div class="section-content">
     <p>The following web services provide access to the Texas A&M Geoservices geocoding system. The versions below are the simplified APIs and offer reduced input parameters and output values than do the <a href="http://" target="_blank" rel="noopener noreferrer">advanced Geocoding APIs</a> which provide additional metadata about the internal working of the Texas A&M Geoservices Geocoder as well as advanced options for requesting specific computational options, reference data sources, output hierarchies, etc. (i.e., all the <a href="http://" target="_blank" rel="noopener noreferrer">science under the hood</a>).</p>
@@ -8,7 +10,7 @@
 
     <div class="service-endpoint">
       <div class="service-verb get">GET</div>
-      <div class="service-address">https://geoservices.tamu.edu/api/geocode/v5</div>
+      <div class="service-address">{{ url }}</div>
     </div>
 
     <p><a href="http://" target="_blank" rel="noopener noreferrer">Looking for an older version?</a></p>
@@ -55,7 +57,7 @@
         <td>
           <div>
             <div>Your <a href="http://" target="_blank" rel="noopener noreferrer">account</a> API key.</div>
-            <div><a href="#geocoding-api-param">More details</a></div>
+            <div><a href="./#geocoding-api-param">More details</a></div>
           </div>
         </td>
         <td></td>
@@ -211,11 +213,26 @@
     </div>
 
     <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 1.0</p>
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
 
       <p>Every geocoding API call requires an accompanying API key and is unique for every registered user on the platform. Each request will deduct one credit from your account balance.</p>
 
       <p>Find your API key in your <a href="http://" target="_blank" rel="noopener noreferrer">account settings</a>. Don't have an account? <a href="http://" target="_blank" rel="noopener noreferrer">Making</a> an account is fast, easy, and free.</p>
+
+      <p>Example URL:</p>
+
+      <div class="service-endpoint">
+        <div class="service-verb get">GET</div>
+        <div class="service-address">
+          <div class="url">
+            {{ url }}?<strong>apiKey={{ apiKey }}&</strong>version={{ apiVersion }}&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json
+          </div>
+          <div class="url-actions">
+            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
+            <span class="material-icons action alt" title="Run">play_circle_outline</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -229,8 +246,24 @@
     </div>
 
     <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 1.0</p>
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>Although the base version of the API is 5, as we continue to improve our processes we will release minor changes or patches to the base API. This parameter will determines which specific version of the API to use for a geocoding request.</p>
+
+      <p>Example URL:</p>
+
+      <div class="service-endpoint">
+        <div class="service-verb get">GET</div>
+        <div class="service-address">
+          <div class="url">
+            {{ url }}?apiKey={{ apiKey }}&<strong>version={{ apiVersion }}</strong
+            >&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json
+          </div>
+          <div class="url-actions">
+            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
+            <span class="material-icons action alt" title="Run">play_circle_outline</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -242,8 +275,21 @@
     </div>
 
     <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 1.0</p>
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>Non-parsed street address.</p>
+
+      <p>Example URL:</p>
+
+      <div class="service-endpoint">
+        <div class="service-verb get">GET</div>
+        <div class="service-address">
+          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>streetAddress=9355 Burton Way</strong>&city=Beverly Hills&state=ca&zip=90210&format=json</div>
+          <div class="url-actions">
+            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
+            <span class="material-icons action alt" title="Run">play_circle_outline</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -255,13 +301,26 @@
     </div>
 
     <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 1.0</p>
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>City value, case-insensitive. Examples:</p>
       <ul>
         <li>Los Angeles</li>
         <li>San Francisco</li>
         <li>New York</li>
       </ul>
+
+      <p>Example URL:</p>
+
+      <div class="service-endpoint">
+        <div class="service-verb get">GET</div>
+        <div class="service-address">
+          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>city=Beverly Hills</strong>&streetAddress=9355 Burton Way&state=ca&zip=90210&format=json</div>
+          <div class="url-actions">
+            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&city=Beverly Hills&streetAddress=9355 Burton Way&state=ca&zip=90210&format=json'">filter_none</span>
+            <span class="material-icons action alt" title="Run">play_circle_outline</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -273,13 +332,26 @@
     </div>
 
     <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 1.0</p>
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>Two-letter U.S. state code, case-insensitive. Examples:</p>
       <ul>
         <li>CA</li>
         <li>TX</li>
         <li>NY</li>
       </ul>
+
+      <p>Example URL:</p>
+
+      <div class="service-endpoint">
+        <div class="service-verb get">GET</div>
+        <div class="service-address">
+          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>state=ca</strong>&streetAddress=9355 Burton Way&city=Beverly Hills&zip=90210&format=json</div>
+          <div class="url-actions">
+            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&state=ca&streetAddress=9355 Burton Way&city=Beverly Hills&zip=90210&format=json'">filter_none</span>
+            <span class="material-icons action alt" title="Run">play_circle_outline</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -291,13 +363,26 @@
     </div>
 
     <div class="parameter-detail-content">
-      <p class="parameter-detail-content-version">Since API Version: 1.0</p>
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
       <p>Numeric zip code. Does not support Zip + 4. Examples:</p>
       <ul>
         <li>90210</li>
         <li>90007</li>
         <li>77840</li>
       </ul>
+
+      <p>Example URL:</p>
+
+      <div class="service-endpoint">
+        <div class="service-verb get">GET</div>
+        <div class="service-address">
+          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>zip=90210</strong>&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&format=json</div>
+          <div class="url-actions">
+            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + 'apiKey=' + apiKey + '&version=' + apiVersion + '&zip=90210&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&format=json'">filter_none</span>
+            <span class="material-icons action alt" title="Run">play_circle_outline</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -311,6 +396,19 @@
     <div class="parameter-detail-content">
       <p class="parameter-detail-content-version">Since API Version: 4.0</p>
       <p>Flag to indicate to return ties as valid results or handle using the tieBreakingStrategy parameter. Ties are allowed by default. if <code>false</code> is provided, a valid strategy for <code>tieBreakingStrategy</code> must also be provided.</p>
+
+      <p>Example URL:</p>
+
+      <div class="service-endpoint">
+        <div class="service-verb get">GET</div>
+        <div class="service-address">
+          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>allowTies=true</strong>&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json</div>
+          <div class="url-actions">
+            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + 'apiKey=' + apiKey + '&version=' + apiVersion + '&allowTies=true&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
+            <span class="material-icons action alt" title="Run">play_circle_outline</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -340,6 +438,141 @@
           </ul>
         </li>
       </ul>
+
+      <p>Example URL:</p>
+
+      <div class="service-endpoint">
+        <div class="service-verb get">GET</div>
+        <div class="service-address">
+          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>tieBreakingStrategy=flipACoin</strong>&allowTies=false&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json</div>
+          <div class="url-actions">
+            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&tieBreakingStrategy=flipACoin&allowTies=false&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
+            <span class="material-icons action alt" title="Run">play_circle_outline</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container">
+    <div class="parameter-detail-header">
+      <span class="material-icons" title="Link to here">link</span>
+      <h3>census</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 2.93</p>
+      <p>Describes whether census variables should be calculated for the requested geocode.</p>
+
+      <p>Example URL:</p>
+
+      <div class="service-endpoint">
+        <div class="service-verb get">GET</div>
+        <div class="service-address">
+          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>census=false</strong>&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json</div>
+          <div class="url-actions">
+            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&census=false&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
+            <span class="material-icons action alt" title="Run">play_circle_outline</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container">
+    <div class="parameter-detail-header">
+      <span class="material-icons" title="Link to here">link</span>
+      <h3>censusYear</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 2.96</p>
+      <p>Pipe-separated list of supported census data years to intersect with. Available years include:</p>
+
+      <ul>
+        <li>1990</li>
+        <li>2000</li>
+        <li>2010</li>
+        <li>allAvailable</li>
+      </ul>
+
+      <p>The value <code>allAvailable</code> is a shorthand for all of the supported years.</p>
+
+      <p>Example URL:</p>
+
+      <div class="service-endpoint">
+        <div class="service-verb get">GET</div>
+        <div class="service-address">
+          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>censusYear=1990|2000</strong>&census=true&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json</div>
+          <div class="url-actions">
+            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&censusYear=1990|2000&census=true&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
+            <span class="material-icons action alt" title="Run">play_circle_outline</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container">
+    <div class="parameter-detail-header">
+      <span class="material-icons" title="Link to here">link</span>
+      <h3>format</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 2.0</p>
+      <p>Value describing the geocode response format. Supported formats include:</p>
+
+      <ul>
+        <li>csv</li>
+        <li>tsv</li>
+        <li>xml</li>
+        <li>json</li>
+      </ul>
+
+      <p>JSON is response type is only available in API version 2.96 and newer.</p>
+
+      <p>Example URL:</p>
+
+      <div class="service-endpoint">
+        <div class="service-verb get">GET</div>
+        <div class="service-address">
+          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>format=json</strong>&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210</div>
+          <div class="url-actions">
+            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&format=json&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210'">filter_none</span>
+            <span class="material-icons action alt" title="Run">play_circle_outline</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="parameter-detail-container">
+    <div class="parameter-detail-header">
+      <span class="material-icons" title="Link to here">link</span>
+      <h3>notStore</h3>
+      <div class="parameter-detail-header-badges"></div>
+    </div>
+
+    <div class="parameter-detail-content">
+      <p class="parameter-detail-content-version">Since API Version: 2.8</p>
+      <p>Describes if transaction details should not be stored in your account history.</p>
+
+      <p>Example URL:</p>
+
+      <div class="service-endpoint">
+        <div class="service-verb get">GET</div>
+        <div class="service-address">
+          <div class="url">{{ url }}?apiKey={{ apiKey }}&version={{ apiVersion }}&<strong>notStore=false</strong>&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json</div>
+          <div class="url-actions">
+            <span class="material-icons action alt" title="Copy URL" clipboard-copy [text]="url + '?apiKey=' + apiKey + '&version=' + apiVersion + '&notStore=false&streetAddress=9355 Burton Way&city=Beverly Hills&state=ca&zip=90210&format=json'">filter_none</span>
+            <span class="material-icons action alt" title="Run">play_circle_outline</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
