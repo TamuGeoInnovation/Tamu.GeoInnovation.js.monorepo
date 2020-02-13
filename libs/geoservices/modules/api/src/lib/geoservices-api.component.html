@@ -1,10 +1,18 @@
 <tamu-gisc-drawer layout="fixed" width="20rem">
   <div class="content">
-    <p class="sidebar-section-title">Documentation</p>
+    <p class="sidebar-section-title">API Documentation</p>
     <div class="sidebar-menu">
       <div class="menu-item" [routerLink]="['geocoding']" routerLinkActive="active">
         <span class="material-icons">my_location</span>
-        <p>Geocoding</p>
+        <ul>
+          <li>Geocoding</li>
+          <ul>
+            <li>Quick Start</li>
+            <li>Parameters</li>
+            <li>Response</li>
+            <li>Libraries</li>
+          </ul>
+        </ul>
       </div>
 
       <div class="menu-item" [routerLink]="['reverse-geocoding']" routerLinkActive="active">

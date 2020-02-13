@@ -182,24 +182,73 @@ table {
     @include flex-direction(row);
     font-size: 1.05rem;
     color: $inactive-color;
-    padding: 0.75rem 0.5rem;
+    padding: 0.75rem 0.5rem 0rem 0.5rem;
     margin: 0.5rem 0;
     cursor: pointer;
+
+    // Have material icons inherit the color from the sidebar menu item,
+    // instead of using global styles which are OK, but not 100% in line
+    // with the application color scheme.
+    .material-icons {
+      color: inherit;
+    }
 
     &:hover {
       color: $state-transition-color;
     }
+
     &.active {
       color: $active-color;
       font-weight: 500;
-
-      .material-icons {
-        color: inherit;
-      }
     }
 
-    p {
+    p,
+    li {
       margin: 0 1rem;
+    }
+
+    ul {
+      list-style: none;
+      margin-left: 0;
+
+      li:first-child {
+        margin-bottom: 0.5rem;
+      }
+
+      ul {
+        margin-left: 0.5rem;
+
+        li:first-child {
+          margin-bottom: 0;
+        }
+
+        li {
+          padding: 0.4rem 0;
+          font-weight: 400;
+          font-size: 0.95rem;
+          color: $inactive-color;
+          position: relative;
+
+          &::before {
+            content: '';
+            height: 100%;
+            top: 0;
+            left: -0.9rem;
+            width: 2pt;
+            background: transparent;
+            position: absolute;
+            @include transition(background 0.25s);
+          }
+
+          &:hover {
+            color: $state-transition-color;
+
+            &::before {
+              background: $state-transition-color;
+            }
+          }
+        }
+      }
     }
   }
 }
