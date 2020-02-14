@@ -2034,6 +2034,31 @@
         }
       }
     },
+    "common-utils-geometry-geoprocessing": {
+      "root": "libs/common/utils/geometry/geoprocessing",
+      "sourceRoot": "libs/common/utils/geometry/geoprocessing/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/common/utils/geometry/geoprocessing/tsconfig.lib.json",
+              "libs/common/utils/geometry/geoprocessing/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/geometry/geoprocessing/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/geometry/geoprocessing/jest.config.js",
+            "tsConfig": "libs/common/utils/geometry/geoprocessing/tsconfig.spec.json"
+          }
+        }
+      }
+    },
     "cpa-angular": {
       "projectType": "application",
       "schematics": {

@@ -188,6 +188,9 @@
     "maps-feature-coordinates": {
       "tags": []
     },
+    "common-utils-geometry-geoprocessing": {
+      "tags": []
+    },
     "cpa-angular-e2e": {
       "tags": []
     },
