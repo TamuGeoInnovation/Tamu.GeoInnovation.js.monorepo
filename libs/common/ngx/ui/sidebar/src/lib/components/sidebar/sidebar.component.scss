@@ -40,7 +40,7 @@
     }
   }
 
-  // Poosition the tabs on the let-side of the container
+  // Position the tabs on the let-side of the container
   &.left {
     left: 0;
     @include transform(translateX(-100%));

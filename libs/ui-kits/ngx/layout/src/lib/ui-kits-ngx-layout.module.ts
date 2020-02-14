@@ -12,6 +12,9 @@ import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { TooltipTriggerComponent } from './components/tooltip-trigger/tooltip-trigger.component';
 import { DrawerComponent } from './components/drawer/drawer.component';
 
+import { TabsComponent } from './components/tabs/tabs.component';
+import { TabComponent } from './components/tabs/tab/tab.component';
+
 @NgModule({
   imports: [CommonModule],
   declarations: [
@@ -21,7 +24,9 @@ import { DrawerComponent } from './components/drawer/drawer.component';
     TooltipComponent,
     TooltipTriggerComponent,
     DrawerComponent,
-    AbstractSlidingDrawerComponent
+    AbstractSlidingDrawerComponent,
+    TabsComponent,
+    TabComponent
   ],
   exports: [
     DrawerComponent,
@@ -29,7 +34,9 @@ import { DrawerComponent } from './components/drawer/drawer.component';
     AccordionHeaderComponent,
     AccordionContentComponent,
     TooltipComponent,
-    TooltipTriggerComponent
+    TooltipTriggerComponent,
+    TabsComponent,
+    TabComponent
   ]
 })
 export class UILayoutModule {}

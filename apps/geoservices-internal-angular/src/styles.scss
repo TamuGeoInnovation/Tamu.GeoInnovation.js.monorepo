@@ -263,7 +263,9 @@ table {
   text-transform: uppercase;
 }
 
-.tab-container {
+.tab-container,
+tamu-gisc-tabs {
+  margin: 1rem 0;
   .tabs {
     @include flexbox();
     @include flex-direction(row);
@@ -280,8 +282,10 @@ table {
     }
 
     .tab {
-      padding: 0.25rem 1.5rem;
       font-size: 1.05rem;
+      padding: 0.25rem 1.5rem;
+      margin-top: 0;
+      margin-bottom: 0;
       cursor: pointer;
       @include no-select;
 
