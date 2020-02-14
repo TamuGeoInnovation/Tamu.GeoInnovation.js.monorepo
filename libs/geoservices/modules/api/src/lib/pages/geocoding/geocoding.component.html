@@ -6,7 +6,7 @@
   <div class="section-content">
     <p>The following web services provide access to the Texas A&M Geoservices geocoding system. The versions below are the simplified APIs and offer reduced input parameters and output values than do the <a href="http://" target="_blank" rel="noopener noreferrer">advanced Geocoding APIs</a> which provide additional metadata about the internal working of the Texas A&M Geoservices Geocoder as well as advanced options for requesting specific computational options, reference data sources, output hierarchies, etc. (i.e., all the <a href="http://" target="_blank" rel="noopener noreferrer">science under the hood</a>).</p>
 
-    <p>Most people probably don't need or care about the internal workings of geocoding systems, but they are provided in the advanced APIs in hopes that more people start to! If you are brave, <a href="http://" target="_blank" rel="noopener noreferrer">click here to view the advanced versions of the API's</a>.</p>
+    <p>Most people probably don't need or care about the internal workings of geocoding systems, but they are provided in the advanced APIs in hopes that more people start to! If you are brave, <a href="http://" target="_blank" rel="noopener noreferrer"> here to view the advanced versions of the API's</a>.</p>
 
     <div class="service-endpoint">
       <div class="service-verb get">GET</div>
@@ -57,7 +57,7 @@
         <td>
           <div>
             <div>Your <a href="http://" target="_blank" rel="noopener noreferrer">account</a> API key.</div>
-            <div><a href="./#geocoding-api-param">More details</a></div>
+            <div class="faux-link" [scrollTo]="'#apiKey'">More details</div>
           </div>
         </td>
         <td></td>
@@ -68,10 +68,10 @@
         <td>
           <div>
             <div>Target API version.</div>
-            <div><a href="http://" target="_blank" rel="noopener noreferrer">More details</a></div>
+            <div class="faux-link" [scrollTo]="'#version'">More details</div>
           </div>
         </td>
-        <td>5</td>
+        <td>{{ apiVersion }}</td>
       </tr>
 
       <tr>
@@ -79,7 +79,7 @@
         <td>
           <div>
             <div>Non-parsed street address value.</div>
-            <div><a href="http://" target="_blank" rel="noopener noreferrer">More details</a></div>
+            <div class="faux-link" [scrollTo]="'#streetAddress'">More details</div>
           </div>
         </td>
         <td></td>
@@ -90,7 +90,7 @@
         <td>
           <div>
             <div>City value.</div>
-            <div><a href="http://" target="_blank" rel="noopener noreferrer">More details</a></div>
+            <div class="faux-link" [scrollTo]="'#city'">More details</div>
           </div>
         </td>
         <td></td>
@@ -101,7 +101,7 @@
         <td>
           <div>
             <div>State abbreviation code</div>
-            <div><a href="http://" target="_blank" rel="noopener noreferrer">More details</a></div>
+            <div class="faux-link" [scrollTo]="'#state'">More details</div>
           </div>
         </td>
         <td></td>
@@ -112,7 +112,7 @@
         <td>
           <div>
             <div>Zip code number.</div>
-            <div><a href="http://" target="_blank" rel="noopener noreferrer">More details</a></div>
+            <div class="faux-link" [scrollTo]="'#zip'">More details</div>
           </div>
         </td>
         <td></td>
@@ -123,7 +123,7 @@
         <td>
           <div>
             <div>Flag indicating to return ties as valid results or handle using the <code>tieBreakingStrategy</code> parameter.</div>
-            <div><a href="http://" target="_blank" rel="noopener noreferrer">More details</a></div>
+            <div class="faux-link" [scrollTo]="'#allowTies'">More details</div>
           </div>
         </td>
         <td>false</td>
@@ -134,7 +134,7 @@
         <td>
           <div>
             <div>Describes the strategy used to break ties and not return ties as valid results. Requires <code>allowTies</code> to be true.</div>
-            <div><a href="http://" target="_blank" rel="noopener noreferrer">More details</a></div>
+            <div class="faux-link" [scrollTo]="'#tieBreakingStrategy'">More details</div>
           </div>
         </td>
         <td>flipACoin</td>
@@ -145,7 +145,7 @@
         <td>
           <div>
             <div>Describes whether or not census variables will be calculated for the geocode.</div>
-            <div><a href="http://" target="_blank" rel="noopener noreferrer">More details</a></div>
+            <div class="faux-link" [scrollTo]="'#census'">More details</div>
           </div>
         </td>
         <td>false</td>
@@ -156,7 +156,7 @@
         <td>
           <div>
             <div>Year or list of years of census data to intersect with.</div>
-            <div><a href="http://" target="_blank" rel="noopener noreferrer">More details</a></div>
+            <div class="faux-link" [scrollTo]="'#censusYear'">More details</div>
           </div>
         </td>
         <td></td>
@@ -167,7 +167,7 @@
         <td>
           <div>
             <div>Response return format.</div>
-            <div><a href="http://" target="_blank" rel="noopener noreferrer">More details</a></div>
+            <div class="faux-link" [scrollTo]="'#format'">More details</div>
           </div>
         </td>
         <td>json</td>
@@ -178,7 +178,7 @@
         <td>
           <div>
             <div>Describes whether or not to include column headers for text (cvs/tsv) output formats.</div>
-            <div><a href="http://" target="_blank" rel="noopener noreferrer">More details</a></div>
+            <div class="faux-link" [scrollTo]="'#includeHeader'">More details</div>
           </div>
         </td>
         <td>false</td>
@@ -189,7 +189,7 @@
         <td>
           <div>
             <div>Describes whether the geocode transaction details will be stored in your account.</div>
-            <div><a href="http://" target="_blank" rel="noopener noreferrer">More details</a></div>
+            <div class="faux-link" [scrollTo]="'#notStore'">More details</div>
           </div>
         </td>
         <td>false</td>
@@ -203,8 +203,8 @@
 <section>
   <h2>Parameter Details</h2>
 
-  <div class="parameter-detail-container">
-    <div class="parameter-detail-header" id="geocoding-api-param">
+  <div class="parameter-detail-container" id="apiKey">
+    <div class="parameter-detail-header">
       <span class="material-icons" title="Link to here">link</span>
       <h3>apiKey</h3>
       <div class="parameter-detail-header-badges">
@@ -239,7 +239,7 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container">
+  <div class="parameter-detail-container" id="version">
     <div class="parameter-detail-header">
       <span class="material-icons" title="Link to here">link</span>
       <h3>version</h3>
@@ -270,7 +270,7 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container">
+  <div class="parameter-detail-container" id="streetAddress">
     <div class="parameter-detail-header">
       <span class="material-icons" title="Link to here">link</span>
       <h3>streetAddress</h3>
@@ -296,7 +296,7 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container">
+  <div class="parameter-detail-container" id="city">
     <div class="parameter-detail-header">
       <span class="material-icons" title="Link to here">link</span>
       <h3>city</h3>
@@ -327,7 +327,7 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container">
+  <div class="parameter-detail-container" id="state">
     <div class="parameter-detail-header">
       <span class="material-icons" title="Link to here">link</span>
       <h3>state</h3>
@@ -358,7 +358,7 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container">
+  <div class="parameter-detail-container" id="zip">
     <div class="parameter-detail-header">
       <span class="material-icons" title="Link to here">link</span>
       <h3>zip</h3>
@@ -389,7 +389,7 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container">
+  <div class="parameter-detail-container" id="allowTies">
     <div class="parameter-detail-header">
       <span class="material-icons" title="Link to here">link</span>
       <h3>allowTies</h3>
@@ -415,7 +415,7 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container">
+  <div class="parameter-detail-container" id="tieBreakingStrategy">
     <div class="parameter-detail-header">
       <span class="material-icons" title="Link to here">link</span>
       <h3>tieBreakingStrategy</h3>
@@ -457,7 +457,7 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container">
+  <div class="parameter-detail-container" id="census">
     <div class="parameter-detail-header">
       <span class="material-icons" title="Link to here">link</span>
       <h3>census</h3>
@@ -483,7 +483,7 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container">
+  <div class="parameter-detail-container" id="censusYear">
     <div class="parameter-detail-header">
       <span class="material-icons" title="Link to here">link</span>
       <h3>censusYear</h3>
@@ -518,7 +518,7 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container">
+  <div class="parameter-detail-container" id="format">
     <div class="parameter-detail-header">
       <span class="material-icons" title="Link to here">link</span>
       <h3>format</h3>
@@ -553,7 +553,7 @@
     </div>
   </div>
 
-  <div class="parameter-detail-container">
+  <div class="parameter-detail-container" id="notStore">
     <div class="parameter-detail-header">
       <span class="material-icons" title="Link to here">link</span>
       <h3>notStore</h3>

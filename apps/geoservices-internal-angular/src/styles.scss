@@ -57,10 +57,12 @@ h3 {
   font-size: 1.5rem;
 }
 
-a {
+a,
+.faux-link {
   color: $active-color;
   text-decoration: none;
   font-weight: 500;
+  cursor: pointer;
 
   &:hover {
     text-decoration: underline;

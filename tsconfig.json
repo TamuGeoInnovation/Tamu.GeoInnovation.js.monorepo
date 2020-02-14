@@ -71,7 +71,8 @@
       "@tamu-gisc/cpa/common/entities": ["libs/cpa/common/entities/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/breadcrumb": ["libs/ui-kits/ngx/navigation/breadcrumb/src/index.ts"],
       "@tamu-gisc/geoservices/modules/api": ["libs/geoservices/modules/api/src/index.ts"],
-      "@tamu-gisc/geoservices/modules/internal": ["libs/geoservices/modules/internal/src/index.ts"]
+      "@tamu-gisc/geoservices/modules/internal": ["libs/geoservices/modules/internal/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/interactions/scroll-to": ["libs/ui-kits/ngx/interactions/scroll-to/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

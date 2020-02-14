@@ -223,6 +223,9 @@
     },
     "geoservices-modules-internal": {
       "tags": []
+    },
+    "ui-kits-ngx-interactions-scroll-to": {
+      "tags": []
     }
   }
 }
