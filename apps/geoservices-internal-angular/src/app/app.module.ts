@@ -46,7 +46,8 @@ export function getHighlightLanguages() {
     {
       provide: HIGHLIGHT_OPTIONS,
       useValue: {
-        languages: getHighlightLanguages()
+        languages: getHighlightLanguages(),
+        lineNumbers: true
       }
     }
   ],

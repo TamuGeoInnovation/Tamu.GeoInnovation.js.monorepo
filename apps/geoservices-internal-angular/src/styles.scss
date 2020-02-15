@@ -98,52 +98,62 @@ code {
 }
 
 table {
-  width: 100%;
-  margin: 1rem 0;
-  font-size: 0.95rem;
+  // All tables, except tables inside code elements.
+  &:not([class^='hljs']) {
+    width: 100%;
+    margin: 1rem 0;
+    font-size: 0.95rem;
 
-  border: 1.5pt solid lighten($inactive-color, 15%);
-  border-collapse: collapse;
-
-  td,
-  th {
-    padding: 1rem;
-  }
-
-  td {
     border: 1.5pt solid lighten($inactive-color, 15%);
     border-collapse: collapse;
-  }
 
-  thead {
-    tr {
-      background: #fafafa;
-    }
-
+    td,
     th {
-      text-align: left;
+      padding: 1rem;
     }
-  }
 
-  tbody {
-    tr {
-      &:nth-child(2n) {
+    td {
+      border: 1.5pt solid lighten($inactive-color, 15%);
+      border-collapse: collapse;
+    }
+
+    thead {
+      tr {
         background: #fafafa;
       }
 
-      // Targets the div in the "Description" column of each row
-      td:nth-child(2) {
-        & > div:first-child {
-          @include flexbox();
-          @include flex-direction(row);
-          @include justify-content(space-between);
+      th {
+        text-align: left;
+      }
+    }
 
-          & > div:nth-child(2) {
-            white-space: nowrap;
-            margin-left: 1rem;
+    tbody {
+      tr {
+        &:nth-child(2n) {
+          background: #fafafa;
+        }
+
+        // Targets the div in the "Description" column of each row
+        td:nth-child(2) {
+          & > div:first-child {
+            @include flexbox();
+            @include flex-direction(row);
+            @include justify-content(space-between);
+
+            & > div:nth-child(2) {
+              white-space: nowrap;
+              margin-left: 1rem;
+            }
           }
         }
       }
+    }
+  }
+
+  // Add small padding after line column in code blocks
+  &[class^='hljs'] {
+    td:first-child {
+      padding-right: 0.5rem;
     }
   }
 }
