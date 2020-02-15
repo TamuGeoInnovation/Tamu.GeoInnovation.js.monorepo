@@ -29,22 +29,10 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
    */
   public setup() {
     // Merge the provided options into the settings model.
-    this.patchDefaults();
+    this.patchOptions(this._options);
 
     // Determine default values based on inputs
     this.calculateDefaults();
-
-    // Generate the geocode query string based on patched defaults and calculated defaults.
-    this.queryString = Object.keys(this.settings)
-      .filter((setting) => {
-        // Filter out any setting transformer entries that explicity define exclusion
-        // for building the query string.
-        return !Boolean(this.settings[setting].excludeParams) && this.settings[setting].value !== undefined;
-      })
-      .map((key, index) => {
-        return `${key}=${this.settings[key].value}`;
-      })
-      .join('&');
   }
 
   /**
@@ -62,6 +50,18 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
   public execute(promiseOrCallback?: true): Promise<Res>;
   public execute(promiseOrCallback?: CallBack<Res>): void;
   public execute(promiseOrCallback?: undefined | boolean | CallBack<Res>): Observable<Res> | Promise<Res> | void {
+    // Generate the geocode query string based on patched defaults and calculated defaults.
+    this.queryString = Object.keys(this.settings)
+      .filter((setting) => {
+        // Filter out any setting transformer entries that explicity define exclusion
+        // for building the query string.
+        return !Boolean(this.settings[setting].excludeParams) && this.settings[setting].value !== undefined;
+      })
+      .map((key, index) => {
+        return `${key}=${this.settings[key].value}`;
+      })
+      .join('&');
+
     const request = ajax({
       url: this.settings.serviceUrl.value + this.queryString,
       method: 'GET',
@@ -119,8 +119,8 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
    * Updates the default settings value with the provided value if it exists,
    * else it creates an entry in the settings model.
    */
-  private patchDefaults() {
-    Object.entries(this._options).forEach(([key, value]) => {
+  public patchOptions(options?: object) {
+    Object.entries(options).forEach(([key, value]) => {
       // If the default value transformer exists, patch its value with that of the
       // entry key.
       if (this.settings[key]) {

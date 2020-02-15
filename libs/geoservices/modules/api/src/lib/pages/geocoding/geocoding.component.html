@@ -578,32 +578,28 @@
       </div>
     </div>
   </div>
-
-  <div>
-    <!-- <pre [gist]="'de9decbcd2539d5ba399aedc598bcaa6'" (gistLoad)="gist = $event">
-        <code [highlight]="gist | gistFile: 'app.module.ts'"></code>
-      </pre> -->
-  </div>
 </section>
 
 <section>
   <h2>Response</h2>
 
+  <p>Response contents depend with the requested <span class="faux-link" [scrollTo]="'#format'">response format</span>.</p>
+
   <tamu-gisc-tabs>
     <tamu-gisc-tab label="JSON">
       <div>
-        <p>JSON content example example goes here</p>
+        <tamu-gisc-response-viewer [runner]="runner" [format]="'json'"></tamu-gisc-response-viewer>
       </div>
     </tamu-gisc-tab>
 
     <tamu-gisc-tab label="CSV/TSV">
       <div>
-        <p>CSV/TSV content example goes here</p>
+        <tamu-gisc-response-viewer [runner]="runner" [format]="'tsv'"></tamu-gisc-response-viewer>
       </div>
     </tamu-gisc-tab>
     <tamu-gisc-tab label="XML">
       <div>
-        <p>XML content example goes here</p>
+        <tamu-gisc-response-viewer [runner]="runner" [format]="'xml'"></tamu-gisc-response-viewer>
       </div>
     </tamu-gisc-tab>
   </tamu-gisc-tabs>

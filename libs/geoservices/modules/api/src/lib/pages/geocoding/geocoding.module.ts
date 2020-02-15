@@ -9,6 +9,7 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { GeocodingComponent } from './geocoding.component';
 import { Routes, RouterModule } from '@angular/router';
+import { ApiComponentsModule } from '../../components/components.module';
 
 const routes: Routes = [
   {
@@ -24,7 +25,8 @@ const routes: Routes = [
     HighlightPlusModule,
     UIClipboardModule,
     UIScrollToModule,
-    UILayoutModule
+    UILayoutModule,
+    ApiComponentsModule
   ],
   declarations: [GeocodingComponent],
   exports: [RouterModule]

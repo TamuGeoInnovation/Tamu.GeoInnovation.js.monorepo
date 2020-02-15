@@ -33,7 +33,8 @@ WebFont.load({
 
 export function getHighlightLanguages() {
   return {
-    html: () => import('highlight.js/lib/languages/xml'),
+    xml: () => import('highlight.js/lib/languages/xml'),
+    json: () => import('highlight.js/lib/languages/json'),
     typescript: () => import('highlight.js/lib/languages/typescript')
   };
 }

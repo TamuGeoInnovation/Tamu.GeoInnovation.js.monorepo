@@ -266,6 +266,8 @@ table {
 .tab-container,
 tamu-gisc-tabs {
   margin: 1rem 0;
+  @include flexbox();
+  @include flex-direction(column);
   .tabs {
     @include flexbox();
     @include flex-direction(row);
