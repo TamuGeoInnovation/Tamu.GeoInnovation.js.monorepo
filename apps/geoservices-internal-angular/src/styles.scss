@@ -425,7 +425,7 @@ tamu-gisc-tabs {
       @include align-items(center);
 
       .parameter-badge {
-        background: $active-color;
+        background: $inactive-color;
         color: white;
         padding: 0.25rem 0.5rem;
         border-radius: 3pt;
@@ -438,6 +438,10 @@ tamu-gisc-tabs {
 
         &:last-child {
           margin-right: 0;
+        }
+
+        &.high-contrast {
+          background: $active-color;
         }
       }
     }

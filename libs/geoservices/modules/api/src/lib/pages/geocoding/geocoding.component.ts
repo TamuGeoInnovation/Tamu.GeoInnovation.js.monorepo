@@ -23,10 +23,13 @@ export class GeocodingComponent implements OnInit {
     streetAddress: '9355 Burton Way',
     city: 'Beverly Hills',
     state: 'ca',
-    zip: 90210
+    zip: 90210,
+    includeHeader: true,
+    census: true,
+    censusYear: 'allAvailable',
+    verbose: true
   });
 
-  public scriptStyleImport = `<script src="https://geoservices.tamu.edu/api/5.0"></script>`;
   constructor() {}
 
   public ngOnInit() {}
