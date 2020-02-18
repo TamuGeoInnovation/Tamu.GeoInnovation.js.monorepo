@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Routes, RouterModule } from '@angular/router';
 
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 
@@ -8,7 +9,6 @@ import { UIScrollToModule } from '@tamu-gisc/ui-kits/ngx/interactions/scroll-to'
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { GeocodingComponent } from './geocoding.component';
-import { Routes, RouterModule } from '@angular/router';
 import { ApiComponentsModule } from '../../components/components.module';
 
 const routes: Routes = [

@@ -212,6 +212,10 @@ table {
     &.active {
       color: $active-color;
       font-weight: 500;
+
+      ul > li + ul {
+        display: block;
+      }
     }
 
     p,
@@ -224,11 +228,13 @@ table {
       margin-left: 0;
 
       li:first-child {
-        margin-bottom: 0.5rem;
+        // margin-bottom: 0.5rem;
       }
 
       ul {
+        margin-top: .5rem;
         margin-left: 0.5rem;
+        display: none;
 
         li:first-child {
           margin-bottom: 0;

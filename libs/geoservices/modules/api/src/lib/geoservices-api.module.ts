@@ -17,6 +17,10 @@ export const routes: Route[] = [
         redirectTo: 'geocoding'
       },
       {
+        path: 'getting-started',
+        loadChildren: () => import('./pages/implementations/implementations.module').then((m) => m.ImplementationsModule)
+      },
+      {
         path: 'geocoding',
         loadChildren: () => import('./pages/geocoding/geocoding.module').then((m) => m.GeocodingModule)
       }

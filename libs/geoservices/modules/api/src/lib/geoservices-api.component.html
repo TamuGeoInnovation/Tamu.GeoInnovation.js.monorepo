@@ -2,19 +2,27 @@
   <div class="content">
     <p class="sidebar-section-title">Geoservices API's</p>
     <div class="sidebar-menu">
-      <div class="menu-item">
+      <div class="menu-item" [routerLink]="['getting-started']" routerLinkActive="active">
         <span class="material-icons">code</span>
-        <p>Getting Started</p>
+        <ul>
+          <li>Getting Started</li>
+          <ul>
+            <li>Overview</li>
+            <li>Authentication</li>
+            <li>Quota and Rate Limits</li>
+            <li>Raw Requests</li>
+            <li>Libraries &amp; SDK's</li>
+          </ul>
+        </ul>
       </div>
       <div class="menu-item" [routerLink]="['geocoding']" routerLinkActive="active">
         <span class="material-icons">my_location</span>
         <ul>
           <li>Geocoding</li>
           <ul>
-            <li>Quick Start</li>
+            <li>Overview</li>
             <li>Parameters</li>
             <li>Response</li>
-            <li>Libraries</li>
           </ul>
         </ul>
       </div>

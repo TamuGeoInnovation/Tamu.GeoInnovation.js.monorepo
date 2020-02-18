@@ -1,0 +1,61 @@
+<section class="internal">
+  <h1 class="section-header">Getting Started</h1>
+
+  <p>The Geoservices Geocoding API is available to developers in several ways:</p>
+
+  <ul>
+    <li>Raw HTTP, REST, or SOAP requests</li>
+    <li>
+      Client JavaScript Libraries
+      <ul>
+        <li>CDN</li>
+        <li>NPM</li>
+      </ul>
+    </li>
+  </ul>
+
+  <p>Raw requests offer the greatest flexibility for developers allowing custom implementations based on their programming language of choice and consuming application formats (json, xml, csv, tsv, etc.)</p>
+
+  <p>Using the hosted version, through a CDN (Content Delivery Network), is best for applications that do not utilize a package manager like NPM. Simply add the script requirement to the head of your webpage and you're off to the races!</p>
+
+  <p>For projects utilizing the NPM package manager, module installation is done through its CLI and imported into your project. This has the benefit of including the API client library into your project and releasing network external dependencies (CDN) that could impact your application load times and performance. Furthermore, the client API libraries are written with TypeScript so developers get the added benefit of JSDoc or native TypeScript typings in supported IDE's or Code Editors.</p>
+
+  <p>The base API for all Geoservices API's is:</p>
+
+  <div class="service-endpoint">
+    <div class="service-verb get">GET</div>
+    <div class="service-address">https://geoservices.tamu.edu/Services/</div>
+  </div>
+</section>
+
+<section>
+  <h2>Authentication</h2>
+
+  <p>All Geoservices API's require an API key to process requests. If you have a Geoservices account, your key will be located in your <a href="http://" target="_blank" rel="noopener noreferrer">account settings</a> page. If you don't yet have an account, <a href="http://" target="_blank" rel="noopener noreferrer">creating one</a> is easy and free.</p>
+
+  <p>Please note that your API key is the secret key to your account and credit balance. Releasing your API key could lead to malicious parties using up your quota. Please ensure you don't expose your API key in public-facing web applications or store them in version control. Should your key become compromised, please contact us and we can issue a new API key.</p>
+</section>
+
+<section>
+  <h2>Quota and Rate Limits</h2>
+
+  <p>All registered users receive a daily quota of free credits that can be used for development and testing purposes. In order to ensure a consistent level of service quality for all of our users, all requests are rate-limited based on their subscription level.</p>
+</section>
+
+<section id="raw-requests">
+  <h2>Raw Queries</h2>
+
+  <p>Our services can be called using any implementation that allows querying HTTP, REST, or SOAP resource endpoints. One of the simplest ways to make use of the API's through a front-end application is by building the request URL and making a call with the native <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank" rel="noopener noreferrer">Fetch API</a>:</p>
+
+  <pre><code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/quick-start/raw-fetch.js' | codeFromUrl | async"></code></pre>
+
+  <p>Browser support for the Fetch API is "good enough" for most applications, however if even broader support is required then querying the API with more lower-level XMLHttpRequests API is in order. Furthermore, both the Fetch API and the XMLHttpRequest API's are browser-only API and as such are not available to NodeJS developers working on back-end applications with Node. Node developers will have to use a third-party library for XHR requests.</p>
+</section>
+
+<section id="first-party-library">
+  <h2>Libraries &amp; SDK's</h2>
+
+  <p>Alternatively, we provide a small first-party JavaScript client library for use in browser and Node applications to facilitate service consumption.</p>
+
+  <h3>JavaScript</h3>
+</section>
