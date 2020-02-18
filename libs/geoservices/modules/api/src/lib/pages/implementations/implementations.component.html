@@ -1,4 +1,4 @@
-<section class="internal">
+<section class="internal" id="overview">
   <h1 class="section-header">Getting Started</h1>
 
   <p>The Geoservices Geocoding API is available to developers in several ways:</p>
@@ -28,7 +28,7 @@
   </div>
 </section>
 
-<section>
+<section id="authentication">
   <h2>Authentication</h2>
 
   <p>All Geoservices API's require an API key to process requests. If you have a Geoservices account, your key will be located in your <a href="http://" target="_blank" rel="noopener noreferrer">account settings</a> page. If you don't yet have an account, <a href="http://" target="_blank" rel="noopener noreferrer">creating one</a> is easy and free.</p>
@@ -36,7 +36,7 @@
   <p>Please note that your API key is the secret key to your account and credit balance. Releasing your API key could lead to malicious parties using up your quota. Please ensure you don't expose your API key in public-facing web applications or store them in version control. Should your key become compromised, please contact us and we can issue a new API key.</p>
 </section>
 
-<section>
+<section id="quota-rate-limits">
   <h2>Quota and Rate Limits</h2>
 
   <p>All registered users receive a daily quota of free credits that can be used for development and testing purposes. In order to ensure a consistent level of service quality for all of our users, all requests are rate-limited based on their subscription level.</p>
@@ -52,7 +52,7 @@
   <p>Browser support for the Fetch API is "good enough" for most applications, however if even broader support is required then querying the API with more lower-level XMLHttpRequests API is in order. Furthermore, both the Fetch API and the XMLHttpRequest API's are only available in browser environments and so they are not available to NodeJS developers working on non-browser projects. Node developers will have to use a third-party library for XHR requests.</p>
 </section>
 
-<section id="first-party-library">
+<section id="library-sdks">
   <h2>Libraries &amp; SDK's</h2>
 
   <p>Alternatively, we provide a small first-party, open-source, JavaScript client library (with support for for other languages in the future) for use in browser and Node applications to reduce the boilerplate required to create API requests and handle errors, facilitating service consumption. It provides XHR wrappers for the following services:</p>

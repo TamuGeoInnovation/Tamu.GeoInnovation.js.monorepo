@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Route } from '@angular/router';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { UIScrollToModule } from '@tamu-gisc/ui-kits/ngx/interactions/scroll-to';
 
 import { GeoservicesApiComponent } from './geoservices-api.component';
 
@@ -29,7 +30,7 @@ export const routes: Route[] = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule],
+  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule, UIScrollToModule],
   declarations: [GeoservicesApiComponent],
   exports: [RouterModule]
 })

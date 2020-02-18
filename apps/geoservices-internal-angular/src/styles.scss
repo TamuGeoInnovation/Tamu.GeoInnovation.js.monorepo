@@ -91,6 +91,8 @@ code {
   margin: 0 0.1rem;
   font-size: 0.9rem;
 
+  max-height: 35rem;
+
   &.hljs {
     padding: 1rem;
     margin: initial;
@@ -233,7 +235,7 @@ table {
       }
 
       ul {
-        margin-top: .5rem;
+        margin-top: 0.5rem;
         margin-left: 0.5rem;
         display: none;
 
