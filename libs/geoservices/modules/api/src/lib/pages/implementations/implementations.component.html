@@ -47,15 +47,39 @@
 
   <p>Our services can be called using any implementation that allows querying HTTP, REST, or SOAP resource endpoints. One of the simplest ways to make use of the API's through a front-end application is by building the request URL and making a call with the native <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank" rel="noopener noreferrer">Fetch API</a>:</p>
 
-  <pre><code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/quick-start/raw-fetch.js' | codeFromUrl | async"></code></pre>
+  <pre><code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/quick-start/raw-fetch.js' | codeFromUrl | async" [lineNumbers]="true"></code></pre>
 
-  <p>Browser support for the Fetch API is "good enough" for most applications, however if even broader support is required then querying the API with more lower-level XMLHttpRequests API is in order. Furthermore, both the Fetch API and the XMLHttpRequest API's are browser-only API and as such are not available to NodeJS developers working on back-end applications with Node. Node developers will have to use a third-party library for XHR requests.</p>
+  <p>Browser support for the Fetch API is "good enough" for most applications, however if even broader support is required then querying the API with more lower-level XMLHttpRequests API is in order. Furthermore, both the Fetch API and the XMLHttpRequest API's are only available in browser environments and so they are not available to NodeJS developers working on non-browser projects. Node developers will have to use a third-party library for XHR requests.</p>
 </section>
 
 <section id="first-party-library">
   <h2>Libraries &amp; SDK's</h2>
 
-  <p>Alternatively, we provide a small first-party JavaScript client library for use in browser and Node applications to facilitate service consumption.</p>
+  <p>Alternatively, we provide a small first-party, open-source, JavaScript client library (with support for for other languages in the future) for use in browser and Node applications to reduce the boilerplate required to create API requests and handle errors, facilitating service consumption. It provides XHR wrappers for the following services:</p>
 
-  <h3>JavaScript</h3>
+  <ul>
+    <li>Geocoding</li>
+    <li>Reverse Geocoding</li>
+    <li>Address Parsing/Processing</li>
+    <li>Census Intersection</li>
+    <li>K-Nearest</li>
+  </ul>
+
+  <p>To use in browser applications without a package manager:</p>
+
+  <pre><code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/quick-start/script-import.html' | codeFromUrl | async" [lineNumbers]="true"></code></pre>
+
+  <p>For browser applications using package managers using ES6 import statements:</p>
+
+  <pre><code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/quick-start/es6-import.js' | codeFromUrl | async" [lineNumbers]="true"></code></pre>
+
+  <p>Finally, using CommonJS's <code>require</code>:</p>
+
+  <pre><code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/quick-start/node-import.js' | codeFromUrl | async" [lineNumbers]="true"></code></pre>
+
+  <p>After importing the respective service class or classes, create an instance providing API parameters as constructor object arguments and call the <code>execute</code> method with the appropriate overload that matches your application's consumption pattern:</p>
+
+  <pre><code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/quick-start/class-consumption.js' | codeFromUrl | async" [lineNumbers]="true"></code></pre>
+
+  <p>See the <a href="https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/tree/master/libs/common/utils/geometry/geoprocessing" target="_blank" rel="noopener noreferrer">Github</a> repository for full library documentation.</p>
 </section>

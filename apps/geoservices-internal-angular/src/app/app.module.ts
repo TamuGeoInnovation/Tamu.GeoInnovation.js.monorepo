@@ -35,12 +35,12 @@ export function getHighlightLanguages() {
   return {
     xml: () => import('highlight.js/lib/languages/xml'),
     json: () => import('highlight.js/lib/languages/json'),
-    typescript: () => import('highlight.js/lib/languages/typescript')
+    javascript: () => import('highlight.js/lib/languages/javascript')
   };
 }
 
 @NgModule({
-  imports: [BrowserModule, RouterModule.forRoot(routes), BrowserAnimationsModule, HighlightPlusModule],
+  imports: [BrowserModule, RouterModule.forRoot(routes, {scrollPositionRestoration: 'enabled'}), BrowserAnimationsModule, HighlightPlusModule],
   declarations: [AppComponent],
   providers: [
     {
