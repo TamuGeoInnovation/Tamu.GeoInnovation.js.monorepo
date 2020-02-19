@@ -124,16 +124,16 @@ table {
     margin: 1rem 0;
     font-size: 0.95rem;
 
-    border: 1.5pt solid $lightened-inactive-color;
+    border: 1pt solid $lightened-inactive-color;
     border-collapse: collapse;
 
     td,
     th {
-      padding: 1rem;
+      padding: 0.75rem;
     }
 
     td {
-      border: 1.5pt solid $lightened-inactive-color;
+      border: 1pt solid $lightened-inactive-color;
       border-collapse: collapse;
     }
 
@@ -494,7 +494,7 @@ tamu-gisc-tabs {
   }
 
   .attribute-unit {
-    margin: 1.5rem 0.5rem;
+    margin: 1rem 0.5rem 1rem 0.5rem;
 
     .attribute-header {
       @include flexbox();
@@ -514,20 +514,31 @@ tamu-gisc-tabs {
     }
   }
 
+  .attribute-node {
+    border-left: 1.25pt solid $lightened-inactive-color;
+    padding-left: 1rem;
+    margin-left: 0.25rem;
+    margin-top: 0.5rem;
+
+    &:hover {
+      border-color: lighten($color: $inactive-color, $amount: 10%);
+    }
+  }
+
   &:hover {
     border-color: lighten($color: $inactive-color, $amount: 10%);
   }
 }
 
 .pill {
-  border: 1.5pt solid $inactive-color;
+  border: 1pt solid $inactive-color;
   color: $inactive-color;
   background: none;
   display: inline-block;
   border-radius: 99rem;
-  padding: 0.25rem 1rem;
+  padding: 0.2rem 1rem;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
 
   span {

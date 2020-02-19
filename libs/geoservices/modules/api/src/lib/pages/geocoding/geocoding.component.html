@@ -744,7 +744,7 @@
           </div>
 
           <div class="parameter-detail-content">
-            <p>A numeric code representing the state of the response. Possible values and their names include:</p>
+            <p>A numeric code representing the state of the response. values and their names include:</p>
 
             <table>
               <thead>
@@ -827,7 +827,7 @@
           </div>
 
           <div class="parameter-detail-content">
-            <p>Matching type associated with the resulting geocodes. Possible values include:</p>
+            <p>Matching type associated with the resulting geocodes. values include:</p>
 
             <table>
               <thead>
@@ -1037,7 +1037,10 @@
                   <p>Collection of geocodes and associated metadata.</p>
 
                   <div *giscAccordion="let parent;">
-                    <div class="pill" [giscAccordionHeader]="parent"><span>Expand Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                    <div class="pill" [giscAccordionHeader]="parent">
+                      <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                      <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                    </div>
 
                     <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
                       <div class="attribute-unit">
@@ -1070,6 +1073,132 @@
 
                         <div class="attribute-description">
                           <p>Numeric code value for the associated NACCR GIS Coordinate Quality code. The NAACCR GIS Coordinate Quality Codes provide an indication of the level of accuracy of a geocode.</p>
+
+                          <div *giscAccordion="let parent;">
+                            <div class="pill" [giscAccordionHeader]="parent">
+                              <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                              <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                            </div>
+
+                            <div class="attribute-node" *giscAccordionContent="parent.expanded">
+                              <p>The NAACCR GIS Coordinate Quality Codes provide an indication of the level of accuracy of a geocode.</p>
+
+                              <p>These codes describe information about:</p>
+
+                              <ul>
+                                <li>The quality of the reference feature matched to - parcel vs. street intersection</li>
+                                <li>The type of input data submitted - ZIP centroid of an address vs. ZIP centroid of a PO box</li>
+                              </ul>
+
+                              <table>
+                                <thead>
+                                  <tr>
+                                    <th>Code</th>
+                                    <th>Value</th>
+                                    <th>Description</th>
+                                  </tr>
+                                </thead>
+
+                                <tbody>
+                                  <tr>
+                                    <td>98</td>
+                                    <td>Unknown</td>
+                                    <td>Latitude and longitude assigned, but coordinate quality is unknown</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>00</td>
+                                    <td>AddressPoint</td>
+                                    <td>Coordinates derived from local government-maintained address points, which are based on property parcel locations, not interpolation over a street segment’s address range</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>01</td>
+                                    <td>GPS</td>
+                                    <td>Coordinates assigned by Global Positioning System (GPS)</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>02</td>
+                                    <td>Parcel</td>
+                                    <td>Coordinates are match of house number and street, and based on property parcel location</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>03</td>
+                                    <td>StreetSegmentInterpolation</td>
+                                    <td>Coordinates are match of house number and street, interpolated over the matching street segment’s address range</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>04</td>
+                                    <td>StreetIntersection</td>
+                                    <td>Coordinates are street intersections</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>05</td>
+                                    <td>StreetCentroid</td>
+                                    <td>Coordinates are at mid-point of street segment (missing or invalid building number)</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>06</td>
+                                    <td>AddressZIPPlus4Centroid</td>
+                                    <td>Coordinates are address ZIP code+4 centroid</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>07</td>
+                                    <td>AddressZIPPlus2Centroid</td>
+                                    <td>Coordinates are address ZIP code+2 centroid</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>08</td>
+                                    <td>ManualLookup</td>
+                                    <td>Coordinates were obtained manually by looking up a location on a paper or electronic map</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>08</td>
+                                    <td>AddressZIPCentroid</td>
+                                    <td>Coordinates are address 5-digit ZIP code centroid</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>10</td>
+                                    <td>POBoxZIPCentroid</td>
+                                    <td>Coordinates are point ZIP code of Post Office Box or Rural Route</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>11</td>
+                                    <td>CityCentroid</td>
+                                    <td>Coordinates are centroid of address city (when address ZIP code is unknown or invalid, and there are multiple ZIP codes for the city)</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>12</td>
+                                    <td>CountyCentroid</td>
+                                    <td>Coordinates are centroid of county</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>99</td>
+                                    <td>Unmatchable</td>
+                                    <td>Latitude and longitude are not assigned, but geocoding was attempted; unable to assign coordinates based on available information</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td></td>
+                                    <td>Missing</td>
+                                    <td>GIS Coordinate Quality not coded</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
@@ -1081,6 +1210,8 @@
 
                         <div class="attribute-description">
                           <p>Code name for the associated NACCR GIS Coordinate Quality code. The NAACCR GIS Coordinate Quality Codes provide an indication of the level of accuracy of a geocode.</p>
+
+                          <p>See <code class="secondary">NAACCRGISCoordinateQualityCode</code> for reference values.</p>
                         </div>
                       </div>
 
@@ -1114,6 +1245,39 @@
 
                         <div class="attribute-description">
                           <p>Geocode feature match type.</p>
+
+                          <div *giscAccordion="let parent;">
+                            <div class="pill" [giscAccordionHeader]="parent">
+                              <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                              <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                            </div>
+
+                            <div class="attribute-node" *giscAccordionContent="parent.expanded">
+                              <table>
+                                <thead>
+                                  <tr>
+                                    <th>Value</th>
+                                    <th>Description</th>
+                                  </tr>
+                                </thead>
+
+                                <tbody>
+                                  <tr>
+                                    <td>success</td>
+                                    <td>Only one match</td>
+                                  </tr>
+                                  <tr>
+                                    <td>ambiguous</td>
+                                    <td>More than one match, all returned</td>
+                                  </tr>
+                                  <tr>
+                                    <td>brokenTie</td>
+                                    <td>More than one match, the tie was broken, and only one result was returned</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
@@ -1125,8 +1289,6 @@
 
                         <div class="attribute-description">
                           <p>Number of geocodes that matched the supplied parameters.</p>
-
-                          <div class="pill"><span>Expand Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
                         </div>
                       </div>
 
@@ -1138,6 +1300,55 @@
 
                         <div class="attribute-description">
                           <p>Geographic level of the output.</p>
+
+                          <div *giscAccordion="let parent;">
+                            <div class="pill" [giscAccordionHeader]="parent">
+                              <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                              <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                            </div>
+
+                            <div class="attribute-node" *giscAccordionContent="parent.expanded">
+                              <table>
+                                <thead>
+                                  <tr>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                  </tr>
+                                </thead>
+
+                                <tbody>
+                                  <tr>
+                                    <td>Parcel centroid</td>
+                                    <td>An exact match was found to a parcel and its centroid is returned as output.</td>
+                                  </tr>
+                                  <tr>
+                                    <td>Street segment</td>
+                                    <td>A match was found to the street segment and the address range associated with the segment was used to interpolate a point to return as output.</td>
+                                  </tr>
+                                  <tr>
+                                    <td>ZCTA</td>
+                                    <td>A match was found to the ZIP portion of the address and its centroid was returned as output.</td>
+                                  </tr>
+                                  <tr>
+                                    <td>City</td>
+                                    <td>A match was found to the ZIP portion of the address and its centroid was returned as output.</td>
+                                  </tr>
+                                  <tr>
+                                    <td>County Subregion</td>
+                                    <td>A match was found to the city portion of the address in the county subregion reference data set and its centroid was returned as output.</td>
+                                  </tr>
+                                  <tr>
+                                    <td>County</td>
+                                    <td>A match was found to the city portion of the address in the county reference data set and its centroid was returned as output.</td>
+                                  </tr>
+                                  <tr>
+                                    <td>Unmatchable</td>
+                                    <td>A match could not be found for the input.</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
@@ -1160,6 +1371,21 @@
 
                         <div class="attribute-description">
                           <p>Units of area of spatial uncertainty of the geocode.</p>
+
+                          <div *giscAccordion="let parent;">
+                            <div class="pill" [giscAccordionHeader]="parent">
+                              <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                              <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                            </div>
+
+                            <div class="attribute-node" *giscAccordionContent="parent.expanded">
+                              <p>The areas units include:</p>
+                              <ul>
+                                <li>square meters (m)</li>
+                                <li>square kilometers (km)</li>
+                              </ul>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
@@ -1171,6 +1397,71 @@
 
                         <div class="attribute-description">
                           <p>Type of input data identified.</p>
+
+                          <div *giscAccordion="let parent;">
+                            <div class="pill" [giscAccordionHeader]="parent">
+                              <div *ngIf="!parent.expanded"><span>Show Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                              <div *ngIf="parent.expanded"><span>Hide Values</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                            </div>
+
+                            <div class="attribute-node" *giscAccordionContent="parent.expanded">
+                              <table>
+                                <thead>
+                                  <tr>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                  </tr>
+                                </thead>
+
+                                <tbody>
+                                  <tr>
+                                    <td>StreetAddress</td>
+                                    <td>The matched input data was a postal street address Example: 3620 South Vermont Ave, Los Angeles, CA 90089-0255</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>PostOfficeBox</td>
+                                    <td>The matched input data was a Post Office Box address Example: PO Box 0255, Los Angeles, CA 90089-0255</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>RuralRoute</td>
+                                    <td>The matched input data was a Rural Route address Example: RR 13 Box 2, Los Angeles, CA 90089-0255</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>StarRoute</td>
+                                    <td>The matched input data was a Star Route address Example: Star Route 13 Box 2, Los Angeles, CA 90089-0255</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>HighwayContractRoute</td>
+                                    <td>The matched input data was a Highway Contract Route address Example: HC 13 Box 2, Los Angeles, CA 90089-0255</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>Intersection</td>
+                                    <td>The matched input data was an intersection of two or more streets Example: 36th and Vermont, Los Angeles, CA</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>NamedPlace</td>
+                                    <td>The matched input data was a named place Example: USC GIS Research Laboratory, Los Angeles, CA</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>RelativeDirection</td>
+                                    <td>The matched input data was a relative direction Example: 1 mile south of downtown Los Angeles</td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>Unmatchable</td>
+                                    <td>A match could not be found for the input</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
@@ -1198,49 +1489,676 @@
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div class="attribute-unit">
-                  <div class="attribute-header">
-                    <div class="attribute-name">CensusValues</div>
-                    <code class="secondary">Array&lt;CensusValue&gt;</code>
-                  </div>
-
-                  <div class="attribute-description">
-                    <p>Census values</p>
-                  </div>
+              <div class="attribute-unit">
+                <div class="attribute-header">
+                  <div class="attribute-name">CensusValues</div>
+                  <code class="secondary">Array&lt;CensusValue&gt;</code>
                 </div>
 
-                <div class="attribute-unit">
-                  <div class="attribute-header">
-                    <div class="attribute-name">ParsedAddress</div>
-                    <code class="secondary">AddressParsed</code>
-                  </div>
+                <div class="attribute-description">
+                  <p>A collection of computed census values.</p>
 
-                  <div class="attribute-description">
-                    <p>Parsed address from the input parameters</p>
+                  <div *giscAccordion="let parent;">
+                    <div class="pill" [giscAccordionHeader]="parent">
+                      <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                      <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                    </div>
+
+                    <div *giscAccordionContent="parent.expanded">
+                      <div class="attribute-list">
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CensusYear</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Year of the census data returned.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CensusTimeTaken</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Time taken to process the census record.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">NAACCRCensusTractCertaintyCode</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Certainty code for the Census tract assignment in NAACCR standard.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">NAACCRCensusTractCertaintyType</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Name of the certainty code for the Census tract assignment in NAACCR standard.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CensusBlock</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census block value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CensusBlockGroup</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census block group value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CensusTract</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census tract value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CensusCountyFips</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census county fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CensusStateFips</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census state fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CensusCbsaFips</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census core base statistical area fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CensusCbsaMicro</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census core base statistical area micropolitan flag for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CensusMcdFips</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census minor civil division fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CensusMetDivFips</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census metropolitan division fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CensusMsaFips</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census metropolitan statistical area fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CensusPlaceFips</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census place fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">ExceptionOccured</div>
+                            <code class="secondary">Boolean</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Describes whether or not census variables will be calculated for the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">Exception</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Indicates if any exceptions ocurred in the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">ErrorMessage</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <div class="attribute-unit">
-                  <div class="attribute-header">
-                    <div class="attribute-name">MatchedAddress</div>
-                    <code class="secondary">AddressMatch</code>
-                  </div>
-
-                  <div class="attribute-description">
-                    <p>Address matched from the input parameters</p>
-                  </div>
+              <div class="attribute-unit">
+                <div class="attribute-header">
+                  <div class="attribute-name">ParsedAddress</div>
+                  <code class="secondary">AddressParsed</code>
                 </div>
 
-                <div class="attribute-unit">
-                  <div class="attribute-header">
-                    <div class="attribute-name">ReferenceFeature</div>
-                    <code class="secondary">AddressFeature</code>
-                  </div>
+                <div class="attribute-description">
+                  <p>Parsed address from the input parameters.</p>
 
-                  <div class="attribute-description">
-                    <p>Matched feature from the input parameters</p>
+                  <div *giscAccordion="let parent;">
+                    <div class="pill" [giscAccordionHeader]="parent">
+                      <div *ngIf="!parent.expanded"><span>Show Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                      <div *ngIf="parent.expanded"><span>Hide Attributes</span> <span class="material-icons alt">keyboard_arrow_up</span></div>
+                    </div>
+
+                    <div *giscAccordionContent="parent.expanded">
+                      <div class="attribute-list">
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">Name</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Year of the census data returned.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">Number</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Time taken to process the census record.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">NumberFractional</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Certainty code for the Census tract assignment in NAACCR standard.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">PreDirectional</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Name of the certainty code for the Census tract assignment in NAACCR standard.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">PreQualifier</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census block value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">PreType</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census block group value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">PreArticle</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census tract value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">PostArticle</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census county fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">PostQualifier</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census state fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">Suffix</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census core base statistical area fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">PostDirectional</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census core base statistical area micropolitan flag for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">SuiteType</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census minor civil division fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">SuiteNumber</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census metropolitan division fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">PostOfficeBoxType</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census metropolitan statistical area fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">PostOfficeBoxNumber</div>
+                            <code class="secondary">Number</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Census place fips value for the output point.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">City</div>
+                            <code class="secondary">Boolean</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Describes whether or not census variables will be calculated for the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">ConsolidatedCity</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Indicates if any exceptions ocurred in the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">MinorCivilDivision</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">CountySubRegion</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">County</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">State</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">Zip</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">ZipPlus1</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">ZipPlus2</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">ZipPlus3</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">ZipPlus4</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">ZipPlus5</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">Area</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">AreaType</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">GeometrySRID</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">Geometry</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">Source</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">Vintage</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">PrimaryIdField</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">PrimaryIdValue</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">SecondaryIdField</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+
+                        <div class="attribute-unit">
+                          <div class="attribute-header">
+                            <div class="attribute-name">SecondaryIdValue</div>
+                            <code class="secondary">String</code>
+                          </div>
+
+                          <div class="attribute-description">
+                            <p>Error message, if any, associated in the processing of the geocode.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                </div>
+              </div>
+
+              <div class="attribute-unit">
+                <div class="attribute-header">
+                  <div class="attribute-name">MatchedAddress</div>
+                  <code class="secondary">AddressMatch</code>
+                </div>
+
+                <div class="attribute-description">
+                  <p>Address matched from the input parameters</p>
+                </div>
+              </div>
+
+              <div class="attribute-unit">
+                <div class="attribute-header">
+                  <div class="attribute-name">ReferenceFeature</div>
+                  <code class="secondary">AddressFeature</code>
+                </div>
+
+                <div class="attribute-description">
+                  <p>Matched feature from the input parameters</p>
                 </div>
               </div>
             </div>
