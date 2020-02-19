@@ -485,16 +485,17 @@ tamu-gisc-tabs {
 
 .attribute-list {
   border-left: 1.25pt solid $lightened-inactive-color;
-  padding-left: 0.5rem;
   @include transition(border-color 0.3s);
 
   // Increase padding on left for nested attribute lists
-  .attribute-list {
-    margin-left: 0.25rem;
+  .attribute-list,
+  .attribute-node {
+    margin-left: 0.5rem;
+    @include transition(border-color 0.3s);
   }
 
   .attribute-unit {
-    margin: 1rem 0.5rem 1rem 0.5rem;
+    margin: 1rem 0.75rem 1rem 1rem;
 
     .attribute-header {
       @include flexbox();
@@ -517,7 +518,6 @@ tamu-gisc-tabs {
   .attribute-node {
     border-left: 1.25pt solid $lightened-inactive-color;
     padding-left: 1rem;
-    margin-left: 0.25rem;
     margin-top: 0.5rem;
 
     &:hover {
