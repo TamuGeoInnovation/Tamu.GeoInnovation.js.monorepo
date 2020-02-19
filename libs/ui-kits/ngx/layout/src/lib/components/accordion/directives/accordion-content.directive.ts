@@ -5,8 +5,6 @@ import { Directive, HostBinding, Input, TemplateRef, ViewContainerRef } from '@a
   selector: '[giscAccordionContent]'
 })
 export class AccordionContentDirective {
-  public expanded: boolean;
-
   private _display = false;
 
   public get display(): boolean {
@@ -20,17 +18,16 @@ export class AccordionContentDirective {
   @Input()
   public defaultDisplay: 'initial' | 'inherit' | 'block' | 'inline' | 'inline-block' = 'initial';
 
-  constructor() {}
-  // constructor(private templateRef: TemplateRef<any>, private viewContainer: ViewContainerRef) {}
+  constructor(private templateRef: TemplateRef<any>, private viewContainer: ViewContainerRef) {}
 
-  // @Input()
-  // public set giscAccordionContent(v: any){
-  //   if(v){
-  //     this.viewContainer.createEmbeddedView(this.templateRef)
-  //   } else {
-  //     this.viewContainer.clear();
-  //   }
-  // }
+  @Input()
+  public set giscAccordionContent(expanded: boolean) {
+    if (expanded) {
+      this.viewContainer.createEmbeddedView(this.templateRef);
+    } else {
+      this.viewContainer.clear();
+    }
+  }
 
   @HostBinding('style.display')
   private get _contentExpanded() {

@@ -1026,7 +1026,7 @@
           </div>
 
           <div class="parameter-detail-content">
-            <p>Array of geocodes matching the input parameters. Array will be of size equal to <code class="secondary">FeatureMatchingResultCount</code>. A geocode object is described as:</p>
+            <p>Array of geocodes matching the input parameters. Arrays will be of size equal to <code class="secondary">FeatureMatchingResultCount</code>. A geocode object is described as:</p>
 
             <div class="attribute-list">
               <div class="attribute-unit">
@@ -1038,16 +1038,10 @@
                 <div class="attribute-description">
                   <p>Collection of geocodes and associated metadata.</p>
 
-                  <div *giscAccordion="let expanded; let controller;">
+                  <div *giscAccordion="let parent;">
+                    <div class="pill" [giscAccordionHeader]="parent"><span>Expand Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
 
-                  {{expanded | json}}
-
-                  {{controller }}
-
-                    <div class="pill" [giscAccordionHeader]="controller"><span>Expand Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-
-                    <!-- <div class="attribute-list" *giscAccordionContent="expanded" defaultDisplay="block"> -->
-                    <div class="attribute-list" giscAccordionContent defaultDisplay="block">
+                    <div class="attribute-list" *giscAccordionContent="parent.expanded" defaultDisplay="block">
                       <div class="attribute-unit">
                         <div class="attribute-header">
                           <div class="attribute-name">Latitude</div>

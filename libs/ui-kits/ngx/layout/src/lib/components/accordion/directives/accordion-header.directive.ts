@@ -1,25 +1,22 @@
-import { Directive, HostListener, Output, HostBinding, Input } from '@angular/core';
+import { Directive, HostListener, Output, Input } from '@angular/core';
 import { Subject } from 'rxjs';
-import { AccordionService } from '../services/accordion.service';
+import { AccordionDirective } from './accordion.directive';
 
 @Directive({
   // tslint:disable-next-line:directive-selector
   selector: '[giscAccordionHeader]'
 })
 export class AccordionHeaderDirective {
-  @Output()
-  public toggle: Subject<boolean> = new Subject();
-
-  public expanded: boolean;
+  public parent: AccordionDirective;
 
   @HostListener('click', ['$event'])
   private _toggle(e: MouseEvent) {
-    this.toggle.next();
+    this.parent.expanded = !this.parent.expanded;
   }
 
   @Input()
   public set giscAccordionHeader(controller){
-    debugger
+    this.parent = controller;
   }
 
   constructor() {}
