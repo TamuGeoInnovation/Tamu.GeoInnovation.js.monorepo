@@ -8,9 +8,10 @@
 $primary-font-family: 'Ubuntu', sans-serif;
 $secondary-font-family: 'Muli', sans-serif;
 
-$inactive-color: hsl(223, 15%, 67%);
 $active-color: hsl(223, 75%, 67%);
 $state-transition-color: hsl(223, 60%, 67%);
+// $inactive-color: hsl(223, 15%, 67%);
+$inactive-color: hsl(223, 15%, 60%);
 
 html {
   height: 100%;
@@ -20,6 +21,7 @@ html {
   font-family: $primary-font-family;
   color: #424242;
   background: hsla(200, 10%, 99%, 1);
+  position: relative;
 }
 
 body {
@@ -84,14 +86,30 @@ ul {
 }
 
 code {
-  border-radius: 5pt;
-  background: $inactive-color;
-  color: white;
-  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  border: 1.5pt solid $inactive-color;
+  color: $inactive-color;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
   margin: 0 0.1rem;
-  font-size: 0.9rem;
+  border-radius: 3pt;
 
   max-height: 35rem;
+
+  &.secondary {
+    background: none;
+    border: none;
+    color: $inactive-color;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0;
+  }
+
+  &.high-contrast {
+    background: $active-color;
+    color: #ffffff;
+    border: none;
+  }
 
   &.hljs {
     padding: 1rem;
@@ -409,8 +427,19 @@ tamu-gisc-tabs {
     @include flexbox();
     @include flex-direction(row);
     @include align-items(center);
-    border-bottom: 1.5pt solid #e0e0e0;
+    // border-bottom: 1.5pt solid #e0e0e0;
+    border-bottom: 1.5pt solid lighten($color: $inactive-color, $amount: 25%);
     padding-bottom: 0.5rem;
+    position: relative;
+
+    span.permalink {
+      position: absolute;
+      left: -2.25rem;
+      top: 50%;
+      opacity: 0;
+      @include transform(translateY(-50%));
+      @include transition(opacity 0.2s);
+    }
 
     h3,
     span,
@@ -433,12 +462,7 @@ tamu-gisc-tabs {
       @include flex-direction(row);
       @include align-items(center);
 
-      .parameter-badge {
-        background: $inactive-color;
-        color: white;
-        padding: 0.25rem 0.5rem;
-        border-radius: 3pt;
-        font-size: 0.75rem;
+      code {
         margin: 0 0.3rem;
 
         &:first-child {
@@ -448,15 +472,84 @@ tamu-gisc-tabs {
         &:last-child {
           margin-right: 0;
         }
-
-        &.high-contrast {
-          background: $active-color;
-        }
       }
     }
   }
 
   .parameter-detail-content {
-    margin-left: 2rem;
+    margin-left: 1rem;
+  }
+
+  &:hover {
+    .parameter-detail-header span.permalink {
+      opacity: 1;
+    }
+  }
+}
+
+.attribute-list {
+  border-left: 1.25pt solid lighten($color: $inactive-color, $amount: 25%);
+  padding-left: 0.5rem;
+  @include transition(border-color 0.3s);
+
+  // Increase padding on left for nested attribute lists
+  .attribute-list {
+    margin-left: 0.25rem;
+  }
+
+  .attribute-unit {
+    margin: 1.5rem 0.5rem;
+
+    .attribute-header {
+      @include flexbox();
+      @include flex-direction(row);
+      position: relative;
+
+      .attribute-name {
+        font-weight: 500;
+        margin-right: 0.5rem;
+      }
+
+      &::before {
+        // content: '';
+        width: 0.5rem;
+        height: 2pt;
+        background: lighten($color: $inactive-color, $amount: 15%);
+        position: absolute;
+        left: -1rem;
+        top: 0.75rem;
+      }
+    }
+
+    .attribute-description {
+      p {
+        margin-top: 0.25rem;
+      }
+    }
+  }
+
+  &:hover {
+    border-color: lighten($color: $inactive-color, $amount: 10%);
+  }
+}
+
+.pill {
+  border: 1.5pt solid $inactive-color;
+  color: $inactive-color;
+  background: none;
+  display: inline-block;
+  border-radius: 99rem;
+  padding: 0.25rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+
+  span {
+    display: inline-block;
+    vertical-align: middle;
+
+    &.material-icons {
+      margin-left: 0.2rem;
+    }
   }
 }
