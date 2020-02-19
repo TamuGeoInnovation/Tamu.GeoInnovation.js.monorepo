@@ -1,0 +1,39 @@
+import { Directive, HostBinding, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+
+@Directive({
+  // tslint:disable-next-line:directive-selector
+  selector: '[giscAccordionContent]'
+})
+export class AccordionContentDirective {
+  public expanded: boolean;
+
+  private _display = false;
+
+  public get display(): boolean {
+    return this.display;
+  }
+
+  public set display(v: boolean) {
+    this._display = v;
+  }
+
+  @Input()
+  public defaultDisplay: 'initial' | 'inherit' | 'block' | 'inline' | 'inline-block' = 'initial';
+
+  constructor() {}
+  // constructor(private templateRef: TemplateRef<any>, private viewContainer: ViewContainerRef) {}
+
+  // @Input()
+  // public set giscAccordionContent(v: any){
+  //   if(v){
+  //     this.viewContainer.createEmbeddedView(this.templateRef)
+  //   } else {
+  //     this.viewContainer.clear();
+  //   }
+  // }
+
+  @HostBinding('style.display')
+  private get _contentExpanded() {
+    return this._display ? this.defaultDisplay : 'none';
+  }
+}

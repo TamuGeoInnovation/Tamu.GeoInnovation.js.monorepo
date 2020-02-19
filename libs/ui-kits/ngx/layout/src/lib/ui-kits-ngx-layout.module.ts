@@ -14,6 +14,9 @@ import { DrawerComponent } from './components/drawer/drawer.component';
 
 import { TabsComponent } from './components/tabs/tabs.component';
 import { TabComponent } from './components/tabs/tab/tab.component';
+import { AccordionDirective } from './components/accordion/directives/accordion.directive';
+import { AccordionHeaderDirective } from './components/accordion/directives/accordion-header.directive';
+import { AccordionContentDirective } from './components/accordion/directives/accordion-content.directive';
 
 @NgModule({
   imports: [CommonModule],
@@ -26,7 +29,10 @@ import { TabComponent } from './components/tabs/tab/tab.component';
     DrawerComponent,
     AbstractSlidingDrawerComponent,
     TabsComponent,
-    TabComponent
+    TabComponent,
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective
   ],
   exports: [
     DrawerComponent,
@@ -36,7 +42,10 @@ import { TabComponent } from './components/tabs/tab/tab.component';
     TooltipComponent,
     TooltipTriggerComponent,
     TabsComponent,
-    TabComponent
+    TabComponent,
+    AccordionDirective,
+    AccordionHeaderDirective,
+    AccordionContentDirective
   ]
 })
 export class UILayoutModule {}

@@ -1038,209 +1038,217 @@
                 <div class="attribute-description">
                   <p>Collection of geocodes and associated metadata.</p>
 
-                  <div class="pill"><span>Expand Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                  <div *giscAccordion="let expanded; let controller;">
 
-                  <div class="attribute-list">
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">Latitude</div>
-                        <code class="secondary">Number</code>
+                  {{expanded | json}}
+
+                  {{controller }}
+
+                    <div class="pill" [giscAccordionHeader]="controller"><span>Expand Attributes</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+
+                    <!-- <div class="attribute-list" *giscAccordionContent="expanded" defaultDisplay="block"> -->
+                    <div class="attribute-list" giscAccordionContent defaultDisplay="block">
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">Latitude</div>
+                          <code class="secondary">Number</code>
+                        </div>
+
+                        <div class="attribute-description">
+                          <p>Latitude value for the matched geocode.</p>
+                        </div>
                       </div>
 
-                      <div class="attribute-description">
-                        <p>Latitude value for the matched geocode.</p>
-                      </div>
-                    </div>
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">Longitude</div>
+                          <code class="secondary">Number</code>
+                        </div>
 
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">Longitude</div>
-                        <code class="secondary">Number</code>
-                      </div>
-
-                      <div class="attribute-description">
-                        <p>Longitude value for the matched geocode.</p>
-                      </div>
-                    </div>
-
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">NAACCRGISCoordinateQualityCode</div>
-                        <code class="secondary">Number</code>
+                        <div class="attribute-description">
+                          <p>Longitude value for the matched geocode.</p>
+                        </div>
                       </div>
 
-                      <div class="attribute-description">
-                        <p>Numeric code value for the associated NACCR GIS Coordinate Quality code. The NAACCR GIS Coordinate Quality Codes provide an indication of the level of accuracy of a geocode.</p>
-                      </div>
-                    </div>
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">NAACCRGISCoordinateQualityCode</div>
+                          <code class="secondary">Number</code>
+                        </div>
 
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">NAACCRGISCoordinateQualityType</div>
-                        <code class="secondary">String</code>
-                      </div>
-
-                      <div class="attribute-description">
-                        <p>Code name for the associated NACCR GIS Coordinate Quality code. The NAACCR GIS Coordinate Quality Codes provide an indication of the level of accuracy of a geocode.</p>
-                      </div>
-                    </div>
-
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">MatchScore</div>
-                        <code class="secondary">Number</code>
+                        <div class="attribute-description">
+                          <p>Numeric code value for the associated NACCR GIS Coordinate Quality code. The NAACCR GIS Coordinate Quality Codes provide an indication of the level of accuracy of a geocode.</p>
+                        </div>
                       </div>
 
-                      <div class="attribute-description">
-                        <p>Match percentage between input data and reference feature.</p>
-                      </div>
-                    </div>
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">NAACCRGISCoordinateQualityType</div>
+                          <code class="secondary">String</code>
+                        </div>
 
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">MatchType</div>
-                        <code class="secondary">String</code>
-                      </div>
-
-                      <div class="attribute-description">
-                        <p>Geocode match type.</p>
-                      </div>
-                    </div>
-
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">FeatureMatchingResultType</div>
-                        <code class="secondary">String</code>
+                        <div class="attribute-description">
+                          <p>Code name for the associated NACCR GIS Coordinate Quality code. The NAACCR GIS Coordinate Quality Codes provide an indication of the level of accuracy of a geocode.</p>
+                        </div>
                       </div>
 
-                      <div class="attribute-description">
-                        <p>Geocode feature match type.</p>
-                      </div>
-                    </div>
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">MatchScore</div>
+                          <code class="secondary">Number</code>
+                        </div>
 
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">FeatureMatchingResultCount</div>
-                        <code class="secondary">Number</code>
-                      </div>
-
-                      <div class="attribute-description">
-                        <p>Number of geocodes that matched the supplied parameters.</p>
-
-                        <div class="pill"><span>Expand Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
-                      </div>
-                    </div>
-
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">FeatureMatchingGeographyType</div>
-                        <code class="secondary">String</code>
+                        <div class="attribute-description">
+                          <p>Match percentage between input data and reference feature.</p>
+                        </div>
                       </div>
 
-                      <div class="attribute-description">
-                        <p>Geographic level of the output.</p>
-                      </div>
-                    </div>
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">MatchType</div>
+                          <code class="secondary">String</code>
+                        </div>
 
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">RegionSize</div>
-                        <code class="secondary">Number</code>
-                      </div>
-
-                      <div class="attribute-description">
-                        <p>Area of the spatial uncertainty of the geocode.</p>
-                      </div>
-                    </div>
-
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">RegionSizeUnits</div>
-                        <code class="secondary">String</code>
+                        <div class="attribute-description">
+                          <p>Geocode match type.</p>
+                        </div>
                       </div>
 
-                      <div class="attribute-description">
-                        <p>Units of area of spatial uncertainty of the geocode.</p>
-                      </div>
-                    </div>
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">FeatureMatchingResultType</div>
+                          <code class="secondary">String</code>
+                        </div>
 
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">MatchedLocationType</div>
-                        <code class="secondary">String</code>
-                      </div>
-
-                      <div class="attribute-description">
-                        <p>Type of input data identified.</p>
-                      </div>
-                    </div>
-
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">Exception</div>
-                        <code class="secondary">String</code>
+                        <div class="attribute-description">
+                          <p>Geocode feature match type.</p>
+                        </div>
                       </div>
 
-                      <div class="attribute-description">
-                        <p>Description of the ocurred description, if any, in processing of the geocode.</p>
-                      </div>
-                    </div>
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">FeatureMatchingResultCount</div>
+                          <code class="secondary">Number</code>
+                        </div>
 
-                    <div class="attribute-unit">
-                      <div class="attribute-header">
-                        <div class="attribute-name">ErrorMessage</div>
-                        <code class="secondary">String</code>
+                        <div class="attribute-description">
+                          <p>Number of geocodes that matched the supplied parameters.</p>
+
+                          <div class="pill"><span>Expand Values</span> <span class="material-icons alt">keyboard_arrow_down</span></div>
+                        </div>
                       </div>
 
-                      <div class="attribute-description">
-                        <p>Error message, if any, associated in the processing of the geocode.</p>
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">FeatureMatchingGeographyType</div>
+                          <code class="secondary">String</code>
+                        </div>
+
+                        <div class="attribute-description">
+                          <p>Geographic level of the output.</p>
+                        </div>
+                      </div>
+
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">RegionSize</div>
+                          <code class="secondary">Number</code>
+                        </div>
+
+                        <div class="attribute-description">
+                          <p>Area of the spatial uncertainty of the geocode.</p>
+                        </div>
+                      </div>
+
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">RegionSizeUnits</div>
+                          <code class="secondary">String</code>
+                        </div>
+
+                        <div class="attribute-description">
+                          <p>Units of area of spatial uncertainty of the geocode.</p>
+                        </div>
+                      </div>
+
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">MatchedLocationType</div>
+                          <code class="secondary">String</code>
+                        </div>
+
+                        <div class="attribute-description">
+                          <p>Type of input data identified.</p>
+                        </div>
+                      </div>
+
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">Exception</div>
+                          <code class="secondary">String</code>
+                        </div>
+
+                        <div class="attribute-description">
+                          <p>Description of the ocurred description, if any, in processing of the geocode.</p>
+                        </div>
+                      </div>
+
+                      <div class="attribute-unit">
+                        <div class="attribute-header">
+                          <div class="attribute-name">ErrorMessage</div>
+                          <code class="secondary">String</code>
+                        </div>
+
+                        <div class="attribute-description">
+                          <p>Error message, if any, associated in the processing of the geocode.</p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">CensusValues</div>
-                  <code class="secondary">Array&lt;CensusValue&gt;</code>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">CensusValues</div>
+                    <code class="secondary">Array&lt;CensusValue&gt;</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Census values</p>
+                  </div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Census values</p>
-                </div>
-              </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">ParsedAddress</div>
+                    <code class="secondary">AddressParsed</code>
+                  </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">ParsedAddress</div>
-                  <code class="secondary">AddressParsed</code>
-                </div>
-
-                <div class="attribute-description">
-                  <p>Parsed address from the input parameters</p>
-                </div>
-              </div>
-
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">MatchedAddress</div>
-                  <code class="secondary">AddressMatch</code>
+                  <div class="attribute-description">
+                    <p>Parsed address from the input parameters</p>
+                  </div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Address matched from the input parameters</p>
-                </div>
-              </div>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">MatchedAddress</div>
+                    <code class="secondary">AddressMatch</code>
+                  </div>
 
-              <div class="attribute-unit">
-                <div class="attribute-header">
-                  <div class="attribute-name">ReferenceFeature</div>
-                  <code class="secondary">AddressFeature</code>
+                  <div class="attribute-description">
+                    <p>Address matched from the input parameters</p>
+                  </div>
                 </div>
 
-                <div class="attribute-description">
-                  <p>Matched feature from the input parameters</p>
+                <div class="attribute-unit">
+                  <div class="attribute-header">
+                    <div class="attribute-name">ReferenceFeature</div>
+                    <code class="secondary">AddressFeature</code>
+                  </div>
+
+                  <div class="attribute-description">
+                    <p>Matched feature from the input parameters</p>
+                  </div>
                 </div>
               </div>
             </div>

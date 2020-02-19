@@ -10,8 +10,8 @@ $secondary-font-family: 'Muli', sans-serif;
 
 $active-color: hsl(223, 75%, 67%);
 $state-transition-color: hsl(223, 60%, 67%);
-// $inactive-color: hsl(223, 15%, 67%);
 $inactive-color: hsl(223, 15%, 60%);
+$lightened-inactive-color: lighten($inactive-color, 25%);
 
 html {
   height: 100%;
@@ -124,7 +124,7 @@ table {
     margin: 1rem 0;
     font-size: 0.95rem;
 
-    border: 1.5pt solid lighten($inactive-color, 15%);
+    border: 1.5pt solid $lightened-inactive-color;
     border-collapse: collapse;
 
     td,
@@ -133,7 +133,7 @@ table {
     }
 
     td {
-      border: 1.5pt solid lighten($inactive-color, 15%);
+      border: 1.5pt solid $lightened-inactive-color;
       border-collapse: collapse;
     }
 
@@ -247,10 +247,6 @@ table {
     ul {
       list-style: none;
       margin-left: 0;
-
-      li:first-child {
-        // margin-bottom: 0.5rem;
-      }
 
       ul {
         margin-top: 0.5rem;
@@ -428,7 +424,7 @@ tamu-gisc-tabs {
     @include flex-direction(row);
     @include align-items(center);
     // border-bottom: 1.5pt solid #e0e0e0;
-    border-bottom: 1.5pt solid lighten($color: $inactive-color, $amount: 25%);
+    border-bottom: 1.5pt solid $lightened-inactive-color;
     padding-bottom: 0.5rem;
     position: relative;
 
@@ -488,7 +484,7 @@ tamu-gisc-tabs {
 }
 
 .attribute-list {
-  border-left: 1.25pt solid lighten($color: $inactive-color, $amount: 25%);
+  border-left: 1.25pt solid $lightened-inactive-color;
   padding-left: 0.5rem;
   @include transition(border-color 0.3s);
 
@@ -508,16 +504,6 @@ tamu-gisc-tabs {
       .attribute-name {
         font-weight: 500;
         margin-right: 0.5rem;
-      }
-
-      &::before {
-        // content: '';
-        width: 0.5rem;
-        height: 2pt;
-        background: lighten($color: $inactive-color, $amount: 15%);
-        position: absolute;
-        left: -1rem;
-        top: 0.75rem;
       }
     }
 
