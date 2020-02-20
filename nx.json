@@ -229,6 +229,9 @@
     },
     "ui-kits-ngx-interactions-scroll-to": {
       "tags": []
+    },
+    "geoservices-modules-data-access": {
+      "tags": []
     }
   }
 }

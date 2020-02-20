@@ -7,13 +7,16 @@ import * as WebFont from 'webfontloader';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+
 import { AppComponent } from './app.component';
+import * as environment from '../environments/environment';
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'api'
+    redirectTo: 'internal'
   },
   {
     path: 'internal',
@@ -40,7 +43,13 @@ export function getHighlightLanguages() {
 }
 
 @NgModule({
-  imports: [BrowserModule, RouterModule.forRoot(routes, {scrollPositionRestoration: 'enabled'}), BrowserAnimationsModule, HighlightPlusModule],
+  imports: [
+    BrowserModule,
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
+    BrowserAnimationsModule,
+    HighlightPlusModule,
+    EnvironmentModule
+  ],
   declarations: [AppComponent],
   providers: [
     {
@@ -49,6 +58,10 @@ export function getHighlightLanguages() {
         languages: getHighlightLanguages(),
         lineNumbers: true
       }
+    },
+    {
+      provide: env,
+      useValue: environment
     }
   ],
   bootstrap: [AppComponent]

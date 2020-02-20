@@ -2586,6 +2586,37 @@
           "styleext": "scss"
         }
       }
+    },
+    "geoservices-modules-data-access": {
+      "projectType": "library",
+      "root": "libs/geoservices/modules/data-access",
+      "sourceRoot": "libs/geoservices/modules/data-access/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/geoservices/modules/data-access/tsconfig.lib.json",
+              "libs/geoservices/modules/data-access/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/geoservices/modules/data-access/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/geoservices/modules/data-access/jest.config.js",
+            "tsConfig": "libs/geoservices/modules/data-access/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/modules/data-access/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {
