@@ -8,6 +8,7 @@ import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { AuthGuard, AuthService } from '@tamu-gisc/geoservices/modules/data-access';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -20,7 +21,8 @@ const routes: Routes = [
   },
   {
     path: 'internal',
-    loadChildren: () => import('@tamu-gisc/geoservices/modules/internal').then((m) => m.GeoservicesInternalModule)
+    loadChildren: () => import('@tamu-gisc/geoservices/modules/internal').then((m) => m.GeoservicesInternalModule),
+    canActivateChild: [AuthGuard]
   },
   {
     path: 'api',
@@ -52,6 +54,7 @@ export function getHighlightLanguages() {
   ],
   declarations: [AppComponent],
   providers: [
+    AuthService,
     {
       provide: HIGHLIGHT_OPTIONS,
       useValue: {
@@ -66,4 +69,6 @@ export function getHighlightLanguages() {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private auth: AuthService) {}
+}

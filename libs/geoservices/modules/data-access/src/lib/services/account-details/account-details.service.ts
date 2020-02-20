@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -14,15 +14,8 @@ export class AccountDetailsService {
   }
 
   public get details() {
-    return this.http.get(this.resource);
-  }
-
-  public login(email?: string, password?: string) {
-    return this.http.get(this.env.value('api_url') + 'login', {
-      params: {
-        email,
-        password
-      }
+    return this.http.get(this.resource, {
+      withCredentials: true
     });
   }
 }

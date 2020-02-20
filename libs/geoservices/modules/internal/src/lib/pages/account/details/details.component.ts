@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AccountDetailsService } from '@tamu-gisc/geoservices/modules/data-access';
+import { AccountDetailsService, AuthService } from '@tamu-gisc/geoservices/modules/data-access';
 
 @Component({
   selector: 'tamu-gisc-details',
@@ -8,13 +8,11 @@ import { AccountDetailsService } from '@tamu-gisc/geoservices/modules/data-acces
   styleUrls: ['./details.component.scss']
 })
 export class DetailsComponent implements OnInit {
-  constructor(private service: AccountDetailsService) {}
+  constructor(private auth: AuthService, private service: AccountDetailsService) {}
 
   public ngOnInit() {
-    // this.service.login().subscribe((res) => {
-    //   this.service.details.subscribe((res) => {
-    //     debugger;
-    //   });
-    // });
+    this.service.details.subscribe((res) => {
+      debugger;
+    });
   }
 }
