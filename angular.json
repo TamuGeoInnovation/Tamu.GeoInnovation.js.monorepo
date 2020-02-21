@@ -2366,44 +2366,44 @@
         }
       }
     },
-    "geoservices-internal-angular": {
+    "geoservices-angular": {
       "projectType": "application",
       "schematics": {
         "@nrwl/angular:component": {
           "style": "scss"
         }
       },
-      "root": "apps/geoservices-internal-angular",
-      "sourceRoot": "apps/geoservices-internal-angular/src",
+      "root": "apps/geoservices-angular",
+      "sourceRoot": "apps/geoservices-angular/src",
       "prefix": "tamu-gisc",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/apps/geoservices-internal-angular",
-            "index": "apps/geoservices-internal-angular/src/index.html",
-            "main": "apps/geoservices-internal-angular/src/main.ts",
-            "polyfills": "apps/geoservices-internal-angular/src/polyfills.ts",
-            "tsConfig": "apps/geoservices-internal-angular/tsconfig.app.json",
+            "outputPath": "dist/apps/geoservices-angular",
+            "index": "apps/geoservices-angular/src/index.html",
+            "main": "apps/geoservices-angular/src/main.ts",
+            "polyfills": "apps/geoservices-angular/src/polyfills.ts",
+            "tsConfig": "apps/geoservices-angular/tsconfig.app.json",
             "aot": false,
             "assets": [
-              "apps/geoservices-internal-angular/src/favicon.ico",
-              "apps/geoservices-internal-angular/src/assets",
+              "apps/geoservices-angular/src/favicon.ico",
+              "apps/geoservices-angular/src/assets",
               {
                 "glob": "**/*",
                 "input": "./libs/assets/",
                 "output": "./assets"
               }
             ],
-            "styles": ["apps/geoservices-internal-angular/src/styles.scss"],
+            "styles": ["apps/geoservices-angular/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "apps/geoservices-internal-angular/src/environments/environment.ts",
-                  "with": "apps/geoservices-internal-angular/src/environments/environment.prod.ts"
+                  "replace": "apps/geoservices-angular/src/environments/environment.ts",
+                  "with": "apps/geoservices-angular/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -2433,89 +2433,89 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "geoservices-internal-angular:build"
+            "browserTarget": "geoservices-angular:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "geoservices-internal-angular:build:production"
+              "browserTarget": "geoservices-angular:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "geoservices-internal-angular:build"
+            "browserTarget": "geoservices-angular:build"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "apps/geoservices-internal-angular/tsconfig.app.json",
-              "apps/geoservices-internal-angular/tsconfig.spec.json"
+              "apps/geoservices-angular/tsconfig.app.json",
+              "apps/geoservices-angular/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!apps/geoservices-internal-angular/**"]
+            "exclude": ["**/node_modules/**", "!apps/geoservices-angular/**"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "apps/geoservices-internal-angular/jest.config.js",
-            "tsConfig": "apps/geoservices-internal-angular/tsconfig.spec.json",
-            "setupFile": "apps/geoservices-internal-angular/src/test-setup.ts"
+            "jestConfig": "apps/geoservices-angular/jest.config.js",
+            "tsConfig": "apps/geoservices-angular/tsconfig.spec.json",
+            "setupFile": "apps/geoservices-angular/src/test-setup.ts"
           }
         }
       }
     },
-    "geoservices-internal-angular-e2e": {
-      "root": "apps/geoservices-internal-angular-e2e",
-      "sourceRoot": "apps/geoservices-internal-angular-e2e/src",
+    "geoservices-angular-e2e": {
+      "root": "apps/geoservices-angular-e2e",
+      "sourceRoot": "apps/geoservices-angular-e2e/src",
       "projectType": "application",
       "architect": {
         "e2e": {
           "builder": "@nrwl/cypress:cypress",
           "options": {
-            "cypressConfig": "apps/geoservices-internal-angular-e2e/cypress.json",
-            "tsConfig": "apps/geoservices-internal-angular-e2e/tsconfig.e2e.json",
-            "devServerTarget": "geoservices-internal-angular:serve"
+            "cypressConfig": "apps/geoservices-angular-e2e/cypress.json",
+            "tsConfig": "apps/geoservices-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "geoservices-angular:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "geoservices-internal-angular:serve:production"
+              "devServerTarget": "geoservices-angular:serve:production"
             }
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["apps/geoservices-internal-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/geoservices-internal-angular-e2e/**"]
+            "tsConfig": ["apps/geoservices-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/geoservices-angular-e2e/**"]
           }
         }
       }
     },
-    "geoservices-modules-api": {
+    "geoservices-api": {
       "projectType": "library",
-      "root": "libs/geoservices/modules/api",
-      "sourceRoot": "libs/geoservices/modules/api/src",
+      "root": "libs/geoservices/api",
+      "sourceRoot": "libs/geoservices/api/src",
       "prefix": "tamu-gisc",
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "libs/geoservices/modules/api/tsconfig.lib.json",
-              "libs/geoservices/modules/api/tsconfig.spec.json"
+              "libs/geoservices/api/tsconfig.lib.json",
+              "libs/geoservices/api/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/modules/api/**"]
+            "exclude": ["**/node_modules/**", "!libs/geoservices/api/**"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "libs/geoservices/modules/api/jest.config.js",
-            "tsConfig": "libs/geoservices/modules/api/tsconfig.spec.json",
-            "setupFile": "libs/geoservices/modules/api/src/test-setup.ts"
+            "jestConfig": "libs/geoservices/api/jest.config.js",
+            "tsConfig": "libs/geoservices/api/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/api/src/test-setup.ts"
           }
         }
       },
@@ -2525,28 +2525,28 @@
         }
       }
     },
-    "geoservices-modules-internal": {
+    "geoservices-internal": {
       "projectType": "library",
-      "root": "libs/geoservices/modules/internal",
-      "sourceRoot": "libs/geoservices/modules/internal/src",
+      "root": "libs/geoservices/internal",
+      "sourceRoot": "libs/geoservices/internal/src",
       "prefix": "tamu-gisc",
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "libs/geoservices/modules/internal/tsconfig.lib.json",
-              "libs/geoservices/modules/internal/tsconfig.spec.json"
+              "libs/geoservices/internal/tsconfig.lib.json",
+              "libs/geoservices/internal/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/modules/internal/**"]
+            "exclude": ["**/node_modules/**", "!libs/geoservices/internal/**"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "libs/geoservices/modules/internal/jest.config.js",
-            "tsConfig": "libs/geoservices/modules/internal/tsconfig.spec.json",
-            "setupFile": "libs/geoservices/modules/internal/src/test-setup.ts"
+            "jestConfig": "libs/geoservices/internal/jest.config.js",
+            "tsConfig": "libs/geoservices/internal/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/internal/src/test-setup.ts"
           }
         }
       },
@@ -2587,28 +2587,28 @@
         }
       }
     },
-    "geoservices-modules-data-access": {
+    "geoservices-data-access": {
       "projectType": "library",
-      "root": "libs/geoservices/modules/data-access",
-      "sourceRoot": "libs/geoservices/modules/data-access/src",
+      "root": "libs/geoservices/data-access",
+      "sourceRoot": "libs/geoservices/data-access/src",
       "prefix": "tamu-gisc",
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "libs/geoservices/modules/data-access/tsconfig.lib.json",
-              "libs/geoservices/modules/data-access/tsconfig.spec.json"
+              "libs/geoservices/data-access/tsconfig.lib.json",
+              "libs/geoservices/data-access/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/modules/data-access/**"]
+            "exclude": ["**/node_modules/**", "!libs/geoservices/data-access/**"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "libs/geoservices/modules/data-access/jest.config.js",
-            "tsConfig": "libs/geoservices/modules/data-access/tsconfig.spec.json",
-            "setupFile": "libs/geoservices/modules/data-access/src/test-setup.ts"
+            "jestConfig": "libs/geoservices/data-access/jest.config.js",
+            "tsConfig": "libs/geoservices/data-access/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/data-access/src/test-setup.ts"
           }
         }
       },
@@ -2618,28 +2618,56 @@
         }
       }
     },
-    "geoservices-modules-public": {
+    "geoservices-public": {
       "projectType": "library",
-      "root": "libs/geoservices/modules/public",
-      "sourceRoot": "libs/geoservices/modules/public/src",
+      "root": "libs/geoservices/public",
+      "sourceRoot": "libs/geoservices/public/src",
       "prefix": "tamu-gisc",
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "libs/geoservices/modules/public/tsconfig.lib.json",
-              "libs/geoservices/modules/public/tsconfig.spec.json"
+              "libs/geoservices/public/tsconfig.lib.json",
+              "libs/geoservices/public/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/modules/public/**"]
+            "exclude": ["**/node_modules/**", "!libs/geoservices/public/**"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "libs/geoservices/modules/public/jest.config.js",
-            "tsConfig": "libs/geoservices/modules/public/tsconfig.spec.json",
-            "setupFile": "libs/geoservices/modules/public/src/test-setup.ts"
+            "jestConfig": "libs/geoservices/public/jest.config.js",
+            "tsConfig": "libs/geoservices/public/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/public/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "geoservices-core-ngx": {
+      "projectType": "library",
+      "root": "libs/geoservices/core/ngx",
+      "sourceRoot": "libs/geoservices/core/ngx/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/geoservices/core/ngx/tsconfig.lib.json", "libs/geoservices/core/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/geoservices/core/ngx/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/geoservices/core/ngx/jest.config.js",
+            "tsConfig": "libs/geoservices/core/ngx/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/core/ngx/src/test-setup.ts"
           }
         }
       },

@@ -71,11 +71,12 @@
       "@tamu-gisc/maps/feature/forms": ["libs/maps/feature/forms/src/index.ts"],
       "@tamu-gisc/cpa/common/entities": ["libs/cpa/common/entities/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/breadcrumb": ["libs/ui-kits/ngx/navigation/breadcrumb/src/index.ts"],
-      "@tamu-gisc/geoservices/modules/api": ["libs/geoservices/modules/api/src/index.ts"],
-      "@tamu-gisc/geoservices/modules/internal": ["libs/geoservices/modules/internal/src/index.ts"],
+      "@tamu-gisc/geoservices/api": ["libs/geoservices/api/src/index.ts"],
+      "@tamu-gisc/geoservices/internal": ["libs/geoservices/internal/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/scroll-to": ["libs/ui-kits/ngx/interactions/scroll-to/src/index.ts"],
-      "@tamu-gisc/geoservices/modules/data-access": ["libs/geoservices/modules/data-access/src/index.ts"],
-      "@tamu-gisc/geoservices/modules/public": ["libs/geoservices/modules/public/src/index.ts"]
+      "@tamu-gisc/geoservices/data-access": ["libs/geoservices/data-access/src/index.ts"],
+      "@tamu-gisc/geoservices/public": ["libs/geoservices/public/src/index.ts"],
+      "@tamu-gisc/geoservices/core/ngx": ["libs/geoservices/core/ngx/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
