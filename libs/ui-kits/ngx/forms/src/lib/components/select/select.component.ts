@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, forwardRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -33,6 +33,7 @@ export class SelectComponent<T> implements ControlValueAccessor {
     this._value = value === null ? undefined : value;
     this._onChange(value === null ? undefined : value);
     this._onTouched();
+    this.cd.markForCheck();
   }
 
   /**
@@ -73,7 +74,7 @@ export class SelectComponent<T> implements ControlValueAccessor {
   @Output()
   public changed: EventEmitter<T> = new EventEmitter();
 
-  constructor() {}
+  constructor(private cd: ChangeDetectorRef) {}
 
   private _onChange = (value: T) => {};
   private _onTouched = () => {};
