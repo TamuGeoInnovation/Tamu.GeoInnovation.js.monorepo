@@ -232,6 +232,9 @@
     },
     "geoservices-modules-data-access": {
       "tags": []
+    },
+    "geoservices-modules-public": {
+      "tags": []
     }
   }
 }

@@ -2617,6 +2617,37 @@
           "styleext": "scss"
         }
       }
+    },
+    "geoservices-modules-public": {
+      "projectType": "library",
+      "root": "libs/geoservices/modules/public",
+      "sourceRoot": "libs/geoservices/modules/public/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/geoservices/modules/public/tsconfig.lib.json",
+              "libs/geoservices/modules/public/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/geoservices/modules/public/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/geoservices/modules/public/jest.config.js",
+            "tsConfig": "libs/geoservices/modules/public/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/modules/public/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {
