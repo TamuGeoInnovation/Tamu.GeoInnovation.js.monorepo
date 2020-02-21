@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { CoreModule } from './core/core.module';
+import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
 
 import { GeoservicesPublicComponent } from './geoservices-public.component';
 
@@ -15,7 +15,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), CoreModule],
+  imports: [CommonModule, RouterModule.forChild(routes), GeoservicesCoreNgxModule],
   declarations: [GeoservicesPublicComponent]
 })
 export class GeoservicesPublicModule {}
