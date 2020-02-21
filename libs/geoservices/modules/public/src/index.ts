@@ -1,1 +1,1 @@
-export * from './lib/geoservices-modules-public.module';
+export * from './lib/geoservices-public.module';

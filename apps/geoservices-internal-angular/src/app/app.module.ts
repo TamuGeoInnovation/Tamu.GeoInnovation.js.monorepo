@@ -17,7 +17,11 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'internal'
+    redirectTo: 'public'
+  },
+  {
+    path: 'public',
+    loadChildren: () => import('@tamu-gisc/geoservices/modules/public').then((m) => m.GeoservicesPublicModule)
   },
   {
     path: 'internal',
