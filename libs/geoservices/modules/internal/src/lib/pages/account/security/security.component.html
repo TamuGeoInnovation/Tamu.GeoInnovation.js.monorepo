@@ -7,7 +7,7 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-collection row">
+      <div class="form-collection row pad-top">
         <tamu-gisc-textbox formControlName="password1" type="password" placeholder="New Password" floatLabel="true"></tamu-gisc-textbox>
       </div>
 
@@ -30,7 +30,7 @@
       <div class="form-collection row">
         <tamu-gisc-select formControlName="Question" [data]="questions | async" displayTemplate="Question" valueTemplate="Question"></tamu-gisc-select>
 
-        <tamu-gisc-textbox formControlName="Answer" type="text" placeholder="Answer" floatLabel="true"></tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="Answer" type="text" placeholder="Security Question Answer" floatLabel="true"></tamu-gisc-textbox>
       </div>
     </div>
   </div>

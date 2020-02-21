@@ -7,3 +7,4 @@ export * from './lib/services/account/details/account-details.service';
 
 export * from './lib/services/account/details/account-details.service';
 export * from './lib/services/account/security/account-security.service';
+export * from './lib/services/account/preferences/account-preferences.service';

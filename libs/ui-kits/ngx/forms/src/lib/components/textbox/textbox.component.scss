@@ -40,14 +40,14 @@ label {
   position: absolute;
   color: #757575;
   left: 1rem;
-  top: 0.5rem;
+  top: 0.4rem;
   pointer-events: none;
   z-index: 1;
   will-change: transform;
   @include transition(transform 0.2s, font-size 0.15s);
 
   &.float {
-    transform: translate3d((0, -1.75rem, 0));
+    transform: translate3d((0, -1.9rem, 0));
     font-size: 0.85rem;
     z-index: -1;
   }

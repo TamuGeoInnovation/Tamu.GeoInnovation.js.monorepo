@@ -14,21 +14,19 @@ export class AccountDetailsService {
     this.resource = this.env.value('api_url') + 'userServices/getDetails';
   }
 
-  public get details() {
+  public getDetails() {
     return this.http.get<IAccountDetails>(this.resource, {
       withCredentials: true
     });
   }
 
-  public updateDetails(details: IAccountDetails): void {
-    forkJoin([
+  public updateDetails(details: IAccountDetails){
+    return forkJoin([
       this._updateAccount(details),
       this._updateCompany(details),
       this._updateContact(details),
       this._updateMailing(details)
-    ]).subscribe((res) => {
-      console.log('updated', res);
-    });
+    ])
   }
 
   private _updateAccount(d: IAccountDetails) {
@@ -96,6 +94,8 @@ export interface IAccountDetails {
   LastName: string;
   LastIPAddress: string;
   NotifyNewsUpdates: string;
+  NotifyServiceUpdates: string;
+  NotifyServiceOutages: string;
   Organization: string;
   Phone: string;
   Position: string;

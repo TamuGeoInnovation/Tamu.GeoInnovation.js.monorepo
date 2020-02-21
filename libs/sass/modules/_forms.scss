@@ -54,6 +54,14 @@ form {
     &.column {
       @include flex-direction(column);
     }
+
+    &.pad-top{
+      margin-top: 1rem;
+    }
+
+    &.pad-bottom{
+      margin-top: 1rem;
+    }
   }
 
   .form-section {
@@ -71,7 +79,7 @@ form {
     .form-section-toolbar {
       display: inherit;
       border-bottom: 1pt solid #eeeeee;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
       font-weight: 600;
 
       @include flex-direction(row);
