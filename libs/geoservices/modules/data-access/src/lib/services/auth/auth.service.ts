@@ -20,7 +20,7 @@ export class AuthService {
    */
   public state() {
     return this.http
-      .get<ILoggedInResponse>(this.env.value('api_url') + 'userservices/getdetails', {
+      .get<ILoggedInResponse>(this.env.value('api_url') + 'userServices/getDetails', {
         withCredentials: true
       })
       .pipe(

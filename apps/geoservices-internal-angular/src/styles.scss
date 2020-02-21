@@ -2,6 +2,7 @@
 @import 'libs/sass/1140';
 
 @import 'libs/sass/mixins';
+@import 'libs/sass/modules/forms';
 
 @import '~highlight.js/styles/atom-one-dark.css';
 
@@ -548,5 +549,12 @@ tamu-gisc-tabs {
     &.material-icons {
       margin-left: 0.2rem;
     }
+  }
+}
+
+// Form overrides
+form {
+  .form-section {
+    margin-bottom: 2.5rem;
   }
 }

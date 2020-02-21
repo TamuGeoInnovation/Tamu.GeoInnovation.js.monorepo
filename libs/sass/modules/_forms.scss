@@ -71,7 +71,7 @@ form {
     .form-section-toolbar {
       display: inherit;
       border-bottom: 1pt solid #eeeeee;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
       font-weight: 600;
 
       @include flex-direction(row);
@@ -91,6 +91,8 @@ form {
           color: #525252;
           text-transform: uppercase;
           text-emphasis: center;
+          margin-top: 0;
+          margin-bottom: 0;
         }
       }
     }
