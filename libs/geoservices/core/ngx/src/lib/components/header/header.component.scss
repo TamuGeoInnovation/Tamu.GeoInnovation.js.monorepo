@@ -1,0 +1,118 @@
+@import 'libs/sass/mixins';
+
+:host {
+  display: inherit;
+  background: #ffffff;
+  width: 100%;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.05));
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+nav {
+  @include flexbox();
+  @include flex-direction(row);
+  padding: 0.75rem 0;
+
+  ul {
+    list-style: none;
+    @include flexbox();
+  }
+
+  li {
+    margin: 0;
+  }
+
+  // Main menu header item font style
+  a {
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+    color: #424242;
+    font-weight: 400;
+
+    .material-icons {
+      font-size: 1.1rem;
+      padding: 0.25rem;
+      will-change: transform, color;
+      @include transition(transform 0.2s, color, 0.2s);
+    }
+  }
+
+  .logo {
+    width: 13.5rem;
+  }
+
+  .menu {
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+    @include justify-content(space-between);
+    @include flex(1);
+    margin-left: 1rem;
+    margin-right: 1rem;
+
+    // Disable text decoration for the root-level menu
+    // anchor tags
+    & > ul > li > a {
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+    }
+
+    // Display root-level navigation items in a row
+    & > ul {
+      @include flex-direction(row);
+
+      & > li {
+        // On root-level list item hover, rotate the dropdown carat icon.
+        &:hover {
+          & > a .material-icons {
+            @include transform(rotate3d(0, 0, 1, -180deg));
+          }
+        }
+      }
+    }
+  }
+
+  // Hide the initial dropdown menus
+  .dropdown {
+    position: relative;
+    perspective: 400px;
+
+    .dropdown__menu {
+      display: initial;
+      position: absolute;
+      pointer-events: none;
+      background: #fff;
+      opacity: 0;
+      padding: 1rem 1.5rem;
+      margin: 0;
+      min-width: 20rem;
+      border-radius: 5pt;
+      left: 50%;
+      top: 100%;
+      @include transform-origin(top center);
+      @include transform(translate3d(-50%, 0, 0) rotate3d(1, 0, 0, -15deg));
+      @include transition(transform 0.15s, opacity 0.15s);
+      will-change: transform;
+
+      li {
+        margin: 0.75rem 0;
+      }
+
+      .dropdown__menu__descriptor {
+        margin: 0;
+        font-size: 0.75rem;
+        color: #757575;
+      }
+    }
+
+    &:hover {
+      > .dropdown__menu {
+        opacity: 1;
+        pointer-events: auto;
+        @include transform(translate3d(-50%, 0, 0) rotate3d(1, 0, 0, 0deg));
+      }
+    }
+  }
+}
