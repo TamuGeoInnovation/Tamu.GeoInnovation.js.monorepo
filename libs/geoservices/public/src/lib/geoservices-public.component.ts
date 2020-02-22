@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-geoservices-public',
@@ -7,6 +9,8 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
   styleUrls: ['./geoservices-public.component.scss']
 })
 export class GeoservicesPublicComponent implements OnInit {
+  public mobileNavToggle = new Subject();
+
   constructor(public rp: ResponsiveService) {}
 
   public ngOnInit() {}

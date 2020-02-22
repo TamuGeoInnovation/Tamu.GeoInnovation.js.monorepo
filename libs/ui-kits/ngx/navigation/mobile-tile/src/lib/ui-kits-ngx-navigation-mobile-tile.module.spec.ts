@@ -1,14 +1,14 @@
 import { async, TestBed } from '@angular/core/testing';
-import { UiKitsNgxNavigationMobileTileModule } from './ui-kits-ngx-navigation-mobile-tile.module';
+import { UITileNavigationModule } from './ui-kits-ngx-navigation-mobile-tile.module';
 
-describe('UiKitsNgxNavigationMobileTileModule', () => {
+describe('UITileNavigationModule', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [UiKitsNgxNavigationMobileTileModule]
+      imports: [UITileNavigationModule]
     }).compileComponents();
   }));
 
   it('should create', () => {
-    expect(UiKitsNgxNavigationMobileTileModule).toBeDefined();
+    expect(UITileNavigationModule).toBeDefined();
   });
 });
