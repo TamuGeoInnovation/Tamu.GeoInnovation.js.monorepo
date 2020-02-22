@@ -76,7 +76,8 @@
       "@tamu-gisc/ui-kits/ngx/interactions/scroll-to": ["libs/ui-kits/ngx/interactions/scroll-to/src/index.ts"],
       "@tamu-gisc/geoservices/data-access": ["libs/geoservices/data-access/src/index.ts"],
       "@tamu-gisc/geoservices/public": ["libs/geoservices/public/src/index.ts"],
-      "@tamu-gisc/geoservices/core/ngx": ["libs/geoservices/core/ngx/src/index.ts"]
+      "@tamu-gisc/geoservices/core/ngx": ["libs/geoservices/core/ngx/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/navigation/mobile-tile": ["libs/ui-kits/ngx/navigation/mobile-tile/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

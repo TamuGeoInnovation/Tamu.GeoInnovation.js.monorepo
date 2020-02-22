@@ -2450,10 +2450,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "apps/geoservices-angular/tsconfig.app.json",
-              "apps/geoservices-angular/tsconfig.spec.json"
-            ],
+            "tsConfig": ["apps/geoservices-angular/tsconfig.app.json", "apps/geoservices-angular/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**", "!apps/geoservices-angular/**"]
           }
         },
@@ -2503,10 +2500,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "libs/geoservices/api/tsconfig.lib.json",
-              "libs/geoservices/api/tsconfig.spec.json"
-            ],
+            "tsConfig": ["libs/geoservices/api/tsconfig.lib.json", "libs/geoservices/api/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**", "!libs/geoservices/api/**"]
           }
         },
@@ -2534,10 +2528,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "libs/geoservices/internal/tsconfig.lib.json",
-              "libs/geoservices/internal/tsconfig.spec.json"
-            ],
+            "tsConfig": ["libs/geoservices/internal/tsconfig.lib.json", "libs/geoservices/internal/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**", "!libs/geoservices/internal/**"]
           }
         },
@@ -2627,10 +2618,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "libs/geoservices/public/tsconfig.lib.json",
-              "libs/geoservices/public/tsconfig.spec.json"
-            ],
+            "tsConfig": ["libs/geoservices/public/tsconfig.lib.json", "libs/geoservices/public/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**", "!libs/geoservices/public/**"]
           }
         },
@@ -2668,6 +2656,37 @@
             "jestConfig": "libs/geoservices/core/ngx/jest.config.js",
             "tsConfig": "libs/geoservices/core/ngx/tsconfig.spec.json",
             "setupFile": "libs/geoservices/core/ngx/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "ui-kits-ngx-navigation-mobile-tile": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/navigation/mobile-tile",
+      "sourceRoot": "libs/ui-kits/ngx/navigation/mobile-tile/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/navigation/mobile-tile/tsconfig.lib.json",
+              "libs/ui-kits/ngx/navigation/mobile-tile/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/mobile-tile/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tile/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/navigation/mobile-tile/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/navigation/mobile-tile/src/test-setup.ts"
           }
         }
       },

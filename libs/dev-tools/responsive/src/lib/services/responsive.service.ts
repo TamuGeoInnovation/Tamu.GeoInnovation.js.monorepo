@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ResponsiveService {
   private _isMobile: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public screenWidth: number;
@@ -28,7 +28,7 @@ export class ResponsiveService {
     }
   }
 
-  public getStatus(): Observable<boolean> {
+  public get isMobile(): Observable<boolean> {
     return this._isMobile.asObservable();
   }
 

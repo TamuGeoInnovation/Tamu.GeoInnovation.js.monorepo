@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
+import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 
 import { GeoservicesPublicComponent } from './geoservices-public.component';
 
