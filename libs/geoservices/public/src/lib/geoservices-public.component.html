@@ -1,9 +1,11 @@
 <!-- Persistent header -->
 <tamu-gisc-header *ngIf="!(rp.isMobile | async)"></tamu-gisc-header>
 
-<tamu-gisc-tile-navigation [toggle]="mobileNavToggle"></tamu-gisc-tile-navigation>
+<div *ngIf="(rp.isMobile | async)">
+  <tamu-gisc-tile-navigation [toggle]="mobileNavToggle"></tamu-gisc-tile-navigation>
 
-<div class="faux-link" (click)="mobileNavToggle.next()">Click me for tiles</div>
+  <div class="faux-link" (click)="mobileNavToggle.next()">Click me for tiles</div>
+</div>
 
 <!-- View outlet. Site "pages" will load here (e.g. landing, services, cart, etc) -->
 <router-outlet></router-outlet>

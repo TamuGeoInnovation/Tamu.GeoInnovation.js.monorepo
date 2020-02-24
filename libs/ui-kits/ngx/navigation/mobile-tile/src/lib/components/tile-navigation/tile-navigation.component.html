@@ -1,1 +1,45 @@
-<p>tile-navigation works!</p>
+<div class="close material-icons" tabindex="0" (click)="switchState()">close</div>
+
+<div class="tiles">
+  <div class="tile" (click)="switchSubMenuState()">
+    <div class="tile__icon material-icons">widgets</div>
+    <div class="tile__name">Services</div>
+  </div>
+
+  <div class="tile" (click)="switchSubMenuState()">
+    <div class="tile__icon material-icons">attach_money</div>
+    <div class="tile__name">Pricing</div>
+  </div>
+
+  <div class="tile" (click)="switchSubMenuState()">
+    <div class="tile__icon material-icons">help_outline</div>
+    <div class="tile__name">Support</div>
+  </div>
+
+  <div class="tile" (click)="switchSubMenuState()">
+    <div class="tile__icon material-icons">menu_book</div>
+    <div class="tile__name">News</div>
+  </div>
+
+  <div class="tile" (click)="switchSubMenuState()">
+    <div class="tile__icon material-icons">person_outline</div>
+    <div class="tile__name">Login</div>
+  </div>
+</div>
+
+<div class="submenu" [ngClass]="{active: submenuVisible}">
+  <div class="submenu__header">
+    <div class="material-icons" (click)="switchSubMenuState()">arrow_back</div>
+    <div class="submenu__header__name">Services</div>
+  </div>
+
+  <div class="submenu__body">
+    <p (click)="switchState()">Address Processing</p>
+    <p (click)="switchState()">Geocoding</p>
+    <p (click)="switchState()">Reverse Geocoding</p>
+    <p (click)="switchState()">Geocode Correction</p>
+    <p (click)="switchState()">Census Intersection</p>
+    <p (click)="switchState()">K-Nearest Search</p>
+    <p (click)="switchState()">Drag &amp; Drop Mapping</p>
+  </div>
+</div>
