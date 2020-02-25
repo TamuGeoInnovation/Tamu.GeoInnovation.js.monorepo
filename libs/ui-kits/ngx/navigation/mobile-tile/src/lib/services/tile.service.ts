@@ -5,9 +5,21 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class TileService {
+  /**
+   * Tile navigation root-element active state.
+   */
   public menuActive: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
+  /**
+   * Tile navigation submenu active state.
+   */
   public submenuActive: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+  /**
+   * Represents the active submenu. Holds a template reference and submenu title.
+   *
+   * Consumed by other components to render the sub-menu.
+   */
   public activeSubMenu: BehaviorSubject<IActiveSubmenu> = new BehaviorSubject(undefined);
 
   constructor() {}

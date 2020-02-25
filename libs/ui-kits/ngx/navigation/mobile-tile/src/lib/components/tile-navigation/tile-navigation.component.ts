@@ -2,14 +2,15 @@ import { Component, OnInit, Input, HostBinding, AfterViewInit, ViewChild, OnDest
 import { Observable, Subject } from 'rxjs';
 import { skip, takeUntil } from 'rxjs/operators';
 
-import { TileSubmenuContainerComponent } from '../tile-submenu-container/tile-submenu-container.component';
 import { TileService } from '../../services/tile.service';
+import { TileSubmenuContainerComponent } from '../tile-submenu-container/tile-submenu-container.component';
 
 @Component({
   selector: 'tamu-gisc-tile-navigation',
   templateUrl: './tile-navigation.component.html',
   styleUrls: ['./tile-navigation.component.scss'],
-  providers: [TileService]
+  providers: [TileService],
+  animations: []
 })
 export class TileNavigationComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input()

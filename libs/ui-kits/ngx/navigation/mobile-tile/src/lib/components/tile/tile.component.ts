@@ -1,4 +1,4 @@
-import { Component, OnInit, ContentChild, HostListener } from '@angular/core';
+import { Component, ContentChild, HostListener } from '@angular/core';
 
 import { TileTitleComponent } from '../tile-title/tile-title.component';
 import { TileSubmenuDirective } from '../../directives/tile-submenu.directive';
@@ -9,7 +9,7 @@ import { TileService } from '../../services/tile.service';
   templateUrl: './tile.component.html',
   styleUrls: ['./tile.component.scss']
 })
-export class TileComponent implements OnInit {
+export class TileComponent {
   @ContentChild(TileTitleComponent, { static: true })
   public title: TileTitleComponent;
 
@@ -17,7 +17,7 @@ export class TileComponent implements OnInit {
   public submenu: TileSubmenuDirective;
 
   @HostListener('click')
-  private _tileClick(event) {
+  private _tileClick() {
     if (this.submenu) {
       this.service.updateSubmenu({
         template: this.submenu.template,
@@ -27,6 +27,4 @@ export class TileComponent implements OnInit {
   }
 
   constructor(private service: TileService) {}
-
-  public ngOnInit() {}
 }
