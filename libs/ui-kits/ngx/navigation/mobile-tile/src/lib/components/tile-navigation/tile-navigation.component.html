@@ -4,4 +4,4 @@
   <ng-content select="tamu-gisc-tile"></ng-content>
 </div>
 
-<tamu-gisc-tile-submenu-container [ngClass]="{active: service.submenuActive}"></tamu-gisc-tile-submenu-container>
+<tamu-gisc-tile-submenu-container [ngClass]="{active: (service.submenuActive | async)}"></tamu-gisc-tile-submenu-container>

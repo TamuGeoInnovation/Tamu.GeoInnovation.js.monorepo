@@ -1,8 +1,7 @@
-import { Component, OnInit, Input, HostBinding, ContentChildren, QueryList, AfterViewInit, ViewChild } from '@angular/core';
-import { Observable, merge } from 'rxjs';
+import { Component, OnInit, Input, HostBinding, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { skip, takeUntil } from 'rxjs/operators';
 
-import { TileComponent } from '../tile/tile.component';
-import { TileSubmenuDirective } from '../../directives/tile-submenu.directive';
 import { TileSubmenuContainerComponent } from '../tile-submenu-container/tile-submenu-container.component';
 import { TileService } from '../../services/tile.service';
 
@@ -12,22 +11,21 @@ import { TileService } from '../../services/tile.service';
   styleUrls: ['./tile-navigation.component.scss'],
   providers: [TileService]
 })
-export class TileNavigationComponent implements OnInit, AfterViewInit {
+export class TileNavigationComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input()
   public toggle: Observable<boolean>;
 
-  public visible = true;
+  private menuVisible: boolean;
 
   @HostBinding('style.display')
   public get _visible() {
-    return this.visible ? '' : 'none';
+    return this.menuVisible ? '' : 'none';
   }
-
-  @ContentChildren(TileComponent)
-  private _tiles: QueryList<TileComponent>;
 
   @ViewChild(TileSubmenuContainerComponent, { static: true })
   private _submenuContainer: TileSubmenuContainerComponent;
+
+  private _$destroy: Subject<boolean> = new Subject();
 
   constructor(public service: TileService) {}
 
@@ -39,25 +37,42 @@ export class TileNavigationComponent implements OnInit, AfterViewInit {
     } else {
       console.warn(`No toggle observable for tile navigation provided.`);
     }
-  }
 
-  public ngAfterViewInit() {
-    const emitters = this._tiles.map((t: TileComponent) => t.clicked);
-
-    merge(...emitters).subscribe((submenu: TileSubmenuDirective) => {
-      this.switchSubmenuState(true);
-
-      this._submenuContainer.container.clear();
-
-      this._submenuContainer.container.createEmbeddedView(submenu.template);
+    // Since HostBinding cannot res cannot resolve an observable, set up an
+    // internal subscription to the service menu active state and set a private
+    // member's value to the result.
+    this.service.menuActive.pipe(takeUntil(this._$destroy)).subscribe((serviceState) => {
+      this.menuVisible = serviceState;
     });
   }
 
-  public switchState(state?: boolean) {
-    this.visible = state !== undefined ? state : !this.visible;
+  public ngAfterViewInit() {
+    // A click even is registered on the TileComponent.
+    //
+    // On click, it submits it's referenced submenu template reference to the service,
+    // which then emits. Here we consume the service submenu value to render
+    // the submenu template reference.
+    this.service.activeSubMenu
+      .pipe(
+        skip(1),
+        takeUntil(this._$destroy)
+      )
+      .subscribe((res) => {
+        this.service.toggleSubmenu();
+
+        this._submenuContainer.container.clear();
+
+        this._submenuContainer.container.createEmbeddedView(res.template);
+      });
   }
 
-  public switchSubmenuState(state?: boolean) {
-    this.service.submenuActive = state !== undefined ? state : !this.service.submenuActive;
+  // Clean up any internal manual component subscriptions.
+  public ngOnDestroy() {
+    this._$destroy.next();
+    this._$destroy.complete();
+  }
+
+  public switchState(state?: boolean) {
+    this.service.toggleMenu();
   }
 }

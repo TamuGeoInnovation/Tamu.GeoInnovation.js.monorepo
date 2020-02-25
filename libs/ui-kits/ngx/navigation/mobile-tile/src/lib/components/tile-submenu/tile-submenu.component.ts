@@ -1,4 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { pluck } from 'rxjs/operators';
+
 import { TileService } from '../../services/tile.service';
 
 @Component({
@@ -6,18 +8,13 @@ import { TileService } from '../../services/tile.service';
   templateUrl: './tile-submenu.component.html',
   styleUrls: ['./tile-submenu.component.scss']
 })
-export class TileSubmenuComponent implements OnInit {
+export class TileSubmenuComponent {
   @Input()
-  public title = 'Sub Title';
-
-  @Output()
-  public cancelSubmenu: EventEmitter<boolean> = new EventEmitter();
+  public title = this.service.activeSubMenu.pipe(pluck('title'));
 
   constructor(private service: TileService) {}
 
-  public ngOnInit() {}
-
   public close() {
-    this.service.submenuActive = false;
+    this.service.toggleSubmenu();
   }
 }

@@ -1,7 +1,8 @@
-import { Component, OnInit, ContentChild, HostListener, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, ContentChild, HostListener } from '@angular/core';
 
 import { TileTitleComponent } from '../tile-title/tile-title.component';
 import { TileSubmenuDirective } from '../../directives/tile-submenu.directive';
+import { TileService } from '../../services/tile.service';
 
 @Component({
   selector: 'tamu-gisc-tile',
@@ -9,9 +10,6 @@ import { TileSubmenuDirective } from '../../directives/tile-submenu.directive';
   styleUrls: ['./tile.component.scss']
 })
 export class TileComponent implements OnInit {
-  @Output()
-  public clicked: EventEmitter<TileSubmenuDirective> = new EventEmitter();
-
   @ContentChild(TileTitleComponent, { static: true })
   public title: TileTitleComponent;
 
@@ -21,11 +19,14 @@ export class TileComponent implements OnInit {
   @HostListener('click')
   private _tileClick(event) {
     if (this.submenu) {
-      this.clicked.emit(this.submenu);
+      this.service.updateSubmenu({
+        template: this.submenu.template,
+        title: this.title.title
+      });
     }
   }
 
-  constructor() {}
+  constructor(private service: TileService) {}
 
   public ngOnInit() {}
 }
