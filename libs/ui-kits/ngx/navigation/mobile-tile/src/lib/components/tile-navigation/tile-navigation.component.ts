@@ -4,19 +4,19 @@ import { Observable, merge } from 'rxjs';
 import { TileComponent } from '../tile/tile.component';
 import { TileSubmenuDirective } from '../../directives/tile-submenu.directive';
 import { TileSubmenuContainerComponent } from '../tile-submenu-container/tile-submenu-container.component';
+import { TileService } from '../../services/tile.service';
 
 @Component({
   selector: 'tamu-gisc-tile-navigation',
   templateUrl: './tile-navigation.component.html',
-  styleUrls: ['./tile-navigation.component.scss']
+  styleUrls: ['./tile-navigation.component.scss'],
+  providers: [TileService]
 })
 export class TileNavigationComponent implements OnInit, AfterViewInit {
   @Input()
   public toggle: Observable<boolean>;
 
   public visible = true;
-
-  public submenuVisible = false;
 
   @HostBinding('style.display')
   public get _visible() {
@@ -29,7 +29,7 @@ export class TileNavigationComponent implements OnInit, AfterViewInit {
   @ViewChild(TileSubmenuContainerComponent, { static: true })
   private _submenuContainer: TileSubmenuContainerComponent;
 
-  constructor() {}
+  constructor(public service: TileService) {}
 
   public ngOnInit() {
     if (this.toggle !== undefined) {
@@ -58,6 +58,6 @@ export class TileNavigationComponent implements OnInit, AfterViewInit {
   }
 
   public switchSubmenuState(state?: boolean) {
-    this.submenuVisible = state !== undefined ? state : !this.submenuVisible;
+    this.service.submenuActive = state !== undefined ? state : !this.service.submenuActive;
   }
 }

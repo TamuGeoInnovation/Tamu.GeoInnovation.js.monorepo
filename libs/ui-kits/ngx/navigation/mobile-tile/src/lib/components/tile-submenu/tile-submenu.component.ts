@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { TileService } from '../../services/tile.service';
 
 @Component({
   selector: 'tamu-gisc-tile-submenu',
@@ -9,7 +10,14 @@ export class TileSubmenuComponent implements OnInit {
   @Input()
   public title = 'Sub Title';
 
-  constructor() {}
+  @Output()
+  public cancelSubmenu: EventEmitter<boolean> = new EventEmitter();
+
+  constructor(private service: TileService) {}
 
   public ngOnInit() {}
+
+  public close() {
+    this.service.submenuActive = false;
+  }
 }
