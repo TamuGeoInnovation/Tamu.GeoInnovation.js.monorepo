@@ -1,30 +1,107 @@
-import { Component, OnInit, Input, HostBinding, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { trigger, state, style, transition, animate, query, stagger } from '@angular/animations';
+
 import { Observable, Subject } from 'rxjs';
-import { skip, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { TileService } from '../../services/tile.service';
-import { TileSubmenuContainerComponent } from '../tile-submenu-container/tile-submenu-container.component';
 
 @Component({
   selector: 'tamu-gisc-tile-navigation',
   templateUrl: './tile-navigation.component.html',
   styleUrls: ['./tile-navigation.component.scss'],
   providers: [TileService],
-  animations: []
+  animations: [
+    trigger('menuShowHide', [
+      transition(':enter', [
+        style({
+          opacity: 0,
+          transform: 'scale3d(0, 0, 0)',
+          zIndex: -100
+        }),
+        animate(
+          '.4s ease',
+          style({
+            opacity: 1,
+            transform: 'none',
+            zIndex: 10
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({
+          opacity: '*',
+          transform: '*',
+          zIndex: '*'
+        }),
+        animate(
+          '.4s ease',
+          style({
+            opacity: 0,
+            transform: 'scale3d(0, 0, 0)',
+            zIndex: -100
+          })
+        )
+      ])
+    ]),
+    trigger('submenuShowHide', [
+      transition(':enter', [
+        style({
+          transform: 'scale3d(0, 0, 0)',
+          opacity: 0
+        }),
+        animate(
+          '.3s ease',
+          style({
+            transform: 'scale3d(1, 1, 1)',
+            opacity: 1
+          })
+        )
+      ]),
+      transition(':leave', [
+        style({
+          transform: '*',
+          opacity: '*'
+        }),
+        animate(
+          '.3s ease',
+          style({
+            transform: 'scale3d(0, 0, 0)',
+            opacity: 0
+          })
+        )
+      ])
+    ]),
+    trigger('tileAnimations', [
+      transition(':enter', [
+        query(
+          '.tiles tamu-gisc-tile',
+          [
+            style({
+              opacity: 0,
+              transform: 'translate3d(0, 50px, 0)'
+            }),
+            stagger(-30, [
+              animate(
+                '.3s .35s ease',
+                style({
+                  opacity: 1,
+                  transform: 'none'
+                })
+              )
+            ])
+          ],
+          { optional: true }
+        )
+      ])
+    ])
+  ]
 })
-export class TileNavigationComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TileNavigationComponent implements OnInit, OnDestroy {
   @Input()
   public toggle: Observable<boolean>;
 
-  private menuVisible: boolean;
-
-  @HostBinding('style.display')
-  public get _visible() {
-    return this.menuVisible ? '' : 'none';
-  }
-
-  @ViewChild(TileSubmenuContainerComponent, { static: true })
-  private _submenuContainer: TileSubmenuContainerComponent;
+  public menuVisible = false;
 
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -45,26 +122,6 @@ export class TileNavigationComponent implements OnInit, AfterViewInit, OnDestroy
     this.service.menuActive.pipe(takeUntil(this._$destroy)).subscribe((serviceState) => {
       this.menuVisible = serviceState;
     });
-  }
-
-  public ngAfterViewInit() {
-    // A click even is registered on the TileComponent.
-    //
-    // On click, it submits it's referenced submenu template reference to the service,
-    // which then emits. Here we consume the service submenu value to render
-    // the submenu template reference.
-    this.service.activeSubMenu
-      .pipe(
-        skip(1),
-        takeUntil(this._$destroy)
-      )
-      .subscribe((res) => {
-        this.service.toggleSubmenu();
-
-        this._submenuContainer.container.clear();
-
-        this._submenuContainer.container.createEmbeddedView(res.template);
-      });
   }
 
   // Clean up any internal manual component subscriptions.

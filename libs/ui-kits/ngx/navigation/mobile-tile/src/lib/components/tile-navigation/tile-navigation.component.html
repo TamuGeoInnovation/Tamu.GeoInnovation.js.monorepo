@@ -1,7 +1,9 @@
-<div class="close material-icons" tabindex="0" (click)="switchState()">close</div>
+<div [@menuShowHide] *ngIf="menuVisible" [@tileAnimations]="true" class="menu-host">
+  <div class="close material-icons" tabindex="0" (click)="switchState()">close</div>
 
-<div class="tiles">
-  <ng-content select="tamu-gisc-tile"></ng-content>
+  <div class="tiles">
+    <ng-content select="tamu-gisc-tile"></ng-content>
+  </div>
+
+  <tamu-gisc-tile-submenu-container @submenuShowHide *ngIf="service.submenuActive | async"></tamu-gisc-tile-submenu-container>
 </div>
-
-<tamu-gisc-tile-submenu-container [ngClass]="{active: (service.submenuActive | async)}"></tamu-gisc-tile-submenu-container>

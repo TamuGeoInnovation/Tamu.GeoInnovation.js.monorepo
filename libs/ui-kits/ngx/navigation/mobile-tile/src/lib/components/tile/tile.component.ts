@@ -23,6 +23,8 @@ export class TileComponent {
         template: this.submenu.template,
         title: this.title.title
       });
+
+      this.service.toggleSubmenu(true);
     }
   }
 

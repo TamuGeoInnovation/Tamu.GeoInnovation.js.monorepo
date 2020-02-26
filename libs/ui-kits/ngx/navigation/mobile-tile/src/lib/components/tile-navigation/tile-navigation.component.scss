@@ -1,6 +1,18 @@
 @import 'libs/sass/mixins';
 
 :host {
+  // @include flexbox();
+  // @include flex-direction(column);
+  // @include justify-content(center);
+  // position: fixed;
+  // background: #fafafa;
+  // height: 100%;
+  // width: 100%;
+  // padding: 1.5rem;
+  // box-sizing: border-box;
+}
+
+.menu-host {
   @include flexbox();
   @include flex-direction(column);
   @include justify-content(center);
@@ -10,7 +22,6 @@
   width: 100%;
   padding: 1.5rem;
   box-sizing: border-box;
-  z-index: 10;
 }
 
 .close {
@@ -28,11 +39,4 @@
   @include justify-content(center);
   @include align-items(center);
   @include flex-wrap(wrap);
-}
-
-tamu-gisc-tile-submenu-container {
-  display: none;
-  &.active {
-    display: initial;
-  }
 }
