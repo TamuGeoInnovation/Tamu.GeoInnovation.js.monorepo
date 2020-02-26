@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, ViewContainerRef, OnDestroy, HostBinding } from '@angular/core';
-import { trigger, transition, query, stagger, animate, style } from '@angular/animations';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { TileService } from '../../services/tile.service';
+import { tileStaggerAnimation } from '../../animations/animations';
 
 @Component({
   selector: 'tamu-gisc-tile-submenu-container',
@@ -13,52 +13,7 @@ import { TileService } from '../../services/tile.service';
   // This animation apparently needs to be in a parent component, and not
   // in the self-component otherwise it can't query anything entering into view
   // because the whole thing is entering into view.
-  animations: [
-    trigger('showHideMenuItems', [
-      transition(':enter', [
-        query(
-          '.body p',
-          [
-            style({
-              opacity: 0,
-              transform: 'translateY(20px)'
-            }),
-            stagger(30, [
-              animate(
-                '.4s .25s ease',
-                style({
-                  opacity: 1,
-                  transform: 'none'
-                })
-              )
-            ])
-          ],
-          { optional: true }
-        )
-      ]),
-      transition(':leave', [
-        query(
-          '.body p',
-          [
-            style({
-              opacity: '*',
-              transform: '*'
-            }),
-            stagger(30, [
-              animate(
-                '100ms ease',
-                style({
-                  opacity: 0,
-                  transform: 'translateY(20px)'
-                })
-              )
-            ])
-          ],
-          { optional: true }
-        )
-      ])
-    ])
-  ]
+  animations: [tileStaggerAnimation]
 })
 export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   @ViewChild('container', { static: true, read: ViewContainerRef })
@@ -67,7 +22,7 @@ export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   private _$destroy: Subject<boolean> = new Subject();
 
   // Bind the animation to the host component
-  @HostBinding('@showHideMenuItems')
+  @HostBinding('@tileStaggerAnimation')
   private _animation() {
     return true;
   }
