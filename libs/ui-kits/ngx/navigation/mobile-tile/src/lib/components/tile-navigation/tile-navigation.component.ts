@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { trigger, state, style, transition, animate, query, stagger } from '@angular/animations';
+import { trigger, style, transition, animate, query, stagger } from '@angular/animations';
 
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -20,7 +20,7 @@ import { TileService } from '../../services/tile.service';
           zIndex: -100
         }),
         animate(
-          '.4s ease',
+          '.3s ease',
           style({
             opacity: 1,
             transform: 'none',
@@ -64,7 +64,7 @@ import { TileService } from '../../services/tile.service';
           opacity: '*'
         }),
         animate(
-          '.3s ease',
+          '.4s ease',
           style({
             transform: 'scale3d(0, 0, 0)',
             opacity: 0

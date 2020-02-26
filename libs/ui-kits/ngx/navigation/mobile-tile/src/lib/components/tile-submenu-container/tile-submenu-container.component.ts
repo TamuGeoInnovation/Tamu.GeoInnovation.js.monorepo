@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef, OnDestroy, HostBinding } from '@angular/core';
+import { trigger, transition, query, stagger, animate, style } from '@angular/animations';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -7,13 +8,69 @@ import { TileService } from '../../services/tile.service';
 @Component({
   selector: 'tamu-gisc-tile-submenu-container',
   templateUrl: './tile-submenu-container.component.html',
-  styleUrls: ['./tile-submenu-container.component.scss']
+  styleUrls: ['./tile-submenu-container.component.scss'],
+  // Queries the view-entering sub-menu items and staggers them in.
+  // This animation apparently needs to be in a parent component, and not
+  // in the self-component otherwise it can't query anything entering into view
+  // because the whole thing is entering into view.
+  animations: [
+    trigger('showHideMenuItems', [
+      transition(':enter', [
+        query(
+          '.body p',
+          [
+            style({
+              opacity: 0,
+              transform: 'translateY(20px)'
+            }),
+            stagger(30, [
+              animate(
+                '.4s .25s ease',
+                style({
+                  opacity: 1,
+                  transform: 'none'
+                })
+              )
+            ])
+          ],
+          { optional: true }
+        )
+      ]),
+      transition(':leave', [
+        query(
+          '.body p',
+          [
+            style({
+              opacity: '*',
+              transform: '*'
+            }),
+            stagger(30, [
+              animate(
+                '100ms ease',
+                style({
+                  opacity: 0,
+                  transform: 'translateY(20px)'
+                })
+              )
+            ])
+          ],
+          { optional: true }
+        )
+      ])
+    ])
+  ]
 })
 export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   @ViewChild('container', { static: true, read: ViewContainerRef })
-  public container: ViewContainerRef;
+  private _container: ViewContainerRef;
 
   private _$destroy: Subject<boolean> = new Subject();
+
+  // Bind the animation to the host component
+  @HostBinding('@showHideMenuItems')
+  private _animation() {
+    return true;
+  }
 
   constructor(private service: TileService) {}
 
@@ -25,9 +82,9 @@ export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
     // the submenu template reference.
     this.service.activeSubMenu.pipe(takeUntil(this._$destroy)).subscribe((res) => {
       if (res) {
-        this.container.clear();
+        this._container.clear();
 
-        this.container.createEmbeddedView(res.template);
+        this._container.createEmbeddedView(res.template);
       }
     });
   }

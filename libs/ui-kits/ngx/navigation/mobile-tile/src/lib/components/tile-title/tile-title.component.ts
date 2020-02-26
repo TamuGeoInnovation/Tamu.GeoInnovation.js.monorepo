@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-tile-title',
