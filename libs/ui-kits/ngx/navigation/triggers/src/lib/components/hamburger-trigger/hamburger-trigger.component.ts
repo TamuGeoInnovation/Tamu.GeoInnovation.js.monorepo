@@ -12,7 +12,7 @@ import { switchMap } from 'rxjs/operators';
       state(
         'up',
         style({
-          transform: 'rotate3d(0, 0, 1, -135deg) translate3d(-0.2rem, -0.35rem, 0rem)'
+          transform: 'rotate3d(0, 0, 1, -135deg) translate3d(-0.45rem, -0.4rem, 0rem)'
         })
       ),
       state(
@@ -27,24 +27,22 @@ import { switchMap } from 'rxjs/operators';
       state(
         'up',
         style({
-          width: '0rem',
-          opacity: 0
+          width: '0rem'
         })
       ),
       state(
         'down',
         style({
-          width: '*',
-          opacity: 1
+          width: '*'
         })
       ),
-      transition('* <=> *', [animate('.2s ease')])
+      transition('* <=> *', [animate('.2s 100ms ease')])
     ]),
     trigger('bottomBun', [
       state(
         'up',
         style({
-          transform: 'rotate3d(0, 0, 1, 135deg) translate3d(-2rem ,0rem ,0rem)'
+          transform: 'rotate3d(0, 0, 1, 135deg) translate3d(-2.0rem, -0.3rem, 0rem)'
         })
       ),
       state(
