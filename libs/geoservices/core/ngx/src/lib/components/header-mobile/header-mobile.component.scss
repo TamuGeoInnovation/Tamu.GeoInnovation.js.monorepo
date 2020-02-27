@@ -1,0 +1,12 @@
+@import 'libs/sass/mixins';
+
+:host {
+  padding: 1.1rem 1.5rem;
+  display: block;
+  position: absolute;
+  z-index: 100;
+}
+
+img {
+  width: 11rem;
+}

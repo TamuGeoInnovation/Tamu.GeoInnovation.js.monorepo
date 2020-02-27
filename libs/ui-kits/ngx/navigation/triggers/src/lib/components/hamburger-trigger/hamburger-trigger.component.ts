@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, HostListener, EventEmitter, Output, Input } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BehaviorSubject, of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -56,17 +56,19 @@ import { switchMap } from 'rxjs/operators';
   ]
 })
 export class HamburgerTriggerComponent implements OnInit {
-  public flipped: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  // Internal trigger state
+  private _state: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  public animationState: Observable<string> = this.flipped.asObservable().pipe(switchMap((s) => of(s ? 'up' : 'down')));
+  // Map trigger state to an animation state
+  public animationState: Observable<string> = this._state.asObservable().pipe(switchMap((s) => of(s ? 'up' : 'down')));
 
   @Output()
   public poked: EventEmitter<boolean> = new EventEmitter();
 
   @HostListener('click')
   private _poke() {
-    this.flipped.next(!this.flipped.getValue());
-    this.poked.emit(this.flipped.getValue());
+    this._state.next(!this._state.getValue());
+    this.poked.emit(this._state.getValue());
   }
 
   constructor() {}

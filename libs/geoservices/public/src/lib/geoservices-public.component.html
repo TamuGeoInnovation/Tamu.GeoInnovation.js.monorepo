@@ -1,6 +1,10 @@
-<!-- Persistent header -->
+<!-- Persistent desktop header -->
 <tamu-gisc-header *ngIf="!(rp.isMobile | async)"></tamu-gisc-header>
 
+<!-- Persistent mobile header -->
+<tamu-gisc-header-mobile *ngIf="(rp.isMobile | async)"></tamu-gisc-header-mobile>
+
+<!-- Persistent tile nav menu trigger -->
 <tamu-gisc-hamburger-trigger (poked)="mobileNavToggle.next($event)"></tamu-gisc-hamburger-trigger>
 
 <div *ngIf="(rp.isMobile | async)">
@@ -54,8 +58,10 @@
   </tamu-gisc-tile-navigation>
 </div>
 
-<!-- View outlet. Site "pages" will load here (e.g. landing, services, cart, etc) -->
-<router-outlet></router-outlet>
+<section id="content-placeholder">
+  <!-- View outlet. Site "pages" will load here (e.g. landing, services, cart, etc) -->
+  <router-outlet></router-outlet>
+</section>
 
 <!-- Persistent footer -->
 <tamu-gisc-footer></tamu-gisc-footer>
