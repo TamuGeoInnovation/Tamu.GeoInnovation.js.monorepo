@@ -2695,6 +2695,37 @@
           "styleext": "scss"
         }
       }
+    },
+    "ui-kits-ngx-navigation-triggers": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/navigation/triggers",
+      "sourceRoot": "libs/ui-kits/ngx/navigation/triggers/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/navigation/triggers/tsconfig.lib.json",
+              "libs/ui-kits/ngx/navigation/triggers/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/triggers/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/navigation/triggers/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/navigation/triggers/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/navigation/triggers/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {

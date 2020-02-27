@@ -1,0 +1,39 @@
+@import 'libs/sass/mixins';
+
+:host {
+  position: fixed;
+  @include flexbox();
+  @include flex-direction(column);
+  @include justify-content(space-around);
+  @include align-items(flex-end);
+  height: 1.7rem;
+  right: 1.5rem;
+  top: 1.5rem;
+  z-index: 9999;
+}
+
+.burger__top-bun,
+.burger__patty,
+.burger__bottom-bun {
+  position: relative;
+  width: 1.85rem;
+  height: 2pt;
+  background: #616161;
+  border-radius: 3pt;
+}
+
+.burger__patty {
+  @include transform-origin(center center);
+}
+
+.burger__patty {
+  width: 1.5rem;
+}
+
+.burger__top-bun {
+  @include transform-origin(center center);
+}
+
+.burger__bottom-bun {
+  @include transform-origin(left center);
+}

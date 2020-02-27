@@ -241,6 +241,9 @@
     },
     "ui-kits-ngx-navigation-mobile-tile": {
       "tags": []
+    },
+    "ui-kits-ngx-navigation-triggers": {
+      "tags": []
     }
   }
 }

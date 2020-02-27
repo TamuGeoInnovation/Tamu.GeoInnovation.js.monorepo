@@ -3,18 +3,26 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { TileService } from '../../services/tile.service';
-import { baseShowHideAnimation, submenuShowHideAnimation } from '../../animations/animations';
+import { baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation } from '../../animations/animations';
 
 @Component({
   selector: 'tamu-gisc-tile-navigation',
   templateUrl: './tile-navigation.component.html',
   styleUrls: ['./tile-navigation.component.scss'],
   providers: [TileService],
-  animations: [baseShowHideAnimation, submenuShowHideAnimation]
+  animations: [baseShowHideAnimation, submenuShowHideAnimation, tileStaggerAnimation]
 })
 export class TileNavigationComponent implements OnInit, OnDestroy {
   @Input()
   public toggle: Observable<boolean>;
+
+  /**
+   * Renders a default "x" button to close the tile menu.
+   *
+   * Disable if a custom tile trigger is desired;
+   */
+  @Input()
+  public defaultToggle = true;
 
   public menuVisible = false;
 

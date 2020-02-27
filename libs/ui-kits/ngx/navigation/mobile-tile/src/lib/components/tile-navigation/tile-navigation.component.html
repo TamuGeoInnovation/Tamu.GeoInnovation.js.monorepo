@@ -1,7 +1,7 @@
-<div [@baseShowHideAnimation] *ngIf="menuVisible" class="menu-host">
-  <div class="close material-icons" tabindex="0" (click)="switchState()">close</div>
+<div @baseShowHideAnimation @tileStaggerAnimation *ngIf="menuVisible" class="menu-host">
+  <div class="close material-icons" tabindex="0" (click)="switchState()" *ngIf="showNativeToggle">close</div>
 
-  <div class="tiles" [@submenuShowHideAnimation] *ngIf="!(service.submenuActive | async)">
+  <div class="tiles" @submenuShowHideAnimation *ngIf="!(service.submenuActive | async)">
     <ng-content select="tamu-gisc-tile"></ng-content>
   </div>
 

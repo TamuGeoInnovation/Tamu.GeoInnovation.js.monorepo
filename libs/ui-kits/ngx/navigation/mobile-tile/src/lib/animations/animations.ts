@@ -74,6 +74,30 @@ export const submenuShowHideAnimation = trigger('submenuShowHideAnimation', [
 export const tileStaggerAnimation = trigger('tileStaggerAnimation', [
   transition(':enter', [
     query(
+      '.tiles tamu-gisc-tile',
+      [
+        style({
+          opacity: 0,
+          transform: 'translate3d(0, 50px, 0)'
+        }),
+        stagger(-30, [
+          animate(
+            '.25s .3s ease',
+            style({
+              opacity: 1,
+              transform: 'none'
+            })
+          )
+        ])
+      ],
+      { optional: true }
+    )
+  ])
+]);
+
+export const submenuListStagger = trigger('submenuListStagger', [
+  transition(':enter', [
+    query(
       '.body p',
       [
         style({

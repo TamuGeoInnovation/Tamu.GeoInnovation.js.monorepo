@@ -1,8 +1,10 @@
 <!-- Persistent header -->
 <tamu-gisc-header *ngIf="!(rp.isMobile | async)"></tamu-gisc-header>
 
+<tamu-gisc-hamburger-trigger (poked)="mobileNavToggle.next($event)"></tamu-gisc-hamburger-trigger>
+
 <div *ngIf="(rp.isMobile | async)">
-  <tamu-gisc-tile-navigation [toggle]="mobileNavToggle">
+  <tamu-gisc-tile-navigation [toggle]="mobileNavToggle" [defaultToggle]="false">
     <tamu-gisc-tile>
       <tamu-gisc-tile-icon><div class="material-icons">widgets</div></tamu-gisc-tile-icon>
       <tamu-gisc-tile-title>Services</tamu-gisc-tile-title>
@@ -50,8 +52,6 @@
       <tamu-gisc-tile-title>Login</tamu-gisc-tile-title>
     </tamu-gisc-tile>
   </tamu-gisc-tile-navigation>
-
-  <div class="faux-link" (click)="mobileNavToggle.next()">Click me for tiles</div>
 </div>
 
 <!-- View outlet. Site "pages" will load here (e.g. landing, services, cart, etc) -->

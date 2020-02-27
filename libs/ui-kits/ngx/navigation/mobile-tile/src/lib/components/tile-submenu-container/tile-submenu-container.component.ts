@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { TileService } from '../../services/tile.service';
-import { tileStaggerAnimation } from '../../animations/animations';
+import { submenuListStagger } from '../../animations/animations';
 
 @Component({
   selector: 'tamu-gisc-tile-submenu-container',
@@ -13,7 +13,7 @@ import { tileStaggerAnimation } from '../../animations/animations';
   // This animation apparently needs to be in a parent component, and not
   // in the self-component otherwise it can't query anything entering into view
   // because the whole thing is entering into view.
-  animations: [tileStaggerAnimation]
+  animations: [submenuListStagger]
 })
 export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   @ViewChild('container', { static: true, read: ViewContainerRef })
@@ -22,7 +22,7 @@ export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   private _$destroy: Subject<boolean> = new Subject();
 
   // Bind the animation to the host component
-  @HostBinding('@tileStaggerAnimation')
+  @HostBinding('@submenuListStagger')
   private _animation() {
     return true;
   }
