@@ -2,11 +2,13 @@
 
 :host {
   display: inherit;
+  position: relative;
   background: #ffffff;
   width: 100%;
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.05));
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
+  z-index: 1;
 }
 
 nav {
@@ -91,6 +93,7 @@ nav {
       border-radius: 5pt;
       left: 50%;
       top: 100%;
+      z-index: 1;
       @include transform-origin(top center);
       @include transform(translate3d(-50%, 0, 0) rotate3d(1, 0, 0, -15deg));
       @include transition(transform 0.15s, opacity 0.15s);

@@ -5,7 +5,7 @@
 <tamu-gisc-header-mobile *ngIf="(rp.isMobile | async)"></tamu-gisc-header-mobile>
 
 <!-- Persistent tile nav menu trigger -->
-<tamu-gisc-hamburger-trigger (poked)="mobileNavToggle.next($event)"></tamu-gisc-hamburger-trigger>
+<tamu-gisc-hamburger-trigger *ngIf="rp.isMobile | async" (poked)="mobileNavToggle.next($event)"></tamu-gisc-hamburger-trigger>
 
 <div *ngIf="(rp.isMobile | async)">
   <tamu-gisc-tile-navigation [toggle]="mobileNavToggle" [defaultToggle]="false">
@@ -39,6 +39,7 @@
       <tamu-gisc-tile-icon><div class="material-icons">help_outline</div></tamu-gisc-tile-icon>
       <tamu-gisc-tile-title>Support</tamu-gisc-tile-title>
       <tamu-gisc-tile-submenu *giscTileSubmenu>
+        <p>API Documentation</p>
         <p>Tutorials</p>
         <p>Bug Reporting</p>
         <p>Submit Address Correction</p>
@@ -58,10 +59,11 @@
   </tamu-gisc-tile-navigation>
 </div>
 
-<section id="content-placeholder">
-  <!-- View outlet. Site "pages" will load here (e.g. landing, services, cart, etc) -->
+<!-- <section [ngClass]="{'content-placeholder': (rp.isMobile | async)}">
   <router-outlet></router-outlet>
-</section>
+</section> -->
+
+<router-outlet></router-outlet>
 
 <!-- Persistent footer -->
 <tamu-gisc-footer></tamu-gisc-footer>

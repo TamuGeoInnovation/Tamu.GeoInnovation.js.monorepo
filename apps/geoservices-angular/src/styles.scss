@@ -3,6 +3,7 @@
 
 @import 'libs/sass/mixins';
 @import 'libs/sass/modules/forms';
+@import 'libs/sass/dom_flexbox';
 
 @import '~highlight.js/styles/atom-one-dark.css';
 
@@ -20,7 +21,8 @@ html {
   font-size: 16px;
   line-height: 1.5;
   font-family: $primary-font-family;
-  color: #424242;
+  // color: #424242;
+  color: #2d3e4c;
   background: hsla(200, 10%, 99%, 1);
   position: relative;
 }
@@ -43,21 +45,33 @@ section {
 h1,
 h2,
 h3,
+h4,
+h5 {
+  font-family: $primary-font-family;
+}
+
+h2,
+h3,
 h4 {
-  font-family: $secondary-font-family;
   font-weight: 400;
 }
 
 h1 {
   font-size: 2.75rem;
+  font-weight: 500;
 }
 
 h2 {
-  font-size: 2rem;
+  font-size: 2.1rem;
 }
 
 h3 {
   font-size: 1.5rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 400;
 }
 
 a,
@@ -559,5 +573,19 @@ tamu-gisc-tabs {
 form {
   .form-section {
     margin-bottom: 2.5rem;
+  }
+}
+
+.slanted-backdrop {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transform: skewY(-2deg) scale(2.3) translateY(-15%);
+  z-index: -1;
+
+  &.reflected {
+    transform: skewY(2deg) scale(2.3) translateY(-15%);
   }
 }
