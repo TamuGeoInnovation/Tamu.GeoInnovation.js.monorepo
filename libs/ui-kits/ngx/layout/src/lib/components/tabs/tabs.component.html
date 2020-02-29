@@ -1,5 +1,9 @@
 <div class="tabs">
-  <p class="tab" *ngFor="let tab of tabs" (click)="switchTab(tab)" [ngClass]="{ active: tab.index === tabIndex }">{{ tab.label }}</p>
+  <div class="tab" *ngFor="let tab of tabs" (click)="switchTab(tab)" [ngClass]="{ active: tab.index === tabIndex }">
+    <p>{{ tab.label }}</p>
+  </div>
 </div>
 
-<div #content class="content"></div>
+<div class="content" [ngClass]="{forwards: contentDirection === 'forwards', reverse: contentDirection === 'reverse'}">
+  <div #content></div>
+</div>
