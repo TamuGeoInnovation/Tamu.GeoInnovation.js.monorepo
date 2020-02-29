@@ -40,7 +40,7 @@ export class TabsComponent implements AfterContentInit {
   public tabSizing: 'default' | 'contain' = 'default';
 
   /**
-   * Describes the placement of tabs vs. content for either direction setting.
+   * Describes the ordering of tabs vs content.
    *
    * - Forward: For row directions, sets the tabs above the content. For column directions,
    * sets the tabs left of the content.
@@ -50,7 +50,7 @@ export class TabsComponent implements AfterContentInit {
    * Defaults to `forwards`.
    */
   @Input()
-  public tabDirection: 'forward' | 'reverse' = 'forward';
+  public layoutDirection: 'forward' | 'reverse' = 'forward';
 
   /**
    * Describes the layout direction the tab content.
@@ -86,12 +86,12 @@ export class TabsComponent implements AfterContentInit {
 
   @HostBinding('class.forward')
   private get _tabDirectionForwardBinding() {
-    return this.tabDirection === 'forward';
+    return this.layoutDirection === 'forward';
   }
 
   @HostBinding('class.reverse')
   private get _tabDirectionReverseBinding() {
-    return this.tabDirection === 'reverse';
+    return this.layoutDirection === 'reverse';
   }
 
   @HostBinding('class.tab-sizing-contain')
@@ -115,11 +115,13 @@ export class TabsComponent implements AfterContentInit {
 
   public switchTab(tab?: Tab) {
     if (tab !== undefined) {
+      // Only render tab if the selected tab index is different than the current.
       if (tab.index !== this.tabIndex) {
         this.tabIndex = tab.index;
         this.renderTab();
       }
     } else {
+      // Default tab to render on initialization.
       this.renderTab();
     }
   }
