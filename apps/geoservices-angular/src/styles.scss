@@ -333,12 +333,15 @@ tamu-gisc-tabs {
       content: '';
       position: absolute;
       background: #e0e0e0;
-      z-index: -1;
+      z-index: 0;
     }
 
     .tab {
       font-size: 1.05rem;
+      border: 2pt solid transparent;
       cursor: pointer;
+      box-sizing: border-box;
+      white-space: nowrap;
       @include no-select;
 
       p {
@@ -348,6 +351,7 @@ tamu-gisc-tabs {
       &.active {
         font-weight: 500;
         color: #212121;
+        z-index: 1;
       }
     }
   }
@@ -428,7 +432,7 @@ tamu-gisc-tabs {
 
       // Apply mostly vertical padding to tabs
       .tab {
-        padding: 0.5rem 1rem;
+        padding: 1rem;
 
         &.active {
           border-right: $border;

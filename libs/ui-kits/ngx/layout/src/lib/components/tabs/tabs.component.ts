@@ -42,7 +42,7 @@ export class TabsComponent implements AfterContentInit {
   /**
    * Describes the placement of tabs vs. content for either direction setting.
    *
-   * - Forwards: For row directions, sets the tabs above the content. For column directions,
+   * - Forward: For row directions, sets the tabs above the content. For column directions,
    * sets the tabs left of the content.
    * - Reverse:  For row directions, sets the tabs below the content. For column directions,
    * sets the tabs right of the content.
@@ -50,19 +50,23 @@ export class TabsComponent implements AfterContentInit {
    * Defaults to `forwards`.
    */
   @Input()
-  public tabDirection: 'forwards' | 'reverse' = 'forwards';
+  public tabDirection: 'forward' | 'reverse' = 'forward';
 
   /**
    * Describes the layout direction the tab content.
    *
-   * - Forwards: Displays as is marked up.
+   * - Forward: Displays as is marked up.
    * - Reverse: Reverses the display direction relative to how it was marked up.
    *
-   * Defaults to `forwards`.
+   * Defaults to `forward`.
    */
 
   @Input()
-  public contentDirection: 'forwards' | 'reverse' = 'forwards';
+  public contentDirection: 'forward' | 'reverse' = 'forward';
+
+  public tabIndex = 0;
+
+  public tabs: Array<Tab>;
 
   @ViewChild('content', { static: true, read: ViewContainerRef })
   private _contentView: ViewContainerRef;
@@ -70,9 +74,24 @@ export class TabsComponent implements AfterContentInit {
   @ContentChildren(TabComponent)
   private _tabList: QueryList<TabComponent>;
 
-  @HostBinding('class')
-  private get _classBindings() {
-    return [this.tabLayout, this.tabDirection].join(' ');
+  @HostBinding('class.row')
+  private get _layoutRowBinding() {
+    return this.tabLayout === 'row';
+  }
+
+  @HostBinding('class.column')
+  private get _layoutColumnBinding() {
+    return this.tabLayout === 'column';
+  }
+
+  @HostBinding('class.forward')
+  private get _tabDirectionForwardBinding() {
+    return this.tabDirection === 'forward';
+  }
+
+  @HostBinding('class.reverse')
+  private get _tabDirectionReverseBinding() {
+    return this.tabDirection === 'reverse';
   }
 
   @HostBinding('class.tab-sizing-contain')
@@ -80,9 +99,7 @@ export class TabsComponent implements AfterContentInit {
     return this.tabSizing === 'contain';
   }
 
-  public tabIndex = 0;
-
-  public tabs: Array<Tab>;
+  constructor() {}
 
   public ngAfterContentInit() {
     this.tabs = this._tabList.map((t, i) => {
@@ -96,13 +113,18 @@ export class TabsComponent implements AfterContentInit {
     this.switchTab();
   }
 
-  constructor() {}
-
   public switchTab(tab?: Tab) {
     if (tab !== undefined) {
-      this.tabIndex = tab.index;
+      if (tab.index !== this.tabIndex) {
+        this.tabIndex = tab.index;
+        this.renderTab();
+      }
+    } else {
+      this.renderTab();
     }
+  }
 
+  private renderTab() {
     this._contentView.clear();
     this._contentView.createEmbeddedView(this.tabs[this.tabIndex].template);
   }
