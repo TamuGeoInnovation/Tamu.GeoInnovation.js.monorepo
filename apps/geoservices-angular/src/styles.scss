@@ -35,10 +35,8 @@ body {
 section {
   margin: 2.5rem 0;
 
-  &.internal {
-    .section-header {
-      margin-bottom: 2rem;
-    }
+  .section-header {
+    margin-bottom: 2rem;
   }
 }
 
@@ -72,6 +70,11 @@ h3 {
 h4 {
   font-size: 1.25rem;
   font-weight: 400;
+}
+
+h5 {
+  font-size: 1.05rem;
+  font-weight: 500;
 }
 
 a,
@@ -736,5 +739,25 @@ form {
     margin-top: 0;
     font-size: 0.85rem;
     color: #616161;
+  }
+}
+
+.feature-tile-container {
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  h5 {
+    text-align: center;
+    margin-bottom: 0.4rem;
+  }
+
+  .feature-tile {
+    width: 12rem;
+    padding: 1rem 1rem 1.5rem 1rem;
+    margin: 1rem;
+    border: 1pt solid $lightened-inactive-color;
+    border-radius: 5pt;
   }
 }
