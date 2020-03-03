@@ -2,7 +2,7 @@
 
 :host {
   display: block;
-  padding: 2rem 0;
+  padding: 2.5rem 0;
   background: #ffffff;
   color: inherit;
 }
@@ -24,13 +24,48 @@ ul {
   }
 }
 
-.copyright {
+.copyright,
+.legal,
+.attribute {
   @include flexbox();
   @include flex-direction(row);
+  @include justify-content(center);
   @include flex-wrap(wrap);
+  margin-top: 2rem;
+
+  & > [class^='column'] {
+    display: inherit;
+    @include flex-direction(row);
+    @include justify-content(center);
+    @include flex-wrap(wrap);
+  }
 
   p,
   a {
-    font-size: 0.8rem;
+    color: #757575;
+    font-size: 0.75rem;
+    font-weight: inherit;
+    margin-top: 0;
+    margin-bottom: 0;
   }
+
+  p {
+    white-space: nowrap;
+    // Apply an inline separator to all links except the last
+    &:not(:last-child) {
+      &::after {
+        content: '-';
+        position: block;
+        margin: 0 0.2rem;
+      }
+    }
+  }
+}
+
+.legal {
+  margin-top: 1.75rem;
+}
+
+.attribute {
+  margin-top: 0.5rem;
 }
