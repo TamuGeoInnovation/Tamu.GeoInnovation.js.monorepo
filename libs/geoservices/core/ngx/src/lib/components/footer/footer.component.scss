@@ -1,0 +1,36 @@
+@import 'libs/sass/mixins';
+
+:host {
+  display: block;
+  padding: 2rem 0;
+  background: #ffffff;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+  margin-left: 0;
+  color: inherit;
+
+  li {
+    font-size: 0.9rem;
+    color: inherit;
+
+    a {
+      color: inherit;
+      font-weight: inherit;
+      font-size: inherit;
+    }
+  }
+}
+
+.copyright {
+  @include flexbox();
+  @include flex-direction(row);
+  @include flex-wrap(wrap);
+
+  p,
+  a {
+    font-size: 0.8rem;
+  }
+}
