@@ -22,11 +22,9 @@ export class GeocodingComponent implements OnInit {
       state: 'ca',
       zip: 99210
     });
+
+    this.result = this.geocode.execute().pipe(switchMap((r) => of(JSON.stringify(r, null, '   '))));
   }
 
   public ngOnInit() {}
-
-  public execute() {
-    this.result = this.geocode.execute().pipe(switchMap((r) => of(JSON.stringify(r, null, '   '))));
-  }
 }

@@ -827,23 +827,4 @@ form {
   }
 }
 
-.code-executor {
-  pre {
-    @include flexbox();
-    @include flex-direction(column);
-    margin: 1rem;
-  }
-}
 
-.code-block-manual-execute {
-  position: relative;
-
-  span.material-icons {
-    color: #98c379;
-    position: absolute;
-    bottom: 1.5rem;
-    right: 1rem;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-}

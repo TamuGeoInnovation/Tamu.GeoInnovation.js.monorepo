@@ -55,22 +55,10 @@
       <p>Our geocoding service provides a simple, unified, language-agnostic API that enables developers to easily integrate our geocoding service into custom applications. We provide a handful of first-party libraries for common programming langues that further accelerates development so you can spend less time worrying about the intricacies of the API and more time focusing on what matters; your application.</p>
     </div>
 
-    <div class="flex flex-column align-center code-executor">
+    <div class="flex flex-column align-center">
       <div class="column7">
-        <pre class="code-block-manual-execute">
-          <code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/services/geocoding/sample.js' | codeFromUrl | async" [lineNumbers]='true'></code>
-          <span class="material-icons" title="Execute Geocode" (click)="execute()">play_circle_outline</span>
-        </pre>
+        <tamu-gisc-code-runner [code]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/services/geocoding/sample.js' | codeFromUrl | async" [result]="result"></tamu-gisc-code-runner>
       </div>
-<!-- 
-      <tamu-gisc-accordion >
-        <tamu-gisc-accordion-header>thing</tamu-gisc-accordion-header>
-        <tamu-gisc-accordion-content>
-          <pre>
-            <code ></code>
-          </pre>
-        </tamu-gisc-accordion-content>
-      </tamu-gisc-accordion> -->
 
       <a [routerLink]="['/api']">Read the documentation ></a>
     </div>

@@ -244,6 +244,9 @@
     },
     "ui-kits-ngx-navigation-triggers": {
       "tags": []
+    },
+    "ui-kits-ngx-layout-code": {
+      "tags": []
     }
   }
 }

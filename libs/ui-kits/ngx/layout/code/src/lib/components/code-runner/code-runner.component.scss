@@ -1,0 +1,92 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flexbox();
+  @include flex-direction(column);
+  position: relative;
+  margin: 1rem auto;
+}
+
+.code,
+.result {
+  position: relative;
+
+  pre {
+    @include flexbox();
+    @include flex-direction(column);
+  }
+}
+
+span.trigger {
+  color: #98c379;
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.code {
+  // Reset the bottom border and border radius of the code block just
+  // above the code runner action bar to create a seamless gap between
+  // the two elements.
+  code {
+    border-bottom: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+.result {
+  code {
+    border-top: none;
+    border-radius: 0 0 3pt 3pt;
+  }
+}
+
+.action-bar {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(flex-end);
+  background: #fcfdfd;
+  border-style: solid;
+  border-color: #8a92a8;
+  border-width: 0 1.5pt 1.5pt 1.5pt;
+  border-radius: 0 0 3pt 3pt;
+
+  p {
+    font-size: 0.9rem;
+    margin: 0;
+    padding: 0.6rem 0.7rem;
+    color: inherit;
+  }
+
+  [class^='action-bar__action'] {
+    display: inherit;
+    @include flex-direction(row);
+    @include align-items(center);
+    cursor: pointer;
+
+    .material-icons {
+      font-size: 1.1rem;
+      margin-right: 0.4rem;
+      color: inherit;
+    }
+
+    // Target the "copy" action bar action
+    &[class*='--copy'] {
+      color: #6c90ea;
+    }
+
+    // Target the "run" action bar action
+    &[class*='--run'] {
+      background: #6c90ea;
+      color: #fafafa;
+    }
+  }
+
+  &.result-available {
+    border-bottom: none;
+    border-radius: 0;
+  }
+}

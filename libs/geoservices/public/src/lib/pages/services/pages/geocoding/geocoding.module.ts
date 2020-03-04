@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+
+import { UILayoutCodeModule } from '@tamu-gisc/ui-kits/ngx/layout/code';
 
 import { GeocodingComponent } from './geocoding.component';
 
@@ -15,7 +16,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), HighlightPlusModule, UILayoutModule],
+  imports: [CommonModule, RouterModule.forChild(routes), HighlightPlusModule, UILayoutCodeModule],
   declarations: [GeocodingComponent]
 })
 export class GeocodingModule {}
