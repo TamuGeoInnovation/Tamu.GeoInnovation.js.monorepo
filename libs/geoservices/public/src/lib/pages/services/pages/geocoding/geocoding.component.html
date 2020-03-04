@@ -1,0 +1,78 @@
+<section class="content-fill-pad" style="background: linear-gradient(-30deg, #E1F5FE, #ffffff, #ffffff)">
+  <div class="container12">
+    <div class="column6 flex flex-row">
+      <div class="intro-logo">
+        <img class="service-logo x-small" src="assets/img/graphics/services/geocoding.svg" alt="Geocoding Service Logo" />
+      </div>
+      <div>
+        <h1>Geocoding</h1>
+        <h4>Make address data work for you.</h4>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-fill-pad">
+  <div class="container12 flex flex-column align-center">
+    <div class="column8 flex flex-column align-center text-content text-content--center">
+      <h2>Location Is Key</h2>
+      <!-- <h4>Data that's easy to trust</h4> -->
+      <p>Geocoding is the process of transforming a normal human-readable address and into a pair of Earth latitude and longitude values. The applications of geocoding are many from simple parsing routing endpoints for directions to address validation and analysis.</p>
+    </div>
+  </div>
+</section>
+
+<section class="content-fill-pad text-content text-content--right" style="background: #ffffff;">
+  <div class="container12 flex flex-row-reverse">
+    <div class="column6 flex justify-end">
+      <h2>Batch Geocoding</h2>
+      <h4>Manage large datasets with ease</h4>
+
+      <p>If you have a database of address that you would like to have latitude and longitude values for upload your database and run our geocoding service over it. The process occurs on our servers, so all you have to do is sit back and relax; we'll notify you when the process is complete and results available for download.</p>
+
+      <p class="faux-link">Upload a database ></p>
+    </div>
+  </div>
+</section>
+
+<section class="content-fill-pad">
+  <div class="container12">
+    <div class="column6">
+      <h2>Desktop Client</h2>
+      <h4>Process data locally</h4>
+      <p>Have some data you don't want to upload to our servers? Make use of our standalone desktop geocoder to execute batch geocoding processes from your local computer.</p>
+
+      <p class="faux-link">Download the desktop client ></p>
+    </div>
+  </div>
+</section>
+
+<section class="content-fill-pad" style="background: #ffffff">
+  <div class="container12 flex justify-center">
+    <div class="column8 text-content text-content--center">
+      <h2>Simple and Intuitive API</h2>
+      <h4>Built by developers, for developers</h4>
+      <p>Our geocoding service provides a simple, unified, language-agnostic API that enables developers to easily integrate our geocoding service into custom applications. We provide a handful of first-party libraries for common programming langues that further accelerates development so you can spend less time worrying about the intricacies of the API and more time focusing on what matters; your application.</p>
+    </div>
+
+    <div class="flex flex-column align-center code-executor">
+      <div class="column7">
+        <pre class="code-block-manual-execute">
+          <code [highlight]="'https://raw.githubusercontent.com/Proantagonist/Geoservices-Doc-Test/master/services/geocoding/sample.js' | codeFromUrl | async" [lineNumbers]='true'></code>
+          <span class="material-icons" title="Execute Geocode" (click)="execute()">play_circle_outline</span>
+        </pre>
+      </div>
+<!-- 
+      <tamu-gisc-accordion >
+        <tamu-gisc-accordion-header>thing</tamu-gisc-accordion-header>
+        <tamu-gisc-accordion-content>
+          <pre>
+            <code ></code>
+          </pre>
+        </tamu-gisc-accordion-content>
+      </tamu-gisc-accordion> -->
+
+      <a [routerLink]="['/api']">Read the documentation ></a>
+    </div>
+  </div>
+</section>

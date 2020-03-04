@@ -1,11 +1,11 @@
 <header class="container12">
   <nav class="column12">
-    <img class="logo" src="assets/img/logos/logo.svg" alt="Geoservices Logo" />
+    <img class="logo" src="assets/img/logos/logo.svg" alt="Geoservices Logo" [routerLink]="['/']" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="router-link-active" />
 
     <div class="menu">
       <ul>
         <li class="dropdown">
-          <a href="" class="dropdown__link">Services <span class="material-icons">keyboard_arrow_down</span></a>
+          <a [routerLink]="['services']" routerLinkActive="router-link-active" class="dropdown__link">Services <span class="material-icons">keyboard_arrow_down</span></a>
           <ul class="dropdown__menu">
             <li>
               <a href="">Address Processing</a>
@@ -13,7 +13,7 @@
             </li>
 
             <li>
-              <a href="">Geocoding</a>
+              <a [routerLink]="['services/geocoding']" routerLinkActive="router-link-active">Geocoding</a>
               <p class="dropdown__menu__descriptor">Turn address data into latitude and longitude values.</p>
             </li>
 

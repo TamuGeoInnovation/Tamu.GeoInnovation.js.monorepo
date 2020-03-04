@@ -21,7 +21,7 @@ html {
   font-size: 16px;
   line-height: 1.5;
   font-family: $primary-font-family;
-  color: #2d3e4c;
+  color: #62707d;
   background: hsla(200, 10%, 99%, 1);
   position: relative;
 }
@@ -41,6 +41,12 @@ section {
   .section-block {
     margin-bottom: 2rem;
   }
+
+  &.content-fill-pad {
+    position: relative;
+    padding: 6.5rem 0;
+    margin: 0;
+  }
 }
 
 h1,
@@ -49,6 +55,14 @@ h3,
 h4,
 h5 {
   font-family: $primary-font-family;
+}
+
+h1,
+h2,
+h3.alt,
+h4.alt,
+h5.alt {
+  color: #2d3e4c;
 }
 
 h2,
@@ -732,6 +746,9 @@ form {
 }
 
 .service-example {
+  @include flexbox();
+  @include flex-direction(column);
+
   img {
     box-sizing: border-box;
     padding: 1rem;
@@ -741,7 +758,6 @@ form {
   p {
     margin-top: 0;
     font-size: 0.85rem;
-    color: #616161;
   }
 }
 
@@ -753,7 +769,7 @@ form {
 
   h5 {
     text-align: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.65rem;
   }
 
   .feature-tile {
@@ -776,5 +792,58 @@ form {
 
   &:hover {
     box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.service-logo {
+  // Size Limiter
+  height: 20rem;
+
+  &.x-small {
+    height: 3.5rem;
+  }
+
+  &.small {
+    height: 4.5rem;
+  }
+}
+
+// Targets the service page "hero" header with logo
+.intro-logo {
+  margin: 0.8rem 1.5rem;
+}
+
+.text-content {
+  &.text-content--right {
+    text-align: right;
+  }
+
+  &.text-content--left {
+    text-align: left;
+  }
+
+  &.text-content--center {
+    text-align: center;
+  }
+}
+
+.code-executor {
+  pre {
+    @include flexbox();
+    @include flex-direction(column);
+    margin: 1rem;
+  }
+}
+
+.code-block-manual-execute {
+  position: relative;
+
+  span.material-icons {
+    color: #98c379;
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
   }
 }

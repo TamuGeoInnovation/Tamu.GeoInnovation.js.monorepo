@@ -12,7 +12,17 @@ const routes: Routes = [
   {
     path: '',
     component: GeoservicesPublicComponent,
-    loadChildren: () => import('./pages/landing/landing.module').then((m) => m.LandingModule)
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadChildren: () => import('./pages/landing/landing.module').then((m) => m.LandingModule)
+      },
+      {
+        path: 'services',
+        loadChildren: () => import('./pages/services/services.module').then((m) => m.ServicesModule)
+      }
+    ]
   }
 ];
 

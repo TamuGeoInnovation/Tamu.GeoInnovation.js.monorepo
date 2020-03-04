@@ -1,11 +1,5 @@
 @import 'libs/sass/mixins';
 
-section {
-  position: relative;
-  padding: 6.5rem 0;
-  margin: 0;
-}
-
 .product-tiles {
   @include flexbox();
   @include flex-direction(row);
