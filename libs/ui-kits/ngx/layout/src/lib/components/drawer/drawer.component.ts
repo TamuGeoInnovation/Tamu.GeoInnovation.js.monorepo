@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { AbstractSlidingDrawerComponent } from '../../models/abstract-sliding-drawer/abstract-sliding-drawer.component';
+import { AbstractSlidingDrawerComponent } from '../../abstracts/abstract-sliding-drawer/abstract-sliding-drawer.component';
 import { slide } from '../../animations/drawer';
 
 @Component({

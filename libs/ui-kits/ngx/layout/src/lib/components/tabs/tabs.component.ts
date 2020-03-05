@@ -1,14 +1,6 @@
-import {
-  Component,
-  ContentChildren,
-  QueryList,
-  ViewChild,
-  ViewContainerRef,
-  TemplateRef,
-  AfterContentInit,
-  Input,
-  HostBinding
-} from '@angular/core';
+import { Component, ContentChildren, QueryList, AfterContentInit, Input, HostBinding } from '@angular/core';
+
+import { AbstractContentReplacerComponent } from '../../abstracts/abstract-content-swap/abstract-content-replacer.component';
 import { TabComponent } from './tab/tab.component';
 
 @Component({
@@ -16,17 +8,9 @@ import { TabComponent } from './tab/tab.component';
   templateUrl: './tabs.component.html',
   styleUrls: ['./tabs.component.scss']
 })
-export class TabsComponent implements AfterContentInit {
-  /**
-   * Describes the tab orientation.
-   *
-   * Row: places the tabs along the x-axis.
-   * Column: places the tabs along the y-axis.
-   *
-   * Defaults to `row`.
-   */
-  @Input()
-  public tabLayout: 'row' | 'column' = 'row';
+export class TabsComponent extends AbstractContentReplacerComponent implements AfterContentInit {
+  @ContentChildren(TabComponent)
+  public contentList: QueryList<TabComponent>;
 
   /**
    * Describes the tab sizing scaling relationship.
@@ -64,26 +48,6 @@ export class TabsComponent implements AfterContentInit {
   @Input()
   public contentDirection: 'forward' | 'reverse' = 'forward';
 
-  public tabIndex = 0;
-
-  public tabs: Array<Tab>;
-
-  @ViewChild('content', { static: true, read: ViewContainerRef })
-  private _contentView: ViewContainerRef;
-
-  @ContentChildren(TabComponent)
-  private _tabList: QueryList<TabComponent>;
-
-  @HostBinding('class.row')
-  private get _layoutRowBinding() {
-    return this.tabLayout === 'row';
-  }
-
-  @HostBinding('class.column')
-  private get _layoutColumnBinding() {
-    return this.tabLayout === 'column';
-  }
-
   @HostBinding('class.forward')
   private get _tabDirectionForwardBinding() {
     return this.layoutDirection === 'forward';
@@ -98,42 +62,4 @@ export class TabsComponent implements AfterContentInit {
   private get _tabSizingBinding() {
     return this.tabSizing === 'contain';
   }
-
-  constructor() {}
-
-  public ngAfterContentInit() {
-    this.tabs = this._tabList.map((t, i) => {
-      return {
-        index: i,
-        label: t.label,
-        template: t.template
-      };
-    });
-
-    this.switchTab();
-  }
-
-  public switchTab(tab?: Tab) {
-    if (tab !== undefined) {
-      // Only render tab if the selected tab index is different than the current.
-      if (tab.index !== this.tabIndex) {
-        this.tabIndex = tab.index;
-        this.renderTab();
-      }
-    } else {
-      // Default tab to render on initialization.
-      this.renderTab();
-    }
-  }
-
-  private renderTab() {
-    this._contentView.clear();
-    this._contentView.createEmbeddedView(this.tabs[this.tabIndex].template);
-  }
-}
-
-interface Tab {
-  index: number;
-  label: string;
-  template: TemplateRef<TabComponent>;
 }

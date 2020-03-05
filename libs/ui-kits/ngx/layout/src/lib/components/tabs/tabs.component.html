@@ -1,6 +1,6 @@
 <div class="tabs">
-  <div class="tab" *ngFor="let tab of tabs" (click)="switchTab(tab)" [ngClass]="{ active: tab.index === tabIndex }">
-    <p>{{ tab.label }}</p>
+  <div class="tab" *ngFor="let toggle of toggles" (click)="swapContent(toggle)" [ngClass]="{ active: toggle.index === toggleIndex }">
+    <p>{{ toggle.label }}</p>
   </div>
 </div>
 
