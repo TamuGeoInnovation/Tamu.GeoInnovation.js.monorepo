@@ -20,6 +20,9 @@ import { AccordionDirective } from './components/accordion/directives/accordion.
 import { AccordionHeaderDirective } from './components/accordion/directives/accordion-header.directive';
 import { AccordionContentDirective } from './components/accordion/directives/accordion-content.directive';
 import { StepperComponent } from './components/stepper/stepper.component';
+import { StepComponent } from './components/stepper/components/step/step.component';
+import { StepToggleComponent } from './components/stepper/components/step-toggle/step-toggle.component';
+import { StepperToggleDirective } from './components/stepper/directives/stepper-toggle.directive';
 
 @NgModule({
   imports: [CommonModule],
@@ -38,7 +41,10 @@ import { StepperComponent } from './components/stepper/stepper.component';
     AccordionDirective,
     AccordionHeaderDirective,
     AccordionContentDirective,
-    StepperComponent
+    StepperComponent,
+    StepComponent,
+    StepToggleComponent,
+    StepperToggleDirective
   ],
   exports: [
     DrawerComponent,
@@ -51,7 +57,11 @@ import { StepperComponent } from './components/stepper/stepper.component';
     TabComponent,
     AccordionDirective,
     AccordionHeaderDirective,
-    AccordionContentDirective
+    AccordionContentDirective,
+    StepperComponent,
+    StepComponent,
+    StepToggleComponent,
+    StepperToggleDirective
   ]
 })
 export class UILayoutModule {}

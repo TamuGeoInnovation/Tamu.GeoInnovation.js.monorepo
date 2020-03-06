@@ -61,19 +61,54 @@
 
       <p>If you have a database of address that you would like to have latitude and longitude values for upload your database and run our geocoding service over it. The process occurs on our servers, so all you have to do is sit back and relax; we'll notify you when the process is complete and results available for download.</p>
 
+      <tamu-gisc-stepper>
+        <tamu-gisc-step>
+          <ng-template giscStepperToggle>
+            <span class="material-icons">cloud_upload</span>
+            <p>Upload</p>
+          </ng-template>
+
+          <p>Upload as many data files as you have. Our geocoder supports Access databases as well as CSV and TSV formatted datasets.</p>
+        </tamu-gisc-step>
+
+        <tamu-gisc-step>
+          <ng-template giscStepperToggle>
+            <span class="material-icons">filter_frames</span>
+            <p>Select</p>
+          </ng-template>
+
+          <p>Is your data less-than ideally clean? No problem! Our systems allow you to choose exactly what files and parts should be processed. This enables you to get the most out of your credits with very minimal effort.</p>
+        </tamu-gisc-step>
+
+        <tamu-gisc-step>
+          <ng-template giscStepperToggle>
+            <span class="material-icons">web</span>
+            <p>Describe</p>
+          </ng-template>
+
+          <p>With easy click and drag tools, tell our geocoder how your data is structured or how it should interpret it.</p>
+        </tamu-gisc-step>
+
+        <tamu-gisc-step>
+          <ng-template giscStepperToggle>
+            <span class="material-icons">offline_bolt</span>
+            <p>Process</p>
+          </ng-template>
+
+          <p>Go with the basics or take advantage of our many advanced geocoding settings and fine tune your results. Start the process, sit back and let us do the rest.</p>
+        </tamu-gisc-step>
+
+        <tamu-gisc-step>
+          <ng-template giscStepperToggle>
+            <span class="material-icons">done_all</span>
+            <p>Complete</p>
+          </ng-template>
+
+          <p>Once all of your files and data have been processed, we'll send you a notification via email where you'll be able to download your results.</p>
+        </tamu-gisc-step>
+      </tamu-gisc-stepper>
+
       <p class="faux-link">Upload a database ></p>
-    </div>
-  </div>
-</section>
-
-<section class="content-fill-pad">
-  <div class="container12">
-    <div class="column6">
-      <h2>Desktop Client</h2>
-      <h4>Process data locally</h4>
-      <p>Have some data you don't want to upload to our servers? Make use of our standalone desktop geocoder to execute batch geocoding processes from your local computer.</p>
-
-      <p class="faux-link">Download the desktop client ></p>
     </div>
   </div>
 </section>

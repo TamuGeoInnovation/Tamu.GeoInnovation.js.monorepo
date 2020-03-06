@@ -214,7 +214,7 @@ table {
 }
 
 .material-icons {
-  color: #bdbdbd;
+  color: inherit;
   font-size: 1.4rem;
   @include transition(color 0.3s);
 
@@ -827,4 +827,49 @@ form {
   }
 }
 
+//
+// Stepper component
+//
 
+tamu-gisc-stepper {
+  margin: 2rem 0;
+
+  .stepper__steps {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(space-between);
+  }
+}
+
+tamu-gisc-step-toggle {
+  cursor: pointer;
+  padding: 1rem;
+  position: relative;
+  color: lighten($inactive-color, 10%);
+  @include no-select();
+
+  .material-icons {
+    font-size: 1.75rem;
+  }
+
+  p {
+    margin: 0.3rem;
+  }
+
+  &.active {
+    color: $active-color;
+    font-weight: 500;
+  }
+
+  &:not(:last-child) {
+    &::after {
+      content: '';
+      height: 1pt;
+      width: 50%;
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      background: #e0e0e0;
+    }
+  }
+}

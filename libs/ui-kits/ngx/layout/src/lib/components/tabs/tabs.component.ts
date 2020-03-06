@@ -10,7 +10,7 @@ import { TabComponent } from './tab/tab.component';
 })
 export class TabsComponent extends AbstractContentReplacerComponent implements AfterContentInit {
   @ContentChildren(TabComponent)
-  public contentList: QueryList<TabComponent>;
+  public toggleList: QueryList<TabComponent>;
 
   /**
    * Describes the tab sizing scaling relationship.

@@ -9,5 +9,5 @@ export class AbstractContentReplacerToggleComponent {
   public label: string;
 
   @ViewChild('template', { static: true })
-  public template: TemplateRef<AbstractContentReplacerToggleComponent>;
+  public template: TemplateRef<unknown>;
 }

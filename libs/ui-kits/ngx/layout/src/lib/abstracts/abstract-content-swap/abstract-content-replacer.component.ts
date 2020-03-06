@@ -1,14 +1,4 @@
-import {
-  Component,
-  Input,
-  ViewChild,
-  ContentChildren,
-  ViewContainerRef,
-  QueryList,
-  AfterContentInit,
-  TemplateRef,
-  HostBinding
-} from '@angular/core';
+import { Component, Input, ContentChildren, QueryList, AfterContentInit, TemplateRef, HostBinding } from '@angular/core';
 
 import { AbstractContentReplacerToggleComponent } from './abstracts/abstract-content-replacer-toggle/abstract-content-replacer-toggle.component';
 
@@ -26,30 +16,40 @@ export class AbstractContentReplacerComponent implements AfterContentInit {
    * Defaults to `row`.
    */
   @Input()
-  public tabLayout: 'row' | 'column' = 'row';
+  public toggleLayout: 'row' | 'column' = 'row';
 
+  /**
+   * Default starting toggle index.
+   *
+   * Defaults to `0`;
+   */
+  @Input()
   public toggleIndex = 0;
 
-  public toggles: Array<AbstractContentReplacerToggleComponent>;
+  /**
+   * Normalized list of toggles derived from `toggleList`
+   */
+  public toggles: Array<Toggle>;
 
+  /**
+   * A series of elements that represent the interaction-able components responsible
+   * for requesting a content render change.
+   */
   @ContentChildren(AbstractContentReplacerToggleComponent)
-  public contentList: QueryList<AbstractContentReplacerToggleComponent>;
-
-  @ViewChild('content', { static: true, read: ViewContainerRef })
-  private _contentView: ViewContainerRef;
+  public toggleList: QueryList<AbstractContentReplacerToggleComponent>;
 
   @HostBinding('class.row')
   private get _layoutRowBinding() {
-    return this.tabLayout === 'row';
+    return this.toggleLayout === 'row';
   }
 
   @HostBinding('class.column')
   private get _layoutColumnBinding() {
-    return this.tabLayout === 'column';
+    return this.toggleLayout === 'column';
   }
 
   public ngAfterContentInit() {
-    this.toggles = this.contentList.map((t, i) => {
+    this.toggles = this.toggleList.map((t, i) => {
       return {
         index: i,
         label: t.label,
@@ -60,27 +60,24 @@ export class AbstractContentReplacerComponent implements AfterContentInit {
     this.swapContent();
   }
 
-  public swapContent(tab?: Toggle) {
+  public swapContent(tab?: Toggle | number) {
     if (tab !== undefined) {
-      // Only render tab if the selected tab index is different than the current.
-      if (tab.index !== this.toggleIndex) {
-        this.toggleIndex = tab.index;
-        this.renderContent();
+      if (typeof tab === 'number') {
+        if (tab !== this.toggleIndex) {
+          this.toggleIndex = tab;
+        }
+      } else {
+        // Only render tab if the selected tab index is different than the current.
+        if (tab.index !== this.toggleIndex) {
+          this.toggleIndex = tab.index;
+        }
       }
-    } else {
-      // Default tab to render on initialization.
-      this.renderContent();
     }
-  }
-
-  public renderContent() {
-    this._contentView.clear();
-    this._contentView.createEmbeddedView(this.toggles[this.toggleIndex].template);
   }
 }
 
 interface Toggle {
   index: number;
   label: string;
-  template: TemplateRef<AbstractContentReplacerToggleComponent>;
+  template: TemplateRef<unknown>;
 }
