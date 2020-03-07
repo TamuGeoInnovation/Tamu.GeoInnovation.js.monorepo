@@ -868,3 +868,14 @@ tamu-gisc-checkbox-group {
     }
   }
 }
+// Card styles
+//
+
+.card {
+  border: 1pt solid lighten($inactive-color, 20%);
+  border-radius: 5pt;
+  padding: 0 1rem;
+  padding-bottom: 0.5rem;
+  box-sizing: border-box;
+  background: #ffffff;
+}
