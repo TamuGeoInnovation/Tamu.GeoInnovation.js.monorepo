@@ -837,7 +837,7 @@ tamu-gisc-stepper {
   .stepper__steps {
     @include flexbox();
     @include flex-direction(row);
-    @include justify-content(space-between);
+    @include justify-content(space-evenly);
   }
 }
 
@@ -865,10 +865,10 @@ tamu-gisc-step-toggle {
     &::after {
       content: '';
       height: 1pt;
-      width: 50%;
+      width: 5rem;
       position: absolute;
       top: 50%;
-      left: 100%;
+      left: 120%;
       background: #e0e0e0;
     }
   }

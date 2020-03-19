@@ -5,10 +5,11 @@ import {RouterModule} from '@angular/router'
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderMobileComponent } from './components/header-mobile/header-mobile.component';
+import { HeaderCovidComponent } from './components/header-covid/header-covid.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule],
-  declarations: [HeaderComponent, FooterComponent, HeaderMobileComponent],
-  exports: [HeaderComponent, FooterComponent, HeaderMobileComponent]
+  declarations: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent],
+  exports: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent]
 })
 export class GeoservicesCoreNgxModule {}

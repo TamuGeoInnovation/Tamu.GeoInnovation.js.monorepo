@@ -247,6 +247,9 @@
     },
     "ui-kits-ngx-layout-code": {
       "tags": []
+    },
+    "geoservices-covid": {
+      "tags": []
     }
   }
 }

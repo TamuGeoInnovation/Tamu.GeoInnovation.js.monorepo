@@ -2757,6 +2757,34 @@
           "styleext": "scss"
         }
       }
+    },
+    "geoservices-covid": {
+      "projectType": "library",
+      "root": "libs/geoservices/covid",
+      "sourceRoot": "libs/geoservices/covid/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/geoservices/covid/tsconfig.lib.json", "libs/geoservices/covid/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/geoservices/covid/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/geoservices/covid/jest.config.js",
+            "tsConfig": "libs/geoservices/covid/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/covid/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {
