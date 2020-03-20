@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+
 import { AccountComponent } from './account.component';
 
 const routes: Routes = [
@@ -26,7 +28,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule],
   declarations: [AccountComponent],
   exports: [RouterModule]
 })

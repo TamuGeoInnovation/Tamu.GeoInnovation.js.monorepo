@@ -26,7 +26,7 @@ const routes: Routes = [
   {
     path: 'internal',
     loadChildren: () => import('@tamu-gisc/geoservices/internal').then((m) => m.GeoservicesInternalModule),
-    canActivateChild: [AuthGuard]
+    // canActivateChild: [AuthGuard]
   },
   {
     path: 'api',

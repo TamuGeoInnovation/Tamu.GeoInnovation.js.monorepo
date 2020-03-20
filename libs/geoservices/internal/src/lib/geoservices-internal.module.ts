@@ -25,6 +25,10 @@ const routes: Routes = [
       {
         path: 'credits',
         loadChildren: () => import('./pages/credits/credits.module').then((m) => m.CreditsModule)
+      },
+      {
+        path: 'databases',
+        loadChildren: () => import('./pages/databases/databases.module').then((m) => m.DatabasesModule)
       }
     ]
   }

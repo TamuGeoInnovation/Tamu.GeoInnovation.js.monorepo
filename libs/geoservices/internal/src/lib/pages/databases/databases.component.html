@@ -1,0 +1,17 @@
+<section class="internal">
+  <h1 class="section-header">Databases</h1>
+
+  <div class="section-content">
+    <div class="tab-container row">
+      <div class="tabs">
+        <div class="tab" [routerLink]="['existing']" routerLinkActive="active">Databases</div>
+        <div class="tab" [routerLink]="['upload']" routerLinkActive="active">Upload</div>
+        <div class="tab" [routerLink]="['share']" routerLinkActive="active">Share</div>
+      </div>
+
+      <div class="tab-content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</section>
