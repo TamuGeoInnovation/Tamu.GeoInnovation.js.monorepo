@@ -213,6 +213,12 @@ table {
   }
 }
 
+.material-icons-container {
+  .material-icons {
+    margin: 0 0.3rem;
+  }
+}
+
 .material-icons {
   color: inherit;
   font-size: 1.4rem;
@@ -871,5 +877,61 @@ tamu-gisc-step-toggle {
       left: 120%;
       background: #e0e0e0;
     }
+  }
+}
+
+//
+// Floating Table Styles
+//
+
+table.floating-table {
+  margin: 1rem auto;
+  border: none;
+
+  tr {
+    border-radius: 5pt;
+    background: none !important;
+  }
+
+  td,
+  th {
+    padding: 0.75rem 1rem;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: none;
+    background: none;
+  }
+
+  thead {
+    tr {
+      border: none;
+      font-weight: 500;
+
+      th {
+        font-weight: inherit;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1pt solid lighten($lightened-inactive-color, 5%);
+      border-top: 1pt solid lighten($lightened-inactive-color, 5%);
+    }
+  }
+}
+
+.placeholder-instruction {
+  margin: 2rem auto;
+
+  .instruction__icon {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+    color: lighten($inactive-color, 5%);
+  }
+
+  .instruction__context,
+  .instruction__cta {
+    margin: 0.5rem auto;
   }
 }
