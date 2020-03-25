@@ -14,6 +14,7 @@ import { TextboxComponent } from './components/textbox/textbox.component';
 import { ButtonComponent } from './components/button/button.component';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { FileComponent } from './components/file/file.component';
 
 @NgModule({
   imports: [CommonModule, FormsModule, UILayoutModule, DlDateTimePickerDateModule, DlDateTimePickerModule],
@@ -24,7 +25,8 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
     DateTimePickerComponent,
     TextboxComponent,
     AbstractValueAccessorFormComponent,
-    ButtonComponent
+    ButtonComponent,
+    FileComponent
   ],
   exports: [
     SelectComponent,
@@ -32,7 +34,8 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
     CheckboxGroupComponent,
     DateTimePickerComponent,
     TextboxComponent,
-    ButtonComponent
+    ButtonComponent,
+    FileComponent
   ]
 })
 export class UIFormsModule {}

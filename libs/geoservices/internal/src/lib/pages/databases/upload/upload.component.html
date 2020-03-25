@@ -1,1 +1,11 @@
-<p>upload works!</p>
+<form [formGroup]="form">
+  <tamu-gisc-upload-form-input formControlName="file"></tamu-gisc-upload-form-input>
+</form>
+
+<div class="inform-context">
+  <ul>
+    <li>Use only alphanumeric characters in your file names. Illegal characters such as punctuation and spaces will be removed.</li>
+    <li>File names will be truncated to 15 characters, not including file extensions.</li>
+    <li>TXT, CSV, or TSV files must have column names as the first row.</li>
+  </ul>
+</div>

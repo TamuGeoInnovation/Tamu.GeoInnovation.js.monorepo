@@ -15,13 +15,15 @@ $state-transition-color: #536dfe;
 $inactive-color: hsl(223, 15%, 60%);
 $lightened-inactive-color: lighten($inactive-color, 25%);
 
+$primary-text-color: #62707d;
+
 html {
   height: 100%;
   width: 100%;
   font-size: 16px;
   line-height: 1.5;
   font-family: $primary-font-family;
-  color: #62707d;
+  color: $primary-text-color;
   background: hsla(200, 10%, 99%, 1);
   position: relative;
 }
@@ -921,8 +923,10 @@ table.floating-table {
   }
 }
 
-.placeholder-instruction {
-  margin: 2rem auto;
+.drag-n-drop {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  @include transition(border-color 0.3s, background 0.3s, color 0.3s);
 
   .instruction__icon {
     font-size: 3rem;
@@ -933,5 +937,38 @@ table.floating-table {
   .instruction__context,
   .instruction__cta {
     margin: 0.5rem auto;
+  }
+
+  &.dragging {
+    background: lighten($state-transition-color, 32%);
+    border-color: lighten($state-transition-color, 20%);
+    color: darken($primary-text-color, 10%);
+  }
+}
+
+.inform-context {
+  background: lighten($lightened-inactive-color, 10%);
+  border: 1pt solid $lightened-inactive-color;
+  padding: 1rem;
+}
+
+.file-upload {
+  position: relative;
+  padding: 3rem 2rem;
+  border: 2pt solid $lightened-inactive-color;
+  border-style: dashed;
+
+  .material-icons {
+    font-size: 2.5rem;
+  }
+
+  input {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
   }
 }
