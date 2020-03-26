@@ -924,8 +924,6 @@ table.floating-table {
 }
 
 .drag-n-drop {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
   @include transition(border-color 0.3s, background 0.3s, color 0.3s);
 
   .instruction__icon {
@@ -970,5 +968,13 @@ table.floating-table {
     height: 100%;
     width: 100%;
     cursor: pointer;
+  }
+}
+
+form {
+  .form-section {
+    .form-section-toolbar {
+      font-weight: 500;
+    }
   }
 }

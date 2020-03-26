@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +27,52 @@ export class DatabaseService {
 
     return of(mock);
   }
+
+  public getTextDelimiterList(): Observable<Array<TextOptions>> {
+    const list: Array<TextOptions> = [
+      {
+        name: 'Comma (,)',
+        character: ','
+      },
+      {
+        name: 'Tab (  )',
+        character: '  '
+      },
+      {
+        name: 'Bar (|)',
+        character: '|'
+      },
+      {
+        name: 'Semicolon (;)',
+        character: ';'
+      },
+      {
+        name: 'Space ( )',
+        character: ' '
+      }
+    ];
+
+    return of(list);
+  }
+
+  public getTextQualifierList(): Observable<Array<TextOptions>> {
+    const list: Array<TextOptions> = [
+      {
+        name: 'None',
+        character: undefined
+      },
+      {
+        name: 'Double quote (")',
+        character: '"'
+      },
+      {
+        name: "Single quote (')",
+        character: "'"
+      }
+    ];
+
+    return of(list);
+  }
 }
 
 export interface DatabaseRecord {
@@ -35,4 +81,9 @@ export interface DatabaseRecord {
   date: number;
   size: string;
   status: 'ready' | 'processing';
+}
+
+export interface TextOptions {
+  name: string;
+  character: string;
 }

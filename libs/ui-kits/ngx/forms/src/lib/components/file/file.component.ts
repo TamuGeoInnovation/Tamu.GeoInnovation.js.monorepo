@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, Input, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -22,6 +22,9 @@ export class FileComponent implements ControlValueAccessor {
   // tslint:disable-next-line:no-input-rename
   @Input('value')
   private _value = false;
+
+  @Output()
+  public fileSelected: EventEmitter<SelectedFile> = new EventEmitter();
 
   public fileName: string;
 
@@ -52,7 +55,7 @@ export class FileComponent implements ControlValueAccessor {
       this.dataType = file.type;
 
       // Pull the file extension from the file.
-      this.fileExtension =  
+      this.fileExtension =
         file.name.split('.').length > 0
           ? file.name
               .split('.')
@@ -64,6 +67,14 @@ export class FileComponent implements ControlValueAccessor {
 
       reader.onload = () => {
         this.value = reader.result;
+
+        this.fileSelected.emit({
+          name: this.fileName,
+          type: this.dataType,
+          extension: this.fileExtension,
+          size: file.size,
+          content: reader.result
+        });
       };
     }
   }
@@ -86,4 +97,12 @@ export class FileComponent implements ControlValueAccessor {
   public setDisabledState(disabled?: boolean) {
     this.value = disabled;
   }
+}
+
+export interface SelectedFile {
+  name: string;
+  type: string;
+  extension: string;
+  size: number;
+  content: string | ArrayBuffer;
 }

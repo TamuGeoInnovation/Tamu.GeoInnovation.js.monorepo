@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { DatabaseService } from '@tamu-gisc/geoservices/data-access';
+import { ReplaySubject } from 'rxjs';
+import { SelectedFile } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-upload',
@@ -9,15 +13,23 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class UploadComponent implements OnInit {
   public form: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
+  public delimiters = this.db.getTextDelimiterList();
+
+  public qualifiers = this.db.getTextQualifierList();
+
+  public file: ReplaySubject<SelectedFile> = new ReplaySubject(1);
+
+  constructor(private fb: FormBuilder, private db: DatabaseService) {}
 
   public ngOnInit() {
     this.form = this.fb.group({
-      file: ['']
+      file: ['', Validators.required],
+      txtDelimiter: [','],
+      txtQualifier: ['"']
     });
+  }
 
-    this.form.valueChanges.subscribe((changes) => {
-      console.log('form value changed')
-    });
+  public upload() {
+    console.log(this.form.getRawValue());
   }
 }
