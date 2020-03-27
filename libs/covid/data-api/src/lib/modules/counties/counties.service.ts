@@ -19,4 +19,21 @@ export class CountiesService extends BaseService<County> {
       }
     });
   }
+
+  public searchCountiesForState(statefips: number, keyword: string) {
+    return this.repo.find({
+      where: {
+        stateFips: statefips,
+        name: Like(`%${keyword}%`)
+      }
+    });
+  }
+
+  public getCountiesForState(stateFips: number) {
+    return this.repo.find({
+      where: {
+        stateFips
+      }
+    });
+  }
 }

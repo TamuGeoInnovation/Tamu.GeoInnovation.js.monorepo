@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Patch, Param, Delete, Get } from '@nestjs/common';
 
-import { State } from '@tamu-gisc/covid/common/entities';
+import { State, County } from '@tamu-gisc/covid/common/entities';
 
 import { StatesService } from './states.service';
 import { BaseController } from '../base/base.controller';
@@ -17,17 +17,17 @@ export class StatesController extends BaseController<State> {
   }
 
   @Post('')
-  public insertState(@Body() body) {
+  public insertState() {
     return 'Not implemented.';
   }
 
   @Patch(':id')
-  public updateState(@Param() body) {
+  public updateState() {
     return 'Not implemented.';
   }
 
   @Delete(':id')
-  public deleteState(@Param() body) {
+  public deleteState() {
     return 'Not implemented.';
   }
 }

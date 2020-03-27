@@ -11,23 +11,33 @@ export class CountiesController extends BaseController<County> {
     super(service);
   }
 
+  @Get('state/:fips/:keyword')
+  public searchCountiesForState(@Param() params) {
+    return this.service.searchCountiesForState(params.fips, params.keyword);
+  }
+
+  @Get('state/:fips')
+  public getCountiesForState(@Param() params) {
+    return this.service.getCountiesForState(params.fips);
+  }
+
   @Get(':keyword')
   public searchState(@Param() params) {
     return this.service.search(params.keyword);
   }
 
   @Post('')
-  public insertState(@Body() body) {
+  public insertState() {
     return 'Not implemented.';
   }
 
   @Patch(':id')
-  public updateState(@Param() body) {
+  public updateState() {
     return 'Not implemented.';
   }
 
   @Delete(':id')
-  public deleteState(@Param() body) {
+  public deleteState() {
     return 'Not implemented.';
   }
 }

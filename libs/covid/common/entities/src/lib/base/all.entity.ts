@@ -7,7 +7,10 @@ import {
   CreateDateColumn,
   BeforeUpdate,
   BeforeInsert,
-  Column
+  Column,
+  OneToMany,
+  JoinColumn,
+  ManyToOne
 } from 'typeorm';
 
 import * as guid from 'uuid/v4';
