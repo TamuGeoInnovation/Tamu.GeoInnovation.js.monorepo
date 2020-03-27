@@ -8,15 +8,14 @@ import {
   BeforeUpdate,
   BeforeInsert,
   Column,
-  OneToMany,
-  JoinColumn,
-  ManyToOne
+  OneToOne,
+  JoinColumn
 } from 'typeorm';
 
 import * as guid from 'uuid/v4';
 
 @Entity()
-export class CovidBaseEntity extends BaseEntity {
+export class BaseIdentifiableEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   public id: number;
 
@@ -29,6 +28,17 @@ export class CovidBaseEntity extends BaseEntity {
   @CreateDateColumn()
   public created: Date;
 
+  @BeforeUpdate()
+  @BeforeInsert()
+  private generateGuid(): void {
+    if (this.guid === undefined) {
+      this.guid = guid();
+    }
+  }
+}
+
+@Entity()
+export class SubmissionEntity extends BaseIdentifiableEntity {
   @Column({ nullable: true })
   public address1: string;
 
@@ -49,18 +59,10 @@ export class CovidBaseEntity extends BaseEntity {
 
   @Column({ type: 'text', nullable: true })
   public notes: string;
-
-  @BeforeUpdate()
-  @BeforeInsert()
-  private generateGuid(): void {
-    if (this.guid === undefined) {
-      this.guid = guid();
-    }
-  }
 }
 
 @Entity({ name: 'testing_sites' })
-export class TestingSite extends CovidBaseEntity {
+export class TestingSite extends SubmissionEntity {
   @Column({ nullable: true })
   public operationStartTime: string;
 
@@ -68,8 +70,15 @@ export class TestingSite extends CovidBaseEntity {
   public operationEndTime: string;
 }
 
+@Entity({ name: 'validated_testing_sites' })
+export class ValidatedTestingSite extends BaseIdentifiableEntity {
+  @OneToOne((type) => TestingSite, { onDelete: 'CASCADE' })
+  @JoinColumn()
+  public testing_site: TestingSite;
+}
+
 @Entity({ name: 'lockdowns' })
-export class Lockdown extends CovidBaseEntity {
+export class Lockdown extends SubmissionEntity {
   @Column({ nullable: true })
   public startDate: Date;
 
@@ -78,6 +87,13 @@ export class Lockdown extends CovidBaseEntity {
 
   @Column({ type: 'text', nullable: true })
   public procedure: string;
+}
+
+@Entity({ name: 'validated_lockdowns' })
+export class ValidatedLockdown extends BaseIdentifiableEntity {
+  @OneToOne((type) => Lockdown, { onDelete: 'CASCADE' })
+  @JoinColumn()
+  public lockdown: Lockdown;
 }
 
 @Entity({ name: 'states' })

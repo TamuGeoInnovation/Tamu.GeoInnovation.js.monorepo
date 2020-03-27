@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { TestingSite } from '@tamu-gisc/covid/common/entities';
+import { TestingSite, ValidatedTestingSite } from '@tamu-gisc/covid/common/entities';
 
 import { SitesService } from './sites.service';
 import { SitesController } from './sites.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TestingSite])],
+  imports: [TypeOrmModule.forFeature([TestingSite, ValidatedTestingSite])],
   providers: [SitesService],
   controllers: [SitesController]
 })
