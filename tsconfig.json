@@ -80,7 +80,9 @@
       "@tamu-gisc/ui-kits/ngx/navigation/mobile-tile": ["libs/ui-kits/ngx/navigation/mobile-tile/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/triggers": ["libs/ui-kits/ngx/navigation/triggers/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/layout/code": ["libs/ui-kits/ngx/layout/code/src/index.ts"],
-      "@tamu-gisc/geoservices/covid": ["libs/geoservices/covid/src/index.ts"]
+      "@tamu-gisc/geoservices/covid": ["libs/geoservices/covid/src/index.ts"],
+      "@tamu-gisc/covid/data-api": ["libs/covid/data-api/src/index.ts"],
+      "@tamu-gisc/covid/common/entities": ["libs/covid/common/entities/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

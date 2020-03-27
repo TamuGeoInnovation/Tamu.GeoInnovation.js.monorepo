@@ -250,6 +250,15 @@
     },
     "geoservices-covid": {
       "tags": []
+    },
+    "covid-data-api": {
+      "tags": []
+    },
+    "covid-data-api-nest": {
+      "tags": []
+    },
+    "covid-common-entities": {
+      "tags": []
     }
   }
 }

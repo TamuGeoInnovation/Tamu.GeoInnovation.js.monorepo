@@ -2785,6 +2785,101 @@
           "styleext": "scss"
         }
       }
+    },
+    "covid-data-api": {
+      "root": "libs/covid/data-api",
+      "sourceRoot": "libs/covid/data-api/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/covid/data-api/tsconfig.lib.json", "libs/covid/data-api/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/covid/data-api/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/covid/data-api/jest.config.js",
+            "tsConfig": "libs/covid/data-api/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "covid-data-api-nest": {
+      "root": "apps/covid-data-api-nest",
+      "sourceRoot": "apps/covid-data-api-nest/src",
+      "projectType": "application",
+      "prefix": "covid-data-api-nest",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/covid-data-api-nest",
+            "main": "apps/covid-data-api-nest/src/main.ts",
+            "tsConfig": "apps/covid-data-api-nest/tsconfig.app.json",
+            "assets": ["apps/covid-data-api-nest/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/covid-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/covid-data-api-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "covid-data-api-nest:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/covid-data-api-nest/tsconfig.app.json", "apps/covid-data-api-nest/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/covid-data-api-nest/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/covid-data-api-nest/jest.config.js",
+            "tsConfig": "apps/covid-data-api-nest/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "covid-common-entities": {
+      "root": "libs/covid/common/entities",
+      "sourceRoot": "libs/covid/common/entities/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/covid/common/entities/tsconfig.lib.json", "libs/covid/common/entities/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/covid/common/entities/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/covid/common/entities/jest.config.js",
+            "tsConfig": "libs/covid/common/entities/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
