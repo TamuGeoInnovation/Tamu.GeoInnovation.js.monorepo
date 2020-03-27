@@ -78,7 +78,7 @@ export class Lockdown extends CovidBaseEntity {
 }
 
 @Entity({ name: 'states' })
-export class State {
+export class State extends BaseEntity {
   @PrimaryColumn()
   public stateFips: number;
 
@@ -90,7 +90,7 @@ export class State {
 }
 
 @Entity({ name: 'counties' })
-export class County {
+export class County extends BaseEntity {
   @PrimaryColumn()
   public countyFips: number;
 
