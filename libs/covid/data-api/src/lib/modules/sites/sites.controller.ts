@@ -1,7 +1,7 @@
 import { Controller, Delete, Post, Get, Param, Body } from '@nestjs/common';
 import { BaseController } from '../base/base.controller';
 
-import { TestingSite } from '@tamu-gisc/covid/common/entities';
+import { TestingSite, SourceType } from '@tamu-gisc/covid/common/entities';
 import { SitesService } from './sites.service';
 import { DeepPartial } from 'typeorm';
 
@@ -13,7 +13,9 @@ export class SitesController extends BaseController<TestingSite> {
 
   @Get('')
   public async getValidated() {
-    return await this.service.validatedRepo.find({ relations: ['testing_site', 'testing_site.source', 'testing_site.source.user'] });
+    return await this.service.validatedRepo.find({
+      relations: ['testing_site', 'testing_site.source', 'testing_site.source.user']
+    });
   }
 
   /**
@@ -30,11 +32,16 @@ export class SitesController extends BaseController<TestingSite> {
     // If no user was found with the given email, make a new one
     if (user === undefined) {
       user = this.service.userRepo.create(userFindOptions);
+
+      await user.save();
     }
+
+    const sourceType = await this.service.sourceTypeRepo.findOne({ guid: body.type });
 
     const source = this.service.sourceRepo.create({
       url: body.url,
-      user: user
+      user: user,
+      type: sourceType
     });
 
     const site = this.service.repo.create({ ...body, source, user } as DeepPartial<TestingSite>);

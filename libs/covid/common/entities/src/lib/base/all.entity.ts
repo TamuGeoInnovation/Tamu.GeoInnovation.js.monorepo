@@ -1,7 +1,6 @@
 import {
   Entity,
   BaseEntity,
-  PrimaryGeneratedColumn,
   PrimaryColumn,
   UpdateDateColumn,
   CreateDateColumn,
@@ -70,12 +69,6 @@ export class User extends CovidBase {
 
   @OneToMany((type) => Source, (source) => source.user)
   public sources: Source[];
-
-  @OneToMany((type) => TestingSite, (site) => site.user)
-  public testing_sites: TestingSite[];
-
-  @OneToMany((type) => Lockdown, (lockdown) => lockdown.user)
-  public lockdowns: Lockdown[];
 }
 
 /**
@@ -94,11 +87,10 @@ export class Source extends CovidBase {
   @Column({ nullable: true })
   public url: string;
 
-  @OneToOne((type) => SourceType, { cascade: true })
-  @JoinColumn()
-  public sourceType: SourceType;
+  @ManyToOne((type) => SourceType, { cascade: true })
+  public type: SourceType;
 
-  @ManyToOne((type) => User, (user) => user.sources)
+  @ManyToOne((type) => User, (user) => user.sources, { onDelete: 'CASCADE' })
   public user: User;
 }
 
@@ -119,9 +111,6 @@ export class TestingSite extends Submission {
 
   @Column({ nullable: true })
   public operationEndTime: string;
-
-  @ManyToOne((type) => User, (user) => user.testing_sites, { cascade: true })
-  public user: User;
 }
 
 @Entity({ name: 'validated_testing_sites' })
@@ -141,9 +130,6 @@ export class Lockdown extends Submission {
 
   @Column({ type: 'text', nullable: true })
   public protocol: string;
-
-  @ManyToOne((type) => User, (user) => user.lockdowns)
-  public user: User;
 }
 
 @Entity({ name: 'validated_lockdowns' })
