@@ -46,7 +46,7 @@ export class TabsComponent extends AbstractContentReplacerComponent implements A
    */
 
   @Input()
-  public contentDirection: 'forward' | 'reverse' = 'forward';
+  public contentDirection = 'forward';
 
   @HostBinding('class.forward')
   private get _tabDirectionForwardBinding() {

@@ -4,6 +4,6 @@
   </ng-container>
 </div>
 
-<div class="stepper__content" [ngClass]="{forwards: contentDirection === 'forwards', reverse: contentDirection === 'reverse'}">
+<div class="stepper__content">
   <ng-container [ngTemplateOutlet]="toggles[toggleIndex].template"></ng-container>
 </div>
