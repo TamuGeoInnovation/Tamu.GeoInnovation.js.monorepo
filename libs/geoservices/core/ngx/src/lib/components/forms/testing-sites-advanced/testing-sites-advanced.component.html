@@ -37,11 +37,17 @@
 
       <div class="form-collection column">
         <tamu-gisc-checkbox formControlName="driveThrough" label="Is this a drive-through location?"></tamu-gisc-checkbox>
+      </div>
 
+      <div class="form-collection column">
         <p>Please select any of the applicable testing restrictions for this site:</p>
         <tamu-gisc-checkbox-group formControlName="restrictions" [referenceId]="'guid'">
           <tamu-gisc-checkbox *ngFor="let restriction of restrictions | async" [label]="restriction.type" [data]="restriction"></tamu-gisc-checkbox>
         </tamu-gisc-checkbox-group>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox type="textarea" formControlName="notes" floatLabel="true" placeholder="Additional Notes"></tamu-gisc-textbox>
       </div>
     </div>
   </div>
@@ -52,33 +58,70 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-collection column pad-top">
+      <div class="form-collection column">
+        <p>Please select the source medium where the information for this <i>testing site</i> was found. Select only <strong>one</strong>:</p>
+        <tamu-gisc-checkbox-group formControlName="classification" [referenceId]="'guid'">
+          <tamu-gisc-checkbox *ngFor="let classification of classifications | async" [label]="classification.type" [data]="classification"></tamu-gisc-checkbox>
+        </tamu-gisc-checkbox-group>
+      </div>
+
+      <div class="form-collection column">
         <tamu-gisc-textbox type="text" formControlName="url" floatLabel="true" placeholder="Article or website URL"></tamu-gisc-textbox>
       </div>
 
       <div class="form-collection column">
         <tamu-gisc-textbox type="text" formControlName="healthDepartmentUrl" floatLabel="true" placeholder="City/County Health Department URL"></tamu-gisc-textbox>
-
-        <p>Please select the source medium where the information for this testing site was found. Select only <strong>one</strong>:</p>
-        <tamu-gisc-checkbox-group formControlName="classification" [referenceId]="'guid'">
-          <tamu-gisc-checkbox *ngFor="let classification of classifications | async" [label]="classification.type" [data]="classification"></tamu-gisc-checkbox>
-        </tamu-gisc-checkbox-group>
       </div>
     </div>
   </div>
 
   <div class="form-section">
     <div class="form-section-toolbar">
-      <div class="form-section-name">Miscellaneous</div>
+      <div class="form-section-name">Lockdown Information</div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <tamu-gisc-checkbox formControlName="isLockdown" label="Is this testing site within county or city limits where a shelter-in-place directive is in effect?"></tamu-gisc-checkbox>
+      </div>
+
+      <div class="form-collection column" *ngIf="form.controls.isLockdown.value">
+        <label for="lockdownStart">Lockdown date start:</label>
+        <input type="date" name="lockdownStart" formControlName="lockdownStart" />
+
+        <br />
+
+        <label for="lockdownEnd">Lockdown date end:</label>
+        <input type="date" name="lockdownEnd" formControlName="lockdownEnd" />
+      </div>
+
+      <div class="form-collection column" *ngIf="form.controls.isLockdown.value">
+        <tamu-gisc-textbox type="textarea" formControlName="lockdownProtocol" floatLabel="true" placeholder="Lockdown protocol instructions"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column" *ngIf="form.controls.isLockdown.value">
+        <tamu-gisc-textbox type="text" formControlName="lockdownUrl" floatLabel="true" placeholder="Lockdown information URL"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column" *ngIf="form.controls.isLockdown.value">
+        <div class="form-collection column">
+          <p>Please select the source medium where the information for the <i>lockdown</i> was found. Select only <strong>one</strong>:</p>
+          <tamu-gisc-checkbox-group formControlName="lockdownUrlClassification" [referenceId]="'guid'">
+            <tamu-gisc-checkbox *ngFor="let classification of classifications | async" [label]="classification.type" [data]="classification"></tamu-gisc-checkbox>
+          </tamu-gisc-checkbox-group>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Contact Information</div>
     </div>
 
     <div class="form-section-body">
       <div class="form-collection row pad-top">
         <tamu-gisc-textbox type="text" formControlName="email" floatLabel="true" placeholder="Your Email Address"></tamu-gisc-textbox>
-      </div>
-
-      <div class="form-collection row">
-        <tamu-gisc-textbox type="textarea" formControlName="notes" floatLabel="true" placeholder="Additional Notes"></tamu-gisc-textbox>
       </div>
     </div>
   </div>

@@ -6,7 +6,8 @@ import {
   CountiesService,
   RestrictionsService,
   ClassificationsService,
-  TestingSitesService
+  TestingSitesService,
+  LockdownsService
 } from '@tamu-gisc/geoservices/data-access';
 import { shareReplay, switchMap, find, filter } from 'rxjs/operators';
 import { Observable, from } from 'rxjs';
@@ -30,7 +31,8 @@ export class TestingSitesAdvancedComponent implements OnInit {
     private ct: CountiesService,
     private rt: RestrictionsService,
     private cl: ClassificationsService,
-    private ts: TestingSitesService
+    private ts: TestingSitesService,
+    private ls: LockdownsService
   ) {}
 
   public ngOnInit() {
@@ -51,7 +53,13 @@ export class TestingSitesAdvancedComponent implements OnInit {
       operationStartTime: [''],
       operationEndTime: [''],
       driveThrough: [false],
-      capacity: ['']
+      capacity: [''],
+      isLockdown: [false],
+      lockdownProtocol: [''],
+      lockdownStart: [Date.now()],
+      lockdownEnd: [Date.now()],
+      lockdownUrl: [''],
+      lockdownUrlClassification: [[]]
     });
 
     this.states = this.st.getStates().pipe(shareReplay(1));
@@ -102,5 +110,27 @@ export class TestingSitesAdvancedComponent implements OnInit {
       .subscribe((res) => {
         console.log(res);
       });
+
+    if (value.isLockdown) {
+      this.ls
+        .submitLockdown({
+          email: value.email,
+          url: value.lockdownUrl,
+          address1: value.address1,
+          address2: value.address2,
+          county: value.county,
+          city: value.city,
+          state: value.state,
+          zip: value.zip,
+          protocol: value.lockdownProtocol,
+          classification: value.lockdownUrlClassification.length >= 1 ? value.lockdownUrlClassification[0] : undefined,
+          healthDepartmentUrl: value.healthDepartmentUrl,
+          startDate: value.lockdownStart,
+          endDate: value.lockdownEnd
+        })
+        .subscribe((res) => {
+          console.log(res);
+        });
+    }
   }
 }

@@ -736,6 +736,10 @@ tamu-gisc-tabs {
 form {
   .form-section {
     margin-bottom: 2.5rem;
+
+    p {
+      margin-top: 0;
+    }
   }
 }
 
@@ -979,7 +983,8 @@ form {
   }
 }
 
-tamu-gisc-select select {
+tamu-gisc-select select,
+input[type='date'] {
   font-family: $primary-font-family;
   padding: 0.5rem !important;
   height: 100%;
