@@ -978,3 +978,13 @@ form {
     }
   }
 }
+
+tamu-gisc-select select {
+  font-family: $primary-font-family;
+  padding: 0.5rem !important;
+  height: 100%;
+  background: #f1f3f4;
+  border: none;
+  border-radius: 5pt;
+  font-size: 1rem !important;
+}

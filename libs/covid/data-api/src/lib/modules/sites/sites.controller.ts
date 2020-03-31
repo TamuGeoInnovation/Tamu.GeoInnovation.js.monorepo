@@ -42,12 +42,13 @@ export class SitesController extends BaseController<TestingSite> {
     //
     // Resolve submission classification
     //
-    const classification = await this.service.classificationRepo.findOne({ guid: body.type });
+    const classification = await this.service.classificationRepo.findOne({ guid: body.classification });
 
     const source = this.service.sourceRepo.create({
       url: body.url,
       user: user,
-      classification: classification
+      classification: classification,
+      healthDepartmentUrl: body.healthDepartmentUrl
     });
 
     //

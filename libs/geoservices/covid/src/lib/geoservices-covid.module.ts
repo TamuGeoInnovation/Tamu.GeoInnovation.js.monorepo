@@ -20,7 +20,11 @@ const routes: Routes = [
       },
       {
         path: 'services',
-        loadChildren: () => import('./pages/services/services.module').then(m => m.ServicesModule)
+        loadChildren: () => import('./pages/services/services.module').then((m) => m.ServicesModule)
+      },
+      {
+        path: 'resources',
+        loadChildren: () => import('./pages/resources/resources.module').then((m) => m.ResourcesModule)
       }
     ]
   }

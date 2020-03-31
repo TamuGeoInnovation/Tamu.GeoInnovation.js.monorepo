@@ -138,9 +138,6 @@ export class TestingSite extends Submission {
 
   @Column({ nullable: true })
   public capacity: number;
-
-  @Column({ nullable: true })
-  public waitTime: number;
 }
 
 @Entity({ name: 'validated_testing_sites' })
