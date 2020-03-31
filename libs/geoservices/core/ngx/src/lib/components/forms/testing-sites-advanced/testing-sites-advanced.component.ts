@@ -7,10 +7,13 @@ import {
   RestrictionsService,
   ClassificationsService,
   TestingSitesService,
-  LockdownsService
+  LockdownsService,
+  SiteOwnersService,
+  SiteServicesService,
+  SiteStatusesService
 } from '@tamu-gisc/geoservices/data-access';
-import { shareReplay, switchMap, find, filter } from 'rxjs/operators';
-import { Observable, from } from 'rxjs';
+import { Observable, from, of, concat } from 'rxjs';
+import { shareReplay, switchMap, filter, toArray } from 'rxjs/operators';
 
 @Component({
   selector: 'tamu-gisc-testing-sites-advanced',
@@ -24,6 +27,15 @@ export class TestingSitesAdvancedComponent implements OnInit {
   public counties: Observable<object>;
   public restrictions: Observable<object>;
   public classifications: Observable<object>;
+  public owners: Observable<object>;
+  public services: Observable<object>;
+  public statuses: Observable<object>;
+
+  public formState = {
+    submitting: false,
+    submitted: false,
+    error: false
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -32,7 +44,10 @@ export class TestingSitesAdvancedComponent implements OnInit {
     private rt: RestrictionsService,
     private cl: ClassificationsService,
     private ts: TestingSitesService,
-    private ls: LockdownsService
+    private ls: LockdownsService,
+    private siteOwner: SiteOwnersService,
+    private siteService: SiteServicesService,
+    private siteStatus: SiteStatusesService
   ) {}
 
   public ngOnInit() {
@@ -50,16 +65,20 @@ export class TestingSitesAdvancedComponent implements OnInit {
       restrictions: [[]],
       healthDepartmentUrl: [''],
       locationName: [''],
-      operationStartTime: [''],
-      operationEndTime: [''],
+      locationPhoneNumber: [''],
+      hoursOfOperation: [''],
+      capacity: [undefined],
       driveThrough: [false],
-      capacity: [''],
+      driveThroughCapacity: [''],
       isLockdown: [false],
       lockdownProtocol: [''],
       lockdownStart: [Date.now()],
       lockdownEnd: [Date.now()],
       lockdownUrl: [''],
-      lockdownUrlClassification: [[]]
+      lockdownUrlClassification: [[]],
+      siteOwnership: [[]],
+      siteServices: [[]],
+      siteStatus: [[]]
     });
 
     this.states = this.st.getStates().pipe(shareReplay(1));
@@ -82,13 +101,22 @@ export class TestingSitesAdvancedComponent implements OnInit {
     this.restrictions = this.rt.getRestrictions();
 
     this.classifications = this.cl.getClassifications();
+
+    this.owners = this.siteOwner.getSiteOwners();
+
+    this.services = this.siteService.getSiteServices();
+
+    this.statuses = this.siteStatus.getSiteStatuses();
   }
 
   public submitForm() {
     const value = this.form.getRawValue();
 
-    this.ts
-      .submitSite({
+    this.formState.submitting = true;
+    this.form.disable();
+
+    concat(
+      this.ts.submitSite({
         email: value.email,
         url: value.url,
         address1: value.address1,
@@ -98,39 +126,48 @@ export class TestingSitesAdvancedComponent implements OnInit {
         state: value.state,
         zip: value.zip,
         notes: value.notes,
-        classification: value.classification.length >= 1 ? value.classification[0] : undefined,
-        restrictions: value.restrictions.join(','),
         healthDepartmentUrl: value.healthDepartmentUrl,
         locationName: value.locationName,
-        operationStartTime: value.operationStartTime,
-        operationEndTime: value.operationEndTime,
+        locationPhoneNumber: value.locationPhoneNumber,
+        hoursOfOperation: value.hoursOfOperation,
         driveThrough: value.driveThrough,
-        capacity: value.capacity
-      })
+        driveThroughCapacity: value.driveThroughCapacity,
+        capacity: value.capacity,
+        classification: value.classification.length >= 1 ? value.classification[0] : undefined,
+        restrictions: value.restrictions.join(','),
+        owners: value.siteOwnership.join(','),
+        services: value.siteServices.join(','),
+        status: value.siteStatus.length >= 1 ? value.siteStatus[0] : undefined
+      }),
+      of(value.isLockdown).pipe(
+        switchMap((should) => {
+          if (should) {
+            return this.ls.submitLockdown({
+              email: value.email,
+              url: value.lockdownUrl,
+              address1: value.address1,
+              address2: value.address2,
+              county: value.county,
+              city: value.city,
+              state: value.state,
+              zip: value.zip,
+              protocol: value.lockdownProtocol,
+              classification: value.lockdownUrlClassification.length >= 1 ? value.lockdownUrlClassification[0] : undefined,
+              healthDepartmentUrl: value.healthDepartmentUrl,
+              startDate: value.lockdownStart,
+              endDate: value.lockdownEnd
+            });
+          } else {
+            return of(false);
+          }
+        })
+      )
+    )
+      .pipe(toArray())
       .subscribe((res) => {
         console.log(res);
+        this.formState.submitting = false;
+        this.formState.submitted = true;
       });
-
-    if (value.isLockdown) {
-      this.ls
-        .submitLockdown({
-          email: value.email,
-          url: value.lockdownUrl,
-          address1: value.address1,
-          address2: value.address2,
-          county: value.county,
-          city: value.city,
-          state: value.state,
-          zip: value.zip,
-          protocol: value.lockdownProtocol,
-          classification: value.lockdownUrlClassification.length >= 1 ? value.lockdownUrlClassification[0] : undefined,
-          healthDepartmentUrl: value.healthDepartmentUrl,
-          startDate: value.lockdownStart,
-          endDate: value.lockdownEnd
-        })
-        .subscribe((res) => {
-          console.log(res);
-        });
-    }
   }
 }

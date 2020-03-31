@@ -14,10 +14,14 @@ import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
 
 const routes: Routes = [
+  // {
+  //   path: '',
+  //   pathMatch: 'full',
+  //   redirectTo: 'covid'
+  // },
   {
     path: '',
-    pathMatch: 'full',
-    redirectTo: 'public'
+    loadChildren: () => import('@tamu-gisc/geoservices/covid').then((m) => m.GeoservicesCovidModule)
   },
   {
     path: 'public',
@@ -25,17 +29,17 @@ const routes: Routes = [
   },
   {
     path: 'internal',
-    loadChildren: () => import('@tamu-gisc/geoservices/internal').then((m) => m.GeoservicesInternalModule),
+    loadChildren: () => import('@tamu-gisc/geoservices/internal').then((m) => m.GeoservicesInternalModule)
     // canActivateChild: [AuthGuard]
   },
   {
     path: 'api',
     loadChildren: () => import('@tamu-gisc/geoservices/api').then((m) => m.GeoservicesApiModule)
   },
-  {
-    path: 'covid',
-    loadChildren: () => import('@tamu-gisc/geoservices/covid').then((m) => m.GeoservicesCovidModule)
-  }
+  // {
+  //   path: '',
+  //   loadChildren: () => import('@tamu-gisc/geoservices/covid').then((m) => m.GeoservicesCovidModule)
+  // }
 ];
 
 WebFont.load({

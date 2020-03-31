@@ -113,6 +113,9 @@ export class Submission extends LocationEntity {
   @Column({ default: false, nullable: false })
   public flagged: boolean;
 
+  @Column({ default: false, select: false })
+  public validated: boolean;
+
   @OneToOne((type) => Source, { cascade: true })
   @JoinColumn()
   public source: Source;
@@ -122,29 +125,54 @@ export class Submission extends LocationEntity {
   public restrictions: Restriction[];
 }
 
+@Entity({ name: 'site_owners' })
+export class SiteOwner extends CovidBase {
+  @Column()
+  public type: string;
+}
+
+@Entity({ name: 'site_statuses' })
+export class SiteStatus extends CovidBase {
+  @Column()
+  public type: string;
+}
+
+@Entity({ name: 'site_services' })
+export class SiteService extends CovidBase {
+  @Column()
+  public type: string;
+}
+
 @Entity({ name: 'testing_sites' })
 export class TestingSite extends Submission {
   @Column({ nullable: true })
   public locationName: string;
 
   @Column({ nullable: true })
-  public operationStartTime: string;
+  public locationPhoneNumber: string;
 
   @Column({ nullable: true })
-  public operationEndTime: string;
+  public hoursOfOperation: string;
+
+  @Column({ nullable: true })
+  public capacity: number;
 
   @Column({ nullable: true })
   public driveThrough: boolean;
 
   @Column({ nullable: true })
-  public capacity: number;
-}
+  public driveThroughCapacity: number;
 
-@Entity({ name: 'validated_testing_sites' })
-export class ValidatedTestingSite extends CovidBase {
-  @OneToOne((type) => TestingSite, { onDelete: 'CASCADE' })
-  @JoinColumn()
-  public testing_site: TestingSite;
+  @ManyToMany((type) => SiteOwner)
+  @JoinTable()
+  public owners: SiteOwner[];
+
+  @ManyToMany((type) => SiteService)
+  @JoinTable()
+  public services: SiteService[];
+
+  @ManyToOne((type) => SiteStatus, { cascade: true })
+  public status: SiteStatus;
 }
 
 @Entity({ name: 'lockdowns' })
@@ -159,14 +187,7 @@ export class Lockdown extends Submission {
   public protocol: string;
 }
 
-@Entity({ name: 'validated_lockdowns' })
-export class ValidatedLockdown extends CovidBase {
-  @OneToOne((type) => Lockdown, { onDelete: 'CASCADE' })
-  @JoinColumn()
-  public lockdown: Lockdown;
-}
-
-@Entity({ name: 'states' })
+@Entity({ name: 'states', synchronize: false })
 export class State extends BaseEntity {
   @PrimaryColumn()
   public stateFips: number;
@@ -178,7 +199,7 @@ export class State extends BaseEntity {
   public abbreviation: string;
 }
 
-@Entity({ name: 'counties' })
+@Entity({ name: 'counties', synchronize: false })
 export class County extends BaseEntity {
   @PrimaryColumn()
   public countyFips: number;

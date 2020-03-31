@@ -7,7 +7,10 @@ import {
   StatesModule,
   CountiesModule,
   SourceTypesModule,
-  RestrictionsModule
+  RestrictionsModule,
+  SiteServicesModule,
+  SiteOwnersModule,
+  SiteStatusesModule
 } from '@tamu-gisc/covid/data-api';
 
 import { AppController } from './app.controller';
@@ -19,6 +22,9 @@ import { config } from '../environments/ormconfig';
   imports: [
     TypeOrmModule.forRoot(config),
     SitesModule,
+    SiteServicesModule,
+    SiteOwnersModule,
+    SiteStatusesModule,
     LockdownsModule,
     StatesModule,
     CountiesModule,

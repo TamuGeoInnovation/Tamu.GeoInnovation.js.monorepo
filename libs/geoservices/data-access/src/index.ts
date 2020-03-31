@@ -17,3 +17,6 @@ export * from './lib/services/restrictions/restrictions.service';
 export * from './lib/services/classifications/classifications.service';
 export * from './lib/services/testing-sites/testing-sites.service';
 export * from './lib/services/lockdowns/lockdowns.service';
+export * from './lib/services/site-owners/site-owners.service';
+export * from './lib/services/site-services/site-services.service';
+export * from './lib/services/site-statuses/site-statuses.service';

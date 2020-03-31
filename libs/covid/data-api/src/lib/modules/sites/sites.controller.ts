@@ -1,7 +1,7 @@
 import { Controller, Delete, Post, Get, Param, Body } from '@nestjs/common';
 import { BaseController } from '../base/base.controller';
 
-import { TestingSite, Classification } from '@tamu-gisc/covid/common/entities';
+import { TestingSite } from '@tamu-gisc/covid/common/entities';
 import { SitesService } from './sites.service';
 import { DeepPartial } from 'typeorm';
 
@@ -13,8 +13,9 @@ export class SitesController extends BaseController<TestingSite> {
 
   @Get('')
   public async getValidated() {
-    return await this.service.validatedRepo.find({
-      relations: ['testing_site', 'testing_site.source', 'testing_site.source.user', 'testing_site.restrictions']
+    return await this.service.repo.find({
+      where: { validated: true },
+      relations: ['source', 'source.user', 'restrictions']
     });
   }
 
@@ -56,7 +57,7 @@ export class SitesController extends BaseController<TestingSite> {
     //
     let restrictions;
 
-    if (body.restrictions !== null) {
+    if (body.restrictions && body.restrictions !== null) {
       const restrictionList = body.restrictions.split(',').map((id) => {
         return {
           guid: id
@@ -69,9 +70,52 @@ export class SitesController extends BaseController<TestingSite> {
     }
 
     //
+    // Resolve owner types
+    //
+
+    let owners;
+
+    if (body.owners && body.owners !== null) {
+      const ownersTypeList = body.owners.split(',').map((id) => {
+        return {
+          guid: id
+        };
+      });
+
+      owners = await this.service.ownerRepo.find({
+        where: ownersTypeList
+      });
+    }
+
+    //
+    // Resolve site service types
+    //
+
+    let services;
+
+    if (body.owners && body.owners !== null) {
+      const serviceList = body.services.split(',').map((id) => {
+        return {
+          guid: id
+        };
+      });
+
+      services = await this.service.serviceRepo.find({
+        where: serviceList
+      });
+    }
+
+    //
+    // Resolve site status
+    //
+    const status = await this.service.statusRepo.findOne({ guid: body.status });
+
+    //
     // Create site
     //
-    const site = this.service.repo.create({ ...body, source, user, restrictions } as DeepPartial<TestingSite>);
+    const site = this.service.repo.create({ ...body, source, user, restrictions, owners, services, status } as DeepPartial<
+      TestingSite
+    >);
 
     return await site.save();
   }
@@ -81,9 +125,9 @@ export class SitesController extends BaseController<TestingSite> {
     const site = await this.service.repo.findOne({ guid: params.siteId });
 
     if (site) {
-      const validated = this.service.validatedRepo.create({ testing_site: site });
+      site.validated = true;
 
-      return validated.save();
+      return site.save();
     } else {
       return {
         status: 500,
@@ -95,8 +139,10 @@ export class SitesController extends BaseController<TestingSite> {
 
   @Delete('/validate/:siteId')
   public async deleteValidatedLockdown(@Param() params) {
-    const validated = await this.service.validatedRepo.findOne({ guid: params.siteId });
+    const site = await this.service.repo.findOne({ guid: params.siteId });
 
-    return validated.remove();
+    site.validated = false;
+
+    return site.save();
   }
 }

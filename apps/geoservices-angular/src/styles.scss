@@ -111,6 +111,10 @@ a,
 p {
   margin-top: 1rem;
   margin-bottom: 1rem;
+
+  &.emphasis {
+    font-weight: 500;
+  }
 }
 
 ul {

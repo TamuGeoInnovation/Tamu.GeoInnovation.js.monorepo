@@ -14,7 +14,7 @@ export class LockdownsController extends BaseController<Lockdown> {
 
   @Get('')
   public async getValidated() {
-    return await this.service.validatedRepo.find({ relations: ['lockdown'] });
+    return await this.service.repo.find({ where: { validated: true }});
   }
 
   /**
@@ -62,15 +62,17 @@ export class LockdownsController extends BaseController<Lockdown> {
   public async validateLockdown(@Param() params) {
     const lockdown = await this.service.repo.findOne({ guid: params.lockdownId });
 
-    const validated = this.service.validatedRepo.create({ lockdown: lockdown });
+    lockdown.validated = true;
 
-    return validated.save();
+    return lockdown.save();
   }
 
   @Delete('/validate/:lockdownId')
   public async deleteValidatedLockdown(@Param() params) {
-    const validated = await this.service.validatedRepo.findOne({ guid: params.lockdownId });
+    const lockdown = await this.service.repo.findOne({ guid: params.lockdownId });
 
-    return validated.remove();
+    lockdown.validated = false;
+
+    return lockdown.save();
   }
 }
