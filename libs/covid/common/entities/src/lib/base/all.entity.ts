@@ -10,7 +10,9 @@ import {
   OneToOne,
   JoinColumn,
   OneToMany,
-  ManyToOne
+  ManyToOne,
+  ManyToMany,
+  JoinTable
 } from 'typeorm';
 
 import * as guid from 'uuid/v4';
@@ -82,6 +84,12 @@ export class SourceType extends CovidBase {
   public type: string;
 }
 
+@Entity({ name: 'restrictions' })
+export class Restriction extends CovidBase {
+  @Column()
+  public type: string;
+}
+
 @Entity({ name: 'sources' })
 export class Source extends CovidBase {
   @Column({ nullable: true })
@@ -99,9 +107,16 @@ export class Submission extends LocationEntity {
   @Column({ type: 'text', nullable: true })
   public notes: string;
 
+  @Column({ default: false, nullable: false })
+  public flagged: boolean;
+
   @OneToOne((type) => Source, { cascade: true })
   @JoinColumn()
   public source: Source;
+
+  @ManyToMany((type) => Restriction)
+  @JoinTable()
+  public restrictions: Restriction[];
 }
 
 @Entity({ name: 'testing_sites' })
