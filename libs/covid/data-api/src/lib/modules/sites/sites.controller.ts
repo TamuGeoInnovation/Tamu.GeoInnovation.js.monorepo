@@ -1,7 +1,7 @@
 import { Controller, Delete, Post, Get, Param, Body } from '@nestjs/common';
 import { BaseController } from '../base/base.controller';
 
-import { TestingSite, SourceType } from '@tamu-gisc/covid/common/entities';
+import { TestingSite, Classification } from '@tamu-gisc/covid/common/entities';
 import { SitesService } from './sites.service';
 import { DeepPartial } from 'typeorm';
 
@@ -14,7 +14,7 @@ export class SitesController extends BaseController<TestingSite> {
   @Get('')
   public async getValidated() {
     return await this.service.validatedRepo.find({
-      relations: ['testing_site', 'testing_site.source', 'testing_site.source.user']
+      relations: ['testing_site', 'testing_site.source', 'testing_site.source.user', 'testing_site.restrictions']
     });
   }
 
@@ -23,6 +23,9 @@ export class SitesController extends BaseController<TestingSite> {
    */
   @Post('')
   public async insertSite(@Body() body) {
+    //
+    // Resolve user by existing or new email
+    //
     const userFindOptions = {
       email: body.email
     };
@@ -36,15 +39,38 @@ export class SitesController extends BaseController<TestingSite> {
       await user.save();
     }
 
-    const sourceType = await this.service.sourceTypeRepo.findOne({ guid: body.type });
+    //
+    // Resolve submission classification
+    //
+    const classification = await this.service.classificationRepo.findOne({ guid: body.type });
 
     const source = this.service.sourceRepo.create({
       url: body.url,
       user: user,
-      type: sourceType
+      classification: classification
     });
 
-    const site = this.service.repo.create({ ...body, source, user } as DeepPartial<TestingSite>);
+    //
+    // Resolve restrictions
+    //
+    let restrictions;
+
+    if (body.restrictions !== null) {
+      const restrictionList = body.restrictions.split(',').map((id) => {
+        return {
+          guid: id
+        };
+      });
+
+      restrictions = await this.service.restrictionRepo.find({
+        where: restrictionList
+      });
+    }
+
+    //
+    // Create site
+    //
+    const site = this.service.repo.create({ ...body, source, user, restrictions } as DeepPartial<TestingSite>);
 
     return await site.save();
   }

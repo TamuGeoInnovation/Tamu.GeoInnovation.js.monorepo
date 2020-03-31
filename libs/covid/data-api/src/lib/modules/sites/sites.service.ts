@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { TestingSite, ValidatedTestingSite, User, Source, SourceType } from '@tamu-gisc/covid/common/entities';
+import { TestingSite, ValidatedTestingSite, User, Source, Classification, Restriction } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 
@@ -13,7 +13,8 @@ export class SitesService extends BaseService<TestingSite> {
     @InjectRepository(ValidatedTestingSite) public validatedRepo: Repository<ValidatedTestingSite>,
     @InjectRepository(User) public userRepo: Repository<User>,
     @InjectRepository(Source) public sourceRepo: Repository<Source>,
-    @InjectRepository(SourceType) public sourceTypeRepo: Repository<SourceType>
+    @InjectRepository(Classification) public classificationRepo: Repository<Classification>,
+    @InjectRepository(Restriction) public restrictionRepo: Repository<Restriction>
   ) {
     super(repo);
   }

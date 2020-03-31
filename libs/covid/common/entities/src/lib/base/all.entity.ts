@@ -39,10 +39,10 @@ export class CovidBase extends BaseEntity {
 
 @Entity()
 export class LocationEntity extends CovidBase {
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'text' })
   public address1: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'text' })
   public address2: string;
 
   @Column({ nullable: true })
@@ -58,15 +58,15 @@ export class LocationEntity extends CovidBase {
   public country: string;
 
   @Column({ nullable: true })
-  public latitude: string;
+  public latitude: number;
 
   @Column({ nullable: true })
-  public longitude: string;
+  public longitude: number;
 }
 
 @Entity({ name: 'users' })
 export class User extends CovidBase {
-  @Column()
+  @Column({ type: 'text' })
   public email: string;
 
   @OneToMany((type) => Source, (source) => source.user)
@@ -78,8 +78,8 @@ export class User extends CovidBase {
  *
  * For example: new website, government website, social media, etc
  */
-@Entity({ name: 'source_types' })
-export class SourceType extends CovidBase {
+@Entity({ name: 'classifications' })
+export class Classification extends CovidBase {
   @Column()
   public type: string;
 }
@@ -92,11 +92,14 @@ export class Restriction extends CovidBase {
 
 @Entity({ name: 'sources' })
 export class Source extends CovidBase {
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'text' })
   public url: string;
 
-  @ManyToOne((type) => SourceType, { cascade: true })
-  public type: SourceType;
+  @Column({ nullable: true, type: 'text' })
+  public healthDepartmentUrl: string;
+
+  @ManyToOne((type) => Classification, { cascade: true })
+  public classification: Classification;
 
   @ManyToOne((type) => User, (user) => user.sources, { onDelete: 'CASCADE' })
   public user: User;
@@ -122,10 +125,22 @@ export class Submission extends LocationEntity {
 @Entity({ name: 'testing_sites' })
 export class TestingSite extends Submission {
   @Column({ nullable: true })
+  public locationName: string;
+
+  @Column({ nullable: true })
   public operationStartTime: string;
 
   @Column({ nullable: true })
   public operationEndTime: string;
+
+  @Column({ nullable: true })
+  public driveThrough: boolean;
+
+  @Column({ nullable: true })
+  public capacity: number;
+
+  @Column({ nullable: true })
+  public waitTime: number;
 }
 
 @Entity({ name: 'validated_testing_sites' })
