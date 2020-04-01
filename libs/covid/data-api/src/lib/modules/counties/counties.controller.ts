@@ -26,6 +26,11 @@ export class CountiesController extends BaseController<County> {
     return this.service.search(params.keyword);
   }
 
+  @Get('claim/:email')
+  public getCountyClaimsForUser(@Param() param) {
+    return this.service.getClaimsForUser(param.email);
+  }
+
   @Post('claim')
   public registerCountyToUser(@Body() body) {
     return this.service.associateUserWithCounty(body.countyFips, body.email);

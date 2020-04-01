@@ -1,0 +1,20 @@
+<div class="column8">
+  <ng-container>
+    <p>Select the state and county to set or change a claim.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submitCountyOwnership()">
+      <div class="form-section">
+        <div class="form-section-body">
+          <div class="form-collection row pad-top">
+            <tamu-gisc-select formControlName="state" [data]="states | async" placeholder="Select State" [valueTemplate]="'stateFips'" [displayTemplate]="'name'"></tamu-gisc-select>
+            <tamu-gisc-select formControlName="county" [data]="counties | async" placeholder="Select County" [valueTemplate]="'countyFips'" [displayTemplate]="'name'"></tamu-gisc-select>
+          </div>
+
+          <div class="form-collection row">
+            <tamu-gisc-button [value]="(localCounty | async) !== undefined ? 'Update' : 'Claim'" type="submit" [disabled]="form.invalid"></tamu-gisc-button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</div>

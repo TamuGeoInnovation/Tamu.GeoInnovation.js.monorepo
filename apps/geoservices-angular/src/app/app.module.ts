@@ -9,6 +9,7 @@ import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { AuthGuard, AuthService } from '@tamu-gisc/geoservices/data-access';
+import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -35,7 +36,7 @@ const routes: Routes = [
   {
     path: 'api',
     loadChildren: () => import('@tamu-gisc/geoservices/api').then((m) => m.GeoservicesApiModule)
-  },
+  }
   // {
   //   path: '',
   //   loadChildren: () => import('@tamu-gisc/geoservices/covid').then((m) => m.GeoservicesCovidModule)
@@ -62,7 +63,8 @@ export function getHighlightLanguages() {
     RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
     BrowserAnimationsModule,
     HighlightPlusModule,
-    EnvironmentModule
+    EnvironmentModule,
+    LocalStoreModule
   ],
   declarations: [AppComponent],
   providers: [

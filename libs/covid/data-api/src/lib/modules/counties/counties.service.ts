@@ -60,4 +60,13 @@ export class CountiesService extends BaseService<County> {
 
     return user.save();
   }
+
+  public async getClaimsForUser(email: string) {
+    return this.userRepo.findOne({
+      where: {
+        email
+      },
+      relations: ['claimedCounties']
+    });
+  }
 }

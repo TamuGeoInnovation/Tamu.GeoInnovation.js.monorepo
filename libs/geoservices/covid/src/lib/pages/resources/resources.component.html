@@ -1,1 +1,18 @@
-<router-outlet></router-outlet>
+<section>
+  <div class="container12">
+    <div class="section-content">
+      <div class="tab-container row">
+        <div class="tabs">
+          <div class="tab" [routerLink]="['profile']" routerLinkActive="active">Identity</div>
+          <div class="tab" [routerLink]="['county']" routerLinkActive="active">County</div>
+          <div class="tab" [routerLink]="['lockdowns']" routerLinkActive="active">Lockdowns</div>
+          <div class="tab" [routerLink]="['testing-sites']" routerLinkActive="active">Testing Sites</div>
+        </div>
+
+        <div class="tab-content flex flex-column align-center">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

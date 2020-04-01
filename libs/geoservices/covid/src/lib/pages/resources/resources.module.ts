@@ -12,7 +12,19 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'testing-sites'
+        redirectTo: 'profile'
+      },
+      {
+        path: 'profile',
+        loadChildren: () => import('./pages/profile/profile.module').then((m) => m.ProfileModule)
+      },
+      {
+        path: 'county',
+        loadChildren: () => import('./pages/county/county.module').then((m) => m.CountyModule)
+      },
+      {
+        path: 'lockdowns',
+        loadChildren: () => import('./pages/profile/profile.module').then((m) => m.ProfileModule)
       },
       {
         path: 'testing-sites',
