@@ -11,12 +11,12 @@ export * from './lib/services/account/preferences/account-preferences.service';
 
 export * from './lib/services/database/database.service';
 
-export * from './lib/services/states/states.service';
-export * from './lib/services/counties/counties.service';
-export * from './lib/services/restrictions/restrictions.service';
-export * from './lib/services/classifications/classifications.service';
-export * from './lib/services/testing-sites/testing-sites.service';
-export * from './lib/services/lockdowns/lockdowns.service';
-export * from './lib/services/site-owners/site-owners.service';
-export * from './lib/services/site-services/site-services.service';
-export * from './lib/services/site-statuses/site-statuses.service';
+export * from './lib/services/covid/states/states.service';
+export * from './lib/services/covid/counties/counties.service';
+export * from './lib/services/covid/restrictions/restrictions.service';
+export * from './lib/services/covid/classifications/classifications.service';
+export * from './lib/services/covid/testing-sites/testing-sites.service';
+export * from './lib/services/covid/lockdowns/lockdowns.service';
+export * from './lib/services/covid/site-owners/site-owners.service';
+export * from './lib/services/covid/site-services/site-services.service';
+export * from './lib/services/covid/site-statuses/site-statuses.service';

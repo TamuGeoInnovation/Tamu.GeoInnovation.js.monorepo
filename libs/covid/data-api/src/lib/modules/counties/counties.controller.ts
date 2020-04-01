@@ -26,6 +26,11 @@ export class CountiesController extends BaseController<County> {
     return this.service.search(params.keyword);
   }
 
+  @Post('claim')
+  public registerCountyToUser(@Body() body) {
+    return this.service.associateUserWithCounty(body.countyFips, body.email);
+  }
+
   @Post('')
   public insertState() {
     return 'Not implemented.';

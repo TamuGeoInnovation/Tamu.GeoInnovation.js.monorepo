@@ -8,3 +8,4 @@ export * from './modules/restrictions/restrictions.module';
 export * from './modules/site-owners/site-owners.module';
 export * from './modules/site-services/site-services.module';
 export * from './modules/site-statuses/site-statuses.module';
+export * from './modules/users/users.module';

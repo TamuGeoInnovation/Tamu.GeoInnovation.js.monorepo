@@ -12,7 +12,7 @@ export class CountiesService {
     this.resource = this.env.value('covid_api_url') + 'counties';
   }
 
-  public getCountiesForState(keyword: string) {
+  public getCountiesForState(keyword: number) {
     return this.http.get(`${this.resource}/state/${keyword}`);
   }
 }

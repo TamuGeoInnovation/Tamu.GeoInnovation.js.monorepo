@@ -66,11 +66,39 @@ export class LocationEntity extends CovidBase {
 
 @Entity({ name: 'users' })
 export class User extends CovidBase {
-  @Column({ type: 'text' })
+  @Column({ type: 'text', select: false })
   public email: string;
 
   @OneToMany((type) => Source, (source) => source.user)
   public sources: Source[];
+
+  @ManyToMany((type) => County)
+  @JoinTable()
+  public claimedCounties: County[];
+}
+
+@Entity({ name: 'states' })
+export class State extends BaseEntity {
+  @PrimaryColumn()
+  public stateFips: number;
+
+  @Column({ type: 'text' })
+  public name: string;
+
+  @Column({ type: 'text' })
+  public abbreviation: string;
+}
+
+@Entity({ name: 'counties' })
+export class County extends BaseEntity {
+  @PrimaryColumn()
+  public countyFips: number;
+
+  @Column()
+  public stateFips: number;
+
+  @Column({ type: 'text' })
+  public name: string;
 }
 
 /**
@@ -185,28 +213,4 @@ export class Lockdown extends Submission {
 
   @Column({ type: 'text', nullable: true })
   public protocol: string;
-}
-
-@Entity({ name: 'states', synchronize: false })
-export class State extends BaseEntity {
-  @PrimaryColumn()
-  public stateFips: number;
-
-  @Column({ type: 'text' })
-  public name: string;
-
-  @Column({ type: 'text' })
-  public abbreviation: string;
-}
-
-@Entity({ name: 'counties', synchronize: false })
-export class County extends BaseEntity {
-  @PrimaryColumn()
-  public countyFips: number;
-
-  @Column()
-  public stateFips: number;
-
-  @Column({ type: 'text' })
-  public name: string;
 }

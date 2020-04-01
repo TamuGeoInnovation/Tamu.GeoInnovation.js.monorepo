@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Observable, from, of, concat } from 'rxjs';
+import { shareReplay, switchMap, filter, toArray } from 'rxjs/operators';
 
 import {
   StatesService,
@@ -12,8 +14,8 @@ import {
   SiteServicesService,
   SiteStatusesService
 } from '@tamu-gisc/geoservices/data-access';
-import { Observable, from, of, concat } from 'rxjs';
-import { shareReplay, switchMap, filter, toArray } from 'rxjs/operators';
+
+import { State } from '@tamu-gisc/covid/common/entities';
 
 @Component({
   selector: 'tamu-gisc-testing-sites-advanced',
@@ -86,8 +88,8 @@ export class TestingSitesAdvancedComponent implements OnInit {
     this.counties = this.form.controls.state.valueChanges.pipe(
       switchMap((state) => {
         return this.states.pipe(
-          switchMap((states: any) => from(states)),
-          filter((st: any) => {
+          switchMap((states: Array<Partial<State>>) => from(states)),
+          filter((st: Partial<State>) => {
             return st.name === state;
           })
         );

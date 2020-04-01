@@ -10,7 +10,8 @@ import {
   RestrictionsModule,
   SiteServicesModule,
   SiteOwnersModule,
-  SiteStatusesModule
+  SiteStatusesModule,
+  UsersModule
 } from '@tamu-gisc/covid/data-api';
 
 import {
@@ -58,7 +59,8 @@ import { dbConfig } from '../environments/environment';
     StatesModule,
     CountiesModule,
     SourceTypesModule,
-    RestrictionsModule
+    RestrictionsModule,
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService]
