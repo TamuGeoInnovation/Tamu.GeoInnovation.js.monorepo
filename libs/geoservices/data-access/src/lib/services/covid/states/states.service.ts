@@ -17,4 +17,8 @@ export class StatesService {
   public getStates() {
     return this.http.get<Array<Partial<State>>>(this.resource);
   }
+
+  public getStateByFips(fips: number) {
+    return this.http.get<Partial<State>>(`${this.resource}/f/${fips}`);
+  }
 }

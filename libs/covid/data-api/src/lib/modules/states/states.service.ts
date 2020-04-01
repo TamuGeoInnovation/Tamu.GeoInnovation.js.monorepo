@@ -20,8 +20,15 @@ export class StatesService extends BaseService<State> {
         },
         {
           abbreviation: Like(`%${keyword}%`)
+        },
+        {
+          stateFips: keyword
         }
       ]
     });
+  }
+
+  public getStateByFips(fips: number) {
+    return this.repo.findOne({ stateFips: fips });
   }
 }

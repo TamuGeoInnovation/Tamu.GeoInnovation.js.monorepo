@@ -16,6 +16,11 @@ export class StatesController extends BaseController<State> {
     return this.service.search(params.keyword);
   }
 
+  @Get('/f/:fips')
+  public getState(@Param() params) {
+    return this.service.getStateByFips(params.fips);
+  }
+
   @Post('')
   public insertState() {
     return 'Not implemented.';

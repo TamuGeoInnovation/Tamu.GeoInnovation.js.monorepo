@@ -206,6 +206,9 @@ export class TestingSite extends Submission {
 @Entity({ name: 'lockdowns' })
 export class Lockdown extends Submission {
   @Column({ nullable: true })
+  public isLockdown: boolean;
+
+  @Column({ nullable: true })
   public startDate: Date;
 
   @Column({ nullable: true })

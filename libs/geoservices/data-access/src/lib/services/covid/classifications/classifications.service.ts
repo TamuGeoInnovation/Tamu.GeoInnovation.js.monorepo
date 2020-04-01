@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { Classification } from '@tamu-gisc/covid/common/entities';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,6 @@ export class ClassificationsService {
   }
 
   public getClassifications() {
-    return this.http.get(this.resource);
+    return this.http.get<Array<Classification>>(this.resource);
   }
 }

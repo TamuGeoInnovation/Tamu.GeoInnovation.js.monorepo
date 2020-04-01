@@ -23,8 +23,8 @@ const routes: Routes = [
         loadChildren: () => import('./pages/county/county.module').then((m) => m.CountyModule)
       },
       {
-        path: 'lockdowns',
-        loadChildren: () => import('./pages/profile/profile.module').then((m) => m.ProfileModule)
+        path: 'lockdown',
+        loadChildren: () => import('./pages/lockdown/lockdown.module').then((m) => m.LockdownModule)
       },
       {
         path: 'testing-sites',

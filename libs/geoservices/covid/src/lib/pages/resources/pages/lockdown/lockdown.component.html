@@ -1,0 +1,93 @@
+<div class="column8">
+  <ng-container>
+    <p>Please indicate whether this county is under a lockdown and provide any additional relevant information.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submitLockdown()">
+      <div class="form-section">
+        <div class="form-section-body">
+          <div class="form-collection column">
+            <p class="emphasis">Is this county under a lockdown directive?</p>
+
+            <tamu-gisc-checkbox-group formControlName="isLockdown" [referenceId]="'value'">
+              <tamu-gisc-checkbox *ngFor="let option of lockdownOptions" [data]="option" [label]="option.label"></tamu-gisc-checkbox>
+            </tamu-gisc-checkbox-group>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section" *ngIf="(lockdownState | async) === false">
+        <div class="form-section-toolbar">
+          <div class="form-section header">Supporting Evidence</div>
+        </div>
+        <div class="form-section-body">
+          <div class="form-collection column">
+            <p>If available, please include a link to the data source. Authoritative data sources are preferable.</p>
+            <tamu-gisc-textbox formControlName="url" type="text" placeholder="URL to Source" floatLabel="true"></tamu-gisc-textbox>
+          </div>
+
+          <div class="form-collection column">
+            <p class="emphasis">Source medium (select one):</p>
+            <tamu-gisc-checkbox-group formControlName="classification" [referenceId]="'guid'">
+              <tamu-gisc-checkbox *ngFor="let class of classifications | async" [data]="class" [label]="class.type"></tamu-gisc-checkbox>
+            </tamu-gisc-checkbox-group>
+          </div>
+
+          <div class="form-collection column">
+            <p>Please provide any additional details that were not available as fields or options such as what steps were taken to verify that this county was not in a lockdown</p>
+            <tamu-gisc-textbox formControlName="notes" type="textarea" placeholder="Additional notes or comments" floatLabel="true"></tamu-gisc-textbox>
+          </div>
+
+          <div class="form-collection row">
+            <tamu-gisc-button [value]="'Save'" type="submit" [disabled]="form.invalid"></tamu-gisc-button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section" *ngIf="(lockdownState | async) === true">
+        <div class="form-section-toolbar">
+          <div class="form-section header">Supporting Details</div>
+        </div>
+
+        <div class="form-section-body">
+          <div class="form-collection column">
+            <label for="lockdownStart">Lockdown date start:</label>
+            <input formControlName="startDate" type="date" name="lockdownStart" />
+
+            <br />
+
+            <label for="lockdownEnd">Lockdown date end:</label>
+            <input formControlName="endDate" type="date" name="lockdownEnd" />
+          </div>
+
+          <div class="form-collection column">
+            <tamu-gisc-textbox formControlName="protocol" type="textarea" placeholder="Protocol or rules during the lockdown" floatLabel="true"></tamu-gisc-textbox>
+          </div>
+
+          <div class="form-collection column">
+            <tamu-gisc-textbox formControlName="healthDepartmentUrl" type="text" placeholder="Health Department URL" floatLabel="true"></tamu-gisc-textbox>
+          </div>
+
+          <div class="form-collection column">
+            <p>Please provide the URL to the website where the information regarding the lockdown was found (if different than the county health department website)</p>
+            <tamu-gisc-textbox formControlName="url" type="text" placeholder="Source URL" floatLabel="true"></tamu-gisc-textbox>
+          </div>
+
+          <div class="form-collection column">
+            <p class="emphasis">Source medium (select one):</p>
+            <tamu-gisc-checkbox-group formControlName="classification" [referenceId]="'guid'">
+              <tamu-gisc-checkbox *ngFor="let class of classifications | async" [data]="class" [label]="class.type"></tamu-gisc-checkbox>
+            </tamu-gisc-checkbox-group>
+          </div>
+
+          <div class="form-collection column">
+            <tamu-gisc-textbox formControlName="notes" type="textarea" placeholder="Additional notes or comments" floatLabel="true"></tamu-gisc-textbox>
+          </div>
+
+          <div class="form-collection row">
+            <tamu-gisc-button [value]="'Submit'" type="submit" [disabled]="form.invalid"></tamu-gisc-button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</div>
