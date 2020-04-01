@@ -997,3 +997,10 @@ input[type='date'] {
   border-radius: 5pt;
   font-size: 1rem !important;
 }
+
+tamu-gisc-checkbox-group {
+  @include flexbox();
+  @include flex-direction(column);
+  @include flex-wrap(wrap);
+  max-height: 15rem;
+}

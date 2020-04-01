@@ -69,7 +69,7 @@ export class TestingSitesAdvancedComponent implements OnInit {
       hoursOfOperation: [''],
       capacity: [undefined],
       driveThrough: [false],
-      driveThroughCapacity: [''],
+      driveThroughCapacity: [0],
       isLockdown: [false],
       lockdownProtocol: [''],
       lockdownStart: [Date.now()],

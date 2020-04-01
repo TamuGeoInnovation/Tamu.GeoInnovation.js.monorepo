@@ -13,14 +13,43 @@ import {
   SiteStatusesModule
 } from '@tamu-gisc/covid/data-api';
 
+import {
+  TestingSite,
+  Lockdown,
+  County,
+  State,
+  User,
+  Source,
+  Classification,
+  Restriction,
+  SiteOwner,
+  SiteStatus,
+  SiteService
+} from '@tamu-gisc/covid/common/entities';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { config } from '../environments/ormconfig';
+import { dbConfig } from '../environments/environment';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(config),
+    TypeOrmModule.forRoot({
+      ...dbConfig,
+      entities: [
+        User,
+        Source,
+        Classification,
+        SiteOwner,
+        TestingSite,
+        SiteStatus,
+        SiteService,
+        Lockdown,
+        State,
+        County,
+        Restriction
+      ]
+    }),
     SitesModule,
     SiteServicesModule,
     SiteOwnersModule,
