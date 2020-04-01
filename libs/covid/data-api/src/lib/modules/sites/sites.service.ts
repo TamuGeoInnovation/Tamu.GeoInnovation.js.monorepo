@@ -29,4 +29,14 @@ export class SitesService extends BaseService<TestingSite> {
   ) {
     super(repo);
   }
+
+  public async getSitesForCounty(state: string, county: string) {
+    return this.repo.find({
+      where: {
+        state: state,
+        county: county
+      },
+      relations: ['source', 'source.classification', 'restrictions', 'owners', 'services', 'status']
+    });
+  }
 }

@@ -1,7 +1,67 @@
-<div class="column8">
-  <h2>COVID-19 Testing Site Submission</h2>
+<!-- <p>The following is a list of submitted testing sites registered to your email address for this county.</p> -->
 
-  <p>Using the form below, please provide details on the COVID-19 testing site.</p>
-
-  <tamu-gisc-testing-sites-advanced></tamu-gisc-testing-sites-advanced>
+<div class="flex flex-column align-center" *ngIf="(sites | async)?.length === 0; else siteList">
+  <p>You have not added any testing sites for this county.</p>
+  <a [routerLink]="['./create']">Add a testing site</a>
 </div>
+
+<ng-template #siteList>
+  <p>The following is a list of sites submitted for this county. <a [routerLink]="['./create']">Add a testing site</a></p>
+
+  <div class="column8">
+    <tamu-gisc-accordion *ngFor="let site of sites | async">
+      <tamu-gisc-accordion-header>{{site.locationName}}</tamu-gisc-accordion-header>
+      <tamu-gisc-accordion-content>
+        <!-- <pre>{{site | json}}</pre> -->
+
+        <div class="flex flex-column">
+          <p class="emphasis">Address Info</p>
+          <ul>
+            <li>Address1: {{site.address1}}</li>
+            <li>Address2: {{site.address2}}</li>
+            <li>City: {{site.city}}</li>
+            <li>County: {{site.county}}</li>
+            <li>State: {{site.state}}</li>
+            <li>Zip: {{site.zip}}</li>
+          </ul>
+
+          <p class="emphasis">Facility Info</p>
+          <ul>
+            <li>Facility Name: {{site.locationName}}</li>
+            <li>Facility Phone: {{site.locationPhoneNumber}}</li>
+            <li>Hours: {{site.hoursOfOperation}}</li>
+            <li>Capacity: {{site.capacity}}</li>
+            <li>Drive Through: {{site.driveThrough}}</li>
+            <li>Drive Through Capacity: {{site.driveThroughCapacity}}</li>
+            <li>
+              Ownership:
+              <ul>
+                <li *ngFor="let owner of site.owners">{{owner.type}}</li>
+              </ul>
+            </li>
+          </ul>
+
+          <p class="emphasis">Source</p>
+          <ul>
+            <li>URL: {{site.source.url}}</li>
+            <li>Classification: {{site.source.classification.type}}</li>
+            <li>Health Department URL: {{site.source.healthDepartmentUrl}}</li>
+          </ul>
+
+          <p class="emphasis">Restrictions</p>
+          <ul>
+            <li *ngFor="let restriction of site.restrictions">{{restriction.type}}</li>
+          </ul>
+
+          <p class="emphasis">Services</p>
+          <ul>
+            <li *ngFor="let service of site.services">{{service.type}}</li>
+          </ul>
+
+          <p class="emphasis">Notes</p>
+          <p>{{site.notes}}</p>
+        </div>
+      </tamu-gisc-accordion-content>
+    </tamu-gisc-accordion>
+  </div>
+</ng-template>

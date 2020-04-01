@@ -3,17 +3,21 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import { TestingSitesComponent } from './testing-sites.component';
-import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 const routes: Routes = [
   {
     path: '',
     component: TestingSitesComponent
+  },
+  {
+    path: 'create',
+    loadChildren: () => import('./pages/create/create.module').then((m) => m.CreateModule)
   }
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), GeoservicesCoreNgxModule],
+  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule],
   declarations: [TestingSitesComponent]
 })
 export class TestingSitesModule {}

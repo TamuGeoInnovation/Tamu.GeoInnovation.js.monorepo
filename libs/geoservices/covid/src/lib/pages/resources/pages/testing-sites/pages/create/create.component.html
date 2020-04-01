@@ -1,3 +1,5 @@
+<p>Please enter all available information regarding this testing site.</p>
+
 <form [formGroup]="form" (ngSubmit)="submitForm()">
   <div class="form-section">
     <div class="form-section-toolbar">
@@ -14,12 +16,12 @@
       </div>
 
       <div class="form-collection row">
-        <tamu-gisc-textbox type="text" formControlName="city" floatLabel="true" placeholder="City"></tamu-gisc-textbox>
-        <tamu-gisc-select formControlName="state" [data]="states | async" [valueTemplate]="'name'" [displayTemplate]="'name'" placeholder="Select State"></tamu-gisc-select>
+        <tamu-gisc-textbox formControlName="city" type="text" floatLabel="true" placeholder="City"></tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="state" type="text" floatLabel="true" placeholder="State"></tamu-gisc-textbox>
       </div>
 
       <div class="form-collection row">
-        <tamu-gisc-select formControlName="county" [data]="counties | async" [valueTemplate]="'name'" [displayTemplate]="'name'" placeholder="Select County"></tamu-gisc-select>
+        <tamu-gisc-textbox formControlName="county" type="text" floatLabel="true" placeholder="County"></tamu-gisc-textbox>
         <tamu-gisc-textbox type="text" formControlName="zip" floatLabel="true" placeholder="Zip"></tamu-gisc-textbox>
       </div>
     </div>
@@ -102,57 +104,6 @@
 
       <div class="form-collection column">
         <tamu-gisc-textbox type="text" formControlName="healthDepartmentUrl" floatLabel="true" placeholder="City/County Health Department URL"></tamu-gisc-textbox>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-section">
-    <div class="form-section-toolbar">
-      <div class="form-section-name">Lockdown Information</div>
-    </div>
-
-    <div class="form-section-body">
-      <div class="form-collection column">
-        <tamu-gisc-checkbox formControlName="isLockdown" label="Is this testing site within county or city limits where a shelter-in-place directive is in effect?"></tamu-gisc-checkbox>
-      </div>
-
-      <div class="form-collection column" *ngIf="form.controls.isLockdown.value">
-        <label for="lockdownStart">Lockdown date start:</label>
-        <input type="date" name="lockdownStart" formControlName="lockdownStart" />
-
-        <br />
-
-        <label for="lockdownEnd">Lockdown date end:</label>
-        <input type="date" name="lockdownEnd" formControlName="lockdownEnd" />
-      </div>
-
-      <div class="form-collection column" *ngIf="form.controls.isLockdown.value">
-        <tamu-gisc-textbox type="textarea" formControlName="lockdownProtocol" floatLabel="true" placeholder="Lockdown protocol instructions"></tamu-gisc-textbox>
-      </div>
-
-      <div class="form-collection column" *ngIf="form.controls.isLockdown.value">
-        <tamu-gisc-textbox type="text" formControlName="lockdownUrl" floatLabel="true" placeholder="Lockdown information URL"></tamu-gisc-textbox>
-      </div>
-
-      <div class="form-collection column" *ngIf="form.controls.isLockdown.value">
-        <div class="form-collection column">
-          <p>Please select the source medium where the information for the <i>lockdown</i> can be found. Select only <strong>one</strong>:</p>
-          <tamu-gisc-checkbox-group formControlName="lockdownUrlClassification" [referenceId]="'guid'">
-            <tamu-gisc-checkbox *ngFor="let classification of classifications | async" [label]="classification.type" [data]="classification"></tamu-gisc-checkbox>
-          </tamu-gisc-checkbox-group>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-section">
-    <div class="form-section-toolbar">
-      <div class="form-section-name">Contact Information</div>
-    </div>
-
-    <div class="form-section-body">
-      <div class="form-collection row pad-top">
-        <tamu-gisc-textbox type="text" formControlName="email" floatLabel="true" placeholder="Your Email Address"></tamu-gisc-textbox>
       </div>
     </div>
   </div>

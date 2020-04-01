@@ -1,28 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, from, of, concat } from 'rxjs';
-import { shareReplay, switchMap, filter, toArray } from 'rxjs/operators';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { Observable } from 'rxjs';
 
+import { County } from '@tamu-gisc/covid/common/entities';
 import {
   StatesService,
-  CountiesService,
   RestrictionsService,
   ClassificationsService,
   TestingSitesService,
-  LockdownsService,
   SiteOwnersService,
   SiteServicesService,
   SiteStatusesService
 } from '@tamu-gisc/geoservices/data-access';
+import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { Router, ActivatedRoute } from '@angular/router';
 
-import { State } from '@tamu-gisc/covid/common/entities';
+const storageOptions = { primaryKey: 'tamu-covid-vga' };
 
 @Component({
-  selector: 'tamu-gisc-testing-sites-advanced',
-  templateUrl: './testing-sites-advanced.component.html',
-  styleUrls: ['./testing-sites-advanced.component.scss']
+  selector: 'tamu-gisc-create',
+  templateUrl: './create.component.html',
+  styleUrls: ['./create.component.scss']
 })
-export class TestingSitesAdvancedComponent implements OnInit {
+export class CreateComponent implements OnInit {
   public form: FormGroup;
 
   public states: Observable<object>;
@@ -41,12 +41,13 @@ export class TestingSitesAdvancedComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private localStore: LocalStoreService,
+    private router: Router,
+    private route: ActivatedRoute,
     private st: StatesService,
-    private ct: CountiesService,
     private rt: RestrictionsService,
     private cl: ClassificationsService,
     private ts: TestingSitesService,
-    private ls: LockdownsService,
     private siteOwner: SiteOwnersService,
     private siteService: SiteServicesService,
     private siteStatus: SiteStatusesService
@@ -54,13 +55,13 @@ export class TestingSitesAdvancedComponent implements OnInit {
 
   public ngOnInit() {
     this.form = this.fb.group({
-      email: [''],
+      email: this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'email' }),
       url: [''],
       address1: [''],
       address2: [''],
-      county: [undefined],
+      county: [{ value: undefined, disabled: true }],
       city: [''],
-      state: [undefined],
+      state: [{ value: undefined, disabled: true }],
       zip: [''],
       notes: [''],
       classification: [[]],
@@ -72,33 +73,10 @@ export class TestingSitesAdvancedComponent implements OnInit {
       capacity: [undefined],
       driveThrough: [false],
       driveThroughCapacity: [0],
-      isLockdown: [false],
-      lockdownProtocol: [''],
-      lockdownStart: [Date.now()],
-      lockdownEnd: [Date.now()],
-      lockdownUrl: [''],
-      lockdownUrlClassification: [[]],
       siteOwnership: [[]],
       siteServices: [[]],
       siteStatus: [[]]
     });
-
-    this.states = this.st.getStates().pipe(shareReplay(1));
-
-    this.counties = this.form.controls.state.valueChanges.pipe(
-      switchMap((state) => {
-        return this.states.pipe(
-          switchMap((states: Array<Partial<State>>) => from(states)),
-          filter((st: Partial<State>) => {
-            return st.name === state;
-          })
-        );
-      }),
-      switchMap((st) => {
-        return this.ct.getCountiesForState(st.stateFips);
-      }),
-      shareReplay(1)
-    );
 
     this.restrictions = this.rt.getRestrictions();
 
@@ -109,6 +87,18 @@ export class TestingSitesAdvancedComponent implements OnInit {
     this.services = this.siteService.getSiteServices();
 
     this.statuses = this.siteStatus.getSiteStatuses();
+
+    // Set the county and state location fields for the form
+    const localCounty = this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'county' }) as Partial<County>;
+
+    if (localCounty) {
+      this.st.getStateByFips(localCounty.stateFips).subscribe((state) => {
+        this.form.patchValue({
+          county: localCounty.name,
+          state: state.name
+        });
+      });
+    }
   }
 
   public submitForm() {
@@ -117,8 +107,8 @@ export class TestingSitesAdvancedComponent implements OnInit {
     this.formState.submitting = true;
     this.form.disable();
 
-    concat(
-      this.ts.submitSite({
+    this.ts
+      .submitSite({
         email: value.email,
         url: value.url,
         address1: value.address1,
@@ -140,36 +130,13 @@ export class TestingSitesAdvancedComponent implements OnInit {
         owners: value.siteOwnership.join(','),
         services: value.siteServices.join(','),
         status: value.siteStatus.length >= 1 ? value.siteStatus[0] : undefined
-      }),
-      of(value.isLockdown).pipe(
-        switchMap((should) => {
-          if (should) {
-            return this.ls.submitLockdown({
-              email: value.email,
-              url: value.lockdownUrl,
-              address1: value.address1,
-              address2: value.address2,
-              county: value.county,
-              city: value.city,
-              state: value.state,
-              zip: value.zip,
-              protocol: value.lockdownProtocol,
-              classification: value.lockdownUrlClassification.length >= 1 ? value.lockdownUrlClassification[0] : undefined,
-              healthDepartmentUrl: value.healthDepartmentUrl,
-              startDate: value.lockdownStart,
-              endDate: value.lockdownEnd
-            });
-          } else {
-            return of(false);
-          }
-        })
-      )
-    )
-      .pipe(toArray())
+      })
       .subscribe((res) => {
         console.log(res);
         this.formState.submitting = false;
         this.formState.submitted = true;
+
+        this.router.navigate(['../'], { relativeTo: this.route });
       });
   }
 }

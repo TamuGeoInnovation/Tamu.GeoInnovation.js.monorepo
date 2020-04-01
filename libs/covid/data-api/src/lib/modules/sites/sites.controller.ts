@@ -19,6 +19,11 @@ export class SitesController extends BaseController<TestingSite> {
     });
   }
 
+  @Get(':state/:county')
+  public async getSitesForCounty(@Param() params) {
+    return await this.service.getSitesForCounty(params.state, params.county);
+  }
+
   /**
    Insert an un-validated testing site.
    */

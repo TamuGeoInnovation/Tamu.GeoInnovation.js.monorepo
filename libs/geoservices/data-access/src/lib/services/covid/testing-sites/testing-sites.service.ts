@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { HttpClient } from '@angular/common/http';
+import { TestingSite } from '@tamu-gisc/covid/common/entities';
 
 @Injectable({
   providedIn: 'root'
@@ -14,5 +15,9 @@ export class TestingSitesService {
 
   public submitSite(payload) {
     return this.http.post(this.resource, payload);
+  }
+
+  public getTestingSitesForCounty(state: string, county: string) {
+    return this.http.get<Array<Partial<TestingSite>>>(`${this.resource}/${state}/${county}`);
   }
 }

@@ -60,7 +60,7 @@ export function getHighlightLanguages() {
 @NgModule({
   imports: [
     BrowserModule,
-    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', relativeLinkResolution: 'corrected' }),
     BrowserAnimationsModule,
     HighlightPlusModule,
     EnvironmentModule,

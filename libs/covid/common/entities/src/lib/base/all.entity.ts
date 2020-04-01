@@ -49,6 +49,9 @@ export class LocationEntity extends CovidBase {
   public county: string;
 
   @Column({ nullable: true })
+  public city: string;
+
+  @Column({ nullable: true })
   public state: string;
 
   @Column({ nullable: true })
