@@ -11,7 +11,9 @@ import {
   SiteServicesModule,
   SiteOwnersModule,
   SiteStatusesModule,
-  UsersModule
+  UsersModule,
+  PhoneNumberTypesModule,
+  PhoneNumbersModule
 } from '@tamu-gisc/covid/data-api';
 
 import {
@@ -21,11 +23,13 @@ import {
   State,
   User,
   Source,
-  Classification,
+  SourceType,
   Restriction,
   SiteOwner,
   SiteStatus,
-  SiteService
+  SiteService,
+  PhoneNumber,
+  PhoneNumberType
 } from '@tamu-gisc/covid/common/entities';
 
 import { AppController } from './app.controller';
@@ -40,7 +44,7 @@ import { dbConfig } from '../environments/environment';
       entities: [
         User,
         Source,
-        Classification,
+        SourceType,
         SiteOwner,
         TestingSite,
         SiteStatus,
@@ -48,7 +52,9 @@ import { dbConfig } from '../environments/environment';
         Lockdown,
         State,
         County,
-        Restriction
+        Restriction,
+        PhoneNumber,
+        PhoneNumberType
       ]
     }),
     SitesModule,
@@ -60,7 +66,9 @@ import { dbConfig } from '../environments/environment';
     CountiesModule,
     SourceTypesModule,
     RestrictionsModule,
-    UsersModule
+    UsersModule,
+    PhoneNumberTypesModule,
+    PhoneNumbersModule
   ],
   controllers: [AppController],
   providers: [AppService]

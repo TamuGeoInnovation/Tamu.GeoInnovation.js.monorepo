@@ -14,48 +14,15 @@ export class LockdownsController extends BaseController<Lockdown> {
 
   @Get('')
   public async getValidated() {
-    return await this.service.repo.find({ where: { validated: true }});
+    return await this.service.repo.find({ where: { validated: true } });
   }
 
   /**
    Insert an un-validated testing site.
    */
   @Post('')
-  public async insertSite(@Body() body) {
-    //
-    // Resolve user by existing or new email
-    //
-    const userFindOptions = {
-      email: body.email
-    };
-
-    let user = await this.service.userRepo.findOne(userFindOptions);
-
-    // If no user was found with the given email, make a new one
-    if (user === undefined) {
-      user = this.service.userRepo.create(userFindOptions);
-
-      await user.save();
-    }
-
-    //
-    // Resolve submission classification
-    //
-    const classification = await this.service.classificationRepo.findOne({ guid: body.classification });
-
-    const source = this.service.sourceRepo.create({
-      url: body.url,
-      user: user,
-      classification: classification,
-      healthDepartmentUrl: body.healthDepartmentUrl
-    });
-
-    //
-    // Create lockdown
-    //
-    const site = this.service.repo.create({ ...body, source, user } as DeepPartial<Lockdown>);
-
-    return await site.save();
+  public async addLockdown(@Body() body) {
+    return this.service.registerLockdown(body);
   }
 
   @Post('/validate/:lockdownId')

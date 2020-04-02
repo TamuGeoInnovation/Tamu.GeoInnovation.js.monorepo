@@ -7,7 +7,7 @@ import { County, State } from '@tamu-gisc/covid/common/entities';
 import { CountiesService, StatesService } from '@tamu-gisc/geoservices/data-access';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
-const storageOptions = { primaryKey: 'tamu-covid-vga' };
+const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
 @Component({
   selector: 'tamu-gisc-county',

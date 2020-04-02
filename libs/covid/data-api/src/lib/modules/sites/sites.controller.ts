@@ -53,7 +53,7 @@ export class SitesController extends BaseController<TestingSite> {
     const source = this.service.sourceRepo.create({
       url: body.url,
       user: user,
-      classification: classification,
+      sourceType: classification,
       healthDepartmentUrl: body.healthDepartmentUrl
     });
 

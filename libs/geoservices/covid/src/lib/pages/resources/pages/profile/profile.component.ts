@@ -6,7 +6,7 @@ import { switchMap, startWith, take } from 'rxjs/operators';
 import { UsersService } from '@tamu-gisc/geoservices/data-access';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
-const storageOptions = { primaryKey: 'tamu-covid-vga' };
+const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
 @Component({
   selector: 'tamu-gisc-profile',

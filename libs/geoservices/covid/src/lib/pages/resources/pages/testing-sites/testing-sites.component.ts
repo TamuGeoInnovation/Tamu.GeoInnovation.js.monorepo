@@ -5,7 +5,7 @@ import { TestingSite, County } from '@tamu-gisc/covid/common/entities';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { switchMap, shareReplay } from 'rxjs/operators';
 
-const storageOptions = { primaryKey: 'tamu-covid-vga' };
+const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
 @Component({
   selector: 'tamu-gisc-testing-sites',

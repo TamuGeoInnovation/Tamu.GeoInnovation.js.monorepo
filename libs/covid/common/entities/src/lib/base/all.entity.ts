@@ -102,6 +102,26 @@ export class County extends BaseEntity {
 
   @Column({ type: 'text' })
   public name: string;
+
+  @OneToMany((type) => PhoneNumber, (phoneNumber) => phoneNumber.county)
+  public phoneNumbers: PhoneNumber[];
+}
+
+@Entity({ name: 'phone_number_types' })
+export class PhoneNumberType extends CovidBase {
+  @Column()
+  public name: string;
+}
+@Entity({ name: 'phone_numbers' })
+export class PhoneNumber extends CovidBase {
+  @Column()
+  public number: string;
+
+  @ManyToOne((type) => PhoneNumberType, { cascade: true })
+  public type: PhoneNumberType;
+
+  @ManyToOne((type) => County, (county) => county.phoneNumbers)
+  public county: County;
 }
 
 /**
@@ -109,8 +129,8 @@ export class County extends BaseEntity {
  *
  * For example: new website, government website, social media, etc
  */
-@Entity({ name: 'classifications' })
-export class Classification extends CovidBase {
+@Entity({ name: 'source_types' })
+export class SourceType extends CovidBase {
   @Column()
   public type: string;
 }
@@ -129,8 +149,8 @@ export class Source extends CovidBase {
   @Column({ nullable: true, type: 'text' })
   public healthDepartmentUrl: string;
 
-  @ManyToOne((type) => Classification, { cascade: true })
-  public classification: Classification;
+  @ManyToOne((type) => SourceType, { cascade: true })
+  public sourceType: SourceType;
 
   @ManyToOne((type) => User, (user) => user.sources, { onDelete: 'CASCADE' })
   public user: User;

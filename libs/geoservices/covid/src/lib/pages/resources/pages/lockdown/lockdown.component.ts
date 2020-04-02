@@ -4,10 +4,10 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-import { Classification, County } from '@tamu-gisc/covid/common/entities';
+import { SourceType, County } from '@tamu-gisc/covid/common/entities';
 import { ClassificationsService, StatesService, LockdownsService } from '@tamu-gisc/geoservices/data-access';
 
-const storageOptions = { primaryKey: 'tamu-covid-vga' };
+const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
 @Component({
   selector: 'tamu-gisc-lockdown',
@@ -16,7 +16,7 @@ const storageOptions = { primaryKey: 'tamu-covid-vga' };
 })
 export class LockdownComponent implements OnInit {
   public form: FormGroup;
-  public classifications: Observable<Array<Classification>>;
+  public classifications: Observable<Array<SourceType>>;
   public lockdownState: Observable<boolean>;
 
   public lockdownOptions = [
@@ -41,8 +41,8 @@ export class LockdownComponent implements OnInit {
   public ngOnInit() {
     this.form = this.fb.group({
       isLockdown: [[], Validators.required],
-      startDate: [new Date(Date.now())],
-      endDate: [new Date(Date.now())],
+      startDate: [new Date().toISOString().split('T')[0]],
+      endDate: [new Date().toISOString().split('T')[0]],
       notes: [''],
       protocol: [''],
       url: [''],
