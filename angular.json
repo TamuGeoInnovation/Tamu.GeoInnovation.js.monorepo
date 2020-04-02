@@ -2834,6 +2834,17 @@
                   "with": "apps/covid-data-api-nest/src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": false,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/covid-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/covid-data-api-nest/src/environments/environment.dev.ts"
+                }
+              ]
             }
           }
         },
