@@ -21,3 +21,5 @@ export * from './lib/services/covid/site-owners/site-owners.service';
 export * from './lib/services/covid/site-services/site-services.service';
 export * from './lib/services/covid/site-statuses/site-statuses.service';
 export * from './lib/services/covid/users/users.service';
+export * from './lib/services/covid/phone-number-types/phone-number-types.service';
+export * from './lib/services/covid/phone-numbers/phone-numbers.service';

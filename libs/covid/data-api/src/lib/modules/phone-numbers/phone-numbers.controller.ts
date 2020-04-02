@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { PhoneNumber } from '@tamu-gisc/covid/common/entities';
 
 import { BaseController } from '../base/base.controller';
@@ -13,6 +13,16 @@ export class PhoneNumbersController extends BaseController<PhoneNumber> {
   @Get('')
   public async getAllNumbers() {
     return this.service.repo.find({ relations: ['type'] });
+  }
+
+  @Get('county/:fips')
+  public async getPhoneNumbersForCounties(@Param() params) {
+    return this.service.getPhoneNumbersForCounties(params.fips);
+  }
+
+  @Post('county')
+  public async setPhoneNumbersForCounty(@Body() body) {
+    return this.service.setPhoneNumbersForCounty(body.numbers, body.countyFips);
   }
 
   @Post('')

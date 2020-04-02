@@ -44,21 +44,33 @@ export class CountiesService extends BaseService<County> {
    * Register a county to a user.
    */
   public async associateUserWithCounty(countyFips: number, email: string) {
-    const user = await this.userRepo.findOne({ email });
+    const user = await this.userRepo.findOne({
+      where: {
+        email
+      },
+      relations: ['claimedCounties']
+    });
 
     if (!user) {
       throw new Error('Invalid email.');
     }
 
-    const county = await this.repo.findOne({ where: { countyFips } });
+    // Check if the claim by countyFips being requested is already existing.
+    const claimedCountyIsSame = user.claimedCounties.findIndex((c) => c.countyFips === countyFips) > -1;
 
-    if (!county) {
-      throw new Error('Invalid county fips.');
+    if (user.claimedCounties.length > 0 && claimedCountyIsSame) {
+      return user;
+    } else {
+      const county = await this.repo.findOne({ where: { countyFips } });
+
+      if (!county) {
+        throw new Error('Invalid county fips.');
+      }
+
+      user.claimedCounties = [county];
+
+      return user.save();
     }
-
-    user.claimedCounties = [county];
-
-    return user.save();
   }
 
   public async getClaimsForUser(email: string) {

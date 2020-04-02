@@ -103,7 +103,7 @@ export class County extends BaseEntity {
   @Column({ type: 'text' })
   public name: string;
 
-  @OneToMany((type) => PhoneNumber, (phoneNumber) => phoneNumber.county)
+  @OneToMany((type) => PhoneNumber, (phoneNumber) => phoneNumber.county, {cascade: true})
   public phoneNumbers: PhoneNumber[];
 }
 
