@@ -11,3 +11,4 @@ export * from './modules/site-statuses/site-statuses.module';
 export * from './modules/users/users.module';
 export * from './modules/phone-numbers/phone-numbers.module';
 export * from './modules/phone-number-types/phone-number-types.module';
+export * from './modules/county-claims/county-claims.module';

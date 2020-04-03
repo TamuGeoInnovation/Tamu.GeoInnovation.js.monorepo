@@ -16,7 +16,7 @@
         </div>
       </div>
 
-      <div class="form-section">
+      <div *ngIf="(localCounty | async) !== undefined" class="form-section">
         <div class="form-section-toolbar">
           <div class="form-section-name">Phone Numbers</div>
           <div class="form-section-actions">

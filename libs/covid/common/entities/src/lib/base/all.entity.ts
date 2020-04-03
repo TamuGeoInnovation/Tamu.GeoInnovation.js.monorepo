@@ -75,9 +75,8 @@ export class User extends CovidBase {
   @OneToMany((type) => Source, (source) => source.user)
   public sources: Source[];
 
-  @ManyToMany((type) => County)
-  @JoinTable()
-  public claimedCounties: County[];
+  @OneToMany((type) => CountyClaim, (claim) => claim.user, { cascade: true })
+  public claims: CountyClaim[];
 }
 
 @Entity({ name: 'states' })
@@ -103,8 +102,24 @@ export class County extends BaseEntity {
   @Column({ type: 'text' })
   public name: string;
 
-  @OneToMany((type) => PhoneNumber, (phoneNumber) => phoneNumber.county, {cascade: true})
+  @OneToMany((type) => PhoneNumber, (phoneNumber) => phoneNumber.county, { cascade: true })
   public phoneNumbers: PhoneNumber[];
+}
+
+@Entity({ name: 'county_claims' })
+export class CountyClaim extends CovidBase {
+  @Column({ nullable: true })
+  public processing: boolean;
+
+  @Column({ nullable: true })
+  public closed: boolean;
+
+  @ManyToOne((type) => User, (user) => user.claims)
+  public user: User;
+
+  @ManyToOne((type) => County)
+  @JoinColumn({ referencedColumnName: 'countyFips' })
+  public county: County;
 }
 
 @Entity({ name: 'phone_number_types' })

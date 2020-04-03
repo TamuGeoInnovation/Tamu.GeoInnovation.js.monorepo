@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { HttpClient } from '@angular/common/http';
 
-import { County, User } from '@tamu-gisc/covid/common/entities';
+import { County, User, CountyClaim } from '@tamu-gisc/covid/common/entities';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +19,10 @@ export class CountiesService {
   }
 
   public registerUserToCounty(email: string, countyFips: number) {
-    return this.http.post<Partial<User>>(`${this.resource}/claim`, { email, countyFips });
+    return this.http.post<Partial<CountyClaim>>(`${this.resource}/claim`, { email, countyFips });
   }
 
   public getClaimsForUser(email: string) {
-    return this.http.get<Partial<User>>(`${this.resource}/claim/${email}`);
+    return this.http.get<Partial<Array<CountyClaim>>>(`${this.resource}/claim/${email}`);
   }
 }

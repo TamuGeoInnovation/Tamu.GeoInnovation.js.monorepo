@@ -29,7 +29,8 @@ import {
   SiteStatus,
   SiteService,
   PhoneNumber,
-  PhoneNumberType
+  PhoneNumberType,
+  CountyClaim
 } from '@tamu-gisc/covid/common/entities';
 
 import { AppController } from './app.controller';
@@ -54,7 +55,8 @@ import { dbConfig } from '../environments/environment';
         County,
         Restriction,
         PhoneNumber,
-        PhoneNumberType
+        PhoneNumberType,
+        CountyClaim
       ]
     }),
     SitesModule,
