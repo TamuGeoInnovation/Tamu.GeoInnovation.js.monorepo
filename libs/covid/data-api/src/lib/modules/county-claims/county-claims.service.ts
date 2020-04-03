@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, QueryBuilder } from 'typeorm';
 
 import { CountyClaim, User, County } from '@tamu-gisc/covid/common/entities';
 
@@ -14,6 +14,29 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     @InjectRepository(User) public userRepo: Repository<User>
   ) {
     super(repo);
+  }
+
+  public async getActiveClaims() {
+    return this.repo.find({
+      where: {
+        processing: true
+      },
+      relations: ['user']
+    });
+  }
+
+  public async getActiveClaimsForCountyFips(countyFips: number) {
+    const active = await this.repo
+      .createQueryBuilder('claim')
+      .innerJoin('claim.county', 'county')
+      .innerJoinAndSelect('claim.user', 'user')
+      .where('county.countyFips = :countyFips AND claim.processing = :processingValue', {
+        countyFips: countyFips,
+        processingValue: true
+      })
+      .getMany();
+
+    return active;
   }
 
   /**

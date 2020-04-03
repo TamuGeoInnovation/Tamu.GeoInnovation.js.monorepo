@@ -15,6 +15,9 @@ $state-transition-color: #536dfe;
 $inactive-color: hsl(223, 15%, 60%);
 $lightened-inactive-color: lighten($inactive-color, 25%);
 
+$alert-color: #ef5350;
+$lightened-alert-color: lighten($alert-color, 25%);
+
 $primary-text-color: #62707d;
 
 html {
@@ -956,6 +959,17 @@ table.floating-table {
   background: lighten($lightened-inactive-color, 10%);
   border: 1pt solid $lightened-inactive-color;
   padding: 1rem;
+
+  &.alert {
+    border-color: $lightened-alert-color;
+    background: lighten($lightened-alert-color, 10%);
+  }
+
+  p {
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }
 
 .file-upload {

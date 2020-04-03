@@ -17,8 +17,8 @@ export class UsersService {
   /**
    * Creates a user entry if one does not exist.
    */
-  public registerEmail(email: string) {
-    return this.http.post<Partial<User>>(this.resource, { email });
+  public registerEmail(userGuid: string) {
+    return this.http.post<Partial<User>>(this.resource, { email: userGuid });
   }
 
   public verifyEmail(email: string) {

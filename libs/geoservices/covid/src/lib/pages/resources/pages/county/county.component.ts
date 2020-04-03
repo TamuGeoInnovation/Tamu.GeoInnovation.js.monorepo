@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Observable, Subject, of, merge, concat } from 'rxjs';
-import { switchMap, startWith, take, withLatestFrom, tap } from 'rxjs/operators';
+import { Observable, Subject, of, merge, concat, combineLatest } from 'rxjs';
+import { switchMap, startWith, take, withLatestFrom, tap, shareReplay, map } from 'rxjs/operators';
 
-import { County, State, PhoneNumberType, PhoneNumber } from '@tamu-gisc/covid/common/entities';
+import { County, State, PhoneNumberType, PhoneNumber, User, CountyClaim } from '@tamu-gisc/covid/common/entities';
 import {
   CountiesService,
   StatesService,
   PhoneNumberTypesService,
-  PhoneNumbersService
+  PhoneNumbersService,
+  CountyClaimsService
 } from '@tamu-gisc/geoservices/data-access';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 
@@ -25,10 +26,22 @@ export class CountyComponent implements OnInit {
   public states: Observable<Array<Partial<State>>>;
   public phoneTypes: Observable<Array<Partial<PhoneNumberType>>>;
 
+  /**
+   * Represents the active county claims for the selected county
+   */
+  public countyClaims: Observable<Array<Partial<CountyClaim>>>;
+
+  public countyClaimable: Observable<boolean>;
+
+  /**
+   * Scheduler that emits whenever there is a claim status change
+   *
+   * Used to schedule other events that rely on a notification when that happens.
+   */
   public claimUpdate: Subject<boolean> = new Subject();
 
   public localCounty: Observable<Partial<County>>;
-  public localEmail: string;
+  public localIdentity: Partial<User>;
 
   constructor(
     private fb: FormBuilder,
@@ -36,7 +49,8 @@ export class CountyComponent implements OnInit {
     private county: CountiesService,
     private state: StatesService,
     private pt: PhoneNumberTypesService,
-    private pn: PhoneNumbersService
+    private pn: PhoneNumbersService,
+    private cs: CountyClaimsService
   ) {}
 
   public ngOnInit() {
@@ -46,7 +60,7 @@ export class CountyComponent implements OnInit {
       phoneNumbers: this.fb.array([this.createPhoneNumberGroup()])
     });
 
-    this.localEmail = this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'email' });
+    this.localIdentity = this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'identity' });
 
     this.phoneTypes = this.pt.getPhoneNumberTypes();
 
@@ -71,7 +85,7 @@ export class CountyComponent implements OnInit {
       .pipe(
         take(1),
         switchMap((county) => {
-          return this.county.getClaimsForUser(this.localEmail);
+          return this.county.getClaimsForUser(this.localIdentity.email);
         }),
         withLatestFrom(this.localCounty)
       )
@@ -141,13 +155,31 @@ export class CountyComponent implements OnInit {
           group.clear();
         }
       });
+
+    this.countyClaims = this.form.controls.county.valueChanges.pipe(
+      switchMap((countyFips: number) => {
+        return this.cs.getActiveClaimsForCounty(countyFips);
+      }),
+      shareReplay(1)
+    );
+
+    this.countyClaimable = this.countyClaims.pipe(
+      map((claims) => {
+        if (claims.length === 0) {
+          return true;
+        }
+
+        // Check if the active claim user is current user.
+        return claims.findIndex((ci) => ci.user.guid === this.localIdentity.guid) > -1;
+      })
+    );
   }
 
   public submitCountyOwnership() {
     const value = this.form.getRawValue();
 
     // Claim pipeline
-    const claim = this.county.registerUserToCounty(this.localEmail, this.form.getRawValue().county).pipe(
+    const claim = this.county.registerUserToCounty(this.localIdentity.email, this.form.getRawValue().county).pipe(
       tap((resClaim) => {
         const verified = resClaim.county.countyFips === this.form.getRawValue().county;
 
@@ -196,7 +228,7 @@ export class CountyComponent implements OnInit {
    *
    * If no county provided, it clears the entry from local storage.
    */
-  private _setLocalCounty(county?: County) {
+  private _setLocalCounty(county?: Partial<County>) {
     if (county) {
       this.localStore.setStorageObjectKeyValue({ ...storageOptions, subKey: 'county', value: county });
     } else {

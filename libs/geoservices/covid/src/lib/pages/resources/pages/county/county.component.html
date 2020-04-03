@@ -16,7 +16,16 @@
         </div>
       </div>
 
-      <div *ngIf="(localCounty | async) !== undefined" class="form-section">
+      <div *ngIf="!(countyClaimable | async) && (countyClaims | async)?.length > 0 && (this.form.controls.county.valueChanges | async) !== undefined" class="form-section">
+        <div class="form-section-body">
+          <div class="inform-context alert">
+            <p>This county has been claimed by another user. Please choose another county.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Only show phone numbers input field if there is a local county stored AND if the form countyFips value is the same as the local value -->
+      <div *ngIf="(localCounty | async) !== undefined && (localCounty | async)?.countyFips === (this.form.controls.county.valueChanges | async)" class="form-section">
         <div class="form-section-toolbar">
           <div class="form-section-name">Phone Numbers</div>
           <div class="form-section-actions">
@@ -41,7 +50,7 @@
       <div class="form-section">
         <div class="form-section-body">
           <div class="form-collection row">
-            <tamu-gisc-button [value]="(localCounty | async) !== undefined ? 'Update' : 'Claim'" type="submit" [disabled]="form.invalid"></tamu-gisc-button>
+            <tamu-gisc-button [value]="(localCounty | async) !== undefined ? 'Update' : 'Claim'" type="submit" [disabled]="form.invalid || !(countyClaimable | async)"></tamu-gisc-button>
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { switchMap, startWith, take } from 'rxjs/operators';
 
 import { UsersService } from '@tamu-gisc/geoservices/data-access';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { User } from '@tamu-gisc/covid/common/entities';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
@@ -19,7 +20,7 @@ export class ProfileComponent implements OnInit {
   /**
    * Email from local storage
    */
-  public storeEmail: Observable<string>;
+  public storeEmail: Observable<Partial<User>>;
 
   /**
    * Used as a scheduler to retrieved the email local storage value.
@@ -39,16 +40,16 @@ export class ProfileComponent implements OnInit {
         return of(
           this.localStore.getStorageObjectKeyValue({
             ...storageOptions,
-            subKey: 'email'
+            subKey: 'identity'
           })
-        ) as Observable<string>;
+        ) as Observable<Partial<User>>;
       })
     );
 
-    this.storeEmail.pipe(take(1)).subscribe((email) => {
+    this.storeEmail.pipe(take(1)).subscribe((identity) => {
       // Check if email has been set in local storage. If it has, verify with server.
-      if (email && email.length > 0) {
-        this.user.verifyEmail(email).subscribe((response) => {
+      if (identity && identity.email && identity.email.length > 0) {
+        this.user.verifyEmail(identity.email).subscribe((response) => {
           if (response.email) {
             this.form.setValue({ email: response.email });
           }
@@ -59,7 +60,7 @@ export class ProfileComponent implements OnInit {
 
   public handleUserLink() {
     this.user.registerEmail(this.form.getRawValue().email).subscribe((res) => {
-      this.localStore.setStorageObjectKeyValue({ ...storageOptions, subKey: 'email', value: res.email });
+      this.localStore.setStorageObjectKeyValue({ ...storageOptions, subKey: 'identity', value: res });
 
       this.registerUpdate.next(true);
     });
