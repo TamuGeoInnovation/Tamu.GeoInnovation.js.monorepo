@@ -4,12 +4,16 @@ import { Lockdown } from '@tamu-gisc/covid/common/entities';
 
 import { LockdownsService } from './lockdowns.service';
 import { BaseController } from '../base/base.controller';
-import { DeepPartial } from 'typeorm';
 
 @Controller('lockdowns')
 export class LockdownsController extends BaseController<Lockdown> {
   constructor(private service: LockdownsService) {
     super(service);
+  }
+
+  @Get('active/email/:email')
+  public async getActiveLockdownsForEmail(@Param() param) {
+    return this.service.getActiveLockDownForEmail(param.email);
   }
 
   @Get('')
@@ -27,19 +31,15 @@ export class LockdownsController extends BaseController<Lockdown> {
 
   @Post('/validate/:lockdownId')
   public async validateLockdown(@Param() params) {
-    const lockdown = await this.service.repo.findOne({ guid: params.lockdownId });
-
-    lockdown.validated = true;
-
-    return lockdown.save();
+    // const lockdown = await this.service.repo.findOne({ guid: params.lockdownId });
+    // lockdown.validated = true;
+    // return lockdown.save();
   }
 
   @Delete('/validate/:lockdownId')
   public async deleteValidatedLockdown(@Param() params) {
-    const lockdown = await this.service.repo.findOne({ guid: params.lockdownId });
-
-    lockdown.validated = false;
-
-    return lockdown.save();
+    // const lockdown = await this.service.repo.findOne({ guid: params.lockdownId });
+    // lockdown.validated = false;
+    // return lockdown.save();
   }
 }

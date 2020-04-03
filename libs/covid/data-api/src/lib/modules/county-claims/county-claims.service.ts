@@ -25,6 +25,20 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     });
   }
 
+  public async getActiveClaimsForEmail(email: string) {
+    const user = await this.userRepo.findOne({ where: { email } });
+
+    const active = await this.repo.find({
+      where: {
+        user: user,
+        processing: true
+      },
+      relations: ['county']
+    });
+
+    return active;
+  }
+
   public async getActiveClaimsForCountyFips(countyFips: number) {
     const active = await this.repo
       .createQueryBuilder('claim')

@@ -52,9 +52,7 @@ export class SitesController extends BaseController<TestingSite> {
 
     const source = this.service.sourceRepo.create({
       url: body.url,
-      user: user,
-      sourceType: classification,
-      healthDepartmentUrl: body.healthDepartmentUrl
+      type: classification
     });
 
     //
@@ -127,27 +125,27 @@ export class SitesController extends BaseController<TestingSite> {
 
   @Post('/validate/:siteId')
   public async validateLockdown(@Param() params) {
-    const site = await this.service.repo.findOne({ guid: params.siteId });
+    // const site = await this.service.repo.findOne({ guid: params.siteId });
 
-    if (site) {
-      site.validated = true;
+    // if (site) {
+    //   site.validated = true;
 
-      return site.save();
-    } else {
-      return {
-        status: 500,
-        success: false,
-        message: 'Site ID not found.'
-      };
-    }
+    //   return site.save();
+    // } else {
+    //   return {
+    //     status: 500,
+    //     success: false,
+    //     message: 'Site ID not found.'
+    //   };
+    // }
   }
 
   @Delete('/validate/:siteId')
   public async deleteValidatedLockdown(@Param() params) {
-    const site = await this.service.repo.findOne({ guid: params.siteId });
+    // const site = await this.service.repo.findOne({ guid: params.siteId });
 
-    site.validated = false;
+    // site.validated = false;
 
-    return site.save();
+    // return site.save();
   }
 }

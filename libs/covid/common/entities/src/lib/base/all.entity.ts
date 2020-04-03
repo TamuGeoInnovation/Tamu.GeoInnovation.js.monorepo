@@ -37,43 +37,10 @@ export class CovidBase extends BaseEntity {
   }
 }
 
-@Entity()
-export class LocationEntity extends CovidBase {
-  @Column({ nullable: true, type: 'text' })
-  public address1: string;
-
-  @Column({ nullable: true, type: 'text' })
-  public address2: string;
-
-  @Column({ nullable: true })
-  public county: string;
-
-  @Column({ nullable: true })
-  public city: string;
-
-  @Column({ nullable: true })
-  public state: string;
-
-  @Column({ nullable: true })
-  public zip: string;
-
-  @Column({ nullable: true })
-  public country: string;
-
-  @Column({ nullable: true })
-  public latitude: number;
-
-  @Column({ nullable: true })
-  public longitude: number;
-}
-
 @Entity({ name: 'users' })
 export class User extends CovidBase {
   @Column({ type: 'text', select: false })
   public email: string;
-
-  @OneToMany((type) => Source, (source) => source.user)
-  public sources: Source[];
 
   @OneToMany((type) => CountyClaim, (claim) => claim.user, { cascade: true })
   public claims: CountyClaim[];
@@ -117,9 +84,81 @@ export class CountyClaim extends CovidBase {
   @ManyToOne((type) => User, (user) => user.claims)
   public user: User;
 
-  @ManyToOne((type) => County)
+  @ManyToOne((type) => County, { cascade: true })
   @JoinColumn({ referencedColumnName: 'countyFips' })
   public county: County;
+}
+
+@Entity({ name: 'locations' })
+export class Location extends CovidBase {
+  @Column({ nullable: true, type: 'text' })
+  public address1: string;
+
+  @Column({ nullable: true, type: 'text' })
+  public address2: string;
+
+  @Column({ nullable: true })
+  public city: string;
+
+  @Column({ nullable: true })
+  public zip: string;
+
+  @Column({ nullable: true })
+  public county: string;
+
+  @Column({ nullable: true })
+  public state: string;
+
+  @Column({ nullable: true })
+  public country: string;
+
+  @Column({ nullable: true })
+  public latitude: number;
+
+  @Column({ nullable: true })
+  public longitude: number;
+}
+
+@Entity({ name: 'lockdown_infos' })
+export class LockdownInfo extends CovidBase {
+  @Column({ nullable: true })
+  public isLockdown: boolean;
+
+  @Column({ nullable: true })
+  public startDate: Date;
+
+  @Column({ nullable: true })
+  public endDate: Date;
+
+  @Column({ type: 'text', nullable: true })
+  public protocol: string;
+
+  @Column({ type: 'text', nullable: true })
+  public notes: string;
+
+  @OneToMany((type) => PhoneNumber, (ph) => ph.lockdownInfo, { cascade: true })
+  public phoneNumbers: PhoneNumber[];
+
+  @OneToMany((type) => Website, (wb) => wb.lockdownInfo, { cascade: true })
+  public websites: Website[];
+}
+
+@Entity({ name: 'website_types' })
+export class WebsiteType extends CovidBase {
+  @Column()
+  public name: string;
+}
+
+@Entity({ name: 'websites' })
+export class Website extends CovidBase {
+  @Column({ nullable: true, type: 'text' })
+  public url: string;
+
+  @ManyToOne((type) => WebsiteType, { cascade: true })
+  public type: WebsiteType;
+
+  @ManyToOne((type) => LockdownInfo, (lockdown) => lockdown.websites)
+  public lockdownInfo: LockdownInfo;
 }
 
 @Entity({ name: 'phone_number_types' })
@@ -137,58 +176,15 @@ export class PhoneNumber extends CovidBase {
 
   @ManyToOne((type) => County, (county) => county.phoneNumbers)
   public county: County;
-}
 
-/**
- * Entity that describes the type of a given source.
- *
- * For example: new website, government website, social media, etc
- */
-@Entity({ name: 'source_types' })
-export class SourceType extends CovidBase {
-  @Column()
-  public type: string;
+  @ManyToOne((type) => LockdownInfo, (lockdown) => lockdown.phoneNumbers)
+  public lockdownInfo: LockdownInfo;
 }
 
 @Entity({ name: 'restrictions' })
 export class Restriction extends CovidBase {
   @Column()
   public type: string;
-}
-
-@Entity({ name: 'sources' })
-export class Source extends CovidBase {
-  @Column({ nullable: true, type: 'text' })
-  public url: string;
-
-  @Column({ nullable: true, type: 'text' })
-  public healthDepartmentUrl: string;
-
-  @ManyToOne((type) => SourceType, { cascade: true })
-  public sourceType: SourceType;
-
-  @ManyToOne((type) => User, (user) => user.sources, { onDelete: 'CASCADE' })
-  public user: User;
-}
-
-@Entity()
-export class Submission extends LocationEntity {
-  @Column({ type: 'text', nullable: true })
-  public notes: string;
-
-  @Column({ default: false, nullable: false })
-  public flagged: boolean;
-
-  @Column({ default: false, select: false })
-  public validated: boolean;
-
-  @OneToOne((type) => Source, { cascade: true })
-  @JoinColumn()
-  public source: Source;
-
-  @ManyToMany((type) => Restriction)
-  @JoinTable()
-  public restrictions: Restriction[];
 }
 
 @Entity({ name: 'site_owners' })
@@ -210,7 +206,7 @@ export class SiteService extends CovidBase {
 }
 
 @Entity({ name: 'testing_sites' })
-export class TestingSite extends Submission {
+export class TestingSite extends Location {
   @Column({ nullable: true })
   public locationName: string;
 
@@ -229,6 +225,9 @@ export class TestingSite extends Submission {
   @Column({ nullable: true })
   public driveThroughCapacity: number;
 
+  @Column({ type: 'text', nullable: true })
+  public notes: string;
+
   @ManyToMany((type) => SiteOwner)
   @JoinTable()
   public owners: SiteOwner[];
@@ -239,19 +238,45 @@ export class TestingSite extends Submission {
 
   @ManyToOne((type) => SiteStatus, { cascade: true })
   public status: SiteStatus;
+
+  @OneToOne((type) => Website, { cascade: true })
+  @JoinColumn()
+  public source: Website;
+
+  @ManyToMany((type) => Restriction)
+  @JoinTable()
+  public restrictions: Restriction[];
+}
+
+@Entity({ name: 'lockdown_statuses' })
+export class LockdownStatus extends CovidBase {
+  @Column({ default: false, select: false })
+  public flagged: boolean;
+
+  @Column({ default: false, select: false })
+  public validated: boolean;
 }
 
 @Entity({ name: 'lockdowns' })
-export class Lockdown extends Submission {
-  @Column({ nullable: true })
-  public isLockdown: boolean;
+export class Lockdown extends CovidBase {
+  @ManyToOne((type) => State, { cascade: true })
+  public state: State;
 
-  @Column({ nullable: true })
-  public startDate: Date;
+  @ManyToOne((type) => County, { cascade: true })
+  public county: County;
 
-  @Column({ nullable: true })
-  public endDate: Date;
+  @ManyToOne((type) => CountyClaim, { cascade: true })
+  public claim: CountyClaim;
 
-  @Column({ type: 'text', nullable: true })
-  public protocol: string;
+  @OneToOne((type) => Location, { cascade: true })
+  @JoinColumn()
+  public location: Location;
+
+  @OneToOne((type) => LockdownInfo, { cascade: true })
+  @JoinColumn()
+  public info: LockdownInfo;
+
+  @OneToOne((type) => LockdownStatus, { cascade: true })
+  @JoinColumn()
+  public status: LockdownStatus;
 }

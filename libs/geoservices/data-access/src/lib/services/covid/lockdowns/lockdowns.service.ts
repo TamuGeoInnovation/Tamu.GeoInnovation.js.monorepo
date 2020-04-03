@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { Lockdown } from '@tamu-gisc/covid/common/entities';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,10 @@ export class LockdownsService {
   }
 
   public submitLockdown(payload) {
-    return this.http.post(this.resource, payload);
+    return this.http.post<Partial<Lockdown>>(this.resource, payload);
+  }
+
+  public getActiveLockdownForEmail(email: string) {
+    return this.http.get<Partial<Lockdown>>(`${this.resource}/active/email/${email}`);
   }
 }

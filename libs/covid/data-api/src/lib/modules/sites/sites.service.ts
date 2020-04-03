@@ -5,8 +5,8 @@ import { Repository } from 'typeorm';
 import {
   TestingSite,
   User,
-  Source,
-  SourceType,
+  Website,
+  WebsiteType,
   Restriction,
   SiteOwner,
   SiteService,
@@ -20,8 +20,8 @@ export class SitesService extends BaseService<TestingSite> {
   constructor(
     @InjectRepository(TestingSite) public repo: Repository<TestingSite>,
     @InjectRepository(User) public userRepo: Repository<User>,
-    @InjectRepository(Source) public sourceRepo: Repository<Source>,
-    @InjectRepository(SourceType) public classificationRepo: Repository<SourceType>,
+    @InjectRepository(Website) public sourceRepo: Repository<Website>,
+    @InjectRepository(WebsiteType) public classificationRepo: Repository<WebsiteType>,
     @InjectRepository(Restriction) public restrictionRepo: Repository<Restriction>,
     @InjectRepository(SiteOwner) public ownerRepo: Repository<SiteOwner>,
     @InjectRepository(SiteService) public serviceRepo: Repository<SiteService>,

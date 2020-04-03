@@ -22,15 +22,18 @@ import {
   County,
   State,
   User,
-  Source,
-  SourceType,
+  Website,
+  WebsiteType,
   Restriction,
   SiteOwner,
   SiteStatus,
   SiteService,
   PhoneNumber,
   PhoneNumberType,
-  CountyClaim
+  CountyClaim,
+  Location,
+  LockdownInfo,
+  LockdownStatus
 } from '@tamu-gisc/covid/common/entities';
 
 import { AppController } from './app.controller';
@@ -44,8 +47,8 @@ import { dbConfig } from '../environments/environment';
       ...dbConfig,
       entities: [
         User,
-        Source,
-        SourceType,
+        Website,
+        WebsiteType,
         SiteOwner,
         TestingSite,
         SiteStatus,
@@ -56,7 +59,10 @@ import { dbConfig } from '../environments/environment';
         Restriction,
         PhoneNumber,
         PhoneNumberType,
-        CountyClaim
+        CountyClaim,
+        Location,
+        LockdownInfo,
+        LockdownStatus
       ]
     }),
     SitesModule,
