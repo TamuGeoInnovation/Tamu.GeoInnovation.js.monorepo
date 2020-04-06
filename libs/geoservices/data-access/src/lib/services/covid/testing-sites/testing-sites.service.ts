@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { HttpClient } from '@angular/common/http';
+
 import { TestingSite } from '@tamu-gisc/covid/common/entities';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Injectable({
   providedIn: 'root'

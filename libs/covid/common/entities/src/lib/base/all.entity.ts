@@ -39,7 +39,7 @@ export class CovidBase extends BaseEntity {
 
 @Entity({ name: 'users' })
 export class User extends CovidBase {
-  @Column({ type: 'text', select: false })
+  @Column({ type: 'varchar', length: 'max', select: false })
   public email: string;
 
   @OneToMany((type) => CountyClaim, (claim) => claim.user, { cascade: true })
@@ -51,10 +51,10 @@ export class State extends BaseEntity {
   @PrimaryColumn()
   public stateFips: number;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'varchar', length: 'max' })
   public name: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'varchar', length: 'max' })
   public abbreviation: string;
 }
 
@@ -66,7 +66,7 @@ export class County extends BaseEntity {
   @Column()
   public stateFips: number;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'varchar', length: 'max' })
   public name: string;
 
   @OneToMany((type) => PhoneNumber, (phoneNumber) => phoneNumber.county, { cascade: true })
@@ -91,10 +91,10 @@ export class CountyClaim extends CovidBase {
 
 @Entity({ name: 'locations' })
 export class Location extends CovidBase {
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'varchar', length: 'max' })
   public address1: string;
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'varchar', length: 'max' })
   public address2: string;
 
   @Column({ nullable: true })
@@ -130,10 +130,10 @@ export class LockdownInfo extends CovidBase {
   @Column({ nullable: true })
   public endDate: Date;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'varchar', length: 'max', nullable: true })
   public protocol: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'varchar', length: 'max', nullable: true })
   public notes: string;
 
   @OneToMany((type) => PhoneNumber, (ph) => ph.lockdownInfo, { cascade: true })
@@ -169,7 +169,7 @@ export class TestingSiteInfo extends CovidBase {
   @Column({ nullable: true })
   public driveThroughCapacity: number;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'varchar', length: 'max', nullable: true })
   public notes: string;
 
   @OneToMany((type) => SiteStatus, (status) => status.testingSiteInfo, { cascade: true })
@@ -214,7 +214,7 @@ export class WebsiteType extends CovidBase {
 
 @Entity({ name: 'websites' })
 export class Website extends CovidBase {
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'varchar', length: 'max' })
   public url: string;
 
   @ManyToOne((type) => WebsiteType, { cascade: true })

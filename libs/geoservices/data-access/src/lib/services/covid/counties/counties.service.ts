@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { HttpClient } from '@angular/common/http';
 
-import { County, User, CountyClaim } from '@tamu-gisc/covid/common/entities';
+import { CountyClaim, County } from '@tamu-gisc/covid/common/entities';
 
 @Injectable({
   providedIn: 'root'
