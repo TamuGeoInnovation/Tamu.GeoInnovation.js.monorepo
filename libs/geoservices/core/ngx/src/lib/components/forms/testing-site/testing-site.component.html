@@ -104,7 +104,7 @@
       <div class="form-section-toolbar">
         <div class="form-section-name">Phone Numbers</div>
         <div class="form-section-actions">
-          <span class="material-icons action alt" (click)="addPhoneNumber()" title="Add phone number">add</span>
+          <span *ngIf="!readonly" class="material-icons action alt" (click)="addPhoneNumber()" title="Add phone number">add</span>
         </div>
       </div>
 
@@ -118,7 +118,13 @@
       </div>
 
       <ng-template #promptAddPhoneNumber>
-        <p>Please add any additional relevant phone numbers specific to this testing site such as on-site support numbers.</p>
+        <div *ngIf="!readonly">
+          <p>Please add any additional relevant phone numbers specific to this testing site such as on-site support numbers.</p>
+        </div>
+
+        <div *ngIf="readonly">
+          <p>No additional phone numbers entered.</p>
+        </div>
       </ng-template>
     </div>
 
@@ -126,7 +132,7 @@
       <div class="form-section-toolbar">
         <div class="form-section-name">Websites</div>
         <div class="form-section-actions">
-          <span class="material-icons action alt" (click)="addWebsite()" title="Add website">add</span>
+          <span *ngIf="!readonly" class="material-icons action alt" (click)="addWebsite()" title="Add website">add</span>
         </div>
       </div>
 
@@ -140,11 +146,17 @@
       </div>
 
       <ng-template #promptAddWebsite>
-        <p>If available, please add any supporting website sources where information on the testing site can be found. Authoritative data sources are preferred.</p>
+        <div *ngIf="!readonly">
+          <p>If available, please add any supporting website sources where information on the testing site can be found. Authoritative data sources are preferred.</p>
+        </div>
+
+        <div *ngIf="readonly">
+          <p>No additional website sources provided.</p>
+        </div>
       </ng-template>
     </div>
 
-    <div class="form-section">
+    <div class="form-section" *ngIf="!readonly">
       <div class="form-section-body">
         <tamu-gisc-button *ngIf="!formState.submitted" type="submit" [value]="!formState.submitting ? 'Submit' : 'Submitting...'" [disabled]="formState.submitting"></tamu-gisc-button>
 

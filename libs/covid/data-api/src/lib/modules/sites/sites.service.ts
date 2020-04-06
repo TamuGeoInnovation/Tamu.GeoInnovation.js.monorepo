@@ -47,7 +47,9 @@ export class SitesService extends BaseService<TestingSite> {
         'info.services',
         'info.restrictions',
         'info.phoneNumbers',
-        'info.websites'
+        'info.phoneNumbers.type',
+        'info.websites',
+        'info.websites.type'
       ]
     });
   }

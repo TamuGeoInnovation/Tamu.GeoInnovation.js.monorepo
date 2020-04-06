@@ -10,10 +10,7 @@
 
   <div class="column8">
     <tamu-gisc-accordion *ngFor="let site of sites | async">
-      <!-- <tamu-gisc-accordion-header>Site</tamu-gisc-accordion-header>
-      <tamu-gisc-accordion-content><pre>{{site | json }}</pre></tamu-gisc-accordion-content> -->
-
-      <tamu-gisc-accordion-header>Site</tamu-gisc-accordion-header>
+      <tamu-gisc-accordion-header>{{site.info.locationName ? site.info.locationName : site.location.address1 ? site.location.address1 : 'Site'}}</tamu-gisc-accordion-header>
       <tamu-gisc-accordion-content><tamu-gisc-testing-site [readonly]="true" [formData]="site"></tamu-gisc-testing-site></tamu-gisc-accordion-content>
     </tamu-gisc-accordion>
   </div>

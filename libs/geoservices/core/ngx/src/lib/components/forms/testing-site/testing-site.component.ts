@@ -166,6 +166,33 @@ export class TestingSiteComponent implements OnInit {
         }
       })
     );
+
+    if (this.readonly) {
+      this.form.disable();
+    }
+
+    if (this.formData) {
+      const patch = JSON.parse(JSON.stringify(this.formData));
+
+      patch.info.undisclosed = [(!patch.info.undisclosed).toString()];
+      patch.info.driveThrough = [patch.info.driveThrough.toString()];
+      patch.info.status = patch.info.status[0] && patch.info.status[0].guid ? patch.info.status[0].guid : undefined;
+      patch.info.owners = patch.info.owners.map((o) => o.guid);
+      patch.info.restrictions = patch.info.restrictions.map((r) => r.guid);
+      patch.info.services = patch.info.services.map((s) => s.guid);
+
+      this.form.patchValue(patch);
+
+      if (patch.info.phoneNumbers.length > 0) {
+        const phc = this.form.get(['info', 'phoneNumbers']) as FormArray;
+        patch.info.phoneNumbers.forEach((n) => phc.push(this.createPhoneNumberGroup(n)));
+      }
+
+      if (patch.info.websites.length > 0) {
+        const wc = this.form.get(['info', 'websites']) as FormArray;
+        patch.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
+      }
+    }
   }
 
   public createPhoneNumberGroup(number?: Partial<PhoneNumber>): FormGroup {
