@@ -1,0 +1,159 @@
+<form [formGroup]="form" (ngSubmit)="submitForm()">
+  <div formGroupName="info" class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">Information Availability</div>
+    </div>
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <p>Is information on this testing site publicly available?</p>
+
+        <tamu-gisc-checkbox-group formControlName="undisclosed" [referenceId]="'value'">
+          <tamu-gisc-checkbox *ngFor="let option of availabilityOptions" [data]="option" [label]="option.label"></tamu-gisc-checkbox>
+        </tamu-gisc-checkbox-group>
+      </div>
+
+      <div class="inform-context" *ngIf="!(undisclosedState | async) && this.form.get(['info', 'undisclosed']).value.length > 0">
+        <p>To the extent allowed by limited information, please provide any relevant details regarding this testing site.</p>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="(this.form.get(['info', 'undisclosed']).value && this.form.get(['info', 'undisclosed']).value.length > 0) || (undisclosedState | async)">
+    <div formGroupName="location" class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">Location Information</div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection row pad-top">
+          <tamu-gisc-textbox type="text" formControlName="address1" floatLabel="true" placeholder="Address 1"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox type="text" formControlName="address2" floatLabel="true" placeholder="Address 2"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox formControlName="city" type="text" floatLabel="true" placeholder="City"></tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="state" type="text" floatLabel="true" placeholder="State"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox formControlName="county" type="text" floatLabel="true" placeholder="County"></tamu-gisc-textbox>
+          <tamu-gisc-textbox type="text" formControlName="zip" floatLabel="true" placeholder="Zip"></tamu-gisc-textbox>
+        </div>
+      </div>
+    </div>
+
+    <div formGroupName="info" class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">Site Details</div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection row pad-top">
+          <tamu-gisc-textbox type="text" formControlName="locationName" floatLabel="true" placeholder="Facility Name"></tamu-gisc-textbox>
+          <tamu-gisc-textbox type="text" formControlName="locationPhoneNumber" floatLabel="true" placeholder="Facility Phone Number"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox type="text" formControlName="hoursOfOperation" floatLabel="true" placeholder="Hours of Operation"></tamu-gisc-textbox>
+          <tamu-gisc-textbox type="number" formControlName="capacity" floatLabel="true" placeholder="Daily Person Testing Capacity"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection column">
+          <tamu-gisc-checkbox formControlName="driveThrough" label="Is this a drive-through location?"></tamu-gisc-checkbox>
+        </div>
+
+        <div class="form-collection column" *ngIf="this.form.get(['info', 'driveThrough']).value">
+          <tamu-gisc-textbox type="number" formControlName="driveThroughCapacity" floatLabel="true" placeholder="Total Vehicle Capacity"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection column">
+          <tamu-gisc-select formControlName="status" [data]="statuses | async" displayTemplate="name" valueTemplate="guid" placeholder="Select operational status"></tamu-gisc-select>
+        </div>
+
+        <div class="form-collection column">
+          <p class="emphasis">Select any of the following that best describes the site ownership:</p>
+          <tamu-gisc-checkbox-group formControlName="owners" [referenceId]="'guid'">
+            <tamu-gisc-checkbox *ngFor="let owner of owners | async" [label]="owner.name" [data]="owner"></tamu-gisc-checkbox>
+          </tamu-gisc-checkbox-group>
+        </div>
+
+        <div class="form-collection column">
+          <p class="emphasis">Select any of the applicable testing restrictions for this site:</p>
+          <tamu-gisc-checkbox-group formControlName="restrictions" [referenceId]="'guid'">
+            <tamu-gisc-checkbox *ngFor="let restriction of restrictions | async" [label]="restriction.name" [data]="restriction"></tamu-gisc-checkbox>
+          </tamu-gisc-checkbox-group>
+        </div>
+
+        <div class="form-collection column">
+          <p class="emphasis">Select any of the following services provided by this site:</p>
+          <tamu-gisc-checkbox-group formControlName="services" [referenceId]="'guid'">
+            <tamu-gisc-checkbox *ngFor="let service of services | async" [label]="service.name" [data]="service"></tamu-gisc-checkbox>
+          </tamu-gisc-checkbox-group>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox type="textarea" formControlName="notes" floatLabel="true" placeholder="Additional Notes/Comments"></tamu-gisc-textbox>
+        </div>
+      </div>
+    </div>
+
+    <div formGroupName="info" class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">Phone Numbers</div>
+        <div class="form-section-actions">
+          <span class="material-icons action alt" (click)="addPhoneNumber()" title="Add phone number">add</span>
+        </div>
+      </div>
+
+      <div [formArrayName]="'phoneNumbers'" *ngIf="form.get(['info', 'phoneNumbers'])['controls'].length > 0; else promptAddPhoneNumber" class="form-section-body">
+        <ng-container *ngFor="let ph of form.get(['info', 'phoneNumbers'])['controls']; let i = index">
+          <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
+            <tamu-gisc-textbox formControlName="number" type="tel" placeholder="Phone Number" floatLabel="true"></tamu-gisc-textbox>
+            <tamu-gisc-select formControlName="type" [data]="phoneTypes | async" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
+          </div>
+        </ng-container>
+      </div>
+
+      <ng-template #promptAddPhoneNumber>
+        <p>Please add any additional relevant phone numbers specific to this testing site such as on-site support numbers.</p>
+      </ng-template>
+    </div>
+
+    <div formGroupName="info" class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">Websites</div>
+        <div class="form-section-actions">
+          <span class="material-icons action alt" (click)="addWebsite()" title="Add website">add</span>
+        </div>
+      </div>
+
+      <div [formArrayName]="'websites'" *ngIf="form.get(['info', 'websites'])['controls'].length > 0; else promptAddWebsite" class="form-section-body">
+        <ng-container *ngFor="let ph of form.get(['info', 'websites'])['controls']; let i = index">
+          <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
+            <tamu-gisc-textbox formControlName="url" type="text" placeholder="Website URL" floatLabel="true"></tamu-gisc-textbox>
+            <tamu-gisc-select formControlName="type" [data]="websitesTypes | async" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
+          </div>
+        </ng-container>
+      </div>
+
+      <ng-template #promptAddWebsite>
+        <p>If available, please add any supporting website sources where information on the testing site can be found. Authoritative data sources are preferred.</p>
+      </ng-template>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-body">
+        <tamu-gisc-button *ngIf="!formState.submitted" type="submit" [value]="!formState.submitting ? 'Submit' : 'Submitting...'" [disabled]="formState.submitting"></tamu-gisc-button>
+
+        <ng-container *ngIf="formState.submitted">
+          <p><strong>Thank you! Your submission has been recorded and will be processed as soon as possible.</strong></p>
+
+          <p>You will be redirected to your site submissions in 5 seconds.</p>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+</form>

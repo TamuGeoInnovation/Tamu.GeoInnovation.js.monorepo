@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { TestingSitesComponent } from './testing-sites.component';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
 
 const routes: Routes = [
   {
@@ -17,7 +18,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule],
+  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule, GeoservicesCoreNgxModule],
   declarations: [TestingSitesComponent]
 })
 export class TestingSitesModule {}

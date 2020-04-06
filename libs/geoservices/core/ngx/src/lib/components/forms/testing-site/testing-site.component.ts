@@ -1,8 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 
-import { County, PhoneNumber, Website, WebsiteType, PhoneNumberType, User } from '@tamu-gisc/covid/common/entities';
+import {
+  County,
+  PhoneNumber,
+  Website,
+  WebsiteType,
+  PhoneNumberType,
+  User,
+  TestingSite
+} from '@tamu-gisc/covid/common/entities';
 import {
   StatesService,
   RestrictionsService,
@@ -20,11 +28,17 @@ import { switchMap, tap } from 'rxjs/operators';
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
 @Component({
-  selector: 'tamu-gisc-create',
-  templateUrl: './create.component.html',
-  styleUrls: ['./create.component.scss']
+  selector: 'tamu-gisc-testing-site',
+  templateUrl: './testing-site.component.html',
+  styleUrls: ['./testing-site.component.scss']
 })
-export class CreateComponent implements OnInit {
+export class TestingSiteComponent implements OnInit {
+  @Input()
+  public readonly: boolean;
+
+  @Input()
+  public formData: Partial<TestingSite>;
+
   public form: FormGroup;
 
   public states: Observable<object>;

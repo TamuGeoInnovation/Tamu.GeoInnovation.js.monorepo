@@ -4,10 +4,11 @@ import { BaseController } from '../base/base.controller';
 import { TestingSite } from '@tamu-gisc/covid/common/entities';
 import { SitesService } from './sites.service';
 import { DeepPartial } from 'typeorm';
+import { CountyClaimsService } from '../county-claims/county-claims.service';
 
 @Controller('sites')
 export class SitesController extends BaseController<TestingSite> {
-  constructor(private service: SitesService) {
+  constructor(private service: SitesService, private ccs: CountyClaimsService) {
     super(service);
   }
 
@@ -33,35 +34,47 @@ export class SitesController extends BaseController<TestingSite> {
     // Resolve user by existing or new email
     //
     const userFindOptions = {
-      email: body.email
+      email: body.claim.user.email
     };
 
-    let user = await this.service.userRepo.findOne(userFindOptions);
+    const user = await this.service.userRepo.findOne(userFindOptions);
 
-    // If no user was found with the given email, make a new one
-    if (user === undefined) {
-      user = this.service.userRepo.create(userFindOptions);
+    const claims = await this.ccs.getActiveClaimsForEmail(body.claim.user.email);
 
-      await user.save();
+    const claim = claims.find((c) => c.county.countyFips === body.claim.county.countyFips);
+
+    if (!claim) {
+      return {
+        status: 400,
+        success: false,
+        message: 'Lockdown and claim mismatch.'
+      };
     }
 
-    //
-    // Resolve submission classification
-    //
-    const classification = await this.service.classificationRepo.findOne({ guid: body.classification });
+    if (claim.processing === false || claim.closed === true) {
+      return {
+        status: 400,
+        success: false,
+        message: 'Claim for county is inactive. Re-open it to modify details.'
+      };
+    }
 
-    const source = this.service.sourceRepo.create({
-      url: body.url,
-      type: classification
-    });
+    // If no user was found with the given email, make a new one
+    if (!user) {
+      return {
+        status: 400,
+        success: false,
+        message: 'Invalid email.'
+      };
+    }
 
     //
     // Resolve restrictions
     //
     let restrictions;
 
-    if (body.restrictions && body.restrictions !== null) {
-      const restrictionList = body.restrictions.split(',').map((id) => {
+    if (body.info.restrictions && body.info.restrictions !== null) {
+      const restrictionList = body.info.restrictions.split(',').map((id) => {
         return {
           guid: id
         };
@@ -78,8 +91,8 @@ export class SitesController extends BaseController<TestingSite> {
 
     let owners;
 
-    if (body.owners && body.owners !== null) {
-      const ownersTypeList = body.owners.split(',').map((id) => {
+    if (body.info.owners && body.info.owners !== null) {
+      const ownersTypeList = body.info.owners.split(',').map((id) => {
         return {
           guid: id
         };
@@ -96,8 +109,8 @@ export class SitesController extends BaseController<TestingSite> {
 
     let services;
 
-    if (body.owners && body.owners !== null) {
-      const serviceList = body.services.split(',').map((id) => {
+    if (body.info.services && body.info.services !== null) {
+      const serviceList = body.info.services.split(',').map((id) => {
         return {
           guid: id
         };
@@ -111,25 +124,31 @@ export class SitesController extends BaseController<TestingSite> {
     //
     // Resolve site status
     //
-    const status = await this.service.statusRepo.findOne({ guid: body.status });
+    const status = await this.service.statusRepo.find({ guid: body.info.status });
 
     //
     // Create site
     //
-    const site = this.service.repo.create({ ...body, source, user, restrictions, owners, services, status } as DeepPartial<
-      TestingSite
-    >);
 
-    return await site.save();
+    const p = { ...body, restrictions, owners, services, status };
+    p.claim = claim;
+    p.info.restrictions = restrictions;
+    p.info.owners = owners;
+    p.info.services = services;
+    p.info.status = status;
+
+    const site = this.service.repo.create(p as DeepPartial<TestingSite>);
+
+    const result = await site.save();
+
+    return result;
   }
 
   @Post('/validate/:siteId')
   public async validateLockdown(@Param() params) {
     // const site = await this.service.repo.findOne({ guid: params.siteId });
-
     // if (site) {
     //   site.validated = true;
-
     //   return site.save();
     // } else {
     //   return {
@@ -143,9 +162,7 @@ export class SitesController extends BaseController<TestingSite> {
   @Delete('/validate/:siteId')
   public async deleteValidatedLockdown(@Param() params) {
     // const site = await this.service.repo.findOne({ guid: params.siteId });
-
     // site.validated = false;
-
     // return site.save();
   }
 }

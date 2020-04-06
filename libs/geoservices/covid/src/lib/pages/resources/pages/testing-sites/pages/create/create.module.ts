@@ -5,6 +5,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { CreateComponent } from './create.component';
+import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
 
 const routes: Routes = [
   {
@@ -14,7 +15,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, ReactiveFormsModule, FormsModule, GeoservicesCoreNgxModule],
   declarations: [CreateComponent]
 })
 export class CreateModule {}

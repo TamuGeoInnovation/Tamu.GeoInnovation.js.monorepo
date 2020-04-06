@@ -7,10 +7,10 @@ import {
   User,
   Website,
   WebsiteType,
-  Restriction,
-  SiteOwner,
-  SiteService,
-  SiteStatus
+  RestrictionType,
+  SiteOwnerType,
+  SiteServiceType,
+  SiteStatusType
 } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
@@ -22,10 +22,10 @@ export class SitesService extends BaseService<TestingSite> {
     @InjectRepository(User) public userRepo: Repository<User>,
     @InjectRepository(Website) public sourceRepo: Repository<Website>,
     @InjectRepository(WebsiteType) public classificationRepo: Repository<WebsiteType>,
-    @InjectRepository(Restriction) public restrictionRepo: Repository<Restriction>,
-    @InjectRepository(SiteOwner) public ownerRepo: Repository<SiteOwner>,
-    @InjectRepository(SiteService) public serviceRepo: Repository<SiteService>,
-    @InjectRepository(SiteStatus) public statusRepo: Repository<SiteStatus>
+    @InjectRepository(RestrictionType) public restrictionRepo: Repository<RestrictionType>,
+    @InjectRepository(SiteOwnerType) public ownerRepo: Repository<SiteOwnerType>,
+    @InjectRepository(SiteServiceType) public serviceRepo: Repository<SiteServiceType>,
+    @InjectRepository(SiteStatusType) public statusRepo: Repository<SiteStatusType>
   ) {
     super(repo);
   }
@@ -36,7 +36,19 @@ export class SitesService extends BaseService<TestingSite> {
         state: state,
         county: county
       },
-      relations: ['source', 'source.classification', 'restrictions', 'owners', 'services', 'status']
+      relations: [
+        'claim',
+        'claim.user',
+        'claim.county',
+        'location',
+        'info',
+        'info.status',
+        'info.owners',
+        'info.services',
+        'info.restrictions',
+        'info.phoneNumbers',
+        'info.websites'
+      ]
     });
   }
 }
