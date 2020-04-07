@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, pluck, withLatestFrom, filter } from 'rxjs/operators';
 
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { WebsiteType, County, User, PhoneNumber, PhoneNumberType, Website } from '@tamu-gisc/covid/common/entities';
@@ -11,6 +11,7 @@ import {
   LockdownsService,
   PhoneNumberTypesService
 } from '@tamu-gisc/geoservices/data-access';
+import { IdentityService } from '../../../../services/identity.service';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
@@ -24,6 +25,9 @@ export class LockdownComponent implements OnInit {
 
   public websitesTypes: Observable<Array<Partial<WebsiteType>>>;
   public phoneTypes: Observable<Array<Partial<PhoneNumberType>>>;
+
+  public localCounty: Observable<Partial<County>>;
+  public localEmail: Observable<Partial<User['email']>>;
 
   public lockdownState: Observable<boolean>;
 
@@ -44,16 +48,20 @@ export class LockdownComponent implements OnInit {
     private cl: ClassificationsService,
     private st: StatesService,
     private ls: LockdownsService,
-    private ph: PhoneNumberTypesService
+    private ph: PhoneNumberTypesService,
+    private is: IdentityService
   ) {}
 
   public ngOnInit() {
-    const localEmail = (this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'identity' }) as Partial<User>)
-      .email;
+    this.localCounty = this.is.identity.pipe(pluck('county'));
+    this.localEmail = this.is.identity.pipe(pluck('user', 'email'));
+
+    // const localEmail = (this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'identity' }) as Partial<User>)
+    //   .email;
 
     this.form = this.fb.group({
       claim: this.fb.group({
-        user: [localEmail, Validators.required],
+        user: ['', Validators.required],
         county: ['']
       }),
       location: this.fb.group({
@@ -92,53 +100,84 @@ export class LockdownComponent implements OnInit {
     );
 
     // Set the county and state location fields for the form
-    const localCounty = this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'county' }) as Partial<County>;
 
-    if (localCounty) {
-      this.st.getStateByFips(localCounty.stateFips).subscribe((state) => {
-        this.form.patchValue({
-          claim: {
-            county: localCounty.countyFips
-          },
-          location: {
-            county: localCounty.name,
-            state: state.name
-          }
-        });
-      });
-    }
-
-    this.ls.getActiveLockdownForEmail(localEmail).subscribe((res) => {
-      const merged = {
-        claim: {
-          user: localEmail,
-          county: res.claim.county.countyFips
-        },
-        location: {
-          address1: res.location.address1,
-          address2: res.location.address2,
-          city: res.location.city,
-          zip: res.location.zip,
-          county: res.location.county,
-          state: res.location.state
-        },
-        info: {
-          isLockdown: [res.info.isLockdown.toString()],
-          startDate: ((res.info.startDate as unknown) as string).split('T')[0],
-          endDate: ((res.info.endDate as unknown) as string).split('T')[0],
-          protocol: res.info.protocol,
-          notes: res.info.notes
+    this.localCounty
+      .pipe(filter((county) => county !== undefined && county.countyFips !== undefined && county.stateFips !== undefined))
+      .subscribe((county) => {
+        if (county) {
+          this.st.getStateByFips(county.stateFips).subscribe((state) => {
+            this.form.patchValue({
+              claim: {
+                county: county.countyFips
+              },
+              location: {
+                county: county.name,
+                state: state.name
+              }
+            });
+          });
         }
-      };
+      });
 
-      this.form.patchValue(merged);
+    this.localEmail
+      .pipe(
+        filter((email) => email !== undefined),
+        switchMap((email) => {
+          return this.ls.getActiveLockdownForEmail(email);
+        }),
+        withLatestFrom(this.localEmail)
+      )
+      .subscribe(([res, email]) => {
+        if (Object.keys(res).length > 0) {
+          const merged = {
+            claim: {
+              user: email,
+              county: res.claim.county.countyFips
+            },
+            location: {
+              address1: res.location.address1,
+              address2: res.location.address2,
+              city: res.location.city,
+              zip: res.location.zip,
+              county: res.location.county,
+              state: res.location.state
+            },
+            info: {
+              isLockdown: [res.info.isLockdown.toString()],
+              startDate:
+                res && res.info && res.info.startDate
+                  ? ((res.info.startDate as unknown) as string).split('T')[0]
+                  : this.form.get(['info', 'startDate']).value,
+              endDate:
+                res && res.info && res.info.endDate
+                  ? ((res.info.endDate as unknown) as string).split('T')[0]
+                  : this.form.get(['info', 'endDate']).value,
+              protocol: res.info.protocol,
+              notes: res.info.notes
+            }
+          };
 
-      const phc = this.form.get(['info', 'phoneNumbers']) as FormArray;
-      const wc = this.form.get(['info', 'websites']) as FormArray;
+          this.form.patchValue(merged);
+        } else {
+          const merged = {
+            claim: {
+              user: email
+            }
+          };
 
-      res.info.phoneNumbers.forEach((n) => phc.push(this.createPhoneNumberGroup(n)));
-      res.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
-    });
+          this.form.patchValue(merged);
+        }
+
+        if (res && res.info && res.info.phoneNumbers) {
+          const phc = this.form.get(['info', 'phoneNumbers']) as FormArray;
+          res.info.phoneNumbers.forEach((n) => phc.push(this.createPhoneNumberGroup(n)));
+        }
+
+        if (res && res.info && res.info.websites) {
+          const wc = this.form.get(['info', 'websites']) as FormArray;
+          res.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
+        }
+      });
   }
 
   public createPhoneNumberGroup(number?: Partial<PhoneNumber>): FormGroup {
