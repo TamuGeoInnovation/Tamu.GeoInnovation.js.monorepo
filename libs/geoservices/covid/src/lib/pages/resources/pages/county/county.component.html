@@ -1,59 +1,66 @@
 <div class="column8">
-  <ng-container>
-    <p>Select the state and county to set or change a claim.</p>
+  <p>Select the state and county to set or change a claim.</p>
 
-    <form [formGroup]="form" (ngSubmit)="submitCountyOwnership()">
-      <div class="form-section">
-        <div class="form-section-toolbar">
-          <div class="form-section-name">County Claim</div>
+  <form [formGroup]="form" (ngSubmit)="submitCountyOwnership()">
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">County Claim</div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection row pad-top">
+          <tamu-gisc-select formControlName="state" [data]="states | async" placeholder="Select State" [valueTemplate]="'stateFips'" [displayTemplate]="'name'"></tamu-gisc-select>
+          <tamu-gisc-select formControlName="county" [data]="counties | async" placeholder="Select County" [valueTemplate]="'countyFips'" [displayTemplate]="'name'"></tamu-gisc-select>
         </div>
+      </div>
+    </div>
 
-        <div class="form-section-body">
-          <div class="form-collection row pad-top">
-            <tamu-gisc-select formControlName="state" [data]="states | async" placeholder="Select State" [valueTemplate]="'stateFips'" [displayTemplate]="'name'"></tamu-gisc-select>
-            <tamu-gisc-select formControlName="county" [data]="counties | async" placeholder="Select County" [valueTemplate]="'countyFips'" [displayTemplate]="'name'"></tamu-gisc-select>
-          </div>
+    <div *ngIf="!(countyClaimable | async) && (countyClaims | async)?.length > 0 && (this.form.controls.county.valueChanges | async) !== 'undefined' && (this.form.controls.state.valueChanges | async) !== 'undefined'" class="form-section">
+      <div class="form-section-body">
+        <div class="inform-context alert">
+          <p>This county has been claimed by another user. Please choose another county.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Only show phone numbers input field if there is a local county stored AND if the form countyFips value is the same as the local value -->
+
+    <div *ngIf="((localCounty | async)?.countyFips === (this.form.controls.county.value)) && ((localCounty | async)?.stateFips === (this.form.controls.state.value)) && ((this.form.controls.county.value) !== 'undefined' && (this.form.controls.state.value) !== 'undefined')" class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">Phone Numbers</div>
+        <div class="form-section-actions">
+          <span class="material-icons action alt" (click)="addPhoneNumber()" title="Add phone number">add</span>
         </div>
       </div>
 
-      <div *ngIf="!(countyClaimable | async) && (countyClaims | async)?.length > 0 && (this.form.controls.county.valueChanges | async) !== undefined" class="form-section">
-        <div class="form-section-body">
-          <div class="inform-context alert">
-            <p>This county has been claimed by another user. Please choose another county.</p>
+      <div *ngIf="form.get('phoneNumbers')['controls'].length > 0; else promptAddPhoneNumber" [formArrayName]="'phoneNumbers'" class="form-section-body">
+        <ng-container *ngFor="let ph of form.get('phoneNumbers')['controls']; let i = index">
+          <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
+            <tamu-gisc-textbox formControlName="number" type="tel" placeholder="Phone Number" floatLabel="true"></tamu-gisc-textbox>
+            <tamu-gisc-select formControlName="type" [data]="phoneTypes | async" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
           </div>
-        </div>
+        </ng-container>
       </div>
 
-      <!-- Only show phone numbers input field if there is a local county stored AND if the form countyFips value is the same as the local value -->
-      <div *ngIf="(localCounty | async) !== undefined && (localCounty | async)?.countyFips === (this.form.controls.county.valueChanges | async)" class="form-section">
-        <div class="form-section-toolbar">
-          <div class="form-section-name">Phone Numbers</div>
-          <div class="form-section-actions">
-            <span class="material-icons action alt" (click)="addPhoneNumber()" title="Add phone number">add</span>
-          </div>
-        </div>
+      <ng-template #promptAddPhoneNumber>
+        <p>There are no phone numbers registered for this county.</p>
+      </ng-template>
+    </div>
 
-        <div *ngIf="form.get('phoneNumbers')['controls'].length > 0; else promptAddPhoneNumber" [formArrayName]="'phoneNumbers'" class="form-section-body">
-          <ng-container *ngFor="let ph of form.get('phoneNumbers')['controls']; let i = index">
-            <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
-              <tamu-gisc-textbox formControlName="number" type="tel" placeholder="Phone Number" floatLabel="true"></tamu-gisc-textbox>
-              <tamu-gisc-select formControlName="type" [data]="phoneTypes | async" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
-            </div>
-          </ng-container>
-        </div>
-
-        <ng-template #promptAddPhoneNumber>
-          <p>There are no phone numbers registered for this county.</p>
-        </ng-template>
-      </div>
-
-      <div class="form-section">
-        <div class="form-section-body">
-          <div class="form-collection row">
-            <tamu-gisc-button [value]="(localCounty | async) !== undefined ? 'Update' : 'Claim'" type="submit" [disabled]="form.invalid || !(countyClaimable | async)"></tamu-gisc-button>
-          </div>
+    <div class="form-section">
+      <div class="form-section-body">
+        <div class="form-collection row">
+          <tamu-gisc-button
+            [value]="(localCounty | async)?.countyFips ? 'Update' : 'Claim'"
+            type="submit"
+            [disabled]="form.invalid 
+          || !(countyClaimable | async) 
+          || (this.form.controls.county.value) === 'undefined' || (this.form.controls.state.value) === 'undefined'
+          || (this.form.controls.state.value) !== (localCounty | async)?.stateFips
+          || (this.form.controls.county.value) !== (localCounty | async)?.countyFips"
+          ></tamu-gisc-button>
         </div>
       </div>
-    </form>
-  </ng-container>
+    </div>
+  </form>
 </div>

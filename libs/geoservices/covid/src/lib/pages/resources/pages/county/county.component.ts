@@ -1,7 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Observable, Subject, of, merge, concat, combineLatest } from 'rxjs';
-import { switchMap, startWith, take, withLatestFrom, tap, shareReplay, map } from 'rxjs/operators';
+import { Observable, Subject, of, merge, concat } from 'rxjs';
+import {
+  switchMap,
+  take,
+  withLatestFrom,
+  tap,
+  shareReplay,
+  map,
+  pluck,
+  filter,
+  distinctUntilChanged,
+  takeUntil
+} from 'rxjs/operators';
 
 import { County, State, PhoneNumberType, PhoneNumber, User, CountyClaim } from '@tamu-gisc/covid/common/entities';
 import {
@@ -12,6 +23,7 @@ import {
   CountyClaimsService
 } from '@tamu-gisc/geoservices/data-access';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { IdentityService } from '../../../../services/identity.service';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
@@ -20,7 +32,7 @@ const storageOptions = { primaryKey: 'tamu-covid-vgi' };
   templateUrl: './county.component.html',
   styleUrls: ['./county.component.scss']
 })
-export class CountyComponent implements OnInit {
+export class CountyComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   public counties: Observable<Array<Partial<County>>>;
   public states: Observable<Array<Partial<State>>>;
@@ -33,24 +45,22 @@ export class CountyComponent implements OnInit {
 
   public countyClaimable: Observable<boolean>;
 
-  /**
-   * Scheduler that emits whenever there is a claim status change
-   *
-   * Used to schedule other events that rely on a notification when that happens.
-   */
-  public claimUpdate: Subject<boolean> = new Subject();
-
   public localCounty: Observable<Partial<County>>;
-  public localIdentity: Partial<User>;
+  public localIdentity: Observable<Partial<User>>;
+
+  public formCounty: Observable<number>;
+  public formState: Observable<number>;
+
+  private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
     private fb: FormBuilder,
-    private localStore: LocalStoreService,
     private county: CountiesService,
     private state: StatesService,
     private pt: PhoneNumberTypesService,
     private pn: PhoneNumbersService,
-    private cs: CountyClaimsService
+    private cs: CountyClaimsService,
+    private is: IdentityService
   ) {}
 
   public ngOnInit() {
@@ -60,64 +70,51 @@ export class CountyComponent implements OnInit {
       phoneNumbers: this.fb.array([this.createPhoneNumberGroup()])
     });
 
-    this.localIdentity = this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'identity' });
+    // User identity from identity service
+    this.localIdentity = this.is.identity.pipe(pluck('user'));
 
+    // County assignment from identity service, filtering out any undefined values to prevent
+    // downstream effects when a non-valid value.
+    this.localCounty = this.is.identity.pipe(
+      pluck('county'),
+      filter((county) => {
+        return county !== undefined && county.countyFips !== undefined;
+      })
+    );
+
+    // Set state and form values whenever the local county local county assignment changes.
+    this.localCounty.pipe(takeUntil(this._$destroy)).subscribe((county) => {
+      this.form.patchValue({
+        state: county.stateFips,
+        county: county.countyFips
+      });
+    });
+
+    this.formCounty = this.form
+      .get('county')
+      .valueChanges.pipe(filter((fips) => fips !== undefined && fips !== 'undefined'));
+
+    this.formState = this.form
+      .get('state')
+      .valueChanges.pipe(filter((state) => state !== undefined && state !== 'undefined'));
+
+    // List of phone types
     this.phoneTypes = this.pt.getPhoneNumberTypes();
 
-    // Setup state and county list observables
+    // List of states
     this.states = this.state.getStates();
-    this.counties = this.form.controls.state.valueChanges.pipe(
+
+    // Sync county list with state selection
+    this.counties = merge(this.localCounty.pipe(pluck('stateFips')), this.form.get('state').valueChanges).pipe(
+      distinctUntilChanged(),
       switchMap((fips) => {
+        if (fips === undefined || fips === 'undefined') {
+          return of([]);
+        }
+
         return this.county.getCountiesForState(fips);
       })
     );
-
-    // Observable wrapper for the local store county object value
-    this.localCounty = this.claimUpdate.pipe(
-      startWith(true),
-      switchMap((v) => {
-        return of(this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'county' }) as Partial<County>);
-      })
-    );
-
-    // Verify county claim with server
-    this.localCounty
-      .pipe(
-        take(1),
-        switchMap((county) => {
-          return this.county.getClaimsForUser(this.localIdentity.email);
-        }),
-        withLatestFrom(this.localCounty)
-      )
-      .subscribe(([claims, localCounty]) => {
-        // If locally referenced county is same as on server, update the form to reflect the current claim state
-        //
-        // Otherwise, set it to whatever the server has
-        if (localCounty) {
-          // Do a simple check to see if the user claimed counties contain the locally referenced one.
-          const matching = claims.find((c) => c.county.countyFips === localCounty.countyFips);
-
-          // If no match found, wipe the local county value, otherwise leave it as is
-          if (matching) {
-            this.form.patchValue({
-              state: matching.county.stateFips,
-              county: matching.county.countyFips
-            });
-          } else {
-            this._setLocalCounty();
-          }
-        } else {
-          // Ensure that the user has ANY claims, at all before attempting to set values.
-          if (claims.length > 0) {
-            this.form.patchValue({
-              state: claims[0].county.stateFips,
-              county: claims[0].county.countyFips
-            });
-
-            this._setLocalCounty(claims[0].county);
-          }
-        }
-      });
 
     // Merge local county, county form value, and county state value and use them
     // as schedulers to retrieve phone numbers for the selected county.
@@ -126,17 +123,20 @@ export class CountyComponent implements OnInit {
       this.localCounty,
       // County form control emits countyFips, This can be used to retrieve a list of phone numbers
       // for the selected county.
-      this.form.controls.county.valueChanges,
+      this.formCounty,
       // Since state form control emits stateFips, it cannot be used to get the selected county,
       // so instead map it to an undefined value that will be used as a signal to clear the
       // phone numbers whenever a new state is selected.
-      this.form.controls.state.valueChanges.pipe(switchMap(() => of(undefined)))
+      this.formState.pipe(switchMap(() => of(undefined)))
     )
       .pipe(
         switchMap((countyOrCountyFips: Partial<County> | number) => {
           if (countyOrCountyFips === undefined) {
+            // Return empty array to symbolize no phone numbers for selected county.
             return of([]);
           }
+
+          // If valid county fips, get phone numbers for it.
           return this.pn.getPhoneNumbersForCounty(
             typeof countyOrCountyFips === 'number' ? countyOrCountyFips : countyOrCountyFips.countyFips
           );
@@ -156,51 +156,58 @@ export class CountyComponent implements OnInit {
         }
       });
 
-    this.countyClaims = this.form.controls.county.valueChanges.pipe(
+    this.countyClaims = merge(this.localCounty.pipe(pluck('countyFips')), this.formCounty).pipe(
       switchMap((countyFips: number) => {
         return this.cs.getActiveClaimsForCounty(countyFips);
       }),
       shareReplay(1)
     );
 
-    this.countyClaimable = this.countyClaims.pipe(
-      map((claims) => {
-        if (claims.length === 0) {
-          return true;
-        }
+    this.countyClaimable = merge(this.countyClaims, this.form.get('county').valueChanges).pipe(
+      withLatestFrom(this.localIdentity),
+      map(([claims, user]) => {
+        if (claims instanceof Array) {
+          // If claim for selected county is equal to zero, no one has claimed it yet.
+          // Mark it as available for claiming
+          if (claims.length === 0) {
+            return true;
+          }
 
-        // Check if the active claim user is current user.
-        return claims.findIndex((ci) => ci.user.guid === this.localIdentity.guid) > -1;
+          // Otherwise, check if the active claim user is current user.
+          // Do not allow overlapping claims for the same user and county
+          return claims.findIndex((ci) => ci.user.guid === user.guid) > -1;
+        } else {
+          return false;
+        }
       })
     );
   }
 
+  public ngOnDestroy() {
+    this._$destroy.next();
+    this._$destroy.complete();
+  }
+
   public submitCountyOwnership() {
-    const value = this.form.getRawValue();
+    const formValue = this.form.getRawValue();
 
     // Claim pipeline
-    const claim = this.county.registerUserToCounty(this.localIdentity.email, this.form.getRawValue().county).pipe(
-      tap((resClaim) => {
-        const verified = resClaim.county.countyFips === this.form.getRawValue().county;
-
-        if (verified) {
-          this._setLocalCounty(resClaim.county);
-        }
+    const claim = this.localIdentity.pipe(
+      take(1),
+      switchMap((user) => {
+        return this.is.registerCountyClaim(user.email, formValue.county);
       })
     );
 
     // Phone number pipeline. Will execute after claim
     const phoneNumbers = this.localCounty.pipe(take(1)).pipe(
       switchMap((cnty) => {
-        return this.pn.setPhoneNumbersForCounty(value.phoneNumbers, cnty.countyFips);
-      }),
-      tap(() => {
-        this.claimUpdate.next();
+        return this.pn.setPhoneNumbersForCounty(formValue.phoneNumbers, cnty.countyFips);
       })
     );
 
     concat(claim, phoneNumbers).subscribe((res) => {
-      console.log(res);
+      console.log('Claim and phone numbers updated: ', res);
     });
   }
 
@@ -221,21 +228,5 @@ export class CountyComponent implements OnInit {
    */
   public addPhoneNumber() {
     (this.form.get('phoneNumbers') as FormArray).push(this.createPhoneNumberGroup());
-  }
-
-  /**
-   * Updates the local store county value.
-   *
-   * If no county provided, it clears the entry from local storage.
-   */
-  private _setLocalCounty(county?: Partial<County>) {
-    if (county) {
-      this.localStore.setStorageObjectKeyValue({ ...storageOptions, subKey: 'county', value: county });
-    } else {
-      this.localStore.setStorageObjectKeyValue({ ...storageOptions, subKey: 'county', value: undefined });
-    }
-
-    // Trigger a local county value update
-    this.claimUpdate.next();
   }
 }

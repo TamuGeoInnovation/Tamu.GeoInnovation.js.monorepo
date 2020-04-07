@@ -113,9 +113,12 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       where: {
         email
       },
-      relations: ['claims', 'claims.county']
+      relations: ['claims', 'claims.county'],
+      order: {
+        created: 'DESC'
+      }
     });
 
-    return user.claims;
+    return user.claims.filter((c) => c.processing);
   }
 }
