@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { of, Observable, Subject } from 'rxjs';
-import { switchMap, startWith, take } from 'rxjs/operators';
+import { Observable, Subject, of } from 'rxjs';
+import { pluck, switchMap } from 'rxjs/operators';
 
-import { UsersService } from '@tamu-gisc/geoservices/data-access';
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { User } from '@tamu-gisc/covid/common/entities';
+
+import { IdentityService } from '../../../../services/identity.service';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
@@ -20,49 +20,36 @@ export class ProfileComponent implements OnInit {
   /**
    * Email from local storage
    */
-  public storeEmail: Observable<Partial<User>>;
+  public storeEmail: Observable<Partial<User['email']>>;
 
   /**
    * Used as a scheduler to retrieved the email local storage value.
    */
   public registerUpdate: Subject<boolean> = new Subject();
 
-  constructor(private fb: FormBuilder, private user: UsersService, private localStore: LocalStoreService) {}
+  constructor(private fb: FormBuilder, private is: IdentityService) {}
 
   public ngOnInit() {
     this.form = this.fb.group({
       email: ['', Validators.required]
     });
 
-    this.storeEmail = this.registerUpdate.pipe(
-      startWith(true),
-      switchMap((value) => {
-        return of(
-          this.localStore.getStorageObjectKeyValue({
-            ...storageOptions,
-            subKey: 'identity'
-          })
-        ) as Observable<Partial<User>>;
+    this.storeEmail = this.is.identity.pipe(
+      pluck('user', 'email'),
+      switchMap((someString) => {
+        // Map it to an undefined value in case the email is an empty string
+        return of(someString && someString.length > 0 ? someString : undefined);
       })
     );
 
-    this.storeEmail.pipe(take(1)).subscribe((identity) => {
-      // Check if email has been set in local storage. If it has, verify with server.
-      if (identity && identity.email && identity.email.length > 0) {
-        this.user.verifyEmail(identity.email).subscribe((response) => {
-          if (response.email) {
-            this.form.setValue({ email: response.email });
-          }
-        });
+    this.storeEmail.subscribe((email) => {
+      if (email) {
+        this.form.setValue({ email: email });
       }
     });
   }
 
   public handleUserLink() {
-    this.user.registerEmail(this.form.getRawValue().email).subscribe((res) => {
-      this.localStore.setStorageObjectKeyValue({ ...storageOptions, subKey: 'identity', value: res });
-
-      this.registerUpdate.next(true);
-    });
+    this.is.registerEmail(this.form.getRawValue().email);
   }
 }
