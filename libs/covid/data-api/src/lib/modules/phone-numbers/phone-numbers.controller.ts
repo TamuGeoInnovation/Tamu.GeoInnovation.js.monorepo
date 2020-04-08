@@ -17,12 +17,7 @@ export class PhoneNumbersController extends BaseController<PhoneNumber> {
 
   @Get('county/:fips')
   public async getPhoneNumbersForCounties(@Param() params) {
-    return this.service.getPhoneNumbersForCounties(params.fips);
-  }
-
-  @Post('county')
-  public async setPhoneNumbersForCounty(@Body() body) {
-    return this.service.setPhoneNumbersForCounty(body.numbers, body.countyFips);
+    return this.service.getPhoneNumbersForCounty(params.fips);
   }
 
   @Post('')

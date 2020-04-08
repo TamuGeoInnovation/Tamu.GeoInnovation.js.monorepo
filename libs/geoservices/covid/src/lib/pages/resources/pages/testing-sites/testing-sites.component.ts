@@ -24,7 +24,7 @@ export class TestingSitesComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     this.is.identity
       .pipe(
-        pluck('county'),
+        pluck('claim', 'county'),
         filter((county) => {
           return county !== undefined && county.countyFips !== undefined;
         }),
@@ -47,7 +47,7 @@ export class TestingSitesComponent implements OnInit, OnDestroy {
     );
 
     this.localCounty = this.is.identity.pipe(
-      pluck('county', 'countyFips'),
+      pluck('claim', 'county', 'countyFips'),
       filter((countyFips) => countyFips !== undefined)
     );
   }

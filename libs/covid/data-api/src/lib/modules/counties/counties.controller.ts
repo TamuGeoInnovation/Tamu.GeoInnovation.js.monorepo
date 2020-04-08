@@ -1,14 +1,13 @@
-import { Controller, Delete, Patch, Param, Post, Body, Get } from '@nestjs/common';
+import { Controller, Delete, Patch, Param, Post, Get } from '@nestjs/common';
 
 import { County } from '@tamu-gisc/covid/common/entities';
 
 import { BaseController } from '../base/base.controller';
 import { CountiesService } from './counties.service';
-import { CountyClaimsService } from '../county-claims/county-claims.service';
 
 @Controller('counties')
 export class CountiesController extends BaseController<County> {
-  constructor(private service: CountiesService, private claimService: CountyClaimsService) {
+  constructor(private service: CountiesService) {
     super(service);
   }
 
@@ -25,16 +24,6 @@ export class CountiesController extends BaseController<County> {
   @Get(':keyword')
   public searchState(@Param() params) {
     return this.service.search(params.keyword);
-  }
-
-  @Get('claim/:email')
-  public getCountyClaimsForUser(@Param() param) {
-    return this.claimService.getClaimsForUser(param.email);
-  }
-
-  @Post('claim')
-  public registerCountyToUser(@Body() body) {
-    return this.claimService.associateUserWithCounty(body.countyFips, body.email);
   }
 
   @Post('')

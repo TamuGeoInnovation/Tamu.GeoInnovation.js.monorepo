@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, QueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { CountyClaim, User, County } from '@tamu-gisc/covid/common/entities';
 
@@ -16,50 +16,45 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     super(repo);
   }
 
-  public async getActiveClaims() {
-    return this.repo.find({
-      where: {
-        processing: true
-      },
-      relations: ['user']
-    });
-  }
-
   public async getActiveClaimsForEmail(email: string) {
     const user = await this.userRepo.findOne({ where: { email } });
 
-    const active = await this.repo.find({
+    const lastClaim = await this.repo.findOne({
       where: {
-        user: user,
-        processing: true
+        user: user
       },
-      relations: ['county']
+      relations: ['county', 'status'],
+      order: {
+        created: 'DESC'
+      }
     });
 
-    return active;
+    return lastClaim && lastClaim.status.closed !== true ? [lastClaim] : [];
   }
 
   public async getActiveClaimsForCountyFips(countyFips: number) {
-    const active = await this.repo
-      .createQueryBuilder('claim')
-      .innerJoin('claim.county', 'county')
-      .innerJoinAndSelect('claim.user', 'user')
-      .where('county.countyFips = :countyFips AND claim.processing = :processingValue', {
-        countyFips: countyFips,
-        processingValue: true
-      })
-      .getMany();
+    const lastForCounty = await this.repo.findOne({
+      where: {
+        county: {
+          countyFips: countyFips
+        }
+      },
+      order: {
+        created: 'DESC'
+      },
+      relations: ['county', 'user', 'status']
+    });
 
-    return active;
+    return lastForCounty && lastForCounty.status.closed !== true ? [lastForCounty] : [];
   }
 
   /**
    * Register a county to a user.
    */
-  public async associateUserWithCounty(countyFips: number, email: string) {
+  public async createOrUpdateClaim(claim: Partial<CountyClaim>) {
     const user = await this.userRepo.findOne({
       where: {
-        email
+        email: claim.user.email
       }
     });
 
@@ -67,58 +62,69 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       throw new Error('Invalid email.');
     }
 
-    // Get active claims
-    const activeClaims = await this.repo.find({
+    if (claim.county === undefined || claim.county.countyFips === undefined) {
+      return {
+        status: 400,
+        success: false,
+        message: 'Missing county fips.'
+      };
+    }
+
+    const county = await this.countyRepo.findOne({
       where: {
-        user: user,
-        processing: true
-      },
-      relations: ['county']
-    });
-
-    // Check if the claim by countyFips being requested is already existing.
-    const claimedCountyIsSame = activeClaims.find((c) => c.county.countyFips === countyFips);
-
-    // If the user already has the claim, do nothing.
-    //
-    // Otherwise, create a new claim with the indicated countyFips
-    if (activeClaims.length > 0 && claimedCountyIsSame) {
-      return claimedCountyIsSame;
-    }
-
-    if (!claimedCountyIsSame) {
-      await Promise.all([
-        activeClaims.map((c) => {
-          c.processing = false;
-          c.closed = true;
-
-          return c.save();
-        })
-      ]);
-    }
-
-    const county = await this.countyRepo.findOne({ where: { countyFips } });
-
-    if (!county) {
-      throw new Error('Invalid county fips.');
-    }
-
-    const claim = this.repo.create({ county: county, user: user, processing: true });
-
-    return claim.save();
-  }
-
-  public async getClaimsForUser(email: string) {
-    const user = await this.userRepo.findOne({
-      where: {
-        email
-      },
-      relations: ['claims', 'claims.county'],
-      order: {
-        created: 'DESC'
+        countyFips: claim.county.countyFips
       }
     });
 
-    return user.claims.filter((c) => c.processing);
+    if (!county) {
+      return {
+        status: 400,
+        success: false,
+        message: 'Invalid county fips.'
+      };
+    }
+
+    // Phone numbers
+    const phs =
+      claim &&
+      claim.info &&
+      claim.info.phoneNumbers &&
+      claim.info.phoneNumbers instanceof Array &&
+      claim.info.phoneNumbers.length > 0
+        ? claim.info.phoneNumbers
+        : [];
+
+    // Websites
+    const ws =
+      claim && claim.info && claim.info.websites && claim.info.websites instanceof Array && claim.info.websites.length > 0
+        ? claim.info.websites
+        : [];
+
+    const cl = this.repo.create({
+      county: county,
+      user: user,
+      info: {
+        phoneNumbers: phs,
+        websites: ws
+      },
+      status: {}
+    });
+
+    return cl.save();
   }
+
+  // public async getActiveClaimsForUser(email: string) {
+  //   // TODO: fix
+  //   // const user = await this.userRepo.findOne({
+  //   //   where: {
+  //   //     email: email
+  //   //   },
+  //   //   relations: ['claims', 'claims.county', 'claims.status'],
+  //   //   order: {
+  //   //     created: 'DESC'
+  //   //   }
+  //   // });
+  //   // const filtered = user.claims.filter((c) => c.status && c.status.processing);
+  //   // return filtered;
+  // }
 }

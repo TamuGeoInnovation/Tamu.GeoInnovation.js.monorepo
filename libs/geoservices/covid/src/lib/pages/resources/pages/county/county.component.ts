@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Observable, Subject, of, merge, concat, forkJoin } from 'rxjs';
+import { Observable, Subject, of, merge, concat, forkJoin, iif, EMPTY } from 'rxjs';
 import {
   switchMap,
   take,
@@ -10,7 +10,8 @@ import {
   pluck,
   filter,
   distinctUntilChanged,
-  takeUntil
+  takeUntil,
+  timeoutWith
 } from 'rxjs/operators';
 
 import {
@@ -33,6 +34,7 @@ import {
   WebsitesService
 } from '@tamu-gisc/geoservices/data-access';
 import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
+import { DeepPartial } from 'typeorm';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
@@ -55,7 +57,7 @@ export class CountyComponent implements OnInit, OnDestroy {
 
   public countyClaimable: Observable<boolean>;
 
-  public localCounty: Observable<Partial<County>>;
+  public localCounty: Observable<DeepPartial<County>>;
   public localIdentity: Observable<Partial<User>>;
 
   public formCounty: Observable<number>;
@@ -71,7 +73,7 @@ export class CountyComponent implements OnInit, OnDestroy {
     private pn: PhoneNumbersService,
     private wt: WebsiteTypesService,
     private ws: WebsitesService,
-    private cs: CountyClaimsService,
+    private cl: CountyClaimsService,
     private is: IdentityService
   ) {}
 
@@ -89,9 +91,9 @@ export class CountyComponent implements OnInit, OnDestroy {
     // County assignment from identity service, filtering out any undefined values to prevent
     // downstream effects when a non-valid value.
     this.localCounty = this.is.identity.pipe(
-      pluck('county'),
-      filter((county) => {
-        return county !== undefined && county.countyFips !== undefined;
+      pluck('claim', 'county'),
+      switchMap((county) => {
+        return county !== undefined && county.countyFips !== undefined ? of(county) : EMPTY;
       })
     );
 
@@ -112,9 +114,9 @@ export class CountyComponent implements OnInit, OnDestroy {
       .valueChanges.pipe(filter((state) => state !== undefined && state !== 'undefined'));
 
     // List of phone types
-    this.phoneTypes = this.pt.getPhoneNumberTypes();
+    this.phoneTypes = this.pt.getPhoneNumberTypes().pipe(shareReplay(1));
 
-    this.websiteTypes = this.wt.getWebsiteTypes();
+    this.websiteTypes = this.wt.getWebsiteTypes().pipe(shareReplay(1));
 
     // List of states
     this.states = this.state.getStates();
@@ -190,7 +192,7 @@ export class CountyComponent implements OnInit, OnDestroy {
 
     this.countyClaims = merge(this.localCounty.pipe(pluck('countyFips')), this.formCounty).pipe(
       switchMap((countyFips: number) => {
-        return this.cs.getActiveClaimsForCounty(countyFips);
+        return this.cl.getActiveClaimsForCounty(countyFips);
       }),
       shareReplay(1)
     );
@@ -198,7 +200,7 @@ export class CountyComponent implements OnInit, OnDestroy {
     this.countyClaimable = merge(this.countyClaims, this.form.get('county').valueChanges).pipe(
       withLatestFrom(this.localIdentity),
       map(([claims, user]) => {
-        if (claims instanceof Array) {
+        if (claims instanceof Object) {
           // If claim for selected county is equal to zero, no one has claimed it yet.
           // Mark it as available for claiming
           if (claims.length === 0) {
@@ -223,31 +225,71 @@ export class CountyComponent implements OnInit, OnDestroy {
   public submitCountyOwnership() {
     const formValue = this.form.getRawValue();
 
-    // Claim pipeline
-    const claim = this.localIdentity.pipe(
-      take(1),
-      switchMap((user) => {
-        return this.is.registerCountyClaim(user.email, formValue.county);
-      })
-    );
+    forkJoin([
+      this.is.identity.pipe(take(1)),
+      this.localCounty.pipe(
+        take(1),
+        timeoutWith(100, of(undefined))
+      )
+    ])
+      .pipe(
+        switchMap(([identity, county]) => {
+          return this.is.registerCountyClaim({
+            guid: identity && identity.claim && identity.claim.guid ? identity.claim.guid : undefined,
+            user: {
+              email: identity.user.email
+            },
+            county: {
+              // Use local county value if available.
+              // Will not be available for initial claims, so use form county value.
+              countyFips: county ? county.countyFips : formValue.county
+            },
+            info: {
+              phoneNumbers: formValue.phoneNumbers,
+              websites: formValue.websites
+            }
+          });
+        })
+      )
+      .subscribe((res) => {
+        console.log(res);
+      });
 
-    // Phone number pipeline. Will execute after claim
-    const phoneNumbers = this.localCounty.pipe(take(1)).pipe(
-      switchMap((cnty) => {
-        return this.pn.setPhoneNumbersForCounty(formValue.phoneNumbers, cnty.countyFips);
-      })
-    );
+    // // Claim pipeline
+    // const claim = this.localIdentity.pipe(
+    //   take(1),
+    //   switchMap((user) => {
+    //     return this.is.registerCountyClaim(user.email, formValue.county);
+    //   })
+    // );
 
-    // Website pipeline. Will execute after claim
-    const websites = this.localCounty.pipe(take(1)).pipe(
-      switchMap((cnty) => {
-        return this.ws.setWebsitesForCounty(formValue.websites, cnty.countyFips);
-      })
-    );
+    // // Phone number pipeline. Will execute after claim
+    // const phoneNumbers = this.localCounty
+    //   .pipe(
+    //     take(1),
+    //     timeoutWith(100, EMPTY)
+    //   )
+    //   .pipe(
+    //     switchMap((cnty) => {
+    //       return this.pn.setPhoneNumbersForCounty(formValue.phoneNumbers, cnty.countyFips);
+    //     })
+    //   );
 
-    concat(claim, forkJoin([phoneNumbers, websites])).subscribe((res) => {
-      console.log('Claim and phone numbers updated: ', res);
-    });
+    // // Website pipeline. Will execute after claim
+    // const websites = this.localCounty
+    //   .pipe(
+    //     take(1),
+    //     timeoutWith(100, EMPTY)
+    //   )
+    //   .pipe(
+    //     switchMap((cnty) => {
+    //       return this.ws.setWebsitesForCounty(formValue.websites, cnty.countyFips);
+    //     })
+    //   );
+
+    // concat(forkJoin([phoneNumbers, websites]), claim).subscribe((res) => {
+    //   console.log('Claim and phone numbers updated: ', res);
+    // });
   }
 
   public createPhoneNumberGroup(number?: Partial<PhoneNumber>): FormGroup {
@@ -261,16 +303,14 @@ export class CountyComponent implements OnInit, OnDestroy {
   public createPhoneNumber(number?: Partial<PhoneNumber>) {
     return {
       number: (number && number.number) || '',
-      type: (number && number.type && number.type.guid) || undefined,
-      guid: (number && number.guid) || undefined
+      type: (number && number.type && number.type.guid) || undefined
     };
   }
 
   public createWebsite(website?: Partial<Website>) {
     return {
       url: (website && website.url) || '',
-      type: (website && website.type && website.type.guid) || undefined,
-      guid: (website && website.guid) || undefined
+      type: (website && website.type && website.type.guid) || undefined
     };
   }
 

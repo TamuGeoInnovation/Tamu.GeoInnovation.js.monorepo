@@ -11,12 +11,7 @@ export class WebsitesController extends BaseController<Website> {
   }
 
   @Get('county/:fips')
-  public async getPhoneNumbersForCounties(@Param() params) {
+  public async getWebsitesForCounty(@Param() params) {
     return this.service.getWebsitesForCounty(params.fips);
-  }
-
-  @Post('county')
-  public async setWebsitesForCounty(@Body() body) {
-    return this.service.setWebsitesForCounty(body.websites, body.countyFips);
   }
 }

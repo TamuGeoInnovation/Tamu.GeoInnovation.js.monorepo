@@ -17,12 +17,4 @@ export class CountiesService {
   public getCountiesForState(stateFips: number) {
     return this.http.get<Array<County>>(`${this.resource}/state/${stateFips}`);
   }
-
-  public registerUserToCounty(email: string, countyFips: number) {
-    return this.http.post<Partial<CountyClaim>>(`${this.resource}/claim`, { email, countyFips });
-  }
-
-  public getClaimsForUser(email: string) {
-    return this.http.get<Partial<Array<CountyClaim>>>(`${this.resource}/claim/${email}`);
-  }
 }

@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { County, User } from '@tamu-gisc/covid/common/entities';
+import { County, User, CountyClaim } from '@tamu-gisc/covid/common/entities';
 import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-store';
-import { UsersService, CountiesService } from '@tamu-gisc/geoservices/data-access';
+import { UsersService, CountyClaimsService } from '@tamu-gisc/geoservices/data-access';
 import { tap } from 'rxjs/operators';
+import { DeepPartial } from 'typeorm';
 
 const storageOptions: Partial<StorageConfig> = { primaryKey: 'tamu-covid-vgi' };
 
 const defaultStorage: CovidLocalStoreIdentity = {
-  county: {
-    countyFips: undefined
+  claim: {
+    guid: undefined,
+    county: {
+      countyFips: undefined
+    }
   },
   user: {
     guid: undefined,
@@ -25,7 +29,7 @@ export class IdentityService {
   private _identity: BehaviorSubject<CovidLocalStoreIdentity> = new BehaviorSubject(defaultStorage);
   public identity: Observable<CovidLocalStoreIdentity> = this._identity.asObservable();
 
-  constructor(private localStorage: LocalStoreService, private user: UsersService, private county: CountiesService) {
+  constructor(private localStorage: LocalStoreService, private user: UsersService, private claim: CountyClaimsService) {
     this.validateLocalIdentity();
   }
 
@@ -35,7 +39,9 @@ export class IdentityService {
     if (ident && ident.user && ident.user.email) {
       this.user.verifyEmail(ident.user.email).subscribe((user) => {
         if (user.guid) {
-          this._identity.next({ ...this.localStorage.getStorage(storageOptions), user });
+          this.localStorage.setStorage({ ...storageOptions, value: { user: user } });
+
+          this._identity.next(this.localStorage.getStorage(storageOptions));
 
           this.assignLocalActiveClaim(user.email);
         } else {
@@ -64,7 +70,7 @@ export class IdentityService {
    */
   public registerEmail(email: string) {
     this.user.registerEmail(email).subscribe((res: Partial<User>) => {
-      this.localStorage.setStorageObjectKeyValue({ ...storageOptions, subKey: 'user', value: res });
+      this.localStorage.setStorage({ ...storageOptions, value: { user: res } });
 
       this._identity.next(this.localStorage.getStorage(storageOptions));
 
@@ -76,20 +82,24 @@ export class IdentityService {
    * Using the local stored email, that has been verified at this point, assign any claims assigned to the verified email.
    */
   public assignLocalActiveClaim(email: string) {
-    this.county.getClaimsForUser(email).subscribe((claims) => {
+    this.claim.getActiveClaimsForUser(email).subscribe((claims) => {
       if (claims.length > 0) {
-        this.localStorage.setStorageObjectKeyValue({ ...storageOptions, subKey: 'county', value: claims[0].county });
+        this.localStorage.setStorageObjectKeyValue({ ...storageOptions, subKey: 'claim', value: claims[0] });
+
+        this._identity.next(this.localStorage.getStorage(storageOptions));
+      } else {
+        this.localStorage.setStorageObjectKeyValue({ ...storageOptions, subKey: 'claim', value: undefined });
 
         this._identity.next(this.localStorage.getStorage(storageOptions));
       }
     });
   }
 
-  public registerCountyClaim(email: string, countyFips: number) {
-    return this.county.registerUserToCounty(email, countyFips).pipe(
+  public registerCountyClaim(claim: DeepPartial<CountyClaim>) {
+    return this.claim.registerClaim(claim).pipe(
       tap((registration) => {
         if (registration.guid) {
-          this.localStorage.setStorageObjectKeyValue({ ...storageOptions, subKey: 'county', value: registration.county });
+          this.localStorage.setStorageObjectKeyValue({ ...storageOptions, subKey: 'claim', value: registration });
 
           this._identity.next(this.localStorage.getStorage(storageOptions));
         } else {
@@ -101,6 +111,6 @@ export class IdentityService {
 }
 
 interface CovidLocalStoreIdentity {
-  county: Partial<County>;
+  claim: DeepPartial<CountyClaim>;
   user: Partial<User>;
 }

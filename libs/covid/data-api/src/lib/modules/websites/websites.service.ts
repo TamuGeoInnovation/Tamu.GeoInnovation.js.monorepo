@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Website, County } from '@tamu-gisc/covid/common/entities';
+import { Website, County, CountyClaim } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 
@@ -10,7 +10,8 @@ import { BaseService } from '../base/base.service';
 export class WebsitesService extends BaseService<Website> {
   constructor(
     @InjectRepository(Website) public repo: Repository<Website>,
-    @InjectRepository(County) public countyRepo: Repository<County>
+    @InjectRepository(County) public countyRepo: Repository<County>,
+    @InjectRepository(CountyClaim) public claimRepo: Repository<CountyClaim>
   ) {
     super(repo);
   }
@@ -24,71 +25,16 @@ export class WebsitesService extends BaseService<Website> {
       };
     }
 
-    const websites = await this.repo.find({
+    const claim = await this.claimRepo.findOne({
       where: {
         county: countyFips
       },
-      relations: ['type']
-    });
-
-    return websites;
-  }
-
-  public async setWebsitesForCounty(websites: Website[], countyFips: number) {
-    const county = await this.countyRepo.findOne({
-      where: {
-        countyFips: countyFips
+      relations: ['info', 'info.websites', 'info.websites.type'],
+      order: {
+        created: 'DESC'
       }
     });
 
-    if (!county) {
-      return {
-        status: 400,
-        success: false,
-        message: 'Invalid county fips'
-      };
-    }
-
-    const sites = await this.repo.find({
-      where: {
-        county
-      }
-    });
-
-    // Diff provided numbers and existing numbers.
-    // Filter out removed numbers and add new ones.
-    const filteredWebsites = websites.reduce(
-      (acc, curr) => {
-        if (curr.guid === undefined || curr.guid === null) {
-          acc.new.push(curr);
-        } else {
-          const exists = sites.find((cph) => cph.guid === curr.guid);
-
-          if (exists) {
-            acc.update.push(exists);
-          }
-        }
-
-        return acc;
-      },
-      { new: [], update: [] } as { new: Array<Partial<Website>>; update: Array<Website> }
-    );
-
-    const newWebsites = filteredWebsites.new.map((website) => {
-      return this.repo.create({ url: website.url, type: website.type });
-    });
-
-    const updatedWebsites = filteredWebsites.update.map((filteredExisting) => {
-      const provided = websites.find((n) => n.guid === filteredExisting.guid);
-
-      filteredExisting.url = provided.url;
-      filteredExisting.type = provided.type;
-
-      return filteredExisting;
-    });
-
-    county.websites = [...newWebsites, ...updatedWebsites];
-
-    return county.save();
+    return claim && claim.info && claim.info.websites ? claim.info.websites : [];
   }
 }

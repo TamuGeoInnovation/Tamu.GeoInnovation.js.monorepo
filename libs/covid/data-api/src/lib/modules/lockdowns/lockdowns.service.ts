@@ -19,40 +19,41 @@ export class LockdownsService extends BaseService<Lockdown> {
     super(repo);
   }
 
+  // TODO: Fix adding county lockdown
   /**
    * Registers a county lockdown
    */
-  public async registerLockdown(params) {
-    const claims = await this.ccs.getActiveClaimsForEmail(params.claim.user);
+  // public async registerLockdown(params) {
+  //   const claims = await this.ccs.getActiveClaimsForEmail(params.claim.user);
 
-    const claim = claims.find((c) => c.county.countyFips === params.claim.county);
+  //   const claim = claims.find((c) => c.county.countyFips === params.claim.county);
 
-    if (!claim) {
-      return {
-        status: 400,
-        success: false,
-        message: 'Lockdown and claim mismatch.'
-      };
-    }
+  //   if (!claim) {
+  //     return {
+  //       status: 400,
+  //       success: false,
+  //       message: 'Lockdown and claim mismatch.'
+  //     };
+  //   }
 
-    if (claim.processing === false || claim.closed === true) {
-      return {
-        status: 400,
-        success: false,
-        message: 'Claim for county is inactive. Re-open it to modify details.'
-      };
-    }
+  //   if (claim.processing === false || claim.closed === true) {
+  //     return {
+  //       status: 400,
+  //       success: false,
+  //       message: 'Claim for county is inactive. Re-open it to modify details.'
+  //     };
+  //   }
 
-    const l = this.repo.create({
-      ...params,
-      status: { flagged: false, validated: false },
-      state: claim.county.stateFips,
-      county: claim.county.countyFips,
-      claim
-    } as DeepPartial<Lockdown>);
+  //   const l = this.repo.create({
+  //     ...params,
+  //     status: { flagged: false, validated: false },
+  //     state: claim.county.stateFips,
+  //     county: claim.county.countyFips,
+  //     claim
+  //   } as DeepPartial<Lockdown>);
 
-    return l.save();
-  }
+  //   return l.save();
+  // }
 
   public async getActiveLockDownForEmail(email: string) {
     const [claim] = await this.ccs.getActiveClaimsForEmail(email);

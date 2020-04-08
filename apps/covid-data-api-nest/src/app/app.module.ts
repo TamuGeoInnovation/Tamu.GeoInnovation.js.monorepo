@@ -39,7 +39,9 @@ import {
   CountyClaim,
   Location,
   LockdownInfo,
-  LockdownStatus
+  LockdownStatus,
+  CountyClaimInfo,
+  CountyClaimStatus
 } from '@tamu-gisc/covid/common/entities';
 
 import { AppController } from './app.controller';
@@ -71,6 +73,8 @@ import { dbConfig } from '../environments/environment';
         PhoneNumber,
         PhoneNumberType,
         CountyClaim,
+        CountyClaimInfo,
+        CountyClaimStatus,
         Location,
         LockdownInfo,
         LockdownStatus

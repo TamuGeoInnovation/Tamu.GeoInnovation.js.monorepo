@@ -42,7 +42,7 @@ export class User extends CovidBase {
   @Column({ type: 'varchar', length: 'max', select: false })
   public email: string;
 
-  @OneToMany((type) => CountyClaim, (claim) => claim.user, { cascade: true })
+  @OneToMany((type) => CountyClaim, (claim) => claim.user)
   public claims: CountyClaim[];
 }
 
@@ -68,28 +68,48 @@ export class County extends BaseEntity {
 
   @Column({ type: 'varchar', length: 'max' })
   public name: string;
+}
 
-  @OneToMany((type) => PhoneNumber, (phoneNumber) => phoneNumber.county, { cascade: true })
+@Entity({ name: 'county_claim_infos' })
+export class CountyClaimInfo extends CovidBase {
+  @OneToMany((type) => PhoneNumber, (phoneNumber) => phoneNumber.claimInfo, { cascade: true })
   public phoneNumbers: PhoneNumber[];
 
-  @OneToMany((type) => Website, (website) => website.county, { cascade: true })
+  @OneToMany((type) => Website, (website) => website.claimInfo, { cascade: true })
   public websites: Website[];
 }
 
-@Entity({ name: 'county_claims' })
-export class CountyClaim extends CovidBase {
+@Entity({ name: 'county_claim_statuses' })
+export class CountyClaimStatus extends CovidBase {
   @Column({ nullable: true })
-  public processing: boolean;
+  public cancelled: boolean;
 
   @Column({ nullable: true })
   public closed: boolean;
 
-  @ManyToOne((type) => User, (user) => user.claims)
+  @Column({ default: false })
+  public validated: boolean;
+
+  @Column({ default: false })
+  public flagged: boolean;
+}
+
+@Entity({ name: 'county_claims' })
+export class CountyClaim extends CovidBase {
+  @ManyToOne((type) => User, (user) => user.claims, { cascade: true })
   public user: User;
 
   @ManyToOne((type) => County, { cascade: true })
   @JoinColumn({ referencedColumnName: 'countyFips' })
   public county: County;
+
+  @OneToOne((type) => CountyClaimStatus, { cascade: true })
+  @JoinColumn()
+  public status: CountyClaimStatus;
+
+  @OneToOne((type) => CountyClaimInfo, { cascade: true })
+  @JoinColumn()
+  public info: CountyClaimInfo;
 }
 
 @Entity({ name: 'locations' })
@@ -223,8 +243,8 @@ export class Website extends CovidBase {
   @ManyToOne((type) => WebsiteType, { cascade: true })
   public type: WebsiteType;
 
-  @ManyToOne((type) => County, (county) => county.websites)
-  public county: County;
+  @ManyToOne((type) => CountyClaimInfo, (info) => info.websites)
+  public claimInfo: County;
 
   @ManyToOne((type) => LockdownInfo, (lockdown) => lockdown.websites)
   public lockdownInfo: LockdownInfo;
@@ -246,8 +266,8 @@ export class PhoneNumber extends CovidBase {
   @ManyToOne((type) => PhoneNumberType, { cascade: true })
   public type: PhoneNumberType;
 
-  @ManyToOne((type) => County, (county) => county.phoneNumbers)
-  public county: County;
+  @ManyToOne((type) => CountyClaimInfo, (info) => info.phoneNumbers)
+  public claimInfo: CountyClaimInfo;
 
   @ManyToOne((type) => LockdownInfo, (lockdown) => lockdown.phoneNumbers)
   public lockdownInfo: LockdownInfo;

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Patch, Delete, Param } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Delete, Param, Body } from '@nestjs/common';
 
 import { CountyClaim } from '@tamu-gisc/covid/common/entities';
 
@@ -16,9 +16,14 @@ export class CountyClaimsController extends BaseController<CountyClaim> {
     return this.service.getActiveClaimsForCountyFips(params.countyFips);
   }
 
-  @Get('active')
-  public getActiveClaims() {
-    return this.service.getActiveClaims();
+  @Get('claim/active/:email')
+  public getActiveClaimsForUser(@Param() param) {
+    return this.service.getActiveClaimsForEmail(param.email);
+  }
+
+  @Post('claim')
+  public registerClaim(@Body() body) {
+    return this.service.createOrUpdateClaim(body);
   }
 
   @Post('')

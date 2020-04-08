@@ -25,6 +25,7 @@ import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { Router, ActivatedRoute } from '@angular/router';
 import { switchMap, pluck, filter, withLatestFrom } from 'rxjs/operators';
 import { IdentityService } from '../../../services/identity.service';
+import { DeepPartial } from 'typeorm';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
@@ -55,7 +56,7 @@ export class TestingSiteComponent implements OnInit {
 
   public undisclosedState: Observable<boolean>;
 
-  public localCounty: Observable<Partial<County>>;
+  public localCounty: Observable<DeepPartial<County>>;
   public localEmail: Observable<Partial<User['email']>>;
 
   public formState = {
@@ -93,7 +94,7 @@ export class TestingSiteComponent implements OnInit {
 
   public ngOnInit() {
     this.localCounty = this.is.identity.pipe(
-      pluck('county'),
+      pluck('claim', 'county'),
       filter((county) => {
         return county !== undefined && county.countyFips !== undefined;
       })
