@@ -71,6 +71,9 @@ export class County extends BaseEntity {
 
   @OneToMany((type) => PhoneNumber, (phoneNumber) => phoneNumber.county, { cascade: true })
   public phoneNumbers: PhoneNumber[];
+
+  @OneToMany((type) => Website, (website) => website.county, { cascade: true })
+  public websites: Website[];
 }
 
 @Entity({ name: 'county_claims' })
@@ -219,6 +222,9 @@ export class Website extends CovidBase {
 
   @ManyToOne((type) => WebsiteType, { cascade: true })
   public type: WebsiteType;
+
+  @ManyToOne((type) => County, (county) => county.websites)
+  public county: County;
 
   @ManyToOne((type) => LockdownInfo, (lockdown) => lockdown.websites)
   public lockdownInfo: LockdownInfo;

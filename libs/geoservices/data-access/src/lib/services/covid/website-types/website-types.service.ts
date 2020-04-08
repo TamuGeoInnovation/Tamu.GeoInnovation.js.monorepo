@@ -7,14 +7,14 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class ClassificationsService {
+export class WebsiteTypesService {
   public resource: string;
 
   constructor(private env: EnvironmentService, private http: HttpClient) {
-    this.resource = this.env.value('covid_api_url') + 'source-types';
+    this.resource = this.env.value('covid_api_url') + 'website-types';
   }
 
-  public getClassifications() {
+  public getWebsiteTypes() {
     return this.http.get<Array<WebsiteType>>(this.resource);
   }
 }

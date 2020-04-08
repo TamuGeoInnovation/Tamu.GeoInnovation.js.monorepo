@@ -7,7 +7,7 @@ import { WebsiteType } from '@tamu-gisc/covid/common/entities';
 import { BaseService } from '../base/base.service';
 
 @Injectable()
-export class SourceTypesService extends BaseService<WebsiteType> {
+export class WebsiteTypesService extends BaseService<WebsiteType> {
   constructor(@InjectRepository(WebsiteType) public repo: Repository<WebsiteType>) {
     super(repo);
   }

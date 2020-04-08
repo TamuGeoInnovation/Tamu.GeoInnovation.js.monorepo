@@ -6,12 +6,12 @@ import { switchMap, pluck, withLatestFrom, filter } from 'rxjs/operators';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { WebsiteType, County, User, PhoneNumber, PhoneNumberType, Website } from '@tamu-gisc/covid/common/entities';
 import {
-  ClassificationsService,
+  WebsiteTypesService,
   StatesService,
   LockdownsService,
   PhoneNumberTypesService
 } from '@tamu-gisc/geoservices/data-access';
-import { IdentityService } from '../../../../services/identity.service';
+import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
@@ -44,8 +44,7 @@ export class LockdownComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private localStore: LocalStoreService,
-    private cl: ClassificationsService,
+    private cl: WebsiteTypesService,
     private st: StatesService,
     private ls: LockdownsService,
     private ph: PhoneNumberTypesService,
@@ -83,7 +82,7 @@ export class LockdownComponent implements OnInit {
       })
     });
 
-    this.websitesTypes = this.cl.getClassifications();
+    this.websitesTypes = this.cl.getWebsiteTypes();
     this.phoneTypes = this.ph.getPhoneNumberTypes();
 
     // Since I don't have a dedicated radio or radio group component, need to control the selection logic by mapping an array to a boolean

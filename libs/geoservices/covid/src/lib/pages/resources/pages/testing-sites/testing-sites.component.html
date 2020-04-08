@@ -1,17 +1,29 @@
 <!-- <p>The following is a list of submitted testing sites registered to your email address for this county.</p> -->
 
-<div class="flex flex-column align-center" *ngIf="(sites | async)?.length === 0; else siteList">
-  <p>You have not added any testing sites for this county.</p>
-  <a [routerLink]="['./create']">Add a testing site</a>
-</div>
+<ng-container *ngIf="!(localEmail | async) ; else hasIdentity">
+  <p>Email registration required to submit testing sites. <a [routerLink]="['../profile']">Register using your email to proceed.</a></p>
+</ng-container>
 
-<ng-template #siteList>
-  <p>The following is a list of sites submitted for this county. <a [routerLink]="['./create']">Add a testing site</a></p>
+<ng-template #hasIdentity>
+  <ng-container *ngIf="!(localCounty | async) ; else hasCounty">
+    <p>An active county claim is required to submit testing sites. <a [routerLink]="['../county']">Claim a county to proceed.</a></p>
+  </ng-container>
 
-  <div class="column8">
-    <tamu-gisc-accordion *ngFor="let site of sites | async">
-      <tamu-gisc-accordion-header>{{site.info.locationName ? site.info.locationName : site.location.address1 ? site.location.address1 : 'Site'}}</tamu-gisc-accordion-header>
-      <tamu-gisc-accordion-content><tamu-gisc-testing-site [readonly]="true" [formData]="site"></tamu-gisc-testing-site></tamu-gisc-accordion-content>
-    </tamu-gisc-accordion>
-  </div>
+  <ng-template #hasCounty>
+    <div class="flex flex-column align-center" *ngIf="(sites | async)?.length === 0; else siteList">
+      <p>You have not added any testing sites for this county.</p>
+      <a [routerLink]="['./create']">Add a testing site</a>
+    </div>
+
+    <ng-template #siteList>
+      <p>The following is a list of sites submitted for this county. <a [routerLink]="['./create']">Add a testing site</a></p>
+
+      <div class="column8">
+        <tamu-gisc-accordion *ngFor="let site of sites | async">
+          <tamu-gisc-accordion-header>{{site.info.locationName ? site.info.locationName : site.location.address1 ? site.location.address1 : 'Site'}}</tamu-gisc-accordion-header>
+          <tamu-gisc-accordion-content><tamu-gisc-testing-site [readonly]="true" [formData]="site"></tamu-gisc-testing-site></tamu-gisc-accordion-content>
+        </tamu-gisc-accordion>
+      </div>
+    </ng-template>
+  </ng-template>
 </ng-template>

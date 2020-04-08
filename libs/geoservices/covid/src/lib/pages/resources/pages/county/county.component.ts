@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Observable, Subject, of, merge, concat } from 'rxjs';
+import { Observable, Subject, of, merge, concat, forkJoin } from 'rxjs';
 import {
   switchMap,
   take,
   withLatestFrom,
-  tap,
   shareReplay,
   map,
   pluck,
@@ -14,16 +13,26 @@ import {
   takeUntil
 } from 'rxjs/operators';
 
-import { County, State, PhoneNumberType, PhoneNumber, User, CountyClaim } from '@tamu-gisc/covid/common/entities';
+import {
+  County,
+  State,
+  PhoneNumberType,
+  PhoneNumber,
+  User,
+  CountyClaim,
+  WebsiteType,
+  Website
+} from '@tamu-gisc/covid/common/entities';
 import {
   CountiesService,
   StatesService,
   PhoneNumberTypesService,
   PhoneNumbersService,
-  CountyClaimsService
+  CountyClaimsService,
+  WebsiteTypesService,
+  WebsitesService
 } from '@tamu-gisc/geoservices/data-access';
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-import { IdentityService } from '../../../../services/identity.service';
+import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
@@ -37,6 +46,7 @@ export class CountyComponent implements OnInit, OnDestroy {
   public counties: Observable<Array<Partial<County>>>;
   public states: Observable<Array<Partial<State>>>;
   public phoneTypes: Observable<Array<Partial<PhoneNumberType>>>;
+  public websiteTypes: Observable<Array<Partial<WebsiteType>>>;
 
   /**
    * Represents the active county claims for the selected county
@@ -59,6 +69,8 @@ export class CountyComponent implements OnInit, OnDestroy {
     private state: StatesService,
     private pt: PhoneNumberTypesService,
     private pn: PhoneNumbersService,
+    private wt: WebsiteTypesService,
+    private ws: WebsitesService,
     private cs: CountyClaimsService,
     private is: IdentityService
   ) {}
@@ -67,7 +79,8 @@ export class CountyComponent implements OnInit, OnDestroy {
     this.form = this.fb.group({
       state: [undefined, Validators.required],
       county: [undefined, Validators.required],
-      phoneNumbers: this.fb.array([this.createPhoneNumberGroup()])
+      phoneNumbers: this.fb.array([this.createPhoneNumberGroup()]),
+      websites: this.fb.array([this.createPhoneNumberGroup()])
     });
 
     // User identity from identity service
@@ -100,6 +113,8 @@ export class CountyComponent implements OnInit, OnDestroy {
 
     // List of phone types
     this.phoneTypes = this.pt.getPhoneNumberTypes();
+
+    this.websiteTypes = this.wt.getWebsiteTypes();
 
     // List of states
     this.states = this.state.getStates();
@@ -137,22 +152,39 @@ export class CountyComponent implements OnInit, OnDestroy {
           }
 
           // If valid county fips, get phone numbers for it.
-          return this.pn.getPhoneNumbersForCounty(
+          const phoneNumbers = this.pn.getPhoneNumbersForCounty(
             typeof countyOrCountyFips === 'number' ? countyOrCountyFips : countyOrCountyFips.countyFips
           );
+
+          const websites = this.ws.getWebsitesForCounty(
+            typeof countyOrCountyFips === 'number' ? countyOrCountyFips : countyOrCountyFips.countyFips
+          );
+
+          return forkJoin([phoneNumbers, websites]);
         })
       )
-      .subscribe((numbers) => {
-        const group = this.form.get('phoneNumbers') as FormArray;
+      .subscribe(([numbers, websites]) => {
+        const phoneGroup = this.form.get('phoneNumbers') as FormArray;
+        const websiteGroup = this.form.get('websites') as FormArray;
 
-        if (numbers.length > 0) {
+        if (numbers && numbers.length > 0) {
           // // Clear any empty phone number fields
-          group.clear();
+          phoneGroup.clear();
 
           // Format the response phone numbers to a suitable form group structure
-          numbers.map((n) => group.push(this.createPhoneNumberGroup(n)));
+          numbers.map((n) => phoneGroup.push(this.createPhoneNumberGroup(n)));
         } else {
-          group.clear();
+          phoneGroup.clear();
+        }
+
+        if (websites && websites.length > 0) {
+          // // Clear any empty website fields
+          websiteGroup.clear();
+
+          // Format the response websites to a suitable form group structure
+          websites.map((n) => websiteGroup.push(this.createWebsiteGroup(n)));
+        } else {
+          websiteGroup.clear();
         }
       });
 
@@ -206,13 +238,24 @@ export class CountyComponent implements OnInit, OnDestroy {
       })
     );
 
-    concat(claim, phoneNumbers).subscribe((res) => {
+    // Website pipeline. Will execute after claim
+    const websites = this.localCounty.pipe(take(1)).pipe(
+      switchMap((cnty) => {
+        return this.ws.setWebsitesForCounty(formValue.websites, cnty.countyFips);
+      })
+    );
+
+    concat(claim, forkJoin([phoneNumbers, websites])).subscribe((res) => {
       console.log('Claim and phone numbers updated: ', res);
     });
   }
 
   public createPhoneNumberGroup(number?: Partial<PhoneNumber>): FormGroup {
     return this.fb.group(this.createPhoneNumber(number));
+  }
+
+  public createWebsiteGroup(website?: Partial<Website>): FormGroup {
+    return this.fb.group(this.createWebsite(website));
   }
 
   public createPhoneNumber(number?: Partial<PhoneNumber>) {
@@ -223,10 +266,22 @@ export class CountyComponent implements OnInit, OnDestroy {
     };
   }
 
+  public createWebsite(website?: Partial<Website>) {
+    return {
+      url: (website && website.url) || '',
+      type: (website && website.type && website.type.guid) || undefined,
+      guid: (website && website.guid) || undefined
+    };
+  }
+
   /**
    * Push a phone number form group to the form array
    */
   public addPhoneNumber() {
     (this.form.get('phoneNumbers') as FormArray).push(this.createPhoneNumberGroup());
+  }
+
+  public addWebsite() {
+    (this.form.get(['websites']) as FormArray).push(this.createWebsiteGroup());
   }
 }

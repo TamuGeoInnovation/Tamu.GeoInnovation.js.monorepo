@@ -14,7 +14,7 @@ import {
 import {
   StatesService,
   RestrictionsService,
-  ClassificationsService,
+  WebsiteTypesService,
   TestingSitesService,
   SiteOwnersService,
   SiteServicesService,
@@ -23,7 +23,8 @@ import {
 } from '@tamu-gisc/geoservices/data-access';
 import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
 import { Router, ActivatedRoute } from '@angular/router';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, pluck, filter, withLatestFrom } from 'rxjs/operators';
+import { IdentityService } from '../../../services/identity.service';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
@@ -54,6 +55,9 @@ export class TestingSiteComponent implements OnInit {
 
   public undisclosedState: Observable<boolean>;
 
+  public localCounty: Observable<Partial<County>>;
+  public localEmail: Observable<Partial<User['email']>>;
+
   public formState = {
     submitting: false,
     submitted: false,
@@ -73,33 +77,48 @@ export class TestingSiteComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private localStore: LocalStoreService,
+    // private localStore: LocalStoreService,
     private router: Router,
     private route: ActivatedRoute,
     private st: StatesService,
     private rt: RestrictionsService,
-    private cl: ClassificationsService,
+    private cl: WebsiteTypesService,
     private ph: PhoneNumberTypesService,
     private ts: TestingSitesService,
     private siteOwner: SiteOwnersService,
     private siteService: SiteServicesService,
-    private siteStatus: SiteStatusesService
+    private siteStatus: SiteStatusesService,
+    private is: IdentityService
   ) {}
 
   public ngOnInit() {
+    this.localCounty = this.is.identity.pipe(
+      pluck('county'),
+      filter((county) => {
+        return county !== undefined && county.countyFips !== undefined;
+      })
+    );
+    this.localEmail = this.is.identity.pipe(
+      pluck('user', 'email'),
+      filter((email) => {
+        return email !== undefined;
+      })
+    );
+
     // Set the county and state location fields for the form
-    const localCounty = this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'county' }) as Partial<County>;
+    // const localCounty = this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'county' }) as Partial<County>;
 
     this.form = this.fb.group({
       claim: this.fb.group({
         user: this.fb.group({
           email: [
-            (this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'identity' }) as Partial<User>).email,
+            // TODO:
+            undefined,
             Validators.required
           ]
         }),
         county: this.fb.group({
-          countyFips: [localCounty.countyFips, Validators.required]
+          countyFips: [undefined, Validators.required]
         })
       }),
       location: this.fb.group({
@@ -107,7 +126,7 @@ export class TestingSiteComponent implements OnInit {
         address2: [''],
         city: [''],
         zip: [''],
-        county: [localCounty.name],
+        county: [''],
         state: [''],
         country: ['']
       }),
@@ -132,7 +151,7 @@ export class TestingSiteComponent implements OnInit {
 
     this.restrictions = this.rt.getRestrictions();
 
-    this.classifications = this.cl.getClassifications();
+    this.classifications = this.cl.getWebsiteTypes();
 
     this.owners = this.siteOwner.getSiteOwners();
 
@@ -140,20 +159,40 @@ export class TestingSiteComponent implements OnInit {
 
     this.statuses = this.siteStatus.getSiteStatuses();
 
-    this.websitesTypes = this.cl.getClassifications();
+    this.websitesTypes = this.cl.getWebsiteTypes();
 
     this.phoneTypes = this.ph.getPhoneNumberTypes();
 
-    if (localCounty) {
-      this.st.getStateByFips(localCounty.stateFips).subscribe((state) => {
+    this.localCounty
+      .pipe(
+        switchMap((county) => {
+          return this.st.getStateByFips(county.stateFips);
+        }),
+        withLatestFrom(this.localCounty)
+      )
+      .subscribe(([state, county]) => {
         this.form.patchValue({
+          claim: {
+            county: {
+              countyFips: county.countyFips
+            }
+          },
           location: {
-            county: localCounty.name,
+            county: county.name,
             state: state.name
           }
         });
       });
-    }
+
+    this.localEmail.subscribe((email) => {
+      this.form.patchValue({
+        claim: {
+          user: {
+            email: email
+          }
+        }
+      });
+    });
 
     this.undisclosedState = this.form.get(['info', 'undisclosed']).valueChanges.pipe(
       switchMap((value) => {
