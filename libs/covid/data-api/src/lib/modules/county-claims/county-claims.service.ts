@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { CountyClaim, User, County } from '@tamu-gisc/covid/common/entities';
+import { CountyClaim, User, County, STATUS } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 
@@ -21,15 +21,21 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
 
     const lastClaim = await this.repo.findOne({
       where: {
-        user: user
+        user: user,
+        statuses: [
+          {
+            type: STATUS.PROCESSING
+          }
+        ]
       },
-      relations: ['county', 'status'],
+      relations: ['county', 'statuses'],
       order: {
         created: 'DESC'
       }
     });
 
-    return lastClaim && lastClaim.status.closed !== true ? [lastClaim] : [];
+    // TODO: Return the last claim that does not have a closed status.
+    return lastClaim ? [lastClaim] : [];
   }
 
   public async getActiveClaimsForCountyFips(countyFips: number) {
@@ -37,15 +43,16 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       where: {
         county: {
           countyFips: countyFips
-        }
+        },
+        statuses: [{ type: STATUS.PROCESSING }]
       },
       order: {
         created: 'DESC'
       },
-      relations: ['county', 'user', 'status']
+      relations: ['statuses', 'statuses.type', 'county', 'user']
     });
 
-    return lastForCounty && lastForCounty.status.closed !== true ? [lastForCounty] : [];
+    return lastForCounty ? [lastForCounty] : [];
   }
 
   /**
@@ -84,30 +91,38 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       };
     }
 
-    // Phone numbers
-    const phs =
-      claim &&
-      claim.info &&
-      claim.info.phoneNumbers &&
-      claim.info.phoneNumbers instanceof Array &&
-      claim.info.phoneNumbers.length > 0
-        ? claim.info.phoneNumbers
-        : [];
+    // TODO: Fix claim phone and website entry/update
+    // // Phone numbers
+    // const phs =
+    //   claim &&
+    //   claim.info &&
+    //   claim.info.phoneNumbers &&
+    //   claim.info.phoneNumbers instanceof Array &&
+    //   claim.info.phoneNumbers.length > 0
+    //     ? claim.info.phoneNumbers
+    //     : [];
 
-    // Websites
-    const ws =
-      claim && claim.info && claim.info.websites && claim.info.websites instanceof Array && claim.info.websites.length > 0
-        ? claim.info.websites
-        : [];
+    // // Websites
+    // const ws =
+    //   claim && claim.info && claim.info.websites && claim.info.websites instanceof Array && claim.info.websites.length > 0
+    //     ? claim.info.websites
+    //     : [];
 
     const cl = this.repo.create({
       county: county,
       user: user,
-      info: {
-        phoneNumbers: phs,
-        websites: ws
-      },
-      status: {}
+      statuses: [
+        {
+          type: {
+            id: STATUS.PROCESSING
+          }
+        }
+      ]
+
+      // info: {
+      //   phoneNumbers: phs,
+      //   websites: ws
+      // },
     });
 
     return cl.save();

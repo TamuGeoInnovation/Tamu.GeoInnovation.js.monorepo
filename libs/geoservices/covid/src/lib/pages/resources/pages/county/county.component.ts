@@ -150,7 +150,7 @@ export class CountyComponent implements OnInit, OnDestroy {
         switchMap((countyOrCountyFips: Partial<County> | number) => {
           if (countyOrCountyFips === undefined) {
             // Return empty array to symbolize no phone numbers for selected county.
-            return of([]);
+            return of([]);  
           }
 
           // If valid county fips, get phone numbers for it.
@@ -244,52 +244,16 @@ export class CountyComponent implements OnInit, OnDestroy {
               // Will not be available for initial claims, so use form county value.
               countyFips: county ? county.countyFips : formValue.county
             },
-            info: {
-              phoneNumbers: formValue.phoneNumbers,
-              websites: formValue.websites
-            }
+            // info: {
+            //   phoneNumbers: formValue.phoneNumbers,
+            //   websites: formValue.websites
+            // }
           });
         })
       )
       .subscribe((res) => {
         console.log(res);
       });
-
-    // // Claim pipeline
-    // const claim = this.localIdentity.pipe(
-    //   take(1),
-    //   switchMap((user) => {
-    //     return this.is.registerCountyClaim(user.email, formValue.county);
-    //   })
-    // );
-
-    // // Phone number pipeline. Will execute after claim
-    // const phoneNumbers = this.localCounty
-    //   .pipe(
-    //     take(1),
-    //     timeoutWith(100, EMPTY)
-    //   )
-    //   .pipe(
-    //     switchMap((cnty) => {
-    //       return this.pn.setPhoneNumbersForCounty(formValue.phoneNumbers, cnty.countyFips);
-    //     })
-    //   );
-
-    // // Website pipeline. Will execute after claim
-    // const websites = this.localCounty
-    //   .pipe(
-    //     take(1),
-    //     timeoutWith(100, EMPTY)
-    //   )
-    //   .pipe(
-    //     switchMap((cnty) => {
-    //       return this.ws.setWebsitesForCounty(formValue.websites, cnty.countyFips);
-    //     })
-    //   );
-
-    // concat(forkJoin([phoneNumbers, websites]), claim).subscribe((res) => {
-    //   console.log('Claim and phone numbers updated: ', res);
-    // });
   }
 
   public createPhoneNumberGroup(number?: Partial<PhoneNumber>): FormGroup {
@@ -323,5 +287,9 @@ export class CountyComponent implements OnInit, OnDestroy {
 
   public addWebsite() {
     (this.form.get(['websites']) as FormArray).push(this.createWebsiteGroup());
+  }
+
+  public removeFormArrayControl(collection: string, index: number) {
+    (this.form.get([collection]) as FormArray).removeAt(index);
   }
 }

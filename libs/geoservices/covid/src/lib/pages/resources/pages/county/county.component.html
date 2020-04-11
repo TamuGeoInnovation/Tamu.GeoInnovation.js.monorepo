@@ -46,9 +46,10 @@
 
           <div *ngIf="form.get('phoneNumbers')['controls'].length > 0; else promptAddPhoneNumber" [formArrayName]="'phoneNumbers'" class="form-section-body">
             <ng-container *ngFor="let ph of form.get('phoneNumbers')['controls']; let i = index">
-              <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
+              <div [formGroupName]="i" class="form-collection row flex align-center select-collection" [ngClass]="{'pad-top': i === 0}">
                 <tamu-gisc-textbox formControlName="number" type="tel" placeholder="Phone Number" floatLabel="true"></tamu-gisc-textbox>
                 <tamu-gisc-select formControlName="type" [data]="phoneTypes | async" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
+                <span class="material-icons action error" title="Remove phone number" (click)="removeFormArrayControl('phoneNumbers', i)">close</span>
               </div>
             </ng-container>
           </div>
@@ -68,9 +69,10 @@
 
           <div *ngIf="form.get('websites')['controls'].length > 0; else promptAddWebsite" [formArrayName]="'websites'" class="form-section-body">
             <ng-container *ngFor="let wb of form.get('websites')['controls']; let i = index">
-              <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
+              <div [formGroupName]="i" class="form-collection row flex align-center select-collection" [ngClass]="{'pad-top': i === 0}">
                 <tamu-gisc-textbox formControlName="url" type="text" placeholder="URL" floatLabel="true"></tamu-gisc-textbox>
                 <tamu-gisc-select formControlName="type" [data]="websiteTypes | async" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
+                <span class="material-icons action error" title="Remove URL" (click)="removeFormArrayControl('websites', i)">close</span>
               </div>
             </ng-container>
           </div>

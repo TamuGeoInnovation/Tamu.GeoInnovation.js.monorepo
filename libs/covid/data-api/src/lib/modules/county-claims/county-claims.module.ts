@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { CountyClaim, User, County } from '@tamu-gisc/covid/common/entities';
+import { CountyClaim, User, County} from '@tamu-gisc/covid/common/entities';
 
 import { CountyClaimsService } from './county-claims.service';
 import { CountyClaimsController } from './county-claims.controller';

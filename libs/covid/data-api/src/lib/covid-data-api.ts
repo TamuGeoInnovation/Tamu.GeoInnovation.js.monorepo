@@ -3,6 +3,11 @@ export * from './modules/lockdowns/lockdowns.module';
 
 export * from './modules/states/states.module';
 export * from './modules/counties/counties.module';
+export * from './modules/field-categories/field-categories.module';
+export * from './modules/field-types/field-types.module';
+export * from './modules/category-values/category-values.module';
+export * from './modules/status-types/status-types.module';
+
 export * from './modules/website-types/website-types.module';
 export * from './modules/websites/websites.module';
 export * from './modules/restrictions/restrictions.module';
