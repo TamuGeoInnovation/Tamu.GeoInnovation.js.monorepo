@@ -20,13 +20,40 @@ export class FieldCategoriesService extends BaseService<FieldCategory> {
     return this.repo.find({ relations: ['types'] });
   }
 
-  public async getCategoryWithValues(id: string){
+  public async getCategoryWithValues(id: string) {
     return this.repo.find({
       where: {
         id: id
       },
       relations: ['values']
-    })
+    });
+  }
+
+  public async getFieldTypesForCategory(categoryId: number) {
+    if (categoryId === undefined) {
+      return {
+        status: 402,
+        success: false,
+        message: 'Input parameter missing.'
+      };
+    }
+
+    const category = await this.repo.findOne({ where: { id: categoryId } });
+
+    if (!category) {
+      return {
+        status: 402,
+        success: false,
+        message: 'Invalid category ID.'
+      };
+    }
+
+    return this.repo.findOne({
+      where: {
+        id: categoryId
+      },
+      relations: ['types']
+    });
   }
 
   public async addFieldTypeToCategory(categoryId: number, typeGuid: string) {
@@ -75,7 +102,7 @@ export class FieldCategoriesService extends BaseService<FieldCategory> {
 
     const v = this.valueRepo.create({
       value: value,
-      category: [category]
+      category: category
     });
 
     await v.save();

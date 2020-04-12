@@ -23,7 +23,7 @@ export class CountyClaimsController extends BaseController<CountyClaim> {
 
   @Post('claim')
   public registerClaim(@Body() body) {
-    return this.service.createOrUpdateClaim(body);
+    return this.service.createOrUpdateClaim(body, body.phoneNumbers, body.websites);
   }
 
   @Post('')

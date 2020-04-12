@@ -31,7 +31,7 @@ export class CountyClaimsService {
     return this.http.get<Partial<Array<CountyClaim>>>(`${this.resource}/claim/active/${email}`);
   }
 
-  public registerClaim(claim: DeepPartial<CountyClaim>) {
-    return this.http.post<Partial<CountyClaim>>(`${this.resource}/claim`, claim);
+  public registerClaim(claim: DeepPartial<CountyClaim>, phoneNumbers, websites) {
+    return this.http.post<Partial<CountyClaim>>(`${this.resource}/claim`, { ...claim, phoneNumbers, websites });
   }
 }

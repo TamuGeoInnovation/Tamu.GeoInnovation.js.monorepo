@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Website, County, CountyClaim } from '@tamu-gisc/covid/common/entities';
+import { County, CountyClaim, CategoryValue } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 
 @Injectable()
-export class WebsitesService extends BaseService<Website> {
+export class WebsitesService extends BaseService<CategoryValue> {
   constructor(
-    @InjectRepository(Website) public repo: Repository<Website>,
+    @InjectRepository(CategoryValue) public repo: Repository<CategoryValue>,
     @InjectRepository(County) public countyRepo: Repository<County>,
     @InjectRepository(CountyClaim) public claimRepo: Repository<CountyClaim>
   ) {
@@ -35,6 +35,8 @@ export class WebsitesService extends BaseService<Website> {
       }
     });
 
-    return claim && claim.info && claim.info.websites ? claim.info.websites : [];
+    // TODO: Get websites for county
+    // return claim && claim.info && claim.info.websites ? claim.info.websites : [];
+    return [];
   }
 }

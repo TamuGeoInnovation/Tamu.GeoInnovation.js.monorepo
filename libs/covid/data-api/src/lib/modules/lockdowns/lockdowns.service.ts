@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeepPartial } from 'typeorm';
+import { Repository } from 'typeorm';
 
-import { Lockdown, User, Website, WebsiteType } from '@tamu-gisc/covid/common/entities';
+import { Lockdown, User } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
@@ -12,8 +12,8 @@ export class LockdownsService extends BaseService<Lockdown> {
   constructor(
     @InjectRepository(Lockdown) public repo: Repository<Lockdown>,
     @InjectRepository(User) public userRepo: Repository<User>,
-    @InjectRepository(Website) public sourceRepo: Repository<Website>,
-    @InjectRepository(WebsiteType) public classificationRepo: Repository<WebsiteType>,
+    // @InjectRepository(Website) public sourceRepo: Repository<Website>,
+    // @InjectRepository(WebsiteType) public classificationRepo: Repository<WebsiteType>,
     public ccs: CountyClaimsService
   ) {
     super(repo);

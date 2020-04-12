@@ -2,7 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { CountyClaim, User, County, STATUS } from '@tamu-gisc/covid/common/entities';
+import { STATUS, CATEGORY } from '@tamu-gisc/covid/common/enums';
+import {
+  CountyClaim,
+  User,
+  County,
+  FieldCategory,
+  CountyClaimInfo,
+  CategoryValue,
+  EntityValue,
+  EntityToValue
+} from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 
@@ -11,7 +21,9 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
   constructor(
     @InjectRepository(CountyClaim) public repo: Repository<CountyClaim>,
     @InjectRepository(County) public countyRepo: Repository<County>,
-    @InjectRepository(User) public userRepo: Repository<User>
+    @InjectRepository(User) public userRepo: Repository<User>,
+    @InjectRepository(CountyClaimInfo) public claimInfoRepo: Repository<CountyClaimInfo>,
+    @InjectRepository(EntityToValue) public valueRepo: Repository<EntityToValue>
   ) {
     super(repo);
   }
@@ -58,7 +70,7 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
   /**
    * Register a county to a user.
    */
-  public async createOrUpdateClaim(claim: Partial<CountyClaim>) {
+  public async createOrUpdateClaim(claim, phoneNumbers: Array<EntityValue>, websites: Array<EntityValue>) {
     const user = await this.userRepo.findOne({
       where: {
         email: claim.user.email
@@ -91,41 +103,92 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       };
     }
 
-    // TODO: Fix claim phone and website entry/update
-    // // Phone numbers
-    // const phs =
-    //   claim &&
-    //   claim.info &&
-    //   claim.info.phoneNumbers &&
-    //   claim.info.phoneNumbers instanceof Array &&
-    //   claim.info.phoneNumbers.length > 0
-    //     ? claim.info.phoneNumbers
-    //     : [];
+    // County claim container
+    let cl;
 
-    // // Websites
-    // const ws =
-    //   claim && claim.info && claim.info.websites && claim.info.websites instanceof Array && claim.info.websites.length > 0
-    //     ? claim.info.websites
-    //     : [];
-
-    const cl = this.repo.create({
-      county: county,
-      user: user,
-      statuses: [
-        {
-          type: {
-            id: STATUS.PROCESSING
+    if (!claim.guid) {
+      cl = this.repo.create({
+        county: county,
+        user: user,
+        statuses: [
+          {
+            type: {
+              id: STATUS.PROCESSING
+            }
           }
+        ]
+      });
+
+      await cl.save();
+    } else {
+      cl = await this.repo.findOne({
+        where: {
+          guid: claim.guid
         }
-      ]
+      });
+    }
 
-      // info: {
-      //   phoneNumbers: phs,
-      //   websites: ws
-      // },
-    });
+    if (!cl) {
+      return {
+        status: 500,
+        success: false,
+        message: 'Could not create claim.'
+      };
+    }
 
-    return cl.save();
+    // Check if there is any county claim info to add/update
+    if (phoneNumbers || websites) {
+      // if (claim.infos.length > 1) {
+      //   return {
+      //     status: 500,
+      //     success: false,
+      //     message: 'Invalid number of claim infos.'
+      //   };
+      // }
+
+      // Create a new claim info
+      const claimInfo = await this.claimInfoRepo
+        .create({
+          claim: cl,
+          statuses: [
+            {
+              type: {
+                id: STATUS.PROCESSING
+              }
+            }
+          ]
+        })
+        .save();
+
+      debugger;
+
+      await claimInfo.save();
+
+      debugger;
+
+      const pns: Array<EntityToValue> = phoneNumbers.map((pn) => {
+        return this.valueRepo.create({
+          entityValue: {
+            value: {
+              value: pn.value.value,
+              type: pn.value.type,
+              category: {
+                id: CATEGORY.PHONE_NUMBERS
+              }
+            }
+          },
+          claimInfo: claimInfo
+        });
+      });
+
+      claimInfo.responses = pns;
+
+      const res = await claimInfo.save();
+
+      return res;
+    }
+
+    return cl;
   }
 
   // public async getActiveClaimsForUser(email: string) {

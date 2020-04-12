@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { County, User, CountyClaim } from '@tamu-gisc/covid/common/entities';
+import { User, CountyClaim } from '@tamu-gisc/covid/common/entities';
 import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-store';
 import { UsersService, CountyClaimsService } from '@tamu-gisc/geoservices/data-access';
 import { tap } from 'rxjs/operators';
@@ -95,8 +95,8 @@ export class IdentityService {
     });
   }
 
-  public registerCountyClaim(claim: DeepPartial<CountyClaim>) {
-    return this.claim.registerClaim(claim).pipe(
+  public registerCountyClaim(claim: DeepPartial<CountyClaim>, phoneNumbers?, websites?) {
+    return this.claim.registerClaim(claim, phoneNumbers, websites).pipe(
       tap((registration) => {
         if (registration.guid) {
           this.localStorage.setStorageObjectKeyValue({ ...storageOptions, subKey: 'claim', value: registration });

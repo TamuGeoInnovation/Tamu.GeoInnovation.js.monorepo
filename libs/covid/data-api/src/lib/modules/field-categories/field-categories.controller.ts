@@ -11,6 +11,11 @@ export class FieldCategoriesController extends BaseController<FieldCategory> {
     super(service);
   }
 
+  @Get('types/:id')
+  public getFieldTypesForCategory(@Param() params) {
+    return this.service.getFieldTypesForCategory(params.id);
+  }
+
   @Post(':id/types')
   public addFieldTypeToCategory(@Body() body, @Param() params) {
     return this.service.addFieldTypeToCategory(params.id, body.type);
@@ -37,6 +42,6 @@ export class FieldCategoriesController extends BaseController<FieldCategory> {
       status: 501,
       success: false,
       message: 'Not implemented'
+    }
     };
-  }
 }

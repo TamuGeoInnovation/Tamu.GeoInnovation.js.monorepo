@@ -5,11 +5,11 @@ import { Repository } from 'typeorm';
 import {
   TestingSite,
   User,
-  Website,
-  WebsiteType,
-  RestrictionType,
-  SiteOwnerType,
-  SiteServiceType,
+  // Website,
+  // WebsiteType,
+  // RestrictionType,
+  // SiteOwnerType,
+  // SiteServiceType,
   SiteStatusType
 } from '@tamu-gisc/covid/common/entities';
 
@@ -20,11 +20,11 @@ export class SitesService extends BaseService<TestingSite> {
   constructor(
     @InjectRepository(TestingSite) public repo: Repository<TestingSite>,
     @InjectRepository(User) public userRepo: Repository<User>,
-    @InjectRepository(Website) public sourceRepo: Repository<Website>,
-    @InjectRepository(WebsiteType) public classificationRepo: Repository<WebsiteType>,
-    @InjectRepository(RestrictionType) public restrictionRepo: Repository<RestrictionType>,
-    @InjectRepository(SiteOwnerType) public ownerRepo: Repository<SiteOwnerType>,
-    @InjectRepository(SiteServiceType) public serviceRepo: Repository<SiteServiceType>,
+    // @InjectRepository(Website) public sourceRepo: Repository<Website>,
+    // @InjectRepository(WebsiteType) public classificationRepo: Repository<WebsiteType>,
+    // @InjectRepository(RestrictionType) public restrictionRepo: Repository<RestrictionType>,
+    // @InjectRepository(SiteOwnerType) public ownerRepo: Repository<SiteOwnerType>,
+    // @InjectRepository(SiteServiceType) public serviceRepo: Repository<SiteServiceType>,
     @InjectRepository(SiteStatusType) public statusRepo: Repository<SiteStatusType>
   ) {
     super(repo);

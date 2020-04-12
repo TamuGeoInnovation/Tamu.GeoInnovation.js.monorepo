@@ -22,14 +22,14 @@ const routes: Routes = [
         path: 'county',
         loadChildren: () => import('./pages/county/county.module').then((m) => m.CountyModule)
       },
-      {
-        path: 'lockdown',
-        loadChildren: () => import('./pages/lockdown/lockdown.module').then((m) => m.LockdownModule)
-      },
-      {
-        path: 'testing-sites',
-        loadChildren: () => import('./pages/testing-sites/testing-sites.module').then((m) => m.TestingSitesModule)
-      }
+      // {
+      //   path: 'lockdown',
+      //   loadChildren: () => import('./pages/lockdown/lockdown.module').then((m) => m.LockdownModule)
+      // },
+      // {
+      //   path: 'testing-sites',
+      //   loadChildren: () => import('./pages/testing-sites/testing-sites.module').then((m) => m.TestingSitesModule)
+      // }
     ]
   }
 ];

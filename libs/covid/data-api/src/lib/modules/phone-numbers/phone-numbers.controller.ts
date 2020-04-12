@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
-import { PhoneNumber } from '@tamu-gisc/covid/common/entities';
+import { FieldCategory } from '@tamu-gisc/covid/common/entities';
 
 import { BaseController } from '../base/base.controller';
 import { PhoneNumbersService } from './phone-numbers.service';
 
 @Controller('phone-numbers')
-export class PhoneNumbersController extends BaseController<PhoneNumber> {
+export class PhoneNumbersController extends BaseController<FieldCategory> {
   constructor(private service: PhoneNumbersService) {
     super(service);
   }

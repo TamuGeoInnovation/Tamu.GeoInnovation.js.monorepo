@@ -86,28 +86,8 @@ export class FieldCategory extends TimeStampEntity {
   @JoinTable()
   public types: FieldType[];
 
-  @ManyToMany((type) => CategoryValue, (value) => value.category, { cascade: true })
-  @JoinTable()
+  @OneToMany((type) => CategoryValue, (value) => value.category)
   public values: CategoryValue[];
-}
-
-@Entity({ name: 'category_values' })
-export class CategoryValue extends GuidIdentity {
-  @Column({ nullable: false, type: 'varchar', length: 'max' })
-  public value: string;
-
-  @ManyToMany((type) => FieldCategory, (category) => category.values)
-  public category: FieldCategory[];
-}
-
-@Entity({ name: 'entity_values' })
-export class EntityValue extends TimeStampEntity {
-  @PrimaryColumn()
-  public entityGuid: string;
-
-  @OneToOne((type) => CategoryValue)
-  @JoinColumn({ name: 'guid' })
-  public valueGuid: CategoryValue;
 }
 
 @Entity({ name: 'field_types' })
@@ -117,15 +97,31 @@ export class FieldType extends GuidIdentity {
 
   @ManyToMany((type) => FieldCategory, (category) => category.types)
   public categories: FieldCategory[];
+
+  @OneToMany((type) => CategoryValue, (value) => value.type)
+  public values: CategoryValue[];
 }
 
-@Entity({ name: 'status_types' })
-export class StatusType extends TimeStampEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
+@Entity({ name: 'category_values' })
+export class CategoryValue extends GuidIdentity {
+  @Column({ nullable: false, type: 'varchar', length: 'max' })
+  public value: string;
 
-  @Column()
-  public name: string;
+  @ManyToOne((type) => FieldCategory, (category) => category.values)
+  public category: FieldCategory;
+
+  @ManyToOne((type) => FieldType, (type) => type.values)
+  public type: FieldType;
+}
+
+@Entity({ name: 'entity_values' })
+export class EntityValue extends GuidIdentity {
+  @OneToMany((type) => EntityToValue, (entity) => entity.entityValue)
+  public entityToValue: EntityToValue[];
+
+  @OneToOne((type) => CategoryValue, { cascade: true })
+  @JoinColumn()
+  public value: CategoryValue;
 }
 
 @Entity({ name: 'county_claims' })
@@ -146,24 +142,38 @@ export class CountyClaim extends GuidIdentity {
 
 @Entity({ name: 'county_claim_infos' })
 export class CountyClaimInfo extends GuidIdentity {
-  @ManyToMany((type) => EntityValue, (entityValue) => entityValue.entityGuid, { cascade: true })
-  public phoneNumbers: EntityValue[];
-
-  @ManyToMany((type) => EntityValue, (entityValue) => entityValue.entityGuid, { cascade: true })
-  public websites: EntityValue[];
+  @OneToMany((type) => EntityToValue, (entity) => entity.claimInfo, { cascade: true })
+  public responses: EntityToValue[];
 
   @ManyToOne((type) => CountyClaim, (claim) => claim.infos)
-  @JoinColumn({ name: 'claimGuid' })
+  @JoinColumn()
   public claim: CountyClaim;
 
   @OneToMany((type) => EntityStatus, (status) => status.claimInfoStatus, { cascade: true })
   public statuses: EntityStatus[];
 }
 
+@Entity({ name: 'entity_to_values' })
+export class EntityToValue extends GuidIdentity {
+  @ManyToOne((type) => EntityValue, (value) => value.entityToValue, { cascade: true })
+  public entityValue: EntityValue;
+
+  @ManyToOne((type) => CountyClaimInfo, (value) => value.responses)
+  public claimInfo: CountyClaimInfo;
+}
+
+@Entity({ name: 'status_types' })
+export class StatusType extends TimeStampEntity {
+  @PrimaryGeneratedColumn()
+  public id: number;
+
+  @Column()
+  public name: string;
+}
+
 @Entity({ name: 'entity_statuses' })
 export class EntityStatus extends GuidIdentity {
-  @OneToOne((type) => StatusType)
-  @JoinColumn()
+  @ManyToOne((type) => StatusType)
   public type: StatusType;
 
   @ManyToOne((type) => CountyClaim, (claim) => claim.statuses)
@@ -220,11 +230,11 @@ export class LockdownInfo extends GuidIdentity {
   @Column({ type: 'varchar', length: 'max', nullable: true })
   public notes: string;
 
-  @OneToMany((type) => PhoneNumber, (ph) => ph.lockdownInfo, { cascade: true })
-  public phoneNumbers: PhoneNumber[];
+  // @OneToMany((type) => PhoneNumber, (ph) => ph.lockdownInfo, { cascade: true })
+  // public phoneNumbers: PhoneNumber[];
 
-  @OneToMany((type) => Website, (wb) => wb.lockdownInfo, { cascade: true })
-  public websites: Website[];
+  // @OneToMany((type) => Website, (wb) => wb.lockdownInfo, { cascade: true })
+  // public websites: Website[];
 }
 
 @Entity({ name: 'testing_site_infos' })
@@ -256,23 +266,23 @@ export class TestingSiteInfo extends GuidIdentity {
   @Column({ type: 'varchar', length: 'max', nullable: true })
   public notes: string;
 
-  @OneToMany((type) => SiteStatus, (status) => status.testingSiteInfo, { cascade: true })
-  public status: SiteStatus[];
+  // @OneToMany((type) => SiteStatus, (status) => status.testingSiteInfo, { cascade: true })
+  // public status: SiteStatus[];
 
-  @OneToMany((type) => SiteOwner, (owner) => owner.testingSiteInfo, { cascade: true })
-  public owners: SiteOwner[];
+  // @OneToMany((type) => SiteOwner, (owner) => owner.testingSiteInfo, { cascade: true })
+  // public owners: SiteOwner[];
 
-  @OneToMany((type) => SiteService, (service) => service.testingSiteInfo, { cascade: true })
-  public services: SiteService[];
+  // @OneToMany((type) => SiteService, (service) => service.testingSiteInfo, { cascade: true })
+  // public services: SiteService[];
 
-  @OneToMany((type) => Restriction, (restriction) => restriction.testingSiteInfo, { cascade: true })
-  public restrictions: Restriction[];
+  // @OneToMany((type) => Restriction, (restriction) => restriction.testingSiteInfo, { cascade: true })
+  // public restrictions: Restriction[];
 
-  @OneToMany((type) => Website, (website) => website.testingSiteInfo, { cascade: true })
-  public websites: Website[];
+  // @OneToMany((type) => Website, (website) => website.testingSiteInfo, { cascade: true })
+  // public websites: Website[];
 
-  @OneToMany((type) => PhoneNumber, (phone) => phone.testingSiteInfo, { cascade: true })
-  public phoneNumbers: PhoneNumber[];
+  // @OneToMany((type) => PhoneNumber, (phone) => phone.testingSiteInfo, { cascade: true })
+  // public phoneNumbers: PhoneNumber[];
 }
 
 @Entity({ name: 'site_status_types' })
@@ -290,97 +300,97 @@ export class SiteStatus extends GuidIdentity {
   public testingSiteInfo: TestingSiteInfo;
 }
 
-@Entity({ name: 'website_types' })
-export class WebsiteType extends GuidIdentity {
-  @Column()
-  public name: string;
-}
+// @Entity({ name: 'website_types' })
+// export class WebsiteType extends GuidIdentity {
+//   @Column()
+//   public name: string;
+// }
 
-@Entity({ name: 'websites' })
-export class Website extends GuidIdentity {
-  @Column({ nullable: true, type: 'varchar', length: 'max' })
-  public url: string;
+// @Entity({ name: 'websites' })
+// export class Website extends GuidIdentity {
+//   @Column({ nullable: true, type: 'varchar', length: 'max' })
+//   public url: string;
 
-  @ManyToOne((type) => WebsiteType, { cascade: true })
-  public type: WebsiteType;
+//   @ManyToOne((type) => WebsiteType, { cascade: true })
+//   public type: WebsiteType;
 
-  // @ManyToOne((type) => CountyClaimInfo, (info) => info.websites)
-  // public claimInfo: County;
+//   // @ManyToOne((type) => CountyClaimInfo, (info) => info.websites)
+//   // public claimInfo: County;
 
-  @ManyToOne((type) => LockdownInfo, (lockdown) => lockdown.websites)
-  public lockdownInfo: LockdownInfo;
+//   @ManyToOne((type) => LockdownInfo, (lockdown) => lockdown.websites)
+//   public lockdownInfo: LockdownInfo;
 
-  @ManyToOne((type) => TestingSiteInfo, (site) => site.websites)
-  public testingSiteInfo: TestingSiteInfo;
-}
+//   @ManyToOne((type) => TestingSiteInfo, (site) => site.websites)
+//   public testingSiteInfo: TestingSiteInfo;
+// }
 
-@Entity({ name: 'phone_number_types' })
-export class PhoneNumberType extends GuidIdentity {
-  @Column()
-  public name: string;
-}
-@Entity({ name: 'phone_numbers' })
-export class PhoneNumber extends GuidIdentity {
-  @Column()
-  public number: string;
+// @Entity({ name: 'phone_number_types' })
+// export class PhoneNumberType extends GuidIdentity {
+//   @Column()
+//   public name: string;
+// }
+// @Entity({ name: 'phone_numbers' })
+// export class PhoneNumber extends GuidIdentity {
+//   @Column()
+//   public number: string;
 
-  @ManyToOne((type) => PhoneNumberType, { cascade: true })
-  public type: PhoneNumberType;
+//   @ManyToOne((type) => PhoneNumberType, { cascade: true })
+//   public type: PhoneNumberType;
 
-  // @ManyToOne((type) => CountyClaimInfo, (info) => info.phoneNumbers)
-  // public claimInfo: CountyClaimInfo;
+//   // @ManyToOne((type) => CountyClaimInfo, (info) => info.phoneNumbers)
+//   // public claimInfo: CountyClaimInfo;
 
-  @ManyToOne((type) => LockdownInfo, (lockdown) => lockdown.phoneNumbers)
-  public lockdownInfo: LockdownInfo;
+//   @ManyToOne((type) => LockdownInfo, (lockdown) => lockdown.phoneNumbers)
+//   public lockdownInfo: LockdownInfo;
 
-  @ManyToOne((type) => TestingSiteInfo, (site) => site.phoneNumbers)
-  public testingSiteInfo: TestingSiteInfo;
-}
+//   @ManyToOne((type) => TestingSiteInfo, (site) => site.phoneNumbers)
+//   public testingSiteInfo: TestingSiteInfo;
+// }
 
-@Entity({ name: 'restriction_types' })
-export class RestrictionType extends GuidIdentity {
-  @Column()
-  public name: string;
-}
+// @Entity({ name: 'restriction_types' })
+// export class RestrictionType extends GuidIdentity {
+//   @Column()
+//   public name: string;
+// }
 
-@Entity({ name: 'restrictions' })
-export class Restriction extends GuidIdentity {
-  @ManyToOne((type) => RestrictionType, { cascade: true })
-  public type: RestrictionType;
+// @Entity({ name: 'restrictions' })
+// export class Restriction extends GuidIdentity {
+//   @ManyToOne((type) => RestrictionType, { cascade: true })
+//   public type: RestrictionType;
 
-  @ManyToOne((type) => TestingSiteInfo, (info) => info.restrictions)
-  public testingSiteInfo: TestingSiteInfo;
-}
+//   @ManyToOne((type) => TestingSiteInfo, (info) => info.restrictions)
+//   public testingSiteInfo: TestingSiteInfo;
+// }
 
-@Entity({ name: 'site_owner_types' })
-export class SiteOwnerType extends GuidIdentity {
-  @Column()
-  public name: string;
-}
+// @Entity({ name: 'site_owner_types' })
+// export class SiteOwnerType extends GuidIdentity {
+//   @Column()
+//   public name: string;
+// }
 
-@Entity({ name: 'site_owners' })
-export class SiteOwner extends GuidIdentity {
-  @ManyToOne((type) => SiteOwnerType, { cascade: true })
-  public type: SiteOwnerType;
+// @Entity({ name: 'site_owners' })
+// export class SiteOwner extends GuidIdentity {
+//   @ManyToOne((type) => SiteOwnerType, { cascade: true })
+//   public type: SiteOwnerType;
 
-  @ManyToOne((type) => TestingSiteInfo, (info) => info.owners)
-  public testingSiteInfo: TestingSiteInfo;
-}
+//   @ManyToOne((type) => TestingSiteInfo, (info) => info.owners)
+//   public testingSiteInfo: TestingSiteInfo;
+// }
 
-@Entity({ name: 'site_service_types' })
-export class SiteServiceType extends GuidIdentity {
-  @Column()
-  public name: string;
-}
+// @Entity({ name: 'site_service_types' })
+// export class SiteServiceType extends GuidIdentity {
+//   @Column()
+//   public name: string;
+// }
 
-@Entity({ name: 'site_services' })
-export class SiteService extends GuidIdentity {
-  @ManyToOne((type) => SiteServiceType, { cascade: true })
-  public type: SiteServiceType;
+// @Entity({ name: 'site_services' })
+// export class SiteService extends GuidIdentity {
+//   @ManyToOne((type) => SiteServiceType, { cascade: true })
+//   public type: SiteServiceType;
 
-  @ManyToOne((type) => TestingSiteInfo, (info) => info.services)
-  public testingSiteInfo: TestingSiteInfo;
-}
+//   @ManyToOne((type) => TestingSiteInfo, (info) => info.services)
+//   public testingSiteInfo: TestingSiteInfo;
+// }
 
 @Entity({ name: 'testing_sites' })
 export class TestingSite extends GuidIdentity {
@@ -421,20 +431,4 @@ export class Lockdown extends GuidIdentity {
   @OneToOne((type) => LockdownStatus, { cascade: true })
   @JoinColumn()
   public status: LockdownStatus;
-}
-
-export enum CATEGORY {
-  WEBSITES = 1,
-  PHONE_NUMBERS = 2,
-  SITE_OWNERS = 3,
-  SITE_SERVICES = 4,
-  SITE_RESTRICTIONS = 5,
-  SITE_OPERATIONAL_STATUS = 6
-}
-
-export enum STATUS {
-  PROCESSING = 1,
-  CLOSED = 2,
-  FLAGGED = 3,
-  CANCELLED = 4
 }

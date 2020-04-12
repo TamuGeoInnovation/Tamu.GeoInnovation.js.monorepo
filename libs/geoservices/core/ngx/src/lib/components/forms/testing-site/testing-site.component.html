@@ -70,27 +70,27 @@
         </div>
 
         <div class="form-collection column">
-          <tamu-gisc-select formControlName="status" [data]="statuses | async" displayTemplate="name" valueTemplate="guid" placeholder="Select operational status"></tamu-gisc-select>
+          <tamu-gisc-select formControlName="status" [data]="(operationalStatusTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select operational status"></tamu-gisc-select>
         </div>
 
         <div class="form-collection column">
           <p class="emphasis">Select any of the following that best describes the site ownership:</p>
           <tamu-gisc-checkbox-group formControlName="owners" [referenceId]="'guid'">
-            <tamu-gisc-checkbox *ngFor="let owner of owners | async" [label]="owner.name" [data]="owner"></tamu-gisc-checkbox>
+            <tamu-gisc-checkbox *ngFor="let owner of (siteOwnerTypes | async)?.types" [label]="owner.name" [data]="owner"></tamu-gisc-checkbox>
           </tamu-gisc-checkbox-group>
         </div>
 
         <div class="form-collection column">
           <p class="emphasis">Select any of the applicable testing restrictions for this site:</p>
           <tamu-gisc-checkbox-group formControlName="restrictions" [referenceId]="'guid'">
-            <tamu-gisc-checkbox *ngFor="let restriction of restrictions | async" [label]="restriction.name" [data]="restriction"></tamu-gisc-checkbox>
+            <tamu-gisc-checkbox *ngFor="let restriction of (siteRestrictionTypes | async)?.types" [label]="restriction.name" [data]="restriction"></tamu-gisc-checkbox>
           </tamu-gisc-checkbox-group>
         </div>
 
         <div class="form-collection column">
           <p class="emphasis">Select any of the following services provided by this site:</p>
           <tamu-gisc-checkbox-group formControlName="services" [referenceId]="'guid'">
-            <tamu-gisc-checkbox *ngFor="let service of services | async" [label]="service.name" [data]="service"></tamu-gisc-checkbox>
+            <tamu-gisc-checkbox *ngFor="let service of (siteServiceTypes | async)?.types" [label]="service.name" [data]="service"></tamu-gisc-checkbox>
           </tamu-gisc-checkbox-group>
         </div>
 
@@ -112,7 +112,7 @@
         <ng-container *ngFor="let ph of form.get(['info', 'phoneNumbers'])['controls']; let i = index">
           <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
             <tamu-gisc-textbox formControlName="number" type="tel" placeholder="Phone Number" floatLabel="true"></tamu-gisc-textbox>
-            <tamu-gisc-select formControlName="type" [data]="phoneTypes | async" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
+            <tamu-gisc-select formControlName="type" [data]="(phoneTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
           </div>
         </ng-container>
       </div>
@@ -140,7 +140,7 @@
         <ng-container *ngFor="let ph of form.get(['info', 'websites'])['controls']; let i = index">
           <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
             <tamu-gisc-textbox formControlName="url" type="text" placeholder="Website URL" floatLabel="true"></tamu-gisc-textbox>
-            <tamu-gisc-select formControlName="type" [data]="websitesTypes | async" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
+            <tamu-gisc-select formControlName="type" [data]="(websitesTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
           </div>
         </ng-container>
       </div>

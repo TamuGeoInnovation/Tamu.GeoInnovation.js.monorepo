@@ -2891,6 +2891,28 @@
           }
         }
       }
+    },
+    "covid-common-enums": {
+      "root": "libs/covid/common/enums",
+      "sourceRoot": "libs/covid/common/enums/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/covid/common/enums/tsconfig.lib.json", "libs/covid/common/enums/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/covid/common/enums/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/covid/common/enums/jest.config.js",
+            "tsConfig": "libs/covid/common/enums/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {

@@ -259,6 +259,9 @@
     },
     "covid-common-entities": {
       "tags": []
+    },
+    "covid-common-enums": {
+      "tags": []
     }
   }
 }

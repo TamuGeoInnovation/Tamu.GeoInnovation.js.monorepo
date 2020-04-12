@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { switchMap, pluck, withLatestFrom, filter } from 'rxjs/operators';
 
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-import { WebsiteType, County, User, PhoneNumber, PhoneNumberType, Website } from '@tamu-gisc/covid/common/entities';
+import { County, User, FieldCategory } from '@tamu-gisc/covid/common/entities';
 import {
   WebsiteTypesService,
   StatesService,
@@ -23,8 +22,8 @@ const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 export class LockdownComponent implements OnInit {
   public form: FormGroup;
 
-  public websitesTypes: Observable<Array<Partial<WebsiteType>>>;
-  public phoneTypes: Observable<Array<Partial<PhoneNumberType>>>;
+  public websitesTypes: Observable<Partial<FieldCategory>>;
+  public phoneTypes: Observable<Partial<FieldCategory>>;
 
   public localCounty: Observable<Partial<County>>;
   public localEmail: Observable<Partial<User['email']>>;
@@ -167,15 +166,15 @@ export class LockdownComponent implements OnInit {
           this.form.patchValue(merged);
         }
 
-        if (res && res.info && res.info.phoneNumbers) {
-          const phc = this.form.get(['info', 'phoneNumbers']) as FormArray;
-          res.info.phoneNumbers.forEach((n) => phc.push(this.createPhoneNumberGroup(n)));
-        }
+        // if (res && res.info && res.info.phoneNumbers) {
+        //   const phc = this.form.get(['info', 'phoneNumbers']) as FormArray;
+        //   res.info.phoneNumbers.forEach((n) => phc.push(this.createPhoneNumberGroup(n)));
+        // }
 
-        if (res && res.info && res.info.websites) {
-          const wc = this.form.get(['info', 'websites']) as FormArray;
-          res.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
-        }
+        // if (res && res.info && res.info.websites) {
+        //   const wc = this.form.get(['info', 'websites']) as FormArray;
+        //   res.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
+        // }
       });
   }
 

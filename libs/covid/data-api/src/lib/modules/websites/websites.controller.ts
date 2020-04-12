@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Param, Body } from '@nestjs/common';
-import { Website } from '@tamu-gisc/covid/common/entities';
+import { Controller, Get, Param } from '@nestjs/common';
+import { CategoryValue } from '@tamu-gisc/covid/common/entities';
 
 import { BaseController } from '../base/base.controller';
 import { WebsitesService } from './websites.service';
 
 @Controller('websites')
-export class WebsitesController extends BaseController<Website> {
+export class WebsitesController extends BaseController<CategoryValue> {
   constructor(private service: WebsitesService) {
     super(service);
   }

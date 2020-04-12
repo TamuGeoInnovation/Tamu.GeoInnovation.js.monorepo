@@ -1,16 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Observable, of } from 'rxjs';
+import { switchMap, pluck, filter, withLatestFrom } from 'rxjs/operators';
+import { DeepPartial } from 'typeorm';
 
-import {
-  County,
-  PhoneNumber,
-  Website,
-  WebsiteType,
-  PhoneNumberType,
-  User,
-  TestingSite
-} from '@tamu-gisc/covid/common/entities';
+import { County, PhoneNumber, Website, User, TestingSite, FieldCategory } from '@tamu-gisc/covid/common/entities';
 import {
   StatesService,
   RestrictionsService,
@@ -21,11 +16,7 @@ import {
   SiteStatusesService,
   PhoneNumberTypesService
 } from '@tamu-gisc/geoservices/data-access';
-import { LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
-import { Router, ActivatedRoute } from '@angular/router';
-import { switchMap, pluck, filter, withLatestFrom } from 'rxjs/operators';
 import { IdentityService } from '../../../services/identity.service';
-import { DeepPartial } from 'typeorm';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
@@ -45,14 +36,13 @@ export class TestingSiteComponent implements OnInit {
 
   public states: Observable<object>;
   public counties: Observable<object>;
-  public restrictions: Observable<object>;
-  public classifications: Observable<object>;
-  public owners: Observable<object>;
-  public services: Observable<object>;
-  public statuses: Observable<object>;
 
-  public websitesTypes: Observable<Array<Partial<WebsiteType>>>;
-  public phoneTypes: Observable<Array<Partial<PhoneNumberType>>>;
+  public siteRestrictionTypes: Observable<Partial<FieldCategory>>;
+  public siteOwnerTypes: Observable<Partial<FieldCategory>>;
+  public siteServiceTypes: Observable<Partial<FieldCategory>>;
+  public operationalStatusTypes: Observable<Partial<FieldCategory>>;
+  public websitesTypes: Observable<Partial<FieldCategory>>;
+  public phoneTypes: Observable<Partial<FieldCategory>>;
 
   public undisclosedState: Observable<boolean>;
 
@@ -150,15 +140,13 @@ export class TestingSiteComponent implements OnInit {
       })
     });
 
-    this.restrictions = this.rt.getRestrictions();
+    this.siteRestrictionTypes = this.rt.getRestrictions();
 
-    this.classifications = this.cl.getWebsiteTypes();
+    this.siteOwnerTypes = this.siteOwner.getSiteOwners();
 
-    this.owners = this.siteOwner.getSiteOwners();
+    this.siteServiceTypes = this.siteService.getSiteServices();
 
-    this.services = this.siteService.getSiteServices();
-
-    this.statuses = this.siteStatus.getSiteStatuses();
+    this.operationalStatusTypes = this.siteStatus.getSiteStatuses();
 
     this.websitesTypes = this.cl.getWebsiteTypes();
 

@@ -14,16 +14,7 @@ import {
   timeoutWith
 } from 'rxjs/operators';
 
-import {
-  County,
-  State,
-  PhoneNumberType,
-  PhoneNumber,
-  User,
-  CountyClaim,
-  WebsiteType,
-  Website
-} from '@tamu-gisc/covid/common/entities';
+import { County, State, User, CountyClaim, FieldCategory, EntityValue } from '@tamu-gisc/covid/common/entities';
 import {
   CountiesService,
   StatesService,
@@ -47,8 +38,8 @@ export class CountyComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   public counties: Observable<Array<Partial<County>>>;
   public states: Observable<Array<Partial<State>>>;
-  public phoneTypes: Observable<Array<Partial<PhoneNumberType>>>;
-  public websiteTypes: Observable<Array<Partial<WebsiteType>>>;
+  public phoneTypes: Observable<Partial<FieldCategory>>;
+  public websiteTypes: Observable<Partial<FieldCategory>>;
 
   /**
    * Represents the active county claims for the selected county
@@ -150,7 +141,7 @@ export class CountyComponent implements OnInit, OnDestroy {
         switchMap((countyOrCountyFips: Partial<County> | number) => {
           if (countyOrCountyFips === undefined) {
             // Return empty array to symbolize no phone numbers for selected county.
-            return of([]);  
+            return of([]);
           }
 
           // If valid county fips, get phone numbers for it.
@@ -234,21 +225,21 @@ export class CountyComponent implements OnInit, OnDestroy {
     ])
       .pipe(
         switchMap(([identity, county]) => {
-          return this.is.registerCountyClaim({
-            guid: identity && identity.claim && identity.claim.guid ? identity.claim.guid : undefined,
-            user: {
-              email: identity.user.email
+          return this.is.registerCountyClaim(
+            {
+              guid: identity && identity.claim && identity.claim.guid ? identity.claim.guid : undefined,
+              user: {
+                email: identity.user.email
+              },
+              county: {
+                // Use local county value if available.
+                // Will not be available for initial claims, so use form county value.
+                countyFips: county ? county.countyFips : formValue.county
+              }
             },
-            county: {
-              // Use local county value if available.
-              // Will not be available for initial claims, so use form county value.
-              countyFips: county ? county.countyFips : formValue.county
-            },
-            // info: {
-            //   phoneNumbers: formValue.phoneNumbers,
-            //   websites: formValue.websites
-            // }
-          });
+            formValue.phoneNumbers.length > 0 ? formValue.phoneNumbers : undefined,
+            formValue.websites.length > 0 ? formValue.websites : undefined
+          );
         })
       )
       .subscribe((res) => {
@@ -256,25 +247,31 @@ export class CountyComponent implements OnInit, OnDestroy {
       });
   }
 
-  public createPhoneNumberGroup(number?: Partial<PhoneNumber>): FormGroup {
+  public createPhoneNumberGroup(number?: DeepPartial<EntityValue>): FormGroup {
     return this.fb.group(this.createPhoneNumber(number));
   }
 
-  public createWebsiteGroup(website?: Partial<Website>): FormGroup {
+  public createWebsiteGroup(website?: DeepPartial<EntityValue>): FormGroup {
     return this.fb.group(this.createWebsite(website));
   }
 
-  public createPhoneNumber(number?: Partial<PhoneNumber>) {
+  public createPhoneNumber(number?: DeepPartial<EntityValue>): DeepPartial<EntityValue> {
     return {
-      number: (number && number.number) || '',
-      type: (number && number.type && number.type.guid) || undefined
+      // entityGuid: number && number.entityGuid,
+      value: this.fb.group({
+        value: number && number.value && number.value.value,
+        type: number && number.value && number.value.type
+      })
     };
   }
 
-  public createWebsite(website?: Partial<Website>) {
+  public createWebsite(website?: DeepPartial<EntityValue>): DeepPartial<EntityValue> {
     return {
-      url: (website && website.url) || '',
-      type: (website && website.type && website.type.guid) || undefined
+      // entityGuid: website && website.entityGuid,
+      value: this.fb.group({
+        value: website.value && website.value.value,
+        type: website && website.value && website.value.type
+      })
     };
   }
 
