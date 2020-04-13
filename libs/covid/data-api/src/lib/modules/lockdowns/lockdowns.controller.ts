@@ -27,7 +27,7 @@ export class LockdownsController extends BaseController<Lockdown> {
   @Post('')
   public async addLockdown(@Body() body) {
     // TODO: fix this call
-    // return this.service.registerLockdown(body);
+    return this.service.createOrUpdateLockdown(body);
   }
 
   @Post('/validate/:lockdownId')

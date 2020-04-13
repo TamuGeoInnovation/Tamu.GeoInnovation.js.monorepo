@@ -377,6 +377,15 @@ export class LockdownStatus extends GuidIdentity {
   
 }
 
+@Entity({ name: 'lockdowns' })
+export class Lockdown extends GuidIdentity {
+  @ManyToOne((type) => CountyClaim, { cascade: true })
+  public claim: CountyClaim;
+
+  @OneToMany((type) => LockdownInfo, (type) => Lockdown, { cascade: true })
+  public infos: LockdownInfo;
+}
+
 @Entity({ name: 'lockdown_infos' })
 export class LockdownInfo extends GuidIdentity {
   @OneToMany((type) => EntityToValue, (entity) => entity.claimInfo, { cascade: true })
@@ -400,6 +409,14 @@ export class LockdownInfo extends GuidIdentity {
   @OneToMany((type) => EntityStatus, (status) => status.claimInfoStatus, { cascade: true })
   public statuses: EntityStatus[];
 
+  @OneToOne((type) => Location, { cascade: true })
+  @JoinColumn()
+  public location: Location;
+
+  @ManyToOne((type) => Lockdown, (lockdown) => lockdown.infos)
+  public lockdown: Lockdown;
+
+
   // @OneToMany((type) => PhoneNumber, (ph) => ph.lockdownInfo, { cascade: true })
   // public phoneNumbers: PhoneNumber[];
 
@@ -407,16 +424,4 @@ export class LockdownInfo extends GuidIdentity {
   // public websites: Website[];
 }
 
-@Entity({ name: 'lockdowns' })
-export class Lockdown extends GuidIdentity {
-  @ManyToOne((type) => CountyClaim, { cascade: true })
-  public claim: CountyClaim;
 
-  @OneToOne((type) => Location, { cascade: true })
-  @JoinColumn()
-  public location: Location;
-
-  @OneToOne((type) => LockdownInfo, { cascade: true })
-  @JoinColumn()
-  public infos: LockdownInfo[];
-}
