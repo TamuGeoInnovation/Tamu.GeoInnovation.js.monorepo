@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { switchMap, pluck, filter, withLatestFrom } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
-import { County, PhoneNumber, Website, User, TestingSite, FieldCategory } from '@tamu-gisc/covid/common/entities';
+import { County, User, TestingSite, FieldCategory } from '@tamu-gisc/covid/common/entities';
 import {
   StatesService,
   RestrictionsService,
@@ -211,50 +211,50 @@ export class TestingSiteComponent implements OnInit {
 
       this.form.patchValue(patch);
 
-      if (patch.info.phoneNumbers.length > 0) {
-        const phc = this.form.get(['info', 'phoneNumbers']) as FormArray;
-        patch.info.phoneNumbers.forEach((n) => phc.push(this.createPhoneNumberGroup(n)));
-      }
+      // if (patch.info.phoneNumbers.length > 0) {
+      //   const phc = this.form.get(['info', 'phoneNumbers']) as FormArray;
+      //   patch.info.phoneNumbers.forEach((n) => phc.push(this.createPhoneNumberGroup(n)));
+      // }
 
-      if (patch.info.websites.length > 0) {
-        const wc = this.form.get(['info', 'websites']) as FormArray;
-        patch.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
-      }
+      // if (patch.info.websites.length > 0) {
+      //   const wc = this.form.get(['info', 'websites']) as FormArray;
+      //   patch.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
+      // }
     }
   }
 
-  public createPhoneNumberGroup(number?: Partial<PhoneNumber>): FormGroup {
-    return this.fb.group(this.createPhoneNumber(number));
-  }
+  // public createPhoneNumberGroup(number?: Partial<PhoneNumber>): FormGroup {
+  //   return this.fb.group(this.createPhoneNumber(number));
+  // }
 
-  public createWebsiteGroup(website?: Partial<Website>): FormGroup {
-    return this.fb.group(this.createWebsite(website));
-  }
+  // public createWebsiteGroup(website?: Partial<Website>): FormGroup {
+  //   return this.fb.group(this.createWebsite(website));
+  // }
 
-  public createPhoneNumber(number?: Partial<PhoneNumber>) {
-    return {
-      number: (number && number.number) || '',
-      type: (number && number.type && number.type.guid) || undefined
-    };
-  }
+  // public createPhoneNumber(number?: Partial<PhoneNumber>) {
+  //   return {
+  //     number: (number && number.number) || '',
+  //     type: (number && number.type && number.type.guid) || undefined
+  //   };
+  // }
 
-  public createWebsite(website?: Partial<Website>) {
-    return {
-      url: (website && website.url) || '',
-      type: (website && website.type && website.type.guid) || undefined
-    };
-  }
+  // public createWebsite(website?: Partial<Website>) {
+  //   return {
+  //     url: (website && website.url) || '',
+  //     type: (website && website.type && website.type.guid) || undefined
+  //   };
+  // }
 
   /**
    * Push a phone number form group to the form array
    */
-  public addPhoneNumber() {
-    (this.form.get(['info', 'phoneNumbers']) as FormArray).push(this.createPhoneNumberGroup());
-  }
+  // public addPhoneNumber() {
+  //   (this.form.get(['info', 'phoneNumbers']) as FormArray).push(this.createPhoneNumberGroup());
+  // }
 
-  public addWebsite() {
-    (this.form.get(['info', 'websites']) as FormArray).push(this.createWebsiteGroup());
-  }
+  // public addWebsite() {
+  //   (this.form.get(['info', 'websites']) as FormArray).push(this.createWebsiteGroup());
+  // }
 
   public submitForm() {
     const value = this.form.getRawValue();

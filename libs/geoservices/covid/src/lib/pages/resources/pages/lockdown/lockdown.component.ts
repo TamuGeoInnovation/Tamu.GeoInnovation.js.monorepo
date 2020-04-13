@@ -178,38 +178,38 @@ export class LockdownComponent implements OnInit {
       });
   }
 
-  public createPhoneNumberGroup(number?: Partial<PhoneNumber>): FormGroup {
-    return this.fb.group(this.createPhoneNumber(number));
-  }
+  // public createPhoneNumberGroup(number?: Partial<PhoneNumber>): FormGroup {
+  //   return this.fb.group(this.createPhoneNumber(number));
+  // }
 
-  public createWebsiteGroup(website?: Partial<Website>): FormGroup {
-    return this.fb.group(this.createWebsite(website));
-  }
+  // public createWebsiteGroup(website?: Partial<Website>): FormGroup {
+  //   return this.fb.group(this.createWebsite(website));
+  // }
 
-  public createPhoneNumber(number?: Partial<PhoneNumber>) {
-    return {
-      number: (number && number.number) || '',
-      type: (number && number.type && number.type.guid) || undefined
-    };
-  }
+  // public createPhoneNumber(number?: Partial<PhoneNumber>) {
+  //   return {
+  //     number: (number && number.number) || '',
+  //     type: (number && number.type && number.type.guid) || undefined
+  //   };
+  // }
 
-  public createWebsite(website?: Partial<Website>) {
-    return {
-      url: (website && website.url) || '',
-      type: (website && website.type && website.type.guid) || undefined
-    };
-  }
+  // public createWebsite(website?: Partial<Website>) {
+  //   return {
+  //     url: (website && website.url) || '',
+  //     type: (website && website.type && website.type.guid) || undefined
+  //   };
+  // }
 
   /**
    * Push a phone number form group to the form array
    */
-  public addPhoneNumber() {
-    (this.form.get(['info', 'phoneNumbers']) as FormArray).push(this.createPhoneNumberGroup());
-  }
+  // public addPhoneNumber() {
+  //   (this.form.get(['info', 'phoneNumbers']) as FormArray).push(this.createPhoneNumberGroup());
+  // }
 
-  public addWebsite() {
-    (this.form.get(['info', 'websites']) as FormArray).push(this.createWebsiteGroup());
-  }
+  // public addWebsite() {
+  //   (this.form.get(['info', 'websites']) as FormArray).push(this.createWebsiteGroup());
+  // }
 
   public submitLockdown() {
     const lockdown = this.form.getRawValue();
