@@ -242,23 +242,20 @@ export class TestingSiteInfo extends GuidIdentity {
   @Column({ type: 'varchar', length: 'max', nullable: true })
   public notes: string;
 
-  // @OneToMany((type) => SiteStatus, (status) => status.testingSiteInfo, { cascade: true })
-  // public status: SiteStatus[];
+}
 
-  // @OneToMany((type) => SiteOwner, (owner) => owner.testingSiteInfo, { cascade: true })
-  // public owners: SiteOwner[];
+@Entity({ name: 'testing_sites' })
+export class TestingSite extends GuidIdentity {
+  @ManyToOne((type) => CountyClaim, { cascade: true })
+  public claim: CountyClaim;
 
-  // @OneToMany((type) => SiteService, (service) => service.testingSiteInfo, { cascade: true })
-  // public services: SiteService[];
+  @OneToOne((type) => Location, { cascade: true })
+  @JoinColumn()
+  public location: Location;
 
-  // @OneToMany((type) => Restriction, (restriction) => restriction.testingSiteInfo, { cascade: true })
-  // public restrictions: Restriction[];
-
-  // @OneToMany((type) => Website, (website) => website.testingSiteInfo, { cascade: true })
-  // public websites: Website[];
-
-  // @OneToMany((type) => PhoneNumber, (phone) => phone.testingSiteInfo, { cascade: true })
-  // public phoneNumbers: PhoneNumber[];
+  @OneToOne((type) => TestingSiteInfo, { cascade: true })
+  @JoinColumn()
+  public info: TestingSiteInfo;
 }
 
 @Entity({ name: 'site_status_types' })
@@ -368,19 +365,7 @@ export class SiteStatus extends GuidIdentity {
 //   public testingSiteInfo: TestingSiteInfo;
 // }
 
-@Entity({ name: 'testing_sites' })
-export class TestingSite extends GuidIdentity {
-  @ManyToOne((type) => CountyClaim, { cascade: true })
-  public claim: CountyClaim;
 
-  @OneToOne((type) => Location, { cascade: true })
-  @JoinColumn()
-  public location: Location;
-
-  @OneToOne((type) => TestingSiteInfo, { cascade: true })
-  @JoinColumn()
-  public info: TestingSiteInfo;
-}
 
 @Entity({ name: 'lockdown_statuses' })
 export class LockdownStatus extends GuidIdentity {
