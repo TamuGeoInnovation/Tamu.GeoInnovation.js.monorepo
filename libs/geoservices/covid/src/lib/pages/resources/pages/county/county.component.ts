@@ -257,7 +257,6 @@ export class CountyComponent implements OnInit, OnDestroy {
 
   public createPhoneNumber(number?: DeepPartial<EntityValue>): DeepPartial<EntityValue> {
     return {
-      // entityGuid: number && number.entityGuid,
       value: this.fb.group({
         value: number && number.value && number.value.value,
         type: number && number.value && number.value.type
@@ -267,9 +266,8 @@ export class CountyComponent implements OnInit, OnDestroy {
 
   public createWebsite(website?: DeepPartial<EntityValue>): DeepPartial<EntityValue> {
     return {
-      // entityGuid: website && website.entityGuid,
       value: this.fb.group({
-        value: website.value && website.value.value,
+        value: website && website.value && website.value.value,
         type: website && website.value && website.value.type
       })
     };

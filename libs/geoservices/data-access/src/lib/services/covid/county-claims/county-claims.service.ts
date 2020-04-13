@@ -15,14 +15,6 @@ export class CountyClaimsService {
     this.resource = this.env.value('covid_api_url') + 'county-claims';
   }
 
-  /**
-   * Creates a new claim or creates new claim information if the claim already exists
-   */
-  public submitClaim() {
-    // TODO: submit claim with numbers and websites
-    debugger;
-  }
-
   public getActiveClaimsForCounty(countyFips: number) {
     return this.http.get<Array<Partial<CountyClaim>>>(`${this.resource}/active/${countyFips}`);
   }
