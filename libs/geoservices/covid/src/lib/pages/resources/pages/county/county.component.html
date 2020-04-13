@@ -91,12 +91,12 @@
         <div class="form-section-body">
           <div class="form-collection row">
             <div class="button-row flex flex-row justify-end">
-              <tamu-gisc-button look="danger" fit="relaxed" value="Close Claim" (click)="submitCloseClaim()"></tamu-gisc-button>
+              <tamu-gisc-button look="danger" fit="relaxed" value="Close Claim" (click)="submitCloseClaim()" *ngIf="(localCounty | async)?.countyFips"></tamu-gisc-button>
 
               <tamu-gisc-button
                 [value]="(localCounty | async)?.countyFips ? 'Update' : 'Claim'"
                 type="submit"
-                look="secondary"
+                [look]="(localCounty | async)?.countyFips ? 'secondary': ''"
                 [disabled]="form.invalid
           || !(countyClaimable | async) 
           || (this.form.controls.county.value) === 'undefined' || (this.form.controls.state.value) === 'undefined'
@@ -104,7 +104,7 @@
           || ((localCounty | async)?.stateFips !== null && (this.form.controls.state.value) !== (localCounty | async)?.stateFips)"
               ></tamu-gisc-button>
 
-              <tamu-gisc-button value="Proceed to Lockdown" [routerLink]="['../lockdown']"></tamu-gisc-button>
+              <tamu-gisc-button value="Proceed to Lockdown" [routerLink]="['../lockdown']" *ngIf="(localCounty | async)?.countyFips"></tamu-gisc-button>
             </div>
           </div>
         </div>
