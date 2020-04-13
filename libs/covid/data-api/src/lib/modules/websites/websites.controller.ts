@@ -18,7 +18,7 @@ export class WebsitesController extends BaseController<CategoryValue> {
   @Post('')
   public async storePhoneNumber(@Body() body) {
     return {
-      status: 402,
+      status: 400,
       success: false,
       message: 'Not implemented'
     };

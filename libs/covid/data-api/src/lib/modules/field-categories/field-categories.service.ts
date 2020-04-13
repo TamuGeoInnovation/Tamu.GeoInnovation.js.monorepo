@@ -32,7 +32,7 @@ export class FieldCategoriesService extends BaseService<FieldCategory> {
   public async getFieldTypesForCategory(categoryId: number) {
     if (categoryId === undefined) {
       return {
-        status: 402,
+        status: 400,
         success: false,
         message: 'Input parameter missing.'
       };
@@ -42,7 +42,7 @@ export class FieldCategoriesService extends BaseService<FieldCategory> {
 
     if (!category) {
       return {
-        status: 402,
+        status: 400,
         success: false,
         message: 'Invalid category ID.'
       };

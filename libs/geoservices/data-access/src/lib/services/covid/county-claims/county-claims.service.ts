@@ -26,4 +26,8 @@ export class CountyClaimsService {
   public registerClaim(claim: DeepPartial<CountyClaim>, phoneNumbers, websites) {
     return this.http.post<Partial<CountyClaim>>(`${this.resource}/claim`, { ...claim, phoneNumbers, websites });
   }
+
+  public closeClaim(claimGuid: string) {
+    return this.http.post<Partial<CountyClaim>>(`${this.resource}/close`, { guid: claimGuid });
+  }
 }
