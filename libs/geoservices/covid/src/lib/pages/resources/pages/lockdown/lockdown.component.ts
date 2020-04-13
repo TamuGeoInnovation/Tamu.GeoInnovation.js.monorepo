@@ -155,18 +155,41 @@ export class LockdownComponent implements OnInit, OnDestroy {
               county: res.location.county,
               state: res.location.state
             },
-            info: {
-              isLockdown: [res.info.isLockdown.toString()],
-              startDate:
-                res && res.info && res.info.startDate
-                  ? ((res.info.startDate as unknown) as string).split('T')[0]
-                  : this.form.get(['info', 'startDate']).value,
-              endDate:
-                res && res.info && res.info.endDate
-                  ? ((res.info.endDate as unknown) as string).split('T')[0]
-                  : this.form.get(['info', 'endDate']).value,
-              protocol: res.info.protocol,
-              notes: res.info.notes
+            // info: {
+            //   isLockdown: [res.info.isLockdown.toString()],
+            //   startDate:
+            //     res && res.info && res.info.startDate
+            //       ? ((res.info.startDate as unknown) as string).split('T')[0]
+            //       : this.form.get(['info', 'startDate']).value,
+            //   endDate:
+            //     res && res.info && res.info.endDate
+            //       ? ((res.info.endDate as unknown) as string).split('T')[0]
+            //       : this.form.get(['info', 'endDate']).value,
+            //   protocol: res.info.protocol,
+            //   notes: res.info.notes
+            // },
+            infos: () => {
+              let ret = [];
+              res.infos.map((info, index) => {
+                ret.push(
+                  {
+                    info: {
+                        isLockdown: [info.isLockdown.toString()],
+                        startDate:
+                          res && info && info.startDate
+                            ? ((info.startDate as unknown) as string).split('T')[0]
+                            : this.form.get(['info', 'startDate']).value,
+                        endDate:
+                          res && info && info.endDate
+                            ? ((info.endDate as unknown) as string).split('T')[0]
+                            : this.form.get(['info', 'endDate']).value,
+                        protocol: info.protocol,
+                        notes: info.notes
+                      },
+                  }
+                );
+              });
+              return ret;
             }
           };
 
@@ -227,13 +250,13 @@ export class LockdownComponent implements OnInit, OnDestroy {
   /**
    * Push a phone number form group to the form array
    */
-  public addPhoneNumber() {
-    (this.form.get(['info', 'phoneNumbers']) as FormArray).push(this.createPhoneNumberGroup());
-  }
+  // public addPhoneNumber() {
+  //   (this.form.get(['info', 'phoneNumbers']) as FormArray).push(this.createPhoneNumberGroup());
+  // }
 
-  public addWebsite() {
-    (this.form.get(['info', 'websites']) as FormArray).push(this.createWebsiteGroup());
-  }
+  // public addWebsite() {
+  //   (this.form.get(['info', 'websites']) as FormArray).push(this.createWebsiteGroup());
+  // }
 
   public submitLockdown() {
     const lockdown = this.form.getRawValue();

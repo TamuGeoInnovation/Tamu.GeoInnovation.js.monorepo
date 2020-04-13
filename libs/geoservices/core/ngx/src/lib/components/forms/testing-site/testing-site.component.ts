@@ -211,15 +211,15 @@ export class TestingSiteComponent implements OnInit {
 
       this.form.patchValue(patch);
 
-      if (patch.info.phoneNumbers.length > 0) {
-        const phc = this.form.get(['info', 'phoneNumbers']) as FormArray;
-        patch.info.phoneNumbers.forEach((n) => phc.push(this.createPhoneNumberGroup(n)));
-      }
+      // if (patch.info.phoneNumbers.length > 0) {
+      //   const phc = this.form.get(['info', 'phoneNumbers']) as FormArray;
+      //   patch.info.phoneNumbers.forEach((n) => phc.push(this.createPhoneNumberGroup(n)));
+      // }
 
-      if (patch.info.websites.length > 0) {
-        const wc = this.form.get(['info', 'websites']) as FormArray;
-        patch.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
-      }
+      // if (patch.info.websites.length > 0) {
+      //   const wc = this.form.get(['info', 'websites']) as FormArray;
+      //   patch.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
+      // }
     }
   }
 
@@ -252,13 +252,13 @@ export class TestingSiteComponent implements OnInit {
   /**
    * Push a phone number form group to the form array
    */
-  public addPhoneNumber() {
-    (this.form.get(['info', 'phoneNumbers']) as FormArray).push(this.createPhoneNumberGroup());
-  }
+  // public addPhoneNumber() {
+  //   (this.form.get(['info', 'phoneNumbers']) as FormArray).push(this.createPhoneNumberGroup());
+  // }
 
-  public addWebsite() {
-    (this.form.get(['info', 'websites']) as FormArray).push(this.createWebsiteGroup());
-  }
+  // public addWebsite() {
+  //   (this.form.get(['info', 'websites']) as FormArray).push(this.createWebsiteGroup());
+  // }
 
   public submitForm() {
     const value = this.form.getRawValue();
