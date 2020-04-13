@@ -89,7 +89,9 @@ import { dbConfig } from '../environments/environment';
     StatesModule,
     CountiesModule,
     CountyClaimsModule,
-    UsersModule
+    UsersModule,
+    WebsitesModule,
+    PhoneNumbersModule
   ],
   controllers: [AppController],
   providers: [AppService]
