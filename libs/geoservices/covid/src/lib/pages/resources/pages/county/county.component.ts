@@ -247,6 +247,19 @@ export class CountyComponent implements OnInit, OnDestroy {
       });
   }
 
+  public submitCloseClaim(): void {
+    this.is.identity
+      .pipe(
+        pluck('claim'),
+        switchMap((claim) => {
+          return this.cl.closeClaim(claim.guid);
+        })
+      )
+      .subscribe((closeStatus) => {
+        debugger;
+      });
+  }
+
   public createPhoneNumberGroup(number?: DeepPartial<EntityValue>): FormGroup {
     return this.fb.group(this.createPhoneNumber(number));
   }

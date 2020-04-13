@@ -29,7 +29,13 @@ export class ButtonComponent {
    * `snug` will take only its minimum box-content space.
    */
   @Input()
-  public fit: 'snug' | 'relaxed' = 'snug';
+  public fit: 'snug' | 'relaxed' = 'relaxed';
+
+  /**
+   * Sets the visual style of the button.
+   */
+  @Input()
+  public look: 'default' | 'secondary' | 'success' | 'danger' | 'warning';
 
   /**
    * Event emitted on inner button trigger.
@@ -49,8 +55,13 @@ export class ButtonComponent {
    * Attaches class on host used to style the component appropriately.
    */
   @HostBinding('class.snug')
-  private get _fit() {
+  private get _fitSnug() {
     return this.fit === 'snug';
+  }
+
+  @HostBinding('class.relaxed')
+  private get _fitRelaxed() {
+    return this.fit === 'relaxed';
   }
 
   /**
@@ -59,6 +70,26 @@ export class ButtonComponent {
   @HostBinding('class.disabled')
   private get _disabled() {
     return this.disabled;
+  }
+
+  @HostBinding('class.secondary')
+  private get _styleSecondary() {
+    return this.look === 'secondary';
+  }
+
+  @HostBinding('class.success')
+  private get _styleSuccess() {
+    return this.look === 'success';
+  }
+
+  @HostBinding('class.danger')
+  private get _styleDanger() {
+    return this.look === 'danger';
+  }
+
+  @HostBinding('class.warning')
+  private get _styleWarning() {
+    return this.look === 'warning';
   }
 
   constructor() {}

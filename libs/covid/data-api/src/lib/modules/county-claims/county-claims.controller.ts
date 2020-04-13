@@ -26,6 +26,11 @@ export class CountyClaimsController extends BaseController<CountyClaim> {
     return this.service.createOrUpdateClaim(body, body.phoneNumbers, body.websites);
   }
 
+  @Post('close')
+  public closeClaim(@Body() body) {
+    return this.service.closeClaim(body.guid);
+  }
+
   @Post('')
   public postOverride() {
     return 'Not Implemented';

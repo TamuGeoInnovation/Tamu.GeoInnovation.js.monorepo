@@ -201,4 +201,28 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     // Return the original claim if no changes to the phone numbers or submissions
     return cl;
   }
+
+  public async closeClaim(claimGuid: string) {
+    if (!claimGuid) {
+      return {
+        status: 400,
+        success: false,
+        message: 'Input parameter missing.'
+      };
+    }
+
+    const claim = await this.repo.findOne({
+      where: {
+        guid: claimGuid
+      }
+    });
+
+    if (!claim) {
+      return {
+        status: 500,
+        success: false,
+        message: 'Invalid claim.'
+      };
+    }
+  }
 }

@@ -90,15 +90,22 @@
       <div class="form-section">
         <div class="form-section-body">
           <div class="form-collection row">
-            <tamu-gisc-button
-              [value]="(localCounty | async)?.countyFips ? 'Update' : 'Claim'"
-              type="submit"
-              [disabled]="form.invalid 
+            <div class="button-row flex flex-row justify-end">
+              <tamu-gisc-button look="danger" fit="relaxed" value="Close Claim" (click)="submitCloseClaim()"></tamu-gisc-button>
+
+              <tamu-gisc-button
+                [value]="(localCounty | async)?.countyFips ? 'Update' : 'Claim'"
+                type="submit"
+                look="secondary"
+                [disabled]="form.invalid
           || !(countyClaimable | async) 
           || (this.form.controls.county.value) === 'undefined' || (this.form.controls.state.value) === 'undefined'
           || ((localCounty | async)?.countyFips !== null && (this.form.controls.county.value) !== (localCounty | async)?.countyFips)
           || ((localCounty | async)?.stateFips !== null && (this.form.controls.state.value) !== (localCounty | async)?.stateFips)"
-            ></tamu-gisc-button>
+              ></tamu-gisc-button>
+
+              <tamu-gisc-button value="Proceed to Lockdown" [routerLink]="['../lockdown']"></tamu-gisc-button>
+            </div>
           </div>
         </div>
       </div>

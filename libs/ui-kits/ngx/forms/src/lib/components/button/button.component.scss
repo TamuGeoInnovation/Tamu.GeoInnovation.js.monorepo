@@ -1,22 +1,54 @@
 @import 'libs/sass/mixins';
 
 $color: rgba(85, 138, 216, 1);
+$dangerColor: #ef5350;
 $sColor: #fafafa;
 
 :host {
   display: inherit;
   border-radius: 1.5rem;
-  // border: 1.5pt solid $color;
   overflow: hidden;
   color: $sColor;
   background: $color;
 
   @include transition(background 0.3s);
 
-  // &.snug {
-  //   // TODO: Deal with snug style
-  //   display: inline-block;
-  // }
+  &.relaxed {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(center);
+    @include align-items(center);
+    @include flex(1);
+  }
+
+  &.snug {
+    // TODO: Deal with snug style
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  &.secondary {
+    border: 1.5pt solid $color;
+    background: none;
+    color: $color;
+
+    &:hover {
+      color: $sColor;
+      border-color: darken($color, 10%);
+    }
+  }
+
+  &.danger {
+    border: 1.5pt solid $dangerColor;
+    background: none;
+    color: $dangerColor;
+
+    &:hover {
+      background: darken($dangerColor, 15%);
+      border-color: darken($dangerColor, 15%);
+      color: $sColor;
+    }
+  }
 
   &:hover {
     background: darken($color, 10%);
@@ -34,7 +66,6 @@ $sColor: #fafafa;
 }
 
 input {
-  // display: block;
   display: inherit;
   @include flex(1);
   @include justify-content(center);

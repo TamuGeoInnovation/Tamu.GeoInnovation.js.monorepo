@@ -23,7 +23,7 @@ export class PhoneNumbersController extends BaseController<FieldCategory> {
   @Post('')
   public async storePhoneNumber(@Body() body) {
     return {
-      status: 402,
+      status: 400,
       success: false,
       message: 'Not implemented'
     };
