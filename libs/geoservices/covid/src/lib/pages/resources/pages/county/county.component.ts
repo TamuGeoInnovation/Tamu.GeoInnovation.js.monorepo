@@ -149,11 +149,11 @@ export class CountyComponent implements OnInit, OnDestroy {
             typeof countyOrCountyFips === 'number' ? countyOrCountyFips : countyOrCountyFips.countyFips
           );
 
-          // const websites = this.ws.getWebsitesForCounty(
-          //   typeof countyOrCountyFips === 'number' ? countyOrCountyFips : countyOrCountyFips.countyFips
-          // );
+          const websites = this.ws.getWebsitesForCounty(
+            typeof countyOrCountyFips === 'number' ? countyOrCountyFips : countyOrCountyFips.countyFips
+          );
 
-          // return forkJoin([phoneNumbers, websites]);
+          return forkJoin([phoneNumbers, websites]);
         })
       )
       .subscribe(([numbers, websites]) => {
