@@ -148,40 +148,49 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
           ]
         })
         .save();
-
       await claimInfo.save();
 
-      const numbers: Array<EntityToValue> = phoneNumbers.map((pn) => {
-        return this.valueRepo.create({
-          entityValue: {
-            value: {
-              value: pn.value.value,
-              type: pn.value.type,
-              category: {
-                id: CATEGORY.PHONE_NUMBERS
-              }
-            }
-          },
-          claimInfo: claimInfo
-        });
-      });
+      claimInfo.responses = [];
 
-      const webs: Array<EntityToValue> = websites.map((wb) => {
-        return this.valueRepo.create({
-          entityValue: {
-            value: {
-              value: wb.value.value,
-              type: wb.value.type,
-              category: {
-                id: CATEGORY.WEBSITES
+      if (phoneNumbers) {
+        const numbers: Array<EntityToValue> = phoneNumbers.map((pn) => {
+          return this.valueRepo.create({
+            entityValue: {
+              value: {
+                value: pn.value.value,
+                type: pn.value.type,
+                category: {
+                  id: CATEGORY.PHONE_NUMBERS
+                }
               }
-            }
-          },
-          claimInfo: claimInfo
+            },
+            claimInfo: claimInfo
+          });
         });
-      });
+        claimInfo.responses.push(...numbers);
+  
+      }
+      
+      if (websites) {
+        const webs: Array<EntityToValue> = websites.map((wb) => {
+          return this.valueRepo.create({
+            entityValue: {
+              value: {
+                value: wb.value.value,
+                type: wb.value.type,
+                category: {
+                  id: CATEGORY.WEBSITES
+                }
+              }
+            },
+            claimInfo: claimInfo
+          });
+        });
+        claimInfo.responses.push(...webs);
+      }
+      
 
-      claimInfo.responses = [...webs, ...numbers];
+      // claimInfo.responses = [...webs, ...numbers];
 
       const res = await claimInfo.save();
 
