@@ -74,8 +74,10 @@
             <div [formArrayName]="'phoneNumbers'" *ngIf="form.get(['info', 'phoneNumbers'])['controls'].length > 0; else promptAddPhoneNumber" class="form-section-body">
               <ng-container *ngFor="let ph of form.get(['info', 'phoneNumbers'])['controls']; let i = index">
                 <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
-                  <tamu-gisc-textbox formControlName="number" type="tel" placeholder="Phone Number" floatLabel="true"></tamu-gisc-textbox>
-                  <tamu-gisc-select formControlName="type" [data]="(phoneTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
+                  <ng-container formGroupName="value">
+                    <tamu-gisc-textbox formControlName="value" type="tel" placeholder="Phone Number" floatLabel="true"></tamu-gisc-textbox>
+                    <tamu-gisc-select formControlName="type" [data]="(phoneTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
+                  </ng-container>
                 </div>
               </ng-container>
             </div>
@@ -96,8 +98,10 @@
             <div [formArrayName]="'websites'" *ngIf="form.get(['info', 'websites'])['controls'].length > 0; else promptAddWebsite" class="form-section-body">
               <ng-container *ngFor="let ph of form.get(['info', 'websites'])['controls']; let i = index">
                 <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
-                  <tamu-gisc-textbox formControlName="url" type="text" placeholder="URL" floatLabel="true"></tamu-gisc-textbox>
-                  <tamu-gisc-select formControlName="type" [data]="(websitesTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
+                  <ng-container formGroupName="value">
+                    <tamu-gisc-textbox formControlName="value" type="text" placeholder="URL" floatLabel="true"></tamu-gisc-textbox>
+                    <tamu-gisc-select formControlName="type" [data]="(websitesTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
+                  </ng-container>
                 </div>
               </ng-container>
             </div>

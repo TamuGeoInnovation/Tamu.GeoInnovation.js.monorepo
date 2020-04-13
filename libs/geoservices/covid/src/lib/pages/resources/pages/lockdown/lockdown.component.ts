@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { switchMap, pluck, withLatestFrom, filter } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { switchMap, pluck, withLatestFrom, filter, takeUntil, take } from 'rxjs/operators';
 
 import { County, User, FieldCategory, EntityValue } from '@tamu-gisc/covid/common/entities';
 import {
@@ -20,7 +20,7 @@ const storageOptions = { primaryKey: 'tamu-covid-vgi' };
   templateUrl: './lockdown.component.html',
   styleUrls: ['./lockdown.component.scss']
 })
-export class LockdownComponent implements OnInit {
+export class LockdownComponent implements OnInit, OnDestroy {
   public form: FormGroup;
 
   public websitesTypes: Observable<Partial<FieldCategory>>;
@@ -30,6 +30,8 @@ export class LockdownComponent implements OnInit {
   public localEmail: Observable<Partial<User['email']>>;
 
   public lockdownState: Observable<boolean>;
+
+  private _$destroy: Subject<boolean> = new Subject();
 
   public lockdownOptions = [
     {
@@ -54,9 +56,6 @@ export class LockdownComponent implements OnInit {
   public ngOnInit() {
     this.localCounty = this.is.identity.pipe(pluck('claim', 'county'));
     this.localEmail = this.is.identity.pipe(pluck('user', 'email'));
-
-    // const localEmail = (this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'identity' }) as Partial<User>)
-    //   .email;
 
     this.form = this.fb.group({
       claim: this.fb.group({
@@ -118,13 +117,28 @@ export class LockdownComponent implements OnInit {
         }
       });
 
+    // Patch the form value with the local email value
+    this.localEmail
+      .pipe(
+        filter((email) => email !== undefined),
+        take(1)
+      )
+      .subscribe((email) => {
+        this.form.patchValue({
+          claim: {
+            user: email
+          }
+        });
+      });
+
     this.localEmail
       .pipe(
         filter((email) => email !== undefined),
         switchMap((email) => {
           return this.ls.getActiveLockdownForEmail(email);
         }),
-        withLatestFrom(this.localEmail)
+        withLatestFrom(this.localEmail),
+        takeUntil(this._$destroy)
       )
       .subscribe(([res, email]) => {
         if (Object.keys(res).length > 0) {
@@ -177,6 +191,11 @@ export class LockdownComponent implements OnInit {
         //   res.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
         // }
       });
+  }
+
+  public ngOnDestroy() {
+    this._$destroy.next();
+    this._$destroy.complete();
   }
 
   public createPhoneNumberGroup(number?: Partial<EntityValue>): FormGroup {
