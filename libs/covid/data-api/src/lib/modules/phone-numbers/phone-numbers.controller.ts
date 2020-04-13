@@ -22,6 +22,10 @@ export class PhoneNumbersController extends BaseController<FieldCategory> {
 
   @Post('')
   public async storePhoneNumber(@Body() body) {
-    return this.service.insertPhoneNumber(body.number, body.type);
+    return {
+      status: 402,
+      success: false,
+      message: 'Not implemented'
+    };
   }
 }

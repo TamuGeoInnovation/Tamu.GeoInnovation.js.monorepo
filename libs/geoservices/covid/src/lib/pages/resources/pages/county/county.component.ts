@@ -257,20 +257,18 @@ export class CountyComponent implements OnInit, OnDestroy {
 
   public createPhoneNumber(number?: DeepPartial<EntityValue>): DeepPartial<EntityValue> {
     return {
-      // entityGuid: number && number.entityGuid,
       value: this.fb.group({
         value: number && number.value && number.value.value,
-        type: number && number.value && number.value.type
+        type: number && number.value && number.value.type.guid
       })
     };
   }
 
   public createWebsite(website?: DeepPartial<EntityValue>): DeepPartial<EntityValue> {
     return {
-      // entityGuid: website && website.entityGuid,
       value: this.fb.group({
-        value: website.value && website.value.value,
-        type: website && website.value && website.value.type
+        value: website && website.value && website.value.value,
+        type: website && website.value && website.value.type.guid
       })
     };
   }

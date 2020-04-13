@@ -2,27 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { FieldCategory, CategoryValue, County, CountyClaim } from '@tamu-gisc/covid/common/entities';
+import { FieldCategory, CategoryValue, County, CountyClaim, CountyClaimInfo } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
+import { CATEGORY } from '@tamu-gisc/covid/common/enums';
 
 @Injectable()
 export class PhoneNumbersService extends BaseService<FieldCategory> {
   constructor(
     @InjectRepository(FieldCategory) public repo: Repository<FieldCategory>,
-    @InjectRepository(CategoryValue) public phoneTypeRepo: Repository<CategoryValue>,
+    @InjectRepository(CategoryValue) public valueRepo: Repository<CategoryValue>,
     @InjectRepository(County) public countyRepo: Repository<County>,
-    @InjectRepository(CountyClaim) public claimRepo: Repository<CountyClaim>
+    @InjectRepository(CountyClaim) public claimRepo: Repository<CountyClaim>,
+    @InjectRepository(CountyClaimInfo) public claimInfoRepo: Repository<CountyClaimInfo>
   ) {
     super(repo);
-  }
-
-  public async insertPhoneNumber(number: string, typeGuid?: string) {
-    // Identify phone number type if one is provided
-    const phoneType = await this.phoneTypeRepo.findOne({ guid: typeGuid });
-
-    // TODO: Fix
-    // return this.repo.create({ number: number, type: phoneType }).save();
   }
 
   public async getPhoneNumbersForCounty(countyFips) {
@@ -34,17 +28,25 @@ export class PhoneNumbersService extends BaseService<FieldCategory> {
       };
     }
 
-    const claim = await this.claimRepo.findOne({
-      where: {
-        county: countyFips
-      },
-      relations: ['info', 'info.phoneNumbers', 'info.phoneNumbers.type'],
-      order: {
-        created: 'DESC'
-      }
+    const claim = await this.claimInfoRepo
+      .createQueryBuilder('info')
+      .innerJoinAndSelect('info.claim', 'claim')
+      .innerJoinAndSelect('info.responses', 'responses')
+      .innerJoinAndSelect('responses.entityValue', 'entityToValue')
+      .innerJoinAndSelect('entityToValue.value', 'value')
+      .innerJoinAndSelect('value.type', 'type')
+      .innerJoinAndSelect('value.category', 'category')
+      .where('claim.countyFips = :countyFips AND category.id = :type', {
+        countyFips: countyFips,
+        type: CATEGORY.PHONE_NUMBERS
+      })
+      .orderBy('claim.created', 'DESC')
+      .getOne();
+
+    const mappedNumbers = claim.responses.map((response) => {
+      return response.entityValue;
     });
 
-    // TODO: fix
-    // return claim && claim.info && claim.info.phoneNumbers ? claim.info.phoneNumbers : [];
+    return mappedNumbers;
   }
 }

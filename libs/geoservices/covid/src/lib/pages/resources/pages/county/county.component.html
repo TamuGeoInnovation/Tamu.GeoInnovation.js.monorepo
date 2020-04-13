@@ -72,9 +72,11 @@
           <div *ngIf="form.get('websites')['controls'].length > 0; else promptAddWebsite" [formArrayName]="'websites'" class="form-section-body">
             <ng-container *ngFor="let wb of form.get('websites')['controls']; let i = index">
               <div [formGroupName]="i" class="form-collection row flex align-center select-collection" [ngClass]="{'pad-top': i === 0}">
-                <tamu-gisc-textbox formControlName="url" type="text" placeholder="URL" floatLabel="true"></tamu-gisc-textbox>
-                <tamu-gisc-select formControlName="type" [data]="(websiteTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
-                <span class="material-icons action error" title="Remove URL" (click)="removeFormArrayControl('websites', i)">close</span>
+                <ng-container formGroupName="value">
+                  <tamu-gisc-textbox formControlName="value" type="text" placeholder="URL" floatLabel="true"></tamu-gisc-textbox>
+                  <tamu-gisc-select formControlName="type" [data]="(websiteTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
+                  <span class="material-icons action error" title="Remove URL" (click)="removeFormArrayControl('websites', i)">close</span>
+                </ng-container>
               </div>
             </ng-container>
           </div>

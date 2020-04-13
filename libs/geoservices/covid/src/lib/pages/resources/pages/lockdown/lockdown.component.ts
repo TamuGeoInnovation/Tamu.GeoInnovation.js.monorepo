@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { switchMap, pluck, withLatestFrom, filter } from 'rxjs/operators';
 
-import { County, User, FieldCategory } from '@tamu-gisc/covid/common/entities';
+import { County, User, FieldCategory, EntityValue } from '@tamu-gisc/covid/common/entities';
 import {
   WebsiteTypesService,
   StatesService,
@@ -11,6 +11,7 @@ import {
   PhoneNumberTypesService
 } from '@tamu-gisc/geoservices/data-access';
 import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
+import { DeepPartial } from 'typeorm';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
@@ -25,7 +26,7 @@ export class LockdownComponent implements OnInit {
   public websitesTypes: Observable<Partial<FieldCategory>>;
   public phoneTypes: Observable<Partial<FieldCategory>>;
 
-  public localCounty: Observable<Partial<County>>;
+  public localCounty: Observable<DeepPartial<County>>;
   public localEmail: Observable<Partial<User['email']>>;
 
   public lockdownState: Observable<boolean>;
@@ -51,7 +52,7 @@ export class LockdownComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this.localCounty = this.is.identity.pipe(pluck('county'));
+    this.localCounty = this.is.identity.pipe(pluck('claim', 'county'));
     this.localEmail = this.is.identity.pipe(pluck('user', 'email'));
 
     // const localEmail = (this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'identity' }) as Partial<User>)
@@ -178,27 +179,31 @@ export class LockdownComponent implements OnInit {
       });
   }
 
-  // public createPhoneNumberGroup(number?: Partial<PhoneNumber>): FormGroup {
-  //   return this.fb.group(this.createPhoneNumber(number));
-  // }
+  public createPhoneNumberGroup(number?: Partial<EntityValue>): FormGroup {
+    return this.fb.group(this.createPhoneNumber(number));
+  }
 
-  // public createWebsiteGroup(website?: Partial<Website>): FormGroup {
-  //   return this.fb.group(this.createWebsite(website));
-  // }
+  public createWebsiteGroup(website?: Partial<EntityValue>): FormGroup {
+    return this.fb.group(this.createWebsite(website));
+  }
 
-  // public createPhoneNumber(number?: Partial<PhoneNumber>) {
-  //   return {
-  //     number: (number && number.number) || '',
-  //     type: (number && number.type && number.type.guid) || undefined
-  //   };
-  // }
+  public createPhoneNumber(number?: Partial<EntityValue>) {
+    return {
+      value: this.fb.group({
+        value: number && number.value && number.value.value,
+        type: number && number.value && number.value.type
+      })
+    };
+  }
 
-  // public createWebsite(website?: Partial<Website>) {
-  //   return {
-  //     url: (website && website.url) || '',
-  //     type: (website && website.type && website.type.guid) || undefined
-  //   };
-  // }
+  public createWebsite(website?: Partial<EntityValue>) {
+    return {
+      value: this.fb.group({
+        value: website && website.value && website.value.value,
+        type: website && website.value && website.value.type
+      })
+    };
+  }
 
   /**
    * Push a phone number form group to the form array

@@ -3,16 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { STATUS, CATEGORY } from '@tamu-gisc/covid/common/enums';
-import {
-  CountyClaim,
-  User,
-  County,
-  FieldCategory,
-  CountyClaimInfo,
-  CategoryValue,
-  EntityValue,
-  EntityToValue
-} from '@tamu-gisc/covid/common/entities';
+import { CountyClaim, User, County, CountyClaimInfo, EntityValue, EntityToValue } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 
@@ -106,6 +97,11 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     // County claim container
     let cl;
 
+    // Incoming payload should contain a claim guid if the user has one.
+    //
+    // If this is the case, make an entity from its database details for use below.
+    //
+    // If no claim guid, provided, make a new entity. This guid will be registered to the user.
     if (!claim.guid) {
       cl = this.repo.create({
         county: county,
@@ -128,6 +124,7 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       });
     }
 
+    // If no claim made, something went wrong.
     if (!cl) {
       return {
         status: 500,
@@ -136,17 +133,9 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       };
     }
 
-    // Check if there is any county claim info to add/update
+    // Check if there is any county claim info to add/update (websites/phone numbers)
     if (phoneNumbers || websites) {
-      // if (claim.infos.length > 1) {
-      //   return {
-      //     status: 500,
-      //     success: false,
-      //     message: 'Invalid number of claim infos.'
-      //   };
-      // }
-
-      // Create a new claim info
+      // Create a new claim info that will
       const claimInfo = await this.claimInfoRepo
         .create({
           claim: cl,
@@ -160,13 +149,9 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
         })
         .save();
 
-      debugger;
-
       await claimInfo.save();
 
-      debugger;
-
-      const pns: Array<EntityToValue> = phoneNumbers.map((pn) => {
+      const numbers: Array<EntityToValue> = phoneNumbers.map((pn) => {
         return this.valueRepo.create({
           entityValue: {
             value: {
@@ -181,28 +166,30 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
         });
       });
 
-      claimInfo.responses = pns;
+      const webs: Array<EntityToValue> = websites.map((wb) => {
+        return this.valueRepo.create({
+          entityValue: {
+            value: {
+              value: wb.value.value,
+              type: wb.value.type,
+              category: {
+                id: CATEGORY.WEBSITES
+              }
+            }
+          },
+          claimInfo: claimInfo
+        });
+      });
+
+      claimInfo.responses = [...webs, ...numbers];
 
       const res = await claimInfo.save();
 
+      // Return the saved claim with websites and phone number submissions
       return res;
     }
 
+    // Return the original claim if no changes to the phone numbers or submissions
     return cl;
   }
-
-  // public async getActiveClaimsForUser(email: string) {
-  //   // TODO: fix
-  //   // const user = await this.userRepo.findOne({
-  //   //   where: {
-  //   //     email: email
-  //   //   },
-  //   //   relations: ['claims', 'claims.county', 'claims.status'],
-  //   //   order: {
-  //   //     created: 'DESC'
-  //   //   }
-  //   // });
-  //   // const filtered = user.claims.filter((c) => c.status && c.status.processing);
-  //   // return filtered;
-  // }
 }
