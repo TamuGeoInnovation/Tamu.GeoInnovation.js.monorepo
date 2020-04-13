@@ -11,6 +11,7 @@ import {
   PhoneNumberTypesService
 } from '@tamu-gisc/geoservices/data-access';
 import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
+import { DeepPartial } from 'typeorm';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
@@ -25,7 +26,7 @@ export class LockdownComponent implements OnInit {
   public websitesTypes: Observable<Partial<FieldCategory>>;
   public phoneTypes: Observable<Partial<FieldCategory>>;
 
-  public localCounty: Observable<Partial<County>>;
+  public localCounty: Observable<DeepPartial<County>>;
   public localEmail: Observable<Partial<User['email']>>;
 
   public lockdownState: Observable<boolean>;
@@ -51,7 +52,7 @@ export class LockdownComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this.localCounty = this.is.identity.pipe(pluck('county'));
+    this.localCounty = this.is.identity.pipe(pluck('claim', 'county'));
     this.localEmail = this.is.identity.pipe(pluck('user', 'email'));
 
     // const localEmail = (this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'identity' }) as Partial<User>)
