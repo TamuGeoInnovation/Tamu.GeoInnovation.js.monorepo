@@ -86,16 +86,17 @@ import { dbConfig } from '../environments/environment';
         Location
       ]
     }),
+    StatesModule,
+    CountiesModule,
+    UsersModule,
     FieldCategoriesModule,
     FieldTypesModule,
     CategoryValueModule,
     StatusTypesModule,
+    CountyClaimsModule,
+    PhoneNumbersModule
     // SitesModule,
     // LockdownsModule,
-    StatesModule,
-    CountiesModule,
-    CountyClaimsModule,
-    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService]

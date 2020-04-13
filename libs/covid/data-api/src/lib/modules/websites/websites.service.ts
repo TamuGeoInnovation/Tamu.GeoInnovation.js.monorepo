@@ -25,15 +25,31 @@ export class WebsitesService extends BaseService<CategoryValue> {
       };
     }
 
-    const claim = await this.claimRepo.findOne({
-      where: {
-        county: countyFips
-      },
-      relations: ['info', 'info.websites', 'info.websites.type'],
-      order: {
-        created: 'DESC'
-      }
-    });
+    // const claim = await this.claimRepo.findOne({
+    //   join: {
+    //     alias: 'claim',
+    //     leftJoinAndSelect: {
+    //       infos: 'claim.infos'
+    //     }
+    //   },
+    //   where: qb => {
+
+    //   },
+    //   // relations: ['info', 'info.websites', 'info.websites.type'],
+    //   order: {
+    //     created: 'DESC'
+    //   }
+    // });
+
+    const claim = await this.claimRepo
+      .createQueryBuilder('claim')
+      .leftJoinAndSelect('infos', 'claim.infos')
+      .where('claim.countyFips = :countyFips', {
+        countyFips: countyFips
+      })
+      .getMany();
+
+    debugger;
 
     // TODO: Get websites for county
     // return claim && claim.info && claim.info.websites ? claim.info.websites : [];
