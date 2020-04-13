@@ -4,6 +4,9 @@ $color: rgba(85, 138, 216, 1);
 $dangerColor: #ef5350;
 $sColor: #fafafa;
 
+$inactiveColor: #dcdcdc;
+$accentColor: #424242;
+
 :host {
   display: inherit;
   border-radius: 1.5rem;
@@ -59,9 +62,17 @@ $sColor: #fafafa;
   }
 
   &.disabled {
-    color: #424242;
-    background: #dcdcdc;
+    color: $accentColor;
+    background: $inactiveColor;
+    border-color: $inactiveColor;
     cursor: not-allowed;
+
+    &:hover {
+      background: $inactiveColor;
+      color: $inactiveColor;
+      border-color: $inactiveColor;
+      color: $accentColor;
+    }
   }
 }
 
