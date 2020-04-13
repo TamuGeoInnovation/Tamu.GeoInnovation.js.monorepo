@@ -259,7 +259,7 @@ export class CountyComponent implements OnInit, OnDestroy {
     return {
       value: this.fb.group({
         value: number && number.value && number.value.value,
-        type: number && number.value && number.value.type
+        type: number && number.value && number.value.type.guid
       })
     };
   }
@@ -268,7 +268,7 @@ export class CountyComponent implements OnInit, OnDestroy {
     return {
       value: this.fb.group({
         value: website && website.value && website.value.value,
-        type: website && website.value && website.value.type
+        type: website && website.value && website.value.type.guid
       })
     };
   }

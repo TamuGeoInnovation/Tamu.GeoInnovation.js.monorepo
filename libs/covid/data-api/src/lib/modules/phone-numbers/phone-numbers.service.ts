@@ -19,14 +19,6 @@ export class PhoneNumbersService extends BaseService<FieldCategory> {
     super(repo);
   }
 
-  public async insertPhoneNumber(number: string, typeGuid?: string) {
-    // Identify phone number type if one is provided
-    const phoneType = await this.valueRepo.findOne({ guid: typeGuid });
-
-    // TODO: Fix
-    // return this.repo.create({ number: number, type: phoneType }).save();
-  }
-
   public async getPhoneNumbersForCounty(countyFips) {
     if (countyFips === undefined || typeof countyFips !== 'string') {
       return {
@@ -42,6 +34,7 @@ export class PhoneNumbersService extends BaseService<FieldCategory> {
       .innerJoinAndSelect('info.responses', 'responses')
       .innerJoinAndSelect('responses.entityValue', 'entityToValue')
       .innerJoinAndSelect('entityToValue.value', 'value')
+      .innerJoinAndSelect('value.type', 'type')
       .innerJoinAndSelect('value.category', 'category')
       .where('claim.countyFips = :countyFips AND category.id = :type', {
         countyFips: countyFips,
@@ -50,7 +43,10 @@ export class PhoneNumbersService extends BaseService<FieldCategory> {
       .orderBy('claim.created', 'DESC')
       .getOne();
 
-    // TODO: Return formatted phone number list, to match the front-end
-    return claim;
+    const mappedNumbers = claim.responses.map((response) => {
+      return response.entityValue;
+    });
+
+    return mappedNumbers;
   }
 }

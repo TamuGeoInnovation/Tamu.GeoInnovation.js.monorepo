@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { switchMap, pluck, filter, withLatestFrom } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
-import { County, PhoneNumber, Website, User, TestingSite, FieldCategory } from '@tamu-gisc/covid/common/entities';
+import { County, User, TestingSite, FieldCategory, EntityValue } from '@tamu-gisc/covid/common/entities';
 import {
   StatesService,
   RestrictionsService,
@@ -223,25 +223,29 @@ export class TestingSiteComponent implements OnInit {
     }
   }
 
-  public createPhoneNumberGroup(number?: Partial<PhoneNumber>): FormGroup {
+  public createPhoneNumberGroup(number?: Partial<EntityValue>): FormGroup {
     return this.fb.group(this.createPhoneNumber(number));
   }
 
-  public createWebsiteGroup(website?: Partial<Website>): FormGroup {
+  public createWebsiteGroup(website?: Partial<EntityValue>): FormGroup {
     return this.fb.group(this.createWebsite(website));
   }
 
-  public createPhoneNumber(number?: Partial<PhoneNumber>) {
+  public createPhoneNumber(number?: Partial<EntityValue>) {
     return {
-      number: (number && number.number) || '',
-      type: (number && number.type && number.type.guid) || undefined
+      value: this.fb.group({
+        value: number && number.value && number.value.value,
+        type: number && number.value && number.value.type
+      })
     };
   }
 
-  public createWebsite(website?: Partial<Website>) {
+  public createWebsite(website?: Partial<EntityValue>) {
     return {
-      url: (website && website.url) || '',
-      type: (website && website.type && website.type.guid) || undefined
+      value: this.fb.group({
+        value: website && website.value && website.value.value,
+        type: website && website.value && website.value.type
+      })
     };
   }
 

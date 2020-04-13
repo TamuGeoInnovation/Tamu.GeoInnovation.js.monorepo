@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { County } from '@tamu-gisc/covid/common/entities';
+import { County, EntityValue } from '@tamu-gisc/covid/common/entities';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Injectable({
@@ -14,11 +14,11 @@ export class PhoneNumbersService {
     this.resource = this.env.value('covid_api_url') + 'phone-numbers';
   }
 
-  public setPhoneNumbersForCounty(numbers: Array<Partial<PhoneNumber>>, countyFips?: number) {
+  public setPhoneNumbersForCounty(numbers: Array<Partial<EntityValue>>, countyFips?: number) {
     return this.http.post<Partial<County>>(`${this.resource}/county`, { numbers, countyFips });
   }
 
   public getPhoneNumbersForCounty(countyFips: number) {
-    return this.http.get<Partial<Array<PhoneNumber>>>(`${this.resource}/county/${countyFips}`);
+    return this.http.get<Partial<Array<EntityValue>>>(`${this.resource}/county/${countyFips}`);
   }
 }

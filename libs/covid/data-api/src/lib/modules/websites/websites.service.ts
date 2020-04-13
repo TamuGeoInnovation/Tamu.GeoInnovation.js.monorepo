@@ -33,6 +33,7 @@ export class WebsitesService extends BaseService<CategoryValue> {
       .innerJoinAndSelect('info.responses', 'responses')
       .innerJoinAndSelect('responses.entityValue', 'entityToValue')
       .innerJoinAndSelect('entityToValue.value', 'value')
+      .innerJoinAndSelect('value.type', 'type')
       .innerJoinAndSelect('value.category', 'category')
       .where('claim.countyFips = :countyFips AND category.id = :type', {
         countyFips: countyFips,
@@ -41,7 +42,10 @@ export class WebsitesService extends BaseService<CategoryValue> {
       .orderBy('claim.created', 'DESC')
       .getOne();
 
-    // TODO: Return formatted phone number list, to match the front-end
-    return claim;
+    const mappedWebsites = claim.responses.map((response) => {
+      return response.entityValue;
+    });
+
+    return mappedWebsites;
   }
 }
