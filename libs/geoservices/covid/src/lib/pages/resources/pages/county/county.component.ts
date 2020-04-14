@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Observable, Subject, of, merge, concat, forkJoin, iif, EMPTY } from 'rxjs';
+import { Observable, Subject, of, merge, forkJoin, EMPTY } from 'rxjs';
 import {
   switchMap,
   take,
@@ -248,16 +248,9 @@ export class CountyComponent implements OnInit, OnDestroy {
   }
 
   public submitCloseClaim(): void {
-    this.is.identity
-      .pipe(
-        pluck('claim'),
-        switchMap((claim) => {
-          return this.cl.closeClaim(claim.guid);
-        })
-      )
-      .subscribe((closeStatus) => {
-        debugger;
-      });
+    this.is.unregisterCountyClaim();
+
+    this.form.reset();
   }
 
   public createPhoneNumberGroup(number?: DeepPartial<EntityValue>): FormGroup {

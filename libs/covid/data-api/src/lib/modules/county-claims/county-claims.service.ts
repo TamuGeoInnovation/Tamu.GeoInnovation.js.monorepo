@@ -3,7 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { STATUS, CATEGORY } from '@tamu-gisc/covid/common/enums';
-import { CountyClaim, User, County, CountyClaimInfo, EntityValue, EntityToValue } from '@tamu-gisc/covid/common/entities';
+import {
+  CountyClaim,
+  User,
+  County,
+  CountyClaimInfo,
+  EntityValue,
+  EntityToValue,
+  EntityStatus
+} from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 
@@ -14,7 +22,8 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     @InjectRepository(County) public countyRepo: Repository<County>,
     @InjectRepository(User) public userRepo: Repository<User>,
     @InjectRepository(CountyClaimInfo) public claimInfoRepo: Repository<CountyClaimInfo>,
-    @InjectRepository(EntityToValue) public valueRepo: Repository<EntityToValue>
+    @InjectRepository(EntityToValue) public valueRepo: Repository<EntityToValue>,
+    @InjectRepository(EntityStatus) public statusRepo: Repository<EntityStatus>
   ) {
     super(repo);
   }
@@ -22,22 +31,18 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
   public async getActiveClaimsForEmail(email: string) {
     const user = await this.userRepo.findOne({ where: { email } });
 
-    const lastClaim = await this.repo.findOne({
-      where: {
-        user: user,
-        statuses: [
-          {
-            type: STATUS.PROCESSING
-          }
-        ]
-      },
-      relations: ['county', 'statuses'],
-      order: {
-        created: 'DESC'
-      }
-    });
+    const lastClaim = await this.repo
+      .createQueryBuilder('claim')
+      .innerJoinAndSelect('claim.user', 'user')
+      .innerJoinAndSelect('claim.county', 'county')
+      .innerJoinAndSelect('claim.statuses', 'statuses')
+      .innerJoinAndSelect('statuses.type', 'type')
+      .where('user.guid = :userGuid AND type.id = :statusType', {
+        userGuid: user.guid,
+        statusType: STATUS.PROCESSING
+      })
+      .getOne();
 
-    // TODO: Return the last claim that does not have a closed status.
     return lastClaim ? [lastClaim] : [];
   }
 
@@ -95,7 +100,7 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     }
 
     // County claim container
-    let cl;
+    let cl: CountyClaim;
 
     // Incoming payload should contain a claim guid if the user has one.
     //
@@ -133,73 +138,77 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       };
     }
 
-    // Check if there is any county claim info to add/update (websites/phone numbers)
-    if (phoneNumbers || websites) {
-      // Create a new claim info that will
-      const claimInfo = await this.claimInfoRepo
-        .create({
-          claim: cl,
-          statuses: [
-            {
-              type: {
-                id: STATUS.PROCESSING
+    // Create a new claim info regardless if there are any provided phones or websites.
+    //
+    // If there are no provided responses, it is assumed it either has none or all have been removed.
+    const claimInfo = await this.claimInfoRepo.create({
+      claim: cl,
+      statuses: [
+        {
+          type: {
+            id: STATUS.PROCESSING
+          }
+        }
+      ],
+      responses: []
+    });
+
+    if (phoneNumbers) {
+      // Filter out any invalid phone number entries and map them to a value entity
+      const numbers: Array<EntityToValue> = phoneNumbers.reduce((acc, pn) => {
+        if (!pn.value || !pn.value.type) {
+          return acc;
+        }
+
+        const value = this.valueRepo.create({
+          entityValue: {
+            value: {
+              value: pn.value.value,
+              type: pn.value.type,
+              category: {
+                id: CATEGORY.PHONE_NUMBERS
               }
             }
-          ]
-        })
-        .save();
-      await claimInfo.save();
-
-      claimInfo.responses = [];
-
-      if (phoneNumbers) {
-        const numbers: Array<EntityToValue> = phoneNumbers.map((pn) => {
-          return this.valueRepo.create({
-            entityValue: {
-              value: {
-                value: pn.value.value,
-                type: pn.value.type,
-                category: {
-                  id: CATEGORY.PHONE_NUMBERS
-                }
-              }
-            },
-            claimInfo: claimInfo
-          });
+          }
         });
-        claimInfo.responses.push(...numbers);
-  
-      }
-      
-      if (websites) {
-        const webs: Array<EntityToValue> = websites.map((wb) => {
-          return this.valueRepo.create({
-            entityValue: {
-              value: {
-                value: wb.value.value,
-                type: wb.value.type,
-                category: {
-                  id: CATEGORY.WEBSITES
-                }
-              }
-            },
-            claimInfo: claimInfo
-          });
-        });
-        claimInfo.responses.push(...webs);
-      }
-      
 
-      // claimInfo.responses = [...webs, ...numbers];
+        return [...acc, value];
+      }, []);
 
-      const res = await claimInfo.save();
-
-      // Return the saved claim with websites and phone number submissions
-      return res;
+      claimInfo.responses.push(...numbers);
     }
 
-    // Return the original claim if no changes to the phone numbers or submissions
-    return cl;
+    if (websites) {
+      // Filter out any invalid phone number entries and map them to a value entity
+      const webs: Array<EntityToValue> = websites.reduce((acc, wb) => {
+        if (!wb.value || !wb.value.type) {
+          return acc;
+        }
+
+        const web = this.valueRepo.create({
+          entityValue: {
+            value: {
+              value: wb.value.value,
+              type: wb.value.type,
+              category: {
+                id: CATEGORY.WEBSITES
+              }
+            }
+          }
+        });
+
+        return [...acc, web];
+      }, []);
+
+      claimInfo.responses.push(...webs);
+    }
+
+    // claimInfo.responses = [...webs, ...numbers];
+
+    const res = await claimInfo.save();
+
+    // Return the saved claim with websites and phone number submissions
+    return res.claim;
   }
 
   public async closeClaim(claimGuid: string) {
@@ -214,7 +223,8 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     const claim = await this.repo.findOne({
       where: {
         guid: claimGuid
-      }
+      },
+      relations: ['statuses', 'statuses.type']
     });
 
     if (!claim) {
@@ -224,5 +234,23 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
         message: 'Invalid claim.'
       };
     }
+
+    // Remove any "PROCESSING" status types, and apply a "CLOSED" status type.
+    // Leave any others intact (cancelled, flagged, etc.)
+    claim.statuses = claim.statuses.filter((status) => {
+      return status.type.id !== (STATUS.PROCESSING as number) && status.type.id !== (STATUS.CLOSED as number);
+    });
+
+    // Create new closed status type
+    const type = this.statusRepo.create({
+      type: {
+        id: STATUS.CLOSED
+      }
+    });
+
+    // Add closed status type to claim
+    claim.statuses.push(type);
+
+    return claim.save();
   }
 }

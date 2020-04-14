@@ -20,8 +20,8 @@
 
         <div class="form-section-body">
           <div class="form-collection row pad-top">
-            <tamu-gisc-select formControlName="state" [data]="states | async" placeholder="Select State" [valueTemplate]="'stateFips'" [displayTemplate]="'name'"></tamu-gisc-select>
-            <tamu-gisc-select formControlName="county" [data]="counties | async" placeholder="Select County" [valueTemplate]="'countyFips'" [displayTemplate]="'name'"></tamu-gisc-select>
+            <tamu-gisc-select formControlName="state" [data]="states | async" placeholder="Select State" [valueTemplate]="'stateFips'" [displayTemplate]="'name'" [disabled]="(localCounty | async)?.countyFips"></tamu-gisc-select>
+            <tamu-gisc-select formControlName="county" [data]="counties | async" placeholder="Select County" [valueTemplate]="'countyFips'" [displayTemplate]="'name'" [disabled]="(localCounty | async)?.countyFips"></tamu-gisc-select>
           </div>
         </div>
       </div>

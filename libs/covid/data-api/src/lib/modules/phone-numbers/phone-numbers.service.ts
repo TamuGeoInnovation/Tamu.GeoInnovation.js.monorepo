@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 
 import { FieldCategory, CategoryValue, County, CountyClaim, CountyClaimInfo } from '@tamu-gisc/covid/common/entities';
 
@@ -28,25 +28,38 @@ export class PhoneNumbersService extends BaseService<FieldCategory> {
       };
     }
 
-    const claim = await this.claimInfoRepo
+    // Validate the claim first
+    const lastInfo = await this.claimInfoRepo
       .createQueryBuilder('info')
-      .innerJoinAndSelect('info.claim', 'claim')
-      .innerJoinAndSelect('info.responses', 'responses')
-      .innerJoinAndSelect('responses.entityValue', 'entityToValue')
-      .innerJoinAndSelect('entityToValue.value', 'value')
-      .innerJoinAndSelect('value.type', 'type')
-      .innerJoinAndSelect('value.category', 'category')
-      .where('claim.countyFips = :countyFips AND category.id = :type', {
-        countyFips: countyFips,
-        type: CATEGORY.PHONE_NUMBERS
+      .leftJoinAndSelect('info.claim', 'claim')
+      .leftJoinAndSelect('info.responses', 'responses')
+      .leftJoinAndSelect('responses.entityValue', 'entityValue')
+      .leftJoinAndSelect('entityValue.value', 'value')
+      .leftJoinAndSelect('value.type', 'type')
+      .leftJoinAndSelect('value.category', 'category')
+      .where('claim.countyFips = :countyFips', {
+        countyFips: countyFips
       })
-      .orderBy('claim.created', 'DESC')
+      .orderBy('info.created', 'DESC')
       .getOne();
 
-    const mappedNumbers = claim.responses.map((response) => {
-      return response.entityValue;
-    });
+    if (lastInfo && lastInfo.responses && lastInfo.responses.length > 0) {
+      // Since I'm a dummy and don't know how to do to return only the responses with category id for
+      // phone numbers, doing the filtering after the data comes back.
+      //
+      // Also mapping into a collection of entity values. Consumers of the callee do not care for anything
+      // other than the list of responses.
+      const mappedResponses = lastInfo.responses.reduce((acc, curr) => {
+        if (curr.entityValue.value.category.id !== CATEGORY.PHONE_NUMBERS) {
+          return acc;
+        }
 
-    return mappedNumbers;
+        return [...acc, curr.entityValue];
+      }, []);
+
+      return mappedResponses;
+    } else {
+      return [];
+    }
   }
 }

@@ -241,7 +241,6 @@ export class TestingSiteInfo extends GuidIdentity {
 
   @Column({ type: 'varchar', length: 'max', nullable: true })
   public notes: string;
-
 }
 
 @Entity({ name: 'testing_sites' })
@@ -365,8 +364,6 @@ export class SiteStatus extends GuidIdentity {
 //   public testingSiteInfo: TestingSiteInfo;
 // }
 
-
-
 @Entity({ name: 'lockdown_statuses' })
 export class LockdownStatus extends GuidIdentity {
   @Column({ default: false, select: false })
@@ -374,7 +371,6 @@ export class LockdownStatus extends GuidIdentity {
 
   @Column({ default: false, select: false })
   public validated: boolean;
-  
 }
 
 @Entity({ name: 'lockdown_infos' })
@@ -396,7 +392,7 @@ export class LockdownInfo extends GuidIdentity {
 
   @Column({ type: 'varchar', length: 'max', nullable: true })
   public notes: string;
-  
+
   @OneToMany((type) => EntityStatus, (status) => status.claimInfoStatus, { cascade: true })
   public statuses: EntityStatus[];
 
