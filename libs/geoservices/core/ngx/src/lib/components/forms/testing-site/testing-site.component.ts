@@ -96,9 +96,6 @@ export class TestingSiteComponent implements OnInit {
       })
     );
 
-    // Set the county and state location fields for the form
-    // const localCounty = this.localStore.getStorageObjectKeyValue({ ...storageOptions, subKey: 'county' }) as Partial<County>;
-
     this.form = this.fb.group({
       claim: this.fb.group({
         user: this.fb.group({
@@ -252,13 +249,13 @@ export class TestingSiteComponent implements OnInit {
   /**
    * Push a phone number form group to the form array
    */
-  // public addPhoneNumber() {
-  //   (this.form.get(['info', 'phoneNumbers']) as FormArray).push(this.createPhoneNumberGroup());
-  // }
+  public addPhoneNumber() {
+    (this.form.get(['info', 'phoneNumbers']) as FormArray).push(this.createPhoneNumberGroup());
+  }
 
-  // public addWebsite() {
-  //   (this.form.get(['info', 'websites']) as FormArray).push(this.createWebsiteGroup());
-  // }
+  public addWebsite() {
+    (this.form.get(['info', 'websites']) as FormArray).push(this.createWebsiteGroup());
+  }
 
   public submitForm() {
     const value = this.form.getRawValue();
