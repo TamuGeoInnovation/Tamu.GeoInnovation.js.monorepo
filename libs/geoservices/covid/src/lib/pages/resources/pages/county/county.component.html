@@ -35,7 +35,7 @@
       </div>
 
       <!-- Only show phone numbers input field if there is a local county stored AND if the form countyFips value is the same as the local value -->
-      <ng-container *ngIf="((localCounty | async)?.countyFips === (this.form.controls.county.value)) && ((localCounty | async)?.stateFips === (this.form.controls.state.value)) && (localCounty | async)?.countyFips !== null && (localCounty | async)?.stateFips !== null && ((this.form.controls.county.value) !== 'undefined' && (this.form.controls.state.value) !== 'undefined')">
+      <ng-container *ngIf="(localCounty | async)?.countyFips && ((localCounty | async)?.countyFips === (this.form.controls.county.value)) && ((localCounty | async)?.stateFips === (this.form.controls.state.value)) && (localCounty | async)?.countyFips !== null && (localCounty | async)?.stateFips !== null && ((this.form.controls.county.value) !== 'undefined' && (this.form.controls.state.value) !== 'undefined')">
         <div class="form-section">
           <div class="form-section-toolbar">
             <div class="form-section-name">Phone Numbers</div>
@@ -87,6 +87,8 @@
         </div>
       </ng-container>
 
+      <!-- <p>{{(form.valueChanges | async | json)}}</p> -->
+
       <div class="form-section">
         <div class="form-section-body">
           <div class="form-collection row">
@@ -99,14 +101,18 @@
                 [look]="(localCounty | async)?.countyFips ? 'secondary': ''"
                 [disabled]="form.invalid
           || !(countyClaimable | async) 
-          || (this.form.controls.county.value) === 'undefined' || (this.form.controls.state.value) === 'undefined'
-          || ((localCounty | async)?.countyFips !== null && (this.form.controls.county.value) !== (localCounty | async)?.countyFips)
-          || ((localCounty | async)?.stateFips !== null && (this.form.controls.state.value) !== (localCounty | async)?.stateFips)"
+          || (this.form.controls.county.value) === 'undefined' || (this.form.controls.state.value) === 'undefined'"
               ></tamu-gisc-button>
 
               <tamu-gisc-button value="Proceed to Lockdown" [routerLink]="['../lockdown']" *ngIf="(localCounty | async)?.countyFips"></tamu-gisc-button>
             </div>
           </div>
+<!-- 
+          <p>Form invalid: {{form.invalid}}</p>
+          <p>County not claimable: {{!(countyClaimable | async) }}</p>
+          <p>Form values undefined: {{(this.form.controls.county.value) === 'undefined' || (this.form.controls.state.value) === 'undefined'}}</p>
+
+          <p>New test: {{(((localCounty | async)?.stateFips) !== null && (this.form.controls.state.value) !== (localCounty | async)?.stateFips)}}</p> -->
         </div>
       </div>
     </form>

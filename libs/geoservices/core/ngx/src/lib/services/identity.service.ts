@@ -115,7 +115,9 @@ export class IdentityService {
     this.claim.closeClaim(c).subscribe((res) => {
       const options: CovidLocalStoreIdentity = this.localStorage.getStorage(storageOptions);
 
-      delete options.claim;
+      options.claim = {
+        county: {}
+      };
 
       this.localStorage.setStorage({ ...storageOptions, value: options });
 

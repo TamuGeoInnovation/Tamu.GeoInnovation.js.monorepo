@@ -18,8 +18,8 @@ export class WebsitesService extends BaseService<CategoryValue> {
     super(repo);
   }
 
-  public async getWebsitesForCounty(countyFips: number) {
-    if (countyFips === undefined || typeof countyFips !== 'string') {
+  public async getWebsitesForCounty(countyFips: number | string) {
+    if (countyFips === undefined || countyFips === 'undefined' || typeof countyFips !== 'string') {
       return {
         status: 400,
         success: false,
