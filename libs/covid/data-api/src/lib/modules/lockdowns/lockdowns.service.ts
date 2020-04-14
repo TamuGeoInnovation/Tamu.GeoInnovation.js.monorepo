@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeepPartial, FindConditions } from 'typeorm';
 
-import { Lockdown, LockdownInfo, User, EntityValue, EntityToValue } from '@tamu-gisc/covid/common/entities';
+import { Lockdown, LockdownInfo, User, EntityValue, EntityToValue, EntityStatus } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
@@ -14,6 +14,7 @@ export class LockdownsService extends BaseService<Lockdown> {
     @InjectRepository(Lockdown) public repo: Repository<Lockdown>,
     @InjectRepository(LockdownInfo) public lockdownInfoRepo: Repository<LockdownInfo>,
     @InjectRepository(User) public userRepo: Repository<User>,
+    @InjectRepository(EntityStatus) public entityStatusRepo: Repository<EntityStatus>,
     // @InjectRepository(Website) public sourceRepo: Repository<Website>,
     // @InjectRepository(WebsiteType) public classificationRepo: Repository<WebsiteType>,
     public ccs: CountyClaimsService
@@ -82,6 +83,12 @@ export class LockdownsService extends BaseService<Lockdown> {
 
     let lockdownContainer: Lockdown;
 
+    const existingLockdown = await this.repo.findOne({
+      where: {
+        claim: claim.guid
+      }
+    });
+    
     if (!params.info) {
       return {
         status: 400,
@@ -113,25 +120,29 @@ export class LockdownsService extends BaseService<Lockdown> {
           },
         }
       })
-      lockdownContainer = await this.repo.create({
+
+      const entStatus = this.entityStatusRepo.create({
+        type: {
+          id: STATUS.PROCESSING,
+        }
+      })
+
+
+      let lockdownInfo: Partial<LockdownInfo>;
+        lockdownInfo = {
+          responses: [...phoneNumbers, ...websites],
+          isLockdown: params.info.isLockdown,
+          endDate: params.info.endDate,
+          startDate: params.info.startDate,
+          notes: params.info.notes,
+          protocol: params.info.protocol,
+          statuses: [entStatus],
+        }
+      const lockdownInfoContainer = this.lockdownInfoRepo.create(lockdownInfo);
+
+      lockdownContainer = this.repo.create({
         claim: claim,
-        infos: [
-          this.lockdownInfoRepo.create({
-            responses: [...phoneNumbers, ...websites],
-            isLockdown: params.info.isLockdown,
-            endDate: params.info.endDate,
-            startDate: params.info.startDate,
-            notes: params.info.notes,
-            protocol: params.info.protocol,
-            statuses: [
-              {
-                type: {
-                  id: STATUS.PROCESSING
-                }
-              }
-            ],
-          })
-        ],
+        infos: [lockdownInfo],
         statuses: [
           {
             type: {
@@ -139,7 +150,24 @@ export class LockdownsService extends BaseService<Lockdown> {
             }
           }
         ],
-      }).save();
+      });
+      await lockdownContainer.save();
+
+      // if (existingLockdown) {
+      //   // Update
+      //   const findConditions: FindConditions<Lockdown> = {
+      //     guid: existingLockdown.guid,
+      //   }
+      //   await this.repo.update(findConditions, lockdownContainer);
+  
+      // } else {
+      //   // Insert
+      //   await lockdownContainer.save();
+      // }
+
+      
+
+      
       
 
       // const lockdownInfo: LockdownInfo = this.lockdownInfoRepo.create({
@@ -173,20 +201,39 @@ export class LockdownsService extends BaseService<Lockdown> {
       order: {
         created: 'DESC'
       },
-      relations: [
-        'claim',
-        'claim.user',
-        'claim.county',
-        'claim.county.phoneNumbers',
-        'location',
-        'info',
-        'info.phoneNumbers',
-        'info.phoneNumbers.type',
-        'info.websites',
-        'info.websites.type'
-      ]
     });
 
-    return lockdown ? lockdown : {};
+    // const lastInfo = await this.lockdownInfoRepo
+    //   .createQueryBuilder('info')
+    //   .leftJoinAndSelect('info.responses', 'responses')
+    //   .leftJoinAndSelect('responses.entityValue', 'entityValue')
+    //   .leftJoinAndSelect('entityValue.value', 'value')
+    //   .leftJoinAndSelect('value.type', 'type')
+    //   .leftJoinAndSelect('value.category', 'category')
+    //   .where('lockdownGuid.countyFips = :countyFips', {
+    //     countyFips: claim.county.countyFips
+    //   })
+    //   .orderBy('info.created', 'DESC')
+    //   .getOne();
+
+    // if (lastInfo && lastInfo.responses && lastInfo.responses.length > 0) {
+    //   // Since I'm a dummy and don't know how to do to return only the responses with category id for
+    //   // phone numbers, doing the filtering after the data comes back.
+    //   //
+    //   // Also mapping into a collection of entity values. Consumers of the callee do not care for anything
+    //   // other than the list of responses.
+    //   const mappedResponses = lastInfo.responses.reduce((acc, curr) => {
+    //     if (curr.entityValue.value.category.id !== CATEGORY.PHONE_NUMBERS) {
+    //       return acc;
+    //     }
+
+    //     return [...acc, curr.entityValue];
+    //   }, []);
+
+    //   return mappedResponses;
+    // } else {
+    //   return [];
+    // }
+
   }
 }
