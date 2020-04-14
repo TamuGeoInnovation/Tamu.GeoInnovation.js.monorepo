@@ -88,7 +88,7 @@ export class LockdownsService extends BaseService<Lockdown> {
         claim: claim.guid
       }
     });
-    
+
     if (!params.info) {
       return {
         status: 400,
@@ -128,7 +128,45 @@ export class LockdownsService extends BaseService<Lockdown> {
       })
 
 
-      let lockdownInfo: Partial<LockdownInfo>;
+      // await lockdownContainer.save();
+
+      if (existingLockdown) {
+        // Update
+
+        let lockdownInfo: Partial<LockdownInfo>;
+        lockdownInfo = {
+          responses: [...phoneNumbers, ...websites],
+          isLockdown: params.info.isLockdown,
+          endDate: params.info.endDate,
+          startDate: params.info.startDate,
+          lockdown: existingLockdown,
+          notes: params.info.notes,
+          protocol: params.info.protocol,
+          statuses: [entStatus],
+        }
+        // const lockdownInfoContainer = this.lockdownInfoRepo.create(lockdownInfo);
+
+        lockdownContainer = this.repo.create({
+          claim: claim,
+          infos: [lockdownInfo],
+          statuses: [
+            {
+              type: {
+                id: STATUS.PROCESSING
+              }
+            }
+          ],
+        });
+        const findConditions: FindConditions<Lockdown> = {
+          guid: existingLockdown.guid,
+        }
+        // await this.repo.update(findConditions, lockdownContainer);
+        const lockdownInfoContainer = await this.lockdownInfoRepo.create(lockdownInfo).save();
+        debugger
+      } else {
+        // Insert
+
+        let lockdownInfo: Partial<LockdownInfo>;
         lockdownInfo = {
           responses: [...phoneNumbers, ...websites],
           isLockdown: params.info.isLockdown,
@@ -138,37 +176,26 @@ export class LockdownsService extends BaseService<Lockdown> {
           protocol: params.info.protocol,
           statuses: [entStatus],
         }
-      const lockdownInfoContainer = this.lockdownInfoRepo.create(lockdownInfo);
+        // const lockdownInfoContainer = this.lockdownInfoRepo.create(lockdownInfo);
 
-      lockdownContainer = this.repo.create({
-        claim: claim,
-        infos: [lockdownInfo],
-        statuses: [
-          {
-            type: {
-              id: STATUS.PROCESSING
+        lockdownContainer = this.repo.create({
+          claim: claim,
+          infos: [lockdownInfo],
+          statuses: [
+            {
+              type: {
+                id: STATUS.PROCESSING
+              }
             }
-          }
-        ],
-      });
-      await lockdownContainer.save();
+          ],
+        });
+        await lockdownContainer.save();
+      }
 
-      // if (existingLockdown) {
-      //   // Update
-      //   const findConditions: FindConditions<Lockdown> = {
-      //     guid: existingLockdown.guid,
-      //   }
-      //   await this.repo.update(findConditions, lockdownContainer);
-  
-      // } else {
-      //   // Insert
-      //   await lockdownContainer.save();
-      // }
 
-      
 
-      
-      
+
+
 
       // const lockdownInfo: LockdownInfo = this.lockdownInfoRepo.create({
       //   isLockdown: params.info.isLockdown,
@@ -203,37 +230,50 @@ export class LockdownsService extends BaseService<Lockdown> {
       },
     });
 
-    // const lastInfo = await this.lockdownInfoRepo
-    //   .createQueryBuilder('info')
-    //   .leftJoinAndSelect('info.responses', 'responses')
-    //   .leftJoinAndSelect('responses.entityValue', 'entityValue')
-    //   .leftJoinAndSelect('entityValue.value', 'value')
-    //   .leftJoinAndSelect('value.type', 'type')
-    //   .leftJoinAndSelect('value.category', 'category')
-    //   .where('lockdownGuid.countyFips = :countyFips', {
-    //     countyFips: claim.county.countyFips
-    //   })
-    //   .orderBy('info.created', 'DESC')
-    //   .getOne();
+    const lastInfo = await this.lockdownInfoRepo
+      .createQueryBuilder('info')
+      .leftJoinAndSelect('info.responses', 'responses')
+      .leftJoinAndSelect('responses.entityValue', 'entityValue')
+      .leftJoinAndSelect('entityValue.value', 'value')
+      .leftJoinAndSelect('value.type', 'type')
+      .leftJoinAndSelect('value.category', 'category')
+      .leftJoinAndSelect('info.lockdown', 'lockdown')
+      .where('lockdown.guid = :lockdownGuid', {
+        lockdownGuid: lockdown.guid
+      })
+      .orderBy('info.created', 'DESC')
+      .getOne();
 
-    // if (lastInfo && lastInfo.responses && lastInfo.responses.length > 0) {
-    //   // Since I'm a dummy and don't know how to do to return only the responses with category id for
-    //   // phone numbers, doing the filtering after the data comes back.
-    //   //
-    //   // Also mapping into a collection of entity values. Consumers of the callee do not care for anything
-    //   // other than the list of responses.
-    //   const mappedResponses = lastInfo.responses.reduce((acc, curr) => {
-    //     if (curr.entityValue.value.category.id !== CATEGORY.PHONE_NUMBERS) {
-    //       return acc;
-    //     }
+    if (lastInfo && lastInfo.responses && lastInfo.responses.length > 0) {
+      // Since I'm a dummy and don't know how to do to return only the responses with category id for
+      // phone numbers, doing the filtering after the data comes back.
+      //
+      // Also mapping into a collection of entity values. Consumers of the callee do not care for anything
+      // other than the list of responses.
+      const phoneNumbers = lastInfo.responses.reduce((acc, curr) => {
+        if (curr.entityValue.value.category.id !== CATEGORY.PHONE_NUMBERS) {
+          return acc;
+        }
 
-    //     return [...acc, curr.entityValue];
-    //   }, []);
+        return [...acc, curr.entityValue];
+      }, []);
 
-    //   return mappedResponses;
-    // } else {
-    //   return [];
-    // }
+      const websites = lastInfo.responses.reduce((acc, curr) => {
+        if (curr.entityValue.value.category.id !== CATEGORY.WEBSITES) {
+          return acc;
+        }
+
+        return [...acc, curr.entityValue];
+      }, []);
+      
+      return {
+        ...lastInfo,
+        phoneNumbers,
+        websites
+      }
+    } else {
+      return [];
+    }
 
   }
 }
