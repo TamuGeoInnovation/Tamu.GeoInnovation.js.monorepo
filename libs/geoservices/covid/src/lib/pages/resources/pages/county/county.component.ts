@@ -81,20 +81,22 @@ export class CountyComponent implements OnInit, OnDestroy {
 
     // County assignment from identity service, filtering out any undefined values to prevent
     // downstream effects when a non-valid value.
-    this.localCounty = this.is.identity.pipe(
-      pluck('claim', 'county'),
-      switchMap((county) => {
-        return county !== undefined && county.countyFips !== undefined ? of(county) : EMPTY;
-      })
-    );
+    this.localCounty = this.is.identity.pipe(pluck('claim', 'county'));
 
     // Set state and form values whenever the local county local county assignment changes.
-    this.localCounty.pipe(takeUntil(this._$destroy)).subscribe((county) => {
-      this.form.patchValue({
-        state: county.stateFips,
-        county: county.countyFips
+    this.localCounty
+      .pipe(
+        switchMap((county) => {
+          return county !== undefined && county.countyFips !== undefined ? of(county) : EMPTY;
+        }),
+        takeUntil(this._$destroy)
+      )
+      .subscribe((county) => {
+        this.form.patchValue({
+          state: county.stateFips,
+          county: county.countyFips
+        });
       });
-    });
 
     this.formCounty = this.form
       .get('county')
@@ -113,7 +115,15 @@ export class CountyComponent implements OnInit, OnDestroy {
     this.states = this.state.getStates();
 
     // Sync county list with state selection
-    this.counties = merge(this.localCounty.pipe(pluck('stateFips')), this.form.get('state').valueChanges).pipe(
+    this.counties = merge(
+      this.localCounty.pipe(
+        switchMap((county) => {
+          return county !== undefined ? of(county) : of({});
+        }),
+        pluck('stateFips')
+      ),
+      this.form.get('state').valueChanges
+    ).pipe(
       distinctUntilChanged(),
       switchMap((fips) => {
         if (fips === undefined || fips === 'undefined') {
@@ -181,7 +191,15 @@ export class CountyComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.countyClaims = merge(this.localCounty.pipe(pluck('countyFips')), this.formCounty).pipe(
+    this.countyClaims = merge(
+      this.localCounty.pipe(
+        switchMap((county) => {
+          return county !== undefined ? of(county) : of({});
+        }),
+        pluck('countyFips')
+      ),
+      this.formCounty
+    ).pipe(
       switchMap((countyFips: number) => {
         return this.cl.getActiveClaimsForCounty(countyFips);
       }),
@@ -190,19 +208,19 @@ export class CountyComponent implements OnInit, OnDestroy {
 
     this.countyClaimable = merge(this.countyClaims, this.form.get('county').valueChanges).pipe(
       withLatestFrom(this.localIdentity),
-      map(([claims, user]) => {
-        if (claims instanceof Object) {
+      switchMap(([claims, user]) => {
+        if (claims instanceof Array) {
           // If claim for selected county is equal to zero, no one has claimed it yet.
           // Mark it as available for claiming
           if (claims.length === 0) {
-            return true;
+            return of(true);
           }
 
           // Otherwise, check if the active claim user is current user.
           // Do not allow overlapping claims for the same user and county
-          return claims.findIndex((ci) => ci.user.guid === user.guid) > -1;
+          return of(claims.findIndex((ci) => ci.user.guid === user.guid) > -1);
         } else {
-          return false;
+          return EMPTY;
         }
       })
     );

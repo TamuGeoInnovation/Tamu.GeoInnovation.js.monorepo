@@ -46,21 +46,28 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     return lastClaim ? [lastClaim] : [];
   }
 
-  public async getActiveClaimsForCountyFips(countyFips: number) {
-    const lastForCounty = await this.repo.findOne({
-      where: {
-        county: {
-          countyFips: countyFips
-        },
-        statuses: [{ type: STATUS.PROCESSING }]
-      },
-      order: {
-        created: 'DESC'
-      },
-      relations: ['statuses', 'statuses.type', 'county', 'user']
-    });
+  public async getActiveClaimsForCountyFips(countyFips: number | string) {
+    if (countyFips === undefined || countyFips === 'undefined') {
+      return {
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      };
+    }
 
-    return lastForCounty ? [lastForCounty] : [];
+    const activeForCounty = await this.repo
+      .createQueryBuilder('claim')
+      .leftJoinAndSelect('claim.statuses', 'statuses')
+      .leftJoinAndSelect('statuses.type', 'type')
+      .leftJoinAndSelect('claim.county', 'county')
+      .leftJoinAndSelect('claim.user', 'user')
+      .where('county.countyFips = :countyFips AND type.id = :statusType', {
+        countyFips: countyFips,
+        statusType: STATUS.PROCESSING
+      })
+      .getOne();
+
+    return activeForCounty ? [activeForCounty] : [];
   }
 
   /**
@@ -203,12 +210,12 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       claimInfo.responses.push(...webs);
     }
 
-    // claimInfo.responses = [...webs, ...numbers];
-
     const res = await claimInfo.save();
 
     // Return the saved claim with websites and phone number submissions
-    return res.claim;
+    const [t] = await this.getActiveClaimsForEmail(claim.user.email);
+
+    return t;
   }
 
   public async closeClaim(claimGuid: string) {

@@ -20,7 +20,7 @@ export class PhoneNumbersService extends BaseService<FieldCategory> {
   }
 
   public async getPhoneNumbersForCounty(countyFips) {
-    if (countyFips === undefined || typeof countyFips !== 'string') {
+    if (countyFips === undefined || countyFips === 'undefined' || typeof countyFips !== 'string') {
       return {
         status: 400,
         success: false,
