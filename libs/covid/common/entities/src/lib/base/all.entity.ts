@@ -153,34 +153,16 @@ export class CountyClaimInfo extends GuidIdentity {
   public statuses: EntityStatus[];
 }
 
-@Entity({ name: 'entity_to_values' })
-export class EntityToValue extends GuidIdentity {
-  @ManyToOne((type) => EntityValue, (value) => value.entityToValue, { cascade: true })
-  public entityValue: EntityValue;
+@Entity({ name: 'lockdowns' })
+export class Lockdown extends GuidIdentity {
+  @ManyToOne((type) => CountyClaim, { cascade: true })
+  public claim: CountyClaim;
 
-  @ManyToOne((type) => CountyClaimInfo, (value) => value.responses)
-  public claimInfo: CountyClaimInfo;
-}
+  @OneToMany((type) => LockdownInfo, (info) => info.lockdown, { cascade: true })
+  public infos: LockdownInfo[];
 
-@Entity({ name: 'status_types' })
-export class StatusType extends TimeStampEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
-  @Column()
-  public name: string;
-}
-
-@Entity({ name: 'entity_statuses' })
-export class EntityStatus extends GuidIdentity {
-  @ManyToOne((type) => StatusType)
-  public type: StatusType;
-
-  @ManyToOne((type) => CountyClaim, (claim) => claim.statuses)
-  public claimStatus: CountyClaim;
-
-  @ManyToOne((type) => CountyClaimInfo, (info) => info.statuses)
-  public claimInfoStatus: CountyClaimInfo;
+  @OneToMany((type) => EntityStatus, (status) => status.lockdownStatus, { cascade: true })
+  public statuses: EntityStatus[];
 }
 
 @Entity({ name: 'locations' })
@@ -211,6 +193,73 @@ export class Location extends GuidIdentity {
 
   @Column({ nullable: true })
   public longitude: number;
+}
+
+@Entity({ name: 'lockdown_infos' })
+export class LockdownInfo extends GuidIdentity {
+  @OneToMany((type) => EntityToValue, (entity) => entity.lockdownInfo, { cascade: true })
+  public responses: EntityToValue[];
+
+  @Column({ nullable: true })
+  public isLockdown: boolean;
+
+  @Column({ nullable: true })
+  public startDate: Date;
+
+  @Column({ nullable: true })
+  public endDate: Date;
+
+  @Column({ type: 'varchar', length: 'max', nullable: true })
+  public protocol: string;
+
+  @Column({ type: 'varchar', length: 'max', nullable: true })
+  public notes: string;
+
+  @OneToMany((type) => EntityStatus, (status) => status.lockdownInfoStatus, { cascade: true })
+  public statuses: EntityStatus[];
+
+  @ManyToOne((type) => Lockdown, (lockdown) => lockdown.infos)
+  public lockdown: Lockdown;
+
+}
+
+@Entity({ name: 'entity_to_values' })
+export class EntityToValue extends GuidIdentity {
+  @ManyToOne((type) => EntityValue, (value) => value.entityToValue, { cascade: true })
+  public entityValue: EntityValue;
+
+  @ManyToOne((type) => CountyClaimInfo, (value) => value.responses)
+  public claimInfo: CountyClaimInfo;
+
+  @ManyToOne((type) => LockdownInfo, (value) => value.responses)
+  public lockdownInfo: LockdownInfo;
+}
+
+@Entity({ name: 'status_types' })
+export class StatusType extends TimeStampEntity {
+  @PrimaryGeneratedColumn()
+  public id: number;
+
+  @Column()
+  public name: string;
+}
+
+@Entity({ name: 'entity_statuses' })
+export class EntityStatus extends GuidIdentity {
+  @ManyToOne((type) => StatusType)
+  public type: StatusType;
+
+  @ManyToOne((type) => CountyClaim, (claim) => claim.statuses)
+  public claimStatus: CountyClaim;
+
+  @ManyToOne((type) => CountyClaimInfo, (info) => info.statuses)
+  public claimInfoStatus: CountyClaimInfo;
+
+  @ManyToOne((type) => LockdownInfo, (info) => info.statuses)
+  public lockdownInfoStatus: LockdownInfo;
+
+  @ManyToOne((type) => Lockdown, (info) => info.statuses)
+  public lockdownStatus: Lockdown
 }
 
 @Entity({ name: 'testing_site_infos' })
@@ -256,168 +305,3 @@ export class TestingSite extends GuidIdentity {
   @JoinColumn()
   public info: TestingSiteInfo;
 }
-
-@Entity({ name: 'site_status_types' })
-export class SiteStatusType extends GuidIdentity {
-  @Column()
-  public name: string;
-}
-
-@Entity({ name: 'site_statuses' })
-export class SiteStatus extends GuidIdentity {
-  @ManyToOne((type) => SiteStatusType, { cascade: true })
-  public type: SiteStatusType;
-
-  @ManyToOne((type) => TestingSiteInfo)
-  public testingSiteInfo: TestingSiteInfo;
-}
-
-// @Entity({ name: 'website_types' })
-// export class WebsiteType extends GuidIdentity {
-//   @Column()
-//   public name: string;
-// }
-
-// @Entity({ name: 'websites' })
-// export class Website extends GuidIdentity {
-//   @Column({ nullable: true, type: 'varchar', length: 'max' })
-//   public url: string;
-
-//   @ManyToOne((type) => WebsiteType, { cascade: true })
-//   public type: WebsiteType;
-
-//   // @ManyToOne((type) => CountyClaimInfo, (info) => info.websites)
-//   // public claimInfo: County;
-
-//   @ManyToOne((type) => LockdownInfo, (lockdown) => lockdown.websites)
-//   public lockdownInfo: LockdownInfo;
-
-//   @ManyToOne((type) => TestingSiteInfo, (site) => site.websites)
-//   public testingSiteInfo: TestingSiteInfo;
-// }
-
-// @Entity({ name: 'phone_number_types' })
-// export class PhoneNumberType extends GuidIdentity {
-//   @Column()
-//   public name: string;
-// }
-// @Entity({ name: 'phone_numbers' })
-// export class PhoneNumber extends GuidIdentity {
-//   @Column()
-//   public number: string;
-
-//   @ManyToOne((type) => PhoneNumberType, { cascade: true })
-//   public type: PhoneNumberType;
-
-//   // @ManyToOne((type) => CountyClaimInfo, (info) => info.phoneNumbers)
-//   // public claimInfo: CountyClaimInfo;
-
-//   @ManyToOne((type) => LockdownInfo, (lockdown) => lockdown.phoneNumbers)
-//   public lockdownInfo: LockdownInfo;
-
-//   @ManyToOne((type) => TestingSiteInfo, (site) => site.phoneNumbers)
-//   public testingSiteInfo: TestingSiteInfo;
-// }
-
-// @Entity({ name: 'restriction_types' })
-// export class RestrictionType extends GuidIdentity {
-//   @Column()
-//   public name: string;
-// }
-
-// @Entity({ name: 'restrictions' })
-// export class Restriction extends GuidIdentity {
-//   @ManyToOne((type) => RestrictionType, { cascade: true })
-//   public type: RestrictionType;
-
-//   @ManyToOne((type) => TestingSiteInfo, (info) => info.restrictions)
-//   public testingSiteInfo: TestingSiteInfo;
-// }
-
-// @Entity({ name: 'site_owner_types' })
-// export class SiteOwnerType extends GuidIdentity {
-//   @Column()
-//   public name: string;
-// }
-
-// @Entity({ name: 'site_owners' })
-// export class SiteOwner extends GuidIdentity {
-//   @ManyToOne((type) => SiteOwnerType, { cascade: true })
-//   public type: SiteOwnerType;
-
-//   @ManyToOne((type) => TestingSiteInfo, (info) => info.owners)
-//   public testingSiteInfo: TestingSiteInfo;
-// }
-
-// @Entity({ name: 'site_service_types' })
-// export class SiteServiceType extends GuidIdentity {
-//   @Column()
-//   public name: string;
-// }
-
-// @Entity({ name: 'site_services' })
-// export class SiteService extends GuidIdentity {
-//   @ManyToOne((type) => SiteServiceType, { cascade: true })
-//   public type: SiteServiceType;
-
-//   @ManyToOne((type) => TestingSiteInfo, (info) => info.services)
-//   public testingSiteInfo: TestingSiteInfo;
-// }
-
-@Entity({ name: 'lockdown_statuses' })
-export class LockdownStatus extends GuidIdentity {
-  @Column({ default: false, select: false })
-  public flagged: boolean;
-
-  @Column({ default: false, select: false })
-  public validated: boolean;
-}
-
-@Entity({ name: 'lockdowns' })
-export class Lockdown extends GuidIdentity {
-  @ManyToOne((type) => CountyClaim, { cascade: true })
-  public claim: CountyClaim;
-
-  @OneToMany((type) => LockdownInfo, (type) => Lockdown, { cascade: true })
-  public infos: LockdownInfo;
-}
-
-@Entity({ name: 'lockdown_infos' })
-export class LockdownInfo extends GuidIdentity {
-  @OneToMany((type) => EntityToValue, (entity) => entity.claimInfo, { cascade: true })
-  public responses: EntityToValue[];
-
-  @Column({ nullable: true })
-  public isLockdown: boolean;
-
-  @Column({ nullable: true })
-  public startDate: Date;
-
-  @Column({ nullable: true })
-  public endDate: Date;
-
-  @Column({ type: 'varchar', length: 'max', nullable: true })
-  public protocol: string;
-
-  @Column({ type: 'varchar', length: 'max', nullable: true })
-  public notes: string;
-
-  @OneToMany((type) => EntityStatus, (status) => status.claimInfoStatus, { cascade: true })
-  public statuses: EntityStatus[];
-
-  @OneToOne((type) => Location, { cascade: true })
-  @JoinColumn()
-  public location: Location;
-
-  @ManyToOne((type) => Lockdown, (lockdown) => lockdown.infos)
-  public lockdown: Lockdown;
-
-
-  // @OneToMany((type) => PhoneNumber, (ph) => ph.lockdownInfo, { cascade: true })
-  // public phoneNumbers: PhoneNumber[];
-
-  // @OneToMany((type) => Website, (wb) => wb.lockdownInfo, { cascade: true })
-  // public websites: Website[];
-}
-
-

@@ -147,14 +147,14 @@ export class LockdownComponent implements OnInit, OnDestroy {
               user: email,
               county: res.claim.county.countyFips
             },
-            location: {
-              address1: res.location.address1,
-              address2: res.location.address2,
-              city: res.location.city,
-              zip: res.location.zip,
-              county: res.location.county,
-              state: res.location.state
-            },
+            // location: {
+            //   address1: res.location.address1,
+            //   address2: res.location.address2,
+            //   city: res.location.city,
+            //   zip: res.location.zip,
+            //   county: res.location.county,
+            //   state: res.location.state
+            // },
             // info: {
             //   isLockdown: [res.info.isLockdown.toString()],
             //   startDate:

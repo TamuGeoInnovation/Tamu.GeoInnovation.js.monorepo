@@ -10,7 +10,6 @@ import {
   // RestrictionType,
   // SiteOwnerType,
   // SiteServiceType,
-  SiteStatusType
 } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
@@ -25,7 +24,7 @@ export class SitesService extends BaseService<TestingSite> {
     // @InjectRepository(RestrictionType) public restrictionRepo: Repository<RestrictionType>,
     // @InjectRepository(SiteOwnerType) public ownerRepo: Repository<SiteOwnerType>,
     // @InjectRepository(SiteServiceType) public serviceRepo: Repository<SiteServiceType>,
-    @InjectRepository(SiteStatusType) public statusRepo: Repository<SiteStatusType>
+    // @InjectRepository(SiteStatusType) public statusRepo: Repository<SiteStatusType>
   ) {
     super(repo);
   }
