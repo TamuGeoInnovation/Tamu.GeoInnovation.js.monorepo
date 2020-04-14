@@ -210,12 +210,12 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       claimInfo.responses.push(...webs);
     }
 
-    // claimInfo.responses = [...webs, ...numbers];
-
     const res = await claimInfo.save();
 
     // Return the saved claim with websites and phone number submissions
-    return res.claim;
+    const [t] = await this.getActiveClaimsForEmail(claim.user.email);
+
+    return t;
   }
 
   public async closeClaim(claimGuid: string) {

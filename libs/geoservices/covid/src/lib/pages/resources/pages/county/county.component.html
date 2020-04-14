@@ -87,8 +87,6 @@
         </div>
       </ng-container>
 
-      <!-- <p>{{(form.valueChanges | async | json)}}</p> -->
-
       <div class="form-section">
         <div class="form-section-body">
           <div class="form-collection row">
@@ -107,12 +105,6 @@
               <tamu-gisc-button value="Proceed to Lockdown" [routerLink]="['../lockdown']" *ngIf="(localCounty | async)?.countyFips"></tamu-gisc-button>
             </div>
           </div>
-<!-- 
-          <p>Form invalid: {{form.invalid}}</p>
-          <p>County not claimable: {{!(countyClaimable | async) }}</p>
-          <p>Form values undefined: {{(this.form.controls.county.value) === 'undefined' || (this.form.controls.state.value) === 'undefined'}}</p>
-
-          <p>New test: {{(((localCounty | async)?.stateFips) !== null && (this.form.controls.state.value) !== (localCounty | async)?.stateFips)}}</p> -->
         </div>
       </div>
     </form>

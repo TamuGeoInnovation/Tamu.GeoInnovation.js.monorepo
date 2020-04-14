@@ -208,19 +208,19 @@ export class CountyComponent implements OnInit, OnDestroy {
 
     this.countyClaimable = merge(this.countyClaims, this.form.get('county').valueChanges).pipe(
       withLatestFrom(this.localIdentity),
-      map(([claims, user]) => {
+      switchMap(([claims, user]) => {
         if (claims instanceof Array) {
           // If claim for selected county is equal to zero, no one has claimed it yet.
           // Mark it as available for claiming
           if (claims.length === 0) {
-            return true;
+            return of(true);
           }
 
           // Otherwise, check if the active claim user is current user.
           // Do not allow overlapping claims for the same user and county
-          return claims.findIndex((ci) => ci.user.guid === user.guid) > -1;
+          return of(claims.findIndex((ci) => ci.user.guid === user.guid) > -1);
         } else {
-          return false;
+          return EMPTY;
         }
       })
     );
