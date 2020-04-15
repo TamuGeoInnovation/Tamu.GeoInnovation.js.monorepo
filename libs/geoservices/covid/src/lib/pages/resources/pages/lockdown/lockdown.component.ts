@@ -141,12 +141,10 @@ export class LockdownComponent implements OnInit, OnDestroy {
             },
             info: {
               isLockdown: [res.info.isLockdown.toString()],
-              startDate: res.info.startDate.split('T')[0],
-              endDate: res.info.endDate.split('T')[0],
+              startDate: res.info.startDate ? res.info.startDate.split('T')[0] : undefined,
+              endDate: res.info.endDate ? res.info.endDate.split('T')[0] : undefined,
               protocol: res.info.protocol,
-              notes: res.info.notes,
-              // phoneNumbers: res.info.websites.map((p) => this.createPhoneNumberGroup(p)),
-              // websites: res.info.websites.map((w) => this.createWebsiteGroup(w))
+              notes: res.info.notes
             }
           };
 
@@ -219,6 +217,7 @@ export class LockdownComponent implements OnInit, OnDestroy {
     const lockdown = this.form.getRawValue();
 
     lockdown.info.isLockdown = lockdown.info.isLockdown[0] === 'true' ? true : false;
+    lockdown.info.protocol = lockdown.info.isLockdown === true ? lockdown.info.protocol : undefined;
     lockdown.info.startDate = lockdown.info.isLockdown === true ? lockdown.info.startDate : undefined;
     lockdown.info.endDate = lockdown.info.isLockdown === true ? lockdown.info.endDate : undefined;
 

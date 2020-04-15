@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeepPartial, FindConditions } from 'typeorm';
+import { Repository } from 'typeorm';
 
+import { STATUS, CATEGORY } from '@tamu-gisc/covid/common/enums';
 import { Lockdown, LockdownInfo, User, EntityValue, EntityToValue, EntityStatus } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
-import { STATUS, CATEGORY } from '@tamu-gisc/covid/common/enums';
 
 @Injectable()
 export class LockdownsService extends BaseService<Lockdown> {
@@ -15,48 +15,10 @@ export class LockdownsService extends BaseService<Lockdown> {
     @InjectRepository(LockdownInfo) public lockdownInfoRepo: Repository<LockdownInfo>,
     @InjectRepository(User) public userRepo: Repository<User>,
     @InjectRepository(EntityStatus) public entityStatusRepo: Repository<EntityStatus>,
-    // @InjectRepository(Website) public sourceRepo: Repository<Website>,
-    // @InjectRepository(WebsiteType) public classificationRepo: Repository<WebsiteType>,
     public ccs: CountyClaimsService
   ) {
     super(repo);
   }
-
-  // TODO: Fix adding county lockdown
-  /**
-   * Registers a county lockdown
-   */
-  // public async registerLockdown(params) {
-  //   const claims = await this.ccs.getActiveClaimsForEmail(params.claim.user);
-
-  //   const claim = claims.find((c) => c.county.countyFips === params.claim.county);
-
-  //   if (!claim) {
-  //     return {
-  //       status: 400,
-  //       success: false,
-  //       message: 'Lockdown and claim mismatch.'
-  //     };
-  //   }
-
-  //   if (claim.processing === false || claim.closed === true) {
-  //     return {
-  //       status: 400,
-  //       success: false,
-  //       message: 'Claim for county is inactive. Re-open it to modify details.'
-  //     };
-  //   }
-
-  //   const l = this.repo.create({
-  //     ...params,
-  //     status: { flagged: false, validated: false },
-  //     state: claim.county.stateFips,
-  //     county: claim.county.countyFips,
-  //     claim
-  //   } as DeepPartial<Lockdown>);
-
-  //   return l.save();
-  // }
 
   public async createOrUpdateLockdown(params) {
     const user = await this.userRepo.findOne({
@@ -69,6 +31,9 @@ export class LockdownsService extends BaseService<Lockdown> {
       throw new Error('Invalid email.');
     }
 
+    // Do some small verification to ensure that the incoming lockdown information
+    // will be applied to the correct county based on the user active county claim
+    // and county information in the incoming lockdown.
     const claims = await this.ccs.getActiveClaimsForEmail(params.claim.user);
 
     const claim = claims.find((c) => c.county.countyFips === params.claim.county);
@@ -126,11 +91,8 @@ export class LockdownsService extends BaseService<Lockdown> {
         }
       });
 
-      // await lockdownContainer.save();
-
+      // If there is an existing lockdown, create only a lockdown info.
       if (existingLockdown) {
-        // Update
-
         let lockdownInfo: Partial<LockdownInfo>;
         lockdownInfo = {
           responses: [...phoneNumbers, ...websites],
@@ -142,7 +104,6 @@ export class LockdownsService extends BaseService<Lockdown> {
           protocol: params.info.protocol,
           statuses: [entStatus]
         };
-        // const lockdownInfoContainer = this.lockdownInfoRepo.create(lockdownInfo);
 
         lockdownContainer = this.repo.create({
           claim: claim,
@@ -155,14 +116,11 @@ export class LockdownsService extends BaseService<Lockdown> {
             }
           ]
         });
-        const findConditions: FindConditions<Lockdown> = {
-          guid: existingLockdown.guid
-        };
-        // await this.repo.update(findConditions, lockdownContainer);
+
         const lockdownInfoContainer = await this.lockdownInfoRepo.create(lockdownInfo).save();
-        debugger;
       } else {
-        // Insert
+        // If there is no existing lockdown for the active claim, create a new lockdown and associated
+        // lockdown info
 
         let lockdownInfo: Partial<LockdownInfo>;
         lockdownInfo = {
@@ -189,24 +147,6 @@ export class LockdownsService extends BaseService<Lockdown> {
         });
         await lockdownContainer.save();
       }
-
-      // const lockdownInfo: LockdownInfo = this.lockdownInfoRepo.create({
-      //   isLockdown: params.info.isLockdown,
-      //   endDate: params.info.endDate,
-      //   startDate: params.info.startDate,
-      //   notes: params.info.notes,
-      //   protocol: params.info.protocol,
-      //   statuses: [
-      //     {
-      //       type: {
-      //         id: STATUS.PROCESSING
-      //       }
-      //     }
-      //   ],
-      // });
-
-      // lockdownContainer.infos = [lockdownInfo];
-      // await lockdownContainer.save();
     }
   }
 
@@ -245,11 +185,11 @@ export class LockdownsService extends BaseService<Lockdown> {
     if (lastInfo && lastInfo.responses && lastInfo.responses.length > 0) {
       const categorized = lastInfo.responses.reduce(
         (acc, curr) => {
-          if (curr.entityValue.value.category.id !== CATEGORY.PHONE_NUMBERS) {
+          if (curr.entityValue.value.category.id === CATEGORY.PHONE_NUMBERS) {
             acc.phoneNumbers.push(curr.entityValue);
           }
 
-          if (curr.entityValue.value.category.id !== CATEGORY.WEBSITES) {
+          if (curr.entityValue.value.category.id === CATEGORY.WEBSITES) {
             acc.websites.push(curr.entityValue);
           }
 
