@@ -62,14 +62,6 @@ export class LockdownComponent implements OnInit, OnDestroy {
         user: ['', Validators.required],
         county: ['']
       }),
-      location: this.fb.group({
-        address1: [''],
-        address2: [''],
-        city: [''],
-        zip: [''],
-        county: ['', Validators.required],
-        state: ['', Validators.required]
-      }),
       info: this.fb.group({
         isLockdown: [[]],
         startDate: [new Date().toISOString().split('T')[0]],
@@ -147,47 +139,14 @@ export class LockdownComponent implements OnInit, OnDestroy {
               user: email,
               county: res.claim.county.countyFips
             },
-            // location: {
-            //   address1: res.location.address1,
-            //   address2: res.location.address2,
-            //   city: res.location.city,
-            //   zip: res.location.zip,
-            //   county: res.location.county,
-            //   state: res.location.state
-            // },
-            // info: {
-            //   isLockdown: [res.info.isLockdown.toString()],
-            //   startDate:
-            //     res && res.info && res.info.startDate
-            //       ? ((res.info.startDate as unknown) as string).split('T')[0]
-            //       : this.form.get(['info', 'startDate']).value,
-            //   endDate:
-            //     res && res.info && res.info.endDate
-            //       ? ((res.info.endDate as unknown) as string).split('T')[0]
-            //       : this.form.get(['info', 'endDate']).value,
-            //   protocol: res.info.protocol,
-            //   notes: res.info.notes
-            // },
-            infos: () => {
-              let ret = [];
-              res.infos.map((info, index) => {
-                ret.push({
-                  info: {
-                    isLockdown: [info.isLockdown.toString()],
-                    startDate:
-                      res && info && info.startDate
-                        ? ((info.startDate as unknown) as string).split('T')[0]
-                        : this.form.get(['info', 'startDate']).value,
-                    endDate:
-                      res && info && info.endDate
-                        ? ((info.endDate as unknown) as string).split('T')[0]
-                        : this.form.get(['info', 'endDate']).value,
-                    protocol: info.protocol,
-                    notes: info.notes
-                  }
-                });
-              });
-              return ret;
+            info: {
+              isLockdown: [res.info.isLockdown.toString()],
+              startDate: res.info.startDate.split('T')[0],
+              endDate: res.info.endDate.split('T')[0],
+              protocol: res.info.protocol,
+              notes: res.info.notes,
+              // phoneNumbers: res.info.websites.map((p) => this.createPhoneNumberGroup(p)),
+              // websites: res.info.websites.map((w) => this.createWebsiteGroup(w))
             }
           };
 
@@ -202,15 +161,15 @@ export class LockdownComponent implements OnInit, OnDestroy {
           this.form.patchValue(merged);
         }
 
-        // if (res && res.info && res.info.phoneNumbers) {
-        //   const phc = this.form.get(['info', 'phoneNumbers']) as FormArray;
-        //   res.info.phoneNumbers.forEach((n) => phc.push(this.createPhoneNumberGroup(n)));
-        // }
+        if (res && res.info && res.info.phoneNumbers) {
+          const phc = this.form.get(['info', 'phoneNumbers']) as FormArray;
+          res.info.phoneNumbers.forEach((n) => phc.push(this.createPhoneNumberGroup(n)));
+        }
 
-        // if (res && res.info && res.info.websites) {
-        //   const wc = this.form.get(['info', 'websites']) as FormArray;
-        //   res.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
-        // }
+        if (res && res.info && res.info.websites) {
+          const wc = this.form.get(['info', 'websites']) as FormArray;
+          res.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
+        }
       });
   }
 
@@ -231,7 +190,7 @@ export class LockdownComponent implements OnInit, OnDestroy {
     return {
       value: this.fb.group({
         value: number && number.value && number.value.value,
-        type: number && number.value && number.value.type
+        type: number && number.value && number.value.type.guid
       })
     };
   }
@@ -240,7 +199,7 @@ export class LockdownComponent implements OnInit, OnDestroy {
     return {
       value: this.fb.group({
         value: website && website.value && website.value.value,
-        type: website && website.value && website.value.type
+        type: website && website.value && website.value.type.guid
       })
     };
   }

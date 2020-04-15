@@ -96,7 +96,6 @@ export class LockdownsService extends BaseService<Lockdown> {
         message: 'Lockdown info must not be null or missing.'
       };
     } else {
-
       const phoneNumbers: EntityToValue[] = params.info.phoneNumbers.map((val, index) => {
         return {
           entityValue: {
@@ -104,10 +103,10 @@ export class LockdownsService extends BaseService<Lockdown> {
               value: val.value.value,
               type: val.value.type,
               category: CATEGORY.PHONE_NUMBERS
-            },
-          },
-        }
-      })
+            }
+          }
+        };
+      });
 
       const websites: EntityToValue[] = params.info.websites.map((val, index) => {
         return {
@@ -116,17 +115,16 @@ export class LockdownsService extends BaseService<Lockdown> {
               value: val.value.value,
               type: val.value.type,
               category: CATEGORY.WEBSITES
-            },
-          },
-        }
-      })
+            }
+          }
+        };
+      });
 
       const entStatus = this.entityStatusRepo.create({
         type: {
-          id: STATUS.PROCESSING,
+          id: STATUS.PROCESSING
         }
-      })
-
+      });
 
       // await lockdownContainer.save();
 
@@ -142,8 +140,8 @@ export class LockdownsService extends BaseService<Lockdown> {
           lockdown: existingLockdown,
           notes: params.info.notes,
           protocol: params.info.protocol,
-          statuses: [entStatus],
-        }
+          statuses: [entStatus]
+        };
         // const lockdownInfoContainer = this.lockdownInfoRepo.create(lockdownInfo);
 
         lockdownContainer = this.repo.create({
@@ -155,14 +153,14 @@ export class LockdownsService extends BaseService<Lockdown> {
                 id: STATUS.PROCESSING
               }
             }
-          ],
+          ]
         });
         const findConditions: FindConditions<Lockdown> = {
-          guid: existingLockdown.guid,
-        }
+          guid: existingLockdown.guid
+        };
         // await this.repo.update(findConditions, lockdownContainer);
         const lockdownInfoContainer = await this.lockdownInfoRepo.create(lockdownInfo).save();
-        debugger
+        debugger;
       } else {
         // Insert
 
@@ -174,8 +172,8 @@ export class LockdownsService extends BaseService<Lockdown> {
           startDate: params.info.startDate,
           notes: params.info.notes,
           protocol: params.info.protocol,
-          statuses: [entStatus],
-        }
+          statuses: [entStatus]
+        };
         // const lockdownInfoContainer = this.lockdownInfoRepo.create(lockdownInfo);
 
         lockdownContainer = this.repo.create({
@@ -187,15 +185,10 @@ export class LockdownsService extends BaseService<Lockdown> {
                 id: STATUS.PROCESSING
               }
             }
-          ],
+          ]
         });
         await lockdownContainer.save();
       }
-
-
-
-
-
 
       // const lockdownInfo: LockdownInfo = this.lockdownInfoRepo.create({
       //   isLockdown: params.info.isLockdown,
@@ -214,7 +207,6 @@ export class LockdownsService extends BaseService<Lockdown> {
 
       // lockdownContainer.infos = [lockdownInfo];
       // await lockdownContainer.save();
-
     }
   }
 
@@ -228,7 +220,12 @@ export class LockdownsService extends BaseService<Lockdown> {
       order: {
         created: 'DESC'
       },
+      relations: ['claim', 'claim.county']
     });
+
+    if (!lockdown) {
+      return [];
+    }
 
     const lastInfo = await this.lockdownInfoRepo
       .createQueryBuilder('info')
@@ -244,36 +241,32 @@ export class LockdownsService extends BaseService<Lockdown> {
       .orderBy('info.created', 'DESC')
       .getOne();
 
+    // Categorize phone numbers and websites from the last info responses
     if (lastInfo && lastInfo.responses && lastInfo.responses.length > 0) {
-      // Since I'm a dummy and don't know how to do to return only the responses with category id for
-      // phone numbers, doing the filtering after the data comes back.
-      //
-      // Also mapping into a collection of entity values. Consumers of the callee do not care for anything
-      // other than the list of responses.
-      const phoneNumbers = lastInfo.responses.reduce((acc, curr) => {
-        if (curr.entityValue.value.category.id !== CATEGORY.PHONE_NUMBERS) {
+      const categorized = lastInfo.responses.reduce(
+        (acc, curr) => {
+          if (curr.entityValue.value.category.id !== CATEGORY.PHONE_NUMBERS) {
+            acc.phoneNumbers.push(curr.entityValue);
+          }
+
+          if (curr.entityValue.value.category.id !== CATEGORY.WEBSITES) {
+            acc.websites.push(curr.entityValue);
+          }
+
           return acc;
-        }
+        },
+        { phoneNumbers: [], websites: [] } as { phoneNumbers: EntityValue[]; websites: EntityValue[] }
+      );
 
-        return [...acc, curr.entityValue];
-      }, []);
-
-      const websites = lastInfo.responses.reduce((acc, curr) => {
-        if (curr.entityValue.value.category.id !== CATEGORY.WEBSITES) {
-          return acc;
-        }
-
-        return [...acc, curr.entityValue];
-      }, []);
-      
       return {
-        ...lastInfo,
-        phoneNumbers,
-        websites
-      }
+        claim: lockdown.claim,
+        info: {
+          ...lastInfo,
+          ...categorized
+        }
+      };
     } else {
-      return [];
+      return {};
     }
-
   }
 }
