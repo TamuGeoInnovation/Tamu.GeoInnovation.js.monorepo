@@ -6,7 +6,6 @@ import {
   take,
   withLatestFrom,
   shareReplay,
-  map,
   pluck,
   filter,
   distinctUntilChanged,

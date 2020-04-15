@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { Observable, of, Subject, combineLatest, pipe } from 'rxjs';
+import { Observable, of, Subject, combineLatest } from 'rxjs';
 import { switchMap, pluck, withLatestFrom, filter, takeUntil, take } from 'rxjs/operators';
 
 import { County, User, FieldCategory, EntityValue } from '@tamu-gisc/covid/common/entities';
@@ -135,12 +135,6 @@ export class LockdownComponent implements OnInit, OnDestroy {
         filter(([email, county]) => {
           return email !== undefined && county && county.countyFips !== undefined;
         }),
-        // )
-
-        // this.localEmail
-        //   .pipe(
-        //     filter((email) => email !== undefined),
-        //     withLatestFrom(this.localCounty),
         switchMap(([email, county]) => {
           // Attempt to get an active lockdown entry for the current identity email
           return this.ls.getActiveLockdownForEmail(email).pipe(

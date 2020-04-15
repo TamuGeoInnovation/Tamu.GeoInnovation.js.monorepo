@@ -122,7 +122,15 @@
           <div class="form-section" *ngIf="(lockdownState | async) === true || (lockdownState | async) === false">
             <div class="form-section-body">
               <div class="form-collection row">
-                <tamu-gisc-button [value]="'Save'" type="submit" [disabled]="form.invalid"></tamu-gisc-button>
+                <div class="flex flex-row justify-between align-center">
+                  <div>
+                    <tamu-gisc-button [value]="'Save'" look="secondary" type="submit" [disabled]="form.invalid"></tamu-gisc-button>
+                  </div>
+
+                  <div>
+                    <a [routerLink]="['../testing-sites']" class="flex flex-row justify-center align-center">Testing Sites <span class="material-icons">keyboard_arrow_right</span></a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
