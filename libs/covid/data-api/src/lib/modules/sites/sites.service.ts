@@ -8,6 +8,7 @@ import {
   Location,
   User,
   EntityToValue,
+  EntityValue,
   EntityStatus,
   County,
   CountyClaim,
@@ -96,14 +97,14 @@ export class SitesService extends BaseService<TestingSite> {
 
       const operationState = params.info.status
         ? {
-            entityValue: {
-              value: {
-                value: '',
-                type: params.info.status,
-                category: CATEGORY.SITE_OPERATIONAL_STATUS
-              }
+          entityValue: {
+            value: {
+              value: '',
+              type: params.info.status,
+              category: CATEGORY.SITE_OPERATIONAL_STATUS
             }
           }
+        }
         : undefined;
 
       const owners: EntityToValue[] = params.info.owners.split(',').map((val, index) => {
@@ -250,9 +251,22 @@ export class SitesService extends BaseService<TestingSite> {
     });
 
 
-    const ret = await this.getAllTestSites(countyClaims);
+    // const ret = await this.getAllTestSites(countyClaims);
+    // ret.map((testSite, index) => {
+    //   this.flattenTestSiteAndInfo(testSite, testSite.infos);
+    // })
+    const testSites = await this.getAllTestSites(countyClaims);
+    const mappedTestSites = testSites.map((testSite, index) => {
+      const infos = testSite.infos;
+      const ret = this.flattenTestSiteAndInfo(testSite, infos);
+      return ret;
+    });
+
+
+
+    debugger
     return {
-      ...ret
+      ...mappedTestSites
     };
   }
 
@@ -266,6 +280,12 @@ export class SitesService extends BaseService<TestingSite> {
           },
           relations: [
             'infos',
+            'infos.responses',
+            'infos.responses.entityValue',
+            'infos.responses.entityValue.value',
+            'infos.responses.entityValue.value.category',
+            // 'infos.responses.entityValue.value.category.id',
+            'infos.responses.testingSiteInfo',
             'infos.location',
           ]
         }).then((testSites: TestingSite[]) => {
@@ -281,4 +301,50 @@ export class SitesService extends BaseService<TestingSite> {
       // resolve(allTestSites)
     });
   }
+
+  private flattenTestSiteAndInfo(testingSite, infos) {
+    return infos.map((info, index) => {
+      const categorized = info.responses.reduce(
+        (acc, curr) => {
+          if (curr.entityValue.value.category.id === CATEGORY.PHONE_NUMBERS) {
+            acc.phoneNumbers.push(curr.entityValue);
+          }
+
+          if (curr.entityValue.value.category.id === CATEGORY.WEBSITES) {
+            acc.websites.push(curr.entityValue);
+          }
+
+          if (curr.entityValue.value.category.id === CATEGORY.SITE_OWNERS) {
+            acc.siteOwners.push(curr.entityValue);
+          }
+
+          if (curr.entityValue.value.category.id === CATEGORY.SITE_SERVICES) {
+            acc.siteServices.push(curr.entityValue);
+          }
+
+          if (curr.entityValue.value.category.id === CATEGORY.SITE_RESTRICTIONS) {
+            acc.siteRestrictions.push(curr.entityValue);
+          }
+
+          if (curr.entityValue.value.category.id === CATEGORY.SITE_OPERATIONAL_STATUS) {
+            acc.siteStatus.push(curr.entityValue);
+          }
+
+          return acc;
+        },
+        { phoneNumbers: [], websites: [], siteOwners: [], siteServices: [], siteRestrictions: [], siteStatus: [] } as { phoneNumbers: EntityValue[]; websites: EntityValue[], siteOwners: EntityValue[], siteServices: EntityValue[], siteRestrictions: EntityValue[], siteStatus: EntityValue[] }
+      );
+      return {
+        claim: testingSite.claim,
+        info: {
+          ...info,
+          ...categorized
+        }
+      };
+    });
+
+
+
+  }
+
 }
