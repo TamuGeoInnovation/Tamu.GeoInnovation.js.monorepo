@@ -90,24 +90,37 @@
       <div class="form-section">
         <div class="form-section-body">
           <div class="form-collection row">
-            <div class="button-row flex flex-row justify-between align-center">
-              <div class="flex flex-row">
-                <tamu-gisc-button look="danger" fit="relaxed" value="Close Claim" (click)="submitCloseClaim()" *ngIf="(localCounty | async)?.countyFips"></tamu-gisc-button>
-
-                <tamu-gisc-button
-                  [value]="(localCounty | async)?.countyFips ? 'Update' : 'Claim'"
-                  type="submit"
-                  [look]="(localCounty | async)?.countyFips ? 'secondary': ''"
-                  [disabled]="form.invalid
-          || !(countyClaimable | async) 
-          || (this.form.controls.county.value) === 'undefined' || (this.form.controls.state.value) === 'undefined'"
-                ></tamu-gisc-button>
-              </div>
-
-              <div>
-                <a [routerLink]="['../lockdown']" *ngIf="(localCounty | async)?.countyFips" class="flex flex-row justify-center align-center">County Lockdown <span class="material-icons">keyboard_arrow_right</span></a>
-              </div>
+            <div class="button-row flex flex-row" *ngIf="(localCounty | async) === undefined || !(localCounty | async)?.countyFips; else buttonsHasClaim">
+              <tamu-gisc-button
+                [value]="(localCounty | async)?.countyFips ? 'Update' : 'Claim'"
+                type="submit"
+                [look]="(localCounty | async)?.countyFips ? 'secondary': ''"
+                [disabled]="form.invalid
+            || !(countyClaimable | async) 
+            || (this.form.controls.county.value) === 'undefined' || (this.form.controls.state.value) === 'undefined'"
+              ></tamu-gisc-button>
             </div>
+
+            <ng-template #buttonsHasClaim>
+              <div class="button-row flex flex-row justify-between align-center">
+                <div class="flex flex-row">
+                  <tamu-gisc-button look="danger" fit="relaxed" value="Close Claim" (click)="submitCloseClaim()" *ngIf="(localCounty | async)?.countyFips"></tamu-gisc-button>
+
+                  <tamu-gisc-button
+                    [value]="(localCounty | async)?.countyFips ? 'Update' : 'Claim'"
+                    type="submit"
+                    [look]="(localCounty | async)?.countyFips ? 'secondary': ''"
+                    [disabled]="form.invalid
+            || !(countyClaimable | async) 
+            || (this.form.controls.county.value) === 'undefined' || (this.form.controls.state.value) === 'undefined'"
+                  ></tamu-gisc-button>
+                </div>
+
+                <div>
+                  <a [routerLink]="['../lockdown']" *ngIf="(localCounty | async)?.countyFips" class="flex flex-row justify-center align-center">County Lockdown <span class="material-icons">keyboard_arrow_right</span></a>
+                </div>
+              </div>
+            </ng-template>
           </div>
         </div>
       </div>
