@@ -95,41 +95,50 @@ export class SitesService extends BaseService<TestingSite> {
           }
         : undefined;
 
-      const owners: EntityToValue[] = params.info.owners.split(',').map((val, index) => {
-        return {
-          entityValue: {
-            value: {
-              value: '',
-              type: val,
-              category: CATEGORY.SITE_OWNERS
-            }
-          }
-        };
-      });
+      const owners: EntityToValue[] =
+        params.info.owners.length > 0
+          ? params.info.owners.split(',').map((val, index) => {
+              return {
+                entityValue: {
+                  value: {
+                    value: '',
+                    type: val,
+                    category: CATEGORY.SITE_OWNERS
+                  }
+                }
+              };
+            })
+          : [];
 
-      const restrictions: EntityToValue[] = params.info.restrictions.split(',').map((val, index) => {
-        return {
-          entityValue: {
-            value: {
-              value: '',
-              type: val,
-              category: CATEGORY.SITE_RESTRICTIONS
-            }
-          }
-        };
-      });
+      const restrictions: EntityToValue[] =
+        params.info.restrictions.length > 0
+          ? params.info.restrictions.split(',').map((val, index) => {
+              return {
+                entityValue: {
+                  value: {
+                    value: '',
+                    type: val,
+                    category: CATEGORY.SITE_RESTRICTIONS
+                  }
+                }
+              };
+            })
+          : [];
 
-      const services: EntityToValue[] = params.info.services.split(',').map((val, index) => {
-        return {
-          entityValue: {
-            value: {
-              value: '',
-              type: val,
-              category: CATEGORY.SITE_SERVICES
-            }
-          }
-        };
-      });
+      const services: EntityToValue[] =
+        params.info.services.length > 0
+          ? params.info.services.split(',').map((val, index) => {
+              return {
+                entityValue: {
+                  value: {
+                    value: '',
+                    type: val,
+                    category: CATEGORY.SITE_SERVICES
+                  }
+                }
+              };
+            })
+          : [];
 
       const entStatus = this.entityStatusRepo.create({
         type: {
@@ -149,16 +158,20 @@ export class SitesService extends BaseService<TestingSite> {
         zip: params.location.zip
       };
 
+      const responsesFiltered = [
+        ...phoneNumbers,
+        ...websites,
+        ...owners,
+        ...restrictions,
+        ...services,
+        (operationState as unknown) as EntityToValue
+      ].filter((response) => {
+        return response !== undefined;
+      });
+
       if (existingTestingSite) {
         testingSiteInfo = {
-          responses: [
-            ...phoneNumbers,
-            ...websites,
-            ...owners,
-            ...restrictions,
-            ...services,
-            (operationState as unknown) as EntityToValue
-          ],
+          responses: responsesFiltered,
           undisclosed: params.info.undisclosed,
           sitesAvailable: params.info.sitesAvailable,
           location: location,
@@ -188,14 +201,7 @@ export class SitesService extends BaseService<TestingSite> {
         return await testingSiteContainer.save();
       } else {
         testingSiteInfo = {
-          responses: [
-            ...phoneNumbers,
-            ...websites,
-            ...owners,
-            ...restrictions,
-            ...services,
-            (operationState as unknown) as EntityToValue
-          ],
+          responses: responsesFiltered,
           undisclosed: params.info.undisclosed,
           sitesAvailable: params.info.sitesAvailable,
           location: location,
