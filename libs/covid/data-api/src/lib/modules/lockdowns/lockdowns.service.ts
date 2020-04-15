@@ -93,7 +93,7 @@ export class LockdownsService extends BaseService<Lockdown> {
       return {
         status: 400,
         success: false,
-        message: 'Lockdown info must not be null or missing.'
+        message: 'Must provide lockdown info in body.'
       };
     } else {
       const phoneNumbers: EntityToValue[] = params.info.phoneNumbers.map((val, index) => {
@@ -155,12 +155,7 @@ export class LockdownsService extends BaseService<Lockdown> {
             }
           ]
         });
-        const findConditions: FindConditions<Lockdown> = {
-          guid: existingLockdown.guid
-        };
-        // await this.repo.update(findConditions, lockdownContainer);
-        const lockdownInfoContainer = await this.lockdownInfoRepo.create(lockdownInfo).save();
-        debugger;
+        await this.lockdownInfoRepo.create(lockdownInfo).save();
       } else {
         // Insert
 

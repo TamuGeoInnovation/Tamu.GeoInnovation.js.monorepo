@@ -158,7 +158,8 @@
 
     <div class="form-section" *ngIf="!readonly">
       <div class="form-section-body">
-        <tamu-gisc-button *ngIf="!formState.submitted" type="submit" [value]="!formState.submitting ? 'Submit' : 'Submitting...'" [disabled]="formState.submitting"></tamu-gisc-button>
+        <!-- <tamu-gisc-button *ngIf="!formState.submitted" type="submit" [value]="!formState.submitting ? 'Submit' : 'Submitting...'" [disabled]="formState.submitting"></tamu-gisc-button> -->
+        <tamu-gisc-button *ngIf="!formState.submitted" type="submit" [value]="!formState.submitting ? 'Submit' : 'Submitting...'"></tamu-gisc-button>
 
         <ng-container *ngIf="formState.submitted">
           <p><strong>Thank you! Your submission has been recorded and will be processed as soon as possible.</strong></p>

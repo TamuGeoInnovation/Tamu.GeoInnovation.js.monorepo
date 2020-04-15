@@ -25,6 +25,11 @@ export class SitesController extends BaseController<TestingSite> {
     return await this.service.getSitesForCounty(params.state, params.county);
   }
 
+  @Post('')
+  public async addTestingSite(@Body() body) {
+    return this.service.createOrUpdateTestingSite(body);
+  }
+
   // TODO: Fix adding testing sites
   /**
    Insert an un-validated testing site.
