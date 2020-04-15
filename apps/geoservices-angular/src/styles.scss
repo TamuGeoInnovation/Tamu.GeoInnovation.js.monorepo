@@ -16,7 +16,10 @@ $inactive-color: hsl(223, 15%, 60%);
 $lightened-inactive-color: lighten($inactive-color, 25%);
 
 $alert-color: #ef5350;
+$warning-color: #ffca28;
+
 $lightened-alert-color: lighten($alert-color, 25%);
+$lightened-warning-color: lighten($warning-color, 25%);
 
 $primary-text-color: #62707d;
 
@@ -964,6 +967,11 @@ table.floating-table {
   &.alert {
     border-color: $lightened-alert-color;
     background: lighten($lightened-alert-color, 10%);
+  }
+
+  &.warning {
+    border-color: $lightened-warning-color;
+    background: lighten($lightened-warning-color, 10%);
   }
 
   p {

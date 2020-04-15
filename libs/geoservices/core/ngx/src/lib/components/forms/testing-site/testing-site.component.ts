@@ -267,17 +267,19 @@ export class TestingSiteComponent implements OnInit {
     value.info.services = value.info.services.join(',');
     value.info.restrictions = value.info.restrictions.join(',');
 
-    this.formState.submitting = true;
-    this.form.disable();
+    // this.formState.submitting = true;
+    // this.form.disable();
 
     this.ts.submitSite(value).subscribe((res) => {
-      console.log(res);
-      this.formState.submitting = false;
-      this.formState.submitted = true;
+      // console.log(res);
+      // this.formState.submitting = false;
+      // this.formState.submitted = true;
 
-      setTimeout(() => {
-        this.router.navigate(['../'], { relativeTo: this.route });
-      }, 5000);
+      // setTimeout(() => {
+      //   this.router.navigate(['../'], { relativeTo: this.route });
+      // }, 5000);
     });
+
+    console.log(value);
   }
 }

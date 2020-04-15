@@ -29,6 +29,10 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
   }
 
   public async getActiveClaimsForEmail(email: string) {
+    if (!email || email === undefined || email === 'undefined') {
+      throw new Error('Invalid email');
+    }
+
     const user = await this.userRepo.findOne({ where: { email } });
 
     const lastClaim = await this.repo
@@ -46,13 +50,9 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     return lastClaim ? [lastClaim] : [];
   }
 
-  public async getActiveClaimsForCountyFips(countyFips: number | string) {
+  public async getActiveClaimsForCountyFips(countyFips: number | string): Promise<CountyClaim[]> {
     if (countyFips === undefined || countyFips === 'undefined') {
-      return {
-        status: 400,
-        success: false,
-        message: 'Invalid county fips'
-      };
+      throw new Error('Invalid county claim.');
     }
 
     const activeForCounty = await this.repo
@@ -65,6 +65,7 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
         countyFips: countyFips,
         statusType: STATUS.PROCESSING
       })
+      .orderBy('claim.created', 'DESC')
       .getOne();
 
     return activeForCounty ? [activeForCounty] : [];

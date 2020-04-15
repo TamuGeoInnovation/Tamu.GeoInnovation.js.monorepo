@@ -6,7 +6,6 @@ import {
   take,
   withLatestFrom,
   shareReplay,
-  map,
   pluck,
   filter,
   distinctUntilChanged,
@@ -252,7 +251,7 @@ export class CountyComponent implements OnInit, OnDestroy {
               county: {
                 // Use local county value if available.
                 // Will not be available for initial claims, so use form county value.
-                countyFips: county ? county.countyFips : formValue.county
+                countyFips: county && county.countyFips ? county.countyFips : formValue.county
               }
             },
             formValue.phoneNumbers.length > 0 ? formValue.phoneNumbers : undefined,

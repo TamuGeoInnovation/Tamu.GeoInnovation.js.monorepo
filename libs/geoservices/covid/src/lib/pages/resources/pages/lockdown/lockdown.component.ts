@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject, combineLatest } from 'rxjs';
 import { switchMap, pluck, withLatestFrom, filter, takeUntil, take } from 'rxjs/operators';
 
 import { County, User, FieldCategory, EntityValue } from '@tamu-gisc/covid/common/entities';
@@ -8,7 +8,8 @@ import {
   WebsiteTypesService,
   StatesService,
   LockdownsService,
-  PhoneNumberTypesService
+  PhoneNumberTypesService,
+  ActiveLockdown
 } from '@tamu-gisc/geoservices/data-access';
 import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
 import { DeepPartial } from 'typeorm';
@@ -30,6 +31,12 @@ export class LockdownComponent implements OnInit, OnDestroy {
   public localEmail: Observable<Partial<User['email']>>;
 
   public lockdownState: Observable<boolean>;
+
+  /**
+   * Describes if the current lockdown information was submitted by the
+   * locally stored user identity
+   */
+  public lockdownIdentityMatch: Subject<boolean> = new Subject();
 
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -123,11 +130,37 @@ export class LockdownComponent implements OnInit, OnDestroy {
         });
       });
 
-    this.localEmail
+    combineLatest([this.localEmail, this.localCounty])
       .pipe(
-        filter((email) => email !== undefined),
-        switchMap((email) => {
-          return this.ls.getActiveLockdownForEmail(email);
+        filter(([email, county]) => {
+          return email !== undefined && county && county.countyFips !== undefined;
+        }),
+        switchMap(([email, county]) => {
+          // Attempt to get an active lockdown entry for the current identity email
+          return this.ls.getActiveLockdownForEmail(email).pipe(
+            switchMap((al) => {
+              // If a lockdown entry for the email exists, the al.info will be defined
+              if (al.info !== undefined) {
+                this.lockdownIdentityMatch.next(true);
+                return of(al);
+              } else {
+                // If no existing lockdown entry for the current email, attempt to get the latest
+                // lockdown entry for the county= based on the claim
+                return this.ls.getLockdownForCounty(county.countyFips).pipe(
+                  switchMap((lc) => {
+                    // If lc.info exists, return that existing lockdown entry and mark it as
+                    // not matching the current users identity.
+                    if (lc && lc.info !== undefined) {
+                      this.lockdownIdentityMatch.next(false);
+                      return of(lc);
+                    } else {
+                      return of({} as ActiveLockdown);
+                    }
+                  })
+                );
+              }
+            })
+          );
         }),
         withLatestFrom(this.localEmail),
         takeUntil(this._$destroy)
@@ -141,12 +174,10 @@ export class LockdownComponent implements OnInit, OnDestroy {
             },
             info: {
               isLockdown: [res.info.isLockdown.toString()],
-              startDate: res.info.startDate.split('T')[0],
-              endDate: res.info.endDate.split('T')[0],
+              startDate: res.info.startDate ? res.info.startDate.split('T')[0] : undefined,
+              endDate: res.info.endDate ? res.info.endDate.split('T')[0] : undefined,
               protocol: res.info.protocol,
-              notes: res.info.notes,
-              // phoneNumbers: res.info.websites.map((p) => this.createPhoneNumberGroup(p)),
-              // websites: res.info.websites.map((w) => this.createWebsiteGroup(w))
+              notes: res.info.notes
             }
           };
 
@@ -215,10 +246,15 @@ export class LockdownComponent implements OnInit, OnDestroy {
     (this.form.get(['info', 'websites']) as FormArray).push(this.createWebsiteGroup());
   }
 
+  public removeFormArrayControl(collection: string, index: number) {
+    (this.form.get(['info', collection]) as FormArray).removeAt(index);
+  }
+
   public submitLockdown() {
     const lockdown = this.form.getRawValue();
 
     lockdown.info.isLockdown = lockdown.info.isLockdown[0] === 'true' ? true : false;
+    lockdown.info.protocol = lockdown.info.isLockdown === true ? lockdown.info.protocol : undefined;
     lockdown.info.startDate = lockdown.info.isLockdown === true ? lockdown.info.startDate : undefined;
     lockdown.info.endDate = lockdown.info.isLockdown === true ? lockdown.info.endDate : undefined;
 

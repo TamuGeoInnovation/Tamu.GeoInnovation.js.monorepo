@@ -68,7 +68,7 @@ export class SitesService extends BaseService<TestingSite> {
         status: 400,
         success: false,
         message: 'Must provide site info in body.'
-      }
+      };
     } else {
       const phoneNumbers: EntityToValue[] = params.info.phoneNumbers.map((val, index) => {
         return {
@@ -94,6 +94,54 @@ export class SitesService extends BaseService<TestingSite> {
         };
       });
 
+      const operationState = params.info.status
+        ? {
+            entityValue: {
+              value: {
+                value: '',
+                type: params.info.status,
+                category: CATEGORY.SITE_OPERATIONAL_STATUS
+              }
+            }
+          }
+        : undefined;
+
+      const owners: EntityToValue[] = params.info.owners.split(',').map((val, index) => {
+        return {
+          entityValue: {
+            value: {
+              value: '',
+              type: val,
+              category: CATEGORY.SITE_OWNERS
+            }
+          }
+        };
+      });
+
+      const restrictions: EntityToValue[] = params.info.restrictions.split(',').map((val, index) => {
+        return {
+          entityValue: {
+            value: {
+              value: '',
+              type: val,
+              category: CATEGORY.SITE_RESTRICTIONS
+            }
+          }
+        };
+      });
+
+      const services: EntityToValue[] = params.info.services.split(',').map((val, index) => {
+        return {
+          entityValue: {
+            value: {
+              value: '',
+              type: val,
+              category: CATEGORY.SITE_SERVICES
+            }
+          }
+        };
+      });
+
       const entStatus = this.entityStatusRepo.create({
         type: {
           id: STATUS.PROCESSING
@@ -109,12 +157,19 @@ export class SitesService extends BaseService<TestingSite> {
         country: params.location.country,
         county: params.location.county,
         state: params.location.state,
-        zip: params.location.zip,
-      }
+        zip: params.location.zip
+      };
 
       if (existingTestingSite) {
         testingSiteInfo = {
-          responses: [...phoneNumbers, ...websites],
+          responses: [
+            ...phoneNumbers,
+            ...websites,
+            ...owners,
+            ...restrictions,
+            ...services,
+            (operationState as unknown) as EntityToValue
+          ],
           undisclosed: params.info.undisclosed,
           sitesAvailable: params.info.sitesAvailable,
           location: location,
@@ -126,7 +181,7 @@ export class SitesService extends BaseService<TestingSite> {
           driveThroughCapacity: params.info.driveThroughCapacity,
           notes: params.info.notes,
           statuses: [entStatus],
-          testingSite: existingTestingSite,
+          testingSite: existingTestingSite
         };
 
         testingSiteContainer = this.repo.create({
@@ -140,10 +195,18 @@ export class SitesService extends BaseService<TestingSite> {
             }
           ]
         });
-        await testingSiteContainer.save();
+
+        return await testingSiteContainer.save();
       } else {
         testingSiteInfo = {
-          responses: [...phoneNumbers, ...websites],
+          responses: [
+            ...phoneNumbers,
+            ...websites,
+            ...owners,
+            ...restrictions,
+            ...services,
+            (operationState as unknown) as EntityToValue
+          ],
           undisclosed: params.info.undisclosed,
           sitesAvailable: params.info.sitesAvailable,
           location: location,
@@ -154,8 +217,8 @@ export class SitesService extends BaseService<TestingSite> {
           driveThrough: params.info.driveThrough,
           driveThroughCapacity: params.info.driveThroughCapacity,
           notes: params.info.notes,
-          statuses: [entStatus],
-        }
+          statuses: [entStatus]
+        };
 
         testingSiteContainer = this.repo.create({
           claim: claim,
@@ -168,10 +231,9 @@ export class SitesService extends BaseService<TestingSite> {
             }
           ]
         });
-        await testingSiteContainer.save();
+
+        return await testingSiteContainer.save();
       }
-
-
     }
   }
 
@@ -184,7 +246,7 @@ export class SitesService extends BaseService<TestingSite> {
     const countyClaims: CountyClaim[] = await this.countyClaimRepo.find({
       where: {
         county: county
-      },
+      }
     });
 
 

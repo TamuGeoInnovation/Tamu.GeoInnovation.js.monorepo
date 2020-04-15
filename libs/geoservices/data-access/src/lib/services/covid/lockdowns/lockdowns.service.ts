@@ -18,8 +18,20 @@ export class LockdownsService {
     return this.http.post<Partial<Lockdown>>(this.resource, payload);
   }
 
+  /**
+   * Returns the lockdown information for a user by their active claim.
+   */
   public getActiveLockdownForEmail(email: string) {
     return this.http.get<Partial<ActiveLockdown>>(`${this.resource}/active/email/${email}`);
+  }
+
+  /**
+   * Returns the latest lockdown submission for the county.
+   *
+   * This does not necessarily return a validated entry.
+   */
+  public getLockdownForCounty(countyFips: number) {
+    return this.http.get<Partial<ActiveLockdown>>(`${this.resource}/active/county/${countyFips}`);
   }
 }
 
