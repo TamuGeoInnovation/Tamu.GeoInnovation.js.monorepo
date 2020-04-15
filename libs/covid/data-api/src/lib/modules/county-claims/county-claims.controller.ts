@@ -12,13 +12,31 @@ export class CountyClaimsController extends BaseController<CountyClaim> {
   }
 
   @Get('active/:countyFips')
-  public getActiveClaimsForCountyFips(@Param() params) {
-    return this.service.getActiveClaimsForCountyFips(params.countyFips);
+  public async getActiveClaimsForCountyFips(@Param() params) {
+    try {
+      const claims = await this.service.getActiveClaimsForCountyFips(params.countyFips);
+      return claims;
+    } catch (err) {
+      return {
+        status: 500,
+        success: false,
+        message: err.message
+      };
+    }
   }
 
   @Get('claim/active/:email')
-  public getActiveClaimsForUser(@Param() param) {
-    return this.service.getActiveClaimsForEmail(param.email);
+  public async getActiveClaimsForUser(@Param() param) {
+    try {
+      const claims = await this.service.getActiveClaimsForEmail(param.email);
+      return claims;
+    } catch (err) {
+      return {
+        status: 500,
+        success: false,
+        message: err.message
+      };
+    }
   }
 
   @Post('claim')

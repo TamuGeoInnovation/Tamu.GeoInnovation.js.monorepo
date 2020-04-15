@@ -167,7 +167,52 @@ export class LockdownsService extends BaseService<Lockdown> {
       return [];
     }
 
-    const lastInfo = await this.lockdownInfoRepo
+    const lastInfo = await this.getLatestLockdownInfoForLockdown(lockdown);
+
+    // Categorize phone numbers and websites from the last info responses
+    if (lastInfo && lastInfo.responses && lastInfo.responses.length > 0) {
+      return this.flattenLockdownAndInfo(lockdown, lastInfo);
+    } else {
+      return {};
+    }
+  }
+
+  /**
+   * Returns the last lockdown entry, including last lockdown info submission
+   * for a provided county fips, independent of user.
+   */
+  public async getLockdownForCounty(countyFips: number | string) {
+    const lockdown = await this.getLatestLockDownForCounty(countyFips);
+
+    const info = await this.getLatestLockdownInfoForLockdown(lockdown);
+
+    return this.flattenLockdownAndInfo(lockdown, info);
+  }
+
+  /**
+   * Gets the last lockdown info submission for a lockdown entry, independent of user
+   */
+  private async getLatestLockDownForCounty(countyFips: number | string) {
+    return await this.repo
+      .createQueryBuilder('lockdown')
+      .leftJoinAndSelect('lockdown.claim', 'claim')
+      .leftJoinAndSelect('claim.county', 'county')
+      .where('county.countyFips = :countyFips', {
+        countyFips: countyFips
+      })
+      .orderBy('lockdown.created', 'DESC')
+      .getOne();
+  }
+
+  /**
+   * Gets the last lockdown info submission for a given lockdown, independent of user.
+   */
+  private async getLatestLockdownInfoForLockdown(lockdown: Lockdown) {
+    if (!lockdown) {
+      throw new Error('Invalid lockdown');
+    }
+    
+    return await this.lockdownInfoRepo
       .createQueryBuilder('info')
       .leftJoinAndSelect('info.responses', 'responses')
       .leftJoinAndSelect('responses.entityValue', 'entityValue')
@@ -180,33 +225,34 @@ export class LockdownsService extends BaseService<Lockdown> {
       })
       .orderBy('info.created', 'DESC')
       .getOne();
+  }
 
-    // Categorize phone numbers and websites from the last info responses
-    if (lastInfo && lastInfo.responses && lastInfo.responses.length > 0) {
-      const categorized = lastInfo.responses.reduce(
-        (acc, curr) => {
-          if (curr.entityValue.value.category.id === CATEGORY.PHONE_NUMBERS) {
-            acc.phoneNumbers.push(curr.entityValue);
-          }
-
-          if (curr.entityValue.value.category.id === CATEGORY.WEBSITES) {
-            acc.websites.push(curr.entityValue);
-          }
-
-          return acc;
-        },
-        { phoneNumbers: [], websites: [] } as { phoneNumbers: EntityValue[]; websites: EntityValue[] }
-      );
-
-      return {
-        claim: lockdown.claim,
-        info: {
-          ...lastInfo,
-          ...categorized
+  /**
+   * Combines a lockdown and lockdown info entity, as well as categorizes the responses
+   * by value category ID (websites vs phone numbers)
+   */
+  private flattenLockdownAndInfo(lockdown, info) {
+    const categorized = info.responses.reduce(
+      (acc, curr) => {
+        if (curr.entityValue.value.category.id === CATEGORY.PHONE_NUMBERS) {
+          acc.phoneNumbers.push(curr.entityValue);
         }
-      };
-    } else {
-      return {};
-    }
+
+        if (curr.entityValue.value.category.id === CATEGORY.WEBSITES) {
+          acc.websites.push(curr.entityValue);
+        }
+
+        return acc;
+      },
+      { phoneNumbers: [], websites: [] } as { phoneNumbers: EntityValue[]; websites: EntityValue[] }
+    );
+
+    return {
+      claim: lockdown.claim,
+      info: {
+        ...info,
+        ...categorized
+      }
+    };
   }
 }

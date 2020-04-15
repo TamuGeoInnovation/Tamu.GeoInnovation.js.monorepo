@@ -16,9 +16,28 @@ export class LockdownsController extends BaseController<Lockdown> {
     return this.service.getActiveLockDownForEmail(param.email);
   }
 
+  @Get('active/county/:countyFips')
+  public async getLockdownForCounty(@Param() params) {
+    try {
+      const countyLockdown = await this.service.getLockdownForCounty(params.countyFips);
+
+      return countyLockdown;
+    } catch (err) {
+      return {
+        status: 500,
+        success: false,
+        message: err.message
+      };
+    }
+  }
+
   @Get('')
   public async getValidated() {
-    return await this.service.repo.find({ where: { validated: true } });
+    return {
+      status: 501,
+      success: false,
+      message: 'Not implemented.'
+    };
   }
 
   /**
@@ -26,7 +45,6 @@ export class LockdownsController extends BaseController<Lockdown> {
    */
   @Post('')
   public async addLockdown(@Body() body) {
-    // TODO: fix this call
     return this.service.createOrUpdateLockdown(body);
   }
 
@@ -35,6 +53,11 @@ export class LockdownsController extends BaseController<Lockdown> {
     // const lockdown = await this.service.repo.findOne({ guid: params.lockdownId });
     // lockdown.validated = true;
     // return lockdown.save();
+    return {
+      status: 501,
+      success: false,
+      message: 'Not implemented.'
+    };
   }
 
   @Delete('/validate/:lockdownId')
@@ -42,5 +65,10 @@ export class LockdownsController extends BaseController<Lockdown> {
     // const lockdown = await this.service.repo.findOne({ guid: params.lockdownId });
     // lockdown.validated = false;
     // return lockdown.save();
+    return {
+      status: 501,
+      success: false,
+      message: 'Not implemented.'
+    };
   }
 }
