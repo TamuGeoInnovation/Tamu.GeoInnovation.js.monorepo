@@ -3,7 +3,6 @@ import { BaseController } from '../base/base.controller';
 
 import { TestingSite } from '@tamu-gisc/covid/common/entities';
 import { SitesService } from './sites.service';
-import { DeepPartial } from 'typeorm';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
 
 @Controller('sites')
