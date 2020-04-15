@@ -35,11 +35,11 @@
 
         <div class="form-collection row">
           <tamu-gisc-textbox formControlName="city" type="text" floatLabel="true" placeholder="City"></tamu-gisc-textbox>
-          <tamu-gisc-textbox formControlName="state" type="text" floatLabel="true" placeholder="State"></tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="state" type="text" floatLabel="true" placeholder="State" disabled="true"></tamu-gisc-textbox>
         </div>
 
         <div class="form-collection row">
-          <tamu-gisc-textbox formControlName="county" type="text" floatLabel="true" placeholder="County"></tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="county" type="text" floatLabel="true" placeholder="County" disabled="true"></tamu-gisc-textbox>
           <tamu-gisc-textbox type="text" formControlName="zip" floatLabel="true" placeholder="Zip"></tamu-gisc-textbox>
         </div>
       </div>
@@ -111,8 +111,10 @@
       <div [formArrayName]="'phoneNumbers'" *ngIf="form.get(['info', 'phoneNumbers'])['controls'].length > 0; else promptAddPhoneNumber" class="form-section-body">
         <ng-container *ngFor="let ph of form.get(['info', 'phoneNumbers'])['controls']; let i = index">
           <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
-            <tamu-gisc-textbox formControlName="number" type="tel" placeholder="Phone Number" floatLabel="true"></tamu-gisc-textbox>
-            <tamu-gisc-select formControlName="type" [data]="(phoneTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
+            <ng-container formGroupName="value">
+              <tamu-gisc-textbox formControlName="value" type="tel" placeholder="Phone Number" floatLabel="true"></tamu-gisc-textbox>
+              <tamu-gisc-select formControlName="type" [data]="(phoneTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
+            </ng-container>
           </div>
         </ng-container>
       </div>
@@ -139,8 +141,10 @@
       <div [formArrayName]="'websites'" *ngIf="form.get(['info', 'websites'])['controls'].length > 0; else promptAddWebsite" class="form-section-body">
         <ng-container *ngFor="let ph of form.get(['info', 'websites'])['controls']; let i = index">
           <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
-            <tamu-gisc-textbox formControlName="url" type="text" placeholder="Website URL" floatLabel="true"></tamu-gisc-textbox>
-            <tamu-gisc-select formControlName="type" [data]="(websitesTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
+            <ng-container formGroupName="value">
+              <tamu-gisc-textbox formControlName="value" type="text" placeholder="Website URL" floatLabel="true"></tamu-gisc-textbox>
+              <tamu-gisc-select formControlName="type" [data]="(websitesTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
+            </ng-container>
           </div>
         </ng-container>
       </div>
@@ -158,8 +162,8 @@
 
     <div class="form-section" *ngIf="!readonly">
       <div class="form-section-body">
-        <tamu-gisc-button *ngIf="!formState.submitted" type="submit" [value]="!formState.submitting ? 'Submit' : 'Submitting...'" [disabled]="formState.submitting"></tamu-gisc-button>
-        <!-- <tamu-gisc-button *ngIf="!formState.submitted" type="submit" [value]="!formState.submitting ? 'Submit' : 'Submitting...'"></tamu-gisc-button> -->
+        <!-- <tamu-gisc-button *ngIf="!formState.submitted" type="submit" [value]="!formState.submitting ? 'Submit' : 'Submitting...'" [disabled]="formState.submitting"></tamu-gisc-button> -->
+        <tamu-gisc-button type="submit" [value]="!formState.submitting ? 'Submit' : 'Submitting...'"></tamu-gisc-button>
 
         <ng-container *ngIf="formState.submitted">
           <p><strong>Thank you! Your submission has been recorded and will be processed as soon as possible.</strong></p>
