@@ -58,7 +58,7 @@ export class LockdownsService extends BaseService<Lockdown> {
       return {
         status: 400,
         success: false,
-        message: 'Lockdown info must not be null or missing.'
+        message: 'Must provide lockdown info in body.'
       };
     } else {
       const phoneNumbers: EntityToValue[] = params.info.phoneNumbers.map((val, index) => {
@@ -117,7 +117,7 @@ export class LockdownsService extends BaseService<Lockdown> {
           ]
         });
 
-        const lockdownInfoContainer = await this.lockdownInfoRepo.create(lockdownInfo).save();
+        await this.lockdownInfoRepo.create(lockdownInfo).save();
       } else {
         // If there is no existing lockdown for the active claim, create a new lockdown and associated
         // lockdown info
@@ -132,7 +132,6 @@ export class LockdownsService extends BaseService<Lockdown> {
           protocol: params.info.protocol,
           statuses: [entStatus]
         };
-        // const lockdownInfoContainer = this.lockdownInfoRepo.create(lockdownInfo);
 
         lockdownContainer = this.repo.create({
           claim: claim,
@@ -211,7 +210,7 @@ export class LockdownsService extends BaseService<Lockdown> {
     if (!lockdown) {
       throw new Error('Invalid lockdown');
     }
-    
+
     return await this.lockdownInfoRepo
       .createQueryBuilder('info')
       .leftJoinAndSelect('info.responses', 'responses')

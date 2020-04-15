@@ -223,6 +223,61 @@ export class LockdownInfo extends GuidIdentity {
 
 }
 
+@Entity({ name: 'testing_sites' })
+export class TestingSite extends GuidIdentity {
+  @ManyToOne((type) => CountyClaim, { cascade: true })
+  public claim: CountyClaim;
+
+  @OneToMany((type) => TestingSiteInfo, (info) => info.testingSite, { cascade: true })
+  public infos: TestingSiteInfo[];
+
+  @OneToMany((type) => EntityStatus, (status) => status.testingSiteStatus, { cascade: true })
+  public statuses: EntityStatus[];
+}
+
+@Entity({ name: 'testing_site_infos' })
+export class TestingSiteInfo extends GuidIdentity {
+  @OneToMany((type) => EntityToValue, (entity) => entity.testingSiteInfo, { cascade: true })
+  public responses: EntityToValue[];
+
+  @Column({ nullable: true })
+  public undisclosed: boolean;
+
+  @Column({ nullable: true })
+  public sitesAvailable: boolean;
+
+  @OneToOne((type) => Location, { cascade: true })
+  @JoinColumn()
+  public location: Location;
+
+  @Column({ nullable: true })
+  public locationName: string;
+
+  @Column({ nullable: true })
+  public locationPhoneNumber: string;
+
+  @Column({ nullable: true })
+  public hoursOfOperation: string;
+
+  @Column({ nullable: true })
+  public capacity: number;
+
+  @Column({ nullable: true })
+  public driveThrough: boolean;
+
+  @Column({ nullable: true })
+  public driveThroughCapacity: number;
+
+  @Column({ type: 'varchar', length: 'max', nullable: true })
+  public notes: string;
+
+  @OneToMany((type) => EntityStatus, (status) => status.testingSiteInfoStatus, { cascade: true })
+  public statuses: EntityStatus[];
+
+  @ManyToOne((type) => TestingSite, (testingSite) => testingSite.infos)
+  public testingSite: TestingSite;
+}
+
 @Entity({ name: 'entity_to_values' })
 export class EntityToValue extends GuidIdentity {
   @ManyToOne((type) => EntityValue, (value) => value.entityToValue, { cascade: true })
@@ -233,6 +288,9 @@ export class EntityToValue extends GuidIdentity {
 
   @ManyToOne((type) => LockdownInfo, (value) => value.responses)
   public lockdownInfo: LockdownInfo;
+
+  @ManyToOne((type) => TestingSiteInfo, (value) => value.responses)
+  public testingSiteInfo: TestingSiteInfo;
 }
 
 @Entity({ name: 'status_types' })
@@ -260,48 +318,12 @@ export class EntityStatus extends GuidIdentity {
 
   @ManyToOne((type) => Lockdown, (info) => info.statuses)
   public lockdownStatus: Lockdown
+  
+  @ManyToOne((type) => TestingSiteInfo, (info) => info.statuses)
+  public testingSiteInfoStatus: TestingSiteInfo;
+
+  @ManyToOne((type) => TestingSite, (info) => info.statuses)
+  public testingSiteStatus: Lockdown
 }
 
-@Entity({ name: 'testing_site_infos' })
-export class TestingSiteInfo extends GuidIdentity {
-  @Column({ nullable: true })
-  public undisclosed: boolean;
 
-  @Column({ nullable: true })
-  public sitesAvailable: boolean;
-
-  @Column({ nullable: true })
-  public locationName: string;
-
-  @Column({ nullable: true })
-  public locationPhoneNumber: string;
-
-  @Column({ nullable: true })
-  public hoursOfOperation: string;
-
-  @Column({ nullable: true })
-  public capacity: number;
-
-  @Column({ nullable: true })
-  public driveThrough: boolean;
-
-  @Column({ nullable: true })
-  public driveThroughCapacity: number;
-
-  @Column({ type: 'varchar', length: 'max', nullable: true })
-  public notes: string;
-}
-
-@Entity({ name: 'testing_sites' })
-export class TestingSite extends GuidIdentity {
-  @ManyToOne((type) => CountyClaim, { cascade: true })
-  public claim: CountyClaim;
-
-  @OneToOne((type) => Location, { cascade: true })
-  @JoinColumn()
-  public location: Location;
-
-  @OneToOne((type) => TestingSiteInfo, { cascade: true })
-  @JoinColumn()
-  public info: TestingSiteInfo;
-}
