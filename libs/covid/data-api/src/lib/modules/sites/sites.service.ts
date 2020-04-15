@@ -9,6 +9,8 @@ import {
   User,
   EntityToValue,
   EntityStatus,
+  County,
+  CountyClaim,
 } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
@@ -18,6 +20,8 @@ import { CATEGORY, STATUS } from '@tamu-gisc/covid/common/enums';
 @Injectable()
 export class SitesService extends BaseService<TestingSite> {
   constructor(
+    @InjectRepository(County) public countyRepo: Repository<County>,
+    @InjectRepository(CountyClaim) public countyClaimRepo: Repository<CountyClaim>,
     @InjectRepository(TestingSite) public repo: Repository<TestingSite>,
     @InjectRepository(TestingSiteInfo) public testingSiteInfoRepo: Repository<TestingSiteInfo>,
     @InjectRepository(Location) public locationRepo: Repository<Location>,
@@ -108,7 +112,7 @@ export class SitesService extends BaseService<TestingSite> {
         zip: params.location.zip,
       }
 
-      if(existingTestingSite) {
+      if (existingTestingSite) {
         testingSiteInfo = {
           responses: [...phoneNumbers, ...websites],
           undisclosed: params.info.undisclosed,
@@ -171,12 +175,48 @@ export class SitesService extends BaseService<TestingSite> {
     }
   }
 
-  public async getSitesForCounty(state: string, county: string) {
-    return this.repo.find({
+  public async getSitesForCounty(state: string, countyName: string) {
+    const county: County = await this.countyRepo.findOne({
       where: {
-        state: state,
+        name: countyName
+      }
+    });
+    const countyClaims: CountyClaim[] = await this.countyClaimRepo.find({
+      where: {
         county: county
       },
+    });
+
+
+    const ret = await this.getAllTestSites(countyClaims);
+    return {
+      ...ret
+    };
+  }
+
+  public async getAllTestSites(countyClaims: CountyClaim[]): Promise<TestingSite[]> {
+    const allTestSites: TestingSite[] = [];
+    return new Promise((resolve, reject) => {
+      countyClaims.map((countyClaim, index) => {
+        this.repo.find({
+          where: {
+            claim: countyClaim
+          },
+          relations: [
+            'infos',
+            'infos.location',
+          ]
+        }).then((testSites: TestingSite[]) => {
+          if (testSites) {
+            allTestSites.push(...testSites)
+          }
+          if (index == countyClaims.length - 1) {
+            resolve(allTestSites);
+          }
+        });
+
+      });
+      // resolve(allTestSites)
     });
   }
 }
