@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Patch, Param, Delete, Get } from '@nestjs/common';
 
-import { State, County } from '@tamu-gisc/covid/common/entities';
+import { State } from '@tamu-gisc/covid/common/entities';
 
 import { StatesService } from './states.service';
 import { BaseController } from '../base/base.controller';

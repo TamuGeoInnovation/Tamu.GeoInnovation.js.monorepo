@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { FieldType, CategoryValue } from '@tamu-gisc/covid/common/entities';
+import { FieldType } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 
