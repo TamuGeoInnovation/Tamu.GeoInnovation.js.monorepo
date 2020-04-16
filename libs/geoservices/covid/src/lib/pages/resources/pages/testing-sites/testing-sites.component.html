@@ -16,13 +16,17 @@
     </div>
 
     <ng-template #siteList>
-      <p>The following is a list of sites submitted for this county. <a [routerLink]="['./create']">Add a testing site</a></p>
+      <div class="flex flex-column align-center">
+        <p>The following is a list of sites submitted for this county. <a [routerLink]="['./create']">Add a testing site</a></p>
 
-      <div class="column8">
-        <tamu-gisc-accordion *ngFor="let site of sites | async">
-          <tamu-gisc-accordion-header>{{site.info.locationName ? site.info.locationName : site.location.address1 ? site.location.address1 : 'Site'}}</tamu-gisc-accordion-header>
-          <tamu-gisc-accordion-content><tamu-gisc-testing-site [readonly]="true" [formData]="site"></tamu-gisc-testing-site></tamu-gisc-accordion-content>
-        </tamu-gisc-accordion>
+        <div class="spinning-loader" *ngIf="!(sites | async)"></div>
+
+        <div class="column8">
+          <tamu-gisc-accordion *ngFor="let site of sites | async">
+            <tamu-gisc-accordion-header>{{site.info.locationName ? site.info.locationName : site.location.address1 ? site.location.address1 : 'Site'}}</tamu-gisc-accordion-header>
+            <tamu-gisc-accordion-content><tamu-gisc-testing-site [readonly]="true" [formData]="site"></tamu-gisc-testing-site></tamu-gisc-accordion-content>
+          </tamu-gisc-accordion>
+        </div>
       </div>
     </ng-template>
   </ng-template>

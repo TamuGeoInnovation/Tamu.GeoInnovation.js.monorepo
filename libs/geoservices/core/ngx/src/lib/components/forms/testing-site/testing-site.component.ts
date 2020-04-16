@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { switchMap, pluck, filter, withLatestFrom } from 'rxjs/operators';
@@ -68,9 +67,6 @@ export class TestingSiteComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    // private localStore: LocalStoreService,
-    private router: Router,
-    private route: ActivatedRoute,
     private st: StatesService,
     private rt: RestrictionsService,
     private cl: WebsiteTypesService,
@@ -201,22 +197,22 @@ export class TestingSiteComponent implements OnInit {
 
       patch.info.undisclosed = [(!patch.info.undisclosed).toString()];
       patch.info.driveThrough = [patch.info.driveThrough.toString()];
-      patch.info.status = patch.info.status[0] && patch.info.status[0].guid ? patch.info.status[0].guid : undefined;
-      patch.info.owners = patch.info.owners.map((o) => o.guid);
-      patch.info.restrictions = patch.info.restrictions.map((r) => r.guid);
-      patch.info.services = patch.info.services.map((s) => s.guid);
+      patch.info.status = patch.info.status[0] && patch.info.status ? patch.info.status : undefined;
+      patch.info.owners = patch.info.owners.split(',');
+      patch.info.restrictions = patch.info.restrictions.split(',');
+      patch.info.services = patch.info.services.split(',');
 
       this.form.patchValue(patch);
 
-      // if (patch.info.phoneNumbers.length > 0) {
-      //   const phc = this.form.get(['info', 'phoneNumbers']) as FormArray;
-      //   patch.info.phoneNumbers.forEach((n) => phc.push(this.createPhoneNumberGroup(n)));
-      // }
+      if (patch.info.phoneNumbers.length > 0) {
+        const phc = this.form.get(['info', 'phoneNumbers']) as FormArray;
+        patch.info.phoneNumbers.forEach((n) => phc.push(this.createPhoneNumberGroup(n)));
+      }
 
-      // if (patch.info.websites.length > 0) {
-      //   const wc = this.form.get(['info', 'websites']) as FormArray;
-      //   patch.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
-      // }
+      if (patch.info.websites.length > 0) {
+        const wc = this.form.get(['info', 'websites']) as FormArray;
+        patch.info.websites.forEach((w) => wc.push(this.createWebsiteGroup(w)));
+      }
     }
   }
 
@@ -232,7 +228,7 @@ export class TestingSiteComponent implements OnInit {
     return {
       value: this.fb.group({
         value: number && number.value && number.value.value,
-        type: number && number.value && number.value.type
+        type: number && number.value && number.value.type.guid
       })
     };
   }
@@ -241,7 +237,7 @@ export class TestingSiteComponent implements OnInit {
     return {
       value: this.fb.group({
         value: website && website.value && website.value.value,
-        type: website && website.value && website.value.type
+        type: website && website.value && website.value.type.guid
       })
     };
   }
@@ -267,17 +263,13 @@ export class TestingSiteComponent implements OnInit {
     value.info.services = value.info.services.join(',');
     value.info.restrictions = value.info.restrictions.join(',');
 
-    // this.formState.submitting = true;
-    // this.form.disable();
+    this.formState.submitting = true;
+    this.form.disable();
 
     this.ts.submitSite(value).subscribe((res) => {
-      // console.log(res);
-      // this.formState.submitting = false;
-      // this.formState.submitted = true;
-
-      // setTimeout(() => {
-      //   this.router.navigate(['../'], { relativeTo: this.route });
-      // }, 5000);
+      console.log(res);
+      this.formState.submitting = false;
+      this.formState.submitted = true;
     });
 
     console.log(value);
