@@ -29,7 +29,15 @@
       <div *ngIf="!(countyClaimable | async) && (countyClaims | async)?.length > 0 && (this.form.controls.county.valueChanges | async) !== 'undefined' && (this.form.controls.state.valueChanges | async) !== 'undefined'" class="form-section">
         <div class="form-section-body">
           <div class="inform-context alert">
-            <p>This county has been claimed by another user. Please choose another county.</p>
+            <p>This county is actively claimed by another user. Please choose another county.</p>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="(countyContributedByOther | async) && (countyClaimable | async) && !(localCounty | async)?.countyFips && (this.form.controls.county.valueChanges | async) !== 'undefined' && (this.form.controls.county.valueChanges | async) !== undefined && (this.form.controls.state.valueChanges | async) !== 'undefined' && (this.form.controls.state.valueChanges | async) !== undefined" class="form-section">
+        <div class="form-section-body">
+          <div class="inform-context warning">
+            <p>This county has been previously claimed and has associated data. Please consider claiming a county with no entered data.</p>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Observable, Subject, of, merge, forkJoin, EMPTY } from 'rxjs';
+import { Observable, Subject, of, merge, forkJoin, EMPTY, combineLatest } from 'rxjs';
 import {
   switchMap,
   take,
@@ -12,6 +12,7 @@ import {
   takeUntil,
   timeoutWith
 } from 'rxjs/operators';
+import { DeepPartial } from 'typeorm';
 
 import { County, State, User, CountyClaim, FieldCategory, EntityValue } from '@tamu-gisc/covid/common/entities';
 import {
@@ -24,7 +25,6 @@ import {
   WebsitesService
 } from '@tamu-gisc/geoservices/data-access';
 import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
-import { DeepPartial } from 'typeorm';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
@@ -46,6 +46,7 @@ export class CountyComponent implements OnInit, OnDestroy {
   public countyClaims: Observable<Array<Partial<CountyClaim>>>;
 
   public countyClaimable: Observable<boolean>;
+  public countyContributedByOther: Observable<boolean>;
 
   public localCounty: Observable<DeepPartial<County>>;
   public localIdentity: Observable<Partial<User>>;
@@ -205,6 +206,15 @@ export class CountyComponent implements OnInit, OnDestroy {
       shareReplay(1)
     );
 
+    this.countyContributedByOther = combineLatest([this.formCounty, this.localIdentity]).pipe(
+      switchMap(([countyFips, user]) => {
+        return this.cl.getHistoricClaimsForCounty(countyFips);
+      }),
+      switchMap((historicClaims) => {
+        return of(historicClaims.length > 0);
+      })
+    );
+
     this.countyClaimable = merge(this.countyClaims, this.form.get('county').valueChanges).pipe(
       withLatestFrom(this.localIdentity),
       switchMap(([claims, user]) => {
@@ -268,6 +278,11 @@ export class CountyComponent implements OnInit, OnDestroy {
     this.is.unregisterCountyClaim();
 
     this.form.reset();
+
+    this.form.patchValue({
+      state: undefined,
+      county: undefined
+    });
   }
 
   public createPhoneNumberGroup(number?: DeepPartial<EntityValue>): FormGroup {

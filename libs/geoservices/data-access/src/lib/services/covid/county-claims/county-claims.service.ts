@@ -19,6 +19,10 @@ export class CountyClaimsService {
     return this.http.get<Array<Partial<CountyClaim>>>(`${this.resource}/active/${countyFips}`);
   }
 
+  public getHistoricClaimsForCounty(countyFips: number) {
+    return this.http.get<Array<Partial<CountyClaim>>>(`${this.resource}/county/${countyFips}/1`);
+  }
+
   public getActiveClaimsForUser(email: string) {
     return this.http.get<Partial<Array<CountyClaim>>>(`${this.resource}/claim/active/${email}`);
   }
