@@ -2,7 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial } from 'typeorm';
 
-import { TestingSite, TestingSiteInfo, Location, User, EntityToValue, EntityStatus } from '@tamu-gisc/covid/common/entities';
+import {
+  TestingSite,
+  TestingSiteInfo,
+  Location,
+  User,
+  EntityToValue,
+  EntityValue,
+  EntityStatus,
+  County,
+  CountyClaim,
+} from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
@@ -11,6 +21,8 @@ import { CATEGORY, STATUS } from '@tamu-gisc/covid/common/enums';
 @Injectable()
 export class SitesService extends BaseService<TestingSite> {
   constructor(
+    @InjectRepository(County) public countyRepo: Repository<County>,
+    @InjectRepository(CountyClaim) public countyClaimRepo: Repository<CountyClaim>,
     @InjectRepository(TestingSite) public repo: Repository<TestingSite>,
     @InjectRepository(TestingSiteInfo) public testingSiteInfoRepo: Repository<TestingSiteInfo>,
     @InjectRepository(Location) public locationRepo: Repository<Location>,
@@ -85,14 +97,14 @@ export class SitesService extends BaseService<TestingSite> {
 
       const operationState = params.info.status
         ? {
-            entityValue: {
-              value: {
-                value: '',
-                type: params.info.status,
-                category: CATEGORY.SITE_OPERATIONAL_STATUS
-              }
+          entityValue: {
+            value: {
+              value: '',
+              type: params.info.status,
+              category: CATEGORY.SITE_OPERATIONAL_STATUS
             }
           }
+        }
         : undefined;
 
       const owners: EntityToValue[] =
@@ -232,12 +244,113 @@ export class SitesService extends BaseService<TestingSite> {
     }
   }
 
-  public async getSitesForCounty(state: string, county: string) {
-    return this.repo.find({
+  public async getSitesForCounty(state: string, countyName: string) {
+    const county: County = await this.countyRepo.findOne({
       where: {
-        state: state,
+        name: countyName
+      }
+    });
+    const countyClaims: CountyClaim[] = await this.countyClaimRepo.find({
+      where: {
         county: county
       }
     });
+
+
+    // const ret = await this.getAllTestSites(countyClaims);
+    // ret.map((testSite, index) => {
+    //   this.flattenTestSiteAndInfo(testSite, testSite.infos);
+    // })
+    const testSites = await this.getAllTestSites(countyClaims);
+    const mappedTestSites = testSites.map((testSite, index) => {
+      const infos = testSite.infos;
+      const ret = this.flattenTestSiteAndInfo(testSite, infos);
+      return ret;
+    });
+
+
+
+    debugger
+    return {
+      ...mappedTestSites
+    };
   }
+
+  public async getAllTestSites(countyClaims: CountyClaim[]): Promise<TestingSite[]> {
+    const allTestSites: TestingSite[] = [];
+    return new Promise((resolve, reject) => {
+      countyClaims.map((countyClaim, index) => {
+        this.repo.find({
+          where: {
+            claim: countyClaim
+          },
+          relations: [
+            'infos',
+            'infos.responses',
+            'infos.responses.entityValue',
+            'infos.responses.entityValue.value',
+            'infos.responses.entityValue.value.category',
+            // 'infos.responses.entityValue.value.category.id',
+            'infos.responses.testingSiteInfo',
+            'infos.location',
+          ]
+        }).then((testSites: TestingSite[]) => {
+          if (testSites) {
+            allTestSites.push(...testSites)
+          }
+          if (index == countyClaims.length - 1) {
+            resolve(allTestSites);
+          }
+        });
+
+      });
+      // resolve(allTestSites)
+    });
+  }
+
+  private flattenTestSiteAndInfo(testingSite, infos) {
+    return infos.map((info, index) => {
+      const categorized = info.responses.reduce(
+        (acc, curr) => {
+          if (curr.entityValue.value.category.id === CATEGORY.PHONE_NUMBERS) {
+            acc.phoneNumbers.push(curr.entityValue);
+          }
+
+          if (curr.entityValue.value.category.id === CATEGORY.WEBSITES) {
+            acc.websites.push(curr.entityValue);
+          }
+
+          if (curr.entityValue.value.category.id === CATEGORY.SITE_OWNERS) {
+            acc.siteOwners.push(curr.entityValue);
+          }
+
+          if (curr.entityValue.value.category.id === CATEGORY.SITE_SERVICES) {
+            acc.siteServices.push(curr.entityValue);
+          }
+
+          if (curr.entityValue.value.category.id === CATEGORY.SITE_RESTRICTIONS) {
+            acc.siteRestrictions.push(curr.entityValue);
+          }
+
+          if (curr.entityValue.value.category.id === CATEGORY.SITE_OPERATIONAL_STATUS) {
+            acc.siteStatus.push(curr.entityValue);
+          }
+
+          return acc;
+        },
+        { phoneNumbers: [], websites: [], siteOwners: [], siteServices: [], siteRestrictions: [], siteStatus: [] } as { phoneNumbers: EntityValue[]; websites: EntityValue[], siteOwners: EntityValue[], siteServices: EntityValue[], siteRestrictions: EntityValue[], siteStatus: EntityValue[] }
+      );
+      return {
+        claim: testingSite.claim,
+        info: {
+          ...info,
+          ...categorized
+        }
+      };
+    });
+
+
+
+  }
+
 }
