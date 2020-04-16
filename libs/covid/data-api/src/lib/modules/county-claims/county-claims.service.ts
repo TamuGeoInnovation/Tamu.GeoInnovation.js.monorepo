@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindManyOptions } from 'typeorm';
 
 import { STATUS, CATEGORY } from '@tamu-gisc/covid/common/enums';
 import {
@@ -260,5 +260,34 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     claim.statuses.push(type);
 
     return claim.save();
+  }
+
+  public async getHistoricClaimsForCounty(countyFips: number | string, limit?: number | string) {
+    if (!countyFips || countyFips === 'undefined' || countyFips === undefined) {
+      throw new Error('Invalid county fips');
+    }
+
+    let findOptions = {
+      where: {
+        county: countyFips
+      }
+    };
+
+    if (limit !== undefined) {
+      const parsedNumber = typeof limit === 'string' ? parseInt(limit, 10) : limit;
+
+      const takeOptions: Partial<FindManyOptions<CountyClaim>> = {
+        take: parsedNumber,
+        order: {
+          created: 'DESC'
+        }
+      };
+
+      findOptions = Object.assign(findOptions, takeOptions);
+    }
+
+    const claims = await this.repo.find(findOptions);
+
+    return claims;
   }
 }

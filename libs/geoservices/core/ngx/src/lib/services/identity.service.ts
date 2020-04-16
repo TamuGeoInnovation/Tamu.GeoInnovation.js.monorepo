@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { User, CountyClaim, County } from '@tamu-gisc/covid/common/entities';
+import { User, CountyClaim } from '@tamu-gisc/covid/common/entities';
 import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-store';
 import { UsersService, CountyClaimsService } from '@tamu-gisc/geoservices/data-access';
 import { tap } from 'rxjs/operators';

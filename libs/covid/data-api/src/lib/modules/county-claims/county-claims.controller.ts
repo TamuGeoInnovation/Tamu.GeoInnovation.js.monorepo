@@ -39,6 +39,20 @@ export class CountyClaimsController extends BaseController<CountyClaim> {
     }
   }
 
+  @Get('county/:countyFips/:limit')
+  public async getPreviousClaimsForCounty(@Param() params) {
+    try {
+      const claims = await this.service.getHistoricClaimsForCounty(params.countyFips, params.limit);
+      return claims;
+    } catch (err) {
+      return {
+        status: 500,
+        success: false,
+        message: err.message
+      };
+    }
+  }
+
   @Post('claim')
   public registerClaim(@Body() body) {
     return this.service.createOrUpdateClaim(body, body.phoneNumbers, body.websites);

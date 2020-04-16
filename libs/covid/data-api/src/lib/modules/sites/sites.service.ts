@@ -11,7 +11,7 @@ import {
   EntityValue,
   EntityStatus,
   County,
-  CountyClaim,
+  CountyClaim
 } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
@@ -56,13 +56,15 @@ export class SitesService extends BaseService<TestingSite> {
       };
     }
 
-    let testingSiteContainer: TestingSite;
+    let existingTestingSite: TestingSite;
 
-    const existingTestingSite = await this.repo.findOne({
-      where: {
-        claim: claim.guid
-      }
-    });
+    if (params.guid) {
+      existingTestingSite = await this.repo.findOne({
+        where: {
+          guid: params.guid
+        }
+      });
+    }
 
     if (!params.info) {
       return {
@@ -97,14 +99,14 @@ export class SitesService extends BaseService<TestingSite> {
 
       const operationState = params.info.status
         ? {
-          entityValue: {
-            value: {
-              value: '',
-              type: params.info.status,
-              category: CATEGORY.SITE_OPERATIONAL_STATUS
+            entityValue: {
+              value: {
+                value: '',
+                type: params.info.status,
+                category: CATEGORY.SITE_OPERATIONAL_STATUS
+              }
             }
           }
-        }
         : undefined;
 
       const owners: EntityToValue[] =
@@ -198,7 +200,7 @@ export class SitesService extends BaseService<TestingSite> {
           testingSite: existingTestingSite
         };
 
-        testingSiteContainer = this.repo.create({
+        const testingSite = this.repo.create({
           claim: claim,
           infos: [testingSiteInfo],
           statuses: [
@@ -210,7 +212,7 @@ export class SitesService extends BaseService<TestingSite> {
           ]
         });
 
-        return await testingSiteContainer.save();
+        return await testingSite.save();
       } else {
         testingSiteInfo = {
           responses: responsesFiltered,
@@ -227,7 +229,7 @@ export class SitesService extends BaseService<TestingSite> {
           statuses: [entStatus]
         };
 
-        testingSiteContainer = this.repo.create({
+        const testingSite = this.repo.create({
           claim: claim,
           infos: [testingSiteInfo],
           statuses: [
@@ -239,78 +241,62 @@ export class SitesService extends BaseService<TestingSite> {
           ]
         });
 
-        return await testingSiteContainer.save();
+        return await testingSite.save();
       }
     }
   }
 
-  public async getSitesForCounty(state: string, countyName: string) {
-    const county: County = await this.countyRepo.findOne({
-      where: {
-        name: countyName
-      }
-    });
-    const countyClaims: CountyClaim[] = await this.countyClaimRepo.find({
-      where: {
-        county: county
-      }
-    });
+  public async getSitesForCounty(countyFips: number | string) {
+    const testingSites = await this.repo
+      .createQueryBuilder('site')
+      .leftJoinAndSelect('site.claim', 'claim')
+      .leftJoinAndSelect('claim.county', 'county')
+      .where('county.countyFips = :countyFips', {
+        countyFips: countyFips
+      })
+      .orderBy('site.created', 'DESC')
+      .getMany();
 
-
-    // const ret = await this.getAllTestSites(countyClaims);
-    // ret.map((testSite, index) => {
-    //   this.flattenTestSiteAndInfo(testSite, testSite.infos);
-    // })
-    const testSites = await this.getAllTestSites(countyClaims);
-    const mappedTestSites = testSites.map((testSite, index) => {
-      const infos = testSite.infos;
-      const ret = this.flattenTestSiteAndInfo(testSite, infos);
-      return ret;
-    });
-
-
-
-    debugger
-    return {
-      ...mappedTestSites
-    };
-  }
-
-  public async getAllTestSites(countyClaims: CountyClaim[]): Promise<TestingSite[]> {
-    const allTestSites: TestingSite[] = [];
-    return new Promise((resolve, reject) => {
-      countyClaims.map((countyClaim, index) => {
-        this.repo.find({
-          where: {
-            claim: countyClaim
-          },
-          relations: [
-            'infos',
-            'infos.responses',
-            'infos.responses.entityValue',
-            'infos.responses.entityValue.value',
-            'infos.responses.entityValue.value.category',
-            // 'infos.responses.entityValue.value.category.id',
-            'infos.responses.testingSiteInfo',
-            'infos.location',
-          ]
-        }).then((testSites: TestingSite[]) => {
-          if (testSites) {
-            allTestSites.push(...testSites)
-          }
-          if (index == countyClaims.length - 1) {
-            resolve(allTestSites);
-          }
-        });
-
+    const deferredLatestInfoForTestingSites = testingSites.map((site) => {
+      return this.testingSiteInfoRepo.findOne({
+        where: {
+          testingSite: site
+        },
+        order: {
+          created: 'DESC'
+        },
+        relations: [
+          'responses',
+          'location',
+          'responses.entityValue',
+          'responses.entityValue.value',
+          'responses.entityValue.value.category',
+          'responses.entityValue.value.type',
+          'statuses'
+        ]
       });
-      // resolve(allTestSites)
     });
+
+    const resolvedLatestInfoForTestingSites = await Promise.all(deferredLatestInfoForTestingSites);
+
+    const joined = testingSites.map((site, index) => {
+      // Only join if the testing site info is not undefined
+      site.infos =
+        resolvedLatestInfoForTestingSites[index] !== undefined ? [resolvedLatestInfoForTestingSites[index]] : undefined;
+      return site;
+    });
+
+    const flattened = this.flattenTestSiteAndInfo(joined);
+
+    return flattened;
   }
 
-  private flattenTestSiteAndInfo(testingSite, infos) {
-    return infos.map((info, index) => {
-      const categorized = info.responses.reduce(
+  private flattenTestSiteAndInfo(sites: TestingSite[]) {
+    return sites.map((site, index) => {
+      const siteInfo =
+        site.infos && site.infos.length > 0 ? site.infos[0] : (({ responses: [] } as unknown) as TestingSiteInfo);
+
+      const categorized = siteInfo.responses.reduce(
         (acc, curr) => {
           if (curr.entityValue.value.category.id === CATEGORY.PHONE_NUMBERS) {
             acc.phoneNumbers.push(curr.entityValue);
@@ -338,19 +324,32 @@ export class SitesService extends BaseService<TestingSite> {
 
           return acc;
         },
-        { phoneNumbers: [], websites: [], siteOwners: [], siteServices: [], siteRestrictions: [], siteStatus: [] } as { phoneNumbers: EntityValue[]; websites: EntityValue[], siteOwners: EntityValue[], siteServices: EntityValue[], siteRestrictions: EntityValue[], siteStatus: EntityValue[] }
+        { phoneNumbers: [], websites: [], siteOwners: [], siteServices: [], siteRestrictions: [], siteStatus: [] } as {
+          phoneNumbers: EntityValue[];
+          websites: EntityValue[];
+          siteOwners: EntityValue[];
+          siteServices: EntityValue[];
+          siteRestrictions: EntityValue[];
+          siteStatus: EntityValue[];
+        }
       );
-      return {
-        claim: testingSite.claim,
+
+      const formatted = {
+        claim: site.claim,
+        location: siteInfo.location ? siteInfo.location : { address1: '', address2: '' },
         info: {
-          ...info,
-          ...categorized
+          ...siteInfo,
+          status:
+            categorized.siteStatus && categorized.siteStatus.length > 0 ? categorized.siteStatus[0].value.type.guid : '',
+          owners: categorized.siteOwners.map((owner) => owner.value.type.guid).join(','),
+          restrictions: categorized.siteRestrictions.map((restriction) => restriction.value.type.guid).join(','),
+          services: categorized.siteServices.map((service) => service.value.type.guid).join(','),
+          phoneNumbers: categorized.phoneNumbers,
+          websites: categorized.websites
         }
       };
+
+      return formatted;
     });
-
-
-
   }
-
 }
