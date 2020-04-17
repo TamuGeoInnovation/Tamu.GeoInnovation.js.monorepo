@@ -291,6 +291,77 @@ export class SitesService extends BaseService<TestingSite> {
     return flattened;
   }
 
+  public async getSitesForUser(identifier: string) {
+    let idType: string;
+    
+    if (identifier.includes("@")) {
+      idType = 'email';
+    } else if (identifier.includes('-')) {
+      idType = 'guid';
+    } else {
+      return {};
+    }
+
+    const testingSites = await this.repo
+      .createQueryBuilder('sites')
+      .leftJoinAndSelect('sites.claim', 'claim')
+      .leftJoinAndSelect('claim.user', 'user')
+      .where(`user.${idType} = :identifier`, {
+        identifier
+      })
+      .orderBy('sites.created', 'DESC')
+      .getMany();
+
+    const deferredLatestInfoForTestingSites = testingSites.map((site) => {
+      return this.testingSiteInfoRepo.findOne({
+        where: {
+          testingSite: site
+        },
+        order: {
+          created: 'DESC'
+        },
+        relations: [
+          'responses',
+          'location',
+          'responses.entityValue',
+          'responses.entityValue.value',
+          'responses.entityValue.value.category',
+          'responses.entityValue.value.type',
+          'statuses'
+        ]
+      });
+    });
+
+    const resolvedLatestInfoForTestingSites = await Promise.all(deferredLatestInfoForTestingSites);
+
+    const joined = testingSites.map((site, index) => {
+      // Only join if the testing site info is not undefined
+      site.infos =
+        resolvedLatestInfoForTestingSites[index] !== undefined ? [resolvedLatestInfoForTestingSites[index]] : undefined;
+      return site;
+    });
+
+    const flattened = this.flattenTestSiteAndInfo(joined);
+
+    return flattened;
+  }
+
+  public async getInfosForSite(siteGuid: string) {
+    const testingSites = await this.repo.find({
+      where: {
+        guid: siteGuid
+      },
+      order: {
+        created: 'DESC',
+      },
+      relations: [
+        'infos'
+      ]
+    });
+
+    return testingSites;
+  }
+
   private flattenTestSiteAndInfo(sites: TestingSite[]) {
     return sites.map((site, index) => {
       const siteInfo =

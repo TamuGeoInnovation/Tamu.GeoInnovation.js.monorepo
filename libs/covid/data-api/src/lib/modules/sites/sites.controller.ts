@@ -15,13 +15,28 @@ export class SitesController extends BaseController<TestingSite> {
   public async getValidated() {
     return await this.service.repo.find({
       where: { validated: true },
-      relations: ['source', 'source.user', 'restrictions']
+      // relations: ['source', 'source.user', 'restrictions']
     });
+  }
+
+  @Get(':siteGuid/infos')
+  public async getInfosForSite(@Param() params) {
+      return this.service.getInfosForSite(params.siteGuid);
   }
 
   @Get(':countyFips')
   public async getSitesForCounty(@Param() params) {
     return await this.service.getSitesForCounty(params.countyFips);
+  }
+
+  @Get('county/:countyFips')
+  public async getSitesByCounty(@Param() params) {
+    return await this.service.getSitesForCounty(params.countyFips);
+  }
+
+  @Get('user/:userIdentifier')
+  public async getSitesForUser(@Param() params) {
+    return await this.service.getSitesForUser(params.userIdentifier);
   }
 
   @Post('')
