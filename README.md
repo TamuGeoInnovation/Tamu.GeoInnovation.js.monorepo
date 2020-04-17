@@ -22,7 +22,7 @@
 
 # Running AggieMap
 
-Run `ng serve --project=aggiemap --aot` to start a local webserver at https://localhost:4200.
+Run `ng serve --project=aggiemap-angular --aot` to start a local webserver at https://localhost:4200.
 
 As you make changes to the project, the local webserver will automatically rebuild and, if AggieMap is open in a webbrowser, the page will reload automatically
 
