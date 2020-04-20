@@ -1,6 +1,5 @@
 .flex {
   @include flexbox();
-  @include flex-wrap(wrap);
 
   &.flex-column {
     @include flex-direction(column);
@@ -100,5 +99,9 @@
 
   &.self-align {
     @include align-self(stretch);
+  }
+
+  &.wrap {
+    @include flex-wrap(wrap);
   }
 }

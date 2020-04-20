@@ -55,8 +55,17 @@
 
                 <br />
 
-                <label for="lockdownEnd">Lockdown date end:</label>
-                <input formControlName="endDate" type="date" name="lockdownEnd" />
+                <div class="flex flex-row align-center">
+                  <div class="flex flex-column">
+                    <label for="lockdownEnd">Lockdown date end:</label>
+                    <input formControlName="endDate" type="date" name="lockdownEnd" />
+                  </div>
+
+                  <div class="flex flex-column pre-1">
+                    <span>&nbsp;</span>
+                    <tamu-gisc-checkbox formControlName="hasUnknownEndDate" label="This county has an unknown lockdown end date"></tamu-gisc-checkbox>
+                  </div>
+                </div>
               </div>
 
               <div class="form-collection column">
@@ -79,7 +88,7 @@
 
             <div [formArrayName]="'phoneNumbers'" *ngIf="form.get(['info', 'phoneNumbers'])['controls'].length > 0; else promptAddPhoneNumber" class="form-section-body">
               <ng-container *ngFor="let ph of form.get(['info', 'phoneNumbers'])['controls']; let i = index">
-                <div [formGroupName]="i" class="form-collection row align-center select-collection" [ngClass]="{'pad-top': i === 0}">
+                <div [formGroupName]="i" class="form-collection row select-collection" [ngClass]="{'pad-top': i === 0}">
                   <ng-container formGroupName="value">
                     <tamu-gisc-textbox formControlName="value" type="tel" placeholder="Phone Number" floatLabel="true"></tamu-gisc-textbox>
                     <tamu-gisc-select formControlName="type" [data]="(phoneTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
@@ -104,7 +113,7 @@
 
             <div [formArrayName]="'websites'" *ngIf="form.get(['info', 'websites'])['controls'].length > 0; else promptAddWebsite" class="form-section-body">
               <ng-container *ngFor="let ph of form.get(['info', 'websites'])['controls']; let i = index">
-                <div [formGroupName]="i" class="form-collection row align-center select-collection" [ngClass]="{'pad-top': i === 0}">
+                <div [formGroupName]="i" class="form-collection row select-collection" [ngClass]="{'pad-top': i === 0}">
                   <ng-container formGroupName="value">
                     <tamu-gisc-textbox formControlName="value" type="text" placeholder="URL" floatLabel="true"></tamu-gisc-textbox>
                     <tamu-gisc-select formControlName="type" [data]="(websitesTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>

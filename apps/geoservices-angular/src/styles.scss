@@ -4,6 +4,7 @@
 @import 'libs/sass/mixins';
 @import 'libs/sass/modules/forms';
 @import 'libs/sass/dom_flexbox';
+@import 'libs/sass/spacing';
 
 @import 'libs/sass/modules/loaders';
 
@@ -1031,6 +1032,7 @@ tamu-gisc-checkbox-group {
 }
 
 .select-collection {
+  @include align-items(center);
   .material-icons {
     flex: 0 !important;
     opacity: 0.5;

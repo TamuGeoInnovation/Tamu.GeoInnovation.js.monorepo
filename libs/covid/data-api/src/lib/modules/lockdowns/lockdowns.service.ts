@@ -95,11 +95,11 @@ export class LockdownsService extends BaseService<Lockdown> {
       if (existingLockdown) {
         let lockdownInfo: Partial<LockdownInfo>;
         lockdownInfo = {
+          lockdown: existingLockdown,
           responses: [...phoneNumbers, ...websites],
           isLockdown: params.info.isLockdown,
-          endDate: params.info.endDate,
           startDate: params.info.startDate,
-          lockdown: existingLockdown,
+          endDate: params.info.endDate,
           notes: params.info.notes,
           protocol: params.info.protocol,
           statuses: [entStatus]
