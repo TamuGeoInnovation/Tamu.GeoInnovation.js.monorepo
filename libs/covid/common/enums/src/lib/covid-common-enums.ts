@@ -11,5 +11,7 @@ export enum STATUS {
   PROCESSING = 1,
   CLOSED = 2,
   FLAGGED = 3,
-  CANCELLED = 4
+  CANCELLED = 4,
+  VALIDATED = 5,
+  CLAIM_SITE_LESS = 6
 }

@@ -124,6 +124,10 @@ export class IdentityService {
       this._identity.next(this.localStorage.getStorage(storageOptions));
     });
   }
+
+  public refresh(){
+    this.validateLocalIdentity();
+  }
 }
 
 interface CovidLocalStoreIdentity {

@@ -212,7 +212,11 @@ export class SitesService extends BaseService<TestingSite> {
           ]
         });
 
-        return await testingSite.save();
+        const site = await testingSite.save();
+
+        await this.clearSitelessStatus(claim);
+
+        return site;
       } else {
         testingSiteInfo = {
           responses: responsesFiltered,
@@ -241,7 +245,11 @@ export class SitesService extends BaseService<TestingSite> {
           ]
         });
 
-        return await testingSite.save();
+        const site = await testingSite.save();
+
+        await this.clearSitelessStatus(claim);
+
+        return site;
       }
     }
   }
@@ -351,5 +359,45 @@ export class SitesService extends BaseService<TestingSite> {
 
       return formatted;
     });
+  }
+
+  public async registerCountyAsSiteless(countyFips: number | string) {
+    if (!countyFips) {
+      return {
+        status: 400,
+        success: false,
+        message: 'Input parameter missing.'
+      };
+    }
+
+    const latestClaim = await this.countyClaimRepo.findOne({
+      where: {
+        county: countyFips
+      },
+      order: {
+        created: 'DESC'
+      },
+      relations: ['statuses', 'statuses.type']
+    });
+
+    latestClaim.statuses.push(
+      this.entityStatusRepo.create({
+        type: {
+          id: STATUS.CLAIM_SITE_LESS
+        }
+      })
+    );
+
+    return latestClaim.save();
+  }
+
+  private async clearSitelessStatus(claim: CountyClaim) {
+    const updatedStatuses = claim.statuses.filter((s) => {
+      return s.type.id !== STATUS.CLAIM_SITE_LESS;
+    });
+
+    claim.statuses = updatedStatuses;
+
+    return await claim.save();
   }
 }

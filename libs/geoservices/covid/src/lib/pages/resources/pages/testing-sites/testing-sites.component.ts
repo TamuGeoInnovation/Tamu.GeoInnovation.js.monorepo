@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { switchMap, pluck, filter, shareReplay } from 'rxjs/operators';
+import { Observable, from, of } from 'rxjs';
+import { switchMap, pluck, filter, shareReplay, take } from 'rxjs/operators';
 
 import { County, User } from '@tamu-gisc/covid/common/entities';
 import { TestingSitesService, StatesService, FormattedTestingSite } from '@tamu-gisc/geoservices/data-access';
 import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
+import { STATUS } from '@tamu-gisc/covid/common/enums';
 
 @Component({
   selector: 'tamu-gisc-testing-sites',
@@ -16,6 +17,9 @@ export class TestingSitesComponent implements OnInit {
 
   public localCounty: Observable<Partial<County['countyFips']>>;
   public localEmail: Observable<Partial<User['email']>>;
+  public claimStatuses: Observable<Array<number>>;
+
+  public countyIsSiteLess: Observable<boolean>;
 
   constructor(private ts: TestingSitesService, private st: StatesService, private is: IdentityService) {}
 
@@ -42,5 +46,27 @@ export class TestingSitesComponent implements OnInit {
       pluck('claim', 'county', 'countyFips'),
       filter((countyFips) => countyFips !== undefined)
     );
+
+    this.claimStatuses = this.is.identity.pipe(
+      pluck('claim', 'statuses'),
+      filter((statuses) => statuses !== undefined),
+      switchMap((statuses) => {
+        return of(statuses.map((s) => s.type.id));
+      })
+    );
+
+    this.countyIsSiteLess = this.claimStatuses.pipe(
+      switchMap((statusIds) => {
+        return of(statusIds.includes(STATUS.CLAIM_SITE_LESS));
+      })
+    );
+  }
+
+  public markAsSiteLes() {
+    this.localCounty.pipe(take(1)).subscribe((county) => {
+      this.ts.registerCountyAsTestingSiteLess(county).subscribe((res) => {
+        this.is.refresh();
+      });
+    });
   }
 }

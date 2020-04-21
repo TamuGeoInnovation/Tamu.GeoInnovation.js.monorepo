@@ -1042,3 +1042,41 @@ tamu-gisc-checkbox-group {
     }
   }
 }
+
+.tab-section {
+  margin: 3.5rem auto;
+
+  &:first-child {
+    margin-top: 1rem;
+  }
+
+  .tab-section-header {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(space-between);
+    @include align-items(flex-end);
+    border-bottom: 1.25pt solid lighten($lightened-inactive-color, 7%);
+    padding-bottom: 0.4rem;
+  }
+
+  .tab-section-body {
+    &.action {
+      @include flexbox();
+      @include flex-direction(row);
+      @include align-items(center);
+
+      & > :nth-child(n) {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+
+      & > :first-child {
+        padding-left: 0;
+      }
+
+      & > :last-child {
+        padding-right: 0;
+      }
+    }
+  }
+}

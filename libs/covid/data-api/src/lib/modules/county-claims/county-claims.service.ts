@@ -47,7 +47,20 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       })
       .getOne();
 
-    return lastClaim ? [lastClaim] : [];
+    if (lastClaim) {
+      // Doing a second query because I need all statuses for the found claim. The above query filters out any
+      // status that is not of type processing.
+      const final = await this.repo.findOne({
+        where: {
+          guid: lastClaim.guid
+        },
+        relations: ['statuses', 'statuses.type', 'user', 'county']
+      });
+
+      return [final];
+    } else {
+      return [];
+    }
   }
 
   public async getActiveClaimsForCountyFips(countyFips: number | string): Promise<CountyClaim[]> {
@@ -116,6 +129,36 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     //
     // If no claim guid, provided, make a new entity. This guid will be registered to the user.
     if (!claim.guid) {
+      const previousClaim = await this.repo.findOne({
+        where: {
+          county: county
+        },
+        order: {
+          created: 'DESC'
+        },
+        relations: ['statuses', 'statuses.type']
+      });
+
+      let statuses = [];
+
+      if (previousClaim) {
+        // Transfer over a select few of statuses from the previous claim.
+        //
+        // Of interest:
+        // - Claims marked as site-less
+        statuses = previousClaim.statuses
+          .filter((s) => {
+            return s.type.id === STATUS.CLAIM_SITE_LESS;
+          })
+          .map((s) => {
+            return this.statusRepo.create({
+              type: {
+                id: s.type.id
+              }
+            });
+          });
+      }
+
       cl = this.repo.create({
         county: county,
         user: user,
@@ -124,7 +167,8 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
             type: {
               id: STATUS.PROCESSING
             }
-          }
+          },
+          ...statuses
         ]
       });
 
