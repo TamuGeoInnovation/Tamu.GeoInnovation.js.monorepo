@@ -10,24 +10,48 @@
   </ng-container>
 
   <ng-template #hasCounty>
-    <div class="flex flex-column align-center" *ngIf="(sites | async)?.length === 0; else siteList">
-      <p>You have not added any testing sites for this county.</p>
-      <a [routerLink]="['./create']">Add a testing site</a>
+    <div class="tab-section">
+      <div class="tab-section-header">
+        <h5>Submitted Testing Sites</h5>
+        <a [routerLink]="['./create']">New Testing Site</a>
+      </div>
+
+      <div class="tab-section-body">
+        <ng-container *ngIf="(sites | async)?.length === 0; else siteList">
+          <p>There are no testing sites registered for this county.</p>
+
+          <p *ngIf="countyIsSiteLess | async">This county has also been marked as <span class="emphasis">having no testing sites</span>. If this is no longer accurate, please add a testing site.</p>
+        </ng-container>
+
+        <ng-template #siteList>
+          <div class="flex flex-column align-center">
+            <div class="spinning-loader" *ngIf="!(sites | async)"></div>
+
+            <div class="column8">
+              <tamu-gisc-accordion *ngFor="let site of sites | async">
+                <tamu-gisc-accordion-header>{{site.info.locationName ? site.info.locationName : site.location.address1 ? site.location.address1 : 'Site'}}</tamu-gisc-accordion-header>
+                <tamu-gisc-accordion-content><tamu-gisc-testing-site [readonly]="true" [formData]="site"></tamu-gisc-testing-site></tamu-gisc-accordion-content>
+              </tamu-gisc-accordion>
+            </div>
+          </div>
+        </ng-template>
+      </div>
     </div>
 
-    <ng-template #siteList>
-      <div class="flex flex-column align-center">
-        <p>The following is a list of sites submitted for this county. <a [routerLink]="['./create']">Add a testing site</a></p>
+    <div class="tab-section" *ngIf="(sites | async)?.length === 0 && !(countyIsSiteLess | async)">
+      <div class="tab-section-header">
+        <h5>County Has No Testing Sites</h5>
+      </div>
 
-        <div class="spinning-loader" *ngIf="!(sites | async)"></div>
+      <div class="tab-section-body action">
+        <div>
+          <p>In some cases, certain counties will not be able to provide any testing sites. If this is the case for this county, mark this county as having no testing sites. This will help differentiate counties that have no testing sites because they have not been checked versus those that have been checked but have been verified as having no testing sites.</p>
+        </div>
 
-        <div class="column8">
-          <tamu-gisc-accordion *ngFor="let site of sites | async">
-            <tamu-gisc-accordion-header>{{site.info.locationName ? site.info.locationName : site.location.address1 ? site.location.address1 : 'Site'}}</tamu-gisc-accordion-header>
-            <tamu-gisc-accordion-content><tamu-gisc-testing-site [readonly]="true" [formData]="site"></tamu-gisc-testing-site></tamu-gisc-accordion-content>
-          </tamu-gisc-accordion>
+        <div>
+          <tamu-gisc-button value="This County Has No Testing Sites" look="danger" (click)="markAsSiteLes()"></tamu-gisc-button>
         </div>
       </div>
-    </ng-template>
+    </div>
   </ng-template>
 </ng-template>

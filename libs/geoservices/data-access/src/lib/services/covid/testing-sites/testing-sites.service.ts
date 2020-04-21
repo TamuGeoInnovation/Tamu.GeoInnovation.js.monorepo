@@ -21,6 +21,10 @@ export class TestingSitesService {
   public getTestingSitesForCounty(countyFips: number) {
     return this.http.get<Array<Partial<FormattedTestingSite>>>(`${this.resource}/${countyFips}`);
   }
+
+  public registerCountyAsTestingSiteLess(countyFips: number) {
+    return this.http.post(`${this.resource}/siteless`, { countyFips: countyFips });
+  }
 }
 
 export interface FormattedTestingSite {
