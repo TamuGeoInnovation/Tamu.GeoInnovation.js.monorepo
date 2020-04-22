@@ -257,7 +257,7 @@ export class TestingSiteComponent implements OnInit, OnChanges {
   }
 
   public removeFormArrayControl(collection: string, index: number) {
-    (this.form.get([collection]) as FormArray).removeAt(index);
+    (this.form.get(['info', collection]) as FormArray).removeAt(index);
   }
 
   public submitForm() {

@@ -146,7 +146,7 @@
               <tamu-gisc-textbox formControlName="value" type="text" placeholder="Website URL" floatLabel="true"></tamu-gisc-textbox>
               <tamu-gisc-select formControlName="type" [data]="(websitesTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
             </ng-container>
-            <span class="material-icons action error" title="Remove phone number" (click)="removeFormArrayControl('phoneNumbers', i)">close</span>
+            <span class="material-icons action error" title="Remove website" (click)="removeFormArrayControl('websites', i)">close</span>
           </div>
         </ng-container>
       </div>
