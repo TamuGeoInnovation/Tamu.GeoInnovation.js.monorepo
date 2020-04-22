@@ -10,10 +10,13 @@ import { TestingSiteComponent } from './components/forms/testing-site/testing-si
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { TestingSiteListComponent } from './components/listable/submissions/testing-sites/testing-sites.component';
+import { CountyListComponent } from './components/listable/submissions/county/county.component';
+import { LockdownListComponent } from './components/listable/submissions/lockdown/lockdown.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, UIFormsModule],
-  declarations: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent, TestingSiteComponent],
-  exports: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent, TestingSiteComponent]
+  declarations: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent, TestingSiteComponent, TestingSiteListComponent, CountyListComponent, LockdownListComponent],
+  exports: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent, TestingSiteComponent, TestingSiteListComponent, CountyListComponent, LockdownListComponent]
 })
 export class GeoservicesCoreNgxModule {}

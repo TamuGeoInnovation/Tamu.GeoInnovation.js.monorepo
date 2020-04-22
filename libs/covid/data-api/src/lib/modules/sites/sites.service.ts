@@ -42,7 +42,7 @@ export class SitesService extends BaseService<TestingSite> {
 
     if (!user) {
       throw new Error('Invalid email.');
-    }
+  }
 
     const claims = await this.ccs.getActiveClaimsForEmail(params.claim.user.email);
 
@@ -354,6 +354,49 @@ export class SitesService extends BaseService<TestingSite> {
     return flattened;
   }
 
+  public async getTestingSitesSortedByCounty() {
+    const testingSites = await this.repo
+    .createQueryBuilder('site')
+    .leftJoinAndSelect('site.claim', 'claim')
+    .leftJoinAndSelect('claim.county', 'county')
+    .orderBy('site.created', 'DESC')
+    .limit(5)
+    .getMany();
+
+  const deferredLatestInfoForTestingSites = testingSites.map((site) => {
+    return this.testingSiteInfoRepo.findOne({
+      where: {
+        testingSite: site
+      },
+      order: {
+        created: 'DESC'
+      },
+      relations: [
+        'responses',
+        'location',
+        'responses.entityValue',
+        'responses.entityValue.value',
+        'responses.entityValue.value.category',
+        'responses.entityValue.value.type',
+        'statuses'
+      ]
+    });
+  });
+
+  const resolvedLatestInfoForTestingSites = await Promise.all(deferredLatestInfoForTestingSites);
+
+  const joined = testingSites.map((site, index) => {
+    // Only join if the testing site info is not undefined
+    site.infos =
+      resolvedLatestInfoForTestingSites[index] !== undefined ? [resolvedLatestInfoForTestingSites[index]] : undefined;
+    return site;
+  });
+
+  const flattened = this.flattenTestSiteAndInfo(joined);
+
+  return flattened;
+  }
+
   public async getInfosForSite(siteGuid: string) {
     const testingSites = await this.repo.find({
       where: {
@@ -471,4 +514,6 @@ export class SitesService extends BaseService<TestingSite> {
 
     return await claim.save();
   }
+
+
 }
