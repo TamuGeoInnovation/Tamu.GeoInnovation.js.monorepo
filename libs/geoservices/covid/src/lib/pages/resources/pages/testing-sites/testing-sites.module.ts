@@ -15,6 +15,10 @@ const routes: Routes = [
   {
     path: 'create',
     loadChildren: () => import('./pages/create/create.module').then((m) => m.CreateModule)
+  },
+  {
+    path: 'create/:siteGuid',
+    loadChildren: () => import('./pages/create/create.module').then((m) => m.CreateModule)
   }
 ];
 

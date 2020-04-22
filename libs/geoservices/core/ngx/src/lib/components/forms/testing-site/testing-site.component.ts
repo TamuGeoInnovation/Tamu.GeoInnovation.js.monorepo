@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { switchMap, pluck, filter, withLatestFrom } from 'rxjs/operators';
@@ -24,7 +24,7 @@ const storageOptions = { primaryKey: 'tamu-covid-vgi' };
   templateUrl: './testing-site.component.html',
   styleUrls: ['./testing-site.component.scss']
 })
-export class TestingSiteComponent implements OnInit {
+export class TestingSiteComponent implements OnInit, OnChanges {
   @Input()
   public readonly: boolean;
 
@@ -93,6 +93,7 @@ export class TestingSiteComponent implements OnInit {
     );
 
     this.form = this.fb.group({
+      guid: [undefined],
       claim: this.fb.group({
         user: this.fb.group({
           email: [
@@ -191,16 +192,18 @@ export class TestingSiteComponent implements OnInit {
     if (this.readonly) {
       this.form.disable();
     }
+  }
 
-    if (this.formData) {
+  public ngOnChanges(changes: SimpleChanges) {
+    if (changes.formData && changes.formData.currentValue !== null) {
       const patch = JSON.parse(JSON.stringify(this.formData));
 
       patch.info.undisclosed = [(!patch.info.undisclosed).toString()];
-      patch.info.driveThrough = [patch.info.driveThrough.toString()];
+      patch.info.driveThrough = patch.info.driveThrough;
       patch.info.status = patch.info.status[0] && patch.info.status ? patch.info.status : undefined;
-      patch.info.owners = patch.info.owners.split(',');
-      patch.info.restrictions = patch.info.restrictions.split(',');
-      patch.info.services = patch.info.services.split(',');
+      patch.info.owners = patch.info.owners.length > 0 ? patch.info.owners.split(',') : [];
+      patch.info.restrictions = patch.info.restrictions.length > 0 ? patch.info.restrictions.split(',') : [];
+      patch.info.services = patch.info.services.length > 0 ? patch.info.services.split(',') : [];
 
       this.form.patchValue(patch);
 
@@ -253,6 +256,10 @@ export class TestingSiteComponent implements OnInit {
     (this.form.get(['info', 'websites']) as FormArray).push(this.createWebsiteGroup());
   }
 
+  public removeFormArrayControl(collection: string, index: number) {
+    (this.form.get([collection]) as FormArray).removeAt(index);
+  }
+
   public submitForm() {
     const value = this.form.getRawValue();
 
@@ -262,6 +269,7 @@ export class TestingSiteComponent implements OnInit {
     value.info.owners = value.info.owners.join(',');
     value.info.services = value.info.services.join(',');
     value.info.restrictions = value.info.restrictions.join(',');
+    value.info.driveThroughCapacity = value.info.driveThrough ? value.info.driveThroughCapacity : null;
 
     this.formState.submitting = true;
     this.form.disable();
