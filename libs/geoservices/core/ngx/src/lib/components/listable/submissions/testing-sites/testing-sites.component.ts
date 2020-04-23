@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { County, FieldCategory } from '@tamu-gisc/covid/common/entities';
 import { CountyClaimsService, PhoneNumbersService, PhoneNumberTypesService, TestingSitesService, WebsitesService, WebsiteTypesService, FormattedTestingSite } from '@tamu-gisc/geoservices/data-access';
-import { Observable } from 'rxjs';
+import { Observable, VirtualTimeScheduler } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CATEGORY } from '@tamu-gisc/covid/common/enums';
 
 @Component({
   selector: 'tamu-gisc-testing-sites-list',
@@ -24,12 +26,28 @@ export class TestingSiteListComponent implements  OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.testingSites = this.ts.getTestingSitesSortedByCounty();
+    this.testingSites = this.ts.getTestingSitesSortedByCounty().pipe(
+      map((sites) => {
+        console.log("blah");
+        sites.forEach((val) => {
+          const responses = val.info.responses;
+          responses.forEach((response, i) => {
+            if (response.entityValue.value.category.id === CATEGORY.WEBSITES) {
+              // console.log("website", response.entityValue.value.value);
+              val.info.notes = response.entityValue.value.value
+            }
+          });
+        });
+        return sites;
+      })
+    );
   }
 
   ngOnDestroy() {
     // this._$destroy.next();
     // this._$destroy.complete();
   }
+
+  
 
 }

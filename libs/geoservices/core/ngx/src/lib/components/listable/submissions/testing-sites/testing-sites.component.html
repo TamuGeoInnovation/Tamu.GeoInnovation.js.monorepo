@@ -6,7 +6,7 @@
           <ng-container *ngIf="site.location">
             <div class="siteItem">
               <span class="material-icons siteDetailIcon">place</span>
-              <div class="form-section-name">{{site.location.county}}, {{site.location.state}}</div>
+              <div class="form-section-name">{{site.location.county}} county, {{site.location.state}}</div>
             </div>
           </ng-container>
           <ng-container *ngIf="site.info.locationPhoneNumber">
@@ -15,10 +15,13 @@
               <div class="form-section-name">{{site.info.locationPhoneNumber | phoneNumberFormat}}</div>
             </div>
           </ng-container>
-          <div class="siteItem">
-            <span class="material-icons siteDetailIcon">language</span>
-            <div class="form-section-name"><a href="">WEBSITE</a></div>
-          </div>
+          <ng-container *ngIf="site.info.notes">
+            <div class="siteItem">
+              <span class="material-icons siteDetailIcon">language</span>
+              <div class="form-section-name"><a href="{{site.info.notes}}">{{site.info.notes}}</a></div>
+            </div>
+          </ng-container>
+          
         </div>
       </ng-container>
     </div>
