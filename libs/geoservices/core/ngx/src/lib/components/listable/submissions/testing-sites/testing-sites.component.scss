@@ -1,0 +1,15 @@
+.siteContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.siteItem {
+    display: flex;
+}
+
+.siteDetailIcon {
+    margin-right: 0.3rem;
+}

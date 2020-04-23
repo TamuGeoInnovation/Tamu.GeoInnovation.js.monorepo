@@ -360,7 +360,7 @@ export class SitesService extends BaseService<TestingSite> {
     .leftJoinAndSelect('site.claim', 'claim')
     .leftJoinAndSelect('claim.county', 'county')
     .orderBy('site.created', 'DESC')
-    .limit(5)
+    .limit(6)
     .getMany();
 
   const deferredLatestInfoForTestingSites = testingSites.map((site) => {

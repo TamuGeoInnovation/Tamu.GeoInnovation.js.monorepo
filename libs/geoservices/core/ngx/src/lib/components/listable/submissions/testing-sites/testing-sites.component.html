@@ -1,34 +1,25 @@
 <ng-container style="background: white;" *ngFor="let site of (testingSites | async); let i = index">
-  <!-- <p>{{i}}</p> -->
     <div style="display: flex; flex-direction: column;">
       <ng-container *ngIf="site.info && site.location">
-        <!-- <div class="display: flex; flex-direction: column;">
-            <div class="material-icons">place_outline</div>
-            <div class="form-section-name">{{site.location.county}}, {{site.location.state}}</div>
-          </div>
-          <div>
-            <span class="material-icons">phone_filled</span>
-            <div class="form-section-name">{{site.info.locationPhoneNumber}}</div>
-          </div> -->
-        <div style="display: flex; flex-direction: column;">
+        <div class="siteContainer">
           <h4>{{site.info.locationName}}</h4>
-          <div style="display: flex;">
-            <i class="material-icons">place_outline</i>
-            <div class="form-section-name">{{site.location.county}}, {{site.location.state}}</div>
-          </div>
-          <div style="display: flex;">
-            <i class="material-icons">phone_filled</i>
-            <div class="form-section-name">{{site.info.locationPhoneNumber}}</div>
-          </div>
-          <div style="display: flex;">
-            <i class="material-icons">language_outline</i>
-            <div class="form-section-name">WEBSITE</div>
+          <ng-container *ngIf="site.location">
+            <div class="siteItem">
+              <span class="material-icons siteDetailIcon">place</span>
+              <div class="form-section-name">{{site.location.county}}, {{site.location.state}}</div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="site.info.locationPhoneNumber">
+            <div class="siteItem">
+              <span class="material-icons siteDetailIcon">phone</span>
+              <div class="form-section-name">{{site.info.locationPhoneNumber}}</div>
+            </div>
+          </ng-container>
+          <div class="siteItem">
+            <span class="material-icons siteDetailIcon">language</span>
+            <div class="form-section-name"><a href="">WEBSITE</a></div>
           </div>
         </div>
-
-        <!-- <ul>
-            <li><i class="material-icons">place_outline</i>{{site.location.county}}, {{site.location.state}}</li>
-          </ul> -->
       </ng-container>
     </div>
 </ng-container>
