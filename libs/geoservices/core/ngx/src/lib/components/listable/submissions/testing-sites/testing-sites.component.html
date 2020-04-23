@@ -12,7 +12,7 @@
           <ng-container *ngIf="site.info.locationPhoneNumber">
             <div class="siteItem">
               <span class="material-icons siteDetailIcon">phone</span>
-              <div class="form-section-name">{{site.info.locationPhoneNumber}}</div>
+              <div class="form-section-name">{{site.info.locationPhoneNumber | phoneNumberFormat}}</div>
             </div>
           </ng-container>
           <div class="siteItem">

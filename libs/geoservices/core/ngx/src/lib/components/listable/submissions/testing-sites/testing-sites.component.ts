@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'tamu-gisc-testing-sites-list',
   templateUrl: './testing-sites.component.html',
-  styleUrls: ['./testing-sites.component.scss']
+  styleUrls: ['./testing-sites.component.scss'],
 })
 export class TestingSiteListComponent implements  OnInit, OnDestroy {
   public counties: Observable<Array<Partial<County>>>;
