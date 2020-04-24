@@ -56,11 +56,11 @@ export class TestingSiteComponent implements OnInit, OnChanges {
 
   public availabilityOptions = [
     {
-      value: 'true',
+      value: true,
       label: 'Yes'
     },
     {
-      value: 'false',
+      value: false,
       label: 'No'
     }
   ];
@@ -116,7 +116,7 @@ export class TestingSiteComponent implements OnInit, OnChanges {
         country: ['']
       }),
       info: this.fb.group({
-        undisclosed: [''],
+        undisclosed: [],
         sitesAvailable: [undefined],
         locationName: [''],
         locationPhoneNumber: [''],
@@ -177,17 +177,7 @@ export class TestingSiteComponent implements OnInit, OnChanges {
       });
     });
 
-    this.undisclosedState = this.form.get(['info', 'undisclosed']).valueChanges.pipe(
-      switchMap((value) => {
-        if (value.length > 1 || value.length === 0) {
-          return of(undefined);
-        } else if (value[0] === 'false') {
-          return of(false);
-        } else if (value[0] === 'true') {
-          return of(true);
-        }
-      })
-    );
+    this.undisclosedState = this.form.get(['info', 'undisclosed']).valueChanges;
 
     if (this.readonly) {
       this.form.disable();
@@ -198,7 +188,7 @@ export class TestingSiteComponent implements OnInit, OnChanges {
     if (changes.formData && changes.formData.currentValue !== null) {
       const patch = JSON.parse(JSON.stringify(this.formData));
 
-      patch.info.undisclosed = [(!patch.info.undisclosed).toString()];
+      patch.info.undisclosed = !patch.info.undisclosed;
       patch.info.driveThrough = patch.info.driveThrough;
       patch.info.status = patch.info.status[0] && patch.info.status ? patch.info.status : undefined;
       patch.info.owners = patch.info.owners.length > 0 ? patch.info.owners.split(',') : [];
@@ -264,7 +254,7 @@ export class TestingSiteComponent implements OnInit, OnChanges {
     const value = this.form.getRawValue();
 
     // Undisclosed wording, is a double negative.
-    value.info.undisclosed = value.info.undisclosed[0] === 'true' ? false : true;
+    value.info.undisclosed = !value.info.undisclosed;
 
     value.info.owners = value.info.owners.join(',');
     value.info.services = value.info.services.join(',');

@@ -7,18 +7,16 @@
       <div class="form-collection column">
         <p>Is information on this testing site publicly available?</p>
 
-        <tamu-gisc-checkbox-group formControlName="undisclosed" [referenceId]="'value'">
-          <tamu-gisc-checkbox *ngFor="let option of availabilityOptions" [data]="option" [label]="option.label"></tamu-gisc-checkbox>
-        </tamu-gisc-checkbox-group>
+        <tamu-gisc-radio-group formControlName="undisclosed" [options]="availabilityOptions" displayPath="label" valuePath="value"></tamu-gisc-radio-group>
       </div>
 
-      <div class="inform-context" *ngIf="!(undisclosedState | async) && this.form.get(['info', 'undisclosed']).value.length > 0">
+      <div class="inform-context" *ngIf="(undisclosedState | async) === false">
         <p>To the extent allowed by limited information, please provide any relevant details regarding this testing site.</p>
       </div>
     </div>
   </div>
 
-  <ng-container *ngIf="(this.form.get(['info', 'undisclosed']).value && this.form.get(['info', 'undisclosed']).value.length > 0) || (undisclosedState | async)">
+  <ng-container *ngIf="(undisclosedState | async) === true || (undisclosedState | async) === false">
     <div formGroupName="location" class="form-section">
       <div class="form-section-toolbar">
         <div class="form-section-name">Location Information</div>
