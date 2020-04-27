@@ -5,6 +5,9 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
+import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
+
+
 import { MyDashboardComponent } from './my-dashboard.component';
 
 const routes: Routes = [
@@ -17,6 +20,6 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [MyDashboardComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, ReactiveFormsModule, FormsModule]
+  imports: [CommonModule, GeoservicesCoreNgxModule, RouterModule.forChild(routes), UIFormsModule, ReactiveFormsModule, FormsModule]
 })
 export class MyDashboardModule { }

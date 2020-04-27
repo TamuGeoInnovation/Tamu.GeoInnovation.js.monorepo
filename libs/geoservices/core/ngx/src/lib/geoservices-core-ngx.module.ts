@@ -14,10 +14,11 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { TestingSiteListComponent } from './components/listable/submissions/testing-sites/testing-sites.component';
 import { CountyListComponent } from './components/listable/submissions/county/county.component';
 import { LockdownListComponent } from './components/listable/submissions/lockdown/lockdown.component';
+import { MyDashboardCountyClaimsComponent } from './components/listable/mydashboard/my-dashboard-county-claims/my-dashboard-county-claims.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, UIFormsModule, PipesModule],
-  declarations: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent, TestingSiteComponent, TestingSiteListComponent, CountyListComponent, LockdownListComponent],
-  exports: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent, TestingSiteComponent, TestingSiteListComponent, CountyListComponent, LockdownListComponent]
+  declarations: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent, TestingSiteComponent, TestingSiteListComponent, CountyListComponent, LockdownListComponent, MyDashboardCountyClaimsComponent],
+  exports: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent, TestingSiteComponent, TestingSiteListComponent, CountyListComponent, LockdownListComponent, MyDashboardCountyClaimsComponent]
 })
 export class GeoservicesCoreNgxModule {}
