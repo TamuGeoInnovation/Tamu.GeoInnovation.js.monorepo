@@ -19,7 +19,11 @@ export class TestingSitesService {
   }
 
   public getTestingSitesForCounty(countyFips: number) {
-    return this.http.get<Array<Partial<FormattedTestingSite>>>(`${this.resource}/${countyFips}`);
+    return this.http.get<Array<Partial<FormattedTestingSite>>>(`${this.resource}/county/${countyFips}`);
+  }
+
+  public getTestingSitesSortedByCounty() {
+    return this.http.get<Array<Partial<FormattedTestingSite>>>(`${this.resource}/county`);
   }
 
   public registerCountyAsTestingSiteLess(countyFips: number) {

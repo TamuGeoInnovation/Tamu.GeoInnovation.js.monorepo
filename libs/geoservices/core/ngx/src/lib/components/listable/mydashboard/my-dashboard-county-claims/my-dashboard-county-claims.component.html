@@ -1,0 +1,24 @@
+<!-- <pre>{{(counties|async|json)}}</pre> -->
+<div class="flex flex-column align-center">
+  <div class="spinning-loader" *ngIf="!(counties | async); else county"></div>
+
+  <ng-template #county>
+    <div class="floating-table">
+      <div class="floating-table-header">
+        <div class="floating-row">
+          <div class="column">County Name</div>
+          <div class="column">Updated</div>
+          <div class="column">Status</div>
+        </div>
+      </div>
+
+      <div class="floating-table-body">
+        <div class="floating-row" *ngFor="let county of (counties | async)">
+          <div class="column">{{county.county.name}}</div>
+          <div class="column">{{county.updated | date : 'medium'}}</div>
+          <div class="column">{{county.statuses[0].type.name}}</div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

@@ -28,9 +28,14 @@ export class SitesController extends BaseController<TestingSite> {
     return this.service.getInfosForSite(params.siteGuid);
   }
 
-  @Get(':countyFips')
-  public async getSitesForCounty(@Param() params) {
-    return await this.service.getSitesForCounty(params.countyFips);
+  // @Get(':countyFips')
+  // public async getSitesForCounty(@Param() params) {
+  //   return await this.service.getSitesForCounty(params.countyFips);
+  // }
+
+  @Get('county')
+  public async getTestingSitesSortedByCounty() {
+    return await this.service.getTestingSitesSortedByCounty();
   }
 
   @Get('county/:countyFips')

@@ -7,6 +7,10 @@
           <div class="tab" [routerLink]="['county']" routerLinkActive="active">County Claim</div>
           <div class="tab" [routerLink]="['lockdown']" routerLinkActive="active">Lockdown</div>
           <div class="tab" [routerLink]="['testing-sites']" routerLinkActive="active">Testing Sites</div>
+          <ng-container *ngIf="(this.email)">
+            <div class="tab" [routerLink]="['dashboard']" routerLinkActive="active">My Dashboard</div>
+          </ng-container>
+
         </div>
 
         <div class="tab-content flex flex-column align-center">

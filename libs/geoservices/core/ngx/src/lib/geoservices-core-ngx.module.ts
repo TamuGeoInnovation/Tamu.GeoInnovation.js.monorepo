@@ -12,9 +12,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FooterLegalComponent } from './components/footer/legal/legal.component';
 import { FooterShortcutsComponent } from './components/footer/shortcuts/shortcuts.component';
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+import { TestingSiteListComponent } from './components/listable/submissions/testing-sites/testing-sites.component';
+import { CountyListComponent } from './components/listable/submissions/county/county.component';
+import { LockdownListComponent } from './components/listable/submissions/lockdown/lockdown.component';
+import { MyDashboardCountyClaimsComponent } from './components/listable/mydashboard/my-dashboard-county-claims/my-dashboard-county-claims.component';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, UIFormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, UIFormsModule, PipesModule],
   declarations: [
     HeaderComponent,
     FooterComponent,
@@ -22,7 +27,11 @@ import { FooterShortcutsComponent } from './components/footer/shortcuts/shortcut
     HeaderCovidComponent,
     TestingSiteComponent,
     FooterLegalComponent,
-    FooterShortcutsComponent
+    FooterShortcutsComponent,
+    TestingSiteListComponent,
+    CountyListComponent,
+    LockdownListComponent,
+    MyDashboardCountyClaimsComponent
   ],
   exports: [
     HeaderComponent,
@@ -31,7 +40,11 @@ import { FooterShortcutsComponent } from './components/footer/shortcuts/shortcut
     FooterShortcutsComponent,
     HeaderMobileComponent,
     HeaderCovidComponent,
-    TestingSiteComponent
+    TestingSiteComponent,
+    TestingSiteListComponent,
+    CountyListComponent,
+    LockdownListComponent,
+    MyDashboardCountyClaimsComponent
   ]
 })
 export class GeoservicesCoreNgxModule {}
