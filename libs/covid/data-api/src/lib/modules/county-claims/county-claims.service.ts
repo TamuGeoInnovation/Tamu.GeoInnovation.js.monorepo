@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindManyOptions } from 'typeorm';
+import { Repository, FindManyOptions, In } from 'typeorm';
 
 import { STATUS, CATEGORY } from '@tamu-gisc/covid/common/enums';
 import {
@@ -12,6 +12,7 @@ import {
   EntityToValue,
   EntityStatus
 } from '@tamu-gisc/covid/common/entities';
+import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 
 import { BaseService } from '../base/base.service';
 
@@ -333,5 +334,43 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     const claims = await this.repo.find(findOptions);
 
     return claims;
+  }
+
+  public async getSuggestedClaims(stateFips: number | string) {
+    const countiesForState = await this.countyRepo.find({
+      where: {
+        stateFips: stateFips
+      }
+    });
+
+    const countyFipsFromCounties = countiesForState.map((c) => c.countyFips);
+
+    const claimsForState = await this.repo.find({
+      where: {
+        county: In(countyFipsFromCounties)
+      },
+      relations: ['statuses', 'statuses.type', 'county']
+    });
+
+    const mappedEligible = countiesForState
+      .map((c) => {
+        const hasClaim = claimsForState.find((claim) => claim.county.countyFips === c.countyFips);
+        // const hasClaimProcessing = hasClaim ? hasClaim.statuses.findIndex((s) => s.type.id === STATUS.PROCESSING) : undefined;
+
+        // If the iterating claim has an associated county claim, return a filler value.
+        // We only care about returning claims with zero data.
+        if (hasClaim) {
+          return undefined;
+        } else {
+          return c;
+        }
+      })
+      .filter((c) => c !== undefined);
+
+    const random = new Array(5).fill(undefined).map(() => {
+      return mappedEligible[getRandomNumber(0, mappedEligible.length)];
+    });
+
+    return random;
   }
 }

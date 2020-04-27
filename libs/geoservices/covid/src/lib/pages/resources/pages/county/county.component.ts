@@ -39,6 +39,7 @@ export class CountyComponent implements OnInit, OnDestroy {
   public states: Observable<Array<Partial<State>>>;
   public phoneTypes: Observable<Partial<FieldCategory>>;
   public websiteTypes: Observable<Partial<FieldCategory>>;
+  public suggestedCounties;
 
   /**
    * Represents the active county claims for the selected county
@@ -102,9 +103,10 @@ export class CountyComponent implements OnInit, OnDestroy {
       .get('county')
       .valueChanges.pipe(filter((fips) => fips !== undefined && fips !== 'undefined'));
 
-    this.formState = this.form
-      .get('state')
-      .valueChanges.pipe(filter((state) => state !== undefined && state !== 'undefined'));
+    this.formState = this.form.get('state').valueChanges.pipe(
+      filter((state) => state !== undefined && state !== 'undefined'),
+      shareReplay(1)
+    );
 
     // List of phone types
     this.phoneTypes = this.pt.getPhoneNumberTypes().pipe(shareReplay(1));
@@ -231,6 +233,12 @@ export class CountyComponent implements OnInit, OnDestroy {
         } else {
           return EMPTY;
         }
+      })
+    );
+
+    this.suggestedCounties = this.formState.pipe(
+      switchMap((stateFips) => {
+        return this.cl.getSuggestedClaims(stateFips);
       })
     );
   }

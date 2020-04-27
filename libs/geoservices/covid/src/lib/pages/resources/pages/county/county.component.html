@@ -26,6 +26,16 @@
         </div>
       </div>
 
+      <div class="form-section" *ngIf="((formState | async) !== undefined && (formState | async) !== null) && ((formCounty | async) === undefined || (formCounty | async) === null)">
+        <div class="form-section-body">
+          <div class="inform-context">
+            <p>
+              Consider contributing to any of the following counties, as they don't currently have any associated data submissions: <span *ngFor="let suggested of (suggestedCounties | async); let last = last">{{suggested.name}}<span *ngIf="!last">, </span></span>
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div *ngIf="!(countyClaimable | async) && (countyClaims | async)?.length > 0 && (this.form.controls.county.valueChanges | async) !== 'undefined' && (this.form.controls.state.valueChanges | async) !== 'undefined'" class="form-section">
         <div class="form-section-body">
           <div class="inform-context alert">
