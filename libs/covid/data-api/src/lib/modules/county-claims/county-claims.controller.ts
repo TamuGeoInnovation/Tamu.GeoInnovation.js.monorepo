@@ -25,6 +25,20 @@ export class CountyClaimsController extends BaseController<CountyClaim> {
     }
   }
 
+  @Get('claim/:email')
+  public async getAllUserCountyClaimsSortedByCounty(@Param() param) {
+    try {
+      const claims = await this.service.getAllUserCountyClaimsSortedByCounty(param.email);
+      return claims;
+    } catch (err) {
+      return {
+        status: 500,
+        success: false,
+        message: err.message
+      };
+    }
+  }
+
   @Get('claim/active/:email')
   public async getActiveClaimsForUser(@Param() param) {
     try {

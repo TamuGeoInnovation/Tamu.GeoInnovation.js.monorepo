@@ -1,5 +1,5 @@
 <ng-container style="background: white;" *ngFor="let site of (testingSites | async); let i = index">
-    <div style="display: flex; flex-direction: column;">
+    <div style="display: flex; flex-direction: column; align-items: center;">
       <ng-container *ngIf="site.info && site.location">
         <div class="siteContainer">
           <h4>{{site.info.locationName}}</h4>

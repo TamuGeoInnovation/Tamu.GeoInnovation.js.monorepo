@@ -10,7 +10,7 @@ import { CATEGORY } from '@tamu-gisc/covid/common/enums';
   templateUrl: './testing-sites.component.html',
   styleUrls: ['./testing-sites.component.scss'],
 })
-export class TestingSiteListComponent implements  OnInit, OnDestroy {
+export class TestingSiteListComponent implements  OnInit {
   public counties: Observable<Array<Partial<County>>>;
   public testingSites: Observable<Array<Partial<FormattedTestingSite>>>;
   public phoneTypes: Observable<Partial<FieldCategory>>;
@@ -28,12 +28,10 @@ export class TestingSiteListComponent implements  OnInit, OnDestroy {
   ngOnInit() {
     this.testingSites = this.ts.getTestingSitesSortedByCounty().pipe(
       map((sites) => {
-        console.log("blah");
         sites.forEach((val) => {
           const responses = val.info.responses;
           responses.forEach((response, i) => {
             if (response.entityValue.value.category.id === CATEGORY.WEBSITES) {
-              // console.log("website", response.entityValue.value.value);
               val.info.notes = response.entityValue.value.value
             }
           });
@@ -42,12 +40,6 @@ export class TestingSiteListComponent implements  OnInit, OnDestroy {
       })
     );
   }
-
-  ngOnDestroy() {
-    // this._$destroy.next();
-    // this._$destroy.complete();
-  }
-
   
 
 }

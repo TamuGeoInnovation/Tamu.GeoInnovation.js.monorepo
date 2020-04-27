@@ -63,6 +63,41 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     }
   }
 
+  public async getAllUserCountyClaimsSortedByCounty(email: string) {
+    if (!email || email === undefined || email === 'undefined') {
+      throw new Error('Invalid email');
+    }
+
+    const user = await this.userRepo.findOne({ where: { email } });
+
+    const claims = await this.repo
+      .createQueryBuilder('claim')
+      .innerJoinAndSelect('claim.user', 'user')
+      .innerJoinAndSelect('claim.county', 'county')
+      .innerJoinAndSelect('claim.statuses', 'statuses')
+      .innerJoinAndSelect('statuses.type', 'type')
+      .where('user.guid = :userGuid', {
+        userGuid: user.guid,
+      })
+      .getMany();
+
+    // if (claims) {
+    //   // Doing a second query because I need all statuses for the found claim. The above query filters out any
+    //   // status that is not of type processing.
+    //   const final = await this.repo.find({
+    //     where: {
+    //       guid: lastClaim.guid
+    //     },
+    //     relations: ['statuses', 'statuses.type', 'user', 'county']
+    //   });
+
+    //   return [final];
+    // } else {
+    //   return [];
+    // }
+    return claims;
+  }
+
   public async getActiveClaimsForCountyFips(countyFips: number | string): Promise<CountyClaim[]> {
     if (countyFips === undefined || countyFips === 'undefined') {
       throw new Error('Invalid county claim.');
