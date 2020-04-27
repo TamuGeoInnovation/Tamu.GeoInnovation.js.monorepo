@@ -319,6 +319,13 @@ export class CountyComponent implements OnInit, OnDestroy {
     };
   }
 
+  public setCountySuggestion(county: County) {
+    this.form.patchValue({
+      state: county.stateFips,
+      county: county.countyFips
+    });
+  }
+
   /**
    * Push a phone number form group to the form array
    */

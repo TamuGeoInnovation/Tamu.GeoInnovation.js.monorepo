@@ -30,7 +30,7 @@
         <div class="form-section-body">
           <div class="inform-context">
             <p>
-              Consider contributing to any of the following counties, as they don't currently have any associated data submissions: <span *ngFor="let suggested of (suggestedCounties | async); let last = last">{{suggested.name}}<span *ngIf="!last">, </span></span>
+              Consider contributing to any of the following counties, as they don't currently have any associated data submissions: <a *ngFor="let suggested of (suggestedCounties | async); let last = last" (click)="setCountySuggestion(suggested)">{{suggested.name}}<span *ngIf="!last">, </span></a>
             </p>
           </div>
         </div>
