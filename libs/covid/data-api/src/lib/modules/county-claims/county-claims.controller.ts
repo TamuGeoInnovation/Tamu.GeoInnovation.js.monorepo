@@ -67,10 +67,10 @@ export class CountyClaimsController extends BaseController<CountyClaim> {
     }
   }
 
-  @Get('suggested/:stateFips')
+  @Get('suggested/:stateFips/:count')
   public async getSuggestedCountyClaims(@Param() params) {
     try {
-      const claims = await this.service.getSuggestedClaims(params.stateFips);
+      const claims = await this.service.getSuggestedClaims(params.stateFips, params.count);
       return claims;
     } catch (err) {
       return {

@@ -32,7 +32,7 @@ export class CountyClaimsService {
   }
 
   public getSuggestedClaims(stateFips: number) {
-    return this.http.get<Array<County>>(`${this.resource}/suggested/${stateFips}`);
+    return this.http.get<Array<County>>(`${this.resource}/suggested/${stateFips}/10`);
   }
 
   public registerClaim(claim: DeepPartial<CountyClaim>, phoneNumbers, websites) {

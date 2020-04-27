@@ -78,7 +78,7 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       .innerJoinAndSelect('claim.statuses', 'statuses')
       .innerJoinAndSelect('statuses.type', 'type')
       .where('user.guid = :userGuid', {
-        userGuid: user.guid,
+        userGuid: user.guid
       })
       .getMany();
 
@@ -371,7 +371,18 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     return claims;
   }
 
-  public async getSuggestedClaims(stateFips: number | string) {
+  /**
+   * Returns a list of suggested county claims that do not yet have any submitted associated data.
+   *
+   * If no `count` is provided, will default to `5`
+   */
+  public async getSuggestedClaims(stateFips: number | string, count?: number) {
+    if (!stateFips || stateFips === 'undefined' || stateFips === undefined || stateFips === null) {
+      throw new Error('Input parameter missing.');
+    }
+
+    const adjustedCount = count ? (typeof count !== 'number' ? parseInt(count, 10) : count) : 5;
+
     const countiesForState = await this.countyRepo.find({
       where: {
         stateFips: stateFips
@@ -402,10 +413,43 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       })
       .filter((c) => c !== undefined);
 
-    const random = new Array(5).fill(undefined).map(() => {
-      return mappedEligible[getRandomNumber(0, mappedEligible.length)];
-    });
+    // If the number of eligible counties for state is less than or equal to the requested count,
+    // simply return the eligible counties. This will also handle the case for duplicates in the response.
+    if (adjustedCount && mappedEligible.length <= adjustedCount) {
+      return mappedEligible;
+    }
 
-    return random;
+    const random = new Array(adjustedCount).fill(undefined).reduce(
+      (acc, curr) => {
+        const selectedIndex = getRandomNumber(0, acc.eligible.length);
+        const selected = acc.eligible[selectedIndex];
+
+        acc.selected = [...acc.selected, selected];
+
+        // Create a new array with the current list of eligible counties.
+        const newEligible = [...acc.eligible];
+        // Remove from the new list, the county that has been selected. This will ensure
+        // that duplicates are not selected
+        newEligible.splice(selectedIndex, 1);
+        // Assign the new list to the accumulated value which will be used in the next
+        // iteration
+        acc.eligible = newEligible;
+
+        return acc;
+      },
+      { selected: [] as County[], eligible: mappedEligible as County[] }
+    ) as { selected: County[]; mappedEligible: County[] };
+
+    return random.selected.sort((a, b) => {
+      if (a.name < b.name) {
+        return -1;
+      }
+
+      if (a.name > b.name) {
+        return 1;
+      }
+
+      return 0;
+    });
   }
 }
