@@ -24,9 +24,7 @@
               <div class="form-collection column pad-top">
                 <p class="emphasis">Is this county under a lockdown directive?</p>
 
-                <tamu-gisc-checkbox-group formControlName="isLockdown" [referenceId]="'value'">
-                  <tamu-gisc-checkbox *ngFor="let option of lockdownOptions" [data]="option" [label]="option.label"></tamu-gisc-checkbox>
-                </tamu-gisc-checkbox-group>
+                <tamu-gisc-radio-group formControlName="isLockdown" [options]="lockdownOptions" displayPath="label" valuePath="value"></tamu-gisc-radio-group>
               </div>
             </div>
           </div>

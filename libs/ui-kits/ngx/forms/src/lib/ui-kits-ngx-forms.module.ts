@@ -15,6 +15,7 @@ import { ButtonComponent } from './components/button/button.component';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { FileComponent } from './components/file/file.component';
+import { RadioGroupComponent } from './components/radio-group/radio-group.component';
 
 @NgModule({
   imports: [CommonModule, FormsModule, UILayoutModule, DlDateTimePickerDateModule, DlDateTimePickerModule],
@@ -26,7 +27,8 @@ import { FileComponent } from './components/file/file.component';
     TextboxComponent,
     AbstractValueAccessorFormComponent,
     ButtonComponent,
-    FileComponent
+    FileComponent,
+    RadioGroupComponent
   ],
   exports: [
     SelectComponent,
@@ -35,7 +37,8 @@ import { FileComponent } from './components/file/file.component';
     DateTimePickerComponent,
     TextboxComponent,
     ButtonComponent,
-    FileComponent
+    FileComponent,
+    RadioGroupComponent
   ]
 })
 export class UIFormsModule {}

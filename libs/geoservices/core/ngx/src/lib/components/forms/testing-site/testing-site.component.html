@@ -7,18 +7,16 @@
       <div class="form-collection column">
         <p>Is information on this testing site publicly available?</p>
 
-        <tamu-gisc-checkbox-group formControlName="undisclosed" [referenceId]="'value'">
-          <tamu-gisc-checkbox *ngFor="let option of availabilityOptions" [data]="option" [label]="option.label"></tamu-gisc-checkbox>
-        </tamu-gisc-checkbox-group>
+        <tamu-gisc-radio-group formControlName="undisclosed" [options]="availabilityOptions" displayPath="label" valuePath="value"></tamu-gisc-radio-group>
       </div>
 
-      <div class="inform-context" *ngIf="!(undisclosedState | async) && this.form.get(['info', 'undisclosed']).value.length > 0">
+      <div class="inform-context" *ngIf="(undisclosedState | async) === false">
         <p>To the extent allowed by limited information, please provide any relevant details regarding this testing site.</p>
       </div>
     </div>
   </div>
 
-  <ng-container *ngIf="(this.form.get(['info', 'undisclosed']).value && this.form.get(['info', 'undisclosed']).value.length > 0) || (undisclosedState | async)">
+  <ng-container *ngIf="(undisclosedState | async) === true || (undisclosedState | async) === false">
     <div formGroupName="location" class="form-section">
       <div class="form-section-toolbar">
         <div class="form-section-name">Location Information</div>
@@ -110,11 +108,12 @@
 
       <div [formArrayName]="'phoneNumbers'" *ngIf="form.get(['info', 'phoneNumbers'])['controls'].length > 0; else promptAddPhoneNumber" class="form-section-body">
         <ng-container *ngFor="let ph of form.get(['info', 'phoneNumbers'])['controls']; let i = index">
-          <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
+          <div [formGroupName]="i" class="form-collection row align-center select-collection" [ngClass]="{'pad-top': i === 0}">
             <ng-container formGroupName="value">
               <tamu-gisc-textbox formControlName="value" type="tel" placeholder="Phone Number" floatLabel="true"></tamu-gisc-textbox>
               <tamu-gisc-select formControlName="type" [data]="(phoneTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
             </ng-container>
+            <span class="material-icons action error" title="Remove phone number" (click)="removeFormArrayControl('phoneNumbers', i)">close</span>
           </div>
         </ng-container>
       </div>
@@ -140,11 +139,12 @@
 
       <div [formArrayName]="'websites'" *ngIf="form.get(['info', 'websites'])['controls'].length > 0; else promptAddWebsite" class="form-section-body">
         <ng-container *ngFor="let ph of form.get(['info', 'websites'])['controls']; let i = index">
-          <div [formGroupName]="i" class="form-collection row" [ngClass]="{'pad-top': i === 0}">
+          <div [formGroupName]="i" class="form-collection row align-center select-collection" [ngClass]="{'pad-top': i === 0}">
             <ng-container formGroupName="value">
               <tamu-gisc-textbox formControlName="value" type="text" placeholder="Website URL" floatLabel="true"></tamu-gisc-textbox>
               <tamu-gisc-select formControlName="type" [data]="(websitesTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
             </ng-container>
+            <span class="material-icons action error" title="Remove website" (click)="removeFormArrayControl('websites', i)">close</span>
           </div>
         </ng-container>
       </div>
@@ -162,14 +162,19 @@
 
     <div class="form-section" *ngIf="!readonly">
       <div class="form-section-body flex">
-        <div class="flex flex-row justify-center">
-          <tamu-gisc-button *ngIf="!formState.submitted" type="submit" [value]="!formState.submitting ? 'Submit' : 'Submitting...'" [disabled]="formState.submitting"></tamu-gisc-button>
-          <!-- <tamu-gisc-button type="submit" [value]="!formState.submitting ? 'Submit' : 'Submitting...'"></tamu-gisc-button> -->
+        <div class="flex flex-column justify-row">
+          <tamu-gisc-button *ngIf="!formState.submitted" type="submit" fit="relaxed" [value]="!formState.submitting ? 'Submit' : 'Submitting...'" [disabled]="formState.submitting"></tamu-gisc-button>
+        </div>
 
-          <ng-container *ngIf="formState.submitted">
+        <div class="flex flex-column align-center" *ngIf="formState.submitted">
+          <ng-container *ngIf="formData === undefined || formData === null">
             <p><strong>Thank you! Your submission has been recorded and will be processed as soon as possible.</strong></p>
-
             <a [routerLink]="['../../testing-sites']">Go back to testing site list</a>
+          </ng-container>
+
+          <ng-container *ngIf="formData !== undefined && formData !== null">
+            <p><strong>Testing site details have been updated.</strong></p>
+            <a [routerLink]="['../../']">Go back to testing site list</a>
           </ng-container>
         </div>
       </div>

@@ -42,11 +42,11 @@ export class LockdownComponent implements OnInit, OnDestroy {
 
   public lockdownOptions = [
     {
-      value: 'true',
+      value: true,
       label: 'Yes'
     },
     {
-      value: 'false',
+      value: false,
       label: 'No'
     }
   ];
@@ -70,7 +70,7 @@ export class LockdownComponent implements OnInit, OnDestroy {
         county: ['']
       }),
       info: this.fb.group({
-        isLockdown: [[]],
+        isLockdown: [],
         hasUnknownEndDate: [false],
         startDate: [new Date().toISOString().split('T')[0]],
         endDate: [new Date().toISOString().split('T')[0]],
@@ -84,18 +84,7 @@ export class LockdownComponent implements OnInit, OnDestroy {
     this.websitesTypes = this.cl.getWebsiteTypes();
     this.phoneTypes = this.ph.getPhoneNumberTypes();
 
-    // Since I don't have a dedicated radio or radio group component, need to control the selection logic by mapping an array to a boolean
-    this.lockdownState = (this.form.controls.info as FormGroup).controls.isLockdown.valueChanges.pipe(
-      switchMap((value) => {
-        if (value.length > 1 || value.length === 0) {
-          return of(undefined);
-        } else if (value[0] === 'false') {
-          return of(false);
-        } else if (value[0] === 'true') {
-          return of(true);
-        }
-      })
-    );
+    this.lockdownState = (this.form.controls.info as FormGroup).controls.isLockdown.valueChanges;
 
     // Set the county and state location fields for the form
 
@@ -174,7 +163,7 @@ export class LockdownComponent implements OnInit, OnDestroy {
               county: res.claim.county.countyFips
             },
             info: {
-              isLockdown: [res.info.isLockdown.toString()],
+              isLockdown: res.info.isLockdown,
               hasUnknownEndDate: res.info.endDate === null ? true : false,
               startDate: res.info.startDate ? res.info.startDate.split('T')[0] : undefined,
               endDate: res.info.endDate ? res.info.endDate.split('T')[0] : undefined,
@@ -267,7 +256,7 @@ export class LockdownComponent implements OnInit, OnDestroy {
   public submitLockdown() {
     const lockdown = this.form.getRawValue();
 
-    lockdown.info.isLockdown = lockdown.info.isLockdown[0] === 'true' ? true : false;
+    lockdown.info.isLockdown = lockdown.info.isLockdown;
     lockdown.info.protocol = lockdown.info.isLockdown === true ? lockdown.info.protocol : undefined;
     lockdown.info.startDate = lockdown.info.isLockdown === true ? lockdown.info.startDate : undefined;
     lockdown.info.endDate =

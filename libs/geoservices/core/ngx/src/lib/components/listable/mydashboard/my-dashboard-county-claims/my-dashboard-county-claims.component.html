@@ -1,15 +1,24 @@
-<p>my-dashboard-county-claims works!</p>
-<pre>{{(counties|async|json)}}</pre>
-    <!-- <ng-container style="background: white;" *ngFor="let county of (counties | async); let i = index">
-        <div style="display: flex; flex-direction: column; align-items: center;">
-            <p>{{county.guid}}</p>
-            <ng-container *ngIf="county.infos">
-                <div class="siteContainer">
-                    <ng-container *ngFor="let info of county.infos">
-                        <p>{{info.guid}}</p>
-                        <p>{{info.claim}}</p>
-                    </ng-container>
-                </div>
-            </ng-container>
+<!-- <pre>{{(counties|async|json)}}</pre> -->
+<div class="flex flex-column align-center">
+  <div class="spinning-loader" *ngIf="!(counties | async); else county"></div>
+
+  <ng-template #county>
+    <div class="floating-table">
+      <div class="floating-table-header">
+        <div class="floating-row">
+          <div class="column">County Name</div>
+          <div class="column">Updated</div>
+          <div class="column">Status</div>
         </div>
-    </ng-container> -->
+      </div>
+
+      <div class="floating-table-body">
+        <div class="floating-row" *ngFor="let county of (counties | async)">
+          <div class="column">{{county.county.name}}</div>
+          <div class="column">{{county.updated | date : 'medium'}}</div>
+          <div class="column">{{county.statuses[0].type.name}}</div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

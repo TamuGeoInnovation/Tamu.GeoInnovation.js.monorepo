@@ -62,7 +62,8 @@ export class SitesService extends BaseService<TestingSite> {
       existingTestingSite = await this.repo.findOne({
         where: {
           guid: params.guid
-        }
+        },
+        relations: ['infos']
       });
     }
 
@@ -184,7 +185,7 @@ export class SitesService extends BaseService<TestingSite> {
       });
 
       if (existingTestingSite) {
-        testingSiteInfo = {
+        const info = this.testingSiteInfoRepo.create({
           responses: responsesFiltered,
           undisclosed: params.info.undisclosed,
           sitesAvailable: params.info.sitesAvailable,
@@ -198,21 +199,11 @@ export class SitesService extends BaseService<TestingSite> {
           notes: params.info.notes,
           statuses: [entStatus],
           testingSite: existingTestingSite
-        };
-
-        const testingSite = this.repo.create({
-          claim: claim,
-          infos: [testingSiteInfo],
-          statuses: [
-            {
-              type: {
-                id: STATUS.PROCESSING
-              }
-            }
-          ]
         });
 
-        const site = await testingSite.save();
+        existingTestingSite.infos.push(info);
+
+        const site = await existingTestingSite.save();
 
         await this.clearSitelessStatus(claim);
 
@@ -294,15 +285,15 @@ export class SitesService extends BaseService<TestingSite> {
       return site;
     });
 
-    const flattened = this.flattenTestSiteAndInfo(joined);
+    const flattened = joined.map((s) => this.flattenTestSiteAndInfo(s));
 
     return flattened;
   }
 
   public async getSitesForUser(identifier: string) {
     let idType: string;
-    
-    if (identifier.includes("@")) {
+
+    if (identifier.includes('@')) {
       idType = 'email';
     } else if (identifier.includes('-')) {
       idType = 'guid';
@@ -349,7 +340,7 @@ export class SitesService extends BaseService<TestingSite> {
       return site;
     });
 
-    const flattened = this.flattenTestSiteAndInfo(joined);
+    const flattened = joined.map((s) => this.flattenTestSiteAndInfo(s));
 
     return flattened;
   }
@@ -403,76 +394,72 @@ export class SitesService extends BaseService<TestingSite> {
         guid: siteGuid
       },
       order: {
-        created: 'DESC',
+        created: 'DESC'
       },
-      relations: [
-        'infos'
-      ]
+      relations: ['infos']
     });
 
     return testingSites;
   }
 
-  private flattenTestSiteAndInfo(sites: TestingSite[]) {
-    return sites.map((site, index) => {
-      const siteInfo =
-        site.infos && site.infos.length > 0 ? site.infos[0] : (({ responses: [] } as unknown) as TestingSiteInfo);
+  private flattenTestSiteAndInfo(site: Partial<TestingSite>) {
+    const siteInfo =
+      site.infos && site.infos.length > 0 ? site.infos[0] : (({ responses: [] } as unknown) as TestingSiteInfo);
 
-      const categorized = siteInfo.responses.reduce(
-        (acc, curr) => {
-          if (curr.entityValue.value.category.id === CATEGORY.PHONE_NUMBERS) {
-            acc.phoneNumbers.push(curr.entityValue);
-          }
-
-          if (curr.entityValue.value.category.id === CATEGORY.WEBSITES) {
-            acc.websites.push(curr.entityValue);
-          }
-
-          if (curr.entityValue.value.category.id === CATEGORY.SITE_OWNERS) {
-            acc.siteOwners.push(curr.entityValue);
-          }
-
-          if (curr.entityValue.value.category.id === CATEGORY.SITE_SERVICES) {
-            acc.siteServices.push(curr.entityValue);
-          }
-
-          if (curr.entityValue.value.category.id === CATEGORY.SITE_RESTRICTIONS) {
-            acc.siteRestrictions.push(curr.entityValue);
-          }
-
-          if (curr.entityValue.value.category.id === CATEGORY.SITE_OPERATIONAL_STATUS) {
-            acc.siteStatus.push(curr.entityValue);
-          }
-
-          return acc;
-        },
-        { phoneNumbers: [], websites: [], siteOwners: [], siteServices: [], siteRestrictions: [], siteStatus: [] } as {
-          phoneNumbers: EntityValue[];
-          websites: EntityValue[];
-          siteOwners: EntityValue[];
-          siteServices: EntityValue[];
-          siteRestrictions: EntityValue[];
-          siteStatus: EntityValue[];
+    const categorized = siteInfo.responses.reduce(
+      (acc, curr) => {
+        if (curr.entityValue.value.category.id === CATEGORY.PHONE_NUMBERS) {
+          acc.phoneNumbers.push(curr.entityValue);
         }
-      );
 
-      const formatted = {
-        claim: site.claim,
-        location: siteInfo.location ? siteInfo.location : { address1: '', address2: '' },
-        info: {
-          ...siteInfo,
-          status:
-            categorized.siteStatus && categorized.siteStatus.length > 0 ? categorized.siteStatus[0].value.type.guid : '',
-          owners: categorized.siteOwners.map((owner) => owner.value.type.guid).join(','),
-          restrictions: categorized.siteRestrictions.map((restriction) => restriction.value.type.guid).join(','),
-          services: categorized.siteServices.map((service) => service.value.type.guid).join(','),
-          phoneNumbers: categorized.phoneNumbers,
-          websites: categorized.websites
+        if (curr.entityValue.value.category.id === CATEGORY.WEBSITES) {
+          acc.websites.push(curr.entityValue);
         }
-      };
 
-      return formatted;
-    });
+        if (curr.entityValue.value.category.id === CATEGORY.SITE_OWNERS) {
+          acc.siteOwners.push(curr.entityValue);
+        }
+
+        if (curr.entityValue.value.category.id === CATEGORY.SITE_SERVICES) {
+          acc.siteServices.push(curr.entityValue);
+        }
+
+        if (curr.entityValue.value.category.id === CATEGORY.SITE_RESTRICTIONS) {
+          acc.siteRestrictions.push(curr.entityValue);
+        }
+
+        if (curr.entityValue.value.category.id === CATEGORY.SITE_OPERATIONAL_STATUS) {
+          acc.siteStatus.push(curr.entityValue);
+        }
+
+        return acc;
+      },
+      { phoneNumbers: [], websites: [], siteOwners: [], siteServices: [], siteRestrictions: [], siteStatus: [] } as {
+        phoneNumbers: EntityValue[];
+        websites: EntityValue[];
+        siteOwners: EntityValue[];
+        siteServices: EntityValue[];
+        siteRestrictions: EntityValue[];
+        siteStatus: EntityValue[];
+      }
+    );
+
+    const formatted = {
+      guid: site.guid,
+      claim: site.claim,
+      location: siteInfo.location ? siteInfo.location : { address1: '', address2: '' },
+      info: {
+        ...siteInfo,
+        status: categorized.siteStatus && categorized.siteStatus.length > 0 ? categorized.siteStatus[0].value.type.guid : '',
+        owners: categorized.siteOwners.map((owner) => owner.value.type.guid).join(','),
+        restrictions: categorized.siteRestrictions.map((restriction) => restriction.value.type.guid).join(','),
+        services: categorized.siteServices.map((service) => service.value.type.guid).join(','),
+        phoneNumbers: categorized.phoneNumbers,
+        websites: categorized.websites
+      }
+    };
+
+    return formatted;
   }
 
   public async registerCountyAsSiteless(countyFips: number | string) {
@@ -515,5 +502,33 @@ export class SitesService extends BaseService<TestingSite> {
     return await claim.save();
   }
 
+  public async getSiteAndLatestInfo(siteGuid: string) {
+    if (!siteGuid) {
+      throw new Error('Input parameter missing;');
+    }
 
+    const info = await this.testingSiteInfoRepo.findOne({
+      where: {
+        testingSite: siteGuid
+      },
+      order: {
+        created: 'DESC'
+      },
+      relations: [
+        'testingSite',
+        'responses',
+        'location',
+        'responses.entityValue',
+        'responses.entityValue.value',
+        'responses.entityValue.value.category',
+        'responses.entityValue.value.type',
+        'statuses'
+      ]
+    });
+
+    return this.flattenTestSiteAndInfo({
+      ...info.testingSite,
+      infos: [info]
+    });
+  }
 }
