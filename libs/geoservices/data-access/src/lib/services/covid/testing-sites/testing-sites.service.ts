@@ -22,6 +22,10 @@ export class TestingSitesService {
     return this.http.get<Array<Partial<FormattedTestingSite>>>(`${this.resource}/county/${countyFips}`);
   }
 
+  public getSitesForUser(email: string) {
+    return this.http.get<Array<Partial<FormattedTestingSite>>>(`${this.resource}/user/${email}`);
+  }
+
   public getTestingSitesSortedByCounty() {
     return this.http.get<Array<Partial<FormattedTestingSite>>>(`${this.resource}/county`);
   }

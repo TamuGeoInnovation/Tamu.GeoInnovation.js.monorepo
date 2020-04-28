@@ -31,6 +31,21 @@ export class LockdownsController extends BaseController<Lockdown> {
     }
   }
 
+  @Get('user/:email')
+  public async getLockdownsForUser(@Param() params) {
+    try {
+      const lockdowns = await this.service.getAllLockdownsForUser(params.email);
+
+      return lockdowns;
+    } catch (err) {
+      return {
+        status: 500,
+        success: false,
+        message: err.message
+      };
+    }
+  }
+
   @Get('')
   public async getValidated() {
     return {

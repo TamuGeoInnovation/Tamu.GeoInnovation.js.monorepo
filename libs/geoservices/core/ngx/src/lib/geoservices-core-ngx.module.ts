@@ -15,10 +15,12 @@ import { TestingSiteListComponent } from './components/listable/submissions/test
 import { CountyListComponent } from './components/listable/submissions/county/county.component';
 import { LockdownListComponent } from './components/listable/submissions/lockdown/lockdown.component';
 import { MyDashboardCountyClaimsComponent } from './components/listable/mydashboard/my-dashboard-county-claims/my-dashboard-county-claims.component';
+import { MyDashboardTestingSitesComponent } from './components/listable/mydashboard/my-dashboard-testing-sites/my-dashboard-testing-sites.component';
+import { MyDashboardLockdownsComponent } from './components/listable/mydashboard/my-dashboard-lockdowns/my-dashboard-lockdowns.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, UIFormsModule, PipesModule],
-  declarations: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent, TestingSiteComponent, TestingSiteListComponent, CountyListComponent, LockdownListComponent, MyDashboardCountyClaimsComponent],
-  exports: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent, TestingSiteComponent, TestingSiteListComponent, CountyListComponent, LockdownListComponent, MyDashboardCountyClaimsComponent]
+  declarations: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent, TestingSiteComponent, TestingSiteListComponent, CountyListComponent, LockdownListComponent, MyDashboardCountyClaimsComponent, MyDashboardTestingSitesComponent, MyDashboardLockdownsComponent],
+  exports: [HeaderComponent, FooterComponent, HeaderMobileComponent, HeaderCovidComponent, TestingSiteComponent, TestingSiteListComponent, CountyListComponent, LockdownListComponent, MyDashboardCountyClaimsComponent, MyDashboardTestingSitesComponent, MyDashboardLockdownsComponent]
 })
 export class GeoservicesCoreNgxModule {}

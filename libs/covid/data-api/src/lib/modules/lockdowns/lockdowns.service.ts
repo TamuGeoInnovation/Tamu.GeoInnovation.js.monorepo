@@ -176,6 +176,64 @@ export class LockdownsService extends BaseService<Lockdown> {
     }
   }
 
+  public async getAllLockdownsForUser(identifier: string) {
+    let idType: string;
+
+    if (identifier.includes('@')) {
+      idType = 'email';
+    } else if (identifier.includes('-')) {
+      idType = 'guid';
+    } else {
+      return {};
+    }
+
+    const lockdowns = await this.repo
+      .createQueryBuilder('lockdowns')
+      .leftJoinAndSelect('lockdowns.claim', 'claim')
+      .leftJoinAndSelect('claim.user', 'user')
+      .where(`user.${idType} = :identifier`, {
+        identifier
+      })
+      .orderBy('lockdowns.created', 'DESC')
+      .getMany();
+
+    const deferredLatestInfoForLockdowns = lockdowns.map((lock) => {
+      return this.lockdownInfoRepo.findOne({
+        where: {
+          lock: lock
+        },
+        order: {
+          created: 'DESC'
+        },
+        relations: [
+          'responses',
+          'responses.entityValue',
+          'responses.entityValue.value',
+          'responses.entityValue.value.category',
+          'responses.entityValue.value.type',
+          'statuses'
+        ]
+      });
+    });
+
+    const resolvedLatestInfoForTestingSites = await Promise.all(deferredLatestInfoForLockdowns);
+
+    const joined = lockdowns.map((site, index) => {
+      // Only join if the testing site info is not undefined
+      site.infos =
+        resolvedLatestInfoForTestingSites[index] !== undefined ? [resolvedLatestInfoForTestingSites[index]] : undefined;
+      return site;
+    });
+
+    try {
+      const flattened = joined.map((s) => this.flattenLockdownAndInfo(lockdowns, deferredLatestInfoForLockdowns));
+      return flattened;
+    } catch(err) {
+      return joined;
+    }
+    
+  }
+
   /**
    * Returns the last lockdown entry, including last lockdown info submission
    * for a provided county fips, independent of user.
