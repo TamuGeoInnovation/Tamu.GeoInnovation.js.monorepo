@@ -1,12 +1,12 @@
 <!-- <p>The following is a list of submitted testing sites registered to your email address for this county.</p> -->
 
 <ng-container *ngIf="!(localEmail | async) ; else hasIdentity">
-  <p>Email registration required to submit testing sites. <a [routerLink]="['../profile']">Register using your email to proceed.</a></p>
+  <p class="flex justify-center">Email registration required to submit testing sites. <a [routerLink]="['../profile']">Register using your email to proceed.</a></p>
 </ng-container>
 
 <ng-template #hasIdentity>
   <ng-container *ngIf="!(localCounty | async) ; else hasCounty">
-    <p>An active county claim is required to submit testing sites. <a [routerLink]="['../county']">Claim a county to proceed.</a></p>
+    <p class="flex justify-center">An active county claim is required to submit testing sites. <a [routerLink]="['../county']">Claim a county to proceed.</a></p>
   </ng-container>
 
   <ng-template #hasCounty>

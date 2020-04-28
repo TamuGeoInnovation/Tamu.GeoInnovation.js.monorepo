@@ -26,7 +26,8 @@
         </div>
       </div>
 
-      <div class="form-section" *ngIf="((formState | async) !== undefined && (formState | async) !== null) && ((formCounty | async) === undefined || (formCounty | async) === null)">
+      <!-- Only show county suggestions whenever the form state form values are invalid (not equal to undefined or null) AND form county values are not set (equal to null or undefined) AND when the local county is invalid -->
+      <div class="form-section" *ngIf="( (form.get('state').valueChanges | async) !== undefined && (form.get('state').valueChanges | async) !== null) && ((form.get('county').valueChanges | async) === undefined || (form.get('county').valueChanges | async) === null) && (!(localCounty | async)?.countyFips)">
         <div class="form-section-body">
           <div class="inform-context">
             <p>
