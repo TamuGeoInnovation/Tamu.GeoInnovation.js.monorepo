@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { Observable, of, Subject, combineLatest } from 'rxjs';
+import { Observable, of, Subject, combineLatest, timer } from 'rxjs';
 import { switchMap, pluck, withLatestFrom, filter, takeUntil, take } from 'rxjs/operators';
 
 import { County, User, FieldCategory, EntityValue } from '@tamu-gisc/covid/common/entities';
@@ -31,6 +31,7 @@ export class LockdownComponent implements OnInit, OnDestroy {
   public localEmail: Observable<Partial<User['email']>>;
 
   public lockdownState: Observable<boolean>;
+  public submissionStatus: Subject<number> = new Subject();
 
   /**
    * Describes if the current lockdown information was submitted by the
@@ -254,6 +255,7 @@ export class LockdownComponent implements OnInit, OnDestroy {
   }
 
   public submitLockdown() {
+    this.submissionStatus.next(0);
     const lockdown = this.form.getRawValue();
 
     lockdown.info.isLockdown = lockdown.info.isLockdown;
@@ -263,6 +265,12 @@ export class LockdownComponent implements OnInit, OnDestroy {
       lockdown.info.isLockdown === true && !lockdown.info.hasUnknownEndDate ? lockdown.info.endDate : null;
 
     return this.ls.submitLockdown(lockdown).subscribe((res) => {
+      this.submissionStatus.next(1);
+
+      timer(3000).subscribe(() => {
+        this.submissionStatus.next(-1);
+      });
+
       console.log('Lockdown submit response:', res);
     });
   }

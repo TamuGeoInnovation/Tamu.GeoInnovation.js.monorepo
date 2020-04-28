@@ -37,7 +37,7 @@
         </div>
       </div>
 
-      <div *ngIf="!(countyClaimable | async) && (countyClaims | async)?.length > 0 && (this.form.controls.county.valueChanges | async) !== 'undefined' && (this.form.controls.state.valueChanges | async) !== 'undefined'" class="form-section">
+      <div *ngIf="!(countyClaimable | async) && (countyClaims | async)?.length > 0 && (this.form.controls.county.valueChanges | async) !== undefined && (this.form.controls.state.valueChanges | async) !== undefined" class="form-section">
         <div class="form-section-body">
           <div class="inform-context alert">
             <p>This county is actively claimed by another user. Please choose another county.</p>
@@ -45,7 +45,7 @@
         </div>
       </div>
 
-      <div *ngIf="(countyContributedByOther | async) && (countyClaimable | async) && !(localCounty | async)?.countyFips && (this.form.controls.county.valueChanges | async) !== 'undefined' && (this.form.controls.county.valueChanges | async) !== undefined && (this.form.controls.state.valueChanges | async) !== 'undefined' && (this.form.controls.state.valueChanges | async) !== undefined" class="form-section">
+      <div *ngIf="(countyContributedByOther | async) && (countyClaimable | async) && !(localCounty | async)?.countyFips && (this.form.controls.county.valueChanges | async) !== undefined && (this.form.controls.county.valueChanges | async) !== undefined && (this.form.controls.state.valueChanges | async) !== undefined && (this.form.controls.state.valueChanges | async) !== undefined" class="form-section">
         <div class="form-section-body">
           <div class="inform-context warning">
             <p>This county has been previously claimed and has associated data. Please consider claiming a county with no entered data.</p>
@@ -116,13 +116,13 @@
                 [look]="(localCounty | async)?.countyFips ? 'secondary': ''"
                 [disabled]="form.invalid
             || !(countyClaimable | async) 
-            || (this.form.controls.county.value) === 'undefined' || (this.form.controls.state.value) === 'undefined'"
+            || (this.form.controls.county.value) === undefined || (this.form.controls.state.value) === undefined"
               ></tamu-gisc-button>
             </div>
 
             <ng-template #buttonsHasClaim>
               <div class="button-row flex flex-row justify-between align-center">
-                <div class="flex flex-row">
+                <div class="flex flex-row align-center">
                   <tamu-gisc-button look="danger" fit="relaxed" value="Close Claim" (click)="submitCloseClaim()" *ngIf="(localCounty | async)?.countyFips"></tamu-gisc-button>
 
                   <tamu-gisc-button
@@ -131,8 +131,14 @@
                     [look]="(localCounty | async)?.countyFips ? 'secondary': ''"
                     [disabled]="form.invalid
             || !(countyClaimable | async) 
-            || (this.form.controls.county.value) === 'undefined' || (this.form.controls.state.value) === 'undefined'"
+            || (this.form.controls.county.value) === undefined || (this.form.controls.state.value) === undefined"
                   ></tamu-gisc-button>
+
+                  <div [ngSwitch]="submissionStatus | async" class="submission-statuses">
+                    <div class="status" *ngSwitchCase="0">Saving...</div>
+                    <div class="status" *ngSwitchCase="1">Saved!</div>
+                    <div class="status" *ngSwitchCase="2">Error!</div>
+                  </div>
                 </div>
 
                 <div>

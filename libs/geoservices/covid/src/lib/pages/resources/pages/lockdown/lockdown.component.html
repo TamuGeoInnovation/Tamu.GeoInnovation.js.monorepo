@@ -130,8 +130,14 @@
             <div class="form-section-body">
               <div class="form-collection row">
                 <div class="flex flex-row justify-between align-center">
-                  <div>
+                  <div class="flex flex-row align-center">
                     <tamu-gisc-button [value]="'Save'" look="secondary" type="submit" [disabled]="form.invalid"></tamu-gisc-button>
+
+                    <div [ngSwitch]="submissionStatus | async" class="submission-statuses pre-1">
+                      <div class="status" *ngSwitchCase="0">Saving...</div>
+                      <div class="status" *ngSwitchCase="1">Saved!</div>
+                      <div class="status" *ngSwitchCase="2">Error!</div>
+                    </div>
                   </div>
 
                   <div>

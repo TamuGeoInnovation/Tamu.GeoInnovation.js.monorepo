@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Observable, Subject, of, merge, forkJoin, EMPTY, combineLatest } from 'rxjs';
+import { Observable, Subject, of, merge, forkJoin, EMPTY, combineLatest, timer } from 'rxjs';
 import {
   switchMap,
   take,
@@ -39,7 +39,7 @@ export class CountyComponent implements OnInit, OnDestroy {
   public states: Observable<Array<Partial<State>>>;
   public phoneTypes: Observable<Partial<FieldCategory>>;
   public websiteTypes: Observable<Partial<FieldCategory>>;
-  public suggestedCounties;
+  public suggestedCounties: Observable<Array<County>>;
 
   /**
    * Represents the active county claims for the selected county
@@ -54,6 +54,7 @@ export class CountyComponent implements OnInit, OnDestroy {
 
   public formCounty: Observable<number>;
   public formState: Observable<number>;
+  public submissionStatus: Subject<number> = new Subject();
 
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -251,6 +252,8 @@ export class CountyComponent implements OnInit, OnDestroy {
   public submitCountyOwnership() {
     const formValue = this.form.getRawValue();
 
+    this.submissionStatus.next(0);
+
     forkJoin([
       this.is.identity.pipe(take(1)),
       this.localCounty.pipe(
@@ -278,6 +281,12 @@ export class CountyComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((res) => {
+        this.submissionStatus.next(1);
+
+        timer(3000).subscribe(() => {
+          this.submissionStatus.next(-1);
+        });
+
         console.log(res);
       });
   }
