@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { County, FieldCategory } from '@tamu-gisc/covid/common/entities';
+import { County } from '@tamu-gisc/covid/common/entities';
 import { CountyClaimsService, PhoneNumbersService, PhoneNumberTypesService, TestingSitesService, WebsitesService, WebsiteTypesService, FormattedTestingSite } from '@tamu-gisc/geoservices/data-access';
-import { Observable, VirtualTimeScheduler } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CATEGORY } from '@tamu-gisc/covid/common/enums';
 

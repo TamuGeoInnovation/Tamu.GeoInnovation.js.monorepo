@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { County, CountyClaim, FieldCategory, User } from '@tamu-gisc/covid/common/entities';
+import { County, CountyClaim, User } from '@tamu-gisc/covid/common/entities';
 import { CountyClaimsService, TestingSitesService, WebsitesService, WebsiteTypesService, FormattedTestingSite } from '@tamu-gisc/geoservices/data-access';
 import { IdentityService } from '../../../../services/identity.service';
-import { Observable, VirtualTimeScheduler } from 'rxjs';
-import { switchMap, pluck, filter, withLatestFrom, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { switchMap, pluck, filter } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 import { CATEGORY } from '@tamu-gisc/covid/common/enums';
 
@@ -22,7 +22,7 @@ export class MyDashboardCountyClaimsComponent implements  OnInit, OnDestroy {
     private is: IdentityService
   ) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     // this.localCounty = this.is.identity.pipe(
     //   pluck('claim', 'county'),
     //   filter((county) => {
@@ -42,7 +42,7 @@ export class MyDashboardCountyClaimsComponent implements  OnInit, OnDestroy {
     
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     // this._$destroy.next();
     // this._$destroy.complete();
   }
