@@ -33,6 +33,12 @@ export class LockdownsService {
   public getLockdownForCounty(countyFips: number) {
     return this.http.get<Partial<ActiveLockdown>>(`${this.resource}/active/county/${countyFips}`);
   }
+
+  public getAllLockdownsForUser(email: string) {
+    return this.http.get<Partial<ActiveLockdown>>(`${this.resource}/user/${email}`);
+
+  }
+
 }
 
 export interface ActiveLockdown {
