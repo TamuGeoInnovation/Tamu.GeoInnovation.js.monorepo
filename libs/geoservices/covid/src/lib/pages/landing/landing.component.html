@@ -4,36 +4,46 @@
     <div class="column9">
       <h1>Texas A&amp;M University &mdash; Aiding in the Fight Against COVID-19</h1>
       <!-- <h4 class="column6 alpha omega">Free Geocoding For The Public Health Community</h4> -->
-      <h4 class="column6 alpha omega">Crowd-sourced lockdown and COVID-19 testing site information.</h4>
+      <h4 class="column6 alpha omega">Free resources plus crowd-sourced lockdown and COVID-19 testing site information.</h4>
     </div>
   </div>
 </section>
 
-<section class="content-fill-pad" style="background: white;">
+<!-- <section class="content-fill-pad" style="background: white;">
   <div class="container12 flex flex-column align-center">
     <div class="column8 flex flex-column text-content text-content--center">
       <p>Texas A&amp;M Geoservices is fully prepared to continue supporting service operations during during the coronavirus COVID-19 disease pandemic. In addition, the Texas A&amp;M University (TAMU) GeoInnovation Service Center has been authorized by TAMU to provide assistance to the national and international public health communities by providing free and unlimited access to our geocoding platform for COVID-19 public health-related surveillance, treatment, and control in the United States.</p>
     </div>
   </div>
-</section>
+</section> -->
 
 <section class="content-fill-pad">
   <div class="container12 flex flex-row-reverse justify-around">
-    <div class="column6 flex flex-column justify-center">
-      <h2>Geocoding in the Fight Against the COVID-19 Pandemic</h2>
+    <div class="column5 flex flex-column justify-center align-center">
+      <!-- <img id="geocoding-graphic" src="assets/img/graphics/geocoding.png" alt="Geocoding Graphic" /> -->
+      <h3>Recent Submissions</h3>
+      <tamu-gisc-testing-sites-list></tamu-gisc-testing-sites-list>
+    </div>
+
+    <div class="column7 flex flex-column justify-center align-center">
+      <!-- <h2>Geocoding in the Fight Against the COVID-19 Pandemic</h2>
 
       <p>The distribution of COVID-19 cases in the United States can be described geographically. Accurate geocoding is a valuable resource used to convert human-retable addresses into latitude and longitude pair values that can further be used for geo-spatial analysis.</p>
 
-      <p>Geocoding costs at scale quickly add up. Texas A&amp;M is eager to facilitate the ongoing efforts by the public health community against the COVID-19 pandemic by eliminating the financial barrier.</p>
-    </div>
+      <p>Geocoding costs at scale quickly add up. Texas A&amp;M is eager to facilitate the ongoing efforts by the public health community against the COVID-19 pandemic by eliminating the financial barrier.</p> -->
 
-    <div class="column6 flex flex-row justify-center align-center">
-      <img id="geocoding-graphic" src="assets/img/graphics/geocoding.png" alt="Geocoding Graphic" />
+      <h2>Crowd-Sourced COVID-19 Lockdown and Testing Sites</h2>
+
+      <p>As part of Texas A&amp;M's commitment to assist the health care community and general public, this website is an effort to collect and maintain an accurate and up-to-date database of county lockdowns and testing centers/facilities. These collected data are part of a larger series of services provided to facilitate dissemination.</p>
+
+      <p>Anybody is free and encouraged to submit new testing sites as they become available, or update existing information. All submissions are reviewed by a committee of qualified professionals to ensure the quality of data.</p>
+
+      <a [routerLink]="['./resources']" class="button leader-2">Enter Data</a>
     </div>
   </div>
 </section>
 
-<section class="content-fill-pad" style="background: #ffffff;">
+<!-- <section class="content-fill-pad" style="background: #ffffff;">
   <div class="container12 flex justify-center">
     <div class="column8 text-content text-content--center">
       <h2>Testing Sites</h2>
@@ -41,53 +51,51 @@
       <tamu-gisc-testing-sites-list></tamu-gisc-testing-sites-list>
     </div>
   </div>
-</section>
-
-
+</section> -->
 
 <section class="content-fill-pad" style="background: #ffffff;">
   <div class="container12 flex justify-center">
     <div class="column8 text-content text-content--center">
-      <h2>Application Process</h2>
-      <h4>Request Access To Free Geocoding</h4>
+      <h2>Purpose</h2>
+      <h4></h4>
 
-      <p>If you are a public health official, academic researcher or student, or employee of a for-profit, non-profit, or government organization working on COVID-19 tracking, prevention, control, surveillance, or other efforts, you may request access to free and unlimited geocoding resources from Texas A&amp;M University.</p>
+      <p>The Texas A&amp;M GeoInnovation Service Center is undertaking several efforts to provide the resources and information needed by professionals and the public.</p>
 
       <tamu-gisc-stepper>
         <tamu-gisc-step>
           <ng-template giscStepperToggle>
-            <span class="material-icons">create</span>
-            <p>Register</p>
-          </ng-template>
-
-          <p>Create a free <a href="https://geoservices.tamu.edu/Signup/" target="_blank" rel="noopener noreferrer">Texas A&amp;M Geoservices account</a>.</p>
-        </tamu-gisc-step>
-
-        <tamu-gisc-step>
-          <ng-template giscStepperToggle>
             <span class="material-icons">assignment</span>
-            <p>Apply</p>
+            <p>Collection</p>
           </ng-template>
 
-          <p>Complete and submit our <a href="https://docs.google.com/forms/d/e/1FAIpQLSeRZOuy1BWP9_uk1JK8XjM-YwyJk0WboR_N42qAK12nCYME6w/viewform" target="_blank" rel="noopener noreferrer">COVID-19 Geocoding Request Form</a>.</p>
+          <p>Volunteered geographic information (VGI) can be difficult to collect and maintain. Texas A&amp;M GeoInnovation Service Center seeks to establish a standardized reporting format for information on counties, lockdowns, and testing sites.</p>
         </tamu-gisc-step>
 
         <tamu-gisc-step>
           <ng-template giscStepperToggle>
-            <span class="material-icons">check_circle_outline</span>
-            <p>Approval</p>
+            <span class="material-icons">all_out</span>
+            <p>Dissemination</p>
           </ng-template>
 
-          <p>We will review your request as soon as possible and add processing credits to your account once approved.</p>
+          <p>Collected crowd-sourced data is used to create visualizations and maps to facilitate the consumption and dissemination of accurate data. In addition, all data is also offered to the general public through API's for use in other applications.</p>
+        </tamu-gisc-step>
+
+        <tamu-gisc-step>
+          <ng-template giscStepperToggle>
+            <span class="material-icons">bookmark</span>
+            <p>Resources</p>
+          </ng-template>
+
+          <p>Several other <em>free</em> resources for professionals and analysts actively working in COVID-19 fighting efforts are available. These include geographic data sets as well as unlimited use of our Geocoding services.</p>
         </tamu-gisc-step>
       </tamu-gisc-stepper>
 
-      <p>For additional questions, comments, concerns, demo's, and how-to's, contact <a href="mailto:daniel.goldberg@tamu.edu">Daniel Goldberg</a>.</p>
+      <!-- <p>For additional questions, comments, concerns, demo's, and how-to's, contact <a href="mailto:daniel.goldberg@tamu.edu">Daniel Goldberg</a>.</p> -->
     </div>
   </div>
 </section>
 
-<section class="content-fill-pad">
+<!-- <section class="content-fill-pad">
   <div class="container12 flex flex flex-column align-center">
     <div class="column12 flex flex-column align-center section-header">
       <h2>Data Privacy &amp; Security</h2>
@@ -113,18 +121,22 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
-<section class="content-fill-pad" style="background: #ffffff;">
-  <div class="container12">
-    <div class="column12 flex flex-column align-center section-header">
-      <h2>Request Free Geocoding Access</h2>
+<section class="content-fill-pad">
+  <div class="container12 flex flex-column align-center">
+    <div class="column12 flex flex-column align-center">
+      <h2>Free Geocoding For COVID-19 Efforts</h2>
     </div>
 
-    <div class="column12 flex flex-column justify-center align-center">
+    <div class="column8">
+      <p>Texas A&amp;M Geoservices is fully prepared to continue supporting service operations during during the coronavirus COVID-19 disease pandemic. In addition, the Texas A&amp;M University (TAMU) GeoInnovation Service Center has been authorized by TAMU to provide assistance to the national and international public health communities by providing free and unlimited access to our geocoding platform for COVID-19 public health-related surveillance, treatment, and control in the United States.</p>
+    </div>
+
+    <div class="column12 flex flex-column justify-center align-center leader-1 trailer-1">
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSeRZOuy1BWP9_uk1JK8XjM-YwyJk0WboR_N42qAK12nCYME6w/viewform" target="_blank" class="button">Apply Now</a>
 
-      <p>Already approved? Check out the <a [routerLink]="['/api']">documentation</a> to learn how to use our geocoding service.</p>
+      <p>Already approved? Check out the <a href="http://geoservices.tamu.edu/Services/Geocode/" target="_blank" rel="noopener noreferrer">documentation</a> to learn how to use our geocoding service.</p>
     </div>
   </div>
 </section>

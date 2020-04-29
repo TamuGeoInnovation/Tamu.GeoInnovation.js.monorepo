@@ -1,19 +1,23 @@
-h4 {
-    padding-bottom: 0.15rem;
+@import 'libs/sass/mixins';
+
+h5 {
+  padding-bottom: 0.4rem;
 }
 
-.siteContainer {
-    display: flex;
-    flex-direction: column;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+.site-container {
+  @include flexbox();
+  @include flex-direction(column);
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
-.siteItem {
-    display: flex;
+.site-item {
+  @include flexbox();
+  @include flex-direction(row);
+  padding-bottom: 0.25rem;
 }
 
-.siteDetailIcon {
-    margin-right: 0.3rem;
-
+.material-icons {
+  margin-right: 0.25rem;
+  color: hsl(223, 15%, 60%);
 }

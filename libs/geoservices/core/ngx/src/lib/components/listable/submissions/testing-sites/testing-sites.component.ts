@@ -1,17 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { County, FieldCategory } from '@tamu-gisc/covid/common/entities';
-import {
-  CountyClaimsService,
-  PhoneNumbersService,
-  PhoneNumberTypesService,
-  TestingSitesService,
-  WebsitesService,
-  WebsiteTypesService,
-  FormattedTestingSite
-} from '@tamu-gisc/geoservices/data-access';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { CATEGORY } from '@tamu-gisc/covid/common/enums';
+import { County, FieldCategory } from '@tamu-gisc/covid/common/entities';
+import { TestingSitesService, FormattedTestingSite } from '@tamu-gisc/geoservices/data-access';
 
 @Component({
   selector: 'tamu-gisc-testing-sites-list',
@@ -24,27 +17,23 @@ export class TestingSiteListComponent implements OnInit {
   public phoneTypes: Observable<Partial<FieldCategory>>;
   public websiteTypes: Observable<Partial<FieldCategory>>;
 
-  constructor(
-    private pt: PhoneNumberTypesService,
-    private pn: PhoneNumbersService,
-    private wt: WebsiteTypesService,
-    private ws: WebsitesService,
-    private cl: CountyClaimsService,
-    private ts: TestingSitesService
-  ) {}
+  constructor(private ts: TestingSitesService) {}
 
   public ngOnInit() {
     this.testingSites = this.ts.getTestingSitesSortedByCounty().pipe(
       map((sites) => {
-        sites.forEach((val) => {
-          const responses = val.info.responses;
-          responses.forEach((response, i) => {
-            if (response.entityValue.value.category.id === CATEGORY.WEBSITES) {
-              val.info.notes = response.entityValue.value.value;
-            }
-          });
+        return sites.map((site) => {
+          // Find any instance of a response with a website type.
+          const website = site.info.responses.find((r) => r.entityValue.value.category.id === CATEGORY.WEBSITES);
+
+          if (website) {
+            site.info.notes = website.entityValue.value.value;
+          } else {
+            site.info.notes = undefined;
+          }
+
+          return site;
         });
-        return sites;
       })
     );
   }

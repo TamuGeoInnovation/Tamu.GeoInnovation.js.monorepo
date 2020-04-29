@@ -1,28 +1,24 @@
-<ng-container style="background: white;" *ngFor="let site of (testingSites | async); let i = index">
-    <div style="display: flex; flex-direction: column; align-items: center;">
-      <ng-container *ngIf="site.info && site.location">
-        <div class="siteContainer">
-          <h4>{{site.info.locationName}}</h4>
-          <ng-container *ngIf="site.location">
-            <div class="siteItem">
-              <span class="material-icons siteDetailIcon">place</span>
-              <div class="form-section-name">{{site.location.county}} county, {{site.location.state}}</div>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="site.info.locationPhoneNumber">
-            <div class="siteItem">
-              <span class="material-icons siteDetailIcon">phone</span>
-              <div class="form-section-name">{{site.info.locationPhoneNumber | phoneNumberFormat}}</div>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="site.info.notes">
-            <div class="siteItem">
-              <span class="material-icons siteDetailIcon">language</span>
-              <div class="form-section-name"><a href="{{site.info.notes}}">{{site.info.notes}}</a></div>
-            </div>
-          </ng-container>
-          
-        </div>
-      </ng-container>
+<div class="flex flex-column align-start">
+  <ng-container *ngFor="let site of (testingSites | async)">
+    <div class="site-container" *ngIf="site.info && site.location">
+      <h5>{{site.info.locationName}}</h5>
+
+      <div class="site-item" *ngIf="site.location">
+        <span class="material-icons site-detail-icon">place</span>
+        <div class="form-section-name">{{site.location.county}} county, {{site.location.state}}</div>
+      </div>
+
+      <div class="site-item" *ngIf="site.info.locationPhoneNumber">
+        <span class="material-icons site-detail-icon">phone</span>
+        <div class="form-section-name">{{site.info.locationPhoneNumber | phoneNumberFormat}}</div>
+      </div>
+
+      <div class="site-item" *ngIf="site.info.notes">
+        <span class="material-icons site-detail-icon">language</span>
+        <!-- TODO: Need to write a pipe to parse url into host name only -->
+        <!-- <div class="form-section-name"><a href="{{site.info.notes}}">{{site.info.notes}}</a></div>-->
+        <div class="form-section-name"><a href="{{site.info.notes}}" target="_blank" rel="noopener noreferrer">Website</a></div>
+      </div>
     </div>
-</ng-container>
+  </ng-container>
+</div>
