@@ -34,12 +34,23 @@
 
       <h2>Crowd-Sourced COVID-19 Lockdown and Testing Sites</h2>
 
-      <p>As part of Texas A&amp;M's commitment to assist the health care community and general public, this website is an effort to collect and maintain an accurate and up-to-date database of county lockdowns and testing centers/facilities. These collected data are part of a larger series of services provided to facilitate dissemination.</p>
+      <p>As part of Texas A&amp;M's commitment to assist the health care community and general public, this website is an effort to collect and maintain an accurate and up-to-date database of county lockdowns and testing centers/facilities. These collected data are part of a larger series of services provided to facilitate information dissemination.</p>
 
       <p>Anybody is free and encouraged to submit new testing sites as they become available, or update existing information. All submissions are reviewed by a committee of qualified professionals to ensure the quality of data.</p>
 
       <a [routerLink]="['./resources']" class="button leader-2">Enter Data</a>
     </div>
+  </div>
+</section>
+
+<section class="flex flex-row justify-center" id="map-section" style="background: #ffffff;">
+  <div class="flex flex-column justify-center align-center" id="map-section-description">
+    <h2>COVID-19 Infection Rates</h2>
+
+    <p>As part of Texas A&amp;M's commitment to assist the health care community and general public, this website is an effort to collect and maintain an accurate and up-to-date database of county lockdowns and testing centers/facilities. These collected data are part of a larger series of services provided to facilitate dissemination.</p>
+  </div>
+  <div id="map-section-map">
+    <tamu-gisc-mapbox-map token="pk.eyJ1Ijoid2hhdHppdG9veWEiLCJhIjoiY2poNzI3M2M0MDNnbjMzcWVtYmZnNXExNiJ9.K-nM-JaZnZvAfutkLQitbg" [center]="['-98', '38.88']"></tamu-gisc-mapbox-map>
   </div>
 </section>
 
@@ -53,7 +64,7 @@
   </div>
 </section> -->
 
-<section class="content-fill-pad" style="background: #ffffff;">
+<section class="content-fill-pad">
   <div class="container12 flex justify-center">
     <div class="column8 text-content text-content--center">
       <h2>Purpose</h2>
@@ -123,7 +134,7 @@
   </div>
 </section> -->
 
-<section class="content-fill-pad">
+<section class="content-fill-pad" style="background: #ffffff;">
   <div class="container12 flex flex-column align-center">
     <div class="column12 flex flex-column align-center">
       <h2>Free Geocoding For COVID-19 Efforts</h2>

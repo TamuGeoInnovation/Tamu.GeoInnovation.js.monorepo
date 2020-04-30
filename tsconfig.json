@@ -83,7 +83,8 @@
       "@tamu-gisc/geoservices/covid": ["libs/geoservices/covid/src/index.ts"],
       "@tamu-gisc/covid/data-api": ["libs/covid/data-api/src/index.ts"],
       "@tamu-gisc/covid/common/entities": ["libs/covid/common/entities/src/index.ts"],
-      "@tamu-gisc/covid/common/enums": ["libs/covid/common/enums/src/index.ts"]
+      "@tamu-gisc/covid/common/enums": ["libs/covid/common/enums/src/index.ts"],
+      "@tamu-gisc/maps/mapbox": ["libs/maps/mapbox/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

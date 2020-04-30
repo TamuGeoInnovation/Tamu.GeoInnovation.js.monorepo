@@ -262,6 +262,9 @@
     },
     "covid-common-enums": {
       "tags": []
+    },
+    "maps-mapbox": {
+      "tags": []
     }
   }
 }
