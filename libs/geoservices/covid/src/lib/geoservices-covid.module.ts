@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
+import { GeoservicesCoreNgxModule, LocalEmailGuard } from '@tamu-gisc/geoservices/core/ngx';
 import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
 import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
 
@@ -25,6 +25,11 @@ const routes: Routes = [
       {
         path: 'resources',
         loadChildren: () => import('./pages/resources/resources.module').then((m) => m.ResourcesModule)
+      },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./pages/dashboard/dashboard.module').then((m) => m.MyDashboardModule),
+        canActivate: [LocalEmailGuard]
       }
     ]
   }

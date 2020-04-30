@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, combineLatest } from 'rxjs';
 
 import { User, CountyClaim } from '@tamu-gisc/covid/common/entities';
 import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-store';
 import { UsersService, CountyClaimsService } from '@tamu-gisc/geoservices/data-access';
-import { tap } from 'rxjs/operators';
+import { tap, take } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
 const storageOptions: Partial<StorageConfig> = { primaryKey: 'tamu-covid-vgi' };
@@ -26,7 +26,7 @@ const defaultStorage: CovidLocalStoreIdentity = {
   providedIn: 'root'
 })
 export class IdentityService {
-  private _identity: BehaviorSubject<CovidLocalStoreIdentity> = new BehaviorSubject(defaultStorage);
+  private _identity: ReplaySubject<CovidLocalStoreIdentity> = new ReplaySubject(1);
   public identity: Observable<CovidLocalStoreIdentity> = this._identity.asObservable();
 
   constructor(private localStorage: LocalStoreService, private user: UsersService, private claim: CountyClaimsService) {
@@ -110,22 +110,24 @@ export class IdentityService {
   }
 
   public unregisterCountyClaim(claim?: DeepPartial<CountyClaim>) {
-    const c = claim && claim.guid ? claim.guid : this._identity.value.claim.guid;
+    combineLatest([this._identity.pipe(take(1))]).subscribe(([localIdentity]) => {
+      const c = claim && claim.guid ? claim.guid : localIdentity.claim.guid;
 
-    this.claim.closeClaim(c).subscribe((res) => {
-      const options: CovidLocalStoreIdentity = this.localStorage.getStorage(storageOptions);
+      this.claim.closeClaim(c).subscribe((res) => {
+        const options: CovidLocalStoreIdentity = this.localStorage.getStorage(storageOptions);
 
-      options.claim = {
-        county: {}
-      };
+        options.claim = {
+          county: {}
+        };
 
-      this.localStorage.setStorage({ ...storageOptions, value: options });
+        this.localStorage.setStorage({ ...storageOptions, value: options });
 
-      this._identity.next(this.localStorage.getStorage(storageOptions));
+        this._identity.next(this.localStorage.getStorage(storageOptions));
+      });
     });
   }
 
-  public refresh(){
+  public refresh() {
     this.validateLocalIdentity();
   }
 }

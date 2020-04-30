@@ -1,0 +1,18 @@
+<section>
+  <div class="container12">
+    <div class="section-content">
+      <div class="tab-container row">
+        <div class="tabs">
+          <div class="tab" [routerLink]="['claims']" routerLinkActive="active">My County Claims</div>
+          <div class="tab" [routerLink]="['lockdowns']" routerLinkActive="active">My Lockdowns</div>
+          <div class="tab" [routerLink]="['testing-sites']" routerLinkActive="active">My Testing Sites</div>
+        </div>
+
+        <div class="tab-content">
+          <br />
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

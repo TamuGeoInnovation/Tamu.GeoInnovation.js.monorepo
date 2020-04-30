@@ -45,7 +45,11 @@
         </li> -->
       </ul>
 
-      <!-- <a href="">Login</a> -->
+      <ul>
+        <li *ngIf="hasEmail | async">
+          <a [routerLink]="['/dashboard']">Dashboard</a>
+        </li>
+      </ul>
     </div>
   </nav>
 </header>

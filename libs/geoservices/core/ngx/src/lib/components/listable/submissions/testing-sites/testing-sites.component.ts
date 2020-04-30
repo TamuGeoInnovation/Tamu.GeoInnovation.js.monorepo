@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { CATEGORY } from '@tamu-gisc/covid/common/enums';
-import { County, FieldCategory } from '@tamu-gisc/covid/common/entities';
 import { TestingSitesService, FormattedTestingSite } from '@tamu-gisc/geoservices/data-access';
 
 @Component({
@@ -12,10 +11,7 @@ import { TestingSitesService, FormattedTestingSite } from '@tamu-gisc/geoservice
   styleUrls: ['./testing-sites.component.scss']
 })
 export class TestingSiteListComponent implements OnInit {
-  public counties: Observable<Array<Partial<County>>>;
   public testingSites: Observable<Array<Partial<FormattedTestingSite>>>;
-  public phoneTypes: Observable<Partial<FieldCategory>>;
-  public websiteTypes: Observable<Partial<FieldCategory>>;
 
   constructor(private ts: TestingSitesService) {}
 

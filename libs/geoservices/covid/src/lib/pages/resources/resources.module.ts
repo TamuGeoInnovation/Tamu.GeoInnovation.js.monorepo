@@ -5,7 +5,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
 
 import { ResourcesComponent } from './resources.component';
-import { LocalEmailGuard } from '../services/guards/local-email.guard';
 
 const routes: Routes = [
   {
@@ -32,11 +31,6 @@ const routes: Routes = [
       {
         path: 'testing-sites',
         loadChildren: () => import('./pages/testing-sites/testing-sites.module').then((m) => m.TestingSitesModule)
-      },
-      {
-        path: 'dashboard',
-        loadChildren: () => import('./pages/my-dashboard/my-dashboard.module').then((m) => m.MyDashboardModule),
-        canActivate: [LocalEmailGuard]
       }
     ]
   }
@@ -44,7 +38,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes), GeoservicesCoreNgxModule],
-  providers: [LocalEmailGuard],
   declarations: [ResourcesComponent]
 })
 export class ResourcesModule {}
