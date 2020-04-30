@@ -30,6 +30,11 @@ const routes: Routes = [
         path: 'dashboard',
         loadChildren: () => import('./pages/dashboard/dashboard.module').then((m) => m.MyDashboardModule),
         canActivate: [LocalEmailGuard]
+      },
+      {
+        path: 'admin',
+        loadChildren: () => import('./pages/admin/admin.module').then((m) => m.AdminModule),
+        canActivate: [LocalEmailGuard]
       }
     ]
   }
