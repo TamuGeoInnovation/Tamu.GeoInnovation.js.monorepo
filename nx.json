@@ -188,7 +188,6 @@
     "maps-feature-coordinates": {
       "tags": []
     },
-<<<<<<< HEAD
     "common-utils-geometry-geoprocessing": {
       "tags": []
     },
@@ -265,9 +264,9 @@
       "tags": []
     },
     "maps-mapbox": {
-=======
+      "tags": []
+    },
     "oidc": {
->>>>>>> Start of oidc-client
       "tags": []
     },
     "oidc-client-test": {
