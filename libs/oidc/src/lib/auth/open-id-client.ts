@@ -1,6 +1,6 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { Client, custom, generators, Issuer, Strategy, ClientMetadata } from 'openid-client';
+import { Client as OIDClient, custom, generators, Issuer, Strategy, ClientMetadata } from 'openid-client';
 
 export const ROLE_LEVELS = {
   ADMIN: 99,
@@ -18,8 +18,8 @@ export const ROLE_LEVELS = {
  */
 export class OpenIdClient {
   public static strategyName = 'oidc';
-  public static client: Client;
-  public static issuer: Issuer<Client>;
+  public static client: OIDClient;
+  public static issuer: Issuer<OIDClient>;
   public static params;
   public static code_verifier: string;
   public static code_challenge: string;
@@ -31,7 +31,7 @@ export class OpenIdClient {
    * @returns {Promise<Client>}
    * @memberof OpenIdClient
    */
-  public static async build(clientMetadata: ClientMetadata, clientParams: {}, issuerUrl: string): Promise<Client> {
+  public static async build(clientMetadata: ClientMetadata, clientParams: {}, issuerUrl: string): Promise<OIDClient> {
     this.params = clientParams;
     // Shadowed name, I know, dunno how to fix it in this particular case. It's kinda needed. -AH (1/29/20)
     const { Client } = await Issuer.discover(issuerUrl);

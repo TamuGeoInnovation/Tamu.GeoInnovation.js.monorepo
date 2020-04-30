@@ -1,5 +1,5 @@
 <div class="column8">
-  <ng-container *ngIf="!(storeEmail | async); else registered">
+  <ng-container *ngIf="(storeEmail | async) === undefined; else registered">
     <p>Please enter your email address below. Your email will only be used to validate submissions and allow you to take ownership for reporting data on a county-level basis.</p>
 
     <form [formGroup]="form" (ngSubmit)="handleUserLink()">

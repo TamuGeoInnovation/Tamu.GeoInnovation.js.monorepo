@@ -1,5 +1,5 @@
 <!-- Persistent desktop header -->
-<tamu-gisc-header-covid *ngIf="!(rp.isMobile | async)"></tamu-gisc-header-covid>
+<tamu-gisc-header-covid *ngIf="(rp.isMobile | async) === false"></tamu-gisc-header-covid>
 
 <!-- Persistent mobile header -->
 <tamu-gisc-header-mobile *ngIf="(rp.isMobile | async)"></tamu-gisc-header-mobile>

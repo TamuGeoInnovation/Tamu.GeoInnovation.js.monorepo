@@ -1,6 +1,6 @@
 <!-- <pre>{{(counties|async|json)}}</pre> -->
 <div class="flex flex-column align-center">
-  <div class="spinning-loader" *ngIf="!(counties | async); else county"></div>
+  <div class="spinning-loader" *ngIf="(counties | async) === null || (counties | async)?.length === undefined; else county"></div>
 
   <ng-template #county>
     <div class="floating-table">

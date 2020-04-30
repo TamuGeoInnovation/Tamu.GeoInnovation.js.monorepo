@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { filter, pluck, switchMap } from 'rxjs/operators';
+import { filter, pluck, switchMap, shareReplay } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
-import { County, TestingSite, User } from '@tamu-gisc/covid/common/entities';
+import { County, User } from '@tamu-gisc/covid/common/entities';
 import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
-import { TestingSitesService } from '@tamu-gisc/geoservices/data-access';
+import { TestingSitesService, FormattedTestingSite } from '@tamu-gisc/geoservices/data-access';
 
 @Component({
   selector: 'tamu-gisc-dashboard-testing-sites',
@@ -15,7 +15,7 @@ import { TestingSitesService } from '@tamu-gisc/geoservices/data-access';
 export class DashboardTestingSitesComponent implements OnInit {
   public localCounty: Observable<DeepPartial<County>>;
   public localEmail: Observable<Partial<User['email']>>;
-  public testingSites: Observable<Array<Partial<TestingSite>>>;
+  public testingSites: Observable<Array<Partial<FormattedTestingSite>>>;
 
   constructor(private ts: TestingSitesService, private is: IdentityService) {}
 
@@ -27,7 +27,8 @@ export class DashboardTestingSitesComponent implements OnInit {
       }),
       switchMap((email) => {
         return this.ts.getSitesForUser(email);
-      })
+      }),
+      shareReplay(1)
     );
   }
 }

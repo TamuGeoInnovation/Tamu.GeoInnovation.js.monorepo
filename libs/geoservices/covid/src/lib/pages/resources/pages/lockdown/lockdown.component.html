@@ -1,5 +1,5 @@
 <div class="column8">
-  <ng-container *ngIf="!(localEmail | async) ; else hasIdentity">
+  <ng-container *ngIf="(localEmail | async) === undefined ; else hasIdentity">
     <p>Email registration required to claim a county. <a [routerLink]="['../profile']">Register your email to proceed.</a></p>
   </ng-container>
 

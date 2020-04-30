@@ -37,7 +37,7 @@
         </div>
       </div>
 
-      <div *ngIf="!(countyClaimable | async) && (countyClaims | async)?.length > 0 && (this.form.controls.county.valueChanges | async) !== undefined && (this.form.controls.state.valueChanges | async) !== undefined" class="form-section">
+      <div *ngIf="(countyClaimable | async) === false && (countyClaims | async)?.length > 0 && (this.form.controls.county.valueChanges | async) !== undefined && (this.form.controls.state.valueChanges | async) !== undefined" class="form-section">
         <div class="form-section-body">
           <div class="inform-context alert">
             <p>This county is actively claimed by another user. Please choose another county.</p>
@@ -115,7 +115,7 @@
                 type="submit"
                 [look]="(localCounty | async)?.countyFips ? 'secondary': ''"
                 [disabled]="form.invalid
-            || !(countyClaimable | async) 
+            || (countyClaimable | async) === false 
             || (this.form.controls.county.value) === undefined || (this.form.controls.state.value) === undefined"
               ></tamu-gisc-button>
             </div>
@@ -130,7 +130,7 @@
                     type="submit"
                     [look]="(localCounty | async)?.countyFips ? 'secondary': ''"
                     [disabled]="form.invalid
-            || !(countyClaimable | async) 
+            || (countyClaimable | async) === false 
             || (this.form.controls.county.value) === undefined || (this.form.controls.state.value) === undefined"
                   ></tamu-gisc-button>
 
