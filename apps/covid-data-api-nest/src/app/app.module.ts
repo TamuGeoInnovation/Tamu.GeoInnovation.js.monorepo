@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
-  SitesModule,
+  TestingSitesModule,
   LockdownsModule,
   StatesModule,
   CountiesModule,
@@ -72,7 +72,7 @@ import { dbConfig } from '../environments/environment';
     FieldTypesModule,
     CategoryValueModule,
     StatusTypesModule,
-    SitesModule,
+    TestingSitesModule,
     LockdownsModule,
     StatesModule,
     CountiesModule,

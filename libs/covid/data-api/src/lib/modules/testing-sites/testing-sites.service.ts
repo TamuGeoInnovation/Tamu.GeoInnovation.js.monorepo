@@ -19,7 +19,7 @@ import { CountyClaimsService } from '../county-claims/county-claims.service';
 import { CATEGORY, STATUS } from '@tamu-gisc/covid/common/enums';
 
 @Injectable()
-export class SitesService extends BaseService<TestingSite> {
+export class TestingSitesService extends BaseService<TestingSite> {
   constructor(
     @InjectRepository(County) public countyRepo: Repository<County>,
     @InjectRepository(CountyClaim) public countyClaimRepo: Repository<CountyClaim>,

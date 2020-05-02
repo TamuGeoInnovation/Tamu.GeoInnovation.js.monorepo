@@ -2,12 +2,12 @@ import { Controller, Delete, Post, Get, Param, Body } from '@nestjs/common';
 import { BaseController } from '../base/base.controller';
 
 import { TestingSite } from '@tamu-gisc/covid/common/entities';
-import { SitesService } from './sites.service';
+import { TestingSitesService } from './testing-sites.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
 
 @Controller('sites')
-export class SitesController extends BaseController<TestingSite> {
-  constructor(private service: SitesService, private ccs: CountyClaimsService) {
+export class TestingSitesController extends BaseController<TestingSite> {
+  constructor(private service: TestingSitesService, private ccs: CountyClaimsService) {
     super(service);
   }
 
