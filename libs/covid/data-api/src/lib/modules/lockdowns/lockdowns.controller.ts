@@ -55,6 +55,20 @@ export class LockdownsController extends BaseController<Lockdown> {
     };
   }
 
+  @Post('admin')
+  public async getLockdownsAdmin(@Body() body) {
+    try {
+      const lockdowns = await this.service.getLockdownsAdmin(body.stateFips, body.countyFips, body.email);
+      return lockdowns;
+    } catch (err) {
+      return {
+        status: 500,
+        success: false,
+        message: err.message
+      };
+    }
+  }
+
   /**
    Insert an un-validated testing site.
    */

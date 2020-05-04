@@ -228,10 +228,9 @@ export class LockdownsService extends BaseService<Lockdown> {
     try {
       const flattened = joined.map((s) => this.flattenLockdownAndInfo(lockdowns, deferredLatestInfoForLockdowns));
       return flattened;
-    } catch(err) {
+    } catch (err) {
       return joined;
     }
-    
   }
 
   /**
@@ -244,6 +243,36 @@ export class LockdownsService extends BaseService<Lockdown> {
     const info = await this.getLatestLockdownInfoForLockdown(lockdown);
 
     return this.flattenLockdownAndInfo(lockdown, info);
+  }
+
+  public async getLockdownsAdmin(stateFips: number | string, countyFips: number | string, email: string) {
+    const builder = this.repo
+      .createQueryBuilder('lockdown')
+      .innerJoinAndSelect('lockdown.claim', 'claim')
+      .innerJoinAndSelect('claim.user', 'user')
+      .innerJoinAndSelect('claim.county', 'county')
+      .innerJoinAndSelect('lockdown.statuses', 'statuses')
+      .innerJoinAndSelect('statuses.type', 'statusType');
+
+    if (stateFips) {
+      builder.andWhere('county.stateFips = :stateFips');
+    }
+
+    if (countyFips) {
+      builder.andWhere('county.countyFips = :countyFips');
+    }
+
+    if (email) {
+      builder.andWhere('user.email = :email');
+    }
+
+    builder.setParameters({
+      stateFips,
+      countyFips,
+      email
+    });
+
+    return builder.getMany();
   }
 
   /**

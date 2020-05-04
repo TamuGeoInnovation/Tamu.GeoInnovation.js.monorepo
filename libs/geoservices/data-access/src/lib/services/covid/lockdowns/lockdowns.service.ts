@@ -36,9 +36,11 @@ export class LockdownsService {
 
   public getAllLockdownsForUser(email: string) {
     return this.http.get<Partial<ActiveLockdown>>(`${this.resource}/user/${email}`);
-
   }
 
+  public getLockdownsAdmin(stateFips?: number | string, countyFips?: number | string, email?: string) {
+    return this.http.post<Array<Partial<Lockdown>>>(`${this.resource}/admin`, { stateFips, countyFips, email });
+  }
 }
 
 export interface ActiveLockdown {

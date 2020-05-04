@@ -12,12 +12,7 @@
   </form>
 </div>
 
-<!-- <pre>
-  {{claims | async | json}}
-</pre> -->
-
 <div class="flex flex-column align-center">
-  <!-- <ng-template #sitesTable> -->
   <div *ngIf="claims | async">{{(claims | async)?.length}} county claims</div>
   <div *ngIf="claims | async" class="floating-table">
     <div class="floating-table-header">
@@ -36,5 +31,4 @@
       </div>
     </div>
   </div>
-  <!-- </ng-template> -->
 </div>

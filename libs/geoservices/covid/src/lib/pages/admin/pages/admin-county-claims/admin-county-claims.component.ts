@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 
-import { County, State, CountyClaim, User } from '@tamu-gisc/covid/common/entities';
-import { CountiesService, CountyClaimsService, StatesService, UsersService } from '@tamu-gisc/geoservices/data-access';
-import { switchMap, shareReplay, map } from 'rxjs/operators';
+import { County, CountyClaim, State, User } from '@tamu-gisc/covid/common/entities';
 import { STATUS } from '@tamu-gisc/covid/common/enums';
+import { CountiesService, CountyClaimsService, StatesService, UsersService } from '@tamu-gisc/geoservices/data-access';
 
 @Component({
   selector: 'tamu-gisc-admin-county-claims',
@@ -45,6 +45,7 @@ export class AdminCountyClaimsComponent implements OnInit {
     );
 
     this.claims = this.form.valueChanges.pipe(
+      startWith({}),
       switchMap((form) => {
         return this.cl.getAdminClaims(form.state, form.county, form.email);
       }),
