@@ -82,20 +82,6 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       })
       .getMany();
 
-    // if (claims) {
-    //   // Doing a second query because I need all statuses for the found claim. The above query filters out any
-    //   // status that is not of type processing.
-    //   const final = await this.repo.find({
-    //     where: {
-    //       guid: lastClaim.guid
-    //     },
-    //     relations: ['statuses', 'statuses.type', 'user', 'county']
-    //   });
-
-    //   return [final];
-    // } else {
-    //   return [];
-    // }
     return claims;
   }
 
@@ -451,5 +437,36 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
 
       return 0;
     });
+  }
+
+  public async getClaimsAdmin(params: { stateFips: number | string; countyFips: number | string; email: string }) {
+    const builder = this.repo
+      .createQueryBuilder('claim')
+      .innerJoinAndSelect('claim.county', 'county')
+      .innerJoinAndSelect('claim.statuses', 'statuses')
+      .innerJoinAndSelect('statuses.type', 'statusType')
+      .innerJoinAndSelect('claim.user', 'user');
+
+    if (params.stateFips) {
+      builder.andWhere('county.stateFips = :stateFips');
+    }
+
+    if (params.countyFips) {
+      builder.andWhere('county.countyFips = :countyFips');
+    }
+
+    if (params.email) {
+      builder.andWhere('user.email = :email');
+    }
+
+    builder.setParameters({
+      stateFips: params.stateFips,
+      countyFips: params.countyFips,
+      email: params.email
+    });
+
+    const res = await builder.getMany();
+
+    return res;
   }
 }

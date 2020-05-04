@@ -12,6 +12,15 @@ export class UsersService extends BaseService<User> {
     super(repo);
   }
 
+  public async getUsers() {
+    return this.repo.find({
+      select: ['email', 'guid', 'created', 'updated'],
+      order: {
+        email: 'ASC'
+      }
+    });
+  }
+
   public async verifyEmail(email: string) {
     if (!email || email.length === 0) {
       return {

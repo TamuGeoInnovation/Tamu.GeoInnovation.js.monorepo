@@ -24,4 +24,8 @@ export class UsersService {
   public verifyEmail(email: string) {
     return this.http.get<Partial<User>>(`${this.resource}/verify/${email}`);
   }
+
+  public getUsers() {
+    return this.http.get<Array<Partial<User>>>(this.resource);
+  }
 }

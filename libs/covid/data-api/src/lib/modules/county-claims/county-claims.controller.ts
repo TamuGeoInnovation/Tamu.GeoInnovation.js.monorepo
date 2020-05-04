@@ -81,6 +81,20 @@ export class CountyClaimsController extends BaseController<CountyClaim> {
     }
   }
 
+  @Post('admin/claim')
+  public async getClaimsAdmin(@Body() body) {
+    try {
+      const claims = await this.service.getClaimsAdmin(body);
+      return claims;
+    } catch (err) {
+      return {
+        status: 500,
+        success: false,
+        message: err.message
+      };
+    }
+  }
+
   @Post('claim')
   public registerClaim(@Body() body) {
     return this.service.createOrUpdateClaim(body, body.phoneNumbers, body.websites);
