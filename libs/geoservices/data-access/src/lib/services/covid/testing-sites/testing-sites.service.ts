@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { CountyClaim, TestingSiteInfo, Location } from '@tamu-gisc/covid/common/entities';
+import { CountyClaim, TestingSiteInfo, Location, TestingSite } from '@tamu-gisc/covid/common/entities';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Injectable({
@@ -36,6 +36,14 @@ export class TestingSitesService {
 
   public getTestingSiteDetails(siteGuid: string) {
     return this.http.get<Partial<FormattedTestingSite>>(`${this.resource}/details/${siteGuid}`);
+  }
+
+  public getTestingSitesAdmin(stateFips?: number | string, countyFips?: number | string, email?: string) {
+    return this.http.post<Array<Partial<FormattedTestingSite>>>(`${this.resource}/admin`, {
+      stateFips,
+      countyFips,
+      email
+    });
   }
 }
 
