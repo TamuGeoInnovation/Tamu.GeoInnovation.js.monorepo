@@ -29,7 +29,11 @@ export class CountiesService extends BaseService<County> {
     });
   }
 
-  public getCountiesForState(stateFips: number) {
+  public getCountiesForState(stateFips: number | string) {
+    if (!stateFips || stateFips === undefined || stateFips === null || stateFips === 'undefined' || stateFips === 'null') {
+      throw new Error('Invalid input parameter.');
+    }
+
     return this.repo.find({
       where: {
         stateFips

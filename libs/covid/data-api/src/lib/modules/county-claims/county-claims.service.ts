@@ -443,6 +443,7 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     const builder = this.repo
       .createQueryBuilder('claim')
       .innerJoinAndSelect('claim.county', 'county')
+      .innerJoinAndSelect('county.stateFips', 'state')
       .innerJoinAndSelect('claim.statuses', 'statuses')
       .innerJoinAndSelect('statuses.type', 'statusType')
       .innerJoinAndSelect('claim.user', 'user');

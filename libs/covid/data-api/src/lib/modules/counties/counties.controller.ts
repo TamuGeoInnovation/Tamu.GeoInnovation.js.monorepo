@@ -17,8 +17,17 @@ export class CountiesController extends BaseController<County> {
   }
 
   @Get('state/:fips')
-  public getCountiesForState(@Param() params) {
-    return this.service.getCountiesForState(params.fips);
+  public async getCountiesForState(@Param() params) {
+    try {
+      const counties = await this.service.getCountiesForState(params.fips);
+      return counties;
+    } catch (err) {
+      return {
+        status: 500,
+        success: false,
+        message: err.message
+      };
+    }
   }
 
   @Get(':keyword')

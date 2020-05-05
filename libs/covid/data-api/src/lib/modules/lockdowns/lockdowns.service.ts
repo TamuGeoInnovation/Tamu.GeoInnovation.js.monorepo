@@ -251,6 +251,7 @@ export class LockdownsService extends BaseService<Lockdown> {
       .innerJoinAndSelect('lockdown.claim', 'claim')
       .innerJoinAndSelect('claim.user', 'user')
       .innerJoinAndSelect('claim.county', 'county')
+      .innerJoinAndSelect('county.stateFips', 'state')
       .innerJoinAndSelect('lockdown.statuses', 'statuses')
       .innerJoinAndSelect('statuses.type', 'statusType');
 

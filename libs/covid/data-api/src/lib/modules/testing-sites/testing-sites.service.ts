@@ -1,4 +1,4 @@
-import { Injectable, Post } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial } from 'typeorm';
 
@@ -533,12 +533,18 @@ export class TestingSitesService extends BaseService<TestingSite> {
   }
 
   public async getTestingSitesAdmin(stateFips?: number | string, countyFips?: number | string, email?: string) {
+    let innerSelect = this.testingSiteInfoRepo
+      .createQueryBuilder('info')
+      .orderBy('info.created', 'DESC')
+      .limit(1);
+
     const builder = this.repo
       .createQueryBuilder('site')
       .innerJoinAndSelect('site.claim', 'claim')
       .innerJoinAndSelect('site.statuses', 'siteStatuses')
       .innerJoinAndSelect('claim.county', 'county')
-      .innerJoinAndSelect('claim.user', 'user');
+      .innerJoinAndSelect('claim.user', 'user')
+      .innerJoinAndSelect('county.stateFips', 'state');
 
     if (stateFips) {
       builder.andWhere('county.stateFips = :stateFips');

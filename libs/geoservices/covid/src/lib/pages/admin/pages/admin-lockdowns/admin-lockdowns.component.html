@@ -12,21 +12,25 @@
   </form>
 </div>
 
-<div class="flex flex-column align-center">
-  <div *ngIf="lockdowns | async">{{(lockdowns | async)?.length}} lockdowns</div>
-  <div *ngIf="lockdowns | async" class="floating-table">
-    <div class="floating-table-header">
-      <div class="floating-row">
-        <div class="column">County</div>
-        <div class="column">Created</div>
-      </div>
-    </div>
+<div class="spinning-loader" *ngIf="(lockdowns | async) === null; else lockdownsList"></div>
 
-    <div class="floating-table-body">
-      <div class="floating-row" *ngFor="let lockdown of lockdowns | async">
-        <div class="column">{{lockdown.claim.county.name}}</div>
-        <div class="column">{{lockdown.created | date : 'medium'}}</div>
+<ng-template #lockdownsList>
+  <div class="flex flex-column align-center">
+    <div *ngIf="lockdowns | async">{{(lockdowns | async)?.length}} lockdowns</div>
+    <div *ngIf="lockdowns | async" class="floating-table">
+      <div class="floating-table-header">
+        <div class="floating-row">
+          <div class="column">County</div>
+          <div class="column">Created</div>
+        </div>
+      </div>
+
+      <div class="floating-table-body">
+        <div class="floating-row" *ngFor="let lockdown of lockdowns | async">
+          <div class="column">{{lockdown.claim.county.name}}, {{lockdown.claim.county.stateFips.name}}</div>
+          <div class="column">{{lockdown.created | date : 'medium'}}</div>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</ng-template>

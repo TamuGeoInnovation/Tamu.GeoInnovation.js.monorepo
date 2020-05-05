@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { startWith, switchMap } from 'rxjs/operators';
+import { startWith, switchMap, shareReplay } from 'rxjs/operators';
 
 import { County, Lockdown, State, User } from '@tamu-gisc/covid/common/entities';
 import { CountiesService, LockdownsService, StatesService, UsersService } from '@tamu-gisc/geoservices/data-access';
@@ -47,7 +47,8 @@ export class AdminLockdownsComponent implements OnInit {
       startWith({}),
       switchMap((form) => {
         return this.ls.getLockdownsAdmin(form.state, form.county, form.email);
-      })
+      }),
+      shareReplay(1)
     );
   }
 }

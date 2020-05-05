@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { CountyClaim, TestingSiteInfo, Location, TestingSite } from '@tamu-gisc/covid/common/entities';
+import { CountyClaim, TestingSiteInfo, Location } from '@tamu-gisc/covid/common/entities';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Injectable({
