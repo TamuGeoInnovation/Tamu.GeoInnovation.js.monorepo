@@ -12,6 +12,7 @@ const SQLiteStore = require('connect-sqlite3')(session);
 import { OpenIdClient } from '@tamu-gisc/oidc';
 import { AppModule } from './app/app.module';
 import { OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL } from './environments/oidcconfig';
+import * as path from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -25,7 +26,7 @@ async function bootstrap() {
     db: 'sessions.db',
     concurrentDB: true,
     table: 'sessions_nestoidc',
-    dir: 'C:\\DevSource\\Tamu\\nestjs-oidc\\db' // WIN
+    dir: __dirname  // WIN,
   });
 
   app.use(
@@ -44,7 +45,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(flash());
-  await app.listen(3000);
+  await app.listen(3001);
 }
 
 OpenIdClient.build(OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL)

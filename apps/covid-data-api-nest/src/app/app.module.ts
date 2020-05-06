@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
@@ -36,6 +36,8 @@ import {
   EntityToValue
 } from '@tamu-gisc/covid/common/entities';
 
+import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -43,6 +45,7 @@ import { dbConfig } from '../environments/environment';
 
 @Module({
   imports: [
+    OidcClientModule,
     TypeOrmModule.forRoot({
       ...dbConfig,
       entities: [
@@ -84,4 +87,16 @@ import { dbConfig } from '../environments/environment';
   controllers: [AppController],
   providers: [AppService]
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  public configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(ClaimsMiddleware)
+      .exclude(
+        { path: 'oidc/login', method: RequestMethod.GET },
+        { path: 'oidc/logout', method: RequestMethod.GET },
+        { path: 'oidc/auth/callback', method: RequestMethod.GET }
+      )
+      .forRoutes(OidcClientController);
+  }
+}
+
