@@ -1,11 +1,11 @@
 <!-- <p>The following is a list of submitted testing sites registered to your email address for this county.</p> -->
 
-<ng-container *ngIf="(localEmail | async) === undefined ; else hasIdentity">
+<ng-container *ngIf="(localEmail | async) === null || (localEmail | async) === undefined ; else hasIdentity">
   <p class="flex justify-center">Email registration required to submit testing sites. <a [routerLink]="['../profile']">Register using your email to proceed.</a></p>
 </ng-container>
 
 <ng-template #hasIdentity>
-  <ng-container *ngIf="(localCounty | async) === undefined ; else hasCounty">
+  <ng-container *ngIf="(localCounty | async) === null || (localCounty | async) === undefined ; else hasCounty">
     <p class="flex justify-center">An active county claim is required to submit testing sites. <a [routerLink]="['../county']">Claim a county to proceed.</a></p>
   </ng-container>
 
@@ -34,7 +34,7 @@
                     <div class="column">Site Name/Address</div>
                     <div class="column">Updated</div>
                     <div class="column">Actions</div>
-                  </div>
+                  </div>  
                 </div>
 
                 <div class="floating-table-body">

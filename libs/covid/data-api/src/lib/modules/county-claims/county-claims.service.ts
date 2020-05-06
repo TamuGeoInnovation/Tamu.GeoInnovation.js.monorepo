@@ -55,7 +55,7 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
         where: {
           guid: lastClaim.guid
         },
-        relations: ['statuses', 'statuses.type', 'user', 'county']
+        relations: ['statuses', 'statuses.type', 'user', 'county', 'county.stateFips']
       });
 
       return [final];
@@ -372,7 +372,8 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     const countiesForState = await this.countyRepo.find({
       where: {
         stateFips: stateFips
-      }
+      },
+      relations: ['stateFips']
     });
 
     const countyFipsFromCounties = countiesForState.map((c) => c.countyFips);

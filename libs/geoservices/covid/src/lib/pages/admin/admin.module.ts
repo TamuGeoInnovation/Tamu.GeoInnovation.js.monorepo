@@ -15,6 +15,10 @@ const routes: Routes = [
         redirectTo: 'claims'
       },
       {
+        path: 'counties',
+        loadChildren: () => import('./pages/admin-counties/admin-counties.module').then((m) => m.AdminCountiesModule)
+      },
+      {
         path: 'claims',
         loadChildren: () =>
           import('./pages/admin-county-claims/admin-county-claims.module').then((m) => m.AdminCountyClaimsModule)

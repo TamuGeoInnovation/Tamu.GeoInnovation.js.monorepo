@@ -2,7 +2,10 @@ export * from './modules/testing-sites/testing-sites.module';
 export * from './modules/lockdowns/lockdowns.module';
 
 export * from './modules/states/states.module';
+
 export * from './modules/counties/counties.module';
+export * from './modules/counties/counties.service';
+
 export * from './modules/field-categories/field-categories.module';
 export * from './modules/field-types/field-types.module';
 export * from './modules/category-values/category-values.module';

@@ -1,0 +1,9 @@
+<p>Counties touched: {{(summary | async)?.touched | number}}</p>
+
+<p>Total counties: {{(summary | async)?.total | number}}</p>
+
+<p>Coverage: {{(summary | async)?.coverage}}%</p>
+
+<p>Unclaimed counties: {{(summary | async)?.claimless | number}}</p>
+
+<p>Claimed without testing sites: {{(summary | async)?.siteless | number}}</p>

@@ -149,7 +149,7 @@ export class TestingSiteComponent implements OnInit, OnChanges {
     this.localCounty
       .pipe(
         switchMap((county) => {
-          return this.st.getStateByFips(county.stateFips);
+          return this.st.getStateByFips(county.stateFips.stateFips);
         }),
         withLatestFrom(this.localCounty)
       )

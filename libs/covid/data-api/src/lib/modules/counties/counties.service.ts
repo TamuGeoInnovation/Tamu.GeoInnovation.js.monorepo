@@ -2,13 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 
-import { County } from '@tamu-gisc/covid/common/entities';
+import { County, CountyClaim, StatusType, EntityStatus, TestingSite } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 
 @Injectable()
 export class CountiesService extends BaseService<County> {
-  constructor(@InjectRepository(County) private repo: Repository<County>) {
+  constructor(
+    @InjectRepository(County) private repo: Repository<County>,
+    @InjectRepository(CountyClaim) private claimRepo: Repository<CountyClaim>
+  ) {
     super(repo);
   }
 
@@ -40,4 +43,44 @@ export class CountiesService extends BaseService<County> {
       }
     });
   }
+
+  public async getCountyStats() {
+    const counties = (await this.repo
+      .createQueryBuilder('county')
+      .leftJoinAndMapMany('county.claims', CountyClaim, 'claim', 'claim.countyFips = county.countyFips')
+      .leftJoinAndMapMany('claim.sites', TestingSite, 'site', 'site.claim = claim.guid')
+      .getMany()) as Array<CountyExtended>;
+
+    const categorized = counties.reduce((acc, curr) => {
+      const countyString = curr.countyFips.toString().padStart(5, '0');
+
+      const t: CountyStat = (acc[countyString] = {});
+
+      t.claims = curr.claims.length;
+      t.sites = curr.claims.reduce((a, c) => {
+        return a + c.sites.length;
+      }, 0);
+
+      return acc;
+    }, {});
+
+    return categorized;
+  }
+}
+
+interface ClaimWithSites extends CountyClaim {
+  sites: TestingSite[];
+}
+interface CountyExtended extends County {
+  claims: ClaimWithSites[];
+  statuses: EntityStatus[];
+}
+
+interface CountyStat {
+  claims?: number;
+  sites?: number;
+}
+
+export interface CountyStats {
+  [key: string]: CountyStat;
 }
