@@ -15,6 +15,20 @@ export class UsersController extends BaseController<User> {
     return this.service.verifyEmail(params.email);
   }
 
+  @Get('stats')
+  public async getUsersWithStats() {
+    try {
+      const users = this.service.getUsersWithStats();
+      return users;
+    } catch (err) {
+      return {
+        status: 500,
+        success: false,
+        message: err.message
+      };
+    }
+  }
+
   @Get('')
   public async getUsers() {
     try {

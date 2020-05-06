@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { User } from '@tamu-gisc/covid/common/entities';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { UserWithStats } from '@tamu-gisc/covid/data-api';
 
 @Injectable({
   providedIn: 'root'
@@ -27,5 +28,9 @@ export class UsersService {
 
   public getUsers() {
     return this.http.get<Array<Partial<User>>>(this.resource);
+  }
+
+  public getUsersWithStats() {
+    return this.http.get<Array<UserWithStats>>(`${this.resource}/stats`);
   }
 }
