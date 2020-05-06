@@ -19,7 +19,7 @@ import { CountyClaimsService } from '../county-claims/county-claims.service';
 import { CATEGORY, STATUS } from '@tamu-gisc/covid/common/enums';
 
 @Injectable()
-export class SitesService extends BaseService<TestingSite> {
+export class TestingSitesService extends BaseService<TestingSite> {
   constructor(
     @InjectRepository(County) public countyRepo: Repository<County>,
     @InjectRepository(CountyClaim) public countyClaimRepo: Repository<CountyClaim>,
@@ -530,5 +530,72 @@ export class SitesService extends BaseService<TestingSite> {
       ...info.testingSite,
       infos: [info]
     });
+  }
+
+  public async getTestingSitesAdmin(stateFips?: number | string, countyFips?: number | string, email?: string) {
+    let innerSelect = this.testingSiteInfoRepo
+      .createQueryBuilder('info')
+      .orderBy('info.created', 'DESC')
+      .limit(1);
+
+    const builder = this.repo
+      .createQueryBuilder('site')
+      .innerJoinAndSelect('site.claim', 'claim')
+      .innerJoinAndSelect('site.statuses', 'siteStatuses')
+      .innerJoinAndSelect('claim.county', 'county')
+      .innerJoinAndSelect('claim.user', 'user')
+      .innerJoinAndSelect('county.stateFips', 'state');
+
+    if (stateFips) {
+      builder.andWhere('county.stateFips = :stateFips');
+    }
+
+    if (countyFips) {
+      builder.andWhere('county.countyFips = :countyFips');
+    }
+
+    if (email) {
+      builder.andWhere('user.email = :email');
+    }
+
+    builder.setParameters({
+      stateFips,
+      countyFips,
+      email
+    });
+
+    const sites = await builder.getMany();
+
+    const deferredInfos = sites.map((s) => {
+      return this.testingSiteInfoRepo.findOne({
+        where: {
+          testingSite: s
+        },
+        order: {
+          created: 'DESC'
+        },
+        relations: [
+          'responses',
+          'location',
+          'responses.entityValue',
+          'responses.entityValue.value',
+          'responses.entityValue.value.category',
+          'responses.entityValue.value.type',
+          'statuses'
+        ]
+      });
+    });
+
+    const resolvedInfos = await Promise.all(deferredInfos);
+
+    const joined = sites.map((site, index) => {
+      // Only join if the testing site info is not undefined
+      site.infos = resolvedInfos[index] !== undefined ? [resolvedInfos[index]] : undefined;
+      return site;
+    });
+
+    const flattened = joined.map((t) => this.flattenTestSiteAndInfo(t));
+
+    return flattened;
   }
 }

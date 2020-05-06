@@ -37,7 +37,7 @@
         </div>
       </div>
 
-      <div *ngIf="!(countyClaimable | async) && (countyClaims | async)?.length > 0 && (this.form.controls.county.valueChanges | async) !== undefined && (this.form.controls.state.valueChanges | async) !== undefined" class="form-section">
+      <div *ngIf="(countyClaimable | async) === false && (countyClaims | async)?.length > 0 && (this.form.controls.county.valueChanges | async) !== undefined && (this.form.controls.state.valueChanges | async) !== undefined" class="form-section">
         <div class="form-section-body">
           <div class="inform-context alert">
             <p>This county is actively claimed by another user. Please choose another county.</p>
@@ -54,7 +54,7 @@
       </div>
 
       <!-- Only show phone numbers input field if there is a local county stored AND if the form countyFips value is the same as the local value -->
-      <ng-container *ngIf="(localCounty | async)?.countyFips && ((localCounty | async)?.countyFips === (this.form.controls.county.value)) && ((localCounty | async)?.stateFips === (this.form.controls.state.value)) && (localCounty | async)?.countyFips !== null && (localCounty | async)?.stateFips !== null && ((this.form.controls.county.value) !== 'undefined' && (this.form.controls.state.value) !== 'undefined')">
+      <ng-container *ngIf="(localCounty | async)?.countyFips && ((localCounty | async)?.countyFips === (this.form.controls.county.value)) && ((localCounty | async)?.stateFips.stateFips === (this.form.controls.state.value)) && (localCounty | async)?.countyFips !== null && (localCounty | async)?.stateFips !== null && ((this.form.controls.county.value) !== 'undefined' && (this.form.controls.state.value) !== 'undefined')">
         <div class="form-section">
           <div class="form-section-toolbar">
             <div class="form-section-name">Phone Numbers</div>
@@ -115,7 +115,7 @@
                 type="submit"
                 [look]="(localCounty | async)?.countyFips ? 'secondary': ''"
                 [disabled]="form.invalid
-            || !(countyClaimable | async) 
+            || (countyClaimable | async) === false 
             || (this.form.controls.county.value) === undefined || (this.form.controls.state.value) === undefined"
               ></tamu-gisc-button>
             </div>
@@ -130,7 +130,7 @@
                     type="submit"
                     [look]="(localCounty | async)?.countyFips ? 'secondary': ''"
                     [disabled]="form.invalid
-            || !(countyClaimable | async) 
+            || (countyClaimable | async) === false 
             || (this.form.controls.county.value) === undefined || (this.form.controls.state.value) === undefined"
                   ></tamu-gisc-button>
 

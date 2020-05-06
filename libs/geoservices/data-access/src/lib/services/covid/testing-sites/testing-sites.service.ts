@@ -37,6 +37,14 @@ export class TestingSitesService {
   public getTestingSiteDetails(siteGuid: string) {
     return this.http.get<Partial<FormattedTestingSite>>(`${this.resource}/details/${siteGuid}`);
   }
+
+  public getTestingSitesAdmin(stateFips?: number | string, countyFips?: number | string, email?: string) {
+    return this.http.post<Array<Partial<FormattedTestingSite>>>(`${this.resource}/admin`, {
+      stateFips,
+      countyFips,
+      email
+    });
+  }
 }
 
 export interface FormattedTestingSite {

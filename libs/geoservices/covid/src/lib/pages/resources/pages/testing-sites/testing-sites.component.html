@@ -1,11 +1,11 @@
 <!-- <p>The following is a list of submitted testing sites registered to your email address for this county.</p> -->
 
-<ng-container *ngIf="!(localEmail | async) ; else hasIdentity">
+<ng-container *ngIf="(localEmail | async) === null || (localEmail | async) === undefined ; else hasIdentity">
   <p class="flex justify-center">Email registration required to submit testing sites. <a [routerLink]="['../profile']">Register using your email to proceed.</a></p>
 </ng-container>
 
 <ng-template #hasIdentity>
-  <ng-container *ngIf="!(localCounty | async) ; else hasCounty">
+  <ng-container *ngIf="(localCounty | async) === null || (localCounty | async) === undefined ; else hasCounty">
     <p class="flex justify-center">An active county claim is required to submit testing sites. <a [routerLink]="['../county']">Claim a county to proceed.</a></p>
   </ng-container>
 
@@ -25,31 +25,33 @@
 
         <ng-template #siteList>
           <div class="flex flex-column align-center">
-            <div class="spinning-loader" *ngIf="!(sites | async)"></div>
+            <div class="spinning-loader" *ngIf="(sites | async) === null || (sites | async)?.length === undefined; else sitesTable"></div>
 
-            <div class="floating-table">
-              <div class="floating-table-header">
-                <div class="floating-row">
-                  <div class="column">Site Name/Address</div>
-                  <div class="column">Updated</div>
-                  <div class="column">Actions</div>
+            <ng-template #sitesTable>
+              <div class="floating-table">
+                <div class="floating-table-header">
+                  <div class="floating-row">
+                    <div class="column">Site Name/Address</div>
+                    <div class="column">Updated</div>
+                    <div class="column">Actions</div>
+                  </div>  
+                </div>
+
+                <div class="floating-table-body">
+                  <div class="floating-row" *ngFor="let site of sites | async">
+                    <div class="column">{{site.info.locationName ? site.info.locationName : site.location.address1 ? site.location.address1 : 'Site'}}</div>
+                    <div class="column">{{site.info.updated | date : 'medium'}}</div>
+                    <div class="column"><span class="material-icons action alt" title="Edit testing site" [routerLink]="['./create', site.guid]">edit</span></div>
+                  </div>
                 </div>
               </div>
-
-              <div class="floating-table-body">
-                <div class="floating-row" *ngFor="let site of sites | async">
-                  <div class="column">{{site.info.locationName ? site.info.locationName : site.location.address1 ? site.location.address1 : 'Site'}}</div>
-                  <div class="column">{{site.info.updated | date : 'medium'}}</div>
-                  <div class="column"><span class="material-icons action alt" title="Edit testing site" [routerLink]="['./create', site.guid]">edit</span></div>
-                </div>
-              </div>
-            </div>
+            </ng-template>
           </div>
         </ng-template>
       </div>
     </div>
 
-    <div class="tab-section" *ngIf="(sites | async)?.length === 0 && !(countyIsSiteLess | async)">
+    <div class="tab-section" *ngIf="(sites | async)?.length === 0 && (countyIsSiteLess | async) === false">
       <div class="tab-section-header">
         <h5>County Has No Testing Sites</h5>
       </div>

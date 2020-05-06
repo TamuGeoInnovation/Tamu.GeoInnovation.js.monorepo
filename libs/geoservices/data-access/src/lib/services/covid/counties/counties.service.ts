@@ -3,6 +3,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { HttpClient } from '@angular/common/http';
 
 import { County } from '@tamu-gisc/covid/common/entities';
+import { CountyStats } from '@tamu-gisc/covid/data-api';
 
 @Injectable({
   providedIn: 'root'
@@ -16,5 +17,9 @@ export class CountiesService {
 
   public getCountiesForState(stateFips: number) {
     return this.http.get<Array<County>>(`${this.resource}/state/${stateFips}`);
+  }
+
+  public getCountyStats() {
+    return this.http.get<CountyStats>(`${this.resource}/stats`);
   }
 }

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { DeepPartial } from 'typeorm';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { CountyClaim, County } from '@tamu-gisc/covid/common/entities';
-import { DeepPartial } from 'typeorm';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +33,14 @@ export class CountyClaimsService {
 
   public getSuggestedClaims(stateFips: number) {
     return this.http.get<Array<County>>(`${this.resource}/suggested/${stateFips}/5`);
+  }
+
+  public getAdminClaims(stateFips: number, countyFips: number, email: string) {
+    return this.http.post<Partial<Array<CountyClaim>>>(`${this.resource}/admin/claim`, {
+      stateFips: stateFips,
+      countyFips: countyFips,
+      email: email
+    });
   }
 
   public registerClaim(claim: DeepPartial<CountyClaim>, phoneNumbers, websites) {

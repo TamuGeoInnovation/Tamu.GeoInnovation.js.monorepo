@@ -18,7 +18,7 @@ export class AccordionContentDirective {
   @Input()
   public defaultDisplay: 'initial' | 'inherit' | 'block' | 'inline' | 'inline-block' = 'initial';
 
-  constructor(private templateRef: TemplateRef<any>, private viewContainer: ViewContainerRef) {}
+  constructor(private templateRef: TemplateRef<unknown>, private viewContainer: ViewContainerRef) {}
 
   @Input()
   public set giscAccordionContent(expanded: boolean) {

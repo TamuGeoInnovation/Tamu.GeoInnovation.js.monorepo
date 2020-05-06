@@ -95,7 +95,7 @@ export class CountyComponent implements OnInit, OnDestroy {
       )
       .subscribe((county) => {
         this.form.patchValue({
-          state: county.stateFips,
+          state: county.stateFips.stateFips,
           county: county.countyFips
         });
       });
@@ -123,7 +123,7 @@ export class CountyComponent implements OnInit, OnDestroy {
         switchMap((county) => {
           return county !== undefined ? of(county) : of({});
         }),
-        pluck('stateFips')
+        pluck('stateFips', 'stateFips')
       ),
       this.form.get('state').valueChanges
     ).pipe(
@@ -330,7 +330,7 @@ export class CountyComponent implements OnInit, OnDestroy {
 
   public setCountySuggestion(county: County) {
     this.form.patchValue({
-      state: county.stateFips,
+      state: county.stateFips.stateFips,
       county: county.countyFips
     });
   }

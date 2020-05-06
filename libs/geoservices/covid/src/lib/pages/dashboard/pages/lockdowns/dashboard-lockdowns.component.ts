@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { filter, pluck, switchMap } from 'rxjs/operators';
+import { filter, pluck, switchMap, shareReplay } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
 import { County, User } from '@tamu-gisc/covid/common/entities';
@@ -27,7 +27,8 @@ export class DashboardLockdownsComponent implements OnInit {
       }),
       switchMap((email) => {
         return this.ls.getAllLockdownsForUser(email);
-      })
+      }),
+      shareReplay(1)
     );
   }
 }

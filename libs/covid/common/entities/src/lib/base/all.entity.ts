@@ -58,8 +58,9 @@ export class County extends BaseEntity {
   @PrimaryColumn()
   public countyFips: number;
 
-  @Column()
-  public stateFips: number;
+  @ManyToOne((type) => State)
+  @JoinColumn({ name: 'stateFips' })
+  public stateFips: State;
 
   @Column({ type: 'varchar', length: 'max' })
   public name: string;
@@ -220,7 +221,6 @@ export class LockdownInfo extends GuidIdentity {
 
   @ManyToOne((type) => Lockdown, (lockdown) => lockdown.infos)
   public lockdown: Lockdown;
-
 }
 
 @Entity({ name: 'testing_sites' })
@@ -317,13 +317,11 @@ export class EntityStatus extends GuidIdentity {
   public lockdownInfoStatus: LockdownInfo;
 
   @ManyToOne((type) => Lockdown, (info) => info.statuses)
-  public lockdownStatus: Lockdown
-  
+  public lockdownStatus: Lockdown;
+
   @ManyToOne((type) => TestingSiteInfo, (info) => info.statuses)
   public testingSiteInfoStatus: TestingSiteInfo;
 
   @ManyToOne((type) => TestingSite, (info) => info.statuses)
-  public testingSiteStatus: Lockdown
+  public testingSiteStatus: Lockdown;
 }
-
-

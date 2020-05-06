@@ -11,14 +11,37 @@ export class CountiesController extends BaseController<County> {
     super(service);
   }
 
+  @Get('stats')
+  public async getCountyStats() {
+    try {
+      const counties = await this.service.getCountyStats();
+      return counties;
+    } catch (err) {
+      return {
+        status: 500,
+        success: false,
+        message: err.message
+      };
+    }
+  }
+
   @Get('state/:fips/:keyword')
   public searchCountiesForState(@Param() params) {
     return this.service.searchCountiesForState(params.fips, params.keyword);
   }
 
   @Get('state/:fips')
-  public getCountiesForState(@Param() params) {
-    return this.service.getCountiesForState(params.fips);
+  public async getCountiesForState(@Param() params) {
+    try {
+      const counties = await this.service.getCountiesForState(params.fips);
+      return counties;
+    } catch (err) {
+      return {
+        status: 500,
+        success: false,
+        message: err.message
+      };
+    }
   }
 
   @Get(':keyword')

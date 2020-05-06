@@ -2,12 +2,12 @@ import { Controller, Delete, Post, Get, Param, Body } from '@nestjs/common';
 import { BaseController } from '../base/base.controller';
 
 import { TestingSite } from '@tamu-gisc/covid/common/entities';
-import { SitesService } from './sites.service';
+import { TestingSitesService } from './testing-sites.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
 
 @Controller('sites')
-export class SitesController extends BaseController<TestingSite> {
-  constructor(private service: SitesService, private ccs: CountyClaimsService) {
+export class TestingSitesController extends BaseController<TestingSite> {
+  constructor(private service: TestingSitesService, private ccs: CountyClaimsService) {
     super(service);
   }
 
@@ -28,11 +28,6 @@ export class SitesController extends BaseController<TestingSite> {
     return this.service.getInfosForSite(params.siteGuid);
   }
 
-  // @Get(':countyFips')
-  // public async getSitesForCounty(@Param() params) {
-  //   return await this.service.getSitesForCounty(params.countyFips);
-  // }
-
   @Get('county')
   public async getTestingSitesSortedByCounty() {
     return await this.service.getTestingSitesSortedByCounty();
@@ -46,6 +41,20 @@ export class SitesController extends BaseController<TestingSite> {
   @Get('user/:userIdentifier')
   public async getSitesForUser(@Param() params) {
     return await this.service.getSitesForUser(params.userIdentifier);
+  }
+
+  @Post('admin')
+  public async getTestingSitesAdmin(@Body() body) {
+    try {
+      const sites = await this.service.getTestingSitesAdmin(body.stateFips, body.countyFips, body.email);
+      return sites;
+    } catch (err) {
+      return {
+        status: 500,
+        success: false,
+        message: err.message
+      };
+    }
   }
 
   @Post('')

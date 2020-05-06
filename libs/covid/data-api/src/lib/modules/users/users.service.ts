@@ -1,15 +1,55 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 
-import { User } from '@tamu-gisc/covid/common/entities';
+import { User, TestingSite } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 
 @Injectable()
 export class UsersService extends BaseService<User> {
-  constructor(@InjectRepository(User) public repo: Repository<User>) {
+  constructor(
+    @InjectRepository(User) public repo: Repository<User>,
+    @InjectRepository(TestingSite) public testingSiteRepo: Repository<TestingSite>
+  ) {
     super(repo);
+  }
+
+  public async getUsers() {
+    return this.repo.find({
+      select: ['email', 'guid', 'created', 'updated'],
+      order: {
+        email: 'ASC'
+      }
+    });
+  }
+
+  public async getUsersWithStats() {
+    const users = await this.repo
+      .createQueryBuilder('user')
+      .addSelect(['user.email'])
+      .innerJoinAndSelect('user.claims', 'claims')
+      .getMany();
+
+    const testingSites = await Promise.all(
+      users.map((u) => {
+        return this.testingSiteRepo.find({
+          where: {
+            claim: In(u.claims.map((c) => c.guid))
+          }
+        });
+      })
+    );
+
+    return users.map(
+      (user, index): UserWithStats => {
+        const temp = { ...user, claimsCount: user.claims.length, sitesCount: testingSites[index].length };
+
+        delete temp.claims;
+
+        return temp;
+      }
+    );
   }
 
   public async verifyEmail(email: string) {
@@ -62,4 +102,9 @@ export class UsersService extends BaseService<User> {
       }
     });
   }
+}
+
+export interface UserWithStats extends Partial<User> {
+  claimsCount: number;
+  sitesCount: number;
 }

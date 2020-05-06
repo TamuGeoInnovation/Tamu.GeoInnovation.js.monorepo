@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
-  SitesModule,
+  TestingSitesModule,
   LockdownsModule,
   StatesModule,
   CountiesModule,
@@ -75,7 +75,7 @@ import { dbConfig } from '../environments/environment';
     FieldTypesModule,
     CategoryValueModule,
     StatusTypesModule,
-    SitesModule,
+    TestingSitesModule,
     LockdownsModule,
     StatesModule,
     CountiesModule,

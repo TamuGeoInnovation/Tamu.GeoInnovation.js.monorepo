@@ -93,7 +93,7 @@ export class LockdownComponent implements OnInit, OnDestroy {
       .pipe(filter((county) => county !== undefined && county.countyFips !== undefined && county.stateFips !== undefined))
       .subscribe((county) => {
         if (county) {
-          this.st.getStateByFips(county.stateFips).subscribe((state) => {
+          this.st.getStateByFips(county.stateFips.stateFips).subscribe((state) => {
             this.form.patchValue({
               claim: {
                 county: county.countyFips

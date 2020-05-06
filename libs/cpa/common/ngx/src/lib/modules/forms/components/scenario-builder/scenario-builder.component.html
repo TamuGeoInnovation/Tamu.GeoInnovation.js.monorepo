@@ -1,4 +1,4 @@
-<h2>CCPA : <ng-container *ngIf="isExisting | async">Scenario Details</ng-container> <ng-container *ngIf="!(isExisting | async)">New Scenario</ng-container></h2>
+<h2>CCPA : <ng-container *ngIf="isExisting | async">Scenario Details</ng-container> <ng-container *ngIf="(isExisting | async) === false">New Scenario</ng-container></h2>
 
 <tamu-gisc-breadcrumb></tamu-gisc-breadcrumb>
 
@@ -80,7 +80,7 @@
   </div>
 
   <div class="form-collection row">
-    <ng-container *ngIf="!(isExisting | async)">
+    <ng-container *ngIf="(isExisting | async) === false">
       <tamu-gisc-button type="submit" value="Publish" [disabled]="!builderForm.valid"></tamu-gisc-button>
     </ng-container>
 
