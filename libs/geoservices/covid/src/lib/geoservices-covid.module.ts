@@ -7,6 +7,7 @@ import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/tr
 import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
 
 import { GeoservicesCovidComponent } from './geoservices-covid.component';
+import { AdminRoleGuard } from '@tamu-gisc/oidc';
 
 const routes: Routes = [
   {

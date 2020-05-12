@@ -1,9 +1,10 @@
-import { Controller, Delete, Post, Get, Param, Body } from '@nestjs/common';
+import { Controller, Delete, Post, Get, Param, Body, UseGuards } from '@nestjs/common';
 import { BaseController } from '../base/base.controller';
 
 import { TestingSite } from '@tamu-gisc/covid/common/entities';
 import { TestingSitesService } from './testing-sites.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
+import { AdminRoleGuard } from '@tamu-gisc/oidc';
 
 @Controller('sites')
 export class TestingSitesController extends BaseController<TestingSite> {
@@ -43,6 +44,7 @@ export class TestingSitesController extends BaseController<TestingSite> {
     return await this.service.getSitesForUser(params.userIdentifier);
   }
 
+  @UseGuards(AdminRoleGuard)
   @Post('admin')
   public async getTestingSitesAdmin(@Body() body) {
     try {

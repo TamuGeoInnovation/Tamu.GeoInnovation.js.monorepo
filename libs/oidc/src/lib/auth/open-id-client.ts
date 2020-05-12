@@ -33,7 +33,6 @@ export class OpenIdClient {
    */
   public static async build(clientMetadata: ClientMetadata, clientParams: {}, issuerUrl: string): Promise<OidcClient> {
     this.params = clientParams;
-    // Shadowed name, I know, dunno how to fix it in this particular case. It's kinda needed. -AH (1/29/20)
     const { Client } = await Issuer.discover(issuerUrl);
 
     return new Promise((resolve, reject) => {

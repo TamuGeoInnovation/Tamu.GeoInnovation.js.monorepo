@@ -1,9 +1,11 @@
-import { Controller, Post, Get, Patch, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
 
 import { CountyClaim } from '@tamu-gisc/covid/common/entities';
 
 import { BaseController } from '../base/base.controller';
 import { CountyClaimsService } from './county-claims.service';
+
+import { AdminRoleGuard } from '@tamu-gisc/oidc';
 
 @Controller('county-claims')
 export class CountyClaimsController extends BaseController<CountyClaim> {
@@ -81,6 +83,7 @@ export class CountyClaimsController extends BaseController<CountyClaim> {
     }
   }
 
+  @UseGuards(AdminRoleGuard)
   @Post('admin/claim')
   public async getClaimsAdmin(@Body() body) {
     try {
