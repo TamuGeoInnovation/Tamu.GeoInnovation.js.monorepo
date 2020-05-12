@@ -21,7 +21,7 @@ export class OidcClientController {
   @UseGuards(LoginGuard)
   @Get('/auth/callback')
   public authCallback(@Response() res, @Request() req) {
-    res.redirect('/home');
+    res.redirect('http://localhost:4200');
   }
 
   @UseGuards(AdminRoleGuard)
