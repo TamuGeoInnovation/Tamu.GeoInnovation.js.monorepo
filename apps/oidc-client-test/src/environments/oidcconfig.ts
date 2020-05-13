@@ -9,9 +9,8 @@ export const OIDC_CLIENT_METADATA: ClientMetadata = {
 };
 
 // export const OIDC_IDP_ISSUER_URL = 'http://localhost:4001';
-// export const OIDC_IDP_ISSUER_URL = 'http://localhost:4001/oidc';
-export const OIDC_IDP_ISSUER_URL = 'https://idp-dev.geoservices.tamu.edu/.well-known/openid-configuration';
-//export const OIDC_IDP_ISSUER_URL = 'https://idp-dev.geoservices.tamu.edu/oidc/';
+export const OIDC_IDP_ISSUER_URL = 'https://idp-dev.geoservices.tamu.edu/';
+// export const OIDC_IDP_ISSUER_URL = 'https://idp-dev-lb.geoservices.tamu.edu'
 export const OIDC_CLIENT_PARAMS = {
   scope: 'openid offline_access basic_profile email tamu role',
   state: 'texas', // Opaque value set by the RP to maintain state between request and callback
