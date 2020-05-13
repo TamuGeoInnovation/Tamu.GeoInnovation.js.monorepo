@@ -24,7 +24,10 @@ async function bootstrap() {
     dir: __dirname,
   });
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  app.enableCors({
+    credentials: true,
+    origin: "http://localhost:4200",
+  });
   const globalPrefix = environment.globalPrefix;
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.port || environment.port;

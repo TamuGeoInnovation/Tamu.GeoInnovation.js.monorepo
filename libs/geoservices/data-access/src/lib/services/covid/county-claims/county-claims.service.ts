@@ -40,6 +40,8 @@ export class CountyClaimsService {
       stateFips: stateFips,
       countyFips: countyFips,
       email: email
+    }, {
+      withCredentials: true
     });
   }
 
