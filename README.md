@@ -16,6 +16,15 @@
 
 1. Use `ng g app myapp --style=scss` to scaffold the app
 
+# Create NestJS app
+
+1. `nx list @nrwl/nest`
+2. `ng g @nrwl/nest:application`
+
+# Creating libraries
+
+1. 
+
 # Viewing on mobile device
 
 1. Use `ng serve --aot --project=myapp --host 0.0.0.0`
