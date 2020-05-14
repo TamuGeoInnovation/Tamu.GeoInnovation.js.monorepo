@@ -92,7 +92,8 @@
       "@tamu-gisc/ues/effluent/ngx": ["libs/ues/effluent/ngx/src/index.ts"],
       "@tamu-gisc/maps/feature/feature-highlight": ["libs/maps/feature/feature-highlight/src/index.ts"],
       "@tamu-gisc/ues/effluent/data-api": ["libs/ues/effluent/data-api/src/index.ts"],
-      "@tamu-gisc/ues/effluent/common/entities": ["libs/ues/effluent/common/entities/src/index.ts"]
+      "@tamu-gisc/ues/effluent/common/entities": ["libs/ues/effluent/common/entities/src/index.ts"],
+      "@tamu-gisc/two/directory": ["libs/two/directory/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

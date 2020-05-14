@@ -21,9 +21,15 @@
 1. `nx list @nrwl/nest`
 2. `ng g @nrwl/nest:application`
 
+# Create NestJS modules / controllers / services / etc
+
+1. `nx list @nestjs/schematics`
+2. `ng g @nestjs/schematics:service`
+3. `ng g @nestjs/schematics:module test --source-root=libs/two/data-api/src/lib/modules --dry-run`
+
 # Creating libraries
 
-1. 
+1. `ng g @nrwl/web:library`
 
 # Viewing on mobile device
 
