@@ -274,6 +274,9 @@
     },
     "two-directory-nest": {
       "tags": []
+    },
+    "two-directory": {
+      "tags": []
     }
   }
 }
