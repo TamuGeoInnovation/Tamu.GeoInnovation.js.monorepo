@@ -3087,6 +3087,79 @@
           }
         }
       }
+    },
+    "two-valup-nest": {
+      "root": "apps/two-valup-nest",
+      "sourceRoot": "apps/two-valup-nest/src",
+      "projectType": "application",
+      "prefix": "two-valup-nest",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/two-valup-nest",
+            "main": "apps/two-valup-nest/src/main.ts",
+            "tsConfig": "apps/two-valup-nest/tsconfig.app.json",
+            "assets": ["apps/two-valup-nest/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-valup-nest/src/environments/environment.ts",
+                  "with": "apps/two-valup-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "two-valup-nest:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/two-valup-nest/tsconfig.app.json", "apps/two-valup-nest/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/two-valup-nest/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/two-valup-nest/jest.config.js",
+            "tsConfig": "apps/two-valup-nest/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "two-valup": {
+      "root": "libs/two/valup",
+      "sourceRoot": "libs/two/valup/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/two/valup/tsconfig.lib.json", "libs/two/valup/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/two/valup/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/two/valup/jest.config.js",
+            "tsConfig": "libs/two/valup/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
