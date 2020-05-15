@@ -27,10 +27,6 @@ const routes: Routes = [
         loadChildren: () => import('./pages/resources/resources.module').then((m) => m.ResourcesModule)
       },
       {
-        path: 'login',
-        loadChildren: () => import('./pages/login/login.module').then((m) => m.LoginModule)
-      },
-      {
         path: 'dashboard',
         loadChildren: () => import('./pages/dashboard/dashboard.module').then((m) => m.MyDashboardModule),
         canActivate: [LocalEmailGuard]

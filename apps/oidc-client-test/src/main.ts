@@ -5,7 +5,6 @@
 
 import { NestFactory } from '@nestjs/core';
 import passport from 'passport';
-import flash from 'connect-flash';
 import session from 'express-session';
 const SQLiteStore = require('connect-sqlite3')(session);
 
@@ -44,7 +43,6 @@ async function bootstrap() {
 
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use(flash());
   await app.listen(3001);
 }
 

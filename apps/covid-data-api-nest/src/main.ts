@@ -5,7 +5,6 @@
 
 import { NestFactory } from '@nestjs/core';
 import passport from 'passport';
-import flash from 'connect-flash';
 import session from 'express-session';
 const SQLiteStore = require('connect-sqlite3')(session);
 
@@ -13,27 +12,28 @@ import { OpenIdClient } from '@tamu-gisc/oidc';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-import { OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL } from './environments/environment.dev';
-
+import { idpConfig } from './environments/environment';
 
 async function bootstrap() {
   const sqlStore = new SQLiteStore({
     db: 'covid_sessions.db',
     concurrentDB: true,
     table: 'sessions',
-    dir: __dirname,
+    dir: __dirname
   });
   const app = await NestFactory.create(AppModule);
+
   app.enableCors({
     credentials: true,
-    origin: "http://localhost:4200",
+    origin: ['http://localhost:4200', 'https://idp-dev.geoservices.tamu.edu']
   });
+
   const globalPrefix = environment.globalPrefix;
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.port || environment.port;
   app.use(
     session({
-      name: 'GISDay',
+      name: 'geoinnovation',
       resave: false,
       saveUninitialized: false,
       secret: 'GEOINNOVATIONSERVICECENTER',
@@ -45,13 +45,12 @@ async function bootstrap() {
   );
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use(flash());
   await app.listen(port, () => {
     console.log('Listening at http://localhost:' + port + '/' + globalPrefix);
   });
 }
 
-OpenIdClient.build(OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL)
+OpenIdClient.build(idpConfig.OIDC_CLIENT_METADATA, idpConfig.OIDC_CLIENT_PARAMS, idpConfig.OIDC_IDP_ISSUER_URL)
   .then(() => bootstrap())
   .catch((err) => {
     console.warn(err);

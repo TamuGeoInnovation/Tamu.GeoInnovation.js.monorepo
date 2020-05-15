@@ -39,7 +39,13 @@ export class LockdownsService {
   }
 
   public getLockdownsAdmin(stateFips?: number | string, countyFips?: number | string, email?: string) {
-    return this.http.post<Array<Partial<Lockdown>>>(`${this.resource}/admin`, { stateFips, countyFips, email });
+    return this.http.post<Array<Partial<Lockdown>>>(
+      `${this.resource}/admin`,
+      { stateFips, countyFips, email },
+      {
+        withCredentials: true
+      }
+    );
   }
 }
 

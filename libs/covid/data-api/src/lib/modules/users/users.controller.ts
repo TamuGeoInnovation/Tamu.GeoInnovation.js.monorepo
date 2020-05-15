@@ -1,8 +1,9 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
 import { User } from '@tamu-gisc/covid/common/entities';
 
 import { UsersService } from './users.service';
 import { BaseController } from '../base/base.controller';
+import { AdminRoleGuard } from '@tamu-gisc/oidc';
 
 @Controller('users')
 export class UsersController extends BaseController<User> {
@@ -15,6 +16,7 @@ export class UsersController extends BaseController<User> {
     return this.service.verifyEmail(params.email);
   }
 
+  @UseGuards(AdminRoleGuard)
   @Get('stats')
   public async getUsersWithStats() {
     try {
@@ -29,6 +31,7 @@ export class UsersController extends BaseController<User> {
     }
   }
 
+  @UseGuards(AdminRoleGuard)
   @Get('')
   public async getUsers() {
     try {

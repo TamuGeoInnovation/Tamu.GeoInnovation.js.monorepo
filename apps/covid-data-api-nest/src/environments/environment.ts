@@ -5,3 +5,4 @@ export const environment = {
 };
 
 export { localDbConfig as dbConfig } from './ormconfig';
+export { localClientConfig as idpConfig } from './oidc-client-config';
