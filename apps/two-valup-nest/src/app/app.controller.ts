@@ -1,13 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post, UsePipes } from '@nestjs/common';
 
 import { AppService } from './app.service';
 
+import { FileAccessPipe, IrgasonValidationService } from '@tamu-gisc/two/valup';
+
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly irgasonService: IrgasonValidationService) {}
 
-  @Get()
-  getData() {
-    return this.appService.getData();
+  @Post()
+  @UsePipes(FileAccessPipe)
+  public whatsTheFileName(@Body('path') path: string) {
+    this.irgasonService.validateAndUpload(path);
   }
+
 }
