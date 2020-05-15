@@ -286,4 +286,23 @@ export class WeatherfluxExpanded extends BaseEntity {
 
   @Column({ name: 'Precip2_Tot', type: 'double precision', nullable: true })
   public precip2_tot: number | null;
+
+  constructor(row?: any) {
+    super();
+    if (row) {
+      Object.keys(row).forEach((key, index) => {
+        // console.log(key, index);
+        const key_lowercase = key.toLowerCase();
+        if (key_lowercase in this) {
+          if (row[key]) {
+            this[key_lowercase] = Number(row[key]) || String(row[key]) || null;
+          }
+          // console.log("Yeah we got this")
+        }
+      });
+      if (row["TOA5"]) {
+        this.timestamp = row["TOA5"];
+      }
+    }
+  }
 }
