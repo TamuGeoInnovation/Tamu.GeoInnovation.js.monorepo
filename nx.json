@@ -328,6 +328,12 @@
     },
     "two-valup": {
       "tags": []
+    },
+    "two-dashboard-angular-e2e": {
+      "tags": []
+    },
+    "two-dashboard-angular": {
+      "tags": []
     }
   }
 }

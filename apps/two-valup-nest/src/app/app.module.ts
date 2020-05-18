@@ -5,7 +5,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { IrgasonValidationService } from '@tamu-gisc/two/valup';
-import { WeatherfluxExpanded } from '@tamu-gisc/two/common';
 
 import { dbConfig } from '@tamu-gisc/two/valup';
 
