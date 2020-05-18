@@ -3048,6 +3048,11 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "two-directory-nest:build"
+          },
+          "configurations": {
+            "development": {
+              "inspect": false
+            }
           }
         },
         "lint": {
@@ -3121,6 +3126,11 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "two-valup-nest:build"
+          },
+          "configurations": {
+            "development": {
+              "inspect": false
+            }
           }
         },
         "lint": {

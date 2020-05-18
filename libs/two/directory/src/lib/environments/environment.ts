@@ -26,6 +26,7 @@ export const VALIDATION_SERVICE = {
   protocol: 'http://',
   host: 'localhost',
   port: 4010,
+  globalPrefix: 'api',
   validation_route: 'validate',
 };
 export const UPLOADER_SERVICE = {
