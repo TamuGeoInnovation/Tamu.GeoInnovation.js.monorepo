@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 
 import { FileAccessPipe, IrgasonValidationService } from '@tamu-gisc/two/valup';
 
-@Controller()
+@Controller('validate')
 export class AppController {
   constructor(private readonly irgasonService: IrgasonValidationService) {}
 
