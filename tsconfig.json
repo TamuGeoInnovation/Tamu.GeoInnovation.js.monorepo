@@ -87,7 +87,8 @@
       "@tamu-gisc/maps/mapbox": ["libs/maps/mapbox/src/index.ts"],
       "@tamu-gisc/oidc": ["libs/oidc/src/index.ts"],
       "@tamu-gisc/two/directory": ["libs/two/directory/src/index.ts"],
-      "@tamu-gisc/two/valup": ["libs/two/valup/src/index.ts"]
+      "@tamu-gisc/two/valup": ["libs/two/valup/src/index.ts"],
+      "@tamu-gisc/two/dashboard": ["libs/two/dashboard/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

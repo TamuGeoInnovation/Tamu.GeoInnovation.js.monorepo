@@ -3287,6 +3287,28 @@
           }
         }
       }
+    },
+    "two-dashboard": {
+      "root": "libs/two/dashboard",
+      "sourceRoot": "libs/two/dashboard/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/two/dashboard/tsconfig.lib.json", "libs/two/dashboard/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/two/dashboard/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/two/dashboard/jest.config.js",
+            "tsConfig": "libs/two/dashboard/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
