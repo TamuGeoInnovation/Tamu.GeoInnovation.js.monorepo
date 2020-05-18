@@ -334,6 +334,9 @@
     },
     "two-dashboard-angular": {
       "tags": []
+    },
+    "two-dashboard": {
+      "tags": []
     }
   }
 }

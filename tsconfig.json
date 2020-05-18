@@ -94,7 +94,8 @@
       "@tamu-gisc/ues/effluent/data-api": ["libs/ues/effluent/data-api/src/index.ts"],
       "@tamu-gisc/ues/effluent/common/entities": ["libs/ues/effluent/common/entities/src/index.ts"],
       "@tamu-gisc/two/directory": ["libs/two/directory/src/index.ts"],
-      "@tamu-gisc/two/valup": ["libs/two/valup/src/index.ts"]
+      "@tamu-gisc/two/valup": ["libs/two/valup/src/index.ts"],
+      "@tamu-gisc/two/dashboard": ["libs/two/dashboard/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
