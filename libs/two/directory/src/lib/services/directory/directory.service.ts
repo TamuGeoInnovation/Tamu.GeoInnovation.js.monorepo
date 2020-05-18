@@ -189,7 +189,7 @@ export class DirectoryService {
    */
   private notifyValidationService(filepath: string): void {
     // const route = path.extname(filepath).substring(1);
-    const route = `${VALIDATION_SERVICE.protocol}${VALIDATION_SERVICE.host}:${VALIDATION_SERVICE.port}/${VALIDATION_SERVICE.validation_route}`;
+    const route = `${VALIDATION_SERVICE.protocol}${VALIDATION_SERVICE.host}:${VALIDATION_SERVICE.port}/${VALIDATION_SERVICE.globalPrefix}/${VALIDATION_SERVICE.validation_route}`;
     const options = {
       method: 'POST',
       uri: route,

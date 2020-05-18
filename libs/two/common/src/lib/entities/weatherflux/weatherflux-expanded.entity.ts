@@ -1,6 +1,6 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity({ name: 'WeatherFlux' })
+@Entity({ name: 'WeatherFlux_Test' })
 export class WeatherfluxExpanded extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'RECORD' })
   public record: number | null;
