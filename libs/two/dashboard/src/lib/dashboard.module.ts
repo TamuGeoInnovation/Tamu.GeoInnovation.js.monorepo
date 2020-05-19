@@ -7,6 +7,7 @@ import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/tr
 import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
 
 import { DashboardComponent } from './dashboard.component';
+import { TWOHeaderModule } from './components/header/header.module';
 
 
 const routes: Routes = [
@@ -27,6 +28,7 @@ const routes: Routes = [
   declarations: [DashboardComponent],
   imports: [
     CommonModule,
+    TWOHeaderModule,
     RouterModule.forChild(routes),
     GeoservicesCoreNgxModule,
     UINavigationTriggersModule,

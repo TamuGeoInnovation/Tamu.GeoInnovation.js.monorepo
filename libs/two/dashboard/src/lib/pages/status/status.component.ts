@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+// import { StatusService } from '@tamu-gisc/two/data-api';
 
 @Component({
-  selector: 'status',
+  selector: 'two-status',
   templateUrl: './status.component.html',
-  styleUrls: ['./status.component.css']
+  styleUrls: ['./status.component.scss']
 })
 export class StatusComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    // private statusService: StatusService 
+  ) { }
 
   ngOnInit() {
   }
