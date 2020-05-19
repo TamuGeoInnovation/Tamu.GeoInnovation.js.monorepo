@@ -1,1 +1,1110 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'libs/sass/1140';
+
+@import 'libs/sass/mixins';
+@import 'libs/sass/modules/forms';
+@import 'libs/sass/dom_flexbox';
+@import 'libs/sass/spacing';
+
+@import 'libs/sass/modules/loaders';
+
+@import '~highlight.js/styles/atom-one-dark.css';
+
+$primary-font-family: 'Ubuntu', sans-serif;
+$secondary-font-family: 'Muli', sans-serif;
+
+$active-color: hsl(223, 75%, 67%);
+$state-transition-color: #536dfe;
+$inactive-color: hsl(223, 15%, 60%);
+$lightened-inactive-color: lighten($inactive-color, 25%);
+
+$alert-color: #ef5350;
+$warning-color: #ffca28;
+
+$lightened-alert-color: lighten($alert-color, 25%);
+$lightened-warning-color: lighten($warning-color, 25%);
+
+$primary-text-color: #62707d;
+
+html {
+  height: 100%;
+  width: 100%;
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: $primary-font-family;
+  color: $primary-text-color;
+  background: hsla(200, 10%, 99%, 1);
+  position: relative;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+}
+
+section {
+  margin: 2.5rem 0;
+
+  .section-header {
+    margin-bottom: 2rem;
+  }
+
+  .section-block {
+    margin-bottom: 2rem;
+  }
+
+  &.content-fill-pad {
+    position: relative;
+    padding: 6.5rem 0;
+    margin: 0;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: $primary-font-family;
+}
+
+h1,
+h2,
+h3.alt,
+h4.alt,
+h5.alt {
+  color: #2d3e4c;
+}
+
+h2,
+h3,
+h4 {
+  font-weight: 400;
+}
+
+h1 {
+  font-size: 2.75rem;
+  font-weight: 500;
+}
+
+h2 {
+  font-size: 2.1rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 400;
+}
+
+h5 {
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+a,
+.faux-link {
+  color: $active-color;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  &.emphasis,
+  .emphasis {
+    font-weight: 500;
+  }
+}
+
+ul {
+  margin-left: 1rem;
+  list-style-position: inside;
+
+  li {
+    margin: 0.5rem 0;
+  }
+}
+
+code {
+  font-size: 0.8rem;
+  border: 1.5pt solid $inactive-color;
+  color: $inactive-color;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  margin: 0 0.1rem;
+  border-radius: 3pt;
+
+  max-height: 35rem;
+
+  &.secondary {
+    background: none;
+    border: none;
+    color: $inactive-color;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0;
+  }
+
+  &.high-contrast {
+    background: $active-color;
+    color: #ffffff;
+    border: none;
+  }
+
+  &.hljs {
+    padding: 1rem;
+    margin: initial;
+  }
+}
+
+table {
+  // All tables, except tables inside code elements.
+  &:not([class^='hljs']) {
+    width: 100%;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+
+    border: 1pt solid $lightened-inactive-color;
+    border-collapse: collapse;
+
+    td,
+    th {
+      padding: 0.75rem;
+    }
+
+    td {
+      border: 1pt solid $lightened-inactive-color;
+      border-collapse: collapse;
+    }
+
+    thead {
+      tr {
+        background: #fafafa;
+      }
+
+      th {
+        text-align: left;
+      }
+    }
+
+    tbody {
+      tr {
+        &:nth-child(2n) {
+          background: #fafafa;
+        }
+
+        // Targets the div in the "Description" column of each row
+        td:nth-child(2) {
+          & > div:first-child {
+            @include flexbox();
+            @include flex-direction(row);
+            @include justify-content(space-between);
+
+            & > div:nth-child(2) {
+              white-space: nowrap;
+              margin-left: 1rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Add small padding after line column in code blocks
+  &[class^='hljs'] {
+    td:first-child {
+      padding-right: 0.5rem;
+    }
+  }
+}
+
+.material-icons-container {
+  .material-icons {
+    margin: 0 0.3rem;
+  }
+}
+
+.material-icons {
+  color: inherit;
+  font-size: 1.4rem;
+  @include transition(color 0.3s);
+
+  &.alt {
+    color: $inactive-color;
+  }
+
+  &.action {
+    cursor: pointer;
+
+    &:hover {
+      color: #616161;
+    }
+
+    &.alt {
+      &:hover {
+        color: $active-color;
+      }
+    }
+
+    &.error {
+      &:hover {
+        color: hsla(10, 100%, 59%, 1);
+      }
+    }
+  }
+}
+
+.sidebar-menu {
+  .menu-item {
+    @include flexbox();
+    @include flex-direction(row);
+    font-size: 1.05rem;
+    color: $inactive-color;
+    padding: 0.75rem 0.5rem 0rem 0.5rem;
+    margin: 0.5rem 0;
+    cursor: pointer;
+    outline: none;
+
+    // Have material icons inherit the color from the sidebar menu item,
+    // instead of using global styles which are OK, but not 100% in line
+    // with the application color scheme.
+    .material-icons {
+      color: inherit;
+    }
+
+    &:hover {
+      color: $state-transition-color;
+    }
+
+    &.active {
+      color: $active-color;
+      font-weight: 500;
+
+      ul > li + ul {
+        display: block;
+      }
+    }
+
+    p,
+    li {
+      margin: 0 1rem;
+    }
+
+    ul {
+      list-style: none;
+      margin-left: 0;
+
+      ul {
+        margin-top: 0.5rem;
+        margin-left: 0.5rem;
+        display: none;
+
+        li:first-child {
+          margin-bottom: 0;
+        }
+
+        li {
+          padding: 0.4rem 0;
+          font-weight: 400;
+          font-size: 0.95rem;
+          color: $inactive-color;
+          position: relative;
+
+          &::before {
+            content: '';
+            height: 100%;
+            top: 0;
+            left: -0.9rem;
+            width: 2pt;
+            background: transparent;
+            position: absolute;
+            @include transition(background 0.25s);
+          }
+
+          &:hover {
+            color: $state-transition-color;
+
+            &::before {
+              background: $state-transition-color;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.sidebar-section-title {
+  color: #9e9e9e;
+  font-size: 0.9rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.tab-container,
+tamu-gisc-tabs {
+  $border: 2pt solid $active-color;
+
+  // Tab component always uses flex layout, regardless of direction
+  // or fill modes
+  @include flexbox();
+
+  // Default layout, along as a column with tabs along the x-axis.
+  @include flex-direction(column);
+  margin: 1rem 0;
+
+  // Base styles for tabs, regardless of direction or fill mode
+  .tabs {
+    // Inherit flexbox display from parent.
+    display: inherit;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      background: #e0e0e0;
+      z-index: 0;
+    }
+
+    .tab {
+      font-size: 1rem;
+      border: 2pt solid transparent;
+      cursor: pointer;
+      box-sizing: border-box;
+      white-space: nowrap;
+      @include no-select;
+
+      p {
+        margin: 0;
+      }
+
+      &.active {
+        font-weight: 500;
+        color: #212121;
+        z-index: 1;
+      }
+    }
+  }
+
+  //
+  // Styles for tab layout in row mode (along the x-axis)
+  //
+  &.row {
+    .tabs {
+      // Default direction is tabs along the x-axis
+      @include flex-direction(row);
+
+      // Tab and content divider has a height when tabs are in a row
+      &::before {
+        bottom: 0;
+        width: 100%;
+        height: 2pt;
+      }
+
+      // Apply mostly horizontal  padding to tabs
+      .tab {
+        padding: 0.25rem 1.5rem;
+
+        &.active {
+          border-bottom: $border;
+        }
+      }
+    }
+
+    //
+    // Apply column reverse fill mode
+    //
+    &.reverse {
+      @include flex-direction(column-reverse);
+
+      .tabs {
+        &::before {
+          top: 0;
+        }
+
+        .tab {
+          &.active {
+            border-top: $border;
+            border-bottom: none;
+          }
+        }
+      }
+    }
+
+    &.tab-sizing-contain {
+      .tabs {
+        .tab {
+          // Grow tabs proportionally to fit the container width
+          @include flex-grow(1);
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  //
+  // Styles for tab layout in column mode (along the y-axis)
+  //
+  &.column {
+    @include flex-direction(row);
+
+    .tabs {
+      // Default direction is tabs along the y-axis
+      @include flex-direction(column);
+      margin-right: 1rem;
+
+      // Tab and content divider has a width when tabs are in a column
+      &::before {
+        right: 0;
+        height: 100%;
+        width: 2pt;
+      }
+
+      // Apply mostly vertical padding to tabs
+      .tab {
+        padding: 1rem;
+
+        &.active {
+          border-right: $border;
+        }
+      }
+    }
+
+    //
+    // Apply row reverse fill mode
+    //
+    &.reverse {
+      @include flex-direction(row-reverse);
+
+      .tabs {
+        margin-left: 1rem;
+
+        &::before {
+          left: 0;
+        }
+
+        .tab {
+          &.active {
+            border-left: $border;
+            border-right: none;
+          }
+        }
+      }
+    }
+
+    //
+    // Apply tab sizing contain styles for column tab layouts
+    //
+    &.tab-sizing-contain {
+      .tabs {
+        .tab {
+          display: inherit;
+          @include flex-direction(column);
+          @include justify-content(center);
+          // Grow tabs proportionally to fit the container width
+          @include flex-grow(1);
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  // Styles for the content fill direction
+  .tab-content,
+  .content {
+    @include flexbox();
+    @include flex-direction(column);
+
+    &.reverse {
+      @include flex-direction(column-reverse);
+    }
+  }
+}
+
+.section-header-api-version {
+  color: $inactive-color;
+}
+
+// Main content container in sidebar layouts
+#root {
+  @include flex(1);
+  margin: 0rem 5rem;
+  box-sizing: border-box;
+  max-width: 80rem; // Limit container widths, a little over 1140px
+}
+
+.service-endpoint {
+  @include flexbox;
+  @include flex-direction(row);
+  border: 1.5pt solid;
+  border-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  .service-verb,
+  .service-address {
+    padding: 0.75rem 1rem;
+  }
+
+  .service-address {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(center);
+    @include align-items(center);
+
+    font-family: monospace;
+
+    .url-actions {
+      display: inherit;
+      @include flex-direction(row);
+
+      span {
+        margin: 0 0.3rem;
+      }
+    }
+  }
+
+  .service-verb {
+    @include flexbox();
+    @include flex-direction(column);
+    @include justify-content(center);
+    @include align-items(center);
+
+    font-weight: 500;
+    border-right: 1.5pt;
+    border-color: inherit;
+    border-style: inherit;
+
+    &.get {
+      color: #4caf50;
+    }
+
+    &.post {
+      color: #ff9800;
+    }
+
+    &.put {
+      color: #03a9f4;
+    }
+
+    &.patch {
+      color: #9e9e9e;
+    }
+
+    &.delete {
+      color: #f44336;
+    }
+  }
+}
+
+.parameter-detail-container {
+  margin: 0.75rem 0 2rem 0;
+  .parameter-detail-header {
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+    // border-bottom: 1.5pt solid #e0e0e0;
+    border-bottom: 1.5pt solid $lightened-inactive-color;
+    padding-bottom: 0.5rem;
+    position: relative;
+
+    span.permalink {
+      position: absolute;
+      left: -2.25rem;
+      top: 50%;
+      opacity: 0;
+      @include transform(translateY(-50%));
+      @include transition(opacity 0.2s);
+    }
+
+    h3,
+    span,
+    .parameter-detail-header-badges {
+      margin-right: 0.4rem;
+      margin-left: 0.4rem;
+    }
+
+    span {
+      cursor: pointer;
+      color: $inactive-color;
+
+      &:hover {
+        color: $state-transition-color;
+      }
+    }
+
+    .parameter-detail-header-badges {
+      @include flexbox();
+      @include flex-direction(row);
+      @include align-items(center);
+
+      code {
+        margin: 0 0.3rem;
+
+        &:first-child {
+          margin-left: 0;
+        }
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  .parameter-detail-content {
+    margin-left: 1rem;
+  }
+
+  &:hover {
+    .parameter-detail-header span.permalink {
+      opacity: 1;
+    }
+  }
+}
+
+.attribute-list {
+  border-left: 1.25pt solid $lightened-inactive-color;
+  @include transition(border-color 0.3s);
+
+  // Increase padding on left for nested attribute lists
+  .attribute-list,
+  .attribute-node {
+    margin-left: 0.5rem;
+    @include transition(border-color 0.3s);
+  }
+
+  .attribute-unit {
+    margin: 1rem 0.75rem 1rem 1rem;
+
+    .attribute-header {
+      @include flexbox();
+      @include flex-direction(row);
+      position: relative;
+
+      .attribute-name {
+        font-weight: 500;
+        margin-right: 0.5rem;
+      }
+    }
+
+    .attribute-description {
+      p {
+        margin-top: 0.25rem;
+      }
+    }
+  }
+
+  .attribute-node {
+    border-left: 1.25pt solid $lightened-inactive-color;
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+
+    &:hover {
+      border-color: lighten($color: $inactive-color, $amount: 10%);
+    }
+  }
+
+  &:hover {
+    border-color: lighten($color: $inactive-color, $amount: 10%);
+  }
+}
+
+.pill {
+  border: 1pt solid $inactive-color;
+  color: $inactive-color;
+  background: none;
+  display: inline-block;
+  border-radius: 99rem;
+  padding: 0.2rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 400;
+  cursor: pointer;
+
+  span {
+    display: inline-block;
+    vertical-align: middle;
+
+    &.material-icons {
+      margin-left: 0.2rem;
+    }
+  }
+}
+
+// Form overrides
+form {
+  .form-section {
+    margin-bottom: 2.5rem;
+
+    p {
+      margin-top: 0;
+    }
+  }
+}
+
+.slanted-backdrop {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transform: skewY(-2deg) scale(2.3) translateY(-15%);
+  z-index: -1;
+
+  &.reflected {
+    transform: skewY(2deg) scale(2.3) translateY(-15%);
+  }
+}
+
+.service-example {
+  @include flexbox();
+  @include flex-direction(column);
+
+  img {
+    box-sizing: border-box;
+    padding: 1rem;
+    height: 250px;
+  }
+
+  p {
+    margin-top: 0;
+    font-size: 0.85rem;
+  }
+}
+
+.feature-tile-container {
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  h5 {
+    text-align: center;
+    margin-bottom: 0.65rem;
+  }
+
+  .feature-tile {
+    width: 12rem;
+    padding: 1rem 1rem 1.5rem 1rem;
+    margin: 1rem;
+    border: 1pt solid $lightened-inactive-color;
+    border-radius: 5pt;
+  }
+}
+
+.button {
+  padding: 0.75rem 1rem;
+  border-radius: 99rem;
+  color: #fafafa;
+  background: #536dfe;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  @include transition(0.3s box-shadow);
+
+  &:hover {
+    box-shadow: 0 2px 10px 5px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.service-logo {
+  // Size Limiter
+  height: 20rem;
+
+  &.x-small {
+    height: 3.5rem;
+  }
+
+  &.small {
+    height: 4.5rem;
+  }
+}
+
+// Targets the service page "hero" header with logo
+.intro-logo {
+  margin: 0.8rem 1.5rem;
+}
+
+.text-content {
+  &.text-content--right {
+    text-align: right;
+  }
+
+  &.text-content--left {
+    text-align: left;
+  }
+
+  &.text-content--center {
+    text-align: center;
+  }
+}
+
+//
+// Stepper component
+//
+
+tamu-gisc-stepper {
+  margin: 2rem 0;
+
+  .stepper__steps {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(space-evenly);
+  }
+}
+
+tamu-gisc-step-toggle {
+  cursor: pointer;
+  padding: 1rem;
+  position: relative;
+  color: lighten($inactive-color, 10%);
+  @include no-select();
+
+  .material-icons {
+    font-size: 1.75rem;
+  }
+
+  p {
+    margin: 0.3rem;
+  }
+
+  &.active {
+    color: $active-color;
+    font-weight: 500;
+  }
+
+  &:not(:last-child) {
+    &::after {
+      content: '';
+      height: 1pt;
+      width: 5rem;
+      position: absolute;
+      top: 50%;
+      left: 120%;
+      background: #e0e0e0;
+    }
+  }
+}
+
+//
+// Floating Table Styles
+//
+
+table.floating-table {
+  margin: 1rem auto;
+  border: none;
+
+  tr {
+    border-radius: 5pt;
+    background: none !important;
+  }
+
+  td,
+  th {
+    padding: 0.75rem 1rem;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: none;
+    background: none;
+  }
+
+  thead {
+    tr {
+      border: none;
+      font-weight: 500;
+
+      th {
+        font-weight: inherit;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1pt solid lighten($lightened-inactive-color, 5%);
+      border-top: 1pt solid lighten($lightened-inactive-color, 5%);
+    }
+  }
+}
+
+.drag-n-drop {
+  @include transition(border-color 0.3s, background 0.3s, color 0.3s);
+
+  .instruction__icon {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+    color: lighten($inactive-color, 5%);
+  }
+
+  .instruction__context,
+  .instruction__cta {
+    margin: 0.5rem auto;
+  }
+
+  &.dragging {
+    background: lighten($state-transition-color, 32%);
+    border-color: lighten($state-transition-color, 20%);
+    color: darken($primary-text-color, 10%);
+  }
+}
+
+.inform-context {
+  background: lighten($lightened-inactive-color, 10%);
+  border: 1pt solid $lightened-inactive-color;
+  padding: 1rem;
+
+  &.alert {
+    border-color: $lightened-alert-color;
+    background: lighten($lightened-alert-color, 10%);
+  }
+
+  &.warning {
+    border-color: $lightened-warning-color;
+    background: lighten($lightened-warning-color, 10%);
+  }
+
+  p {
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.file-upload {
+  position: relative;
+  padding: 3rem 2rem;
+  border: 2pt solid $lightened-inactive-color;
+  border-style: dashed;
+
+  .material-icons {
+    font-size: 2.5rem;
+  }
+
+  input {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+  }
+}
+
+form {
+  .form-section {
+    .form-section-toolbar {
+      font-weight: 500;
+    }
+  }
+}
+
+tamu-gisc-select select,
+input[type='date'] {
+  font-family: $primary-font-family;
+  padding: 0.5rem !important;
+  height: 100%;
+  background: #f1f3f4;
+  border: none;
+  border-radius: 5pt;
+  font-size: 1rem !important;
+}
+
+tamu-gisc-checkbox-group {
+  @include flexbox();
+  @include flex-direction(column);
+  @include flex-wrap(wrap);
+  max-height: 15rem;
+}
+
+.select-collection {
+  @include align-items(center);
+  .material-icons {
+    flex: 0 !important;
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.tab-section {
+  margin: 3.5rem auto;
+
+  &:first-child {
+    margin-top: 1rem;
+  }
+
+  .tab-section-header {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(space-between);
+    @include align-items(flex-end);
+    border-bottom: 1.25pt solid lighten($lightened-inactive-color, 7%);
+    padding-bottom: 0.4rem;
+  }
+
+  .tab-section-body {
+    &.action {
+      @include flexbox();
+      @include flex-direction(row);
+      @include align-items(center);
+
+      & > :nth-child(n) {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+
+      & > :first-child {
+        padding-left: 0;
+      }
+
+      & > :last-child {
+        padding-right: 0;
+      }
+    }
+  }
+}
+
+.floating-table {
+  width: 100%;
+
+  .floating-table-header {
+    font-weight: 500;
+  }
+
+  .floating-row {
+    @include flexbox();
+    @include flex-direction(row);
+
+    & > :nth-child(n) {
+      @include flexbox();
+      @include flex-direction(row);
+      @include justify-content(center);
+      @include align-items(center);
+      @include flex(1);
+      text-align: center;
+    }
+
+    background: #ffffff;
+    border: 1pt solid $lightened-inactive-color;
+    border-radius: 5pt;
+    padding: 0.5rem;
+    margin: 0.75rem auto;
+  }
+}
