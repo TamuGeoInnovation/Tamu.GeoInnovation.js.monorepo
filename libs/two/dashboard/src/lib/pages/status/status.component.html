@@ -1,23 +1,24 @@
 <div class="flex flex-column align-center">
-    <div class="spinning-loader" *ngIf="(testingSites | async) === null || (testingSites | async)?.length === undefined; else sites"></div>
+    <div class="spinning-loader" *ngIf="(status | async) === null || (status | async)?.length === undefined; else sites"></div>
   
     <ng-template #sites>
       <div class="floating-table">
         <div class="floating-table-header">
           <div class="floating-row">
-            <div class="column">Facility Name</div>
-            <div class="column">Updated</div>
-            <div class="column">County</div>
-            <div class="column">Notes</div>
+            <div class="column">Site Code</div>
+            <div class="column">Success</div>
+            <div class="column">Failure</div>
+            <div class="column">Latest</div>
           </div>
         </div>
   
         <div class="floating-table-body">
-          <div class="floating-row" *ngFor="let site of (testingSites | async)">
-            <div class="column">{{site.info.locationName}}</div>
-            <div class="column">{{site.info.updated | date : 'medium'}}</div>
-            <div class="column">{{site.location.county}}</div>
-            <div class="column">{{site.info.notes}}</div>
+          <div class="floating-row" *ngFor="let stat of (status | async)">
+            <div class="column">{{stat.siteCode}}</div>
+            <div class="column">{{stat.success}}</div>
+            <div class="column">{{stat.failure}}</div>
+            <div class="column">{{stat.latest | date : 'medium'}}</div>
+            
           </div>
         </div>
       </div>
