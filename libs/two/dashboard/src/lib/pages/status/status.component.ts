@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-// import { StatusService } from '@tamu-gisc/two/data-api';
+import { StatusService, IStatusResponse } from '@tamu-gisc/two/data-access';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'two-status',
@@ -7,12 +8,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./status.component.scss']
 })
 export class StatusComponent implements OnInit {
+  public status: Observable<Array<Partial<IStatusResponse>>>;
 
-  constructor(
-    // private statusService: StatusService 
-  ) { }
+  constructor(private statusService: StatusService) { }
 
-  ngOnInit() {
+  public ngOnInit() {
+    this.status = this.statusService.status();
   }
 
 }

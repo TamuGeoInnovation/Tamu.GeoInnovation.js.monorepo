@@ -3309,6 +3309,28 @@
           }
         }
       }
+    },
+    "two-data-access": {
+      "root": "libs/two/data-access",
+      "sourceRoot": "libs/two/data-access/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/two/data-access/tsconfig.lib.json", "libs/two/data-access/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/two/data-access/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/two/data-access/jest.config.js",
+            "tsConfig": "libs/two/data-access/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
