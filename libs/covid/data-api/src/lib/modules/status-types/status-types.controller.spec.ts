@@ -13,10 +13,7 @@ describe('StatusTypes Controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         StatusTypesService,
-        {
-          provide: getRepositoryToken(StatusType),
-          useClass: Repository
-        }
+        { provide: getRepositoryToken(StatusType), useClass: Repository }
       ],
       controllers: [StatusTypesController]
     }).compile();

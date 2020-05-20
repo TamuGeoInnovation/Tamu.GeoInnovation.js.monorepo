@@ -15,30 +15,11 @@ describe('PhoneNumbers Controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PhoneNumbersService,
-        {
-          provide: getRepositoryToken(FieldCategory),
-          useClass: Repository
-        },
-        PhoneNumbersService,
-        {
-          provide: getRepositoryToken(CategoryValue),
-          useClass: Repository
-        },
-        PhoneNumbersService,
-        {
-          provide: getRepositoryToken(County),
-          useClass: Repository
-        },
-        PhoneNumbersService,
-        {
-          provide: getRepositoryToken(CountyClaim),
-          useClass: Repository
-        },
-        PhoneNumbersService,
-        {
-          provide: getRepositoryToken(CountyClaimInfo),
-          useClass: Repository
-        }
+        { provide: getRepositoryToken(FieldCategory), useClass: Repository },
+        { provide: getRepositoryToken(CategoryValue), useClass: Repository },
+        { provide: getRepositoryToken(County), useClass: Repository },
+        { provide: getRepositoryToken(CountyClaim), useClass: Repository },
+        { provide: getRepositoryToken(CountyClaimInfo), useClass: Repository }
       ],
 
       controllers: [PhoneNumbersController]

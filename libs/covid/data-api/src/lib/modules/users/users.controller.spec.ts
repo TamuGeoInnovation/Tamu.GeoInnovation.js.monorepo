@@ -16,15 +16,8 @@ describe('Users Controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService, 
-        {
-          provide: getRepositoryToken(User),
-          useClass : Repository
-        }, 
-        UsersService, 
-        {
-          provide: getRepositoryToken(TestingSite),
-          useClass : Repository
-        }, 
+        { provide: getRepositoryToken(User), useClass : Repository },  
+        { provide: getRepositoryToken(TestingSite), useClass : Repository }, 
       ],
       controllers: [UsersController],
     }).compile();

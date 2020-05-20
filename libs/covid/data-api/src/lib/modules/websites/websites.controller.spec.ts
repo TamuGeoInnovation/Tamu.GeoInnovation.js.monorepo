@@ -13,26 +13,10 @@ describe('Websites Controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         WebsitesService, 
-        {
-          provide: getRepositoryToken(CategoryValue), 
-          useClass: Repository
-
-        },
-        WebsitesService,
-        {
-          provide: getRepositoryToken(County),
-          useClass: Repository
-        },
-        WebsitesService,
-        {
-          provide: getRepositoryToken(CountyClaim),
-          useClass: Repository
-        },
-        WebsitesService,
-        {
-          provide: getRepositoryToken(CountyClaimInfo),
-          useClass: Repository
-        }
+        { provide: getRepositoryToken(CategoryValue), useClass: Repository },
+        { provide: getRepositoryToken(County), useClass: Repository },
+        { provide: getRepositoryToken(CountyClaim), useClass: Repository },
+        { provide: getRepositoryToken(CountyClaimInfo), useClass: Repository}
       ],
       controllers: [WebsitesController]
     }).compile();

@@ -12,10 +12,7 @@ describe('States Controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         StatesService,
-        {
-          provide: getRepositoryToken(State),
-          useClass: Repository 
-        }
+        { provide: getRepositoryToken(State), useClass: Repository }
       ],
       controllers: [StatesController]
     }).compile();

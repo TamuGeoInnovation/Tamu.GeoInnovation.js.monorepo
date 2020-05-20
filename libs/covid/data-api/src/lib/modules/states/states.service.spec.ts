@@ -9,15 +9,11 @@ describe('StatesService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [StatesService,
-        {
-          provide: getRepositoryToken(State),
-          useClass: Repository
-        }
+      providers: [
+        StatesService,
+        { provide: getRepositoryToken(State), useClass: Repository }
       ]
-    
     }).compile();
-
     service = module.get<StatesService>(StatesService);
   });
 
