@@ -41,11 +41,13 @@ import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { dbConfig } from '../environments/environment';
+import { dbConfig, idpConfig } from '../environments/environment';
 
 @Module({
   imports: [
-    OidcClientModule,
+    OidcClientModule.forRoot({
+      host: idpConfig.OIDC_IDP_ISSUER_URL
+    }),
     TypeOrmModule.forRoot({
       ...dbConfig,
       entities: [
@@ -99,4 +101,3 @@ export class AppModule implements NestModule {
       .forRoutes(OidcClientController);
   }
 }
-
