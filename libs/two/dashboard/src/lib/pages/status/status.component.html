@@ -14,7 +14,7 @@
   
         <div class="floating-table-body">
           <div class="floating-row" *ngFor="let stat of (status | async)">
-            <div class="column">{{stat.siteCode}}</div>
+            <div class="column"><a [routerLink]="['site/', stat.siteCode]" routerLinkActive="router-link-active">{{stat.siteCode}}</a></div>
             <div class="column">{{stat.success}}</div>
             <div class="column">{{stat.failure}}</div>
             <div class="column">{{stat.latest | date : 'medium'}}</div>
