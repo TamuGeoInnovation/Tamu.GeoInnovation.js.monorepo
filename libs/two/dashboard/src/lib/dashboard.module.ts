@@ -20,6 +20,10 @@ const routes: Routes = [
         pathMatch: 'full',
         loadChildren: () => import('./pages/status/status.module').then((m) => m.StatusModule)
       },
+      {
+        path: 'site/:siteCode',
+        loadChildren: () => import('./pages/site/site.module').then((m) => m.SiteModule)
+      }
     ]
   }
 ];
