@@ -277,6 +277,9 @@
     },
     "oidc-angular": {
       "tags": []
+    },
+    "oidc-express": {
+      "tags": []
     }
   }
 }
