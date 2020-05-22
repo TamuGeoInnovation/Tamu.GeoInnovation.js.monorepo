@@ -271,6 +271,12 @@
     },
     "oidc-client-test": {
       "tags": []
+    },
+    "oidc-angular-e2e": {
+      "tags": []
+    },
+    "oidc-angular": {
+      "tags": []
     }
   }
 }
