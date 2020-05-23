@@ -1,6 +1,9 @@
 import { apply, chain, externalSchematic, mergeWith, move, Rule, template, Tree, url } from '@angular-devkit/schematics';
 import { names } from '@nrwl/workspace';
 
+// Debug schematic
+// node --inspect-brk .\node_modules\@nrwl\cli\bin\nx.js workspace-schematic angular-ssr --dry-run
+
 interface UniversalAppSchema {
   name: string;
 }
@@ -20,7 +23,7 @@ export default function(schema: UniversalAppSchema): Rule {
       directory: ''
     }),
     updateServerApp(schema.name),
-    addConcatTarget(`${schema.name}-ssr`)
+    addConcatTarget(`${schema.name}`)
   ]);
 }
 
@@ -42,6 +45,7 @@ function addConcatTarget(name: string): Rule {
         targets: [{ target: `${name}:build` }, { target: `${name}:server` }, { target: `${name}-ssr:serve` }]
       }
     };
+
     const angularJson = JSON.parse(host.read('angular.json').toString());
     angularJson.projects[`${name}-ssr`].architect['serve-all'] = serveAll;
     host.overwrite('angular.json', JSON.stringify(angularJson));
