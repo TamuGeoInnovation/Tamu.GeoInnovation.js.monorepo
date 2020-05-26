@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CountyListComponent } from './county.component';
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { HttpClientModule } from '@angular/common/http';
+
 
 describe('CountyComponent', () => {
   let component: CountyListComponent;
@@ -8,10 +11,19 @@ describe('CountyComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CountyListComponent ]
+      imports: [ EnvironmentModule, HttpClientModule ],
+      declarations: [ CountyListComponent ],
+      providers: [
+        CountyListComponent,
+          {
+            provide: env,
+            useValue: { covid_api_url : 'https://' }
+          }
+      ]
     })
     .compileComponents();
   }));
+
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CountyListComponent);

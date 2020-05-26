@@ -1,14 +1,25 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LockdownListComponent } from './lockdown.component';
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('LockdownListComponent', () => {
   let component: LockdownListComponent;
   let fixture: ComponentFixture<LockdownListComponent>;
 
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LockdownListComponent ]
+      imports: [ EnvironmentModule, HttpClientModule ],
+      declarations: [ LockdownListComponent ],
+      providers: [
+        LockdownListComponent,
+          {
+            provide: env,
+            useValue: { covid_api_url : 'https://' }
+          }
+      ]
     })
     .compileComponents();
   }));

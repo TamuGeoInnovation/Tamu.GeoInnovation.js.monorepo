@@ -2,16 +2,40 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GeoservicesCovidComponent } from './geoservices-covid.component';
 
+import { RouterTestingModule } from '@angular/router/testing';
+import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
+import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
+import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
+import { AppStorage } from '@tamu-gisc/common/ngx/local-store';
+import { StorageServiceModule, LOCAL_STORAGE } from 'angular-webstorage-service';
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+
 describe('GeoservicesCovidComponent', () => {
   let component: GeoservicesCovidComponent;
   let fixture: ComponentFixture<GeoservicesCovidComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GeoservicesCovidComponent ]
+      imports: [  RouterTestingModule, HttpClientTestingModule, EnvironmentModule, 
+                  StorageServiceModule ,  GeoservicesCoreNgxModule, 
+                  UINavigationTriggersModule, UITileNavigationModule ],
+      declarations: [ GeoservicesCovidComponent ],
+      providers: [GeoservicesCovidComponent,           
+        {
+          provide: AppStorage, 
+          useExisting: LOCAL_STORAGE 
+        },
+        {
+          provide: env,
+          useValue: { covid_api_url : 'https://' }
+        }
+      ]
     })
     .compileComponents();
   }));
+
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GeoservicesCovidComponent);
