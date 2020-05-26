@@ -5,65 +5,81 @@ import { names } from '@nrwl/workspace';
 // node --inspect-brk .\node_modules\@nrwl\cli\bin\nx.js workspace-schematic angular-ssr --dry-run
 
 interface UniversalAppSchema {
-  name: string;
+  angularAppName: string;
+  expressAppName: string;
 }
 
 export default function(schema: UniversalAppSchema): Rule {
   return chain([
     externalSchematic('@nrwl/angular', 'application', {
-      name: schema.name
+      name: schema.angularAppName
     }),
     externalSchematic('@schematics/angular', 'universal', {
-      clientProject: schema.name
+      clientProject: schema.angularAppName
     }),
-    updateOutputPath(schema.name),
+    updateOutputPath(schema.angularAppName),
     externalSchematic('@nrwl/node', 'application', {
-      name: `${schema.name}-ssr`,
+      name: `${getExpressAppName(schema)}`,
       framework: 'none',
       directory: ''
     }),
-    updateServerApp(schema.name),
-    addConcatTarget(`${schema.name}`)
+    updateServerApp(schema.angularAppName, getExpressAppName(schema)),
+    addConcatTarget(schema.angularAppName, getExpressAppName(schema))
   ]);
+}
+
+function getExpressAppName(schema: UniversalAppSchema) {
+  return `${schema.expressAppName.length > 0 ? schema.expressAppName : schema.angularAppName + '-ssr'}`;
 }
 
 function updateOutputPath(name: string): Rule {
   return (host: Tree) => {
     const angularJson = JSON.parse(host.read('angular.json').toString());
+
     const serverTargetFixed = angularJson.projects[name].architect.server;
+    const buildTargetFixed = angularJson.projects[name].architect.build;
+
     serverTargetFixed.options.outputPath = `dist/apps/${name}/server`;
+    buildTargetFixed.options.outputPath = `dist/apps/${name}/browser`;
+
     angularJson.projects[name].architect.server = serverTargetFixed;
-    host.overwrite('angular.json', JSON.stringify(angularJson));
+    angularJson.projects[name].architect.build = buildTargetFixed;
+
+    host.overwrite('angular.json', JSON.stringify(angularJson, null, '  '));
   };
 }
 
-function addConcatTarget(name: string): Rule {
+function addConcatTarget(angularName: string, expressName: string): Rule {
   return (host: Tree) => {
     const serveAll = {
       builder: '@angular-devkit/architect:concat',
       options: {
-        targets: [{ target: `${name}:build` }, { target: `${name}:server` }, { target: `${name}-ssr:serve` }]
+        targets: [
+          { target: `${angularName}:build` },
+          { target: `${angularName}:server` },
+          { target: `${expressName}:serve` }
+        ]
       }
     };
 
     const angularJson = JSON.parse(host.read('angular.json').toString());
-    angularJson.projects[`${name}-ssr`].architect['serve-all'] = serveAll;
-    host.overwrite('angular.json', JSON.stringify(angularJson));
+    angularJson.projects[`${expressName}`].architect['serve-all'] = serveAll;
+    host.overwrite('angular.json', JSON.stringify(angularJson, null, '  '));
   };
 }
 
-function updateServerApp(name: string): Rule {
+function updateServerApp(angularName: string, expressName: string): Rule {
   return chain([
     (host: Tree) => {
-      host.delete(`apps/${name}-ssr/src/main.ts`);
+      host.delete(`apps/${expressName}/src/main.ts`);
     },
     mergeWith(
       apply(url('./files'), [
         template({
           tmpl: '',
-          ...names(name)
+          ...names(angularName)
         }),
-        move(`apps/${name}-ssr/src`)
+        move(`apps/${expressName}/src`)
       ])
     )
   ]);
