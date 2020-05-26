@@ -3022,6 +3022,210 @@
           }
         }
       }
+    },
+    "oidc-provider-angular": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/oidc-provider-angular",
+      "sourceRoot": "apps/oidc-provider-angular/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/oidc-provider-angular/browser",
+            "index": "apps/oidc-provider-angular/src/index.html",
+            "main": "apps/oidc-provider-angular/src/main.ts",
+            "polyfills": "apps/oidc-provider-angular/src/polyfills.ts",
+            "tsConfig": "apps/oidc-provider-angular/tsconfig.app.json",
+            "aot": true,
+            "assets": ["apps/oidc-provider-angular/src/favicon.ico", "apps/oidc-provider-angular/src/assets"],
+            "styles": ["apps/oidc-provider-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-provider-angular/src/environments/environment.ts",
+                  "with": "apps/oidc-provider-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "oidc-provider-angular:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "oidc-provider-angular:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "oidc-provider-angular:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/oidc-provider-angular/tsconfig.app.json", "apps/oidc-provider-angular/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/oidc-provider-angular/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/oidc-provider-angular/jest.config.js",
+            "tsConfig": "apps/oidc-provider-angular/tsconfig.spec.json",
+            "setupFile": "apps/oidc-provider-angular/src/test-setup.ts"
+          }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/apps/oidc-provider-angular/server",
+            "main": "apps/oidc-provider-angular/src/main.server.ts",
+            "tsConfig": "apps/oidc-provider-angular/tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-provider-angular/src/environments/environment.ts",
+                  "with": "apps/oidc-provider-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "sourceMap": false,
+              "optimization": true
+            }
+          }
+        }
+      }
+    },
+    "oidc-provider-angular-e2e": {
+      "root": "apps/oidc-provider-angular-e2e",
+      "sourceRoot": "apps/oidc-provider-angular-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/oidc-provider-angular-e2e/cypress.json",
+            "tsConfig": "apps/oidc-provider-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "oidc-provider-angular:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "oidc-provider-angular:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/oidc-provider-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/oidc-provider-angular-e2e/**"]
+          }
+        }
+      }
+    },
+    "oidc-provider-express": {
+      "root": "apps/oidc-provider-express",
+      "sourceRoot": "apps/oidc-provider-express/src",
+      "projectType": "application",
+      "prefix": "oidc-provider-express",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/oidc-provider-express",
+            "main": "apps/oidc-provider-express/src/main.ts",
+            "tsConfig": "apps/oidc-provider-express/tsconfig.app.json",
+            "assets": ["apps/oidc-provider-express/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-provider-express/src/environments/environment.ts",
+                  "with": "apps/oidc-provider-express/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "oidc-provider-express:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/oidc-provider-express/tsconfig.app.json", "apps/oidc-provider-express/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/oidc-provider-express/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/oidc-provider-express/jest.config.js",
+            "tsConfig": "apps/oidc-provider-express/tsconfig.spec.json"
+          }
+        },
+        "serve-all": {
+          "builder": "@angular-devkit/architect:concat",
+          "options": {
+            "targets": [
+              {
+                "target": "oidc-provider-angular:build"
+              },
+              {
+                "target": "oidc-provider-angular:server"
+              },
+              {
+                "target": "oidc-provider-express:serve"
+              }
+            ]
+          }
+        }
+      }
     }
   },
   "cli": {
