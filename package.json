@@ -61,6 +61,7 @@
     "connect-flash": "^0.1.1",
     "connect-sqlite3": "^0.9.11",
     "core-js": "^3.2.1",
+    "date-and-time": "^0.13.1",
     "deepmerge": "^4.2.2",
     "document-register-element": "1.13.1",
     "esri-loader": "^2.10.1",
