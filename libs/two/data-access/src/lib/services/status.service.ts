@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { map, reduce } from 'rxjs/operators';
 import date from 'date-and-time';
 
+import { IChartConfiguration } from '@tamu-gisc/charts';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Injectable({
@@ -33,15 +35,40 @@ export class StatusService {
       siteCode: siteCode,
       dateRange: dateRange
     };
-    return this.http.post<Array<Partial<IStatusResponse>>>(this.resource, dateHistory);
+    return this.http.post<Array<Partial<IStatusResponse>>>(this.resource, dateHistory).pipe(
+      map<IStatusResponse[], IChartConfiguration[]>((value: Partial<IStatusResponse[]>, index: number) => {
+        const configs: IChartConfiguration[] = [];
+        for (let i = 0; i < value.length; i++) {
+          const config: IChartConfiguration = {
+            data: {
+              datasets: [
+                {
+                  data: [Number.parseInt(value[i].success, 10), Number.parseInt(value[i].failure, 10)]
+                }
+              ],
+              labels: ['Successes', 'Failures']
+            },
+            options: {
+              cutoutPercentage: 50,
+              title: {
+                text: value[i].date
+              }
+            }
+          };
+          configs.push(config);
+        }
+        return configs;
+      })
+    );
   }
 }
 
 export interface IStatusResponse {
-  siteCode: string;
-  success: string;
-  failure: string;
-  latest: string;
+  siteCode?: string;
+  success?: string;
+  failure?: string;
+  latest?: string;
+  date?: string;
 }
 
 export interface IDateHistory {

@@ -13,33 +13,14 @@ import { StatusService, IDateHistory } from '@tamu-gisc/two/data-access';
 export class SiteComponent implements OnInit {
   public siteCode: string;
   public chartData: Observable<Array<IChartConfiguration>>;
-  private history = 5;
-  public chartConfiguration: IChartConfiguration = {
-    data: {
-      datasets: [
-        {
-          data: [44, 4]
-        }
-      ],
-      labels: ['Successes', 'Failures']
-    },
-    options: {
-      cutoutPercentage: 50,
-      title: {
-        text: 'May 11, 2020'
-      }
-    }
-  };
+  private history = 2;
 
   constructor(private route: ActivatedRoute, private statusService: StatusService) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       this.siteCode = params.get('siteCode');
     });
-
-    this.statusService.siteHistory(this.siteCode, this.history).subscribe((result) => {
-      console.log(result);
-    })
+    this.chartData = this.statusService.siteHistory(this.siteCode, this.history);
   }
 }
