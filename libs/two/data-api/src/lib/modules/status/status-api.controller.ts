@@ -11,7 +11,7 @@ export class StatusAPIController {
     }   
 
     @Post()
-    public async getSiteHistory(@Param() params, @Body() body) {
+    public async getSiteHistory(@Body() body) {
         return this.statusService.getHistoryForSite(body);
     }
 }

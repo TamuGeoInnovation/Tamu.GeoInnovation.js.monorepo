@@ -22,16 +22,23 @@ export class StatusAPIService {
     const results = [];
     for(let i = 0; i < dateHistory.dateRange.length; i++) {
       const result = await this.getHistoryForSiteSingleDay(dateHistory.siteCode, dateHistory.dateRange[i]);
-      results.push(result);
+      const ret = {
+        ...result[0],
+        date: dateHistory.dateRange[i].lowerDate
+      }
+      results.push(ret);
     }
+    console.log(results);
     return results;
   }
 
   private async getHistoryForSiteSingleDay(siteCode: string, singleDay: IHistoryRange) {
     return new Promise((resolve, reject) => {
-      const statQuery = `SELECT A.siteCode, COUNT(A.siteCode) as success, (SELECT COUNT(siteCode) FROM TWO.Entry_failure WHERE siteCode = A.siteCode AND A.\`Timestamp\` < CAST('${singleDay.upperDate}' AS DATE) AND A.\`Timestamp\` >= CAST('${singleDay.lowerDate}' AS DATE))  as failure FROM TWO.WeatherFlux A WHERE A.\`Timestamp\` < CAST('${singleDay.upperDate}' AS DATE) AND A.\`Timestamp\` >= CAST('${singleDay.lowerDate}' AS DATE) AND A.siteCode LIKE '${siteCode}' GROUP BY A.siteCode`;
+      const statQuery = `SELECT A.siteCode, COUNT(A.siteCode) as success, (SELECT COUNT(siteCode) FROM TWO.Entry_failure WHERE siteCode = A.siteCode AND A.\`Timestamp\` < CAST('${singleDay.upperDate}' AS DATE) AND A.\`Timestamp\` >= CAST('${singleDay.lowerDate}' AS DATE))  as failure FROM TWO.WeatherFlux_Test A WHERE A.\`Timestamp\` < CAST('${singleDay.upperDate}' AS DATE) AND A.\`Timestamp\` >= CAST('${singleDay.lowerDate}' AS DATE) AND A.siteCode LIKE '${siteCode}' GROUP BY A.siteCode`;
       resolve(getConnection().query(statQuery));
     });
   }
+
+  
 
 }
