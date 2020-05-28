@@ -46,7 +46,7 @@ import { dbConfig, idpConfig } from '../environments/environment';
 @Module({
   imports: [
     OidcClientModule.forRoot({
-      host: idpConfig.OIDC_IDP_ISSUER_URL
+      host: idpConfig.issuer_url
     }),
     TypeOrmModule.forRoot({
       ...dbConfig,

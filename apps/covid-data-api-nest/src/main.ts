@@ -50,7 +50,7 @@ async function bootstrap() {
   });
 }
 
-OpenIdClient.build(idpConfig.OIDC_CLIENT_METADATA, idpConfig.OIDC_CLIENT_PARAMS, idpConfig.OIDC_IDP_ISSUER_URL)
+OpenIdClient.build(idpConfig.metadata, idpConfig.parameters, idpConfig.issuer_url)
   .then(() => bootstrap())
   .catch((err) => {
     console.warn(err);
