@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { StatusAPIService } from './status-api.service';
 
 @Controller('status')
@@ -9,4 +9,9 @@ export class StatusAPIController {
     public async getStatus() {
         return this.statusService.getStatus();
     }   
+
+    @Post()
+    public async getSiteHistory(@Param() params, @Body() body) {
+        return this.statusService.getHistoryForSite(body);
+    }
 }

@@ -1,2 +1,7 @@
 <p>{{siteCode}}</p>
-
+<div class="charts">
+    <tamu-gisc-pie-chart [source]="chartConfiguration.data" [options]="chartConfiguration.options" [title]="chartConfiguration.options.title.text"></tamu-gisc-pie-chart>
+</div>
+<!-- <div class="charts" *ngIf="chartData && (chartData | async) !== null && (chartData|async).length > 0">
+    <tamu-gisc-pie-chart [source]="chartConfiguration.data" [options]="chartConfiguration.options" [title]="chartConfiguration.options.title.text"></tamu-gisc-pie-chart>
+</div> -->
