@@ -1,7 +1,17 @@
 @import 'libs/sass/mixins';
 
+h3 {
+  align-self: center;
+}
+
 .charts {
   & > tamu-gisc-pie-chart {
-    margin-bottom: 3rem;
+    max-width: 30rem;
+    margin-bottom: 5rem;
   }
+}
+
+.chartDiv {
+  display: flex;
+  justify-content: space-evenly;
 }
