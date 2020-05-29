@@ -266,9 +266,6 @@
     "maps-mapbox": {
       "tags": []
     },
-    "oidc": {
-      "tags": []
-    },
     "oidc-client-test": {
       "tags": []
     },
@@ -279,6 +276,12 @@
       "tags": []
     },
     "oidc-provider-express": {
+      "tags": []
+    },
+    "oidc-provider": {
+      "tags": []
+    },
+    "oidc-client": {
       "tags": []
     }
   }

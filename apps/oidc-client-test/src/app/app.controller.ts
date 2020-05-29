@@ -1,7 +1,6 @@
 import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 
-import { AuthenticatedGuard } from '@tamu-gisc/oidc';
-import { AppService } from './app.service';
+import { AuthenticatedGuard } from '@tamu-gisc/oidc/client';
 
 @Controller()
 export class AppController {

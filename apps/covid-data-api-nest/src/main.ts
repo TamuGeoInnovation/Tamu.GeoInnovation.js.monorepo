@@ -8,7 +8,7 @@ import passport from 'passport';
 import session from 'express-session';
 const SQLiteStore = require('connect-sqlite3')(session);
 
-import { OpenIdClient } from '@tamu-gisc/oidc';
+import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';

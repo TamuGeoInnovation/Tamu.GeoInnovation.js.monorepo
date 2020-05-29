@@ -4,7 +4,7 @@ import { BaseController } from '../base/base.controller';
 import { TestingSite } from '@tamu-gisc/covid/common/entities';
 import { TestingSitesService } from './testing-sites.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
-import { AdminRoleGuard } from '@tamu-gisc/oidc';
+import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 
 @Controller('sites')
 export class TestingSitesController extends BaseController<TestingSite> {

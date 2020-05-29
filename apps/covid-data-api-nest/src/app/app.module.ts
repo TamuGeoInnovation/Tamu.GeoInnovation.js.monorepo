@@ -36,7 +36,7 @@ import {
   EntityToValue
 } from '@tamu-gisc/covid/common/entities';
 
-import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc';
+import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc/client';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';

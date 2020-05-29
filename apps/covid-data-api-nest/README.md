@@ -30,7 +30,7 @@ To successfully serve and build this application, two configuration files are re
 Requires three exports: `localClientConfig`, `devClientConfig`, `productionClientConfig`. Example of one:
 
 ```js
-import { ClientConfiguration } from '@tamu-gisc/oidc';
+import { ClientConfiguration } from '@tamu-gisc/oidc/client';
 
 export const localClientConfig: ClientConfiguration = {
   issuer_url: '',

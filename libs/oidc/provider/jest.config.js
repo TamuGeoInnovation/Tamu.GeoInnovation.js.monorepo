@@ -1,9 +1,9 @@
 module.exports = {
-  name: 'oidc',
-  preset: '../../jest.config.js',
+  name: 'oidc-provider',
+  preset: '../../../jest.config.js',
   transform: {
     '^.+\\.[tj]sx?$': 'ts-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
-  coverageDirectory: '../../coverage/libs/oidc'
+  coverageDirectory: '../../../coverage/libs/oidc/provider'
 };
