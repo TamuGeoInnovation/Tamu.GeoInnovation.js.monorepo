@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { DatabasesComponent } from './databases.component';
-import { RouterTestingModule } from '@angular/router/testing';
 
 describe('DatabasesComponent', () => {
   let component: DatabasesComponent;
@@ -10,9 +10,8 @@ describe('DatabasesComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ DatabasesComponent ]
-    })
-    .compileComponents();
+      declarations: [DatabasesComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

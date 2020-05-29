@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+
 import { Repository } from 'typeorm';
-import { CategoryValue, CountyClaim, CountyClaimInfo, County } from '@tamu-gisc/covid/common/entities';
+
+import { County, CountyClaim, CategoryValue, CountyClaimInfo } from '@tamu-gisc/covid/common/entities';
 
 import { WebsitesController } from './websites.controller';
 import { WebsitesService } from './websites.service';
@@ -12,11 +14,11 @@ describe('Websites Controller', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        WebsitesService, 
+        WebsitesService,
         { provide: getRepositoryToken(CategoryValue), useClass: Repository },
         { provide: getRepositoryToken(County), useClass: Repository },
         { provide: getRepositoryToken(CountyClaim), useClass: Repository },
-        { provide: getRepositoryToken(CountyClaimInfo), useClass: Repository}
+        { provide: getRepositoryToken(CountyClaimInfo), useClass: Repository }
       ],
       controllers: [WebsitesController]
     }).compile();
@@ -24,8 +26,7 @@ describe('Websites Controller', () => {
     controller = module.get<WebsitesController>(WebsitesController);
   });
 
-  
   it('should be defined', () => {
-    expect(controller).toBeUndefined;
+    expect(controller).toBeDefined;
   });
 });

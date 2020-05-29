@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { RefillComponent } from './refill.component';
-import { RouterTestingModule } from '@angular/router/testing';
 
 describe('RefillComponent', () => {
   let component: RefillComponent;
@@ -10,9 +10,8 @@ describe('RefillComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ RefillComponent ]
-    })
-    .compileComponents();
+      declarations: [RefillComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,9 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { AccountComponent } from './account.component';
 import { RouterTestingModule } from '@angular/router/testing';
 
-
+import { AccountComponent } from './account.component';
 
 describe('AccountComponent', () => {
   let component: AccountComponent;
@@ -12,9 +10,8 @@ describe('AccountComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [ AccountComponent ]
-    })
-    .compileComponents();
+      declarations: [AccountComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -22,7 +19,6 @@ describe('AccountComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
 
   it('should create', () => {
     expect(component).toBeTruthy();

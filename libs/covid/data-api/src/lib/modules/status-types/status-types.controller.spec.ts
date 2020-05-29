@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+
 import { Repository } from 'typeorm';
+
 import { StatusType } from '@tamu-gisc/covid/common/entities';
 
-import {StatusTypesController} from './status-types.controller';
+import { StatusTypesController } from './status-types.controller';
 import { StatusTypesService } from './status-types.service';
 
 describe('StatusTypes Controller', () => {
@@ -11,10 +13,7 @@ describe('StatusTypes Controller', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        StatusTypesService,
-        { provide: getRepositoryToken(StatusType), useClass: Repository }
-      ],
+      providers: [StatusTypesService, { provide: getRepositoryToken(StatusType), useClass: Repository }],
       controllers: [StatusTypesController]
     }).compile();
 

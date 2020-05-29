@@ -1,10 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { SecurityComponent } from './security.component';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('SecurityComponent', () => {
   let component: SecurityComponent;
@@ -15,12 +16,12 @@ describe('SecurityComponent', () => {
       imports: [FormsModule, ReactiveFormsModule, UIFormsModule, EnvironmentModule, HttpClientTestingModule],
       providers: [
         {
-          provide: env, 
-          useValue: { api_url : 'https://' }
-        }],
-      declarations: [ SecurityComponent ]
-    })
-    .compileComponents();
+          provide: env,
+          useValue: { api_url: 'https://' }
+        }
+      ],
+      declarations: [SecurityComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

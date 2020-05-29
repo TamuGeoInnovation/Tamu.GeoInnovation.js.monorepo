@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { EnvironmentService, env } from '@tamu-gisc/common/ngx/environment';
 
 import { AdminCountyClaimsComponent } from './admin-county-claims.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterModule, Routes } from '@angular/router';
-import {  EnvironmentService, env } from '@tamu-gisc/common/ngx/environment';
 
 describe('AdminCountyClaimsComponent', () => {
   let component: AdminCountyClaimsComponent;
@@ -13,15 +13,16 @@ describe('AdminCountyClaimsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule, UIFormsModule, RouterModule, HttpClientTestingModule],
-      declarations: [ AdminCountyClaimsComponent ],
-      providers: [ AdminCountyClaimsComponent,
-        EnvironmentService,        {
+      imports: [ReactiveFormsModule, UIFormsModule, HttpClientTestingModule],
+      declarations: [AdminCountyClaimsComponent],
+      providers: [
+        EnvironmentService,
+        {
           provide: env,
           useValue: { covid_api_url: 'http://' }
-        } ]
-    })
-    .compileComponents();
+        }
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
