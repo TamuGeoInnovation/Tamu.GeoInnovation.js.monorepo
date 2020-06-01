@@ -1,0 +1,84 @@
+@import 'libs/sass/mixins';
+
+.product-tiles {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-around);
+  @include flex-wrap(wrap);
+
+  .product-tiles__tile {
+    display: inherit;
+    @include flex-direction(column);
+    @include align-items(center);
+    width: 37.5%;
+    margin: 3rem 2rem;
+
+    .product-tiles_tile__identity {
+      width: 4.5rem;
+      margin-bottom: 1.25rem;
+    }
+  }
+}
+
+.corona-bg {
+  background-image: url('~/assets/img/graphics/1584464765126-3.jpg');
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+
+#geocoding-graphic {
+  height: 20rem;
+  object-fit: cover;
+}
+
+.hero {
+  padding: 15rem 0;
+}
+
+.data-security-privacy {
+  .bullet {
+    margin-bottom: 0.5rem;
+  }
+
+  .material-icons {
+    color: #57ce5c;
+    font-size: 1.25rem;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+  }
+
+  .fine-print {
+    color: #757575;
+    font-size: 0.75rem;
+    font-style: italic;
+    margin-top: 2rem;
+
+    .small-print {
+      margin: 0.5rem 0;
+    }
+  }
+}
+
+#map-section {
+  #map-section-description,
+  #map-section-map {
+    @include flexbox();
+    @include flex(1);
+    @include flex-shrink(10);
+  }
+
+  #map-section-description {
+    padding: 10rem 0;
+
+    p {
+      max-width: 50%;
+    }
+  }
+
+  #map-section-map {
+  }
+}
