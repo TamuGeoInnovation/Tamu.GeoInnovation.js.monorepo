@@ -1,4 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { UploadFileComponent } from './upload-file.component';
 
@@ -8,9 +15,9 @@ describe('UploadFileComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UploadFileComponent ]
-    })
-    .compileComponents();
+      imports: [UIFormsModule, ReactiveFormsModule, CommonModule, FormsModule, UILayoutModule],
+      declarations: [UploadFileComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

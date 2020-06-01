@@ -10,7 +10,7 @@ describe('UploadComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, FormsModule, ReactiveFormsModule],
+      imports: [RouterTestingModule, ReactiveFormsModule],
       declarations: [UploadComponent]
     }).compileComponents();
   }));

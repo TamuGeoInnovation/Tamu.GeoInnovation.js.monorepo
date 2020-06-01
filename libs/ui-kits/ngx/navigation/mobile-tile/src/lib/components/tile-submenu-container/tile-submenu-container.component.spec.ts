@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { TileSubmenuContainerComponent } from './tile-submenu-container.component';
 
@@ -8,9 +9,9 @@ describe('TileSubmenuContainerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TileSubmenuContainerComponent ]
-    })
-    .compileComponents();
+      imports: [BrowserAnimationsModule],
+      declarations: [TileSubmenuContainerComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
