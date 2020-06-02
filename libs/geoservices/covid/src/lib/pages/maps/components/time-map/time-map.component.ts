@@ -62,7 +62,7 @@ export class TimeMapComponent implements OnInit {
     });
   }
 
-  public reloadData(mortalButtonSelected : boolean) {
+  /*public reloadData(mortalButtonSelected : boolean) {
     //dateToLoad = moment($("#mapdate").val()).format('YYYY-MM-DD').toString();
     //console.log('loading ' + dateToLoad);
     const currentDateSelected = '2020-05-20'
@@ -84,7 +84,7 @@ export class TimeMapComponent implements OnInit {
         alert('something went horribly wrong')
       }
     });
-  }
+  }*/
 
   public drawCasesMap() {
 
