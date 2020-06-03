@@ -25,34 +25,6 @@
   object-fit: cover;
 }
 
-.hero {
-  padding: 15rem 0;
-}
-
-.data-security-privacy {
-  .bullet {
-    margin-bottom: 0.5rem;
-  }
-
-  .material-icons {
-    color: #57ce5c;
-    font-size: 1.25rem;
-    margin-right: 0.5rem;
-    vertical-align: middle;
-  }
-
-  .fine-print {
-    color: #757575;
-    font-size: 0.75rem;
-    font-style: italic;
-    margin-top: 2rem;
-
-    .small-print {
-      margin: 0.5rem 0;
-    }
-  }
-}
-
 #map-section {
   #map-section-description,
   #map-section-map {
@@ -83,3 +55,103 @@
   padding: 1rem;
 }
 
+// toggle button start
+
+/* The switch - the box around the slider */
+.switch {
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+//toggle button end
+
+//legend start
+.legend {
+	background-color: #fff;
+	border-radius: 3px;
+	bottom: 30px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+	font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+	padding: 10px;
+	position: absolute;
+	right: 10px;
+	z-index: 1;
+}
+
+.legend h4 {
+	margin: 0 0 5px;
+}
+
+.legend h3 {
+	margin: 0 0 5px;
+}
+
+.legend div span {
+	border-radius: 50%;
+	display: inline-block;
+	height: 10px;
+	margin-right: 5px;
+	width: 10px;
+	border-style: solid;
+	border-width: thin;
+}
+// legend end

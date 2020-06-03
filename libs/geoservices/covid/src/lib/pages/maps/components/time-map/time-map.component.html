@@ -1,16 +1,32 @@
-
 <section>
-  <div id = "map-section">
-    <tamu-gisc-drawer [width]="'20rem'" [position]="'left'">
+  <div id="map-section">
+    <tamu-gisc-drawer [width]="'25rem'" [position]="'left'">
       <div class="content">
-        Yeah Baby
+        <h3>Map Controls</h3>
+        <label class="switch">
+          <input type="checkbox" id="csToggle" (click)="stateToggle(this)">
+          <span class="slider round"></span>
+        </label>
+        Counties/State
+        <br>
+        <label class="switch">
+          <input type="checkbox" id="mortalToggle" (click)="mortalityToggle(this)">
+          <span class="slider round"></span>
+        </label>
+        Infection Rate/Mortality Rate
       </div>
     </tamu-gisc-drawer>
-    <tamu-gisc-mapbox-map token="pk.eyJ1Ijoid2hhdHppdG9veWEiLCJhIjoiY2poNzI3M2M0MDNnbjMzcWVtYmZnNXExNiJ9.K-nM-JaZnZvAfutkLQitbg" [center]="['-98', '38.88']"></tamu-gisc-mapbox-map>
+    <tamu-gisc-mapbox-map
+      token="pk.eyJ1Ijoid2hhdHppdG9veWEiLCJhIjoiY2poNzI3M2M0MDNnbjMzcWVtYmZnNXExNiJ9.K-nM-JaZnZvAfutkLQitbg"
+      [center]="['-98', '38.88']">
+    </tamu-gisc-mapbox-map>
     <div>
       <h3>
         County Data
       </h3>
+      <p>
+        Hover over a county to get data
+      </p>
     </div>
   </div>
 </section>
