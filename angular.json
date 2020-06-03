@@ -3170,7 +3170,8 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "oidc-provider-express:build"
+            "buildTarget": "oidc-provider-express:build",
+            "port": 7778
           }
         },
         "lint": {
