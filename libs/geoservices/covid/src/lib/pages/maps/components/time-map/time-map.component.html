@@ -21,12 +21,30 @@
       [center]="['-98', '38.88']">
     </tamu-gisc-mapbox-map>
     <div>
-      <h3>
-        County Data
-      </h3>
-      <p>
-        Hover over a county to get data
-      </p>
+      <h3>County Data</h3>
+      <div id= "info-box">
+        <p>Hover over a county</p>
+      </div>
+      <div id="cases-legend" class="legend" style="display: block;">
+        <h3>Infection Rate</h3>
+        <h4>Cases/100,000 People</h4>
+        <div><span style="background-color: #ffffff"></span>0</div>
+        <div><span style="background-color: #fde6e6"></span>1</div>
+        <div><span style="background-color: #fdc4c4"></span>10</div>
+        <div><span style="background-color: #fc8b8b"></span>100</div>
+        <div><span style="background-color: #d18080"></span>500</div>
+        <div><span style="background-color: #ae8080"></span>1000</div>
+      </div>
+      <div id="mortality-legend" class="legend" style="display: none;">
+        <h3>Mortality Rate</h3>
+        <h4>Deaths/100,000 People</h4>
+        <div><span style="background-color: #f2f0f7"></span>0</div>
+        <div><span style="background-color: #dadaeb"></span>1</div>
+        <div><span style="background-color: #bcbddc"></span>10</div>
+        <div><span style="background-color: #9e9ac8"></span>50</div>
+        <div><span style="background-color: #756bb1"></span>75</div>
+        <div><span style="background-color: #54278f"></span>100</div>
+      </div>
     </div>
   </div>
 </section>

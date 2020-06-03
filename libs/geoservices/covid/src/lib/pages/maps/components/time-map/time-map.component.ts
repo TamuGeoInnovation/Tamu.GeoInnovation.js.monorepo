@@ -23,6 +23,11 @@ export class TimeMapComponent implements OnInit {
   private countyData: object;
 
   public ngOnInit() {
+
+    this.mortalButtonToggled = false;
+    this.stateButtonToggle = false;
+    this.reloadData(this.mortalButtonToggled);
+
     this.mapService.loaded.subscribe((map) => {
       const zoomThreshold = 3;
 
@@ -63,21 +68,46 @@ export class TimeMapComponent implements OnInit {
         'covid-state'
       );
 
-      map.addLayer({
-        id: 'statelines',
-        type: 'line',
-        source: 'state-lines',
-        'source-layer': 'state-lines',
-        paint: {
-          'line-color': '#000000',
-          'line-width': 1
-        }
-      }),
-        'state-label';
+      map.addLayer(
+        {
+          id: 'statelines',
+          type: 'line',
+          source: 'state-lines',
+          'source-layer': 'state-lines',
+          paint: {
+            'line-color': '#000000',
+            'line-width': 1
+          }
+        },
+        'state-label'
+      );
+
+      map.on('mousemove', 'covid-county', function (e) {
+        console.log('fdakjfansdjhk')
+        /*map.getCanvas().style.cursor = 'pointer';
+        // Single out the first found feature.
+        const feature = e.features[0];
+        const selectedCounty = this.countyData[this.currentDateSelected].filter(county => county.fips === feature.properties.fips);*/
+
+        const feature = e.features[0];
+        console.log(feature);
+        console.log(this.countyData)
+        const selectedCounty = this.countyData[this.selectedDate].filter(county => county.fips === feature.properties.fips);
+        console.log(selectedCounty);
+    
+        document.getElementById("info-box").innerHTML = (feature.properties.NAME + ' County' + '</br>' +
+          'Population: ' + feature.properties.POPESTIMATE2019 + '</br>' +
+          'Cases: ' + selectedCounty[0]['confirmed'] + '</br>' +
+          'Infection Rate: ' + selectedCounty[0]['infection_rate'].toFixed(2) + '/100,000 People</br>' +
+          'Deaths: ' + selectedCounty[0]['deaths'] + '</br>' +
+          'Mortality Rate: ' + selectedCounty[0]['death_rate'].toFixed(2) + '/100,000 People')
+      });
     });
-    this.mortalButtonToggled = false;
-    this.stateButtonToggle = false;
-    this.reloadData(this.mortalButtonToggled);
+    
+  }
+
+  public updateInfoBox(featureData){
+    
   }
 
   public reloadData(mortalButtonSelected: boolean) {
