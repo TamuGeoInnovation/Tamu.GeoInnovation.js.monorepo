@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { MapsComponent } from './maps.component';
 import { TimeMapComponent } from './components/time-map/time-map.component';
 import { MapsMapboxModule } from '@tamu-gisc/maps/mapbox';
+import { HttpClientModule } from '@angular/common/http';
 
 const routes: Routes = [
   {
@@ -27,7 +28,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [MapsComponent, TimeMapComponent],
   imports: [
-    CommonModule, RouterModule.forChild(routes), MapsMapboxModule
+    CommonModule, RouterModule.forChild(routes), MapsMapboxModule, HttpClientModule
   ]
 })
 export class MapsModule { }
