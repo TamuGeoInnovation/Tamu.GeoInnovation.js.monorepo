@@ -20,16 +20,6 @@
   }
 }
 
-.corona-bg {
-  background-image: url('~/assets/img/graphics/1584464765126-3.jpg');
-  background-size: cover;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  position: absolute;
-}
-
 #geocoding-graphic {
   height: 20rem;
   object-fit: cover;
@@ -82,3 +72,14 @@
   #map-section-map {
   }
 }
+
+#map-section {
+  width: auto;
+  height: 50rem;
+  display: flex;
+}
+
+#map-section h3 {
+  padding: 1rem;
+}
+

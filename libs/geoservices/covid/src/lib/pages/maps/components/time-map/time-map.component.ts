@@ -22,7 +22,7 @@ export class TimeMapComponent implements OnInit {
   public ngOnInit() {
     
     this.mapService.loaded.subscribe((map) => {
-      const zoomThreshold = 4;
+      const zoomThreshold = 3;
 
       map.addSource('county-lines', {
         type: 'vector',

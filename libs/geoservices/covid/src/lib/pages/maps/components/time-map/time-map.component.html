@@ -1,12 +1,16 @@
 
-<section class="flex flex-row justify-center" id="map-section" style="background: #ffffff;">
-    <div class="flex flex-column justify-center align-center" id="map-section-description">
-      <h2>Covid Time Map</h2>
-  
-      <p>To the right is a constantly updating map with all the data</p>
+<section>
+  <div id = "map-section">
+    <tamu-gisc-drawer [width]="'20rem'" [position]="'left'">
+      <div class="content">
+        Yeah Baby
+      </div>
+    </tamu-gisc-drawer>
+    <tamu-gisc-mapbox-map token="pk.eyJ1Ijoid2hhdHppdG9veWEiLCJhIjoiY2poNzI3M2M0MDNnbjMzcWVtYmZnNXExNiJ9.K-nM-JaZnZvAfutkLQitbg" [center]="['-98', '38.88']"></tamu-gisc-mapbox-map>
+    <div>
+      <h3>
+        County Data
+      </h3>
     </div>
-    <div id="map-section-map">
-      <tamu-gisc-mapbox-map token="pk.eyJ1Ijoid2hhdHppdG9veWEiLCJhIjoiY2poNzI3M2M0MDNnbjMzcWVtYmZnNXExNiJ9.K-nM-JaZnZvAfutkLQitbg" [center]="['-98', '38.88']"></tamu-gisc-mapbox-map>
-    </div>
-  </section>
-  
+  </div>
+</section>
