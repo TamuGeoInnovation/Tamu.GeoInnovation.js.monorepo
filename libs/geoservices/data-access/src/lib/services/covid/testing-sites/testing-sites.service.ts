@@ -39,11 +39,17 @@ export class TestingSitesService {
   }
 
   public getTestingSitesAdmin(stateFips?: number | string, countyFips?: number | string, email?: string) {
-    return this.http.post<Array<Partial<FormattedTestingSite>>>(`${this.resource}/admin`, {
-      stateFips,
-      countyFips,
-      email
-    });
+    return this.http.post<Array<Partial<FormattedTestingSite>>>(
+      `${this.resource}/admin`,
+      {
+        stateFips,
+        countyFips,
+        email
+      },
+      {
+        withCredentials: true
+      }
+    );
   }
 }
 

@@ -1,9 +1,10 @@
-import { Controller, Post, Param, Delete, Get, Body } from '@nestjs/common';
+import { Controller, Post, Param, Delete, Get, Body, UseGuards } from '@nestjs/common';
 
 import { Lockdown } from '@tamu-gisc/covid/common/entities';
 
 import { LockdownsService } from './lockdowns.service';
 import { BaseController } from '../base/base.controller';
+import { AdminRoleGuard } from '@tamu-gisc/oidc';
 
 @Controller('lockdowns')
 export class LockdownsController extends BaseController<Lockdown> {
@@ -55,6 +56,7 @@ export class LockdownsController extends BaseController<Lockdown> {
     };
   }
 
+  @UseGuards(AdminRoleGuard)
   @Post('admin')
   public async getLockdownsAdmin(@Body() body) {
     try {

@@ -46,9 +46,14 @@
       </ul>
 
       <ul>
-        <li *ngIf="hasEmail | async">
+        <li *ngIf="hasEmail | async; else showLoginPrompt">
           <a [routerLink]="['/dashboard']">Dashboard</a>
         </li>
+        <ng-template #showLoginPrompt>
+          <li>
+            <a [href]="loginUrl">Login</a>
+          </li>
+        </ng-template>
       </ul>
     </div>
   </nav>

@@ -15,9 +15,9 @@ export class AdminRoleGuard implements CanActivate {
     const isAuthed = request.isAuthenticated();
     let canProceed = false;
     if (isAuthed) {
-      if (request.user.claims) {
-        if (request.user.claims.role) {
-          const level = request.user.claims.role.level;
+      if (request.user) {
+        if (request.user.role) {
+          const level = request.user.role.level_role;
           if (level >= ROLE_LEVELS.ADMIN) {
             canProceed = true;
           }
@@ -43,8 +43,8 @@ export class ManagerRoleGuard implements CanActivate {
     let canProceed = false;
     if (isAuthed) {
       if (request.user.claims) {
-        if (request.user.claims.role) {
-          const level = request.user.claims.role.level;
+        if (request.user.role) {
+          const level = request.user.role.level_role;
           if (level >= ROLE_LEVELS.MANAGER) {
             canProceed = true;
           }
@@ -71,8 +71,8 @@ export class UserRoleGuard implements CanActivate {
     let canProceed = false;
     if (isAuthed) {
       if (request.user.claims) {
-        if (request.user.claims.role) {
-          const level = request.user.claims.role.level;
+        if (request.user.role) {
+          const level = request.user.role.level_role;
           if (level >= ROLE_LEVELS.USER) {
             canProceed = true;
           }

@@ -1,15 +1,15 @@
-import { Controller, Get, Next, Request, Response, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
-import { LoginGuard } from '../guards/login.guard';
+import { Controller, Get, Request, Response, UseGuards } from '@nestjs/common';
+
 import { AdminRoleGuard, ManagerRoleGuard, UserRoleGuard } from '../guards/roles.guard';
+import { LoginGuard } from '../guards/login.guard';
 import { OpenIdClient } from './open-id-client';
 
 @Controller('oidc')
 export class OidcClientController {
-
   @UseGuards(LoginGuard)
   @Get('/login')
   public login(@Response() res) {
-    res.redirect('/home');
+    // No logic here. LoginGuard will callback to /auth/callback
   }
 
   @Get('/logout')
@@ -21,7 +21,9 @@ export class OidcClientController {
   @UseGuards(LoginGuard)
   @Get('/auth/callback')
   public authCallback(@Response() res, @Request() req) {
-    res.redirect('/home');
+    if (req && req.session && req.session.returnUrl) {
+      res.redirect(req.session.returnUrl);
+    }
   }
 
   @UseGuards(AdminRoleGuard)

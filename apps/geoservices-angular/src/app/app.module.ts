@@ -2,13 +2,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import * as WebFont from 'webfontloader';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { AuthGuard, AuthService } from '@tamu-gisc/geoservices/data-access';
+import { AuthGuard, AuthService, AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 
 import { AppComponent } from './app.component';
@@ -79,6 +80,11 @@ export function getHighlightLanguages() {
     {
       provide: env,
       useValue: environment
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
     }
   ],
   bootstrap: [AppComponent]

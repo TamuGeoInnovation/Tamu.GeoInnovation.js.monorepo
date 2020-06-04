@@ -2852,6 +2852,14 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "covid-data-api-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "covid-data-api-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "covid-data-api-nest:build:development"
+            }
           }
         },
         "lint": {
