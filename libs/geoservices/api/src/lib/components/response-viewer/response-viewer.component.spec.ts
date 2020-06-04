@@ -1,28 +1,18 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CommonModule } from '@angular/common';
-
-import { HighlightPlusModule } from 'ngx-highlightjs/plus/';
+import { async, TestBed, inject } from '@angular/core/testing';
 
 import { ResponseViewerComponent } from './response-viewer.component';
+import { HighlightPlusModule } from 'ngx-highlightjs/plus/';
+import { CommonModule } from '@angular/common';
 
 describe('ResponseViewerComponent', () => {
-  let component: ResponseViewerComponent<object, object>;
-  let fixture: ComponentFixture<ResponseViewerComponent<object, object>>;
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HighlightPlusModule, CommonModule],
-      declarations: [ResponseViewerComponent]
+      providers: [ResponseViewerComponent]
     }).compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ResponseViewerComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
+  it('should create', inject([ResponseViewerComponent], (component: ResponseViewerComponent<{}, {}>) => {
     expect(component).toBeTruthy();
-  });
+  }));
 });
