@@ -4,7 +4,6 @@ import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 import { Moment } from 'moment';
 import { forkJoin } from 'rxjs';
 
-
 @Component({
   selector: 'tamu-gisc-time-map',
   templateUrl: './time-map.component.html',
@@ -19,10 +18,9 @@ export class TimeMapComponent implements OnInit {
   private selectedDate: string;
   private stateData: object;
   private countyData: object;
-  private hoveredCounty : object;
 
   public ngOnInit() {
-   const initObject = this;
+    const initObject = this;
 
     this.mortalButtonToggled = false;
     this.stateButtonToggle = false;
@@ -82,44 +80,64 @@ export class TimeMapComponent implements OnInit {
         'state-label'
       );
 
-      map.on('mousemove', 'covid-county', function (e) {
+      map.on('mousemove', 'covid-county', function(e) {
         const feature = e.features[0];
-        this.hoveredCounty = feature
-        const selectedCounty = initObject.countyData[initObject.selectedDate].filter(county => county.fips === feature.properties.fips);
+        const selectedCounty = initObject.countyData[initObject.selectedDate].filter(
+          (county) => county.fips === feature.properties.fips
+        );
 
-        document.getElementById("info-box").innerHTML = (feature.properties.NAME + ' County' + '</br>' +
-          'Population: ' + feature.properties.POPESTIMATE2019 + '</br>' +
-          'Cases: ' + selectedCounty[0]['confirmed'] + '</br>' +
-          'Infection Rate: ' + selectedCounty[0]['infection_rate'].toFixed(2) + '/100,000 People</br>' +
-          'Deaths: ' + selectedCounty[0]['deaths'] + '</br>' +
-          'Mortality Rate: ' + selectedCounty[0]['death_rate'].toFixed(2) + '/100,000 People');
+        document.getElementById('info-box').innerHTML =
+          feature.properties.NAME +
+          ' County' +
+          '</br>' +
+          'Population: ' +
+          feature.properties.POPESTIMATE2019 +
+          '</br>' +
+          'Cases: ' +
+          selectedCounty[0]['confirmed'] +
+          '</br>' +
+          'Infection Rate: ' +
+          selectedCounty[0]['infection_rate'].toFixed(2) +
+          '/100,000 People</br>' +
+          'Deaths: ' +
+          selectedCounty[0]['deaths'] +
+          '</br>' +
+          'Mortality Rate: ' +
+          selectedCounty[0]['death_rate'].toFixed(2) +
+          '/100,000 People';
       });
 
-      map.on('mousemove', 'covid-state', function (e) {
+      map.on('mousemove', 'covid-state', function(e) {
         const feature = e.features[0];
-        this.hoveredCounty = feature
-        const selectedState = initObject.stateData[initObject.selectedDate].filter(state => state.STATE === feature.properties.STATE);
+        const selectedState = initObject.stateData[initObject.selectedDate].filter(
+          (state) => state.STATE === feature.properties.STATE
+        );
 
-        document.getElementById("info-box").innerHTML = (feature.properties.NAME + '</br>' +
-          'Population: ' + feature.properties.POPESTIMATE2019 + '</br>' +
-          'Cases: ' + selectedState[0]['confirmed'] + '</br>' +
-          'Infection Rate: ' + selectedState[0]['infection_rate'].toFixed(2) + '/100,000 People</br>' +
-          'Deaths: ' + selectedState[0]['deaths'] + '</br>' +
-          'Mortality Rate: ' + selectedState[0]['death_rate'].toFixed(2) + '/100,000 People');
+        document.getElementById('info-box').innerHTML =
+          feature.properties.NAME +
+          '</br>' +
+          'Population: ' +
+          feature.properties.POPESTIMATE2019 +
+          '</br>' +
+          'Cases: ' +
+          selectedState[0]['confirmed'] +
+          '</br>' +
+          'Infection Rate: ' +
+          selectedState[0]['infection_rate'].toFixed(2) +
+          '/100,000 People</br>' +
+          'Deaths: ' +
+          selectedState[0]['deaths'] +
+          '</br>' +
+          'Mortality Rate: ' +
+          selectedState[0]['death_rate'].toFixed(2) +
+          '/100,000 People';
       });
 
-      map.on('mouseleave', 'covid-county', function () {
+      map.on('mouseleave', 'covid-county', function() {
         map.getCanvas().style.cursor = '';
-        document.getElementById("info-box").innerHTML = "Hover over the map to see info"
+        document.getElementById('info-box').innerHTML = 'Hover over the map to see info';
       });
-
     });
-    
-  }
-
-  public updateInfoBox(featureData){
-
-
   }
 
   public reloadData(mortalButtonSelected: boolean) {
@@ -252,8 +270,17 @@ export class TimeMapComponent implements OnInit {
 
   public mortalityToggle(toggleButton) {
     this.mortalButtonToggled = !this.mortalButtonToggled;
-    //const casesLegend = 
     this.mortalButtonToggled ? this.drawDeathMap() : this.drawCasesMap();
+    if(this.mortalButtonToggled){
+      this.drawDeathMap()
+      document.getElementById('cases-legend').style.display = 'none';
+			document.getElementById('mortality-legend').style.display = 'block';
+    }
+    else{
+      this.drawCasesMap();
+      document.getElementById('cases-legend').style.display = 'block';
+			document.getElementById('mortality-legend').style.display = 'none';
+    }
   }
 
   public switchLayers() {
