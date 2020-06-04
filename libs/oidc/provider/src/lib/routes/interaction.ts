@@ -63,7 +63,7 @@ export const interaction_routes = (app: express.Application, provider: Provider)
           error: true,
           type: "SOMETHING; THIS ISN'T USED ANYMORE",
           message: 'Invalid user login or password',
-          title: 'Sign-in',
+          title: 'Geoservices Login',
           params: querystring.stringify(details.params, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
           }),
@@ -290,7 +290,7 @@ export const interaction_routes = (app: express.Application, provider: Provider)
     };
     const key: Secret = {
       key: 'k',
-      passphrase: ''
+      passphrase: 'paincakes'
     };
     const logoutJWS = sign(logoutTokenDecrypted, key, {
       algorithm: 'RSA256'

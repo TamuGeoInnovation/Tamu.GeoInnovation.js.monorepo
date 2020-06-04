@@ -177,7 +177,9 @@ export class IdpServer {
     this.app.set('views', dir);
     this.app.set('view engine', 'ejs');
     this.app.set('x-powered-by', false);
-    this.app.use(express.static(path.join(dir, 'scripts')));
+    this.app.use(express.static(path.join(__dirname, 'assets/styles')));
+    this.app.use(express.static(path.join(__dirname, 'assets/scripts')));
+    this.app.use(express.static(path.join(__dirname, 'assets/images')));
     this.app.use(json());
     this.app.use(urlencoded({ extended: true }));
     this.app.use(cookieParser());
