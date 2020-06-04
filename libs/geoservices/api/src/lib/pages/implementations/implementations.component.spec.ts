@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { HighlightPlusModule } from 'ngx-highlightjs/plus/';
+
 import { ImplementationsComponent } from './implementations.component';
 
 describe('ImplementationsComponent', () => {
@@ -8,9 +10,9 @@ describe('ImplementationsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ImplementationsComponent ]
-    })
-    .compileComponents();
+      imports: [HighlightPlusModule],
+      declarations: [ImplementationsComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

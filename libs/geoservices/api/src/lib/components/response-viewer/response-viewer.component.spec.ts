@@ -1,16 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CommonModule } from '@angular/common';
+
+import { HighlightPlusModule } from 'ngx-highlightjs/plus/';
 
 import { ResponseViewerComponent } from './response-viewer.component';
 
 describe('ResponseViewerComponent', () => {
-  let component: ResponseViewerComponent;
-  let fixture: ComponentFixture<ResponseViewerComponent>;
+  let component: ResponseViewerComponent<object, object>;
+  let fixture: ComponentFixture<ResponseViewerComponent<object, object>>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResponseViewerComponent ]
-    })
-    .compileComponents();
+      imports: [HighlightPlusModule, CommonModule],
+      declarations: [ResponseViewerComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

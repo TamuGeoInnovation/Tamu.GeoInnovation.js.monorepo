@@ -27,14 +27,14 @@ describe('ProfileComponent', () => {
       ],
       declarations: [ProfileComponent],
       providers: [
-        {
-          provide: AppStorage,
-          useExisting: LOCAL_STORAGE
-        },
         EnvironmentService,
         {
           provide: env,
           useValue: { covid_api_url: 'http://' }
+        },
+        {
+          provide: AppStorage,
+          useExisting: LOCAL_STORAGE
         }
       ]
     }).compileComponents();
@@ -43,7 +43,6 @@ describe('ProfileComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ProfileComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

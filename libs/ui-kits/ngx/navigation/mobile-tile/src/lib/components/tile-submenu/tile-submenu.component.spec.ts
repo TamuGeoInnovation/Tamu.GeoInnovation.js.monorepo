@@ -8,9 +8,8 @@ describe('TileSubmenuComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TileSubmenuComponent ]
-    })
-    .compileComponents();
+      declarations: [TileSubmenuComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
