@@ -2,7 +2,7 @@ import { Directive, AfterViewInit, ElementRef, AfterViewChecked, OnDestroy, Inpu
 
 import { DragService, UIDragState } from '../../services/drag/drag.service';
 
-import * as interact from 'interactjs';
+import interact from 'interactjs';
 
 @Directive({
   // tslint:disable-next-line:directive-selector
@@ -27,7 +27,7 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
   /**
    * Draggable event reference. Needs to be stored in variable in order to destroy event handlers on component destroy.
    */
-  private draggable: FixedInteractable;
+  private draggable;
 
   private lastContentHeight: number;
 
@@ -42,11 +42,11 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
       );
     }
 
-    this.draggable = <FixedInteractable>interact('.draggable').draggable({
-      inertia: true,
-      restrict: {
-        restriction: 'self'
-      }
+    this.draggable = interact('.draggable').draggable({
+      inertia: true
+      // restrict: {
+      //   restriction: 'self'
+      // }
     });
 
     this.draggable.on('dragmove', (event) => this._dragMoveListener(event));
@@ -190,7 +190,7 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
 }
 
 // As far as I can tell, in the version of interactjs we're using the TypeScript bindings are wrong
-interface FixedInteractable extends interact.Interactable {
-  getRect(): interact.Rect & interact.Rect2;
-  unset(): FixedInteractable;
-}
+// interface FixedInteractable extends interact {
+//   getRect(): interact.Rect & interact.Rect2;
+//   unset(): FixedInteractable;
+// }
