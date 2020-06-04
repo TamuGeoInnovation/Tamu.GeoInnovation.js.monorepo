@@ -20,7 +20,7 @@ export class MapComponent implements OnInit {
         baseLayers: [
           {
             type: 'TileLayer',
-            url: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/BaseMap_20190813/MapServer',
+            url: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer',
             spatialReference: {
               wkid: 102100
             },

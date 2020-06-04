@@ -116,7 +116,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
 
             this.model = new SketchViewModel({ view: mapInstance.view, layer, updateOnGraphicClick: !this.updateTools });
 
-            this.model.on('create', (event) => {
+            this.model.on('create', (event: any) => {
               if (event.state === 'complete') {
                 this.emitDrawn(event.target.layer.graphics);
               }
@@ -127,7 +127,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
             // - Shape update complete
             // - Shape move stop
             // - Shape reshape stop
-            this.model.on('update', (event) => {
+            this.model.on('update', (event: any) => {
               if (
                 event.state === 'complete' ||
                 (event.toolEventInfo && event.toolEventInfo.type === 'move-stop') ||
@@ -137,7 +137,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
               }
             });
 
-            this.model.on('delete', (event) => {
+            this.model.on('delete', (event: any) => {
               this.emitDrawn(event.target.layer.graphics);
             });
 
