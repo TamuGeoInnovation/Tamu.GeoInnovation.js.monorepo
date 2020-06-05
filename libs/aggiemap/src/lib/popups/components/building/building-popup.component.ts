@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Angulartics2 } from 'angulartics2';
@@ -14,7 +14,9 @@ import { GeneralDirectionsPopupComponent } from '../base/base.popup.component';
   templateUrl: './building-popup.component.html',
   styleUrls: ['../base/base.popup.component.scss']
 })
-export class BuildingPopupComponent extends GeneralDirectionsPopupComponent {
+export class BuildingPopupComponent extends GeneralDirectionsPopupComponent implements OnInit {
+  public proctorURL: string;
+
   constructor(
     private rtr: Router,
     private rt: ActivatedRoute,
@@ -23,6 +25,14 @@ export class BuildingPopupComponent extends GeneralDirectionsPopupComponent {
     private ms: EsriMapService
   ) {
     super(rtr, rt, ps, anl, ms);
+  }
+
+  public ngOnInit() {
+    super.ngOnInit();
+
+    const buildingNumber = this.data.attributes.Number.split('.')[0];
+
+    this.proctorURL = `https://proctorlist.tamu.edu/MainProctorBuildings/Details/${buildingNumber}?utm_source=aggiemap`;
   }
 
   public startDirections() {

@@ -16,7 +16,7 @@
   </div>
 
   <!-- Building proctors link -->
-  <a href="https://proctorlist.tamu.edu/MainProctorBuildings/Details/{{ data.attributes.Number.split('.')[0] }}?utm_source=aggiemap" class="no-decor" target="_blank" tabindex="0" role="button" [attr.building]="data.attributes.Number" (click)="buildingProctorClick()">
+  <a [href]="proctorURL" class="no-decor" target="_blank" tabindex="0" role="button" [attr.building]="data.attributes.Number" (click)="buildingProctorClick()">
     <div id="building-proctors" class="button secondary" [attr.building]="data.attributes.Number">
       Building Proctors
     </div>
