@@ -75,6 +75,7 @@
     "snarkdown": "^1.2.2",
     "tslib": "^1.9.0",
     "typeorm": "^0.2.20",
+    "uuid": "^8.1.0",
     "webfontloader": "^1.6.28",
     "zone.js": "^0.9.1"
   },

@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 import { Observable } from 'rxjs';
 
-import * as guid from 'uuid/v4';
+import { v4 as guid } from 'uuid';
 
 @Component({
   selector: 'tamu-gisc-copy-field',

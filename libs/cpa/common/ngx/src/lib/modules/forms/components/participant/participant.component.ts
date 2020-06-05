@@ -16,7 +16,7 @@ import {
   skip
 } from 'rxjs/operators';
 
-import * as uuid from 'uuid/v4';
+import { v4 as guid } from 'uuid';
 
 import {
   IWorkshopRequestPayload,
@@ -402,11 +402,11 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     });
   }
 
-  private initializeParticipant(guid?: string) {
+  private initializeParticipant(id?: string) {
     if (guid) {
       this.participantGuid = guid;
     } else {
-      this.participantGuid = uuid();
+      this.participantGuid = guid();
     }
   }
 
