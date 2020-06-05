@@ -6,7 +6,7 @@ import { debounceTime, distinctUntilChanged, switchMap, filter } from 'rxjs/oper
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 
-import * as guid from 'uuid/v4';
+import { v4 as guid } from 'uuid';
 
 @Component({
   selector: 'tamu-gisc-layer-configuration',

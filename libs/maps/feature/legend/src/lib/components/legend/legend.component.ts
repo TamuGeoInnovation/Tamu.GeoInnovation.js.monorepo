@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
-import * as guid from 'uuid/v4';
+import { v4 as guid } from 'uuid';
 
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
