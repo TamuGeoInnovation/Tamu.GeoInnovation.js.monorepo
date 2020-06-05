@@ -7,6 +7,8 @@ import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/sear
 
 import { Connections, Definitions as d } from './definitions';
 
+import esri = __esri;
+
 export * from './definitions';
 
 /*
@@ -22,7 +24,7 @@ const commonLayerProps = {
   outFields: ['*'],
   minScale: 100000,
   maxScale: 0,
-  elevationInfo: { mode: 'relative-to-ground', offset: 1 },
+  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerElevationInfo,
   popupEnabled: false
 };
 

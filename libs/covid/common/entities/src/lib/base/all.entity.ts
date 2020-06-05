@@ -16,7 +16,7 @@ import {
   JoinTable
 } from 'typeorm';
 
-import * as guid from 'uuid/v4';
+import { v4 as guid } from 'uuid';
 
 @Entity()
 export class TimeStampEntity extends BaseEntity {

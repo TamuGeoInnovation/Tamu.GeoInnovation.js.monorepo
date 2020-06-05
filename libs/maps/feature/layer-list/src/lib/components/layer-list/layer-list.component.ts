@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil, shareReplay } from 'rxjs/operators';
 
 // import { Angulartics2 } from 'angulartics2';
-import * as guid from 'uuid/v4';
+import { v4 as guid } from 'uuid';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapService } from '@tamu-gisc/maps/esri';

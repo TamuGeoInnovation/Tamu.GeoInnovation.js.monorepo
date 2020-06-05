@@ -315,7 +315,7 @@ export class TripPoint {
    * Generates esri graphic properties utilizing the trip point normalized attributes and origin geometry.
    */
   public toEsriGraphic(): esri.Graphic {
-    const attributes = { ...this.attributes };
+    const attributes = this.attributes ? { ...this.attributes } : { ...this.originAttributes };
     const geometry: Partial<esri.Geometry> = { ...this.originGeometry.raw };
 
     ((geometry as unknown) as { type: string }).type = getGeometryType(geometry);

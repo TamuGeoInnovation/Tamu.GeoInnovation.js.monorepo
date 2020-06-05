@@ -78,12 +78,9 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    this.responsiveService
-      .getStatus()
-      .pipe(takeUntil(this._destroy$))
-      .subscribe((value) => {
-        this.isMobile = value;
-      });
+    this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
+      this.isMobile = value;
+    });
 
     // Set loader phrases and display a random one.
     const phrases = [

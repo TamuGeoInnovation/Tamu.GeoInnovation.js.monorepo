@@ -14,16 +14,17 @@ import { Connections, Definitions as d } from './definitions';
 
 import { Popups } from '@tamu-gisc/aggiemap';
 
+import esri = __esri;
+
 export * from './definitions';
 export * from './notification-events';
 export * from './polygons';
-
 
 const commonLayerProps = {
   outFields: ['*'],
   minScale: 100000,
   maxScale: 0,
-  elevationInfo: { mode: 'relative-to-ground', offset: 1 },
+  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerElevationInfo,
   popupEnabled: false
 };
 
