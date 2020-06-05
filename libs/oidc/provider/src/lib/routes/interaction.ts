@@ -2,7 +2,7 @@ import express, { NextFunction, Response, Request, urlencoded } from 'express';
 import Provider from 'oidc-provider';
 import request from 'request';
 import cors from 'cors';
-import uuidv4 from 'uuid/v4';
+import { v4 as guid } from 'uuid';
 import { authenticator } from 'otplib';
 import nodemailer from 'nodemailer';
 import { sign, decode, Secret } from 'jsonwebtoken';

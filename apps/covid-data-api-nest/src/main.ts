@@ -25,7 +25,12 @@ async function bootstrap() {
 
   app.enableCors({
     credentials: true,
-    origin: ['http://localhost:4200', 'https://idp-dev.geoservices.tamu.edu']
+    origin: [
+      'http://localhost:4200',
+      'https://idp-dev.geoservices.tamu.edu',
+      'https://covid-dev.geoservices.tamu.edu',
+      'https://covid.geoservices.tamu.edu'
+    ]
   });
 
   const globalPrefix = environment.globalPrefix;

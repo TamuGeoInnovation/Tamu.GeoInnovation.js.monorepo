@@ -1,4 +1,4 @@
-import * as uuid from 'uuid/v4';
+import { v4 as guid } from 'uuid';
 
 import { DbManager } from '../sequelize/DbManager';
 import { AccountManager } from '../sequelize/account_manager';
@@ -8,7 +8,7 @@ const logins = new Map();
 
 export class OIDCAccount {
   constructor(id?: string) {
-    this.accountId = id || uuid();
+    this.accountId = id || guid();
     store.set(this.accountId, this);
   }
   private accountId: string;
