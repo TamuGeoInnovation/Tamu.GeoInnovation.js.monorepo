@@ -1,8 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
+
 import { Moment } from 'moment';
-import { forkJoin } from 'rxjs';
+import { forkJoin, BehaviorSubject } from 'rxjs';
+import { take } from 'rxjs/operators';
+
+import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
+import { View } from 'typeorm/schema-builder/view/View';
+
+interface IInfoBox {
+  name: string;
+  pop: number;
+  cases: number;
+  deaths: number;
+  infectionRate: number;
+  deathRate: number;
+}
 
 @Component({
   selector: 'tamu-gisc-time-map',
@@ -13,17 +26,17 @@ export class TimeMapComponent implements OnInit {
   constructor(private mapService: MapboxMapService, private http: HttpClient) {}
 
   private maxDate: string;
-  private mortalButtonToggled: boolean;
-  private stateButtonToggle: boolean;
   private selectedDate: string;
-  private stateData: object;
-  private countyData: object;
+  private stateData;
+  private countyData;
+
+  @ViewChild('infobox', { static: false }) public infobox: ElementRef;
+
+  public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
+  public mortalButtonToggled = false;
+  public stateButtonToggle = false;
 
   public ngOnInit() {
-    const initObject = this;
-
-    this.mortalButtonToggled = false;
-    this.stateButtonToggle = false;
     this.reloadData(this.mortalButtonToggled);
 
     this.mapService.loaded.subscribe((map) => {
@@ -80,71 +93,40 @@ export class TimeMapComponent implements OnInit {
         'state-label'
       );
 
-      map.on('mousemove', 'covid-county', function(e) {
+      map.on('mousemove', 'covid-county', (e) => {
         const feature = e.features[0];
-        const selectedCounty = initObject.countyData[initObject.selectedDate].filter(
+        const selectedCounty = this.countyData[this.selectedDate].filter(
           (county) => county.fips === feature.properties.fips
         );
 
-        document.getElementById('info-box').innerHTML =
-          feature.properties.NAME +
-          ' County' +
-          '</br>' +
-          'Population: ' +
-          feature.properties.POPESTIMATE2019 +
-          '</br>' +
-          'Cases: ' +
-          selectedCounty[0]['confirmed'] +
-          '</br>' +
-          'Infection Rate: ' +
-          selectedCounty[0]['infection_rate'].toFixed(2) +
-          '/100,000 People</br>' +
-          'Deaths: ' +
-          selectedCounty[0]['deaths'] +
-          '</br>' +
-          'Mortality Rate: ' +
-          selectedCounty[0]['death_rate'].toFixed(2) +
-          '/100,000 People';
+        this.infoBoxModel.next({
+          name: feature.properties.NAME,
+          pop: feature.properties.POPESTIMATE2019,
+          cases: selectedCounty[0]['confirmed'],
+          infectionRate: selectedCounty[0]['infection_rate'],
+          deaths: selectedCounty[0]['deaths'],
+          deathRate: selectedCounty[0]['death_rate']
+        });
       });
 
-      map.on('mousemove', 'covid-state', function(e) {
+      map.on('mousemove', 'covid-state', (e) => {
         const feature = e.features[0];
-        const selectedState = initObject.stateData[initObject.selectedDate].filter(
-          (state) => state.STATE === feature.properties.STATE
-        );
+        const selectedState = this.stateData[this.selectedDate].filter((state) => state.STATE === feature.properties.STATE);
 
-        document.getElementById('info-box').innerHTML =
-          feature.properties.NAME +
-          '</br>' +
-          'Population: ' +
-          feature.properties.POPESTIMATE2019 +
-          '</br>' +
-          'Cases: ' +
-          selectedState[0]['confirmed'] +
-          '</br>' +
-          'Infection Rate: ' +
-          selectedState[0]['infection_rate'].toFixed(2) +
-          '/100,000 People</br>' +
-          'Deaths: ' +
-          selectedState[0]['deaths'] +
-          '</br>' +
-          'Mortality Rate: ' +
-          selectedState[0]['death_rate'].toFixed(2) +
-          '/100,000 People';
-      });
-
-      map.on('mouseleave', 'covid-county', function() {
-        map.getCanvas().style.cursor = '';
-        document.getElementById('info-box').innerHTML = 'Hover over the map to see info';
+        this.infoBoxModel.next({
+          name: feature.properties.NAME,
+          pop: feature.properties.POPESTIMATE2019,
+          cases: selectedState[0]['confirmed'],
+          infectionRate: selectedState[0]['infection_rate'],
+          deaths: selectedState[0]['deaths'],
+          deathRate: selectedState[0]['death_rate']
+        });
       });
     });
   }
 
   public reloadData(mortalButtonSelected: boolean) {
-    //dateToLoad = moment($("#mapdate").val()).format('YYYY-MM-DD').toString();
-    //console.log('loading ' + dateToLoad);
-    console.log('reloadData called');
-    const currentDateSelected = '2020-05-29';
+    const currentDateSelected = '2020-06-06';
     console.log(currentDateSelected);
     const stateURL =
       'https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/states/' +
@@ -156,7 +138,7 @@ export class TimeMapComponent implements OnInit {
       '.json';
 
     const requests = forkJoin([this.http.get(stateURL), this.http.get(countyURL)]);
-    requests.subscribe(([sData, cData]) => {
+    requests.pipe(take(1)).subscribe(([sData, cData]) => {
       this.stateData = sData;
       this.countyData = cData;
       this.selectedDate = currentDateSelected;
@@ -205,18 +187,13 @@ export class TimeMapComponent implements OnInit {
     stateExpression.push('rgba(255,255,255,1)');
     countyExpression.push('rgba(255,255,255,1)');
 
-    this.mapService.loaded.subscribe((map) => {
+    this.mapService.loaded.pipe(take(1)).subscribe((map) => {
       map.setPaintProperty('covid-state', 'fill-color', stateExpression);
       map.setPaintProperty('covid-county', 'fill-color', countyExpression);
     });
-
-    //this.mapService.map.setPaintProperty('covid-state', 'fill-color', stateExpression);
-    //this.mapService.map.setPaintProperty('covid-county', 'fill-color', countyExpression);
   }
 
   public drawDeathMap() {
-    console.log('death');
-
     const stateExpression = ['match', ['get', 'STATE']];
     const countyExpression = ['match', ['get', 'fips']];
 
@@ -224,16 +201,16 @@ export class TimeMapComponent implements OnInit {
       const number = row['death_rate'];
       const color =
         number > 100
-          ? '#54278f'
+          ? '#54278F'
           : number > 75
-          ? '#756bb1'
+          ? '#756BB1'
           : number > 50
-          ? '#9e9ac8'
+          ? '#9E9AC8'
           : number > 10
-          ? '#bcbddc'
+          ? '#BCBDDC'
           : number > 1
-          ? '#dadaeb'
-          : '#f2f0f7';
+          ? '#DADAEB'
+          : '#F2F0F7';
       stateExpression.push(row['STATE'], color);
     });
 
@@ -241,53 +218,41 @@ export class TimeMapComponent implements OnInit {
       const number = row['death_rate'];
       const color =
         number > 100
-          ? '#54278f'
+          ? '#54278F'
           : number > 75
-          ? '#756bb1'
+          ? '#756BB1'
           : number > 50
-          ? '#9e9ac8'
+          ? '#9E9AC8'
           : number > 10
-          ? '#bcbddc'
+          ? '#BCBDDC'
           : number > 1
-          ? '#dadaeb'
-          : '#f2f0f7';
+          ? '#DADAEB'
+          : '#F2F0F7';
       countyExpression.push(row['fips'], color);
     });
 
     stateExpression.push('rgba(255,255,255,1)');
     countyExpression.push('rgba(255,255,255,1)');
 
-    this.mapService.loaded.subscribe((map) => {
+    this.mapService.loaded.pipe(take(1)).subscribe((map) => {
       map.setPaintProperty('covid-state', 'fill-color', stateExpression);
       map.setPaintProperty('covid-county', 'fill-color', countyExpression);
     });
   }
 
-  public stateToggle(toggleButton) {
+  public stateToggle() {
     this.stateButtonToggle = !this.stateButtonToggle;
     this.switchLayers();
   }
 
-  public mortalityToggle(toggleButton) {
+  public mortalityToggle() {
     this.mortalButtonToggled = !this.mortalButtonToggled;
     this.mortalButtonToggled ? this.drawDeathMap() : this.drawCasesMap();
-    if(this.mortalButtonToggled){
-      this.drawDeathMap()
-      document.getElementById('cases-legend').style.display = 'none';
-			document.getElementById('mortality-legend').style.display = 'block';
-    }
-    else{
-      this.drawCasesMap();
-      document.getElementById('cases-legend').style.display = 'block';
-			document.getElementById('mortality-legend').style.display = 'none';
-    }
   }
 
   public switchLayers() {
-    this.mapService.loaded.subscribe((map) => {
-      this.stateButtonToggle
-        ? map.setLayoutProperty('covid-state', 'visibility', 'visible')
-        : map.setLayoutProperty('covid-state', 'visibility', 'none');
-    });
+    this.stateButtonToggle
+      ? this.mapService.map.setLayoutProperty('covid-state', 'visibility', 'visible')
+      : this.mapService.map.setLayoutProperty('covid-state', 'visibility', 'none');
   }
 }

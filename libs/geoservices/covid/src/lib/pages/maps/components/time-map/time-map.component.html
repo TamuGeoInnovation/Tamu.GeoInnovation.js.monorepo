@@ -1,50 +1,48 @@
-<section>
-  <div id="map-section">
-    <tamu-gisc-drawer [width]="'25rem'" [position]="'left'">
-      <div class="content">
-        <h3>Map Controls</h3>
-        <label class="switch">
-          <input type="checkbox" id="csToggle" (click)="stateToggle(this)">
-          <span class="slider round"></span>
-        </label>
-        Counties/State
-        <br>
-        <label class="switch">
-          <input type="checkbox" id="mortalToggle" (click)="mortalityToggle(this)">
-          <span class="slider round"></span>
-        </label>
-        Infection Rate/Mortality Rate
-      </div>
-    </tamu-gisc-drawer>
-    <tamu-gisc-mapbox-map
-      token="pk.eyJ1Ijoid2hhdHppdG9veWEiLCJhIjoiY2poNzI3M2M0MDNnbjMzcWVtYmZnNXExNiJ9.K-nM-JaZnZvAfutkLQitbg"
-      [center]="['-98', '38.88']">
-    </tamu-gisc-mapbox-map>
-    <div class = 'right-sidebar'>
-      <h3>COVID-19 Data</h3>
-      <div id= "info-box">
-        <p>Hover over the map to see info</p>
-      </div>
-      <div id="cases-legend" class="legend" style="display: block;">
-        <h3>Infection Rate</h3>
-        <h4>Cases/100,000 People</h4>
-        <div><span style="background-color: #ffffff"></span>0</div>
-        <div><span style="background-color: #fde6e6"></span>1</div>
-        <div><span style="background-color: #fdc4c4"></span>10</div>
-        <div><span style="background-color: #fc8b8b"></span>100</div>
-        <div><span style="background-color: #d18080"></span>500</div>
-        <div><span style="background-color: #ae8080"></span>1000</div>
-      </div>
-      <div id="mortality-legend" class="legend" style="display: none;">
-        <h3>Mortality Rate</h3>
-        <h4>Deaths/100,000 People</h4>
-        <div><span style="background-color: #f2f0f7"></span>0</div>
-        <div><span style="background-color: #dadaeb"></span>1</div>
-        <div><span style="background-color: #bcbddc"></span>10</div>
-        <div><span style="background-color: #9e9ac8"></span>50</div>
-        <div><span style="background-color: #756bb1"></span>75</div>
-        <div><span style="background-color: #54278f"></span>100</div>
-      </div>
+<div id="map-section">
+  <tamu-gisc-drawer [width]="'20rem'" [position]="'left'">
+    <div class="content">
+      <h3>Map Controls</h3>
+      <input type="checkbox" name="county-state-toggle" (click)="stateToggle()">
+      <label for="county-state-toggle">Counties/State</label>
+      <br>
+      <input type="checkbox" name="infection-mortality-toggle" (click)="mortalityToggle()">
+      <label for="county-state-toggle">Infection Rate/Mortality Rate</label>
+    </div>
+  </tamu-gisc-drawer>
+  <tamu-gisc-mapbox-map
+    token="pk.eyJ1Ijoid2hhdHppdG9veWEiLCJhIjoiY2poNzI3M2M0MDNnbjMzcWVtYmZnNXExNiJ9.K-nM-JaZnZvAfutkLQitbg"
+    [center]="['-98', '38.88']">
+  </tamu-gisc-mapbox-map>
+  <div class='right-sidebar'>
+    <h3>COVID-19 Data</h3>
+    <div #infobox *ngIf="(infoBoxModel | async) as info">
+      <p *ngIf="!stateButtonToggle">County: {{info.name}}</p>
+      <p *ngIf="stateButtonToggle">State: {{info.name}}</p>
+      <p>Population: {{info.pop}}</p>
+      <p>Cases: {{info.cases}}</p>
+      <p>Infection Rate: {{info.infectionRate.toFixed(2)}}</p>
+      <p>Deaths: {{info.deaths}}</p>
+      <p>Mortality Rate: {{info.deathRate.toFixed(2)}}</p>
+    </div>
+    <div class="legend">
+      <h3>Infection Rate</h3>
+      <h4>Cases/100,000 People</h4>
+      <div><span id="infection-zero"></span>0</div>
+      <div><span id="infection-one"></span>1</div>
+      <div><span id="infection-ten"></span>10</div>
+      <div><span id="infection-one-hundred"></span>100</div>
+      <div><span id="infection-five-hundred"></span>500</div>
+      <div><span id="infection-one-thousand"></span>1000</div>
+    </div>
+    <div *ngIf="mortalButtonToggled" class="legend">
+      <h3>Mortality Rate</h3>
+      <h4>Deaths/100,000 People</h4>
+      <div><span id="mortality-zero"></span>0</div>
+      <div><span id="mortality-one"></span>1</div>
+      <div><span id="mortality-ten"></span>10</div>
+      <div><span id="mortality-fifty"></span>50</div>
+      <div><span id="mortality-seventy-five"></span>75</div>
+      <div><span id="mortality-one-hundred"></span>100</div>
     </div>
   </div>
-</section>
+</div>

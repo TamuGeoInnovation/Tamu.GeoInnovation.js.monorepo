@@ -1,31 +1,10 @@
 @import 'libs/sass/mixins';
 
-.product-tiles {
-  @include flexbox();
-  @include flex-direction(row);
-  @include justify-content(space-around);
-  @include flex-wrap(wrap);
-
-  .product-tiles__tile {
-    display: inherit;
-    @include flex-direction(column);
-    @include align-items(center);
-    width: 37.5%;
-    margin: 3rem 2rem;
-
-    .product-tiles_tile__identity {
-      width: 4.5rem;
-      margin-bottom: 1.25rem;
-    }
-  }
-}
-
-#geocoding-graphic {
-  height: 20rem;
-  object-fit: cover;
-}
-
 #map-section {
+  width: auto;
+  height: 50rem;
+  display: flex;
+
   #map-section-description,
   #map-section-map {
     @include flexbox();
@@ -40,118 +19,39 @@
       max-width: 50%;
     }
   }
-
-  #map-section-map {
-  }
-}
-
-#map-section {
-  width: auto;
-  height: 50rem;
-  display: flex;
 }
 
 #map-section h3 {
   padding: 1rem;
 }
 
-// toggle button start
-
-/* The switch - the box around the slider */
-.switch {
-  margin-right: 1rem;
-  margin-bottom: 1rem;
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-
-//toggle button end
-
 //legend start
 .legend {
-	background-color: #fff;
-	border-radius: 3px;
-	bottom: 30px;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-	font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-	padding: 10px;
-	position: absolute;
-	z-index: 1;
+  background-color: #fff;
+  border-radius: 3px;
+  bottom: 7rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  position: absolute;
+  z-index: 1;
 }
 
 .legend h4 {
-	margin: 0 0 5px;
+  margin: 0 0 5px;
 }
 
 .legend h3 {
-	margin: 0 0 5px;
+  margin: 0 0 5px;
 }
 
 .legend div span {
-	border-radius: 50%;
-	display: inline-block;
-	height: 10px;
-	margin-right: 5px;
-	width: 10px;
-	border-style: solid;
-	border-width: thin;
+  border-radius: 50%;
+  display: inline-block;
+  height: 10px;
+  margin-right: 5px;
+  width: 10px;
+  border-style: solid;
+  border-width: thin;
 }
 // legend end
 
@@ -160,4 +60,42 @@ input:checked + .slider:before {
   margin-right: 0.5rem;
   width: 25rem;
   padding-top: 0.5rem;
+}
+
+#mortality-zero {
+  background-color: #f2f0f7;
+}
+#mortality-one {
+  background-color: #dadaeb;
+}
+#mortality-ten {
+  background-color: #bcbddc;
+}
+#mortality-fifty {
+  background-color: #9e9ac8;
+}
+#mortality-seventy-five {
+  background-color: #756bb1;
+}
+#mortality-one-hundred {
+  background-color: #54278f;
+}
+
+#infection-zero {
+  background-color: #ffffff;
+}
+#infection-one {
+  background-color: #fde6e6;
+}
+#infection-ten {
+  background-color: #fdc4c4;
+}
+#infection-one-hundred {
+  background-color: #fc8b8b;
+}
+#infection-five-hundred {
+  background-color: #d18080;
+}
+#infection-one-thousand {
+  background-color: #ae8080;
 }

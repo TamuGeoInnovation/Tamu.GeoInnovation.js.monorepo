@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+
+import { MapsMapboxModule } from '@tamu-gisc/maps/mapbox';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { MapsComponent } from './maps.component';
 import { TimeMapComponent } from './components/time-map/time-map.component';
-import { MapsMapboxModule } from '@tamu-gisc/maps/mapbox';
-import { HttpClientModule } from '@angular/common/http';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 const routes: Routes = [
   {
