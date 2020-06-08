@@ -48,8 +48,6 @@ export class TimeMapComponent implements OnInit {
   private stateData: Array<StateRecord>;
   private countyData: Array<CountyRecord>;
 
-  @ViewChild('infobox', { static: false }) public infobox: ElementRef;
-
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
   public mortalButtonToggled = false;
   public stateButtonToggle = false;
