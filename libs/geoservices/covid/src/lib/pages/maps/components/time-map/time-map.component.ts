@@ -8,6 +8,24 @@ import { take } from 'rxjs/operators';
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 import { View } from 'typeorm/schema-builder/view/View';
 
+interface StateRecord {
+  STATE: string;
+  pop: number;
+  cases: number;
+  deaths: number;
+  infectionRate: number;
+  deathRate: number;
+}
+
+interface CountyRecord {
+  fips: string;
+  pop: number;
+  cases: number;
+  deaths: number;
+  infectionRate: number;
+  deathRate: number;
+}
+
 interface IInfoBox {
   name: string;
   pop: number;
@@ -27,8 +45,8 @@ export class TimeMapComponent implements OnInit {
 
   private maxDate: string;
   private selectedDate: string;
-  private stateData;
-  private countyData;
+  private stateData: Array<StateRecord>;
+  private countyData: Array<CountyRecord>;
 
   @ViewChild('infobox', { static: false }) public infobox: ElementRef;
 
@@ -37,7 +55,7 @@ export class TimeMapComponent implements OnInit {
   public stateButtonToggle = false;
 
   public ngOnInit() {
-    this.reloadData(this.mortalButtonToggled);
+    this.reloadData();
 
     this.mapService.loaded.subscribe((map) => {
       const zoomThreshold = 3;
@@ -95,7 +113,7 @@ export class TimeMapComponent implements OnInit {
 
       map.on('mousemove', 'covid-county', (e) => {
         const feature = e.features[0];
-        const selectedCounty = this.countyData[this.selectedDate].filter(
+        const selectedCounty = this.countyData.filter(
           (county) => county.fips === feature.properties.fips
         );
 
@@ -111,7 +129,7 @@ export class TimeMapComponent implements OnInit {
 
       map.on('mousemove', 'covid-state', (e) => {
         const feature = e.features[0];
-        const selectedState = this.stateData[this.selectedDate].filter((state) => state.STATE === feature.properties.STATE);
+        const selectedState = this.stateData.filter((state) => state.STATE === feature.properties.STATE);
 
         this.infoBoxModel.next({
           name: feature.properties.NAME,
@@ -125,7 +143,7 @@ export class TimeMapComponent implements OnInit {
     });
   }
 
-  public reloadData(mortalButtonSelected: boolean) {
+  public reloadData() {
     const currentDateSelected = '2020-06-06';
     console.log(currentDateSelected);
     const stateURL =
@@ -139,10 +157,10 @@ export class TimeMapComponent implements OnInit {
 
     const requests = forkJoin([this.http.get(stateURL), this.http.get(countyURL)]);
     requests.pipe(take(1)).subscribe(([sData, cData]) => {
-      this.stateData = sData;
-      this.countyData = cData;
+      this.stateData = sData[currentDateSelected];
+      this.countyData = cData[currentDateSelected];
       this.selectedDate = currentDateSelected;
-      mortalButtonSelected ? this.drawDeathMap() : this.drawCasesMap();
+      this.mortalButtonToggled ? this.drawDeathMap() : this.drawCasesMap();
     });
   }
 
@@ -150,7 +168,7 @@ export class TimeMapComponent implements OnInit {
     const stateExpression = ['match', ['get', 'STATE']];
     const countyExpression = ['match', ['get', 'fips']];
 
-    this.stateData[this.selectedDate].forEach(function(row) {
+    this.stateData.forEach(function(row) {
       const number = row['infection_rate'];
       const color =
         number > 1000
@@ -167,7 +185,7 @@ export class TimeMapComponent implements OnInit {
       stateExpression.push(row['STATE'], color);
     });
 
-    this.countyData[this.selectedDate].forEach(function(row) {
+    this.countyData.forEach(function(row) {
       const number = row['infection_rate'];
       const color =
         number > 1000
@@ -197,7 +215,7 @@ export class TimeMapComponent implements OnInit {
     const stateExpression = ['match', ['get', 'STATE']];
     const countyExpression = ['match', ['get', 'fips']];
 
-    this.stateData[this.selectedDate].forEach(function(row) {
+    this.stateData.forEach(function(row) {
       const number = row['death_rate'];
       const color =
         number > 100
@@ -214,7 +232,7 @@ export class TimeMapComponent implements OnInit {
       stateExpression.push(row['STATE'], color);
     });
 
-    this.countyData[this.selectedDate].forEach(function(row) {
+    this.countyData.forEach(function(row) {
       const number = row['death_rate'];
       const color =
         number > 100

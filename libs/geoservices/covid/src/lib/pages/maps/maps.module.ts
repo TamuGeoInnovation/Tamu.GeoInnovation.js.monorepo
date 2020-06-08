@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { MapsMapboxModule } from '@tamu-gisc/maps/mapbox';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { MapsComponent } from './maps.component';
 import { TimeMapComponent } from './components/time-map/time-map.component';
@@ -30,7 +31,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [MapsComponent, TimeMapComponent],
   imports: [
-    CommonModule, RouterModule.forChild(routes), MapsMapboxModule, HttpClientModule,UILayoutModule
+    CommonModule, RouterModule.forChild(routes), MapsMapboxModule, HttpClientModule,UILayoutModule, UIFormsModule
   ]
 })
 export class MapsModule { }
