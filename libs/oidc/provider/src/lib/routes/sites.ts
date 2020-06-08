@@ -1,5 +1,5 @@
 import express from 'express';
-import uuid from 'uuid';
+import { v4 as guid } from 'uuid';
 import Provider from 'oidc-provider';
 
 import { SiteManager } from '../sequelize/site_manager';
@@ -39,7 +39,7 @@ export const sites_routes = (app: express.Application, provider: Provider) => {
   app.post('/sites/add', async (req, res, next) => {
     const data = req.body;
     if (data.guid == null || data.guid === undefined) {
-      data.siteGuid = uuid();
+      data.siteGuid = guid();
     }
     const add = await SiteManager.addSite(data);
     res.status(200).send({ success: true });
