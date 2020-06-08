@@ -8,9 +8,8 @@ describe('TimeMapComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TimeMapComponent ]
-    })
-    .compileComponents();
+      declarations: [TimeMapComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

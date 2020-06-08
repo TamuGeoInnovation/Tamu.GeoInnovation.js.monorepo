@@ -53,8 +53,6 @@ export class TimeMapComponent implements OnInit {
   public stateButtonToggle = false;
 
   public ngOnInit() {
-    this.reloadData();
-
     this.mapService.loaded.subscribe((map) => {
       const zoomThreshold = 3;
 
@@ -111,9 +109,7 @@ export class TimeMapComponent implements OnInit {
 
       map.on('mousemove', 'covid-county', (e) => {
         const feature = e.features[0];
-        const selectedCounty = this.countyData.filter(
-          (county) => county.fips === feature.properties.fips
-        );
+        const selectedCounty = this.countyData.filter((county) => county.fips === feature.properties.fips);
 
         this.infoBoxModel.next({
           name: feature.properties.NAME,
@@ -138,6 +134,7 @@ export class TimeMapComponent implements OnInit {
           deathRate: selectedState[0]['death_rate']
         });
       });
+      this.reloadData();
     });
   }
 
@@ -203,10 +200,8 @@ export class TimeMapComponent implements OnInit {
     stateExpression.push('rgba(255,255,255,1)');
     countyExpression.push('rgba(255,255,255,1)');
 
-    this.mapService.loaded.pipe(take(1)).subscribe((map) => {
-      map.setPaintProperty('covid-state', 'fill-color', stateExpression);
-      map.setPaintProperty('covid-county', 'fill-color', countyExpression);
-    });
+    this.mapService.map.setPaintProperty('covid-state', 'fill-color', stateExpression);
+    this.mapService.map.setPaintProperty('covid-county', 'fill-color', countyExpression);
   }
 
   public drawDeathMap() {
@@ -250,10 +245,8 @@ export class TimeMapComponent implements OnInit {
     stateExpression.push('rgba(255,255,255,1)');
     countyExpression.push('rgba(255,255,255,1)');
 
-    this.mapService.loaded.pipe(take(1)).subscribe((map) => {
-      map.setPaintProperty('covid-state', 'fill-color', stateExpression);
-      map.setPaintProperty('covid-county', 'fill-color', countyExpression);
-    });
+    this.mapService.map.setPaintProperty('covid-state', 'fill-color', stateExpression);
+    this.mapService.map.setPaintProperty('covid-county', 'fill-color', countyExpression);
   }
 
   public stateToggle() {

@@ -2,11 +2,8 @@
   <tamu-gisc-drawer [width]="'20rem'" [position]="'left'">
     <div class="content">
       <h3>Map Controls</h3>
-      <input type="checkbox" name="county-state-toggle" (click)="stateToggle()">
-      <label for="county-state-toggle">Counties/State</label>
-      <br>
-      <input type="checkbox" name="infection-mortality-toggle" (click)="mortalityToggle()">
-      <label for="county-state-toggle">Infection Rate/Mortality Rate</label>
+      <tamu-gisc-checkbox label="Counties/State" (click)="stateToggle()"></tamu-gisc-checkbox>
+      <tamu-gisc-checkbox label="Infection Rate/Mortality Rate" (click)="mortalityToggle()"></tamu-gisc-checkbox>
       <!-- <input type="date" id="datepicker" value="2020-06-06" max="2020-06-06" min="2020-01-21">
       <tamu-gisc-button value="Register" type="submit"></tamu-gisc-button> -->
     </div>

@@ -31,12 +31,10 @@ const routes: Routes = [
       }
     ]
   }
-]
+];
 
 @NgModule({
   declarations: [MapsComponent, TimeMapComponent, SitesMapComponent],
-  imports: [
-    CommonModule, RouterModule.forChild(routes), MapsMapboxModule, HttpClientModule,UILayoutModule, UIFormsModule
-  ]
+  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, HttpClientModule, UILayoutModule, UIFormsModule]
 })
-export class MapsModule { }
+export class MapsModule {}
