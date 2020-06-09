@@ -1,8 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CommonModule } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
-
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { ServicesComponent } from './services.component';
 
@@ -12,7 +9,7 @@ describe('ServicesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule, RouterTestingModule, UILayoutModule],
+      imports: [RouterTestingModule],
       declarations: [ServicesComponent]
     }).compileComponents();
   }));

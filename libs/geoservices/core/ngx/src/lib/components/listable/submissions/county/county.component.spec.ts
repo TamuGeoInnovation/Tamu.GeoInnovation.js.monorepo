@@ -14,7 +14,6 @@ describe('CountyComponent', () => {
       imports: [EnvironmentModule, HttpClientTestingModule],
       declarations: [CountyListComponent],
       providers: [
-        CountyListComponent,
         {
           provide: env,
           useValue: { covid_api_url: 'https://' }

@@ -1,15 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { CreateComponent } from './create.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
-import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AppStorage } from '@tamu-gisc/common/ngx/local-store';
+import { ReactiveFormsModule } from '@angular/forms';
+
 import { StorageServiceModule, LOCAL_STORAGE } from 'angular-webstorage-service';
 
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { AppStorage } from '@tamu-gisc/common/ngx/local-store';
+
+import { CreateComponent } from './create.component';
 
 describe('CreateComponent', () => {
   let component: CreateComponent;
@@ -17,23 +18,29 @@ describe('CreateComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule, UIFormsModule, RouterTestingModule, StorageServiceModule, GeoservicesCoreNgxModule, EnvironmentModule, HttpClientTestingModule ],
-      declarations: [ CreateComponent ],
+      imports: [
+        ReactiveFormsModule,
+        UIFormsModule,
+        RouterTestingModule,
+        StorageServiceModule,
+        GeoservicesCoreNgxModule,
+        EnvironmentModule,
+        HttpClientTestingModule
+      ],
+      declarations: [CreateComponent],
       providers: [
         CreateComponent,
-          {
-            provide: env,
-            useValue: { covid_api_url : 'https://' }
-          }, 
-          {
-            provide: AppStorage, 
-            useExisting: LOCAL_STORAGE 
-          }
+        {
+          provide: env,
+          useValue: { covid_api_url: 'https://' }
+        },
+        {
+          provide: AppStorage,
+          useExisting: LOCAL_STORAGE
+        }
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
-
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CreateComponent);

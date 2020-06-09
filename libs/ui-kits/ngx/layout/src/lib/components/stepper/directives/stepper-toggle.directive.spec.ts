@@ -30,6 +30,6 @@ describe('StepperToggleDirective', () => {
   });
 
   it('should create an instance', () => {
-    expect(component).toBeDefined();
+    expect(component.directive).toBeDefined();
   });
 });

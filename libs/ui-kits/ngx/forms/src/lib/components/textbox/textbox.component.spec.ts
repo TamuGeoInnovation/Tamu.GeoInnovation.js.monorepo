@@ -11,7 +11,7 @@ describe('TextboxComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule, FormsModule, RouterTestingModule],
+      imports: [FormsModule],
       declarations: [TextboxComponent]
     }).compileComponents();
   }));

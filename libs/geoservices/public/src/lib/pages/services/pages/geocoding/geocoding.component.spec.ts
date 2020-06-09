@@ -22,6 +22,11 @@ describe('GeocodingComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(GeocodingComponent);
     component = fixture.componentInstance;
+    /*
+    Test passes when fixture.detectChanges() is included and runs: npx jest -o 
+    However fails when fixture.detectChanges() is included and runs:  npx jest --collectCoverage 
+    fixture.detectChanges();
+    */
   });
 
   it('should create', () => {

@@ -33,6 +33,5 @@
     "yml"
   ],
   "jest.autoEnable": false,
-  "cSpell.enabled": true,
-  "editor.formatOnSave": true
+  "cSpell.enabled": true
 }

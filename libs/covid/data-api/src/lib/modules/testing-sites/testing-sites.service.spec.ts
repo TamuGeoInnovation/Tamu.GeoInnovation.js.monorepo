@@ -25,6 +25,7 @@ describe('TestingSitesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TestingSitesService,
+        CountyClaimsService,
         { provide: getRepositoryToken(County), useClass: Repository },
         { provide: getRepositoryToken(CountyClaim), useClass: Repository },
         { provide: getRepositoryToken(TestingSite), useClass: Repository },
@@ -33,8 +34,7 @@ describe('TestingSitesService', () => {
         { provide: getRepositoryToken(User), useClass: Repository },
         { provide: getRepositoryToken(EntityStatus), useClass: Repository },
         { provide: getRepositoryToken(CountyClaimInfo), useClass: Repository },
-        { provide: getRepositoryToken(EntityToValue), useClass: Repository },
-        CountyClaimsService
+        { provide: getRepositoryToken(EntityToValue), useClass: Repository }
       ]
     }).compile();
 
