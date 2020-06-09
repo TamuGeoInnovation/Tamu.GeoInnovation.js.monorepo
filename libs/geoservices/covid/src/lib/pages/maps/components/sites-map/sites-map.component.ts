@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Moment } from 'moment';
 import { forkJoin, BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -15,10 +14,13 @@ import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 export class SitesMapComponent implements OnInit {
   constructor(private mapService: MapboxMapService, private http: HttpClient) {}
 
-  private statData;
+  public unformattedData;
+  public statData: Array<StatRecord>;
+  public siteButtonToggle = false;
 
   public ngOnInit() {
     this.mapService.loaded.subscribe((map) => {
+      this.getStats();
       const zoomThreshold = 3;
 
       map.addSource('county-lines', {
@@ -57,10 +59,55 @@ export class SitesMapComponent implements OnInit {
         },
         'state-label'
       );
+      map.dragRotate.disable();
     });
   }
 
   public getStats() {
-    const url = 'https://nodes.geoservices.tamu.edu/api/covid/counties/stats';
+    const statsUrl = 'https://nodes.geoservices.tamu.edu/api/covid/counties/stats';
+    const requests = forkJoin([this.http.get(statsUrl)]);
+    requests.pipe(take(1)).subscribe(([recievedData]) => {
+      this.unformattedData = recievedData;
+      this.formatData();
+      this.drawMap();
+    });
   }
+
+  public formatData() {
+    console.log(this.unformattedData);
+    this.statData = new Array();
+    Object.keys(this.unformattedData).forEach((keyIndex) => {
+      const statToAdd: StatRecord = {
+        fips: keyIndex,
+        claims: this.unformattedData[keyIndex]['claims'],
+        sites: this.unformattedData[keyIndex]['sites']
+      };
+      this.statData.push(statToAdd);
+    });
+  }
+
+  public drawMap() {
+    //console.log(this.statData);
+    const key = this.siteButtonToggle === true ? 'sites' : 'claims';
+    const colorSchemes = this.siteButtonToggle === true ? ['#756bb1', '#efedf5'] : ['#2b8cbe', '#ece7f2'];
+    const countyExpression = ['match', ['get', 'fips']];
+    this.statData.forEach((row) => {
+      const number = row[key];
+      const color = number > 0 ? colorSchemes[0] : colorSchemes[1];
+      countyExpression.push(row['fips'], color);
+    });
+    countyExpression.push('rgba(255,255,255,1)');
+    this.mapService.map.setPaintProperty('counties', 'fill-color', countyExpression);
+  }
+
+  public sitesToggle() {
+    this.siteButtonToggle = !this.siteButtonToggle;
+    this.drawMap();
+  }
+}
+
+interface StatRecord {
+  fips: string;
+  claims: number;
+  sites: number;
 }
