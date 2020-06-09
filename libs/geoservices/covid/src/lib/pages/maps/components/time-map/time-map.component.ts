@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Moment } from 'moment';
@@ -6,34 +6,6 @@ import { forkJoin, BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
-import { View } from 'typeorm/schema-builder/view/View';
-
-interface StateRecord {
-  STATE: string;
-  pop: number;
-  cases: number;
-  deaths: number;
-  infectionRate: number;
-  deathRate: number;
-}
-
-interface CountyRecord {
-  fips: string;
-  pop: number;
-  cases: number;
-  deaths: number;
-  infectionRate: number;
-  deathRate: number;
-}
-
-interface IInfoBox {
-  name: string;
-  pop: number;
-  cases: number;
-  deaths: number;
-  infectionRate: number;
-  deathRate: number;
-}
 
 @Component({
   selector: 'tamu-gisc-time-map',
@@ -44,7 +16,6 @@ export class TimeMapComponent implements OnInit {
   constructor(private mapService: MapboxMapService, private http: HttpClient) {}
 
   private maxDate: string;
-  private selectedDate: string;
   private stateData: Array<StateRecord>;
   private countyData: Array<CountyRecord>;
 
@@ -154,7 +125,6 @@ export class TimeMapComponent implements OnInit {
     requests.pipe(take(1)).subscribe(([sData, cData]) => {
       this.stateData = sData[currentDateSelected];
       this.countyData = cData[currentDateSelected];
-      this.selectedDate = currentDateSelected;
       this.mortalButtonToggled ? this.drawDeathMap() : this.drawCasesMap();
     });
   }
@@ -264,4 +234,29 @@ export class TimeMapComponent implements OnInit {
       ? this.mapService.map.setLayoutProperty('covid-state', 'visibility', 'visible')
       : this.mapService.map.setLayoutProperty('covid-state', 'visibility', 'none');
   }
+}
+
+interface BaseRecord {
+  pop: number;
+  cases: number;
+  deaths: number;
+  infectionRate: number;
+  deathRate: number;
+}
+
+interface StateRecord extends BaseRecord {
+  STATE: string;
+}
+
+interface CountyRecord extends BaseRecord {
+  fips: string;
+}
+
+interface IInfoBox {
+  name: string;
+  pop: number;
+  cases: number;
+  deaths: number;
+  infectionRate: number;
+  deathRate: number;
 }

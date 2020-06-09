@@ -29,7 +29,7 @@
 .legend {
   background-color: #fff;
   border-radius: 3px;
-  bottom: 7rem;
+  bottom: 1rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   padding: 10px;
   position: absolute;
@@ -60,6 +60,7 @@
   margin-right: 0.5rem;
   width: 25rem;
   padding-top: 0.5rem;
+  position: relative;
 }
 
 #mortality-zero {
