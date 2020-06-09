@@ -1,1 +1,12 @@
-<p>sites-map works!</p>
+<div id="map-section">
+  <tamu-gisc-drawer [width]="'20rem'" [position]="'left'">
+    <div class="content">
+      <h3>Map Controls</h3>
+      <tamu-gisc-checkbox label="Claims/Sites"></tamu-gisc-checkbox>
+    </div>
+  </tamu-gisc-drawer>
+  <tamu-gisc-mapbox-map
+    token="pk.eyJ1Ijoid2hhdHppdG9veWEiLCJhIjoiY2poNzI3M2M0MDNnbjMzcWVtYmZnNXExNiJ9.K-nM-JaZnZvAfutkLQitbg"
+    style="mapbox://styles/mapbox/dark-v10" [center]="['-98', '38.88']">
+  </tamu-gisc-mapbox-map>
+</div>
