@@ -1,13 +1,13 @@
 import { async, TestBed, inject } from '@angular/core/testing';
 
-import { ResponseViewerComponent } from './response-viewer.component';
 import { HighlightPlusModule } from 'ngx-highlightjs/plus/';
-import { CommonModule } from '@angular/common';
+
+import { ResponseViewerComponent } from './response-viewer.component';
 
 describe('ResponseViewerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HighlightPlusModule, CommonModule],
+      imports: [HighlightPlusModule],
       providers: [ResponseViewerComponent]
     }).compileComponents();
   }));
