@@ -1,5 +1,5 @@
 import express, { NextFunction, Response, Request, urlencoded } from 'express';
-import Provider from 'oidc-provider';
+import Provider, { IClient, Session } from 'oidc-provider';
 import request from 'request';
 import cors from 'cors';
 import { v4 as guid } from 'uuid';
@@ -11,6 +11,7 @@ import { AccountManager } from '../sequelize/account_manager';
 import { TwoFactorAuthUtils } from '../misc/twofactor-auth-utils';
 import { DbManager } from '../sequelize/DbManager';
 import { LoginManager } from '../sequelize/login_manager';
+import { urlHas } from '../misc/url-utils';
 
 const querystring = require('querystring');
 const body = urlencoded({ extended: false });
@@ -21,14 +22,14 @@ export const interaction_routes = (app: express.Application, provider: Provider)
     res.render = (view, locals) => {
       app.render(view, locals, (err, html) => {
         if (err) throw err;
-        if (locals.title === 'Sign-in') {
+        if (locals.view === 'login') {
           orig.call(res, '_layout', {
             ...locals,
             body: html
           });
-        } else if (locals.title === '2FA') {
+        } else if (locals.view === '2fa') {
           orig.call(res, '2fa-scan');
-        } else if (locals.title === 'Authorize') {
+        } else if (locals.view === 'authorize') {
           orig.call(res, '_layout', {
             ...locals,
             body: html
@@ -49,54 +50,64 @@ export const interaction_routes = (app: express.Application, provider: Provider)
     next();
   });
 
-  app.get('/interaction/:grant', setNoCache, async (req, res, next) => {
+  app.get('/interaction/:grant', setNoCache, async (req: Request, res: Response, next: NextFunction) => {
     try {
       const details = await provider.interactionDetails(req);
       const client = await provider.Client.find(details.params.client_id);
 
       // HERE WE LOOK IN THE BAD LOGIN TABLE TO SEE IF WE HAVE A MATCH WITH THIS GRANT ID
       const previousLoginAttempt = await LoginManager.getUserLoginAttempt(req.params.grant);
+
       if (previousLoginAttempt) {
-        return res.render('user-info', {
+        const props: RenderProps = {
+          view: 'login',
+          title: 'Geoservices Login',
           client,
           details,
           error: true,
-          type: "SOMETHING; THIS ISN'T USED ANYMORE",
           message: 'Invalid user login or password',
-          title: 'Geoservices Login',
           params: querystring.stringify(details.params, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
           }),
           interaction: querystring.stringify(details.interaction, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
           })
-        });
-      }
-      if (details.interaction.error === 'login_required') {
-        return res.render('user-info', {
+        };
+
+        return res.render('user-info', props);
+      } else if (details.interaction.error === 'login_required') {
+        const props: RenderProps = {
+          view: 'login',
+          title: 'GeoInnovation Service Center Login',
           client,
           details,
           error: false,
-          title: 'Sign-in',
+          params: querystring.stringify(details.params, ',<br/>', ' = ', {
+            encodeURIComponent: (value) => value
+          }),
+          interaction: querystring.stringify(details.interaction, ',<br/>', ' = ', {
+            encodeURIComponent: (value) => value
+          }),
+          devMode: urlHas(req.path, 'dev', true)
+        };
+
+        return res.render('user-info', props);
+      } else {
+        const props: RenderProps = {
+          client,
+          details,
+          view: 'authorize',
+          title: 'Authorize',
           params: querystring.stringify(details.params, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
           }),
           interaction: querystring.stringify(details.interaction, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
           })
-        });
+        };
+
+        return res.render('interaction', props);
       }
-      return res.render('interaction', {
-        client,
-        details,
-        title: 'Authorize',
-        params: querystring.stringify(details.params, ',<br/>', ' = ', {
-          encodeURIComponent: (value) => value
-        }),
-        interaction: querystring.stringify(details.interaction, ',<br/>', ' = ', {
-          encodeURIComponent: (value) => value
-        })
-      });
     } catch (err) {
       return next(err);
     }
@@ -127,12 +138,14 @@ export const interaction_routes = (app: express.Application, provider: Provider)
             },
             consent: {}
           };
-          return res.render('2fa-auth', {
+
+          const props: RenderProps = {
             client,
             details,
             email: user.user.email,
             sub: user.user.sub,
             error: false,
+            view: 'login',
             title: 'Sign-in',
             result: JSON.stringify(result),
             params: querystring.stringify(details.params, ',<br/>', ' = ', {
@@ -141,7 +154,9 @@ export const interaction_routes = (app: express.Application, provider: Provider)
             interaction: querystring.stringify(details.interaction, ',<br/>', ' = ', {
               encodeURIComponent: (value) => value
             })
-          });
+          };
+
+          return res.render('2fa-auth', props);
         } else {
           // USER IS VERIFIED BUT NO 2fa
           const result = {
@@ -154,16 +169,19 @@ export const interaction_routes = (app: express.Application, provider: Provider)
             },
             consent: {}
           };
+
           await provider.interactionFinished(req, res, result);
         }
       } else {
         // USER HAS NOT VERIFIED EMAIL, SHOW THE THINGY TO LET THEM REQUEST A NEW ONE
-        return res.render('not-verified', {
+
+        const props: RenderProps = {
           client,
           details,
           email: user.user.email,
           sub: user.user.sub,
           error: false,
+          view: 'login',
           title: 'Sign-in',
           params: querystring.stringify(details.params, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
@@ -171,7 +189,9 @@ export const interaction_routes = (app: express.Application, provider: Provider)
           interaction: querystring.stringify(details.interaction, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
           })
-        });
+        };
+
+        return res.render('not-verified', props);
       }
     } else {
       // TODO: LOG AN INCORRECT LOGIN ATTEMPT HERE
@@ -193,14 +213,16 @@ export const interaction_routes = (app: express.Application, provider: Provider)
         // TODO: LOG THE INCORRECT 2FA CODE
         const details = await provider.interactionDetails(req);
         const client = await provider.Client.find(details.params.client_id);
-        return res.render('2fa-auth', {
+
+        const props: RenderProps = {
           client,
           details,
           email: req.body.email,
           sub: req.body.sub,
           error: true,
           message: 'Invalid 2fa token',
-          type: 'invalid-token',
+          // type: 'invalid-token',
+          view: 'login',
           title: 'Sign-in',
           result: req.body.result,
           params: querystring.stringify(details.params, ',<br/>', ' = ', {
@@ -209,21 +231,25 @@ export const interaction_routes = (app: express.Application, provider: Provider)
           interaction: querystring.stringify(details.interaction, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
           })
-        });
+        };
+
+        return res.render('2fa-auth', props);
       }
     } catch (error) {
       console.error(error);
       // THIS OCCURS WHEN THE TOKEN PROVIDED IS LESS THAN OR MORE THAN 6 CHARS
       const details = await provider.interactionDetails(req);
       const client = await provider.Client.find(details.params.client_id);
-      return res.render('2fa-auth', {
+
+      const props: RenderProps = {
         client,
         details,
         email: req.body.email,
         sub: req.body.sub,
         error: true,
         message: 'Invalid 2fa token',
-        type: 'invalid-token',
+        // type: 'invalid-token',
+        view: 'login',
         title: 'Sign-in',
         result: req.body.result,
         params: querystring.stringify(details.params, ',<br/>', ' = ', {
@@ -232,7 +258,9 @@ export const interaction_routes = (app: express.Application, provider: Provider)
         interaction: querystring.stringify(details.interaction, ',<br/>', ' = ', {
           encodeURIComponent: (value) => value
         })
-      });
+      };
+
+      return res.render('2fa-auth', props);
     }
   });
 
@@ -260,6 +288,7 @@ export const interaction_routes = (app: express.Application, provider: Provider)
           },
           consent: {}
         };
+
         await provider.interactionFinished(req, res, result);
       } else {
         // const tempSession = await provider.setProviderSession(req, res, {
@@ -288,13 +317,16 @@ export const interaction_routes = (app: express.Application, provider: Provider)
       },
       sid: decoded.sid
     };
+
     const key: Secret = {
       key: 'k',
       passphrase: 'paincakes'
     };
+
     const logoutJWS = sign(logoutTokenDecrypted, key, {
       algorithm: 'RSA256'
     });
+
     request.post(redirect_uri, {
       headers: {
         'content-type': 'application/x-www-form-urlencoded'
@@ -359,9 +391,12 @@ export const interaction_routes = (app: express.Application, provider: Provider)
     // const service = "accounts.geoservices.tamu.edu";
     // const otpauth = authenticator.keyuri(encodeURIComponent(user), encodeURIComponent(service), secret);
     // TODO: THIS GENERATES A QR IMAGE FOR ATHARMON@TAMU.EDU; SHOULD BE GENERALIZED EVENTUALLY
-    res.render('2fa-scan', {
+    const ret: RenderProps = {
+      view: '2fa',
       title: '2FA'
-    });
+    };
+
+    res.render('2fa-scan', ret);
     // const canvas = document.getElementById('canvas');
     // QRCode.toCanvas(canvas, otpauth).catch(error => {
     //   console.error(error);
@@ -412,3 +447,18 @@ export const interaction_routes = (app: express.Application, provider: Provider)
     next(err);
   });
 };
+
+interface RenderProps {
+  view: 'login' | '2fa' | 'authorize';
+  title: string;
+  client?: IClient;
+  details?: Session;
+  email?: string;
+  sub?: string;
+  error?: boolean;
+  message?: string;
+  result?: unknown;
+  params?: string;
+  interaction?: string;
+  devMode?: boolean;
+}

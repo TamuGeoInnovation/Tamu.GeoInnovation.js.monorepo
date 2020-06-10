@@ -76,7 +76,7 @@ declare module 'oidc-provider' {
     destroy(): Promise<void>;
   }
 
-  interface IClient {
+  export interface IClient {
     applicationType: 'web' | 'native';
     grantTypes: string[]; // [ "authorization_code" ]
     idTokenSignedResponseAlg: 'RS256';
@@ -93,7 +93,7 @@ declare module 'oidc-provider' {
     signText?: string;
   }
 
-  interface Session {
+  export interface Session {
     _id: string;
     accountId: string | null;
     expiresAt: Date;

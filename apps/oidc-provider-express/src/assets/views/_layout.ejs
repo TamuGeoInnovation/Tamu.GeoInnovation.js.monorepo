@@ -4,34 +4,48 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <title>Sign-in</title>
+    <title>GeoInnovation Service Center Login</title>
 
     <script src="/qrcode.min.js"></script>
 
     <link rel="stylesheet" href="/styles.css" />
     <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,600" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   </head>
   <body>
-    <div class="login-card">
-      <h1><%= title %></h1>
-      <div class="login-client-image"><% if (client.logoUri) { %><img src="<%= client.logoUri %>" /><% } %></div>
-      <%- body %>
-      <div class="login-help">
-        <a href="<%= details.returnTo %>">[ Cancel ]</a>
-        <% if (client.tosUri) { %><a href="<%= client.tosUri %>">[ Terms of Service ]</a><% } %> <% if (client.policyUri) {
-        %><a href="<%= client.policyUri %>">[ Privacy Policy ]</a><% } %>
+    <div class="container">
+      <div class="logo">
+        <img src="/TAM-Logo.svg" alt="GeoInnovation Service Center Logo" />
       </div>
-    </div>
-    <div class="login-card">
-      <div class="grant-debug">
-        <%= details.uuid %>
+
+      <h1 class="title"><%= title %></h1>
+
+      <div class="login-card">
+        <!-- Views are inserted in line below -->
+        <%- body %>
+
+        <!-- Login help is inserted below -->
+        <!-- <div class="login-help">
+          <a href="<%= details.returnTo %>">[ Cancel ]</a>
+          <% if (client.tosUri) { %><a href="<%= client.tosUri %>">[ Terms of Service ]</a><% } %> <% if (client.policyUri) {
+          %><a href="<%= client.policyUri %>">[ Privacy Policy ]</a><% } %>
+        </div> -->
       </div>
-      <div class="grant-debug">
-        <%- params %>
+
+      <!-- Dev information is inserted below -->
+      <%if (devMode) { %>
+      <div class="login-card">
+        <div class="grant-debug">
+          <%= details.uuid %>
+        </div>
+        <div class="grant-debug">
+          <%- params %>
+        </div>
+        <div class="grant-debug">
+          <%- interaction %>
+        </div>
       </div>
-      <div class="grant-debug">
-        <%- interaction %>
-      </div>
+      <%} %>
     </div>
   </body>
 </html>
