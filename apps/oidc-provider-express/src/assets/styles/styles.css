@@ -5,6 +5,7 @@ html {
   background: #fcfdfd;
   font-size: 16px;
   color: hsl(204, 12%, 8%);
+  line-height: 1.4;
 }
 
 body {
@@ -35,7 +36,11 @@ body {
 }
 
 .form-input {
-  margin: 1rem 0;
+  margin: 1.25rem 0;
+}
+
+.form-input.no-margin {
+  margin: 0;
 }
 
 .login-card {
@@ -133,13 +138,18 @@ input[type='checkbox'] label {
   display: none;
 }
 
+.two-col {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .login-card a {
   text-decoration: none;
-  color: #666;
-  font-weight: 400;
-  text-align: center;
-  display: inline-block;
-  opacity: 0.6;
+  color: #2b5d7d;
+  text-decoration: underline;
+  font-weight: 500;
 }
 
 .login-help {
@@ -166,5 +176,24 @@ input[type='checkbox'] label {
 }
 
 #error-message {
-  color: 'red';
+  color: red;
+  text-align: center;
+  font-weight: 500;
+}
+
+.session-controls {
+  margin: 1.5rem 0;
+}
+
+.account-register-prompt {
+  text-align: center;
+  margin: 2.5rem auto;
+}
+
+.text.center {
+  text-align: center;
+}
+
+.authorize-instructions {
+  margin-bottom: 2rem;
 }

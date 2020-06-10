@@ -11,7 +11,8 @@ import { AccountManager } from '../sequelize/account_manager';
 import { TwoFactorAuthUtils } from '../misc/twofactor-auth-utils';
 import { DbManager } from '../sequelize/DbManager';
 import { LoginManager } from '../sequelize/login_manager';
-import { urlHas } from '../misc/url-utils';
+import { urlHas, urlFragment } from '../misc/url-utils';
+import { ParsedUrlQuery } from 'querystring';
 
 const querystring = require('querystring');
 const body = urlencoded({ extended: false });
@@ -22,7 +23,7 @@ export const interaction_routes = (app: express.Application, provider: Provider)
     res.render = (view, locals) => {
       app.render(view, locals, (err, html) => {
         if (err) throw err;
-        if (locals.view === 'login') {
+        if (locals.view === 'user-info') {
           orig.call(res, '_layout', {
             ...locals,
             body: html
@@ -60,25 +61,27 @@ export const interaction_routes = (app: express.Application, provider: Provider)
 
       if (previousLoginAttempt) {
         const props: RenderProps = {
-          view: 'login',
+          view: 'user-info',
           title: 'Geoservices Login',
           client,
           details,
           error: true,
-          message: 'Invalid user login or password',
+          message: 'Invalid email or password combination.',
           params: querystring.stringify(details.params, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
           }),
           interaction: querystring.stringify(details.interaction, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
-          })
+          }),
+          devMode: urlHas(req.path, 'dev', true),
+          requestingHost: urlFragment(client.redirectUris[0], 'hostname')
         };
 
         return res.render('user-info', props);
       } else if (details.interaction.error === 'login_required') {
         const props: RenderProps = {
-          view: 'login',
-          title: 'GeoInnovation Service Center Login',
+          view: 'user-info',
+          title: 'GeoInnovation Service Center SSO',
           client,
           details,
           error: false,
@@ -88,7 +91,8 @@ export const interaction_routes = (app: express.Application, provider: Provider)
           interaction: querystring.stringify(details.interaction, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
           }),
-          devMode: urlHas(req.path, 'dev', true)
+          devMode: urlHas(req.path, 'dev', true),
+          requestingHost: urlFragment(client.redirectUris[0], 'hostname')
         };
 
         return res.render('user-info', props);
@@ -103,7 +107,8 @@ export const interaction_routes = (app: express.Application, provider: Provider)
           }),
           interaction: querystring.stringify(details.interaction, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
-          })
+          }),
+          requestingHost: urlFragment(client.redirectUris[0], 'hostname')
         };
 
         return res.render('interaction', props);
@@ -140,13 +145,13 @@ export const interaction_routes = (app: express.Application, provider: Provider)
           };
 
           const props: RenderProps = {
+            view: 'user-info',
+            title: 'Sign-in',
             client,
             details,
             email: user.user.email,
             sub: user.user.sub,
             error: false,
-            view: 'login',
-            title: 'Sign-in',
             result: JSON.stringify(result),
             params: querystring.stringify(details.params, ',<br/>', ' = ', {
               encodeURIComponent: (value) => value
@@ -176,13 +181,13 @@ export const interaction_routes = (app: express.Application, provider: Provider)
         // USER HAS NOT VERIFIED EMAIL, SHOW THE THINGY TO LET THEM REQUEST A NEW ONE
 
         const props: RenderProps = {
+          view: 'user-info',
+          title: 'Sign-in',
           client,
           details,
           email: user.user.email,
           sub: user.user.sub,
           error: false,
-          view: 'login',
-          title: 'Sign-in',
           params: querystring.stringify(details.params, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
           }),
@@ -215,6 +220,8 @@ export const interaction_routes = (app: express.Application, provider: Provider)
         const client = await provider.Client.find(details.params.client_id);
 
         const props: RenderProps = {
+          view: 'user-info',
+          title: 'Sign-in',
           client,
           details,
           email: req.body.email,
@@ -222,8 +229,6 @@ export const interaction_routes = (app: express.Application, provider: Provider)
           error: true,
           message: 'Invalid 2fa token',
           // type: 'invalid-token',
-          view: 'login',
-          title: 'Sign-in',
           result: req.body.result,
           params: querystring.stringify(details.params, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
@@ -242,6 +247,8 @@ export const interaction_routes = (app: express.Application, provider: Provider)
       const client = await provider.Client.find(details.params.client_id);
 
       const props: RenderProps = {
+        view: 'user-info',
+        title: 'Sign-in',
         client,
         details,
         email: req.body.email,
@@ -249,8 +256,6 @@ export const interaction_routes = (app: express.Application, provider: Provider)
         error: true,
         message: 'Invalid 2fa token',
         // type: 'invalid-token',
-        view: 'login',
-        title: 'Sign-in',
         result: req.body.result,
         params: querystring.stringify(details.params, ',<br/>', ' = ', {
           encodeURIComponent: (value) => value
@@ -320,7 +325,7 @@ export const interaction_routes = (app: express.Application, provider: Provider)
 
     const key: Secret = {
       key: 'k',
-      passphrase: 'paincakes'
+      passphrase: ''
     };
 
     const logoutJWS = sign(logoutTokenDecrypted, key, {
@@ -449,7 +454,7 @@ export const interaction_routes = (app: express.Application, provider: Provider)
 };
 
 interface RenderProps {
-  view: 'login' | '2fa' | 'authorize';
+  view: 'user-info' | '2fa' | 'authorize';
   title: string;
   client?: IClient;
   details?: Session;
@@ -461,4 +466,5 @@ interface RenderProps {
   params?: string;
   interaction?: string;
   devMode?: boolean;
+  requestingHost?: string | boolean | ParsedUrlQuery;
 }

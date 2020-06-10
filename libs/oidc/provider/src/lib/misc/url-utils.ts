@@ -22,3 +22,13 @@ export function urlHas<T>(unparsedUrl: string, property: string, value?: T): boo
     return true;
   }
 }
+
+export function urlFragment(unparsedUrl: string, fragment: keyof url.UrlWithParsedQuery) {
+  const parsed = url.parse(unparsedUrl, true);
+
+  if (!parsed[fragment]) {
+    return undefined;
+  }
+
+  return parsed[fragment];
+}

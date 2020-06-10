@@ -13,18 +13,24 @@
     <input required type="password" name="password" placeholder="Password" />
   </div>
 
-  <div class="form-input">
-    <!-- <label><input type="checkbox" name="remember" value="yes" checked="yes" />Stay signed in</label> -->
-
-    <div class="custom-checkbox">
-      <input type="checkbox" name="remember" value="yes" checked="yes" />
-      <div class="material-icons unchecked">check_box_outline_blank</div>
-      <div class="material-icons checked">check_box</div>
-      <p>Stay signed in</p>
+  <div class="two-col session-controls">
+    <div>
+      <div class="custom-checkbox">
+        <input type="checkbox" name="remember" value="yes" checked="yes" />
+        <div class="material-icons unchecked">check_box_outline_blank</div>
+        <div class="material-icons checked">check_box</div>
+        <p>Stay signed in</p>
+      </div>
     </div>
+
+    <div><a href="http://">Forgot password?</a></div>
   </div>
 
   <div class="form-input">
     <button type="submit" class="login login-submit">Sign-in</button>
+  </div>
+
+  <div class="account-register-prompt">
+    <p>Don't have an account? <a href="http://">Get started</a>.</p>
   </div>
 </form>
