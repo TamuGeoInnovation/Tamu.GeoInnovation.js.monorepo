@@ -252,11 +252,6 @@ interface CountyRecord extends BaseRecord {
   fips: string;
 }
 
-interface IInfoBox {
+interface IInfoBox extends BaseRecord {
   name: string;
-  pop: number;
-  cases: number;
-  deaths: number;
-  infectionRate: number;
-  deathRate: number;
 }
