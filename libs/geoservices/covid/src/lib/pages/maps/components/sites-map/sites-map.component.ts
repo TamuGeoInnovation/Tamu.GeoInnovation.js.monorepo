@@ -87,7 +87,6 @@ export class SitesMapComponent implements OnInit {
   }
 
   public drawMap() {
-    //console.log(this.statData);
     const key = this.siteButtonToggle === true ? 'sites' : 'claims';
     const colorSchemes = this.siteButtonToggle === true ? ['#756bb1', '#efedf5'] : ['#2b8cbe', '#ece7f2'];
     const countyExpression = ['match', ['get', 'fips']];
