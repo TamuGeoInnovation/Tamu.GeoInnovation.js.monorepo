@@ -3,15 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { STATUS, CATEGORY } from '@tamu-gisc/covid/common/enums';
-import {
-  Lockdown,
-  LockdownInfo,
-  User,
-  EntityValue,
-  EntityToValue,
-  EntityStatus,
-  CountyClaim
-} from '@tamu-gisc/covid/common/entities';
+import { Lockdown, LockdownInfo, User, EntityValue, EntityToValue, EntityStatus } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
@@ -350,22 +342,4 @@ export class LockdownsService extends BaseService<Lockdown> {
       }
     };
   }
-}
-
-interface ClaimWithLockdowns extends CountyClaim {
-  lockdowns: Lockdown[];
-}
-
-interface LockdownExtended extends Lockdown {
-  claims: ClaimWithLockdowns[];
-  statuses: EntityStatus[];
-}
-
-interface LockdownStat {
-  claims?: number;
-  lockdowns?: number;
-}
-
-export interface LockdownStats {
-  [key: string]: LockdownStats;
 }
