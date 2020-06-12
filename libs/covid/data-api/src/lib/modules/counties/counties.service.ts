@@ -44,7 +44,7 @@ export class CountiesService extends BaseService<County> {
     });
   }
 
-  public async getCountyStats() {
+  public async getCountyStats(): Promise<CountyStats> {
     const counties = (await this.repo
       .createQueryBuilder('county')
       .leftJoinAndMapMany('county.claims', CountyClaim, 'claim', 'claim.countyFips = county.countyFips')
