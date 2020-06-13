@@ -29,7 +29,8 @@ async function bootstrap() {
       'http://localhost:4200',
       'https://idp-dev.geoservices.tamu.edu',
       'https://covid-dev.geoservices.tamu.edu',
-      'https://covid.geoservices.tamu.edu'
+      'https://covid.geoservices.tamu.edu',
+      'https://jorge-sepulveda.github.io'
     ]
   });
 
