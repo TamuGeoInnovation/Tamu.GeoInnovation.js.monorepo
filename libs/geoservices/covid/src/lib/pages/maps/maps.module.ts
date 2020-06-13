@@ -9,7 +9,7 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { MapsComponent } from './maps.component';
 import { TimeMapComponent } from './components/time-map/time-map.component';
-import { SitesMapComponent } from './components/sites-map/sites-map.component';
+import { LockdownMapComponent } from './components/lockdown-map/lockdown-map.component';
 
 const routes: Routes = [
   {
@@ -26,15 +26,15 @@ const routes: Routes = [
         component: TimeMapComponent
       },
       {
-        path: 'sites-map',
-        component: SitesMapComponent
+        path: 'lockdown-map',
+        component: LockdownMapComponent
       }
     ]
   }
 ];
 
 @NgModule({
-  declarations: [MapsComponent, TimeMapComponent, SitesMapComponent],
+  declarations: [MapsComponent, TimeMapComponent, LockdownMapComponent],
   imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, HttpClientModule, UILayoutModule, UIFormsModule]
 })
 export class MapsModule {}

@@ -1,0 +1,32 @@
+<div id="map-section">
+  <tamu-gisc-drawer [width]="'20rem'" [position]="'left'">
+    <div class="content">
+      <h3>Map Controls</h3>
+      <tamu-gisc-checkbox label="Claims/Lockdowns" (click)="lockdownToggle()"></tamu-gisc-checkbox>
+    </div>
+  </tamu-gisc-drawer>
+  <tamu-gisc-mapbox-map
+    token="pk.eyJ1Ijoid2hhdHppdG9veWEiLCJhIjoiY2poNzI3M2M0MDNnbjMzcWVtYmZnNXExNiJ9.K-nM-JaZnZvAfutkLQitbg"
+    style="mapbox://styles/mapbox/dark-v10" [center]="['-98', '38.88']">
+  </tamu-gisc-mapbox-map>
+  <div class='right-sidebar'>
+    <h3>Claims & Lockdowns</h3>
+    <div #infobox *ngIf="(infoBoxModel | async) as info">
+      <p>County: {{info.name}}</p>
+      <p>FIPS: {{info.fips}}</p>
+      <p>Claims: {{info.claims}}</p>
+      <p>Lockdowns: {{info.lockdowns}}</p>
+    </div>
+    <h4>Click on a county to get more info</h4>
+    <div *ngIf="!lockdownButtonToggle" class="legend">
+      <h3>Claimed Counties</h3>
+      <div><span id="unclaimed"></span>Unclaimed</div>
+      <div><span id="claimed"></span>Claimed</div>
+    </div>
+    <div *ngIf="lockdownButtonToggle" class="legend">
+      <h3>Counties with Lockdowns</h3>
+      <div><span id="no-lockdown"></span>No Lockdown</div>
+      <div><span id="has-lockdown"></span>Lockdown</div>
+    </div>
+  </div>
+</div>

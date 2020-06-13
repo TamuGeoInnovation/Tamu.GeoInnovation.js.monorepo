@@ -1,0 +1,15 @@
+@import 'libs/sass/mixins';
+@import '../../maps.component.scss';
+
+#no-lockdown {
+  background-color: #ece7f2;
+}
+#has-lockdown {
+  background-color: #fc8d59;
+}
+#unclaimed {
+  background-color: #ece7f2;
+}
+#claimed {
+  background-color: #2b8cbe;
+}
