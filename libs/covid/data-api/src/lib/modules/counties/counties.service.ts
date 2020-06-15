@@ -56,7 +56,6 @@ export class CountiesService extends BaseService<County> {
       const countyString = curr.countyFips.toString().padStart(5, '0');
 
       const t: CountyStat = (acc[countyString] = {});
-
       t.claims = curr.claims.length;
       t.sites = curr.claims.reduce((a, c) => {
         return a + c.sites.length;
@@ -64,6 +63,10 @@ export class CountiesService extends BaseService<County> {
       t.lockdowns = curr.claims.reduce((a, c) => {
         return a + c.lockdowns.length;
       }, 0);
+      t.lockdownInfo = curr.claims.map((c) => {
+        
+        return c.lockdowns[0];
+      }, null);
 
       return acc;
     }, {});
@@ -80,11 +83,17 @@ interface CountyExtended extends County {
   claims: ClaimWithData[];
   statuses: EntityStatus[];
 }
+interface LockdownStat {
+  updated: string;
+  created: string;
+  guid: string;
+}
 
 interface CountyStat {
   claims?: number;
   sites?: number;
   lockdowns?: number;
+  lockdownInfo?: LockdownStat;
 }
 
 export interface CountyStats {
