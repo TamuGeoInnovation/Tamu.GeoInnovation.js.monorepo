@@ -73,9 +73,7 @@ export class CountiesService extends BaseService<County> {
         } else {
           const lockdownStat: LockdownStat = {
             updated: c.lockdowns[0].updated,
-
             created: c.lockdowns[0].created,
-
             guid: c.lockdowns[0].guid
           };
           return lockdownStat;
