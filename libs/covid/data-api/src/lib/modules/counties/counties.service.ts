@@ -58,12 +58,27 @@ export class CountiesService extends BaseService<County> {
       const t: CountyStat = (acc[countyString] = {});
 
       t.claims = curr.claims.length;
+
       t.sites = curr.claims.reduce((a, c) => {
         return a + c.sites.length;
       }, 0);
+
       t.lockdowns = curr.claims.reduce((a, c) => {
         return a + c.lockdowns.length;
       }, 0);
+
+      t.lockdownInfo = curr.claims.map((c) => {
+        if (c.lockdowns[0] === undefined) {
+          return null;
+        } else {
+          const lockdownStat: LockdownStat = {
+            updated: c.lockdowns[0].updated,
+            created: c.lockdowns[0].created,
+            guid: c.lockdowns[0].guid
+          };
+          return lockdownStat;
+        }
+      });
 
       return acc;
     }, {});
@@ -76,15 +91,23 @@ interface ClaimWithData extends CountyClaim {
   sites: TestingSite[];
   lockdowns: Lockdown[];
 }
+
 interface CountyExtended extends County {
   claims: ClaimWithData[];
   statuses: EntityStatus[];
+}
+
+interface LockdownStat {
+  updated: Date;
+  created: Date;
+  guid: string;
 }
 
 interface CountyStat {
   claims?: number;
   sites?: number;
   lockdowns?: number;
+  lockdownInfo?: LockdownStat[];
 }
 
 export interface CountyStats {
