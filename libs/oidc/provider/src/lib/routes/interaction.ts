@@ -108,7 +108,8 @@ export const interaction_routes = (app: express.Application, provider: Provider)
           interaction: querystring.stringify(details.interaction, ',<br/>', ' = ', {
             encodeURIComponent: (value) => value
           }),
-          requestingHost: urlFragment(client.redirectUris[0], 'hostname')
+          requestingHost: urlFragment(client.redirectUris[0], 'hostname'),
+          devMode: urlHas(req.path, 'dev', true)
         };
 
         return res.render('interaction', props);
