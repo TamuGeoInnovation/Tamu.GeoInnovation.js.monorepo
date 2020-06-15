@@ -58,12 +58,15 @@ export class CountiesService extends BaseService<County> {
       const t: CountyStat = (acc[countyString] = {});
 
       t.claims = curr.claims.length;
+
       t.sites = curr.claims.reduce((a, c) => {
         return a + c.sites.length;
       }, 0);
+
       t.lockdowns = curr.claims.reduce((a, c) => {
         return a + c.lockdowns.length;
       }, 0);
+
       t.lockdownInfo = curr.claims.map((c) => {
         if (c.lockdowns[0] === undefined) {
           return null;
