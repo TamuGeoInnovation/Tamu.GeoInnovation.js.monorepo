@@ -16,6 +16,7 @@
       <p>FIPS: {{info.fips}}</p>
       <p>Claims: {{info.claims}}</p>
       <p>Lockdowns: {{info.lockdowns}}</p>
+      <p>guid: {{info.lockdownInfo['guid']}}</p>
     </div>
     <h4>Click on a county to get more info</h4>
     <div *ngIf="!lockdownButtonToggle" class="legend">
