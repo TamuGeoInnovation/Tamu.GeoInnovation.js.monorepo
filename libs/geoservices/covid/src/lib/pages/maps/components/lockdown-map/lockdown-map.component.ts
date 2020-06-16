@@ -2,12 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { forkJoin, BehaviorSubject } from 'rxjs';
-import { take, min } from 'rxjs/operators';
-import { Moment } from 'moment';
+import { take } from 'rxjs/operators';
 
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
-import { UpdateEvent, UpdateQueryBuilder } from 'typeorm';
-import { type } from 'os';
 
 @Component({
   selector: 'tamu-gisc-lockdown-map',
@@ -48,7 +45,7 @@ export class LockdownMapComponent implements OnInit {
           },
           'source-layer': 'county-lines',
           paint: {
-            'fill-outline-color': '#FFFFFF'
+            'fill-outline-color': '#303030'
           }
         },
         'road-motorway-trunk'
@@ -172,8 +169,11 @@ export class LockdownMapComponent implements OnInit {
       const stopThree = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
       const stopFour = new Date().getTime() - 40 * 24 * 60 * 60 * 1000;
       const stopFive = new Date().getTime() - 50 * 24 * 60 * 60 * 1000;
+      const stopSix = new Date().getTime() - 60 * 24 * 60 * 60 * 1000;
       colorCode =
-        timeStamp < stopFive
+        timeStamp < stopSix
+          ? 7
+          : timeStamp < stopFive
           ? 6
           : timeStamp < stopFour
           ? 5
@@ -201,7 +201,7 @@ export class LockdownMapComponent implements OnInit {
   }
 
   public drawLockdownMap(): void {
-    const colorSchemes = ['#ECE7F2', '#1a9850', '#91cf60', '#d9ef8b', '#fee08b', '#fc8d59', '#d73027'];
+    const colorSchemes = ['#4d4d4d', '#4575b4', '#91bfdb', '#e0f3f8', '#ffffbf', '#fee090', '#fc8d59', '#d73027'];
     const countyExpression = ['match', ['get', 'fips']];
     this.statData.forEach((row) => {
       const number = this.getDateCode(row.lockdownInfo);
