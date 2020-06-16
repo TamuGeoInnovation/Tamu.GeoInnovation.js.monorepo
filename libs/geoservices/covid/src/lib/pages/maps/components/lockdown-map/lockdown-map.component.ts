@@ -84,7 +84,7 @@ export class LockdownMapComponent implements OnInit {
       map.on('mousemove', 'counties-lockdowns', (e) => {
         const feature = e.features[0];
         const selectedCounty = this.statData.filter((county) => county.fips === feature.properties.fips);
-        console.log(selectedCounty[0]['lockdownInfo']);
+        //console.log(selectedCounty[0]['lockdownInfo']);
 
         this.infoBoxModel.next({
           name: feature.properties.NAME,
@@ -108,6 +108,7 @@ export class LockdownMapComponent implements OnInit {
     const lockdownUrl = 'https://nodes.geoservices.tamu.edu/api/covid/lockdowns/active/county/' + fipsCode;
     const requests = forkJoin([this.http.get(lockdownUrl)]);
     requests.pipe(take(1)).subscribe(([lockdownData]) => {
+      console.log(lockdownData);
       return lockdownData;
     });
   }
@@ -123,6 +124,7 @@ export class LockdownMapComponent implements OnInit {
       this.drawLockdownMap();
     });
   }
+
   public formatData(): void {
     this.statData = new Array();
     let lockdownRecords = new Array();
@@ -165,30 +167,24 @@ export class LockdownMapComponent implements OnInit {
       colorCode = 0;
     } else {
       const timeStamp = new Date(minDate.updated).getTime();
-      const fifteen = new Date().getTime() - 10 * 24 * 60 * 60 * 1000;
-      const thirty = new Date().getTime() - 20 * 24 * 60 * 60 * 1000;
-      const fortyFive = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
-      const sixty = new Date().getTime() - 40 * 24 * 60 * 60 * 1000;
-      const seventyFive = new Date().getTime() - 50 * 24 * 60 * 60 * 1000;
-      console.log(timeStamp);
-      console.log(fifteen);
-      console.log(thirty);
-      console.log(fortyFive);
-      console.log(sixty);
+      const stopOne = new Date().getTime() - 10 * 24 * 60 * 60 * 1000;
+      const stopTwo = new Date().getTime() - 20 * 24 * 60 * 60 * 1000;
+      const stopThree = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
+      const stopFour = new Date().getTime() - 40 * 24 * 60 * 60 * 1000;
+      const stopFive = new Date().getTime() - 50 * 24 * 60 * 60 * 1000;
       colorCode =
-        timeStamp < seventyFive
+        timeStamp < stopFive
           ? 6
-          : timeStamp < sixty
+          : timeStamp < stopFour
           ? 5
-          : timeStamp < fortyFive
+          : timeStamp < stopThree
           ? 4
-          : timeStamp < thirty
+          : timeStamp < stopTwo
           ? 3
-          : timeStamp < fifteen
+          : timeStamp < stopOne
           ? 2
           : 1;
     }
-    console.log(colorCode);
     return colorCode;
   }
 

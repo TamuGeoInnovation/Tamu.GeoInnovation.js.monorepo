@@ -1,15 +1,31 @@
 @import 'libs/sass/mixins';
 @import '../../maps.component.scss';
 
-#no-lockdown {
-  background-color: #ece7f2;
-}
-#has-lockdown {
-  background-color: #fc8d59;
-}
 #unclaimed {
   background-color: #ece7f2;
 }
 #claimed {
   background-color: #2b8cbe;
+}
+
+#no-lockdown {
+  background-color: #ece7f2;
+}
+#stop-one {
+  background-color: #1a9850;
+}
+#stop-two {
+  background-color: #91cf60;
+}
+#stop-three {
+  background-color: #d9ef8b;
+}
+#stop-four {
+  background-color: #fee08b;
+}
+#stop-five {
+  background-color: #fc8d59;
+}
+#stop-six {
+  background-color: #d73027;
 }
