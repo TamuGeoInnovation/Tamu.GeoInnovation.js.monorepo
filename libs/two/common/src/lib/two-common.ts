@@ -22,6 +22,8 @@ export { Fields } from './entities/fields/fields.entity';
 export { NodeGroups } from './entities/node-groups/node-groups.entity';
 export { DataGroupFlds } from './entities/data-group-fids/data-group-fids.entity';
 
+export { EntryFailure } from './entities/entry-failure/entry-failure.entity';
+
 export {
   DIRECTORY_SERVICE,
   VALIDATION_SERVICE,

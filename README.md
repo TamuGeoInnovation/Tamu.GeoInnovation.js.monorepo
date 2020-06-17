@@ -44,3 +44,7 @@ As you make changes to the project, the local webserver will automatically rebui
 # Submitting Pull Requests
 
 When submitting PRs be sure that your changes pass Continuous Integration.
+
+# Starting inspector on localhost:7777 failed: address already in use
+1. https://github.com/nrwl/nx/issues/1248
+2. Use `ng serve {projectname} --configuration=development` to launch
