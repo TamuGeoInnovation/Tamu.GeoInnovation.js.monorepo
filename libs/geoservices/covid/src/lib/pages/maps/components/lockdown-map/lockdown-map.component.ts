@@ -18,7 +18,6 @@ export class LockdownMapComponent implements OnInit {
   public statData: Array<StatRecord>;
   public lockdownButtonToggle = false;
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
-  public lockdownBoxModel: BehaviorSubject<LockdownRecord> = new BehaviorSubject(undefined);
   public ngOnInit(): void {
     this.mapService.loaded.subscribe((map) => {
       this.getStats();
@@ -40,7 +39,6 @@ export class LockdownMapComponent implements OnInit {
           type: 'fill',
           source: 'county-lines',
           layout: {
-            // make layer visible by default (change to none or visible for debugging)
             visibility: 'none'
           },
           'source-layer': 'county-lines',
@@ -77,32 +75,35 @@ export class LockdownMapComponent implements OnInit {
         },
         'state-label'
       );
-      map.dragRotate.disable();
+
       map.on('mousemove', 'counties-lockdowns', (e) => {
         const feature = e.features[0];
-        const selectedCounty = this.statData.filter((county) => county.fips === feature.properties.fips);
-        //console.log(selectedCounty[0]['lockdownInfo']);
-
+        const hoveredCounty = this.statData.filter((county) => county.fips === feature.properties.fips);
+        const updatedDate: Date = hoveredCounty[0]['lockdownInfo'][0]
+          ? hoveredCounty[0]['lockdownInfo'][0]['updated']
+          : null;
+        const createdDate: Date = hoveredCounty[0]['lockdownInfo'][0]
+          ? hoveredCounty[0]['lockdownInfo'][0]['created']
+          : null;
         this.infoBoxModel.next({
           name: feature.properties.NAME,
-          fips: selectedCounty[0]['fips'],
-          claims: selectedCounty[0]['claims'],
-          sites: selectedCounty[0]['sites'],
-          lockdowns: selectedCounty[0]['lockdowns'],
-          lockdownInfo: selectedCounty[0]['lockdownInfo']
-        });
-        this.lockdownBoxModel.next({
-          updated: selectedCounty[0]['lockdownInfo']['updated'],
-          created: selectedCounty[0]['lockdownInfo']['created'],
-          guid: selectedCounty[0]['lockdownInfo']['guid']
+          fips: hoveredCounty[0]['fips'],
+          claims: hoveredCounty[0]['claims'],
+          sites: hoveredCounty[0]['sites'],
+          lockdowns: hoveredCounty[0]['lockdowns'],
+          lockdownInfo: hoveredCounty[0]['lockdownInfo'],
+          updated: updatedDate,
+          created: createdDate
         });
       });
 
       map.on('click', 'counties-lockdowns', (e) => {
         const feature = e.features[0];
-        const selectedCounty = this.statData.filter((county) => county.fips === feature.properties.fips);
-        this.getFipsLockdownData(selectedCounty[0]['fips']);
+        const clickedCounty = this.statData.filter((county) => county.fips === feature.properties.fips);
+        this.getFipsLockdownData(clickedCounty[0]['fips']);
       });
+
+      map.dragRotate.disable();
     });
   }
 
@@ -241,4 +242,6 @@ interface LockdownRecord {
 
 interface IInfoBox extends StatRecord {
   name: string;
+  updated: Date;
+  created: Date;
 }
