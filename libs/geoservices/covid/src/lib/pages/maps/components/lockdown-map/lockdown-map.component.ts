@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { forkJoin, BehaviorSubject } from 'rxjs';
+import { forkJoin, BehaviorSubject, from } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { Popup } from 'mapbox-gl';
 
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 
@@ -13,11 +14,11 @@ import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 })
 export class LockdownMapComponent implements OnInit {
   constructor(private mapService: MapboxMapService, private http: HttpClient) {}
-
   public unformattedData;
   public statData: Array<StatRecord>;
   public lockdownButtonToggle = false;
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
+  public countyBoxModel: BehaviorSubject<CountyStateBox> = new BehaviorSubject(undefined);
   public ngOnInit(): void {
     this.mapService.loaded.subscribe((map) => {
       this.getStats();
@@ -78,6 +79,13 @@ export class LockdownMapComponent implements OnInit {
 
       map.on('mousemove', 'counties-lockdowns', (e) => {
         const feature = e.features[0];
+        this.countyBoxModel.next({
+          county: feature.properties.NAME
+        });
+      });
+
+      map.on('click', 'counties-lockdowns', (e) => {
+        const feature = e.features[0];
         const hoveredCounty = this.statData.filter((county) => county.fips === feature.properties.fips);
         const updatedDate: Date = hoveredCounty[0]['lockdownInfo'][0]
           ? hoveredCounty[0]['lockdownInfo'][0]['updated']
@@ -95,12 +103,9 @@ export class LockdownMapComponent implements OnInit {
           updated: updatedDate,
           created: createdDate
         });
-      });
-
-      map.on('click', 'counties-lockdowns', (e) => {
-        const feature = e.features[0];
-        const clickedCounty = this.statData.filter((county) => county.fips === feature.properties.fips);
-        this.getFipsLockdownData(clickedCounty[0]['fips']);
+        // const feature = e.features[0];
+        // const clickedCounty = this.statData.filter((county) => county.fips === feature.properties.fips);
+        // this.getFipsLockdownData(clickedCounty[0]['fips']);
       });
 
       map.dragRotate.disable();
@@ -244,4 +249,7 @@ interface IInfoBox extends StatRecord {
   name: string;
   updated: Date;
   created: Date;
+}
+interface CountyStateBox {
+  county: string;
 }
