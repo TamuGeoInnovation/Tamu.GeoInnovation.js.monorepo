@@ -10,22 +10,29 @@
     style="mapbox://styles/mapbox/dark-v10" [center]="['-98', '38.88']">
   </tamu-gisc-mapbox-map>
   <div class='right-sidebar'>
-    <h3>Claims & Lockdowns</h3>
     <div #infobox *ngIf="(infoBoxModel | async) as info">
+      <h3>Claims & Lockdowns</h3>
       <p>County: {{info.name}}</p>
       <p>FIPS: {{info.fips}}</p>
       <p>Claims: {{info.claims}}</p>
       <p>Lockdowns: {{info.lockdowns}}</p>
-      <p>guid: {{info.lockdownInfo}}</p>
+      <p>updated: {{info.lockdownInfo[0]['updated']}}</p>
+      <p>created: {{info.lockdownInfo[0]['created']}}</p>
+      <p>guid: {{info.lockdownInfo[0]['guid']}}</p>
     </div>
-    <h4>Click on a county to get more info</h4>
+    <!-- <div #lockdownbox *ngIf="(lockdownBoxModel | async) as lockdownInfo">
+      <p>updated: {{lockdownInfo}}</p>
+      <p>created: {{lockdownInfo.created}}</p>
+      <p>guid: {{lockdownInfo.guid}}</p>
+    </div> -->
+    <!-- <h4>Click on a county to get more info</h4> -->
     <div *ngIf="!lockdownButtonToggle" class="legend">
       <h3>Claimed Counties</h3>
       <div><span id="unclaimed"></span>Unclaimed</div>
       <div><span id="claimed"></span>Claimed</div>
     </div>
     <div *ngIf="lockdownButtonToggle" class="legend">
-      <h3>Age of Lockdown Data</h3>
+      <h3>Days since Lockdown was submitted</h3>
       <div><span id="no-lockdown"></span>>No Lockdowns</div>
       <div><span id="stop-one"></span>> 0 days</div>
       <div><span id="stop-two"></span>> 10 days</div>

@@ -18,7 +18,7 @@ export class LockdownMapComponent implements OnInit {
   public statData: Array<StatRecord>;
   public lockdownButtonToggle = false;
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
-
+  public lockdownBoxModel: BehaviorSubject<LockdownRecord> = new BehaviorSubject(undefined);
   public ngOnInit(): void {
     this.mapService.loaded.subscribe((map) => {
       this.getStats();
@@ -91,6 +91,11 @@ export class LockdownMapComponent implements OnInit {
           lockdowns: selectedCounty[0]['lockdowns'],
           lockdownInfo: selectedCounty[0]['lockdownInfo']
         });
+        this.lockdownBoxModel.next({
+          updated: selectedCounty[0]['lockdownInfo']['updated'],
+          created: selectedCounty[0]['lockdownInfo']['created'],
+          guid: selectedCounty[0]['lockdownInfo']['guid']
+        });
       });
 
       map.on('click', 'counties-lockdowns', (e) => {
@@ -112,7 +117,6 @@ export class LockdownMapComponent implements OnInit {
 
   public getStats(): void {
     const statsUrl = 'https://nodes.geoservices.tamu.edu/api/covid/counties/stats';
-    //const statsUrl = 'http://localhost:27023/counties/stats';
     const requests = forkJoin([this.http.get(statsUrl)]);
     requests.pipe(take(1)).subscribe(([recievedData]) => {
       this.unformattedData = recievedData;
@@ -164,6 +168,7 @@ export class LockdownMapComponent implements OnInit {
       colorCode = 0;
     } else {
       const timeStamp = new Date(minDate.updated).getTime();
+      //Left most side of the equation is days (day* hour* min * sec *msec)
       const stopOne = new Date().getTime() - 10 * 24 * 60 * 60 * 1000;
       const stopTwo = new Date().getTime() - 20 * 24 * 60 * 60 * 1000;
       const stopThree = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
@@ -212,7 +217,7 @@ export class LockdownMapComponent implements OnInit {
     this.mapService.map.setPaintProperty('counties-lockdowns', 'fill-color', countyExpression);
   }
 
-  public lockdownToggle() {
+  public lockdownToggle(): void {
     this.lockdownButtonToggle = !this.lockdownButtonToggle;
     this.lockdownButtonToggle
       ? this.mapService.map.setLayoutProperty('counties-lockdowns', 'visibility', 'visible')
