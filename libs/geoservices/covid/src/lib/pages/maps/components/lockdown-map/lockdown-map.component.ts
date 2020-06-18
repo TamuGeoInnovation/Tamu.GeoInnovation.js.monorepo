@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { forkJoin, BehaviorSubject, from } from 'rxjs';
+import { forkJoin, BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { Popup } from 'mapbox-gl';
 
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 
@@ -95,7 +94,9 @@ export class LockdownMapComponent implements OnInit {
           : null;
         this.infoBoxModel.next({
           name: feature.properties.NAME,
+          state: hoveredCounty[0]['state'],
           fips: hoveredCounty[0]['fips'],
+          fipsNum: hoveredCounty[0]['fipsNum'],
           claims: hoveredCounty[0]['claims'],
           sites: hoveredCounty[0]['sites'],
           lockdowns: hoveredCounty[0]['lockdowns'],
@@ -103,9 +104,6 @@ export class LockdownMapComponent implements OnInit {
           updated: updatedDate,
           created: createdDate
         });
-        // const feature = e.features[0];
-        // const clickedCounty = this.statData.filter((county) => county.fips === feature.properties.fips);
-        // this.getFipsLockdownData(clickedCounty[0]['fips']);
       });
 
       map.dragRotate.disable();
@@ -150,6 +148,8 @@ export class LockdownMapComponent implements OnInit {
 
       const statToAdd: StatRecord = {
         fips: keyIndex,
+        state: keyIndex.substring(0, 2),
+        fipsNum: parseInt(keyIndex, 10),
         claims: this.unformattedData[keyIndex]['claims'],
         sites: this.unformattedData[keyIndex]['sites'],
         lockdowns: this.unformattedData[keyIndex]['lockdowns'],
@@ -212,7 +212,7 @@ export class LockdownMapComponent implements OnInit {
   }
 
   public drawLockdownMap(): void {
-    const colorSchemes = ['#4d4d4d', '#4575b4', '#91bfdb', '#e0f3f8', '#ffffbf', '#fee090', '#fc8d59', '#d73027'];
+    const colorSchemes = ['#4d4d4d', '#1a9850', '#91cf60', '#d9ef8b', '#ffffbf', '#fee08b', '#fc8d59', '#d73027'];
     const countyExpression = ['match', ['get', 'fips']];
     this.statData.forEach((row) => {
       const number = this.getDateCode(row.lockdownInfo);
@@ -233,6 +233,8 @@ export class LockdownMapComponent implements OnInit {
 
 interface StatRecord {
   fips: string;
+  fipsNum: number;
+  state: string;
   claims: number;
   sites: number;
   lockdowns: number;
@@ -250,6 +252,7 @@ interface IInfoBox extends StatRecord {
   updated: Date;
   created: Date;
 }
+
 interface CountyStateBox {
   county: string;
 }

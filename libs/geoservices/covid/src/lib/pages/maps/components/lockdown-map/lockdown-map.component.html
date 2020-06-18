@@ -21,6 +21,9 @@
       <p>Claims: {{info.claims}}</p>
       <p>Lockdowns: {{info.lockdowns}}</p>
       <p>Updated: {{info.updated}}</p>
+      <a [routerLink]="['/admin/claims']" [queryParams]='{state: info.state, county: info.fipsNum}' target="_blank">
+        Admin Page
+      </a>
     </div>
     <div *ngIf="!lockdownButtonToggle" class="legend">
       <h3>Claimed Counties</h3>
@@ -29,7 +32,7 @@
     </div>
     <div *ngIf="lockdownButtonToggle" class="legend">
       <h3>Age of lockdown submission</h3>
-      <div><span id="no-lockdown"></span>>No Lockdowns</div>
+      <div><span id="no-lockdown"></span>> No Lockdowns</div>
       <div><span id="stop-one"></span>> 0 days</div>
       <div><span id="stop-two"></span>> 10 days</div>
       <div><span id="stop-three"></span>> 20 days</div>
