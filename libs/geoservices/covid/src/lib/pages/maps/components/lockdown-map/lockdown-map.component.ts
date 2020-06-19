@@ -212,7 +212,7 @@ export class LockdownMapComponent implements OnInit {
   }
 
   public drawLockdownMap(): void {
-    const colorSchemes = ['#4d4d4d', '#1a9850', '#91cf60', '#d9ef8b', '#ffffbf', '#fee08b', '#fc8d59', '#d73027'];
+    const colorSchemes = ['#4D4D4D', '#1A9850', '#91CF60', '#D9EF8B', '#FFFFBF', '#FEE08B', '#FC8D59', '#D73027'];
     const countyExpression = ['match', ['get', 'fips']];
     this.statData.forEach((row) => {
       const number = this.getDateCode(row.lockdownInfo);
