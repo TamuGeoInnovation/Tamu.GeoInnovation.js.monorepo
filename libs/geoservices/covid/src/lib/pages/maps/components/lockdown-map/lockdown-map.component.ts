@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { forkJoin, BehaviorSubject } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { take, skip, map } from 'rxjs/operators';
 
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
-import { LockdownsService } from '@tamu-gisc/geoservices/data-access';
+import { CountiesService } from '@tamu-gisc/geoservices/data-access';
 
 @Component({
   selector: 'tamu-gisc-lockdown-map',
@@ -13,7 +13,7 @@ import { LockdownsService } from '@tamu-gisc/geoservices/data-access';
   styleUrls: ['./lockdown-map.component.scss']
 })
 export class LockdownMapComponent implements OnInit {
-  constructor(private mapService: MapboxMapService, private http: HttpClient, private lockService: LockdownsService) {}
+  constructor(private mapService: MapboxMapService, private http: HttpClient, private countyService: CountiesService) {}
   public unformattedData;
   public statData: Array<StatRecord>;
   public lockdownButtonToggle = false;
@@ -111,17 +111,6 @@ export class LockdownMapComponent implements OnInit {
     });
   }
 
-  public getFipsLockdownData(fipsCode: string) {
-    const check = this.lockService.getLockdownForCounty(parseInt(fipsCode, 10));
-    console.log(check);
-    const lockdownUrl = 'https://nodes.geoservices.tamu.edu/api/covid/lockdowns/active/county/' + fipsCode;
-    const requests = forkJoin([this.http.get(lockdownUrl)]);
-    requests.subscribe(([lockdownData]) => {
-      console.log(lockdownData);
-      return lockdownData;
-    });
-  }
-
   public getStats(): void {
     const statsUrl = 'https://nodes.geoservices.tamu.edu/api/covid/counties/stats';
     const requests = forkJoin([this.http.get(statsUrl)]);
@@ -134,31 +123,30 @@ export class LockdownMapComponent implements OnInit {
   }
 
   public formatData(): void {
-    this.statData = new Array();
-    let lockdownRecords = new Array();
-    Object.keys(this.unformattedData).forEach((keyIndex) => {
-      lockdownRecords = this.unformattedData[keyIndex]['lockdownInfo'].filter((item) => {
-        return item !== null;
-      });
-      lockdownRecords = lockdownRecords.map((item) => {
-        const lockdownStat: LockdownRecord = {
-          updated: item.updated,
-          created: item.created,
-          guid: item.guid
-        };
-        return lockdownStat;
-      });
+    this.statData = Object.entries(this.unformattedData).map((key) => {
+      const lockdownRecords: Array<LockdownRecord> = key[1]['lockdownInfo']
+        .filter((item) => {
+          return item !== null;
+        })
+        .map((lockdownInfo) => {
+          const lockdownStat: LockdownRecord = {
+            updated: lockdownInfo.updated,
+            created: lockdownInfo.created,
+            guid: lockdownInfo.guid
+          };
+          return lockdownStat;
+        });
 
       const statToAdd: StatRecord = {
-        fips: keyIndex,
-        state: keyIndex.substring(0, 2),
-        fipsNum: parseInt(keyIndex, 10),
-        claims: this.unformattedData[keyIndex]['claims'],
-        sites: this.unformattedData[keyIndex]['sites'],
-        lockdowns: this.unformattedData[keyIndex]['lockdowns'],
+        fips: key[0],
+        state: key[0].substring(0, 2),
+        fipsNum: parseInt(key[0], 10),
+        claims: key[1]['claims'],
+        sites: key[1]['sites'],
+        lockdowns: key[1]['lockdowns'],
         lockdownInfo: lockdownRecords
       };
-      this.statData.push(statToAdd);
+      return statToAdd;
     });
   }
 
