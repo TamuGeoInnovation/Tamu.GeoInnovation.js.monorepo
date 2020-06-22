@@ -1,19 +1,19 @@
 import { NestFactory, HttpAdapterHost } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { AppModule } from './app.module';
-import { } from '@tamu'
+import { AppModule } from './app/app.module';
+import { IdpServer } from '@tamu-gisc/oidc/provider';
 import { Provider } from 'oidc-provider';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   // enableOIDCDebug(OpenIdProvider.provider);
   // console.log("Applying oidc-provider...");
-  app.use("/oidc", OpenIdProvider.provider.callback);
+  app.use('/oidc', OpenIdProvider.provider.callback);
   // const adapterHost = app.get(HttpAdapterHost);
   // const httpAdapter = adapterHost.httpAdapter;
   // const instance = httpAdapter.getInstance();
   // instance.use(OpenIdProvider.provider.callback);
-  
+
   // app.use((err, req, res, next) => {
   //   console.log("MAYBE SOMETHING HERE");
   //   if (err.name === "SessionNotFound") {
@@ -155,4 +155,3 @@ function enableOIDCDebug(idp: Provider): void {
     console.log('backchannel.error');
   });
 }
-
