@@ -5,6 +5,7 @@ import { forkJoin, BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
+import { LockdownsService } from '@tamu-gisc/geoservices/data-access';
 
 @Component({
   selector: 'tamu-gisc-lockdown-map',
@@ -12,7 +13,7 @@ import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
   styleUrls: ['./lockdown-map.component.scss']
 })
 export class LockdownMapComponent implements OnInit {
-  constructor(private mapService: MapboxMapService, private http: HttpClient) {}
+  constructor(private mapService: MapboxMapService, private http: HttpClient, private lockService: LockdownsService) {}
   public unformattedData;
   public statData: Array<StatRecord>;
   public lockdownButtonToggle = false;
@@ -111,9 +112,11 @@ export class LockdownMapComponent implements OnInit {
   }
 
   public getFipsLockdownData(fipsCode: string) {
+    const check = this.lockService.getLockdownForCounty(parseInt(fipsCode, 10));
+    console.log(check);
     const lockdownUrl = 'https://nodes.geoservices.tamu.edu/api/covid/lockdowns/active/county/' + fipsCode;
     const requests = forkJoin([this.http.get(lockdownUrl)]);
-    requests.pipe(take(1)).subscribe(([lockdownData]) => {
+    requests.subscribe(([lockdownData]) => {
       console.log(lockdownData);
       return lockdownData;
     });
@@ -122,7 +125,7 @@ export class LockdownMapComponent implements OnInit {
   public getStats(): void {
     const statsUrl = 'https://nodes.geoservices.tamu.edu/api/covid/counties/stats';
     const requests = forkJoin([this.http.get(statsUrl)]);
-    requests.pipe(take(1)).subscribe(([recievedData]) => {
+    requests.subscribe(([recievedData]) => {
       this.unformattedData = recievedData;
       this.formatData();
       this.drawClaimsMap();
