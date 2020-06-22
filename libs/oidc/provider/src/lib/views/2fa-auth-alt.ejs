@@ -1,0 +1,9 @@
+<form autocomplete="off" action="/pwr/<%= token %>/2fa" method="post">
+  <input type="hidden" name="sub" value="<%= sub %>"/>
+  <% if (error) {%> <p id="error-message"><%= message %></p> <%}%>
+  <p>Enter the 6 digit code from your authenticator app</p>
+  <input required type="text" name="token" class="error-input" placeholder="6 digit code" autofocus="on" >
+
+  <button type="submit" class="login login-submit">Check code</button>
+</form>
+

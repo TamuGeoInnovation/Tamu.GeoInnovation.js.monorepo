@@ -1,0 +1,10 @@
+<form autocomplete="off" action="/user/<%= sub %>" method="post">
+    <input required type="text" name="login" placeholder="Email" autofocus="on">
+    <input required type="text" name="name" placeholder="Name">
+    <input required type="password" name="password" placeholder="Password">
+    <input required type="password" name="confirm_password" placeholder="Confirm Password">
+    <% if (error) { %>
+        <p><%= error %></p>
+    <% } %>
+    <button type="submit" class="login login-submit">Register</button>
+</form>
