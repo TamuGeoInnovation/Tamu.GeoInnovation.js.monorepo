@@ -86,27 +86,23 @@ export class LockdownMapComponent implements OnInit {
 
       map.on('click', 'counties-lockdowns', (e) => {
         const feature = e.features[0];
-        const hoveredCounty = this.statData.filter((county) => county.fips === feature.properties.fips);
-        const updatedDate: Date = hoveredCounty[0]['lockdownInfo'][0]
-          ? hoveredCounty[0]['lockdownInfo'][0]['updated']
-          : null;
-        const createdDate: Date = hoveredCounty[0]['lockdownInfo'][0]
-          ? hoveredCounty[0]['lockdownInfo'][0]['created']
-          : null;
+        const filteredCounty = this.statData.filter((county) => county.fips === feature.properties.fips);
+        const hoveredCounty = filteredCounty[0];
+        const updatedDate: Date = hoveredCounty.lockdownInfo[0] ? hoveredCounty.lockdownInfo[0].updated : null;
+        const createdDate: Date = hoveredCounty.lockdownInfo[0] ? hoveredCounty.lockdownInfo[0].created : null;
         this.infoBoxModel.next({
           name: feature.properties.NAME,
-          state: hoveredCounty[0]['state'],
-          fips: hoveredCounty[0]['fips'],
-          fipsNum: hoveredCounty[0]['fipsNum'],
-          claims: hoveredCounty[0]['claims'],
-          sites: hoveredCounty[0]['sites'],
-          lockdowns: hoveredCounty[0]['lockdowns'],
-          lockdownInfo: hoveredCounty[0]['lockdownInfo'],
+          state: hoveredCounty.state,
+          fips: hoveredCounty.fips,
+          fipsNum: hoveredCounty.fipsNum,
+          claims: hoveredCounty.claims,
+          sites: hoveredCounty.sites,
+          lockdowns: hoveredCounty.lockdowns,
+          lockdownInfo: hoveredCounty.lockdownInfo,
           updated: updatedDate,
           created: createdDate
         });
       });
-
       map.dragRotate.disable();
     });
   }
@@ -123,30 +119,27 @@ export class LockdownMapComponent implements OnInit {
   }
 
   public formatData(): void {
-    this.statData = Object.entries(this.unformattedData).map((key) => {
-      const lockdownRecords: Array<LockdownRecord> = key[1]['lockdownInfo']
+    this.statData = Object.entries(this.unformattedData).map(([key, entry]) => {
+      const lockdownRecords: Array<LockdownRecord> = entry['lockdownInfo']
         .filter((item) => {
           return item !== null;
         })
         .map((lockdownInfo) => {
-          const lockdownStat: LockdownRecord = {
+          return {
             updated: lockdownInfo.updated,
             created: lockdownInfo.created,
             guid: lockdownInfo.guid
           };
-          return lockdownStat;
         });
-
-      const statToAdd: StatRecord = {
-        fips: key[0],
-        state: key[0].substring(0, 2),
-        fipsNum: parseInt(key[0], 10),
-        claims: key[1]['claims'],
-        sites: key[1]['sites'],
-        lockdowns: key[1]['lockdowns'],
+      return {
+        fips: key,
+        state: key.substring(0, 2),
+        fipsNum: parseInt(key, 10),
+        claims: entry['claims'],
+        sites: entry['sites'],
+        lockdowns: entry['lockdowns'],
         lockdownInfo: lockdownRecords
       };
-      return statToAdd;
     });
   }
 
