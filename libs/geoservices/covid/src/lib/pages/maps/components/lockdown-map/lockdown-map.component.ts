@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { forkJoin, BehaviorSubject } from 'rxjs';
-import { take, skip, map } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 import { CountiesService } from '@tamu-gisc/geoservices/data-access';
@@ -14,13 +14,13 @@ import { CountiesService } from '@tamu-gisc/geoservices/data-access';
 })
 export class LockdownMapComponent implements OnInit {
   constructor(private mapService: MapboxMapService, private http: HttpClient, private countyService: CountiesService) {}
-  public unformattedData;
+  public unformattedData: Array<DataRecord>;
   public statData: Array<StatRecord>;
   public lockdownButtonToggle = false;
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
   public countyBoxModel: BehaviorSubject<CountyStateBox> = new BehaviorSubject(undefined);
   public ngOnInit(): void {
-    this.mapService.loaded.subscribe((map) => {
+    this.mapService.loaded.pipe(take(1)).subscribe((map) => {
       this.getStats();
       const zoomThreshold = 3;
 
@@ -79,19 +79,27 @@ export class LockdownMapComponent implements OnInit {
 
       map.on('mousemove', 'counties-lockdowns', (e) => {
         const feature = e.features[0];
+        const clickedCounty: County = {
+          name: feature[0].properties.NAME,
+          fips: feature[0].properties.fips
+        };
         this.countyBoxModel.next({
-          county: feature.properties.NAME
+          county: clickedCounty.name
         });
       });
 
       map.on('click', 'counties-lockdowns', (e) => {
         const feature = e.features[0];
-        const filteredCounty = this.statData.filter((county) => county.fips === feature.properties.fips);
+        const clickedCounty: County = {
+          name: feature[0].properties.NAME,
+          fips: feature[0].properties.fips
+        };
+        const filteredCounty = this.statData.filter((county) => county.fips === clickedCounty.fips);
         const hoveredCounty = filteredCounty[0];
         const updatedDate: Date = hoveredCounty.lockdownInfo[0] ? hoveredCounty.lockdownInfo[0].updated : null;
         const createdDate: Date = hoveredCounty.lockdownInfo[0] ? hoveredCounty.lockdownInfo[0].created : null;
         this.infoBoxModel.next({
-          name: feature.properties.NAME,
+          name: clickedCounty.name,
           state: hoveredCounty.state,
           fips: hoveredCounty.fips,
           fipsNum: hoveredCounty.fipsNum,
@@ -109,7 +117,7 @@ export class LockdownMapComponent implements OnInit {
 
   public getStats(): void {
     const statsUrl = 'https://nodes.geoservices.tamu.edu/api/covid/counties/stats';
-    const requests = forkJoin([this.http.get(statsUrl)]);
+    const requests = forkJoin([this.http.get<DataRecord[]>(statsUrl)]);
     requests.subscribe(([recievedData]) => {
       this.unformattedData = recievedData;
       this.formatData();
@@ -120,25 +128,24 @@ export class LockdownMapComponent implements OnInit {
 
   public formatData(): void {
     this.statData = Object.entries(this.unformattedData).map(([key, entry]) => {
-      const lockdownRecords: Array<LockdownRecord> = entry['lockdownInfo']
-        .filter((item) => {
-          return item !== null;
-        })
-        .map((lockdownInfo) => {
-          return {
-            updated: lockdownInfo.updated,
-            created: lockdownInfo.created,
-            guid: lockdownInfo.guid
-          };
-        });
       return {
         fips: key,
         state: key.substring(0, 2),
         fipsNum: parseInt(key, 10),
-        claims: entry['claims'],
-        sites: entry['sites'],
-        lockdowns: entry['lockdowns'],
-        lockdownInfo: lockdownRecords
+        claims: entry.claims,
+        sites: entry.sites,
+        lockdowns: entry.lockdowns,
+        lockdownInfo: entry.lockdownInfo
+          .filter((item) => {
+            return item !== null;
+          })
+          .map((lockRecord) => {
+            return {
+              updated: lockRecord.updated,
+              created: lockRecord.created,
+              guid: lockRecord.guid
+            };
+          })
       };
     });
   }
@@ -215,14 +222,17 @@ export class LockdownMapComponent implements OnInit {
   }
 }
 
-interface StatRecord {
-  fips: string;
-  fipsNum: number;
-  state: string;
+interface DataRecord {
   claims: number;
   sites: number;
   lockdowns: number;
   lockdownInfo: Array<LockdownRecord>;
+}
+
+interface StatRecord extends DataRecord {
+  fips: string;
+  fipsNum: number;
+  state: string;
 }
 
 interface LockdownRecord {
@@ -239,4 +249,9 @@ interface IInfoBox extends StatRecord {
 
 interface CountyStateBox {
   county: string;
+}
+
+interface County {
+  name: string;
+  fips: string;
 }
