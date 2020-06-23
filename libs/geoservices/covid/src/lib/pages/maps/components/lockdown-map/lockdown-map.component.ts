@@ -78,28 +78,22 @@ export class LockdownMapComponent implements OnInit {
       );
 
       map.on('mousemove', 'counties-lockdowns', (e) => {
-        const feature = e.features[0];
-        const clickedCounty: County = {
-          name: feature[0].properties.NAME,
-          fips: feature[0].properties.fips
-        };
+        const [feature] = e.features;
+        const props = feature.properties as County;
         this.countyBoxModel.next({
-          county: clickedCounty.name
+          county: props.NAME
         });
       });
 
       map.on('click', 'counties-lockdowns', (e) => {
-        const feature = e.features[0];
-        const clickedCounty: County = {
-          name: feature[0].properties.NAME,
-          fips: feature[0].properties.fips
-        };
-        const filteredCounty = this.statData.filter((county) => county.fips === clickedCounty.fips);
+        const [feature] = e.features;
+        const props = feature.properties as County;
+        const filteredCounty = this.statData.filter((county) => county.fips === props.fips);
         const hoveredCounty = filteredCounty[0];
         const updatedDate: Date = hoveredCounty.lockdownInfo[0] ? hoveredCounty.lockdownInfo[0].updated : null;
         const createdDate: Date = hoveredCounty.lockdownInfo[0] ? hoveredCounty.lockdownInfo[0].created : null;
         this.infoBoxModel.next({
-          name: clickedCounty.name,
+          name: props.NAME,
           state: hoveredCounty.state,
           fips: hoveredCounty.fips,
           fipsNum: hoveredCounty.fipsNum,
@@ -194,9 +188,9 @@ export class LockdownMapComponent implements OnInit {
     const colorSchemes = ['#2B8CBE', '#ECE7F2'];
     const countyExpression = ['match', ['get', 'fips']];
     this.statData.forEach((row) => {
-      const number = row['claims'];
+      const number = row.claims;
       const color = number > 0 ? colorSchemes[0] : colorSchemes[1];
-      countyExpression.push(row['fips'], color);
+      countyExpression.push(row.fips, color);
     });
     countyExpression.push('rgba(255,255,255,1)');
     this.mapService.map.setPaintProperty('counties-claims', 'fill-color', countyExpression);
@@ -208,7 +202,7 @@ export class LockdownMapComponent implements OnInit {
     this.statData.forEach((row) => {
       const number = this.getDateCode(row.lockdownInfo);
       const color = colorSchemes[number];
-      countyExpression.push(row['fips'], color);
+      countyExpression.push(row.fips, color);
     });
     countyExpression.push('rgba(255,255,255,1)');
     this.mapService.map.setPaintProperty('counties-lockdowns', 'fill-color', countyExpression);
@@ -252,6 +246,6 @@ interface CountyStateBox {
 }
 
 interface County {
-  name: string;
+  NAME: string;
   fips: string;
 }
