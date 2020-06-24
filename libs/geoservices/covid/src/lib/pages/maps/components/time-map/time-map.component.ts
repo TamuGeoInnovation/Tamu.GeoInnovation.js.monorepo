@@ -49,7 +49,6 @@ export class TimeMapComponent implements OnInit {
           source: 'state-lines',
           'source-layer': 'state-lines',
           layout: {
-            // make layer visible by default (change to none or visible for debugging)
             visibility: 'none'
           }
         },
@@ -116,7 +115,6 @@ export class TimeMapComponent implements OnInit {
 
   public reloadData(): void {
     const dateSelected: string = this.datePicker.nativeElement.value;
-    //console.log(dateSelected);
     const stateURL =
       'https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/states/' +
       dateSelected +
@@ -138,9 +136,8 @@ export class TimeMapComponent implements OnInit {
     const stateExpression = ['match', ['get', 'STATE']];
     const countyExpression = ['match', ['get', 'fips']];
 
-    this.stateData.forEach((row) => {
+    this.stateData.map((row) => {
       const number = row.infection_rate;
-      //console.log(row.STATE);
       const color =
         number > 1000
           ? '#AE8080'
@@ -156,7 +153,7 @@ export class TimeMapComponent implements OnInit {
       stateExpression.push(row.STATE, color);
     });
 
-    this.countyData.forEach((row) => {
+    this.countyData.map((row) => {
       const number = row.infection_rate;
       const color =
         number > 1000
@@ -184,7 +181,7 @@ export class TimeMapComponent implements OnInit {
     const stateExpression = ['match', ['get', 'STATE']];
     const countyExpression = ['match', ['get', 'fips']];
 
-    this.stateData.forEach((row) => {
+    this.stateData.map((row) => {
       const number = row.death_rate;
       const color =
         number > 100
@@ -201,7 +198,7 @@ export class TimeMapComponent implements OnInit {
       stateExpression.push(row.STATE, color);
     });
 
-    this.countyData.forEach((row) => {
+    this.countyData.map((row) => {
       const number = row.death_rate;
       const color =
         number > 100
