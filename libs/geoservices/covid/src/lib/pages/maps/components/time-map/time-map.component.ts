@@ -16,7 +16,7 @@ export class TimeMapComponent implements OnInit {
   constructor(private mapService: MapboxMapService, private http: HttpClient) {}
 
   public now: Moment;
-  private maxDate = '2020-06-16';
+  private maxDate = '2020-06-23';
   private stateData: Array<StateRecord>;
   private countyData: Array<CountyRecord>;
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
@@ -27,7 +27,7 @@ export class TimeMapComponent implements OnInit {
   public datePicker: ElementRef;
 
   public ngOnInit(): void {
-    this.mapService.loaded.subscribe((map) => {
+    this.mapService.loaded.pipe(take(1)).subscribe((map) => {
       this.datePicker.nativeElement.value = this.maxDate;
       this.datePicker.nativeElement.max = this.maxDate;
       const zoomThreshold = 3;
@@ -84,30 +84,30 @@ export class TimeMapComponent implements OnInit {
       );
 
       map.on('mousemove', 'covid-county', (e) => {
-        const feature = e.features[0];
-        const selectedCounty = this.countyData.filter((county) => county.fips === feature.properties.fips);
-
+        const [feature] = e.features;
+        const props = feature.properties as County;
+        const selectedCounty = this.countyData.filter((county) => county.fips === props.fips);
         this.infoBoxModel.next({
-          name: feature.properties.NAME,
-          pop: feature.properties.POPESTIMATE2019,
-          cases: selectedCounty[0]['confirmed'],
-          infectionRate: selectedCounty[0]['infection_rate'],
-          deaths: selectedCounty[0]['deaths'],
-          deathRate: selectedCounty[0]['death_rate']
+          name: props.NAME,
+          population: selectedCounty[0].population,
+          confirmed: selectedCounty[0].confirmed,
+          infection_rate: selectedCounty[0].infection_rate,
+          deaths: selectedCounty[0].deaths,
+          death_rate: selectedCounty[0].death_rate
         });
       });
 
       map.on('mousemove', 'covid-state', (e) => {
-        const feature = e.features[0];
-        const selectedState = this.stateData.filter((state) => state.STATE === feature.properties.STATE);
-
+        const [feature] = e.features;
+        const props = feature.properties as State;
+        const selectedState = this.stateData.filter((state) => state.STATE === props.STATE);
         this.infoBoxModel.next({
           name: feature.properties.NAME,
-          pop: feature.properties.POPESTIMATE2019,
-          cases: selectedState[0]['confirmed'],
-          infectionRate: selectedState[0]['infection_rate'],
-          deaths: selectedState[0]['deaths'],
-          deathRate: selectedState[0]['death_rate']
+          population: selectedState[0].population,
+          confirmed: selectedState[0].confirmed,
+          infection_rate: selectedState[0].infection_rate,
+          deaths: selectedState[0].deaths,
+          death_rate: selectedState[0].death_rate
         });
       });
       this.reloadData();
@@ -116,7 +116,7 @@ export class TimeMapComponent implements OnInit {
 
   public reloadData(): void {
     const dateSelected: string = this.datePicker.nativeElement.value;
-    console.log(dateSelected);
+    //console.log(dateSelected);
     const stateURL =
       'https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/states/' +
       dateSelected +
@@ -140,7 +140,7 @@ export class TimeMapComponent implements OnInit {
 
     this.stateData.forEach((row) => {
       const number = row.infection_rate;
-      console.log(row.STATE);
+      //console.log(row.STATE);
       const color =
         number > 1000
           ? '#AE8080'
@@ -264,8 +264,10 @@ interface IInfoBox extends BaseRecord {
 
 interface State {
   STATE: string;
+  NAME: string;
 }
 
 interface County {
-  name: string;
+  fips: string;
+  NAME: string;
 }

@@ -19,11 +19,11 @@
     <div #infobox *ngIf="(infoBoxModel | async) as info">
       <p *ngIf="!stateButtonToggle">County: {{info.name}}</p>
       <p *ngIf="stateButtonToggle">State: {{info.name}}</p>
-      <p>Population: {{info.pop}}</p>
-      <p>Cases: {{info.cases}}</p>
-      <p>Infection Rate: {{info.infectionRate.toFixed(2)}}</p>
+      <p>Population: {{info.population}}</p>
+      <p>Cases: {{info.confirmed}}</p>
+      <p>Infection Rate: {{info.infection_rate.toFixed(2)}}</p>
       <p>Deaths: {{info.deaths}}</p>
-      <p>Mortality Rate: {{info.deathRate.toFixed(2)}}</p>
+      <p>Mortality Rate: {{info.death_rate.toFixed(2)}}</p>
     </div>
     <div *ngIf="!mortalButtonToggled" class="legend">
       <h3>Infection Rate</h3>
