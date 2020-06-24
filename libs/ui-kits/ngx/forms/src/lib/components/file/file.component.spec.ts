@@ -8,9 +8,8 @@ describe('FileComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FileComponent ]
-    })
-    .compileComponents();
+      declarations: [FileComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -21,5 +20,24 @@ describe('FileComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+  it('should correctly evaluate checked', () => {
+    expect(component.checked).toBeFalsy();
+  });
+  it('should correctly evaluate writeValue', () => {
+    component.writeValue(true);
+    expect(component.checked).toBeTruthy();
+  });
+  it('should correctly evaluate setDisabledState', () => {
+    component.setDisabledState(true);
+    expect(component.checked).toBeTruthy();
+  });
+
+  it('should handleFileChange()', () => {
+    const mockFile = new File(['go'], 'go.text', { type: 'text/plain' });
+    const mockEvt = { target: { files: [mockFile] } };
+    const readAsDataURLSpy = jest.spyOn(FileReader.prototype, 'readAsDataURL');
+    component.handleFileChange(mockEvt);
+    expect(readAsDataURLSpy).toBeCalledWith(mockFile);
   });
 });

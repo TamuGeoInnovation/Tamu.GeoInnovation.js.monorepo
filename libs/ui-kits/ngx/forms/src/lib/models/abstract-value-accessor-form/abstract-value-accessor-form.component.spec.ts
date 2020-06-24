@@ -21,4 +21,23 @@ describe('AbstractValueAccessorFormComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  it('should correctly evaluate writeValue', () => {
+    component.writeValue(true);
+    expect(component.value).toBeTruthy();
+    component.writeValue(null);
+    expect(component.value).toBeUndefined();
+  });
+  it('should correctly evaluate registerOnChange', () => {
+    component.registerOnChange(component.writeValue(true));
+    expect(component.value).toBeTruthy();
+  });
+
+  it('should correctly evaluate registerOnTouched', () => {
+    component.registerOnTouched(component.writeValue(true));
+    expect(component.value).toBeTruthy();
+  });
+  it('should correctly evaluate setDisabledState', () => {
+    component.setDisabledState(true);
+    expect(component.disabled).toBeTruthy();
+  });
 });
