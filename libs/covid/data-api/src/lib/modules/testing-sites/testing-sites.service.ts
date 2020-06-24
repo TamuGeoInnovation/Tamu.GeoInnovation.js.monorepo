@@ -544,6 +544,7 @@ export class TestingSitesService extends BaseService<TestingSite> {
       .innerJoinAndSelect('site.statuses', 'siteStatuses')
       .innerJoinAndSelect('claim.county', 'county')
       .innerJoinAndSelect('claim.user', 'user')
+      .addSelect('user.email')
       .innerJoinAndSelect('county.stateFips', 'state');
 
     if (stateFips) {

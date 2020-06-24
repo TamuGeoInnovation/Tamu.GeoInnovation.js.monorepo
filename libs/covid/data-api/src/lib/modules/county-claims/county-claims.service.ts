@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindManyOptions, In } from 'typeorm';
 
@@ -64,7 +64,7 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     }
   }
 
-  public async getAllUserCountyClaimsSortedByCounty(email: string) {
+  public async getAllUserCountyClaims(email: string) {
     if (!email || email === undefined || email === 'undefined') {
       throw new Error('Invalid email');
     }
@@ -75,6 +75,7 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       .createQueryBuilder('claim')
       .innerJoinAndSelect('claim.user', 'user')
       .innerJoinAndSelect('claim.county', 'county')
+      .innerJoinAndSelect('county.stateFips', 'state')
       .innerJoinAndSelect('claim.statuses', 'statuses')
       .innerJoinAndSelect('statuses.type', 'type')
       .where('user.guid = :userGuid', {
@@ -447,7 +448,8 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       .innerJoinAndSelect('county.stateFips', 'state')
       .innerJoinAndSelect('claim.statuses', 'statuses')
       .innerJoinAndSelect('statuses.type', 'statusType')
-      .innerJoinAndSelect('claim.user', 'user');
+      .innerJoinAndSelect('claim.user', 'user')
+      .addSelect('user.email');
 
     if (params.stateFips) {
       builder.andWhere('county.stateFips = :stateFips');
@@ -461,6 +463,8 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       builder.andWhere('user.email = :email');
     }
 
+    builder.orderBy('claim.created', 'DESC');
+
     builder.setParameters({
       stateFips: params.stateFips,
       countyFips: params.countyFips,
@@ -470,5 +474,27 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     const res = await builder.getMany();
 
     return res;
+  }
+
+  public async getInfosForClaim(claimGuid: string) {
+    const claim = await this.repo.findOne({
+      where: {
+        guid: claimGuid
+      },
+      relations: ['infos']
+    });
+
+    if (claim) {
+      return claim;
+    } else {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          message: 'Claim not found.',
+          success: false
+        },
+        HttpStatus.NOT_FOUND
+      );
+    }
   }
 }

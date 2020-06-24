@@ -8,6 +8,7 @@
         <div class="floating-row">
           <div class="column">Email</div>
           <div class="column">Claims</div>
+          <div class="column">Lockdowns</div>
           <div class="column">Testing Sites</div>
         </div>
       </div>
@@ -15,8 +16,9 @@
       <div class="floating-table-body">
         <div class="floating-row" *ngFor="let user of users | async">
           <div class="column">{{user.email}}</div>
-          <div class="column">{{user.claimsCount}}</div>
-          <div class="column">{{user.sitesCount}}</div>
+          <div class="column"><a routerLink="../claims" [queryParams]="{email: user.email}">{{user.claimsCount}}</a></div>
+          <div class="column"><a routerLink="../lockdowns" [queryParams]="{email: user.email}">{{user.lockdownsCount}}</a></div>
+          <div class="column"><a routerLink="../testing-sites" [queryParams]="{email: user.email}">{{user.sitesCount}}</a></div>
         </div>
       </div>
     </div>
