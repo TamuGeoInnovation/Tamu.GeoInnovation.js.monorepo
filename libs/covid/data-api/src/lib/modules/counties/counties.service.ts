@@ -133,7 +133,7 @@ interface LockdownStat {
   guid: string;
 }
 
-interface CountyStat {
+export interface CountyStat {
   claims?: number;
   sites?: number;
   lockdowns?: number;

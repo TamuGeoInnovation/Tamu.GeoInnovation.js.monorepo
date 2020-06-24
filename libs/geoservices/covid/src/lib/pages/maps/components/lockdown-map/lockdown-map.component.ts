@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 
-import { forkJoin, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 import { CountiesService } from '@tamu-gisc/geoservices/data-access';
+import { CountyStats, CountyStat } from '@tamu-gisc/covid/data-api';
 
 @Component({
   selector: 'tamu-gisc-lockdown-map',
@@ -13,8 +13,8 @@ import { CountiesService } from '@tamu-gisc/geoservices/data-access';
   styleUrls: ['./lockdown-map.component.scss']
 })
 export class LockdownMapComponent implements OnInit {
-  constructor(private mapService: MapboxMapService, private http: HttpClient, private countyService: CountiesService) {}
-  public unformattedData: Array<DataRecord>;
+  constructor(private mapService: MapboxMapService, private countyService: CountiesService) {}
+  public unformattedData: CountyStats;
   public statData: Array<StatRecord>;
   public lockdownButtonToggle = false;
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
@@ -110,9 +110,8 @@ export class LockdownMapComponent implements OnInit {
   }
 
   public getStats(): void {
-    const statsUrl = 'https://nodes.geoservices.tamu.edu/api/covid/counties/stats';
-    const requests = forkJoin([this.http.get<DataRecord[]>(statsUrl)]);
-    requests.subscribe(([recievedData]) => {
+    const statService = this.countyService.getCountyStats();
+    const statSubscription = statService.subscribe((recievedData) => {
       this.unformattedData = recievedData;
       this.formatData();
       this.drawClaimsMap();
@@ -216,14 +215,7 @@ export class LockdownMapComponent implements OnInit {
   }
 }
 
-interface DataRecord {
-  claims: number;
-  sites: number;
-  lockdowns: number;
-  lockdownInfo: Array<LockdownRecord>;
-}
-
-interface StatRecord extends DataRecord {
+interface StatRecord extends CountyStat {
   fips: string;
   fipsNum: number;
   state: string;
