@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Moment } from 'moment';
 import { forkJoin, BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -15,11 +14,13 @@ import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 export class TimeMapComponent implements OnInit {
   constructor(private mapService: MapboxMapService, private http: HttpClient) {}
 
-  public now: Moment;
-  private maxDate = '2020-06-23';
   private stateData: Array<StateRecord>;
   private countyData: Array<CountyRecord>;
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
+  public dateModel: BehaviorSubject<String> = new BehaviorSubject(undefined);
+  public maxDate = '2020-06-23';
+  public dateSelected = '2020-06-23';
+
   public mortalButtonToggled = false;
   public stateButtonToggle = false;
 
@@ -109,25 +110,27 @@ export class TimeMapComponent implements OnInit {
           death_rate: selectedState[0].death_rate
         });
       });
+
       this.reloadData();
     });
   }
 
   public reloadData(): void {
-    const dateSelected: string = this.datePicker.nativeElement.value;
+    this.dateSelected = this.datePicker.nativeElement.value;
     const stateURL =
       'https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/states/' +
-      dateSelected +
+      this.dateSelected +
       '.json';
     const countyURL =
       'https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/counties/' +
-      dateSelected +
+      this.dateSelected +
       '.json';
+    this.dateModel.next(this.dateSelected);
 
     const requests = forkJoin([this.http.get(stateURL), this.http.get(countyURL)]);
     requests.subscribe(([sData, cData]) => {
-      this.stateData = sData[dateSelected] as Array<StateRecord>;
-      this.countyData = cData[dateSelected] as Array<CountyRecord>;
+      this.stateData = sData[this.dateSelected] as Array<StateRecord>;
+      this.countyData = cData[this.dateSelected] as Array<CountyRecord>;
       this.mortalButtonToggled ? this.drawDeathMap() : this.drawCasesMap();
     });
   }
@@ -166,7 +169,7 @@ export class TimeMapComponent implements OnInit {
           ? '#FDC4C4'
           : number > 1
           ? '#FDE6E6'
-          : '#FFFFFF';
+          : '#FFF7EC';
       countyExpression.push(row.fips, color);
     });
 
