@@ -127,7 +127,7 @@ export interface CountyExtended extends County {
   statuses: EntityStatus[];
 }
 
-interface LockdownStat {
+export interface LockdownStat {
   updated: Date;
   created: Date;
   guid: string;

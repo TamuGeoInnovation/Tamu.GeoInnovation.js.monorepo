@@ -5,7 +5,7 @@ import { take } from 'rxjs/operators';
 
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 import { CountiesService } from '@tamu-gisc/geoservices/data-access';
-import { CountyStats, CountyStat } from '@tamu-gisc/covid/data-api';
+import { CountyStats, CountyStat, LockdownStat } from '@tamu-gisc/covid/data-api';
 
 @Component({
   selector: 'tamu-gisc-lockdown-map',
@@ -110,8 +110,7 @@ export class LockdownMapComponent implements OnInit {
   }
 
   public getStats(): void {
-    const statService = this.countyService.getCountyStats();
-    const statSubscription = statService.subscribe((recievedData) => {
+    this.countyService.getCountyStats().subscribe((recievedData) => {
       this.unformattedData = recievedData;
       this.formatData();
       this.drawClaimsMap();
@@ -143,8 +142,8 @@ export class LockdownMapComponent implements OnInit {
     });
   }
 
-  public getDateCode(records: Array<LockdownRecord>): number {
-    let minDate: LockdownRecord = null;
+  public getDateCode(records: Array<LockdownStat>): number {
+    let minDate: LockdownStat = null;
     let colorCode = 0;
     if (records.length === 0) {
       colorCode = 0;
@@ -219,12 +218,6 @@ interface StatRecord extends CountyStat {
   fips: string;
   fipsNum: number;
   state: string;
-}
-
-interface LockdownRecord {
-  updated: Date;
-  created: Date;
-  guid: string;
 }
 
 interface IInfoBox extends StatRecord {
