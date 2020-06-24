@@ -1,4 +1,4 @@
-import { Controller, Post, Param, Delete, Get, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Param, Delete, Get, Body, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
 
 import { Lockdown } from '@tamu-gisc/covid/common/entities';
 
@@ -68,6 +68,28 @@ export class LockdownsController extends BaseController<Lockdown> {
         success: false,
         message: err.message
       };
+    }
+  }
+
+  @UseGuards(AdminRoleGuard)
+  @Get('admin/lockdown/:lockdownGuid')
+  public async getClaimDetails(@Param() params) {
+    try {
+      const details = await this.service.getInfosForLockdown(params.lockdownGuid);
+      return details;
+    } catch (err) {
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('info/:infoGuid')
+  public async getLockDownInfo(@Param() params) {
+    try {
+      const info = await this.service.getLockdownInfoForLockdown(params.infoGuid);
+
+      return info;
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

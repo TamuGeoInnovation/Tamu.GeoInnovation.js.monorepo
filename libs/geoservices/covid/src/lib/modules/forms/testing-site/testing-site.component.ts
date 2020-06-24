@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { switchMap, pluck, filter, withLatestFrom } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
@@ -15,7 +15,7 @@ import {
   SiteStatusesService,
   PhoneNumberTypesService
 } from '@tamu-gisc/geoservices/data-access';
-import { IdentityService } from '../../../services/identity.service';
+import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 

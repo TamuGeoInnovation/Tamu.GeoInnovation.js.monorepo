@@ -28,28 +28,22 @@ export class UsersService extends BaseService<User> {
     const users = await this.repo
       .createQueryBuilder('user')
       .addSelect(['user.email'])
-      .innerJoinAndSelect('user.claims', 'claims')
+      .leftJoinAndSelect('user.claims', 'claims')
+      .leftJoinAndSelect('claims.sites', 'sites')
+      .leftJoinAndSelect('claims.lockdowns', 'lockdowns')
+      .orderBy('user.email', 'ASC')
       .getMany();
 
-    const testingSites = await Promise.all(
-      users.map((u) => {
-        return this.testingSiteRepo.find({
-          where: {
-            claim: In(u.claims.map((c) => c.guid))
-          }
-        });
-      })
-    );
+    const stats = users.map((user, index) => {
+      return {
+        ...user,
+        claimsCount: user.claims.length,
+        sitesCount: user.claims.reduce((acc, curr) => curr.sites.length + acc, 0),
+        lockdownsCount: user.claims.reduce((acc, curr) => curr.lockdowns.length + acc, 0)
+      };
+    });
 
-    return users.map(
-      (user, index): UserWithStats => {
-        const temp = { ...user, claimsCount: user.claims.length, sitesCount: testingSites[index].length };
-
-        delete temp.claims;
-
-        return temp;
-      }
-    );
+    return stats;
   }
 
   public async verifyEmail(email: string) {
@@ -107,4 +101,5 @@ export class UsersService extends BaseService<User> {
 export interface UserWithStats extends Partial<User> {
   claimsCount: number;
   sitesCount: number;
+  lockdownsCount?: number;
 }

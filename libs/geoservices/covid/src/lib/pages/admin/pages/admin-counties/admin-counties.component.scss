@@ -1,0 +1,14 @@
+.table-actions {
+  a {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}

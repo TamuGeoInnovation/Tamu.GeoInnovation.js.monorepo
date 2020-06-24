@@ -21,4 +21,8 @@ export class PhoneNumbersService {
   public getPhoneNumbersForCounty(countyFips: number) {
     return this.http.get<Partial<Array<EntityValue>>>(`${this.resource}/county/${countyFips}`);
   }
+
+  public getPhoneNumbersForClaimInfo(guid: string) {
+    return this.http.get<Array<EntityValue>>(`${this.resource}/claim/info/${guid}`);
+  }
 }
