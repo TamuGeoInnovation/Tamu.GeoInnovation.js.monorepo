@@ -1,13 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AccordionComponent } from './accordion.component';
-import { Component, ViewChild } from '@angular/core';
-import { AccordionHeaderComponent } from './accordion-header/accordion-header.component';
-import { AccordionContentComponent } from './accordion-content/accordion-content.component';
+
 import { AccordionService } from './services/accordion.service';
 
 // Mock testing component to emulate ContentChildren title and content components.
-@Component({
+/*@Component({
   template: `
     <tamu-gisc-accordion-header></tamu-gisc-accordion-header>
     <tamu-gisc-accordion-content></tamu-gisc-accordion-content>
@@ -19,21 +17,21 @@ class TestComponent {
 
   @ViewChild(AccordionContentComponent, { static: true })
   public content: AccordionContentComponent;
-}
+}*/
 
 describe('AccordionComponent', () => {
-  let fixture: ComponentFixture<TestComponent>;
-  let component: TestComponent;
+  let fixture: ComponentFixture<AccordionComponent>;
+  let component: AccordionComponent;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TestComponent, AccordionComponent, AccordionHeaderComponent, AccordionContentComponent],
+      declarations: [AccordionComponent],
       providers: [AccordionService]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TestComponent);
+    fixture = TestBed.createComponent(AccordionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
