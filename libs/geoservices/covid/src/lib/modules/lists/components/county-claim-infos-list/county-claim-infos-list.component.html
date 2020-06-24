@@ -1,0 +1,6 @@
+<tamu-gisc-accordion *ngFor="let info of (infos | async)?.infos">
+  <tamu-gisc-accordion-header>Edit on {{info.created | date : 'medium'}}</tamu-gisc-accordion-header>
+  <tamu-gisc-accordion-content>
+    <tamu-gisc-county-claim-info-details [infoGuid]="info.guid"></tamu-gisc-county-claim-info-details>
+  </tamu-gisc-accordion-content>
+</tamu-gisc-accordion>

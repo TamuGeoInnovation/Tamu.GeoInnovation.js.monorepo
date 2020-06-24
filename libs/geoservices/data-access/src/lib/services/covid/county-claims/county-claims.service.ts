@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DeepPartial } from 'typeorm';
+import { map } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { CountyClaim, County } from '@tamu-gisc/covid/common/entities';
@@ -23,8 +24,14 @@ export class CountyClaimsService {
     return this.http.get<Array<Partial<CountyClaim>>>(`${this.resource}/county/${countyFips}/1`);
   }
 
-  public getAllUserCountyClaimsSortedByCounty(email) {
-    return this.http.get<Array<Partial<CountyClaim>>>(`${this.resource}/claim/${email}`);
+  public getAllUserCountyClaims(email) {
+    return this.http.get<Array<Partial<CountyClaim>>>(`${this.resource}/claim/${email}`).pipe(
+      map((claims) => {
+        return claims.sort((a, b) => {
+          return Date.parse((b.created as unknown) as string) - Date.parse((a.created as unknown) as string);
+        });
+      })
+    );
   }
 
   public getActiveClaimsForUser(email: string) {
@@ -36,11 +43,21 @@ export class CountyClaimsService {
   }
 
   public getAdminClaims(stateFips: number, countyFips: number, email: string) {
-    return this.http.post<Partial<Array<CountyClaim>>>(`${this.resource}/admin/claim`, {
-      stateFips: stateFips,
-      countyFips: countyFips,
-      email: email
-    }, {
+    return this.http.post<Partial<Array<CountyClaim>>>(
+      `${this.resource}/admin/claim`,
+      {
+        stateFips: stateFips,
+        countyFips: countyFips,
+        email: email
+      },
+      {
+        withCredentials: true
+      }
+    );
+  }
+
+  public getClaimInfos(claimGuid: string) {
+    return this.http.get<Partial<CountyClaim>>(`${this.resource}/admin/claim/${claimGuid}`, {
       withCredentials: true
     });
   }

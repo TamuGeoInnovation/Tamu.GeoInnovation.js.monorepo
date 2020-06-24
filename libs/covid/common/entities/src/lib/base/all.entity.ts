@@ -139,6 +139,15 @@ export class CountyClaim extends GuidIdentity {
 
   @OneToMany((type) => CountyClaimInfo, (info) => info.claim, { cascade: true })
   public infos: CountyClaimInfo[];
+
+  // Sites and lockdowns were added after schema creation.
+  // Should not present a problem since the inverse was already declared
+
+  @OneToMany((type) => TestingSite, (site) => site.claim)
+  public sites: TestingSite[];
+
+  @OneToMany((type) => Lockdown, (lockdown) => lockdown.claim)
+  public lockdowns: Lockdown[];
 }
 
 @Entity({ name: 'county_claim_infos' })

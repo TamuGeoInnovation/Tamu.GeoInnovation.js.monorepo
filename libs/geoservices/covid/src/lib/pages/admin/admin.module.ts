@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AdminComponent } from './admin.component';
+import { UrlFormHandlerComponent } from './pages/url-form-handler/url-form-handler.component';
 
 const routes: Routes = [
   {
@@ -12,7 +13,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'claims'
+        redirectTo: 'counties'
       },
       {
         path: 'counties',
@@ -42,6 +43,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [AdminComponent]
+  declarations: [AdminComponent, UrlFormHandlerComponent]
 })
 export class AdminModule {}

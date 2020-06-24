@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 
-import { County, CountyClaim, StatusType, EntityStatus, TestingSite, Lockdown } from '@tamu-gisc/covid/common/entities';
+import { County, CountyClaim, EntityStatus, TestingSite, Lockdown, State } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 
@@ -45,12 +45,7 @@ export class CountiesService extends BaseService<County> {
   }
 
   public async getCountyStats(): Promise<CountyStats> {
-    const counties = (await this.repo
-      .createQueryBuilder('county')
-      .leftJoinAndMapMany('county.claims', CountyClaim, 'claim', 'claim.countyFips = county.countyFips')
-      .leftJoinAndMapMany('claim.sites', TestingSite, 'site', 'site.claim = claim.guid')
-      .leftJoinAndMapMany('claim.lockdowns', Lockdown, 'lockdown', 'lockdown.claim = claim.guid')
-      .getMany()) as Array<CountyExtended>;
+    const counties = await this.getCountiesAndDetails({ claims: true, sites: true, lockdowns: true });
 
     const categorized = counties.reduce((acc, curr) => {
       const countyString = curr.countyFips.toString().padStart(5, '0');
@@ -85,6 +80,41 @@ export class CountiesService extends BaseService<County> {
 
     return categorized;
   }
+
+  public async getSummary() {
+    const counties = await this.getCountiesAndDetails({ claims: true, lockdowns: true, state: true });
+
+    // Return only the counties with claims
+    return counties.filter((c) => {
+      return c.claims && c.claims.length > 0;
+    });
+  }
+
+  private getCountiesAndDetails(returns?: { claims?: boolean; sites?: boolean; lockdowns?: boolean; state?: boolean }) {
+    const counties = this.repo.createQueryBuilder('county');
+
+    if (returns !== undefined) {
+      if (returns.claims) {
+        counties.leftJoinAndMapMany('county.claims', CountyClaim, 'claim', 'claim.countyFips = county.countyFips');
+      }
+
+      if (returns.sites) {
+        counties.leftJoinAndMapMany('claim.sites', TestingSite, 'site', 'site.claim = claim.guid');
+      }
+
+      if (returns.lockdowns) {
+        counties.leftJoinAndMapMany('claim.lockdowns', Lockdown, 'lockdown', 'lockdown.claim = claim.guid');
+      }
+
+      if (returns.state) {
+        counties.leftJoinAndSelect('county.stateFips', 'state');
+      }
+    }
+
+    counties.orderBy('county.countyFips', 'ASC');
+
+    return counties.getMany() as Promise<Array<CountyExtended>>;
+  }
 }
 
 interface ClaimWithData extends CountyClaim {
@@ -92,7 +122,7 @@ interface ClaimWithData extends CountyClaim {
   lockdowns: Lockdown[];
 }
 
-interface CountyExtended extends County {
+export interface CountyExtended extends County {
   claims: ClaimWithData[];
   statuses: EntityStatus[];
 }
