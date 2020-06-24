@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Moment } from 'moment';
@@ -15,16 +15,21 @@ import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 export class TimeMapComponent implements OnInit {
   constructor(private mapService: MapboxMapService, private http: HttpClient) {}
 
+  public now: Moment;
   private maxDate: string;
   private stateData: Array<StateRecord>;
   private countyData: Array<CountyRecord>;
-
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
   public mortalButtonToggled = false;
   public stateButtonToggle = false;
 
-  public ngOnInit() {
+  @ViewChild('datePicker', { static: false })
+  public datePicker: ElementRef;
+
+  public ngOnInit(): void {
     this.mapService.loaded.subscribe((map) => {
+      this.datePicker.nativeElement.value = '2020-06-16';
+      this.datePicker.nativeElement.max = '2020-06-16';
       const zoomThreshold = 3;
 
       map.addSource('county-lines', {
@@ -109,27 +114,27 @@ export class TimeMapComponent implements OnInit {
     });
   }
 
-  public reloadData() {
-    const currentDateSelected = '2020-06-06';
-    console.log(currentDateSelected);
+  public reloadData(): void {
+    const dateSelected: string = this.datePicker.nativeElement.value;
+    console.log(dateSelected);
     const stateURL =
       'https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/states/' +
-      currentDateSelected +
+      dateSelected +
       '.json';
     const countyURL =
       'https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/counties/' +
-      currentDateSelected +
+      dateSelected +
       '.json';
 
     const requests = forkJoin([this.http.get(stateURL), this.http.get(countyURL)]);
     requests.pipe(take(1)).subscribe(([sData, cData]) => {
-      this.stateData = sData[currentDateSelected];
-      this.countyData = cData[currentDateSelected];
+      this.stateData = sData[dateSelected];
+      this.countyData = cData[dateSelected];
       this.mortalButtonToggled ? this.drawDeathMap() : this.drawCasesMap();
     });
   }
 
-  public drawCasesMap() {
+  public drawCasesMap(): void {
     const stateExpression = ['match', ['get', 'STATE']];
     const countyExpression = ['match', ['get', 'fips']];
 
@@ -174,7 +179,7 @@ export class TimeMapComponent implements OnInit {
     this.mapService.map.setPaintProperty('covid-county', 'fill-color', countyExpression);
   }
 
-  public drawDeathMap() {
+  public drawDeathMap(): void {
     const stateExpression = ['match', ['get', 'STATE']];
     const countyExpression = ['match', ['get', 'fips']];
 
@@ -219,17 +224,17 @@ export class TimeMapComponent implements OnInit {
     this.mapService.map.setPaintProperty('covid-county', 'fill-color', countyExpression);
   }
 
-  public stateToggle() {
+  public stateToggle(): void {
     this.stateButtonToggle = !this.stateButtonToggle;
     this.switchLayers();
   }
 
-  public mortalityToggle() {
+  public mortalityToggle(): void {
     this.mortalButtonToggled = !this.mortalButtonToggled;
     this.mortalButtonToggled ? this.drawDeathMap() : this.drawCasesMap();
   }
 
-  public switchLayers() {
+  public switchLayers(): void {
     this.stateButtonToggle
       ? this.mapService.map.setLayoutProperty('covid-state', 'visibility', 'visible')
       : this.mapService.map.setLayoutProperty('covid-state', 'visibility', 'none');
