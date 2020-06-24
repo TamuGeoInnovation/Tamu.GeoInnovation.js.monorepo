@@ -1,0 +1,34 @@
+@import 'libs/sass/mixins';
+@import '../../maps.component.scss';
+
+#unclaimed {
+  background-color: #ece7f2;
+}
+#claimed {
+  background-color: #2b8cbe;
+}
+
+#no-lockdown {
+  background-color: #4d4d4d;
+}
+#stop-one {
+  background-color: #1a9850;
+}
+#stop-two {
+  background-color: #91cf60;
+}
+#stop-three {
+  background-color: #d9ef8b;
+}
+#stop-four {
+  background-color: #ffffbf;
+}
+#stop-five {
+  background-color: #fee08b;
+}
+#stop-six {
+  background-color: #fc8d59;
+}
+#stop-seven {
+  background-color: #d73027;
+}
