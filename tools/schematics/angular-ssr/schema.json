@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "angular-ssr",
+  "type": "object",
+  "properties": {
+    "angularAppName": {
+      "type": "string",
+      "description": "Angular application name",
+      "x-prompt": "What is the name of the Angular application?"
+    },
+    "expressAppName": {
+      "type": "string",
+      "description": "Express application name",
+      "x-prompt": "What is the name of the Express application? Leave blank if the same."
+    }
+  },
+  "required": ["angularAppName", "expressAppName"]
+}

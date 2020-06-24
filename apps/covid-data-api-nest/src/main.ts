@@ -8,7 +8,7 @@ import passport from 'passport';
 import session from 'express-session';
 const SQLiteStore = require('connect-sqlite3')(session);
 
-import { OpenIdClient } from '@tamu-gisc/oidc';
+import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
@@ -25,7 +25,13 @@ async function bootstrap() {
 
   app.enableCors({
     credentials: true,
-    origin: ['http://localhost:4200', 'https://idp-dev.geoservices.tamu.edu']
+    origin: [
+      'http://localhost:4200',
+      'https://idp-dev.geoservices.tamu.edu',
+      'https://covid-dev.geoservices.tamu.edu',
+      'https://covid.geoservices.tamu.edu',
+      'https://jorge-sepulveda.github.io'
+    ]
   });
 
   const globalPrefix = environment.globalPrefix;
@@ -50,7 +56,7 @@ async function bootstrap() {
   });
 }
 
-OpenIdClient.build(idpConfig.OIDC_CLIENT_METADATA, idpConfig.OIDC_CLIENT_PARAMS, idpConfig.OIDC_IDP_ISSUER_URL)
+OpenIdClient.build(idpConfig.metadata, idpConfig.parameters, idpConfig.issuer_url)
   .then(() => bootstrap())
   .catch((err) => {
     console.warn(err);

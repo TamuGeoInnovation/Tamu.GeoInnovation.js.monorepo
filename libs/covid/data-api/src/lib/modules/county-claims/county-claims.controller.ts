@@ -5,7 +5,7 @@ import { CountyClaim } from '@tamu-gisc/covid/common/entities';
 import { BaseController } from '../base/base.controller';
 import { CountyClaimsService } from './county-claims.service';
 
-import { AdminRoleGuard } from '@tamu-gisc/oidc';
+import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 
 @Controller('county-claims')
 export class CountyClaimsController extends BaseController<CountyClaim> {

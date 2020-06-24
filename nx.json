@@ -266,10 +266,22 @@
     "maps-mapbox": {
       "tags": []
     },
-    "oidc": {
+    "oidc-client-test": {
       "tags": []
     },
-    "oidc-client-test": {
+    "oidc-provider-angular-e2e": {
+      "tags": []
+    },
+    "oidc-provider-angular": {
+      "tags": []
+    },
+    "oidc-provider-express": {
+      "tags": []
+    },
+    "oidc-provider": {
+      "tags": []
+    },
+    "oidc-client": {
       "tags": []
     }
   }

@@ -36,7 +36,7 @@ import {
   EntityToValue
 } from '@tamu-gisc/covid/common/entities';
 
-import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc';
+import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc/client';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -46,7 +46,7 @@ import { dbConfig, idpConfig } from '../environments/environment';
 @Module({
   imports: [
     OidcClientModule.forRoot({
-      host: idpConfig.OIDC_IDP_ISSUER_URL
+      host: idpConfig.issuer_url
     }),
     TypeOrmModule.forRoot({
       ...dbConfig,

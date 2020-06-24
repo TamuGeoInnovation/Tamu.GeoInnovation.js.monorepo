@@ -3,7 +3,7 @@ import { User } from '@tamu-gisc/covid/common/entities';
 
 import { UsersService } from './users.service';
 import { BaseController } from '../base/base.controller';
-import { AdminRoleGuard } from '@tamu-gisc/oidc';
+import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 
 @Controller('users')
 export class UsersController extends BaseController<User> {
