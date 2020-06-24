@@ -16,7 +16,7 @@ export class TimeMapComponent implements OnInit {
   constructor(private mapService: MapboxMapService, private http: HttpClient) {}
 
   public now: Moment;
-  private maxDate: string;
+  private maxDate = '2020-06-16';
   private stateData: Array<StateRecord>;
   private countyData: Array<CountyRecord>;
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
@@ -28,8 +28,8 @@ export class TimeMapComponent implements OnInit {
 
   public ngOnInit(): void {
     this.mapService.loaded.subscribe((map) => {
-      this.datePicker.nativeElement.value = '2020-06-16';
-      this.datePicker.nativeElement.max = '2020-06-16';
+      this.datePicker.nativeElement.value = this.maxDate;
+      this.datePicker.nativeElement.max = this.maxDate;
       const zoomThreshold = 3;
 
       map.addSource('county-lines', {
@@ -127,9 +127,9 @@ export class TimeMapComponent implements OnInit {
       '.json';
 
     const requests = forkJoin([this.http.get(stateURL), this.http.get(countyURL)]);
-    requests.pipe(take(1)).subscribe(([sData, cData]) => {
-      this.stateData = sData[dateSelected];
-      this.countyData = cData[dateSelected];
+    requests.subscribe(([sData, cData]) => {
+      this.stateData = sData[dateSelected] as Array<StateRecord>;
+      this.countyData = cData[dateSelected] as Array<CountyRecord>;
       this.mortalButtonToggled ? this.drawDeathMap() : this.drawCasesMap();
     });
   }
@@ -138,8 +138,9 @@ export class TimeMapComponent implements OnInit {
     const stateExpression = ['match', ['get', 'STATE']];
     const countyExpression = ['match', ['get', 'fips']];
 
-    this.stateData.forEach(function(row) {
-      const number = row['infection_rate'];
+    this.stateData.forEach((row) => {
+      const number = row.infection_rate;
+      console.log(row.STATE);
       const color =
         number > 1000
           ? '#AE8080'
@@ -152,11 +153,11 @@ export class TimeMapComponent implements OnInit {
           : number > 1
           ? '#FDE6E6'
           : '#FFFFFF';
-      stateExpression.push(row['STATE'], color);
+      stateExpression.push(row.STATE, color);
     });
 
-    this.countyData.forEach(function(row) {
-      const number = row['infection_rate'];
+    this.countyData.forEach((row) => {
+      const number = row.infection_rate;
       const color =
         number > 1000
           ? '#AE8080'
@@ -169,7 +170,7 @@ export class TimeMapComponent implements OnInit {
           : number > 1
           ? '#FDE6E6'
           : '#FFFFFF';
-      countyExpression.push(row['fips'], color);
+      countyExpression.push(row.fips, color);
     });
 
     stateExpression.push('rgba(255,255,255,1)');
@@ -183,8 +184,8 @@ export class TimeMapComponent implements OnInit {
     const stateExpression = ['match', ['get', 'STATE']];
     const countyExpression = ['match', ['get', 'fips']];
 
-    this.stateData.forEach(function(row) {
-      const number = row['death_rate'];
+    this.stateData.forEach((row) => {
+      const number = row.death_rate;
       const color =
         number > 100
           ? '#54278F'
@@ -197,11 +198,11 @@ export class TimeMapComponent implements OnInit {
           : number > 1
           ? '#DADAEB'
           : '#F2F0F7';
-      stateExpression.push(row['STATE'], color);
+      stateExpression.push(row.STATE, color);
     });
 
-    this.countyData.forEach(function(row) {
-      const number = row['death_rate'];
+    this.countyData.forEach((row) => {
+      const number = row.death_rate;
       const color =
         number > 100
           ? '#54278F'
@@ -214,7 +215,7 @@ export class TimeMapComponent implements OnInit {
           : number > 1
           ? '#DADAEB'
           : '#F2F0F7';
-      countyExpression.push(row['fips'], color);
+      countyExpression.push(row.fips, color);
     });
 
     stateExpression.push('rgba(255,255,255,1)');
@@ -242,11 +243,11 @@ export class TimeMapComponent implements OnInit {
 }
 
 interface BaseRecord {
-  pop: number;
-  cases: number;
+  population: number;
+  confirmed: number;
   deaths: number;
-  infectionRate: number;
-  deathRate: number;
+  infection_rate: number;
+  death_rate: number;
 }
 
 interface StateRecord extends BaseRecord {
@@ -258,5 +259,13 @@ interface CountyRecord extends BaseRecord {
 }
 
 interface IInfoBox extends BaseRecord {
+  name: string;
+}
+
+interface State {
+  STATE: string;
+}
+
+interface County {
   name: string;
 }
