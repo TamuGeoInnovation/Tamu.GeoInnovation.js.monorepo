@@ -1,0 +1,199 @@
+html {
+  height: 100%;
+  width: 100%;
+  font-family: 'Ubuntu', sans-serif;
+  background: #fcfdfd;
+  font-size: 16px;
+  color: hsl(204, 12%, 8%);
+  line-height: 1.4;
+}
+
+body {
+  height: inherit;
+  width: inherit;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: inherit;
+}
+
+.container {
+  width: 22.5rem;
+}
+
+.title {
+  text-align: center;
+  font-weight: 400;
+  margin: 0;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  max-width: 7.5rem;
+  margin: 0 auto;
+}
+
+.form-input {
+  margin: 1.25rem 0;
+}
+
+.form-input.no-margin {
+  margin: 0;
+}
+
+.login-card {
+  border-radius: 2px;
+}
+
+.login-card h1 {
+  font-weight: 100;
+  text-align: center;
+  font-size: 2.3em;
+}
+
+input,
+button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button {
+  color: #fafafa;
+  font-weight: 400;
+  padding: 0.75rem;
+  border: none;
+  background-color: #500000;
+  border-radius: 5pt;
+  width: 100%;
+  cursor: pointer;
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'] {
+  height: 44px;
+  font-size: 16px;
+  width: 100%;
+  margin-bottom: 10px;
+  -webkit-appearance: none;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1pt solid hsla(0, 19%, 23%, 0.5);
+  padding: 0 8px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+input[type='text']:focus,
+input[type='email']:focus,
+input[type='password']:focus {
+  outline: none;
+  border-bottom: 1.5pt solid #500000;
+}
+
+input[type='checkbox'],
+input[type='checkbox'] label {
+  cursor: pointer;
+  margin: 0;
+  padding: 0.25rem;
+}
+
+.custom-checkbox {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.custom-checkbox p {
+  padding: 0.5rem 0;
+  margin: 0 0 0 0.3rem;
+}
+
+.custom-checkbox .material-icons {
+  color: #500000;
+}
+
+/* Default to an unchecked state */
+.custom-checkbox .material-icons.checked {
+  display: none;
+}
+
+.custom-checkbox input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.custom-checkbox input:checked ~ .checked {
+  display: initial;
+}
+
+.custom-checkbox input:checked ~ .unchecked {
+  display: none;
+}
+
+.two-col {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.login-card a {
+  text-decoration: none;
+  color: #2b5d7d;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.login-help {
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+}
+
+.login-client-image img {
+  margin-bottom: 20px;
+}
+
+.grant-debug {
+  font-family: Fixed, monospace;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+  padding-top: 10px;
+}
+
+.error-input {
+  border-color: 'red';
+}
+
+#error-message {
+  color: red;
+  text-align: center;
+  font-weight: 500;
+}
+
+.session-controls {
+  margin: 1.5rem 0;
+}
+
+.account-register-prompt {
+  text-align: center;
+  margin: 2.5rem auto;
+}
+
+.text.center {
+  text-align: center;
+}
+
+.authorize-instructions {
+  margin-bottom: 2rem;
+}

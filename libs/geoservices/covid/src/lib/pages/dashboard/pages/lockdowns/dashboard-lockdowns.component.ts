@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { filter, pluck, switchMap, shareReplay } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
-import { County, User } from '@tamu-gisc/covid/common/entities';
+import { County, User, Lockdown } from '@tamu-gisc/covid/common/entities';
 import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
 import { ActiveLockdown, LockdownsService } from '@tamu-gisc/geoservices/data-access';
 
@@ -15,7 +15,7 @@ import { ActiveLockdown, LockdownsService } from '@tamu-gisc/geoservices/data-ac
 export class DashboardLockdownsComponent implements OnInit {
   public localCounty: Observable<DeepPartial<County>>;
   public localEmail: Observable<Partial<User['email']>>;
-  public lockdowns: Observable<Partial<ActiveLockdown>>;
+  public lockdowns: Observable<Array<Lockdown>>;
 
   constructor(private ls: LockdownsService, private is: IdentityService) {}
 

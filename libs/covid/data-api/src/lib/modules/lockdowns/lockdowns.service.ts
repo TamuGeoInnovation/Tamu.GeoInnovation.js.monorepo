@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -117,7 +117,7 @@ export class LockdownsService extends BaseService<Lockdown> {
           ]
         });
 
-        await this.lockdownInfoRepo.create(lockdownInfo).save();
+        return await this.lockdownInfoRepo.create(lockdownInfo).save();
       } else {
         // If there is no existing lockdown for the active claim, create a new lockdown and associated
         // lockdown info
@@ -144,7 +144,8 @@ export class LockdownsService extends BaseService<Lockdown> {
             }
           ]
         });
-        await lockdownContainer.save();
+
+        return await lockdownContainer.save();
       }
     }
   }
@@ -169,7 +170,7 @@ export class LockdownsService extends BaseService<Lockdown> {
     const lastInfo = await this.getLatestLockdownInfoForLockdown(lockdown);
 
     // Categorize phone numbers and websites from the last info responses
-    if (lastInfo && lastInfo.responses && lastInfo.responses.length > 0) {
+    if (lastInfo) {
       return this.flattenLockdownAndInfo(lockdown, lastInfo);
     } else {
       return {};
@@ -191,10 +192,11 @@ export class LockdownsService extends BaseService<Lockdown> {
       .createQueryBuilder('lockdowns')
       .leftJoinAndSelect('lockdowns.claim', 'claim')
       .leftJoinAndSelect('claim.user', 'user')
+      .leftJoinAndSelect('claim.county', 'county')
+      .leftJoinAndSelect('county.stateFips', 'state')
       .where(`user.${idType} = :identifier`, {
         identifier
       })
-      .orderBy('lockdowns.created', 'DESC')
       .getMany();
 
     const deferredLatestInfoForLockdowns = lockdowns.map((lock) => {
@@ -250,6 +252,7 @@ export class LockdownsService extends BaseService<Lockdown> {
       .createQueryBuilder('lockdown')
       .innerJoinAndSelect('lockdown.claim', 'claim')
       .innerJoinAndSelect('claim.user', 'user')
+      .addSelect('user.email')
       .innerJoinAndSelect('claim.county', 'county')
       .innerJoinAndSelect('county.stateFips', 'state')
       .innerJoinAndSelect('lockdown.statuses', 'statuses')
@@ -267,6 +270,8 @@ export class LockdownsService extends BaseService<Lockdown> {
       builder.andWhere('user.email = :email');
     }
 
+    builder.orderBy('lockdown.created', 'DESC');
+
     builder.setParameters({
       stateFips,
       countyFips,
@@ -274,6 +279,51 @@ export class LockdownsService extends BaseService<Lockdown> {
     });
 
     return builder.getMany();
+  }
+
+  public async getInfosForLockdown(lockdownGuid: string) {
+    const claim = await this.repo.findOne({
+      where: {
+        guid: lockdownGuid
+      },
+      relations: ['infos']
+    });
+
+    if (claim) {
+      return claim;
+    } else {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          message: 'Claim not found.',
+          success: false
+        },
+        HttpStatus.NOT_FOUND
+      );
+    }
+  }
+
+  public async getLockdownInfoForLockdown(infoGuid: string) {
+    if (!infoGuid) {
+      throw new Error('Invalid lockdown info guid.');
+    }
+
+    const info = await this.lockdownInfoRepo
+      .createQueryBuilder('info')
+      .leftJoinAndSelect('info.responses', 'responses')
+      .leftJoinAndSelect('responses.entityValue', 'entityValue')
+      .leftJoinAndSelect('entityValue.value', 'value')
+      .leftJoinAndSelect('value.type', 'type')
+      .leftJoinAndSelect('value.category', 'category')
+      .leftJoinAndSelect('info.lockdown', 'lockdown')
+      .leftJoinAndSelect('lockdown.claim', 'claim')
+      .leftJoinAndSelect('claim.county', 'county')
+      .where('info.guid = :infoGuid', {
+        infoGuid
+      })
+      .getOne();
+
+    return this.flattenLockdownAndInfo(info.lockdown, info);
   }
 
   /**

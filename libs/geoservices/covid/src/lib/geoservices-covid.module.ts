@@ -23,6 +23,10 @@ const routes: Routes = [
         loadChildren: () => import('./pages/services/services.module').then((m) => m.ServicesModule)
       },
       {
+        path: 'maps',
+        loadChildren: () => import('./pages/maps/maps.module').then((m) => m.MapsModule)
+      },
+      {
         path: 'resources',
         loadChildren: () => import('./pages/resources/resources.module').then((m) => m.ResourcesModule)
       },
@@ -33,8 +37,7 @@ const routes: Routes = [
       },
       {
         path: 'admin',
-        loadChildren: () => import('./pages/admin/admin.module').then((m) => m.AdminModule),
-        canActivate: [LocalEmailGuard]
+        loadChildren: () => import('./pages/admin/admin.module').then((m) => m.AdminModule)
       }
     ]
   }

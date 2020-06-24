@@ -1,11 +1,10 @@
-import { Controller, Post, Get, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Delete, Param, Body, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
 
 import { CountyClaim } from '@tamu-gisc/covid/common/entities';
+import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 
 import { BaseController } from '../base/base.controller';
 import { CountyClaimsService } from './county-claims.service';
-
-import { AdminRoleGuard } from '@tamu-gisc/oidc';
 
 @Controller('county-claims')
 export class CountyClaimsController extends BaseController<CountyClaim> {
@@ -28,9 +27,9 @@ export class CountyClaimsController extends BaseController<CountyClaim> {
   }
 
   @Get('claim/:email')
-  public async getAllUserCountyClaimsSortedByCounty(@Param() param) {
+  public async getAllUserCountyClaims(@Param() param) {
     try {
-      const claims = await this.service.getAllUserCountyClaimsSortedByCounty(param.email);
+      const claims = await this.service.getAllUserCountyClaims(param.email);
       return claims;
     } catch (err) {
       return {
@@ -95,6 +94,17 @@ export class CountyClaimsController extends BaseController<CountyClaim> {
         success: false,
         message: err.message
       };
+    }
+  }
+
+  @UseGuards(AdminRoleGuard)
+  @Get('admin/claim/:claimGuid')
+  public async getClaimDetails(@Param() params) {
+    try {
+      const details = await this.service.getInfosForClaim(params.claimGuid);
+      return details;
+    } catch (err) {
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

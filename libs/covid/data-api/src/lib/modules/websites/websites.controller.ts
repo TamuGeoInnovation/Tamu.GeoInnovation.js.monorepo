@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, HttpException, HttpStatus } from '@nestjs/common';
 import { CategoryValue } from '@tamu-gisc/covid/common/entities';
 
 import { BaseController } from '../base/base.controller';
@@ -15,12 +15,20 @@ export class WebsitesController extends BaseController<CategoryValue> {
     return this.service.getWebsitesForCounty(params.fips);
   }
 
+  @Get('claim/info/:guid')
+  public async getWebsitesForClaimInfo(@Param() params) {
+    return this.service.getWebsitesForClaimInfo(params.guid);
+  }
+
   @Post('')
   public async storePhoneNumber(@Body() body) {
-    return {
-      status: 400,
-      success: false,
-      message: 'Not implemented'
-    };
+    throw new HttpException(
+      {
+        status: HttpStatus.NOT_IMPLEMENTED,
+        message: 'Not implemented',
+        success: false
+      },
+      HttpStatus.NOT_IMPLEMENTED
+    );
   }
 }

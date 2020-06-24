@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
 import { DashboardComponent } from './dashboard.component';
+import { CovidFormsModule } from '../../modules/forms/forms.module';
 
 const routes: Routes = [
   {
@@ -34,7 +34,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, GeoservicesCoreNgxModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), CovidFormsModule],
   declarations: [DashboardComponent]
 })
 export class MyDashboardModule {}

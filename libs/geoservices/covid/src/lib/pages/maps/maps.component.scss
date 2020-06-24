@@ -1,0 +1,58 @@
+@import 'libs/sass/mixins';
+
+#map-section {
+  width: auto;
+  height: 50rem;
+  display: flex;
+
+  #map-section-description,
+  #map-section-map {
+    @include flexbox();
+    @include flex(1);
+    @include flex-shrink(10);
+  }
+
+  #map-section-description {
+    padding: 10rem 0;
+
+    p {
+      max-width: 50%;
+    }
+  }
+}
+
+//legend start
+.legend {
+  border-radius: 3px;
+  bottom: 1rem;
+  padding: 10px;
+  position: absolute;
+  z-index: 1;
+}
+
+.legend h4 {
+  margin: 0 0 5px;
+}
+
+.legend h3 {
+  margin: 0 0 5px;
+}
+
+.legend div span {
+  border-radius: 50%;
+  display: inline-block;
+  height: 10px;
+  margin-right: 5px;
+  width: 10px;
+  border-style: solid;
+  border-width: thin;
+}
+// legend end
+
+.right-sidebar {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  width: 25rem;
+  padding-top: 0.5rem;
+  position: relative;
+}

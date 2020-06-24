@@ -44,6 +44,17 @@ export class TemplateRenderer {
 }
 
 /**
+ * Evaluates whether an input string is falsy either due to an undefined value or it being of length 0.
+ */
+export function isFalsy(s: string): boolean {
+  if (s === undefined || s.length === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/**
  * Properties describing the TemplateRenderer class.
  */
 export interface TemplateRendererOptions {

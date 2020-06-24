@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+
 import { CreateComponent } from './create.component';
-import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
+import { CovidFormsModule } from '../../../../../../modules/forms/forms.module';
 
 const routes: Routes = [
   {
@@ -15,7 +16,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, ReactiveFormsModule, FormsModule, GeoservicesCoreNgxModule],
+  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, ReactiveFormsModule, CovidFormsModule],
   declarations: [CreateComponent]
 })
 export class CreateModule {}

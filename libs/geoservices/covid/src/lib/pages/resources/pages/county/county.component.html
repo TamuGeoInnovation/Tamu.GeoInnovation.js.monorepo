@@ -55,55 +55,7 @@
 
       <!-- Only show phone numbers input field if there is a local county stored AND if the form countyFips value is the same as the local value -->
       <ng-container *ngIf="(localCounty | async)?.countyFips && ((localCounty | async)?.countyFips === (this.form.controls.county.value)) && ((localCounty | async)?.stateFips.stateFips === (this.form.controls.state.value)) && (localCounty | async)?.countyFips !== null && (localCounty | async)?.stateFips !== null && ((this.form.controls.county.value) !== 'undefined' && (this.form.controls.state.value) !== 'undefined')">
-        <div class="form-section">
-          <div class="form-section-toolbar">
-            <div class="form-section-name">Phone Numbers</div>
-            <div class="form-section-actions">
-              <span class="material-icons action alt" (click)="addPhoneNumber()" title="Add phone number">add</span>
-            </div>
-          </div>
-
-          <div *ngIf="form.get('phoneNumbers')['controls'].length > 0; else promptAddPhoneNumber" [formArrayName]="'phoneNumbers'" class="form-section-body">
-            <ng-container *ngFor="let ph of form.get('phoneNumbers')['controls']; let i = index">
-              <div [formGroupName]="i" class="form-collection row flex align-center select-collection" [ngClass]="{'pad-top': i === 0}">
-                <ng-container formGroupName="value">
-                  <tamu-gisc-textbox formControlName="value" type="tel" placeholder="Phone Number" floatLabel="true"></tamu-gisc-textbox>
-                  <tamu-gisc-select formControlName="type" [data]="(phoneTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
-                </ng-container>
-                <span class="material-icons action error" title="Remove phone number" (click)="removeFormArrayControl('phoneNumbers', i)">close</span>
-              </div>
-            </ng-container>
-          </div>
-
-          <ng-template #promptAddPhoneNumber>
-            <p>There are no phone numbers registered for this county.</p>
-          </ng-template>
-        </div>
-
-        <div class="form-section">
-          <div class="form-section-toolbar">
-            <div class="form-section-name">Websites and Documents</div>
-            <div class="form-section-actions">
-              <span class="material-icons action alt" (click)="addWebsite()" title="Add website">add</span>
-            </div>
-          </div>
-
-          <div *ngIf="form.get('websites')['controls'].length > 0; else promptAddWebsite" [formArrayName]="'websites'" class="form-section-body">
-            <ng-container *ngFor="let wb of form.get('websites')['controls']; let i = index">
-              <div [formGroupName]="i" class="form-collection row flex align-center select-collection" [ngClass]="{'pad-top': i === 0}">
-                <ng-container formGroupName="value">
-                  <tamu-gisc-textbox formControlName="value" type="text" placeholder="URL" floatLabel="true"></tamu-gisc-textbox>
-                  <tamu-gisc-select formControlName="type" [data]="(websiteTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
-                  <span class="material-icons action error" title="Remove URL" (click)="removeFormArrayControl('websites', i)">close</span>
-                </ng-container>
-              </div>
-            </ng-container>
-          </div>
-
-          <ng-template #promptAddWebsite>
-            <p>There are no websites registered for this county.</p>
-          </ng-template>
-        </div>
+        <tamu-gisc-county-claim [form]="form"></tamu-gisc-county-claim>
       </ng-container>
 
       <div class="form-section">
