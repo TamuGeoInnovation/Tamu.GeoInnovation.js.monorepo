@@ -25,4 +25,16 @@ describe('CheckboxGroupComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should correctly evaluate ngOnInit', () => {
+    component.referenceId = undefined;
+    expect(() => {
+      component.ngOnInit();
+    }).toThrow();
+  });
+
+  it('should correctly evaluate writeValue', () => {
+    component.writeValue(['reeee', 'reeee']);
+    expect(component.value).toStrictEqual(['reeee', 'reeee']);
+  });
 });

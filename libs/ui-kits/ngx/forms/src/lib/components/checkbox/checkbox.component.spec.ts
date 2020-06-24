@@ -37,4 +37,13 @@ describe('CheckboxComponent', () => {
     });
     component.handleKeyboardEvent();
   });
+  it('should correctly evaluate setDisabledState', () => {
+    component.setDisabledState(true);
+    expect(component.disabled).toEqual(true);
+  });
+
+  it('should correctly evaluate _setValueNoEmit', () => {
+    component._setValueNoEmit(true);
+    expect(component.checked).toEqual(true);
+  });
 });

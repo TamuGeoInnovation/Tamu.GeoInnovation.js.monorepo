@@ -30,6 +30,7 @@ describe('TileSubmenuDirective', () => {
   });
 
   it('should create an instance', () => {
+    component.directive.ngOnInit();
     expect(component.directive).toBeDefined();
   });
 });
