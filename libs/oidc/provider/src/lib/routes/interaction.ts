@@ -8,10 +8,10 @@ import nodemailer from 'nodemailer';
 import { sign, decode, Secret } from 'jsonwebtoken';
 
 import { AccountManager } from '../sequelize/account_manager';
-import { TwoFactorAuthUtils } from '../misc/twofactor-auth-utils';
+import { TwoFactorAuthUtils } from '../_utils/twofactorauth.util';
 import { DbManager } from '../sequelize/DbManager';
 import { LoginManager } from '../sequelize/login_manager';
-import { urlHas, urlFragment } from '../misc/url-utils';
+import { urlHas, urlFragment } from '../_utils/url-utils';
 import { ParsedUrlQuery } from 'querystring';
 
 const querystring = require('querystring');

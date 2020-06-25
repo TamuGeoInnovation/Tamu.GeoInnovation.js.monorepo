@@ -3,7 +3,7 @@ import { DbManager } from './DbManager';
 import { IAccountAttrs, ITAMUAttrs } from '../models/Accounts/accounts';
 import { IUsersAttrs, IUsersInstance } from '../models/Users/users';
 import * as Sequelize from 'sequelize';
-import { TwoFactorAuthUtils } from '../misc/twofactor-auth-utils';
+import { TwoFactorAuthUtils } from '../_utils/twofactorauth.util';
 
 export class AccountManager {
   public static SALT_ROUNDS = 12;

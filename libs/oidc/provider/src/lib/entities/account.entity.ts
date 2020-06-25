@@ -2,7 +2,7 @@ import {
   Entity,
   Column,
 } from "typeorm";
-import * as guid from 'uuid/v4';
+import * as uuid from 'uuid';
 
 import { User } from "./user.entity";
 import { GuidIdentity } from "./guid-identity.entity";

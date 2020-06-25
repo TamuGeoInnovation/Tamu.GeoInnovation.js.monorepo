@@ -1,7 +1,6 @@
 import * as otplib from 'otplib';
 import * as crypto from 'crypto';
 
-
 export class TwoFactorAuthUtils {
   // TODO: AT THE MOMENT THE KEY / SECRET IS HARDCODED INTO THE EJS FILE (2fa-scan.ejs), THIS IS NO BUENO
   // FIXED: atharmon (4/3/19)
