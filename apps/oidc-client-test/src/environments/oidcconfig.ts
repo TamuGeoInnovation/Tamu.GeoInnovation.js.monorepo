@@ -8,8 +8,8 @@ export const OIDC_CLIENT_METADATA: ClientMetadata = {
   token_endpoint_auth_method: 'client_secret_basic'
 };
 
-// export const OIDC_IDP_ISSUER_URL = 'http://localhost:4001';
-export const OIDC_IDP_ISSUER_URL = 'https://idp-dev.geoservices.tamu.edu/';
+export const OIDC_IDP_ISSUER_URL = 'http://localhost:4001/oidc';
+// export const OIDC_IDP_ISSUER_URL = 'https://idp-dev.geoservices.tamu.edu/';
 // export const OIDC_IDP_ISSUER_URL = 'https://idp-dev-lb.geoservices.tamu.edu'
 export const OIDC_CLIENT_PARAMS = {
   scope: 'openid offline_access basic_profile email tamu role',

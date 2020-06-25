@@ -28,7 +28,7 @@ As you make changes to the project, the local webserver will automatically rebui
 
 # Anything NestJS
 - Bring up a list of NestJS commands: `nx list @nestjs/schematics`
-- Using a schematic: `nx @nestjs/schematics:module MODULENAME`
+- Using a schematic: `nx g @nestjs/schematics:module MODULENAME`
     - Can specify project with `--source-root=BLAHBLAHBLAHBLAHBLAH`
 - How to use a schematic: `nx g @nestjs/schematics:module --help`
 

@@ -1,5 +1,5 @@
 import { Entity, BeforeUpdate, PrimaryColumn, BeforeInsert } from 'typeorm';
-import * as guid from 'uuid/v4';
+import * as guid from 'uuid';
 
 @Entity()
 export class GuidIdentity {

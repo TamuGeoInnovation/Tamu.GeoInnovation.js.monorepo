@@ -1,3 +1,5 @@
+import { Req } from '@nestjs/common';
+import { Request } from 'express';
 import {
   BaseEntity,
   Column,
@@ -7,8 +9,6 @@ import {
   JoinColumn,
   OneToOne,
 } from "typeorm";
-import * as Koa from "koa";
-
 import { Account } from "./account.entity";
 import { GuidIdentity } from "./guid-identity.entity";
 
@@ -95,7 +95,7 @@ export class User extends GuidIdentity {
   })
   last_used_ip_address: string;
 
-  constructor(request: Koa.Request) {
+  constructor(@Req() request: Request) {
     super();
     try {
       if (request) {

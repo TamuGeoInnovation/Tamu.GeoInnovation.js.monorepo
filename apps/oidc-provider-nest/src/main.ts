@@ -1,13 +1,26 @@
 import { NestFactory, HttpAdapterHost } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app/app.module';
-import { IdpServer } from '@tamu-gisc/oidc/provider';
+import { OpenIdProvider } from '@tamu-gisc/oidc/provider';
 import { Provider } from 'oidc-provider';
+import express, { Response, Request } from 'express';
+import { urlencoded, json } from 'body-parser';
+import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
+import * as path from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   // enableOIDCDebug(OpenIdProvider.provider);
   // console.log("Applying oidc-provider...");
+  const dir = path.join(__dirname, 'assets/views');
+
+  app.setViewEngine('ejs');
+  app.set('views', dir);
+  app.set('x-powered-by', false);
+  app.use(express.static(path.join(__dirname, 'assets/styles')));
+  app.use(express.static(path.join(__dirname, 'assets/scripts')));
+  app.use(express.static(path.join(__dirname, 'assets/images')));
   app.use('/oidc', OpenIdProvider.provider.callback);
   // const adapterHost = app.get(HttpAdapterHost);
   // const httpAdapter = adapterHost.httpAdapter;
