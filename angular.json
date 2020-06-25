@@ -3240,7 +3240,7 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "oidc-provider-nest:build",
-            "port": 0
+            "port": 7770
           }
         },
         "lint": {

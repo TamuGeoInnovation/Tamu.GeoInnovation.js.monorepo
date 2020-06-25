@@ -1,12 +1,50 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import  { InteractionModule, UserModule } from '@tamu-gisc/oidc/provider-nest';
+import {
+  Account,
+  AccessToken,
+  AuthorizationCode,
+  Client,
+  ClientCredential,
+  DeviceCode,
+  InitialAccessToken,
+  Interaction,
+  RefreshToken,
+  RegistrationAccessToken,
+  Session,
+  User,
+  InteractionModule,
+  UserModule
+} from '@tamu-gisc/oidc/provider-nest';
+
+import { dbConfig } from '../environments/environment';
 
 @Module({
-  imports: [InteractionModule, UserModule],
+  imports: [
+    TypeOrmModule.forRoot({
+      ...dbConfig,
+      entities: [
+        Account,
+        AccessToken,
+        AuthorizationCode,
+        Client,
+        ClientCredential,
+        DeviceCode,
+        InitialAccessToken,
+        Interaction,
+        RefreshToken,
+        RegistrationAccessToken,
+        Session,
+        User
+      ]
+    }),
+    InteractionModule,
+    UserModule
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
 export class AppModule {}

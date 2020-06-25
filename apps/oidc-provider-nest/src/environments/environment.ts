@@ -1,3 +1,5 @@
 export const environment = {
-  production: false
+  production: false,
 };
+
+export { localDbConfig as dbConfig } from './ormconfig';
