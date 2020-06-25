@@ -163,7 +163,7 @@ export class Account extends GuidIdentity implements IAccount {
   phone_number: string;
 
   @Column({
-    type: 'boolean',
+    type: 'bit',
     nullable: true
   })
   phone_number_verified: boolean = false;
@@ -243,7 +243,7 @@ export class User extends GuidIdentity {
   email: string;
 
   @Column({
-    type: 'boolean',
+    type: 'bit',
     nullable: true
   })
   email_verified: boolean = false;
@@ -261,7 +261,7 @@ export class User extends GuidIdentity {
   updatedAt?: string;
 
   @Column({
-    type: 'boolean',
+    type: 'bit',
     nullable: true
   })
   enabled2fa?: boolean = false;
@@ -279,7 +279,7 @@ export class User extends GuidIdentity {
   recovery_email: string;
 
   @Column({
-    type: 'boolean',
+    type: 'bit',
     nullable: true
   })
   recovery_email_verified: boolean = false;

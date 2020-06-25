@@ -53,7 +53,7 @@ export class InteractionController {
     }
   }
 
-  @Post(':uid/login')
+  @Post(':uid')
   async interactionLoginPost(@Param() params, @Req() req: Request, @Res() res: Response) {
     console.log('secondStep');
     await OpenIdProvider.provider.setProviderSession(req, res, {

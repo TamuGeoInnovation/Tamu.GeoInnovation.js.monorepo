@@ -1,9 +1,9 @@
-import { Connection, getConnection, Repository, Db, UpdateResult } from "typeorm";
+import { Connection, getConnection, Repository, Db, UpdateResult } from 'typeorm';
 import { CommonService } from '../common/common.service';
 import { SHA1HashUtils } from '../../_utils/sha1hash.util';
 import { User } from '../../entities/all.entity';
 
-import { hash, compare } from "bcrypt";
+import { hash, compare } from 'bcrypt';
 
 export class UserService {
   private static connection: Connection;
@@ -16,13 +16,13 @@ export class UserService {
       };
       getConnection()
         .getRepository(User)
-        .createQueryBuilder("user")
+        .createQueryBuilder('user')
         .where(`user.${key} = :${key}`, op)
         .getOne()
         .then((user: User) => {
           resolve(user);
         })
-        .catch(err => {
+        .catch((err) => {
           throw err;
         });
     });
@@ -35,49 +35,51 @@ export class UserService {
         .findOne({
           email: user.email
         })
-        .then(existingUser => {
+        .then((existingUser) => {
           if (existingUser) {
-            console.log("User already exists with this email");
+            console.log('User already exists with this email');
             resolve(false);
           } else {
-            hash(user.password, SHA1HashUtils.SALT_ROUNDS).then(hashedPw => {
+            hash(user.password, SHA1HashUtils.SALT_ROUNDS).then((hashedPw) => {
               user.password = hashedPw;
               getConnection()
                 .getRepository(User)
                 .save(user)
-                .then(val => {
+                .then((val) => {
                   resolve(true);
                 })
-                .catch(err => {
+                .catch((err) => {
                   reject(err);
                 });
             });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           throw err;
         });
     });
   }
 
-  public static async userLogin(
-    email: string,
-    password: string
-  ): Promise<User> {
+  public static async userLogin(email: string, password: string): Promise<User> {
     return new Promise((resolve, reject) => {
       getConnection()
         .getRepository(User)
-        .createQueryBuilder("user")
-        .where("user.email = :email", { email })
+        .createQueryBuilder('user')
+        .where('user.email = :email', { email })
         .getOne()
         .then((user: User) => {
-          compare(password, user.password).then(same => {
-            if (same) {
-              resolve(user);
-            } else {
-              resolve();
-            }
-          });
+          if (user) {
+            compare(password, user.password).then((same) => {
+              if (same) {
+                resolve(user);
+              } else {
+                resolve();
+              }
+            });
+          } else {
+            // no user found
+            reject();
+          }
         });
     });
   }
@@ -97,5 +99,4 @@ export class UserService {
         });
     });
   }
-
 }
