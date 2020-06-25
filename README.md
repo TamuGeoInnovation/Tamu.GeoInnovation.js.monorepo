@@ -26,6 +26,10 @@ Run `ng serve --project=aggiemap-angular --aot` to start a local webserver at ht
 
 As you make changes to the project, the local webserver will automatically rebuild and, if AggieMap is open in a webbrowser, the page will reload automatically
 
+
+# Generate a lib
+- `ng g @nrwl/web:library projectlib/sublib`
+
 # Anything NestJS
 - Bring up a list of NestJS commands: `nx list @nestjs/schematics`
 - Using a schematic: `nx g @nestjs/schematics:module MODULENAME`
