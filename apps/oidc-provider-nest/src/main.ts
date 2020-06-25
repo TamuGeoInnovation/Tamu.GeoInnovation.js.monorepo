@@ -1,9 +1,9 @@
 import { NestFactory, HttpAdapterHost } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app/app.module';
-import { OpenIdProvider } from '@tamu-gisc/oidc/provider';
+import { OpenIdProvider } from '@tamu-gisc/oidc/provider-nest';
 import { Provider } from 'oidc-provider';
-import express, { Response, Request } from 'express';
+import * as express from 'express';
 import { urlencoded, json } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
