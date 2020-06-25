@@ -13,7 +13,8 @@ import {
   OneToMany,
   JoinColumn
 } from 'typeorm';
-import * as guid from 'uuid';
+
+import { v4 as guid } from 'uuid';
 
 export type TypeORMEntities = string | Function | (new () => unknown) | EntitySchema<unknown>;
 export type KindOfId = number | string;
