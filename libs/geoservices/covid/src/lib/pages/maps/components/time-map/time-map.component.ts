@@ -18,7 +18,6 @@ export class TimeMapComponent implements OnInit {
   private countyData: Array<CountyRecord>;
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
   public dateModel: BehaviorSubject<String> = new BehaviorSubject(undefined);
-  public maxDate = '2020-06-24';
   public dateSelected = '2020-06-24';
 
   public mortalButtonToggled = false;
@@ -29,8 +28,8 @@ export class TimeMapComponent implements OnInit {
 
   public ngOnInit(): void {
     this.mapService.loaded.pipe(take(1)).subscribe((map) => {
-      this.datePicker.nativeElement.value = this.maxDate;
-      this.datePicker.nativeElement.max = this.maxDate;
+      this.datePicker.nativeElement.value = this.dateSelected;
+      this.datePicker.nativeElement.max = this.dateSelected;
       const zoomThreshold = 3;
 
       map.addSource('county-lines', {
@@ -127,14 +126,8 @@ export class TimeMapComponent implements OnInit {
 
   public reloadData(): void {
     this.dateSelected = this.datePicker.nativeElement.value;
-    const stateURL =
-      'https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/states/' +
-      this.dateSelected +
-      '.json';
-    const countyURL =
-      'https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/counties/' +
-      this.dateSelected +
-      '.json';
+    const stateURL = `https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/states/${this.dateSelected}.json`;
+    const countyURL = `https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/counties/${this.dateSelected}.json`;
     this.dateModel.next(this.dateSelected);
 
     const requests = forkJoin([this.http.get(stateURL), this.http.get(countyURL)]);
