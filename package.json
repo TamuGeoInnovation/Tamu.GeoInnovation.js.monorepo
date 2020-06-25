@@ -68,6 +68,7 @@
     "esri-loader": "~2.10.1",
     "express-session": "^1.17.0",
     "geojson-utils": "git+ssh://git@github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.geojsonutils.git",
+    "got": "^11.3.0",
     "helmet": "^3.21.2",
     "interactjs": "^1.9.19",
     "jsonwebtoken": "^8.5.0",
