@@ -105,6 +105,11 @@ export class LockdownMapComponent implements OnInit {
           created: createdDate
         });
       });
+
+      map.on('mouseleave', 'counties-lockdowns', (e) => {
+        this.infoBoxModel.next(null);
+      });
+
       map.dragRotate.disable();
     });
   }

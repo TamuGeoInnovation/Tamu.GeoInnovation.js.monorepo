@@ -16,7 +16,7 @@
   </tamu-gisc-mapbox-map>
   <div class='right-sidebar'>
     <h3>COVID-19 Data</h3>
-    <p *ngIf="(dateModel | async) as date"><b>Date Selected:{{date}}</b></p>
+    <h5 *ngIf="(dateModel | async) as date">Date Selected:{{date}}</h5>
     <div #infobox *ngIf="(infoBoxModel | async) as info">
       <p *ngIf="!stateButtonToggle">County: {{info.name}}</p>
       <p *ngIf="stateButtonToggle">State: {{info.name}}</p>

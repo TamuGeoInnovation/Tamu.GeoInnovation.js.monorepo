@@ -18,8 +18,8 @@ export class TimeMapComponent implements OnInit {
   private countyData: Array<CountyRecord>;
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
   public dateModel: BehaviorSubject<String> = new BehaviorSubject(undefined);
-  public maxDate = '2020-06-23';
-  public dateSelected = '2020-06-23';
+  public maxDate = '2020-06-24';
+  public dateSelected = '2020-06-24';
 
   public mortalButtonToggled = false;
   public stateButtonToggle = false;
@@ -110,6 +110,16 @@ export class TimeMapComponent implements OnInit {
           death_rate: selectedState[0].death_rate
         });
       });
+
+      map.on('mouseleave', 'covid-county', (e) => {
+        this.infoBoxModel.next(null);
+      });
+
+      map.on('mouseleave', 'covid-state', (e) => {
+        this.infoBoxModel.next(null);
+      });
+
+      map.dragRotate.disable();
 
       this.reloadData();
     });
