@@ -7,20 +7,21 @@ import * as express from 'express';
 import { urlencoded, json } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
-import * as path from 'path';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   // enableOIDCDebug(OpenIdProvider.provider);
   // console.log("Applying oidc-provider...");
-  const dir = path.join(__dirname, 'assets/views');
-
+  const dir = join(__dirname, 'assets/views');
+  const dir2 = join(__dirname, 'src', 'assets', 'views');
+  console.log("dir2: ", dir2);
   app.setViewEngine('ejs');
   app.set('views', dir);
   app.set('x-powered-by', false);
-  app.use(express.static(path.join(__dirname, 'assets/styles')));
-  app.use(express.static(path.join(__dirname, 'assets/scripts')));
-  app.use(express.static(path.join(__dirname, 'assets/images')));
+  app.use(express.static(join(__dirname, 'assets', 'styles')));
+  app.use(express.static(join(__dirname, 'assets', 'scripts')));
+  app.use(express.static(join(__dirname, 'assets', 'images')));
   app.use('/oidc', OpenIdProvider.provider.callback);
   // const adapterHost = app.get(HttpAdapterHost);
   // const httpAdapter = adapterHost.httpAdapter;

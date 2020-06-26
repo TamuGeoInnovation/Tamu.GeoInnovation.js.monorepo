@@ -6,6 +6,7 @@ import { User } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
 import { JwtUtil } from '../../_utils/jwt.util';
 import { InteractionResults } from 'oidc-provider';
+import { urlHas, urlFragment } from '../../_utils/url-utils';
 
 @Controller('interaction')
 export class InteractionController {
@@ -20,16 +21,25 @@ export class InteractionController {
       const name = prompt.name;
       switch (name) {
         case 'login': {
-          return res.render('login', {
+          const locals = {
             client,
             uid,
             params,
             details: prompt.details,
-            title: 'GISC Identity Portal',
+            title: 'GeoInnovation Service Center SSO',
+            error: false,
             debug: false,
-            interaction: true
+            interaction: true,
+            devMode: urlHas(req.path, 'dev', true),
+            requestingHost: urlFragment(client.redirectUris[0], 'hostname')
+          }
+          return res.render('user-info', locals, (err, html) => {
+            if (err) throw err;
+            res.render('_layout', {
+              ...locals, 
+              body: html
+            })
           });
-          break;
         }
         case 'consent': {
           return res.render('interaction', {
@@ -40,7 +50,6 @@ export class InteractionController {
             title: 'Authorize',
             session: session ? console.log(session) : undefined
           });
-          break;
         }
         default: {
           throw new Error('Unknown prompt type');
