@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { EnvironmentService, env } from '@tamu-gisc/common/ngx/environment';
@@ -13,7 +14,7 @@ describe('AdminLockdownsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, UIFormsModule, HttpClientTestingModule],
+      imports: [ReactiveFormsModule, UIFormsModule, HttpClientTestingModule, RouterTestingModule],
       declarations: [AdminLockdownsComponent],
       providers: [
         EnvironmentService,

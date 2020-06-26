@@ -8,6 +8,7 @@ import { LOCAL_STORAGE, StorageServiceModule } from 'angular-webstorage-service'
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { env, EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { AppStorage } from '@tamu-gisc/common/ngx/local-store';
+import { CovidFormsModule } from '@tamu-gisc/geoservices/covid';
 
 import { LockdownComponent } from './lockdown.component';
 
@@ -23,7 +24,8 @@ describe('LockdownComponent', () => {
         ReactiveFormsModule,
         UIFormsModule,
         RouterTestingModule,
-        StorageServiceModule
+        StorageServiceModule,
+        CovidFormsModule
       ],
       declarations: [LockdownComponent],
       providers: [

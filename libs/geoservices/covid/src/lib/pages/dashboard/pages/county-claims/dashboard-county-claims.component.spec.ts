@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { LOCAL_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 
@@ -14,7 +15,7 @@ describe('DashboardCountyClaimsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, EnvironmentModule, StorageServiceModule],
+      imports: [HttpClientTestingModule, EnvironmentModule, StorageServiceModule, RouterTestingModule],
       providers: [
         {
           provide: AppStorage,

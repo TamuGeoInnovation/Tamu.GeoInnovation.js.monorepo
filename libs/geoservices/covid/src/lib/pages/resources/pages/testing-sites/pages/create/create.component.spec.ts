@@ -9,6 +9,7 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { AppStorage } from '@tamu-gisc/common/ngx/local-store';
+import { CovidFormsModule } from '@tamu-gisc/geoservices/covid';
 
 import { CreateComponent } from './create.component';
 
@@ -25,7 +26,8 @@ describe('CreateComponent', () => {
         StorageServiceModule,
         GeoservicesCoreNgxModule,
         EnvironmentModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        CovidFormsModule
       ],
       declarations: [CreateComponent],
       providers: [
