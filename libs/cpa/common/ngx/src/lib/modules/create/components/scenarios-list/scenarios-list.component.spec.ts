@@ -1,13 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ActivatedRoute } from '@angular/router';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { NavigationBreadcrumbModule } from '@tamu-gisc/ui-kits/ngx/navigation/breadcrumb';
 
 import { ScenariosListComponent } from './scenarios-list.component';
-import { of } from 'rxjs';
 
 describe('ScenariosListComponent', () => {
   let component: ScenariosListComponent;

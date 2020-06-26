@@ -31,7 +31,6 @@ describe('CreateComponent', () => {
       ],
       declarations: [CreateComponent],
       providers: [
-        CreateComponent,
         {
           provide: env,
           useValue: { covid_api_url: 'https://' }
