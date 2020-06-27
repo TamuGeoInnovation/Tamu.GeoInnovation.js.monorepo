@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
@@ -11,18 +10,21 @@ import { CountyClaimComponent } from './county-claim.component';
 describe('CountyClaimComponent', () => {
   let component: CountyClaimComponent;
   let fixture: ComponentFixture<CountyClaimComponent>;
-  const formBuilder: FormBuilder = new FormBuilder();
+  const formB = new FormBuilder();
+  const form = new FormGroup({
+    phoneNumbers: formB.array([]),
+    websites: formB.array([])
+  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule, UIFormsModule, EnvironmentModule, HttpClientTestingModule],
+      imports: [ReactiveFormsModule, FormsModule, UIFormsModule, EnvironmentModule, HttpClientTestingModule],
       declarations: [CountyClaimComponent],
       providers: [
         {
           provide: env,
           useValue: { covid_api_url: 'https://' }
-        },
-        { provide: FormBuilder, useValue: formBuilder }
+        }
       ]
     }).compileComponents();
   }));
@@ -30,7 +32,7 @@ describe('CountyClaimComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CountyClaimComponent);
     component = fixture.componentInstance;
-    component.form = formBuilder.group({ ['readonly']: Boolean, ['infoGuid']: String }, {});
+    component.form = form;
     fixture.detectChanges();
   });
 
