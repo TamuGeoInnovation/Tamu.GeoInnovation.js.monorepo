@@ -1,0 +1,42 @@
+<div>
+  <form [formGroup]="form">
+    <div class="form-section">
+      <div class="form-section-body">
+        <div class="form-collection row pad-top">
+          <tamu-gisc-select formControlName="state" [data]="states | async" placeholder="Select State" [valueTemplate]="'stateFips'" [displayTemplate]="'name'"></tamu-gisc-select>
+          <tamu-gisc-select formControlName="county" [data]="counties | async" placeholder="Select County" [valueTemplate]="'countyFips'" [displayTemplate]="'name'"></tamu-gisc-select>
+          <tamu-gisc-select formControlName="email" [data]="users | async" placeholder="Select User" [valueTemplate]="'email'" [displayTemplate]="'email'"></tamu-gisc-select>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="spinning-loader" *ngIf="(sites | async) === null; else sitesList"></div>
+
+<ng-template #sitesList>
+  <div class="flex flex-column align-center">
+    <div *ngIf="sites | async">{{(sites | async)?.length}} testing sites</div>
+    <div *ngIf="sites | async" class="floating-table">
+      <div class="floating-table-header">
+        <div class="floating-row">
+          <div class="column">County</div>
+          <div class="column">State</div>
+          <div class="column">Created</div>
+          <div class="column">Name</div>
+          <div class="column">Added By</div>
+        </div>
+      </div>
+
+      <div class="floating-table-body">
+        <div class="floating-row" *ngFor="let site of sites | async">
+          <div class="column">{{site.claim.county.name}}</div>
+          <div class="column">{{site.claim.county.stateFips.name}}</div>
+          <div class="column">{{site.info.created | date : 'medium'}}</div>
+          <div class="column">{{site.info.locationName}}</div>
+          <div class="column">{{site.claim.user.email}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

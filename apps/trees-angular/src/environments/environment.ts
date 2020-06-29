@@ -11,6 +11,8 @@ import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/sear
 
 import { Connections, Definitions as d } from './definitions';
 
+import esri = __esri;
+
 export * from './definitions';
 
 /*
@@ -21,6 +23,14 @@ export * from './definitions';
  * on performance if an error is thrown.
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+
+const commonLayerProps = {
+  outFields: ['*'],
+  minScale: 100000,
+  maxScale: 0,
+  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.CSVLayerElevationInfo,
+  popupEnabled: false
+};
 
 export const LayerSources: LayerSource[] = [
   {
@@ -33,6 +43,7 @@ export const LayerSources: LayerSource[] = [
     loadOnInit: true,
     visible: true,
     native: {
+      ...commonLayerProps,
       renderer: {
         type: 'simple',
         symbol: {
@@ -62,7 +73,10 @@ export const LayerSources: LayerSource[] = [
         src:
           'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAENJREFUOI1jYaAyYKGZgf9DGf5TahjjagZGFnQBcg2DOYgFmyAlgLYupAYYYgaORsogNHA0Uig3kJIwhAUXC7oApQAAQ8kZ9+L+/N4AAAAASUVORK5CYII='
       }
-    ]
+    ],
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -73,7 +87,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: true,
     visible: true,
-    legendItems: []
+    legendItems: [],
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'graphic',
@@ -82,7 +99,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'hide',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BuildingPopupComponent'
+    popupComponent: 'BuildingPopupComponent',
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'graphic',
@@ -90,7 +110,10 @@ export const LayerSources: LayerSource[] = [
     title: 'Custom Boundary',
     listMode: 'show',
     loadOnInit: true,
-    visible: true
+    visible: true,
+    native: {
+      ...commonLayerProps
+    }
   }
 ];
 

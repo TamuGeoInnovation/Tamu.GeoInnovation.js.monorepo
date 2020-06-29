@@ -5,6 +5,6 @@ import { ResponsiveService } from './services/responsive.service';
 
 @NgModule({
   imports: [CommonModule],
-  providers: [ResponsiveService]
+  providers: []
 })
 export class ResponsiveModule {}

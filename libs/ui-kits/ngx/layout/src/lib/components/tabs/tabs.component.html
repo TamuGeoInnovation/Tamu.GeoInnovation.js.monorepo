@@ -1,0 +1,9 @@
+<div class="tabs">
+  <div class="tab" *ngFor="let toggle of toggles" (click)="swapContent(toggle)" [ngClass]="{ active: toggle.index === toggleIndex }">
+    <p>{{ toggle.label }}</p>
+  </div>
+</div>
+
+<div class="content" [ngClass]="{forwards: contentDirection === 'forwards', reverse: contentDirection === 'reverse'}">
+  <ng-container [ngTemplateOutlet]="toggles[toggleIndex].template"></ng-container>
+</div>

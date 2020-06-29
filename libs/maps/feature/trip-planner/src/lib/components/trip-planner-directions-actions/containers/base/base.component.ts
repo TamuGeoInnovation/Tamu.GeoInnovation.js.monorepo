@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil, pluck } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
-import * as guid from 'uuid/v4';
+import { v4 as guid } from 'uuid';
 
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 

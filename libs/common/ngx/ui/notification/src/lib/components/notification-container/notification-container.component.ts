@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, from } from 'rxjs';
 import { take, flatMap, toArray } from 'rxjs/operators';
 
-import { uuid as guid } from 'uuid/v4';
+import { v4 as guid } from 'uuid';
 
 import { Notification, NotificationService } from '../../services/notification.service';
 

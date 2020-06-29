@@ -20,6 +20,14 @@ export const environment = {
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
 
+const commonLayerProps = {
+  outFields: ['*'],
+  minScale: 100000,
+  maxScale: 0,
+  elevationInfo: { mode: 'relative-to-ground', offset: 1 },
+  popupEnabled: false
+};
+
 export const SearchSources: SearchSource[] = [];
 
 export const LayerSources: LayerSource[] = [
@@ -30,7 +38,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     title: 'Signage Points',
     loadOnInit: true,
-    popupComponent: Popups.SignPopupComponent
+    popupComponent: Popups.SignPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'graphic',
@@ -38,7 +49,10 @@ export const LayerSources: LayerSource[] = [
     title: 'Custom Boundary',
     listMode: 'show',
     loadOnInit: true,
-    visible: true
+    visible: true,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'graphic',
@@ -46,6 +60,9 @@ export const LayerSources: LayerSource[] = [
     title: 'Selected Buildings',
     listMode: 'hide',
     loadOnInit: false,
-    visible: true
+    visible: true,
+    native: {
+      ...commonLayerProps
+    }
   }
 ];

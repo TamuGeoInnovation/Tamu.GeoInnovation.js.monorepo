@@ -1,0 +1,90 @@
+@import 'libs/sass/mixins';
+
+$color: rgba(85, 138, 216, 1);
+$dangerColor: #ef5350;
+$sColor: #fafafa;
+
+$inactiveColor: #dcdcdc;
+$accentColor: #424242;
+
+:host {
+  display: inherit;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  color: $sColor;
+  background: $color;
+
+  @include transition(background 0.3s);
+
+  &.relaxed {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(center);
+    @include align-items(center);
+    @include flex(1);
+  }
+
+  &.snug {
+    // TODO: Deal with snug style
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  &.secondary {
+    border: 1.5pt solid $color;
+    background: none;
+    color: $color;
+
+    &:hover {
+      color: $sColor;
+      border-color: darken($color, 10%);
+    }
+  }
+
+  &.danger {
+    border: 1.5pt solid $dangerColor;
+    background: none;
+    color: $dangerColor;
+
+    &:hover {
+      background: darken($dangerColor, 15%);
+      border-color: darken($dangerColor, 15%);
+      color: $sColor;
+    }
+  }
+
+  &:hover {
+    background: darken($color, 10%);
+  }
+
+  &:active {
+    background: darken($color, 25%);
+  }
+
+  &.disabled {
+    color: $accentColor;
+    background: $inactiveColor;
+    border-color: $inactiveColor;
+    cursor: not-allowed;
+
+    &:hover {
+      background: $inactiveColor;
+      color: $inactiveColor;
+      border-color: $inactiveColor;
+      color: $accentColor;
+    }
+  }
+}
+
+input {
+  display: inherit;
+  @include flex(1);
+  @include justify-content(center);
+  color: inherit;
+  border: none;
+  background: none;
+  padding: 0.9rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  @include transition(color 0.3s);
+}

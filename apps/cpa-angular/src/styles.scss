@@ -1,0 +1,96 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'libs/sass/1140';
+@import 'libs/sass/mixins';
+@import 'libs/sass/modules/forms';
+@import 'libs/sass/dom_flexbox';
+@import 'libs/sass/modules/loaders';
+
+html {
+  height: 100%;
+  font-weight: 300;
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #424242;
+}
+
+body {
+  height: inherit;
+  width: inherit;
+}
+
+h2 {
+  padding-bottom: 0.75rem;
+}
+
+h3 {
+  padding-bottom: 0.5rem;
+}
+
+p {
+  padding-bottom: 0.75rem;
+}
+
+.material-icons-container {
+  line-height: 0;
+}
+
+.material-icons {
+  color: #bdbdbd;
+  font-size: 1.4rem;
+  @include transition(color 0.3s);
+
+  &.alt {
+    color: hsla(216, 20%, 60%, 1);
+  }
+
+  &.action {
+    cursor: pointer;
+
+    &:hover {
+      color: #616161;
+    }
+
+    &.alt {
+      &:hover {
+        color: hsl(216, 63%, 59%);
+      }
+    }
+
+    &.error {
+      &:hover {
+        color: hsla(10, 100%, 59%, 1);
+      }
+    }
+  }
+}
+
+.view-container {
+  margin-top: 1rem;
+}
+
+.record-item {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  @include align-content(center);
+  padding: 0.4rem 0;
+
+  .record-title {
+    font-weight: 500;
+  }
+
+  .material-icons-container {
+    .material-icons {
+      padding: 0 0.25rem;
+    }
+  }
+}
+
+.actionable-header {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  @include align-items(center);
+}

@@ -10,7 +10,7 @@ import {
   of,
   forkJoin
 } from 'rxjs';
-import { mergeMap, filter, switchMap, scan, take, toArray } from 'rxjs/operators';
+import { mergeMap, filter, switchMap, scan, take, toArray, withLatestFrom } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -41,7 +41,8 @@ export class LayerListService implements OnDestroy {
         // Create a LayerListItem instance for each including the existing layer instance as a class property.
         const existing: LayerListItem<esri.Layer>[] = res.map.allLayers
           .filter((l) => {
-            return l.listMode === 'show';
+            // Undefined value means "default" value, which is equal to "show"
+            return l.listMode === undefined || l.listMode === 'show';
           })
           .toArray()
           .map((l) => {
@@ -52,7 +53,7 @@ export class LayerListService implements OnDestroy {
         // Create a LayerListItem instance for each, leaving the layer property undefined.
         // This will be used as a flag to determine whether a layer needs to be lazy-loaded
         const nonExisting: LayerListItem<esri.Layer>[] = LayerSources.filter((s) => {
-          return s.listMode === 'show' && existing.findIndex((el) => s.id === el.id) === -1;
+          return (s.listMode === undefined || s.listMode === 'show') && existing.findIndex((el) => s.id === el.id) === -1;
         }).map((l) => {
           return new LayerListItem(l);
         });
@@ -82,7 +83,11 @@ export class LayerListService implements OnDestroy {
 
             // Layers that are not found in the service should simply be added.
             const newLayers = e.added
-              .filter((al) => al.listMode === 'show' && this._store.value.findIndex((cl) => cl.id === al.id) === -1)
+              .filter(
+                (al) =>
+                  (al.listMode === undefined || al.listMode === 'show') &&
+                  this._store.value.findIndex((cl) => cl.id === al.id) === -1
+              )
               .map((l: esri.Layer) => {
                 return new LayerListItem({ layer: l });
               });
@@ -218,7 +223,7 @@ export class LayerListService implements OnDestroy {
    * @param {ILayerSubscriptionProperties} props The `layers` property is used from this object
    * to reduce the original collection.
    * @param {boolean} filterLazy If `true` will ignore lazy load layers during the filtering. This is used internally
-   * to prevent errors and unecessary layer watch handles from being created. When `false`, all layers will be processed,
+   * to prevent errors and unnecessary layer watch handles from being created. When `false`, all layers will be processed,
    * and will not filter out layers marked for lazy loading which is useful to get a full list of layers for UI presentation,
    * for example.
    */
@@ -228,7 +233,9 @@ export class LayerListService implements OnDestroy {
   ): MonoTypeOperatorFunction<LayerListItem<esri.Layer>[]> {
     return (input$) =>
       input$.pipe(
-        switchMap((list) => from(list)),
+        switchMap((list) => {
+          return from(list);
+        }),
         filter((item) => {
           if (item.layer === undefined && filterLazy) {
             return false;
@@ -249,7 +256,11 @@ export class LayerListService implements OnDestroy {
         // Since the source observable (service store), never completes a simple toArray() will not work here.
         //
         // It's possible to achieve the same end-result with the scan operator that collects stream emissions over time.
-        scan((acc, curr) => {
+        withLatestFrom(this._store),
+        scan((acc, [curr, store]) => {
+          // Diff the accumulated layers with the store and remove anything from the accumulated that doesn't exist in store.
+          acc = store.map((sl) => acc.find((al) => al.id === sl.id)).filter((l) => l !== undefined);
+
           // Check if the accumulated value contains the current layer by id
           const existingIndex = acc.findIndex((layer) => layer.id === curr.id);
 

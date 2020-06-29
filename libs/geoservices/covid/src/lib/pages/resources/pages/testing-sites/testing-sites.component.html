@@ -1,0 +1,70 @@
+<!-- <p>The following is a list of submitted testing sites registered to your email address for this county.</p> -->
+
+<ng-container *ngIf="(localEmail | async) === null || (localEmail | async) === undefined ; else hasIdentity">
+  <p class="flex justify-center">Email registration required to submit testing sites. <a [routerLink]="['../profile']">Register using your email to proceed.</a></p>
+</ng-container>
+
+<ng-template #hasIdentity>
+  <ng-container *ngIf="(localCounty | async) === null || (localCounty | async) === undefined ; else hasCounty">
+    <p class="flex justify-center">An active county claim is required to submit testing sites. <a [routerLink]="['../county']">Claim a county to proceed.</a></p>
+  </ng-container>
+
+  <ng-template #hasCounty>
+    <div class="tab-section">
+      <div class="tab-section-header">
+        <h5>Submitted Testing Sites</h5>
+        <a [routerLink]="['./create']">New Testing Site</a>
+      </div>
+
+      <div class="tab-section-body">
+        <ng-container *ngIf="(sites | async)?.length === 0; else siteList">
+          <p>There are no testing sites registered for this county.</p>
+
+          <p *ngIf="countyIsSiteLess | async">This county has also been marked as <span class="emphasis">having no testing sites</span>. If this is no longer accurate, please add a testing site.</p>
+        </ng-container>
+
+        <ng-template #siteList>
+          <div class="flex flex-column align-center">
+            <div class="spinning-loader" *ngIf="(sites | async) === null || (sites | async)?.length === undefined; else sitesTable"></div>
+
+            <ng-template #sitesTable>
+              <div class="floating-table">
+                <div class="floating-table-header">
+                  <div class="floating-row">
+                    <div class="column">Site Name/Address</div>
+                    <div class="column">Updated</div>
+                    <div class="column">Actions</div>
+                  </div>  
+                </div>
+
+                <div class="floating-table-body">
+                  <div class="floating-row" *ngFor="let site of sites | async">
+                    <div class="column">{{site.info.locationName ? site.info.locationName : site.location.address1 ? site.location.address1 : 'Site'}}</div>
+                    <div class="column">{{site.info.updated | date : 'medium'}}</div>
+                    <div class="column"><span class="material-icons action alt" title="Edit testing site" [routerLink]="['./create', site.guid]">edit</span></div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="tab-section" *ngIf="(sites | async)?.length === 0 && (countyIsSiteLess | async) === false">
+      <div class="tab-section-header">
+        <h5>County Has No Testing Sites</h5>
+      </div>
+
+      <div class="tab-section-body action">
+        <div>
+          <p>In some cases, certain counties will not be able to provide any testing sites. If this is the case for this county, mark this county as having no testing sites. This will help differentiate counties that have no testing sites because they have not been checked versus those that have been checked but have been verified as having no testing sites.</p>
+        </div>
+
+        <div>
+          <tamu-gisc-button value="This County Has No Testing Sites" look="danger" (click)="markAsSiteLes()"></tamu-gisc-button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>

@@ -190,6 +190,99 @@
     },
     "common-utils-geometry-geoprocessing": {
       "tags": []
+    },
+    "cpa-angular-e2e": {
+      "tags": []
+    },
+    "cpa-angular": {
+      "tags": []
+    },
+    "cpa-nest": {
+      "tags": []
+    },
+    "cpa-data-api": {
+      "tags": []
+    },
+    "maps-feature-forms": {
+      "tags": []
+    },
+    "cpa-common-entities": {
+      "tags": []
+    },
+    "cpa-common-ngx": {
+      "tags": []
+    },
+    "ui-kits-ngx-navigation-breadcrumb": {
+      "tags": []
+    },
+    "geoservices-angular-e2e": {
+      "tags": []
+    },
+    "geoservices-angular": {
+      "tags": []
+    },
+    "geoservices-api": {
+      "tags": []
+    },
+    "geoservices-internal": {
+      "tags": []
+    },
+    "ui-kits-ngx-interactions-scroll-to": {
+      "tags": []
+    },
+    "geoservices-data-access": {
+      "tags": []
+    },
+    "geoservices-public": {
+      "tags": []
+    },
+    "geoservices-core-ngx": {
+      "tags": []
+    },
+    "ui-kits-ngx-navigation-mobile-tile": {
+      "tags": []
+    },
+    "ui-kits-ngx-navigation-triggers": {
+      "tags": []
+    },
+    "ui-kits-ngx-layout-code": {
+      "tags": []
+    },
+    "geoservices-covid": {
+      "tags": []
+    },
+    "covid-data-api": {
+      "tags": []
+    },
+    "covid-data-api-nest": {
+      "tags": []
+    },
+    "covid-common-entities": {
+      "tags": []
+    },
+    "covid-common-enums": {
+      "tags": []
+    },
+    "maps-mapbox": {
+      "tags": []
+    },
+    "oidc-client-test": {
+      "tags": []
+    },
+    "oidc-provider-angular-e2e": {
+      "tags": []
+    },
+    "oidc-provider-angular": {
+      "tags": []
+    },
+    "oidc-provider-express": {
+      "tags": []
+    },
+    "oidc-provider": {
+      "tags": []
+    },
+    "oidc-client": {
+      "tags": []
     }
   }
 }

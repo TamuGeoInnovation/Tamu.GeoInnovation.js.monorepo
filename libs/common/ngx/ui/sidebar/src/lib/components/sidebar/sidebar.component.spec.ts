@@ -29,11 +29,11 @@ describe('SidebarComponent', () => {
 
     ((sidebarTab as unknown) as { clicked: (MouseEvent) => unknown }).clicked(mouseEvent);
     expect(sidebarComponent.currentView).toEqual(sidebarTab.route);
-    expect(sidebarComponent.sidebarVisible).toBeTruthy();
+    expect(sidebarComponent.visible).toBeTruthy();
 
     ((sidebarTab as unknown) as { clicked: (MouseEvent) => unknown }).clicked(mouseEvent);
     expect(sidebarComponent.currentView).toEqual(sidebarTab.route);
-    expect(sidebarComponent.sidebarVisible).toBeFalsy();
+    expect(sidebarComponent.visible).toBeFalsy();
 
     expect(sidebarComponent.ngOnDestroy()).toBeUndefined();
   });

@@ -16,7 +16,7 @@ describe('ResponsiveService', () => {
   }));
 
   it('should get status', inject([ResponsiveService], (responsiveService: ResponsiveService) => {
-    responsiveService.getStatus().forEach((value) => {
+    responsiveService.isMobile.forEach((value) => {
       expect(value).toEqual(false);
     });
   }));

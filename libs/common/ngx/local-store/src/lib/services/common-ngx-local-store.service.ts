@@ -26,6 +26,14 @@ export class LocalStoreService {
     }
   }
 
+  public setStorage<T>(config: ValueConfig<T>): T | undefined {
+    const storeKey = config.primaryKey || STORAGE_KEY;
+
+    this.store.set(storeKey, config.value);
+
+    return this.store.get(storeKey);
+  }
+
   /**
    * Sets the value of a key in an optionally provided object stored in Local Storage referenced by storage key.
    * If no storage key reference is provided, the application default storage will be used.

@@ -1,0 +1,33 @@
+<div class="column8">
+  <ng-container *ngIf="(localEmail | async) === undefined ; else hasIdentity">
+    <p>Email registration required to claim a county. <a [routerLink]="['../profile']">Register your email to proceed.</a></p>
+  </ng-container>
+
+  <ng-template #hasIdentity>
+    <ng-container *ngIf="!(localCounty | async)?.countyFips ; else hasCounty">
+      <p>An active county claim is required to county lockdown information. <a [routerLink]="['../county']">Claim a county to proceed.</a></p>
+    </ng-container>
+
+    <ng-template #hasCounty>
+      <p>Please indicate whether this county is under a lockdown and provide any additional relevant information.</p>
+
+      <div class="form-section-body" *ngIf="(lockdownIdentityMatch | async) === false">
+        <div class="inform-context warning">
+          <p>The below information was submitted by the last county claim owner. Please review and update the information as needed.</p>
+        </div>
+      </div>
+
+      <tamu-gisc-lockdown-details [lockdown]="(lockdownEmailAndCounty | async)?.lockdown" [email]="(lockdownEmailAndCounty | async)?.email" [county]="(lockdownEmailAndCounty | async)?.county?.countyFips" (lockdownSubmit)="submitLockdown($event)"></tamu-gisc-lockdown-details>
+
+      <div [ngSwitch]="submissionStatus | async" class="submission-statuses pre-1">
+        <div class="status" *ngSwitchCase="0">Saving...</div>
+        <div class="status" *ngSwitchCase="1">Saved!</div>
+        <div class="status" *ngSwitchCase="2">Error!</div>
+      </div>
+
+      <div>
+        <a [routerLink]="['../testing-sites']" class="flex flex-row justify-center align-center">Testing Sites <span class="material-icons">keyboard_arrow_right</span></a>
+      </div>
+    </ng-template>
+  </ng-template>
+</div>

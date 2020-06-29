@@ -1,0 +1,16 @@
+<tamu-gisc-sidebar width="22.5rem" position="right">
+  <div class="tabs left">
+    <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''"></tamu-gisc-sidebar-tab>
+  </div>
+
+  <div class="content">
+    <tamu-gisc-layer-list></tamu-gisc-layer-list>
+  </div>
+</tamu-gisc-sidebar>
+
+<!-- Viewer and builder sidebar renders here -->
+<router-outlet></router-outlet>
+
+<tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
+
+<tamu-gisc-feature-popup></tamu-gisc-feature-popup>

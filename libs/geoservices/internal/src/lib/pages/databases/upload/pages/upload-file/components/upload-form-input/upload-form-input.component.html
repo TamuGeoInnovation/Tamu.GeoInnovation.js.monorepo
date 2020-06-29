@@ -1,0 +1,12 @@
+<div #dragArea class="drag-n-drop file-upload flex flex-column justify-center align-center" [ngClass]="{dragging: dragOver | async}">
+  <span class="material-icons instruction__icon">insert_drive_file</span>
+
+  <h4 class="instruction__header" *ngIf="fileName === undefined else hasFile">Drag you database file here or click to browse.</h4>
+
+  <ng-template #hasFile>
+    <h4 class="instruction__header">{{fileName}}</h4>
+  </ng-template>
+
+  <p class="instruction__context">Supported files include CSV, TSV, 2007+ Microsoft Access databases.</p>
+  <input type="file" id="database-upload" (change)="handleFileChange($event)" />
+</div>

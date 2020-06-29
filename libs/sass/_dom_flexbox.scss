@@ -1,9 +1,12 @@
 .flex {
   @include flexbox();
-  @include flex-wrap(wrap);
 
   &.flex-column {
     @include flex-direction(column);
+  }
+
+  &.flex-column-reverse {
+    @include flex-direction(column-reverse);
   }
 
   &.flex-row {
@@ -14,8 +17,16 @@
     @include flex-direction(row-reverse);
   }
 
+  //
+  // Flex Align Items
+  //
+
   &.align-start {
     @include align-items(flex-start);
+  }
+
+  &.align-end {
+    @include align-items(flex-end);
   }
 
   &.align-center {
@@ -30,6 +41,46 @@
     @include align-items(stretch);
   }
 
+  //
+  // Flex Align Content
+  //
+
+  &.align-content-start {
+    @include align-content(flex-start);
+  }
+
+  &.align-content-end {
+    @include align-content(flex-end);
+  }
+
+  &.align-content-center {
+    @include align-content(center);
+  }
+
+  &.align-content-stretch {
+    @include align-content(stretch);
+  }
+
+  &.align-content-space-between {
+    @include align-content(space-between);
+  }
+
+  &.align-content-space-around {
+    @include align-content(space-around);
+  }
+
+  //
+  // Flex Justify Content
+  //
+
+  &.justify-start {
+    @include justify-content(flex-start);
+  }
+
+  &.justify-end {
+    @include justify-content(flex-end);
+  }
+
   &.justify-center {
     @include justify-content(center);
   }
@@ -42,7 +93,15 @@
     @include justify-content(space-around);
   }
 
+  &.justify-evenly {
+    @include justify-content(space-around);
+  }
+
   &.self-align {
     @include align-self(stretch);
+  }
+
+  &.wrap {
+    @include flex-wrap(wrap);
   }
 }

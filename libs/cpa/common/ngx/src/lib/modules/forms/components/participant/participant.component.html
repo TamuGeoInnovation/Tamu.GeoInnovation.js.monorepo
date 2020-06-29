@@ -1,0 +1,81 @@
+<div class="actions">
+  <div class="left-actions">
+    <!-- Test only if the current index is equal to zero. Even though a value lf "-1" is not possible in an array,
+    in this case a value of "-1" represents a non-yet-existing, or possible, item at the end of the array -->
+    <!-- -->
+    <!-- Call `scanNextParticipant` only if the the current index is greater than zero OR if it is equal to "-1".
+      An index greater than zero is straight forward, means we can walk to the previous index.
+      An index equal to "-1" means that the current participant has not submitted any geometry and thus has no scan index. This case is assumed to be at the tail-end of the array, meaning we can start scanning
+      from the last index of the array. -->
+    <div class="action" title="Previous Participant" [ngClass]="{ unavailable: (responseIndex | async) === 0 || (responses | async)?.length === 0 }" (click)="scan('prev')">
+      <span class="material-icons">keyboard_arrow_left</span>
+      <p>Previous Participant</p>
+    </div>
+  </div>
+
+  <div class="right-actions">
+    <!-- Make action available if the current index is a valid array index (not "-1") -->
+    <!--  -->
+    <!-- Call `scanNextParticipant` only if the currentIndex is not -1. An index equal to the upper array limit would mean we can create a new participant, which is acceptable. -->
+
+    <div class="action" title="Next Participant" [ngClass]="{ unavailable: !form.valid }" (click)="scan('next')">
+      <p>Next Participant</p>
+      <span class="material-icons">keyboard_arrow_right</span>
+    </div>
+  </div>
+</div>
+
+<!-- Scenario Title -->
+<h2>{{ (scenario | async)?.title }}</h2>
+<h3>{{ (workshop | async)?.title }}</h3>
+
+<p class="scenario-description">{{ (scenario | async)?.description }}</p>
+
+<form [formGroup]="form">
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-textbox type="text" placeholder="Name (Optional)" floatLabel="true" formControlName="name"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox type="textarea" placeholder="Notes (Optional)" floatLabel="true" formControlName="notes"></tamu-gisc-textbox>
+      </div>
+
+      <div class="sidebar-component-content-container">
+        <div class="sidebar-component-name">
+          <p>Drawing Tools</p>
+        </div>
+        <tamu-gisc-map-draw [reference]="'drawing-layer'" [collapseGraphics]="true" (export)="handleDrawSelection($event)"></tamu-gisc-map-draw>
+      </div>
+
+      <div class="sidebar-component-content-container">
+        <div class="sidebar-component-name">
+          <p>Summary & Charts</p>
+        </div>
+
+        <tamu-gisc-selection-summary [collection]="selected">
+          <div class="charts">
+            <tamu-gisc-bar-chart [paths]="[['attributes.Qualifier', 'identity']]" [transformations]="[['categorize', 'count']]" [labels]="['Type']" [options]="chartOptions"></tamu-gisc-bar-chart>
+          </div>
+        </tamu-gisc-selection-summary>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="actions">
+  <div class="left-actions">
+    <div class="action" title="Previous Scenario" [ngClass]="{ unavailable: (scenarioIndex | async) === 0 }" (click)="scanScenario('prev')">
+      <span class="material-icons">keyboard_arrow_left</span>
+      <p>Previous Scenario</p>
+    </div>
+  </div>
+
+  <div class="right-actions">
+    <div class="action" title="Next Scenario" [ngClass]="{ unavailable: (scenarioIndex | async) === (workshop | async)?.scenarios.length - 1 }" (click)="scanScenario('next')">
+      <p>Next Scenario</p>
+      <span class="material-icons">keyboard_arrow_right</span>
+    </div>
+  </div>
+</div>

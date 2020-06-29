@@ -8,10 +8,11 @@ import { MarkdownParsePipe } from './parsing/markdown-parse.pipe';
 import { SafeHtmlPipe } from './sanitation/safe-html.pipe';
 
 import { TimeUntilPipe } from './transformation/time-until.pipe';
+import { PhoneNumberFormatPipe } from './transformation/phone-number-format.pipe';
 
 @NgModule({
-  declarations: [GroupByPipe, OrderByPipe, MarkdownParsePipe, SafeHtmlPipe, TimeUntilPipe],
+  declarations: [GroupByPipe, OrderByPipe, MarkdownParsePipe, SafeHtmlPipe, TimeUntilPipe, PhoneNumberFormatPipe],
   imports: [CommonModule],
-  exports: [GroupByPipe, OrderByPipe, MarkdownParsePipe, SafeHtmlPipe, TimeUntilPipe]
+  exports: [GroupByPipe, OrderByPipe, MarkdownParsePipe, SafeHtmlPipe, TimeUntilPipe, PhoneNumberFormatPipe]
 })
 export class PipesModule {}

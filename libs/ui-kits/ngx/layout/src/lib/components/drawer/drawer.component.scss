@@ -1,0 +1,97 @@
+@import 'libs/sass/mixins';
+
+$border-radius: 1.5rem;
+
+:host {
+  position: absolute;
+  z-index: 101;
+  background: white;
+  height: 100%;
+  box-sizing: border-box;
+  @include no-select;
+
+  &.left {
+    left: 0;
+    border-top-right-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+    filter: drop-shadow(5px -2px 5px rgba(0, 0, 0, 0.05));
+
+    .toggle {
+      left: 100%;
+      @include transform(translateX(-50%));
+
+      span {
+        left: 50%;
+        @include transform(rotate3d(0, 1, 0, 0deg) translateX(-15%) translateY(-50%));
+      }
+      // On visible state, rotate the initial icon about the Y axis
+      &.visible {
+        span {
+          @include transform(rotate3d(0, 1, 0, 180deg) translateX(-50%) translateY(-50%));
+        }
+      }
+    }
+  }
+
+  &.right {
+    right: 0;
+    border-top-left-radius: $border-radius;
+    border-bottom-left-radius: $border-radius;
+    filter: drop-shadow(-5px -2px 5px rgba(0, 0, 0, 0.05));
+
+    .toggle {
+      right: 100%;
+      @include transform(translateX(50%));
+
+      span {
+        right: 50%;
+        @include transform(rotate3d(0, 1, 0, 0deg) translateX(0%) translateY(-50%));
+      }
+      // On visible state, rotate the initial icon about the Y axis
+      &.visible {
+        span {
+          @include transform(rotate3d(0, 1, 0, 180deg) translateX(-150%) translateY(-50%));
+        }
+      }
+    }
+  }
+
+  &[layout='fixed'] {
+    position: fixed;
+  }
+
+  &[layout='absolute'] {
+    position: absolute;
+  }
+
+  &[layout='relative'] {
+    position: relative;
+  }
+}
+
+// Arrow button that serves as a drawer on/off toggle
+.toggle {
+  position: absolute;
+  top: 50%;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 99rem;
+  border: 1pt solid #e0e0e0;
+  top: 50%;
+  cursor: pointer;
+
+  // Span contains the icon
+  span {
+    position: absolute;
+    top: 50%;
+    will-change: transform;
+    @include transform-origin(0 0);
+  }
+}
+
+.content {
+  max-height: 100%;
+  overflow: auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}

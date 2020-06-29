@@ -40,7 +40,7 @@ export class EsriMapService {
     private environment: EnvironmentService
   ) {}
 
-  public loadMap(mapProperties: MapProperties, viewProperties: MapViewProperties) {
+  public loadMap(mapProperties: MapProperties, viewProperties: ViewProperties) {
     // If properties specifies 2d mode, load 2d map view.
     if (viewProperties.mode === '2d') {
       this.moduleProvider
@@ -75,8 +75,6 @@ export class EsriMapService {
   /**
    * Bootstrapping function that continues the map creation after the 2d vs 3d determination is made.
    *
-   * This function is used to keep code DRY.
-   *
    * @param {MapProperties} Properties
    * @param {MapViewProperties} ViewProperties
    * @param {esri.MapConstructor} Map
@@ -86,7 +84,7 @@ export class EsriMapService {
    */
   private next(
     Properties: MapProperties,
-    ViewProperties: MapViewProperties,
+    ViewProps: ViewProperties,
     Map: esri.MapConstructor,
     MapView: esri.MapViewConstructor | esri.SceneViewConstructor,
     TileLayer: esri.TileLayerConstructor,
@@ -94,8 +92,8 @@ export class EsriMapService {
   ): void {
     const basemap = this.makeBasemap(Properties, TileLayer, Basemap);
     this._modules.map = new Map(basemap);
-    const viewProps = this.makeMapView(ViewProperties.properties, this._modules.map);
-    this._modules.view = new MapView(viewProps);
+    const props = this.makeMapView(ViewProps.properties, this._modules.map);
+    this._modules.view = new MapView(props as esri.MapViewProperties & esri.SceneViewProperties);
 
     // Set the value of the async subject
     this._store.next({
@@ -107,7 +105,9 @@ export class EsriMapService {
     this._store.complete();
 
     // Filter list of layers that need to be added on map load
-    this.loadLayers(this.environment.value('LayerSources').filter((l) => l.loadOnInit));
+    this.loadLayers(
+      this.environment.value('LayerSources').filter((l) => l.loadOnInit === undefined || l.loadOnInit === true)
+    );
 
     // Load faeture list from url (e.g. howdy links)
     this.selectFeaturesFromUrl();
@@ -133,8 +133,8 @@ export class EsriMapService {
    *
    * Internal use only.
    */
-  private makeMapView(viewProperties: esri.MapViewProperties, map: esri.Map): esri.MapViewProperties {
-    // Make a clone of the passed in view properties
+  private makeMapView(viewProperties: esri.MapViewProperties | esri.SceneViewProperties, map: esri.Map) {
+    // Make a shallow clone of the passed in view properties
     const vProps = Object.assign({}, viewProperties);
 
     // If the supplied view properties does not have a map object, set it.
@@ -255,21 +255,8 @@ export class EsriMapService {
       });
     } else {
       const generateLayer = (layerSource: LayerSource): Promise<esri.Layer> => {
-        // Set of persistent properties, that will be applied to all layer types.
-        const persistentProps = {
-          outFields: layerSource.native && 'outFields' in layerSource.native ? layerSource.native.outFields : ['*'],
-          minScale: layerSource.native && 'minScale' in layerSource.native ? layerSource.native.minScale : 100000,
-          maxScale: layerSource.native && 'maxScale' in layerSource.native ? layerSource.native.maxScale : 0,
-          elevationInfo:
-            layerSource.native && 'elevationInfo' in layerSource.native
-              ? layerSource.native.elevationInfo
-              : { mode: 'relative-to-ground', offset: 1 },
-          popupEnabled: false
-        };
-
         // Object with merged root level properties, native properties, and persistent properties.
-        // const props: any = Object.assign(source, ...native, ...persistentProps);
-        const props = { ...layerSource, ...layerSource.native, ...persistentProps };
+        const props = { ...layerSource, ...layerSource.native };
 
         // Remove the 'native' property from the object since it's not needed in the layer creation.
         if (props.hasOwnProperty('native')) {
@@ -277,7 +264,9 @@ export class EsriMapService {
         }
 
         // Delete any additional properties to avoid polluting layer instances
-        delete props.loadOnInit;
+        if ('loadOnInit' in props) {
+          delete props.loadOnInit;
+        }
 
         if (layerSource.type === 'feature') {
           return this.moduleProvider.require(['FeatureLayer']).then(([FeatureLayer]: [esri.FeatureLayerConstructor]) => {
@@ -325,6 +314,18 @@ export class EsriMapService {
       // Generate the layer
       return generateLayer(source).then((layer) => {
         if (layer) {
+          const sources: LayerSource[] = this.environment.value('LayerSources');
+
+          const existingSourceIndex = sources.findIndex((s: LayerSource) => {
+            return s.id === source.id;
+          });
+
+          // If the source being processed does not exist in LayerSources, add it.
+          // This is the case in dynamically added layers
+          if (existingSourceIndex === -1) {
+            sources.push(source);
+          }
+
           // Add layer to map
           (<esri.Map>this._modules.map).add(layer, source.layerIndex ? source.layerIndex : undefined);
 
@@ -586,7 +587,26 @@ export interface MapConfig {
 }
 
 interface MapProperties extends esri.MapProperties {
-  basemap: BaseMapProperties | string;
+  basemap:
+    | BaseMapProperties
+    | (
+        | 'streets'
+        | 'topo'
+        | 'satellite'
+        | 'hybrid'
+        | 'dark-gray'
+        | 'gray'
+        | 'national-geographic'
+        | 'oceans'
+        | 'osm'
+        | 'terrain'
+        | 'dark-gray-vector'
+        | 'gray-vector'
+        | 'streets-vector'
+        | 'streets-night-vector'
+        | 'streets-navigation-vector'
+        | 'topo-vector'
+        | 'streets-relief-fector');
 }
 
 interface BaseMapProperties extends esri.BasemapProperties {
@@ -654,16 +674,27 @@ export interface HitTestSnapshot {
 
 export interface MapViewProperties {
   /**
-   * Describes the mapping mode for the view.
+   * Describes the mapping mode as a map view (2d)
    *
-   * 2d will use a MapView
-   *
-   * 3d will use a SceneView
    */
-  mode: '2d' | '3d';
+  mode: '2d';
 
   /**
    * Native ArcGIS JS MapView Properties
    */
   properties: esri.MapViewProperties;
 }
+
+export interface SceneViewProperties {
+  /**
+   * Describes the mapping mode as a scene view (3d).
+   */
+  mode: '3d';
+
+  /**
+   * Native ArcGIS JS SceneView Properties
+   */
+  properties: esri.SceneViewProperties;
+}
+
+export type ViewProperties = MapViewProperties | SceneViewProperties;

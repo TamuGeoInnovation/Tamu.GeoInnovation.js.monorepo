@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { from, Subject, combineLatest } from 'rxjs';
-import { takeUntil, pluck, filter, switchMap, take } from 'rxjs/operators';
+import { takeUntil, pluck, filter, switchMap } from 'rxjs/operators';
 
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { EsriModuleProviderService, EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
@@ -14,7 +14,7 @@ import esri = __esri;
   styleUrls: ['./base.component.scss'],
   providers: [FeatureSelectorService]
 })
-export class BaseComponent implements OnInit, OnDestroy {
+export class BaseDrawComponent implements OnInit, OnDestroy {
   public model: ISketchViewModel;
 
   @Input()
@@ -116,7 +116,7 @@ export class BaseComponent implements OnInit, OnDestroy {
 
             this.model = new SketchViewModel({ view: mapInstance.view, layer, updateOnGraphicClick: !this.updateTools });
 
-            this.model.on('create', (event) => {
+            this.model.on('create', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) => {
               if (event.state === 'complete') {
                 this.emitDrawn(event.target.layer.graphics);
               }
@@ -127,7 +127,7 @@ export class BaseComponent implements OnInit, OnDestroy {
             // - Shape update complete
             // - Shape move stop
             // - Shape reshape stop
-            this.model.on('update', (event) => {
+            this.model.on('update', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelUpdateEvent>) => {
               if (
                 event.state === 'complete' ||
                 (event.toolEventInfo && event.toolEventInfo.type === 'move-stop') ||
@@ -137,7 +137,7 @@ export class BaseComponent implements OnInit, OnDestroy {
               }
             });
 
-            this.model.on('delete', (event) => {
+            this.model.on('delete', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelDeleteEvent>) => {
               this.emitDrawn(event.target.layer.graphics);
             });
 
@@ -245,7 +245,7 @@ export class BaseComponent implements OnInit, OnDestroy {
         if (geometryTypes.length === 1) {
           let geometryProp;
 
-          // TODO: rings and paths should work fine. Multipoint and point will need tweaking.
+          // TODO: rings and paths should work fine. Multi point and point will need tweaking.
           if (cloned.geometry.hasOwnProperty('rings')) {
             geometryProp = 'rings';
           } else if (cloned.geometry.hasOwnProperty('paths')) {
@@ -263,7 +263,7 @@ export class BaseComponent implements OnInit, OnDestroy {
           // Apply collapsed geometry to cloned graphic.
           cloned.geometry[geometryProp] = collapsedGeometry;
 
-          // Reset some uneeded properties.
+          // Reset some unnecessary properties.
           cloned.layer = undefined;
           cloned.attributes = undefined;
 
@@ -280,8 +280,76 @@ export class BaseComponent implements OnInit, OnDestroy {
       this.export.emit(features.toArray());
     }
   }
+
+  /**
+   * Draws the provided graphics on the target draw layer.
+   *
+   * Emits a 'create' event.
+   */
+  public draw(graphics: esri.Graphic[]) {
+    this.model.layer.addMany(this.applySymbol(graphics));
+    this.model.emit('create', {
+      type: 'create',
+      state: 'complete',
+      graphics: this.model.layer.graphics
+    });
+  }
+
+  /**
+   * Clears the target draw layer
+   *
+   * Emits a 'delete' event.
+   */
+  public reset() {
+    this.model.layer.removeAll();
+    this.model.emit('delete', {
+      graphics: this.model.layer.graphics,
+      type: 'delete'
+    });
+  }
+
+  /**
+   * For graphics added through the `draw` methods, their symbols will typically
+   * not match the correct symbols used by the SketchView model and so on first render
+   * they will display incorrectly. This method applies the correct symbol for the graphics
+   * before adding them to the target layer.
+   */
+  private applySymbol(graphics: esri.Graphic[]): esri.Graphic[] {
+    const symbol = (type: string | 'point' | 'polygon' | 'polyline'): esri.Symbol => {
+      if (type === 'point') {
+        return this.model.pointSymbol;
+      } else if (type === 'polyline') {
+        return this.model.polylineSymbol;
+      } else if (type === 'polygon') {
+        return this.model.polygonSymbol;
+      }
+    };
+
+    const symbolized = graphics.map((g) => {
+      // Handle graphic instances as well as auto-castable objects.
+      if (g.toJSON === undefined) {
+        const copy = JSON.parse(JSON.stringify(g));
+
+        copy.symbol = symbol(copy.geometry.type);
+
+        return copy;
+      } else {
+        const copy = g.toJSON();
+
+        copy.symbol = symbol(g.geometry.type);
+
+        return copy;
+      }
+    });
+
+    return symbolized;
+  }
 }
 
 interface ISketchViewModel extends esri.SketchViewModel {
   toggleUpdateTool?: () => {};
+}
+
+interface ISketchViewModelEvent {
+  target: ISketchViewModel;
 }

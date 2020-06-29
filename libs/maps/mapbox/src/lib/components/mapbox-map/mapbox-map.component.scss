@@ -1,0 +1,12 @@
+@import url('https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css');
+
+:host {
+  height: 100%;
+  width: 100%;
+  display: flex;
+}
+
+.mapboxgl-map {
+  height: inherit;
+  width: inherit;
+}

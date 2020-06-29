@@ -2058,6 +2058,1197 @@
           }
         }
       }
+    },
+    "cpa-angular": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/cpa-angular",
+      "sourceRoot": "apps/cpa-angular/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/cpa-angular",
+            "index": "apps/cpa-angular/src/index.html",
+            "main": "apps/cpa-angular/src/main.ts",
+            "polyfills": "apps/cpa-angular/src/polyfills.ts",
+            "tsConfig": "apps/cpa-angular/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "apps/cpa-angular/src/favicon.ico",
+              "apps/cpa-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
+            "styles": ["apps/cpa-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/cpa-angular/src/environments/environment.ts",
+                  "with": "apps/cpa-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "cpa-angular:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "cpa-angular:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "cpa-angular:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/cpa-angular/tsconfig.app.json", "apps/cpa-angular/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/cpa-angular/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/cpa-angular/jest.config.js",
+            "tsConfig": "apps/cpa-angular/tsconfig.spec.json",
+            "setupFile": "apps/cpa-angular/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "cpa-angular-e2e": {
+      "root": "apps/cpa-angular-e2e",
+      "sourceRoot": "apps/cpa-angular-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/cpa-angular-e2e/cypress.json",
+            "tsConfig": "apps/cpa-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "cpa-angular:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "cpa-angular:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/cpa-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/cpa-angular-e2e/**"]
+          }
+        }
+      }
+    },
+    "cpa-nest": {
+      "root": "apps/cpa-nest",
+      "sourceRoot": "apps/cpa-nest/src",
+      "projectType": "application",
+      "prefix": "cpa-nest",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/cpa-nest",
+            "main": "apps/cpa-nest/src/main.ts",
+            "tsConfig": "apps/cpa-nest/tsconfig.app.json",
+            "assets": ["apps/cpa-nest/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/cpa-nest/src/environments/environment.ts",
+                  "with": "apps/cpa-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "cpa-nest:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/cpa-nest/tsconfig.app.json", "apps/cpa-nest/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/cpa-nest/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/cpa-nest/jest.config.js",
+            "tsConfig": "apps/cpa-nest/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "cpa-data-api": {
+      "root": "libs/cpa/data-api",
+      "sourceRoot": "libs/cpa/data-api/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/cpa/data-api/tsconfig.lib.json", "libs/cpa/data-api/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/cpa/data-api/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/cpa/data-api/jest.config.js",
+            "tsConfig": "libs/cpa/data-api/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "cpa-common-ngx": {
+      "projectType": "library",
+      "root": "libs/cpa/common/ngx",
+      "sourceRoot": "libs/cpa/common/ngx/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/cpa/common/ngx/tsconfig.lib.json", "libs/cpa/common/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/cpa/common/ngx/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/cpa/common/ngx/jest.config.js",
+            "tsConfig": "libs/cpa/common/ngx/tsconfig.spec.json",
+            "setupFile": "libs/cpa/common/ngx/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "maps-feature-forms": {
+      "projectType": "library",
+      "root": "libs/maps/feature/forms",
+      "sourceRoot": "libs/maps/feature/forms/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/maps/feature/forms/tsconfig.lib.json", "libs/maps/feature/forms/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/forms/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/feature/forms/jest.config.js",
+            "tsConfig": "libs/maps/feature/forms/tsconfig.spec.json",
+            "setupFile": "libs/maps/feature/forms/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "cpa-common-entities": {
+      "root": "libs/cpa/common/entities",
+      "sourceRoot": "libs/cpa/common/entities/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/cpa/common/entities/tsconfig.lib.json", "libs/cpa/common/entities/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/cpa/common/entities/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/cpa/common/entities/jest.config.js",
+            "tsConfig": "libs/cpa/common/entities/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "ui-kits-ngx-navigation-breadcrumb": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/navigation/breadcrumb",
+      "sourceRoot": "libs/ui-kits/ngx/navigation/breadcrumb/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/navigation/breadcrumb/tsconfig.lib.json",
+              "libs/ui-kits/ngx/navigation/breadcrumb/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/breadcrumb/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/navigation/breadcrumb/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/navigation/breadcrumb/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/navigation/breadcrumb/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "geoservices-angular": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/geoservices-angular",
+      "sourceRoot": "apps/geoservices-angular/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/geoservices-angular",
+            "index": "apps/geoservices-angular/src/index.html",
+            "main": "apps/geoservices-angular/src/main.ts",
+            "polyfills": "apps/geoservices-angular/src/polyfills.ts",
+            "tsConfig": "apps/geoservices-angular/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "apps/geoservices-angular/src/favicon.ico",
+              "apps/geoservices-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
+            "styles": ["apps/geoservices-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/geoservices-angular/src/environments/environment.ts",
+                  "with": "apps/geoservices-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "geoservices-angular:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "geoservices-angular:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "geoservices-angular:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/geoservices-angular/tsconfig.app.json", "apps/geoservices-angular/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/geoservices-angular/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/geoservices-angular/jest.config.js",
+            "tsConfig": "apps/geoservices-angular/tsconfig.spec.json",
+            "setupFile": "apps/geoservices-angular/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "geoservices-angular-e2e": {
+      "root": "apps/geoservices-angular-e2e",
+      "sourceRoot": "apps/geoservices-angular-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/geoservices-angular-e2e/cypress.json",
+            "tsConfig": "apps/geoservices-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "geoservices-angular:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "geoservices-angular:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/geoservices-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/geoservices-angular-e2e/**"]
+          }
+        }
+      }
+    },
+    "geoservices-api": {
+      "projectType": "library",
+      "root": "libs/geoservices/api",
+      "sourceRoot": "libs/geoservices/api/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/geoservices/api/tsconfig.lib.json", "libs/geoservices/api/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/geoservices/api/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/geoservices/api/jest.config.js",
+            "tsConfig": "libs/geoservices/api/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/api/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "geoservices-internal": {
+      "projectType": "library",
+      "root": "libs/geoservices/internal",
+      "sourceRoot": "libs/geoservices/internal/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/geoservices/internal/tsconfig.lib.json", "libs/geoservices/internal/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/geoservices/internal/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/geoservices/internal/jest.config.js",
+            "tsConfig": "libs/geoservices/internal/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/internal/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "ui-kits-ngx-interactions-scroll-to": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/interactions/scroll-to",
+      "sourceRoot": "libs/ui-kits/ngx/interactions/scroll-to/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/interactions/scroll-to/tsconfig.lib.json",
+              "libs/ui-kits/ngx/interactions/scroll-to/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/interactions/scroll-to/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/interactions/scroll-to/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/interactions/scroll-to/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/interactions/scroll-to/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "geoservices-data-access": {
+      "projectType": "library",
+      "root": "libs/geoservices/data-access",
+      "sourceRoot": "libs/geoservices/data-access/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/geoservices/data-access/tsconfig.lib.json",
+              "libs/geoservices/data-access/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/geoservices/data-access/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/geoservices/data-access/jest.config.js",
+            "tsConfig": "libs/geoservices/data-access/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/data-access/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "geoservices-public": {
+      "projectType": "library",
+      "root": "libs/geoservices/public",
+      "sourceRoot": "libs/geoservices/public/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/geoservices/public/tsconfig.lib.json", "libs/geoservices/public/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/geoservices/public/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/geoservices/public/jest.config.js",
+            "tsConfig": "libs/geoservices/public/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/public/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "geoservices-core-ngx": {
+      "projectType": "library",
+      "root": "libs/geoservices/core/ngx",
+      "sourceRoot": "libs/geoservices/core/ngx/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/geoservices/core/ngx/tsconfig.lib.json", "libs/geoservices/core/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/geoservices/core/ngx/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/geoservices/core/ngx/jest.config.js",
+            "tsConfig": "libs/geoservices/core/ngx/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/core/ngx/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "ui-kits-ngx-navigation-mobile-tile": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/navigation/mobile-tile",
+      "sourceRoot": "libs/ui-kits/ngx/navigation/mobile-tile/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/navigation/mobile-tile/tsconfig.lib.json",
+              "libs/ui-kits/ngx/navigation/mobile-tile/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/mobile-tile/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tile/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/navigation/mobile-tile/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/navigation/mobile-tile/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "ui-kits-ngx-navigation-triggers": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/navigation/triggers",
+      "sourceRoot": "libs/ui-kits/ngx/navigation/triggers/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/navigation/triggers/tsconfig.lib.json",
+              "libs/ui-kits/ngx/navigation/triggers/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/triggers/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/navigation/triggers/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/navigation/triggers/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/navigation/triggers/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "ui-kits-ngx-layout-code": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/layout/code",
+      "sourceRoot": "libs/ui-kits/ngx/layout/code/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ui-kits/ngx/layout/code/tsconfig.lib.json",
+              "libs/ui-kits/ngx/layout/code/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/layout/code/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/layout/code/jest.config.js",
+            "tsConfig": "libs/ui-kits/ngx/layout/code/tsconfig.spec.json",
+            "setupFile": "libs/ui-kits/ngx/layout/code/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "geoservices-covid": {
+      "projectType": "library",
+      "root": "libs/geoservices/covid",
+      "sourceRoot": "libs/geoservices/covid/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/geoservices/covid/tsconfig.lib.json", "libs/geoservices/covid/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/geoservices/covid/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/geoservices/covid/jest.config.js",
+            "tsConfig": "libs/geoservices/covid/tsconfig.spec.json",
+            "setupFile": "libs/geoservices/covid/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "covid-data-api": {
+      "root": "libs/covid/data-api",
+      "sourceRoot": "libs/covid/data-api/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/covid/data-api/tsconfig.lib.json", "libs/covid/data-api/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/covid/data-api/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/covid/data-api/jest.config.js",
+            "tsConfig": "libs/covid/data-api/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "covid-data-api-nest": {
+      "root": "apps/covid-data-api-nest",
+      "sourceRoot": "apps/covid-data-api-nest/src",
+      "projectType": "application",
+      "prefix": "covid-data-api-nest",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/covid-data-api-nest",
+            "main": "apps/covid-data-api-nest/src/main.ts",
+            "tsConfig": "apps/covid-data-api-nest/tsconfig.app.json",
+            "assets": ["apps/covid-data-api-nest/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": false,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/covid-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/covid-data-api-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": false,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/covid-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/covid-data-api-nest/src/environments/environment.dev.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "covid-data-api-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "covid-data-api-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "covid-data-api-nest:build:development"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/covid-data-api-nest/tsconfig.app.json", "apps/covid-data-api-nest/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/covid-data-api-nest/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/covid-data-api-nest/jest.config.js",
+            "tsConfig": "apps/covid-data-api-nest/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "covid-common-entities": {
+      "root": "libs/covid/common/entities",
+      "sourceRoot": "libs/covid/common/entities/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/covid/common/entities/tsconfig.lib.json", "libs/covid/common/entities/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/covid/common/entities/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/covid/common/entities/jest.config.js",
+            "tsConfig": "libs/covid/common/entities/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "covid-common-enums": {
+      "root": "libs/covid/common/enums",
+      "sourceRoot": "libs/covid/common/enums/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/covid/common/enums/tsconfig.lib.json", "libs/covid/common/enums/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/covid/common/enums/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/covid/common/enums/jest.config.js",
+            "tsConfig": "libs/covid/common/enums/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "maps-mapbox": {
+      "projectType": "library",
+      "root": "libs/maps/mapbox",
+      "sourceRoot": "libs/maps/mapbox/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/maps/mapbox/tsconfig.lib.json", "libs/maps/mapbox/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/maps/mapbox/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/maps/mapbox/jest.config.js",
+            "tsConfig": "libs/maps/mapbox/tsconfig.spec.json",
+            "setupFile": "libs/maps/mapbox/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "oidc-client-test": {
+      "root": "apps/oidc-client-test",
+      "sourceRoot": "apps/oidc-client-test/src",
+      "projectType": "application",
+      "prefix": "oidc-client-test",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/oidc-client-test",
+            "main": "apps/oidc-client-test/src/main.ts",
+            "tsConfig": "apps/oidc-client-test/tsconfig.app.json",
+            "assets": ["apps/oidc-client-test/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-client-test/src/environments/environment.ts",
+                  "with": "apps/oidc-client-test/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "oidc-client-test:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/oidc-client-test/tsconfig.app.json", "apps/oidc-client-test/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/oidc-client-test/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/oidc-client-test/jest.config.js",
+            "tsConfig": "apps/oidc-client-test/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "oidc-provider-angular": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/oidc-provider-angular",
+      "sourceRoot": "apps/oidc-provider-angular/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/oidc-provider-angular/browser",
+            "index": "apps/oidc-provider-angular/src/index.html",
+            "main": "apps/oidc-provider-angular/src/main.ts",
+            "polyfills": "apps/oidc-provider-angular/src/polyfills.ts",
+            "tsConfig": "apps/oidc-provider-angular/tsconfig.app.json",
+            "aot": true,
+            "assets": ["apps/oidc-provider-angular/src/favicon.ico", "apps/oidc-provider-angular/src/assets"],
+            "styles": ["apps/oidc-provider-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-provider-angular/src/environments/environment.ts",
+                  "with": "apps/oidc-provider-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "oidc-provider-angular:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "oidc-provider-angular:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "oidc-provider-angular:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/oidc-provider-angular/tsconfig.app.json", "apps/oidc-provider-angular/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/oidc-provider-angular/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/oidc-provider-angular/jest.config.js",
+            "tsConfig": "apps/oidc-provider-angular/tsconfig.spec.json",
+            "setupFile": "apps/oidc-provider-angular/src/test-setup.ts"
+          }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/apps/oidc-provider-angular/server",
+            "main": "apps/oidc-provider-angular/src/main.server.ts",
+            "tsConfig": "apps/oidc-provider-angular/tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-provider-angular/src/environments/environment.ts",
+                  "with": "apps/oidc-provider-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "sourceMap": false,
+              "optimization": true
+            }
+          }
+        }
+      }
+    },
+    "oidc-provider-angular-e2e": {
+      "root": "apps/oidc-provider-angular-e2e",
+      "sourceRoot": "apps/oidc-provider-angular-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/oidc-provider-angular-e2e/cypress.json",
+            "tsConfig": "apps/oidc-provider-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "oidc-provider-angular:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "oidc-provider-angular:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/oidc-provider-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/oidc-provider-angular-e2e/**"]
+          }
+        }
+      }
+    },
+    "oidc-provider-express": {
+      "root": "apps/oidc-provider-express",
+      "sourceRoot": "apps/oidc-provider-express/src",
+      "projectType": "application",
+      "prefix": "oidc-provider-express",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/oidc-provider-express",
+            "main": "apps/oidc-provider-express/src/main.ts",
+            "tsConfig": "apps/oidc-provider-express/tsconfig.app.json",
+            "assets": ["apps/oidc-provider-express/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": false,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-provider-express/src/environments/environment.ts",
+                  "with": "apps/oidc-provider-express/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "oidc-provider-express:build",
+            "port": 7778
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/oidc-provider-express/tsconfig.app.json", "apps/oidc-provider-express/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/oidc-provider-express/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/oidc-provider-express/jest.config.js",
+            "tsConfig": "apps/oidc-provider-express/tsconfig.spec.json"
+          }
+        },
+        "serve-all": {
+          "builder": "@angular-devkit/architect:concat",
+          "options": {
+            "targets": [
+              {
+                "target": "oidc-provider-angular:build"
+              },
+              {
+                "target": "oidc-provider-angular:server"
+              },
+              {
+                "target": "oidc-provider-express:serve"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oidc-provider": {
+      "root": "libs/oidc/provider",
+      "sourceRoot": "libs/oidc/provider/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/oidc/provider/tsconfig.lib.json", "libs/oidc/provider/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/oidc/provider/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/oidc/provider/jest.config.js",
+            "tsConfig": "libs/oidc/provider/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "oidc-client": {
+      "root": "libs/oidc/client",
+      "sourceRoot": "libs/oidc/client/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/oidc/client/tsconfig.lib.json", "libs/oidc/client/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/oidc/client/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/oidc/client/jest.config.js",
+            "tsConfig": "libs/oidc/client/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {

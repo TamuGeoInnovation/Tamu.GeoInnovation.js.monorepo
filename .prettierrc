@@ -8,7 +8,9 @@
     {
       "files": "*.html",
       "options": {
-        "printWidth": 9999
+        "printWidth": 9999,
+        "semi": true,
+        "parser": "html"
       }
     }
   ]

@@ -1,0 +1,34 @@
+@import 'libs/sass/mixins';
+
+.radio-option {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+  padding: 0.25rem 0;
+
+  .material-icons {
+    vertical-align: middle;
+    color: #616161;
+
+    &.active {
+      color: #0079c1;
+    }
+  }
+
+  .radio-toggle {
+    margin-right: 0.5rem;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    color: #757575;
+  }
+}

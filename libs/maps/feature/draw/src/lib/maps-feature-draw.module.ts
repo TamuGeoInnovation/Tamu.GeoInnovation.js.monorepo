@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { BaseComponent } from './components/base/base.component';
+import { BaseDrawComponent } from './components/base/base.component';
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [BaseComponent],
-  exports: [BaseComponent]
+  declarations: [BaseDrawComponent],
+  exports: [BaseDrawComponent]
 })
 export class MapDrawingModule {}
