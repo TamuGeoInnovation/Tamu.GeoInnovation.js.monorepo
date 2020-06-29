@@ -5,28 +5,28 @@ import { User } from '../../entities/all.entity';
 
 import { hash, compare } from 'bcrypt';
 
-export class UserService {
+export class UserService extends CommonService {
   private static connection: Connection;
   private static repository: Repository<User>;
 
-  public static async findUserByKey(key: string, value: string): Promise<User> {
-    return new Promise((resolve, reject) => {
-      const op = {
-        [key]: value
-      };
-      getConnection()
-        .getRepository(User)
-        .createQueryBuilder('user')
-        .where(`user.${key} = :${key}`, op)
-        .getOne()
-        .then((user: User) => {
-          resolve(user);
-        })
-        .catch((err) => {
-          throw err;
-        });
-    });
-  }
+  // public static async findUserByKey(key: string, value: string): Promise<User> {
+  //   return new Promise((resolve, reject) => {
+  //     const op = {
+  //       [key]: value
+  //     };
+  //     getConnection()
+  //       .getRepository(User)
+  //       .createQueryBuilder('user')
+  //       .where(`user.${key} = :${key}`, op)
+  //       .getOne()
+  //       .then((user: User) => {
+  //         resolve(user);
+  //       })
+  //       .catch((err) => {
+  //         throw err;
+  //       });
+  //   });
+  // }
 
   public static async insertUser(user: User): Promise<boolean> {
     return new Promise((resolve, reject) => {
@@ -82,6 +82,24 @@ export class UserService {
           }
         });
     });
+  }
+
+  public static async getAccountGuid(guid: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      getConnection()
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .where('user.guid = :guid', { guid })
+      .loadAllRelationIds()
+      .getOne()
+      .then((user: User) => {
+        if (user) {
+          resolve(String(user["account"]));
+        } else {
+          reject();
+        }
+      })
+    })
   }
 
   public static async updateUser(user: User): Promise<UpdateResult> {

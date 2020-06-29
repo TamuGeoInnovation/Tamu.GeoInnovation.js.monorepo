@@ -20,6 +20,26 @@ export class InteractionController {
 
       const name = prompt.name;
       switch (name) {
+        // case 'select_account':
+        //   if (!session) {
+        //     return OpenIdProvider.provider.interactionFinished(req, res, { select_account: {} }, { mergeWithLastSubmission: false });
+        //   }
+        //   const account = await OpenIdProvider.provider.Account.findAccount(undefined, session.accountId);
+        //   const { email } = await account.claims('prompt', 'email', { email: null }, []);
+        //   return res.render('select_account', {
+        //     client,
+        //     uid,
+        //     email,
+        //     details: prompt.details,
+        //     params,
+        //     title: 'Sign-in',
+        //     session: session ? debug(session) : undefined,
+        //     dbg: {
+        //       params: debug(params),
+        //       prompt: debug(prompt),
+        //     },
+        //   });
+
         case 'login': {
           const locals = {
             client,
@@ -63,12 +83,12 @@ export class InteractionController {
   }
 
   @Post(':uid')
-  async interactionLoginPost(@Param() params, @Req() req: Request, @Res() res: Response) {
+  async interactionLoginPost(@Param() params, @Req() req: Request, @Res() res: Response, @Next() next) {
     await OpenIdProvider.provider.setProviderSession(req, res, {
       account: 'accountId'
     });
     const details = await OpenIdProvider.provider.interactionDetails(req, res);
-    const client = await OpenIdProvider.provider.Client.find(details.params.client_id);
+    // const client = await OpenIdProvider.provider.Client.find(details.params.client_id);
 
     try {
         const email = req.body.login;
@@ -76,6 +96,7 @@ export class InteractionController {
         const user: User = await UserService.userLogin(email, password);
         if (user) {
           const result: InteractionResults = {
+            select_account: {},
             login: {
               account: user.guid,
               acr: "urn:mace:incommon:iap:bronze",
@@ -84,10 +105,11 @@ export class InteractionController {
               ts: Math.floor(Date.now() / 1000),
             },
             consent: {},
+            
           };
           if (user.enabled2fa) {
             return res.render("2fa-auth", {
-              client,
+              // client,
               details,
               email: user.email,
               guid: user.guid,
@@ -99,17 +121,20 @@ export class InteractionController {
               debug: false,
             });
           } else {
-            await OpenIdProvider.provider.interactionFinished(req, res, result);
+            console.log("interactionFinished");
+            await OpenIdProvider.provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
           }
         } else {
           // could not get user; render some error page or redirect to registration
         }
     } catch (err) {
-      throw err;
+      return next(err);
     } finally {
 
     }
   }
+
+
 
   // @Post(':grant/login')
   // async thirdStep(@Param() params, @Req() req: Request, @Res() res: Response) {

@@ -2,6 +2,7 @@ import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { InteractionController } from '../../controllers/interaction/interaction.controller';
 import { UserService } from '../../services/user/user.service';
 import { LayoutMiddleware } from '../../middleware/layout.middleware';
+import { setPragmaAndCache } from '../../middleware/set-pragma-cache.middleware';
 
 @Module({
     imports: [],
@@ -11,8 +12,8 @@ import { LayoutMiddleware } from '../../middleware/layout.middleware';
 })
 export class InteractionModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
-        // consumer
-        //     .apply(LayoutMiddleware)
-        //     .forRoutes('interaction');
+        consumer
+            .apply(setPragmaAndCache)
+            .forRoutes('interaction');
     }
 }

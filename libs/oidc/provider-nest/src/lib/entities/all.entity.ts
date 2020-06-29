@@ -11,13 +11,19 @@ import {
   ManyToOne,
   OneToOne,
   OneToMany,
-  JoinColumn
+  JoinColumn,
 } from 'typeorm';
 
 import { v4 as guid } from 'uuid';
 
 export type TypeORMEntities = string | Function | (new () => unknown) | EntitySchema<unknown>;
 export type KindOfId = number | string;
+export type QueryBuilderRelationsEntities = "account" | "user";
+export interface IQueryBuilderRelations {
+  currentEntity: QueryBuilderRelationsEntities;
+  foreignKeyFieldInCurrentEntity: string;
+  foreignEntity: QueryBuilderRelationsEntities;
+}
 
 export interface IRequiredEntityAttrs {
   id: string;
@@ -341,7 +347,8 @@ export class AccessToken implements IRequiredEntityAttrs {
 
   @Column({
     type: 'varchar',
-    nullable: true
+    nullable: true,
+    length: 'max',
   })
   data: string;
 
@@ -378,7 +385,8 @@ export class AuthorizationCode implements IRequiredEntityAttrs {
 
   @Column({
     type: 'varchar',
-    nullable: true
+    nullable: true,
+    length: 'max',
   })
   data: string;
 
@@ -409,7 +417,8 @@ export class ClientCredential implements IRequiredEntityAttrs {
 
   @Column({
     type: 'varchar',
-    nullable: true
+    nullable: true,
+    length: 'max',
   })
   data: string;
 
@@ -440,7 +449,8 @@ export class Client implements IRequiredEntityAttrs {
 
   @Column({
     type: 'varchar',
-    nullable: true
+    nullable: true,
+    length: 'max',
   })
   data: string;
 
@@ -483,7 +493,8 @@ export class DeviceCode implements IRequiredEntityAttrs {
 
   @Column({
     type: 'varchar',
-    nullable: true
+    nullable: true,
+    length: 'max',
   })
   data: string;
 
@@ -514,7 +525,8 @@ export class InitialAccessToken implements IRequiredEntityAttrs {
 
   @Column({
     type: 'varchar',
-    nullable: true
+    nullable: true,
+    length: 'max',
   })
   data: string;
 
@@ -545,7 +557,8 @@ export class Interaction implements IRequiredEntityAttrs {
 
   @Column({
     type: 'varchar',
-    nullable: true
+    nullable: true,
+    length: 'max'
   })
   data: string;
 
@@ -607,7 +620,8 @@ export class RefreshToken implements IRequiredEntityAttrs {
 
   @Column({
     type: 'varchar',
-    nullable: true
+    nullable: true,
+    length: 'max',
   })
   data: string;
 
@@ -638,7 +652,8 @@ export class RegistrationAccessToken implements IRequiredEntityAttrs {
 
   @Column({
     type: 'varchar',
-    nullable: true
+    nullable: true,
+    length: 'max',
   })
   data: string;
 
@@ -675,7 +690,8 @@ export class Session implements IRequiredEntityAttrs {
 
   @Column({
     type: 'varchar',
-    nullable: true
+    nullable: true,
+    length: 'max',
   })
   data: string;
 

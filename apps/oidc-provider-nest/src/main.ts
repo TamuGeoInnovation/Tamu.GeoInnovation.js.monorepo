@@ -11,11 +11,11 @@ import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  // enableOIDCDebug(OpenIdProvider.provider);
-  // console.log("Applying oidc-provider...");
+  enableOIDCDebug(OpenIdProvider.provider);
+  OpenIdProvider.provider.proxy = true;
+  
   const dir = join(__dirname, 'assets/views');
-  const dir2 = join(__dirname, 'src', 'assets', 'views');
-  console.log("dir2: ", dir2);
+  app.use(helmet());
   app.setViewEngine('ejs');
   app.set('views', dir);
   app.set('x-powered-by', false);
@@ -23,19 +23,22 @@ async function bootstrap() {
   app.use(express.static(join(__dirname, 'assets', 'scripts')));
   app.use(express.static(join(__dirname, 'assets', 'images')));
   app.use('/oidc', OpenIdProvider.provider.callback);
-  // const adapterHost = app.get(HttpAdapterHost);
-  // const httpAdapter = adapterHost.httpAdapter;
-  // const instance = httpAdapter.getInstance();
-  // instance.use(OpenIdProvider.provider.callback);
+  app.use(json());
+  app.use(urlencoded({ extended: true }));
+  app.use(cookieParser());
 
-  // app.use((err, req, res, next) => {
-  //   console.log("MAYBE SOMETHING HERE");
-  //   if (err.name === "SessionNotFound") {
-  //     // handle interaction expired / session not found error
-  //     console.error("SESSION NOT FOUND");
-  //   }
-  //   next(err);
-  // });
+  // this.app.use(setCORs);
+  
+  app.use((err, req, res, next) => {
+    console.log("MAYBE SOMETHING HERE");
+    if (err.name === "SessionNotFound") {
+      // handle interaction expired / session not found error
+      console.error("SESSION NOT FOUND");
+      throw err;
+    }
+    next(err);
+  });
+
   await app.listen(4001);
 }
 
@@ -49,7 +52,9 @@ OpenIdProvider.build()
 
 function enableOIDCDebug(idp: Provider): void {
   idp.addListener('server_error', (error: any, ctx: any) => {
+    console.warn(error.message);
     debugger;
+    throw error;
   });
   idp.addListener('authorization.accepted', (ctx: any) => {
     debugger;
