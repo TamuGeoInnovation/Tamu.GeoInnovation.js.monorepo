@@ -28,7 +28,8 @@ export class UserController {
   async registerPost(@Req() req: Request, @Res() res: Response) {
     const body = req.body;
     req.body.ip = req.ip;
-    const existingUser = await UserService.findUserByKey('email', body.login);
+    // const existingUser = await UserService.findUserByKey('email', body.login);
+    const existingUser = await UserService.findUserByKey(User, 'email', body.login);
     if (existingUser) {
       return res.render('register', {
         error: 'Username or password is incorrect',

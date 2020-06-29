@@ -30,7 +30,7 @@ async function bootstrap() {
 
   app.use(
     session({
-      name: 'GISDay',
+      name: 'idp',
       resave: false,
       saveUninitialized: false,
       secret: 'GEOINNOVATIONSERVICECENTER',

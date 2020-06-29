@@ -1,4 +1,5 @@
-import { getConnection, EntitySchema } from "typeorm";
+import { getConnection, EntitySchema, FindConditions } from "typeorm";
+import { QueryBuilderRelationsEntities } from '../../entities/all.entity';
 
 export type TypeORMEntities =
   | string

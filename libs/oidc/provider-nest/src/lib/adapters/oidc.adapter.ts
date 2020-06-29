@@ -90,6 +90,8 @@ export class OidcAdapter {
         expiresAt: expiresIn
           ? new Date(Date.now() + expiresIn * 1000).toISOString()
           : undefined,
+      }).catch((typeOrmErr) => {
+        debugger
       });
     }
   }
@@ -165,6 +167,9 @@ export class OidcAdapter {
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.name);
     await repo.delete({
       grantId: `${id}`,
+    }).catch((typeOrmErr) => {
+      debugger
+      throw typeOrmErr;
     });
   }
 
