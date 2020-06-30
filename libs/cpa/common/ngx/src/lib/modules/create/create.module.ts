@@ -24,7 +24,7 @@ const routes: Routes = [
         path: '',
         component: OverviewComponent,
         data: {
-          breadcrumb: 'Builder'
+          breadcrumb: 'Home'
         }
       },
       {
