@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { forkJoin, BehaviorSubject } from 'rxjs';
@@ -17,24 +17,17 @@ export class TimeMapComponent implements OnInit {
   private stateData: Array<StateRecord>;
   private countyData: Array<CountyRecord>;
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
-  public dateModel: BehaviorSubject<String> = new BehaviorSubject(undefined);
+  public dateModel: BehaviorSubject<string>;
 
-  public dateSelected: string;
-  public currentDay: number = new Date().getTime();
-
+  public maxDate: string;
   public mortalButtonToggled = false;
   public stateButtonToggle = false;
 
-  @ViewChild('datePicker', { static: false })
-  public datePicker: ElementRef;
-
   public ngOnInit(): void {
     this.mapService.loaded.pipe(take(1)).subscribe((map) => {
-      const maxDate: Date = new Date(this.currentDay - 1 * 24 * 60 * 60 * 1000);
-      this.dateSelected = maxDate.toISOString().split('T')[0];
-      this.datePicker.nativeElement.value = this.dateSelected;
-      this.datePicker.nativeElement.max = this.dateSelected;
-      const zoomThreshold = 3;
+      const currentDay: number = new Date().getTime();
+      this.maxDate = new Date(currentDay - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      this.dateModel = new BehaviorSubject(this.maxDate);
 
       map.addSource('county-lines', {
         type: 'vector',
@@ -124,20 +117,19 @@ export class TimeMapComponent implements OnInit {
 
       map.dragRotate.disable();
 
-      this.reloadData();
+      this.reloadData(this.dateModel.getValue());
     });
   }
 
-  public reloadData(): void {
-    this.dateSelected = this.datePicker.nativeElement.value;
-    const stateURL = `https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/states/${this.dateSelected}.json`;
-    const countyURL = `https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/counties/${this.dateSelected}.json`;
-    this.dateModel.next(this.dateSelected);
-
+  public reloadData(date?: string): void {
+    this.dateModel.next(date);
+    const dateSelected = this.dateModel.getValue();
+    const stateURL = `https://raw.githubusercontent.com/TamuGeoInnovation/covid-time-map/master/src/pyscraper/outputFiles/states/${dateSelected}.json`;
+    const countyURL = `https://raw.githubusercontent.com/TamuGeoInnovation/covid-time-map/master/src/pyscraper/outputFiles/counties/${dateSelected}.json`;
     const requests = forkJoin([this.http.get(stateURL), this.http.get(countyURL)]);
     requests.subscribe(([sData, cData]) => {
-      this.stateData = sData[this.dateSelected] as Array<StateRecord>;
-      this.countyData = cData[this.dateSelected] as Array<CountyRecord>;
+      this.stateData = sData[dateSelected] as Array<StateRecord>;
+      this.countyData = cData[dateSelected] as Array<CountyRecord>;
       this.mortalButtonToggled ? this.drawDeathMap() : this.drawCasesMap();
     });
   }
@@ -246,6 +238,10 @@ export class TimeMapComponent implements OnInit {
     this.stateButtonToggle
       ? this.mapService.map.setLayoutProperty('covid-state', 'visibility', 'visible')
       : this.mapService.map.setLayoutProperty('covid-state', 'visibility', 'none');
+  }
+
+  public dateChanged(e): void {
+    this.reloadData(e.target.value);
   }
 }
 
