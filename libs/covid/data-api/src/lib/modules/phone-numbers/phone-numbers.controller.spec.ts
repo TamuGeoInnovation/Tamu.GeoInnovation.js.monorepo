@@ -1,34 +1,40 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-
-import { Repository } from 'typeorm';
-
-import { FieldCategory, CategoryValue, County, CountyClaim, CountyClaimInfo } from '@tamu-gisc/covid/common/entities';
 
 import { PhoneNumbersController } from './phone-numbers.controller';
 import { PhoneNumbersService } from './phone-numbers.service';
+import { Repository } from 'typeorm';
+
+jest.mock('./phone-numbers.service');
 
 describe('PhoneNumbers Controller', () => {
+  let service: PhoneNumbersService;
   let controller: PhoneNumbersController;
+  let module: TestingModule;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        PhoneNumbersService,
-        { provide: getRepositoryToken(FieldCategory), useClass: Repository },
-        { provide: getRepositoryToken(CategoryValue), useClass: Repository },
-        { provide: getRepositoryToken(County), useClass: Repository },
-        { provide: getRepositoryToken(CountyClaim), useClass: Repository },
-        { provide: getRepositoryToken(CountyClaimInfo), useClass: Repository }
-      ],
-
+    module = await Test.createTestingModule({
+      providers: [PhoneNumbersService],
       controllers: [PhoneNumbersController]
     }).compile();
-
+    service = module.get<PhoneNumbersService>(PhoneNumbersService);
     controller = module.get<PhoneNumbersController>(PhoneNumbersController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+  describe('getPhoneNumbersForCounties', () => {
+    it('should return expected Result', async () => {
+      const expectedValue = [];
+      jest.spyOn(service, 'getPhoneNumbersForCounty').mockResolvedValue(expectedValue);
+      expect(await controller.getPhoneNumbersForCounties('yeet')).toBe(expectedValue);
+    });
+  });
+  describe('getPhoneNumbersForClaimInfo', () => {
+    it('should return expected Result', async () => {
+      const expectedValue = [];
+      jest.spyOn(service, 'getPhoneNumbersForClaimInfo').mockResolvedValue(expectedValue);
+      expect(await controller.getPhoneNumbersForClaimInfo('yeet')).toBe(expectedValue);
+    });
   });
 });
