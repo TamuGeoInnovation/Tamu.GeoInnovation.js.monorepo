@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Moment } from 'moment';
 import { forkJoin, BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -15,17 +14,20 @@ import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
 export class TimeMapComponent implements OnInit {
   constructor(private mapService: MapboxMapService, private http: HttpClient) {}
 
-  private maxDate: string;
   private stateData: Array<StateRecord>;
   private countyData: Array<CountyRecord>;
-
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
+  public dateModel: BehaviorSubject<string>;
+
+  public maxDate: string;
   public mortalButtonToggled = false;
   public stateButtonToggle = false;
 
-  public ngOnInit() {
-    this.mapService.loaded.subscribe((map) => {
-      const zoomThreshold = 3;
+  public ngOnInit(): void {
+    this.mapService.loaded.pipe(take(1)).subscribe((map) => {
+      const currentDay: number = new Date().getTime();
+      this.maxDate = new Date(currentDay - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      this.dateModel = new BehaviorSubject(this.maxDate);
 
       map.addSource('county-lines', {
         type: 'vector',
@@ -44,7 +46,6 @@ export class TimeMapComponent implements OnInit {
           source: 'state-lines',
           'source-layer': 'state-lines',
           layout: {
-            // make layer visible by default (change to none or visible for debugging)
             visibility: 'none'
           }
         },
@@ -79,62 +80,66 @@ export class TimeMapComponent implements OnInit {
       );
 
       map.on('mousemove', 'covid-county', (e) => {
-        const feature = e.features[0];
-        const selectedCounty = this.countyData.filter((county) => county.fips === feature.properties.fips);
-
+        const [feature] = e.features;
+        const props = feature.properties as County;
+        const selectedCounty = this.countyData.filter((county) => county.fips === props.fips);
         this.infoBoxModel.next({
-          name: feature.properties.NAME,
-          pop: feature.properties.POPESTIMATE2019,
-          cases: selectedCounty[0]['confirmed'],
-          infectionRate: selectedCounty[0]['infection_rate'],
-          deaths: selectedCounty[0]['deaths'],
-          deathRate: selectedCounty[0]['death_rate']
+          name: props.NAME,
+          population: selectedCounty[0].population,
+          confirmed: selectedCounty[0].confirmed,
+          infection_rate: selectedCounty[0].infection_rate,
+          deaths: selectedCounty[0].deaths,
+          death_rate: selectedCounty[0].death_rate
         });
       });
 
       map.on('mousemove', 'covid-state', (e) => {
-        const feature = e.features[0];
-        const selectedState = this.stateData.filter((state) => state.STATE === feature.properties.STATE);
-
+        const [feature] = e.features;
+        const props = feature.properties as State;
+        const selectedState = this.stateData.filter((state) => state.STATE === props.STATE);
         this.infoBoxModel.next({
           name: feature.properties.NAME,
-          pop: feature.properties.POPESTIMATE2019,
-          cases: selectedState[0]['confirmed'],
-          infectionRate: selectedState[0]['infection_rate'],
-          deaths: selectedState[0]['deaths'],
-          deathRate: selectedState[0]['death_rate']
+          population: selectedState[0].population,
+          confirmed: selectedState[0].confirmed,
+          infection_rate: selectedState[0].infection_rate,
+          deaths: selectedState[0].deaths,
+          death_rate: selectedState[0].death_rate
         });
       });
-      this.reloadData();
+
+      map.on('mouseleave', 'covid-county', (e) => {
+        this.infoBoxModel.next(null);
+      });
+
+      map.on('mouseleave', 'covid-state', (e) => {
+        this.infoBoxModel.next(null);
+      });
+
+      map.dragRotate.disable();
+
+      this.reloadData(this.dateModel.getValue());
     });
   }
 
-  public reloadData() {
-    const currentDateSelected = '2020-06-06';
-    console.log(currentDateSelected);
-    const stateURL =
-      'https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/states/' +
-      currentDateSelected +
-      '.json';
-    const countyURL =
-      'https://raw.githubusercontent.com/jorge-sepulveda/covid-time-map/master/src/pyscraper/outputFiles/counties/' +
-      currentDateSelected +
-      '.json';
-
+  public reloadData(date?: string): void {
+    this.dateModel.next(date);
+    const dateSelected = this.dateModel.getValue();
+    const stateURL = `https://raw.githubusercontent.com/TamuGeoInnovation/covid-time-map/master/src/pyscraper/outputFiles/states/${dateSelected}.json`;
+    const countyURL = `https://raw.githubusercontent.com/TamuGeoInnovation/covid-time-map/master/src/pyscraper/outputFiles/counties/${dateSelected}.json`;
     const requests = forkJoin([this.http.get(stateURL), this.http.get(countyURL)]);
-    requests.pipe(take(1)).subscribe(([sData, cData]) => {
-      this.stateData = sData[currentDateSelected];
-      this.countyData = cData[currentDateSelected];
+    requests.subscribe(([sData, cData]) => {
+      this.stateData = sData[dateSelected] as Array<StateRecord>;
+      this.countyData = cData[dateSelected] as Array<CountyRecord>;
       this.mortalButtonToggled ? this.drawDeathMap() : this.drawCasesMap();
     });
   }
 
-  public drawCasesMap() {
+  public drawCasesMap(): void {
     const stateExpression = ['match', ['get', 'STATE']];
     const countyExpression = ['match', ['get', 'fips']];
 
-    this.stateData.forEach(function(row) {
-      const number = row['infection_rate'];
+    this.stateData.map((row) => {
+      const number = row.infection_rate;
       const color =
         number > 1000
           ? '#AE8080'
@@ -147,11 +152,11 @@ export class TimeMapComponent implements OnInit {
           : number > 1
           ? '#FDE6E6'
           : '#FFFFFF';
-      stateExpression.push(row['STATE'], color);
+      stateExpression.push(row.STATE, color);
     });
 
-    this.countyData.forEach(function(row) {
-      const number = row['infection_rate'];
+    this.countyData.map((row) => {
+      const number = row.infection_rate;
       const color =
         number > 1000
           ? '#AE8080'
@@ -163,8 +168,8 @@ export class TimeMapComponent implements OnInit {
           ? '#FDC4C4'
           : number > 1
           ? '#FDE6E6'
-          : '#FFFFFF';
-      countyExpression.push(row['fips'], color);
+          : '#FFF7EC';
+      countyExpression.push(row.fips, color);
     });
 
     stateExpression.push('rgba(255,255,255,1)');
@@ -174,12 +179,12 @@ export class TimeMapComponent implements OnInit {
     this.mapService.map.setPaintProperty('covid-county', 'fill-color', countyExpression);
   }
 
-  public drawDeathMap() {
+  public drawDeathMap(): void {
     const stateExpression = ['match', ['get', 'STATE']];
     const countyExpression = ['match', ['get', 'fips']];
 
-    this.stateData.forEach(function(row) {
-      const number = row['death_rate'];
+    this.stateData.map((row) => {
+      const number = row.death_rate;
       const color =
         number > 100
           ? '#54278F'
@@ -192,11 +197,11 @@ export class TimeMapComponent implements OnInit {
           : number > 1
           ? '#DADAEB'
           : '#F2F0F7';
-      stateExpression.push(row['STATE'], color);
+      stateExpression.push(row.STATE, color);
     });
 
-    this.countyData.forEach(function(row) {
-      const number = row['death_rate'];
+    this.countyData.map((row) => {
+      const number = row.death_rate;
       const color =
         number > 100
           ? '#54278F'
@@ -209,7 +214,7 @@ export class TimeMapComponent implements OnInit {
           : number > 1
           ? '#DADAEB'
           : '#F2F0F7';
-      countyExpression.push(row['fips'], color);
+      countyExpression.push(row.fips, color);
     });
 
     stateExpression.push('rgba(255,255,255,1)');
@@ -219,29 +224,33 @@ export class TimeMapComponent implements OnInit {
     this.mapService.map.setPaintProperty('covid-county', 'fill-color', countyExpression);
   }
 
-  public stateToggle() {
+  public stateToggle(): void {
     this.stateButtonToggle = !this.stateButtonToggle;
     this.switchLayers();
   }
 
-  public mortalityToggle() {
+  public mortalityToggle(): void {
     this.mortalButtonToggled = !this.mortalButtonToggled;
     this.mortalButtonToggled ? this.drawDeathMap() : this.drawCasesMap();
   }
 
-  public switchLayers() {
+  public switchLayers(): void {
     this.stateButtonToggle
       ? this.mapService.map.setLayoutProperty('covid-state', 'visibility', 'visible')
       : this.mapService.map.setLayoutProperty('covid-state', 'visibility', 'none');
   }
+
+  public dateChanged(e): void {
+    this.reloadData(e.target.value);
+  }
 }
 
 interface BaseRecord {
-  pop: number;
-  cases: number;
+  population: number;
+  confirmed: number;
   deaths: number;
-  infectionRate: number;
-  deathRate: number;
+  infection_rate: number;
+  death_rate: number;
 }
 
 interface StateRecord extends BaseRecord {
@@ -254,4 +263,14 @@ interface CountyRecord extends BaseRecord {
 
 interface IInfoBox extends BaseRecord {
   name: string;
+}
+
+interface State {
+  STATE: string;
+  NAME: string;
+}
+
+interface County {
+  fips: string;
+  NAME: string;
 }

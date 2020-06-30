@@ -22,7 +22,6 @@ export class LockdownMapComponent implements OnInit {
   public ngOnInit(): void {
     this.mapService.loaded.pipe(take(1)).subscribe((map) => {
       this.getStats();
-      const zoomThreshold = 3;
 
       map.addSource('county-lines', {
         type: 'vector',
@@ -105,6 +104,11 @@ export class LockdownMapComponent implements OnInit {
           created: createdDate
         });
       });
+
+      map.on('mouseleave', 'counties-lockdowns', (e) => {
+        this.infoBoxModel.next(null);
+      });
+
       map.dragRotate.disable();
     });
   }
