@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AccordionHeaderComponent } from './accordion-header.component';
 import { AccordionService } from '../services/accordion.service';
 import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
+import { EventEmitter } from 'events';
 
 describe('AccordionHeaderComponent', () => {
   let component: AccordionHeaderComponent;
@@ -34,6 +35,8 @@ describe('AccordionHeaderComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    const yeet = spyOn(AccordionServiceStub, 'state');
+    component.state = mockHelper;
+    expect(yeet).toBeCalled();
   });
 });

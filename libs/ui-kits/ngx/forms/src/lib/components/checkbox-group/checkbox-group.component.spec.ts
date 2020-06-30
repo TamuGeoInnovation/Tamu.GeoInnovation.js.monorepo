@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CheckboxGroupComponent } from './checkbox-group.component';
+import { QueryList } from '@angular/core';
 
 describe('CheckboxGroupComponent', () => {
   let component: CheckboxGroupComponent;

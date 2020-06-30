@@ -23,6 +23,7 @@ describe('TooltipComponent', () => {
   });
 
   it('should create', () => {
+    component.isVisible = true;
     component.clickOutside(document.dispatchEvent(new Event('mousedown')));
     expect(component.isVisible).toBeFalsy();
   });
