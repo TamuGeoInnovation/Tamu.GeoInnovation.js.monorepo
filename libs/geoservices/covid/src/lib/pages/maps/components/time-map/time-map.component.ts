@@ -19,7 +19,8 @@ export class TimeMapComponent implements OnInit {
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
   public dateModel: BehaviorSubject<String> = new BehaviorSubject(undefined);
 
-  public dateSelected = '2020-06-29';
+  public dateSelected: string;
+  public currentDay: number = new Date().getTime();
 
   public mortalButtonToggled = false;
   public stateButtonToggle = false;
@@ -29,6 +30,8 @@ export class TimeMapComponent implements OnInit {
 
   public ngOnInit(): void {
     this.mapService.loaded.pipe(take(1)).subscribe((map) => {
+      const maxDate: Date = new Date(this.currentDay - 1 * 24 * 60 * 60 * 1000);
+      this.dateSelected = maxDate.toISOString().split('T')[0];
       this.datePicker.nativeElement.value = this.dateSelected;
       this.datePicker.nativeElement.max = this.dateSelected;
       const zoomThreshold = 3;
