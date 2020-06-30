@@ -74,7 +74,7 @@ export class BreadcrumbComponent implements OnInit {
           if (rt.parent) {
             return extract(rt.parent, [...p, rt.routeConfig]);
           } else {
-            return parents;
+            return p;
           }
         })
         .flat();
