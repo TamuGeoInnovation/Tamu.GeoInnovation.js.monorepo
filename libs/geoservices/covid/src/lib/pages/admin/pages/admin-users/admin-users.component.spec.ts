@@ -1,4 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { AdminUsersComponent } from './admin-users.component';
 
@@ -8,9 +12,15 @@ describe('AdminUsersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdminUsersComponent ]
-    })
-    .compileComponents();
+      imports: [HttpClientTestingModule, RouterTestingModule, EnvironmentModule],
+      declarations: [AdminUsersComponent],
+      providers: [
+        {
+          provide: env,
+          useValue: { covid_api_url: 'http://' }
+        }
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

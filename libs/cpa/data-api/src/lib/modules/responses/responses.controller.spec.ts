@@ -1,12 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+
+import { Repository } from 'typeorm';
+
+import { Response } from '@tamu-gisc/cpa/common/entities';
+
 import { ResponsesController } from './responses.controller';
+import { ResponsesService } from './responses.service';
 
 describe('Responses Controller', () => {
   let controller: ResponsesController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [ResponsesController],
+      providers: [ResponsesService, { provide: getRepositoryToken(Response), useClass: Repository }],
+      controllers: [ResponsesController]
     }).compile();
 
     controller = module.get<ResponsesController>(ResponsesController);

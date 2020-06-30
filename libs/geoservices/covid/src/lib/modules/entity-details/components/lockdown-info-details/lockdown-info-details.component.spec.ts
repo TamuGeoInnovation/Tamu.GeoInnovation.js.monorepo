@@ -1,4 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { CovidFormsModule } from '@tamu-gisc/geoservices/covid';
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { LockdownInfoDetailsComponent } from './lockdown-info-details.component';
 
@@ -8,9 +12,15 @@ describe('LockdownInfoDetailsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LockdownInfoDetailsComponent ]
-    })
-    .compileComponents();
+      imports: [CovidFormsModule, EnvironmentModule, HttpClientTestingModule],
+      declarations: [LockdownInfoDetailsComponent],
+      providers: [
+        {
+          provide: env,
+          useValue: { covid_api_url: 'https://' }
+        }
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
