@@ -8,9 +8,8 @@ describe('TileIconComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TileIconComponent ]
-    })
-    .compileComponents();
+      declarations: [TileIconComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,4 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+
+import { Repository } from 'typeorm';
+
+import { Response } from '@tamu-gisc/cpa/common/entities';
+
 import { ResponsesService } from './responses.service';
 
 describe('ResponsesService', () => {
@@ -6,7 +12,7 @@ describe('ResponsesService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ResponsesService],
+      providers: [ResponsesService, { provide: getRepositoryToken(Response), useClass: Repository }]
     }).compile();
 
     service = module.get<ResponsesService>(ResponsesService);

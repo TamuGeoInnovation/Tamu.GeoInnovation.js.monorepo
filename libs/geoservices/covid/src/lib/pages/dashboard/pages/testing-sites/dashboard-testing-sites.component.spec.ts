@@ -1,4 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { LOCAL_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { AppStorage } from '@tamu-gisc/common/ngx/local-store';
 
 import { DashboardTestingSitesComponent } from './dashboard-testing-sites.component';
 
@@ -8,9 +14,19 @@ describe('DashboardTestingSitesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashboardTestingSitesComponent ]
-    })
-    .compileComponents();
+      imports: [HttpClientTestingModule, EnvironmentModule, StorageServiceModule],
+      providers: [
+        {
+          provide: AppStorage,
+          useExisting: LOCAL_STORAGE
+        },
+        {
+          provide: env,
+          useValue: { covid_api_url: 'https://' }
+        }
+      ],
+      declarations: [DashboardTestingSitesComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

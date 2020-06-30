@@ -1,4 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FormBuilder } from '@angular/forms';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { UrlFormHandlerComponent } from './url-form-handler.component';
 
@@ -8,9 +13,10 @@ describe('UrlFormHandlerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UrlFormHandlerComponent ]
-    })
-    .compileComponents();
+      imports: [RouterTestingModule, EnvironmentModule, HttpClientTestingModule],
+      declarations: [UrlFormHandlerComponent],
+      providers: [FormBuilder, { provide: env, useValue: { covid_api_url: 'https://' } }]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
