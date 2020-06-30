@@ -18,7 +18,8 @@ export class TimeMapComponent implements OnInit {
   private countyData: Array<CountyRecord>;
   public infoBoxModel: BehaviorSubject<IInfoBox> = new BehaviorSubject(undefined);
   public dateModel: BehaviorSubject<String> = new BehaviorSubject(undefined);
-  public dateSelected = '2020-06-24';
+
+  public dateSelected = '2020-06-29';
 
   public mortalButtonToggled = false;
   public stateButtonToggle = false;
