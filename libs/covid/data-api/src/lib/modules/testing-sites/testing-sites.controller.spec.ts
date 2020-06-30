@@ -1,49 +1,59 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-
-import { Repository } from 'typeorm';
-
-import {
-  County,
-  CountyClaim,
-  TestingSite,
-  TestingSiteInfo,
-  Location,
-  User,
-  EntityStatus,
-  CountyClaimInfo,
-  EntityToValue
-} from '@tamu-gisc/covid/common/entities';
 
 import { TestingSitesController } from './testing-sites.controller';
 import { TestingSitesService } from './testing-sites.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
+import { TestingSiteInfo, TestingSite, EntityToValue, EntityValue } from '@tamu-gisc/covid/common/entities';
+
+jest.mock('./testing-sites.service');
+jest.mock('../county-claims/county-claims.service');
 
 describe('TestingSitesController', () => {
+  let testingSitesservice: TestingSitesService;
+  let countyClaimsService: CountyClaimsService;
+  let module: TestingModule;
   let controller: TestingSitesController;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        TestingSitesService,
-        CountyClaimsService,
-        { provide: getRepositoryToken(County), useClass: Repository },
-        { provide: getRepositoryToken(CountyClaim), useClass: Repository },
-        { provide: getRepositoryToken(TestingSite), useClass: Repository },
-        { provide: getRepositoryToken(TestingSiteInfo), useClass: Repository },
-        { provide: getRepositoryToken(Location), useClass: Repository },
-        { provide: getRepositoryToken(User), useClass: Repository },
-        { provide: getRepositoryToken(EntityStatus), useClass: Repository },
-        { provide: getRepositoryToken(CountyClaimInfo), useClass: Repository },
-        { provide: getRepositoryToken(EntityToValue), useClass: Repository }
-      ],
+    module = await Test.createTestingModule({
+      providers: [TestingSitesService, CountyClaimsService],
       controllers: [TestingSitesController]
     }).compile();
-
+    testingSitesservice = module.get<TestingSitesService>(TestingSitesService);
+    countyClaimsService = module.get<CountyClaimsService>(CountyClaimsService);
     controller = module.get<TestingSitesController>(TestingSitesController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  describe('getDetailsForSite', () => {
+    it('should return expected Result', async () => {
+      jest.spyOn(testingSitesservice, 'getSiteAndLatestInfo').mockResolvedValue(undefined);
+      expect(await controller.getDetailsForSite({})).toBe(undefined);
+    });
+  });
+
+  describe('getInfosForSite', () => {
+    it('should return expected Result', async () => {});
+  });
+
+  describe('getTestingSitesSortedByCounty', () => {
+    it('should return expected Result', async () => {});
+  });
+  describe('getSitesByCounty', () => {
+    it('should return expected Result', async () => {});
+  });
+  describe('getSitesForUser', () => {
+    it('should return expected Result', async () => {});
+  });
+
+  describe('addTestingSite', () => {
+    it('should return expected Result', async () => {});
+  });
+
+  describe('registerCountyAsSiteless', () => {
+    it('should return expected Result', async () => {});
   });
 });

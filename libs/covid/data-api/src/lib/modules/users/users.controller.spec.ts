@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { UsersController } from './users.controller';
 import { UsersService } from '../users/users.service';
-import { User } from '@tamu-gisc/covid/common/entities';
 
 jest.mock('../users/users.service');
 
