@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PhoneNumbersController } from './phone-numbers.controller';
 import { PhoneNumbersService } from './phone-numbers.service';
 import { Repository } from 'typeorm';
+import { async } from 'rxjs/internal/scheduler/async';
 
 jest.mock('./phone-numbers.service');
 
@@ -23,6 +24,14 @@ describe('PhoneNumbers Controller', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
+
+  describe('getAllNumbers', () => {
+    it('should return expected Result', async () => {
+      service.repo = new Repository();
+      jest.spyOn(service.repo, 'find').mockResolvedValue([]);
+      expect(await controller.getAllNumbers()).toStrictEqual([]);
+    });
+  });
   describe('getPhoneNumbersForCounties', () => {
     it('should return expected Result', async () => {
       const expectedValue = [];
@@ -35,6 +44,11 @@ describe('PhoneNumbers Controller', () => {
       const expectedValue = [];
       jest.spyOn(service, 'getPhoneNumbersForClaimInfo').mockResolvedValue(expectedValue);
       expect(await controller.getPhoneNumbersForClaimInfo('yeet')).toBe(expectedValue);
+    });
+  });
+  describe('storePhoneNumber', () => {
+    it('should return expected Result', async () => {
+      await expect(controller.storePhoneNumber('')).rejects.toThrow();
     });
   });
 });
