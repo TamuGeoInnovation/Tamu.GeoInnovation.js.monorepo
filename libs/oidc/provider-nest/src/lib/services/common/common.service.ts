@@ -1,5 +1,5 @@
-import { getConnection, EntitySchema, FindConditions } from "typeorm";
-import { QueryBuilderRelationsEntities } from '../../entities/all.entity';
+import { getConnection, EntitySchema, FindConditions, BaseEntity } from "typeorm";
+import { ClientMetadata } from "../../entities/all.entity";
 
 export type TypeORMEntities =
   | string
@@ -9,7 +9,7 @@ export type TypeORMEntities =
 
 export abstract class CommonService {
 
-  public static async findUserByKey<T extends TypeORMEntities>(entity: T, key: string, value: string): Promise<any> {
+  public static async findByKey<T extends TypeORMEntities>(entity: T, key: string, value: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const op = {
         [key]: value
@@ -28,7 +28,7 @@ export abstract class CommonService {
     });
   }
 
-  async findAll<T extends TypeORMEntities>(
+  public static async findAll<T extends TypeORMEntities>(
     entity: T,
     where?: {}
   ): Promise<any[]> {

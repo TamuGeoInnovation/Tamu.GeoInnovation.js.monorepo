@@ -11,9 +11,27 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('auth/:uid')
-  async authGet(@Param() params, @Req() req: Request, @Res() res: Response) {
-    console.log('auth/:uid');
-    debugger
+  @Get('me')
+  async meGet(@Param() params, @Req() req: Request, @Res() res: Response) {
+    return 'hello from /me to you';
   }
+
+  @Get(':uid')
+  async authGet(@Param() params, @Next() next) {
+      console.log("authGet", params.uid);
+      return next();
+  }
+
+  @Get('oidc/auth/:uid')
+  async authGet2(@Param() params, @Next() next) {
+      console.log("authGet2", params.uid);
+      return next();
+  }
+
+  @Get('auth/:uid')
+  async authGet3(@Param() params, @Next() next) {
+      console.log("authGet3", params.uid);
+      return next();
+  }
+
 }

@@ -65,6 +65,7 @@ export class UserService extends CommonService {
       getConnection()
         .getRepository(User)
         .createQueryBuilder('user')
+        .leftJoinAndSelect("user.account", "account")
         .where('user.email = :email', { email })
         .getOne()
         .then((user: User) => {
@@ -82,24 +83,6 @@ export class UserService extends CommonService {
           }
         });
     });
-  }
-
-  public static async getAccountGuid(guid: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      getConnection()
-      .getRepository(User)
-      .createQueryBuilder('user')
-      .where('user.guid = :guid', { guid })
-      .loadAllRelationIds()
-      .getOne()
-      .then((user: User) => {
-        if (user) {
-          resolve(String(user["account"]));
-        } else {
-          reject();
-        }
-      })
-    })
   }
 
   public static async updateUser(user: User): Promise<UpdateResult> {

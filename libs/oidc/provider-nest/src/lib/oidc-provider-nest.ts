@@ -15,7 +15,11 @@ export * from './entities/all.entity';
 // modules
 export * from './modules/interaction/interaction.module';
 export * from './modules/user/user.module';
+export * from './modules/auth/auth.module';
+export * from './modules/oidc/oidc.module';
+export * from './modules/client-metadata/client-metadata.module';
 
 // services
 export * from './services/user/user.service';
 export * from './services/account/account.service';
+export * from './services/client-metadata/client-metadata.service';

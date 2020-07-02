@@ -12,18 +12,19 @@ import {
   OneToOne,
   OneToMany,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
+  BaseEntity,
+  Repository,
+  EntityRepository,
+  getConnection,
+  ObjectType
 } from 'typeorm';
 
 import { v4 as guid } from 'uuid';
 
 export type TypeORMEntities = string | Function | (new () => unknown) | EntitySchema<unknown>;
 export type KindOfId = number | string;
-export type QueryBuilderRelationsEntities = "account" | "user";
-export interface IQueryBuilderRelations {
-  currentEntity: QueryBuilderRelationsEntities;
-  foreignKeyFieldInCurrentEntity: string;
-  foreignEntity: QueryBuilderRelationsEntities;
-}
 
 export interface IRequiredEntityAttrs {
   id: string;
@@ -74,7 +75,7 @@ export interface IUser {
 }
 
 @Entity()
-export class GuidIdentity {
+export class GuidIdentity extends BaseEntity {
   @PrimaryColumn()
   public guid: string;
 
@@ -348,7 +349,7 @@ export class AccessToken implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max',
+    length: 'max'
   })
   data: string;
 
@@ -364,7 +365,7 @@ export class AccessToken implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() {}
+  constructor() { }
 }
 
 @Entity({
@@ -386,7 +387,7 @@ export class AuthorizationCode implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max',
+    length: 'max'
   })
   data: string;
 
@@ -402,7 +403,7 @@ export class AuthorizationCode implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() {}
+  constructor() { }
 }
 
 @Entity({
@@ -418,7 +419,7 @@ export class ClientCredential implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max',
+    length: 'max'
   })
   data: string;
 
@@ -434,7 +435,7 @@ export class ClientCredential implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() {}
+  constructor() { }
 }
 
 @Entity({
@@ -450,7 +451,7 @@ export class Client implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max',
+    length: 'max'
   })
   data: string;
 
@@ -466,7 +467,7 @@ export class Client implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() {}
+  constructor() { }
 }
 
 @Entity({
@@ -494,7 +495,7 @@ export class DeviceCode implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max',
+    length: 'max'
   })
   data: string;
 
@@ -510,7 +511,7 @@ export class DeviceCode implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() {}
+  constructor() { }
 }
 
 @Entity({
@@ -526,7 +527,7 @@ export class InitialAccessToken implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max',
+    length: 'max'
   })
   data: string;
 
@@ -542,7 +543,7 @@ export class InitialAccessToken implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() {}
+  constructor() { }
 }
 
 @Entity({
@@ -574,32 +575,7 @@ export class Interaction implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() {}
-}
-
-@Entity({
-  name: 'client_metadata'
-})
-export class ClientMetadata extends GuidIdentity {
-  client_id: string;
-
-  client_secret: string;
-
-  redirect_uris: string[];
-
-  response_types: string[];
-
-  token_endpoint_auth_method: string;
-
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  added: Date;
-
-  constructor() {
-    super();
-  }
+  constructor() { }
 }
 
 @Entity({
@@ -621,7 +597,7 @@ export class RefreshToken implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max',
+    length: 'max'
   })
   data: string;
 
@@ -637,7 +613,7 @@ export class RefreshToken implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() {}
+  constructor() { }
 }
 
 @Entity({
@@ -653,7 +629,7 @@ export class RegistrationAccessToken implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max',
+    length: 'max'
   })
   data: string;
 
@@ -669,7 +645,7 @@ export class RegistrationAccessToken implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() {}
+  constructor() { }
 }
 
 @Entity({
@@ -691,7 +667,7 @@ export class Session implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max',
+    length: 'max'
   })
   data: string;
 
@@ -707,5 +683,136 @@ export class Session implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() {}
+  constructor() { }
 }
+
+@Entity({
+  name: 'client_metadata'
+})
+export class ClientMetadata extends GuidIdentity {
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  public clientName: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  public clientSecret: string;
+
+  @ManyToMany((type) => GrantType)
+  @JoinTable()
+  public grantTypes: GrantType[];
+
+  // @OneToMany((type) => RedirectUri, redirectUri => redirectUri.clientMetadata, { cascade: true })
+  // redirectUris: RedirectUri[];
+
+  // @OneToMany((type) => ResponseType, (value) => value.clientMetadata, { cascade: true })
+  // responseTypes: ResponseType[];
+
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  token_endpoint_auth_method: string;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
+  name: 'grant_types'
+})
+export class GrantType extends GuidIdentity {
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  name: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  type: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    length: 1024
+  })
+  details: string;
+}
+// @Entity({
+//   name: 'redirect_uris'
+// })
+// export class RedirectUri extends GuidIdentity {
+//   @ManyToOne((type) => ClientMetadata, (client) => client.redirectUris)
+//   @JoinColumn()
+//   clientMetadata: ClientMetadata;
+
+//   @Column({
+//     type: 'varchar',
+//     nullable: false
+//   })
+//   url: string;
+// }
+
+// @Entity({
+//   name: 'response_type'
+// })
+// export class ResponseType extends GuidIdentity {
+//   @ManyToOne((type) => ClientMetadata, (client) => client.responseTypes)
+//   @JoinColumn()
+//   clientMetadata: ClientMetadata;
+
+//   @Column({
+//     type: 'varchar',
+//     nullable: false
+//   })
+//   type: string;
+
+//   @Column({
+//     type: 'varchar',
+//     nullable: true
+//   })
+//   details: string;
+// }
+
+@Entity({
+  name: 'roles'
+})
+export class Role extends GuidIdentity {
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  level: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  name: string;
+}
+
+export class CommonRepo<T> extends Repository<T> {
+  public async findByKey<K extends keyof T>(key: K, value: unknown) {
+    const op = {
+      [key]: value
+    };
+
+    return this.createQueryBuilder('entity')
+      .where(`entity.${key} = :${key}`, op)
+      .getOne();
+  }
+}
+
+@EntityRepository(ClientMetadata)
+export class ClientMetadataRepo extends CommonRepo<ClientMetadata> { }
+
+@EntityRepository(GrantType)
+export class GrantTypeRepo extends CommonRepo<GrantType> { }

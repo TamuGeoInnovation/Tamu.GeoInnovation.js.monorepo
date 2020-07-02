@@ -8,10 +8,11 @@ import { urlencoded, json } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { join } from 'path';
+import cors from "cors";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  enableOIDCDebug(OpenIdProvider.provider);
+  // enableOIDCDebug(OpenIdProvider.provider);
   OpenIdProvider.provider.proxy = true;
   
   const dir = join(__dirname, 'assets/views');
@@ -22,12 +23,12 @@ async function bootstrap() {
   app.use(express.static(join(__dirname, 'assets', 'styles')));
   app.use(express.static(join(__dirname, 'assets', 'scripts')));
   app.use(express.static(join(__dirname, 'assets', 'images')));
-  app.use('/oidc', OpenIdProvider.provider.callback);
   app.use(json());
   app.use(urlencoded({ extended: true }));
   app.use(cookieParser());
+  app.use(cors())
+  app.use('/oidc', OpenIdProvider.provider.callback);
 
-  // this.app.use(setCORs);
   
   app.use((err, req, res, next) => {
     console.log("MAYBE SOMETHING HERE");
@@ -38,6 +39,12 @@ async function bootstrap() {
     }
     next(err);
   });
+
+  // OpenIdProvider.provider.addListener('server_error', (error: any, ctx: any) => {
+  //   console.error(error.message);
+  //   debugger;
+  //   throw error;
+  // });
 
   await app.listen(4001);
 }
@@ -52,125 +59,166 @@ OpenIdProvider.build()
 
 function enableOIDCDebug(idp: Provider): void {
   idp.addListener('server_error', (error: any, ctx: any) => {
-    console.warn(error.message);
+    console.error(error.message);
     debugger;
     throw error;
   });
   idp.addListener('authorization.accepted', (ctx: any) => {
+    console.log('authorization.accepted');
     debugger;
   });
   idp.addListener('interaction.started', (detail: any, ctx: any) => {
-    console.log(detail, ctx);
+    console.log('interaction.started');
     debugger;
   });
   idp.addListener('interaction.ended', (ctx: any) => {
+    console.log('interaction.ended');
     debugger;
   });
   idp.addListener('authorization.success', (ctx: any) => {
+    console.log('authorization.success');
     debugger;
   });
   idp.addListener('authorization.error', (error: any, ctx: any) => {
+    console.log('authorization.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('grant.success', (ctx: any) => {
+    console.log('grant.success');
     debugger;
   });
 
   idp.addListener('grant.error', (error: any, ctx: any) => {
+    console.log('grant.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('certificates.error', (error: any, ctx: any) => {
+    console.log('certificates.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('discovery.error', (error: any, ctx: any) => {
+    console.log('discovery.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('introspection.error', (error: any, ctx: any) => {
+    console.log('introspection.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('revocation.error', (error: any, ctx: any) => {
+    console.log('revocation.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('registration_create.success', (client: any, ctx: any) => {
+    console.log('registration_create.success');
     debugger;
   });
 
   idp.addListener('registration_create.error', (error: any, ctx: any) => {
+    console.log('registration_create.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('registration_read.error', (error: any, ctx: any) => {
+    console.log('registration_read.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('registration_update.success', (client: any, ctx: any) => {
+    console.log('registration_update.success');
     debugger;
   });
 
   idp.addListener('registration_update.error', (error: any, ctx: any) => {
+    console.log('registration_update.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('registration_delete.success', (client: any, ctx: any) => {
+    console.log('registration_delete.success');
     debugger;
   });
 
   idp.addListener('registration_delete.error', (error: any, ctx: any) => {
+    console.log('registration_delete.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('userinfo.error', (error: any, ctx: any) => {
+    console.log('userinfo.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('check_session.error', (error: any, ctx: any) => {
+    console.log('check_session.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('check_session_origin.error', (error: any, ctx: any) => {
+    console.log('check_session_origin.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('webfinger.error', (error: any, ctx: any) => {
+    console.log('webfinger.error');
+    console.error(error);
     debugger;
   });
 
   idp.addListener('token.issued', (token: any) => {
+    console.log('token.issued');
     debugger;
   });
 
   idp.addListener('token.consumed', (token: any) => {
+    console.log('token.consumed');
     debugger;
   });
 
   idp.addListener('token.revoked', (token: any) => {
+    console.log('token.revoked');
     debugger;
   });
 
   idp.addListener('grant.revoked', (grantId: any) => {
+    console.log('grant.revoked');
     debugger;
   });
 
   idp.addListener('end_session.success', (ctx: any) => {
-    debugger;
     console.log('end_session.success');
+    debugger;
   });
   idp.addListener('end_session.error', (error: any, ctx: any) => {
-    debugger;
     console.log('end_session.error');
+    console.error(error);
+    debugger;
   });
   idp.addListener('backchannel.success', (client: Provider, accoundId: string, sid: string, ctx: any) => {
-    debugger;
     console.log('backchannel.success');
+    debugger;
   });
   idp.addListener('backchannel.error', (error: any, client: Provider, accoundId: string, sid: string, ctx: any) => {
-    debugger;
     console.log('backchannel.error');
+    console.error(error);
+    debugger;
   });
 }
