@@ -709,8 +709,9 @@ export class ClientMetadata extends GuidIdentity {
   @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata, { cascade: true })
   redirectUris: RedirectUri[];
 
-  // @OneToMany((type) => ResponseType, (value) => value.clientMetadata, { cascade: true })
-  // responseTypes: ResponseType[];
+  @ManyToMany((type) => ResponseType)
+  @JoinTable()
+  responseTypes: ResponseType[];
 
   @Column({
     type: 'varchar',
@@ -761,26 +762,22 @@ export class RedirectUri extends GuidIdentity {
   url: string;
 }
 
-// @Entity({
-//   name: 'response_type'
-// })
-// export class ResponseType extends GuidIdentity {
-//   @ManyToOne((type) => ClientMetadata, (client) => client.responseTypes)
-//   @JoinColumn()
-//   clientMetadata: ClientMetadata;
+@Entity({
+  name: 'response_type'
+})
+export class ResponseType extends GuidIdentity {
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  type: string;
 
-//   @Column({
-//     type: 'varchar',
-//     nullable: false
-//   })
-//   type: string;
-
-//   @Column({
-//     type: 'varchar',
-//     nullable: true
-//   })
-//   details: string;
-// }
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  details: string;
+}
 
 @Entity({
   name: 'roles'
@@ -855,3 +852,6 @@ export class GrantTypeRepo extends CommonRepo<GrantType> {}
 
 @EntityRepository(RedirectUri)
 export class RedirectUriRepo extends CommonRepo<RedirectUri> {}
+
+@EntityRepository(ResponseType)
+export class ResponseTypeRepo extends CommonRepo<ResponseType> {}

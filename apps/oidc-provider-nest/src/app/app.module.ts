@@ -25,7 +25,7 @@ import {
   ClientMetadataRepo,
   GrantTypeRepo,
   RedirectUri,
-  // ResponseType,
+  ResponseType,
   Role
 } from '@tamu-gisc/oidc/provider-nest';
 
@@ -49,7 +49,7 @@ import { dbConfig } from '../environments/environment';
         RedirectUri,
         RefreshToken,
         RegistrationAccessToken,
-        // ResponseType,
+        ResponseType,
         Role,
         Session,
         User

@@ -16,6 +16,11 @@ export class ClientMetadataController {
     return this.clientMetadataService.getAllGrantTypes();
   }
 
+  @Get('response-type')
+  async allReponseTypesGet() {
+    return this.clientMetadataService.getAllResponseTypes();
+  }
+
   @Get(':clientName')
   async oneClientGet(@Param() params) {
     return this.clientMetadataService.getClient(params.clientName);
@@ -29,5 +34,10 @@ export class ClientMetadataController {
   @Post('grant')
   async insertGrantTypePost(@Req() req: Request) {
     return this.clientMetadataService.insertGrantType(req);
+  }
+
+  @Post('response-type')
+  async insertResponseTypePost(@Req() req: Request) {
+    return this.clientMetadataService.insertResponseType(req);
   }
 }
