@@ -8,13 +8,11 @@ import {
   Account,
   AccessToken,
   AuthorizationCode,
-  AuthModule,
   Client,
   ClientCredential,
   DeviceCode,
   InitialAccessToken,
   Interaction,
-  OidcModule,
   RefreshToken,
   RegistrationAccessToken,
   Session,
@@ -26,9 +24,9 @@ import {
   GrantType,
   ClientMetadataRepo,
   GrantTypeRepo,
-  // RedirectUri,
+  RedirectUri,
   // ResponseType,
-  Role,
+  Role
 } from '@tamu-gisc/oidc/provider-nest';
 
 import { dbConfig } from '../environments/environment';
@@ -44,12 +42,11 @@ import { dbConfig } from '../environments/environment';
         Client,
         ClientCredential,
         ClientMetadata,
-        // ClientMetadataRepo,
         DeviceCode,
         GrantType,
         InitialAccessToken,
         Interaction,
-        // RedirectUri,
+        RedirectUri,
         RefreshToken,
         RegistrationAccessToken,
         // ResponseType,
@@ -67,5 +64,5 @@ import { dbConfig } from '../environments/environment';
   providers: [AppService]
 })
 export class AppModule {
-  constructor(private connection: Connection) { }
+  constructor(private connection: Connection) {}
 }

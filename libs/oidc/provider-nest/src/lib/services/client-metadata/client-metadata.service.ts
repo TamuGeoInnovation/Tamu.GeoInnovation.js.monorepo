@@ -1,79 +1,87 @@
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
-import { ClientMetadata, ClientMetadataRepo, GrantTypeRepo, GrantType } from '../../entities/all.entity';
+import {
+  ClientMetadata,
+  ClientMetadataRepo,
+  GrantTypeRepo,
+  GrantType,
+  RedirectUri,
+  RedirectUriRepo
+} from '../../entities/all.entity';
+import { In } from 'typeorm';
 
 @Injectable()
 export class ClientMetadataService {
-  constructor(private readonly clientMetadataRepo: ClientMetadataRepo) { }
+  constructor(
+    private readonly clientMetadataRepo: ClientMetadataRepo,
+    private readonly grantTypeRepo: GrantTypeRepo,
+    private readonly redirectUriRepo: RedirectUriRepo
+  ) {}
 
   // ClientMetadata functions
   public async getClient(clientName: string) {
     if (clientName) {
-      return this.clientMetadataRepo.findByKey('clientName', clientName);
+      return this.clientMetadataRepo.findByKeyDeep('clientName', clientName);
     } else {
       throw new Error('No clientIdentifier provided');
     }
-
   }
 
-  public async getAllClients() { }
+  public async getAllClients() {
+    return this.clientMetadataRepo.findAll();
+  }
 
-  // public static async insertClient(req: Request): Promise<boolean> {
-  //   const connection = getConnection();
-  //   const grants: string[] = req.body.grantTypes;
-  //   const grantTypes: GrantType[] = await connection.getRepository(GrantType).find({
-  //     type: In(grants)
-  //   })
-  //   const _client: Partial<ClientMetadata> = {
-  //     clientName: req.body.clientName,
-  //     clientSecret: req.body.clientSecret,
-  //     grantTypes: grantTypes,
-  //     token_endpoint_auth_method: req.body.token_endpoint_auth_method,
+  public async insertClientMetadata(req: Request) {
+    try {
+      const grants = await this.findGrantTypeEntities(req.body.grantTypes);
+      const redirectUris = await this.createRedirectUriEntities(req.body.redirectUris);
 
-  //   }
-  //   const client = connection.getRepository(ClientMetadata).create(_client);
+      const _clientMetadata: Partial<ClientMetadata> = {
+        clientName: req.body.clientName,
+        clientSecret: req.body.clientSecret,
+        token_endpoint_auth_method: req.body.token_endpoint_auth_method,
+        grantTypes: grants,
+        redirectUris: redirectUris
+      };
+      const clientMetadata = this.clientMetadataRepo.create(_clientMetadata);
 
-  //   return new Promise((resolve, reject) => {
-  //     connection
-  //       .getRepository(ClientMetadata)
-  //       .save(client)
-  //       .then((result) => {
-  //         if (result) {
-  //           resolve(true);
-  //         } else {
-  //           resolve(false);
-  //         }
-  //       })
-  //       .catch((typeOrmErr) => {
-  //         reject(typeOrmErr);
-  //       });
-  //   });
-  // }
+      return this.clientMetadataRepo.save(clientMetadata);
+    } catch (generalErr) {
+      throw generalErr;
+    }
+  }
 
-  // // GrantType functions
-  // public static async insertGrantType(req: Request): Promise<boolean> {
-  //   const connection = getConnection();
-  //   const grant: Partial<GrantType> = {
-  //     name: req.body.name,
-  //     type: req.body.type,
-  //     details: req.body.details
-  //   };
-  //   const grantType = connection.getRepository(GrantType).create(grant);
+  // GrantType functions
+  private async findGrantTypeEntities(_grants: string[]): Promise<GrantType[]> {
+    return this.grantTypeRepo.find({
+      type: In(_grants)
+    });
+  }
 
-  //   return new Promise((resolve, reject) => {
-  //     connection
-  //       .getRepository(GrantType)
-  //       .save(grantType)
-  //       .then((result) => {
-  //         if (result) {
-  //           resolve(true);
-  //         } else {
-  //           resolve(false);
-  //         }
-  //       })
-  //       .catch((typeOrmErr) => {
-  //         reject(typeOrmErr);
-  //       });
-  //   });
-  // }
+  public async getAllGrantTypes() {
+    return this.grantTypeRepo.findAll();
+  }
+
+  public async insertGrantType(req: Request) {
+    const _grant: Partial<GrantType> = {
+      name: req.body.name,
+      type: req.body.type,
+      details: req.body.details
+    };
+    const grant = this.grantTypeRepo.create(_grant);
+    return this.grantTypeRepo.insert(grant);
+  }
+
+  // RedirectUri functions
+  private async createRedirectUriEntities(_redirectUris: string[]): Promise<RedirectUri[]> {
+    const redirectUris: RedirectUri[] = [];
+    _redirectUris.map((value, i) => {
+      const redirectUriPartial: Partial<RedirectUri> = {
+        url: value
+      };
+      const redirectUri = this.redirectUriRepo.create(redirectUriPartial);
+      redirectUris.push(redirectUri);
+    });
+    return redirectUris;
+  }
 }
