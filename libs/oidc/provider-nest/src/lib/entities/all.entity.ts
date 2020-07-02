@@ -365,7 +365,7 @@ export class AccessToken implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() { }
+  constructor() {}
 }
 
 @Entity({
@@ -403,7 +403,7 @@ export class AuthorizationCode implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() { }
+  constructor() {}
 }
 
 @Entity({
@@ -435,7 +435,7 @@ export class ClientCredential implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() { }
+  constructor() {}
 }
 
 @Entity({
@@ -467,7 +467,7 @@ export class Client implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() { }
+  constructor() {}
 }
 
 @Entity({
@@ -511,7 +511,7 @@ export class DeviceCode implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() { }
+  constructor() {}
 }
 
 @Entity({
@@ -543,7 +543,7 @@ export class InitialAccessToken implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() { }
+  constructor() {}
 }
 
 @Entity({
@@ -575,7 +575,7 @@ export class Interaction implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() { }
+  constructor() {}
 }
 
 @Entity({
@@ -613,7 +613,7 @@ export class RefreshToken implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() { }
+  constructor() {}
 }
 
 @Entity({
@@ -645,7 +645,7 @@ export class RegistrationAccessToken implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() { }
+  constructor() {}
 }
 
 @Entity({
@@ -683,7 +683,7 @@ export class Session implements IRequiredEntityAttrs {
   })
   consumedAt: Date;
 
-  constructor() { }
+  constructor() {}
 }
 
 @Entity({
@@ -706,8 +706,8 @@ export class ClientMetadata extends GuidIdentity {
   @JoinTable()
   public grantTypes: GrantType[];
 
-  // @OneToMany((type) => RedirectUri, redirectUri => redirectUri.clientMetadata, { cascade: true })
-  // redirectUris: RedirectUri[];
+  @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata, { cascade: true })
+  redirectUris: RedirectUri[];
 
   // @OneToMany((type) => ResponseType, (value) => value.clientMetadata, { cascade: true })
   // responseTypes: ResponseType[];
@@ -746,20 +746,20 @@ export class GrantType extends GuidIdentity {
   })
   details: string;
 }
-// @Entity({
-//   name: 'redirect_uris'
-// })
-// export class RedirectUri extends GuidIdentity {
-//   @ManyToOne((type) => ClientMetadata, (client) => client.redirectUris)
-//   @JoinColumn()
-//   clientMetadata: ClientMetadata;
 
-//   @Column({
-//     type: 'varchar',
-//     nullable: false
-//   })
-//   url: string;
-// }
+@Entity({
+  name: 'redirect_uris'
+})
+export class RedirectUri extends GuidIdentity {
+  @ManyToOne((type) => ClientMetadata, (client) => client.redirectUris)
+  clientMetadata: ClientMetadata;
+
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  url: string;
+}
 
 // @Entity({
 //   name: 'response_type'
@@ -800,7 +800,7 @@ export class Role extends GuidIdentity {
 }
 
 export class CommonRepo<T> extends Repository<T> {
-  public async findByKey<K extends keyof T>(key: K, value: unknown) {
+  public async findByKeyShallow<K extends keyof T>(key: K, value: unknown) {
     const op = {
       [key]: value
     };
@@ -809,10 +809,49 @@ export class CommonRepo<T> extends Repository<T> {
       .where(`entity.${key} = :${key}`, op)
       .getOne();
   }
+
+  public async findByKeyDeep<K extends keyof T>(key: K, value: unknown) {
+    const op = {
+      [key]: value
+    };
+
+    const relatedProps = this.getRelatedProps();
+    const queryBuilder = this.createQueryBuilder('entity');
+    if (relatedProps) {
+      relatedProps.map((propName) => {
+        queryBuilder.leftJoinAndSelect(`entity.${propName}`, propName);
+      });
+    }
+    return queryBuilder.where(`entity.${key} = :${key}`, op).getOne();
+  }
+
+  public async findAll() {
+    return this.createQueryBuilder('entity').getMany();
+  }
+
+  private getRelatedProps() {
+    const relations = this.metadata.ownRelations;
+    const propNames: string[] = [];
+    relations.map((value, i) => {
+      propNames.push(value.propertyName);
+    });
+    return propNames;
+  }
+
+  // public async insertEntity(req: Request) {
+  //   // Insert given an Express req, build a Partial<EntityType>
+  //   // with the entity's props and the req.boy's contents
+
+  //   return this.createQueryBuilder('entity')
+  //     .insert()
+  // }
 }
 
 @EntityRepository(ClientMetadata)
-export class ClientMetadataRepo extends CommonRepo<ClientMetadata> { }
+export class ClientMetadataRepo extends CommonRepo<ClientMetadata> {}
 
 @EntityRepository(GrantType)
-export class GrantTypeRepo extends CommonRepo<GrantType> { }
+export class GrantTypeRepo extends CommonRepo<GrantType> {}
+
+@EntityRepository(RedirectUri)
+export class RedirectUriRepo extends CommonRepo<RedirectUri> {}
