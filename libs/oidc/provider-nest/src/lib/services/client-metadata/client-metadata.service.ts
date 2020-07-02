@@ -8,7 +8,9 @@ import {
   RedirectUri,
   RedirectUriRepo,
   ResponseType,
-  ResponseTypeRepo
+  ResponseTypeRepo,
+  TokenEndpointAuthMethod,
+  TokenEndpointAuthMethodRepo
 } from '../../entities/all.entity';
 import { In } from 'typeorm';
 
@@ -18,7 +20,8 @@ export class ClientMetadataService {
     private readonly clientMetadataRepo: ClientMetadataRepo,
     private readonly grantTypeRepo: GrantTypeRepo,
     private readonly redirectUriRepo: RedirectUriRepo,
-    private readonly responseTypeRepo: ResponseTypeRepo
+    private readonly responseTypeRepo: ResponseTypeRepo,
+    private readonly tokenEndpointRepo: TokenEndpointAuthMethodRepo
   ) {}
 
   // ClientMetadata functions
@@ -100,5 +103,19 @@ export class ClientMetadataService {
 
   public async getAllResponseTypes() {
     return this.responseTypeRepo.findAll();
+  }
+
+  // TokenEndpointAuthMethod functions
+  public async insertTokenEndpointAuthMethod(req: Request) {
+    const _tokenEndpointMethod: Partial<TokenEndpointAuthMethod> = {
+      type: req.body.type,
+      details: req.body.details
+    };
+    const tokenEndpointMethod = this.tokenEndpointRepo.create(_tokenEndpointMethod);
+    return this.tokenEndpointRepo.insert(tokenEndpointMethod);
+  }
+
+  public async getAllTokenEndpointAuthMethods() {
+    return this.tokenEndpointRepo.findAll();
   }
 }

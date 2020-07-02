@@ -763,7 +763,7 @@ export class RedirectUri extends GuidIdentity {
 }
 
 @Entity({
-  name: 'response_type'
+  name: 'response_types'
 })
 export class ResponseType extends GuidIdentity {
   @Column({
@@ -774,7 +774,26 @@ export class ResponseType extends GuidIdentity {
 
   @Column({
     type: 'varchar',
-    nullable: true
+    nullable: true,
+    length: 1024
+  })
+  details: string;
+}
+
+@Entity({
+  name: 'token_endpoint_auth_methods'
+})
+export class TokenEndpointAuthMethod extends GuidIdentity {
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  type: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    length: 1024
   })
   details: string;
 }
@@ -855,3 +874,6 @@ export class RedirectUriRepo extends CommonRepo<RedirectUri> {}
 
 @EntityRepository(ResponseType)
 export class ResponseTypeRepo extends CommonRepo<ResponseType> {}
+
+@EntityRepository(TokenEndpointAuthMethod)
+export class TokenEndpointAuthMethodRepo extends CommonRepo<TokenEndpointAuthMethod> {}
