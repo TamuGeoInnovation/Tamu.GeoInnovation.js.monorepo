@@ -29,7 +29,7 @@ export class UserController {
     const body = req.body;
     req.body.ip = req.ip;
     // const existingUser = await UserService.findUserByKey('email', body.login);
-    const existingUser = await UserService.findUserByKey(User, 'email', body.login);
+    const existingUser = await UserService.findByKey(User, 'email', body.login);
     if (existingUser) {
       return res.render('register', {
         error: 'Username or password is incorrect',

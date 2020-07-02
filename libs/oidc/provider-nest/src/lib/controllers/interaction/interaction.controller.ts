@@ -52,13 +52,13 @@ export class InteractionController {
             interaction: true,
             devMode: urlHas(req.path, 'dev', true),
             requestingHost: urlFragment(client.redirectUris[0], 'hostname')
-          }
+          };
           return res.render('user-info', locals, (err, html) => {
             if (err) throw err;
             res.render('_layout', {
-              ...locals, 
+              ...locals,
               body: html
-            })
+            });
           });
         }
         case 'consent': {
@@ -78,7 +78,6 @@ export class InteractionController {
     } catch (err) {
       throw err;
     } finally {
-
     }
   }
 
@@ -91,50 +90,50 @@ export class InteractionController {
     // const client = await OpenIdProvider.provider.Client.find(details.params.client_id);
 
     try {
-        const email = req.body.login;
-        const password = req.body.password;
-        const user: User = await UserService.userLogin(email, password);
-        if (user) {
-          const result: InteractionResults = {
-            select_account: {},
-            login: {
-              account: user.guid,
-              acr: "urn:mace:incommon:iap:bronze",
-              amr: ["pwd"],
-              remember: true,
-              ts: Math.floor(Date.now() / 1000),
-            },
-            consent: {},
-            
-          };
-          if (user.enabled2fa) {
-            return res.render("2fa-auth", {
-              // client,
-              details,
-              email: user.email,
-              guid: user.guid,
-              error: false,
-              title: "Sign-in",
-              result: JSON.stringify(result),
-              params: {},
-              interaction: {},
-              debug: false,
-            });
-          } else {
-            console.log("interactionFinished");
-            await OpenIdProvider.provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
+      const email = req.body.login;
+      const password = req.body.password;
+      const user: User = await UserService.userLogin(email, password);
+      if (user) {
+        const result: InteractionResults = {
+          select_account: {},
+          login: {
+            account: user.account.guid,
+            acr: 'urn:mace:incommon:iap:bronze',
+            amr: ['pwd'],
+            remember: true,
+            ts: Math.floor(Date.now() / 1000)
+          },
+          // consent was given by the user to the client for this session
+          consent: {
+            rejectedScopes: [], // array of strings, scope names the end-user has not granted
+            rejectedClaims: [] // array of strings, claim names the end-user has not granted
           }
+        };
+        if (user.enabled2fa) {
+          return res.render('2fa-auth', {
+            // client,
+            details,
+            email: user.email,
+            guid: user.guid,
+            error: false,
+            title: 'Sign-in',
+            result: JSON.stringify(result),
+            params: {},
+            interaction: {},
+            debug: false
+          });
         } else {
-          // could not get user; render some error page or redirect to registration
+          console.log('interactionFinished');
+          await OpenIdProvider.provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
         }
+      } else {
+        // could not get user; render some error page or redirect to registration
+      }
     } catch (err) {
       return next(err);
     } finally {
-
     }
   }
-
-
 
   // @Post(':grant/login')
   // async thirdStep(@Param() params, @Req() req: Request, @Res() res: Response) {
@@ -146,17 +145,17 @@ export class InteractionController {
 
   @Post(':uid/continue')
   async continuePost(@Param() params, @Req() req: Request, @Res() res: Response) {
-    debugger
+    debugger;
   }
 
   @Post(':uid/confirm')
   async confirmPost(@Param() params, @Req() req: Request, @Res() res: Response) {
-    debugger
+    debugger;
   }
 
   @Post(':uid/abort')
   async abortPost(@Param() params, @Req() req: Request, @Res() res: Response) {
-    debugger
+    debugger;
   }
 
   @Get('logout')
