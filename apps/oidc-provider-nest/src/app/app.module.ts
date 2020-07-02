@@ -26,6 +26,8 @@ import {
   GrantTypeRepo,
   RedirectUri,
   ResponseType,
+  TokenEndpointAuthMethod,
+  TokenEndpointAuthMethodRepo,
   Role
 } from '@tamu-gisc/oidc/provider-nest';
 
@@ -52,6 +54,7 @@ import { dbConfig } from '../environments/environment';
         ResponseType,
         Role,
         Session,
+        TokenEndpointAuthMethod,
         User
       ]
     }),

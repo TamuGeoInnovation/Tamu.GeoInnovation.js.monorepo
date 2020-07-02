@@ -21,6 +21,11 @@ export class ClientMetadataController {
     return this.clientMetadataService.getAllResponseTypes();
   }
 
+  @Get('token-endpoint')
+  async allTokenEndpointAuthMethodsGet() {
+    return this.clientMetadataService.getAllTokenEndpointAuthMethods();
+  }
+
   @Get(':clientName')
   async oneClientGet(@Param() params) {
     return this.clientMetadataService.getClient(params.clientName);
