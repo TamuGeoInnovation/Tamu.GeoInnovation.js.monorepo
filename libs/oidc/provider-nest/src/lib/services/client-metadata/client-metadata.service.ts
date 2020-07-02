@@ -6,7 +6,9 @@ import {
   GrantTypeRepo,
   GrantType,
   RedirectUri,
-  RedirectUriRepo
+  RedirectUriRepo,
+  ResponseType,
+  ResponseTypeRepo
 } from '../../entities/all.entity';
 import { In } from 'typeorm';
 
@@ -15,7 +17,8 @@ export class ClientMetadataService {
   constructor(
     private readonly clientMetadataRepo: ClientMetadataRepo,
     private readonly grantTypeRepo: GrantTypeRepo,
-    private readonly redirectUriRepo: RedirectUriRepo
+    private readonly redirectUriRepo: RedirectUriRepo,
+    private readonly responseTypeRepo: ResponseTypeRepo
   ) {}
 
   // ClientMetadata functions
@@ -83,5 +86,19 @@ export class ClientMetadataService {
       redirectUris.push(redirectUri);
     });
     return redirectUris;
+  }
+
+  // ResponseType functions
+  public async insertResponseType(req: Request) {
+    const _responseType: Partial<ResponseType> = {
+      type: req.body.type,
+      details: req.body.details
+    };
+    const responseType = this.responseTypeRepo.create(_responseType);
+    return this.responseTypeRepo.insert(responseType);
+  }
+
+  public async getAllResponseTypes() {
+    return this.responseTypeRepo.findAll();
   }
 }
