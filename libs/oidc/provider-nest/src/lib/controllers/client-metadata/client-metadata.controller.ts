@@ -45,4 +45,9 @@ export class ClientMetadataController {
   async insertResponseTypePost(@Req() req: Request) {
     return this.clientMetadataService.insertResponseType(req);
   }
+
+  @Post('token-endpoint')
+  async insertTokenEndpointAuthMethod(@Req() req: Request) {
+    return this.clientMetadataService.insertTokenEndpointAuthMethod(req);
+  }
 }

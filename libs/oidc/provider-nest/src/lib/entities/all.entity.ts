@@ -713,11 +713,9 @@ export class ClientMetadata extends GuidIdentity {
   @JoinTable()
   responseTypes: ResponseType[];
 
-  @Column({
-    type: 'varchar',
-    nullable: false
-  })
-  token_endpoint_auth_method: string;
+  @ManyToMany((type) => TokenEndpointAuthMethod)
+  @JoinTable()
+  tokenEndpointAuthMethods: TokenEndpointAuthMethod[];
 
   constructor() {
     super();
