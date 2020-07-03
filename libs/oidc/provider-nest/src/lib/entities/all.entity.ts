@@ -74,6 +74,15 @@ export interface IUser {
   last_used_ip_address: string | null;
 }
 
+export interface IClientMetadata {
+  client_id: string;
+  client_secret: string;
+  grant_types: string[];
+  redirect_uris: string[];
+  response_types: string[];
+  token_endpoint_auth_method: string[];
+}
+
 @Entity()
 export class GuidIdentity extends BaseEntity {
   @PrimaryColumn()
@@ -839,8 +848,19 @@ export class CommonRepo<T> extends Repository<T> {
     return queryBuilder.where(`entity.${key} = :${key}`, op).getOne();
   }
 
-  public async findAll() {
+  public async findAllShallow() {
     return this.createQueryBuilder('entity').getMany();
+  }
+
+  public async findAllDeep() {
+    const relatedProps = this.getRelatedProps();
+    const queryBuilder = this.createQueryBuilder('entity');
+    if (relatedProps) {
+      relatedProps.map((propName) => {
+        queryBuilder.leftJoinAndSelect(`entity.${propName}`, propName);
+      });
+    }
+    return queryBuilder.getMany();
   }
 
   private getRelatedProps() {

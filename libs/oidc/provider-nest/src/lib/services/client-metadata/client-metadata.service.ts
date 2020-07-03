@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import {
+  IClientMetadata,
   ClientMetadata,
   ClientMetadataRepo,
   GrantTypeRepo,
@@ -34,7 +35,7 @@ export class ClientMetadataService {
   }
 
   public async getAllClients() {
-    return this.clientMetadataRepo.findAll();
+    return this.clientMetadataRepo.findAllShallow();
   }
 
   public async insertClientMetadata(req: Request) {
@@ -60,7 +61,41 @@ export class ClientMetadataService {
     }
   }
 
-  public async loadClientMetadaForOidcSetup() {}
+  public async loadClientMetadaForOidcSetup() {
+    const clients = await this.clientMetadataRepo.findAllDeep();
+    const flattenedClients: IClientMetadata[] = this.flattenClientMetadataForReturn(clients);
+    return flattenedClients;
+  }
+
+  private flattenClientMetadataForReturn(clients: ClientMetadata[]): IClientMetadata[] {
+    const flattenedClients: IClientMetadata[] = [];
+    clients.map((curr) => {
+      let flattened: IClientMetadata = {
+        client_id: null,
+        client_secret: null,
+        grant_types: [],
+        redirect_uris: [],
+        response_types: [],
+        token_endpoint_auth_method: []
+      };
+      flattened.client_id = curr.clientName;
+      flattened.client_secret = curr.clientSecret;
+      flattened.grant_types = curr.grantTypes.map((grantType) => {
+        return grantType.type;
+      });
+      flattened.redirect_uris = curr.redirectUris.map((redirectUri) => {
+        return redirectUri.url;
+      });
+      flattened.response_types = curr.responseTypes.map((responseType) => {
+        return responseType.type;
+      });
+      flattened.token_endpoint_auth_method = curr.tokenEndpointAuthMethods.map((tokenEndpoint) => {
+        return tokenEndpoint.type;
+      });
+      flattenedClients.push(flattened);
+    });
+    return flattenedClients;
+  }
 
   // GrantType functions
   private async findGrantTypeEntities(_grants: string[]): Promise<GrantType[]> {
@@ -70,7 +105,7 @@ export class ClientMetadataService {
   }
 
   public async getAllGrantTypes() {
-    return this.grantTypeRepo.findAll();
+    return this.grantTypeRepo.findAllShallow();
   }
 
   public async insertGrantType(req: Request) {
@@ -113,7 +148,7 @@ export class ClientMetadataService {
   }
 
   public async getAllResponseTypes() {
-    return this.responseTypeRepo.findAll();
+    return this.responseTypeRepo.findAllShallow();
   }
 
   // TokenEndpointAuthMethod functions
@@ -133,6 +168,6 @@ export class ClientMetadataService {
   }
 
   public async getAllTokenEndpointAuthMethods() {
-    return this.tokenEndpointRepo.findAll();
+    return this.tokenEndpointRepo.findAllShallow();
   }
 }

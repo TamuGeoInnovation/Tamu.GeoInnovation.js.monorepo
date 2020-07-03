@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { ClientMetadata as OidcClientMetadata } from 'oidc-provider';
 import { ClientMetadataService } from '../../services/client-metadata/client-metadata.service';
 
 @Controller('client-metadata')
@@ -9,6 +10,20 @@ export class ClientMetadataController {
   @Get()
   async allClientGet() {
     return this.clientMetadataService.getAllClients();
+  }
+
+  @Get('test')
+  async getClientMetadataForOidcSetup() {
+    // {
+    //   client_id: 'oidc-client-test',
+    //   client_secret: 'pppssssssttttheykidwantsomekandy',
+    //   grant_types: ['refresh_token', 'authorization_code'],
+    //   redirect_uris: ['http://localhost:3001/oidc/auth/callback'],
+    //   response_types: ['code'],
+    //   token_endpoint_auth_method: 'client_secret_basic'
+    // }
+    const clients = await this.clientMetadataService.loadClientMetadaForOidcSetup();
+    return clients;
   }
 
   @Get('grant')
