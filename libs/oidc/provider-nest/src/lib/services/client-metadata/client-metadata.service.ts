@@ -41,13 +41,16 @@ export class ClientMetadataService {
     try {
       const grants = await this.findGrantTypeEntities(req.body.grantTypes);
       const redirectUris = await this.createRedirectUriEntities(req.body.redirectUris);
+      const responseTypes = await this.findResponseTypeEntities(req.body.responseTypes);
+      const token_endpoint_auth_methods = await this.findTokenEndpointAuthMethods(req.body.token_endpoint_auth_methods);
 
       const _clientMetadata: Partial<ClientMetadata> = {
         clientName: req.body.clientName,
         clientSecret: req.body.clientSecret,
-        token_endpoint_auth_method: req.body.token_endpoint_auth_method,
         grantTypes: grants,
-        redirectUris: redirectUris
+        redirectUris: redirectUris,
+        responseTypes: responseTypes,
+        tokenEndpointAuthMethods: token_endpoint_auth_methods
       };
       const clientMetadata = this.clientMetadataRepo.create(_clientMetadata);
 
@@ -56,6 +59,8 @@ export class ClientMetadataService {
       throw generalErr;
     }
   }
+
+  public async loadClientMetadaForOidcSetup() {}
 
   // GrantType functions
   private async findGrantTypeEntities(_grants: string[]): Promise<GrantType[]> {
@@ -92,6 +97,12 @@ export class ClientMetadataService {
   }
 
   // ResponseType functions
+  private async findResponseTypeEntities(_responseTypes: string[]): Promise<ResponseType[]> {
+    return this.responseTypeRepo.find({
+      type: In(_responseTypes)
+    });
+  }
+
   public async insertResponseType(req: Request) {
     const _responseType: Partial<ResponseType> = {
       type: req.body.type,
@@ -106,6 +117,12 @@ export class ClientMetadataService {
   }
 
   // TokenEndpointAuthMethod functions
+  private async findTokenEndpointAuthMethods(_tokenEndpoints: string[]): Promise<TokenEndpointAuthMethod[]> {
+    return this.tokenEndpointRepo.find({
+      type: In(_tokenEndpoints)
+    });
+  }
+
   public async insertTokenEndpointAuthMethod(req: Request) {
     const _tokenEndpointMethod: Partial<TokenEndpointAuthMethod> = {
       type: req.body.type,
