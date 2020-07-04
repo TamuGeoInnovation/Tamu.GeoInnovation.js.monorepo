@@ -35,10 +35,33 @@ describe('WebsitesService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-  it('should be defined', () => {
-    expect(service.getWebsitesForCounty(undefined)).toMatchObject({
-      __zone_symbol__state: true,
-      __zone_symbol__value: { message: 'Invalid county fips', status: 400, success: false }
+  describe('getWebsitesForCounty', () => {
+    it('should handle catagorey inputs ', async () => {
+      expect(await service.getWebsitesForCounty('undefined')).toMatchObject({
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      });
+      expect(await service.getWebsitesForCounty(undefined)).toMatchObject({
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      });
+      expect(await service.getWebsitesForCounty(9)).toMatchObject({
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      });
+      await expect(service.getWebsitesForCounty('yeet')).toMatchObject({});
+    });
+  });
+
+  describe('getWebsitesForClaimInfo', () => {
+    it('should handle catagorey inputs ', async () => {
+      await expect(service.getWebsitesForClaimInfo(undefined)).rejects.toThrow();
+    });
+    it('should handle catagorey inputs ', async () => {
+      await expect(service.getWebsitesForClaimInfo('yeet')).toMatchObject({});
     });
   });
 });
