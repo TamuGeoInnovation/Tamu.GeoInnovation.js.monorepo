@@ -37,17 +37,75 @@ describe('CountyClaimsService', () => {
     EntityToValueRepoMock = module.get(getRepositoryToken(EntityToValue));
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('getWebsitesForClaimInfo', () => {
+    it('should handle catagorey inputs ', async () => {
+      await expect(service.getActiveClaimsForEmail(undefined)).rejects.toThrow();
+    });
+    it('should handle catagorey inputs ', async () => {
+      await expect(service.getActiveClaimsForEmail('undefined')).rejects.toThrow();
+    });
+  });
+  describe('getAllUserCountyClaims', () => {
+    it('should handle catagorey inputs ', async () => {
+      await expect(service.getAllUserCountyClaims(undefined)).rejects.toThrow();
+    });
+    it('should handle catagorey inputs ', async () => {
+      await expect(service.getAllUserCountyClaims('undefined')).rejects.toThrow();
+    });
+  });
+  describe('getActiveClaimsForCountyFips', () => {
+    it('should handle catagorey inputs ', async () => {
+      await expect(service.getActiveClaimsForCountyFips(undefined)).rejects.toThrow();
+    });
+    it('should handle catagorey inputs ', async () => {
+      await expect(service.getActiveClaimsForCountyFips('undefined')).rejects.toThrow();
+    });
   });
 
-  /*it('should be defined', () => {
-    expect(service.closeClaim(null)).toReturnWith({
-      status: 400,
-      success: false,
-      message: 'Input parameter missing.'
+  describe('closeClaim', () => {
+    it('should handle catagorey inputs ', async () => {
+      expect(await service.closeClaim(undefined)).toMatchObject({
+        status: 400,
+        success: false,
+        message: 'Input parameter missing.'
+      });
     });
-  });*/
+    it('should handle catagorey inputs ', async () => {
+      CountyClaimInfoRepoMock.findOne.mockReturnValue(undefined);
+      expect(await service.closeClaim('yeet')).toMatchObject({
+        status: 500,
+        success: false,
+        message: 'Invalid claim.'
+      });
+    });
+  });
+
+  describe('getHistoricClaimsForCounty', () => {
+    it('should handle catagorey inputs ', async () => {
+      await expect(service.getHistoricClaimsForCounty(undefined)).rejects.toThrow();
+    });
+    it('should handle catagorey inputs ', async () => {
+      await expect(service.getHistoricClaimsForCounty('undefined')).rejects.toThrow();
+    });
+  });
+
+  describe('getSuggestedClaims', () => {
+    it('should handle catagorey inputs ', async () => {
+      await expect(service.getSuggestedClaims(undefined)).rejects.toThrow();
+    });
+    it('should handle catagorey inputs ', async () => {
+      await expect(service.getSuggestedClaims('undefined')).rejects.toThrow();
+    });
+    it('should handle catagorey inputs ', async () => {
+      await expect(service.getSuggestedClaims(null)).rejects.toThrow();
+    });
+  });
+  describe('createOrUpdateClaim', () => {
+    it('should handle catagorey inputs ', async () => {
+      UserRepoMock.findOne.mockReturnValue(undefined);
+      await expect(service.createOrUpdateClaim(undefined, undefined, undefined)).rejects.toThrow();
+    });
+  });
 });
 
 // @ts-ignore
