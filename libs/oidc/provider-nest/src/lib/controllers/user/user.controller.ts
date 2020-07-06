@@ -1,5 +1,6 @@
 import { Controller, Get, Next, Param, Req, Res, Render, Post } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { urlFragment, urlHas } from '../../_utils/url-utils';
 import { Account, User } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
 import { AccountService } from '../../services/account/account.service';
@@ -13,14 +14,23 @@ export class UserController {
 
   @Get('register')
   async registerGet(@Req() req: Request, @Res() res: Response) {
-    return res.render('register', {
+    const locals = {
       title: 'GISC Identity Portal',
       client: {},
       debug: false,
       details: {},
       params: {},
       interaction: true,
-      error: false
+      error: false,
+      devMode: urlHas(req.path, 'dev', true),
+      requestingHost: urlFragment('', 'hostname')
+    };
+    return res.render('register', locals, (err, html) => {
+      if (err) throw err;
+      res.render('_layout', {
+        ...locals,
+        body: html
+      });
     });
   }
 
@@ -42,7 +52,7 @@ export class UserController {
       });
     } else {
       const newUser: User = new User(req);
-      const newAccount: Account = new Account(body.name, body.ip);
+      const newAccount: Account = new Account(body.name, body.email);
       newUser.account = newAccount;
       const userInserted = await UserService.insertUser(newUser);
       const accountInserted = await AccountService.insertAccount(newAccount);
