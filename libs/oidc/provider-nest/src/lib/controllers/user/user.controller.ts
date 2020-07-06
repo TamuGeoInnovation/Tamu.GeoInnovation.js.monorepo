@@ -7,15 +7,12 @@ import { AccountService } from '../../services/account/account.service';
 
 @Controller('user')
 export class UserController {
-  @Get('auth')
-  async authGet() {
-    return '/user/auth';
-  }
+  constructor(private readonly userService: UserService) {}
 
   @Get('register')
   async registerGet(@Req() req: Request, @Res() res: Response) {
     const locals = {
-      title: 'GISC Identity Portal',
+      title: 'GeoInnovation Service Center',
       client: {},
       debug: false,
       details: {},
@@ -36,14 +33,12 @@ export class UserController {
 
   @Post('register')
   async registerPost(@Req() req: Request, @Res() res: Response) {
-    const body = req.body;
     req.body.ip = req.ip;
-    // const existingUser = await UserService.findUserByKey('email', body.login);
-    const existingUser = await UserService.findByKey(User, 'email', body.login);
+    const existingUser = await this.userService.userRepo.findByKeyShallow('email', req.body.email);
     if (existingUser) {
       return res.render('register', {
         error: 'Username or password is incorrect',
-        title: 'GISC Identity Portal',
+        title: 'GeoInnovation Service Center',
         client: {},
         debug: false,
         details: {},
@@ -52,9 +47,9 @@ export class UserController {
       });
     } else {
       const newUser: User = new User(req);
-      const newAccount: Account = new Account(body.name, body.email);
+      const newAccount: Account = new Account(req.body.name, req.body.email);
       newUser.account = newAccount;
-      const userInserted = await UserService.insertUser(newUser);
+      const userInserted = await this.userService.insertUser(newUser);
       const accountInserted = await AccountService.insertAccount(newAccount);
       return {
         userInserted,
