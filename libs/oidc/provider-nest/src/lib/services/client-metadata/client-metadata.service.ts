@@ -14,6 +14,7 @@ import {
   TokenEndpointAuthMethodRepo
 } from '../../entities/all.entity';
 import { In } from 'typeorm';
+import { ClientAuthMethod } from 'oidc-provider';
 
 @Injectable()
 export class ClientMetadataService {
@@ -43,15 +44,16 @@ export class ClientMetadataService {
       const grants = await this.findGrantTypeEntities(req.body.grantTypes);
       const redirectUris = await this.createRedirectUriEntities(req.body.redirectUris);
       const responseTypes = await this.findResponseTypeEntities(req.body.responseTypes);
-      const token_endpoint_auth_methods = await this.findTokenEndpointAuthMethods(req.body.token_endpoint_auth_methods);
+      const token_endpoint_auth_method = await this.findTokenEndpointAuthMethod(req.body.token_endpoint_auth_method);
 
+      // TODO: Fix this ClientAuthMethod cast
       const _clientMetadata: Partial<ClientMetadata> = {
         clientName: req.body.clientName,
         clientSecret: req.body.clientSecret,
         grantTypes: grants,
         redirectUris: redirectUris,
         responseTypes: responseTypes,
-        tokenEndpointAuthMethods: token_endpoint_auth_methods
+        tokenEndpointAuthMethod: token_endpoint_auth_method
       };
       const clientMetadata = this.clientMetadataRepo.create(_clientMetadata);
 
@@ -76,7 +78,7 @@ export class ClientMetadataService {
         grant_types: [],
         redirect_uris: [],
         response_types: [],
-        token_endpoint_auth_method: []
+        token_endpoint_auth_method: null
       };
       flattened.client_id = curr.clientName;
       flattened.client_secret = curr.clientSecret;
@@ -89,9 +91,9 @@ export class ClientMetadataService {
       flattened.response_types = curr.responseTypes.map((responseType) => {
         return responseType.type;
       });
-      flattened.token_endpoint_auth_method = curr.tokenEndpointAuthMethods.map((tokenEndpoint) => {
-        return tokenEndpoint.type;
-      });
+      // flattened.token_endpoint_auth_method = curr.tokenEndpointAuthMethods.map((tokenEndpoint) => {
+      //   return tokenEndpoint.type;
+      // });
       flattenedClients.push(flattened);
     });
     return flattenedClients;
@@ -152,10 +154,8 @@ export class ClientMetadataService {
   }
 
   // TokenEndpointAuthMethod functions
-  private async findTokenEndpointAuthMethods(_tokenEndpoints: string[]): Promise<TokenEndpointAuthMethod[]> {
-    return this.tokenEndpointRepo.find({
-      type: In(_tokenEndpoints)
-    });
+  private async findTokenEndpointAuthMethod(_tokenEndpoint: string): Promise<TokenEndpointAuthMethod> {
+    return this.tokenEndpointRepo.findOne(_tokenEndpoint);
   }
 
   public async insertTokenEndpointAuthMethod(req: Request) {

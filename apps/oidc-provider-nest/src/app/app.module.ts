@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Connection } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -23,6 +22,8 @@ import {
   ClientMetadata,
   GrantType,
   ClientMetadataRepo,
+  RedirectUriRepo,
+  ResponseTypeRepo,
   GrantTypeRepo,
   RedirectUri,
   ResponseType,
@@ -58,6 +59,13 @@ import { dbConfig } from '../environments/environment';
         User
       ]
     }),
+    TypeOrmModule.forFeature([
+      ClientMetadataRepo,
+      GrantTypeRepo,
+      RedirectUriRepo,
+      ResponseTypeRepo,
+      TokenEndpointAuthMethodRepo
+    ]),
     // AuthModule,
     InteractionModule,
     ClientMetadataModule,
@@ -67,5 +75,11 @@ import { dbConfig } from '../environments/environment';
   providers: [AppService]
 })
 export class AppModule {
-  constructor(private connection: Connection) {}
+  constructor() {
+    // works surprisingly
+    // OpenIdProvider.build(null, this.clientMetadataService).then(() => {
+    //   OpenIdProvider.provider.proxy = true;
+    //   adapterHost.httpAdapter.use('/oidc', OpenIdProvider.provider.callback);
+    // });
+  }
 }

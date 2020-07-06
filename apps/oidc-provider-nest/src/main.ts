@@ -1,20 +1,22 @@
-import { NestFactory, HttpAdapterHost } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app/app.module';
-import { OpenIdProvider } from '@tamu-gisc/oidc/provider-nest';
+import { OpenIdProvider, ClientMetadataModule, ClientMetadataService } from '@tamu-gisc/oidc/provider-nest';
 import { Provider } from 'oidc-provider';
 import * as express from 'express';
 import { urlencoded, json } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { join } from 'path';
-import cors from "cors";
+import cors from 'cors';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // const clientsService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
+  // const clients = await clientsService.loadClientMetadaForOidcSetup();
+  // OpenIdProvider.build(clients);
   // enableOIDCDebug(OpenIdProvider.provider);
   OpenIdProvider.provider.proxy = true;
-  
   const dir = join(__dirname, 'assets/views');
   app.use(helmet());
   app.setViewEngine('ejs');
@@ -26,27 +28,20 @@ async function bootstrap() {
   app.use(json());
   app.use(urlencoded({ extended: true }));
   app.use(cookieParser());
-  app.use(cors())
+  app.use(cors());
   app.use('/oidc', OpenIdProvider.provider.callback);
 
-  
   app.use((err, req, res, next) => {
-    console.log("MAYBE SOMETHING HERE");
-    if (err.name === "SessionNotFound") {
+    console.log('MAYBE SOMETHING HERE');
+    if (err.name === 'SessionNotFound') {
       // handle interaction expired / session not found error
-      console.error("SESSION NOT FOUND");
+      console.error('SESSION NOT FOUND');
       throw err;
     }
     next(err);
   });
 
-  // OpenIdProvider.provider.addListener('server_error', (error: any, ctx: any) => {
-  //   console.error(error.message);
-  //   debugger;
-  //   throw error;
-  // });
-
-  await app.listen(4001);
+  await app.listenAsync(4001);
 }
 
 OpenIdProvider.build()
