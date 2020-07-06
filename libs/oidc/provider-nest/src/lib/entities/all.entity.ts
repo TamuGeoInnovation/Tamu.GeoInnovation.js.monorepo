@@ -204,16 +204,16 @@ export class Account extends GuidIdentity implements IAccount {
   })
   added: string;
 
-  constructor(fullName: string, ip: string) {
+  constructor(fullName: string, email: string) {
     super();
     try {
       // if (user) {
       // if (user.guid) {
       //   this.guid = user.guid;
       // }
-      // if (user.email) {
-      //   this.email = user.email;
-      // }
+      if (email) {
+        this.email = email;
+      }
       if (fullName) {
         this.name = fullName;
         if (fullName.includes(' ')) {
