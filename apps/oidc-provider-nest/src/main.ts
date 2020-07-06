@@ -12,9 +12,9 @@ import cors from 'cors';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  // const clientsService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
-  // const clients = await clientsService.loadClientMetadaForOidcSetup();
-  // OpenIdProvider.build(clients);
+  const clientsService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
+  const clients = await clientsService.loadClientMetadaForOidcSetup();
+  OpenIdProvider.build(clients);
   // enableOIDCDebug(OpenIdProvider.provider);
   OpenIdProvider.provider.proxy = true;
   const dir = join(__dirname, 'assets/views');
@@ -44,13 +44,13 @@ async function bootstrap() {
   await app.listenAsync(4001);
 }
 
-OpenIdProvider.build()
-  .then(() => {
-    bootstrap();
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+// OpenIdProvider.build()
+//   .then(() => {
+bootstrap();
+//   })
+//   .catch((err) => {
+//     console.error(err);
+//   });
 
 function enableOIDCDebug(idp: Provider): void {
   idp.addListener('server_error', (error: any, ctx: any) => {

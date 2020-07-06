@@ -91,6 +91,7 @@ export class ClientMetadataService {
       flattened.response_types = curr.responseTypes.map((responseType) => {
         return responseType.type;
       });
+      flattened.token_endpoint_auth_method = curr.tokenEndpointAuthMethod.type;
       // flattened.token_endpoint_auth_method = curr.tokenEndpointAuthMethods.map((tokenEndpoint) => {
       //   return tokenEndpoint.type;
       // });
@@ -155,7 +156,11 @@ export class ClientMetadataService {
 
   // TokenEndpointAuthMethod functions
   private async findTokenEndpointAuthMethod(_tokenEndpoint: string): Promise<TokenEndpointAuthMethod> {
-    return this.tokenEndpointRepo.findOne(_tokenEndpoint);
+    return this.tokenEndpointRepo.findOne({
+      where: {
+        type: _tokenEndpoint
+      }
+    });
   }
 
   public async insertTokenEndpointAuthMethod(req: Request) {

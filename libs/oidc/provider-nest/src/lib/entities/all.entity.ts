@@ -22,6 +22,7 @@ import {
 } from 'typeorm';
 
 import { v4 as guid } from 'uuid';
+import { ClientAuthMethod } from 'oidc-provider';
 
 export type TypeORMEntities = string | Function | (new () => unknown) | EntitySchema<unknown>;
 export type KindOfId = number | string;
@@ -80,7 +81,7 @@ export interface IClientMetadata {
   grant_types: string[];
   redirect_uris: string[];
   response_types: string[];
-  token_endpoint_auth_method: string[];
+  token_endpoint_auth_method: string;
 }
 
 @Entity()
@@ -696,6 +697,24 @@ export class Session implements IRequiredEntityAttrs {
 }
 
 @Entity({
+  name: 'token_endpoint_auth_methods'
+})
+export class TokenEndpointAuthMethod extends GuidIdentity {
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  type: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    length: 1024
+  })
+  details: string;
+}
+
+@Entity({
   name: 'client_metadata'
 })
 export class ClientMetadata extends GuidIdentity {
@@ -722,9 +741,9 @@ export class ClientMetadata extends GuidIdentity {
   @JoinTable()
   responseTypes: ResponseType[];
 
-  @ManyToMany((type) => TokenEndpointAuthMethod)
-  @JoinTable()
-  tokenEndpointAuthMethods: TokenEndpointAuthMethod[];
+  @OneToOne((type) => TokenEndpointAuthMethod)
+  @JoinColumn()
+  tokenEndpointAuthMethod: TokenEndpointAuthMethod;
 
   constructor() {
     super();
@@ -773,24 +792,6 @@ export class RedirectUri extends GuidIdentity {
   name: 'response_types'
 })
 export class ResponseType extends GuidIdentity {
-  @Column({
-    type: 'varchar',
-    nullable: false
-  })
-  type: string;
-
-  @Column({
-    type: 'varchar',
-    nullable: true,
-    length: 1024
-  })
-  details: string;
-}
-
-@Entity({
-  name: 'token_endpoint_auth_methods'
-})
-export class TokenEndpointAuthMethod extends GuidIdentity {
   @Column({
     type: 'varchar',
     nullable: false
