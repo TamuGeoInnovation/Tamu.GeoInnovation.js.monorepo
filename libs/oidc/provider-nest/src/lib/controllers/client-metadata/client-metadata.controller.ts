@@ -14,14 +14,6 @@ export class ClientMetadataController {
 
   @Get('test')
   async getClientMetadataForOidcSetup() {
-    // {
-    //   client_id: 'oidc-client-test',
-    //   client_secret: 'pppssssssttttheykidwantsomekandy',
-    //   grant_types: ['refresh_token', 'authorization_code'],
-    //   redirect_uris: ['http://localhost:3001/oidc/auth/callback'],
-    //   response_types: ['code'],
-    //   token_endpoint_auth_method: 'client_secret_basic'
-    // }
     const clients = await this.clientMetadataService.loadClientMetadaForOidcSetup();
     return clients;
   }

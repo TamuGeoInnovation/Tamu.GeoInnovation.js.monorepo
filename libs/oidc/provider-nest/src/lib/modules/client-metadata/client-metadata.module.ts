@@ -21,6 +21,7 @@ import {
     ])
   ],
   providers: [ClientMetadataService],
-  controllers: [ClientMetadataController]
+  controllers: [ClientMetadataController],
+  exports: [ClientMetadataService]
 })
 export class ClientMetadataModule {}
