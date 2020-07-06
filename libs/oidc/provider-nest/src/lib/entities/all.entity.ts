@@ -896,3 +896,9 @@ export class ResponseTypeRepo extends CommonRepo<ResponseType> {}
 
 @EntityRepository(TokenEndpointAuthMethod)
 export class TokenEndpointAuthMethodRepo extends CommonRepo<TokenEndpointAuthMethod> {}
+
+@EntityRepository(User)
+export class UserRepo extends CommonRepo<User> {}
+
+@EntityRepository(Account)
+export class AccountRepo extends CommonRepo<Account> {}

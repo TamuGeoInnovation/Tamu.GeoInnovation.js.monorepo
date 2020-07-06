@@ -1,19 +1,17 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { InteractionController } from '../../controllers/interaction/interaction.controller';
 import { UserService } from '../../services/user/user.service';
-import { LayoutMiddleware } from '../../middleware/layout.middleware';
 import { setPragmaAndCache } from '../../middleware/set-pragma-cache.middleware';
+import { UserModule } from '../user/user.module';
 
 @Module({
-    imports: [],
-    controllers: [InteractionController],
-    providers: [UserService],
-    exports: [],
+  imports: [UserModule],
+  controllers: [InteractionController],
+  providers: [],
+  exports: []
 })
 export class InteractionModule implements NestModule {
-    configure(consumer: MiddlewareConsumer) {
-        consumer
-            .apply(setPragmaAndCache)
-            .forRoutes('interaction');
-    }
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(setPragmaAndCache).forRoutes('interaction');
+  }
 }

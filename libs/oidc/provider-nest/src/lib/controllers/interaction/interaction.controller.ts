@@ -90,9 +90,9 @@ export class InteractionController {
     // const client = await OpenIdProvider.provider.Client.find(details.params.client_id);
 
     try {
-      const email = req.body.login;
+      const email = req.body.email;
       const password = req.body.password;
-      const user: User = await UserService.userLogin(email, password);
+      const user: User = await this.userService.userLogin(email, password);
       if (user) {
         const result: InteractionResults = {
           select_account: {},
