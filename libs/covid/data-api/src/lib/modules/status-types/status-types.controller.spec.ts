@@ -1,26 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-
-import { Repository } from 'typeorm';
-
-import { StatusType } from '@tamu-gisc/covid/common/entities';
 
 import { StatusTypesController } from './status-types.controller';
 import { StatusTypesService } from './status-types.service';
 
+jest.mock('./status-types.service');
+
 describe('StatusTypes Controller', () => {
+  let service: StatusTypesService;
   let controller: StatusTypesController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [StatusTypesService, { provide: getRepositoryToken(StatusType), useClass: Repository }],
+      providers: [StatusTypesService],
       controllers: [StatusTypesController]
     }).compile();
-
+    service = module.get<StatusTypesService>(StatusTypesService);
     controller = module.get<StatusTypesController>(StatusTypesController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  describe('Validation ', () => {
+    it('controller should be defined', () => {
+      expect(controller).toBeDefined();
+    });
   });
 });

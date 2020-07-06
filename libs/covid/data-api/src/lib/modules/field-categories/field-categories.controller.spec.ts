@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { FieldCategory } from '@tamu-gisc/covid/common/entities';
+
 import { FieldCategoriesController } from './field-categories.controller';
 import { FieldCategoriesService } from './field-categories.service';
-import { FieldCategory } from '@tamu-gisc/covid/common/entities';
 
 jest.mock('./field-categories.service');
 
@@ -24,54 +25,61 @@ describe('FieldCategories Controller', () => {
     jest.resetAllMocks();
   });
 
+  describe('Validation ', () => {
+    it('controller should be defined', () => {
+      expect(controller).toBeDefined();
+    });
+  });
+
+  const mockParameters = 'foobar';
+
   describe('getFieldTypesForCategory', () => {
-    it('should return expected Result', async () => {
-      const expectedValue = new FieldCategory();
-      jest.spyOn(service, 'getFieldTypesForCategory').mockResolvedValue(expectedValue);
-      expect(await controller.getFieldTypesForCategory('foo')).toMatchObject(expectedValue);
+    it('should return expectedResult', async () => {
+      const expectedResult = new FieldCategory();
+      jest.spyOn(service, 'getFieldTypesForCategory').mockResolvedValue(expectedResult);
+      expect(await controller.getFieldTypesForCategory(mockParameters)).toMatchObject(expectedResult);
     });
   });
 
   describe('addFieldTypeToCategory', () => {
-    it('should return expected Result', async () => {
-      const expectedValue = new FieldCategory();
-      jest.spyOn(service, 'addFieldTypeToCategory').mockResolvedValue(expectedValue);
-      expect(await controller.addFieldTypeToCategory('foo', 'bar')).toMatchObject(expectedValue);
+    it('should return expectedResult', async () => {
+      const expectedResult = new FieldCategory();
+      jest.spyOn(service, 'addFieldTypeToCategory').mockResolvedValue(expectedResult);
+      expect(await controller.addFieldTypeToCategory(mockParameters, mockParameters)).toMatchObject(expectedResult);
     });
   });
 
   describe('getCategoryValues', () => {
-    it('should return expected Result', async () => {
-      const expectedValue = [new FieldCategory()];
-      jest.spyOn(service, 'getCategoryWithValues').mockResolvedValue(expectedValue);
-      expect(await controller.getCategoryValues('foo')).toMatchObject(expectedValue);
+    it('should return expectedResult', async () => {
+      const expectedResult = [new FieldCategory()];
+      jest.spyOn(service, 'getCategoryWithValues').mockResolvedValue(expectedResult);
+      expect(await controller.getCategoryValues(mockParameters)).toMatchObject(expectedResult);
     });
   });
 
   describe('addValueToType', () => {
-    it('should return expected Result', async () => {
-      const expectedValue = new FieldCategory();
-      jest.spyOn(service, 'addValueToCategory').mockResolvedValue(expectedValue);
-      expect(await controller.addValueToType('foo', 'bar')).toMatchObject(expectedValue);
+    it('should return expectedResult', async () => {
+      const expectedResult = new FieldCategory();
+      jest.spyOn(service, 'addValueToCategory').mockResolvedValue(expectedResult);
+      expect(await controller.addValueToType(mockParameters, mockParameters)).toMatchObject(expectedResult);
     });
   });
   describe('getCategories', () => {
-    it('should return expected Result', async () => {
-      const expectedValue = [new FieldCategory()];
-      jest.spyOn(service, 'getAllCategoriesWithTypes').mockResolvedValue(expectedValue);
-      expect(await controller.getCategories()).toMatchObject(expectedValue);
+    it('should return expectedResult', async () => {
+      const expectedResult = [new FieldCategory()];
+      jest.spyOn(service, 'getAllCategoriesWithTypes').mockResolvedValue(expectedResult);
+      expect(await controller.getCategories()).toMatchObject(expectedResult);
     });
   });
 
   describe('deleteCategory', () => {
-    it('should return expected Result', async () => {
-      const expectedValue = {
+    it('should return expectedResult', async () => {
+      const expectedResult = {
         status: 501,
         success: false,
         message: 'Not implemented'
       };
-
-      expect(await controller.deleteCategory()).toMatchObject(expectedValue);
+      expect(await controller.deleteCategory()).toMatchObject(expectedResult);
     });
   });
 });

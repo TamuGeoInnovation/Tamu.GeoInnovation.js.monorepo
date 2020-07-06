@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { Repository } from 'typeorm';
+
 import { PhoneNumbersController } from './phone-numbers.controller';
 import { PhoneNumbersService } from './phone-numbers.service';
-import { Repository } from 'typeorm';
-import { async } from 'rxjs/internal/scheduler/async';
 
 jest.mock('./phone-numbers.service');
 
@@ -25,30 +25,39 @@ describe('PhoneNumbers Controller', () => {
     jest.resetAllMocks();
   });
 
+  const mockParameters = 'foobar';
+
+  describe('Validation ', () => {
+    it('controller should be defined', () => {
+      expect(controller).toBeDefined();
+    });
+  });
+
   describe('getAllNumbers', () => {
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
+      const expectedResult = [];
       service.repo = new Repository();
-      jest.spyOn(service.repo, 'find').mockResolvedValue([]);
-      expect(await controller.getAllNumbers()).toStrictEqual([]);
+      jest.spyOn(service.repo, 'find').mockResolvedValue(expectedResult);
+      expect(await controller.getAllNumbers()).toStrictEqual(expectedResult);
     });
   });
   describe('getPhoneNumbersForCounties', () => {
-    it('should return expected Result', async () => {
-      const expectedValue = [];
-      jest.spyOn(service, 'getPhoneNumbersForCounty').mockResolvedValue(expectedValue);
-      expect(await controller.getPhoneNumbersForCounties('yeet')).toBe(expectedValue);
+    it('should return expectedResult', async () => {
+      const expectedResult = [];
+      jest.spyOn(service, 'getPhoneNumbersForCounty').mockResolvedValue(expectedResult);
+      expect(await controller.getPhoneNumbersForCounties(mockParameters)).toBe(expectedResult);
     });
   });
   describe('getPhoneNumbersForClaimInfo', () => {
-    it('should return expected Result', async () => {
-      const expectedValue = [];
-      jest.spyOn(service, 'getPhoneNumbersForClaimInfo').mockResolvedValue(expectedValue);
-      expect(await controller.getPhoneNumbersForClaimInfo('yeet')).toBe(expectedValue);
+    it('should return expectedResult', async () => {
+      const expectedResult = [];
+      jest.spyOn(service, 'getPhoneNumbersForClaimInfo').mockResolvedValue(expectedResult);
+      expect(await controller.getPhoneNumbersForClaimInfo(mockParameters)).toBe(expectedResult);
     });
   });
   describe('storePhoneNumber', () => {
-    it('should return expected Result', async () => {
-      await expect(controller.storePhoneNumber('')).rejects.toThrow();
+    it('should throw error', async () => {
+      await expect(controller.storePhoneNumber(mockParameters)).rejects.toThrow();
     });
   });
 });

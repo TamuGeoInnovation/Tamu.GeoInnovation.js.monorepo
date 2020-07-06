@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { State } from '@tamu-gisc/covid/common/entities';
+
 import { StatesController } from './states.controller';
 import { StatesService } from './states.service';
-import { State } from '@tamu-gisc/covid/common/entities';
 
 jest.mock('./states.service');
 
@@ -23,37 +24,49 @@ describe('States Controller', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
+
+  const mockParameters = 'foobar';
+
+  describe('Validation ', () => {
+    it('controller should be defined', () => {
+      expect(controller).toBeDefined();
+    });
+  });
+
   describe('searchState', () => {
-    it('should return expected Result', async () => {
-      const expectedValue = [];
-      jest.spyOn(stateService, 'search').mockResolvedValue(expectedValue);
-      expect(await controller.searchState('yeet')).toBe(expectedValue);
+    it('should return expectedResult', async () => {
+      const expectedResult = [];
+      jest.spyOn(stateService, 'search').mockResolvedValue(expectedResult);
+      expect(await controller.searchState(mockParameters)).toBe(expectedResult);
     });
   });
 
   describe('getState', () => {
-    it('should return expected Result', async () => {
-      const expectedValue = new State();
-      expectedValue.stateFips = 0;
-      jest.spyOn(stateService, 'getStateByFips').mockResolvedValue(expectedValue);
-      expect(await controller.getState(0)).toEqual(expectedValue);
+    it('should return expectedResult', async () => {
+      const expectedResult = new State();
+      expectedResult.stateFips = 0;
+      jest.spyOn(stateService, 'getStateByFips').mockResolvedValue(expectedResult);
+      expect(await controller.getState(mockParameters)).toEqual(expectedResult);
     });
   });
 
   describe('insertState', () => {
-    it('should return expected Result', async () => {
-      expect(await controller.insertState()).toEqual('Not implemented.');
+    it('should return expectedResult', async () => {
+      const expectedResult = 'Not implemented.';
+      expect(await controller.insertState()).toEqual(expectedResult);
     });
   });
 
   describe('updateState', () => {
-    it('should return expected Result', async () => {
-      expect(await controller.updateState()).toEqual('Not implemented.');
+    it('should return expectedResult', async () => {
+      const expectedResult = 'Not implemented.';
+      expect(await controller.updateState()).toEqual(expectedResult);
     });
   });
   describe('deleteState', () => {
-    it('should return expected Result', async () => {
-      expect(await controller.deleteState()).toEqual('Not implemented.');
+    it('should return expectedResult', async () => {
+      const expectedResult = 'Not implemented.';
+      expect(await controller.deleteState()).toEqual(expectedResult);
     });
   });
 });

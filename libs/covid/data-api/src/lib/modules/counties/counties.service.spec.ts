@@ -26,8 +26,10 @@ describe('CountiesService', () => {
     CountyClaimMockRepo = module.get(getRepositoryToken(CountyClaim));
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('Validation ', () => {
+    it('service should be defined', () => {
+      expect(service).toBeDefined();
+    });
   });
 
   it('should properly Search', () => {
