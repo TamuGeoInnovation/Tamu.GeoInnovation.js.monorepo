@@ -3,7 +3,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 //
 // Accepts an array of objects and returns those which evaluation is truthy
 //
-
 @Pipe({
   name: 'searchResult'
 })

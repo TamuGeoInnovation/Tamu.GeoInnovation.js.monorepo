@@ -8,10 +8,16 @@ import { HttpClientModule } from '@angular/common/http';
 import * as WebFont from 'webfontloader';
 import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 
-import { DesktopGuard, MobileGuard } from '../../modules/routing/guards/device.guard';
+import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 
 // Modules
-import { AggiemapModule, BusListComponent } from '@tamu-gisc/aggiemap';
+import {
+  AggiemapModule,
+  AggiemapSidebarComponent,
+  BusListComponent,
+  SidebarTripPlannerComponent,
+  SidebarReferenceComponent
+} from '@tamu-gisc/aggiemap';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
@@ -36,14 +42,8 @@ import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinate
 
 import { SkeletonModule } from '../../skeleton/skeleton.module';
 
-// Pipes
-import { SearchResultPipe } from '../../../assets/pipes/common.pipe';
-
 // Components
 import { EsriMapComponent } from '../../map/esri-map.component';
-import { SidebarComponent } from '../../modules/components/sidebar/containers/base/base.component';
-import { TripPlannerComponent } from '../../modules/components/sidebar/components/trip-planner/trip-planner.component';
-import { ReferenceComponent } from '../../modules/components/sidebar/components/reference/reference.component';
 
 import { MobileUIComponent } from '../../modules/components/mobile-ui/containers/main/mobile-ui.component';
 import { TripPlannerTopComponent } from '../../modules/components/mobile-ui/components/trip-planner-top/trip-planner-top.component';
@@ -84,12 +84,12 @@ const hybridRoutes: Routes = [
       },
       {
         path: 'd',
-        component: SidebarComponent,
+        component: AggiemapSidebarComponent,
         canActivateChild: [DesktopGuard],
         children: [
-          { path: '', component: ReferenceComponent },
+          { path: '', component: SidebarReferenceComponent },
           { path: 'bus', component: BusListComponent },
-          { path: 'trip', component: TripPlannerComponent },
+          { path: 'trip', component: SidebarTripPlannerComponent },
           { path: 'trip/options', component: TripPlannerOptionsComponent }
         ]
       },
@@ -186,10 +186,6 @@ const hybridRoutes: Routes = [
     BackdropComponent,
     ModalComponent,
     EsriMapComponent,
-    SearchResultPipe,
-    SidebarComponent,
-    TripPlannerComponent,
-    ReferenceComponent,
     MobileUIComponent,
     TripPlannerTopComponent,
     OmnisearchComponent,

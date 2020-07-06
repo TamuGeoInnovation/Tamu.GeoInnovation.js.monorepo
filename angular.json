@@ -3393,6 +3393,37 @@
           "styleext": "scss"
         }
       }
+    },
+    "common-utils-device-guards": {
+      "projectType": "library",
+      "root": "libs/common/utils/device/guards",
+      "sourceRoot": "libs/common/utils/device/guards/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/common/utils/device/guards/tsconfig.lib.json",
+              "libs/common/utils/device/guards/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/device/guards/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/device/guards/jest.config.js",
+            "tsConfig": "libs/common/utils/device/guards/tsconfig.spec.json",
+            "setupFile": "libs/common/utils/device/guards/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {

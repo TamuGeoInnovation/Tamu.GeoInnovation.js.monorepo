@@ -292,6 +292,9 @@
     },
     "ues-common-ngx": {
       "tags": []
+    },
+    "common-utils-device-guards": {
+      "tags": []
     }
   }
 }

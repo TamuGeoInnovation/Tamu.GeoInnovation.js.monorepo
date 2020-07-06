@@ -17,7 +17,7 @@ import { SearchSelection } from '../components/search/search.component';
  *  - The response features do not contain geometry
  *  - The feature items contain property values that can be related in another table/service that does contain geometry data.
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AltSearchHelper<T extends object> {
   private _sources: SearchSource[];
 

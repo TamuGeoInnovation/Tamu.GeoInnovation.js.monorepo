@@ -5,48 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
-import { SESSION_STORAGE, LOCAL_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
-import * as WebFont from 'webfontloader';
-
-import { DesktopGuard, MobileGuard } from 'app/modules/routing/guards/device.guard';
-
-// Modules
-import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
-import { UIStructuralLayoutModule } from '@tamu-gisc/ui-kits/ngx/layout/structural';
-import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
-import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
-import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
-
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
-
-import { LayerListModule, LayerListCategorizedComponent } from '@tamu-gisc/maps/feature/layer-list';
-import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
-
-import { SearchModule } from '@tamu-gisc/search';
 
 // Services
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
-
-// Parent Components
-import { EsriMapComponent } from 'app/map/esri-map.component';
-// import { HeaderComponent } from 'app/skeleton/header/header.component';
-// import { FooterComponent } from 'app/skeleton/footer/footer.component';
-// import { InstructionsComponent } from 'app/instructions/instructions.component';
-// import { PrivacyComponent } from 'app/privacy/privacy.component';
-
-import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
-
-// Esri Map Child Components
-import { SidebarComponent } from 'app/modules/components/sidebar/containers/base/base.component';
-import { TripPlannerComponent } from 'app/modules/components/sidebar/components/trip-planner/trip-planner.component';
-import { ReferenceComponent } from 'app/modules/components/sidebar/components/reference/reference.component';
 
 // import { BasePopupComponent } from 'app/modules/components/popup/components/base/base.popup.component';
 // import { BuildingPopupComponent } from 'app/modules/components/popup/components/building/building-popup.component';
@@ -70,16 +34,6 @@ import { MainMobileSidebarComponent } from 'app/modules/components/mobile-ui/com
 import { BackdropComponent } from 'app/modules//components/backdrop/backdrop.component';
 import { ModalComponent } from 'app/modules/components/modal/containers/main/base/base.component';
 
-WebFont.load({
-  google: {
-    families: ['Material Icons']
-  },
-  custom: {
-    families: ['Moriston', 'Tungsten'],
-    urls: ['assets/fonts/moriston_pro/moriston_pro.css', 'assets/fonts/tungsten/tungsten.css']
-  }
-});
-
 const hybridRoutes: Routes = [
   {
     path: '',
@@ -88,66 +42,8 @@ const hybridRoutes: Routes = [
   },
   {
     path: 'map',
-    component: EsriMapComponent,
-    children: [
-      {
-        path: '',
-        redirectTo: 'd',
-        pathMatch: 'full'
-      },
-      {
-        path: 'd',
-        component: SidebarComponent,
-        canActivateChild: [DesktopGuard],
-        children: [
-          { path: '', component: ReferenceComponent },
-          { path: 'trip', component: TripPlannerComponent },
-          { path: 'trip/options', component: TripPlannerOptionsComponent }
-        ]
-      },
-      {
-        path: 'm',
-        component: MobileUIComponent,
-        canActivateChild: [MobileGuard],
-        children: [
-          {
-            path: '',
-            children: [
-              { path: '', component: OmnisearchComponent },
-              { path: '', component: PopupMobileComponent, outlet: 'outlet-2' }
-            ]
-          },
-          {
-            path: 'trip',
-            children: [
-              { path: '', component: TripPlannerTopComponent },
-              { path: '', component: TripPlannerBottomComponent, outlet: 'outlet-2' }
-            ]
-          },
-          {
-            path: 'search/:id',
-            children: [{ path: '', component: OmnisearchComponent }]
-          },
-          {
-            path: 'sidebar',
-            component: MobileSidebarComponent,
-            children: [
-              { path: '', component: MainMobileSidebarComponent },
-              { path: 'legend', component: LegendComponent },
-              { path: 'layers', component: LayerListCategorizedComponent }
-            ]
-          }
-        ]
-      },
-      {
-        path: 'modal',
-        component: ModalComponent,
-        children: [{ path: 'bad-route', component: ReportBadRouteComponent }]
-      }
-    ]
+    loadChildren: () => import('../map/map.module').then((m) => m.MapModule)
   }
-  // { path: 'privacy', component: PrivacyComponent },
-  // { path: 'instructions', component: InstructionsComponent }
 ];
 
 @NgModule({
@@ -157,34 +53,14 @@ const hybridRoutes: Routes = [
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    StorageServiceModule,
-    PipesModule,
-    UIStructuralLayoutModule,
-    UIClipboardModule,
-    UIDragModule,
-    UILayoutModule,
-    MapsFeatureTripPlannerModule,
-    LayerListModule,
-    EsriMapModule,
-    LegendModule,
-    SearchModule,
     ResponsiveModule,
     CommonNgxRouterModule,
     TestingModule,
-    UITamuBrandingModule,
-    MapPopupModule,
-    UIFormsModule,
-    MapsFeatureAccessibilityModule,
-    MapsFeatureCoordinatesModule
+    UITamuBrandingModule
   ],
   declarations: [
     BackdropComponent,
     ModalComponent,
-    EsriMapComponent,
-    searchResultPipe,
-    SidebarComponent,
-    TripPlannerComponent,
-    ReferenceComponent,
     MobileUIComponent,
     TripPlannerTopComponent,
     OmnisearchComponent,

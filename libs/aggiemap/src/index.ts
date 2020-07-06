@@ -3,6 +3,7 @@ export * from './lib/aggiemap.module';
 // Modules
 export * from './lib/popups/popups.module';
 export * from './lib/reference/reference.module';
+export * from './lib/modules/sidebar/sidebar.module';
 
 // Components
 export * from './lib/reference/components/building-department-list/building-department-list.component';
@@ -22,3 +23,7 @@ export * from './lib/transportation/components/bus-list/bus-list.component';
 export * from './lib/transportation/components/bus-list-header/bus-list-header.component';
 export * from './lib/transportation/components/bus-route/bus-route.component';
 export * from './lib/transportation/components/bus-timetable/bus-timetable.component';
+
+export * from './lib/modules/sidebar/sidebar.component';
+export * from './lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component';
+export * from './lib/modules/sidebar/components/sidebar-trip-planner/sidebar-trip-planner.component';
