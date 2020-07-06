@@ -39,6 +39,7 @@ import { dbConfig } from '../environments/environment';
     TypeOrmModule.forRoot({
       ...dbConfig,
       entities: [
+        TokenEndpointAuthMethod,
         Account,
         AccessToken,
         AuthorizationCode,
@@ -55,7 +56,6 @@ import { dbConfig } from '../environments/environment';
         ResponseType,
         Role,
         Session,
-        TokenEndpointAuthMethod,
         User
       ]
     }),
