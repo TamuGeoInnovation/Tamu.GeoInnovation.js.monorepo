@@ -105,6 +105,14 @@ describe('CountyClaimsService', () => {
       UserRepoMock.findOne.mockReturnValue(undefined);
       await expect(service.createOrUpdateClaim(undefined, undefined, undefined)).rejects.toThrow();
     });
+    /*it('should handle catagorey inputs ', async () => {
+      UserRepoMock.findOne.mockReturnValue(new User());
+      await expect(service.createOrUpdateClaim(new CountyClaim(), [], [])).toMatchObject({
+        status: 400,
+        success: false,
+        message: 'Input parameter missing.'
+      });
+    });*/
   });
 });
 

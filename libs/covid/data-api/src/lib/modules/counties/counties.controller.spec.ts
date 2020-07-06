@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpException } from '@nestjs/common';
 
 import { CountiesController } from './counties.controller';
 import { CountiesService } from './counties.service';
@@ -23,84 +22,98 @@ describe('Counties Controller', () => {
     jest.resetAllMocks();
   });
 
+  describe('Validation ', () => {
+    it('controller should be defined', () => {
+      expect(controller).toBeDefined();
+    });
+  });
+
+  const mockParameters = 'foobar';
+
   describe('getCountyStats', () => {
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
       const expectedResult = {};
       jest.spyOn(countiesService, 'getCountyStats').mockResolvedValue(expectedResult);
       expect(await controller.getCountyStats()).toMatchObject(expectedResult);
     });
 
-    it('should return expected Result', async () => {
-      jest.spyOn(countiesService, 'getCountyStats').mockImplementation(() => {
-        throw new Error();
-      });
-      expect(await controller.getCountyStats()).toStrictEqual({
+    it('should return expectedResult - Error Handling', async () => {
+      const expectedResult = {
         message: '',
         status: 500,
         success: false
+      };
+      jest.spyOn(countiesService, 'getCountyStats').mockImplementation(() => {
+        throw new Error();
       });
+      expect(await controller.getCountyStats()).toStrictEqual(expectedResult);
     });
   });
+
   describe('getCountySummary', () => {
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
       const expectedResult = [];
       jest.spyOn(countiesService, 'getSummary').mockResolvedValue(expectedResult);
       expect(await controller.getCountySummary()).toMatchObject(expectedResult);
     });
 
-    it('should return expected Result', async () => {
-      const expectedResult = { claim: '', info: '' };
+    it('should return expectedResult', async () => {
       jest.spyOn(countiesService, 'getSummary').mockImplementation(() => {
         throw new Error();
       });
       await expect(controller.getCountySummary()).rejects.toThrow();
     });
   });
+
   describe('searchCountiesForState', () => {
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
       const expectedResult = [];
       jest.spyOn(countiesService, 'searchCountiesForState').mockResolvedValue(expectedResult);
-      expect(await controller.searchCountiesForState(expectedResult)).toMatchObject(expectedResult);
+      expect(await controller.searchCountiesForState(mockParameters)).toMatchObject(expectedResult);
     });
   });
   describe('getCountiesForState', () => {
-    const expectedResult = [];
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
+      const expectedResult = [];
       jest.spyOn(countiesService, 'getCountiesForState').mockResolvedValue(expectedResult);
-      expect(await controller.getCountiesForState(expectedResult)).toMatchObject(expectedResult);
+      expect(await controller.getCountiesForState(mockParameters)).toMatchObject(expectedResult);
     });
 
-    it('should return expected Result', async () => {
-      jest.spyOn(countiesService, 'getCountiesForState').mockImplementation(() => {
-        throw new Error();
-      });
-      expect(await controller.getCountiesForState(expectedResult)).toStrictEqual({
+    it('should return expectedResult - Error Handling', async () => {
+      const expectedResult = {
         message: '',
         status: 500,
         success: false
+      };
+      jest.spyOn(countiesService, 'getCountiesForState').mockImplementation(() => {
+        throw new Error();
       });
+      expect(await controller.getCountiesForState(mockParameters)).toStrictEqual(expectedResult);
     });
   });
 
   describe('searchState', () => {
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
       const expectedResult = [];
       jest.spyOn(countiesService, 'search').mockResolvedValue(expectedResult);
-      expect(await controller.searchState(expectedResult)).toMatchObject(expectedResult);
+      expect(await controller.searchState(mockParameters)).toMatchObject(expectedResult);
     });
   });
+
   describe('insertState', () => {
-    it('should return expected Result', () => {
+    it('should throw error', () => {
       expect(controller.insertState).toThrow();
     });
   });
+
   describe('updateState', () => {
-    it('should return expected Result', () => {
+    it('should throw error', () => {
       expect(controller.updateState).toThrow();
     });
   });
+
   describe('deleteState', () => {
-    it('should return expected Result', () => {
+    it('should throw error', () => {
       expect(controller.deleteState).toThrow();
     });
   });

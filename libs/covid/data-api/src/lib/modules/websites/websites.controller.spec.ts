@@ -23,33 +23,33 @@ describe('Websites Controller', () => {
     jest.resetAllMocks();
   });
 
-  describe('Get Websites for County', () => {
-    it('should return expected Result', async () => {
-      const expectedResult = { status: 0, success: true, message: 'yeet' };
-      const mockEmailToSatisfyParameters = 'yeet';
+  const mockParameters = 'foobar';
+
+  describe('Validation ', () => {
+    it('controller should be defined', () => {
+      expect(controller).toBeDefined();
+    });
+  });
+
+  describe('getWebsitesForCounty', () => {
+    it('should return expectedResult', async () => {
+      const expectedResult = { status: 0, success: true, message: 'foobar' };
       jest.spyOn(service, 'getWebsitesForCounty').mockResolvedValue(expectedResult);
-      expect(await controller.getWebsitesForCounty(mockEmailToSatisfyParameters)).toBe(expectedResult);
+      expect(await controller.getWebsitesForCounty(mockParameters)).toBe(expectedResult);
     });
   });
 
-  describe('Get Websites for Claim Info', () => {
-    it('should return expected Result', async () => {
+  describe('getWebsitesForClaimInfo', () => {
+    it('should return expectedResult', async () => {
       const expectedResult = [];
-      const mockEmailToSatisfyParameters = 'yeet';
       jest.spyOn(service, 'getWebsitesForClaimInfo').mockResolvedValue(expectedResult);
-      expect(await controller.getWebsitesForClaimInfo(mockEmailToSatisfyParameters)).toBe(expectedResult);
+      expect(await controller.getWebsitesForClaimInfo(mockParameters)).toBe(expectedResult);
     });
   });
 
-  describe('Store Phone Number', () => {
-    it('should throw error', async (done) => {
-      await controller
-        .storePhoneNumber(undefined)
-        .then(() => done.fail(''))
-        .catch((error) => {
-          expect(error.message).toStrictEqual({ message: 'Not implemented', status: 501, success: false });
-          done();
-        });
+  describe('storePhoneNumber', () => {
+    it('should throw error', async () => {
+      await expect(controller.storePhoneNumber(undefined)).rejects.toThrow();
     });
   });
 });

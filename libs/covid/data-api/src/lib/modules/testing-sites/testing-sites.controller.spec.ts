@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { Repository } from 'typeorm';
+
+import { TestingSite, CountyClaim } from '@tamu-gisc/covid/common/entities';
+
 import { TestingSitesController } from './testing-sites.controller';
 import { TestingSitesService } from './testing-sites.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
-
-import { TestingSite, CountyClaim } from '@tamu-gisc/covid/common/entities';
-import { Repository } from 'typeorm';
 
 jest.mock('./testing-sites.service');
 jest.mock('../county-claims/county-claims.service');
@@ -30,88 +31,108 @@ describe('TestingSitesController', () => {
     jest.resetAllMocks();
   });
 
-  describe('getValidated', () => {
-    it('should return expected Result', async () => {
-      testingSitesservice.repo = new Repository();
-      jest.spyOn(testingSitesservice.repo, 'find').mockResolvedValue([]);
-      expect(await controller.getValidated()).toStrictEqual([]);
+  const mockParameters = 'foobar';
+
+  describe('Validation ', () => {
+    it('controller should be defined', () => {
+      expect(controller).toBeDefined();
     });
   });
+
+  describe('getValidated', () => {
+    it('should return expectedResult', async () => {
+      const expectedResult = [];
+      testingSitesservice.repo = new Repository();
+      jest.spyOn(testingSitesservice.repo, 'find').mockResolvedValue(expectedResult);
+      expect(await controller.getValidated()).toStrictEqual(expectedResult);
+    });
+  });
+
   describe('getDetailsForSite', () => {
-    it('should return expected Result', async () => {
-      jest.spyOn(testingSitesservice, 'getSiteAndLatestInfo').mockResolvedValue(undefined);
-      expect(await controller.getDetailsForSite({})).toBe(undefined);
+    it('should return expectedResult', async () => {
+      const expectedResult = undefined;
+      jest.spyOn(testingSitesservice, 'getSiteAndLatestInfo').mockResolvedValue(expectedResult);
+      expect(await controller.getDetailsForSite(mockParameters)).toBe(expectedResult);
     });
   });
 
   describe('getInfosForSite', () => {
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
       const expectedResult = [];
       jest.spyOn(testingSitesservice, 'getInfosForSite').mockResolvedValue(expectedResult);
-      expect(await controller.getInfosForSite(expectedResult)).toMatchObject(expectedResult);
+      expect(await controller.getInfosForSite(mockParameters)).toMatchObject(expectedResult);
     });
   });
+
   describe('getTestingSitesSortedByCounty', () => {
-    it('should return expected Result', async () => {
-      jest.spyOn(testingSitesservice, 'getTestingSitesSortedByCounty').mockResolvedValue([]);
-      expect(await controller.getTestingSitesSortedByCounty()).toStrictEqual([]);
+    it('should return expectedResult', async () => {
+      const expectedResult = [];
+      jest.spyOn(testingSitesservice, 'getTestingSitesSortedByCounty').mockResolvedValue(expectedResult);
+      expect(await controller.getTestingSitesSortedByCounty()).toStrictEqual(expectedResult);
     });
   });
+
   describe('getSitesByCounty', () => {
-    it('should return expected Result', async () => {
-      jest.spyOn(testingSitesservice, 'getSitesForCounty').mockResolvedValue([]);
-      expect(await controller.getSitesByCounty([])).toStrictEqual([]);
+    it('should return expectedResult', async () => {
+      const expectedResult = [];
+      jest.spyOn(testingSitesservice, 'getSitesForCounty').mockResolvedValue(expectedResult);
+      expect(await controller.getSitesByCounty(mockParameters)).toStrictEqual(expectedResult);
     });
   });
+
   describe('getSitesForUser', () => {
-    it('should return expected Result', async () => {
-      jest.spyOn(testingSitesservice, 'getSitesForUser').mockResolvedValue([]);
-      expect(await controller.getSitesForUser([])).toStrictEqual([]);
+    it('should return expectedResult', async () => {
+      const expectedResult = [];
+      jest.spyOn(testingSitesservice, 'getSitesForUser').mockResolvedValue(expectedResult);
+      expect(await controller.getSitesForUser(mockParameters)).toStrictEqual(expectedResult);
     });
   });
 
   describe('getTestingSitesAdmin', () => {
-    const expectedResult = [];
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
+      const expectedResult = [];
       jest.spyOn(testingSitesservice, 'getTestingSitesAdmin').mockResolvedValue(expectedResult);
-      expect(await controller.getTestingSitesAdmin(expectedResult)).toMatchObject(expectedResult);
+      expect(await controller.getTestingSitesAdmin(mockParameters)).toMatchObject(expectedResult);
     });
 
-    it('should return expected Result', async () => {
-      jest.spyOn(testingSitesservice, 'getTestingSitesAdmin').mockImplementation(() => {
-        throw new Error();
-      });
-      expect(await controller.getTestingSitesAdmin(expectedResult)).toStrictEqual({
+    it('should handle Error thrown from service.getTestingSitesAdmin', async () => {
+      const expectedResult = {
         message: '',
         status: 500,
         success: false
+      };
+      jest.spyOn(testingSitesservice, 'getTestingSitesAdmin').mockImplementation(() => {
+        throw new Error();
       });
+      expect(await controller.getTestingSitesAdmin(mockParameters)).toStrictEqual(expectedResult);
     });
   });
 
   describe('addTestingSite', () => {
-    it('should return expected Result', async () => {
-      const expectedSomething = new TestingSite();
-      jest.spyOn(testingSitesservice, 'createOrUpdateTestingSite').mockResolvedValue(expectedSomething);
-      expect(await controller.addTestingSite(expectedSomething)).toBe(expectedSomething);
+    it('should return expectedResult', async () => {
+      const expectedResult = new TestingSite();
+      jest.spyOn(testingSitesservice, 'createOrUpdateTestingSite').mockResolvedValue(expectedResult);
+      expect(await controller.addTestingSite(mockParameters)).toBe(expectedResult);
     });
   });
 
   describe('registerCountyAsSiteless', () => {
-    it('should return expected Result', async () => {
-      const expectedSomething = new CountyClaim();
-      jest.spyOn(testingSitesservice, 'registerCountyAsSiteless').mockResolvedValue(expectedSomething);
-      expect(await controller.registerCountyAsSiteless(expectedSomething)).toBe(expectedSomething);
+    it('should return expectedResult', async () => {
+      const expectedResult = new CountyClaim();
+      jest.spyOn(testingSitesservice, 'registerCountyAsSiteless').mockResolvedValue(expectedResult);
+      expect(await controller.registerCountyAsSiteless(mockParameters)).toBe(expectedResult);
     });
   });
+
   describe('validateLockdown', () => {
-    it('should return expected Result', async () => {
-      expect(await controller.validateLockdown('')).toBeUndefined();
+    it('should be undefiend', async () => {
+      expect(await controller.validateLockdown(mockParameters)).toBeUndefined();
     });
   });
+
   describe('deleteValidatedLockdown', () => {
-    it('should return expected Result', async () => {
-      expect(await controller.deleteValidatedLockdown('')).toBeUndefined();
+    it('should be undefiend', async () => {
+      expect(await controller.deleteValidatedLockdown(mockParameters)).toBeUndefined();
     });
   });
 });
