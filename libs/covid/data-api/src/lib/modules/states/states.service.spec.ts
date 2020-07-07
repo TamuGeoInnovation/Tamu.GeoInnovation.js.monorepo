@@ -8,44 +8,37 @@ import { State } from '@tamu-gisc/covid/common/entities';
 import { StatesService } from './states.service';
 
 describe('StatesService', () => {
-  let service: StatesService;
-  let StateMockRepo: MockType<Repository<State>>;
+  let statesService: StatesService;
+  let stateMockRepo: Repository<State>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [StatesService, { provide: getRepositoryToken(State), useFactory: repositoryMockFactory }]
+      providers: [StatesService, { provide: getRepositoryToken(State), useClass: Repository }]
     }).compile();
-    service = module.get<StatesService>(StatesService);
-    StateMockRepo = module.get(getRepositoryToken(State));
+    statesService = module.get<StatesService>(StatesService);
+    stateMockRepo = module.get(getRepositoryToken(State));
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('Validation ', () => {
+    it('Service should be defined', () => {
+      expect(statesService).toBeDefined();
+    });
   });
 
-  it('should search', () => {
-    const stateName = 'yeet';
-    const stateTest = new State();
-    stateTest.name = stateName;
-    StateMockRepo.find.mockReturnValue(stateName);
-    expect(service.search('yeet')).toEqual(stateName);
+  describe('search', () => {
+    it('should search', async () => {
+      const mockParameter = 'foo';
+      const expectedResult = [];
+      jest.spyOn(stateMockRepo, 'find').mockResolvedValue(expectedResult);
+      expect(await statesService.search(mockParameter)).toBe(expectedResult);
+    });
   });
-  it('should getStateByFips', () => {
-    const stateFipsTest = 99;
-    const stateTest = new State();
-    stateTest.stateFips = stateFipsTest;
-    StateMockRepo.findOne.mockReturnValue(stateFipsTest);
-    expect(service.getStateByFips(99)).toEqual(stateFipsTest);
+  describe('getStateByFips', () => {
+    it('should getStateByFips', async () => {
+      const mockParameter = 99;
+      const expectedResult = new State();
+      jest.spyOn(stateMockRepo, 'findOne').mockResolvedValue(expectedResult);
+      expect(await statesService.getStateByFips(mockParameter)).toBe(expectedResult);
+    });
   });
 });
-
-// @ts-ignore
-export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(() => ({
-  findOne: jest.fn(),
-  find: jest.fn(),
-  update: jest.fn(),
-  save: jest.fn()
-}));
-export type MockType<T> = {
-  [P in keyof T]: jest.Mock<{}>;
-};

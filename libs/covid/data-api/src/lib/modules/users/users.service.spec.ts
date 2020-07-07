@@ -1,107 +1,106 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { Repository, QueryBuilder, BaseEntity } from 'typeorm';
+import { Repository } from 'typeorm';
 
-import { User, TestingSite, CountyClaim } from '@tamu-gisc/covid/common/entities';
+import { User, TestingSite } from '@tamu-gisc/covid/common/entities';
 
 import { UsersService } from './users.service';
-import { create } from 'domain';
 
 describe('UsersService', () => {
-  let service: UsersService;
-  let UserMockRepo: MockType<Repository<User>>;
-  let TestingSiteMockRepo: MockType<Repository<TestingSite>>;
+  let usersService: UsersService;
+  let userMockRepo: Repository<User>;
+  let testingSiteMockRepo: Repository<TestingSite>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
-        { provide: getRepositoryToken(User), useFactory: repositoryMockFactory },
-        { provide: getRepositoryToken(TestingSite), useFactory: repositoryMockFactory }
+        { provide: getRepositoryToken(User), useClass: Repository },
+        { provide: getRepositoryToken(TestingSite), useClass: Repository }
       ]
     }).compile();
 
-    service = module.get<UsersService>(UsersService);
-    UserMockRepo = module.get(getRepositoryToken(User));
-    TestingSiteMockRepo = module.get(getRepositoryToken(TestingSite));
+    usersService = module.get<UsersService>(UsersService);
+    userMockRepo = module.get(getRepositoryToken(User));
+    testingSiteMockRepo = module.get(getRepositoryToken(TestingSite));
+  });
+
+  describe('Validation ', () => {
+    it('Service should be defined', () => {
+      expect(usersService).toBeDefined();
+    });
   });
 
   describe('getUsers', () => {
-    it('should return true if active ', async () => {
-      const user = new User();
-      UserMockRepo.find.mockReturnValue(user);
-      expect(await service.getUsers()).toEqual(user);
+    it('should return expectedResult', async () => {
+      const expectedResult = [];
+      jest.spyOn(userMockRepo, 'find').mockResolvedValue(expectedResult);
+      expect(await usersService.getUsers()).toEqual(expectedResult);
     });
   });
-  /*describe('getUsersWithStats', () => {
-    it('should return true if active ', async () => {
-      service.repo = new Repository();
-      expect(await service.getUsersWithStats()).toEqual(undefined);
-    });
-  });*/
+
   describe('verifyEmail', () => {
     it('should handle missing inputs ', async () => {
-      expect(await service.verifyEmail('')).toMatchObject({
+      const mockParameterUndefined = undefined;
+      const mockParameterEmptyString = '';
+      const expectedResult = {
         statusCode: 500,
         success: false,
         message: 'Input parameter missing'
-      });
-      expect(await service.verifyEmail(undefined)).toMatchObject({
-        statusCode: 500,
-        success: false,
-        message: 'Input parameter missing'
-      });
+      };
+      expect(await usersService.verifyEmail(mockParameterEmptyString)).toMatchObject(expectedResult);
+      expect(await usersService.verifyEmail(mockParameterUndefined)).toMatchObject(expectedResult);
     });
     it('should handle no existing user ', async () => {
-      UserMockRepo.findOne.mockReturnValue(undefined);
-      expect(await service.verifyEmail('Foobar')).toMatchObject({
+      const mockParameter = 'Foobar';
+      const mockParameterUndefined = undefined;
+      const expectedResult = {
         statusCode: 400,
         success: false,
         message: 'Email not found'
-      });
+      };
+      jest.spyOn(userMockRepo, 'findOne').mockResolvedValue(mockParameterUndefined);
+      expect(await usersService.verifyEmail(mockParameter)).toMatchObject(expectedResult);
     });
     it('should return user if findOne returns, and if email length > 0 ', async () => {
-      const user = new User();
-      UserMockRepo.findOne.mockReturnValue(user);
-      expect(await service.verifyEmail('foobar')).toEqual(user);
+      const mockParameter = 'Foobar';
+      const expectedResult = new User();
+      jest.spyOn(userMockRepo, 'findOne').mockResolvedValue(expectedResult);
+      expect(await usersService.verifyEmail(mockParameter)).toEqual(expectedResult);
     });
   });
+
   describe('registerEmail', () => {
     it('should handle missing inputs ', async () => {
-      expect(await service.registerEmail('')).toMatchObject({
+      const mockParameterUndefined = undefined;
+      const mockParameterEmptyString = '';
+      const expectedResult = {
         status: 500,
         success: false,
         message: 'Input parameter missing'
-      });
-      expect(await service.registerEmail(undefined)).toMatchObject({
-        status: 500,
-        success: false,
-        message: 'Input parameter missing'
-      });
+      };
+      expect(await usersService.registerEmail(mockParameterEmptyString)).toMatchObject(expectedResult);
+      expect(await usersService.registerEmail(mockParameterUndefined)).toMatchObject(expectedResult);
     });
-    it('should handle no existing user', async () => {
-      const user = new User();
-      UserMockRepo.findOne.mockReturnValueOnce(undefined).mockReturnValue(user);
-      UserMockRepo.create.mockReturnValue(UserMockRepo);
-      expect(await service.registerEmail('foobar')).toEqual(user);
-    });
+
+    /*it('should handle no existing user', async () => {
+      const mockParameterUndefined = undefined;
+      const mockParameterUser = new User();
+      const mockParameter = 'foobar';
+      jest
+        .spyOn(userMockRepo, 'findOne')
+        .mockReturnValueOnce(mockParameterUndefined)
+        .mockResolvedValue(mockParameterUser);
+      jest.spyOn(userMockRepo, 'create').mockReturnValue(mockParameterUser);
+      expect(await usersService.registerEmail(mockParameter)).toEqual(mockParameterUser);
+    });*/
+
     it('should return user if findOne returns, and if email length > 0 ', async () => {
-      const user = new User();
-      UserMockRepo.findOne.mockReturnValue(user);
-      expect(await service.registerEmail('foobar')).toEqual(user);
+      const mockParameter = 'foobar';
+      const expectedResult = new User();
+      jest.spyOn(userMockRepo, 'findOne').mockResolvedValue(expectedResult);
+      expect(await usersService.registerEmail(mockParameter)).toEqual(expectedResult);
     });
   });
 });
-
-// @ts-ignore
-export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(() => ({
-  findOne: jest.fn(),
-  find: jest.fn(),
-  update: jest.fn(),
-  save: jest.fn(),
-  create: jest.fn()
-}));
-export type MockType<T> = {
-  [P in keyof T]: jest.Mock<{}>;
-};

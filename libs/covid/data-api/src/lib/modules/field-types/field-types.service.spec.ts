@@ -8,17 +8,21 @@ import { FieldType } from '@tamu-gisc/covid/common/entities';
 import { FieldTypesService } from './field-types.service';
 
 describe('FieldTypesService', () => {
-  let service: FieldTypesService;
+  let fieldTypesService: FieldTypesService;
+  let fieldTypesMockRepository: Repository<FieldType>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [FieldTypesService, { provide: getRepositoryToken(FieldType), useClass: Repository }]
     }).compile();
 
-    service = module.get<FieldTypesService>(FieldTypesService);
+    fieldTypesService = module.get<FieldTypesService>(FieldTypesService);
+    fieldTypesMockRepository = module.get(getRepositoryToken(FieldType));
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('Validation ', () => {
+    it('Service should be defined', () => {
+      expect(fieldTypesService).toBeDefined();
+    });
   });
 });

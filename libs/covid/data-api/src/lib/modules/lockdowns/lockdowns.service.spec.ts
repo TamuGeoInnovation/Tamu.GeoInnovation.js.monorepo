@@ -19,7 +19,18 @@ import { LockdownsService } from './lockdowns.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
 
 describe('LockdownsService', () => {
-  let service: LockdownsService;
+  let lockdownsService: LockdownsService;
+  let countyClaimsService: CountyClaimsService;
+
+  let LockdownMock: Repository<Lockdown>;
+  let LockdownInfoMock: Repository<LockdownInfo>;
+  let UserMock: Repository<User>;
+  let EntityStatusMock: Repository<EntityStatus>;
+  let CountyMock: Repository<County>;
+  let CountyClaimMock: Repository<CountyClaim>;
+  let CountyClaimInfoMock: Repository<CountyClaimInfo>;
+  let EntityValueMock: Repository<EntityValue>;
+  let EntityToValueMock: Repository<EntityToValue>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -37,11 +48,21 @@ describe('LockdownsService', () => {
         { provide: getRepositoryToken(EntityToValue), useClass: Repository }
       ]
     }).compile();
-
-    service = module.get<LockdownsService>(LockdownsService);
+    lockdownsService = module.get<LockdownsService>(LockdownsService);
+    countyClaimsService = module.get<CountyClaimsService>(CountyClaimsService);
+    LockdownMock = module.get(getRepositoryToken(Lockdown));
+    LockdownInfoMock = module.get(getRepositoryToken(LockdownInfo));
+    UserMock = module.get(getRepositoryToken(User));
+    EntityStatusMock = module.get(getRepositoryToken(EntityStatus));
+    CountyMock = module.get(getRepositoryToken(County));
+    CountyClaimMock = module.get(getRepositoryToken(CountyClaim));
+    CountyClaimInfoMock = module.get(getRepositoryToken(CountyClaimInfo));
+    EntityValueMock = module.get(getRepositoryToken(EntityValue));
+    EntityToValueMock = module.get(getRepositoryToken(EntityToValue));
   });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('Validation ', () => {
+    it('Service should be defined', () => {
+      expect(lockdownsService).toBeDefined();
+    });
   });
 });

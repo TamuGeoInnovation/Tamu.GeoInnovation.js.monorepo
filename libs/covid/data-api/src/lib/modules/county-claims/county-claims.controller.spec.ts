@@ -8,17 +8,16 @@ import { CountyClaimsController } from './county-claims.controller';
 jest.mock('./county-claims.service');
 
 describe('CountyClaims Controller', () => {
-  let service: CountyClaimsService;
-  let controller: CountyClaimsController;
-  let module: TestingModule;
+  let countyClaimsService: CountyClaimsService;
+  let countyClaimsController: CountyClaimsController;
 
   beforeEach(async () => {
-    module = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       providers: [CountyClaimsService],
       controllers: [CountyClaimsController]
     }).compile();
-    service = module.get<CountyClaimsService>(CountyClaimsService);
-    controller = module.get<CountyClaimsController>(CountyClaimsController);
+    countyClaimsService = module.get<CountyClaimsService>(CountyClaimsService);
+    countyClaimsController = module.get<CountyClaimsController>(CountyClaimsController);
   });
 
   afterEach(() => {
@@ -30,8 +29,8 @@ describe('CountyClaims Controller', () => {
   describe('getActiveClaimsForCountyFips', () => {
     it('should return expectedResult', async () => {
       const expectedResult = [];
-      jest.spyOn(service, 'getActiveClaimsForCountyFips').mockResolvedValue(expectedResult);
-      expect(await controller.getActiveClaimsForCountyFips(mockParameters)).toMatchObject(expectedResult);
+      jest.spyOn(countyClaimsService, 'getActiveClaimsForCountyFips').mockResolvedValue(expectedResult);
+      expect(await countyClaimsController.getActiveClaimsForCountyFips(mockParameters)).toMatchObject(expectedResult);
     });
 
     it('should return expectedResult - Error handling', async () => {
@@ -40,17 +39,17 @@ describe('CountyClaims Controller', () => {
         status: 500,
         success: false
       };
-      jest.spyOn(service, 'getActiveClaimsForCountyFips').mockImplementation(() => {
+      jest.spyOn(countyClaimsService, 'getActiveClaimsForCountyFips').mockImplementation(() => {
         throw new Error();
       });
-      expect(await controller.getActiveClaimsForCountyFips(mockParameters)).toStrictEqual(expectedResult);
+      expect(await countyClaimsController.getActiveClaimsForCountyFips(mockParameters)).toStrictEqual(expectedResult);
     });
   });
   describe('getAllUserCountyClaims', () => {
     it('should return expectedResult', async () => {
       const expectedResult = [];
-      jest.spyOn(service, 'getAllUserCountyClaims').mockResolvedValue(expectedResult);
-      expect(await controller.getAllUserCountyClaims(mockParameters)).toMatchObject(expectedResult);
+      jest.spyOn(countyClaimsService, 'getAllUserCountyClaims').mockResolvedValue(expectedResult);
+      expect(await countyClaimsController.getAllUserCountyClaims(mockParameters)).toMatchObject(expectedResult);
     });
 
     it('should return expectedResult - Error handling', async () => {
@@ -59,17 +58,17 @@ describe('CountyClaims Controller', () => {
         status: 500,
         success: false
       };
-      jest.spyOn(service, 'getAllUserCountyClaims').mockImplementation(() => {
+      jest.spyOn(countyClaimsService, 'getAllUserCountyClaims').mockImplementation(() => {
         throw new Error();
       });
-      expect(await controller.getAllUserCountyClaims(mockParameters)).toStrictEqual(expectedResult);
+      expect(await countyClaimsController.getAllUserCountyClaims(mockParameters)).toStrictEqual(expectedResult);
     });
   });
   describe('getActiveClaimsForUser', () => {
     it('should return expectedResult', async () => {
       const expectedResult = [];
-      jest.spyOn(service, 'getActiveClaimsForEmail').mockResolvedValue(expectedResult);
-      expect(await controller.getActiveClaimsForUser(mockParameters)).toMatchObject(expectedResult);
+      jest.spyOn(countyClaimsService, 'getActiveClaimsForEmail').mockResolvedValue(expectedResult);
+      expect(await countyClaimsController.getActiveClaimsForUser(mockParameters)).toMatchObject(expectedResult);
     });
 
     it('should return expectedResult - Error handling', async () => {
@@ -78,17 +77,17 @@ describe('CountyClaims Controller', () => {
         status: 500,
         success: false
       };
-      jest.spyOn(service, 'getActiveClaimsForEmail').mockImplementation(() => {
+      jest.spyOn(countyClaimsService, 'getActiveClaimsForEmail').mockImplementation(() => {
         throw new Error();
       });
-      expect(await controller.getActiveClaimsForUser(mockParameters)).toStrictEqual(expectedResult);
+      expect(await countyClaimsController.getActiveClaimsForUser(mockParameters)).toStrictEqual(expectedResult);
     });
   });
   describe('getPreviousClaimsForCounty', () => {
     it('should return expected Result', async () => {
       const expectedResult = [];
-      jest.spyOn(service, 'getHistoricClaimsForCounty').mockResolvedValue(expectedResult);
-      expect(await controller.getPreviousClaimsForCounty(mockParameters)).toMatchObject(expectedResult);
+      jest.spyOn(countyClaimsService, 'getHistoricClaimsForCounty').mockResolvedValue(expectedResult);
+      expect(await countyClaimsController.getPreviousClaimsForCounty(mockParameters)).toMatchObject(expectedResult);
     });
 
     it('should return expectedResult - Error handling', async () => {
@@ -97,17 +96,17 @@ describe('CountyClaims Controller', () => {
         status: 500,
         success: false
       };
-      jest.spyOn(service, 'getHistoricClaimsForCounty').mockImplementation(() => {
+      jest.spyOn(countyClaimsService, 'getHistoricClaimsForCounty').mockImplementation(() => {
         throw new Error();
       });
-      expect(await controller.getPreviousClaimsForCounty(mockParameters)).toStrictEqual(expectedResult);
+      expect(await countyClaimsController.getPreviousClaimsForCounty(mockParameters)).toStrictEqual(expectedResult);
     });
   });
   describe('getSuggestedCountyClaims', () => {
     it('should return expectedResult', async () => {
       const expectedResult = [];
-      jest.spyOn(service, 'getSuggestedClaims').mockResolvedValue(expectedResult);
-      expect(await controller.getSuggestedCountyClaims(mockParameters)).toMatchObject(expectedResult);
+      jest.spyOn(countyClaimsService, 'getSuggestedClaims').mockResolvedValue(expectedResult);
+      expect(await countyClaimsController.getSuggestedCountyClaims(mockParameters)).toMatchObject(expectedResult);
     });
 
     it('should return expectedResult - Error handling', async () => {
@@ -116,40 +115,40 @@ describe('CountyClaims Controller', () => {
         status: 500,
         success: false
       };
-      jest.spyOn(service, 'getSuggestedClaims').mockImplementation(() => {
+      jest.spyOn(countyClaimsService, 'getSuggestedClaims').mockImplementation(() => {
         throw new Error();
       });
-      expect(await controller.getSuggestedCountyClaims(mockParameters)).toStrictEqual(expectedResult);
+      expect(await countyClaimsController.getSuggestedCountyClaims(mockParameters)).toStrictEqual(expectedResult);
     });
   });
   describe('getClaimsAdmin', () => {
     it('should return expectedResult', async () => {
       const expectedResult = [];
-      jest.spyOn(service, 'getClaimsAdmin').mockResolvedValue(expectedResult);
-      expect(await controller.getClaimsAdmin(mockParameters)).toMatchObject(expectedResult);
+      jest.spyOn(countyClaimsService, 'getClaimsAdmin').mockResolvedValue(expectedResult);
+      expect(await countyClaimsController.getClaimsAdmin(mockParameters)).toMatchObject(expectedResult);
     });
 
     it('should return expectedResult - Error handling', async () => {
       const expectedResult = { message: '', status: 500, success: false };
-      jest.spyOn(service, 'getClaimsAdmin').mockImplementation(() => {
+      jest.spyOn(countyClaimsService, 'getClaimsAdmin').mockImplementation(() => {
         throw new Error();
       });
-      expect(await controller.getClaimsAdmin(mockParameters)).toStrictEqual(expectedResult);
+      expect(await countyClaimsController.getClaimsAdmin(mockParameters)).toStrictEqual(expectedResult);
     });
   });
   describe('getClaimDetails', () => {
     it('should return expectedResult', async () => {
       const expectedResult = new CountyClaim();
-      jest.spyOn(service, 'getInfosForClaim').mockResolvedValue(expectedResult);
-      expect(controller.getClaimDetails(mockParameters)).toMatchObject(expectedResult);
+      jest.spyOn(countyClaimsService, 'getInfosForClaim').mockResolvedValue(expectedResult);
+      expect(countyClaimsController.getClaimDetails(mockParameters)).toMatchObject(expectedResult);
     });
 
     it('should return expectedResult - Error handling', async (done) => {
       const expectedResult = 'Internal server error';
-      jest.spyOn(service, 'getInfosForClaim').mockImplementation(() => {
+      jest.spyOn(countyClaimsService, 'getInfosForClaim').mockImplementation(() => {
         throw new Error();
       });
-      await controller
+      await countyClaimsController
         .getClaimDetails(mockParameters)
         .then(() => done.fail(''))
         .catch((error) => {
@@ -161,35 +160,35 @@ describe('CountyClaims Controller', () => {
   describe('registerClaim', () => {
     it('should return expectedResult', async () => {
       const expectedResult = new CountyClaim();
-      jest.spyOn(service, 'createOrUpdateClaim').mockResolvedValue(expectedResult);
-      expect(controller.registerClaim(mockParameters)).toMatchObject(expectedResult);
+      jest.spyOn(countyClaimsService, 'createOrUpdateClaim').mockResolvedValue(expectedResult);
+      expect(countyClaimsController.registerClaim(mockParameters)).toMatchObject(expectedResult);
     });
   });
   describe('closeClaim', () => {
     it('should return expectedResult', async () => {
       const expectedResult = new CountyClaim();
-      jest.spyOn(service, 'closeClaim').mockResolvedValue(expectedResult);
-      expect(controller.closeClaim(mockParameters)).toMatchObject(expectedResult);
+      jest.spyOn(countyClaimsService, 'closeClaim').mockResolvedValue(expectedResult);
+      expect(countyClaimsController.closeClaim(mockParameters)).toMatchObject(expectedResult);
     });
   });
   describe('postOverride', () => {
     it('should return expectedResult', async () => {
       const expectedResult = 'Not Implemented';
-      expect(controller.postOverride()).toBe(expectedResult);
+      expect(countyClaimsController.postOverride()).toBe(expectedResult);
     });
   });
 
   describe('patchOverride', () => {
     it('should return expectedResult', async () => {
       const expectedResult = 'Not Implemented';
-      expect(controller.patchOverride()).toBe(expectedResult);
+      expect(countyClaimsController.patchOverride()).toBe(expectedResult);
     });
   });
 
   describe('deleteOverride', () => {
     it('should return expectedResult', async () => {
       const expectedResult = 'Not Implemented';
-      expect(controller.deleteOverride()).toBe(expectedResult);
+      expect(countyClaimsController.deleteOverride()).toBe(expectedResult);
     });
   });
 });

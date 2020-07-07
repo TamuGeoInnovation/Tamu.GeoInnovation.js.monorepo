@@ -19,7 +19,18 @@ import { TestingSitesService } from './testing-sites.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
 
 describe('TestingSitesService', () => {
-  let service: TestingSitesService;
+  let testingSitesService: TestingSitesService;
+  let countyClaimsService: CountyClaimsService;
+
+  let countyMockRepo: Repository<County>;
+  let countyClaimMockRepo: Repository<CountyClaim>;
+  let testingSiteMockRepo: Repository<TestingSite>;
+  let testingSiteInfoMockRepo: Repository<TestingSiteInfo>;
+  let locationMockRepo: Repository<Location>;
+  let userMockRepo: Repository<User>;
+  let entityStatusMockRepo: Repository<EntityStatus>;
+  let countyClaimInfoMockRepo: Repository<CountyClaimInfo>;
+  let entityToValueMockRepo: Repository<EntityToValue>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -37,11 +48,44 @@ describe('TestingSitesService', () => {
         { provide: getRepositoryToken(EntityToValue), useClass: Repository }
       ]
     }).compile();
-
-    service = module.get<TestingSitesService>(TestingSitesService);
+    countyClaimsService = module.get<CountyClaimsService>(CountyClaimsService);
+    testingSitesService = module.get<TestingSitesService>(TestingSitesService);
+    countyMockRepo = module.get(getRepositoryToken(County));
+    countyClaimMockRepo = module.get(getRepositoryToken(CountyClaim));
+    testingSiteMockRepo = module.get(getRepositoryToken(TestingSite));
+    testingSiteInfoMockRepo = module.get(getRepositoryToken(TestingSiteInfo));
+    locationMockRepo = module.get(getRepositoryToken(Location));
+    userMockRepo = module.get(getRepositoryToken(User));
+    entityStatusMockRepo = module.get(getRepositoryToken(EntityStatus));
+    countyClaimInfoMockRepo = module.get(getRepositoryToken(CountyClaimInfo));
+    entityToValueMockRepo = module.get(getRepositoryToken(EntityToValue));
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('Validation ', () => {
+    it('Service should be defined', () => {
+      expect(testingSitesService).toBeDefined();
+    });
+  });
+  describe('getWebsitesForClaimInfo', () => {
+    it('should handle catagorey inputs ', async () => {
+      const mockParameter = '';
+      jest.spyOn(userMockRepo, 'findOne').mockResolvedValue(undefined);
+      await expect(testingSitesService.createOrUpdateTestingSite(mockParameter)).rejects.toThrow();
+    });
+  });
+
+  describe('getSitesForUser', () => {
+    it('should handle catagorey inputs ', async () => {
+      const mockParameter = '';
+      const expectedResult = {};
+      await expect(testingSitesService.getSitesForUser(mockParameter)).toMatchObject(expectedResult);
+    });
+  });
+
+  describe('getSiteAndLatestInfo', () => {
+    it('should handle catagorey inputs ', async () => {
+      const mockParameter = undefined;
+      await expect(testingSitesService.getSiteAndLatestInfo(mockParameter)).rejects.toThrow();
+    });
   });
 });

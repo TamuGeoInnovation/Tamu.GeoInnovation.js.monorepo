@@ -8,71 +8,71 @@ import { County, CountyClaim, CategoryValue, CountyClaimInfo } from '@tamu-gisc/
 import { WebsitesService } from './websites.service';
 
 describe('WebsitesService', () => {
-  let service: WebsitesService;
-  let CategoryValueMockRepo: MockType<Repository<CategoryValue>>;
-  let CountyMockRepo: MockType<Repository<County>>;
-  let CountyClaimMockRepo: MockType<Repository<CountyClaim>>;
-  let CountyClaimInfoMockRepo: MockType<Repository<CountyClaimInfo>>;
+  let websitesService: WebsitesService;
+  let categoryValueMockRepo: Repository<CategoryValue>;
+  let countyMockRepo: Repository<County>;
+  let countyClaimMockRepo: Repository<CountyClaim>;
+  let countyClaimInfoMockRepo: Repository<CountyClaimInfo>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         WebsitesService,
-        { provide: getRepositoryToken(CategoryValue), useFactory: repositoryMockFactory },
-        { provide: getRepositoryToken(County), useFactory: repositoryMockFactory },
-        { provide: getRepositoryToken(CountyClaim), useFactory: repositoryMockFactory },
-        { provide: getRepositoryToken(CountyClaimInfo), useFactory: repositoryMockFactory }
+        { provide: getRepositoryToken(CategoryValue), useClass: Repository },
+        { provide: getRepositoryToken(County), useClass: Repository },
+        { provide: getRepositoryToken(CountyClaim), useClass: Repository },
+        { provide: getRepositoryToken(CountyClaimInfo), useClass: Repository }
       ]
     }).compile();
 
-    service = module.get<WebsitesService>(WebsitesService);
-    CategoryValueMockRepo = module.get(getRepositoryToken(CategoryValue));
-    CountyMockRepo = module.get(getRepositoryToken(County));
-    CountyClaimMockRepo = module.get(getRepositoryToken(CountyClaim));
-    CountyClaimInfoMockRepo = module.get(getRepositoryToken(CountyClaimInfo));
+    websitesService = module.get<WebsitesService>(WebsitesService);
+    categoryValueMockRepo = module.get(getRepositoryToken(CategoryValue));
+    countyMockRepo = module.get(getRepositoryToken(County));
+    countyClaimMockRepo = module.get(getRepositoryToken(CountyClaim));
+    countyClaimInfoMockRepo = module.get(getRepositoryToken(CountyClaimInfo));
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-  describe('getWebsitesForCounty', () => {
-    it('should handle catagorey inputs ', async () => {
-      expect(await service.getWebsitesForCounty('undefined')).toMatchObject({
-        status: 400,
-        success: false,
-        message: 'Invalid county fips'
-      });
-      expect(await service.getWebsitesForCounty(undefined)).toMatchObject({
-        status: 400,
-        success: false,
-        message: 'Invalid county fips'
-      });
-      expect(await service.getWebsitesForCounty(9)).toMatchObject({
-        status: 400,
-        success: false,
-        message: 'Invalid county fips'
-      });
-      await expect(service.getWebsitesForCounty('yeet')).toMatchObject({});
+  describe('Validation ', () => {
+    it('Service should be defined', () => {
+      expect(websitesService).toBeDefined();
     });
+  });
+
+  describe('getWebsitesForCounty', () => {
+    it('should return expected Result', async () => {
+      const mockParameter = 'undefined';
+      const expectedResult = {
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      };
+      expect(await websitesService.getWebsitesForCounty(mockParameter)).toMatchObject(expectedResult);
+    });
+    it('should return expected Result', async () => {
+      const mockParameter = undefined;
+      const expectedResult = {
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      };
+      expect(await websitesService.getWebsitesForCounty(mockParameter)).toMatchObject(expectedResult);
+    });
+    it('should return expected Result', async () => {
+      const mockParameter = 0;
+      const expectedResult = {
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      };
+      expect(await websitesService.getWebsitesForCounty(mockParameter)).toMatchObject(expectedResult);
+    });
+    /*await expect(websitesService.getWebsitesForCounty('yeet')).toMatchObject({});*/
   });
 
   describe('getWebsitesForClaimInfo', () => {
     it('should handle catagorey inputs ', async () => {
-      await expect(service.getWebsitesForClaimInfo(undefined)).rejects.toThrow();
-    });
-    it('should handle catagorey inputs ', async () => {
-      await expect(service.getWebsitesForClaimInfo('yeet')).toMatchObject({});
+      const mockParameter = undefined;
+      await expect(websitesService.getWebsitesForClaimInfo(mockParameter)).rejects.toThrow();
     });
   });
 });
-
-// @ts-ignore
-export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(() => ({
-  findOne: jest.fn(),
-  find: jest.fn(),
-  update: jest.fn(),
-  save: jest.fn()
-}));
-export type MockType<T> = {
-  [P in keyof T]: jest.Mock<{}>;
-};
