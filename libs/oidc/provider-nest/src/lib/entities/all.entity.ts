@@ -902,3 +902,6 @@ export class UserRepo extends CommonRepo<User> {}
 
 @EntityRepository(Account)
 export class AccountRepo extends CommonRepo<Account> {}
+
+@EntityRepository(Role)
+export class RoleRepo extends CommonRepo<Role> {}

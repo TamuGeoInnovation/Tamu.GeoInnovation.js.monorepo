@@ -29,7 +29,8 @@ import {
   ResponseType,
   TokenEndpointAuthMethod,
   TokenEndpointAuthMethodRepo,
-  Role
+  Role,
+  RoleModule
 } from '@tamu-gisc/oidc/provider-nest';
 
 import { dbConfig } from '../environments/environment';
@@ -69,6 +70,7 @@ import { dbConfig } from '../environments/environment';
     // AuthModule,
     InteractionModule,
     ClientMetadataModule,
+    RoleModule,
     UserModule
   ],
   controllers: [AppController],
