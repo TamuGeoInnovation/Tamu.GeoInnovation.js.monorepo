@@ -131,7 +131,8 @@ export class InteractionController {
           consent: {
             rejectedScopes: [], // array of strings, scope names the end-user has not granted
             rejectedClaims: [] // array of strings, claim names the end-user has not granted
-          }
+          },
+          meta: {}
         };
         if (user.enabled2fa) {
           const locals = {
@@ -139,8 +140,8 @@ export class InteractionController {
             details: details,
             email: user.email,
             guid: user.guid,
-            error: false,
-            result: JSON.stringify(result)
+            error: false
+            // result: JSON.stringify(result)
           };
           return res.render('2fa-auth', locals, (err, html) => {
             if (err) throw err;
@@ -165,17 +166,28 @@ export class InteractionController {
   @Post(':uid/2fa')
   async interaction2faPost(@Req() req: Request, @Res() res: Response) {
     const details = await OpenIdProvider.provider.interactionDetails(req, res);
-    const user = await this.userService.userRepo.findOne({
-      where: {
-        guid: req.body.guid
-      }
-    });
+    const user = await this.userService.userRepo.findByKeyDeep('guid', req.body.guid);
 
     try {
       const inputToken = req.body.token;
       const isValid = await TwoFactorAuthUtils.isValid(inputToken, user.secret2fa);
       if (isValid) {
-        const result: InteractionResults = JSON.parse(req.body.result);
+        const result: InteractionResults = {
+          select_account: {},
+          login: {
+            account: user.account.guid,
+            acr: 'urn:mace:incommon:iap:bronze',
+            amr: ['pwd'],
+            remember: true,
+            ts: Math.floor(Date.now() / 1000)
+          },
+          // consent was given by the user to the client for this session
+          consent: {
+            rejectedScopes: [], // array of strings, scope names the end-user has not granted
+            rejectedClaims: [] // array of strings, claim names the end-user has not granted
+          },
+          meta: {}
+        };
         // await this.loginService.insertNewLoginForUser(params.uid, req.body.email, req.body.guid);
         await OpenIdProvider.provider.interactionFinished(req, res, result);
       } else {
