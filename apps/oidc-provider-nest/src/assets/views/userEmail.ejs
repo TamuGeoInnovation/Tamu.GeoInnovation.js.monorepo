@@ -1,8 +1,9 @@
 <form autocomplete="off" action="/interaction/verifyemail/" method="post">
-  <input type="hidden" name="uuid" value="<%= details.uuid %>"/>
-  <input required type="text" name="login" placeholder="Username" <% if (!details.params.login_hint) { %>autofocus="on"<% } else { %> value="<%= details.params.login_hint %>" <% } %>>
+  <input type="hidden" name="uuid" value="<%= details.uuid %>" />
+  <input required type="text" name="email" placeholder="Username" <% if (!details.params.login_hint) { % />autofocus="on"<% }
+  else { %> value="<%= details.params.login_hint %>" <% } %>>
 
-  <label><input type="checkbox" name="remember" value="yes" checked="yes">Stay signed in</label>
+  <label><input type="checkbox" name="remember" value="yes" checked="yes" />Stay signed in</label>
 
   <button type="submit" class="login login-submit">Sign-in</button>
 </form>
