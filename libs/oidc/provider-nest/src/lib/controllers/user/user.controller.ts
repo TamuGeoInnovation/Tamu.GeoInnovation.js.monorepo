@@ -2,8 +2,8 @@ import { Controller, Get, Next, Param, Req, Res, Render, Post } from '@nestjs/co
 import { Request, Response } from 'express';
 import { urlFragment, urlHas } from '../../_utils/url-utils';
 import { Account, User } from '../../entities/all.entity';
-import { UserService } from '../../services/user/user.service';
-import { AccountService } from '../../services/account/account.service';
+import { UserService, ServiceToControllerTypes } from '../../services/user/user.service';
+import { authenticator } from 'otplib';
 
 @Controller('user')
 export class UserController {
@@ -50,11 +50,41 @@ export class UserController {
       const newAccount: Account = new Account(req.body.name, req.body.email);
       newUser.account = newAccount;
       const userInserted = await this.userService.insertUser(newUser);
-      const accountInserted = await AccountService.insertAccount(newAccount);
-      return {
-        userInserted,
-        accountInserted
-      };
+      // const accountInserted = await StaticAccountService.insertAccount(newAccount);
+      return res.send(userInserted);
+    }
+  }
+
+  @Get('2fa/enable/:guid')
+  async enable2faGet(@Param() params, @Req() req: Request, @Res() res: Response) {
+    if (params.guid) {
+      const enable2fa = await this.userService.enable2FA(params.guid);
+      if (enable2fa) {
+        const issuer = 'GeoInnovation Service Center';
+        const otpPath = authenticator.keyuri(
+          encodeURIComponent((enable2fa as User).email),
+          issuer,
+          (enable2fa as User).secret2fa
+        );
+        return res.render('2fa-scan', {
+          title: 'Two-factor Authentication',
+          otpPath: JSON.stringify(otpPath)
+        });
+      }
+    } else {
+      return res.send({
+        error: 'No guid provided'
+      });
+    }
+  }
+
+  @Post('2fa/disable')
+  async disable2faPost(@Req() req: Request, @Res() res: Response) {
+    if (req.body.guid) {
+      const disable2fa = await this.userService.disable2fa(req.body.guid);
+      if (disable2fa) {
+        return res.sendStatus(200);
+      }
     }
   }
 }

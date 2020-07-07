@@ -4,81 +4,7 @@ import { Account, User, UserRepo, AccountRepo } from '../../entities/all.entity'
 
 import { hash, compare } from 'bcrypt';
 import { Injectable } from '@nestjs/common';
-
-// export class UserService {
-//   public static async insertUser(user: User): Promise<boolean> {
-//     return new Promise((resolve, reject) => {
-//       getConnection()
-//         .getRepository(User)
-//         .findOne({
-//           email: user.email
-//         })
-//         .then((existingUser) => {
-//           if (existingUser) {
-//             console.log('User already exists with this email');
-//             resolve(false);
-//           } else {
-//             hash(user.password, SHA1HashUtils.SALT_ROUNDS).then((hashedPw) => {
-//               user.password = hashedPw;
-//               getConnection()
-//                 .getRepository(User)
-//                 .save(user)
-//                 .then((val) => {
-//                   resolve(true);
-//                 })
-//                 .catch((err) => {
-//                   reject(err);
-//                 });
-//             });
-//           }
-//         })
-//         .catch((err) => {
-//           throw err;
-//         });
-//     });
-//   }
-
-//   public static async userLogin(email: string, password: string): Promise<User> {
-//     return new Promise((resolve, reject) => {
-//       getConnection()
-//         .getRepository(User)
-//         .createQueryBuilder('user')
-//         .leftJoinAndSelect('user.account', 'account')
-//         .where('user.email = :email', { email })
-//         .getOne()
-//         .then((user: User) => {
-//           if (user) {
-//             compare(password, user.password).then((same) => {
-//               if (same) {
-//                 resolve(user);
-//               } else {
-//                 resolve();
-//               }
-//             });
-//           } else {
-//             // no user found
-//             reject();
-//           }
-//         });
-//     });
-//   }
-
-//   public static async updateUser(user: User): Promise<UpdateResult> {
-//     return new Promise((resolve, reject) => {
-//       getConnection()
-//         .getRepository(User)
-//         .createQueryBuilder()
-//         .update(user)
-//         .execute()
-//         .then((result) => {
-//           resolve(result);
-//         })
-//         .catch((err) => {
-//           throw err;
-//         });
-//     });
-//   }
-// }
+import { TwoFactorAuthUtils } from '../../_utils/twofactorauth.util';
 
 @Injectable()
 export class UserService {
@@ -111,11 +37,50 @@ export class UserService {
     }
   }
 
-  // public async insertAccount(account: Account) {
-  //   const existingAccount = await this.accountRepo.findOne({
-  //     where: {
-  //       email: account.email
-  //     }
-  //   })
-  // }
+  public async enable2FA(guid: string): Promise<IServiceToControllerResponse | User> {
+    // TODO: MAY WANT TO ADD A CHECK HERE TO PREVENT SOMEONE FROM OVERRIDING THE STORED SECRET
+    // WHICH WOULD MAKE THE PERSON MORE OR LESS LOCKED OUT OF THEIR ACCOUNT SINCE THE SECRET
+    // STORED IN AUTHENTICATOR IS WRONG NOW
+    let ret: IServiceToControllerResponse;
+    const newSecret = await TwoFactorAuthUtils.generateNewSecret();
+    const user = await this.userRepo.findOne({
+      where: {
+        guid: guid
+      }
+    });
+    if (!user.enabled2fa) {
+      user.enabled2fa = true;
+      user.secret2fa = newSecret;
+      await this.userRepo.save(user);
+      return user;
+    } else {
+      ret = {
+        type: ServiceToControllerTypes.CONDITION_ALREADY_TRUE
+      };
+      return ret;
+    }
+  }
+
+  public async disable2fa(guid: string) {
+    const user = await this.userRepo.findOne({
+      where: {
+        guid: guid
+      }
+    });
+    if (user && user.enabled2fa) {
+      user.enabled2fa = false;
+      user.secret2fa = null;
+      return await this.userRepo.save(user);
+    }
+  }
+}
+
+export interface IServiceToControllerResponse {
+  message?: string;
+  type?: ServiceToControllerTypes;
+}
+
+export enum ServiceToControllerTypes {
+  CONDITION_ALREADY_TRUE,
+  TASK_COMPLETE
 }

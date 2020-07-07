@@ -320,8 +320,8 @@ export class User extends GuidIdentity {
       if (request) {
         if (request.body) {
           const body = request.body;
-          if (body.login) {
-            this.email = body.login;
+          if (body.email) {
+            this.email = body.email;
           }
           if (body.password) {
             this.password = body.password;

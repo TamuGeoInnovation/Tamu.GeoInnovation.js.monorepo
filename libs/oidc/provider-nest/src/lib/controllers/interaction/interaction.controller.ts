@@ -5,8 +5,9 @@ import { OpenIdProvider } from '../../configs/oidc-provider-config';
 import { User } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
 import { JwtUtil } from '../../_utils/jwt.util';
-import { InteractionResults } from 'oidc-provider';
+import Provider, { InteractionResults } from 'oidc-provider';
 import { urlHas, urlFragment } from '../../_utils/url-utils';
+import { TwoFactorAuthUtils } from '../../_utils/twofactorauth.util';
 
 @Controller('interaction')
 export class InteractionController {
@@ -82,16 +83,39 @@ export class InteractionController {
   }
 
   @Post(':uid')
-  async interactionLoginPost(@Param() params, @Req() req: Request, @Res() res: Response, @Next() next) {
+  async interactionLoginPost(@Req() req: Request, @Res() res: Response, @Next() next) {
     await OpenIdProvider.provider.setProviderSession(req, res, {
       account: 'accountId'
     });
     const details = await OpenIdProvider.provider.interactionDetails(req, res);
-    // const client = await OpenIdProvider.provider.Client.find(details.params.client_id);
+    const { uid, prompt, params, session } = details;
+    const client = await OpenIdProvider.provider.Client.find(params.client_id);
 
     try {
       const email = req.body.email;
       const password = req.body.password;
+      if (!email || !password) {
+        const locals = {
+          client,
+          uid,
+          params,
+          details: prompt.details,
+          title: 'GeoInnovation Service Center SSO',
+          error: true,
+          message: 'Email or password is incorrect',
+          debug: false,
+          interaction: true,
+          devMode: urlHas(req.path, 'dev', true),
+          requestingHost: urlFragment(client.redirectUris[0], 'hostname')
+        };
+        return res.render('user-info', locals, (err, html) => {
+          if (err) throw err;
+          res.render('_layout', {
+            ...locals,
+            body: html
+          });
+        });
+      }
       const user: User = await this.userService.userLogin(email, password);
       if (user) {
         const result: InteractionResults = {
@@ -110,17 +134,20 @@ export class InteractionController {
           }
         };
         if (user.enabled2fa) {
-          return res.render('2fa-auth', {
-            // client,
-            details,
+          const locals = {
+            title: 'Sign-in',
+            details: details,
             email: user.email,
             guid: user.guid,
             error: false,
-            title: 'Sign-in',
-            result: JSON.stringify(result),
-            params: {},
-            interaction: {},
-            debug: false
+            result: JSON.stringify(result)
+          };
+          return res.render('2fa-auth', locals, (err, html) => {
+            if (err) throw err;
+            res.render('_layout-simple', {
+              ...locals,
+              body: html
+            });
           });
         } else {
           console.log('interactionFinished');
@@ -135,13 +162,46 @@ export class InteractionController {
     }
   }
 
-  // @Post(':grant/login')
-  // async thirdStep(@Param() params, @Req() req: Request, @Res() res: Response) {
-  //   console.log('thirdStep');
-  //   await OpenIdProvider.provider.setProviderSession(req, res, {
-  //     account: 'accountId'
-  //   });
-  // }
+  @Post(':uid/2fa')
+  async interaction2faPost(@Req() req: Request, @Res() res: Response) {
+    const details = await OpenIdProvider.provider.interactionDetails(req, res);
+    const user = await this.userService.userRepo.findOne({
+      where: {
+        guid: req.body.guid
+      }
+    });
+
+    try {
+      const inputToken = req.body.token;
+      const isValid = await TwoFactorAuthUtils.isValid(inputToken, user.secret2fa);
+      if (isValid) {
+        const result: InteractionResults = JSON.parse(req.body.result);
+        // await this.loginService.insertNewLoginForUser(params.uid, req.body.email, req.body.guid);
+        await OpenIdProvider.provider.interactionFinished(req, res, result);
+      } else {
+        // TODO: Log incorrect token provided in database? Maybe, idk
+        // Incorrect code provided
+        throw new Error('Token provided was incorrect; please try again');
+      }
+    } catch (err) {
+      const locals = {
+        title: 'Sign-in',
+        details: details,
+        email: user.email,
+        guid: user.guid,
+        error: true,
+        message: err.message,
+        result: JSON.stringify(req.body.result)
+      };
+      return res.render('2fa-auth', locals, (err, html) => {
+        if (err) throw err;
+        res.render('_layout-simple', {
+          ...locals,
+          body: html
+        });
+      });
+    }
+  }
 
   @Post(':uid/continue')
   async continuePost(@Param() params, @Req() req: Request, @Res() res: Response) {
