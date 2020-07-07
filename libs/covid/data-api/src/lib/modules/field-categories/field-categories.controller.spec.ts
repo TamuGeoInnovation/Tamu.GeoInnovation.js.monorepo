@@ -8,17 +8,16 @@ import { FieldCategoriesService } from './field-categories.service';
 jest.mock('./field-categories.service');
 
 describe('FieldCategories Controller', () => {
-  let service: FieldCategoriesService;
-  let controller: FieldCategoriesController;
-  let module: TestingModule;
+  let fieldCategoriesService: FieldCategoriesService;
+  let fieldCategoriesController: FieldCategoriesController;
 
   beforeEach(async () => {
-    module = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       providers: [FieldCategoriesService],
       controllers: [FieldCategoriesController]
     }).compile();
-    service = module.get<FieldCategoriesService>(FieldCategoriesService);
-    controller = module.get<FieldCategoriesController>(FieldCategoriesController);
+    fieldCategoriesService = module.get<FieldCategoriesService>(FieldCategoriesService);
+    fieldCategoriesController = module.get<FieldCategoriesController>(FieldCategoriesController);
   });
 
   afterEach(() => {
@@ -27,7 +26,7 @@ describe('FieldCategories Controller', () => {
 
   describe('Validation ', () => {
     it('controller should be defined', () => {
-      expect(controller).toBeDefined();
+      expect(fieldCategoriesController).toBeDefined();
     });
   });
 
@@ -36,39 +35,41 @@ describe('FieldCategories Controller', () => {
   describe('getFieldTypesForCategory', () => {
     it('should return expectedResult', async () => {
       const expectedResult = new FieldCategory();
-      jest.spyOn(service, 'getFieldTypesForCategory').mockResolvedValue(expectedResult);
-      expect(await controller.getFieldTypesForCategory(mockParameters)).toMatchObject(expectedResult);
+      jest.spyOn(fieldCategoriesService, 'getFieldTypesForCategory').mockResolvedValue(expectedResult);
+      expect(await fieldCategoriesController.getFieldTypesForCategory(mockParameters)).toMatchObject(expectedResult);
     });
   });
 
   describe('addFieldTypeToCategory', () => {
     it('should return expectedResult', async () => {
       const expectedResult = new FieldCategory();
-      jest.spyOn(service, 'addFieldTypeToCategory').mockResolvedValue(expectedResult);
-      expect(await controller.addFieldTypeToCategory(mockParameters, mockParameters)).toMatchObject(expectedResult);
+      jest.spyOn(fieldCategoriesService, 'addFieldTypeToCategory').mockResolvedValue(expectedResult);
+      expect(await fieldCategoriesController.addFieldTypeToCategory(mockParameters, mockParameters)).toMatchObject(
+        expectedResult
+      );
     });
   });
 
   describe('getCategoryValues', () => {
     it('should return expectedResult', async () => {
       const expectedResult = [new FieldCategory()];
-      jest.spyOn(service, 'getCategoryWithValues').mockResolvedValue(expectedResult);
-      expect(await controller.getCategoryValues(mockParameters)).toMatchObject(expectedResult);
+      jest.spyOn(fieldCategoriesService, 'getCategoryWithValues').mockResolvedValue(expectedResult);
+      expect(await fieldCategoriesController.getCategoryValues(mockParameters)).toMatchObject(expectedResult);
     });
   });
 
   describe('addValueToType', () => {
     it('should return expectedResult', async () => {
       const expectedResult = new FieldCategory();
-      jest.spyOn(service, 'addValueToCategory').mockResolvedValue(expectedResult);
-      expect(await controller.addValueToType(mockParameters, mockParameters)).toMatchObject(expectedResult);
+      jest.spyOn(fieldCategoriesService, 'addValueToCategory').mockResolvedValue(expectedResult);
+      expect(await fieldCategoriesController.addValueToType(mockParameters, mockParameters)).toMatchObject(expectedResult);
     });
   });
   describe('getCategories', () => {
     it('should return expectedResult', async () => {
       const expectedResult = [new FieldCategory()];
-      jest.spyOn(service, 'getAllCategoriesWithTypes').mockResolvedValue(expectedResult);
-      expect(await controller.getCategories()).toMatchObject(expectedResult);
+      jest.spyOn(fieldCategoriesService, 'getAllCategoriesWithTypes').mockResolvedValue(expectedResult);
+      expect(await fieldCategoriesController.getCategories()).toMatchObject(expectedResult);
     });
   });
 
@@ -79,7 +80,7 @@ describe('FieldCategories Controller', () => {
         success: false,
         message: 'Not implemented'
       };
-      expect(await controller.deleteCategory()).toMatchObject(expectedResult);
+      expect(await fieldCategoriesController.deleteCategory()).toMatchObject(expectedResult);
     });
   });
 });

@@ -6,21 +6,25 @@ import { StatusTypesService } from './status-types.service';
 jest.mock('./status-types.service');
 
 describe('StatusTypes Controller', () => {
-  let service: StatusTypesService;
-  let controller: StatusTypesController;
+  let statusTypesService: StatusTypesService;
+  let statusTypesController: StatusTypesController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [StatusTypesService],
       controllers: [StatusTypesController]
     }).compile();
-    service = module.get<StatusTypesService>(StatusTypesService);
-    controller = module.get<StatusTypesController>(StatusTypesController);
+    statusTypesService = module.get<StatusTypesService>(StatusTypesService);
+    statusTypesController = module.get<StatusTypesController>(StatusTypesController);
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   describe('Validation ', () => {
     it('controller should be defined', () => {
-      expect(controller).toBeDefined();
+      expect(statusTypesController).toBeDefined();
     });
   });
 });

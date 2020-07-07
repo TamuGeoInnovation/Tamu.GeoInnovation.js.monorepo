@@ -6,21 +6,25 @@ import { FieldTypesService } from './field-types.service';
 jest.mock('./field-types.service');
 
 describe('FieldTypes Controller', () => {
-  let service: FieldTypesService;
-  let controller: FieldTypesController;
+  let fieldTypesService: FieldTypesService;
+  let fieldTypesController: FieldTypesController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [FieldTypesService],
       controllers: [FieldTypesController]
     }).compile();
-    service = module.get<FieldTypesService>(FieldTypesService);
-    controller = module.get<FieldTypesController>(FieldTypesController);
+    fieldTypesService = module.get<FieldTypesService>(FieldTypesService);
+    fieldTypesController = module.get<FieldTypesController>(FieldTypesController);
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   describe('Validation ', () => {
     it('controller should be defined', () => {
-      expect(controller).toBeDefined();
+      expect(fieldTypesController).toBeDefined();
     });
   });
 });

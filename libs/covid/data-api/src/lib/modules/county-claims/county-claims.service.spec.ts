@@ -7,62 +7,83 @@ import { CountyClaim, User, County, CountyClaimInfo, EntityToValue, EntityStatus
 
 import { CountyClaimsService } from './county-claims.service';
 
-describe('CountyClaimsService', () => {
-  let service: CountyClaimsService;
-  let UserRepoMock: MockType<Repository<User>>;
-  let CountyRepoMock: MockType<Repository<County>>;
-  let CountyClaimRepoMock: MockType<Repository<CountyClaim>>;
-  let CountyClaimInfoRepoMock: MockType<Repository<CountyClaimInfo>>;
-  let EntityStatusRepoMock: MockType<Repository<EntityStatus>>;
-  let EntityToValueRepoMock: MockType<Repository<EntityToValue>>;
+describe('CountyClaims Controller', () => {
+  let countyClaimsService: CountyClaimsService;
+  let countyClaimRepo: Repository<CountyClaim>;
+  let userRepo: Repository<User>;
+  let countyRepo: Repository<County>;
+  let countyClaimInfoRepo: Repository<CountyClaimInfo>;
+  let entityToValueRepo: Repository<EntityToValue>;
+  let entityStatusRepo: Repository<EntityStatus>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CountyClaimsService,
-        { provide: getRepositoryToken(CountyClaim), useFactory: repositoryMockFactory },
-        { provide: getRepositoryToken(User), useFactory: repositoryMockFactory },
-        { provide: getRepositoryToken(County), useFactory: repositoryMockFactory },
-        { provide: getRepositoryToken(CountyClaimInfo), useFactory: repositoryMockFactory },
-        { provide: getRepositoryToken(EntityToValue), useFactory: repositoryMockFactory },
-        { provide: getRepositoryToken(EntityStatus), useFactory: repositoryMockFactory }
+        { provide: getRepositoryToken(CountyClaim), useClass: Repository },
+        { provide: getRepositoryToken(User), useClass: Repository },
+        { provide: getRepositoryToken(County), useClass: Repository },
+        { provide: getRepositoryToken(CountyClaimInfo), useClass: Repository },
+        { provide: getRepositoryToken(EntityToValue), useClass: Repository },
+        { provide: getRepositoryToken(EntityStatus), useClass: Repository }
       ]
     }).compile();
-    service = module.get<CountyClaimsService>(CountyClaimsService);
-    UserRepoMock = module.get(getRepositoryToken(User));
-    CountyRepoMock = module.get(getRepositoryToken(County));
-    CountyClaimRepoMock = module.get(getRepositoryToken(CountyClaim));
-    CountyClaimInfoRepoMock = module.get(getRepositoryToken(CountyClaimInfo));
-    EntityStatusRepoMock = module.get(getRepositoryToken(EntityStatus));
-    EntityToValueRepoMock = module.get(getRepositoryToken(EntityToValue));
+    countyClaimsService = module.get<CountyClaimsService>(CountyClaimsService);
+    countyClaimRepo = module.get<Repository<CountyClaim>>(getRepositoryToken(CountyClaim));
+    userRepo = module.get<Repository<User>>(getRepositoryToken(User));
+    countyRepo = module.get<Repository<County>>(getRepositoryToken(County));
+    countyClaimInfoRepo = module.get<Repository<CountyClaimInfo>>(getRepositoryToken(CountyClaimInfo));
+    entityToValueRepo = module.get<Repository<EntityToValue>>(getRepositoryToken(EntityToValue));
+    entityStatusRepo = module.get<Repository<EntityStatus>>(getRepositoryToken(EntityStatus));
   });
 
   describe('getWebsitesForClaimInfo', () => {
-    it('should handle catagorey inputs ', async () => {
-      await expect(service.getActiveClaimsForEmail(undefined)).rejects.toThrow();
+    it('should throw error - undefined value ', async () => {
+      await expect(countyClaimsService.getActiveClaimsForEmail(undefined)).rejects.toThrow();
     });
-    it('should handle catagorey inputs ', async () => {
-      await expect(service.getActiveClaimsForEmail('undefined')).rejects.toThrow();
+    it('should throw error - undefined string', async () => {
+      await expect(countyClaimsService.getActiveClaimsForEmail('undefined')).rejects.toThrow();
     });
   });
+
   describe('getAllUserCountyClaims', () => {
-    it('should handle catagorey inputs ', async () => {
-      await expect(service.getAllUserCountyClaims(undefined)).rejects.toThrow();
+    it('should throw error - undefined value ', async () => {
+      await expect(countyClaimsService.getAllUserCountyClaims(undefined)).rejects.toThrow();
     });
-    it('should handle catagorey inputs ', async () => {
-      await expect(service.getAllUserCountyClaims('undefined')).rejects.toThrow();
+    it('should throw error  - undefined string', async () => {
+      await expect(countyClaimsService.getAllUserCountyClaims('undefined')).rejects.toThrow();
     });
   });
+
   describe('getActiveClaimsForCountyFips', () => {
-    it('should handle catagorey inputs ', async () => {
-      await expect(service.getActiveClaimsForCountyFips(undefined)).rejects.toThrow();
+    it('should throw error  - undefined value ', async () => {
+      await expect(countyClaimsService.getActiveClaimsForCountyFips(undefined)).rejects.toThrow();
     });
-    it('should handle catagorey inputs ', async () => {
-      await expect(service.getActiveClaimsForCountyFips('undefined')).rejects.toThrow();
+    it('should throw error  - undefined string', async () => {
+      await expect(countyClaimsService.getActiveClaimsForCountyFips('undefined')).rejects.toThrow();
     });
   });
 
   describe('closeClaim', () => {
+    it('should handle catagorey inputs ', async () => {
+      expect(await countyClaimsService.closeClaim(undefined)).toMatchObject({
+        status: 400,
+        success: false,
+        message: 'Input parameter missing.'
+      });
+    });
+    it('should handle catagorey inputs ', async () => {
+      jest.spyOn(countyClaimRepo, 'findOne').mockReturnValue(undefined);
+      expect(await countyClaimsService.closeClaim('yeet')).toMatchObject({
+        status: 500,
+        success: false,
+        message: 'Invalid claim.'
+      });
+    });
+  });
+});
+
+/*describe('closeClaim', () => {
     it('should handle catagorey inputs ', async () => {
       expect(await service.closeClaim(undefined)).toMatchObject({
         status: 400,
@@ -105,7 +126,7 @@ describe('CountyClaimsService', () => {
       UserRepoMock.findOne.mockReturnValue(undefined);
       await expect(service.createOrUpdateClaim(undefined, undefined, undefined)).rejects.toThrow();
     });
-    /*it('should handle catagorey inputs ', async () => {
+    it('should handle catagorey inputs ', async () => {
       UserRepoMock.findOne.mockReturnValue(new User());
       await expect(service.createOrUpdateClaim(new CountyClaim(), [], [])).toMatchObject({
         status: 400,
@@ -113,16 +134,3 @@ describe('CountyClaimsService', () => {
         message: 'Input parameter missing.'
       });
     });*/
-  });
-});
-
-// @ts-ignore
-export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(() => ({
-  findOne: jest.fn(),
-  find: jest.fn(),
-  update: jest.fn(),
-  save: jest.fn()
-}));
-export type MockType<T> = {
-  [P in keyof T]: jest.Mock<{}>;
-};

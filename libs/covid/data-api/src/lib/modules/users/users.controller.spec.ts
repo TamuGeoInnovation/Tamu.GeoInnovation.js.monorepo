@@ -7,15 +7,14 @@ jest.mock('../users/users.service');
 
 describe('Users Controller', () => {
   let usersService: UsersService;
-  let module: TestingModule;
-  let controller: UsersController;
+  let usersController: UsersController;
   beforeEach(async () => {
-    module = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
       providers: [UsersService]
     }).compile();
     usersService = module.get<UsersService>(UsersService);
-    controller = module.get<UsersController>(UsersController);
+    usersController = module.get<UsersController>(UsersController);
   });
 
   afterEach(() => {
@@ -26,7 +25,7 @@ describe('Users Controller', () => {
 
   describe('Validation ', () => {
     it('controller should be defined', () => {
-      expect(controller).toBeDefined();
+      expect(usersController).toBeDefined();
     });
   });
 
@@ -38,7 +37,7 @@ describe('Users Controller', () => {
         message: 'Input parameter missing'
       };
       jest.spyOn(usersService, 'verifyEmail').mockResolvedValue(expectedResult);
-      expect(await controller.verifyEmail(mockParameters)).toBe(expectedResult);
+      expect(await usersController.verifyEmail(mockParameters)).toBe(expectedResult);
     });
   });
 
@@ -46,14 +45,14 @@ describe('Users Controller', () => {
     it('should return expected Result', async () => {
       const expectedResult = [];
       jest.spyOn(usersService, 'getUsers').mockResolvedValue(expectedResult);
-      expect(await controller.getUsers()).toBe(expectedResult);
+      expect(await usersController.getUsers()).toBe(expectedResult);
     });
     it('should return expected Result', async () => {
       const expectedResult = { message: '', status: 500, success: false };
       jest.spyOn(usersService, 'getUsers').mockImplementation(() => {
         throw new Error();
       });
-      expect(await controller.getUsers()).toStrictEqual(expectedResult);
+      expect(await usersController.getUsers()).toStrictEqual(expectedResult);
     });
   });
 
@@ -61,14 +60,14 @@ describe('Users Controller', () => {
     it('should return expectedResult', async () => {
       const expectedResult = [];
       jest.spyOn(usersService, 'getUsersWithStats').mockResolvedValue(expectedResult);
-      expect(await controller.getUsersWithStats()).toBe(expectedResult);
+      expect(await usersController.getUsersWithStats()).toBe(expectedResult);
     });
     it('should handle Error thrown from service.getUsersWithStats', async () => {
       const expectedResult = { message: '', status: 500, success: false };
       jest.spyOn(usersService, 'getUsersWithStats').mockImplementation(() => {
         throw new Error();
       });
-      expect(await controller.getUsersWithStats()).toStrictEqual(expectedResult);
+      expect(await usersController.getUsersWithStats()).toStrictEqual(expectedResult);
     });
   });
 
@@ -76,7 +75,7 @@ describe('Users Controller', () => {
     it('should return expectedResult', async () => {
       const expectedResult = [];
       jest.spyOn(usersService, 'getUsers').mockResolvedValue(expectedResult);
-      expect(await controller.getUsers()).toBe(expectedResult);
+      expect(await usersController.getUsers()).toBe(expectedResult);
     });
     it('should handle Error thrown from service.getUsers', async () => {
       const expectedResult = { message: '', status: 500, success: false };
@@ -84,7 +83,7 @@ describe('Users Controller', () => {
       jest.spyOn(usersService, 'getUsers').mockImplementation(() => {
         throw new Error();
       });
-      expect(await controller.getUsers()).toStrictEqual(expectedResult);
+      expect(await usersController.getUsers()).toStrictEqual(expectedResult);
     });
   });
 
@@ -96,7 +95,7 @@ describe('Users Controller', () => {
         message: 'Input parameter missing'
       };
       jest.spyOn(usersService, 'registerEmail').mockResolvedValue(expectedResult);
-      expect(await controller.registerEmail(mockParameters)).toBe(expectedResult);
+      expect(await usersController.registerEmail(mockParameters)).toBe(expectedResult);
     });
   });
 });

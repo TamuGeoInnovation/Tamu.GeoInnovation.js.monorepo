@@ -6,21 +6,25 @@ import { CategoryValuesController } from './category-values.controller';
 jest.mock('./category-values.service');
 
 describe('CategoryValues Controller', () => {
-  let controller: CategoryValuesController;
-  let service: CategoryValuesService;
+  let categoryValuesService: CategoryValuesService;
+  let categoryValuesController: CategoryValuesController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [CategoryValuesService],
       controllers: [CategoryValuesController]
     }).compile();
-    service = module.get<CategoryValuesService>(CategoryValuesService);
-    controller = module.get<CategoryValuesController>(CategoryValuesController);
+    categoryValuesService = module.get<CategoryValuesService>(CategoryValuesService);
+    categoryValuesController = module.get<CategoryValuesController>(CategoryValuesController);
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   describe('Validation ', () => {
     it('controller should be defined', () => {
-      expect(controller).toBeDefined();
+      expect(categoryValuesController).toBeDefined();
     });
   });
 });

@@ -8,17 +8,16 @@ import { StatesService } from './states.service';
 jest.mock('./states.service');
 
 describe('States Controller', () => {
-  let stateService: StatesService;
-  let module: TestingModule;
-  let controller: StatesController;
+  let statesService: StatesService;
+  let statesController: StatesController;
 
   beforeEach(async () => {
-    module = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       providers: [StatesService],
       controllers: [StatesController]
     }).compile();
-    stateService = module.get<StatesService>(StatesService);
-    controller = module.get<StatesController>(StatesController);
+    statesService = module.get<StatesService>(StatesService);
+    statesController = module.get<StatesController>(StatesController);
   });
 
   afterEach(() => {
@@ -29,15 +28,15 @@ describe('States Controller', () => {
 
   describe('Validation ', () => {
     it('controller should be defined', () => {
-      expect(controller).toBeDefined();
+      expect(statesController).toBeDefined();
     });
   });
 
   describe('searchState', () => {
     it('should return expectedResult', async () => {
       const expectedResult = [];
-      jest.spyOn(stateService, 'search').mockResolvedValue(expectedResult);
-      expect(await controller.searchState(mockParameters)).toBe(expectedResult);
+      jest.spyOn(statesService, 'search').mockResolvedValue(expectedResult);
+      expect(await statesController.searchState(mockParameters)).toBe(expectedResult);
     });
   });
 
@@ -45,28 +44,28 @@ describe('States Controller', () => {
     it('should return expectedResult', async () => {
       const expectedResult = new State();
       expectedResult.stateFips = 0;
-      jest.spyOn(stateService, 'getStateByFips').mockResolvedValue(expectedResult);
-      expect(await controller.getState(mockParameters)).toEqual(expectedResult);
+      jest.spyOn(statesService, 'getStateByFips').mockResolvedValue(expectedResult);
+      expect(await statesController.getState(mockParameters)).toEqual(expectedResult);
     });
   });
 
   describe('insertState', () => {
     it('should return expectedResult', async () => {
       const expectedResult = 'Not implemented.';
-      expect(await controller.insertState()).toEqual(expectedResult);
+      expect(await statesController.insertState()).toEqual(expectedResult);
     });
   });
 
   describe('updateState', () => {
     it('should return expectedResult', async () => {
       const expectedResult = 'Not implemented.';
-      expect(await controller.updateState()).toEqual(expectedResult);
+      expect(await statesController.updateState()).toEqual(expectedResult);
     });
   });
   describe('deleteState', () => {
     it('should return expectedResult', async () => {
       const expectedResult = 'Not implemented.';
-      expect(await controller.deleteState()).toEqual(expectedResult);
+      expect(await statesController.deleteState()).toEqual(expectedResult);
     });
   });
 });
