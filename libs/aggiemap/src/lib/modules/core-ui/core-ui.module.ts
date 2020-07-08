@@ -4,10 +4,12 @@ import { RouterModule } from '@angular/router';
 
 import { BackdropComponent } from './components/backdrop/backdrop.component';
 import { ModalComponent } from './components/modal/modal.component';
+import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule],
-  declarations: [BackdropComponent, ModalComponent],
-  exports: [BackdropComponent, ModalComponent]
+  declarations: [BackdropComponent, ModalComponent, HeaderComponent, FooterComponent],
+  exports: [BackdropComponent, ModalComponent, HeaderComponent, FooterComponent]
 })
 export class AggiemapCoreUIModule {}

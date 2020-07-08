@@ -52,23 +52,8 @@ import { PopupsModule } from '@tamu-gisc/aggiemap';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
 
-import { SkeletonModule } from '../../skeleton/skeleton.module';
-
 // Components
 import { EsriMapComponent } from '../../map/esri-map.component';
-
-// import { MobileUIComponent } from '../../modules/components/mobile-ui/containers/main/mobile-ui.component';
-// import { TripPlannerTopComponent } from '../../modules/components/mobile-ui/components/trip-planner-top/trip-planner-top.component';
-// import { OmnisearchComponent } from '../../modules/components/mobile-ui/components/omnisearch/omnisearch.component';
-// import { TripPlannerBottomComponent } from '../../modules/components/mobile-ui/components/trip-planner-bottom/trip-planner-bottom.component';
-
-// import { MobileSidebarComponent } from '../../modules/components/mobile-ui/components/sidebar/mobile-sidebar.component';
-// import { MainMobileSidebarComponent } from '../../modules/components/mobile-ui/components/sidebar/components/main/main.component';
-
-// import { BackdropComponent } from '../../modules//components/backdrop/backdrop.component';
-
-// import { ModalComponent } from '../../modules/components/modal/containers/main/base/base.component';
-// import { ReportBadRouteComponent } from '../../modules/components/forms/report-bad-route/report-bad-route.component';
 
 WebFont.load({
   google: {
@@ -172,7 +157,6 @@ const hybridRoutes: Routes = [
     SettingsModule,
     CommonNgxRouterModule,
     PipesModule,
-    SkeletonModule,
     EsriMapModule,
     LayerListModule,
     LegendModule,

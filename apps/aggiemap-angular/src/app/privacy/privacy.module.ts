@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { SkeletonModule } from '../skeleton/skeleton.module';
+import { AggiemapCoreUIModule } from '@tamu-gisc/aggiemap';
+
 import { PrivacyComponent } from './components/privacy.component';
 
 const routes: Routes = [
@@ -13,7 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [PrivacyComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), SkeletonModule]
+  imports: [CommonModule, RouterModule.forChild(routes), AggiemapCoreUIModule],
+  declarations: [PrivacyComponent]
 })
 export class PrivacyModule {}
