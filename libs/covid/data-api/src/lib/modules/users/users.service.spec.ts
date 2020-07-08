@@ -32,6 +32,7 @@ describe('UsersService', () => {
     });
   });
 
+  /* Implementation Testing?
   describe('getUsers', () => {
     it('should return expectedResult', async () => {
       const expectedResult = [];
@@ -39,6 +40,7 @@ describe('UsersService', () => {
       expect(await usersService.getUsers()).toEqual(expectedResult);
     });
   });
+  */
 
   describe('verifyEmail', () => {
     it('should handle missing inputs ', async () => {
@@ -52,6 +54,7 @@ describe('UsersService', () => {
       expect(await usersService.verifyEmail(mockParameterEmptyString)).toMatchObject(expectedResult);
       expect(await usersService.verifyEmail(mockParameterUndefined)).toMatchObject(expectedResult);
     });
+    /* Implementation Testing?
     it('should handle no existing user ', async () => {
       const mockParameter = 'Foobar';
       const mockParameterUndefined = undefined;
@@ -62,13 +65,15 @@ describe('UsersService', () => {
       };
       jest.spyOn(userMockRepo, 'findOne').mockResolvedValue(mockParameterUndefined);
       expect(await usersService.verifyEmail(mockParameter)).toMatchObject(expectedResult);
-    });
+    });*/
+
+    /* Implementation Testing?
     it('should return user if findOne returns, and if email length > 0 ', async () => {
       const mockParameter = 'Foobar';
       const expectedResult = new User();
       jest.spyOn(userMockRepo, 'findOne').mockResolvedValue(expectedResult);
       expect(await usersService.verifyEmail(mockParameter)).toEqual(expectedResult);
-    });
+    });*/
   });
 
   describe('registerEmail', () => {
@@ -84,23 +89,12 @@ describe('UsersService', () => {
       expect(await usersService.registerEmail(mockParameterUndefined)).toMatchObject(expectedResult);
     });
 
-    /*it('should handle no existing user', async () => {
-      const mockParameterUndefined = undefined;
-      const mockParameterUser = new User();
-      const mockParameter = 'foobar';
-      jest
-        .spyOn(userMockRepo, 'findOne')
-        .mockReturnValueOnce(mockParameterUndefined)
-        .mockResolvedValue(mockParameterUser);
-      jest.spyOn(userMockRepo, 'create').mockReturnValue(mockParameterUser);
-      expect(await usersService.registerEmail(mockParameter)).toEqual(mockParameterUser);
-    });*/
-
+    /* Implementation Testing?
     it('should return user if findOne returns, and if email length > 0 ', async () => {
       const mockParameter = 'foobar';
       const expectedResult = new User();
       jest.spyOn(userMockRepo, 'findOne').mockResolvedValue(expectedResult);
       expect(await usersService.registerEmail(mockParameter)).toEqual(expectedResult);
-    });
+    });*/
   });
 });

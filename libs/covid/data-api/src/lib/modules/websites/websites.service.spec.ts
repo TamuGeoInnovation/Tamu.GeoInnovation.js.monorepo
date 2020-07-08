@@ -39,7 +39,7 @@ describe('WebsitesService', () => {
   });
 
   describe('getWebsitesForCounty', () => {
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
       const mockParameter = 'undefined';
       const expectedResult = {
         status: 400,
@@ -48,7 +48,7 @@ describe('WebsitesService', () => {
       };
       expect(await websitesService.getWebsitesForCounty(mockParameter)).toMatchObject(expectedResult);
     });
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
       const mockParameter = undefined;
       const expectedResult = {
         status: 400,
@@ -57,7 +57,7 @@ describe('WebsitesService', () => {
       };
       expect(await websitesService.getWebsitesForCounty(mockParameter)).toMatchObject(expectedResult);
     });
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
       const mockParameter = 0;
       const expectedResult = {
         status: 400,
@@ -66,11 +66,10 @@ describe('WebsitesService', () => {
       };
       expect(await websitesService.getWebsitesForCounty(mockParameter)).toMatchObject(expectedResult);
     });
-    /*await expect(websitesService.getWebsitesForCounty('yeet')).toMatchObject({});*/
   });
 
   describe('getWebsitesForClaimInfo', () => {
-    it('should handle catagorey inputs ', async () => {
+    it('should throw error for undefined parameter ', async () => {
       const mockParameter = undefined;
       await expect(websitesService.getWebsitesForClaimInfo(mockParameter)).rejects.toThrow();
     });
