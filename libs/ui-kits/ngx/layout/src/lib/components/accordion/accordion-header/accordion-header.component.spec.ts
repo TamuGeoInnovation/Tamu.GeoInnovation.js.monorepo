@@ -35,8 +35,6 @@ describe('AccordionHeaderComponent', () => {
   });
 
   it('should create', () => {
-    const yeet = spyOn(AccordionServiceStub, 'state');
-    component.state = mockHelper;
-    expect(yeet).toBeCalled();
+    expect(component).toBeTruthy();
   });
 });

@@ -84,7 +84,7 @@ describe('CountyClaims Controller', () => {
     });
   });
   describe('getPreviousClaimsForCounty', () => {
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
       const expectedResult = [];
       jest.spyOn(countyClaimsService, 'getHistoricClaimsForCounty').mockResolvedValue(expectedResult);
       expect(await countyClaimsController.getPreviousClaimsForCounty(mockParameters)).toMatchObject(expectedResult);

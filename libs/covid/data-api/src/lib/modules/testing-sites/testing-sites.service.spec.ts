@@ -67,23 +67,36 @@ describe('TestingSitesService', () => {
     });
   });
   describe('getWebsitesForClaimInfo', () => {
-    it('should handle catagorey inputs ', async () => {
+    /* Implementation Testing?
+    it('should throw error with mockParameter being Empty String ', async () => {
       const mockParameter = '';
       jest.spyOn(userMockRepo, 'findOne').mockResolvedValue(undefined);
       await expect(testingSitesService.createOrUpdateTestingSite(mockParameter)).rejects.toThrow();
-    });
+    });*/
   });
 
   describe('getSitesForUser', () => {
-    it('should handle catagorey inputs ', async () => {
+    it('should return {} with mockParameter being Empty String ', async () => {
       const mockParameter = '';
       const expectedResult = {};
       await expect(testingSitesService.getSitesForUser(mockParameter)).toMatchObject(expectedResult);
     });
   });
 
-  describe('getSiteAndLatestInfo', () => {
+  describe('should return error message with mockParameter being undefined', () => {
     it('should handle catagorey inputs ', async () => {
+      const mockParameter = undefined;
+      const expectedResult = {
+        status: 400,
+        success: false,
+        message: 'Input parameter missing.'
+      };
+      expect(await testingSitesService.registerCountyAsSiteless(mockParameter)).toMatchObject(expectedResult);
+    });
+  });
+
+  describe('getSiteAndLatestInfo', () => {
+    it('should throw error with mockParameter being undefined', async () => {
       const mockParameter = undefined;
       await expect(testingSitesService.getSiteAndLatestInfo(mockParameter)).rejects.toThrow();
     });

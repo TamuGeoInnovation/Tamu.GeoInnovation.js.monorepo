@@ -42,12 +42,12 @@ describe('Users Controller', () => {
   });
 
   describe('Get Users', () => {
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
       const expectedResult = [];
       jest.spyOn(usersService, 'getUsers').mockResolvedValue(expectedResult);
       expect(await usersController.getUsers()).toBe(expectedResult);
     });
-    it('should return expected Result', async () => {
+    it('should return expectedResult', async () => {
       const expectedResult = { message: '', status: 500, success: false };
       jest.spyOn(usersService, 'getUsers').mockImplementation(() => {
         throw new Error();

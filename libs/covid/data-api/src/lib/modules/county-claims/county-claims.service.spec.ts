@@ -39,98 +39,81 @@ describe('CountyClaims Controller', () => {
 
   describe('getWebsitesForClaimInfo', () => {
     it('should throw error - undefined value ', async () => {
-      await expect(countyClaimsService.getActiveClaimsForEmail(undefined)).rejects.toThrow();
+      const mockParameter = undefined;
+      await expect(countyClaimsService.getActiveClaimsForEmail(mockParameter)).rejects.toThrow();
     });
     it('should throw error - undefined string', async () => {
-      await expect(countyClaimsService.getActiveClaimsForEmail('undefined')).rejects.toThrow();
+      const mockParameter = 'undefined';
+      await expect(countyClaimsService.getActiveClaimsForEmail(mockParameter)).rejects.toThrow();
     });
   });
 
   describe('getAllUserCountyClaims', () => {
     it('should throw error - undefined value ', async () => {
-      await expect(countyClaimsService.getAllUserCountyClaims(undefined)).rejects.toThrow();
+      const mockParameter = undefined;
+      await expect(countyClaimsService.getAllUserCountyClaims(mockParameter)).rejects.toThrow();
     });
     it('should throw error  - undefined string', async () => {
-      await expect(countyClaimsService.getAllUserCountyClaims('undefined')).rejects.toThrow();
+      const mockParameter = 'undefined';
+      await expect(countyClaimsService.getAllUserCountyClaims(mockParameter)).rejects.toThrow();
     });
   });
 
   describe('getActiveClaimsForCountyFips', () => {
     it('should throw error  - undefined value ', async () => {
-      await expect(countyClaimsService.getActiveClaimsForCountyFips(undefined)).rejects.toThrow();
+      const mockParameter = undefined;
+      await expect(countyClaimsService.getActiveClaimsForCountyFips(mockParameter)).rejects.toThrow();
     });
     it('should throw error  - undefined string', async () => {
-      await expect(countyClaimsService.getActiveClaimsForCountyFips('undefined')).rejects.toThrow();
+      const mockParameter = 'undefined';
+      await expect(countyClaimsService.getActiveClaimsForCountyFips(mockParameter)).rejects.toThrow();
     });
   });
 
   describe('closeClaim', () => {
-    it('should handle catagorey inputs ', async () => {
-      expect(await countyClaimsService.closeClaim(undefined)).toMatchObject({
+    it('should handle mockParameter being undefined ', async () => {
+      const mockParameter = undefined;
+      const expectedResult = {
         status: 400,
         success: false,
         message: 'Input parameter missing.'
-      });
+      };
+      expect(await countyClaimsService.closeClaim(mockParameter)).toMatchObject(expectedResult);
     });
-    it('should handle catagorey inputs ', async () => {
-      jest.spyOn(countyClaimRepo, 'findOne').mockReturnValue(undefined);
-      expect(await countyClaimsService.closeClaim('yeet')).toMatchObject({
+    /* Implementation Testing?
+    it('should handle mockParameter being defined, but spyOn undefined ', async () => {
+      const mockParameter = 'foobar';
+      const expectedResult = {
         status: 500,
         success: false,
         message: 'Invalid claim.'
-      });
+      };
+      jest.spyOn(countyClaimRepo, 'findOne').mockReturnValue(undefined);
+      expect(await countyClaimsService.closeClaim(mockParameter)).toMatchObject(expectedResult);
+    });*/
+  });
+  describe('getHistoricClaimsForCounty', () => {
+    it('should throw error  - undefined value  ', async () => {
+      const mockParameter = undefined;
+      await expect(countyClaimsService.getHistoricClaimsForCounty(mockParameter)).rejects.toThrow();
+    });
+    it('should throw error  - undefined string  ', async () => {
+      const mockParameter = 'undefined';
+      await expect(countyClaimsService.getHistoricClaimsForCounty(mockParameter)).rejects.toThrow();
+    });
+  });
+  describe('getSuggestedClaims', () => {
+    it('should throw error  - undefined value ', async () => {
+      const mockParameter = undefined;
+      await expect(countyClaimsService.getSuggestedClaims(mockParameter)).rejects.toThrow();
+    });
+    it('should throw error  - undefined string ', async () => {
+      const mockParameter = 'undefined';
+      await expect(countyClaimsService.getSuggestedClaims(mockParameter)).rejects.toThrow();
+    });
+    it('should throw error  - null', async () => {
+      const mockParameter = null;
+      await expect(countyClaimsService.getSuggestedClaims(mockParameter)).rejects.toThrow();
     });
   });
 });
-
-/*describe('closeClaim', () => {
-    it('should handle catagorey inputs ', async () => {
-      expect(await service.closeClaim(undefined)).toMatchObject({
-        status: 400,
-        success: false,
-        message: 'Input parameter missing.'
-      });
-    });
-    it('should handle catagorey inputs ', async () => {
-      CountyClaimInfoRepoMock.findOne.mockReturnValue(undefined);
-      expect(await service.closeClaim('yeet')).toMatchObject({
-        status: 500,
-        success: false,
-        message: 'Invalid claim.'
-      });
-    });
-  });
-
-  describe('getHistoricClaimsForCounty', () => {
-    it('should handle catagorey inputs ', async () => {
-      await expect(service.getHistoricClaimsForCounty(undefined)).rejects.toThrow();
-    });
-    it('should handle catagorey inputs ', async () => {
-      await expect(service.getHistoricClaimsForCounty('undefined')).rejects.toThrow();
-    });
-  });
-
-  describe('getSuggestedClaims', () => {
-    it('should handle catagorey inputs ', async () => {
-      await expect(service.getSuggestedClaims(undefined)).rejects.toThrow();
-    });
-    it('should handle catagorey inputs ', async () => {
-      await expect(service.getSuggestedClaims('undefined')).rejects.toThrow();
-    });
-    it('should handle catagorey inputs ', async () => {
-      await expect(service.getSuggestedClaims(null)).rejects.toThrow();
-    });
-  });
-  describe('createOrUpdateClaim', () => {
-    it('should handle catagorey inputs ', async () => {
-      UserRepoMock.findOne.mockReturnValue(undefined);
-      await expect(service.createOrUpdateClaim(undefined, undefined, undefined)).rejects.toThrow();
-    });
-    it('should handle catagorey inputs ', async () => {
-      UserRepoMock.findOne.mockReturnValue(new User());
-      await expect(service.createOrUpdateClaim(new CountyClaim(), [], [])).toMatchObject({
-        status: 400,
-        success: false,
-        message: 'Input parameter missing.'
-      });
-    });*/

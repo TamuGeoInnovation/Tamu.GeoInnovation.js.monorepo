@@ -9,8 +9,8 @@ import { CountiesService } from './counties.service';
 
 describe('CountiesService', () => {
   let countiesService: CountiesService;
-  let CountyMockRepo: Repository<County>;
-  let CountyClaimMockRepo: Repository<CountyClaim>;
+  let countyMockRepo: Repository<County>;
+  let countyClaimMockRepo: Repository<CountyClaim>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,8 +22,8 @@ describe('CountiesService', () => {
     }).compile();
 
     countiesService = module.get<CountiesService>(CountiesService);
-    CountyMockRepo = module.get(getRepositoryToken(County));
-    CountyClaimMockRepo = module.get(getRepositoryToken(CountyClaim));
+    countyMockRepo = module.get(getRepositoryToken(County));
+    countyClaimMockRepo = module.get(getRepositoryToken(CountyClaim));
   });
 
   describe('Validation ', () => {
@@ -32,7 +32,26 @@ describe('CountiesService', () => {
     });
   });
 
-  /*it('should properly Search', () => {
+  describe('getCountiesForState', () => {
+    it('should throw error for undefined parameter ', async () => {
+      const mockParameter = undefined;
+      expect(() => countiesService.getCountiesForState(mockParameter)).toThrow();
+    });
+    it('should throw error for undefined string parameter ', async () => {
+      const mockParameter = 'undefined';
+      expect(() => countiesService.getCountiesForState(mockParameter)).toThrow();
+    });
+    it('should throw error for null  parameter ', async () => {
+      const mockParameter = null;
+      expect(() => countiesService.getCountiesForState(mockParameter)).toThrow();
+    });
+    it('should throw error for null string parameter ', async () => {
+      const mockParameter = 'null';
+      expect(() => countiesService.getCountiesForState(mockParameter)).toThrow();
+    });
+  });
+  /* Implementation Testing?
+  it('should properly Search', () => {
     const countyName = 'reee';
     const countyTest = new County();
     countyTest.name = countyName;
@@ -67,24 +86,5 @@ describe('CountiesService', () => {
     countyTest.stateFips = stateFipsMock;
     CountyMockRepo.find.mockReturnValue(countyTest);
     expect(service.getCountiesForState('yeet')).toBe(countyTest);
-  });
-
-  Work inprogress
-  it('should be getCountyStats()', () => {
-    const stateFipsMock = {
-      stateFips: 6,
-      name: 'yeet',
-      abbreviation: 'yt',
-      hasId: undefined,
-      save: undefined,
-      remove: undefined,
-      reload: undefined
-    };
-    const countyTest = new County();
-    countyTest.stateFips = stateFipsMock;
-    countyTest.name = 'yeet';
-    countyTest.countyFips = 0;
-    CountyMockRepo.createQueryBuilder.mockReturnValue(countyTest);
-    expect(service.getCountyStats()).toBeDefined();
   });*/
 });
