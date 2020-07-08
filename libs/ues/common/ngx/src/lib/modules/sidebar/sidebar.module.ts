@@ -12,6 +12,7 @@ import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 
 import { SidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
+import { UESCoreUIModule } from '../core-ui/core-ui.module';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { SidebarReferenceComponent } from './components/sidebar-reference/sideba
     SearchModule,
     MapsFeatureTripPlannerModule,
     LayerListModule,
-    LegendModule
+    LegendModule,
+    UESCoreUIModule
   ],
   declarations: [SidebarComponent, SidebarReferenceComponent],
   exports: [SidebarComponent]

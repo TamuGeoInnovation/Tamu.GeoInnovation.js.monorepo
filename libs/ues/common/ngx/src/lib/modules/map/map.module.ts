@@ -38,6 +38,7 @@ import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard
 import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 
+import { UESCoreUIModule } from '../core-ui/core-ui.module';
 import { MapComponent } from './map.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
@@ -131,7 +132,8 @@ const routes: Routes = [
     AggiemapFormsModule,
     SettingsModule,
     SidebarModule,
-    UITamuBrandingModule
+    UITamuBrandingModule,
+    UESCoreUIModule
   ],
   declarations: [MapComponent]
 })
