@@ -4,6 +4,8 @@ export * from './lib/aggiemap.module';
 export * from './lib/popups/popups.module';
 export * from './lib/reference/reference.module';
 export * from './lib/modules/sidebar/sidebar.module';
+export * from './lib/modules/core-ui/core-ui.module';
+export * from './lib/modules/mobile-ui/mobile-ui.module';
 
 // Components
 export * from './lib/reference/components/building-department-list/building-department-list.component';
@@ -27,3 +29,10 @@ export * from './lib/transportation/components/bus-timetable/bus-timetable.compo
 export * from './lib/modules/sidebar/sidebar.component';
 export * from './lib/modules/sidebar/components/sidebar-reference/sidebar-reference.component';
 export * from './lib/modules/sidebar/components/sidebar-trip-planner/sidebar-trip-planner.component';
+
+export * from './lib/modules/core-ui/components/backdrop/backdrop.component';
+
+export * from './lib/modules/mobile-ui/mobile-ui.component';
+export * from './lib/modules/mobile-ui/components/trip-planner-top/trip-planner-top.component';
+export * from './lib/modules/mobile-ui/components/trip-planner-bottom/trip-planner-bottom.component';
+export * from './lib/modules/mobile-ui/components/omnisearch/omnisearch.component';
