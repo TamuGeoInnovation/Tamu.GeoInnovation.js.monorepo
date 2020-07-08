@@ -248,9 +248,6 @@ export class User extends GuidIdentity {
   @JoinColumn()
   public account: Account;
 
-  @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata, { cascade: true })
-  redirectUris: RedirectUri[];
-
   @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true })
   @JoinColumn()
   public userRoles: UserRole[];
