@@ -24,4 +24,8 @@ export class RoleService {
       this.roleRepo.save(role);
     }
   }
+
+  public async getAllRoles() {
+    return this.roleRepo.find();
+  }
 }

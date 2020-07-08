@@ -30,7 +30,8 @@ import {
   TokenEndpointAuthMethod,
   TokenEndpointAuthMethodRepo,
   Role,
-  RoleModule
+  RoleModule,
+  UserRole
 } from '@tamu-gisc/oidc/provider-nest';
 
 import { dbConfig } from '../environments/environment';
@@ -57,7 +58,8 @@ import { dbConfig } from '../environments/environment';
         ResponseType,
         Role,
         Session,
-        User
+        User,
+        UserRole
       ]
     }),
     TypeOrmModule.forFeature([

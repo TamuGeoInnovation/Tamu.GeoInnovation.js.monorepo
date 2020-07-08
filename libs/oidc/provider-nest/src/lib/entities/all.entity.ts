@@ -16,9 +16,9 @@ import {
   ManyToMany,
   BaseEntity,
   Repository,
-  EntityRepository,
   getConnection,
-  ObjectType
+  ObjectType,
+  EntityRepository
 } from 'typeorm';
 
 import { v4 as guid } from 'uuid';
@@ -248,11 +248,12 @@ export class User extends GuidIdentity {
   @JoinColumn()
   public account: Account;
 
-  // @Column({
-  //   type: "varchar",
-  //   nullable: true,
-  // })
-  // guid: string = v4();
+  @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata, { cascade: true })
+  redirectUris: RedirectUri[];
+
+  @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true })
+  @JoinColumn()
+  public userRoles: UserRole[];
 
   @Column({
     type: 'varchar',
@@ -823,6 +824,23 @@ export class Role extends GuidIdentity {
   name: string;
 }
 
+@Entity({
+  name: 'user_roles'
+})
+export class UserRole extends GuidIdentity {
+  @OneToOne((type) => Role, { cascade: true })
+  @JoinColumn()
+  role: Role;
+
+  // @ManyToOne((type) => ClientMetadata, (client) => client.guid)
+  @OneToOne((type) => ClientMetadata, { cascade: true })
+  @JoinColumn()
+  client: ClientMetadata;
+
+  @ManyToOne((type) => User, (user) => user.userRoles)
+  user: User;
+}
+
 export class CommonRepo<T> extends Repository<T> {
   public async findByKeyShallow<K extends keyof T>(key: K, value: unknown) {
     const op = {
@@ -872,14 +890,6 @@ export class CommonRepo<T> extends Repository<T> {
     });
     return propNames;
   }
-
-  // public async insertEntity(req: Request) {
-  //   // Insert given an Express req, build a Partial<EntityType>
-  //   // with the entity's props and the req.boy's contents
-
-  //   return this.createQueryBuilder('entity')
-  //     .insert()
-  // }
 }
 
 @EntityRepository(ClientMetadata)
@@ -905,3 +915,6 @@ export class AccountRepo extends CommonRepo<Account> {}
 
 @EntityRepository(Role)
 export class RoleRepo extends CommonRepo<Role> {}
+
+@EntityRepository(UserRole)
+export class UserRoleRepo extends CommonRepo<UserRole> {}
