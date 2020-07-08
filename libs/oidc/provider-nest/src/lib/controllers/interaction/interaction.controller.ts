@@ -129,10 +129,14 @@ export class InteractionController {
           },
           // consent was given by the user to the client for this session
           consent: {
-            rejectedScopes: [], // array of strings, scope names the end-user has not granted
+            rejectedScopes: ['profile'], // array of strings, scope names the end-user has not granted
             rejectedClaims: [] // array of strings, claim names the end-user has not granted
           },
-          meta: {}
+          meta: {
+            test: {
+              greetings: 'hello'
+            }
+          }
         };
         if (user.enabled2fa) {
           const locals = {
