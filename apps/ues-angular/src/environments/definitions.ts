@@ -1,5 +1,3 @@
-import { Popups } from '@tamu-gisc/aggiemap';
-
 export const Connections = {
   basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer',
   inforUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer',
@@ -17,7 +15,6 @@ export const Definitions = {
     layerId: 'buildings-layer',
     name: 'Buildings',
     url: `${Connections.basemapUrl}/1`,
-    popupComponent: Popups.BuildingPopupComponent,
     category: 'Uncategorized'
   },
   DOMESTIC_COLD_WATER: {

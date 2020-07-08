@@ -35,12 +35,13 @@ export const LayerSources: LayerSource[] = [
     id: d.BUILDINGS.layerId,
     title: d.BUILDINGS.name,
     url: d.BUILDINGS.url,
-    category: d.BUILDINGS.category,
+    popupComponent: Popups.BuildingPopupComponent,
     listMode: 'hide',
     loadOnInit: true,
     visible: true,
-    popupComponent: 'BuildingPopupComponent',
+    layerIndex: 1,
     native: {
+      ...commonLayerProps,
       renderer: {
         type: 'simple',
         symbol: {
@@ -63,8 +64,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -75,8 +78,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -87,8 +92,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -99,8 +106,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -111,8 +120,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -123,8 +134,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -135,8 +148,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -147,8 +162,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -159,8 +176,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -171,8 +190,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -183,8 +204,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -195,8 +218,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -207,8 +232,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -219,8 +246,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -231,8 +260,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -243,8 +274,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -255,8 +288,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -267,8 +302,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -279,8 +316,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -291,8 +330,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -303,8 +344,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -315,8 +358,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -327,8 +372,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -339,8 +386,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -351,8 +400,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -363,8 +414,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -375,8 +428,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -387,8 +442,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -399,8 +456,10 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent',
-    native: {}
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
@@ -419,7 +478,7 @@ export const LayerSources: LayerSource[] = [
           'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAENJREFUOI1jYaAyYKGZgf9DGf5TahjjagZGFnQBcg2DOYgFmyAlgLYupAYYYgaORsogNHA0Uig3kJIwhAUXC7oApQAAQ8kZ9+L+/N4AAAAASUVORK5CYII='
       }
     ],
-    popupComponent: 'ConstructionPopupComponent'
+    popupComponent: Popups.ConstructionPopupComponent
   },
   {
     type: 'feature',
@@ -444,7 +503,7 @@ export const LayerSources: LayerSource[] = [
           'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAA05JREFUSInNlU+IE3cUxz+/38ykY1JRlFKyENYl0LqLkWazFSzYg8XDQmRP4rWnCKV4qB48SJP04Gn3sjcDglCkrCchLXQRyxaL0JYllJRdKt1WumqoLdLDbjZ/Zn6vhyRjZpPIllLoO8289+b7+b03j9+z+Y/N/l8A2u32mGVZGaVUXETGAJRSZaXU6r8CiEgGKADZnk8p1XvMiwgiUvJ9v+g4ztN/BDDGFID8dt3wcKPF8kqLx88M65uGyYRmesri8EHN3GwsZ9t2zhhT1FoX9gQQkTKQrVQb3LjdYH3ThOLrmybwLS41mb8UJZ1y88aYuNb6wksB3ZNnv36wwyelnVEFhuzyQp2L533mZmM5Y0ytv5IQoNvzfKXa4LMvmsx/FA1i33zf4s59jwMuXP0gSu9P/LDW5tMv2ywuNTl21CE5EcmLSDAAuysobNcNN243eO2AIn3cDQKWrbhz3+P0CZvpPv/WtgBtAHLFLe7dPARwHZgJAdrt9hiQfbjRYn3T8M6UFYh4nnAk4QBwfNIJfLYdTFRglWqDdMrNDLTIsqwMwPJKa+CjJzWP8YTDiTc1ySMOIi98u215pUU65WKMOau1LgcApVQc4PEzM/DRxqOO2LtvR4i/bvHnc5/6zmAewN1Vjyt9egFARMaUUgMjCVBZa3P61D5OnXTRWvHroxb79+uhgH69EKBnkwk9APm26tNoGF6NdUR//Mnj5ExkqPBkIgzub1EZyE9PWQMAzwi/PfF4IxnBGPjqu9GA6e5wdPVCgFUR4fDB4aX//EsH8PsfHrW/ZGgOQHK8I+l5Xi0EABCR0txsLLe41OTBms977z8PYgu3GizcagTvH17bBrZD4mcyNjNvvYKIlHqXXwjg+37Rtu3c/KUolxfqI085ys5lXWJRDVDq+UIAx3GeGmOK6ZSbv3jeZ3GpuWfxj3P7SE5EEJGi1jrYEwNTpLUuGGPic7Ox3LGjDrni1kuFz2RszmVdkhMRgM93X9lDr2ut9QVjTC05Ecnfu3mISrXB8kqLu6seQLAPkuOdnseiunfywm6tkQtHa13o7oXr6ZSbSadcrgzJE5ESUOpvy54A0BldureiMebs7p3seV5t1KrcE6DftNblveb2299DrV3F9KlErwAAAABJRU5ErkJggg=='
       }
     ],
-    popupComponent: 'AccessiblePopupComponent'
+    popupComponent: Popups.AccessiblePopupComponent
   },
   {
     type: 'graphic',
@@ -454,7 +513,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'hide',
     loadOnInit: false,
     visible: true,
-    popupComponent: 'BasePopupComponent'
+    popupComponent: Popups.GeneralDirectionsPopupComponent
   }
 ];
 
@@ -577,7 +636,7 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{attributes.DeptName}',
-    popupComponent: 'BasePopupComponent',
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
     searchActive: true,
     altLookup: {
       source: 'building-exact',

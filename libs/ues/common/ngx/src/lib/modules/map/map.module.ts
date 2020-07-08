@@ -115,6 +115,7 @@ const routes: Routes = [
     LegendModule,
     LayerListModule,
     MapPopupModule,
+    PopupsModule,
     MapsFeatureAccessibilityModule,
     MapsFeatureCoordinatesModule,
     UIStructuralLayoutModule,
@@ -128,7 +129,6 @@ const routes: Routes = [
     AggiemapCoreUIModule,
     AggiemapSidebarModule,
     AggiemapFormsModule,
-    PopupsModule,
     SettingsModule,
     SidebarModule,
     UITamuBrandingModule
