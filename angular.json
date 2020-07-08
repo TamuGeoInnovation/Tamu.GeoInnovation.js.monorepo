@@ -3270,7 +3270,15 @@
             "polyfills": "apps/ues-angular/src/polyfills.ts",
             "tsConfig": "apps/ues-angular/tsconfig.app.json",
             "aot": true,
-            "assets": ["apps/ues-angular/src/favicon.ico", "apps/ues-angular/src/assets"],
+            "assets": [
+              "apps/ues-angular/src/favicon.ico",
+              "apps/ues-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
             "styles": ["apps/ues-angular/src/styles.scss"],
             "scripts": []
           },

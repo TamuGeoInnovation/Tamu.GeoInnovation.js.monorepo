@@ -1,11 +1,24 @@
+import { Popups } from '@tamu-gisc/aggiemap';
+
+export const Connections = {
+  basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer',
+  inforUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer',
+  accessibleUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
+  constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer',
+  departmentUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
+  tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
+  bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
+  bikeLocationsUrl: 'http://nodes.geoservices.tamu.edu/api/veoride/bikes/?format=geojson&metadata=false&fields=lat,lon'
+};
+
 export const Definitions = {
   BUILDINGS: {
     id: 'buildings',
     layerId: 'buildings-layer',
     name: 'Buildings',
-    url: "https://gis.tamu.edu/arcgis/rest/services/FCOR/BaseMap_20200123/MapServer/1",
-    popupComponent: 'BuildingPopupComponent',
-    category: 'Infrastructure'
+    url: `${Connections.basemapUrl}/1`,
+    popupComponent: Popups.BuildingPopupComponent,
+    category: 'Uncategorized'
   },
   DOMESTIC_COLD_WATER: {
     id: 'domestic-cold-water',
@@ -210,4 +223,4 @@ export const Definitions = {
     url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/28',
     category: 'Electrical'
   }
-}
+};

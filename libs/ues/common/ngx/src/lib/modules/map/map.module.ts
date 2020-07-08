@@ -2,31 +2,45 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import {
   AggiemapModule,
-  AggiemapSidebarComponent,
   SidebarTripPlannerComponent,
-  SidebarReferenceComponent
+  AggiemapMobileUIModule,
+  MobileUIComponent,
+  TripPlannerTopComponent,
+  OmnisearchComponent,
+  TripPlannerBottomComponent,
+  AggiemapCoreUIModule,
+  AggiemapSidebarModule,
+  MainMobileSidebarComponent,
+  MobileSidebarComponent,
+  ModalComponent,
+  ReportBadRouteComponent,
+  AggiemapFormsModule,
+  PopupsModule
 } from '@tamu-gisc/aggiemap';
-import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
-import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
-import { LayerListModule, LayerListCategorizedComponent } from '@tamu-gisc/maps/feature/layer-list';
-import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
-import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
-import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
-
-import { UIStructuralLayoutModule } from '@tamu-gisc/ui-kits/ngx/layout/structural';
-import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
-
+import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
+import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { UIStructuralLayoutModule } from '@tamu-gisc/ui-kits/ngx/layout/structural';
+import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
+import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
+import { LayerListModule, LayerListCategorizedComponent } from '@tamu-gisc/maps/feature/layer-list';
+import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
+import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
+import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
+import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
+import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 
 import { MapComponent } from './map.component';
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
 
 const routes: Routes = [
   {
@@ -40,7 +54,7 @@ const routes: Routes = [
       },
       {
         path: 'd',
-        component: AggiemapSidebarComponent,
+        component: SidebarComponent,
         canActivateChild: [DesktopGuard],
         children: [
           { path: '', component: SidebarReferenceComponent },
@@ -109,8 +123,16 @@ const routes: Routes = [
     UILayoutModule,
     UIFormsModule,
     PipesModule,
-    SearchModule
+    SearchModule,
+    AggiemapMobileUIModule,
+    AggiemapCoreUIModule,
+    AggiemapSidebarModule,
+    AggiemapFormsModule,
+    PopupsModule,
+    SettingsModule,
+    SidebarModule,
+    UITamuBrandingModule
   ],
-  declarations: []
+  declarations: [MapComponent]
 })
 export class MapModule {}

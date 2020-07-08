@@ -12,7 +12,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class EsriMapService {
   // Private store, which will contain the eventual map and view objects
   //

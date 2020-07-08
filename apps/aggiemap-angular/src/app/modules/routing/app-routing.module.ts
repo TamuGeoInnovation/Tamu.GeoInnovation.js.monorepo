@@ -28,7 +28,8 @@ import {
   MobileSidebarComponent,
   ModalComponent,
   ReportBadRouteComponent,
-  AggiemapFormsModule
+  AggiemapFormsModule,
+  PopupsModule
 } from '@tamu-gisc/aggiemap';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
@@ -48,7 +49,6 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
 import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
 import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
-import { PopupsModule } from '@tamu-gisc/aggiemap';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
 

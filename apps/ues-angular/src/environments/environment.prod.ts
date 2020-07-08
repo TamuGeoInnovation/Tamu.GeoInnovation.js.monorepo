@@ -7,15 +7,25 @@ export const environment = {
   production: true
 };
 
-import { SearchSource } from '@tamu-gisc/search';
+import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/search';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 
-import { Definitions as d } from './definitions';
+import { Connections, Definitions as d } from './definitions';
 
-export const Connections = {
-  basemapUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer',
-  accessibleUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
-  constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2019/MapServer'
+import { Popups } from '@tamu-gisc/aggiemap';
+
+import esri = __esri;
+
+export * from './definitions';
+export * from './notification-events';
+export * from './polygons';
+
+const commonLayerProps = {
+  outFields: ['*'],
+  minScale: 100000,
+  maxScale: 0,
+  elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerElevationInfo,
+  popupEnabled: false
 };
 
 // Persistent layer definitions that will be processed by a factory and added to the map.
@@ -452,7 +462,7 @@ export const LayerSources: LayerSource[] = [
 export const LegendSources: LegendItem[] = [
   {
     id: 'university-building-legend',
-    title: 'Unversity Building',
+    title: 'University Building',
     src:
       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAJBJREFUOI1jYaAyYIExAtnZGygxaP3Pnw1wAwPZ2RuE7azruYVFyDLsw/2HDCkvXhirKCvPgruQW1iEQUJJmWwXMv386cPAzOzDQlgpaWDUwFEDRw0cZgZ+uP+QbEO+vn3DwIts4PqfPxsCL1xg+HThAgMDAwODsISEMamGimtooLoQVuIyMDAwMDwkw7VQPQDNmyRazmV6EgAAAABJRU5ErkJggg=='
   },
@@ -500,22 +510,171 @@ export const LegendSources: LegendItem[] = [
   }
 ];
 
-// Search sources used for querying features.
-// export const SearchSources: SearchSource[] = [
-//   {
-//     key: d.FIRE_HYDRANTS.id,
-//     name: d.FIRE_HYDRANTS.name,
-//     url: d.FIRE_HYDRANTS.url,
-//     query:
-//       "/query?f=json&resultRecordCount=5&where=(UPPER(Location) LIKE '%{{queryTerm}}%') OR (UPPER(No_) LIKE '%{{queryTerm}}%') OR (UPPER(HYDR_NUMBER) LIKE '%{{queryTerm}}%') OR (UPPER(Make) LIKE '%{{queryTerm}}%')&outFields=*&outSR=4326&returnGeometry=true&spatialRel=esriSpatialRelIntersects",
-//     featuresLocation: 'features',
-//     displayTemplate: '{{attributes.Location}} ({{attributes.HYDR_NUMBER}})',
-//     popupComponent: 'BasePopupComponent',
-//     searchActive: true
-//   }
-// ];
+const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
+  f: 'json',
+  resultRecordCount: 5,
+  outFields: '*',
+  outSR: 4326,
+  returnGeometry: true,
+  spatialRel: 'esriSpatialRelIntersects'
+};
 
-export const SelectionSymbols: any = {
+// Search sources used for querying features.
+export const SearchSources: SearchSource[] = [
+  {
+    source: 'building',
+    name: 'Building',
+    url: `${Connections.basemapUrl}/1`,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['Number', 'BldgAbbr', 'BldgName'],
+        operators: ['LIKE', 'LIKE', 'LIKE'],
+        wildcards: ['includes', 'includes', 'includes'],
+        transformations: ['UPPER', 'UPPER', 'UPPER']
+      },
+      scoringWhere: {
+        keys: ['BldgName'],
+        operators: ['LIKE'],
+        wildcards: ['startsWith'],
+        transformations: ['UPPER']
+      }
+    },
+    scoringKeys: ['attributes.BldgAbbr', 'attributes.Number', 'attributes.BldgName'],
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.BldgName} ({attributes.Number})',
+    popupComponent: Popups.BuildingPopupComponent,
+    searchActive: true
+  },
+  {
+    source: 'building-exact',
+    name: 'Building',
+    url: `${Connections.basemapUrl}/1`,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['Number'],
+        operators: ['=']
+      }
+    },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.BldgName} ({attributes.Number})',
+    popupComponent: Popups.BuildingPopupComponent,
+    searchActive: false
+  },
+  {
+    source: 'university-departments',
+    name: 'University Departments',
+    url: `${Connections.departmentUrl}`,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['DeptName', 'CollegeName', 'DeptAbbre'],
+        operators: ['LIKE', 'LIKE', 'LIKE'],
+        wildcards: ['includes', 'includes', 'includes'],
+        transformations: ['UPPER', 'UPPER', 'UPPER']
+      }
+    },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.DeptName}',
+    popupComponent: 'BasePopupComponent',
+    searchActive: true,
+    altLookup: {
+      source: 'building-exact',
+      reference: {
+        keys: ['attributes.HOME1']
+      }
+    }
+  },
+  {
+    source: 'university-departments-exact',
+    name: 'University Departments',
+    url: `${Connections.departmentUrl}`,
+    queryParams: {
+      ...commonQueryParams,
+      resultRecordCount: 100,
+      where: {
+        keys: ['HOME1'],
+        operators: ['=']
+      }
+    },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.DeptName}',
+    searchActive: false
+  },
+  {
+    source: 'parking-garage',
+    name: 'Parking Garage',
+    url: `${Connections.basemapUrl}/0`,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['LotName', 'Name'],
+        operators: ['LIKE', 'LIKE'],
+        wildcards: ['includes', 'includes'],
+        transformations: ['UPPER', 'UPPER']
+      }
+    },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.LotName}',
+    popupComponent: Popups.BuildingPopupComponent,
+    searchActive: true
+  },
+  {
+    source: 'parking-lot',
+    name: 'Parking Lot',
+    url: `${Connections.basemapUrl}/12`,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['LotName'],
+        operators: ['LIKE'],
+        wildcards: ['includes'],
+        transformations: ['UPPER']
+      }
+    },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.LotName}',
+    popupComponent: Popups.ParkingLotPopupComponent,
+    searchActive: true
+  },
+  {
+    source: 'points-of-interest',
+    name: 'Points of Interest',
+    url: `${Connections.inforUrl}/0`,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['Name'],
+        operators: ['LIKE'],
+        wildcards: ['includes'],
+        transformations: ['UPPER']
+      }
+    },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.Name}',
+    popupComponent: Popups.PoiPopupComponent,
+    searchActive: true
+  },
+  {
+    source: 'bike-racks',
+    name: 'Bike Racks',
+    url: `${Connections.bikeRacksUrl}`,
+    queryParams: {
+      ...commonQueryParams,
+      resultRecordCount: 9999,
+      where: {
+        keys: ['1'],
+        operators: ['=']
+      }
+    },
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.Type}',
+    searchActive: false
+  }
+];
+
+export const SelectionSymbols = {
   polygon: {
     type: 'simple-fill',
     style: 'solid',
