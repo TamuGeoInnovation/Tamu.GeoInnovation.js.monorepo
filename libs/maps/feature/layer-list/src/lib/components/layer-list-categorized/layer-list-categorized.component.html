@@ -6,7 +6,7 @@
 <div class="sidebar-component-content-container">
   <div class="category" *ngFor="let category of categorized">
     <tamu-gisc-accordion [expanded]="category.expanded">
-      <tamu-gisc-accordion-header>{{category.title}}</tamu-gisc-accordion-header>
+      <tamu-gisc-accordion-header (click)="category.expanded = !category.expanded">{{category.title}}</tamu-gisc-accordion-header>
       <tamu-gisc-accordion-content>
         <p *ngFor="let item of category.layers" class="layer-item" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible }" (click)="toggleLayer(item)">
           {{ item.title }}
