@@ -730,6 +730,26 @@ export const SearchSources: SearchSource[] = [
     featuresLocation: 'features',
     displayTemplate: '{attributes.Type}',
     searchActive: false
+  },
+  {
+    source: d.FIRE_HYDRANTS.id,
+    name: d.FIRE_HYDRANTS.name,
+    url: d.FIRE_HYDRANTS.url,
+    query:
+      "/query?f=json&resultRecordCount=5&where=(UPPER(Location) LIKE '%{{queryTerm}}%') OR (UPPER(No_) LIKE '%{{queryTerm}}%') OR (UPPER(HYDR_NUMBER) LIKE '%{{queryTerm}}%') OR (UPPER(Make) LIKE '%{{queryTerm}}%')&outFields=*&outSR=4326&returnGeometry=true&spatialRel=esriSpatialRelIntersects",
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.Location} ({attributes.HYDR_NUMBER})',
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    searchActive: true,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['Location', 'No_', 'HYDR_NUMBER', 'Make'],
+        operators: ['LIKE', 'LIKE', 'LIKE', 'LIKE'],
+        wildcards: ['includes', 'includes', 'includes', 'includes'],
+        transformations: ['UPPER', 'UPPER', 'UPPER', 'UPPER']
+      }
+    }
   }
 ];
 

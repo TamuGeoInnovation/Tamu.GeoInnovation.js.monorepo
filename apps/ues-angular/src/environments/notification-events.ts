@@ -1,39 +1,6 @@
 import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
 export const NotificationEvents: NotificationProperties[] = [
-  // {
-  //   id: 'changelog-update',
-  //   title: "Aggiemap Has Been Updated",
-  //   range: [0, 9999999999999],
-  //   acknowledge: false,
-  //   message: 'Aggiemap has received a major update! Press me to be re-directed to the Aggiemap changelog to find out more.',
-  //   imgUrl: './assets/images/text-lines.svg',
-  //   imgAltText: 'Newspaper Icon',
-  //   action: {
-  //     type: 'route',
-  //     value: 'changelog'
-  //   }
-  // },
-  {
-    id: 'move_in',
-    title: 'Move-In',
-    range: [1534309200000, 1534957200000],
-    acknowledge: false,
-    message:
-      'Moving-in? Get the best parking information on your move-in day with the <a href="https://aggiemap.tamu.edu/movein/" target="_blank">move-in day parking app</a>.',
-    imgUrl: './assets/images/package-orig.svg',
-    imgAltText: '"Box Icon'
-  },
-  {
-    id: 'graduation',
-    title: 'Graduation',
-    range: [1557247098694, 1557637200000],
-    acknowledge: false,
-    message:
-      'Attending graduation? Avoid the traffic and find best parking locations with the <a href="https://aggiemap.tamu.edu/graduation/arrival/" target="_blank">graduation day map</a>.',
-    imgUrl: './assets/images/mortarboard.svg',
-    imgAltText: '"Graduation Cap Icon'
-  },
   {
     id: 'out_of_bounds',
     title: 'Outside County Limits',
