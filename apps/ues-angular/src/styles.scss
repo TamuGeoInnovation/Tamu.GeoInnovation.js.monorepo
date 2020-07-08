@@ -47,7 +47,6 @@
 //   UI Elements
 //  ==========================================================================
 
-@import 'libs/sass/components/datetime-picker';
 @import 'libs/sass/modules/loaders';
 
 //  ==========================================================================
@@ -73,13 +72,6 @@ body {
 body.scroll {
   -webkit-overflow-scrolling: touch; //Preserve mobile momentum scrolling
   overflow-y: scroll;
-}
-
-.infowindow .window .top .right .user .titlebar .title {
-  font-family: $secondary-fStack;
-  font-weight: bold;
-  font-size: 14pt;
-  font-size: 18pt;
 }
 
 body p {
@@ -156,17 +148,6 @@ select {
   padding: 0.5rem;
 }
 
-#footer a {
-  // color: #fff;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-#footer a:visited {
-  // color: #ffffff;
-  text-decoration: none;
-}
-
 h1 {
   font-size: 3rem;
   font-weight: 300;
@@ -215,12 +196,6 @@ h6 {
     border-bottom: 1px solid #eeeeee;
     padding-bottom: 0.5rem;
   }
-}
-
-app-root {
-  @include flexbox();
-  @include flex-direction(column);
-  height: inherit;
 }
 
 .accessible-viewfinder,
