@@ -1,0 +1,11 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flexbox();
+  @include flex-direction(column);
+  @include align-items(center);
+}
+
+h2 {
+  margin-top: 0;
+}

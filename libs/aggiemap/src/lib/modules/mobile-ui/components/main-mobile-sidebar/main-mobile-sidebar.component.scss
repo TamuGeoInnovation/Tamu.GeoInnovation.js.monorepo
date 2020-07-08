@@ -1,0 +1,34 @@
+@import 'libs/sass/mixins';
+
+.list-container {
+  margin-left: 0.5rem;
+  list-style-type: none;
+}
+
+p,
+a {
+  padding: 0.4rem 0;
+  font-size: 0.9rem;
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.list-item {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+
+  & > a,
+  & > p {
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+  }
+}
+
+.material-icons {
+  font-size: 0.9rem;
+  margin-left: 0.25rem;
+  color: #757575;
+}

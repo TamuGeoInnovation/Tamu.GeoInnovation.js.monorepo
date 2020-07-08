@@ -22,7 +22,7 @@ import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 // import { ParkingLotPopupComponent } from 'app/modules/components/popup/components/parking-lot/parking-lot.component';
 // import { AccessiblePopupComponent } from 'app/modules/components/popup/components/accessible/accessible.component';
 
-import { UIMobileModule, MobileUIComponent } from '@tamu-gisc/aggiemap';
+import { AggiemapMobileUIModule, MobileUIComponent } from '@tamu-gisc/aggiemap';
 
 import { TripPlannerTopComponent } from 'app/modules/components/mobile-ui/components/trip-planner-top/trip-planner-top.component';
 import { OmnisearchComponent } from 'app/modules/components/mobile-ui/components/omnisearch/omnisearch.component';
@@ -58,7 +58,7 @@ const hybridRoutes: Routes = [
     CommonNgxRouterModule,
     TestingModule,
     UITamuBrandingModule,
-    UIMobileModule
+    AggiemapMobileUIModule
   ],
   declarations: [
     BackdropComponent,

@@ -17,10 +17,18 @@ import {
   BusListComponent,
   SidebarTripPlannerComponent,
   SidebarReferenceComponent,
+  AggiemapMobileUIModule,
   MobileUIComponent,
   TripPlannerTopComponent,
   OmnisearchComponent,
-  TripPlannerBottomComponent
+  TripPlannerBottomComponent,
+  AggiemapCoreUIModule,
+  AggiemapSidebarModule,
+  MainMobileSidebarComponent,
+  MobileSidebarComponent,
+  ModalComponent,
+  ReportBadRouteComponent,
+  AggiemapFormsModule
 } from '@tamu-gisc/aggiemap';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
@@ -54,12 +62,13 @@ import { EsriMapComponent } from '../../map/esri-map.component';
 // import { OmnisearchComponent } from '../../modules/components/mobile-ui/components/omnisearch/omnisearch.component';
 // import { TripPlannerBottomComponent } from '../../modules/components/mobile-ui/components/trip-planner-bottom/trip-planner-bottom.component';
 
-import { MobileSidebarComponent } from '../../modules/components/mobile-ui/components/sidebar/mobile-sidebar.component';
-import { MainMobileSidebarComponent } from '../../modules/components/mobile-ui/components/sidebar/components/main/main.component';
+// import { MobileSidebarComponent } from '../../modules/components/mobile-ui/components/sidebar/mobile-sidebar.component';
+// import { MainMobileSidebarComponent } from '../../modules/components/mobile-ui/components/sidebar/components/main/main.component';
 
-import { BackdropComponent } from '../../modules//components/backdrop/backdrop.component';
-import { ModalComponent } from '../../modules/components/modal/containers/main/base/base.component';
-import { ReportBadRouteComponent } from '../../modules/components/forms/report-bad-route/report-bad-route.component';
+// import { BackdropComponent } from '../../modules//components/backdrop/backdrop.component';
+
+// import { ModalComponent } from '../../modules/components/modal/containers/main/base/base.component';
+// import { ReportBadRouteComponent } from '../../modules/components/forms/report-bad-route/report-bad-route.component';
 
 WebFont.load({
   google: {
@@ -184,16 +193,13 @@ const hybridRoutes: Routes = [
     MapPopupModule,
     PopupsModule,
     AggiemapModule,
-    MapsFeatureCoordinatesModule
+    AggiemapCoreUIModule,
+    AggiemapSidebarModule,
+    AggiemapMobileUIModule,
+    MapsFeatureCoordinatesModule,
+    AggiemapFormsModule
   ],
-  declarations: [
-    BackdropComponent,
-    ModalComponent,
-    EsriMapComponent,
-    ReportBadRouteComponent,
-    MobileSidebarComponent,
-    MainMobileSidebarComponent
-  ],
+  declarations: [EsriMapComponent],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

@@ -1,0 +1,17 @@
+<h2 class="trailer-1">Trip Result Feedback</h2>
+
+<form (ngSubmit)="submitBadRoute()">
+  <p>
+    Thank you for taking interest in improving Aggie Map. Please help us understand the problem a little better with a brief description on how this result could be improved. (Optional)
+  </p>
+
+  <textarea [(ngModel)]="description" [disabled]="submitted" placeholder="Description" rows="5" name="description" tabindex="0" autofocus></textarea>
+
+  <p class="leader-1">
+    Please provide your email if you would like to be notified on updates or status of your feedback. (Optional)
+  </p>
+
+  <input type="email" placeholder="Email" [(ngModel)]="email" name="email" tabindex="0" [disabled]="submitted" />
+
+  <button class="leader-2" type="submit" *ngIf="!submitted" tabindex="0">Submit</button>
+</form>
