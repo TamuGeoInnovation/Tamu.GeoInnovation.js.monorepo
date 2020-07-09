@@ -20,7 +20,7 @@ import {
   PopupsModule
 } from '@tamu-gisc/aggiemap';
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
-import { EsriMapModule } from '@tamu-gisc/maps/esri';
+import { EsriMapModule, EsriModuleProviderService, EsriMapService } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -32,7 +32,12 @@ import { LayerListModule, LayerListCategorizedComponent } from '@tamu-gisc/maps/
 import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
-import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
+import {
+  MapsFeatureTripPlannerModule,
+  TripPlannerOptionsComponent,
+  TripPlannerService,
+  BusService
+} from '@tamu-gisc/maps/feature/trip-planner';
 import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
@@ -135,6 +140,7 @@ const routes: Routes = [
     UITamuBrandingModule,
     UESCoreUIModule
   ],
-  declarations: [MapComponent]
+  declarations: [MapComponent],
+  providers: [EsriModuleProviderService, EsriMapService, TripPlannerService, BusService]
 })
 export class MapModule {}
