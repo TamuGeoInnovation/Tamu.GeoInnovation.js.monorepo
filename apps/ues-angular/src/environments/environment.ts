@@ -478,7 +478,10 @@ export const LayerSources: LayerSource[] = [
           'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAENJREFUOI1jYaAyYKGZgf9DGf5TahjjagZGFnQBcg2DOYgFmyAlgLYupAYYYgaORsogNHA0Uig3kJIwhAUXC7oApQAAQ8kZ9+L+/N4AAAAASUVORK5CYII='
       }
     ],
-    popupComponent: Popups.ConstructionPopupComponent
+    popupComponent: Popups.ConstructionPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
   },
   {
     type: 'feature',
