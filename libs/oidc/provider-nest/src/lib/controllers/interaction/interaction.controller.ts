@@ -43,13 +43,9 @@ export class InteractionController {
 
         case 'login': {
           const locals = {
-            client,
-            uid,
             params,
             details: prompt.details,
-            title: 'GeoInnovation Service Center SSO',
             error: false,
-            debug: false,
             interaction: true,
             devMode: urlHas(req.path, 'dev', true),
             requestingHost: urlFragment(client.redirectUris[0], 'hostname')
@@ -94,50 +90,8 @@ export class InteractionController {
     try {
       const email = req.body.email;
       const password = req.body.password;
-      if (!email || !password) {
-        const locals = {
-          client,
-          uid,
-          params,
-          details: prompt.details,
-          title: 'GeoInnovation Service Center SSO',
-          error: true,
-          message: 'Email or password is incorrect',
-          debug: false,
-          interaction: true,
-          devMode: urlHas(req.path, 'dev', true),
-          requestingHost: urlFragment(client.redirectUris[0], 'hostname')
-        };
-        return res.render('user-info', locals, (err, html) => {
-          if (err) throw err;
-          res.render('_layout', {
-            ...locals,
-            body: html
-          });
-        });
-      }
       const user: User = await this.userService.userLogin(email, password);
       if (user) {
-        const result: InteractionResults = {
-          select_account: {},
-          login: {
-            account: user.account.guid,
-            acr: 'urn:mace:incommon:iap:bronze',
-            amr: ['pwd'],
-            remember: true,
-            ts: Math.floor(Date.now() / 1000)
-          },
-          // consent was given by the user to the client for this session
-          consent: {
-            rejectedScopes: ['profile'], // array of strings, scope names the end-user has not granted
-            rejectedClaims: [] // array of strings, claim names the end-user has not granted
-          },
-          meta: {
-            test: {
-              greetings: 'hello'
-            }
-          }
-        };
         if (user.enabled2fa) {
           const locals = {
             title: 'Sign-in',
@@ -155,15 +109,50 @@ export class InteractionController {
             });
           });
         } else {
-          console.log('interactionFinished');
+          const result: InteractionResults = {
+            select_account: {},
+            login: {
+              account: user.account.guid,
+              acr: 'urn:mace:incommon:iap:bronze',
+              amr: ['pwd'],
+              remember: true,
+              ts: Math.floor(Date.now() / 1000)
+            },
+            // consent was given by the user to the client for this session
+            consent: {
+              rejectedScopes: ['profile'], // array of strings, scope names the end-user has not granted
+              rejectedClaims: [] // array of strings, claim names the end-user has not granted
+            },
+            meta: {
+              test: {
+                greetings: 'hello'
+              }
+            }
+          };
           await OpenIdProvider.provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
         }
       } else {
         // could not get user; render some error page or redirect to registration
+        throw new Error('Email / password combination unknown');
       }
     } catch (err) {
-      return next(err);
-    } finally {
+      const locals = {
+        params,
+        details: prompt.details,
+        error: true,
+        message: err.message,
+        interaction: true,
+        devMode: urlHas(req.path, 'dev', true),
+        requestingHost: urlFragment(client.redirectUris[0], 'hostname')
+      };
+      return res.render('user-info', locals, (err, html) => {
+        if (err) throw err;
+        res.render('_layout', {
+          ...locals,
+          body: html
+        });
+      });
+      // return next(err);
     }
   }
 
