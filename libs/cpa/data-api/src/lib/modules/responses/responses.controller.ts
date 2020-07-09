@@ -14,37 +14,41 @@ export class ResponsesController extends BaseController<Response> {
 
   @Get(':workshopGuid/:scenarioGuid')
   public async getAllForScenarioAndWorkshop(@Param() params) {
-    return await this.service.repository
+    return this.service.getAllForBoth(params);
+    /*return await this.service.repository
       .createQueryBuilder('r')
       .where('r.workshopGuid = :w AND r.scenarioGuid = :s', {
         w: params.workshopGuid,
         s: params.scenarioGuid
       })
-      .getMany();
+      .getMany();*/
   }
 
   /**
    * Retrieves a specific existing scenario user response.
    */
   @Get(':guid')
-  public async getOne(@Param() params: IResponseRequestPayload) {
-    return this.service.getOne({ where: { guid: params.guid }, relations: ['scenario'] });
+  public async getOne(@Param() params /*: IResponseRequestPayload*/) {
+    return this.service.getSpecific(params);
+    //return this.service.getOne({ where: { guid: params.guid }, relations: ['scenario'] });
   }
 
   /**
    * Updates an existing scenario user response.
    */
   @Patch(':guid')
-  public async update(@Param() params: IResponseRequestPayload, @Body() body: IResponseRequestPayload) {
-    return this.service.repository.update({ guid: params.guid }, { ...body });
+  public async update(@Param() params /*: IResponseRequestPayload*/, @Body() body /*: IResponseRequestPayload*/) {
+    return this.service.updateExisting(params, body);
+    //return this.service.repository.update({ guid: params.guid }, { ...body });
   }
 
   /**
    * Deletes an existing scenario user response.
    */
   @Delete(':guid')
-  public async delete(@Param() params: IResponseRequestPayload) {
-    return this.service.repository.delete({ guid: params.guid });
+  public async delete(@Param() params /*: IResponseRequestPayload*/) {
+    return this.service.deleteExisting(params);
+    //return this.service.repository.delete({ guid: params.guid });
   }
 
   /**
@@ -59,8 +63,9 @@ export class ResponsesController extends BaseController<Response> {
    * Inserts a scenario user response.
    */
   @Post('')
-  public async insert(@Body() body: IResponseRequestPayload) {
-    const existing = await this.service.getOne({ where: { guid: body.guid } });
+  public async insert(@Body() body /*: IResponseRequestPayload*/) {
+    return this.service.insertNew(body);
+    /*const existing = await this.service.getOne({ where: { guid: body.guid } });
 
     if (existing === undefined) {
       const workshop = await getRepository(Workshop).findOne({ guid: body.workshopGuid });
@@ -75,13 +80,13 @@ export class ResponsesController extends BaseController<Response> {
       }
     } else {
       throw new HttpException('Internal server error.', 500);
-    }
+    }*/
   }
 }
 
-export interface IResponseResponse extends DeepPartial<Response> {}
+/*export interface IResponseResponse extends DeepPartial<Response> {}
 export interface IResponseRequestPayload extends Omit<IResponseResponse, 'shapes'> {
   scenarioGuid?: string;
   workshopGuid?: string;
   shapes: object;
-}
+}*/

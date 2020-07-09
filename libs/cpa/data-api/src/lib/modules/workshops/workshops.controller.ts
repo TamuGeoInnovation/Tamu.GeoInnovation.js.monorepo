@@ -16,8 +16,9 @@ export class WorkshopsController extends BaseController<Workshop> {
    * Adds a scenario to a workshop
    */
   @Post('scenario')
-  public async addScenario(@Body() body: IWorkshopScenarioPayload) {
-    const existing = await this.service.repository.findOne({ where: { guid: body.workshopGuid }, relations: ['scenarios'] });
+  public async addScenario(@Body() body /*: IWorkshopScenarioPayload*/) {
+    return await this.service.addNewScenario(body);
+    /*const existing = await this.service.repository.findOne({ where: { guid: body.workshopGuid }, relations: ['scenarios'] });
 
     if (existing) {
       // Get the existing scenario, if it exists.
@@ -32,15 +33,16 @@ export class WorkshopsController extends BaseController<Workshop> {
       }
     } else {
       throw new HttpException('Not Found', 404);
-    }
+    }*/
   }
 
   /**
    * Deletes a scenario from a workshop
    */
   @Delete('scenario/:workshopGuid/:scenarioGuid')
-  public async deleteScenario(@Param() params: IWorkshopScenarioPayload) {
-    const existing = await this.service.repository.findOne({
+  public async deleteScenario(@Param() params /*: IWorkshopScenarioPayload*/) {
+    return await this.service.deleteScen(params);
+    /*const existing = await this.service.repository.findOne({
       where: { guid: params.workshopGuid },
       relations: ['scenarios']
     });
@@ -51,7 +53,7 @@ export class WorkshopsController extends BaseController<Workshop> {
       return await existing.save();
     } else {
       throw new HttpException('Not Found', 404);
-    }
+    }*/
   }
 
   /**
@@ -71,13 +73,14 @@ export class WorkshopsController extends BaseController<Workshop> {
    * Updates an existing workshop record with provided body key-values.
    */
   @Patch(':guid')
-  public async updateOne(@Body() body: IWorkshopRequestPayload, @Param() params) {
-    try {
+  public async updateOne(@Body() body /*: IWorkshopRequestPayload*/, @Param() params) {
+    return await this.service.updateWorkshop(body, params);
+    /*try {
       await this.service.repository.update({ guid: params.guid }, { ...body });
       return;
     } catch (err) {
       throw new HttpException('Internal Server Error', 500);
-    }
+    }*/
   }
 
   /**
@@ -85,13 +88,14 @@ export class WorkshopsController extends BaseController<Workshop> {
    */
   @Delete(':guid')
   public async deleteOne(@Param() params) {
-    try {
+    return await this.service.deleteWorkshop(params);
+    /*try {
       await this.service.repository.delete({ guid: params.guid });
 
       return;
     } catch (err) {
       throw new HttpException('Internal Server Error', 500);
-    }
+    }*/
   }
 
   /**
@@ -103,10 +107,10 @@ export class WorkshopsController extends BaseController<Workshop> {
   }
 }
 
-export interface IWorkshopRequestPayload extends DeepPartial<Workshop> {
+/*export interface IWorkshopRequestPayload extends DeepPartial<Workshop> {
   guid: string;
 }
 export interface IWorkshopScenarioPayload {
   scenarioGuid: string;
   workshopGuid: string;
-}
+}*/
