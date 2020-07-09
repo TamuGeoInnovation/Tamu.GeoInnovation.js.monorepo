@@ -738,8 +738,6 @@ export const SearchSources: SearchSource[] = [
     source: d.FIRE_HYDRANTS.id,
     name: d.FIRE_HYDRANTS.name,
     url: d.FIRE_HYDRANTS.url,
-    query:
-      "/query?f=json&resultRecordCount=5&where=(UPPER(Location) LIKE '%{{queryTerm}}%') OR (UPPER(No_) LIKE '%{{queryTerm}}%') OR (UPPER(HYDR_NUMBER) LIKE '%{{queryTerm}}%') OR (UPPER(Make) LIKE '%{{queryTerm}}%')&outFields=*&outSR=4326&returnGeometry=true&spatialRel=esriSpatialRelIntersects",
     featuresLocation: 'features',
     displayTemplate: '{attributes.Location} ({attributes.HYDR_NUMBER})',
     popupComponent: Popups.GeneralDirectionsPopupComponent,
@@ -751,6 +749,24 @@ export const SearchSources: SearchSource[] = [
         operators: ['LIKE', 'LIKE', 'LIKE', 'LIKE'],
         wildcards: ['includes', 'includes', 'includes', 'includes'],
         transformations: ['UPPER', 'UPPER', 'UPPER', 'UPPER']
+      }
+    }
+  },
+  {
+    source: d.GENERATORS.id,
+    name: d.GENERATORS.name,
+    url: d.GENERATORS.url,
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.UES_ID}',
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    searchActive: true,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['UES_ID', 'AIM_ASSET_NUMBER '],
+        operators: ['LIKE', 'LIKE'],
+        wildcards: ['includes', 'includes'],
+        transformations: ['UPPER', 'UPPER']
       }
     }
   }
