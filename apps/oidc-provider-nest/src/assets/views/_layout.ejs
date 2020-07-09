@@ -18,25 +18,16 @@
         <img src="/TAM-Logo.svg" alt="GeoInnovation Service Center Logo" />
       </div>
 
-      <h1 class="title"><%= title %></h1>
+      <h1 class="title">GeoInnovation Service Center SSO</h1>
 
       <p class="text center authorize-instructions">
         Log into <i><%= requestingHost %></i> using your GeoInnovation account.
       </p>
 
       <div class="login-card">
-        <!-- Views are inserted in line below -->
         <%- body %>
-
-        <!-- Login help is inserted below -->
-        <!-- <div class="login-help">
-          <a href="<%= details.returnTo %>">[ Cancel ]</a>
-          <% if (client.tosUri) { %><a href="<%= client.tosUri %>">[ Terms of Service ]</a><% } %> <% if (client.policyUri) {
-          %><a href="<%= client.policyUri %>">[ Privacy Policy ]</a><% } %>
-        </div> -->
       </div>
 
-      <!-- Dev information is inserted below -->
       <%if (devMode) { %>
       <div class="login-card">
         <div class="grant-debug">
