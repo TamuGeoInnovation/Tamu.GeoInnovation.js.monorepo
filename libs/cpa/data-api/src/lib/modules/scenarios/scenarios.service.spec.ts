@@ -18,7 +18,9 @@ describe('ScenariosService', () => {
     service = module.get<ScenariosService>(ScenariosService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('Validation ', () => {
+    it('service should be defined', async () => {
+      expect(service).toBeDefined();
+    });
   });
 });

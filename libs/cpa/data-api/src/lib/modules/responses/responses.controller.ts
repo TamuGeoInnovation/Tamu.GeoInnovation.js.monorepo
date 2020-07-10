@@ -29,7 +29,12 @@ export class ResponsesController extends BaseController<Response> {
    */
   @Get(':guid')
   public async getOne(@Param() params /*: IResponseRequestPayload*/) {
-    return this.service.getSpecific(params);
+    const existing = await this.service.getSpecific(params);
+    if (existing) {
+      return existing;
+    } else {
+      throw new HttpException('Not Found', 404);
+    }
     //return this.service.getOne({ where: { guid: params.guid }, relations: ['scenario'] });
   }
 

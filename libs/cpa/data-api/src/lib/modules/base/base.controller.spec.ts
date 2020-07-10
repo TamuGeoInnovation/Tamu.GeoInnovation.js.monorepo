@@ -29,23 +29,23 @@ describe('Base Controller', () => {
   });
   describe('getAll', () => {
     it('should return expectedResult', async () => {
-      const expectedResult = [];
-      jest.spyOn(baseService, 'getAll').mockResolvedValue(expectedResult);
-      expect(await baseController.getAll()).toEqual(expectedResult);
+      const serviceSpy = jest.spyOn(baseService, 'getAll');
+      baseController.getAll();
+      expect(serviceSpy).toHaveBeenCalled();
     });
   });
   describe('getOne', () => {
     it('should return expectedResult', async () => {
-      const expectedResult = new BaseEntity();
-      jest.spyOn(baseService, 'getOne').mockResolvedValue(expectedResult);
-      expect(await baseController.getOne(mockParameters)).toMatchObject(expectedResult);
+      const serviceSpy = jest.spyOn(baseService, 'getOne');
+      baseController.getOne(mockParameters);
+      expect(serviceSpy).toHaveBeenCalled();
     });
   });
   describe('insert', () => {
     it('should return expectedResult', async () => {
-      const expectedResult = new BaseEntity();
-      jest.spyOn(baseService, 'createOne').mockResolvedValue(expectedResult);
-      expect(await baseController.insert(mockParameters)).toMatchObject(expectedResult);
+      const serviceSpy = jest.spyOn(baseService, 'createOne');
+      baseController.insert(mockParameters);
+      expect(serviceSpy).toHaveBeenCalled();
     });
   });
 });
