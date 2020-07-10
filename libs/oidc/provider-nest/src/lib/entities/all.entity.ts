@@ -838,6 +838,35 @@ export class UserRole extends GuidIdentity {
   user: User;
 }
 
+@Entity({
+  name: 'user_logins'
+})
+export class UserLogin extends GuidIdentity {
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  grantId: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  email_used: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  ip_addr: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  occured_at: string;
+}
+
 export class CommonRepo<T> extends Repository<T> {
   public async findByKeyShallow<K extends keyof T>(key: K, value: unknown) {
     const op = {
@@ -915,3 +944,6 @@ export class RoleRepo extends CommonRepo<Role> {}
 
 @EntityRepository(UserRole)
 export class UserRoleRepo extends CommonRepo<UserRole> {}
+
+@EntityRepository(UserLogin)
+export class UserLoginRepo extends CommonRepo<UserLogin> {}

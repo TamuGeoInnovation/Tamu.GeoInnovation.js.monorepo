@@ -38,7 +38,8 @@ export class UserService {
     }
 
     user.password = await hash(user.password, SHA1HashUtils.SALT_ROUNDS);
-    return this.userRepo.save(user);
+    await this.userRepo.save(user);
+    
   }
 
   public async userLogin(email: string, password: string) {
@@ -115,6 +116,8 @@ export class UserService {
       this.userRoleRepo.save(update);
     }
   }
+
+
 }
 
 export interface IServiceToControllerResponse {

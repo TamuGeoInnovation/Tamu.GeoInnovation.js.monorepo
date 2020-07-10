@@ -8,10 +8,11 @@ import { JwtUtil } from '../../_utils/jwt.util';
 import Provider, { InteractionResults } from 'oidc-provider';
 import { urlHas, urlFragment } from '../../_utils/url-utils';
 import { TwoFactorAuthUtils } from '../../_utils/twofactorauth.util';
+import { UserLoginService } from '../../services/user-login/user-login.service';
 
 @Controller('interaction')
 export class InteractionController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService, private readonly loginService: UserLoginService) {}
 
   @Get(':uid')
   async interactionGet(@Req() req: Request, @Res() res: Response) {
@@ -129,6 +130,7 @@ export class InteractionController {
               }
             }
           };
+          this.loginService.insertUserLogin(req);
           await OpenIdProvider.provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
         }
       } else {
