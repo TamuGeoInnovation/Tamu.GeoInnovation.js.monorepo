@@ -18,7 +18,9 @@ describe('WorkshopsService', () => {
     service = module.get<WorkshopsService>(WorkshopsService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('Validation ', () => {
+    it('service should be defined', async () => {
+      expect(service).toBeDefined();
+    });
   });
 });

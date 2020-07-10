@@ -18,7 +18,9 @@ describe('ResponsesService', () => {
     service = module.get<ResponsesService>(ResponsesService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('Validation ', () => {
+    it('service should be defined', async () => {
+      expect(service).toBeDefined();
+    });
   });
 });
