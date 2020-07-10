@@ -739,16 +739,16 @@ export const SearchSources: SearchSource[] = [
     name: d.FIRE_HYDRANTS.name,
     url: d.FIRE_HYDRANTS.url,
     featuresLocation: 'features',
-    displayTemplate: '{attributes.Location} ({attributes.HYDR_NUMBER})',
+    displayTemplate: '{attributes.HYDR_NUMBER}',
     popupComponent: Popups.GeneralDirectionsPopupComponent,
     searchActive: true,
     queryParams: {
       ...commonQueryParams,
       where: {
-        keys: ['Location', 'No_', 'HYDR_NUMBER', 'Make'],
-        operators: ['LIKE', 'LIKE', 'LIKE', 'LIKE'],
-        wildcards: ['includes', 'includes', 'includes', 'includes'],
-        transformations: ['UPPER', 'UPPER', 'UPPER', 'UPPER']
+        keys: ['HYDR_NUMBER', 'ASSETNUM '],
+        operators: ['LIKE', 'LIKE'],
+        wildcards: ['includes', 'includes'],
+        transformations: ['UPPER', 'UPPER']
       }
     }
   },
@@ -763,10 +763,136 @@ export const SearchSources: SearchSource[] = [
     queryParams: {
       ...commonQueryParams,
       where: {
-        keys: ['UES_ID', 'AIM_ASSET_NUMBER '],
+        keys: ['UES_ID', 'AIM_ASSET_NUMBER'],
         operators: ['LIKE', 'LIKE'],
         wildcards: ['includes', 'includes'],
         transformations: ['UPPER', 'UPPER']
+      }
+    }
+  },
+  {
+    source: d.TRANSFORMER.id,
+    name: d.TRANSFORMER.name,
+    url: d.TRANSFORMER.url,
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.UESID}',
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    searchActive: true,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['UESID', 'AIMNumber'],
+        operators: ['LIKE', 'LIKE'],
+        wildcards: ['includes', 'includes'],
+        transformations: ['UPPER', 'UPPER']
+      }
+    }
+  },
+  {
+    source: d.ELECTRICAL_MANHOLES.id,
+    name: d.ELECTRICAL_MANHOLES.name,
+    url: d.ELECTRICAL_MANHOLES.url,
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.MH_NUMBER}',
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    searchActive: true,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['MH_NUMBER'],
+        operators: ['LIKE'],
+        wildcards: ['includes'],
+        transformations: ['UPPER']
+      }
+    }
+  },
+  {
+    source: d.ELECTRICAL_MANHOLES.id,
+    name: d.ELECTRICAL_MANHOLES.name,
+    url: d.ELECTRICAL_MANHOLES.url,
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.MH_NUMBER}',
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    searchActive: true,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['MH_NUMBER'],
+        operators: ['LIKE'],
+        wildcards: ['includes'],
+        transformations: ['UPPER']
+      }
+    }
+  },
+  {
+    source: d.DOMESTIC_COLD_WATER.id,
+    name: d.DOMESTIC_COLD_WATER.name,
+    url: d.DOMESTIC_COLD_WATER.url,
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.OBJECTID}',
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    searchActive: true,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['OBJECTID'],
+        operators: ['LIKE'],
+        wildcards: ['includes'],
+        transformations: ['UPPER']
+      }
+    }
+  },
+  {
+    source: d.DOMESTIC_COLD_WATER.id,
+    name: d.DOMESTIC_COLD_WATER.name,
+    url: d.DOMESTIC_COLD_WATER.url,
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.OBJECTID}',
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    searchActive: true,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['OBJECTID'],
+        operators: ['LIKE'],
+        wildcards: ['includes'],
+        transformations: ['UPPER']
+      }
+    }
+  },
+  {
+    source: d.UES_NATURAL_GAS_METERS.id,
+    name: d.UES_NATURAL_GAS_METERS.name,
+    url: d.UES_NATURAL_GAS_METERS.url,
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.Meter_Number}',
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    searchActive: true,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['Meter_Number'],
+        operators: ['LIKE'],
+        wildcards: ['includes'],
+        transformations: ['UPPER']
+      }
+    }
+  },
+  {
+    source: d.WELL_SITES.id,
+    name: d.WELL_SITES.name,
+    url: d.WELL_SITES.url,
+    featuresLocation: 'features',
+    displayTemplate: '{attributes.WELL_NAME}',
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    searchActive: true,
+    queryParams: {
+      ...commonQueryParams,
+      where: {
+        keys: ['WELL_NAME'],
+        operators: ['LIKE'],
+        wildcards: ['includes'],
+        transformations: ['UPPER']
       }
     }
   }

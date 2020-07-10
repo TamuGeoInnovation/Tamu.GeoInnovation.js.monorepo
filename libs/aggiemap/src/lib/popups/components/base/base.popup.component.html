@@ -1,8 +1,6 @@
 <div class="popup-section">
-  <div class="feature-style-1" tabindex="0">{{ data.layer.id }}</div>
-  <div class="feature-style-2" tabindex="0">
-    <span *ngIf="data.attributes.Address">{{ data.attributes.Address }},</span> College Station, TX 77843
-  </div>
+  <div class="feature-style-1" tabindex="0">{{ data?.layer?.id }}</div>
+  <div class="feature-style-2" tabindex="0"><span *ngIf="data.attributes.Address">{{ data?.attributes?.Address }},</span> College Station, TX 77843</div>
 </div>
 
 <div class="popup-section">
@@ -28,7 +26,7 @@
   <!-- <copy [text]="shareUrl"></copy> -->
 
   <!-- Directions To Button -->
-  <div class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.Number" (click)="startDirections(data.attributes.name)">
+  <div class="button" tabindex="0" role="button" [attr.building-number]="data?.attributes?.Number" (click)="startDirections(data?.attributes?.Number)">
     Directions To Here
   </div>
 </div>
