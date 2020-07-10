@@ -92,4 +92,5 @@ export class UserController {
   async addUserRolePost(@Req() req: Request) {
     this.userService.insertUserRole(req);
   }
+  
 }

@@ -56,7 +56,7 @@ export class ManagerRoleGuard implements CanActivate {
 }
 
 /**
- * NestJS guard. 
+ * NestJS guard.
  * May not be necessary as it pretty much functions exactly like the login guard at this level
  *
  * @export

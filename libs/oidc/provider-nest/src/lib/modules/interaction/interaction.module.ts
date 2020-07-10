@@ -3,9 +3,11 @@ import { InteractionController } from '../../controllers/interaction/interaction
 import { UserService } from '../../services/user/user.service';
 import { setPragmaAndCache } from '../../middleware/set-pragma-cache.middleware';
 import { UserModule } from '../user/user.module';
+import { UserLoginModule } from '../user-login/user-login.module';
+import { UserLoginService } from '../../services/user-login/user-login.service';
 
 @Module({
-  imports: [UserModule],
+  imports: [UserModule, UserLoginModule],
   controllers: [InteractionController],
   providers: [],
   exports: []
