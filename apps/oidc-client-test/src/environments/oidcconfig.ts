@@ -20,7 +20,7 @@ export const OIDC_IDP_ISSUER_URL = 'http://localhost:4001/oidc';
 // export const OIDC_IDP_ISSUER_URL = 'https://idp-dev.geoservices.tamu.edu/';
 // export const OIDC_IDP_ISSUER_URL = 'https://idp-dev-lb.geoservices.tamu.edu'
 export const OIDC_CLIENT_PARAMS = {
-  scope: 'openid offline_access basic_profile email role_scope',
+  scope: 'openid offline_access basic_profile email role',
   state: 'texas', // Opaque value set by the RP to maintain state between request and callback
   prompt: 'consent'
 };
