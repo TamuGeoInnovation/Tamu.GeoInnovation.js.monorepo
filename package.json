@@ -65,7 +65,7 @@
     "core-js": "^3.2.1",
     "deepmerge": "^4.2.2",
     "document-register-element": "1.13.1",
-    "esri-loader": "^2.10.1",
+    "esri-loader": "~2.10.1",
     "express-session": "^1.17.0",
     "geojson-utils": "git+ssh://git@github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.geojsonutils.git",
     "helmet": "^3.21.2",

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { events } from '../changelog-events';
 
 @Component({

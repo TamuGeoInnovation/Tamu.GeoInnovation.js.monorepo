@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { AggiemapCoreUIModule } from '@tamu-gisc/aggiemap';
 
 import { AboutComponent } from './components/about.component';
-import { SkeletonModule } from '../skeleton/skeleton.module';
 
 const routes: Routes = [
   {
@@ -13,7 +13,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), SkeletonModule],
+  imports: [CommonModule, RouterModule.forChild(routes), AggiemapCoreUIModule],
   declarations: [AboutComponent],
   exports: [AboutComponent]
 })

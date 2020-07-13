@@ -3249,6 +3249,189 @@
           }
         }
       }
+    },
+    "ues-angular": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/ues-angular",
+      "sourceRoot": "apps/ues-angular/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/ues-angular",
+            "index": "apps/ues-angular/src/index.html",
+            "main": "apps/ues-angular/src/main.ts",
+            "polyfills": "apps/ues-angular/src/polyfills.ts",
+            "tsConfig": "apps/ues-angular/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/ues-angular/src/favicon.ico",
+              "apps/ues-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
+            "styles": ["apps/ues-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-angular/src/environments/environment.ts",
+                  "with": "apps/ues-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ues-angular:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ues-angular:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ues-angular:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/ues-angular/tsconfig.app.json", "apps/ues-angular/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/ues-angular/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/ues-angular/jest.config.js",
+            "tsConfig": "apps/ues-angular/tsconfig.spec.json",
+            "setupFile": "apps/ues-angular/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "ues-angular-e2e": {
+      "root": "apps/ues-angular-e2e",
+      "sourceRoot": "apps/ues-angular-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/ues-angular-e2e/cypress.json",
+            "tsConfig": "apps/ues-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "ues-angular:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ues-angular:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/ues-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/ues-angular-e2e/**"]
+          }
+        }
+      }
+    },
+    "ues-common-ngx": {
+      "projectType": "library",
+      "root": "libs/ues/common/ngx",
+      "sourceRoot": "libs/ues/common/ngx/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ues/common/ngx/tsconfig.lib.json", "libs/ues/common/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ues/common/ngx/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ues/common/ngx/jest.config.js",
+            "tsConfig": "libs/ues/common/ngx/tsconfig.spec.json",
+            "setupFile": "libs/ues/common/ngx/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "common-utils-device-guards": {
+      "projectType": "library",
+      "root": "libs/common/utils/device/guards",
+      "sourceRoot": "libs/common/utils/device/guards/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/common/utils/device/guards/tsconfig.lib.json",
+              "libs/common/utils/device/guards/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/device/guards/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/common/utils/device/guards/jest.config.js",
+            "tsConfig": "libs/common/utils/device/guards/tsconfig.spec.json",
+            "setupFile": "libs/common/utils/device/guards/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
+
 import { loadModules } from 'esri-loader';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class EsriModuleProviderService {
   /**
    * Module dictionary, allows to pass simple class names instead of the class path.

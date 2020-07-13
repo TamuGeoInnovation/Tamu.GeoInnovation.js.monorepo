@@ -283,6 +283,18 @@
     },
     "oidc-client": {
       "tags": []
+    },
+    "ues-angular-e2e": {
+      "tags": []
+    },
+    "ues-angular": {
+      "tags": []
+    },
+    "ues-common-ngx": {
+      "tags": []
+    },
+    "common-utils-device-guards": {
+      "tags": []
     }
   }
 }

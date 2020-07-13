@@ -8,10 +8,29 @@ import { HttpClientModule } from '@angular/common/http';
 import * as WebFont from 'webfontloader';
 import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 
-import { DesktopGuard, MobileGuard } from '../../modules/routing/guards/device.guard';
+import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 
 // Modules
-import { AggiemapModule, BusListComponent } from '@tamu-gisc/aggiemap';
+import {
+  AggiemapModule,
+  AggiemapSidebarComponent,
+  BusListComponent,
+  SidebarTripPlannerComponent,
+  SidebarReferenceComponent,
+  AggiemapMobileUIModule,
+  MobileUIComponent,
+  TripPlannerTopComponent,
+  OmnisearchComponent,
+  TripPlannerBottomComponent,
+  AggiemapCoreUIModule,
+  AggiemapSidebarModule,
+  MainMobileSidebarComponent,
+  MobileSidebarComponent,
+  ModalComponent,
+  ReportBadRouteComponent,
+  AggiemapFormsModule,
+  PopupsModule
+} from '@tamu-gisc/aggiemap';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
@@ -30,32 +49,11 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
 import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
 import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
-import { PopupsModule } from '@tamu-gisc/aggiemap';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
 
-import { SkeletonModule } from '../../skeleton/skeleton.module';
-
-// Pipes
-import { SearchResultPipe } from '../../../assets/pipes/common.pipe';
-
 // Components
 import { EsriMapComponent } from '../../map/esri-map.component';
-import { SidebarComponent } from '../../modules/components/sidebar/containers/base/base.component';
-import { TripPlannerComponent } from '../../modules/components/sidebar/components/trip-planner/trip-planner.component';
-import { ReferenceComponent } from '../../modules/components/sidebar/components/reference/reference.component';
-
-import { MobileUIComponent } from '../../modules/components/mobile-ui/containers/main/mobile-ui.component';
-import { TripPlannerTopComponent } from '../../modules/components/mobile-ui/components/trip-planner-top/trip-planner-top.component';
-import { OmnisearchComponent } from '../../modules/components/mobile-ui/components/omnisearch/omnisearch.component';
-import { TripPlannerBottomComponent } from '../../modules/components/mobile-ui/components/trip-planner-bottom/trip-planner-bottom.component';
-import { ReportBadRouteComponent } from '../../modules/components/forms/report-bad-route/report-bad-route.component';
-
-import { MobileSidebarComponent } from '../../modules/components/mobile-ui/components/sidebar/mobile-sidebar.component';
-import { MainMobileSidebarComponent } from '../../modules/components/mobile-ui/components/sidebar/components/main/main.component';
-
-import { BackdropComponent } from '../../modules//components/backdrop/backdrop.component';
-import { ModalComponent } from '../../modules/components/modal/containers/main/base/base.component';
 
 WebFont.load({
   google: {
@@ -84,12 +82,12 @@ const hybridRoutes: Routes = [
       },
       {
         path: 'd',
-        component: SidebarComponent,
+        component: AggiemapSidebarComponent,
         canActivateChild: [DesktopGuard],
         children: [
-          { path: '', component: ReferenceComponent },
+          { path: '', component: SidebarReferenceComponent },
           { path: 'bus', component: BusListComponent },
-          { path: 'trip', component: TripPlannerComponent },
+          { path: 'trip', component: SidebarTripPlannerComponent },
           { path: 'trip/options', component: TripPlannerOptionsComponent }
         ]
       },
@@ -159,7 +157,6 @@ const hybridRoutes: Routes = [
     SettingsModule,
     CommonNgxRouterModule,
     PipesModule,
-    SkeletonModule,
     EsriMapModule,
     LayerListModule,
     LegendModule,
@@ -180,24 +177,13 @@ const hybridRoutes: Routes = [
     MapPopupModule,
     PopupsModule,
     AggiemapModule,
-    MapsFeatureCoordinatesModule
+    AggiemapCoreUIModule,
+    AggiemapSidebarModule,
+    AggiemapMobileUIModule,
+    MapsFeatureCoordinatesModule,
+    AggiemapFormsModule
   ],
-  declarations: [
-    BackdropComponent,
-    ModalComponent,
-    EsriMapComponent,
-    SearchResultPipe,
-    SidebarComponent,
-    TripPlannerComponent,
-    ReferenceComponent,
-    MobileUIComponent,
-    TripPlannerTopComponent,
-    OmnisearchComponent,
-    TripPlannerBottomComponent,
-    ReportBadRouteComponent,
-    MobileSidebarComponent,
-    MainMobileSidebarComponent
-  ],
+  declarations: [EsriMapComponent],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
