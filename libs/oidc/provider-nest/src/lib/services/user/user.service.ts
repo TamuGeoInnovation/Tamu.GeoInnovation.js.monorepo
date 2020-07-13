@@ -1,5 +1,6 @@
 import { Connection, getConnection, Repository, Db, UpdateResult } from 'typeorm';
 import { Request } from 'express';
+import { hashSync } from 'bcrypt';
 import { SHA1HashUtils } from '../../_utils/sha1hash.util';
 import {
   Account,
@@ -9,7 +10,11 @@ import {
   UserRole,
   RoleRepo,
   ClientMetadataRepo,
-  UserRoleRepo
+  UserRoleRepo,
+  SecretQuestion,
+  SecretAnswer,
+  SecretQuestionRepo,
+  SecretAnswerRepo
 } from '../../entities/all.entity';
 
 import { hash, compare } from 'bcrypt';
@@ -23,7 +28,9 @@ export class UserService {
     public readonly accountRepo: AccountRepo,
     public readonly roleRepo: RoleRepo,
     public readonly clientMetadataRepo: ClientMetadataRepo,
-    public readonly userRoleRepo: UserRoleRepo
+    public readonly userRoleRepo: UserRoleRepo,
+    public readonly questionRepo: SecretQuestionRepo,
+    public readonly answerRepo: SecretAnswerRepo
   ) {}
 
   public async insertUser(user: User) {
@@ -39,7 +46,6 @@ export class UserService {
 
     user.password = await hash(user.password, SHA1HashUtils.SALT_ROUNDS);
     await this.userRepo.save(user);
-    
   }
 
   public async userLogin(email: string, password: string) {
@@ -117,7 +123,38 @@ export class UserService {
     }
   }
 
+  public async insertSecretQuestion(req: Request) {
+    const _secretQuestion: Partial<SecretQuestion> = {
+      questionText: req.body.questionText
+    };
+    const secretQuestion = this.questionRepo.create(_secretQuestion);
+    return this.questionRepo.insert(secretQuestion);
+  }
 
+  public async getAllSecretQuestions() {
+    return this.questionRepo.find();
+  }
+
+  public async insertSecretAnswers(req: Request, user: User) {
+    const _secretAnswer1: Partial<SecretAnswer> = {
+      answer: hashSync(req.body.secretanswer1, SHA1HashUtils.SALT_ROUNDS),
+      secretQuestion: req.body.secretQuestion1,
+      user: user
+    };
+    const _secretAnswer2: Partial<SecretAnswer> = {
+      answer: hashSync(req.body.secretanswer2, SHA1HashUtils.SALT_ROUNDS),
+      secretQuestion: req.body.secretQuestion2,
+      user: user
+    };
+    const secretAnswer1 = this.answerRepo.create(_secretAnswer1);
+    const secretAnswer2 = this.answerRepo.create(_secretAnswer2);
+    if (secretAnswer1) {
+      this.answerRepo.save(secretAnswer1);
+    }
+    if (secretAnswer2) {
+      this.answerRepo.save(secretAnswer2);
+    }
+  }
 }
 
 export interface IServiceToControllerResponse {

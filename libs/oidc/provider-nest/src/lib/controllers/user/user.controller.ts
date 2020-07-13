@@ -1,9 +1,11 @@
 import { Controller, Get, Next, Param, Req, Res, Render, Post } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { urlFragment, urlHas } from '../../_utils/url-utils';
-import { Account, User } from '../../entities/all.entity';
-import { UserService, ServiceToControllerTypes } from '../../services/user/user.service';
 import { authenticator } from 'otplib';
+import { hashSync } from 'bcrypt';
+import { urlFragment, urlHas } from '../../_utils/url-utils';
+import { SHA1HashUtils } from '../../_utils/sha1hash.util';
+import { Account, User, SecretAnswer } from '../../entities/all.entity';
+import { UserService } from '../../services/user/user.service';
 
 @Controller('user')
 export class UserController {
@@ -11,20 +13,22 @@ export class UserController {
 
   @Get('register')
   async registerGet(@Req() req: Request, @Res() res: Response) {
+    const questions = await this.userService.getAllSecretQuestions();
     const locals = {
-      title: 'GeoInnovation Service Center',
+      title: 'GeoInnovation Service Center SSO',
       client: {},
       debug: false,
       details: {},
       params: {},
       interaction: true,
       error: false,
+      questions: questions,
       devMode: urlHas(req.path, 'dev', true),
       requestingHost: urlFragment('', 'hostname')
     };
     return res.render('register', locals, (err, html) => {
       if (err) throw err;
-      res.render('_layout', {
+      res.render('_registration-layout', {
         ...locals,
         body: html
       });
@@ -36,21 +40,35 @@ export class UserController {
     req.body.ip = req.ip;
     const existingUser = await this.userService.userRepo.findByKeyShallow('email', req.body.email);
     if (existingUser) {
-      return res.render('register', {
-        error: 'Username or password is incorrect',
-        title: 'GeoInnovation Service Center',
+      // TODO: This doesn't work right; no error message shown
+      const questions = await this.userService.getAllSecretQuestions();
+      const locals = {
+        title: 'GeoInnovation Service Center SSO',
         client: {},
         debug: false,
         details: {},
         params: {},
-        interaction: true
+        interaction: true,
+        error: true,
+        message: 'The email provided is already registered.',
+        questions: questions,
+        devMode: urlHas(req.path, 'dev', true),
+        requestingHost: urlFragment('', 'hostname')
+      };
+      return res.render('register', locals, (err, html) => {
+        if (err) throw err;
+        res.render('_registration-layout', {
+          ...locals,
+          body: html
+        });
       });
     } else {
       const newUser: User = new User(req);
       const newAccount: Account = new Account(req.body.name, req.body.email);
       newUser.account = newAccount;
       const userInserted = await this.userService.insertUser(newUser);
-      // const accountInserted = await StaticAccountService.insertAccount(newAccount);
+      this.userService.insertSecretAnswers(req, newUser);
+
       return res.send(userInserted);
     }
   }
@@ -92,5 +110,4 @@ export class UserController {
   async addUserRolePost(@Req() req: Request) {
     this.userService.insertUserRole(req);
   }
-  
 }

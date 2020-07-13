@@ -197,3 +197,12 @@ input[type='checkbox'] label {
 .authorize-instructions {
   margin-bottom: 2rem;
 }
+
+.dropdown {
+  border: 0px;
+  outline: 0px;
+}
+
+.dropdown-option {
+  background: '#fcfdfd';
+}
