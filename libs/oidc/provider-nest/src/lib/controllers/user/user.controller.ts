@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
 import { hashSync } from 'bcrypt';
 import { urlFragment, urlHas } from '../../_utils/url-utils';
-import { SHA1HashUtils } from '../../_utils/sha1hash.util';
+import { Mailer } from '../../_utils/mailer.util';
 import { Account, User, SecretAnswer } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
 
@@ -68,9 +68,24 @@ export class UserController {
       newUser.account = newAccount;
       const userInserted = await this.userService.insertUser(newUser);
       this.userService.insertSecretAnswers(req, newUser);
-
+      Mailer.sendAccountConfirmationEmail(newUser.email, newUser.guid);
       return res.send(userInserted);
     }
+  }
+
+  @Get('register/:guid')
+  async registerConfirmedGet(@Param() params, @Res() res: Response) {
+    await this.userService.userRepo
+      .createQueryBuilder()
+      .update(User)
+      .set({
+        email_verified: true
+      })
+      .where('guid = :guid', {
+        guid: params.guid
+      })
+      .execute();
+    return res.redirect('/');
   }
 
   @Get('2fa/enable/:guid')
