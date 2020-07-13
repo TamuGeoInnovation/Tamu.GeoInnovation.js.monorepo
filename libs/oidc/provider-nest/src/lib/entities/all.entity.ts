@@ -867,6 +867,34 @@ export class UserLogin extends GuidIdentity {
   occured_at: string;
 }
 
+@Entity({
+  name: 'secret_questions'
+})
+export class SecretQuestion extends GuidIdentity {
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  questionText: string;
+}
+
+@Entity({
+  name: 'secret_answers'
+})
+export class SecretAnswer extends GuidIdentity {
+  @ManyToOne((type) => User)
+  user: User;
+
+  @ManyToOne((type) => SecretQuestion)
+  secretQuestion: SecretQuestion;
+
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  answer: string;
+}
+
 export class CommonRepo<T> extends Repository<T> {
   public async findByKeyShallow<K extends keyof T>(key: K, value: unknown) {
     const op = {
@@ -947,3 +975,9 @@ export class UserRoleRepo extends CommonRepo<UserRole> {}
 
 @EntityRepository(UserLogin)
 export class UserLoginRepo extends CommonRepo<UserLogin> {}
+
+@EntityRepository(SecretQuestion)
+export class SecretQuestionRepo extends CommonRepo<SecretQuestion> {}
+
+@EntityRepository(SecretAnswer)
+export class SecretAnswerRepo extends CommonRepo<SecretAnswer> {}

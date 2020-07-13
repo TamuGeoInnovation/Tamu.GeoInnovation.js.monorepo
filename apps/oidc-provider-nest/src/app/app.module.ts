@@ -33,7 +33,9 @@ import {
   RoleModule,
   UserRole,
   UserLogin,
-  UserLoginModule
+  UserLoginModule,
+  SecretQuestion,
+  SecretAnswer
 } from '@tamu-gisc/oidc/provider-nest';
 
 import { dbConfig } from '../environments/environment';
@@ -62,7 +64,9 @@ import { dbConfig } from '../environments/environment';
         Session,
         User,
         UserRole,
-        UserLogin
+        UserLogin,
+        SecretQuestion,
+        SecretAnswer
       ]
     }),
     TypeOrmModule.forFeature([

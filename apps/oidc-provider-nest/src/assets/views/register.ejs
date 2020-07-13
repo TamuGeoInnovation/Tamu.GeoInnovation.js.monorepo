@@ -3,7 +3,23 @@
   <input required type="text" name="email" placeholder="Email" />
   <input required type="password" name="password" placeholder="Password" />
   <input required type="password" name="confirm_password" placeholder="Confirm Password" />
-  <% if (error) { %>
+  <p class="text center authorize-instructions">
+    Please choose and answer two secret questions:
+  </p>
+  <% if (questions) { %>
+  <select name="secretQuestion1" required class="dropdown">
+    <% for(var i = 0; i < questions.length; i++) { %>
+    <option class="dropdown-option" value="<%= questions[i].guid %>"><%= questions[i].questionText %></option>
+    <% } %>
+    <input required type="text" name="secretanswer1" placeholder="Secret answer" />
+  </select>
+  <select name="secretQuestion2" required class="dropdown">
+    <% for(var i = 0; i < questions.length; i++) { %>
+    <option <% if(i == 1) { %>selected<% } %> class="dropdown-option" value="<%= questions[i].guid %>"><%= questions[i].questionText %></option>
+    <% } %>
+    <input required type="text" name="secretanswer2" placeholder="Secret answer" />
+  </select>
+  <% } %> <% if (error) { %>
   <p><%= error %></p>
   <% } %>
   <button type="submit" class="form-input">Register</button>
