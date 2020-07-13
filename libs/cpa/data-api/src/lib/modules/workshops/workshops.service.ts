@@ -45,7 +45,7 @@ export class WorkshopsService extends BaseService<Workshop> {
   }
   public async updateWorkshop(body: IWorkshopRequestPayload, params) {
     try {
-      await this.repository.update({ guid: params.guid }, { ...body });
+      await this.repo.update({ guid: params.guid }, { ...body });
       return;
     } catch (err) {
       throw new HttpException('Internal Server Error', 500);
@@ -53,7 +53,7 @@ export class WorkshopsService extends BaseService<Workshop> {
   }
   public async deleteWorkshop(params) {
     try {
-      await this.repository.delete({ guid: params.guid });
+      await this.repo.delete({ guid: params.guid });
       return;
     } catch (err) {
       throw new HttpException('Internal Server Error', 500);

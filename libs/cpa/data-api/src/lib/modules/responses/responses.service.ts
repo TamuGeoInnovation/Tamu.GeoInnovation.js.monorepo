@@ -12,7 +12,7 @@ export class ResponsesService extends BaseService<Response> {
     super(repo);
   }
   public async getAllForBoth(params) {
-    return await this.repository
+    return await this.repo
       .createQueryBuilder('r')
       .where('r.workshopGuid = :w AND r.scenarioGuid = :s', {
         w: params.workshopGuid,

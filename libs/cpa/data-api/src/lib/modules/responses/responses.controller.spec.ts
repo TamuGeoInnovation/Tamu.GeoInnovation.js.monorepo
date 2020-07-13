@@ -30,6 +30,14 @@ describe('Responses Controller', () => {
     });
   });
 
+  describe('getAllForScenarioAndWorkshop', () => {
+    it('should return expectedResult', async () => {
+      const expectedResult = [];
+      jest.spyOn(responsesService, 'getAllForBoth').mockResolvedValue(expectedResult);
+      expect(await responsesController.getAllForScenarioAndWorkshop(mockParameters)).toBe(expectedResult);
+    });
+  });
+
   describe('getOne', () => {
     it('should return expectedResult', async () => {
       const expectedResult = new Response();
