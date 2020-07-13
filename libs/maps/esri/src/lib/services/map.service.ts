@@ -2,13 +2,13 @@ import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AsyncSubject, Observable, BehaviorSubject } from 'rxjs';
 
-import { EsriModuleProviderService } from './module-provider.service';
-
 import { SearchService } from '@tamu-gisc/search';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+
+import { EsriModuleProviderService } from './module-provider.service';
 
 import esri = __esri;
 

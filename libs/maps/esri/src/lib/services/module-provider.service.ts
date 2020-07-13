@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { loadModules } from 'esri-loader';
 
 @Injectable({ providedIn: 'root' })
