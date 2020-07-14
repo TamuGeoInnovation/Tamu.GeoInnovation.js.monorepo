@@ -126,11 +126,16 @@ export class UserService {
   }
 
   public async insertSecretQuestion(req: Request) {
-    const _secretQuestion: Partial<SecretQuestion> = {
-      questionText: req.body.questionText
-    };
-    const secretQuestion = this.questionRepo.create(_secretQuestion);
-    return this.questionRepo.insert(secretQuestion);
+    const questions: Partial<SecretQuestion>[] = [];
+    req.body.questions.map((value) => {
+      const question: Partial<SecretQuestion> = {
+        questionText: value.questionText
+      };
+      questions.push(question);
+    });
+    const secretQuestions = this.questionRepo.create(questions);
+
+    return this.questionRepo.insert(secretQuestions);
   }
 
   public async getAllSecretQuestions() {
