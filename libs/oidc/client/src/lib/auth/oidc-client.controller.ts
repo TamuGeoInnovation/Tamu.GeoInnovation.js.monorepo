@@ -8,7 +8,7 @@ import { OpenIdClient } from './open-id-client';
 export class OidcClientController {
   @UseGuards(LoginGuard)
   @Get('/login')
-  public login(@Response() res) {
+  public login() {
     // No logic here. LoginGuard will callback to /auth/callback
   }
 
@@ -24,7 +24,7 @@ export class OidcClientController {
     // if (req && req.session && req.session.returnUrl) {
     //   res.redirect(req.session.returnUrl);
     // }
-    res.redirect('/home')
+    res.redirect('/home');
   }
 
   @UseGuards(AdminRoleGuard)

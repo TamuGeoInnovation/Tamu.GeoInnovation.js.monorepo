@@ -114,7 +114,7 @@ export const PROVIDER_CONFIGURATION = {
     const clientId = req.oidc.client.clientId;
     // TODO: It isn't too apparent how to determine if we need to return role or not
     // depending on the claims approved by the user
-    // const account: Account = await StaticAccountService.findByKey(Account, 'guid', id);
+    const account: Account = await StaticAccountService.findByKey(Account, 'guid', id);
     const user: User = await StaticAccountService.getUserRoles(id, clientId);
     // The problem with this method is it scrubs the clientMetada so we don't know what sites have what permissions
     // const roles = [];
@@ -127,8 +127,9 @@ export const PROVIDER_CONFIGURATION = {
     // });
 
     // TODO: This isn't smart to have the [0] index of the userRoles array
-    if (user.account) {
-      const test = {
+    let ret = {};
+    if (user) {
+      ret = {
         sub: user.account.guid,
         ...user.account,
         role: {
@@ -136,20 +137,21 @@ export const PROVIDER_CONFIGURATION = {
           level_role: user.userRoles[0].role.level,
           client_role: user.userRoles[0].client.clientName
         }
-        // name_role: user.userRoles[0].role.name,
-        // level_role: user.userRoles[0].role.level,
-        // client_role: user.userRoles[0].client.clientName
-      };
-      return {
-        accountId: user.account.guid,
-        async claims(use: string, scope: string, claims: {}, rejected: string[]) {
-          return test;
-        }
       };
     } else {
-      console.warn('No account found');
-      return;
+      console.warn('No roles found');
+      ret = {
+        sub: account.guid,
+        ...account
+      };
     }
+
+    return {
+      accountId: account.guid,
+      async claims(use: string, scope: string, claims: {}, rejected: string[]) {
+        return ret;
+      }
+    };
   },
   jwks: keystore.toJWKS(true),
   features: {

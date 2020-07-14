@@ -9,6 +9,6 @@ export class AppService {
   async getSignedInAccount(req: Request, res: Response) {
     const ctx = OpenIdProvider.provider.app.createContext(req, res);
     const session = await OpenIdProvider.provider.Session.get(ctx);
-    return await this.userService.accountRepo.findByKeyShallow('guid', session.account);
+    return this.userService.accountRepo.findByKeyShallow('guid', session.account);
   }
 }

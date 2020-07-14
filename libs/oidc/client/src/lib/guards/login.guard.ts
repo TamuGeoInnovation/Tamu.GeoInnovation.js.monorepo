@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable, Inject } from '@nestjs/common';
+import { ExecutionContext, Injectable, Inject, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { OpenIdClient } from '../auth/open-id-client';
@@ -19,20 +19,28 @@ export class LoginGuard extends AuthGuard(OpenIdClient.strategyName) {
   public async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
 
-    if (request.query && request.query.ret) {
-      request.session.returnUrl = request.query.ret;
-    } else if (request.headers.referer) {
-      if (this.host === undefined) {
-        console.warn('IDP issuer host not provided. Can not register a return URL.');
-      } else if (this.host !== undefined && !request.headers.referer.includes(this.host)) {
-        request.session.returnUrl = request.headers.referer;
-      }
-    } else {
-      console.warn('Missing referrer. Will not redirect incoming request after successful authentication.');
-    }
+    // if (request.query && request.query.ret) {
+    //   request.session.returnUrl = request.query.ret;
+    // } else if (request.headers.referer) {
+    //   if (this.host === undefined) {
+    //     console.warn('IDP issuer host not provided. Can not register a return URL.');
+    //   } else if (this.host !== undefined && !request.headers.referer.includes(this.host)) {
+    //     request.session.returnUrl = request.headers.referer;
+    //   }
+    // } else {
+    //   console.warn('Missing referrer. Will not redirect incoming request after successful authentication.');
+    // }
 
     const result = (await super.canActivate(context)) as boolean;
     await super.logIn(request);
     return result;
+  }
+
+  handleRequest(err, user, info) {
+    // You can throw an exception based on either "info" or "err" arguments
+    if (err || !user) {
+      throw err || new UnauthorizedException();
+    }
+    return user;
   }
 }

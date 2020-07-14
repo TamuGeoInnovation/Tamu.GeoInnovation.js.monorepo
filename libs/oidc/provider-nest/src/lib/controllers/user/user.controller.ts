@@ -71,7 +71,7 @@ export class UserController {
       const userInserted = await this.userService.insertUser(newUser);
       this.userService.insertSecretAnswers(req, newUser);
       Mailer.sendAccountConfirmationEmail(newUser.email, newUser.guid);
-      return res.send(userInserted);
+      return res.send(`Welcome aboard, ${newUser.account.name}!`);
     }
   }
 
