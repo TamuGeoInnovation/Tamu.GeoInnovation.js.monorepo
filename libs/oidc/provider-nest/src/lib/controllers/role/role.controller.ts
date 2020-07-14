@@ -14,4 +14,9 @@ export class RoleController {
   async newRolePost(@Req() req) {
     return this.roleService.insertRole(req);
   }
+
+  @Post('all')
+  async newRolesPost(@Req() req) {
+    return this.roleService.insertRoles(req);
+  }
 }
