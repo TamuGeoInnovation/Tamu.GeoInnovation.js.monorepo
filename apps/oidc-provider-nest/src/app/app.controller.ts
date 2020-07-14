@@ -8,7 +8,8 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  public getHello(@Req() req: Request, @Res() res: Response): string {
-    return this.appService.getHello(req, res);
+  public async getHello(@Req() req: Request, @Res() res: Response) {
+    const account = await this.appService.getSignedInAccount(req, res);
+    return res.send(`Hello ${account.name}!`);
   }
 }

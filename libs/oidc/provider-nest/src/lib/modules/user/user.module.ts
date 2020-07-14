@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, HttpModule } from '@nestjs/common';
 import { UserController } from '../../controllers/user/user.controller';
 import { SecretQuestionController } from '../../controllers/secret-question/secret-question.controller';
 import { UserService } from '../../services/user/user.service';
@@ -10,7 +10,8 @@ import {
   ClientMetadataRepo,
   UserRoleRepo,
   SecretQuestionRepo,
-  SecretAnswerRepo
+  SecretAnswerRepo,
+  UserPasswordResetRepo
 } from '../../entities/all.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -23,8 +24,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       ClientMetadataRepo,
       SecretQuestionRepo,
       SecretAnswerRepo,
-      UserRoleRepo
-    ])
+      UserRoleRepo,
+      UserPasswordResetRepo
+    ]),
+    HttpModule
   ],
   controllers: [UserController, SecretQuestionController],
   providers: [UserService, StaticAccountService],

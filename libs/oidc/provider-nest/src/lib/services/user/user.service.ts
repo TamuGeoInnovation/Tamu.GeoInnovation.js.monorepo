@@ -14,7 +14,8 @@ import {
   SecretQuestion,
   SecretAnswer,
   SecretQuestionRepo,
-  SecretAnswerRepo
+  SecretAnswerRepo,
+  UserPasswordResetRepo
 } from '../../entities/all.entity';
 
 import { hash, compare } from 'bcrypt';
@@ -30,7 +31,8 @@ export class UserService {
     public readonly clientMetadataRepo: ClientMetadataRepo,
     public readonly userRoleRepo: UserRoleRepo,
     public readonly questionRepo: SecretQuestionRepo,
-    public readonly answerRepo: SecretAnswerRepo
+    public readonly answerRepo: SecretAnswerRepo,
+    public readonly passwordResetRepo: UserPasswordResetRepo
   ) {}
 
   public async insertUser(user: User) {
@@ -154,6 +156,20 @@ export class UserService {
     if (secretAnswer2) {
       this.answerRepo.save(secretAnswer2);
     }
+  }
+
+  public async isPasswordResetLinkStillValid(token: string) {
+    const resetRequest = await this.passwordResetRepo.findByKeyShallow('token', token);
+    if (new Date(resetRequest.expiresAt) >= new Date()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public async compareSecretAnswers(user: User, questionGuid: string, answer: string) {
+    const secretAnswer = await this.answerRepo.findByKeyDeep('user', user);
+    return compare(answer, secretAnswer.answer);
   }
 }
 

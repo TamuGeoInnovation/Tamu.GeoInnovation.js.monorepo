@@ -895,6 +895,66 @@ export class SecretAnswer extends GuidIdentity {
   answer: string;
 }
 
+@Entity({
+  name: 'user_pw_reset'
+})
+export class UserPasswordReset extends GuidIdentity {
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  userGuid: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  initializerIp: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  token: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  createdAt: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  expiresAt: string;
+
+  public setToken() {
+    if (this.token === undefined) {
+      this.token = guid();
+    }
+  }
+
+  @BeforeInsert()
+  private setupTokenAndExpiration(): void {
+    if (this.createdAt === undefined) {
+      this.createdAt = new Date().toISOString();
+    }
+    if (this.expiresAt === undefined) {
+      this.expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // Should be a 10 min expiration (Date.now() + 10 * 60 * 1000).toISOString();
+    }
+  }
+
+  constructor(req?: Request) {
+    super();
+    if (req) {
+      if (req.body.ip) {
+        this.initializerIp = req.body.ip;
+      }
+    }
+  }
+}
+
 export class CommonRepo<T> extends Repository<T> {
   public async findByKeyShallow<K extends keyof T>(key: K, value: unknown) {
     const op = {
@@ -919,6 +979,31 @@ export class CommonRepo<T> extends Repository<T> {
       });
     }
     return queryBuilder.where(`entity.${key} = :${key}`, op).getOne();
+  }
+
+  public async findAllByKeyShallow<K extends keyof T>(key: K, value: unknown) {
+    const op = {
+      [key]: value
+    };
+
+    return this.createQueryBuilder('entity')
+      .where(`entity.${key} = :${key}`, op)
+      .getMany();
+  }
+
+  public async findAllByKeyDeep<K extends keyof T>(key: K, value: unknown) {
+    const op = {
+      [key]: value
+    };
+
+    const relatedProps = this.getRelatedProps();
+    const queryBuilder = this.createQueryBuilder('entity');
+    if (relatedProps) {
+      relatedProps.map((propName) => {
+        queryBuilder.leftJoinAndSelect(`entity.${propName}`, propName);
+      });
+    }
+    return queryBuilder.where(`entity.${key} = :${key}`, op).getMany();
   }
 
   public async findAllShallow() {
@@ -981,3 +1066,6 @@ export class SecretQuestionRepo extends CommonRepo<SecretQuestion> {}
 
 @EntityRepository(SecretAnswer)
 export class SecretAnswerRepo extends CommonRepo<SecretAnswer> {}
+
+@EntityRepository(UserPasswordReset)
+export class UserPasswordResetRepo extends CommonRepo<UserPasswordReset> {}

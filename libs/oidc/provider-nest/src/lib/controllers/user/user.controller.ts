@@ -1,15 +1,17 @@
-import { Controller, Get, Next, Param, Req, Res, Render, Post } from '@nestjs/common';
+import { Controller, Get, Next, Param, Req, Res, Render, Post, HttpService } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
 import { hashSync } from 'bcrypt';
+
 import { urlFragment, urlHas } from '../../_utils/url-utils';
 import { Mailer } from '../../_utils/mailer.util';
-import { Account, User, SecretAnswer } from '../../entities/all.entity';
+import { Account, User, SecretAnswer, UserPasswordReset } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
+import { SHA1HashUtils } from '../../_utils/sha1hash.util';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService, private readonly httpService: HttpService) {}
 
   @Get('register')
   async registerGet(@Req() req: Request, @Res() res: Response) {
@@ -124,5 +126,85 @@ export class UserController {
   @Post('role')
   async addUserRolePost(@Req() req: Request) {
     this.userService.insertUserRole(req);
+  }
+
+  @Post('pwr')
+  async userForgotPasswordPost(@Req() req: Request) {
+    // TODO: Move all this to the userService, get it out of ma controller
+    const IPSTACK_APIKEY = '1e599a1240ca8f99f0b0d81a08324dbb';
+    const IPSTACK_URL = 'http://api.ipstack.com/';
+
+    const user = await this.userService.userRepo.findByKeyDeep('guid', req.body.guid);
+    const _resetRequest: Partial<UserPasswordReset> = {
+      userGuid: user.guid,
+      initializerIp: req.ip
+    };
+    const resetRequest = await this.userService.passwordResetRepo.create(_resetRequest);
+    resetRequest.setToken();
+    this.httpService.get(`${IPSTACK_URL}${req.ip}?access_key=${IPSTACK_APIKEY}`).subscribe((observer) => {
+      const location = observer.data.country_name;
+      Mailer.sendPasswordResetRequestEmail(user, resetRequest, location);
+      this.userService.passwordResetRepo.save(resetRequest).catch((typeOrmErr) => {
+        debugger;
+        console.warn(typeOrmErr);
+      }); // INSERT NEW AccountManager.insertNewPWResetRequest(req.params.sub, token, req.ip);
+    });
+    // .unsubscribe();
+  }
+
+  @Get('pwr/:token')
+  async loadAppropriatePWRViewGet(@Param() params, @Res() res: Response) {
+    // TODO: Move all this to the userService, get it out of ma controller
+    const stillValid = await this.userService.isPasswordResetLinkStillValid(params.token);
+    if (stillValid) {
+      const resetToken = await this.userService.passwordResetRepo.findByKeyShallow('token', params.token);
+      const user = await this.userService.userRepo.findByKeyShallow('guid', resetToken.userGuid);
+      // TODO: should we prompt those with 2fa to input their authcode before changing pw?
+      const questionsAndAnswers = await this.userService.answerRepo.findAllByKeyDeep('user', user.guid);
+      const questions: {
+        text: string;
+        guid: string;
+      }[] = [];
+      questionsAndAnswers.map((secretAnswer) => {
+        questions.push({
+          guid: secretAnswer.secretQuestion.guid,
+          text: secretAnswer.secretQuestion.questionText
+        });
+      });
+
+      res.render('password-reset', {
+        guid: user.guid,
+        token: params.token,
+        questions
+      });
+    }
+  }
+
+  @Post('pwr/:token')
+  async compareAgainstSecretAnswersPost(@Param() params, @Req() req: Request, @Res() res: Response) {
+    const token = params.token;
+    const { answer1, answer2, guid, question1, question2 } = req.body;
+    const exactMatch1 = await this.userService.compareSecretAnswers(guid, question1, answer1);
+    const exactMatch2 = await this.userService.compareSecretAnswers(guid, question2, answer2);
+    if (exactMatch1 && exactMatch2) {
+      // both answers were correct
+      return res.render('new-password', {
+        token
+      });
+    } else {
+      // one was wrong, show them the screen again
+      // TODO: would be cool to have a service that logged and kept track of incorrect answers to then
+      // lock someone's account if they answer too many times incorrectly
+      res.send('Incorrect answer');
+    }
+    debugger;
+  }
+
+  @Post('npw/:token')
+  async newPasswordPost(@Param() params, @Req() req: Request, @Res() res: Response) {
+    const resetRequest = await this.userService.passwordResetRepo.findByKeyShallow('token', params.token);
+    const user = await this.userService.userRepo.findByKeyShallow('guid', resetRequest.userGuid);
+    user.password = hashSync(req.body.newPassword, SHA1HashUtils.SALT_ROUNDS);
+    this.userService.userRepo.save(user);
   }
 }
