@@ -21,8 +21,21 @@ export class RoleService {
         name: req.body.name
       };
       const role = this.roleRepo.create(_role);
-      this.roleRepo.save(role);
+      return this.roleRepo.save(role);
     }
+  }
+
+  public async insertRoles(req: Request) {
+    const _roles: Partial<Role>[] = [];
+    req.body.roles.map((role) => {
+      const newRole: Partial<Role> = {
+        level: role.level,
+        name: role.name
+      };
+      _roles.push(newRole);
+    });
+    const roles = this.roleRepo.create(_roles);
+    return this.roleRepo.save(roles);
   }
 
   public async getAllRoles() {
