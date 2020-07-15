@@ -3276,6 +3276,11 @@
               "apps/ues-angular/src/assets",
               {
                 "glob": "**/*",
+                "input": "./libs/ues/assets/",
+                "output": "./assets"
+              },
+              {
+                "glob": "**/*",
                 "input": "./libs/assets/",
                 "output": "./assets"
               }
@@ -3454,7 +3459,20 @@
             "polyfills": "apps/ues-effluent-angular/src/polyfills.ts",
             "tsConfig": "apps/ues-effluent-angular/tsconfig.app.json",
             "aot": true,
-            "assets": ["apps/ues-effluent-angular/src/favicon.ico", "apps/ues-effluent-angular/src/assets"],
+            "assets": [
+              "apps/ues-effluent-angular/src/favicon.ico",
+              "apps/ues-effluent-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/ues/assets/",
+                "output": "./assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
             "styles": ["apps/ues-effluent-angular/src/styles.scss"],
             "scripts": []
           },
@@ -3547,6 +3565,34 @@
             "tsConfig": ["apps/ues-effluent-angular-e2e/tsconfig.e2e.json"],
             "exclude": ["**/node_modules/**", "!apps/ues-effluent-angular-e2e/**"]
           }
+        }
+      }
+    },
+    "ues-effluent": {
+      "projectType": "library",
+      "root": "libs/ues/effluent",
+      "sourceRoot": "libs/ues/effluent/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ues/effluent/tsconfig.lib.json", "libs/ues/effluent/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ues/effluent/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ues/effluent/jest.config.js",
+            "tsConfig": "libs/ues/effluent/tsconfig.spec.json",
+            "setupFile": "libs/ues/effluent/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
         }
       }
     }

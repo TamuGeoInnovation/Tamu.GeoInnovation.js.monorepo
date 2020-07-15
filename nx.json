@@ -301,6 +301,9 @@
     },
     "ues-effluent-angular": {
       "tags": []
+    },
+    "ues-effluent": {
+      "tags": []
     }
   }
 }

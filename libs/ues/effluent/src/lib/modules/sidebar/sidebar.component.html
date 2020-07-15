@@ -1,0 +1,11 @@
+<tamu-gisc-sidebar [position]="'right'">
+  <div class="tabs left">
+    <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'" [route]="''"></tamu-gisc-sidebar-tab>
+  </div>
+
+  <div class="content">
+    <tamu-gisc-ues-tamu-block></tamu-gisc-ues-tamu-block>
+    <router-outlet></router-outlet>
+    <tamu-gisc-feature-popup></tamu-gisc-feature-popup>
+  </div>
+</tamu-gisc-sidebar>
