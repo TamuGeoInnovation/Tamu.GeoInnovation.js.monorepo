@@ -295,6 +295,12 @@
     },
     "common-utils-device-guards": {
       "tags": []
+    },
+    "ues-effluent-angular-e2e": {
+      "tags": []
+    },
+    "ues-effluent-angular": {
+      "tags": []
     }
   }
 }
