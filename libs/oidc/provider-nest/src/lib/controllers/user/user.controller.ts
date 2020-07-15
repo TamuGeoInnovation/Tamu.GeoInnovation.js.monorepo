@@ -176,12 +176,32 @@ export class UserController {
           text: secretAnswer.secretQuestion.questionText
         });
       });
-
-      res.render('password-reset', {
+      const locals = {
+        title: 'GeoInnovation Service Center SSO',
+        client: {},
+        debug: false,
+        details: {},
+        params: {},
+        interaction: true,
+        error: false,
         guid: user.guid,
         token: params.token,
         questions
+        // devMode: urlHas(req.path, 'dev', true),
+        // requestingHost: urlFragment('', 'hostname')
+      };
+      return res.render('password-reset', locals, (err, html) => {
+        if (err) throw err;
+        res.render('_password-reset-layout', {
+          ...locals,
+          body: html
+        });
       });
+      // res.render('password-reset', {
+      //   guid: user.guid,
+      //   token: params.token,
+      //   questions
+      // });
     }
   }
 
@@ -193,9 +213,27 @@ export class UserController {
     const exactMatch2 = await this.userService.compareSecretAnswers(guid, question2, answer2);
     if (exactMatch1 && exactMatch2) {
       // both answers were correct
-      return res.render('new-password', {
-        token
+      const locals = {
+        title: 'GeoInnovation Service Center SSO',
+        client: {},
+        debug: false,
+        details: {},
+        params: {},
+        interaction: true,
+        error: false,
+        token: params.token
+      };
+      return res.render('new-password', locals, (err, html) => {
+        if (err) throw err;
+        res.render('_password-reset-layout', {
+          ...locals,
+          body: html
+        });
       });
+
+      // return res.render('new-password', {
+      //   token
+      // });
     } else {
       // one was wrong, show them the screen again
       // TODO: would be cool to have a service that logged and kept track of incorrect answers to then
