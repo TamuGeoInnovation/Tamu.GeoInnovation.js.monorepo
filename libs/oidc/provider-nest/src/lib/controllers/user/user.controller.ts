@@ -6,7 +6,7 @@ import { hashSync } from 'bcrypt';
 import { urlFragment, urlHas } from '../../_utils/url-utils';
 import { Mailer } from '../../_utils/mailer.util';
 import { Account, User, SecretAnswer, UserPasswordReset } from '../../entities/all.entity';
-import { UserService } from '../../services/user/user.service';
+import { UserService, ServiceToControllerTypes } from '../../services/user/user.service';
 import { SHA1HashUtils } from '../../_utils/sha1hash.util';
 
 @Controller('user')
@@ -90,10 +90,15 @@ export class UserController {
     return res.redirect('/');
   }
 
-  @Get('2fa/enable/:guid')
+  @Post('2fa/enable')
   async enable2faGet(@Param() params, @Req() req: Request, @Res() res: Response) {
-    if (params.guid) {
-      const enable2fa = await this.userService.enable2FA(params.guid);
+    if (req.body.guid) {
+      const enable2fa = await this.userService.enable2FA(req.body.guid);
+      if (enable2fa == ServiceToControllerTypes.CONDITION_ALREADY_TRUE) {
+        return res.send({
+          error: '2FA already enabled for user'
+        });
+      }
       if (enable2fa) {
         const issuer = 'GeoInnovation Service Center';
         const otpPath = authenticator.keyuri(
@@ -205,6 +210,8 @@ export class UserController {
     const resetRequest = await this.userService.passwordResetRepo.findByKeyShallow('token', params.token);
     const user = await this.userService.userRepo.findByKeyShallow('guid', resetRequest.userGuid);
     user.password = hashSync(req.body.newPassword, SHA1HashUtils.SALT_ROUNDS);
+    user.updatedAt = new Date().toISOString();
     this.userService.userRepo.save(user);
+    res.redirect('/');
   }
 }
