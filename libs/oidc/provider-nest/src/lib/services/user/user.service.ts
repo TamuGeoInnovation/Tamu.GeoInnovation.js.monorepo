@@ -173,8 +173,13 @@ export class UserService {
   }
 
   public async compareSecretAnswers(user: User, questionGuid: string, answer: string) {
-    const secretAnswer = await this.answerRepo.findByKeyDeep('user', user);
-    return compare(answer, secretAnswer.answer);
+    const secretAnswers = await this.answerRepo.findAllByKeyDeep('user', user);
+    for (var i = 0; i < secretAnswers.length; i++) {
+      const secretAnswer = secretAnswers[i];
+      if (secretAnswer.secretQuestion.guid === questionGuid) {
+        return compare(answer, secretAnswer.answer);
+      }
+    }
   }
 }
 
