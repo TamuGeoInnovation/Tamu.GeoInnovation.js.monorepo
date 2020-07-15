@@ -40,15 +40,8 @@ export class Mailer {
       text: 'Your password to GeoInnovation Service Center has been reset.',
       html: 'Your password to GeoInnovation Service Center has been reset.'
     };
-    return new Promise((resolve, reject) => {
-      Mailer.transporter
-        .sendMail(mailOptions)
-        .then((response) => {
-          resolve(response);
-        })
-        .catch((error) => {
-          reject(error);
-        });
+    Mailer.transporter.sendMail(mailOptions).then((response) => {
+      console.log('Verification email: ', Mailer.getTestMessageUrl(response));
     });
   }
   static async sendAccountConfirmationEmail(toEmail: string = 'aplecore@gmail.com', sub: string): Promise<any> {

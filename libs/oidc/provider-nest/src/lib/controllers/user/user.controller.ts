@@ -187,8 +187,6 @@ export class UserController {
         guid: user.guid,
         token: params.token,
         questions
-        // devMode: urlHas(req.path, 'dev', true),
-        // requestingHost: urlFragment('', 'hostname')
       };
       return res.render('password-reset', locals, (err, html) => {
         if (err) throw err;
@@ -197,11 +195,6 @@ export class UserController {
           body: html
         });
       });
-      // res.render('password-reset', {
-      //   guid: user.guid,
-      //   token: params.token,
-      //   questions
-      // });
     }
   }
 
@@ -230,10 +223,6 @@ export class UserController {
           body: html
         });
       });
-
-      // return res.render('new-password', {
-      //   token
-      // });
     } else {
       // one was wrong, show them the screen again
       // TODO: would be cool to have a service that logged and kept track of incorrect answers to then
@@ -250,6 +239,7 @@ export class UserController {
     user.password = hashSync(req.body.newPassword, SHA1HashUtils.SALT_ROUNDS);
     user.updatedAt = new Date().toISOString();
     this.userService.userRepo.save(user);
+    Mailer.sendPasswordResetConfirmationEmail(user.email);
     res.redirect('/');
   }
 }
