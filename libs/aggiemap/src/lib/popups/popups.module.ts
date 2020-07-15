@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
+import { BasePopupComponent } from './components/base/base.popup.component';
+import { BaseDirectionsComponent } from './components/base-directions/base-directions.component';
 import { AccessiblePopupComponent } from './components/accessible/accessible.component';
-import { GeneralDirectionsPopupComponent } from './components/base/base.popup.component';
 import { BuildingPopupComponent } from './components/building/building-popup.component';
 import { ConstructionPopupComponent } from './components/construction/construction.component';
 import { LactationPopupComponent } from './components/lactation/lactation.component';
@@ -16,8 +17,9 @@ import { PoiPopupComponent } from './components/poi/poi.component';
 import { TentZonePopupComponent } from './components/tent-zone/tent-zone.component';
 
 const PopsArr = [
+  BasePopupComponent,
+  BaseDirectionsComponent,
   AccessiblePopupComponent,
-  GeneralDirectionsPopupComponent,
   BuildingPopupComponent,
   ConstructionPopupComponent,
   LactationPopupComponent,
@@ -29,8 +31,9 @@ const PopsArr = [
 ];
 
 const PopsObj = {
+  BasePopupComponent,
+  BaseDirectionsComponent,
   AccessiblePopupComponent,
-  GeneralDirectionsPopupComponent,
   BuildingPopupComponent,
   ConstructionPopupComponent,
   LactationPopupComponent,

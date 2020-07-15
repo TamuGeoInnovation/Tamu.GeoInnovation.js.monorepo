@@ -64,7 +64,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -78,7 +78,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -92,7 +92,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -106,7 +106,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -120,7 +120,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -134,7 +134,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -148,7 +148,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -162,7 +162,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -176,7 +176,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -190,7 +190,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -204,7 +204,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -218,7 +218,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -232,7 +232,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -246,7 +246,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -260,7 +260,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -274,7 +274,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -288,7 +288,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -302,7 +302,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -316,7 +316,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -330,7 +330,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -344,7 +344,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -358,7 +358,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -372,7 +372,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -386,7 +386,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -400,7 +400,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -414,7 +414,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -428,7 +428,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -442,7 +442,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -456,7 +456,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     native: {
       ...commonLayerProps
     }
@@ -586,7 +586,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'hide',
     loadOnInit: false,
     visible: true,
-    popupComponent: Popups.GeneralDirectionsPopupComponent
+    popupComponent: Popups.BasePopupComponent
   }
 ];
 
@@ -709,7 +709,7 @@ export const SearchSources: SearchSource[] = [
     },
     featuresLocation: 'features',
     displayTemplate: '{attributes.DeptName}',
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     searchActive: true,
     altLookup: {
       source: 'building-exact',
@@ -810,7 +810,7 @@ export const SearchSources: SearchSource[] = [
     url: d.FIRE_HYDRANTS.url,
     featuresLocation: 'features',
     displayTemplate: '{attributes.HYDR_NUMBER}',
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     searchActive: true,
     queryParams: {
       ...commonQueryParams,
@@ -828,7 +828,7 @@ export const SearchSources: SearchSource[] = [
     url: d.GENERATORS.url,
     featuresLocation: 'features',
     displayTemplate: '{attributes.UES_ID}',
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     searchActive: true,
     queryParams: {
       ...commonQueryParams,
@@ -846,7 +846,7 @@ export const SearchSources: SearchSource[] = [
     url: d.TRANSFORMER.url,
     featuresLocation: 'features',
     displayTemplate: '{attributes.UESID}',
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     searchActive: true,
     queryParams: {
       ...commonQueryParams,
@@ -864,7 +864,7 @@ export const SearchSources: SearchSource[] = [
     url: d.ELECTRICAL_MANHOLES.url,
     featuresLocation: 'features',
     displayTemplate: '{attributes.MH_NUMBER}',
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     searchActive: true,
     queryParams: {
       ...commonQueryParams,
@@ -882,7 +882,7 @@ export const SearchSources: SearchSource[] = [
     url: d.ELECTRICAL_MANHOLES.url,
     featuresLocation: 'features',
     displayTemplate: '{attributes.MH_NUMBER}',
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     searchActive: true,
     queryParams: {
       ...commonQueryParams,
@@ -900,7 +900,7 @@ export const SearchSources: SearchSource[] = [
     url: d.DOMESTIC_COLD_WATER.url,
     featuresLocation: 'features',
     displayTemplate: '{attributes.OBJECTID}',
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     searchActive: true,
     queryParams: {
       ...commonQueryParams,
@@ -918,7 +918,7 @@ export const SearchSources: SearchSource[] = [
     url: d.DOMESTIC_COLD_WATER.url,
     featuresLocation: 'features',
     displayTemplate: '{attributes.OBJECTID}',
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     searchActive: true,
     queryParams: {
       ...commonQueryParams,
@@ -936,7 +936,7 @@ export const SearchSources: SearchSource[] = [
     url: d.UES_NATURAL_GAS_METERS.url,
     featuresLocation: 'features',
     displayTemplate: '{attributes.Meter_Number}',
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     searchActive: true,
     queryParams: {
       ...commonQueryParams,
@@ -954,7 +954,7 @@ export const SearchSources: SearchSource[] = [
     url: d.WELL_SITES.url,
     featuresLocation: 'features',
     displayTemplate: '{attributes.WELL_NAME}',
-    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    popupComponent: Popups.BasePopupComponent,
     searchActive: true,
     queryParams: {
       ...commonQueryParams,
