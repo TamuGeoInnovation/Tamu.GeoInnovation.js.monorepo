@@ -38,6 +38,7 @@ import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
 import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { MapComponent } from './map.component';
+import { SidebarRelationshipsComponent } from '../sidebar/components/sidebar-relationships/sidebar-relationships.component';
 
 const routes: Routes = [
   {
@@ -58,7 +59,10 @@ const routes: Routes = [
         path: 'd',
         component: SidebarComponent,
         canActivateChild: [DesktopGuard],
-        children: [{ path: '', component: SidebarReferenceComponent }]
+        children: [
+          { path: '', component: SidebarReferenceComponent },
+          { path: 'relationships', component: SidebarRelationshipsComponent }
+        ]
       },
       {
         path: 'm',

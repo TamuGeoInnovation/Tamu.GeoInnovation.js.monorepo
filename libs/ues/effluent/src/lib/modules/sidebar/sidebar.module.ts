@@ -13,6 +13,7 @@ import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
 
 import { SidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
+import { SidebarRelationshipsComponent } from './components/sidebar-relationships/sidebar-relationships.component';
 
 @NgModule({
   imports: [
@@ -27,7 +28,7 @@ import { SidebarReferenceComponent } from './components/sidebar-reference/sideba
     LegendModule,
     UESCoreUIModule
   ],
-  declarations: [SidebarComponent, SidebarReferenceComponent],
+  declarations: [SidebarComponent, SidebarReferenceComponent, SidebarRelationshipsComponent],
   exports: [SidebarComponent]
 })
 export class UESEffluentSidebarModule {}

@@ -70,7 +70,7 @@ export const LayerSources: LayerSource[] = [
     url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/EffluentZones/FeatureServer/0',
     popupComponent: Popups.BasePopupComponent,
     listMode: 'show',
-    loadOnInit: false,
+    loadOnInit: true,
     visible: true,
     layerIndex: 3,
     native: {
