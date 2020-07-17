@@ -1,8 +1,16 @@
 <form autocomplete="off" action="/user/register" method="post">
+  <% if (error) {%>
+    <ul>
+    <% message.map((errorMessage) => { %>
+      <li id="uservalidation-error-message"><%= errorMessage %></li>
+    <% }) %>
+    </ul>
+  <%}%>
+  
   <input required type="text" name="name" placeholder="Name" autofocus="on" />
   <input required type="text" name="email" placeholder="Email" />
-  <input required type="password" name="password" placeholder="Password" />
-  <input required type="password" name="confirm_password" placeholder="Confirm Password" />
+  <input required type="password" id="password" name="password" placeholder="Password" />
+  <input required type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" />
   <p class="text center authorize-instructions">
     Please choose and answer two secret questions:
   </p>
@@ -19,8 +27,6 @@
     <% } %>
     <input required type="text" name="secretanswer2" placeholder="Secret answer" />
   </select>
-  <% } %> <% if (error) { %>
-  <p><%= error %></p>
-  <% } %>
+  <% } %> 
   <button type="submit" class="form-input">Register</button>
 </form>

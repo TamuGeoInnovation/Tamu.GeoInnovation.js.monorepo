@@ -2,7 +2,6 @@ import { Controller, Get, Next, Param, Req, Res, Render, Post, HttpService } fro
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
 import { hashSync } from 'bcrypt';
-
 import { urlFragment, urlHas } from '../../_utils/url-utils';
 import { Mailer } from '../../_utils/mailer.util';
 import { Account, User, SecretAnswer, UserPasswordReset } from '../../entities/all.entity';
@@ -39,40 +38,16 @@ export class UserController {
 
   @Post('register')
   async registerPost(@Req() req: Request, @Res() res: Response) {
+    this.userService.isPasswordValid(req);
     req.body.ip = req.ip;
-    const existingUser = await this.userService.userRepo.findByKeyShallow('email', req.body.email);
-    if (existingUser) {
-      // TODO: This doesn't work right; no error message shown
-      const questions = await this.userService.getAllSecretQuestions();
-      const locals = {
-        title: 'GeoInnovation Service Center SSO',
-        client: {},
-        debug: false,
-        details: {},
-        params: {},
-        interaction: true,
-        error: true,
-        message: 'The email provided is already registered.',
-        questions: questions,
-        devMode: urlHas(req.path, 'dev', true),
-        requestingHost: urlFragment('', 'hostname')
-      };
-      return res.render('register', locals, (err, html) => {
-        if (err) throw err;
-        res.render('_registration-layout', {
-          ...locals,
-          body: html
-        });
-      });
-    } else {
-      const newUser: User = new User(req);
-      const newAccount: Account = new Account(req.body.name, req.body.email);
-      newUser.account = newAccount;
-      const userInserted = await this.userService.insertUser(newUser);
-      this.userService.insertSecretAnswers(req, newUser);
-      Mailer.sendAccountConfirmationEmail(newUser.email, newUser.guid);
-      return res.send(`Welcome aboard, ${newUser.account.name}!`);
-    }
+
+    const newUser: User = new User(req);
+    const newAccount: Account = new Account(req.body.name, req.body.email);
+    newUser.account = newAccount;
+    this.userService.insertUser(newUser);
+    this.userService.insertSecretAnswers(req, newUser);
+    Mailer.sendAccountConfirmationEmail(newUser.email, newUser.guid);
+    return res.send(`Welcome aboard, ${newUser.account.name}!`);
   }
 
   @Get('register/:guid')
@@ -240,6 +215,7 @@ export class UserController {
     user.updatedAt = new Date().toISOString();
     this.userService.userRepo.save(user);
     Mailer.sendPasswordResetConfirmationEmail(user.email);
+    this.userService.passwordResetRepo.delete(resetRequest);
     res.redirect('/');
   }
 }
