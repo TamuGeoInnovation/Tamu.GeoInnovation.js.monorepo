@@ -1,8 +1,10 @@
-import { Module, HttpModule } from '@nestjs/common';
+import { Module, NestModule, HttpModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserController } from '../../controllers/user/user.controller';
 import { SecretQuestionController } from '../../controllers/secret-question/secret-question.controller';
 import { UserService } from '../../services/user/user.service';
 import { StaticAccountService } from '../../services/account/account.service';
+import { UserValidationMiddleware } from '../../middleware/user-validation/user-validation.middleware';
 import {
   AccountRepo,
   UserRepo,
@@ -13,7 +15,6 @@ import {
   SecretAnswerRepo,
   UserPasswordResetRepo
 } from '../../entities/all.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -33,4 +34,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   providers: [UserService, StaticAccountService],
   exports: [UserService, StaticAccountService]
 })
-export class UserModule {}
+export class UserModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(UserValidationMiddleware).forRoutes({
+      path: 'user/register',
+      method: RequestMethod.POST
+    });
+  }
+}
