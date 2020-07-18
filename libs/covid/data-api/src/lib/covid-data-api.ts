@@ -16,3 +16,5 @@ export * from './modules/county-claims/county-claims.module';
 
 export * from './modules/users/users.module';
 export * from './modules/users/users.service';
+
+export * from './ormconfig';
