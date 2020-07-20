@@ -112,8 +112,7 @@ describe('State Integration Tests', () => {
   });
 
   describe('search', () => {
-    it('should be able to get a State By search', async () => {
-      // create new state
+    it('should be able to get a County By search', async () => {
       await service.createOne(countiesTest);
       await service.createOne(countiesTestTwo);
       const foundCounty = await service.search('Foo');

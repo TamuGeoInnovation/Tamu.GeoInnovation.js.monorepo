@@ -6,6 +6,14 @@ import { config } from '@tamu-gisc/covid/data-api';
 import { UsersService } from './users.service';
 import { UsersModule } from './users.module';
 
+const userTest: Partial<User> = {
+  email: 'Foo'
+};
+
+const userTestTwo: Partial<User> = {
+  email: 'Bar'
+};
+
 describe('Testing Site Integration Tests', () => {
   let usersService: UsersService;
   let usersRepo: Repository<User>;
@@ -13,8 +21,21 @@ describe('Testing Site Integration Tests', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [UsersModule, TypeOrmModule.forFeature([User]), TypeOrmModule.forRoot(config)],
-      providers: [User]
+      imports: [
+        UsersModule,
+        TypeOrmModule.forFeature([User, TestingSite]),
+        TypeOrmModule.forRoot({
+          type: 'mssql',
+          host: 'localhost',
+          port: 1433,
+          username: 'testing',
+          password: 'test',
+          database: 'test',
+          autoLoadEntities: true,
+          synchronize: true
+        })
+      ],
+      providers: [UsersService]
     }).compile();
 
     usersService = module.get<UsersService>(UsersService);
@@ -48,5 +69,15 @@ describe('Testing Site Integration Tests', () => {
       .from(User)
       .execute();
     await connection.close();
+  });
+
+  describe('registerEmail', () => {
+    it('should be able to register via Email', async () => {
+      // create new state
+      await usersService.createOne(userTest);
+      await usersService.createOne(userTestTwo);
+      const foundUser = await usersService.registerEmail('Foo');
+      expect(foundUser).toMatchObject([userTest]);
+    });
   });
 });
