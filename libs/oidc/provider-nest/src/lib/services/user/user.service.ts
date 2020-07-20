@@ -1,6 +1,5 @@
 import { Connection, getConnection, Repository, Db, UpdateResult } from 'typeorm';
 import { Request } from 'express';
-import { hashSync } from 'bcrypt';
 import { SHA1HashUtils } from '../../_utils/sha1hash.util';
 import {
   Account,
@@ -15,10 +14,12 @@ import {
   SecretAnswer,
   SecretQuestionRepo,
   SecretAnswerRepo,
-  UserPasswordResetRepo
+  UserPasswordHistory,
+  UserPasswordResetRepo,
+  UserPasswordHistoryRepo
 } from '../../entities/all.entity';
 
-import { hash, compare } from 'bcrypt';
+import { hashSync, hash, compare } from 'bcrypt';
 import { Injectable } from '@nestjs/common';
 import { TwoFactorAuthUtils } from '../../_utils/twofactorauth.util';
 
@@ -32,7 +33,8 @@ export class UserService {
     public readonly userRoleRepo: UserRoleRepo,
     public readonly questionRepo: SecretQuestionRepo,
     public readonly answerRepo: SecretAnswerRepo,
-    public readonly passwordResetRepo: UserPasswordResetRepo
+    public readonly passwordResetRepo: UserPasswordResetRepo,
+    public readonly passwordHistoryRepo: UserPasswordHistoryRepo
   ) {}
 
   public async insertUser(user: User) {
@@ -43,11 +45,18 @@ export class UserService {
     });
 
     if (existingUser) {
-      // user already exists, do something about it
+      // TODO: user already exists, do something about it
     }
 
     user.password = await hash(user.password, SHA1HashUtils.SALT_ROUNDS);
     await this.userRepo.save(user);
+
+    const _usedPassword: Partial<UserPasswordHistory> = {
+      user: user,
+      usedPassword: user.password
+    };
+    const usedPassword = await this.passwordHistoryRepo.create(_usedPassword);
+    await this.passwordHistoryRepo.save(usedPassword);
   }
 
   public async userLogin(email: string, password: string) {
@@ -144,22 +153,21 @@ export class UserService {
 
   public async insertSecretAnswers(req: Request, user: User) {
     const _secretAnswer1: Partial<SecretAnswer> = {
-      answer: hashSync(req.body.secretanswer1, SHA1HashUtils.SALT_ROUNDS),
+      answer: hashSync(req.body.secretanswer1.toLowerCase(), SHA1HashUtils.SALT_ROUNDS),
       secretQuestion: req.body.secretQuestion1,
       user: user
     };
     const _secretAnswer2: Partial<SecretAnswer> = {
-      answer: hashSync(req.body.secretanswer2, SHA1HashUtils.SALT_ROUNDS),
+      answer: hashSync(req.body.secretanswer2.toLowerCase(), SHA1HashUtils.SALT_ROUNDS),
       secretQuestion: req.body.secretQuestion2,
       user: user
     };
-    const secretAnswer1 = this.answerRepo.create(_secretAnswer1);
-    const secretAnswer2 = this.answerRepo.create(_secretAnswer2);
-    if (secretAnswer1) {
-      this.answerRepo.save(secretAnswer1);
-    }
-    if (secretAnswer2) {
-      this.answerRepo.save(secretAnswer2);
+    const secretAnswers = this.answerRepo.create([_secretAnswer1, _secretAnswer2]);
+    if (secretAnswers) {
+      this.answerRepo.save(secretAnswers).catch((typeOrmErr) => {
+        debugger;
+        console.warn(typeOrmErr);
+      });
     }
   }
 
@@ -179,6 +187,27 @@ export class UserService {
       if (secretAnswer.secretQuestion.guid === questionGuid) {
         return compare(answer, secretAnswer.answer);
       }
+    }
+  }
+
+  public async isNewPasswordUsed(newPassword: string, user: User) {
+    const oldPasswords = await this.passwordHistoryRepo.find({
+      where: {
+        user: user
+      }
+    });
+    if (oldPasswords) {
+      const len = oldPasswords.length;
+      for (let i = 0; i < len; i++) {
+        const areSame = await compare(newPassword, oldPasswords[i].usedPassword);
+        if (areSame) {
+          // they're the same
+          return true;
+        }
+      }
+      return false;
+    } else {
+      return false;
     }
   }
 }

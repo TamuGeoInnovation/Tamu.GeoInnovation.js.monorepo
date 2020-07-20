@@ -4,7 +4,7 @@ import { authenticator } from 'otplib';
 import { hashSync } from 'bcrypt';
 import { urlFragment, urlHas } from '../../_utils/url-utils';
 import { Mailer } from '../../_utils/mailer.util';
-import { Account, User, SecretAnswer, UserPasswordReset } from '../../entities/all.entity';
+import { Account, User, SecretAnswer, UserPasswordReset, UserPasswordHistory } from '../../entities/all.entity';
 import { UserService, ServiceToControllerTypes } from '../../services/user/user.service';
 import { SHA1HashUtils } from '../../_utils/sha1hash.util';
 
@@ -38,14 +38,14 @@ export class UserController {
 
   @Post('register')
   async registerPost(@Req() req: Request, @Res() res: Response) {
-    this.userService.isPasswordValid(req);
+    // TODO: put this in the service
     req.body.ip = req.ip;
 
     const newUser: User = new User(req);
     const newAccount: Account = new Account(req.body.name, req.body.email);
     newUser.account = newAccount;
-    this.userService.insertUser(newUser);
-    this.userService.insertSecretAnswers(req, newUser);
+    await this.userService.insertUser(newUser);
+    await this.userService.insertSecretAnswers(req, newUser);
     Mailer.sendAccountConfirmationEmail(newUser.email, newUser.guid);
     return res.send(`Welcome aboard, ${newUser.account.name}!`);
   }
@@ -170,6 +170,8 @@ export class UserController {
           body: html
         });
       });
+    } else {
+      return res.send('This link is no longer valid');
     }
   }
 
@@ -202,20 +204,82 @@ export class UserController {
       // one was wrong, show them the screen again
       // TODO: would be cool to have a service that logged and kept track of incorrect answers to then
       // lock someone's account if they answer too many times incorrectly
-      res.send('Incorrect answer');
+      const questionsAndAnswers = await this.userService.answerRepo.findAllByKeyDeep('user', guid);
+      const questions: {
+        text: string;
+        guid: string;
+      }[] = [];
+      questionsAndAnswers.map((secretAnswer) => {
+        questions.push({
+          guid: secretAnswer.secretQuestion.guid,
+          text: secretAnswer.secretQuestion.questionText
+        });
+      });
+      const locals = {
+        title: 'GeoInnovation Service Center SSO',
+        client: {},
+        debug: false,
+        details: {},
+        params: {},
+        interaction: true,
+        error: true,
+        message: 'Incorrect answer(s)',
+        guid: guid,
+        token: params.token,
+        questions
+      };
+      return res.render('password-reset', locals, (err, html) => {
+        if (err) throw err;
+        res.render('_password-reset-layout', {
+          ...locals,
+          body: html
+        });
+      });
     }
-    debugger;
   }
 
   @Post('npw/:token')
   async newPasswordPost(@Param() params, @Req() req: Request, @Res() res: Response) {
     const resetRequest = await this.userService.passwordResetRepo.findByKeyShallow('token', params.token);
     const user = await this.userService.userRepo.findByKeyShallow('guid', resetRequest.userGuid);
-    user.password = hashSync(req.body.newPassword, SHA1HashUtils.SALT_ROUNDS);
-    user.updatedAt = new Date().toISOString();
-    this.userService.userRepo.save(user);
-    Mailer.sendPasswordResetConfirmationEmail(user.email);
-    this.userService.passwordResetRepo.delete(resetRequest);
-    res.redirect('/');
+    // here check to see if the new password is not reused
+    const isNewPasswordUsed = await this.userService.isNewPasswordUsed(req.body.newPassword, user);
+    if (!isNewPasswordUsed) {
+      // password is not used; continue
+      user.password = hashSync(req.body.newPassword, SHA1HashUtils.SALT_ROUNDS);
+      user.updatedAt = new Date().toISOString();
+      this.userService.userRepo.save(user);
+      Mailer.sendPasswordResetConfirmationEmail(user.email);
+      const _newUsedPassword: Partial<UserPasswordHistory> = {
+        user: user,
+        usedPassword: user.password
+      };
+      const newUsedPassword = await this.userService.passwordHistoryRepo.create(_newUsedPassword);
+      this.userService.passwordHistoryRepo.save(newUsedPassword);
+      this.userService.passwordResetRepo.delete(resetRequest);
+      res.redirect('/');
+    } else {
+      // Hey this is a used password you doodoo head
+      const messages: string[] = [];
+      messages.push('You cannot re-use an old password');
+      const locals = {
+        title: 'GeoInnovation Service Center SSO',
+        client: {},
+        debug: false,
+        details: {},
+        params: {},
+        interaction: true,
+        error: true,
+        message: messages,
+        token: params.token
+      };
+      return res.render('new-password', locals, (err, html) => {
+        if (err) throw err;
+        res.render('_password-reset-layout', {
+          ...locals,
+          body: html
+        });
+      });
+    }
   }
 }

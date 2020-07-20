@@ -955,6 +955,20 @@ export class UserPasswordReset extends GuidIdentity {
   }
 }
 
+@Entity({
+  name: 'password_history'
+})
+export class UserPasswordHistory extends GuidIdentity {
+  @ManyToOne((type) => User)
+  user: User;
+
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  usedPassword: string;
+}
+
 export class CommonRepo<T> extends Repository<T> {
   public async findByKeyShallow<K extends keyof T>(key: K, value: unknown) {
     const op = {
@@ -1069,3 +1083,6 @@ export class SecretAnswerRepo extends CommonRepo<SecretAnswer> {}
 
 @EntityRepository(UserPasswordReset)
 export class UserPasswordResetRepo extends CommonRepo<UserPasswordReset> {}
+
+@EntityRepository(UserPasswordHistory)
+export class UserPasswordHistoryRepo extends CommonRepo<UserPasswordHistory> {}
