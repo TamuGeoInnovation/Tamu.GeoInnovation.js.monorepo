@@ -4,7 +4,10 @@ import { UserController } from '../../controllers/user/user.controller';
 import { SecretQuestionController } from '../../controllers/secret-question/secret-question.controller';
 import { UserService } from '../../services/user/user.service';
 import { StaticAccountService } from '../../services/account/account.service';
-import { UserValidationMiddleware } from '../../middleware/user-validation/user-validation.middleware';
+import {
+  UserValidationMiddleware,
+  PasswordValidationMiddleware
+} from '../../middleware/user-validation/user-validation.middleware';
 import {
   AccountRepo,
   UserRepo,
@@ -13,7 +16,8 @@ import {
   UserRoleRepo,
   SecretQuestionRepo,
   SecretAnswerRepo,
-  UserPasswordResetRepo
+  UserPasswordResetRepo,
+  UserPasswordHistoryRepo
 } from '../../entities/all.entity';
 
 @Module({
@@ -26,7 +30,8 @@ import {
       SecretQuestionRepo,
       SecretAnswerRepo,
       UserRoleRepo,
-      UserPasswordResetRepo
+      UserPasswordResetRepo,
+      UserPasswordHistoryRepo
     ]),
     HttpModule
   ],
@@ -38,6 +43,10 @@ export class UserModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(UserValidationMiddleware).forRoutes({
       path: 'user/register',
+      method: RequestMethod.POST
+    });
+    consumer.apply(PasswordValidationMiddleware).forRoutes({
+      path: 'user/npw/:token',
       method: RequestMethod.POST
     });
   }

@@ -15,7 +15,7 @@ async function bootstrap() {
   const clientsService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
   const clients = await clientsService.loadClientMetadaForOidcSetup();
   OpenIdProvider.build(clients);
-  enableOIDCDebug(OpenIdProvider.provider);
+  // enableOIDCDebug(OpenIdProvider.provider);
   OpenIdProvider.provider.proxy = true;
   const dir = join(__dirname, 'assets/views');
   app.use(helmet());

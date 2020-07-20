@@ -36,7 +36,8 @@ import {
   UserLoginModule,
   SecretQuestion,
   SecretAnswer,
-  UserPasswordReset
+  UserPasswordReset,
+  UserPasswordHistory
 } from '@tamu-gisc/oidc/provider-nest';
 
 import { dbConfig } from '../environments/environment';
@@ -68,7 +69,8 @@ import { dbConfig } from '../environments/environment';
         UserLogin,
         SecretQuestion,
         SecretAnswer,
-        UserPasswordReset
+        UserPasswordReset,
+        UserPasswordHistory
       ]
     }),
     TypeOrmModule.forFeature([
