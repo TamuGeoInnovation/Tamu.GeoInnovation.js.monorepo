@@ -4,7 +4,6 @@ import { Repository, getConnection } from 'typeorm';
 import { StatesService } from './states.service';
 import { StatesModule } from './states.module';
 import { State } from '@tamu-gisc/covid/common/entities';
-import { config } from '@tamu-gisc/covid/data-api';
 
 const stateTest: Partial<State> = {
   abbreviation: 'F',
@@ -13,7 +12,9 @@ const stateTest: Partial<State> = {
 };
 
 const stateTestTwo: Partial<State> = {
-  stateFips: 10
+  stateFips: 10,
+  name: 'Bar',
+  abbreviation: 'B'
 };
 
 describe('State Integration Tests', () => {
@@ -22,7 +23,20 @@ describe('State Integration Tests', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [StatesModule, TypeOrmModule.forFeature([State]), TypeOrmModule.forRoot(config)],
+      imports: [
+        StatesModule,
+        TypeOrmModule.forFeature([State]),
+        TypeOrmModule.forRoot({
+          type: 'mssql',
+          host: 'localhost',
+          port: 1433,
+          username: 'testing',
+          password: 'test',
+          database: 'test',
+          autoLoadEntities: true,
+          synchronize: true
+        })
+      ],
       providers: [StatesService]
     }).compile();
 

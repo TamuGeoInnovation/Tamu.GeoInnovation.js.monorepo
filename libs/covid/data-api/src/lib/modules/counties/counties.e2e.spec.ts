@@ -1,19 +1,39 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { Repository, getConnection } from 'typeorm';
-import { State, County, CountyClaim } from '@tamu-gisc/covid/common/entities';
+import {
+  State,
+  County,
+  CountyClaim,
+  EntityStatus,
+  TestingSite,
+  Lockdown,
+  User,
+  CountyClaimInfo,
+  EntityToValue,
+  LockdownInfo,
+  TestingSiteInfo,
+  Location,
+  EntityValue,
+  CategoryValue,
+  FieldCategory,
+  FieldType,
+  StatusType
+} from '@tamu-gisc/covid/common/entities';
 import { CountiesService } from './counties.service';
 import { CountiesModule } from './counties.module';
 import { config } from '@tamu-gisc/covid/data-api';
 
-const stateTest: Partial<State> = {
-  abbreviation: 'F',
-  stateFips: 9,
+const countiesTest: Partial<County> = {
+  countyFips: 1,
+  stateFips: new State(),
   name: 'Foo'
 };
 
-const stateTestTwo: Partial<State> = {
-  stateFips: 10
+const countiesTestTwo: Partial<County> = {
+  countyFips: 1,
+  stateFips: new State(),
+  name: 'Bar'
 };
 
 describe('State Integration Tests', () => {
@@ -23,7 +43,38 @@ describe('State Integration Tests', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [CountiesModule, TypeOrmModule.forFeature([State]), TypeOrmModule.forRoot(config)],
+      imports: [
+        CountiesModule,
+        TypeOrmModule.forFeature([County, CountyClaim]),
+        TypeOrmModule.forRoot({
+          type: 'mssql',
+          host: 'localhost',
+          port: 1433,
+          username: 'testing',
+          password: 'test',
+          database: 'test',
+          entities: [
+            State,
+            County,
+            CountyClaim,
+            EntityStatus,
+            TestingSite,
+            Lockdown,
+            User,
+            CountyClaimInfo,
+            EntityToValue,
+            LockdownInfo,
+            TestingSiteInfo,
+            Location,
+            EntityValue,
+            CategoryValue,
+            FieldCategory,
+            FieldType,
+            StatusType
+          ],
+          synchronize: true
+        })
+      ],
       providers: [CountiesService]
     }).compile();
 
@@ -58,5 +109,15 @@ describe('State Integration Tests', () => {
       .from(CountyClaim)
       .execute();
     await connection.close();
+  });
+
+  describe('search', () => {
+    it('should be able to get a State By search', async () => {
+      // create new state
+      await service.createOne(countiesTest);
+      await service.createOne(countiesTestTwo);
+      const foundCounty = await service.search('Foo');
+      expect(foundCounty).toMatchObject([countiesTest]);
+    });
   });
 });
