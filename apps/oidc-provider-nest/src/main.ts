@@ -11,7 +11,7 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { join } from 'path';
 
-import { InputSanitizerMiddleware } from '@tamu-gisc/oidc/provider-nest';
+import { environment } from './environments/environment';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -48,26 +48,20 @@ async function bootstrap() {
   // app.use(InputSanitizerMiddleware);
   app.use('/oidc', OpenIdProvider.provider.callback);
 
-  app.use((err, req, res, next) => {
-    console.log('MAYBE SOMETHING HERE');
-    if (err.name === 'SessionNotFound') {
-      // handle interaction expired / session not found error
-      console.error('SESSION NOT FOUND');
-      throw err;
-    }
-    next(err);
-  });
+  // app.use((err, req, res, next) => {
+  //   console.log('MAYBE SOMETHING HERE');
+  //   if (err.name === 'SessionNotFound') {
+  //     // handle interaction expired / session not found error
+  //     console.error('SESSION NOT FOUND');
+  //     throw err;
+  //   }
+  //   next(err);
+  // });
 
-  await app.listenAsync(4001);
+  await app.listenAsync(environment.port);
 }
 
-// OpenIdProvider.build()
-//   .then(() => {
 bootstrap();
-//   })
-//   .catch((err) => {
-//     console.error(err);
-//   });
 
 function enableOIDCDebug(idp: Provider): void {
   idp.addListener('server_error', (error: any, ctx: any) => {
