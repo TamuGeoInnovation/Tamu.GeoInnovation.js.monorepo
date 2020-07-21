@@ -19,6 +19,7 @@ import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/sear
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 
 import { Connections, Definitions as d } from './definitions';
+import { tiers } from './tier-dictionary';
 
 import { Popups } from '@tamu-gisc/aggiemap';
 
@@ -26,7 +27,10 @@ import esri = __esri;
 
 export * from './definitions';
 export * from './notification-events';
-export * from './polygons';
+
+export const effluentZonesUrl = Connections.effluentZonesUrl;
+export const effluentSampleLocationsUrl = Connections.effluentSampleLocationsUrl;
+export const effluentTiers = tiers;
 
 const commonLayerProps = {
   outFields: ['*'],
@@ -67,7 +71,7 @@ export const LayerSources: LayerSource[] = [
     type: 'feature',
     id: 'sampling-zone-1',
     title: 'Sampling Zone 1',
-    url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/EffluentZones/FeatureServer/0',
+    url: Connections.effluentZonesUrl,
     popupComponent: Popups.BasePopupComponent,
     listMode: 'show',
     loadOnInit: true,
@@ -90,10 +94,10 @@ export const LayerSources: LayerSource[] = [
     type: 'feature',
     id: 'sampling-zone-2',
     title: 'Sampling Zone 2',
-    url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/EffluentZones/FeatureServer/0',
+    url: Connections.effluentZonesUrl,
     popupComponent: Popups.BasePopupComponent,
     listMode: 'show',
-    loadOnInit: false,
+    loadOnInit: true,
     visible: true,
     layerIndex: 4,
     native: {
@@ -113,10 +117,10 @@ export const LayerSources: LayerSource[] = [
     type: 'feature',
     id: 'sampling-zone-3',
     title: 'Sampling Zone 3',
-    url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/EffluentZones/FeatureServer/0',
+    url: Connections.effluentZonesUrl,
     popupComponent: Popups.BasePopupComponent,
     listMode: 'show',
-    loadOnInit: false,
+    loadOnInit: true,
     visible: true,
     layerIndex: 5,
     native: {
@@ -136,10 +140,10 @@ export const LayerSources: LayerSource[] = [
     type: 'feature',
     id: 'sampling-zone-4',
     title: 'Sampling Zone 4',
-    url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/EffluentZones/FeatureServer/0',
+    url: Connections.effluentZonesUrl,
     popupComponent: Popups.BasePopupComponent,
     listMode: 'show',
-    loadOnInit: false,
+    loadOnInit: true,
     visible: true,
     layerIndex: 6,
     native: {
@@ -159,10 +163,10 @@ export const LayerSources: LayerSource[] = [
     type: 'feature',
     id: 'sample-testing-locations',
     title: 'Sample Testing Locations',
-    url: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/Sample_Locations/FeatureServer/0',
+    url: Connections.effluentSampleLocationsUrl,
     popupComponent: Popups.BasePopupComponent,
     listMode: 'show',
-    loadOnInit: false,
+    loadOnInit: true,
     visible: true,
     layerIndex: 7,
     native: {

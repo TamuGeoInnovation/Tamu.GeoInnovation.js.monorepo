@@ -5,5 +5,29 @@
 <div class="sidebar-component-content">
   <p>Select a zone or sample to show their relationships.</p>
 
-  <p>Tier: {{tier | async | json}}</p>
+  <p>Selected Tier: {{tier | async}}</p>
+  <p>Previous Tier: {{previousTier | async}}</p>
+  <p>Next Tier: {{nextTier | async}}</p>
+  <p>Sample: {{sample | async}}</p>
+
+  <div>
+    <h4>Tier Owns</h4>
+    <ul>
+      <li *ngFor="let child of tierOwns | async">{{child?.attributes?.SampleNumb}}</li>
+    </ul>
+  </div>
+
+  <div>
+    <h4>Owned By</h4>
+    <ul>
+      <li *ngFor="let child of tierOwnedBy | async">{{child?.attributes?.SampleNumb}}</li>
+    </ul>
+  </div>
+
+  <div>
+    <h4>Sample Locations In Zone</h4>
+    <ul>
+      <li *ngFor="let location of sampleLocationsInZone | async">{{location?.attributes?.Sample}}</li>
+    </ul>
+  </div>
 </div>
