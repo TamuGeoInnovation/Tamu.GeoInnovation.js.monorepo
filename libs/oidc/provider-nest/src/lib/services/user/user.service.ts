@@ -171,7 +171,7 @@ export class UserService {
     }
   }
 
-  public async isPasswordResetLinkStillValid(token: string) {
+  public async isPasswordResetTokenStillValid(token: string) {
     const resetRequest = await this.passwordResetRepo.findByKeyShallow('token', token);
     if (new Date(resetRequest.expiresAt) >= new Date()) {
       return true;

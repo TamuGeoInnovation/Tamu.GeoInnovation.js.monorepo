@@ -1,10 +1,12 @@
 # TODO (open)
 
-- [] Sanitize all inputs
+- Sanitize all inputs
   - Trim proceeding / trailing whitespace
-- [] Prevent changing password more than once in 24 hours
-- [] Use EJS layouts e.g. `<%- include('footer'); -%>`
-- [] Change default keystore
+- Prevent changing password more than once in 24 hours
+- Use EJS layouts e.g. `<%- include('footer'); -%>`
+- Change default keystore
+- The URL after you finish registering shows the view for the home page, yet you're still
+  at `/user/register`
 
 # TODO (closed)
 

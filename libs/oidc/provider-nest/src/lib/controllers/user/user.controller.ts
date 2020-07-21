@@ -135,7 +135,7 @@ export class UserController {
   @Get('pwr/:token')
   async loadAppropriatePWRViewGet(@Param() params, @Res() res: Response) {
     // TODO: Move all this to the userService, get it out of ma controller
-    const stillValid = await this.userService.isPasswordResetLinkStillValid(params.token);
+    const stillValid = await this.userService.isPasswordResetTokenStillValid(params.token);
     if (stillValid) {
       const resetToken = await this.userService.passwordResetRepo.findByKeyShallow('token', params.token);
       const user = await this.userService.userRepo.findByKeyShallow('guid', resetToken.userGuid);
@@ -177,64 +177,68 @@ export class UserController {
 
   @Post('pwr/:token')
   async compareAgainstSecretAnswersPost(@Param() params, @Req() req: Request, @Res() res: Response) {
-    const token = params.token;
-    const { answer1, answer2, guid, question1, question2 } = req.body;
-    const exactMatch1 = await this.userService.compareSecretAnswers(guid, question1, answer1);
-    const exactMatch2 = await this.userService.compareSecretAnswers(guid, question2, answer2);
-    if (exactMatch1 && exactMatch2) {
-      // both answers were correct
-      const locals = {
-        title: 'GeoInnovation Service Center SSO',
-        client: {},
-        debug: false,
-        details: {},
-        params: {},
-        interaction: true,
-        error: false,
-        token: params.token
-      };
-      return res.render('new-password', locals, (err, html) => {
-        if (err) throw err;
-        res.render('_password-reset-layout', {
-          ...locals,
-          body: html
+    if (this.userService.isPasswordResetTokenStillValid(params.token)) {
+      const { answer1, answer2, guid, question1, question2 } = req.body;
+      const exactMatch1 = await this.userService.compareSecretAnswers(guid, question1, answer1);
+      const exactMatch2 = await this.userService.compareSecretAnswers(guid, question2, answer2);
+      if (exactMatch1 && exactMatch2) {
+        // both answers were correct
+        const locals = {
+          title: 'GeoInnovation Service Center SSO',
+          client: {},
+          debug: false,
+          details: {},
+          params: {},
+          interaction: true,
+          error: false,
+          token: params.token
+        };
+        return res.render('new-password', locals, (err, html) => {
+          if (err) throw err;
+          res.render('_password-reset-layout', {
+            ...locals,
+            body: html
+          });
         });
-      });
+      } else {
+        // one was wrong, show them the screen again
+        // TODO: would be cool to have a service that logged and kept track of incorrect answers to then
+        // lock someone's account if they answer too many times incorrectly
+        const questionsAndAnswers = await this.userService.answerRepo.findAllByKeyDeep('user', guid);
+        const questions: {
+          text: string;
+          guid: string;
+        }[] = [];
+        questionsAndAnswers.map((secretAnswer) => {
+          questions.push({
+            guid: secretAnswer.secretQuestion.guid,
+            text: secretAnswer.secretQuestion.questionText
+          });
+        });
+        const locals = {
+          title: 'GeoInnovation Service Center SSO',
+          client: {},
+          debug: false,
+          details: {},
+          params: {},
+          interaction: true,
+          error: true,
+          message: 'Incorrect answer(s)',
+          guid: guid,
+          token: params.token,
+          questions
+        };
+        return res.render('password-reset', locals, (err, html) => {
+          if (err) throw err;
+          res.render('_password-reset-layout', {
+            ...locals,
+            body: html
+          });
+        });
+      }
     } else {
-      // one was wrong, show them the screen again
-      // TODO: would be cool to have a service that logged and kept track of incorrect answers to then
-      // lock someone's account if they answer too many times incorrectly
-      const questionsAndAnswers = await this.userService.answerRepo.findAllByKeyDeep('user', guid);
-      const questions: {
-        text: string;
-        guid: string;
-      }[] = [];
-      questionsAndAnswers.map((secretAnswer) => {
-        questions.push({
-          guid: secretAnswer.secretQuestion.guid,
-          text: secretAnswer.secretQuestion.questionText
-        });
-      });
-      const locals = {
-        title: 'GeoInnovation Service Center SSO',
-        client: {},
-        debug: false,
-        details: {},
-        params: {},
-        interaction: true,
-        error: true,
-        message: 'Incorrect answer(s)',
-        guid: guid,
-        token: params.token,
-        questions
-      };
-      return res.render('password-reset', locals, (err, html) => {
-        if (err) throw err;
-        res.render('_password-reset-layout', {
-          ...locals,
-          body: html
-        });
-      });
+      // Token is expired
+      return res.send('This link is no longer valid');
     }
   }
 

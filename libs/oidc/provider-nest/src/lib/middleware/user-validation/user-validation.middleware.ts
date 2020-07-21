@@ -74,7 +74,8 @@ export class PasswordValidationMiddleware implements NestMiddleware {
 }
 
 @Injectable()
-export class UserValidationMiddleware extends PasswordValidationMiddleware {
+export class UserValidationMiddleware implements NestMiddleware {
+  constructor(public readonly userRepo: UserRepo, public readonly questionRepo: SecretQuestionRepo) {}
   async use(req: any, res: any, next: () => void) {
     try {
       req.body.validationErrors = [];
@@ -127,6 +128,7 @@ export class UserValidationMiddleware extends PasswordValidationMiddleware {
         throw new Error('Password isnt strong enough');
       }
     } catch (err) {
+      const questions = await this.questionRepo.find();
       const locals = {
         title: 'GeoInnovation Service Center SSO',
         client: {},
@@ -136,7 +138,7 @@ export class UserValidationMiddleware extends PasswordValidationMiddleware {
         interaction: true,
         error: true,
         message: req.body.validationErrors,
-        questions: await this.questionRepo.find(),
+        questions: questions,
         devMode: urlHas(req.path, 'dev', true),
         requestingHost: urlFragment('', 'hostname')
       };
