@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, from, combineLatest, of } from 'rxjs';
-import { shareReplay, map, filter, switchMap } from 'rxjs/operators';
+import { shareReplay, map, filter, switchMap, withLatestFrom } from 'rxjs/operators';
 
 import { PopupService } from '@tamu-gisc/maps/feature/popup';
 import { EsriMapService, HitTestSnapshot, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
@@ -22,15 +22,16 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
   public tierOwns: Observable<Array<esri.Graphic>>;
   public sampleLocationsInZone: Observable<Array<esri.Graphic>>;
 
-  public sample: Observable<string>;
+  public sample: Observable<number>;
 
-  public location;
+  public affectedBuildings: Observable<Array<IEffluentTierMetatada>>;
 
   public hit: Observable<HitTestSnapshot>;
   public hitGraphic: Observable<esri.Graphic>;
 
   private zonesResourceUrl: string;
   private sampleLocationsResourceUrl: string;
+  private buildingsResource: Array<IEffluentTierMetatada>;
   private modules: Observable<[esri.QueryConstructor, esri.QueryTaskConstructor]>;
 
   constructor(
@@ -45,6 +46,7 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
 
     this.zonesResourceUrl = this.environmentService.value('effluentZonesUrl');
     this.sampleLocationsResourceUrl = this.environmentService.value('effluentSampleLocationsUrl');
+    this.buildingsResource = this.environmentService.value('effluentTiers');
 
     this.hit = this.mapService.hitTest.pipe(shareReplay(1));
     this.hitGraphic = this.mapService.hitTest.pipe(
@@ -68,7 +70,7 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
     this.sample = this.hitGraphic.pipe(
       map((graphic) => {
         return graphic && graphic.attributes && graphic.attributes.SampleNumb !== undefined
-          ? graphic.attributes.SampleNumb.split('-').pop()
+          ? parseInt(graphic.attributes.SampleNumb.split('-').pop(), 10)
           : undefined;
       })
     );
@@ -160,10 +162,37 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
       })
     );
 
-    const dictionary = this.environmentService.value('effluentTiers');
+    this.affectedBuildings = this.sampleLocationsInZone.pipe(
+      withLatestFrom(this.tier, this.sample),
+      switchMap(([locations, tier, sample]) => {
+        const filtered = locations.reduce((acc, curr) => {
+          const buildingsForLocation = this.buildingsResource.filter((building) => {
+            return building.tiers.some((t) => {
+              return t.tier === tier && t.zone === sample;
+            });
+          });
+
+          const merged = [...acc, ...buildingsForLocation];
+
+          return merged;
+        }, []);
+
+        return of(filtered);
+      })
+    );
   }
 
   public ngOnDestroy() {
     this.popupService.enablePopups();
   }
+}
+
+export interface IEffluentTierMetatada {
+  number: string;
+  classification: 'Residence' | 'E&G' | 'Dining';
+  area: number;
+  tiers: Array<{
+    tier: number;
+    zone: number;
+  }>;
 }

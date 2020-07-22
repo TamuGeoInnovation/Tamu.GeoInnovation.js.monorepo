@@ -3,31 +3,52 @@
 </div>
 
 <div class="sidebar-component-content">
-  <p>Select a zone or sample to show their relationships.</p>
+  <p *ngIf="(tier | async) === null else selectedDetails">Select a zone or sample to show their relationships.</p>
 
-  <p>Selected Tier: {{tier | async}}</p>
-  <p>Previous Tier: {{previousTier | async}}</p>
-  <p>Next Tier: {{nextTier | async}}</p>
-  <p>Sample: {{sample | async}}</p>
+  <ng-template #selectedDetails>
+    <p>Selected Tier: {{tier | async}}</p>
+    <p>Sample: {{sample | async}}</p>
+  </ng-template>
 
-  <div>
-    <h4>Tier Owns</h4>
-    <ul>
-      <li *ngFor="let child of tierOwns | async">{{child?.attributes?.SampleNumb}}</li>
-    </ul>
-  </div>
-
-  <div>
+  <div *ngIf="(tierOwnedBy | async) as tob">
     <h4>Owned By</h4>
-    <ul>
-      <li *ngFor="let child of tierOwnedBy | async">{{child?.attributes?.SampleNumb}}</li>
-    </ul>
+    <ng-container *ngIf="tob.length > 0; else noParent">
+      <ul>
+        <li *ngFor="let child of tob">{{child?.attributes?.SampleNumb}}</li>
+      </ul>
+    </ng-container>
+
+    <ng-template #noParent>
+      <p>This is a top-level tier and has no parent.</p>
+    </ng-template>
   </div>
 
-  <div>
+  <div *ngIf="(tierOwns | async) as to">
+    <h4>Tier Owns</h4>
+    <ng-container *ngIf="to.length > 0; else noOwnership">
+      <ul>
+        <li *ngFor="let child of to">{{child?.attributes?.SampleNumb}}</li>
+      </ul>
+    </ng-container>
+
+    <ng-template #noOwnership>
+      <p>There are no further sampling levels for this tier.</p>
+    </ng-template>
+  </div>
+
+  <div *ngIf="(sampleLocationsInZone | async) as sz">
     <h4>Sample Locations In Zone</h4>
     <ul>
-      <li *ngFor="let location of sampleLocationsInZone | async">{{location?.attributes?.Sample}}</li>
+      <li *ngFor="let location of sz">{{location?.attributes?.Sample}}</li>
+    </ul>
+  </div>
+
+  <div *ngIf="(affectedBuildings | async) as buildings">
+    <h4>Affected Buildings</h4>
+    <ul>
+      <li *ngFor="let building of buildings">
+        {{building.number}}
+      </li>
     </ul>
   </div>
 </div>
