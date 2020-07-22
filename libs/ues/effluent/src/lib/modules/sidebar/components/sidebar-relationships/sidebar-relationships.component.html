@@ -1,54 +1,67 @@
 <div class="sidebar-component-name">
-  <p>Relationships</p>
+  <p>Relationship Explorer</p>
 </div>
 
 <div class="sidebar-component-content">
   <p *ngIf="(tier | async) === null else selectedDetails">Select a zone or sample to show their relationships.</p>
 
   <ng-template #selectedDetails>
-    <p>Selected Tier: {{tier | async}}</p>
-    <p>Sample: {{sample | async}}</p>
+    <div class="stat-card">
+      <div class="stat-metric">{{tier | async}}-{{sample | async}}</div>
+      <div class="stat-title">Selected Tier</div>
+    </div>
   </ng-template>
 
   <div *ngIf="(tierOwnedBy | async) as tob">
-    <h4>Owned By</h4>
     <ng-container *ngIf="tob.length > 0; else noParent">
-      <ul>
-        <li *ngFor="let child of tob">{{child?.attributes?.SampleNumb}}</li>
-      </ul>
+      <div class="stat-card" *ngFor="let child of tob">
+        <div class="stat-metric">{{child?.attributes?.SampleNumb}}</div>
+        <div class="stat-title">Parent Tier</div>
+      </div>
     </ng-container>
 
     <ng-template #noParent>
-      <p>This is a top-level tier and has no parent.</p>
+      <div class="stat-card">
+        <div class="stat-metric">N/A</div>
+        <div class="stat-title">Parent Tier</div>
+      </div>
     </ng-template>
   </div>
 
   <div *ngIf="(tierOwns | async) as to">
-    <h4>Tier Owns</h4>
-    <ng-container *ngIf="to.length > 0; else noOwnership">
-      <ul>
-        <li *ngFor="let child of to">{{child?.attributes?.SampleNumb}}</li>
-      </ul>
+    <ng-container *ngIf="to.length > 0">
+      <div class="stat-card">
+        <div class="stat-metric">{{to.length > 0 ? to.length : 0}}</div>
+        <div class="stat-title">Sub Samples</div>
+
+        <div class="stat-list">
+          <div class="stat-list-item" *ngFor="let child of to">{{child?.attributes?.SampleNumb}}</div>
+        </div>
+      </div>
     </ng-container>
-
-    <ng-template #noOwnership>
-      <p>There are no further sampling levels for this tier.</p>
-    </ng-template>
-  </div>
-
-  <div *ngIf="(sampleLocationsInZone | async) as sz">
-    <h4>Sample Locations In Zone</h4>
-    <ul>
-      <li *ngFor="let location of sz">{{location?.attributes?.Sample}}</li>
-    </ul>
   </div>
 
   <div *ngIf="(affectedBuildings | async) as buildings">
-    <h4>Affected Buildings</h4>
-    <ul>
-      <li *ngFor="let building of buildings">
-        {{building.number}}
-      </li>
-    </ul>
+    <div class="stat-card">
+      <div class="stat-metric">{{buildings.length > 0 ? buildings.length : 0}}</div>
+      <div class="stat-title">Covered Buildings</div>
+
+      <div class="stat-list">
+        <div class="stat-list-item" *ngFor="let building of buildings">{{building.number}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="(sampleLocationsInZone | async) as sz">
+    <div class="stat-card">
+      <div class="stat-metric">{{sz.length > 0 ? sz.length : 0}}</div>
+      <div class="stat-title">Sample Locations</div>
+
+      <ng-container *ngIf="(sampleLocationsInZone | async)?.length  > 0">
+        <div class="stat-chart" *ngFor="let location of sampleLocationsInZone | async">
+          <tamu-gisc-line-chart [source]="location?.attributes?.chartData" [options]="chartOptions" [title]="'Signal concentration @ ' + location?.attributes?.Sample"></tamu-gisc-line-chart>
+        </div>
+      </ng-container>
+    </div>
   </div>
 </div>

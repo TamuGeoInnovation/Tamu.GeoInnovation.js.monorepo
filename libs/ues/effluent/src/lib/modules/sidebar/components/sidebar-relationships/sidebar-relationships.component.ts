@@ -1,12 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, from, combineLatest, of } from 'rxjs';
-import { shareReplay, map, filter, switchMap, withLatestFrom } from 'rxjs/operators';
+import { shareReplay, map, filter, switchMap, withLatestFrom, share } from 'rxjs/operators';
 
 import { PopupService } from '@tamu-gisc/maps/feature/popup';
 import { EsriMapService, HitTestSnapshot, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
+import { IChartConfiguration } from '@tamu-gisc/charts';
+import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 
 @Component({
   selector: 'tamu-gisc-sidebar-relationships',
@@ -24,15 +26,38 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
 
   public sample: Observable<number>;
 
-  public affectedBuildings: Observable<Array<IEffluentTierMetatada>>;
+  public affectedBuildings: Observable<Array<IEffluentTierMetadata>>;
 
   public hit: Observable<HitTestSnapshot>;
   public hitGraphic: Observable<esri.Graphic>;
 
   private zonesResourceUrl: string;
   private sampleLocationsResourceUrl: string;
-  private buildingsResource: Array<IEffluentTierMetatada>;
+  private buildingsResource: Array<IEffluentTierMetadata>;
   private modules: Observable<[esri.QueryConstructor, esri.QueryTaskConstructor]>;
+
+  public chartOptions: Partial<IChartConfiguration['options']> = {
+    scales: {
+      xAxes: [
+        {
+          type: 'time',
+          distribution: 'series',
+          time: {
+            unit: 'day'
+          }
+        }
+      ]
+    },
+    legend: {
+      position: 'bottom',
+      display: false
+    },
+    plugins: {
+      colorschemes: {
+        scheme: 'brewer.Paired8'
+      }
+    }
+  };
 
   constructor(
     private mapService: EsriMapService,
@@ -121,7 +146,8 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
       }),
       map((result) => {
         return result.features;
-      })
+      }),
+      shareReplay(1)
     );
 
     this.tierOwnedBy = combineLatest([this.previousTier, this.hitGraphic, this.modules]).pipe(
@@ -140,7 +166,8 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
       }),
       map((result) => {
         return result.features;
-      })
+      }),
+      shareReplay(1)
     );
 
     this.sampleLocationsInZone = combineLatest([this.tier, this.hitGraphic, this.modules]).pipe(
@@ -159,7 +186,14 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
       }),
       map((result) => {
         return result.features;
-      })
+      }),
+      map((features) => {
+        return features.map((f) => {
+          f.attributes.chartData = this.getRandomChartData();
+          return f;
+        });
+      }),
+      shareReplay(1)
     );
 
     this.affectedBuildings = this.sampleLocationsInZone.pipe(
@@ -185,9 +219,49 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {
     this.popupService.enablePopups();
   }
+
+  private getRandomChartData(): Observable<IChartConfiguration['data']> {
+    return of({ values: this.getNRandomValues(7), dates: this.getLastNDates(7) }).pipe(
+      map((factors) => {
+        return factors.dates.map((d, i, a) => {
+          return {
+            x: d,
+            y: factors.values[i]
+          };
+        });
+      }),
+      map((dataset) => {
+        return {
+          datasets: [
+            {
+              data: dataset,
+              fill: false
+            }
+          ]
+        };
+      })
+    );
+  }
+
+  private getNRandomValues(n: number) {
+    return new Array(n).fill(undefined).map((v) => getRandomNumber(0, 1000));
+  }
+
+  private getLastNDates(days: number) {
+    return new Array(days)
+      .fill(undefined)
+      .reduce((acc, curr, ci) => {
+        if (ci === 0) {
+          return [Date.now()];
+        } else {
+          return [...acc, acc[ci - 1] - 24 * 60 * 60 * 1000];
+        }
+      }, [])
+      .reverse();
+  }
 }
 
-export interface IEffluentTierMetatada {
+export interface IEffluentTierMetadata {
   number: string;
   classification: 'Residence' | 'E&G' | 'Dining';
   area: number;
