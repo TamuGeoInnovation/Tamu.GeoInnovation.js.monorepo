@@ -26,13 +26,11 @@ import { config } from '@tamu-gisc/covid/data-api';
 
 const countiesTest: Partial<County> = {
   countyFips: 1,
-  stateFips: new State(),
   name: 'Foo'
 };
 
 const countiesTestTwo: Partial<County> = {
-  countyFips: 1,
-  stateFips: new State(),
+  countyFips: 3,
   name: 'Bar'
 };
 
@@ -89,7 +87,7 @@ describe('State Integration Tests', () => {
 
   afterEach(async () => {
     await countyRepo.query(`DELETE FROM counties`);
-    await countyClaimRepo.query(`DELETE FROM countyClaims`);
+    await countyClaimRepo.query(`DELETE FROM county_claims`);
   });
 
   /**
@@ -115,8 +113,18 @@ describe('State Integration Tests', () => {
     it('should be able to get a County By search', async () => {
       await service.createOne(countiesTest);
       await service.createOne(countiesTestTwo);
-      const foundCounty = await service.search('Foo');
-      expect(foundCounty).toMatchObject([countiesTest]);
+      expect(await service.search('Foo')).toEqual([countiesTest]);
+    });
+  });
+
+  describe('searchCountiesForState', () => {
+    it('should be able to get a County By search', async () => {
+      const testState = new State();
+      testState.stateFips = 9;
+      countiesTest.stateFips = testState;
+      await service.createOne(countiesTest);
+      await service.createOne(countiesTestTwo);
+      expect(await service.searchCountiesForState(12, 'Foo')).toEqual([countiesTest]);
     });
   });
 });
