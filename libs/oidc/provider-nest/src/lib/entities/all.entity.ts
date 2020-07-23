@@ -1017,7 +1017,8 @@ export class CommonRepo<T> extends Repository<T> {
         queryBuilder.leftJoinAndSelect(`entity.${propName}`, propName);
       });
     }
-    return queryBuilder.where(`entity.${key} = :${key}`, op).getMany();
+    const ret = await queryBuilder.where(`entity.${key} = :${key}`, op).getMany();
+    return ret;
   }
 
   public async findAllShallow() {
