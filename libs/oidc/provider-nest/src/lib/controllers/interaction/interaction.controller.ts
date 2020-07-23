@@ -22,26 +22,6 @@ export class InteractionController {
 
       const name = prompt.name;
       switch (name) {
-        // case 'select_account':
-        //   if (!session) {
-        //     return OpenIdProvider.provider.interactionFinished(req, res, { select_account: {} }, { mergeWithLastSubmission: false });
-        //   }
-        //   const account = await OpenIdProvider.provider.Account.findAccount(undefined, session.accountId);
-        //   const { email } = await account.claims('prompt', 'email', { email: null }, []);
-        //   return res.render('select_account', {
-        //     client,
-        //     uid,
-        //     email,
-        //     details: prompt.details,
-        //     params,
-        //     title: 'Sign-in',
-        //     session: session ? debug(session) : undefined,
-        //     dbg: {
-        //       params: debug(params),
-        //       prompt: debug(prompt),
-        //     },
-        //   });
-
         case 'login': {
           const locals = {
             params,

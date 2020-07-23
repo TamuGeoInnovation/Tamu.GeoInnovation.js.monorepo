@@ -18,8 +18,6 @@ export * from './middleware/input-sanitizer/input-sanitizer.middleware';
 // modules
 export * from './modules/interaction/interaction.module';
 export * from './modules/user/user.module';
-export * from './modules/auth/auth.module';
-export * from './modules/oidc/oidc.module';
 export * from './modules/client-metadata/client-metadata.module';
 export * from './modules/role/role.module';
 export * from './modules/user-login/user-login.module';
