@@ -2,29 +2,20 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { Repository, getConnection } from 'typeorm';
 import {
-  State,
   County,
   CountyClaim,
-  EntityStatus,
-  TestingSite,
-  Lockdown,
-  User,
   CountyClaimInfo,
-  EntityToValue,
-  LockdownInfo,
-  TestingSiteInfo,
-  Location,
-  EntityValue,
   CategoryValue,
-  FieldCategory,
-  FieldType,
-  StatusType
+  EntityToValue,
+  EntityStatus,
+  State,
+  User
 } from '@tamu-gisc/covid/common/entities';
 import { config } from '@tamu-gisc/covid/data-api';
 import { WebsitesService } from './websites.service';
 import { WebsitesModule } from './websites.module';
 
-describe('State Integration Tests', () => {
+describe('Websites Integration Tests', () => {
   let service: WebsitesService;
   let categoryValueRepo: Repository<CategoryValue>;
   let countyRepo: Repository<County>;
@@ -36,34 +27,7 @@ describe('State Integration Tests', () => {
       imports: [
         WebsitesModule,
         TypeOrmModule.forFeature([CategoryValue, County, CountyClaim, CountyClaimInfo]),
-        TypeOrmModule.forRoot({
-          type: 'mssql',
-          host: 'localhost',
-          port: 1433,
-          username: 'testing',
-          password: 'test',
-          database: 'test',
-          entities: [
-            State,
-            County,
-            CountyClaim,
-            EntityStatus,
-            TestingSite,
-            Lockdown,
-            User,
-            CountyClaimInfo,
-            EntityToValue,
-            LockdownInfo,
-            TestingSiteInfo,
-            Location,
-            EntityValue,
-            CategoryValue,
-            FieldCategory,
-            FieldType,
-            StatusType
-          ],
-          synchronize: true
-        })
+        TypeOrmModule.forRoot(config)
       ],
       providers: [WebsitesService]
     }).compile();
@@ -116,6 +80,13 @@ describe('State Integration Tests', () => {
   });
   describe('Validation ', () => {
     it('Service should be defined', () => {
+      expect(service).toBeDefined();
+    });
+  });
+
+  describe('getWebsites ', () => {
+    it('getWebsites', () => {
+      countyClaimInfoRepo.create().save();
       expect(service).toBeDefined();
     });
   });

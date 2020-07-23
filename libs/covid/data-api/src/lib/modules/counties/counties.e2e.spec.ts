@@ -1,41 +1,40 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { Repository, getConnection } from 'typeorm';
-import {
-  State,
-  County,
-  CountyClaim,
-  EntityStatus,
-  TestingSite,
-  Lockdown,
-  User,
-  CountyClaimInfo,
-  EntityToValue,
-  LockdownInfo,
-  TestingSiteInfo,
-  Location,
-  EntityValue,
-  CategoryValue,
-  FieldCategory,
-  FieldType,
-  StatusType
-} from '@tamu-gisc/covid/common/entities';
+import { State, County, CountyClaim } from '@tamu-gisc/covid/common/entities';
 import { CountiesService } from './counties.service';
 import { CountiesModule } from './counties.module';
 import { config } from '@tamu-gisc/covid/data-api';
+import { StatesService } from '../states/states.service';
+import { StatesModule } from '../states/states.module';
+
+const testState = new State();
+testState.name = 'Foo';
+testState.abbreviation = 'F';
+testState.stateFips = 1;
+
+const testStateTwo = new State();
+testStateTwo.name = 'Bar';
+testStateTwo.abbreviation = 'B';
+testStateTwo.stateFips = 2;
 
 const countiesTest: Partial<County> = {
   countyFips: 1,
+  stateFips: testState,
   name: 'Foo'
 };
 
 const countiesTestTwo: Partial<County> = {
-  countyFips: 3,
+  countyFips: 2,
+  stateFips: testStateTwo,
   name: 'Bar'
 };
 
-describe('State Integration Tests', () => {
+describe('County Integration Tests', () => {
   let service: CountiesService;
+  let statesService: StatesService;
+
+  let stateRepo: Repository<State>;
   let countyRepo: Repository<County>;
   let countyClaimRepo: Repository<CountyClaim>;
 
@@ -43,40 +42,16 @@ describe('State Integration Tests', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         CountiesModule,
-        TypeOrmModule.forFeature([County, CountyClaim]),
-        TypeOrmModule.forRoot({
-          type: 'mssql',
-          host: 'localhost',
-          port: 1433,
-          username: 'testing',
-          password: 'test',
-          database: 'test',
-          entities: [
-            State,
-            County,
-            CountyClaim,
-            EntityStatus,
-            TestingSite,
-            Lockdown,
-            User,
-            CountyClaimInfo,
-            EntityToValue,
-            LockdownInfo,
-            TestingSiteInfo,
-            Location,
-            EntityValue,
-            CategoryValue,
-            FieldCategory,
-            FieldType,
-            StatusType
-          ],
-          synchronize: true
-        })
+        StatesModule,
+        TypeOrmModule.forFeature([County, CountyClaim, State]),
+        TypeOrmModule.forRoot(config)
       ],
-      providers: [CountiesService]
+      providers: [CountiesService, StatesService]
     }).compile();
 
     service = module.get<CountiesService>(CountiesService);
+    statesService = module.get<StatesService>(StatesService);
+    stateRepo = module.get<Repository<State>>(getRepositoryToken(State));
     countyRepo = module.get<Repository<County>>(getRepositoryToken(County));
     countyClaimRepo = module.get<Repository<CountyClaim>>(getRepositoryToken(CountyClaim));
   });
@@ -87,6 +62,7 @@ describe('State Integration Tests', () => {
 
   afterEach(async () => {
     await countyRepo.query(`DELETE FROM counties`);
+    await stateRepo.query(`DELETE FROM states`);
     await countyClaimRepo.query(`DELETE FROM county_claims`);
   });
 
@@ -96,6 +72,11 @@ describe('State Integration Tests', () => {
 
   afterAll(async () => {
     const connection = getConnection();
+    await connection
+      .createQueryBuilder()
+      .delete()
+      .from(State)
+      .execute();
     await connection
       .createQueryBuilder()
       .delete()
@@ -111,20 +92,61 @@ describe('State Integration Tests', () => {
 
   describe('search', () => {
     it('should be able to get a County By search', async () => {
+      await statesService.createOne(testState);
+      await statesService.createOne(testStateTwo);
       await service.createOne(countiesTest);
       await service.createOne(countiesTestTwo);
-      expect(await service.search('Foo')).toEqual([countiesTest]);
+      expect(await service.search('Foo')).toMatchObject([
+        {
+          countyFips: 1,
+          name: 'Foo'
+        }
+      ]);
     });
   });
 
   describe('searchCountiesForState', () => {
-    it('should be able to get a County By search', async () => {
-      const testState = new State();
-      testState.stateFips = 9;
-      countiesTest.stateFips = testState;
+    it('should be able to get a County By searchCountiesForState', async () => {
+      await statesService.createOne(testState);
+      await statesService.createOne(testStateTwo);
       await service.createOne(countiesTest);
       await service.createOne(countiesTestTwo);
-      expect(await service.searchCountiesForState(12, 'Foo')).toEqual([countiesTest]);
+      expect(await service.searchCountiesForState(1, 'Foo')).toMatchObject([
+        {
+          countyFips: 1,
+          name: 'Foo'
+        }
+      ]);
+    });
+  });
+
+  describe('getCountiesForState', () => {
+    it('should be able to get a County By getCountiesForState', async () => {
+      await statesService.createOne(testState);
+      await statesService.createOne(testStateTwo);
+      await service.createOne(countiesTest);
+      await service.createOne(countiesTestTwo);
+      expect(await service.getCountiesForState(1)).toMatchObject([
+        {
+          countyFips: 1,
+          name: 'Foo'
+        }
+      ]);
+    });
+  });
+
+  describe('getCountiesForState', () => {
+    it('should be able to get a County By getCountiesForState', async () => {
+      await statesService.createOne(testState);
+      await statesService.createOne(testStateTwo);
+      await service.createOne(countiesTest);
+      await service.createOne(countiesTestTwo);
+      expect(await service.getCountiesForState(1)).toMatchObject([
+        {
+          countyFips: 1,
+          name: 'Foo'
+        }
+      ]);
     });
   });
 });

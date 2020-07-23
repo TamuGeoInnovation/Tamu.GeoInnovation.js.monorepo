@@ -1,81 +1,60 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { Repository, getConnection } from 'typeorm';
-import {
-  TestingSite,
-  User,
-  CountyClaim,
-  County,
-  EntityStatus,
-  CountyClaimInfo,
-  Lockdown,
-  StatusType,
-  LockdownInfo,
-  TestingSiteInfo,
-  State,
-  EntityValue,
-  EntityToValue,
-  CategoryValue,
-  FieldCategory,
-  FieldType,
-  Location
-} from '@tamu-gisc/covid/common/entities';
+import { TestingSite, User, CountyClaim, State, County, StatusType, EntityStatus } from '@tamu-gisc/covid/common/entities';
 import { config } from '@tamu-gisc/covid/data-api';
 import { UsersService } from './users.service';
 import { UsersModule } from './users.module';
 
-const countyClaimTest = new CountyClaim();
-countyClaimTest.guid = '70';
+const testState = new State();
+testState.name = 'Foo';
+testState.abbreviation = 'F';
+testState.stateFips = 1;
+
+const testStateTwo = new State();
+testStateTwo.name = 'Bar';
+testStateTwo.abbreviation = 'B';
+testStateTwo.stateFips = 2;
+
+const countiesTest: Partial<County> = {
+  countyFips: 1,
+  stateFips: testState,
+  name: 'Foo'
+};
+
+const countiesTestTwo: Partial<County> = {
+  countyFips: 2,
+  stateFips: testStateTwo,
+  name: 'Bar'
+};
+
+const statusTypeTest = new StatusType();
+statusTypeTest.id = 1;
+statusTypeTest.name = 'foo';
+
+const statusTypeTwoTest = new StatusType();
+statusTypeTest.id = 2;
+statusTypeTest.name = 'bar';
+
+const entityStatusTest = new EntityStatus();
+entityStatusTest.type = statusTypeTest;
 
 const userTest: Partial<User> = {
-  email: 'Foo',
-  claims: [countyClaimTest]
+  email: 'Foo'
 };
 
 const userTestTwo: Partial<User> = {
-  email: 'Bar',
-  claims: [countyClaimTest]
+  email: 'Bar'
 };
 
-describe('Testing Site Integration Tests', () => {
+describe('Users Integration Tests', () => {
   let usersService: UsersService;
   let usersRepo: Repository<User>;
   let testingSitesRepo: Repository<TestingSite>;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        UsersModule,
-        TypeOrmModule.forFeature([User, TestingSite]),
-        TypeOrmModule.forRoot({
-          type: 'mssql',
-          host: 'localhost',
-          port: 1433,
-          username: 'testing',
-          password: 'test',
-          database: 'test',
-          entities: [
-            User,
-            TestingSite,
-            CountyClaim,
-            County,
-            FieldCategory,
-            FieldType,
-            CategoryValue,
-            EntityStatus,
-            EntityValue,
-            EntityToValue,
-            CountyClaimInfo,
-            Lockdown,
-            StatusType,
-            LockdownInfo,
-            TestingSiteInfo,
-            State,
-            Location
-          ],
-          synchronize: true
-        })
-      ],
+      imports: [UsersModule, TypeOrmModule.forFeature([User, TestingSite]), TypeOrmModule.forRoot(config)],
       providers: [UsersService]
     }).compile();
 
