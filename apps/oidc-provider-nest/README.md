@@ -7,6 +7,8 @@
 - Change default keystore
 - The URL after you finish registering shows the view for the home page, yet you're still
   at `/user/register`
+- Some way to determine "Hey you answered your secret questions wrong X times, you're locked out for X minutes"
+  - Same with logging in
 
 # TODO (closed)
 

@@ -1,16 +1,13 @@
-import { Controller, Get, Next, Param, Req, Res, Render, Post, HttpService } from '@nestjs/common';
+import { Controller, Get, Param, Req, Res, Post } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
-import { hashSync } from 'bcrypt';
 import { urlFragment, urlHas } from '../../_utils/url-utils';
-import { Mailer } from '../../_utils/mailer.util';
-import { Account, User, SecretAnswer, UserPasswordReset, UserPasswordHistory } from '../../entities/all.entity';
+import { User } from '../../entities/all.entity';
 import { UserService, ServiceToControllerTypes } from '../../services/user/user.service';
-import { SHA1HashUtils } from '../../_utils/sha1hash.util';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService, private readonly httpService: HttpService) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get('register')
   async registerGet(@Req() req: Request, @Res() res: Response) {
@@ -38,30 +35,14 @@ export class UserController {
 
   @Post('register')
   async registerPost(@Req() req: Request, @Res() res: Response) {
-    // TODO: put this in the service
     req.body.ip = req.ip;
-
-    const newUser: User = new User(req);
-    const newAccount: Account = new Account(req.body.name, req.body.email);
-    newUser.account = newAccount;
-    await this.userService.insertUser(newUser);
-    await this.userService.insertSecretAnswers(req, newUser);
-    Mailer.sendAccountConfirmationEmail(newUser.email, newUser.guid);
+    const newUser = await this.userService.insertUser(req);
     return res.send(`Welcome aboard, ${newUser.account.name}!`);
   }
 
   @Get('register/:guid')
   async registerConfirmedGet(@Param() params, @Res() res: Response) {
-    await this.userService.userRepo
-      .createQueryBuilder()
-      .update(User)
-      .set({
-        email_verified: true
-      })
-      .where('guid = :guid', {
-        guid: params.guid
-      })
-      .execute();
+    this.userService.userVerifiedEmail(params.guid);
     return res.redirect('/');
   }
 
@@ -110,47 +91,17 @@ export class UserController {
 
   @Post('pwr')
   async userForgotPasswordPost(@Req() req: Request) {
-    // TODO: Move all this to the userService, get it out of ma controller
-    const IPSTACK_APIKEY = '1e599a1240ca8f99f0b0d81a08324dbb';
-    const IPSTACK_URL = 'http://api.ipstack.com/';
-
-    const user = await this.userService.userRepo.findByKeyDeep('guid', req.body.guid);
-    const _resetRequest: Partial<UserPasswordReset> = {
-      userGuid: user.guid,
-      initializerIp: req.ip
-    };
-    const resetRequest = await this.userService.passwordResetRepo.create(_resetRequest);
-    resetRequest.setToken();
-    this.httpService.get(`${IPSTACK_URL}${req.ip}?access_key=${IPSTACK_APIKEY}`).subscribe((observer) => {
-      const location = observer.data.country_name;
-      Mailer.sendPasswordResetRequestEmail(user, resetRequest, location);
-      this.userService.passwordResetRepo.save(resetRequest).catch((typeOrmErr) => {
-        debugger;
-        console.warn(typeOrmErr);
-      }); // INSERT NEW AccountManager.insertNewPWResetRequest(req.params.sub, token, req.ip);
-    });
-    // .unsubscribe();
+    this.userService.sendPasswordResetEmail(req);
   }
 
   @Get('pwr/:token')
   async loadAppropriatePWRViewGet(@Param() params, @Res() res: Response) {
-    // TODO: Move all this to the userService, get it out of ma controller
     const stillValid = await this.userService.isPasswordResetTokenStillValid(params.token);
     if (stillValid) {
       const resetToken = await this.userService.passwordResetRepo.findByKeyShallow('token', params.token);
       const user = await this.userService.userRepo.findByKeyShallow('guid', resetToken.userGuid);
       // TODO: should we prompt those with 2fa to input their authcode before changing pw?
-      const questionsAndAnswers = await this.userService.answerRepo.findAllByKeyDeep('user', user.guid);
-      const questions: {
-        text: string;
-        guid: string;
-      }[] = [];
-      questionsAndAnswers.map((secretAnswer) => {
-        questions.push({
-          guid: secretAnswer.secretQuestion.guid,
-          text: secretAnswer.secretQuestion.questionText
-        });
-      });
+      const questions = await this.userService.getUsersQuestions(user);
       const locals = {
         title: 'GeoInnovation Service Center SSO',
         client: {},
@@ -178,10 +129,8 @@ export class UserController {
   @Post('pwr/:token')
   async compareAgainstSecretAnswersPost(@Param() params, @Req() req: Request, @Res() res: Response) {
     if (this.userService.isPasswordResetTokenStillValid(params.token)) {
-      const { answer1, answer2, guid, question1, question2 } = req.body;
-      const exactMatch1 = await this.userService.compareSecretAnswers(guid, question1, answer1);
-      const exactMatch2 = await this.userService.compareSecretAnswers(guid, question2, answer2);
-      if (exactMatch1 && exactMatch2) {
+      const answersAreCorrect = await this.userService.areSecretAnswersCorrect(req);
+      if (answersAreCorrect) {
         // both answers were correct
         const locals = {
           title: 'GeoInnovation Service Center SSO',
@@ -202,19 +151,12 @@ export class UserController {
         });
       } else {
         // one was wrong, show them the screen again
-        // TODO: would be cool to have a service that logged and kept track of incorrect answers to then
-        // lock someone's account if they answer too many times incorrectly
-        const questionsAndAnswers = await this.userService.answerRepo.findAllByKeyDeep('user', guid);
-        const questions: {
-          text: string;
-          guid: string;
-        }[] = [];
-        questionsAndAnswers.map((secretAnswer) => {
-          questions.push({
-            guid: secretAnswer.secretQuestion.guid,
-            text: secretAnswer.secretQuestion.questionText
-          });
+        const user = await this.userService.userRepo.findOne({
+          where: {
+            guid: req.body.guid
+          }
         });
+        const questions = await this.userService.getUsersQuestions(user);
         const locals = {
           title: 'GeoInnovation Service Center SSO',
           client: {},
@@ -224,7 +166,7 @@ export class UserController {
           interaction: true,
           error: true,
           message: 'Incorrect answer(s)',
-          guid: guid,
+          guid: req.body.guid,
           token: params.token,
           questions
         };
@@ -244,23 +186,8 @@ export class UserController {
 
   @Post('npw/:token')
   async newPasswordPost(@Param() params, @Req() req: Request, @Res() res: Response) {
-    const resetRequest = await this.userService.passwordResetRepo.findByKeyShallow('token', params.token);
-    const user = await this.userService.userRepo.findByKeyShallow('guid', resetRequest.userGuid);
-    // here check to see if the new password is not reused
-    const isNewPasswordUsed = await this.userService.isNewPasswordUsed(req.body.newPassword, user);
-    if (!isNewPasswordUsed) {
-      // password is not used; continue
-      user.password = hashSync(req.body.newPassword, SHA1HashUtils.SALT_ROUNDS);
-      user.updatedAt = new Date().toISOString();
-      this.userService.userRepo.save(user);
-      Mailer.sendPasswordResetConfirmationEmail(user.email);
-      const _newUsedPassword: Partial<UserPasswordHistory> = {
-        user: user,
-        usedPassword: user.password
-      };
-      const newUsedPassword = await this.userService.passwordHistoryRepo.create(_newUsedPassword);
-      this.userService.passwordHistoryRepo.save(newUsedPassword);
-      this.userService.passwordResetRepo.delete(resetRequest);
+    const updatedPassword = await this.userService.ifNewUpdatePassword(req, params.token);
+    if (updatedPassword) {
       res.redirect('/');
     } else {
       // Hey this is a used password you doodoo head

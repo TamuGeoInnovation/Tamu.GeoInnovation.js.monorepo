@@ -53,8 +53,14 @@ async function bootstrap() {
   await app.listen(3001);
 }
 
-OpenIdClient.build(OIDC_CLIENT_METADATA_AD, OIDC_CLIENT_PARAMS_AD, AZURE_AD_UES)
+OpenIdClient.build(OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL)
   .then(() => bootstrap())
   .catch((err) => {
     console.warn(err);
   });
+
+// OpenIdClient.build(OIDC_CLIENT_METADATA_AD, OIDC_CLIENT_PARAMS_AD, AZURE_AD_UES)
+//   .then(() => bootstrap())
+//   .catch((err) => {
+//     console.warn(err);
+//   });

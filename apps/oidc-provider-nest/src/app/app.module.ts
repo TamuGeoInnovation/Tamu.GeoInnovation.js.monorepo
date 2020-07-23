@@ -73,6 +73,7 @@ import { dbConfig } from '../environments/environment';
         UserPasswordHistory
       ]
     }),
+    // TODO: Is this .forFeature here required since it's in ClientMetadataModule?
     TypeOrmModule.forFeature([
       ClientMetadataRepo,
       GrantTypeRepo,
