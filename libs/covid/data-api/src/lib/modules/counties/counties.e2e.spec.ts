@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
-import { Repository, getConnection } from 'typeorm';
+import { Repository, getConnection, DeepPartial } from 'typeorm';
 import { State, County, CountyClaim } from '@tamu-gisc/covid/common/entities';
 import { CountiesService } from './counties.service';
 import { CountiesModule } from './counties.module';
@@ -8,23 +8,25 @@ import { config } from '@tamu-gisc/covid/data-api';
 import { StatesService } from '../states/states.service';
 import { StatesModule } from '../states/states.module';
 
-const testState = new State();
-testState.name = 'Foo';
-testState.abbreviation = 'F';
-testState.stateFips = 1;
+const testState: DeepPartial<State> = {
+  name: 'Foo',
+  abbreviation: 'F',
+  stateFips: 1
+};
 
-const testStateTwo = new State();
-testStateTwo.name = 'Bar';
-testStateTwo.abbreviation = 'B';
-testStateTwo.stateFips = 2;
+const testStateTwo: DeepPartial<State> = {
+  name: 'Bar',
+  abbreviation: 'B',
+  stateFips: 2
+};
 
-const countiesTest: Partial<County> = {
+const countiesTest: DeepPartial<County> = {
   countyFips: 1,
   stateFips: testState,
   name: 'Foo'
 };
 
-const countiesTestTwo: Partial<County> = {
+const countiesTestTwo: DeepPartial<County> = {
   countyFips: 2,
   stateFips: testStateTwo,
   name: 'Bar'

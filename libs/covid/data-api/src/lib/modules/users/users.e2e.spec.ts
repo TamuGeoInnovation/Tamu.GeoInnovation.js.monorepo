@@ -1,66 +1,53 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
-import { Repository, getConnection } from 'typeorm';
-import { TestingSite, User, CountyClaim, State, County, StatusType, EntityStatus } from '@tamu-gisc/covid/common/entities';
+import { Repository, getConnection, DeepPartial } from 'typeorm';
+import { TestingSite, User, CountyClaim, Lockdown } from '@tamu-gisc/covid/common/entities';
 import { config } from '@tamu-gisc/covid/data-api';
 import { UsersService } from './users.service';
+import { TestingSitesService } from '../testing-sites/testing-sites.service';
 import { UsersModule } from './users.module';
+import { TestingSitesModule } from '../testing-sites/testing-sites.module';
+import { CountyClaimsService } from '../county-claims/county-claims.service';
+import { CountyClaimsModule } from '../county-claims/county-claims.module';
 
-const testState = new State();
-testState.name = 'Foo';
-testState.abbreviation = 'F';
-testState.stateFips = 1;
-
-const testStateTwo = new State();
-testStateTwo.name = 'Bar';
-testStateTwo.abbreviation = 'B';
-testStateTwo.stateFips = 2;
-
-const countiesTest: Partial<County> = {
-  countyFips: 1,
-  stateFips: testState,
-  name: 'Foo'
+const userTest: DeepPartial<User> = {
+  email: 'Foo',
+  claims: []
 };
 
-const countiesTestTwo: Partial<County> = {
-  countyFips: 2,
-  stateFips: testStateTwo,
-  name: 'Bar'
-};
-
-const statusTypeTest = new StatusType();
-statusTypeTest.id = 1;
-statusTypeTest.name = 'foo';
-
-const statusTypeTwoTest = new StatusType();
-statusTypeTest.id = 2;
-statusTypeTest.name = 'bar';
-
-const entityStatusTest = new EntityStatus();
-entityStatusTest.type = statusTypeTest;
-
-const userTest: Partial<User> = {
-  email: 'Foo'
-};
-
-const userTestTwo: Partial<User> = {
-  email: 'Bar'
+const userTestTwo: DeepPartial<User> = {
+  email: 'Bar',
+  claims: []
 };
 
 describe('Users Integration Tests', () => {
   let usersService: UsersService;
+  let countyClaimService: CountyClaimsService;
+  let testingSiteService: TestingSitesService;
+
   let usersRepo: Repository<User>;
   let testingSitesRepo: Repository<TestingSite>;
+  let countyClaimRepo: Repository<CountyClaim>;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [UsersModule, TypeOrmModule.forFeature([User, TestingSite]), TypeOrmModule.forRoot(config)],
-      providers: [UsersService]
+      imports: [
+        UsersModule,
+        TestingSitesModule,
+        CountyClaimsModule,
+        TypeOrmModule.forFeature([User, TestingSite, CountyClaimsService]),
+        TypeOrmModule.forRoot(config)
+      ],
+      providers: [UsersService, TestingSitesService, CountyClaimsService]
     }).compile();
 
     usersService = module.get<UsersService>(UsersService);
+    countyClaimService = module.get<CountyClaimsService>(CountyClaimsService);
+    testingSiteService = module.get<TestingSitesService>(TestingSitesService);
+
     usersRepo = module.get<Repository<User>>(getRepositoryToken(User));
     testingSitesRepo = module.get<Repository<TestingSite>>(getRepositoryToken(TestingSite));
+    countyClaimRepo = module.get<Repository<CountyClaim>>(getRepositoryToken(CountyClaim));
   });
 
   /**
@@ -69,6 +56,7 @@ describe('Users Integration Tests', () => {
 
   afterEach(async () => {
     await usersRepo.query(`DELETE FROM users`);
+    await usersRepo.query(`DELETE FROM county_claims`);
     await testingSitesRepo.query(`DELETE FROM testing_sites`);
   });
 
@@ -81,12 +69,17 @@ describe('Users Integration Tests', () => {
     await connection
       .createQueryBuilder()
       .delete()
-      .from(TestingSite)
+      .from(User)
       .execute();
     await connection
       .createQueryBuilder()
       .delete()
-      .from(User)
+      .from(CountyClaim)
+      .execute();
+    await connection
+      .createQueryBuilder()
+      .delete()
+      .from(TestingSite)
       .execute();
     await connection.close();
   });
@@ -104,11 +97,7 @@ describe('Users Integration Tests', () => {
     it('should be able to getUsersWithStats', async () => {
       await usersService.createOne(userTest);
       await usersService.createOne(userTestTwo);
-      const foundUser = await usersService.getUsersWithStats();
-      expect(await usersService.getUsersWithStats()).toMatchObject([
-        { claims: [], email: 'Bar' },
-        { claims: [], email: 'Foo' }
-      ]);
+      expect(await usersService.getUsersWithStats()).toEqual([{ claims: [], email: 'Bar' }, { claims: [], email: 'Foo' }]);
     });
   });
 
