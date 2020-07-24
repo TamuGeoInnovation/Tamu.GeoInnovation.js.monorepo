@@ -166,7 +166,6 @@ export class InteractionController {
         // await this.loginService.insertNewLoginForUser(params.uid, req.body.email, req.body.guid);
         await OpenIdProvider.provider.interactionFinished(req, res, result);
       } else {
-        // TODO: Log incorrect token provided in database? Maybe, idk
         // Incorrect code provided
         throw new Error('Token provided was incorrect; please try again');
       }

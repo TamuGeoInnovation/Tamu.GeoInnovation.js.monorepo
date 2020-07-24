@@ -43,7 +43,13 @@ export class UserService {
     public readonly passwordHistoryRepo: UserPasswordHistoryRepo,
     private readonly httpService: HttpService
   ) {}
-
+  /**
+   * Function used to insert a new user given an Express Request.
+   *
+   * @param {Request} req
+   * @returns
+   * @memberof UserService
+   */
   public async insertUser(req: Request) {
     const user: User = new User(req);
     const newAccount: Account = new Account(req.body.name, req.body.email);
@@ -56,6 +62,7 @@ export class UserService {
 
     if (existingUser) {
       // TODO: user already exists, do something about it
+      return;
     }
 
     user.password = await hash(user.password, SHA1HashUtils.SALT_ROUNDS);
@@ -73,6 +80,12 @@ export class UserService {
     }
   }
 
+  /**
+   * Function used to update the "email_verified" attribute to true
+   *
+   * @param {string} guid
+   * @memberof UserService
+   */
   public async userVerifiedEmail(guid: string) {
     const user = await this.userRepo.findOne({
       where: {
@@ -83,6 +96,13 @@ export class UserService {
     this.userRepo.save(user);
   }
 
+  /**
+   * Function used to generate a new PasswordReset entity and send an email
+   * to the user with instructions on how to reset their password.
+   *
+   * @param {Request} req
+   * @memberof UserService
+   */
   public async sendPasswordResetEmail(req: Request) {
     const user = await this.userRepo.findByKeyDeep('guid', req.body.guid);
     const _resetRequest: Partial<UserPasswordReset> = {
@@ -101,6 +121,15 @@ export class UserService {
     });
   }
 
+  /**
+   * Function that will determine if the email and password provided at login
+   * are accurate. If so, will return the user that matches this combination.
+   *
+   * @param {string} email
+   * @param {string} password
+   * @returns
+   * @memberof UserService
+   */
   public async userLogin(email: string, password: string) {
     const userWithAccount = await this.userRepo.findByKeyDeep('email', email);
     if (userWithAccount) {
@@ -113,18 +142,22 @@ export class UserService {
     }
   }
 
+  /**
+   * Function used to set "enabled2fa" to true and generate a new 2fa secret for a user; saves the result
+   *
+   * @param {string} guid
+   * @returns {(Promise<IServiceToControllerResponse | User>)}
+   * @memberof UserService
+   */
   public async enable2FA(guid: string): Promise<IServiceToControllerResponse | User> {
-    // TODO: MAY WANT TO ADD A CHECK HERE TO PREVENT SOMEONE FROM OVERRIDING THE STORED SECRET
-    // WHICH WOULD MAKE THE PERSON MORE OR LESS LOCKED OUT OF THEIR ACCOUNT SINCE THE SECRET
-    // STORED IN AUTHENTICATOR IS WRONG NOW
     let ret: IServiceToControllerResponse;
-    const newSecret = await TwoFactorAuthUtils.generateNewSecret();
     const user = await this.userRepo.findOne({
       where: {
         guid: guid
       }
     });
-    if (!user.enabled2fa) {
+    if (user.enabled2fa === false) {
+      const newSecret = await TwoFactorAuthUtils.generateNewSecret();
       user.enabled2fa = true;
       user.secret2fa = newSecret;
       await this.userRepo.save(user);
@@ -137,6 +170,13 @@ export class UserService {
     }
   }
 
+  /**
+   * Function used to set "enabled2fa" to false and remove "secret2fa"
+   *
+   * @param {string} guid
+   * @returns
+   * @memberof UserService
+   */
   public async disable2fa(guid: string) {
     const user = await this.userRepo.findOne({
       where: {
@@ -150,6 +190,12 @@ export class UserService {
     }
   }
 
+  /**
+   * Function that will set a user's role for a given clientId.
+   *
+   * @param {Request} req
+   * @memberof UserService
+   */
   public async insertUserRole(req: Request) {
     const existingUser = await this.userRepo.findByKeyDeep('email', req.body.email);
     if (existingUser) {
@@ -172,10 +218,20 @@ export class UserService {
         user: existingUser
       };
       const update = this.userRoleRepo.create(newUserRole);
-      this.userRoleRepo.save(update);
+      return this.userRoleRepo.save(update);
+    } else {
+      // user does not exist
+      return;
     }
   }
 
+  /**
+   * Function used to insert a series of secret questions
+   *
+   * @param {Request} req
+   * @returns
+   * @memberof UserService
+   */
   public async insertSecretQuestion(req: Request) {
     const questions: Partial<SecretQuestion>[] = [];
     req.body.questions.map((value) => {
@@ -189,10 +245,24 @@ export class UserService {
     return this.questionRepo.insert(secretQuestions);
   }
 
+  /**
+   * Function used to return all of the secret questions in the db
+   *
+   * @returns
+   * @memberof UserService
+   */
   public async getAllSecretQuestions() {
     return this.questionRepo.find();
   }
 
+  /**
+   * Function used to get the secret quetsions associated with a user
+   * and return them in a simple object with question guid and question text
+   *
+   * @param {User} user
+   * @returns
+   * @memberof UserService
+   */
   public async getUsersQuestions(user: User) {
     const questionsAndAnswers = await this.answerRepo.findAllByKeyDeep('user', user.guid);
     const questions: {
@@ -210,6 +280,13 @@ export class UserService {
     return questions;
   }
 
+  /**
+   * Function used to insert the secret answers provided by a user upon registration
+   *
+   * @param {Request} req
+   * @param {User} user
+   * @memberof UserService
+   */
   public async insertSecretAnswers(req: Request, user: User) {
     const _secretAnswer1: Partial<SecretAnswer> = {
       answer: await hash(req.body.secretanswer1.toLowerCase(), SHA1HashUtils.SALT_ROUNDS),
@@ -229,6 +306,13 @@ export class UserService {
     }
   }
 
+  /**
+   * Function that will check to see if a given UserPasswortReset token is still valid
+   *
+   * @param {string} token
+   * @returns
+   * @memberof UserService
+   */
   public async isPasswordResetTokenStillValid(token: string) {
     const resetRequest = await this.passwordResetRepo.findByKeyShallow('token', token);
     if (new Date(resetRequest.expiresAt) >= new Date()) {
@@ -238,6 +322,7 @@ export class UserService {
     }
   }
 
+  // TODO: I think we can delete this function; was used before moving logic to the service
   public async compareSecretAnswers(user: User, questionGuid: string, answer: string) {
     const secretAnswers = await this.answerRepo.findAllByKeyDeep('user', user.guid);
     for (var i = 0; i < secretAnswers.length; i++) {
@@ -248,6 +333,13 @@ export class UserService {
     }
   }
 
+  /**
+   * Function that will determine if the answers provided match the secret answer hashes we have stored
+   *
+   * @param {Request} req
+   * @returns
+   * @memberof UserService
+   */
   public async areSecretAnswersCorrect(req: Request) {
     const { answer1, answer2, guid, question1, question2 } = req.body;
     const user = await this.userRepo.findOne({
@@ -274,6 +366,14 @@ export class UserService {
     }
   }
 
+  /**
+   * Function that will determine if the new password given has been used in the past.
+   *
+   * @param {string} newPassword
+   * @param {User} user
+   * @returns
+   * @memberof UserService
+   */
   public async isNewPasswordUsed(newPassword: string, user: User) {
     const oldPasswords = await this.passwordHistoryRepo.find({
       where: {
@@ -295,6 +395,14 @@ export class UserService {
     }
   }
 
+  /**
+   * Function that will update the user's password if the new password provided hasn't been used before
+   *
+   * @param {Request} req
+   * @param {string} token
+   * @returns
+   * @memberof UserService
+   */
   public async ifNewUpdatePassword(req: Request, token: string) {
     const resetRequest = await this.passwordResetRepo.findByKeyShallow('token', token);
     const user = await this.userRepo.findByKeyShallow('guid', resetRequest.userGuid);
@@ -309,6 +417,15 @@ export class UserService {
     }
   }
 
+  /**
+   * Function that will update the user's password and send an email saying their password has been changed
+   *
+   * @private
+   * @param {Request} req
+   * @param {User} user
+   * @returns
+   * @memberof UserService
+   */
   private async updateUserPassword(req: Request, user: User) {
     user.password = await hash(req.body.newPassword, SHA1HashUtils.SALT_ROUNDS);
     user.updatedAt = new Date().toISOString();
