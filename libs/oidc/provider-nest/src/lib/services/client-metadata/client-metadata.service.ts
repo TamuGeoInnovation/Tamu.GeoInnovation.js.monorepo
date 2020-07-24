@@ -46,7 +46,6 @@ export class ClientMetadataService {
       const responseTypes = await this.findResponseTypeEntities(req.body.responseTypes);
       const token_endpoint_auth_method = await this.findTokenEndpointAuthMethod(req.body.token_endpoint_auth_method);
 
-      // TODO: Fix this ClientAuthMethod cast
       const _clientMetadata: Partial<ClientMetadata> = {
         clientName: req.body.clientName,
         clientSecret: req.body.clientSecret,

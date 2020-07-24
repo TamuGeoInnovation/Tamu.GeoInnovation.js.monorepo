@@ -8,7 +8,15 @@ import { UserService, ServiceToControllerTypes } from '../../services/user/user.
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
+  /**
+   * Function that will load the 'register' view.
+   * Will prompt user for name, email, pw, and secret answers
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @returns
+   * @memberof UserController
+   */
   @Get('register')
   async registerGet(@Req() req: Request, @Res() res: Response) {
     const questions = await this.userService.getAllSecretQuestions();
@@ -33,6 +41,15 @@ export class UserController {
     });
   }
 
+  /**
+   * The 'register' view has a form that will post to this route.
+   * This route will insert a new User entity
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @returns
+   * @memberof UserController
+   */
   @Post('register')
   async registerPost(@Req() req: Request, @Res() res: Response) {
     req.body.ip = req.ip;
@@ -40,12 +57,30 @@ export class UserController {
     return res.send(`Welcome aboard, ${newUser.account.name}!`);
   }
 
+  /**
+   * Sends an email to the user for them to "verify" their email address
+   *
+   * @param {*} params
+   * @param {Response} res
+   * @returns
+   * @memberof UserController
+   */
   @Get('register/:guid')
   async registerConfirmedGet(@Param() params, @Res() res: Response) {
     this.userService.userVerifiedEmail(params.guid);
     return res.redirect('/');
   }
 
+  /**
+   * Enables 2FA for a given user. Will generate a new 2FA QR code and display it in a view
+   * for the user to scan.
+   *
+   * @param {*} params
+   * @param {Request} req
+   * @param {Response} res
+   * @returns
+   * @memberof UserController
+   */
   @Post('2fa/enable')
   async enable2faGet(@Param() params, @Req() req: Request, @Res() res: Response) {
     if (req.body.guid) {
@@ -74,6 +109,14 @@ export class UserController {
     }
   }
 
+  /**
+   * Simply sets the user attribute "enabled2fa" to false and removes the secret
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @returns
+   * @memberof UserController
+   */
   @Post('2fa/disable')
   async disable2faPost(@Req() req: Request, @Res() res: Response) {
     if (req.body.guid) {
@@ -84,16 +127,39 @@ export class UserController {
     }
   }
 
+  /**
+   * Assigns a role to a user for a particular clientId.
+   * Will save newly created UserRole entity object
+   *
+   * @param {Request} req
+   * @memberof UserController
+   */
   @Post('role')
   async addUserRolePost(@Req() req: Request) {
     this.userService.insertUserRole(req);
   }
 
+  /**
+   * Sends an email with a magic link to the user
+   * Post body needs "guid" key which is the USER guid of the person
+   *
+   * @param {Request} req
+   * @memberof UserController
+   */
   @Post('pwr')
   async userForgotPasswordPost(@Req() req: Request) {
     this.userService.sendPasswordResetEmail(req);
   }
 
+  /**
+   * The email from "userForgotPasswordPost" will take the user here.
+   * Loads a view where we display the user's secret questions
+   *
+   * @param {*} params
+   * @param {Response} res
+   * @returns
+   * @memberof UserController
+   */
   @Get('pwr/:token')
   async loadAppropriatePWRViewGet(@Param() params, @Res() res: Response) {
     const stillValid = await this.userService.isPasswordResetTokenStillValid(params.token);
@@ -126,6 +192,17 @@ export class UserController {
     }
   }
 
+  /**
+   * The form from "loadAppropriatePWRViewGet" will come here.
+   * Checks to see if the answers from "loadAppropriatePWRViewGet" match the hashes we have.
+   * If everything is okay we show them the "new-password" view
+   *
+   * @param {*} params
+   * @param {Request} req
+   * @param {Response} res
+   * @returns
+   * @memberof UserController
+   */
   @Post('pwr/:token')
   async compareAgainstSecretAnswersPost(@Param() params, @Req() req: Request, @Res() res: Response) {
     if (this.userService.isPasswordResetTokenStillValid(params.token)) {
@@ -184,6 +261,17 @@ export class UserController {
     }
   }
 
+  /**
+   * "compareAgainstSecretAnswersPost"'s form will come here.
+   * Will check to see if the password passes validation (InputValidationMiddleware)
+   * then it will update the password IF it hasn't been used already
+   *
+   * @param {*} params
+   * @param {Request} req
+   * @param {Response} res
+   * @returns
+   * @memberof UserController
+   */
   @Post('npw/:token')
   async newPasswordPost(@Param() params, @Req() req: Request, @Res() res: Response) {
     const updatedPassword = await this.userService.ifNewUpdatePassword(req, params.token);
