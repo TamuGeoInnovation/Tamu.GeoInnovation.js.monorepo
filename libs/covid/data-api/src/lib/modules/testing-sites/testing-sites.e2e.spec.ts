@@ -75,4 +75,10 @@ describe('Testing Site Integration Tests', () => {
       .execute();
     await connection.close();
   });
+
+  describe('validation', () => {
+    it('service should be defined', async () => {
+      expect(await TestingSite).toBeDefined();
+    });
+  });
 });

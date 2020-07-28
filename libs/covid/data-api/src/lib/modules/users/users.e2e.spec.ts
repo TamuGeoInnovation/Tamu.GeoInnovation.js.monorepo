@@ -1,7 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { Repository, getConnection, DeepPartial } from 'typeorm';
-import { TestingSite, User, CountyClaim, Lockdown } from '@tamu-gisc/covid/common/entities';
+import {
+  TestingSite,
+  User,
+  CountyClaim,
+  Lockdown,
+  County,
+  TestingSiteInfo,
+  Location,
+  EntityStatus,
+  CountyClaimInfo,
+  EntityToValue,
+  LockdownInfo,
+  State
+} from '@tamu-gisc/covid/common/entities';
 import { config } from '@tamu-gisc/covid/data-api';
 import { UsersService } from './users.service';
 import { TestingSitesService } from '../testing-sites/testing-sites.service';
@@ -9,45 +22,73 @@ import { UsersModule } from './users.module';
 import { TestingSitesModule } from '../testing-sites/testing-sites.module';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
 import { CountyClaimsModule } from '../county-claims/county-claims.module';
+import { LockdownsService } from '../lockdowns/lockdowns.service';
+import { LockdownsModule } from '../lockdowns/lockdowns.module';
+import { CountiesService } from '../counties/counties.service';
+import { CountiesModule } from '../counties/counties.module';
+
+const countyTest: DeepPartial<County> = {
+  name: 'Foo',
+  countyFips: 1
+};
 
 const userTest: DeepPartial<User> = {
-  email: 'Foo',
-  claims: []
+  email: 'Foo'
 };
 
 const userTestTwo: DeepPartial<User> = {
-  email: 'Bar',
-  claims: []
+  email: 'Bar'
 };
 
 describe('Users Integration Tests', () => {
   let usersService: UsersService;
-  let countyClaimService: CountyClaimsService;
-  let testingSiteService: TestingSitesService;
+  let countiesService: CountiesService;
+  let countyClaimsService: CountyClaimsService;
+  let testingSitesService: TestingSitesService;
+  let lockdownsService: LockdownsService;
 
   let usersRepo: Repository<User>;
+  let countyClaimsRepo: Repository<CountyClaim>;
   let testingSitesRepo: Repository<TestingSite>;
-  let countyClaimRepo: Repository<CountyClaim>;
+  let lockdownsRepo: Repository<Lockdown>;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         UsersModule,
-        TestingSitesModule,
         CountyClaimsModule,
-        TypeOrmModule.forFeature([User, TestingSite, CountyClaimsService]),
+        CountiesModule,
+        TestingSitesModule,
+        LockdownsModule,
+        TypeOrmModule.forFeature([
+          User,
+          TestingSite,
+          CountyClaim,
+          CountyClaimInfo,
+          EntityToValue,
+          Lockdown,
+          County,
+          State,
+          TestingSiteInfo,
+          Location,
+          LockdownInfo,
+          EntityStatus
+        ]),
         TypeOrmModule.forRoot(config)
       ],
-      providers: [UsersService, TestingSitesService, CountyClaimsService]
+      providers: [UsersService, TestingSitesService, CountyClaimsService, LockdownsService, CountiesService]
     }).compile();
 
     usersService = module.get<UsersService>(UsersService);
-    countyClaimService = module.get<CountyClaimsService>(CountyClaimsService);
-    testingSiteService = module.get<TestingSitesService>(TestingSitesService);
+    countiesService = module.get<CountiesService>(CountiesService);
+    countyClaimsService = module.get<CountyClaimsService>(CountyClaimsService);
+    testingSitesService = module.get<TestingSitesService>(TestingSitesService);
+    lockdownsService = module.get<LockdownsService>(LockdownsService);
 
     usersRepo = module.get<Repository<User>>(getRepositoryToken(User));
+    countyClaimsRepo = module.get<Repository<CountyClaim>>(getRepositoryToken(CountyClaim));
     testingSitesRepo = module.get<Repository<TestingSite>>(getRepositoryToken(TestingSite));
-    countyClaimRepo = module.get<Repository<CountyClaim>>(getRepositoryToken(CountyClaim));
+    lockdownsRepo = module.get<Repository<Lockdown>>(getRepositoryToken(Lockdown));
   });
 
   /**
@@ -56,8 +97,11 @@ describe('Users Integration Tests', () => {
 
   afterEach(async () => {
     await usersRepo.query(`DELETE FROM users`);
-    await usersRepo.query(`DELETE FROM county_claims`);
+    await countyClaimsRepo.query(`DELETE FROM county_claims`);
+    await testingSitesRepo.query(`DELETE FROM testing_site_infos`);
     await testingSitesRepo.query(`DELETE FROM testing_sites`);
+    await lockdownsRepo.query(`DELETE FROM lockdown_infos`);
+    await lockdownsRepo.query(`DELETE FROM lockdowns`);
   });
 
   /**
@@ -96,8 +140,26 @@ describe('Users Integration Tests', () => {
   describe('getUsersWithStats', () => {
     it('should be able to getUsersWithStats', async () => {
       await usersService.createOne(userTest);
-      await usersService.createOne(userTestTwo);
-      expect(await usersService.getUsersWithStats()).toEqual([{ claims: [], email: 'Bar' }, { claims: [], email: 'Foo' }]);
+      await countiesService.createOne(countyTest);
+
+      const countyClaimTest: DeepPartial<CountyClaim> = {
+        user: userTest,
+        county: countyTest,
+        statuses: [{ type: { id: 1, name: 'Foo' } }]
+      };
+
+      await countyClaimsService.createOrUpdateClaim(countyClaimTest, [], []);
+      expect(await usersService.getUsersWithStats()).toEqual([]);
+    });
+  });
+
+  /*describe('getUsersWithStats', () => {
+    it('should be able to getUsersWithStats', async () => {
+      await lockdownsService.createOne(lockdownTest);
+      await testingSitesService.createOne(testingSiteTest);
+      await usersService.createOne(userTest);
+      await countyClaimsService.createOne(countyClaimTest);
+      expect(await usersService.getUsersWithStats()).toEqual([]);
     });
   });
 
@@ -144,5 +206,5 @@ describe('Users Integration Tests', () => {
     await usersService.createOne(userTestTwo);
     const foundUser = await usersService.registerEmail('Foobar');
     expect(foundUser).toMatchObject({ email: 'Foobar' });
-  });
+  });*/
 });

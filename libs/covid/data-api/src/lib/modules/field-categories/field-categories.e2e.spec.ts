@@ -16,19 +16,7 @@ const fieldCategory: DeepPartial<FieldCategory> = {
   name: 'Foo'
 };
 
-const fieldType: DeepPartial<FieldType> = {
-  name: 'Foo'
-};
-
-fieldCategory.types = [fieldType];
-
-const categoryValue: DeepPartial<CategoryValue> = {
-  value: 'foo',
-  category: fieldCategory,
-  type: fieldType
-};
-
-describe('County Integration Tests', () => {
+describe('fieldCategory Integration Tests', () => {
   let fieldCategoriesService: FieldCategoriesService;
   let fieldTypeService: FieldTypesService;
   let categoryValueService: CategoryValuesService;
@@ -62,10 +50,11 @@ describe('County Integration Tests', () => {
    */
 
   afterEach(async () => {
-    await categoryValueRepo.query(`DELETE FROM category_values`);
-
-    await fieldTypeRepo.query(`DELETE FROM field_types`);
     await fieldCategoriesRepo.query(`DELETE FROM field_categories`);
+    await fieldCategoriesRepo.query(`DELETE FROM field_categories_types_field_types`);
+
+    await categoryValueRepo.query(`DELETE FROM category_values`);
+    await fieldTypeRepo.query(`DELETE FROM field_types`);
   });
 
   /**
@@ -77,6 +66,11 @@ describe('County Integration Tests', () => {
     await connection
       .createQueryBuilder()
       .delete()
+      .from(FieldCategory)
+      .execute();
+    await connection
+      .createQueryBuilder()
+      .delete()
       .from(CategoryValue)
       .execute();
     await connection
@@ -84,21 +78,19 @@ describe('County Integration Tests', () => {
       .delete()
       .from(FieldType)
       .execute();
-    await connection
-      .createQueryBuilder()
-      .delete()
-      .from(FieldCategory)
-      .execute();
     await connection.close();
   });
 
-  describe('getAllCategoriesWithTypes', () => {
-    it('should be able to get Category with types', async () => {
-      await fieldTypeService.createOne(fieldType);
-      await fieldCategoriesService.createOne(fieldCategory);
-      await categoryValueService.createOne(categoryValue);
+  it('getAllCategoriesWithTypes - Should be able to get every catagory with a set type.', async () => {
+    await fieldCategoriesService.createOne(fieldCategory);
+    await fieldCategoriesService.addFieldTypeToCategory(1, 'Foo');
+    const catsWithTypes = await fieldCategoriesService.getAllCategoriesWithTypes();
+    expect(catsWithTypes[0].name).toEqual(fieldCategory.name);
+  });
 
-      expect(await fieldCategoriesService.getAllCategoriesWithTypes()).toMatchObject([fieldCategory]);
-    });
+  it('should be able to get Category with getCategoryWithValues', async () => {
+    await fieldCategoriesService.createOne(fieldCategory);
+    //const catsWithTypes = await fieldCategoriesService.getCategoryWithValues('1');
+    expect(await fieldCategoriesService.addValueToCategory('1', 'Foo')).toEqual(fieldCategory.name);
   });
 });

@@ -33,7 +33,7 @@ describe('State Integration Tests', () => {
   });
 
   /**
-   * after each test, delete everything from states table
+   * after each test, delete everything from each table
    */
 
   afterEach(async () => {
@@ -41,7 +41,7 @@ describe('State Integration Tests', () => {
   });
 
   /**
-   * after all tests are done, delete everything from states table
+   * after all tests are done, delete everything from each table
    */
 
   afterAll(async () => {

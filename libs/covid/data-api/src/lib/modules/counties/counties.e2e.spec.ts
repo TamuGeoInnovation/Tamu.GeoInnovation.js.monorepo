@@ -33,7 +33,7 @@ const countiesTestTwo: DeepPartial<County> = {
 };
 
 describe('County Integration Tests', () => {
-  let service: CountiesService;
+  let countiesService: CountiesService;
   let statesService: StatesService;
 
   let stateRepo: Repository<State>;
@@ -51,7 +51,7 @@ describe('County Integration Tests', () => {
       providers: [CountiesService, StatesService]
     }).compile();
 
-    service = module.get<CountiesService>(CountiesService);
+    countiesService = module.get<CountiesService>(CountiesService);
     statesService = module.get<StatesService>(StatesService);
     stateRepo = module.get<Repository<State>>(getRepositoryToken(State));
     countyRepo = module.get<Repository<County>>(getRepositoryToken(County));
@@ -82,12 +82,12 @@ describe('County Integration Tests', () => {
     await connection
       .createQueryBuilder()
       .delete()
-      .from(County)
+      .from(CountyClaim)
       .execute();
     await connection
       .createQueryBuilder()
       .delete()
-      .from(CountyClaim)
+      .from(County)
       .execute();
     await connection.close();
   });
@@ -96,9 +96,9 @@ describe('County Integration Tests', () => {
     it('should be able to get a County By search', async () => {
       await statesService.createOne(testState);
       await statesService.createOne(testStateTwo);
-      await service.createOne(countiesTest);
-      await service.createOne(countiesTestTwo);
-      expect(await service.search('Foo')).toMatchObject([
+      await countiesService.createOne(countiesTest);
+      await countiesService.createOne(countiesTestTwo);
+      expect(await countiesService.search('Foo')).toMatchObject([
         {
           countyFips: 1,
           name: 'Foo'
@@ -111,9 +111,9 @@ describe('County Integration Tests', () => {
     it('should be able to get a County By searchCountiesForState', async () => {
       await statesService.createOne(testState);
       await statesService.createOne(testStateTwo);
-      await service.createOne(countiesTest);
-      await service.createOne(countiesTestTwo);
-      expect(await service.searchCountiesForState(1, 'Foo')).toMatchObject([
+      await countiesService.createOne(countiesTest);
+      await countiesService.createOne(countiesTestTwo);
+      expect(await countiesService.searchCountiesForState(1, 'Foo')).toMatchObject([
         {
           countyFips: 1,
           name: 'Foo'
@@ -126,9 +126,9 @@ describe('County Integration Tests', () => {
     it('should be able to get a County By getCountiesForState', async () => {
       await statesService.createOne(testState);
       await statesService.createOne(testStateTwo);
-      await service.createOne(countiesTest);
-      await service.createOne(countiesTestTwo);
-      expect(await service.getCountiesForState(1)).toMatchObject([
+      await countiesService.createOne(countiesTest);
+      await countiesService.createOne(countiesTestTwo);
+      expect(await countiesService.getCountiesForState(1)).toMatchObject([
         {
           countyFips: 1,
           name: 'Foo'
@@ -137,18 +137,26 @@ describe('County Integration Tests', () => {
     });
   });
 
-  describe('getCountiesForState', () => {
-    it('should be able to get a County By getCountiesForState', async () => {
+  describe('getCountyStats', () => {
+    it('should be able to get a County By getCountyStats', async () => {
       await statesService.createOne(testState);
       await statesService.createOne(testStateTwo);
-      await service.createOne(countiesTest);
-      await service.createOne(countiesTestTwo);
-      expect(await service.getCountiesForState(1)).toMatchObject([
-        {
-          countyFips: 1,
-          name: 'Foo'
-        }
-      ]);
+      await countiesService.createOne(countiesTest);
+      await countiesService.createOne(countiesTestTwo);
+      expect(await countiesService.getCountyStats()).toMatchObject({
+        '00001': { claims: 0, lockdownInfo: [], lockdowns: 0, sites: 0 },
+        '00002': { claims: 0, lockdownInfo: [], lockdowns: 0, sites: 0 }
+      });
+    });
+  });
+
+  describe('getSummary', () => {
+    it('should be able to get a County By getSummary', async () => {
+      await statesService.createOne(testState);
+      await statesService.createOne(testStateTwo);
+      await countiesService.createOne(countiesTest);
+      await countiesService.createOne(countiesTestTwo);
+      expect(await countiesService.getSummary()).toMatchObject([]);
     });
   });
 });
