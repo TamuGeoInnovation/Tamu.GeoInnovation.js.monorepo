@@ -9,6 +9,7 @@
   at `/user/register`
 - Some way to determine "Hey you answered your secret questions wrong X times, you're locked out for X minutes"
   - Same with logging in
+- Implement "Forgot my password"
 
 # TODO (closed)
 
@@ -35,6 +36,9 @@
 - Maybe keep track of previous passwords and prevent someone from using a past password
 
 # Bugs and things to look into (open)
+
+- Are token expirations working? Is this something that should be done on the client side or server side?
+- If you happen to send to POST to `idp/user/pwr` and don't provide the `guid` or `email` keys, you will throw an exception on the backend. We need an exception filter to catch that and send a response back that says something along the lines of "Expected parameters not supplied" or something like that
 
 # Bugs and things to look into (closed)
 

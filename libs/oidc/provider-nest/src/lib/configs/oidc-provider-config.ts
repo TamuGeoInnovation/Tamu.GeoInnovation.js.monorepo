@@ -80,7 +80,8 @@ function loadableProviderConfiguration(clients: IClientMetadata[]) {
     // ],
     clients: clients,
     claims: {
-      amr: null,
+      // amr: null,
+      amr: ['pwd', 'otp'],
       address: ['address'],
       email: ['email', 'email_verified'],
       phone: ['phone_number', 'phone_number_verified'],
@@ -370,8 +371,8 @@ export const PROVIDER_CONFIGURATION = {
     }
   },
   ttl: {
-    // AccessToken: 1 * 40, // 40 seconds
-    AccessToken: 1 * 60 * 60, // 1 hour in seconds
+    AccessToken: 1 * 60, // 40 seconds
+    // AccessToken: 1 * 60 * 60, // 1 hour in seconds
     AuthorizationCode: 10 * 60, // 10 minutes in seconds
     IdToken: 1 * 60 * 60, // 1 hour in seconds
     // IdToken: 1 * 60, // 1 minute in seconds

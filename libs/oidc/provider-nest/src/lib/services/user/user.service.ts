@@ -104,7 +104,14 @@ export class UserService {
    * @memberof UserService
    */
   public async sendPasswordResetEmail(req: Request) {
-    const user = await this.userRepo.findByKeyDeep('guid', req.body.guid);
+    const { guid, email } = req.body;
+    let user;
+    if (guid) {
+      user = await this.userRepo.findByKeyDeep('guid', guid);
+    } else if (email) {
+      user = await this.userRepo.findByKeyDeep('email', email);
+    }
+
     const _resetRequest: Partial<UserPasswordReset> = {
       userGuid: user.guid,
       initializerIp: req.ip
