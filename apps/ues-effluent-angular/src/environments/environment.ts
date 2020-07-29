@@ -20,6 +20,7 @@ import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 
 import { Connections, Definitions as d } from './definitions';
 import { tiers } from './tier-dictionary';
+import { samples } from './sample-dictionary';
 
 import { Popups } from '@tamu-gisc/aggiemap';
 
@@ -31,6 +32,7 @@ export * from './notification-events';
 export const effluentZonesUrl = Connections.effluentZonesUrl;
 export const effluentSampleLocationsUrl = Connections.effluentSampleLocationsUrl;
 export const effluentTiers = tiers;
+export const effluentSamples = samples;
 
 const commonLayerProps = {
   outFields: ['*'],

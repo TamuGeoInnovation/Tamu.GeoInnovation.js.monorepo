@@ -38,6 +38,7 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
   private zonesResourceUrl: string;
   private sampleLocationsResourceUrl: string;
   private buildingsResource: Array<IEffluentTierMetadata>;
+  private samplesResource: Array<IEffluentSample>;
   private modules: Observable<[esri.QueryConstructor, esri.QueryTaskConstructor]>;
   private _destroy: Subject<boolean> = new Subject();
 
@@ -78,6 +79,7 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
     this.zonesResourceUrl = this.environmentService.value('effluentZonesUrl');
     this.sampleLocationsResourceUrl = this.environmentService.value('effluentSampleLocationsUrl');
     this.buildingsResource = this.environmentService.value('effluentTiers');
+    this.samplesResource = this.environmentService.value('effluentSamples');
 
     this.hit = this.mapService.hitTest.pipe(shareReplay(1));
     this.hitGraphic = this.mapService.hitTest.pipe(
@@ -224,7 +226,7 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
       }),
       map((features) => {
         return features.map((f) => {
-          f.attributes.chartData = this.getRandomChartData();
+          f.attributes.chartData = this.getChartData();
           return f;
         });
       }),
@@ -287,9 +289,35 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
     this.popupService.enablePopups();
   }
 
-  private getRandomChartData(): Observable<IChartConfiguration['data']> {
-    return of({ values: this.getNRandomValues(7), dates: this.getLastNDates(7) }).pipe(
-      map((factors) => {
+  private getChartData(): Observable<IChartConfiguration['data']> {
+    return combineLatest([this.tier, this.sample]).pipe(
+      switchMap(([tier, sample]) => {
+        const data = this.samplesResource.find((s) => {
+          return s.sample === `${tier}-${sample}`;
+        });
+
+        if (data) {
+          return this.getChartConfiguration({
+            values: data.entries.map((e) => e.result),
+            dates: data.entries.map((e) => e.date)
+          });
+        } else {
+          return this.getChartConfiguration(this.getRandomChartData());
+        }
+      })
+    );
+  }
+
+  private getRandomChartData() {
+    return { values: this.getNRandomValues(7), dates: this.getLastNDates(7) };
+  }
+
+  private getChartConfiguration(factors: {
+    values: Array<number>;
+    dates: Array<Date>;
+  }): Observable<IChartConfiguration['data']> {
+    return of(factors).pipe(
+      map((f) => {
         return factors.dates.map((d, i, a) => {
           return {
             x: d,
@@ -383,5 +411,13 @@ export interface IEffluentTierMetadata {
   tiers: Array<{
     tier: number;
     zone: number;
+  }>;
+}
+
+export interface IEffluentSample {
+  sample: string;
+  entries: Array<{
+    date: Date;
+    result: number;
   }>;
 }
