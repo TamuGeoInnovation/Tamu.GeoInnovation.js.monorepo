@@ -139,16 +139,55 @@ export class UserController {
     this.userService.insertUserRole(req);
   }
 
+  @Get('pwr')
+  async userForgotPasswordGet(@Req() req: Request, @Res() res: Response) {
+    // return res.render('forgot-password');
+    const locals = {
+      title: 'GeoInnovation Service Center SSO',
+      client: {},
+      debug: false,
+      details: {},
+      params: {},
+      interaction: true,
+      error: false
+    };
+    return res.render('forgot-password', locals, (err, html) => {
+      if (err) throw err;
+      res.render('_password-reset-layout', {
+        ...locals,
+        body: html
+      });
+    });
+  }
+
   /**
    * Sends an email with a magic link to the user
    * Post body needs "guid" key which is the USER guid of the person
+   * or "email"
    *
    * @param {Request} req
    * @memberof UserController
    */
   @Post('pwr')
-  async userForgotPasswordPost(@Req() req: Request) {
-    this.userService.sendPasswordResetEmail(req);
+  async userForgotPasswordPost(@Req() req: Request, @Res() res: Response) {
+    await this.userService.sendPasswordResetEmail(req);
+    const locals = {
+      title: 'GeoInnovation Service Center SSO',
+      client: {},
+      debug: false,
+      details: {},
+      params: {},
+      interaction: true,
+      error: false,
+      email: req.body.email
+    };
+    return res.render('email-was-sent', locals, (err, html) => {
+      if (err) throw err;
+      res.render('_password-reset-layout', {
+        ...locals,
+        body: html
+      });
+    });
   }
 
   /**

@@ -27,7 +27,7 @@ export const OIDC_CLIENT_PARAMS = {
 };
 
 export const OIDC_CLIENT_PARAMS_AD = {
-  scope: 'openid email profile groups',
+  scope: 'openid email profile',
   state: 'texas',
   prompt: 'consent'
 };
