@@ -41,17 +41,6 @@
     </ng-container>
   </div>
 
-  <div *ngIf="(affectedBuildings | async) as buildings">
-    <div class="stat-card">
-      <div class="stat-metric">{{buildings.length > 0 ? buildings.length : 0}}</div>
-      <div class="stat-title">Covered Buildings</div>
-
-      <div class="stat-list">
-        <div class="stat-list-item" *ngFor="let building of buildings">{{building.number}}</div>
-      </div>
-    </div>
-  </div>
-
   <div *ngIf="(sampleLocationsInZone | async) as sz">
     <div class="stat-card">
       <div class="stat-metric">{{sz.length > 0 ? sz.length : 0}}</div>
@@ -62,6 +51,17 @@
           <tamu-gisc-line-chart [source]="location?.attributes?.chartData" [options]="chartOptions" [title]="'Signal concentration @ ' + location?.attributes?.Sample"></tamu-gisc-line-chart>
         </div>
       </ng-container>
+    </div>
+  </div>
+
+  <div *ngIf="(affectedBuildings | async) as buildings">
+    <div class="stat-card">
+      <div class="stat-metric">{{buildings.length > 0 ? buildings.length : 0}}</div>
+      <div class="stat-title">Covered Buildings</div>
+
+      <div class="stat-list">
+        <div class="stat-list-item" *ngFor="let building of buildings">{{building.number}}</div>
+      </div>
     </div>
   </div>
 </div>

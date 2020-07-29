@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -15,7 +15,7 @@ import esri = __esri;
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
   public view: esri.MapView;
   public isMobile: boolean;
@@ -76,10 +76,6 @@ export class MapComponent implements OnInit {
               breakpoint: false,
               position: 'bottom-right'
             }
-          },
-          highlightOptions: {
-            haloOpacity: 0,
-            fillOpacity: 0
           }
         }
       }

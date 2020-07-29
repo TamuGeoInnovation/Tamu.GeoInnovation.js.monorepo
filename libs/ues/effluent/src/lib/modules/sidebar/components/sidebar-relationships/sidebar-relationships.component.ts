@@ -1,19 +1,21 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, from, combineLatest, of } from 'rxjs';
-import { shareReplay, map, filter, switchMap, withLatestFrom, share } from 'rxjs/operators';
+import { Observable, from, combineLatest, of, Subject } from 'rxjs';
+import { shareReplay, map, filter, switchMap, withLatestFrom, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
+import { IChartConfiguration } from '@tamu-gisc/charts';
+import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 import { PopupService } from '@tamu-gisc/maps/feature/popup';
 import { EsriMapService, HitTestSnapshot, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import { FeatureHighlightService } from '@tamu-gisc/maps/feature/feature-highlight';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
-import { IChartConfiguration } from '@tamu-gisc/charts';
-import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 
 @Component({
   selector: 'tamu-gisc-sidebar-relationships',
   templateUrl: './sidebar-relationships.component.html',
-  styleUrls: ['./sidebar-relationships.component.scss']
+  styleUrls: ['./sidebar-relationships.component.scss'],
+  providers: [FeatureHighlightService]
 })
 export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
   public tier: Observable<number>;
@@ -35,6 +37,7 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
   private sampleLocationsResourceUrl: string;
   private buildingsResource: Array<IEffluentTierMetadata>;
   private modules: Observable<[esri.QueryConstructor, esri.QueryTaskConstructor]>;
+  private _destroy: Subject<boolean> = new Subject();
 
   public chartOptions: Partial<IChartConfiguration['options']> = {
     scales: {
@@ -63,7 +66,8 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
     private mapService: EsriMapService,
     private environmentService: EnvironmentService,
     private popupService: PopupService,
-    private moduleProvider: EsriModuleProviderService
+    private moduleProvider: EsriModuleProviderService,
+    private featureHighlightService: FeatureHighlightService
   ) {}
 
   public ngOnInit(): void {
@@ -81,6 +85,11 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
       }),
       filter((g) => {
         return g !== undefined;
+      }),
+      // Filter out multiple emissions by feature id. This will prevent many xhr requests and limit other
+      // unnecessary UI reactive changes.
+      distinctUntilChanged((oldGraphic, newGraphic) => {
+        return oldGraphic.attributes.FID === newGraphic.attributes.FID;
       })
     );
 
@@ -99,6 +108,30 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
           : undefined;
       })
     );
+
+    this.hitGraphic.pipe(takeUntil(this._destroy)).subscribe((graphic) => {
+      this.featureHighlightService.highlight({
+        features: graphic,
+        options: {
+          clearAllOthers: true
+        }
+      });
+    });
+
+    // combineLatest([this.mapService.store, this.hitGraphic])
+    //   .pipe(withLatestFrom(this._highlightFeatures))
+    //   .subscribe(async ([[store, graphic], highlights]) => {
+    //     // Deselect any features
+    //     if (highlights) {
+    //       highlights.remove();
+    //     }
+
+    //     const layerView: esri.FeatureLayerView = ((await store.view.whenLayerView(
+    //       graphic.layer
+    //     )) as unknown) as esri.FeatureLayerView;
+
+    //     this._highlightFeatures.next(layerView.highlight(graphic));
+    //   });
 
     this.previousTier = this.tier.pipe(
       filter((currentTier) => {
@@ -217,6 +250,8 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
+    this._destroy.next();
+    this._destroy.complete();
     this.popupService.enablePopups();
   }
 

@@ -125,6 +125,6 @@ const routes: Routes = [
     UESCoreUIModule
   ],
   declarations: [MapComponent],
-  providers: [EsriModuleProviderService, EsriMapService]
+  providers: []
 })
 export class MapModule {}
