@@ -430,25 +430,6 @@ export const tiers: Array<IEffluentTierMetatada> = [
     ]
   },
   {
-    number: '419',
-    classification: 'Residence',
-    area: 45134,
-    tiers: [
-      {
-        tier: 1,
-        zone: 1
-      },
-      {
-        tier: 2,
-        zone: 2
-      },
-      {
-        tier: 3,
-        zone: 8
-      }
-    ]
-  },
-  {
     number: '422',
     classification: 'Residence',
     area: 51494,

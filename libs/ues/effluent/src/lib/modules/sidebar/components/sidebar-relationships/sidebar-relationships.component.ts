@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, from, combineLatest, of, Subject } from 'rxjs';
-import { shareReplay, map, filter, switchMap, withLatestFrom, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { shareReplay, map, filter, switchMap, withLatestFrom, distinctUntilChanged, takeUntil, tap } from 'rxjs/operators';
 
 import { IChartConfiguration } from '@tamu-gisc/charts';
 import { getRandomNumber } from '@tamu-gisc/common/utils/number';
@@ -25,6 +25,7 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
   public tierOwnedBy: Observable<Array<esri.Graphic>>;
   public tierOwns: Observable<Array<esri.Graphic>>;
   public sampleLocationsInZone: Observable<Array<esri.Graphic>>;
+  public sampleBuildings: Observable<Array<esri.Graphic>>;
 
   public sample: Observable<number>;
 
@@ -32,6 +33,7 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
 
   public hit: Observable<HitTestSnapshot>;
   public hitGraphic: Observable<esri.Graphic>;
+  public isHitGraphicZone: Observable<boolean>;
 
   private zonesResourceUrl: string;
   private sampleLocationsResourceUrl: string;
@@ -93,19 +95,34 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
       })
     );
 
+    this.isHitGraphicZone = this.hitGraphic.pipe(
+      map((g) => {
+        return g.layer.id !== 'sample-testing-locations';
+      }),
+      shareReplay(1)
+    );
+
     this.tier = this.hitGraphic.pipe(
       map((graphic) => {
-        return graphic && graphic.attributes && graphic.attributes.Tier !== undefined
-          ? parseInt(graphic.attributes.Tier, 10)
-          : undefined;
+        if (graphic && graphic.attributes && graphic.attributes.Tier !== undefined) {
+          return parseInt(graphic.attributes.Tier, 10);
+        } else if (graphic && graphic.attributes && graphic.attributes.Sample !== undefined) {
+          return parseInt(graphic.attributes.Sample.split('-')[0], 10);
+        } else {
+          return undefined;
+        }
       })
     );
 
     this.sample = this.hitGraphic.pipe(
       map((graphic) => {
-        return graphic && graphic.attributes && graphic.attributes.SampleNumb !== undefined
-          ? parseInt(graphic.attributes.SampleNumb.split('-').pop(), 10)
-          : undefined;
+        if (graphic && graphic.attributes && graphic.attributes.SampleNumb !== undefined) {
+          return parseInt(graphic.attributes.SampleNumb.split('-').pop(), 10);
+        } else if (graphic && graphic.attributes && graphic.attributes.Sample !== undefined) {
+          return parseInt(graphic.attributes.Sample.split('-')[1], 10);
+        } else {
+          return undefined;
+        }
       })
     );
 
@@ -117,21 +134,6 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
         }
       });
     });
-
-    // combineLatest([this.mapService.store, this.hitGraphic])
-    //   .pipe(withLatestFrom(this._highlightFeatures))
-    //   .subscribe(async ([[store, graphic], highlights]) => {
-    //     // Deselect any features
-    //     if (highlights) {
-    //       highlights.remove();
-    //     }
-
-    //     const layerView: esri.FeatureLayerView = ((await store.view.whenLayerView(
-    //       graphic.layer
-    //     )) as unknown) as esri.FeatureLayerView;
-
-    //     this._highlightFeatures.next(layerView.highlight(graphic));
-    //   });
 
     this.previousTier = this.tier.pipe(
       filter((currentTier) => {
@@ -245,6 +247,36 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
         }, []);
 
         return of(filtered);
+      }),
+      shareReplay(1)
+    );
+
+    this.sampleBuildings = this.affectedBuildings.pipe(
+      withLatestFrom(this.isHitGraphicZone, this.tier, this.sample),
+      switchMap(([v, is, tier, sample]) => {
+        if (is === false) {
+          const filtered = this.buildingsResource.filter((d) => {
+            return d.tiers.find((t) => t.tier === tier && t.zone === sample) !== undefined;
+          });
+
+          return of(filtered.map((f) => f.number)).pipe(
+            switchMap((bldgs) => {
+              return this.getBuildings(bldgs);
+            })
+          );
+        } else {
+          return of(undefined);
+        }
+      }),
+      tap((buildings) => {
+        if (buildings && buildings.length > 0) {
+          this.featureHighlightService.highlight({
+            features: buildings,
+            options: {
+              clearAllOthers: true
+            }
+          });
+        }
       })
     );
   }
@@ -297,29 +329,33 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
     }
   }
 
-  public async highlightLocation() {}
-
   public async highlightBuildings(building: string | string[]) {
+    const buildings = await this.getBuildings(building);
+
+    if (building.length > 0) {
+      this.featureHighlightService.highlight({
+        features: buildings,
+        options: {
+          clearAllOthers: true
+        }
+      });
+    }
+  }
+
+  private async getBuildings(building: string | string[]): Promise<Array<esri.Graphic>> {
     const layer = this.mapService.findLayerById(`buildings-layer`) as esri.FeatureLayer;
 
-    const padStart = (number: string) => (number.length < 4 ? number.padStart(4, '0') : number);
+    const padStart = (number: string) => (number.length < 4 ? `'${number.padStart(4, '0')}'` : `'${number}'`);
 
     const buildingNumbers = building instanceof Array ? building.map((b) => padStart(b)) : [padStart(building)];
 
     const r = await layer.queryFeatures({
       returnGeometry: true,
       outFields: ['*'],
-      where: `Number LIKE ('${buildingNumbers.join(',')}')`
+      where: `Number IN (${buildingNumbers.join(',')})`
     });
 
-    if (r.features.length > 0) {
-      this.featureHighlightService.highlight({
-        features: r.features,
-        options: {
-          clearAllOthers: true
-        }
-      });
-    }
+    return r.features;
   }
 
   private getNRandomValues(n: number) {

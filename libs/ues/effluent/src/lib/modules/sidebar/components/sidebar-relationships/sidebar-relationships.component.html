@@ -7,61 +7,85 @@
 
   <ng-template #selectedDetails>
     <div class="stat-card">
-      <div class="stat-metric">{{tier | async}}-{{sample | async}}</div>
-      <div class="stat-title">Selected Tier</div>
+      <ng-container *ngIf="isHitGraphicZone | async">
+        <div class="stat-metric">{{tier | async}}-{{sample | async}}</div>
+        <div class="stat-title">Selected Tier</div>
+      </ng-container>
+
+      <ng-container *ngIf="(isHitGraphicZone | async) === false">
+        <div class="stat-metric">{{tier | async}}-{{sample | async}}</div>
+        <div class="stat-title">Sample</div>
+      </ng-container>
     </div>
   </ng-template>
 
-  <div *ngIf="(tierOwnedBy | async) as tob">
-    <ng-container *ngIf="tob.length > 0; else noParent">
-      <div class="stat-card" *ngFor="let child of tob">
-        <div class="stat-metric">{{child?.attributes?.SampleNumb}}</div>
-        <div class="stat-title">Parent Tier</div>
-      </div>
-    </ng-container>
-
-    <ng-template #noParent>
-      <div class="stat-card">
-        <div class="stat-metric">N/A</div>
-        <div class="stat-title">Parent Tier</div>
-      </div>
-    </ng-template>
-  </div>
-
-  <div *ngIf="(tierOwns | async) as to">
-    <ng-container *ngIf="to.length > 0">
-      <div class="stat-card">
-        <div class="stat-metric">{{to.length > 0 ? to.length : 0}}</div>
-        <div class="stat-title">Sub Samples</div>
-
-        <div class="stat-list">
-          <div class="stat-list-item clip" *ngFor="let child of to" (click)="highlightSubSample(child?.attributes?.SampleNumb)">{{child?.attributes?.SampleNumb}}</div>
+  <ng-container *ngIf="isHitGraphicZone | async">
+    <div *ngIf="(tierOwnedBy | async) as tob">
+      <ng-container *ngIf="tob.length > 0; else noParent">
+        <div class="stat-card" *ngFor="let child of tob">
+          <div class="stat-metric">{{child?.attributes?.SampleNumb}}</div>
+          <div class="stat-title">Parent Tier</div>
         </div>
-      </div>
-    </ng-container>
-  </div>
+      </ng-container>
 
-  <div *ngIf="(sampleLocationsInZone | async) as sz">
-    <div class="stat-card">
-      <div class="stat-metric">{{sz.length > 0 ? sz.length : 0}}</div>
-      <div class="stat-title">Sample Locations</div>
+      <ng-template #noParent>
+        <div class="stat-card">
+          <div class="stat-metric">N/A</div>
+          <div class="stat-title">Parent Tier</div>
+        </div>
+      </ng-template>
+    </div>
 
-      <ng-container *ngIf="(sampleLocationsInZone | async)?.length  > 0">
-        <div class="stat-chart" *ngFor="let location of sampleLocationsInZone | async">
-          <tamu-gisc-line-chart [source]="location?.attributes?.chartData" [options]="chartOptions" [title]="'Signal concentration @ ' + location?.attributes?.Sample"></tamu-gisc-line-chart>
+    <div *ngIf="(tierOwns | async) as to">
+      <ng-container *ngIf="to.length > 0">
+        <div class="stat-card">
+          <div class="stat-metric">{{to.length > 0 ? to.length : 0}}</div>
+          <div class="stat-title">Sub Samples</div>
+
+          <div class="stat-list">
+            <div class="stat-list-item clip" *ngFor="let child of to" (click)="highlightSubSample(child?.attributes?.SampleNumb)">{{child?.attributes?.SampleNumb}}</div>
+          </div>
         </div>
       </ng-container>
     </div>
-  </div>
 
-  <div *ngIf="(affectedBuildings | async) as buildings">
-    <div class="stat-card">
-      <div class="stat-metric">{{buildings.length > 0 ? buildings.length : 0}}</div>
-      <div class="stat-title">Covered Buildings</div>
+    <div *ngIf="(sampleLocationsInZone | async) as sz">
+      <div class="stat-card">
+        <div class="stat-metric">{{sz.length > 0 ? sz.length : 0}}</div>
+        <div class="stat-title">Sample Locations</div>
 
-      <div class="stat-list">
-        <div class="stat-list-item chip" *ngFor="let building of buildings" (click)="highlightBuildings(building.number)">{{building.number}}</div>
+        <ng-container *ngIf="(sampleLocationsInZone | async)?.length  > 0">
+          <div class="stat-chart" *ngFor="let location of sampleLocationsInZone | async">
+            <tamu-gisc-line-chart [source]="location?.attributes?.chartData" [options]="chartOptions" [title]="'Signal concentration @ ' + location?.attributes?.Sample"></tamu-gisc-line-chart>
+          </div>
+        </ng-container>
       </div>
     </div>
-  </div>
+  </ng-container>
+
+  <ng-container *ngIf="isHitGraphicZone | async">
+    <div *ngIf="(affectedBuildings | async) as buildings">
+      <div class="stat-card">
+        <div class="stat-metric">{{buildings.length > 0 ? buildings.length : 0}}</div>
+        <div class="stat-title">Covered Buildings</div>
+
+        <div class="stat-list">
+          <div class="stat-list-item chip" *ngFor="let building of buildings" (click)="highlightBuildings(building.number)">{{building.number}}</div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="(isHitGraphicZone | async) === false">
+    <div *ngIf="(sampleBuildings | async) as sb">
+      <div class="stat-card">
+        <div class="stat-metric">{{sb.length > 0 ? sb.length : 0}}</div>
+        <div class="stat-title">Covered Buildings</div>
+
+        <div class="stat-list">
+          <div class="stat-list-item chip" *ngFor="let building of sb" (click)="highlightBuildings(building?.attributes?.Number)">{{building?.attributes?.Number}}</div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
 </div>
