@@ -278,6 +278,50 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
     );
   }
 
+  public async highlightSubSample(subSample: string) {
+    const layer = this.mapService.findLayerById(`sampling-zone-${subSample.split('-')[0]}`) as esri.FeatureLayer;
+
+    const r = await layer.queryFeatures({
+      returnGeometry: true,
+      outFields: ['*'],
+      where: `SampleNumb = '${subSample}'`
+    });
+
+    if (r.features.length > 0) {
+      this.featureHighlightService.highlight({
+        features: r.features,
+        options: {
+          clearAllOthers: true
+        }
+      });
+    }
+  }
+
+  public async highlightLocation() {}
+
+  public async highlightBuildings(building: string | string[]) {
+    const layer = this.mapService.findLayerById(`buildings-layer`) as esri.FeatureLayer;
+
+    const padStart = (number: string) => (number.length < 4 ? number.padStart(4, '0') : number);
+
+    const buildingNumbers = building instanceof Array ? building.map((b) => padStart(b)) : [padStart(building)];
+
+    const r = await layer.queryFeatures({
+      returnGeometry: true,
+      outFields: ['*'],
+      where: `Number LIKE ('${buildingNumbers.join(',')}')`
+    });
+
+    if (r.features.length > 0) {
+      this.featureHighlightService.highlight({
+        features: r.features,
+        options: {
+          clearAllOthers: true
+        }
+      });
+    }
+  }
+
   private getNRandomValues(n: number) {
     return new Array(n).fill(undefined).map((v) => getRandomNumber(0, 1000));
   }

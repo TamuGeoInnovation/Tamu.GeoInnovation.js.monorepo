@@ -84,7 +84,7 @@ export const LayerSources: LayerSource[] = [
         type: 'simple',
         symbol: {
           type: 'simple-fill',
-          color: [158, 85, 156, 0.75],
+          color: [158, 85, 156, 0.5],
           style: 'solid'
         }
       }
@@ -107,7 +107,7 @@ export const LayerSources: LayerSource[] = [
         type: 'simple',
         symbol: {
           type: 'simple-fill',
-          color: [167, 198, 54, 0.75],
+          color: [167, 198, 54, 0.5],
           style: 'solid'
         }
       }
@@ -130,7 +130,7 @@ export const LayerSources: LayerSource[] = [
         type: 'simple',
         symbol: {
           type: 'simple-fill',
-          color: [20, 158, 206, 0.75],
+          color: [20, 158, 206, 0.5],
           style: 'solid'
         }
       }
@@ -153,7 +153,7 @@ export const LayerSources: LayerSource[] = [
         type: 'simple',
         symbol: {
           type: 'simple-fill',
-          color: [237, 81, 81, 0.75],
+          color: [237, 81, 81, 0.4],
           style: 'solid'
         }
       }

@@ -35,7 +35,7 @@
         <div class="stat-title">Sub Samples</div>
 
         <div class="stat-list">
-          <div class="stat-list-item" *ngFor="let child of to">{{child?.attributes?.SampleNumb}}</div>
+          <div class="stat-list-item clip" *ngFor="let child of to" (click)="highlightSubSample(child?.attributes?.SampleNumb)">{{child?.attributes?.SampleNumb}}</div>
         </div>
       </div>
     </ng-container>
@@ -60,7 +60,7 @@
       <div class="stat-title">Covered Buildings</div>
 
       <div class="stat-list">
-        <div class="stat-list-item" *ngFor="let building of buildings">{{building.number}}</div>
+        <div class="stat-list-item chip" *ngFor="let building of buildings" (click)="highlightBuildings(building.number)">{{building.number}}</div>
       </div>
     </div>
   </div>
