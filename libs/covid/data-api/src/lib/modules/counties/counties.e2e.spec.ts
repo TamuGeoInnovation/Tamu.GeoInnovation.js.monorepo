@@ -5,8 +5,6 @@ import { State, County, CountyClaim } from '@tamu-gisc/covid/common/entities';
 import { CountiesService } from './counties.service';
 import { CountiesModule } from './counties.module';
 import { config } from '@tamu-gisc/covid/data-api';
-import { StatesService } from '../states/states.service';
-import { StatesModule } from '../states/states.module';
 
 const testState: DeepPartial<State> = {
   name: 'Foo',
@@ -34,25 +32,16 @@ const countiesTestTwo: DeepPartial<County> = {
 
 describe('County Integration Tests', () => {
   let countiesService: CountiesService;
-  let statesService: StatesService;
-
   let stateRepo: Repository<State>;
   let countyRepo: Repository<County>;
   let countyClaimRepo: Repository<CountyClaim>;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        CountiesModule,
-        StatesModule,
-        TypeOrmModule.forFeature([County, CountyClaim, State]),
-        TypeOrmModule.forRoot(config)
-      ],
-      providers: [CountiesService, StatesService]
+      imports: [CountiesModule, TypeOrmModule.forFeature([County, CountyClaim, State]), TypeOrmModule.forRoot(config)],
+      providers: [CountiesService]
     }).compile();
-
     countiesService = module.get<CountiesService>(CountiesService);
-    statesService = module.get<StatesService>(StatesService);
     stateRepo = module.get<Repository<State>>(getRepositoryToken(State));
     countyRepo = module.get<Repository<County>>(getRepositoryToken(County));
     countyClaimRepo = module.get<Repository<CountyClaim>>(getRepositoryToken(CountyClaim));
@@ -94,8 +83,8 @@ describe('County Integration Tests', () => {
 
   describe('search', () => {
     it('should be able to get a County By search', async () => {
-      await statesService.createOne(testState);
-      await statesService.createOne(testStateTwo);
+      await stateRepo.save(testState);
+      await stateRepo.save(testStateTwo);
       await countiesService.createOne(countiesTest);
       await countiesService.createOne(countiesTestTwo);
       expect(await countiesService.search('Foo')).toMatchObject([
@@ -109,8 +98,8 @@ describe('County Integration Tests', () => {
 
   describe('searchCountiesForState', () => {
     it('should be able to get a County By searchCountiesForState', async () => {
-      await statesService.createOne(testState);
-      await statesService.createOne(testStateTwo);
+      await stateRepo.save(testState);
+      await stateRepo.save(testStateTwo);
       await countiesService.createOne(countiesTest);
       await countiesService.createOne(countiesTestTwo);
       expect(await countiesService.searchCountiesForState(1, 'Foo')).toMatchObject([
@@ -124,8 +113,8 @@ describe('County Integration Tests', () => {
 
   describe('getCountiesForState', () => {
     it('should be able to get a County By getCountiesForState', async () => {
-      await statesService.createOne(testState);
-      await statesService.createOne(testStateTwo);
+      await stateRepo.save(testState);
+      await stateRepo.save(testStateTwo);
       await countiesService.createOne(countiesTest);
       await countiesService.createOne(countiesTestTwo);
       expect(await countiesService.getCountiesForState(1)).toMatchObject([
@@ -139,8 +128,8 @@ describe('County Integration Tests', () => {
 
   describe('getCountyStats', () => {
     it('should be able to get a County By getCountyStats', async () => {
-      await statesService.createOne(testState);
-      await statesService.createOne(testStateTwo);
+      await stateRepo.save(testState);
+      await stateRepo.save(testStateTwo);
       await countiesService.createOne(countiesTest);
       await countiesService.createOne(countiesTestTwo);
       expect(await countiesService.getCountyStats()).toMatchObject({
@@ -152,8 +141,8 @@ describe('County Integration Tests', () => {
 
   describe('getSummary', () => {
     it('should be able to get a County By getSummary', async () => {
-      await statesService.createOne(testState);
-      await statesService.createOne(testStateTwo);
+      await stateRepo.save(testState);
+      await stateRepo.save(testStateTwo);
       await countiesService.createOne(countiesTest);
       await countiesService.createOne(countiesTestTwo);
       expect(await countiesService.getSummary()).toMatchObject([]);

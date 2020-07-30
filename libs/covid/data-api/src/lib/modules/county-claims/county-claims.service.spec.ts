@@ -29,6 +29,7 @@ describe('CountyClaims Controller', () => {
       ]
     }).compile();
     countyClaimsService = module.get<CountyClaimsService>(CountyClaimsService);
+
     countyClaimRepo = module.get<Repository<CountyClaim>>(getRepositoryToken(CountyClaim));
     userRepo = module.get<Repository<User>>(getRepositoryToken(User));
     countyRepo = module.get<Repository<County>>(getRepositoryToken(County));
