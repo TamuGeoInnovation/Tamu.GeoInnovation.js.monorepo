@@ -6,32 +6,9 @@ import { CountiesService } from './counties.service';
 import { CountiesModule } from './counties.module';
 import { config } from '@tamu-gisc/covid/data-api';
 
-const testState: DeepPartial<State> = {
-  name: 'Foo',
-  abbreviation: 'F',
-  stateFips: 1
-};
-
-const testStateTwo: DeepPartial<State> = {
-  name: 'Bar',
-  abbreviation: 'B',
-  stateFips: 2
-};
-
-const countiesTest: DeepPartial<County> = {
-  countyFips: 1,
-  stateFips: testState,
-  name: 'Foo'
-};
-
-const countiesTestTwo: DeepPartial<County> = {
-  countyFips: 2,
-  stateFips: testStateTwo,
-  name: 'Bar'
-};
-
 describe('County Integration Tests', () => {
   let countiesService: CountiesService;
+
   let stateRepo: Repository<State>;
   let countyRepo: Repository<County>;
   let countyClaimRepo: Repository<CountyClaim>;
@@ -41,7 +18,9 @@ describe('County Integration Tests', () => {
       imports: [CountiesModule, TypeOrmModule.forFeature([County, CountyClaim, State]), TypeOrmModule.forRoot(config)],
       providers: [CountiesService]
     }).compile();
+
     countiesService = module.get<CountiesService>(CountiesService);
+
     stateRepo = module.get<Repository<State>>(getRepositoryToken(State));
     countyRepo = module.get<Repository<County>>(getRepositoryToken(County));
     countyClaimRepo = module.get<Repository<CountyClaim>>(getRepositoryToken(CountyClaim));
@@ -81,18 +60,37 @@ describe('County Integration Tests', () => {
     await connection.close();
   });
 
+  const testState: DeepPartial<State> = {
+    name: 'Foo',
+    abbreviation: 'F',
+    stateFips: 1
+  };
+
+  const testStateTwo: DeepPartial<State> = {
+    name: 'Bar',
+    abbreviation: 'B',
+    stateFips: 2
+  };
+
+  const countiesTest: DeepPartial<County> = {
+    countyFips: 1,
+    stateFips: testState,
+    name: 'Foo'
+  };
+
+  const countiesTestTwo: DeepPartial<County> = {
+    countyFips: 2,
+    stateFips: testStateTwo,
+    name: 'Bar'
+  };
   describe('search', () => {
     it('should be able to get a County By search', async () => {
       await stateRepo.save(testState);
       await stateRepo.save(testStateTwo);
       await countiesService.createOne(countiesTest);
       await countiesService.createOne(countiesTestTwo);
-      expect(await countiesService.search('Foo')).toMatchObject([
-        {
-          countyFips: 1,
-          name: 'Foo'
-        }
-      ]);
+      expect(await countiesService.search('Foo')).toMatchObject([{ name: countiesTest.name }]);
+      expect(await countiesService.search('Bar')).toMatchObject([{ name: countiesTestTwo.name }]);
     });
   });
 
@@ -104,8 +102,15 @@ describe('County Integration Tests', () => {
       await countiesService.createOne(countiesTestTwo);
       expect(await countiesService.searchCountiesForState(1, 'Foo')).toMatchObject([
         {
-          countyFips: 1,
-          name: 'Foo'
+          countyFips: countiesTest.countyFips,
+          name: countiesTest.name
+        }
+      ]);
+
+      expect(await countiesService.searchCountiesForState(2, 'Bar')).toMatchObject([
+        {
+          countyFips: countiesTestTwo.countyFips,
+          name: countiesTestTwo.name
         }
       ]);
     });
@@ -119,8 +124,15 @@ describe('County Integration Tests', () => {
       await countiesService.createOne(countiesTestTwo);
       expect(await countiesService.getCountiesForState(1)).toMatchObject([
         {
-          countyFips: 1,
-          name: 'Foo'
+          countyFips: countiesTest.countyFips,
+          name: countiesTest.name
+        }
+      ]);
+
+      expect(await countiesService.getCountiesForState(2)).toMatchObject([
+        {
+          countyFips: countiesTestTwo.countyFips,
+          name: countiesTestTwo.name
         }
       ]);
     });

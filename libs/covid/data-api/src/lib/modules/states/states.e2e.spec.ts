@@ -6,18 +6,6 @@ import { StatesModule } from './states.module';
 import { State } from '@tamu-gisc/covid/common/entities';
 import { config } from '@tamu-gisc/covid/data-api';
 
-const stateTest: Partial<State> = {
-  abbreviation: 'F',
-  stateFips: 9,
-  name: 'Foo'
-};
-
-const stateTestTwo: Partial<State> = {
-  stateFips: 10,
-  name: 'Bar',
-  abbreviation: 'B'
-};
-
 describe('State Integration Tests', () => {
   let service: StatesService;
   let repo: Repository<State>;
@@ -54,12 +42,26 @@ describe('State Integration Tests', () => {
     await connection.close();
   });
 
+  const stateTest: Partial<State> = {
+    abbreviation: 'F',
+    stateFips: 9,
+    name: 'Foo'
+  };
+
+  const stateTestTwo: Partial<State> = {
+    stateFips: 10,
+    name: 'Bar',
+    abbreviation: 'B'
+  };
+
   describe('search', () => {
     it('should be able to get a State By search', async () => {
       // create new state
       await service.createOne(stateTest);
       await service.createOne(stateTestTwo);
-      const foundState = await service.search('10');
+      let foundState = await service.search('9');
+      expect(foundState).toMatchObject([stateTest]);
+      foundState = await service.search('10');
       expect(foundState).toMatchObject([stateTestTwo]);
     });
   });
