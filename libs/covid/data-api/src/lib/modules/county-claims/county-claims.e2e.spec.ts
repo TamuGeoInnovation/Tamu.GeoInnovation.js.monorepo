@@ -13,7 +13,11 @@ import {
   User,
   TestingSite,
   StatusType,
-  State
+  State,
+  EntityValue,
+  CategoryValue,
+  FieldCategory,
+  FieldType
 } from '@tamu-gisc/covid/common/entities';
 import { CountyClaimsModule } from './county-claims.module';
 import { UsersService } from '../users/users.service';
@@ -81,7 +85,7 @@ describe('County Claims Integration Tests', () => {
     await countyClaimsRepo.query(`DELETE FROM county_claims`);
     await usersRepo.query(`DELETE FROM users`);
     await countiesRepo.query(`DELETE FROM counties`);
-    await countiesRepo.query(`DELETE FROM states`);
+    await statesRepo.query(`DELETE FROM states`);
   });
 
   /**
@@ -184,10 +188,25 @@ describe('County Claims Integration Tests', () => {
     county: countiesTestTwo,
     statuses: [entityStatusTestTwo]
   };
+
+  /*const fieldCategoryTest: DeepPartial<FieldCategory> = {id: 1, };
+
+  const fieldTypeTest: DeepPartial<FieldType> = {name: 'Foo'};
+
+  const categoryValueTest: DeepPartial<CategoryValue> = {
+    value: 'Foo',
+    category: fieldCategoryTest,
+    type: fieldTypeTest
+  };
+
+  const entityValueTest: DeepPartial<EntityValue> = {
+    value: categoryValueTest
+  };*/
+
   describe('', () => {
     it('getActiveClaimsForEmail', async () => {
       await usersRepo.save(userTest);
-      await statusTypeRepo.save(statusTypeTest);
+      //await statusTypeRepo.save(statusTypeTest);
       await entityStatusRepo.save(entityStatusTest);
       await statesRepo.save(testState);
       await countiesRepo.save(countiesTest);
@@ -306,45 +325,5 @@ describe('County Claims Integration Tests', () => {
       const suggestedClaim = await countyClaimsService.getInfosForClaim(setClaim[0].guid);
       expect(suggestedClaim.infos.length).toEqual(1);
     });
-    /*it('getAllUserCountyClaims', async () => {
-      await usersRepo.save(userTest);
-      await statusTypeRepo.save(statusTypeTest);
-      await entityStatusRepo.save(entityStatusTest);
-      await statesRepo.save(testState);
-      await countiesRepo.save(countiesTest);
-      await countyClaimsService.createOne(countiesTest);
-
-      await statusTypeRepo.save(statusTypeTestTwo);
-      await entityStatusRepo.save(entityStatusTestTwo);
-      await statesRepo.save(testStateTwo);
-      await countiesRepo.save(countiesTestTwo);
-      await countyClaimsService.createOne(countiesTestTwo);
-
-      await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
-      await countyClaimsService.createOrUpdateClaim(countyClaimsTestTwo, [], []);
-      const numberOfState = await countyClaimsService.getAllUserCountyClaims(userTest.email);
-      expect(numberOfState.length).toEqual(2);
-    });
-
-    it('getActiveClaimsForCountyFips', async () => {
-      await usersRepo.save(userTest);
-      await statusTypeRepo.save(statusTypeTest);
-      await entityStatusRepo.save(entityStatusTest);
-      await statesRepo.save(testState);
-      await countiesRepo.save(countiesTest);
-      await countyClaimsService.createOne(countiesTest);
-
-      await statusTypeRepo.save(statusTypeTestTwo);
-      await entityStatusRepo.save(entityStatusTestTwo);
-      await statesRepo.save(testStateTwo);
-      await countiesRepo.save(countiesTestTwo);
-      await countyClaimsService.createOne(countiesTestTwo);
-
-      await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
-      await countyClaimsService.createOrUpdateClaim(countyClaimsTestTwo, [], []);
-      const numberOfState = await countyClaimsService.getActiveClaimsForCountyFips(countiesTest.countyFips);
-
-      expect(numberOfState[0].county.countyFips).toEqual(countiesTest.countyFips);
-    });*/
   });
 });
