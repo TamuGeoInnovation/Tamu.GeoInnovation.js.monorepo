@@ -27,19 +27,6 @@ import { LockdownsModule } from '../lockdowns/lockdowns.module';
 import { CountiesService } from '../counties/counties.service';
 import { CountiesModule } from '../counties/counties.module';
 
-const countyTest: DeepPartial<County> = {
-  name: 'Foo',
-  countyFips: 1
-};
-
-const userTest: DeepPartial<User> = {
-  email: 'Foo'
-};
-
-const userTestTwo: DeepPartial<User> = {
-  email: 'Bar'
-};
-
 describe('Users Integration Tests', () => {
   let usersService: UsersService;
   let countiesService: CountiesService;
@@ -128,6 +115,18 @@ describe('Users Integration Tests', () => {
     await connection.close();
   });
 
+  const countyTest: DeepPartial<County> = {
+    name: 'Foo',
+    countyFips: 1
+  };
+
+  const userTest: DeepPartial<User> = {
+    email: 'Foo'
+  };
+
+  const userTestTwo: DeepPartial<User> = {
+    email: 'Bar'
+  };
   describe('getUsers', () => {
     it('should be able to getUsers', async () => {
       await usersService.createOne(userTest);
@@ -137,7 +136,7 @@ describe('Users Integration Tests', () => {
     });
   });
 
-  describe('getUsersWithStats', () => {
+  /*describe('getUsersWithStats', () => {
     it('should be able to getUsersWithStats', async () => {
       await usersService.createOne(userTest);
       await countiesService.createOne(countyTest);
@@ -153,7 +152,7 @@ describe('Users Integration Tests', () => {
     });
   });
 
-  /*describe('getUsersWithStats', () => {
+  describe('getUsersWithStats', () => {
     it('should be able to getUsersWithStats', async () => {
       await lockdownsService.createOne(lockdownTest);
       await testingSitesService.createOne(testingSiteTest);

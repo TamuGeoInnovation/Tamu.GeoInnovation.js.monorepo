@@ -13,32 +13,18 @@ import { FieldCategoriesService } from '../field-categories/field-categories.ser
 
 describe('Field Type Integration Tests', () => {
   let fieldTypeService: FieldTypesService;
-  let fieldCategoriesService: FieldCategoriesService;
-  let categoryValueService: CategoryValuesService;
 
-  let fieldCategoriesRepo: Repository<FieldCategory>;
   let fieldTypeRepo: Repository<FieldType>;
-  let categoryValueRepo: Repository<CategoryValue>;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        FieldCategoriesModule,
-        FieldTypesModule,
-        CategoryValueModule,
-        TypeOrmModule.forFeature([FieldCategory, FieldType, CategoryValue]),
-        TypeOrmModule.forRoot(config)
-      ],
-      providers: [FieldCategoriesService, FieldTypesService, CategoryValuesService]
+      imports: [FieldTypesModule, TypeOrmModule.forFeature([FieldType]), TypeOrmModule.forRoot(config)],
+      providers: [FieldTypesService]
     }).compile();
 
-    fieldCategoriesService = module.get<FieldCategoriesService>(FieldCategoriesService);
     fieldTypeService = module.get<FieldTypesService>(FieldTypesService);
-    categoryValueService = module.get<CategoryValuesService>(CategoryValuesService);
 
-    fieldCategoriesRepo = module.get<Repository<FieldCategory>>(getRepositoryToken(FieldCategory));
     fieldTypeRepo = module.get<Repository<FieldType>>(getRepositoryToken(FieldType));
-    categoryValueRepo = module.get<Repository<CategoryValue>>(getRepositoryToken(CategoryValue));
   });
 
   /**
@@ -46,8 +32,6 @@ describe('Field Type Integration Tests', () => {
    */
 
   afterEach(async () => {
-    await categoryValueRepo.query(`DELETE FROM category_values`);
-    await fieldCategoriesRepo.query(`DELETE FROM field_categories`);
     await fieldTypeRepo.query(`DELETE FROM field_types`);
   });
 
@@ -60,16 +44,6 @@ describe('Field Type Integration Tests', () => {
     await connection
       .createQueryBuilder()
       .delete()
-      .from(CategoryValue)
-      .execute();
-    await connection
-      .createQueryBuilder()
-      .delete()
-      .from(FieldCategory)
-      .execute();
-    await connection
-      .createQueryBuilder()
-      .delete()
       .from(FieldType)
       .execute();
     await connection.close();
@@ -77,7 +51,7 @@ describe('Field Type Integration Tests', () => {
 
   describe('validation', () => {
     it('service should be defined', async () => {
-      expect(await fieldTypeService).toBeDefined();
+      expect(fieldTypeService).toBeDefined();
     });
   });
 });

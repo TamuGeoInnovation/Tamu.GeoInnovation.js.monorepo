@@ -203,9 +203,9 @@ describe('County Claims Integration Tests', () => {
   describe('Validation', () => {
     it('service should be defined', async () => {
       // create new state
-      expect(await lockdownsService).toBeDefined();
+      expect(lockdownsService).toBeDefined();
     });
-    it('createOrUpdateLockdown', async () => {
+    /*it('createOrUpdateLockdown', async () => {
       await usersRepo.save(userTest);
       await statusTypeRepo.save(statusTypeTest);
       await entityStatusRepo.save(entityStatusTest);
@@ -217,7 +217,7 @@ describe('County Claims Integration Tests', () => {
       const setLockdown = await lockdownsService.createOrUpdateLockdown({ claim: countyClaimsTest, info: {} });
 
       expect(setLockdown[0].county.name).toEqual(countiesTest.name);
-    });
+    });*/
   });
 });
 

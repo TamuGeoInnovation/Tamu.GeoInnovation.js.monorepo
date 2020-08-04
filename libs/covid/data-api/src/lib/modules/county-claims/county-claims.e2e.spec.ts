@@ -131,13 +131,13 @@ describe('County Claims Integration Tests', () => {
 
   const userTest: DeepPartial<User> = { email: 'Foo', guid: 'Bar' };
 
-  const testState: DeepPartial<State> = {
+  const stateTest: DeepPartial<State> = {
     name: 'Foo',
     abbreviation: 'F',
     stateFips: 1
   };
 
-  const testStateTwo: DeepPartial<State> = {
+  const stateTestTwo: DeepPartial<State> = {
     name: 'Bar',
     abbreviation: 'B',
     stateFips: 2
@@ -146,19 +146,19 @@ describe('County Claims Integration Tests', () => {
   const countiesTest: DeepPartial<County> = {
     countyFips: 1,
     name: 'Foo',
-    stateFips: testState
+    stateFips: stateTest
   };
 
   const countiesTestTwo: DeepPartial<County> = {
     countyFips: 2,
     name: 'Bar',
-    stateFips: testStateTwo
+    stateFips: stateTestTwo
   };
 
   const countiesTestThree: DeepPartial<County> = {
     countyFips: 3,
     name: 'Bar',
-    stateFips: testState
+    stateFips: stateTest
   };
 
   const statusTypeTest: DeepPartial<StatusType> = {
@@ -208,7 +208,7 @@ describe('County Claims Integration Tests', () => {
       await usersRepo.save(userTest);
       //await statusTypeRepo.save(statusTypeTest);
       await entityStatusRepo.save(entityStatusTest);
-      await statesRepo.save(testState);
+      await statesRepo.save(stateTest);
       await countiesRepo.save(countiesTest);
       await countyClaimsService.createOne(countiesTest);
       await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
@@ -222,13 +222,13 @@ describe('County Claims Integration Tests', () => {
       await usersRepo.save(userTest);
       await statusTypeRepo.save(statusTypeTest);
       await entityStatusRepo.save(entityStatusTest);
-      await statesRepo.save(testState);
+      await statesRepo.save(stateTest);
       await countiesRepo.save(countiesTest);
       await countyClaimsService.createOne(countiesTest);
 
       await statusTypeRepo.save(statusTypeTestTwo);
       await entityStatusRepo.save(entityStatusTestTwo);
-      await statesRepo.save(testStateTwo);
+      await statesRepo.save(stateTestTwo);
       await countiesRepo.save(countiesTestTwo);
       await countyClaimsService.createOne(countiesTestTwo);
 
@@ -242,7 +242,7 @@ describe('County Claims Integration Tests', () => {
       await usersRepo.save(userTest);
       await statusTypeRepo.save(statusTypeTest);
       await entityStatusRepo.save(entityStatusTest);
-      await statesRepo.save(testState);
+      await statesRepo.save(stateTest);
       await countiesRepo.save(countiesTest);
       await countyClaimsService.createOne(countiesTest);
       await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
@@ -256,7 +256,7 @@ describe('County Claims Integration Tests', () => {
       await usersRepo.save(userTest);
       await statusTypeRepo.save(statusTypeTest);
       await entityStatusRepo.save(entityStatusTest);
-      await statesRepo.save(testState);
+      await statesRepo.save(stateTest);
       await countiesRepo.save(countiesTest);
       await countyClaimsService.createOne(countiesTest);
       await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
@@ -269,7 +269,7 @@ describe('County Claims Integration Tests', () => {
       await usersRepo.save(userTest);
       await statusTypeRepo.save(statusTypeTest);
       await entityStatusRepo.save(entityStatusTest);
-      await statesRepo.save(testState);
+      await statesRepo.save(stateTest);
       await countiesRepo.save(countiesTest);
       await countyClaimsService.createOne(countiesTest);
       await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
@@ -283,7 +283,7 @@ describe('County Claims Integration Tests', () => {
       await usersRepo.save(userTest);
       await statusTypeRepo.save(statusTypeTest);
       await entityStatusRepo.save(entityStatusTest);
-      await statesRepo.save(testState);
+      await statesRepo.save(stateTest);
       await countiesRepo.save(countiesTest);
       await countiesRepo.save(countiesTestThree);
 
@@ -298,7 +298,7 @@ describe('County Claims Integration Tests', () => {
       await usersRepo.save(userTest);
       await statusTypeRepo.save(statusTypeTest);
       await entityStatusRepo.save(entityStatusTest);
-      await statesRepo.save(testState);
+      await statesRepo.save(stateTest);
       await countiesRepo.save(countiesTest);
       await countyClaimsService.createOne(countiesTest);
 
@@ -316,7 +316,7 @@ describe('County Claims Integration Tests', () => {
       await usersRepo.save(userTest);
       await statusTypeRepo.save(statusTypeTest);
       await entityStatusRepo.save(entityStatusTest);
-      await statesRepo.save(testState);
+      await statesRepo.save(stateTest);
       await countiesRepo.save(countiesTest);
       await countyClaimsService.createOne(countiesTest);
 

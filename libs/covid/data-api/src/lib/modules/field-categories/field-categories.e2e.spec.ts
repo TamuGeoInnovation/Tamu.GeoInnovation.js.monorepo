@@ -8,21 +8,6 @@ import { config } from '@tamu-gisc/covid/data-api';
 import { FieldCategoriesService } from './field-categories.service';
 import { FieldCategoriesModule } from './field-categories.module';
 
-const fieldCategoryTest: Partial<FieldCategory> = {
-  id: 1,
-  name: 'Foo'
-};
-
-const fieldCategoryTestTwo: Partial<FieldCategory> = {
-  id: 2,
-  name: 'Bar'
-};
-
-const fieldTypeTest: Partial<FieldType> = {
-  name: 'Foo',
-  guid: 'Foo'
-};
-
 describe('fieldCategory Integration Tests', () => {
   let fieldCategoriesService: FieldCategoriesService;
 
@@ -80,6 +65,21 @@ describe('fieldCategory Integration Tests', () => {
       .execute();
     await connection.close();
   });
+
+  const fieldCategoryTest: Partial<FieldCategory> = {
+    id: 1,
+    name: 'Foo'
+  };
+
+  const fieldCategoryTestTwo: Partial<FieldCategory> = {
+    id: 2,
+    name: 'Bar'
+  };
+
+  const fieldTypeTest: Partial<FieldType> = {
+    name: 'Foo',
+    guid: 'Foo'
+  };
   it('getAllCategoriesWithTypes.', async () => {
     await fieldCategoriesRepo.save(fieldCategoryTest);
     const catsWithTypes = await fieldCategoriesService.getAllCategoriesWithTypes();

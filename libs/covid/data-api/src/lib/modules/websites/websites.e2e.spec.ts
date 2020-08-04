@@ -84,10 +84,10 @@ describe('Websites Integration Tests', () => {
     });
   });
 
-  describe('getWebsites ', () => {
+  /*describe('getWebsites ', () => {
     it('getWebsites', () => {
       countyClaimInfoRepo.create().save();
       expect(service).toBeDefined();
     });
-  });
+  });*/
 });
