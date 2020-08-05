@@ -89,6 +89,30 @@
         </div>
       </div>
     </div>
+
+    <div *ngIf="(uncoveredBuildings | async) as ub">
+      <div class="stat-card">
+        <div class="stat-metric">{{ub.length > 0 ? ub.length : 0}}</div>
+        <div class="stat-title">{{ub.length > 1 ? 'Uncovered Buildings' : 'Uncovered Building'}}</div>
+
+        <div class="checkbox-accordion">
+          <input type="checkbox" />
+          <div class="checkbox-instructions">
+            <p class="checkbox-false">Expand building list</p>
+            <p class="checkbox-true">Collapse building list</p>
+          </div>
+          <div class="stat-list accordion-content">
+            <div class="stat-list-item chip" *ngFor="let building of ub" (click)="highlightBuildings(building?.attributes?.Number)">{{building?.attributes?.Number}} {{building?.attributes?.Abbrev ? '- ' + building?.attributes?.Abbrev : ''}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div>
+      <pre>
+        {{uncoveredBuildings | async | json}}
+      </pre>
+    </div> -->
   </ng-container>
 
   <!-- Show only when the selected feature is a sampling location. The affectedBuildings stream will be empty for this condition, so sampleBuildings is used instead as it performs additional lookups -->

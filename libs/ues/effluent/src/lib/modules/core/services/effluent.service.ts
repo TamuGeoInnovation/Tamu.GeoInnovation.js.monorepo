@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, combineLatest, from, of } from 'rxjs';
+import { Observable, combineLatest, from, of, pipe } from 'rxjs';
 import { shareReplay, map, filter, distinctUntilChanged, switchMap, withLatestFrom, tap } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -25,6 +25,7 @@ export class EffluentService {
   public tierOwns: Observable<Array<esri.Graphic>>;
   public sampleLocationsInZone: Observable<Array<esri.Graphic>>;
   public sampleBuildings: Observable<Array<esri.Graphic>>;
+  public uncoveredBuildings: Observable<Array<esri.Graphic>>;
 
   public sample: Observable<number>;
 
@@ -258,6 +259,32 @@ export class EffluentService {
         }
       })
     );
+
+    this.uncoveredBuildings = this.affectedBuildings.pipe(
+      withLatestFrom(this.tier, this.sample, this.hitGraphic),
+      switchMap(([buildings, tier, sample, graphic]) => {
+        const bldgs = buildings.map((b) => `'${b.attributes.Number}'`);
+
+        return from(this.getIntersectingNonFocusBuildings(bldgs, graphic));
+      }),
+      map((result) => {
+        return result.features;
+      }),
+      shareReplay(1)
+    );
+  }
+
+  public async getIntersectingNonFocusBuildings(buildings: string[], area: esri.Graphic) {
+    const layer = this.mapService.findLayerById(`buildings-layer`) as esri.FeatureLayer;
+
+    const r = await layer.queryFeatures({
+      returnGeometry: false,
+      outFields: ['*'],
+      where: `Number NOT IN (${buildings.join(',')})`,
+      geometry: area.geometry
+    });
+
+    return r;
   }
 
   public async getBuildings(building: string | string[]): Promise<Array<esri.Graphic>> {

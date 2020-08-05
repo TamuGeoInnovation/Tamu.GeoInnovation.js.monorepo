@@ -30,6 +30,7 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
   public sample = this.effluentService.sample;
 
   public affectedBuildings = this.effluentService.affectedBuildings;
+  public uncoveredBuildings = this.effluentService.uncoveredBuildings;
 
   public hit = this.effluentService.hit;
   public hitGraphic = this.effluentService.hitGraphic;
