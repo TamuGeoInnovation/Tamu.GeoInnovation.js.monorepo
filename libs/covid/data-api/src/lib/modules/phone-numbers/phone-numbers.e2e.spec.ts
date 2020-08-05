@@ -23,6 +23,7 @@ import { CountyClaimsService } from '../county-claims/county-claims.service';
 import { CountyClaimsModule } from '../county-claims/county-claims.module';
 import { PhoneNumbersService } from './phone-numbers.service';
 import { PhoneNumbersModule } from './phone-numbers.module';
+import { CATEGORY } from '@tamu-gisc/covid/common/enums';
 
 describe('Phone-Numbers Integration Tests', () => {
   let phoneNumberService: PhoneNumbersService;
@@ -31,14 +32,10 @@ describe('Phone-Numbers Integration Tests', () => {
 
   let countyClaimsRepo: Repository<CountyClaim>;
   let usersRepo: Repository<User>;
-
   let fieldCategoryRepo: Repository<FieldCategory>;
-
   let fieldTypeRepo: Repository<FieldType>;
-
   let categoryValueRepo: Repository<CategoryValue>;
   let entityValueRepo: Repository<EntityValue>;
-
   let countiesRepo: Repository<County>;
   let statesRepo: Repository<State>;
   let countyClaimInfoRepo: Repository<CountyClaimInfo>;
@@ -75,11 +72,9 @@ describe('Phone-Numbers Integration Tests', () => {
     usersService = module.get<UsersService>(UsersService);
 
     statesRepo = module.get<Repository<State>>(getRepositoryToken(State));
-
     fieldCategoryRepo = module.get<Repository<FieldCategory>>(getRepositoryToken(FieldCategory));
     fieldTypeRepo = module.get<Repository<FieldType>>(getRepositoryToken(FieldType));
     categoryValueRepo = module.get<Repository<CategoryValue>>(getRepositoryToken(CategoryValue));
-
     entityValueRepo = module.get<Repository<EntityValue>>(getRepositoryToken(EntityValue));
     countyClaimsRepo = module.get<Repository<CountyClaim>>(getRepositoryToken(CountyClaim));
     usersRepo = module.get<Repository<User>>(getRepositoryToken(User));
@@ -96,14 +91,8 @@ describe('Phone-Numbers Integration Tests', () => {
   afterEach(async () => {
     await entityToValueRepo.query(`DELETE FROM entity_to_values`);
     await countyClaimInfoRepo.query(`DELETE FROM county_claim_infos`);
-
     await entityValueRepo.query(`DELETE FROM entity_values`);
     await categoryValueRepo.query(`DELETE FROM category_values`);
-    await fieldTypeRepo.query(`DELETE FROM field_types`);
-    await fieldTypeRepo.query(`DELETE FROM field_categories_types_field_types`);
-    await fieldCategoryRepo.query(`DELETE FROM field_categories`);
-    await fieldCategoryRepo.query(`DELETE FROM field_categories_types_field_types`);
-
     await countyClaimsRepo.query(`DELETE FROM county_claims`);
     await countiesRepo.query(`DELETE FROM counties`);
     await statesRepo.query(`DELETE FROM states`);
@@ -134,16 +123,6 @@ describe('Phone-Numbers Integration Tests', () => {
     await connection
       .createQueryBuilder()
       .delete()
-      .from(FieldType)
-      .execute();
-    await connection
-      .createQueryBuilder()
-      .delete()
-      .from(FieldCategory)
-      .execute();
-    await connection
-      .createQueryBuilder()
-      .delete()
       .from(CountyClaimInfo)
       .execute();
     await connection
@@ -169,33 +148,15 @@ describe('Phone-Numbers Integration Tests', () => {
     await connection.close();
   });
 
-  const fieldCategoryW: DeepPartial<FieldCategory> = { name: 'Website' };
-  const fieldCategoryPN: DeepPartial<FieldCategory> = { name: 'PhoneNumber' };
-
-  const fieldTypePN: DeepPartial<FieldType> = { name: '6054756968', guid: 'Fo' };
-
-  const categoryValue: DeepPartial<CategoryValue> = {
-    value: 'Foo',
-    type: fieldTypePN,
-    category: fieldCategoryPN,
-    guid: 'Foo'
-  };
-
-  const entityValue: DeepPartial<EntityValue> = { value: categoryValue, guid: 'Fooo' };
-
+  const fieldCategoryW: DeepPartial<FieldCategory> = { name: 'Website', id: 1 };
+  const fieldCategoryPN: DeepPartial<FieldCategory> = { name: 'PhoneNumber', id: 2 };
+  const fieldTypePN: DeepPartial<FieldType> = { name: 'Foooo', guid: 'Yeet' };
+  const entityValue: DeepPartial<EntityValue> = { guid: 'Fooo' };
   const entityToValue: DeepPartial<EntityToValue> = { entityValue: entityValue, guid: 'Foooo' };
-
-  /* 
-    Testing this - - - - - 
-  */
   const userTest: DeepPartial<User> = { email: 'Foo', guid: 'Bar' };
-
   const stateTest: DeepPartial<State> = { name: 'Foo', abbreviation: 'F', stateFips: 1 };
-
   const countyTest: DeepPartial<County> = { countyFips: 1, name: 'Foo', stateFips: stateTest };
-
   const countyClaimInfoTest: DeepPartial<CountyClaimInfo> = { responses: [entityToValue], guid: 'Foobar' };
-
   const countyClaimTest: DeepPartial<CountyClaim> = {
     user: userTest,
     county: countyTest,
@@ -204,51 +165,82 @@ describe('Phone-Numbers Integration Tests', () => {
   };
 
   describe('Validation', () => {
-    it('service should be defined', async () => {
-      await fieldCategoryRepo.save(fieldCategoryW);
-      await fieldCategoryRepo.save(fieldCategoryPN);
-      await fieldTypeRepo.save(fieldTypePN);
-      await categoryValueRepo.save(categoryValue);
-      await entityValueRepo.save(entityValue);
-      await entityToValueRepo.save(entityToValue);
-
-      await usersRepo.save(userTest);
-      await statesRepo.save(stateTest);
-      await countiesRepo.save(countyTest);
-      await countyClaimInfoRepo.save(countyClaimInfoTest);
-      await countyClaimsRepo.save(countyClaimTest);
-      await phoneNumberService.getPhoneNumbersForCounty(countyTest.countyFips.toString());
-
-      expect(await phoneNumberService.getPhoneNumbersForCounty(countyTest.countyFips.toString())).toEqual([fieldCategoryPN]);
-    });
-  });
-
-  describe('Validation', () => {
-    it('service should be defined', async () => {
-      await fieldCategoryRepo.save(fieldCategoryW);
-      await fieldCategoryRepo.save(fieldCategoryPN);
-      await fieldTypeRepo.save(fieldTypePN);
-      await categoryValueRepo.save(categoryValue);
-      await entityValueRepo.save(entityValue);
-      await entityToValueRepo.save(entityToValue);
-
-      await usersRepo.save(userTest);
-      await statesRepo.save(stateTest);
-      await countiesRepo.save(countyTest);
-      await countyClaimInfoRepo.save(countyClaimInfoTest);
-      await countyClaimsRepo.save(countyClaimTest);
-
-      expect(await phoneNumberService.getPhoneNumbersForCounty(countyTest.countyFips.toString())).toEqual([fieldCategoryPN]);
-    });
-  });
-
-  /*describe('', () => {
     it('getPhoneNumbersForCounty', async () => {
-      await entityToValueRepo.save(entityToValueTest);
+      await fieldCategoryRepo.save(fieldCategoryW);
+      await fieldCategoryRepo.save(fieldCategoryPN);
+      await fieldTypeRepo.save(fieldTypePN);
+
+      const category = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.PHONE_NUMBERS
+        }
+      });
+
+      const type = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Foooo'
+        }
+      });
+
+      const Cv = categoryValueRepo.create({
+        value: 'Foo',
+        type: type,
+        category: category
+      });
+      await Cv.save();
+      const eV = entityValueRepo.create({ value: Cv, guid: 'Fooo' });
+      await eV.save();
+      const eTV = entityToValueRepo.create({ entityValue: eV, guid: 'Foooo' });
+      await eTV.save();
+      await usersRepo.save(userTest);
+      await statesRepo.save(stateTest);
+      await countiesRepo.save(countyTest);
+
       await countyClaimInfoRepo.save(countyClaimInfoTest);
       await countyClaimsRepo.save(countyClaimTest);
 
-      expect(await phoneNumberService.getPhoneNumbersForCounty(countyTest.countyFips.toString())).toEqual([]);
+      const expected = await phoneNumberService.getPhoneNumbersForCounty(countyTest.countyFips.toString());
+
+      expect(expected[0]).toEqual(eV);
     });
-  });*/
+
+    it('getPhoneNumbersForClaimInfo', async () => {
+      await fieldCategoryRepo.save(fieldCategoryW);
+      await fieldCategoryRepo.save(fieldCategoryPN);
+      await fieldTypeRepo.save(fieldTypePN);
+
+      const category = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.PHONE_NUMBERS
+        }
+      });
+
+      const type = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Foooo'
+        }
+      });
+
+      const Cv = categoryValueRepo.create({
+        value: 'Foo',
+        type: type,
+        category: category
+      });
+      await Cv.save();
+      const eV = entityValueRepo.create({ value: Cv, guid: 'Fooo' });
+      await eV.save();
+      const eTV = entityToValueRepo.create({ entityValue: eV, guid: 'Foooo' });
+      await eTV.save();
+      await usersRepo.save(userTest);
+      await statesRepo.save(stateTest);
+      await countiesRepo.save(countyTest);
+
+      await countyClaimInfoRepo.save(countyClaimInfoTest);
+      await countyClaimsRepo.save(countyClaimTest);
+
+      const expected = await phoneNumberService.getPhoneNumbersForClaimInfo(countyClaimTest.infos[0].guid);
+
+      expect(expected[0]).toEqual(eV);
+    });
+  });
 });
