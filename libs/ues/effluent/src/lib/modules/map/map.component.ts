@@ -4,11 +4,14 @@ import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
-import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { IEffluentSample } from '@tamu-gisc/ues/common/ngx';
 
 import esri = __esri;
+import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
+import { layer } from 'esri/views/3d/support/LayerPerformanceInfo';
 
 @Component({
   selector: 'tamu-gisc-map',
@@ -22,11 +25,18 @@ export class MapComponent implements OnInit, OnDestroy {
   public config: MapConfig;
 
   private _destroy$: Subject<boolean> = new Subject();
+  private _effluentSamplesResource: Array<IEffluentSample>;
 
-  constructor(private responsiveService: ResponsiveService, private environment: EnvironmentService) {}
+  constructor(
+    private responsiveService: ResponsiveService,
+    private environment: EnvironmentService,
+    private mapService: EsriMapService,
+    private layerListService: LayerListService
+  ) {}
 
   public ngOnInit() {
     const connections = this.environment.value('Connections');
+    this._effluentSamplesResource = this.environment.value('effluentSamples');
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
       this.isMobile = value;
@@ -90,6 +100,20 @@ export class MapComponent implements OnInit, OnDestroy {
       'Howdy Ags!'
     ];
     (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
+
+    // this.mapService.store.subscribe(({map, view}) => {
+
+    // })
+
+    this.layerListService.layers({ watchProperties: ['visible'], layers: ['sampling-zone-3'] }).subscribe(([result]) => {
+      const l = result.layer as esri.FeatureLayer;
+
+      if (l) {
+        const t = this.generateUniqueValueRenderer(3);
+
+        l.renderer = (t as unknown) as any;
+      }
+    });
   }
 
   public ngOnDestroy() {
@@ -155,4 +179,45 @@ export class MapComponent implements OnInit, OnDestroy {
       throw new Error('No event provided.');
     }
   };
+
+  private generateUniqueValueRenderer(level: number) {
+    // Get a list of samples which match the given level
+    const eligible = this._effluentSamplesResource.filter((sample) => {
+      return sample.sample.split('-')[0] === level.toString();
+    });
+
+    // Map to latest value
+    const infos = eligible.reduce((acc, curr) => {
+      const info = {
+        value: curr.sample.toString(),
+        symbol: {
+          type: 'simple-fill',
+          color: this.getSymbolColorForValue(curr.entries.pop().result)
+        }
+      };
+
+      return [...acc, info];
+    }, []);
+
+    const renderer = {
+      type: 'unique-value',
+      field: 'SampleNumb',
+      defaultSymbol: { type: 'simple-fill' },
+      uniqueValueInfos: infos
+    };
+
+    return renderer;
+  }
+
+  private getSymbolColorForValue(measurement: number) {
+    if (measurement === undefined) {
+      return [20, 158, 206, 0.4];
+    } else if (measurement < 0.45) {
+      return [102, 187, 106, 0.4];
+    } else if (measurement < 0.6) {
+      return [255, 202, 40, 0.4];
+    } else if (measurement < 1) {
+      return [239, 83, 80, 0.4];
+    }
+  }
 }
