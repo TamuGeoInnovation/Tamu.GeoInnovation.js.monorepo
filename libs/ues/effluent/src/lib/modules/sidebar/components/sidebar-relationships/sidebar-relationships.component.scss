@@ -28,6 +28,7 @@
     @include flexbox();
     @include flex-direction(row);
     @include flex-wrap(wrap);
+    @include justify-content(center);
 
     .stat-list-item {
       background: transparent;
@@ -47,5 +48,51 @@
 
   .stat-chart {
     width: 100%;
+  }
+}
+
+.checkbox-accordion {
+  position: relative;
+
+  .checkbox-instructions {
+    text-align: center;
+
+    p {
+      font-weight: 600;
+      text-decoration: underline;
+      color: #500000;
+    }
+
+    & > p.checkbox-true {
+      display: none;
+    }
+  }
+
+  .accordion-content {
+    display: none;
+  }
+
+  input[type='checkbox'] {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    padding: 0.5rem;
+    cursor: pointer;
+
+    &:checked {
+      & ~ .checkbox-instructions {
+        p.checkbox-true {
+          display: block;
+        }
+
+        p.checkbox-false {
+          display: none;
+        }
+      }
+
+      & ~ .accordion-content {
+        @include flexbox();
+      }
+    }
   }
 }

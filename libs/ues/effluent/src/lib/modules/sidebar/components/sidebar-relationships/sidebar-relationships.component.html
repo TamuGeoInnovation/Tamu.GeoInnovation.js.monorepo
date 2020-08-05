@@ -20,7 +20,20 @@
   </ng-template>
 
   <ng-container *ngIf="isHitGraphicZone | async">
-    <div *ngIf="(tierOwnedBy | async) as tob">
+    <div *ngIf="(sampleLocationsInZone | async) as sz">
+      <div class="stat-card">
+        <div class="stat-metric">{{sz.length > 0 ? sz.length : 0}}</div>
+        <div class="stat-title">{{sz.length > 1 ? 'Sample Locations' : 'Sample Location'}}</div>
+
+        <ng-container *ngIf="(sampleLocationsInZone | async)?.length  > 0">
+          <div class="stat-chart" *ngFor="let location of sampleLocationsInZone | async">
+            <tamu-gisc-line-chart [source]="location?.attributes?.chartData" [options]="chartOptions" [title]="'Signal value @ ' + location?.attributes?.Sample"></tamu-gisc-line-chart>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- <div *ngIf="(tierOwnedBy | async) as tob">
       <ng-container *ngIf="tob.length > 0; else noParent">
         <div class="stat-card" *ngFor="let child of tob">
           <div class="stat-metric">{{child?.attributes?.SampleNumb}}</div>
@@ -34,32 +47,26 @@
           <div class="stat-title">Parent Tier</div>
         </div>
       </ng-template>
-    </div>
+    </div> -->
 
     <div *ngIf="(tierOwns | async) as to">
       <ng-container *ngIf="to.length > 0">
         <div class="stat-card">
           <div class="stat-metric">{{to.length > 0 ? to.length : 0}}</div>
-          <div class="stat-title">Sub Samples</div>
+          <div class="stat-title">{{to.length > 1 ? 'Sub Samples' : 'Sub Sample'}}</div>
 
-          <div class="stat-list">
-            <div class="stat-list-item clip" *ngFor="let child of to" (click)="highlightSubSample(child?.attributes?.SampleNumb)">{{child?.attributes?.SampleNumb}}</div>
+          <div class="checkbox-accordion">
+            <input type="checkbox" />
+            <div class="checkbox-instructions">
+              <p class="checkbox-false">Expand Sub Samples</p>
+              <p class="checkbox-true">Collapse Sub Samples</p>
+            </div>
+            <div class="stat-list accordion-content">
+              <div class="stat-list-item clip" *ngFor="let child of to" (click)="highlightSubSample(child?.attributes?.SampleNumb)">{{child?.attributes?.SampleNumb}}</div>
+            </div>
           </div>
         </div>
       </ng-container>
-    </div>
-
-    <div *ngIf="(sampleLocationsInZone | async) as sz">
-      <div class="stat-card">
-        <div class="stat-metric">{{sz.length > 0 ? sz.length : 0}}</div>
-        <div class="stat-title">Sample Locations</div>
-
-        <ng-container *ngIf="(sampleLocationsInZone | async)?.length  > 0">
-          <div class="stat-chart" *ngFor="let location of sampleLocationsInZone | async">
-            <tamu-gisc-line-chart [source]="location?.attributes?.chartData" [options]="chartOptions" [title]="'Signal value @ ' + location?.attributes?.Sample"></tamu-gisc-line-chart>
-          </div>
-        </ng-container>
-      </div>
     </div>
   </ng-container>
 
@@ -68,10 +75,17 @@
     <div *ngIf="(affectedBuildings | async) as buildings">
       <div class="stat-card">
         <div class="stat-metric">{{buildings.length > 0 ? buildings.length : 0}}</div>
-        <div class="stat-title">Covered Buildings</div>
+        <div class="stat-title">{{buildings.length > 1 ? 'Covered Buildings' : 'Covered Building'}}</div>
 
-        <div class="stat-list">
-          <div class="stat-list-item chip" *ngFor="let building of buildings" (click)="highlightBuildings(building?.attributes?.Number)">{{building?.attributes?.Number}} {{building?.attributes?.Abbrev ? '- ' + building?.attributes?.Abbrev : ''}}</div>
+        <div class="checkbox-accordion">
+          <input type="checkbox" />
+          <div class="checkbox-instructions">
+            <p class="checkbox-false">Expand building list</p>
+            <p class="checkbox-true">Collapse building list</p>
+          </div>
+          <div class="stat-list accordion-content">
+            <div class="stat-list-item chip" *ngFor="let building of buildings" (click)="highlightBuildings(building?.attributes?.Number)">{{building?.attributes?.Number}} {{building?.attributes?.Abbrev ? '- ' + building?.attributes?.Abbrev : ''}}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -82,10 +96,17 @@
     <div *ngIf="(sampleBuildings | async) as sb">
       <div class="stat-card">
         <div class="stat-metric">{{sb.length > 0 ? sb.length : 0}}</div>
-        <div class="stat-title">Covered Buildings</div>
+        <div class="stat-title">{{sb.length > 1 ? 'Covered Buildings' : 'Covered Building'}}</div>
 
-        <div class="stat-list">
-          <div class="stat-list-item chip" *ngFor="let building of sb" (click)="highlightBuildings(building?.attributes?.Number)">{{building?.attributes?.Number}} {{building?.attributes?.Abbrev ? '- ' + building?.attributes?.Abbrev : ''}}</div>
+        <div class="checkbox-accordion">
+          <input type="checkbox" />
+          <div class="checkbox-instructions">
+            <p class="checkbox-false">Expand building list</p>
+            <p class="checkbox-true">Collapse building list</p>
+          </div>
+          <div class="stat-list accordion-content">
+            <div class="stat-list-item chip" *ngFor="let building of sb" (click)="highlightBuildings(building?.attributes?.Number)">{{building?.attributes?.Number}} {{building?.attributes?.Abbrev ? '- ' + building?.attributes?.Abbrev : ''}}</div>
+          </div>
         </div>
       </div>
     </div>

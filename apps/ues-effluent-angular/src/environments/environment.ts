@@ -76,8 +76,8 @@ export const LayerSources: LayerSource[] = [
     url: Connections.effluentZonesUrl,
     popupComponent: Popups.BasePopupComponent,
     listMode: 'show',
-    loadOnInit: false,
-    visible: true,
+    loadOnInit: true,
+    visible: false,
     layerIndex: 3,
     native: {
       ...commonLayerProps,
@@ -99,8 +99,8 @@ export const LayerSources: LayerSource[] = [
     url: Connections.effluentZonesUrl,
     popupComponent: Popups.BasePopupComponent,
     listMode: 'show',
-    loadOnInit: false,
-    visible: true,
+    loadOnInit: true,
+    visible: false,
     layerIndex: 4,
     native: {
       ...commonLayerProps,
@@ -145,8 +145,8 @@ export const LayerSources: LayerSource[] = [
     url: Connections.effluentZonesUrl,
     popupComponent: Popups.BasePopupComponent,
     listMode: 'show',
-    loadOnInit: false,
-    visible: true,
+    loadOnInit: true,
+    visible: false,
     layerIndex: 6,
     native: {
       ...commonLayerProps,

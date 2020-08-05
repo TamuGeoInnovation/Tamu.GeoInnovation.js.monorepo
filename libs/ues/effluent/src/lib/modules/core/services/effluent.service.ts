@@ -261,6 +261,10 @@ export class EffluentService {
   }
 
   public async getBuildings(building: string | string[]): Promise<Array<esri.Graphic>> {
+    if (building === undefined || (building instanceof Array && building.length === 0)) {
+      return [];
+    }
+
     const layer = this.mapService.findLayerById(`buildings-layer`) as esri.FeatureLayer;
 
     const padStart = (number: string) => (number.length < 4 ? `'${number.padStart(4, '0')}'` : `'${number}'`);
