@@ -76,7 +76,7 @@ export const LayerSources: LayerSource[] = [
     url: Connections.effluentZonesUrl,
     popupComponent: Popups.BasePopupComponent,
     listMode: 'show',
-    loadOnInit: true,
+    loadOnInit: false,
     visible: true,
     layerIndex: 3,
     native: {
@@ -86,7 +86,7 @@ export const LayerSources: LayerSource[] = [
         type: 'simple',
         symbol: {
           type: 'simple-fill',
-          color: [158, 85, 156, 0.5],
+          color: [158, 85, 156, 0.4],
           style: 'solid'
         }
       }
@@ -99,7 +99,7 @@ export const LayerSources: LayerSource[] = [
     url: Connections.effluentZonesUrl,
     popupComponent: Popups.BasePopupComponent,
     listMode: 'show',
-    loadOnInit: true,
+    loadOnInit: false,
     visible: true,
     layerIndex: 4,
     native: {
@@ -109,7 +109,7 @@ export const LayerSources: LayerSource[] = [
         type: 'simple',
         symbol: {
           type: 'simple-fill',
-          color: [167, 198, 54, 0.5],
+          color: [167, 198, 54, 0.4],
           style: 'solid'
         }
       }
@@ -132,7 +132,7 @@ export const LayerSources: LayerSource[] = [
         type: 'simple',
         symbol: {
           type: 'simple-fill',
-          color: [20, 158, 206, 0.5],
+          color: [20, 158, 206, 0.4],
           style: 'solid'
         }
       }
@@ -145,7 +145,7 @@ export const LayerSources: LayerSource[] = [
     url: Connections.effluentZonesUrl,
     popupComponent: Popups.BasePopupComponent,
     listMode: 'show',
-    loadOnInit: true,
+    loadOnInit: false,
     visible: true,
     layerIndex: 6,
     native: {
@@ -172,7 +172,8 @@ export const LayerSources: LayerSource[] = [
     visible: true,
     layerIndex: 7,
     native: {
-      ...commonLayerProps
+      ...commonLayerProps,
+      definitionExpression: "Tier = '3'"
     }
   },
   {

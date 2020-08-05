@@ -56,13 +56,14 @@
 
         <ng-container *ngIf="(sampleLocationsInZone | async)?.length  > 0">
           <div class="stat-chart" *ngFor="let location of sampleLocationsInZone | async">
-            <tamu-gisc-line-chart [source]="location?.attributes?.chartData" [options]="chartOptions" [title]="'Signal concentration @ ' + location?.attributes?.Sample"></tamu-gisc-line-chart>
+            <tamu-gisc-line-chart [source]="location?.attributes?.chartData" [options]="chartOptions" [title]="'Signal value @ ' + location?.attributes?.Sample"></tamu-gisc-line-chart>
           </div>
         </ng-container>
       </div>
     </div>
   </ng-container>
 
+  <!-- Show only when the selected feature is a graphic zone (not a sampling location) -->
   <ng-container *ngIf="isHitGraphicZone | async">
     <div *ngIf="(affectedBuildings | async) as buildings">
       <div class="stat-card">
@@ -70,12 +71,13 @@
         <div class="stat-title">Covered Buildings</div>
 
         <div class="stat-list">
-          <div class="stat-list-item chip" *ngFor="let building of buildings" (click)="highlightBuildings(building.number)">{{building.number}}</div>
+          <div class="stat-list-item chip" *ngFor="let building of buildings" (click)="highlightBuildings(building?.attributes?.Number)">{{building?.attributes?.Number}} {{building?.attributes?.Abbrev ? '- ' + building?.attributes?.Abbrev : ''}}</div>
         </div>
       </div>
     </div>
   </ng-container>
 
+  <!-- Show only when the selected feature is a sampling location. The affectedBuildings stream will be empty for this condition, so sampleBuildings is used instead as it performs additional lookups -->
   <ng-container *ngIf="(isHitGraphicZone | async) === false">
     <div *ngIf="(sampleBuildings | async) as sb">
       <div class="stat-card">
@@ -83,7 +85,7 @@
         <div class="stat-title">Covered Buildings</div>
 
         <div class="stat-list">
-          <div class="stat-list-item chip" *ngFor="let building of sb" (click)="highlightBuildings(building?.attributes?.Number)">{{building?.attributes?.Number}}</div>
+          <div class="stat-list-item chip" *ngFor="let building of sb" (click)="highlightBuildings(building?.attributes?.Number)">{{building?.attributes?.Number}} {{building?.attributes?.Abbrev ? '- ' + building?.attributes?.Abbrev : ''}}</div>
         </div>
       </div>
     </div>

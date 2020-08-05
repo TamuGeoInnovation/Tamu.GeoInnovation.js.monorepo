@@ -3286,7 +3286,8 @@
               }
             ],
             "styles": ["apps/ues-angular/src/styles.scss"],
-            "scripts": []
+            "scripts": [],
+            "crossOrigin": "anonymous"
           },
           "configurations": {
             "production": {
