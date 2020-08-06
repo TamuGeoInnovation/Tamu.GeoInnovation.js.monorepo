@@ -164,24 +164,21 @@ describe('Phone-Numbers Integration Tests', () => {
     infos: [countyClaimInfoTest]
   };
 
-  describe('Validation', () => {
+  describe('Validation', async () => {
     it('getPhoneNumbersForCounty', async () => {
       await fieldCategoryRepo.save(fieldCategoryW);
       await fieldCategoryRepo.save(fieldCategoryPN);
       await fieldTypeRepo.save(fieldTypePN);
-
       const category = await fieldCategoryRepo.findOne({
         where: {
           id: CATEGORY.PHONE_NUMBERS
         }
       });
-
       const type = await fieldTypeRepo.findOne({
         where: {
           name: 'Foooo'
         }
       });
-
       const Cv = categoryValueRepo.create({
         value: 'Foo',
         type: type,
@@ -195,7 +192,6 @@ describe('Phone-Numbers Integration Tests', () => {
       await usersRepo.save(userTest);
       await statesRepo.save(stateTest);
       await countiesRepo.save(countyTest);
-
       await countyClaimInfoRepo.save(countyClaimInfoTest);
       await countyClaimsRepo.save(countyClaimTest);
 
@@ -208,19 +204,16 @@ describe('Phone-Numbers Integration Tests', () => {
       await fieldCategoryRepo.save(fieldCategoryW);
       await fieldCategoryRepo.save(fieldCategoryPN);
       await fieldTypeRepo.save(fieldTypePN);
-
       const category = await fieldCategoryRepo.findOne({
         where: {
           id: CATEGORY.PHONE_NUMBERS
         }
       });
-
       const type = await fieldTypeRepo.findOne({
         where: {
           name: 'Foooo'
         }
       });
-
       const Cv = categoryValueRepo.create({
         value: 'Foo',
         type: type,
@@ -234,7 +227,6 @@ describe('Phone-Numbers Integration Tests', () => {
       await usersRepo.save(userTest);
       await statesRepo.save(stateTest);
       await countiesRepo.save(countyTest);
-
       await countyClaimInfoRepo.save(countyClaimInfoTest);
       await countyClaimsRepo.save(countyClaimTest);
 

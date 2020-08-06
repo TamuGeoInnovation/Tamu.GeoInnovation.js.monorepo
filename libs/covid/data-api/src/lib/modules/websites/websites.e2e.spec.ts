@@ -2,12 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { Repository, getConnection, DeepPartial } from 'typeorm';
 import {
-  County,
   CountyClaim,
+  County,
+  EntityStatus,
+  EntityToValue,
   CountyClaimInfo,
   CategoryValue,
-  EntityToValue,
-  EntityStatus,
   State,
   User,
   FieldCategory,
@@ -80,10 +80,8 @@ describe('Websites Integration Tests', () => {
   afterEach(async () => {
     await entityToValueRepo.query(`DELETE FROM entity_to_values`);
     await countyClaimInfoRepo.query(`DELETE FROM county_claim_infos`);
-
     await entityValueRepo.query(`DELETE FROM entity_values`);
     await categoryValueRepo.query(`DELETE FROM category_values`);
-
     await countyClaimsRepo.query(`DELETE FROM county_claims`);
     await countiesRepo.query(`DELETE FROM counties`);
     await statesRepo.query(`DELETE FROM states`);
@@ -159,19 +157,16 @@ describe('Websites Integration Tests', () => {
       await fieldCategoryRepo.save(fieldCategoryW);
       await fieldCategoryRepo.save(fieldCategoryPN);
       await fieldTypeRepo.save(fieldTypePN);
-
       const category = await fieldCategoryRepo.findOne({
         where: {
           id: CATEGORY.WEBSITES
         }
       });
-
       const type = await fieldTypeRepo.findOne({
         where: {
           name: 'Foooo'
         }
       });
-
       const Cv = categoryValueRepo.create({
         value: 'Foo',
         type: type,
@@ -185,12 +180,10 @@ describe('Websites Integration Tests', () => {
       await usersRepo.save(userTest);
       await statesRepo.save(stateTest);
       await countiesRepo.save(countyTest);
-
       await countyClaimInfoRepo.save(countyClaimInfoTest);
       await countyClaimsRepo.save(countyClaimTest);
 
       const expected = await service.getWebsitesForCounty(countyTest.countyFips.toString());
-
       expect(expected[0]).toEqual(eV);
     });
 
@@ -198,19 +191,16 @@ describe('Websites Integration Tests', () => {
       await fieldCategoryRepo.save(fieldCategoryW);
       await fieldCategoryRepo.save(fieldCategoryPN);
       await fieldTypeRepo.save(fieldTypePN);
-
       const category = await fieldCategoryRepo.findOne({
         where: {
           id: CATEGORY.WEBSITES
         }
       });
-
       const type = await fieldTypeRepo.findOne({
         where: {
           name: 'Foooo'
         }
       });
-
       const Cv = categoryValueRepo.create({
         value: 'Foo',
         type: type,
@@ -224,20 +214,11 @@ describe('Websites Integration Tests', () => {
       await usersRepo.save(userTest);
       await statesRepo.save(stateTest);
       await countiesRepo.save(countyTest);
-
       await countyClaimInfoRepo.save(countyClaimInfoTest);
       await countyClaimsRepo.save(countyClaimTest);
 
       const expected = await service.getWebsitesForClaimInfo(countyClaimTest.infos[0].guid);
-
       expect(expected[0]).toEqual(eV);
     });
   });
-
-  /*describe('getWebsites ', () => {
-    it('getWebsites', () => {
-      countyClaimInfoRepo.create().save();
-      expect(service).toBeDefined();
-    });
-  });*/
 });

@@ -1,37 +1,35 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { Repository, getConnection, DeepPartial } from 'typeorm';
-
-import { config } from '@tamu-gisc/covid/data-api';
-import { CountyClaimsService } from './county-claims.service';
 import {
   CountyClaim,
   County,
   EntityStatus,
   EntityToValue,
   CountyClaimInfo,
-  User,
-  TestingSite,
-  StatusType,
-  State,
-  EntityValue,
   CategoryValue,
+  State,
+  User,
   FieldCategory,
-  FieldType
+  FieldType,
+  EntityValue,
+  TestingSite,
+  StatusType
 } from '@tamu-gisc/covid/common/entities';
+import { config } from '@tamu-gisc/covid/data-api';
+import { CountyClaimsService } from './county-claims.service';
 import { CountyClaimsModule } from './county-claims.module';
-import { UsersService } from '../users/users.service';
-import { UsersModule } from '../users/users.module';
-import { StatusTypesService } from '../status-types/status-types.service';
-import { StatusTypesModule } from '../status-types/status-types.module';
+import { CATEGORY } from '@tamu-gisc/covid/common/enums';
 
 describe('County Claims Integration Tests', () => {
   let countyClaimsService: CountyClaimsService;
-  let usersService: UsersService;
-  let statusTypesService: StatusTypesService;
 
   let countyClaimsRepo: Repository<CountyClaim>;
   let usersRepo: Repository<User>;
+  let fieldCategoryRepo: Repository<FieldCategory>;
+  let fieldTypeRepo: Repository<FieldType>;
+  let categoryValueRepo: Repository<CategoryValue>;
+  let entityValueRepo: Repository<EntityValue>;
   let countiesRepo: Repository<County>;
   let statesRepo: Repository<State>;
   let countyClaimInfoRepo: Repository<CountyClaimInfo>;
@@ -43,8 +41,6 @@ describe('County Claims Integration Tests', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         CountyClaimsModule,
-        UsersModule,
-        StatusTypesModule,
         TypeOrmModule.forFeature([
           CountyClaim,
           User,
@@ -53,19 +49,25 @@ describe('County Claims Integration Tests', () => {
           EntityToValue,
           EntityStatus,
           TestingSite,
-          StatusType,
-          State
+          State,
+          FieldCategory,
+          CategoryValue,
+          EntityValue,
+          FieldType,
+          StatusType
         ]),
         TypeOrmModule.forRoot(config)
       ],
-      providers: [CountyClaimsService, UsersService, StatusTypesService]
+      providers: [CountyClaimsService]
     }).compile();
 
     countyClaimsService = module.get<CountyClaimsService>(CountyClaimsService);
-    usersService = module.get<UsersService>(UsersService);
-    statusTypesService = module.get<StatusTypesService>(StatusTypesService);
 
     statesRepo = module.get<Repository<State>>(getRepositoryToken(State));
+    fieldCategoryRepo = module.get<Repository<FieldCategory>>(getRepositoryToken(FieldCategory));
+    fieldTypeRepo = module.get<Repository<FieldType>>(getRepositoryToken(FieldType));
+    categoryValueRepo = module.get<Repository<CategoryValue>>(getRepositoryToken(CategoryValue));
+    entityValueRepo = module.get<Repository<EntityValue>>(getRepositoryToken(EntityValue));
     countyClaimsRepo = module.get<Repository<CountyClaim>>(getRepositoryToken(CountyClaim));
     usersRepo = module.get<Repository<User>>(getRepositoryToken(User));
     entityStatusRepo = module.get<Repository<EntityStatus>>(getRepositoryToken(EntityStatus));
@@ -80,12 +82,15 @@ describe('County Claims Integration Tests', () => {
    */
 
   afterEach(async () => {
+    await entityToValueRepo.query(`DELETE FROM entity_to_values`);
     await entityStatusRepo.query(`DELETE FROM entity_statuses`);
     await countyClaimInfoRepo.query(`DELETE FROM county_claim_infos`);
+    await entityValueRepo.query(`DELETE FROM entity_values`);
+    await categoryValueRepo.query(`DELETE FROM category_values`);
     await countyClaimsRepo.query(`DELETE FROM county_claims`);
-    await usersRepo.query(`DELETE FROM users`);
     await countiesRepo.query(`DELETE FROM counties`);
     await statesRepo.query(`DELETE FROM states`);
+    await usersRepo.query(`DELETE FROM users`);
   });
 
   /**
@@ -94,7 +99,21 @@ describe('County Claims Integration Tests', () => {
 
   afterAll(async () => {
     const connection = getConnection();
-
+    await connection
+      .createQueryBuilder()
+      .delete()
+      .from(EntityToValue)
+      .execute();
+    await connection
+      .createQueryBuilder()
+      .delete()
+      .from(EntityValue)
+      .execute();
+    await connection
+      .createQueryBuilder()
+      .delete()
+      .from(CategoryValue)
+      .execute();
     await connection
       .createQueryBuilder()
       .delete()
@@ -113,11 +132,6 @@ describe('County Claims Integration Tests', () => {
     await connection
       .createQueryBuilder()
       .delete()
-      .from(User)
-      .execute();
-    await connection
-      .createQueryBuilder()
-      .delete()
       .from(County)
       .execute();
     await connection
@@ -125,202 +139,484 @@ describe('County Claims Integration Tests', () => {
       .delete()
       .from(State)
       .execute();
-
+    await connection
+      .createQueryBuilder()
+      .delete()
+      .from(User)
+      .execute();
     await connection.close();
   });
 
+  const fieldCategoryW: DeepPartial<FieldCategory> = { name: 'Website', id: 1 };
+  const fieldCategoryPN: DeepPartial<FieldCategory> = { name: 'PhoneNumber', id: 2 };
+  const fieldTypeW: DeepPartial<FieldType> = { name: 'FooYeet', guid: 'Yeet' };
+  const fieldTypePN: DeepPartial<FieldType> = { name: 'FooRee', guid: 'Reee' };
+  const statusTypeP: DeepPartial<StatusType> = { name: 'Processing', id: 1 };
+  const statusTypeC: DeepPartial<StatusType> = { name: 'Closed', id: 2 };
+  const statusTypeF: DeepPartial<StatusType> = { name: 'Flagged', id: 3 };
+  const statusTypeCan: DeepPartial<StatusType> = { name: 'Cancelled', id: 4 };
+  const statusTypeV: DeepPartial<StatusType> = { name: 'Validated', id: 5 };
+  const statusTypeCSL: DeepPartial<StatusType> = { name: 'ClaimSiteLess', id: 6 };
   const userTest: DeepPartial<User> = { email: 'Foo', guid: 'Bar' };
-
-  const stateTest: DeepPartial<State> = {
-    name: 'Foo',
-    abbreviation: 'F',
-    stateFips: 1
-  };
-
-  const stateTestTwo: DeepPartial<State> = {
-    name: 'Bar',
-    abbreviation: 'B',
-    stateFips: 2
-  };
-
-  const countiesTest: DeepPartial<County> = {
-    countyFips: 1,
-    name: 'Foo',
-    stateFips: stateTest
-  };
-
-  const countiesTestTwo: DeepPartial<County> = {
-    countyFips: 2,
-    name: 'Bar',
-    stateFips: stateTestTwo
-  };
-
-  const countiesTestThree: DeepPartial<County> = {
-    countyFips: 3,
-    name: 'Bar',
-    stateFips: stateTest
-  };
-
-  const statusTypeTest: DeepPartial<StatusType> = {
-    name: 'Foo'
-  };
-
-  const statusTypeTestTwo: DeepPartial<StatusType> = {
-    name: 'Bar'
-  };
-
-  const entityStatusTest: DeepPartial<EntityStatus> = {
-    guid: 'Foo'
-  };
-
-  const entityStatusTestTwo: DeepPartial<EntityStatus> = {
-    guid: 'Bar'
-  };
-
-  const countyClaimsTest: DeepPartial<CountyClaim> = {
+  const stateTest: DeepPartial<State> = { name: 'Foo', abbreviation: 'F', stateFips: 1 };
+  const countyTest: DeepPartial<County> = { countyFips: 1, name: 'Foo', stateFips: stateTest };
+  const countyTestTwo: DeepPartial<County> = { countyFips: 2, name: 'Bar', stateFips: stateTest };
+  const countyClaimTest: DeepPartial<CountyClaim> = {
     user: userTest,
-    county: countiesTest,
-    statuses: [entityStatusTest]
+    county: countyTest
   };
-
-  const countyClaimsTestTwo: DeepPartial<CountyClaim> = {
-    user: userTest,
-    county: countiesTestTwo,
-    statuses: [entityStatusTestTwo]
-  };
-
-  /*const fieldCategoryTest: DeepPartial<FieldCategory> = {id: 1, };
-
-  const fieldTypeTest: DeepPartial<FieldType> = {name: 'Foo'};
-
-  const categoryValueTest: DeepPartial<CategoryValue> = {
-    value: 'Foo',
-    category: fieldCategoryTest,
-    type: fieldTypeTest
-  };
-
-  const entityValueTest: DeepPartial<EntityValue> = {
-    value: categoryValueTest
-  };*/
 
   describe('', () => {
     it('getActiveClaimsForEmail', async () => {
+      await fieldCategoryRepo.save(fieldCategoryW);
+      await fieldCategoryRepo.save(fieldCategoryPN);
+      await fieldTypeRepo.save(fieldTypeW);
+      await fieldTypeRepo.save(fieldTypePN);
+      const categoryW = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.WEBSITES
+        }
+      });
+      const categoryPN = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.PHONE_NUMBERS
+        }
+      });
+      const typeW = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Web'
+        }
+      });
+      const typePn = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Phone'
+        }
+      });
+      const CvW = categoryValueRepo.create({
+        value: 'WebS',
+        type: typeW,
+        category: categoryW
+      });
+      const CvPn = categoryValueRepo.create({
+        value: 'PhoneN',
+        type: typePn,
+        category: categoryPN
+      });
+      await CvW.save();
+      await CvPn.save();
+      const eVW = entityValueRepo.create({ value: CvW, guid: 'FoooWebsites' });
+      await eVW.save();
+      const eVPn = entityValueRepo.create({ value: CvPn, guid: 'FoooPhone' });
+      await eVPn.save();
+      await statusTypeRepo.save(statusTypeP);
+      await statusTypeRepo.save(statusTypeC);
+      await statusTypeRepo.save(statusTypeF);
+      await statusTypeRepo.save(statusTypeCan);
+      await statusTypeRepo.save(statusTypeV);
+      await statusTypeRepo.save(statusTypeCSL);
       await usersRepo.save(userTest);
-      //await statusTypeRepo.save(statusTypeTest);
-      await entityStatusRepo.save(entityStatusTest);
       await statesRepo.save(stateTest);
-      await countiesRepo.save(countiesTest);
-      await countyClaimsService.createOne(countiesTest);
-      await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
+      await countiesRepo.save(countyTest);
+      await countyClaimsService.createOrUpdateClaim(countyClaimTest, [eVPn], [eVW]);
       const setClaim = await countyClaimsService.getActiveClaimsForEmail(userTest.email);
-      expect(setClaim[0].county.name).toEqual(countiesTest.name);
+      expect(setClaim[0].county.name).toEqual(countyTest.name);
       await countyClaimsService.closeClaim(setClaim[0].guid);
       expect(await countyClaimsService.getActiveClaimsForEmail(userTest.email)).toEqual([]);
     });
 
     it('getAllUserCountyClaims', async () => {
+      await fieldCategoryRepo.save(fieldCategoryW);
+      await fieldCategoryRepo.save(fieldCategoryPN);
+      await fieldTypeRepo.save(fieldTypeW);
+      await fieldTypeRepo.save(fieldTypePN);
+      const categoryW = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.WEBSITES
+        }
+      });
+      const categoryPN = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.PHONE_NUMBERS
+        }
+      });
+      const typeW = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Web'
+        }
+      });
+      const typePn = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Phone'
+        }
+      });
+      const CvW = categoryValueRepo.create({
+        value: 'WebS',
+        type: typeW,
+        category: categoryW
+      });
+      const CvPn = categoryValueRepo.create({
+        value: 'PhoneN',
+        type: typePn,
+        category: categoryPN
+      });
+      await CvW.save();
+      await CvPn.save();
+      const eVW = entityValueRepo.create({ value: CvW, guid: 'FoooWebsites' });
+      await eVW.save();
+      const eVPn = entityValueRepo.create({ value: CvPn, guid: 'FoooPhone' });
+      await eVPn.save();
+      await statusTypeRepo.save(statusTypeP);
+      await statusTypeRepo.save(statusTypeC);
+      await statusTypeRepo.save(statusTypeF);
+      await statusTypeRepo.save(statusTypeCan);
+      await statusTypeRepo.save(statusTypeV);
+      await statusTypeRepo.save(statusTypeCSL);
       await usersRepo.save(userTest);
-      await statusTypeRepo.save(statusTypeTest);
-      await entityStatusRepo.save(entityStatusTest);
       await statesRepo.save(stateTest);
-      await countiesRepo.save(countiesTest);
-      await countyClaimsService.createOne(countiesTest);
-
-      await statusTypeRepo.save(statusTypeTestTwo);
-      await entityStatusRepo.save(entityStatusTestTwo);
-      await statesRepo.save(stateTestTwo);
-      await countiesRepo.save(countiesTestTwo);
-      await countyClaimsService.createOne(countiesTestTwo);
-
-      await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
-      await countyClaimsService.createOrUpdateClaim(countyClaimsTestTwo, [], []);
+      await countiesRepo.save(countyTest);
+      await countyClaimsService.createOrUpdateClaim(countyClaimTest, [eVPn], [eVW]);
       const numberOfState = await countyClaimsService.getAllUserCountyClaims(userTest.email);
-      expect(numberOfState.length).toEqual(2);
+      expect(numberOfState.length).toEqual(1);
     });
 
     it('getActiveClaimsForCountyFips', async () => {
+      await fieldCategoryRepo.save(fieldCategoryW);
+      await fieldCategoryRepo.save(fieldCategoryPN);
+      await fieldTypeRepo.save(fieldTypeW);
+      await fieldTypeRepo.save(fieldTypePN);
+      const categoryW = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.WEBSITES
+        }
+      });
+      const categoryPN = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.PHONE_NUMBERS
+        }
+      });
+      const typeW = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Web'
+        }
+      });
+      const typePn = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Phone'
+        }
+      });
+      const CvW = categoryValueRepo.create({
+        value: 'WebS',
+        type: typeW,
+        category: categoryW
+      });
+      const CvPn = categoryValueRepo.create({
+        value: 'PhoneN',
+        type: typePn,
+        category: categoryPN
+      });
+      await CvW.save();
+      await CvPn.save();
+      const eVW = entityValueRepo.create({ value: CvW, guid: 'FoooWebsites' });
+      await eVW.save();
+      const eVPn = entityValueRepo.create({ value: CvPn, guid: 'FoooPhone' });
+      await eVPn.save();
+      await statusTypeRepo.save(statusTypeP);
+      await statusTypeRepo.save(statusTypeC);
+      await statusTypeRepo.save(statusTypeF);
+      await statusTypeRepo.save(statusTypeCan);
+      await statusTypeRepo.save(statusTypeV);
+      await statusTypeRepo.save(statusTypeCSL);
       await usersRepo.save(userTest);
-      await statusTypeRepo.save(statusTypeTest);
-      await entityStatusRepo.save(entityStatusTest);
       await statesRepo.save(stateTest);
-      await countiesRepo.save(countiesTest);
-      await countyClaimsService.createOne(countiesTest);
-      await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
-      const setClaim = await countyClaimsService.getActiveClaimsForCountyFips(countiesTest.countyFips);
-      expect(setClaim[0].county.name).toEqual(countiesTest.name);
+      await countiesRepo.save(countyTest);
+      await countyClaimsService.createOrUpdateClaim(countyClaimTest, [eVPn], [eVW]);
+      const setClaim = await countyClaimsService.getActiveClaimsForCountyFips(countyTest.countyFips);
+      expect(setClaim[0].county.name).toEqual(countyTest.name);
       await countyClaimsService.closeClaim(setClaim[0].guid);
-      expect(await countyClaimsService.getActiveClaimsForCountyFips(countiesTest.countyFips)).toEqual([]);
+      expect(await countyClaimsService.getActiveClaimsForCountyFips(countyTest.countyFips)).toEqual([]);
     });
 
     it('closeClaim', async () => {
+      await fieldCategoryRepo.save(fieldCategoryW);
+      await fieldCategoryRepo.save(fieldCategoryPN);
+      await fieldTypeRepo.save(fieldTypeW);
+      await fieldTypeRepo.save(fieldTypePN);
+      const categoryW = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.WEBSITES
+        }
+      });
+      const categoryPN = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.PHONE_NUMBERS
+        }
+      });
+      const typeW = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Web'
+        }
+      });
+      const typePn = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Phone'
+        }
+      });
+      const CvW = categoryValueRepo.create({
+        value: 'WebS',
+        type: typeW,
+        category: categoryW
+      });
+      const CvPn = categoryValueRepo.create({
+        value: 'PhoneN',
+        type: typePn,
+        category: categoryPN
+      });
+      await CvW.save();
+      await CvPn.save();
+      const eVW = entityValueRepo.create({ value: CvW, guid: 'FoooWebsites' });
+      await eVW.save();
+      const eVPn = entityValueRepo.create({ value: CvPn, guid: 'FoooPhone' });
+      await eVPn.save();
+      await statusTypeRepo.save(statusTypeP);
+      await statusTypeRepo.save(statusTypeC);
+      await statusTypeRepo.save(statusTypeF);
+      await statusTypeRepo.save(statusTypeCan);
+      await statusTypeRepo.save(statusTypeV);
+      await statusTypeRepo.save(statusTypeCSL);
       await usersRepo.save(userTest);
-      await statusTypeRepo.save(statusTypeTest);
-      await entityStatusRepo.save(entityStatusTest);
       await statesRepo.save(stateTest);
-      await countiesRepo.save(countiesTest);
-      await countyClaimsService.createOne(countiesTest);
-      await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
-      const setClaim = await countyClaimsService.getActiveClaimsForCountyFips(countiesTest.countyFips);
+      await countiesRepo.save(countyTest);
+      await countyClaimsService.createOrUpdateClaim(countyClaimTest, [eVPn], [eVW]);
+      const setClaim = await countyClaimsService.getActiveClaimsForCountyFips(countyTest.countyFips);
       await countyClaimsService.closeClaim(setClaim[0].guid);
-      expect(await countyClaimsService.getActiveClaimsForCountyFips(countiesTest.countyFips)).toEqual([]);
+      expect(await countyClaimsService.getActiveClaimsForCountyFips(countyTest.countyFips)).toEqual([]);
     });
 
     it('getHistoricClaimsForCounty', async () => {
+      await fieldCategoryRepo.save(fieldCategoryW);
+      await fieldCategoryRepo.save(fieldCategoryPN);
+      await fieldTypeRepo.save(fieldTypeW);
+      await fieldTypeRepo.save(fieldTypePN);
+      const categoryW = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.WEBSITES
+        }
+      });
+      const categoryPN = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.PHONE_NUMBERS
+        }
+      });
+      const typeW = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Web'
+        }
+      });
+      const typePn = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Phone'
+        }
+      });
+      const CvW = categoryValueRepo.create({
+        value: 'WebS',
+        type: typeW,
+        category: categoryW
+      });
+      const CvPn = categoryValueRepo.create({
+        value: 'PhoneN',
+        type: typePn,
+        category: categoryPN
+      });
+      await CvW.save();
+      await CvPn.save();
+      const eVW = entityValueRepo.create({ value: CvW, guid: 'FoooWebsites' });
+      await eVW.save();
+      const eVPn = entityValueRepo.create({ value: CvPn, guid: 'FoooPhone' });
+      await eVPn.save();
+      await statusTypeRepo.save(statusTypeP);
+      await statusTypeRepo.save(statusTypeC);
+      await statusTypeRepo.save(statusTypeF);
+      await statusTypeRepo.save(statusTypeCan);
+      await statusTypeRepo.save(statusTypeV);
+      await statusTypeRepo.save(statusTypeCSL);
       await usersRepo.save(userTest);
-      await statusTypeRepo.save(statusTypeTest);
-      await entityStatusRepo.save(entityStatusTest);
       await statesRepo.save(stateTest);
-      await countiesRepo.save(countiesTest);
-      await countyClaimsService.createOne(countiesTest);
-      await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
+      await countiesRepo.save(countyTest);
+      await countyClaimsService.createOrUpdateClaim(countyClaimTest, [eVPn], [eVW]);
       const setClaim = await countyClaimsService.getActiveClaimsForEmail(userTest.email);
       await countyClaimsService.closeClaim(setClaim[0].guid);
-      const historicClaim = await countyClaimsService.getHistoricClaimsForCounty(countiesTest.countyFips);
+      const historicClaim = await countyClaimsService.getHistoricClaimsForCounty(countyTest.countyFips);
       expect(historicClaim[0].guid).toEqual(setClaim[0].guid);
     });
 
     it('getSuggestedClaims', async () => {
+      await fieldCategoryRepo.save(fieldCategoryW);
+      await fieldCategoryRepo.save(fieldCategoryPN);
+      await fieldTypeRepo.save(fieldTypeW);
+      await fieldTypeRepo.save(fieldTypePN);
+      const categoryW = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.WEBSITES
+        }
+      });
+      const categoryPN = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.PHONE_NUMBERS
+        }
+      });
+      const typeW = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Web'
+        }
+      });
+      const typePn = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Phone'
+        }
+      });
+      const CvW = categoryValueRepo.create({
+        value: 'WebS',
+        type: typeW,
+        category: categoryW
+      });
+      const CvPn = categoryValueRepo.create({
+        value: 'PhoneN',
+        type: typePn,
+        category: categoryPN
+      });
+      await CvW.save();
+      await CvPn.save();
+      const eVW = entityValueRepo.create({ value: CvW, guid: 'FoooWebsites' });
+      await eVW.save();
+      const eVPn = entityValueRepo.create({ value: CvPn, guid: 'FoooPhone' });
+      await eVPn.save();
+      await statusTypeRepo.save(statusTypeP);
+      await statusTypeRepo.save(statusTypeC);
+      await statusTypeRepo.save(statusTypeF);
+      await statusTypeRepo.save(statusTypeCan);
+      await statusTypeRepo.save(statusTypeV);
+      await statusTypeRepo.save(statusTypeCSL);
       await usersRepo.save(userTest);
-      await statusTypeRepo.save(statusTypeTest);
-      await entityStatusRepo.save(entityStatusTest);
       await statesRepo.save(stateTest);
-      await countiesRepo.save(countiesTest);
-      await countiesRepo.save(countiesTestThree);
+      await countiesRepo.save(countyTest);
+      await countiesRepo.save(countyTestTwo);
+      await countyClaimsService.createOrUpdateClaim(countyClaimTest, [eVPn], [eVW]);
 
-      await countyClaimsService.createOne(countiesTest);
-      await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
-
-      const suggestedClaim = await countyClaimsService.getSuggestedClaims(countiesTest.countyFips);
-      expect(suggestedClaim[0].countyFips).toEqual(countiesTestThree.countyFips);
+      const suggestedClaim = await countyClaimsService.getSuggestedClaims(countyTest.countyFips);
+      expect(suggestedClaim[0].countyFips).toEqual(countyTestTwo.countyFips);
     });
 
     it('getClaimsAdmin', async () => {
+      await fieldCategoryRepo.save(fieldCategoryW);
+      await fieldCategoryRepo.save(fieldCategoryPN);
+      await fieldTypeRepo.save(fieldTypeW);
+      await fieldTypeRepo.save(fieldTypePN);
+      const categoryW = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.WEBSITES
+        }
+      });
+      const categoryPN = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.PHONE_NUMBERS
+        }
+      });
+      const typeW = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Web'
+        }
+      });
+      const typePn = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Phone'
+        }
+      });
+      const CvW = categoryValueRepo.create({
+        value: 'WebS',
+        type: typeW,
+        category: categoryW
+      });
+      const CvPn = categoryValueRepo.create({
+        value: 'PhoneN',
+        type: typePn,
+        category: categoryPN
+      });
+      await CvW.save();
+      await CvPn.save();
+      const eVW = entityValueRepo.create({ value: CvW, guid: 'FoooWebsites' });
+      await eVW.save();
+      const eVPn = entityValueRepo.create({ value: CvPn, guid: 'FoooPhone' });
+      await eVPn.save();
+      await statusTypeRepo.save(statusTypeP);
+      await statusTypeRepo.save(statusTypeC);
+      await statusTypeRepo.save(statusTypeF);
+      await statusTypeRepo.save(statusTypeCan);
+      await statusTypeRepo.save(statusTypeV);
+      await statusTypeRepo.save(statusTypeCSL);
       await usersRepo.save(userTest);
-      await statusTypeRepo.save(statusTypeTest);
-      await entityStatusRepo.save(entityStatusTest);
       await statesRepo.save(stateTest);
-      await countiesRepo.save(countiesTest);
-      await countyClaimsService.createOne(countiesTest);
-
-      await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
+      await countiesRepo.save(countyTest);
+      await countyClaimsService.createOrUpdateClaim(countyClaimTest, [eVPn], [eVW]);
 
       const suggestedClaim = await countyClaimsService.getClaimsAdmin({
-        stateFips: countyClaimsTest.county.stateFips.stateFips,
-        countyFips: countyClaimsTest.county.countyFips,
-        email: countyClaimsTest.user.email
+        stateFips: countyClaimTest.county.stateFips.stateFips,
+        countyFips: countyClaimTest.county.countyFips,
+        email: countyClaimTest.user.email
       });
-      expect(suggestedClaim[0].user.email).toEqual(countyClaimsTest.user.email);
+      expect(suggestedClaim[0].user.email).toEqual(countyClaimTest.user.email);
     });
 
     it('getInfosForClaim', async () => {
+      await fieldCategoryRepo.save(fieldCategoryW);
+      await fieldCategoryRepo.save(fieldCategoryPN);
+      await fieldTypeRepo.save(fieldTypeW);
+      await fieldTypeRepo.save(fieldTypePN);
+      const categoryW = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.WEBSITES
+        }
+      });
+      const categoryPN = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.PHONE_NUMBERS
+        }
+      });
+      const typeW = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Web'
+        }
+      });
+      const typePn = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Phone'
+        }
+      });
+      const CvW = categoryValueRepo.create({
+        value: 'WebS',
+        type: typeW,
+        category: categoryW
+      });
+      const CvPn = categoryValueRepo.create({
+        value: 'PhoneN',
+        type: typePn,
+        category: categoryPN
+      });
+      await CvW.save();
+      await CvPn.save();
+      const eVW = entityValueRepo.create({ value: CvW, guid: 'FoooWebsites' });
+      await eVW.save();
+      const eVPn = entityValueRepo.create({ value: CvPn, guid: 'FoooPhone' });
+      await eVPn.save();
+      await statusTypeRepo.save(statusTypeP);
+      await statusTypeRepo.save(statusTypeC);
+      await statusTypeRepo.save(statusTypeF);
+      await statusTypeRepo.save(statusTypeCan);
+      await statusTypeRepo.save(statusTypeV);
+      await statusTypeRepo.save(statusTypeCSL);
       await usersRepo.save(userTest);
-      await statusTypeRepo.save(statusTypeTest);
-      await entityStatusRepo.save(entityStatusTest);
       await statesRepo.save(stateTest);
-      await countiesRepo.save(countiesTest);
-      await countyClaimsService.createOne(countiesTest);
-
-      await countyClaimsService.createOrUpdateClaim(countyClaimsTest, [], []);
+      await countiesRepo.save(countyTest);
+      await countyClaimsService.createOrUpdateClaim(countyClaimTest, [eVPn], [eVW]);
       const setClaim = await countyClaimsService.getActiveClaimsForEmail(userTest.email);
       const suggestedClaim = await countyClaimsService.getInfosForClaim(setClaim[0].guid);
       expect(suggestedClaim.infos.length).toEqual(1);
