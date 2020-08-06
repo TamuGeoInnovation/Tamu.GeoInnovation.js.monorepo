@@ -37,7 +37,9 @@ import {
   SecretQuestion,
   SecretAnswer,
   UserPasswordReset,
-  UserPasswordHistory
+  UserPasswordHistory,
+  PushedAuthorizationRequest,
+  ReplayDetection
 } from '@tamu-gisc/oidc/provider-nest';
 
 import { dbConfig } from '../environments/environment';
@@ -70,7 +72,9 @@ import { dbConfig } from '../environments/environment';
         SecretQuestion,
         SecretAnswer,
         UserPasswordReset,
-        UserPasswordHistory
+        UserPasswordHistory,
+        PushedAuthorizationRequest,
+        ReplayDetection
       ]
     }),
     // TODO: Is this .forFeature here required since it's in ClientMetadataModule?

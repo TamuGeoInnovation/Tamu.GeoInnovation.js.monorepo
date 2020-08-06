@@ -164,6 +164,9 @@ function loadableProviderConfiguration(clients: IClientMetadata[]) {
       claimsParameter: {
         enabled: true
       },
+      encryption: {
+        enabled: false
+      },
       introspection: {
         enabled: true
       },
@@ -188,10 +191,21 @@ function loadableProviderConfiguration(clients: IClientMetadata[]) {
       userinfo: {
         enabled: true
       }
+      // ietfJWTAccessTokenProfile: {
+      //   enabled: true
+      // }
     },
     formats: {
       AccessToken: 'jwt',
       ClientCredentials: 'opaque'
+      // AccessToken: 'jwt-ietf',
+      // ClientCredentials: 'jwt-ietf'
+      // customizers: {
+      //   'jwt-ietf': undefined,
+      //   jwt: undefined,
+      //   paseto: undefined
+      // },
+      // jwtAccessTokenSigningAlg: [AsyncFunction: jwtAccessTokenSigningAlg]
     },
     // routes: {
     //   authorization: '/auth',
