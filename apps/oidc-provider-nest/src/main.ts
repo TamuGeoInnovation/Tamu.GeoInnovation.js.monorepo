@@ -20,7 +20,7 @@ async function bootstrap() {
   const clientsService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
   const clients = await clientsService.loadClientMetadaForOidcSetup();
   OpenIdProvider.build(clients);
-  // enableOIDCDebug(OpenIdProvider.provider);
+  enableOIDCDebug(OpenIdProvider.provider);
   OpenIdProvider.provider.proxy = true;
   const dir = join(__dirname, 'assets/views');
   app.use(helmet());
@@ -75,7 +75,6 @@ function enableOIDCDebug(idp: Provider): void {
   });
   idp.addListener('interaction.started', (detail: any, ctx: any) => {
     console.log('interaction.started');
-    debugger;
   });
   idp.addListener('interaction.ended', (ctx: any) => {
     console.log('interaction.ended');
@@ -98,7 +97,7 @@ function enableOIDCDebug(idp: Provider): void {
 
   idp.addListener('grant.error', (error: any, ctx: any) => {
     console.log('grant.error');
-    console.error(error);
+    console.error(ctx);
     debugger;
   });
 

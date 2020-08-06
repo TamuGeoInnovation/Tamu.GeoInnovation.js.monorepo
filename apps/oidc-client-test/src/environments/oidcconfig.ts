@@ -1,11 +1,11 @@
 import { ClientMetadata } from 'openid-client';
 
 export const OIDC_CLIENT_METADATA: ClientMetadata = {
-  client_id: 'oidc-client-test',
+  client_id: 'oidc-client-test-jwt',
   client_secret: 'pppssssssttttheykidwantsomekandy',
   redirect_uris: ['http://localhost:3001/oidc/auth/callback'],
   response_types: ['code'],
-  token_endpoint_auth_method: 'client_secret_basic'
+  token_endpoint_auth_method: 'client_secret_jwt'
 };
 
 export const OIDC_CLIENT_METADATA_AD: ClientMetadata = {

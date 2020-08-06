@@ -657,6 +657,70 @@ export class RegistrationAccessToken implements IRequiredEntityAttrs {
 }
 
 @Entity({
+  name: 'replay_detection'
+})
+export class ReplayDetection implements IRequiredEntityAttrs {
+  @PrimaryColumn({
+    type: 'varchar',
+    nullable: false
+  })
+  id: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    length: 'max'
+  })
+  data: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  expiresAt: Date;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  consumedAt: Date;
+
+  constructor() {}
+}
+
+@Entity({
+  name: 'pushed_authz_request'
+})
+export class PushedAuthorizationRequest implements IRequiredEntityAttrs {
+  @PrimaryColumn({
+    type: 'varchar',
+    nullable: false
+  })
+  id: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    length: 'max'
+  })
+  data: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  expiresAt: Date;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  consumedAt: Date;
+
+  constructor() {}
+}
+
+@Entity({
   name: 'sessions'
 })
 export class Session implements IRequiredEntityAttrs {
@@ -710,6 +774,8 @@ export class TokenEndpointAuthMethod extends GuidIdentity {
     length: 1024
   })
   details: string;
+
+  clientMetadatas: ClientMetadata;
 }
 
 @Entity({
@@ -729,23 +795,22 @@ export class ClientMetadata extends GuidIdentity {
   public clientSecret: string;
 
   @ManyToMany((type) => GrantType)
-  @JoinTable()
+  @JoinTable({
+    name: 'client_metadata_grant_types'
+  })
   public grantTypes: GrantType[];
 
   @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata, { cascade: true })
   redirectUris: RedirectUri[];
 
   @ManyToMany((type) => ResponseType)
-  @JoinTable()
+  @JoinTable({
+    name: 'client_metadata_response_types'
+  })
   responseTypes: ResponseType[];
 
-  @OneToOne((type) => TokenEndpointAuthMethod)
-  @JoinColumn()
+  @ManyToOne((type) => TokenEndpointAuthMethod, (token) => token.clientMetadatas)
   tokenEndpointAuthMethod: TokenEndpointAuthMethod;
-
-  constructor() {
-    super();
-  }
 }
 
 @Entity({

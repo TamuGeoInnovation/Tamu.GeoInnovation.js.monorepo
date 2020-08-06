@@ -65,30 +65,29 @@ export class AuthStrategy extends PassportStrategy(Strategy, OpenIdClient.strate
       passReqToCallback: true
     });
   }
-/**
- * Here we set the contents of req.user. We use the access_token 
- * from userinfo and exchange it for the user's claims
- *
- * @param {*} tokenset
- * @param {*} userinfo
- * @param {*} done
- * @returns
- * @memberof AuthStrategy
- */
-public async validate(tokenset, userinfo, done) {
+  /**
+   * Here we set the contents of req.user. We use the access_token
+   * from userinfo and exchange it for the user's claims
+   *
+   * @param {*} tokenset
+   * @param {*} userinfo
+   * @param {*} done
+   * @returns
+   * @memberof AuthStrategy
+   */
+  public async validate(tokenset, userinfo, done) {
     if (!userinfo) {
       throw new UnauthorizedException();
     }
     if (userinfo.access_token) {
-      const userClaims = await OpenIdClient.client.userinfo(userinfo.access_token)
+      const userClaims = await OpenIdClient.client.userinfo(userinfo.access_token);
 
       return {
         ...userinfo,
-        ...userClaims,
+        ...userClaims
       };
     } else {
       return userinfo;
     }
-    
   }
 }
