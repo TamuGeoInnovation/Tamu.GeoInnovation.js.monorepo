@@ -93,7 +93,7 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
     const r = await layer.queryFeatures({
       returnGeometry: true,
       outFields: ['*'],
-      where: `SampleNumb = '${subSample}'`
+      where: `SampleNumber = '${subSample}'`
     });
 
     if (r.features.length > 0) {

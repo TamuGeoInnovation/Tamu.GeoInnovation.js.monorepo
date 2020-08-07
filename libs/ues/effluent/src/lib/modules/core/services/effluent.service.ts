@@ -7,11 +7,12 @@ import { EsriMapService, EsriModuleProviderService, HitTestSnapshot } from '@tam
 import { PopupService } from '@tamu-gisc/maps/feature/popup';
 import { FeatureHighlightService } from '@tamu-gisc/maps/feature/feature-highlight';
 
-import { IEffluentSample, IEffluentTierMetadata } from '@tamu-gisc/ues/common/ngx';
-
 import esri = __esri;
+
 import { IChartConfiguration } from '@tamu-gisc/charts';
 import { getRandomNumber } from '@tamu-gisc/common/utils/number';
+import { SamplingLocationsService } from './sampling-locations.service';
+import { SamplingBuildingsService } from './sampling-buildings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,6 @@ export class EffluentService {
 
   public sample: Observable<number>;
 
-  // public affectedBuildings: Observable<Array<IEffluentTierMetadata>>;
   public affectedBuildings: Observable<Array<esri.Graphic>>;
 
   public hit: Observable<HitTestSnapshot>;
@@ -38,8 +38,6 @@ export class EffluentService {
 
   private zonesResourceUrl: string;
   private sampleLocationsResourceUrl: string;
-  private buildingsResource: Array<IEffluentTierMetadata>;
-  private samplesResource: Array<IEffluentSample>;
 
   private modules: Observable<[esri.QueryConstructor, esri.QueryTaskConstructor]>;
 
@@ -48,7 +46,9 @@ export class EffluentService {
     private environmentService: EnvironmentService,
     private popupService: PopupService,
     private moduleProvider: EsriModuleProviderService,
-    private featureHighlightService: FeatureHighlightService
+    private featureHighlightService: FeatureHighlightService,
+    private effluentSampleService: SamplingLocationsService,
+    private effluentBuildingsService: SamplingBuildingsService
   ) {
     this.popupService.suppressPopups();
 
@@ -56,8 +56,6 @@ export class EffluentService {
 
     this.zonesResourceUrl = this.environmentService.value('effluentZonesUrl');
     this.sampleLocationsResourceUrl = this.environmentService.value('effluentSampleLocationsUrl');
-    this.buildingsResource = this.environmentService.value('effluentTiers');
-    this.samplesResource = this.environmentService.value('effluentSamples');
 
     this.hit = this.mapService.hitTest.pipe(shareReplay(1));
 
@@ -72,7 +70,7 @@ export class EffluentService {
       // Filter out multiple emissions by feature id. This will prevent many xhr requests and limit other
       // unnecessary UI reactive changes.
       distinctUntilChanged((oldGraphic, newGraphic) => {
-        return oldGraphic.attributes.FID === newGraphic.attributes.FID;
+        return oldGraphic.attributes.OBJECTID === newGraphic.attributes.OBJECTID;
       })
     );
 
@@ -87,8 +85,8 @@ export class EffluentService {
       map((graphic) => {
         if (graphic && graphic.attributes && graphic.attributes.Tier !== undefined) {
           return parseInt(graphic.attributes.Tier, 10);
-        } else if (graphic && graphic.attributes && graphic.attributes.Sample !== undefined) {
-          return parseInt(graphic.attributes.Sample.split('-')[0], 10);
+        } else if (graphic && graphic.attributes && graphic.attributes.SampleNumber !== undefined) {
+          return parseInt(graphic.attributes.SampleNumber.split('-')[0], 10);
         } else {
           return undefined;
         }
@@ -97,8 +95,8 @@ export class EffluentService {
 
     this.sample = this.hitGraphic.pipe(
       map((graphic) => {
-        if (graphic && graphic.attributes && graphic.attributes.SampleNumb !== undefined) {
-          return parseInt(graphic.attributes.SampleNumb.split('-').pop(), 10);
+        if (graphic && graphic.attributes && graphic.attributes.SampleNumber !== undefined) {
+          return parseInt(graphic.attributes.SampleNumber.split('-').pop(), 10);
         } else if (graphic && graphic.attributes && graphic.attributes.Sample !== undefined) {
           return parseInt(graphic.attributes.Sample.split('-')[1], 10);
         } else {
@@ -207,10 +205,9 @@ export class EffluentService {
       withLatestFrom(this.tier, this.sample),
       switchMap(([locations, tier, sample]) => {
         const filtered = locations.reduce((acc, curr) => {
-          const buildingsForLocation = this.buildingsResource.filter((building) => {
-            return building.tiers.some((t) => {
-              return t.tier === tier && t.zone === sample;
-            });
+          const buildingsForLocation = this.effluentBuildingsService.getBuildingsIn({
+            tier: tier,
+            zone: sample
           });
 
           const merged = [...acc, ...buildingsForLocation];
@@ -235,8 +232,9 @@ export class EffluentService {
       withLatestFrom(this.isHitGraphicZone, this.tier, this.sample),
       switchMap(([v, is, tier, sample]) => {
         if (is === false) {
-          const filtered = this.buildingsResource.filter((d) => {
-            return d.tiers.find((t) => t.tier === tier && t.zone === sample) !== undefined;
+          const filtered = this.effluentBuildingsService.getBuildingsIn({
+            tier: tier,
+            zone: sample
           });
 
           return of(filtered.map((f) => f.number)).pipe(
@@ -310,8 +308,9 @@ export class EffluentService {
   private getChartData(): Observable<IChartConfiguration['data']> {
     return combineLatest([this.tier, this.sample]).pipe(
       switchMap(([tier, sample]) => {
-        const data = this.samplesResource.find((s) => {
-          return s.sample === `${tier}-${sample}`;
+        const data = this.effluentSampleService.getSamplingLocation({
+          tier,
+          sample
         });
 
         if (data) {

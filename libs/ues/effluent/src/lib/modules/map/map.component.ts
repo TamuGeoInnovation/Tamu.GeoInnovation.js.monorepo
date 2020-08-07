@@ -201,7 +201,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
     const renderer = {
       type: 'unique-value',
-      field: 'SampleNumb',
+      field: 'SampleNumber',
       defaultSymbol: { type: 'simple-fill' },
       uniqueValueInfos: infos
     };

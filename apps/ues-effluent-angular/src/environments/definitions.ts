@@ -6,9 +6,8 @@ export const Connections = {
   departmentUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
   tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
   bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
-  effluentZonesUrl: 'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/EffluentZones/FeatureServer/0',
-  effluentSampleLocationsUrl:
-    'https://services1.arcgis.com/qr14biwnHA6Vis6l/ArcGIS/rest/services/Sample_Locations/FeatureServer/0'
+  effluentZonesUrl: 'https://ues-arc.tamu.edu/arcgis/rest/services/Sanitary/SanitarySampling/MapServer/2',
+  effluentSampleLocationsUrl: 'https://ues-arc.tamu.edu/arcgis/rest/services/Sanitary/SanitarySampling/MapServer/0'
 };
 
 export const Definitions = {

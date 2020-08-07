@@ -7,7 +7,7 @@ describe('EffluentService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(EffluentService);
+    service = TestBed.get(EffluentService);
   });
 
   it('should be created', () => {

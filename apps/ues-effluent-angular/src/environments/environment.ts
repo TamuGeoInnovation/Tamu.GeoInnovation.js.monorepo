@@ -183,7 +183,7 @@ export const LayerSources: LayerSource[] = [
     url: `${Connections.constructionUrl}`,
     category: 'Infrastructure',
     listMode: 'show',
-    loadOnInit: true,
+    loadOnInit: false,
     visible: true,
     legendItems: [
       {

@@ -36,7 +36,7 @@
     <!-- <div *ngIf="(tierOwnedBy | async) as tob">
       <ng-container *ngIf="tob.length > 0; else noParent">
         <div class="stat-card" *ngFor="let child of tob">
-          <div class="stat-metric">{{child?.attributes?.SampleNumb}}</div>
+          <div class="stat-metric">{{child?.attributes?.SampleNumber}}</div>
           <div class="stat-title">Parent Tier</div>
         </div>
       </ng-container>
@@ -62,7 +62,7 @@
               <p class="checkbox-true">Collapse Sub Samples</p>
             </div>
             <div class="stat-list accordion-content">
-              <div class="stat-list-item clip" *ngFor="let child of to" (click)="highlightSubSample(child?.attributes?.SampleNumb)">{{child?.attributes?.SampleNumb}}</div>
+              <div class="stat-list-item clip" *ngFor="let child of to" (click)="highlightSubSample(child?.attributes?.SampleNumber)">{{child?.attributes?.SampleNumber}}</div>
             </div>
           </div>
         </div>

@@ -15,6 +15,7 @@ import { ChartsModule } from '@tamu-gisc/charts';
 import { SidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
 import { SidebarRelationshipsComponent } from './components/sidebar-relationships/sidebar-relationships.component';
+import { SidebarOverviewComponent } from './components/sidebar-overview/sidebar-overview.component';
 
 @NgModule({
   imports: [
@@ -30,7 +31,7 @@ import { SidebarRelationshipsComponent } from './components/sidebar-relationship
     UESCoreUIModule,
     ChartsModule
   ],
-  declarations: [SidebarComponent, SidebarReferenceComponent, SidebarRelationshipsComponent],
+  declarations: [SidebarComponent, SidebarReferenceComponent, SidebarRelationshipsComponent, SidebarOverviewComponent],
   exports: [SidebarComponent]
 })
 export class UESEffluentSidebarModule {}
