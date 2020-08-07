@@ -3760,7 +3760,8 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "two-directory-nest:build"
+            "buildTarget": "two-directory-nest:build",
+            "port": 0
           },
           "configurations": {
             "development": {
@@ -3838,7 +3839,8 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "two-valup-nest:build"
+            "buildTarget": "two-valup-nest:build",
+            "port": 0
           },
           "configurations": {
             "development": {
@@ -3943,7 +3945,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "two-dashboard-angular:build"
+            "browserTarget": "two-dashboard-angular:build",
+            "port": 0
           },
           "configurations": {
             "production": {

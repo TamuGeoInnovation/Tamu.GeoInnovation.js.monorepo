@@ -1,12 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { Stats } from 'fs';
 import * as chokidar from 'chokidar';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { ACCEPTABLE_EXTS, ARCHIVE_DIRECTORY, FILENAME, FILES, FILENAME_REGEXP, SOURCE_DIRECTORY, VALIDATION_SERVICE, WORK_DIRECTORY } from '../../environments/environment';
+import {
+  ACCEPTABLE_EXTS,
+  ARCHIVE_DIRECTORY,
+  FILENAME,
+  FILES,
+  FILENAME_REGEXP,
+  SOURCE_DIRECTORY,
+  VALIDATION_SERVICE,
+  WORK_DIRECTORY
+} from '../../environments/environment';
 
 @Injectable()
 export class DirectoryService {
@@ -199,11 +207,13 @@ export class DirectoryService {
       json: true
     };
     try {
-      axios.post(route, {
-        path: filepath
-      }).catch((err) => {
-        throw err;
-      })
+      axios
+        .post(route, {
+          path: filepath
+        })
+        .catch((err) => {
+          throw err;
+        });
       // rp(options).catch((err) => {
       //   throw err;
       // });

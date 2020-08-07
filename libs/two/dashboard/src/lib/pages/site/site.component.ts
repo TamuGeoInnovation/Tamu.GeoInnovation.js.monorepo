@@ -21,6 +21,10 @@ export class SiteComponent implements OnInit {
     this.route.paramMap.subscribe((params) => {
       this.siteCode = params.get('siteCode');
     });
-    this.chartData = this.statusService.siteHistory(this.siteCode, this.history);
+    if (this.siteCode === 'demo') {
+      this.chartData = this.statusService.demoSiteHistory(this.history);
+    } else {
+      this.chartData = this.statusService.siteHistory(this.siteCode, this.history);
+    }
   }
 }
