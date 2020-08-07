@@ -61,6 +61,54 @@ export class StatusService {
       })
     );
   }
+
+  public demoSiteHistory(history: number) {
+    const now = new Date();
+    const dateRange = [
+      {
+        upperDate: '2018-05-16',
+        lowerDate: '2018-05-15'
+      },
+      {
+        upperDate: '2018-05-18',
+        lowerDate: '2018-05-17'
+      },
+      {
+        upperDate: '2018-05-20',
+        lowerDate: '2018-05-19'
+      }
+    ];
+
+    const dateHistory: IDateHistory = {
+      siteCode: 'RFPr',
+      dateRange: dateRange
+    };
+    return this.http.post<Array<Partial<IStatusResponse>>>(this.resource, dateHistory).pipe(
+      map<IStatusResponse[], IChartConfiguration[]>((value: Partial<IStatusResponse[]>, index: number) => {
+        const configs: IChartConfiguration[] = [];
+        for (let i = 0; i < value.length; i++) {
+          const config: IChartConfiguration = {
+            data: {
+              datasets: [
+                {
+                  data: [Number.parseInt(value[i].success, 10), Number.parseInt(value[i].failure, 10)]
+                }
+              ],
+              labels: ['Successes', 'Failures']
+            },
+            options: {
+              cutoutPercentage: 50,
+              title: {
+                text: value[i].date
+              }
+            }
+          };
+          configs.push(config);
+        }
+        return configs;
+      })
+    );
+  }
 }
 
 export interface IStatusResponse {
