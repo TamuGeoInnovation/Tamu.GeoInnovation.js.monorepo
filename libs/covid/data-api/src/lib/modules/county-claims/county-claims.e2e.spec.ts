@@ -149,8 +149,8 @@ describe('County Claims Integration Tests', () => {
 
   const fieldCategoryW: DeepPartial<FieldCategory> = { name: 'Website', id: 1 };
   const fieldCategoryPN: DeepPartial<FieldCategory> = { name: 'PhoneNumber', id: 2 };
-  const fieldTypeW: DeepPartial<FieldType> = { name: 'FooYeet', guid: 'Yeet' };
-  const fieldTypePN: DeepPartial<FieldType> = { name: 'FooRee', guid: 'Reee' };
+  const fieldTypeW: DeepPartial<FieldType> = { name: 'Web', guid: 'Yeet' };
+  const fieldTypePN: DeepPartial<FieldType> = { name: 'Phone', guid: 'Reee' };
   const statusTypeP: DeepPartial<StatusType> = { name: 'Processing', id: 1 };
   const statusTypeC: DeepPartial<StatusType> = { name: 'Closed', id: 2 };
   const statusTypeF: DeepPartial<StatusType> = { name: 'Flagged', id: 3 };
