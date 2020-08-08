@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Observable, combineLatest, from, of, pipe } from 'rxjs';
+import { Observable, combineLatest, from, of } from 'rxjs';
 import { shareReplay, map, filter, distinctUntilChanged, switchMap, withLatestFrom, tap } from 'rxjs/operators';
 
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { EsriMapService, EsriModuleProviderService, HitTestSnapshot } from '@tamu-gisc/maps/esri';
+import { EsriMapService, HitTestSnapshot } from '@tamu-gisc/maps/esri';
 import { PopupService } from '@tamu-gisc/maps/feature/popup';
 import { FeatureHighlightService } from '@tamu-gisc/maps/feature/feature-highlight';
-
-import esri = __esri;
 
 import { IChartConfiguration } from '@tamu-gisc/charts';
 import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 import { SamplingLocationsService } from './sampling-locations.service';
 import { SamplingBuildingsService } from './sampling-buildings.service';
+import { EffluentZonesService } from './effluent-zones.service';
+
+import esri = __esri;
 
 @Injectable({
   providedIn: 'root'
@@ -36,26 +36,17 @@ export class EffluentService {
   public hitGraphic: Observable<esri.Graphic>;
   public isHitGraphicZone: Observable<boolean>;
 
-  private zonesResourceUrl: string;
-  private sampleLocationsResourceUrl: string;
-
-  private modules: Observable<[esri.QueryConstructor, esri.QueryTaskConstructor]>;
-
   constructor(
     private mapService: EsriMapService,
-    private environmentService: EnvironmentService,
     private popupService: PopupService,
-    private moduleProvider: EsriModuleProviderService,
     private featureHighlightService: FeatureHighlightService,
     private effluentSampleService: SamplingLocationsService,
-    private effluentBuildingsService: SamplingBuildingsService
+    private effluentBuildingsService: SamplingBuildingsService,
+    private effluentZonesService: EffluentZonesService
   ) {
     this.popupService.suppressPopups();
 
     this.popupService.suppressPopups();
-
-    this.zonesResourceUrl = this.environmentService.value('effluentZonesUrl');
-    this.sampleLocationsResourceUrl = this.environmentService.value('effluentSampleLocationsUrl');
 
     this.hit = this.mapService.hitTest.pipe(shareReplay(1));
 
@@ -131,66 +122,23 @@ export class EffluentService {
       })
     );
 
-    this.modules = from(this.moduleProvider.require(['Query', 'QueryTask'])).pipe(shareReplay(1)) as Observable<
-      [esri.QueryConstructor, esri.QueryTaskConstructor]
-    >;
-
-    this.tierOwns = combineLatest([this.nextTier, this.hitGraphic, this.modules]).pipe(
-      switchMap(([nextTier, graphic, [Query, QueryTask]]) => {
-        const task = new QueryTask({ url: this.zonesResourceUrl });
-
-        const q = new Query({
-          returnGeometry: true,
-          spatialRelationship: 'intersects',
-          outFields: ['*'],
-          geometry: graphic.geometry,
-          where: `Tier = '${nextTier}'`
-        });
-
-        return from(task.execute(q));
-      }),
-      map((result) => {
-        return result.features;
+    this.tierOwns = combineLatest([this.nextTier, this.hitGraphic]).pipe(
+      switchMap(([nextTier, graphic]) => {
+        return this.effluentZonesService.getZonesForTier(graphic.geometry, nextTier);
       }),
       shareReplay(1)
     );
 
-    this.tierOwnedBy = combineLatest([this.previousTier, this.hitGraphic, this.modules]).pipe(
-      switchMap(([previousTier, graphic, [Query, QueryTask]]) => {
-        const task = new QueryTask({ url: this.zonesResourceUrl });
-
-        const q = new Query({
-          returnGeometry: true,
-          spatialRelationship: 'intersects',
-          outFields: ['*'],
-          geometry: graphic.geometry,
-          where: `Tier = '${previousTier}'`
-        });
-
-        return from(task.execute(q));
-      }),
-      map((result) => {
-        return result.features;
+    this.tierOwnedBy = combineLatest([this.previousTier, this.hitGraphic]).pipe(
+      switchMap(([previousTier, graphic]) => {
+        return this.effluentZonesService.getZonesForTier(graphic.geometry, previousTier);
       }),
       shareReplay(1)
     );
 
-    this.sampleLocationsInZone = combineLatest([this.tier, this.hitGraphic, this.modules]).pipe(
-      switchMap(([tier, graphic, [Query, QueryTask]]) => {
-        const task = new QueryTask({ url: this.sampleLocationsResourceUrl });
-
-        const q = new Query({
-          returnGeometry: true,
-          spatialRelationship: 'intersects',
-          outFields: ['*'],
-          geometry: graphic.geometry,
-          where: `Tier = '${tier}'`
-        });
-
-        return from(task.execute(q));
-      }),
-      map((result) => {
-        return result.features;
+    this.sampleLocationsInZone = combineLatest([this.tier, this.hitGraphic]).pipe(
+      switchMap(([tier, graphic]) => {
+        return this.effluentSampleService.getSamplingLocationsForTier(graphic.geometry, tier);
       }),
       map((features) => {
         return features.map((f) => {
