@@ -1,0 +1,8 @@
+<form autocomplete="off" action="/accounts/register/sendVerification" method="post">
+  <input type="hidden" name="sub" value="<%= sub %>"/>
+  <input type="hidden" name="email" value="<%= email %>"/>
+
+  <p>Your account has not been verified. Please check your email for your account verification link.</p>
+  <button type="submit" class="login login-submit">Click here if you would like us to send the account verification email again.</button>
+</form>
+

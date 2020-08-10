@@ -1,0 +1,122 @@
+<form [formGroup]="form" (ngSubmit)="submitLockdown()">
+  <ng-container formGroupName="info">
+    <div class="form-section">
+      <div class="form-section-body">
+        <div class="form-collection column pad-top">
+          <p class="emphasis">Is this county under a lockdown directive?</p>
+
+          <tamu-gisc-radio-group formControlName="isLockdown" [options]="lockdownOptions" displayPath="label" valuePath="value"></tamu-gisc-radio-group>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section" *ngIf="(lockdownState | async) === false">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">Supporting Details</div>
+      </div>
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <p>Please provide any additional details that are not available as fields or options such as what steps were taken to verify that this county is not in a lockdown.</p>
+          <tamu-gisc-textbox formControlName="notes" type="textarea" placeholder="Additional notes or comments" floatLabel="true"></tamu-gisc-textbox>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section" *ngIf="(lockdownState | async) === true">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">Supporting Details</div>
+      </div>
+
+      <div class="form-section-body">
+        <div class="form-collection column">
+          <label for="lockdownStart">Lockdown date start:</label>
+          <input formControlName="startDate" type="date" name="lockdownStart" />
+
+          <br />
+
+          <div class="flex flex-row align-center">
+            <div class="flex flex-column">
+              <label for="lockdownEnd">Lockdown date end:</label>
+              <input formControlName="endDate" type="date" name="lockdownEnd" />
+            </div>
+
+            <div class="flex flex-column pre-1">
+              <span>&nbsp;</span>
+              <tamu-gisc-checkbox formControlName="hasUnknownEndDate" label="This county has an unknown lockdown end date"></tamu-gisc-checkbox>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="protocol" type="textarea" placeholder="Protocol or rules during the lockdown" floatLabel="true"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection column">
+          <tamu-gisc-textbox formControlName="notes" type="textarea" placeholder="Additional notes or comments" floatLabel="true"></tamu-gisc-textbox>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section" *ngIf="(lockdownState | async) === true || (lockdownState | async) === false">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">Phone Numbers</div>
+        <div class="form-section-actions">
+          <span class="material-icons action alt" (click)="addPhoneNumber()" title="Add phone number">add</span>
+        </div>
+      </div>
+
+      <div [formArrayName]="'phoneNumbers'" *ngIf="form.get(['info', 'phoneNumbers'])['controls'].length > 0; else promptAddPhoneNumber" class="form-section-body">
+        <ng-container *ngFor="let ph of form.get(['info', 'phoneNumbers'])['controls']; let i = index">
+          <div [formGroupName]="i" class="form-collection row select-collection" [ngClass]="{'pad-top': i === 0}">
+            <ng-container formGroupName="value">
+              <tamu-gisc-textbox formControlName="value" type="tel" placeholder="Phone Number" floatLabel="true"></tamu-gisc-textbox>
+              <tamu-gisc-select formControlName="type" [data]="(phoneTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select phone type"></tamu-gisc-select>
+            </ng-container>
+            <span class="material-icons action error" title="Remove phone number" (click)="removeFormArrayControl('phoneNumbers', i)">close</span>
+          </div>
+        </ng-container>
+      </div>
+
+      <ng-template #promptAddPhoneNumber>
+        <p>There are no phone numbers registered for this county lockdown. Please add any additional relevant phone numbers specific to the county lockdown that are not already listed in the <a [routerLink]="['../county']" target="_blank">county page</a>.</p>
+      </ng-template>
+    </div>
+
+    <div class="form-section" *ngIf="(lockdownState | async) === true || (lockdownState | async) === false">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">Websites and Documents</div>
+        <div class="form-section-actions">
+          <span class="material-icons action alt" (click)="addWebsite()" title="Add website">add</span>
+        </div>
+      </div>
+
+      <div [formArrayName]="'websites'" *ngIf="form.get(['info', 'websites'])['controls'].length > 0; else promptAddWebsite" class="form-section-body">
+        <ng-container *ngFor="let ph of form.get(['info', 'websites'])['controls']; let i = index">
+          <div [formGroupName]="i" class="form-collection row select-collection" [ngClass]="{'pad-top': i === 0}">
+            <ng-container formGroupName="value">
+              <tamu-gisc-textbox formControlName="value" type="text" placeholder="URL" floatLabel="true"></tamu-gisc-textbox>
+              <tamu-gisc-select formControlName="type" [data]="(websitesTypes | async)?.types" displayTemplate="name" valueTemplate="guid" placeholder="Select website type"></tamu-gisc-select>
+            </ng-container>
+            <span class="material-icons action error" title="Remove website" (click)="removeFormArrayControl('websites', i)">close</span>
+          </div>
+        </ng-container>
+      </div>
+
+      <ng-template #promptAddWebsite>
+        <p>There are no websites or documents registered for this county lockdown. Please add any additional relevant websites where the lockdown information for this county can be found. Authoritative data sources are preferred.</p>
+      </ng-template>
+    </div>
+
+    <div class="form-section" *ngIf="(lockdownState | async) === true || (lockdownState | async) === false">
+      <div class="form-section-body">
+        <div class="form-collection row">
+          <div class="flex flex-row justify-between align-center">
+            <div class="flex flex-row align-center">
+              <tamu-gisc-button [value]="'Save'" look="secondary" type="submit" [disabled]="form.invalid"></tamu-gisc-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</form>

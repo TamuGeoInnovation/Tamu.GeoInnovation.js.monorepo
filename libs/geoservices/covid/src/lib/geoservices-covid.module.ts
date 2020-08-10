@@ -23,12 +23,12 @@ const routes: Routes = [
         loadChildren: () => import('./pages/services/services.module').then((m) => m.ServicesModule)
       },
       {
-        path: 'resources',
-        loadChildren: () => import('./pages/resources/resources.module').then((m) => m.ResourcesModule)
+        path: 'maps',
+        loadChildren: () => import('./pages/maps/maps.module').then((m) => m.MapsModule)
       },
       {
-        path: 'login',
-        loadChildren: () => import('./pages/login/login.module').then((m) => m.LoginModule)
+        path: 'resources',
+        loadChildren: () => import('./pages/resources/resources.module').then((m) => m.ResourcesModule)
       },
       {
         path: 'dashboard',
@@ -37,8 +37,7 @@ const routes: Routes = [
       },
       {
         path: 'admin',
-        loadChildren: () => import('./pages/admin/admin.module').then((m) => m.AdminModule),
-        canActivate: [LocalEmailGuard]
+        loadChildren: () => import('./pages/admin/admin.module').then((m) => m.AdminModule)
       }
     ]
   }

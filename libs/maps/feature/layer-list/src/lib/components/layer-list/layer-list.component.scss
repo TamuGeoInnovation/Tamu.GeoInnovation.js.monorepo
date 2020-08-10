@@ -28,3 +28,31 @@
     padding-bottom: 0;
   }
 }
+
+.sidebar-component-content-container {
+  padding-left: 0;
+}
+
+.category {
+  .category-title {
+    padding: 0.5rem;
+    background: #f5f5f5f5;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+
+    p {
+      padding-bottom: 0;
+    }
+  }
+
+  .category-item {
+    padding-left: 1rem;
+  }
+
+  .category-item p {
+    &:last-child {
+      margin-bottom: 0.75rem;
+    }
+  }
+}

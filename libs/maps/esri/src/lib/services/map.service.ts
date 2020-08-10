@@ -2,17 +2,17 @@ import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AsyncSubject, Observable, BehaviorSubject } from 'rxjs';
 
-import { EsriModuleProviderService } from './module-provider.service';
-
 import { SearchService } from '@tamu-gisc/search';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
+import { EsriModuleProviderService } from './module-provider.service';
+
 import esri = __esri;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class EsriMapService {
   // Private store, which will contain the eventual map and view objects
   //
@@ -40,7 +40,7 @@ export class EsriMapService {
     private environment: EnvironmentService
   ) {}
 
-  public loadMap(mapProperties: MapProperties, viewProperties: MapViewProperties) {
+  public loadMap(mapProperties: MapProperties, viewProperties: ViewProperties) {
     // If properties specifies 2d mode, load 2d map view.
     if (viewProperties.mode === '2d') {
       this.moduleProvider
@@ -75,8 +75,6 @@ export class EsriMapService {
   /**
    * Bootstrapping function that continues the map creation after the 2d vs 3d determination is made.
    *
-   * This function is used to keep code DRY.
-   *
    * @param {MapProperties} Properties
    * @param {MapViewProperties} ViewProperties
    * @param {esri.MapConstructor} Map
@@ -86,7 +84,7 @@ export class EsriMapService {
    */
   private next(
     Properties: MapProperties,
-    ViewProperties: MapViewProperties,
+    ViewProps: ViewProperties,
     Map: esri.MapConstructor,
     MapView: esri.MapViewConstructor | esri.SceneViewConstructor,
     TileLayer: esri.TileLayerConstructor,
@@ -94,8 +92,8 @@ export class EsriMapService {
   ): void {
     const basemap = this.makeBasemap(Properties, TileLayer, Basemap);
     this._modules.map = new Map(basemap);
-    const viewProps = this.makeMapView(ViewProperties.properties, this._modules.map);
-    this._modules.view = new MapView(viewProps);
+    const props = this.makeMapView(ViewProps.properties, this._modules.map);
+    this._modules.view = new MapView(props as esri.MapViewProperties & esri.SceneViewProperties);
 
     // Set the value of the async subject
     this._store.next({
@@ -135,8 +133,8 @@ export class EsriMapService {
    *
    * Internal use only.
    */
-  private makeMapView(viewProperties: esri.MapViewProperties, map: esri.Map): esri.MapViewProperties {
-    // Make a clone of the passed in view properties
+  private makeMapView(viewProperties: esri.MapViewProperties | esri.SceneViewProperties, map: esri.Map) {
+    // Make a shallow clone of the passed in view properties
     const vProps = Object.assign({}, viewProperties);
 
     // If the supplied view properties does not have a map object, set it.
@@ -676,16 +674,27 @@ export interface HitTestSnapshot {
 
 export interface MapViewProperties {
   /**
-   * Describes the mapping mode for the view.
+   * Describes the mapping mode as a map view (2d)
    *
-   * 2d will use a MapView
-   *
-   * 3d will use a SceneView
    */
-  mode: '2d' | '3d';
+  mode: '2d';
 
   /**
    * Native ArcGIS JS MapView Properties
    */
   properties: esri.MapViewProperties;
 }
+
+export interface SceneViewProperties {
+  /**
+   * Describes the mapping mode as a scene view (3d).
+   */
+  mode: '3d';
+
+  /**
+   * Native ArcGIS JS SceneView Properties
+   */
+  properties: esri.SceneViewProperties;
+}
+
+export type ViewProperties = MapViewProperties | SceneViewProperties;

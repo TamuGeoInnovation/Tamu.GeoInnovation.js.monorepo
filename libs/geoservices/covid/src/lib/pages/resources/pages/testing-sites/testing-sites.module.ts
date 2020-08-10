@@ -2,10 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { TestingSitesComponent } from './testing-sites.component';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+
+import { TestingSitesComponent } from './testing-sites.component';
+import { CovidFormsModule } from '../../../../modules/forms/forms.module';
 
 const routes: Routes = [
   {
@@ -23,7 +24,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule, GeoservicesCoreNgxModule],
+  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule, CovidFormsModule],
   declarations: [TestingSitesComponent]
 })
 export class TestingSitesModule {}

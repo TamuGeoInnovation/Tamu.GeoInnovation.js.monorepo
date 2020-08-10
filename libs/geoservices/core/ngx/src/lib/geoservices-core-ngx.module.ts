@@ -6,10 +6,6 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderMobileComponent } from './components/header-mobile/header-mobile.component';
 import { HeaderCovidComponent } from './components/header-covid/header-covid.component';
-import { TestingSiteComponent } from './components/forms/testing-site/testing-site.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { FooterLegalComponent } from './components/footer/legal/legal.component';
 import { FooterShortcutsComponent } from './components/footer/shortcuts/shortcuts.component';
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
@@ -18,13 +14,12 @@ import { CountyListComponent } from './components/listable/submissions/county/co
 import { LockdownListComponent } from './components/listable/submissions/lockdown/lockdown.component';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, UIFormsModule, PipesModule],
+  imports: [CommonModule, RouterModule, PipesModule],
   declarations: [
     HeaderComponent,
     FooterComponent,
     HeaderMobileComponent,
     HeaderCovidComponent,
-    TestingSiteComponent,
     FooterLegalComponent,
     FooterShortcutsComponent,
     TestingSiteListComponent,
@@ -38,7 +33,6 @@ import { LockdownListComponent } from './components/listable/submissions/lockdow
     FooterShortcutsComponent,
     HeaderMobileComponent,
     HeaderCovidComponent,
-    TestingSiteComponent,
     TestingSiteListComponent,
     CountyListComponent,
     LockdownListComponent

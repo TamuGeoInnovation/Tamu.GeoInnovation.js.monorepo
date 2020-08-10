@@ -5,15 +5,13 @@
 
 <div class="sidebar-component-content-container">
   <div class="category" *ngFor="let category of categorized">
-    <div class="category-title" (click)="category.expanded = !category.expanded">
-      <p>{{ category.title }}</p>
-    </div>
-
-    <!-- TODO: Include later: accordion [accordionExpanded]="category.expanded" -->
-    <div class="category-item">
-      <p *ngFor="let item of category.layers" class="layer-item" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible }" (click)="toggleLayer(item)">
-        {{ item.title }}
-      </p>
-    </div>
+    <tamu-gisc-accordion [expanded]="category.expanded">
+      <tamu-gisc-accordion-header (click)="category.expanded = !category.expanded">{{category.title}}</tamu-gisc-accordion-header>
+      <tamu-gisc-accordion-content>
+        <p *ngFor="let item of category.layers" class="layer-item" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible }" (click)="toggleLayer(item)">
+          {{ item.title }}
+        </p>
+      </tamu-gisc-accordion-content>
+    </tamu-gisc-accordion>
   </div>
 </div>

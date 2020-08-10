@@ -21,4 +21,8 @@ export class WebsitesService {
   public setWebsitesForCounty(websites: EntityValue[], countyFips: number) {
     return this.http.post<Array<EntityValue>>(`${this.resource}/county`, { websites, countyFips });
   }
+
+  public getWebsitesForClaimInfo(guid: string) {
+    return this.http.get<Array<EntityValue>>(`${this.resource}/claim/info/${guid}`);
+  }
 }

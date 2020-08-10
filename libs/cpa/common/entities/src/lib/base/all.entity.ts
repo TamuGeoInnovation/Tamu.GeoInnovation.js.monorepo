@@ -14,7 +14,7 @@ import {
   ManyToOne
 } from 'typeorm';
 
-import * as guid from 'uuid/v4';
+import { v4 as guid } from 'uuid';
 
 @Entity()
 export class CPABaseEntity extends BaseEntity {

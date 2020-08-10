@@ -4,15 +4,13 @@ import { Location } from '@angular/common';
 import { from, Subject } from 'rxjs';
 import { mergeMap, groupBy, reduce, map, toArray, takeUntil } from 'rxjs/operators';
 
-import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
-import { LayerListService, LayerListCategory } from '../../services/layer-list.service';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
+import { LayerListService, LayerListCategory } from '../../services/layer-list.service';
 import { LayerListComponent } from '../layer-list/layer-list.component';
-
-import { Angulartics2 } from 'angulartics2';
 
 import esri = __esri;
 
@@ -29,7 +27,6 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
   constructor(
     private lyrs: LayerListService,
     private ms: EsriMapService,
-    // private anl: Angulartics2,
     private res: ResponsiveService,
     private loc: Location,
     private rtr: Router,
@@ -37,7 +34,6 @@ export class LayerListCategorizedComponent extends LayerListComponent implements
     private hs: RouterHistoryService,
     private env: EnvironmentService
   ) {
-    // super(lyrs, ms, anl, res, loc, rtr, rt, hs, env);
     super(lyrs, ms, res, loc, rtr, rt, hs, env);
   }
 

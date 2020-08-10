@@ -43,3 +43,6 @@ ormconfig.*
 
 # OIDC Configurations
 oidcconfig.*
+oidc-client-config.*
+oidc-provider-config.*
+oidc.db

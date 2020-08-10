@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { Lockdown, CountyClaim, EntityValue } from '@tamu-gisc/covid/common/entities';
@@ -35,11 +36,33 @@ export class LockdownsService {
   }
 
   public getAllLockdownsForUser(email: string) {
-    return this.http.get<Partial<ActiveLockdown>>(`${this.resource}/user/${email}`);
+    return this.http.get<Array<Lockdown>>(`${this.resource}/user/${email}`).pipe(
+      map((lockdowns) => {
+        return lockdowns.sort((a, b) => {
+          return Date.parse((b.created as unknown) as string) - Date.parse((a.created as unknown) as string);
+        });
+      })
+    );
   }
 
   public getLockdownsAdmin(stateFips?: number | string, countyFips?: number | string, email?: string) {
-    return this.http.post<Array<Partial<Lockdown>>>(`${this.resource}/admin`, { stateFips, countyFips, email });
+    return this.http.post<Array<Partial<Lockdown>>>(
+      `${this.resource}/admin`,
+      { stateFips, countyFips, email },
+      {
+        withCredentials: true
+      }
+    );
+  }
+
+  public getLockdownInfos(claimGuid: string) {
+    return this.http.get<Partial<Lockdown>>(`${this.resource}/admin/lockdown/${claimGuid}`, {
+      withCredentials: true
+    });
+  }
+
+  public getLockdownInfoDetails(infoGuid: string) {
+    return this.http.get<ActiveLockdown>(`${this.resource}/info/${infoGuid}`);
   }
 }
 

@@ -27,10 +27,10 @@ export class UsersService {
   }
 
   public getUsers() {
-    return this.http.get<Array<Partial<User>>>(this.resource);
+    return this.http.get<Array<Partial<User>>>(this.resource, { withCredentials: true });
   }
 
   public getUsersWithStats() {
-    return this.http.get<Array<UserWithStats>>(`${this.resource}/stats`);
+    return this.http.get<Array<UserWithStats>>(`${this.resource}/stats`, { withCredentials: true });
   }
 }

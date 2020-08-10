@@ -5,11 +5,10 @@
 
 import { NestFactory } from '@nestjs/core';
 import passport from 'passport';
-import flash from 'connect-flash';
 import session from 'express-session';
 const SQLiteStore = require('connect-sqlite3')(session);
 
-import { OpenIdClient } from '@tamu-gisc/oidc';
+import { OpenIdClient } from '@tamu-gisc/oidc/client';
 import { AppModule } from './app/app.module';
 import { OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL } from './environments/oidcconfig';
 import * as path from 'path';
@@ -26,7 +25,7 @@ async function bootstrap() {
     db: 'sessions.db',
     concurrentDB: true,
     table: 'sessions_nestoidc',
-    dir: __dirname  // WIN,
+    dir: __dirname // WIN,
   });
 
   app.use(
@@ -44,7 +43,6 @@ async function bootstrap() {
 
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use(flash());
   await app.listen(3001);
 }
 

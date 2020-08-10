@@ -26,7 +26,7 @@ export class DashboardCountyClaimsComponent implements OnInit {
         return email !== undefined;
       }),
       switchMap((email) => {
-        return this.cl.getAllUserCountyClaimsSortedByCounty(email);
+        return this.cl.getAllUserCountyClaims(email);
       }),
       shareReplay(1)
     );

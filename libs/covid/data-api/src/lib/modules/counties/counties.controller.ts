@@ -1,4 +1,4 @@
-import { Controller, Delete, Patch, Param, Post, Get } from '@nestjs/common';
+import { Controller, Delete, Patch, Param, Post, Get, HttpException, HttpStatus } from '@nestjs/common';
 
 import { County } from '@tamu-gisc/covid/common/entities';
 
@@ -22,6 +22,24 @@ export class CountiesController extends BaseController<County> {
         success: false,
         message: err.message
       };
+    }
+  }
+
+  @Get('summary')
+  public async getCountySummary() {
+    try {
+      const summary = await this.service.getSummary();
+
+      return summary;
+    } catch (err) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: `Could not get county summary, ${err.message}`,
+          success: false
+        },
+        500
+      );
     }
   }
 
@@ -51,16 +69,37 @@ export class CountiesController extends BaseController<County> {
 
   @Post('')
   public insertState() {
-    return 'Not implemented.';
+    throw new HttpException(
+      {
+        status: HttpStatus.NOT_IMPLEMENTED,
+        success: false,
+        message: 'Not implemented'
+      },
+      HttpStatus.NOT_IMPLEMENTED
+    );
   }
 
   @Patch(':id')
   public updateState() {
-    return 'Not implemented.';
+    throw new HttpException(
+      {
+        status: HttpStatus.NOT_IMPLEMENTED,
+        success: false,
+        message: 'Not implemented'
+      },
+      HttpStatus.NOT_IMPLEMENTED
+    );
   }
 
   @Delete(':id')
   public deleteState() {
-    return 'Not implemented.';
+    throw new HttpException(
+      {
+        status: HttpStatus.NOT_IMPLEMENTED,
+        success: false,
+        message: 'Not implemented'
+      },
+      HttpStatus.NOT_IMPLEMENTED
+    );
   }
 }

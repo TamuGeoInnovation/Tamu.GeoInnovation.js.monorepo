@@ -1,5 +1,6 @@
 export * from './lib/geoservices-data-access.module';
 
+export * from './lib/services/auth/interceptor.service';
 export * from './lib/services/auth/auth.service';
 export * from './lib/guards/auth.guard';
 

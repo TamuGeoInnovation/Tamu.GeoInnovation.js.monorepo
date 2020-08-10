@@ -1,0 +1,15 @@
+<canvas id="canvas"></canvas>
+<script src="/qrcode.min.js"></script>
+
+<script>
+  function setup() {
+    
+    QRCode.toDataURL(document.getElementById('canvas'), JSON.parse('<%- otpPath %>'), {
+      errorCorrectionLevel: "L",
+    }, function (error) {
+      if (error) console.error(error)
+      console.log('success!');
+    })
+  }
+</script> 
+<script>setup();</script>
