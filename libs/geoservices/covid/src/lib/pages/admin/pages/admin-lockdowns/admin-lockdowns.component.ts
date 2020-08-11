@@ -1,22 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { startWith, switchMap, shareReplay } from 'rxjs/operators';
+import { switchMap, shareReplay } from 'rxjs/operators';
 
-import { County, Lockdown, State, User } from '@tamu-gisc/covid/common/entities';
+import { Lockdown } from '@tamu-gisc/covid/common/entities';
 import { CountiesService, LockdownsService, StatesService, UsersService } from '@tamu-gisc/geoservices/data-access';
+
+import { UrlFormHandlerComponent } from '../url-form-handler/url-form-handler.component';
 
 @Component({
   selector: 'tamu-gisc-admin-lockdowns',
   templateUrl: './admin-lockdowns.component.html',
   styleUrls: ['./admin-lockdowns.component.scss']
 })
-export class AdminLockdownsComponent implements OnInit {
-  public form: FormGroup;
-
-  public states: Observable<Array<Partial<State>>>;
-  public counties: Observable<Array<Partial<County>>>;
-  public users: Observable<Array<Partial<User>>>;
+export class AdminLockdownsComponent extends UrlFormHandlerComponent implements OnInit {
   public lockdowns: Observable<Array<Partial<Lockdown>>>;
 
   constructor(
@@ -24,27 +22,16 @@ export class AdminLockdownsComponent implements OnInit {
     private st: StatesService,
     private ct: CountiesService,
     private us: UsersService,
-    private ls: LockdownsService
-  ) {}
+    private ls: LockdownsService,
+    private rt: ActivatedRoute
+  ) {
+    super(rt, fb, st, ct, us);
+  }
 
   public ngOnInit() {
-    this.form = this.fb.group({
-      state: [undefined],
-      county: [undefined],
-      email: [undefined]
-    });
-
-    this.states = this.st.getStates();
-    this.users = this.us.getUsers();
-
-    this.counties = this.form.get('state').valueChanges.pipe(
-      switchMap((stateFips) => {
-        return this.ct.getCountiesForState(stateFips);
-      })
-    );
+    super.ngOnInit();
 
     this.lockdowns = this.form.valueChanges.pipe(
-      startWith({}),
       switchMap((form) => {
         return this.ls.getLockdownsAdmin(form.state, form.county, form.email);
       }),

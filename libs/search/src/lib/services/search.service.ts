@@ -1,15 +1,14 @@
-import { Injectable, Component } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ReplaySubject, Observable, BehaviorSubject, forkJoin, of, from } from 'rxjs';
 import { toArray, concatMap, switchMap } from 'rxjs/operators';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { CompoundOperator, makeWhere } from '@tamu-gisc/common/utils/database';
 import { makeUrlParams } from '@tamu-gisc/common/utils/routing';
 
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class SearchService<T> {
   private _sources: SearchSource[];
 

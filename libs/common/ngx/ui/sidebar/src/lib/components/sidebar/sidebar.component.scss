@@ -12,7 +12,6 @@
   padding: 1rem 0.5rem;
   top: 0;
   z-index: 100;
-  // overflow-y: scroll;
 
   &.left {
     left: 0;
@@ -20,6 +19,12 @@
 
   &.right {
     right: 0;
+  }
+
+  // Make the first div inside the sidebar take up the height of the sidebar. This enables auto vertical overflow scroll on the
+  // sidebar content area
+  & > div {
+    height: inherit;
   }
 }
 
@@ -84,6 +89,6 @@
 
 .tabs-content-container {
   height: inherit;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 }

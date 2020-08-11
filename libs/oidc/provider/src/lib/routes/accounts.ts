@@ -3,7 +3,7 @@ import { authenticator } from 'otplib';
 import Provider from 'oidc-provider';
 
 import { AccountManager } from '../sequelize/account_manager';
-import { TwoFactorAuthUtils } from '../_utils/twofactorauth.util';
+import { TwoFactorAuthUtils } from '../misc/twofactor-auth-utils';
 import { GISCEmailer } from '../mailer';
 
 export const accounts_routes = (app: express.Application, provider: Provider) => {

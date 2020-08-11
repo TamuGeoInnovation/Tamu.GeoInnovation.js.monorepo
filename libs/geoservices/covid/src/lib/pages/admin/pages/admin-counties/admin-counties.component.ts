@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { shareReplay, map } from 'rxjs/operators';
 
 import { CountiesService } from '@tamu-gisc/geoservices/data-access';
-import { CountyStats } from '@tamu-gisc/covid/data-api';
-import { shareReplay, map } from 'rxjs/operators';
+import { CountyStats, CountyExtended } from '@tamu-gisc/covid/data-api';
 
 @Component({
   selector: 'tamu-gisc-admin-counties',
@@ -14,12 +14,15 @@ export class AdminCountiesComponent implements OnInit {
   public stats: Observable<CountyStats>;
   public summary: Observable<CountySummary>;
 
+  public counties: Observable<Array<CountyExtended>>;
+
   constructor(private ct: CountiesService) {}
 
   public ngOnInit() {
     this.stats = this.ct.getCountyStats().pipe(shareReplay(1));
+    this.counties = this.ct.getCountySummary().pipe(shareReplay(1));
 
-    (this.summary = this.stats.pipe(
+    this.summary = this.stats.pipe(
       map((v) => {
         return Object.entries(v).reduce(
           (acc, [fips, county], index, arr) => {
@@ -51,9 +54,9 @@ export class AdminCountiesComponent implements OnInit {
             coverage: ''
           } as CountySummary
         );
-      })
-    )),
-      shareReplay(1);
+      }),
+      shareReplay(1)
+    );
   }
 }
 

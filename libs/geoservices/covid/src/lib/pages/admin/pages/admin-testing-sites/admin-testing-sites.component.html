@@ -21,16 +21,20 @@
       <div class="floating-table-header">
         <div class="floating-row">
           <div class="column">County</div>
+          <div class="column">State</div>
           <div class="column">Created</div>
           <div class="column">Name</div>
+          <div class="column">Added By</div>
         </div>
       </div>
 
       <div class="floating-table-body">
         <div class="floating-row" *ngFor="let site of sites | async">
-          <div class="column">{{site.claim.county.name}}, {{site.claim.county.stateFips.name}}</div>
+          <div class="column">{{site.claim.county.name}}</div>
+          <div class="column">{{site.claim.county.stateFips.name}}</div>
           <div class="column">{{site.info.created | date : 'medium'}}</div>
           <div class="column">{{site.info.locationName}}</div>
+          <div class="column">{{site.claim.user.email}}</div>
         </div>
       </div>
     </div>
