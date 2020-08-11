@@ -13,11 +13,9 @@ import esri = __esri;
   styleUrls: ['./campus-totals.component.scss']
 })
 export class CampusTotalsComponent implements OnInit {
-  private zones: Observable<Array<esri.Graphic>>;
+  public zones: Observable<Array<esri.Graphic>>;
 
   public zonesSampleAverage: Observable<number>;
-  public totalFocusArea: Observable<number>;
-  public totalNonFocusArea: Observable<number>;
 
   constructor(private sls: SamplingLocationsService, private ezs: EffluentZonesService) {}
 
@@ -50,24 +48,6 @@ export class CampusTotalsComponent implements OnInit {
             return acc + curr.attributes.Sample.result;
           }, 0) / validZones.length
         );
-      }),
-      shareReplay(1)
-    );
-
-    this.totalFocusArea = this.zones.pipe(
-      map((zones) => {
-        return zones.reduce((acc, curr) => {
-          return acc + curr.attributes.Focus;
-        }, 0);
-      }),
-      shareReplay(1)
-    );
-
-    this.totalNonFocusArea = this.zones.pipe(
-      map((zones) => {
-        return zones.reduce((acc, curr) => {
-          return acc + curr.attributes.Additional;
-        }, 0);
       }),
       shareReplay(1)
     );

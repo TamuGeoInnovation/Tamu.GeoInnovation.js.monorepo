@@ -3,6 +3,4 @@
   <div class="stat-title">Signal Average</div>
 </div>
 
-<p>Total Focus Area: {{totalFocusArea | async | number}}</p>
-
-<p>Total Non-Focus Area: {{totalNonFocusArea | async | number}}</p>
+<tamu-gisc-coverage-chart [zones]="zones"></tamu-gisc-coverage-chart>
