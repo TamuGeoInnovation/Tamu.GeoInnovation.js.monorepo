@@ -28,7 +28,7 @@ export class SamplingLocationsService {
   public getSamplingLocation(location: string | { tier: number; sample: number }) {
     let loc = { tier: undefined, sample: undefined };
 
-    if (location instanceof String) {
+    if (typeof location === 'string') {
       loc.tier = location.split('-')[0];
       loc.sample = location.split('-').pop();
     } else if (location instanceof Object) {

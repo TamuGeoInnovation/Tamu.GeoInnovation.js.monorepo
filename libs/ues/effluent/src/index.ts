@@ -1,3 +1,4 @@
+export * from './lib/modules/core/core.module';
 export * from './lib/modules/map/map.module';
 export * from './lib/modules/sidebar/sidebar.module';
 

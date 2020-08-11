@@ -12,6 +12,7 @@ import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
 import { ChartsModule } from '@tamu-gisc/charts';
 
+import { UESEffluentCoreModule } from '../core/core.module';
 import { SidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
 import { SidebarRelationshipsComponent } from './components/sidebar-relationships/sidebar-relationships.component';
@@ -29,7 +30,8 @@ import { SidebarOverviewComponent } from './components/sidebar-overview/sidebar-
     LayerListModule,
     LegendModule,
     UESCoreUIModule,
-    ChartsModule
+    ChartsModule,
+    UESEffluentCoreModule
   ],
   declarations: [SidebarComponent, SidebarReferenceComponent, SidebarRelationshipsComponent, SidebarOverviewComponent],
   exports: [SidebarComponent]

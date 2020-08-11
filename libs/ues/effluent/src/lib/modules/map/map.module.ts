@@ -35,6 +35,7 @@ import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 
 import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
 
+import { SidebarOverviewComponent } from '../sidebar/components/sidebar-overview/sidebar-overview.component';
 import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { MapComponent } from './map.component';
@@ -61,7 +62,8 @@ const routes: Routes = [
         canActivateChild: [DesktopGuard],
         children: [
           { path: '', component: SidebarReferenceComponent },
-          { path: 'relationships', component: SidebarRelationshipsComponent }
+          { path: 'relationships', component: SidebarRelationshipsComponent },
+          { path: 'overview', component: SidebarOverviewComponent }
         ]
       },
       {

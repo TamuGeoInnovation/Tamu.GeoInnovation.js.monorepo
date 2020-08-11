@@ -28,7 +28,7 @@ export class EffluentZonesService {
         // Early return if none of the optional parameters are provided.
         //
         // The query will flat out fail without either of them
-        if (geometry === undefined || tier === undefined) {
+        if (geometry === undefined && tier === undefined) {
           return of(undefined);
         }
 

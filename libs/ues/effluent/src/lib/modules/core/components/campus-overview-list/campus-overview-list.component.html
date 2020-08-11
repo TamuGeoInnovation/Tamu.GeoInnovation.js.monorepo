@@ -1,0 +1,16 @@
+<div class="zone-overview-tile" *ngFor="let zone of zones | async">
+  <div class="zone-metric">
+    <div class="zone-metric-value">{{zone.attributes.SampleNumber}}</div>
+    <div class="zone-metric-name">Sample</div>
+  </div>
+
+  <div class="zone-metric">
+    <div class="zone-metric-value">{{zone.attributes.Focus | number}}</div>
+    <div class="zone-metric-name">Focus Area (Sq. Ft.)</div>
+  </div>
+
+  <div class="zone-metric">
+    <div class="zone-metric-value" [ngClass]="{'metric-safe': zone?.attributes?.Signal?.result <= .45, 'metric-warning': zone?.attributes?.Signal?.result > .45, 'metric-alert' : zone?.attributes?.Signal?.result > .6}">{{zone?.attributes?.Signal?.result ? zone.attributes.Signal.result : 'N/A'}}</div>
+    <div class="zone-metric-name">Signal (ppm)</div>
+  </div>
+</div>
