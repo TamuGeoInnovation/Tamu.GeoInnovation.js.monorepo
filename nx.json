@@ -301,6 +301,18 @@
     },
     "oidc-provider-nestjs": {
       "tags": []
+    },
+    "oidc-admin-angular": {
+      "tags": []
+    },
+    "oidc-admin-angular-e2e": {
+      "tags": []
+    },
+    "oidc-admin-nest": {
+      "tags": []
+    },
+    "oidc-admin": {
+      "tags": []
     }
   }
 }
