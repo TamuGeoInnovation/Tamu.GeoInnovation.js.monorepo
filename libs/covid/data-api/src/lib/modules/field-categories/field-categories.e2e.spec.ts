@@ -62,7 +62,7 @@ describe('Field Category Setup', () => {
       await fieldCategoriesRepo.save(fieldCategorySR);
       await fieldCategoriesRepo.save(fieldCategorySOS);
       const catsWithTypes = await fieldCategoriesService.getAllCategoriesWithTypes();
-      expect(catsWithTypes[0].types).toEqual([]);
+      expect(catsWithTypes[0].types).toMatchObject([{ name: 'Foo' }]);
     });
 
     it('getCategoryWithValues.', async () => {
@@ -73,7 +73,7 @@ describe('Field Category Setup', () => {
       await fieldCategoriesRepo.save(fieldCategorySR);
       await fieldCategoriesRepo.save(fieldCategorySOS);
       const catsWithTypes = await fieldCategoriesService.getCategoryWithValues(fieldCategoryW.id.toString());
-      expect(catsWithTypes[0].values).toEqual([]);
+      expect(catsWithTypes[0].values).toMatchObject([]);
     });
 
     it('getFieldTypesForCategory.', async () => {
@@ -85,7 +85,7 @@ describe('Field Category Setup', () => {
       await fieldCategoriesRepo.save(fieldCategorySOS);
       const catsWithTypes = await fieldCategoriesService.getAllCategoriesWithTypes();
       const typesForCats = await fieldCategoriesService.getFieldTypesForCategory(fieldCategoryW.id);
-      expect(typesForCats).toEqual(catsWithTypes[0]);
+      expect(typesForCats).toMatchObject(catsWithTypes[0]);
     });
 
     it('addFieldTypeToCategory.', async () => {
@@ -98,7 +98,7 @@ describe('Field Category Setup', () => {
       await fieldTypeRepo.save(fieldTypeTest);
       await fieldCategoriesService.addFieldTypeToCategory(fieldCategoryW.id, fieldTypeTest.guid);
       const catsWithTypes = await fieldCategoriesService.getAllCategoriesWithTypes();
-      expect(catsWithTypes[0].types).toEqual([fieldTypeTest]);
+      expect(catsWithTypes[0].types).toMatchObject([fieldTypeTest]);
     });
     it('addValueToCategory.', async () => {
       await fieldCategoriesRepo.save(fieldCategoryW);

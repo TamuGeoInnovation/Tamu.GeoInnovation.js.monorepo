@@ -164,7 +164,7 @@ describe('Phone-Numbers Setup', () => {
     infos: [countyClaimInfoTest]
   };
 
-  describe('Phone-Numbers Integration Tests', async () => {
+  describe('Phone-Numbers Integration Tests', () => {
     it('getPhoneNumbersForCounty', async () => {
       await fieldCategoryRepo.save(fieldCategoryW);
       await fieldCategoryRepo.save(fieldCategoryPN);
