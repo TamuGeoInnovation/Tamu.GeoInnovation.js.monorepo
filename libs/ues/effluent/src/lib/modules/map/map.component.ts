@@ -4,14 +4,15 @@ import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
+import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { IEffluentSample } from '@tamu-gisc/ues/common/ngx';
 
+import { SamplingLocationsService } from '../core/services/sampling-locations.service';
+
 import esri = __esri;
-import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
-import { layer } from 'esri/views/3d/support/LayerPerformanceInfo';
 
 @Component({
   selector: 'tamu-gisc-map',
@@ -25,18 +26,17 @@ export class MapComponent implements OnInit, OnDestroy {
   public config: MapConfig;
 
   private _destroy$: Subject<boolean> = new Subject();
-  private _effluentSamplesResource: Array<IEffluentSample>;
 
   constructor(
     private responsiveService: ResponsiveService,
     private environment: EnvironmentService,
     private mapService: EsriMapService,
-    private layerListService: LayerListService
+    private layerListService: LayerListService,
+    private samplingLocationsService: SamplingLocationsService
   ) {}
 
   public ngOnInit() {
     const connections = this.environment.value('Connections');
-    this._effluentSamplesResource = this.environment.value('effluentSamples');
 
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
       this.isMobile = value;
@@ -182,9 +182,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private generateUniqueValueRenderer(level: number) {
     // Get a list of samples which match the given level
-    const eligible = this._effluentSamplesResource.filter((sample) => {
-      return sample.sample.split('-')[0] === level.toString();
-    });
+    const eligible = this.samplingLocationsService.getSamplesForTier(level);
 
     // Map to latest value
     const infos = eligible.reduce((acc, curr) => {

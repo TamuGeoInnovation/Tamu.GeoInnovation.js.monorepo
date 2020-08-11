@@ -35,12 +35,32 @@ export class SamplingLocationsService {
       loc = { ...location };
     }
 
-    if (loc.tier !== undefined && loc.sample !== undefined) {
-      return this.samplesResource.find((r) => {
-        return r.sample === `${loc.tier}-${loc.sample}`;
-      });
-    } else {
+    if (loc.tier === undefined && loc.sample === undefined) {
       return null;
+    }
+
+    const l = this.samplesResource.find((r) => {
+      return r.sample === `${loc.tier}-${loc.sample}`;
+    });
+
+    if (!l) {
+      return null;
+    }
+
+    return JSON.parse(JSON.stringify(l));
+  }
+
+  public getSamplesForTier(tier?: number): Array<IEffluentSample> {
+    if (tier !== undefined) {
+      const filtered = this.samplesResource.filter((sample) => {
+        const st = parseInt(sample.sample.split('-')[0], 10);
+
+        return st === tier;
+      });
+
+      return JSON.parse(JSON.stringify(filtered));
+    } else {
+      return JSON.parse(JSON.stringify(this.samplesResource));
     }
   }
 

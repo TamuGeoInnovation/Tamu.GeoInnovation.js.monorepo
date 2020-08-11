@@ -11,6 +11,6 @@
 
   <div class="zone-metric">
     <div class="zone-metric-value" [ngClass]="{'metric-safe': zone?.attributes?.Signal?.result <= .45, 'metric-warning': zone?.attributes?.Signal?.result > .45, 'metric-alert' : zone?.attributes?.Signal?.result > .6}">{{zone?.attributes?.Signal?.result ? zone.attributes.Signal.result : 'N/A'}}</div>
-    <div class="zone-metric-name">Signal (ppm)</div>
+    <div class="zone-metric-name">Signal</div>
   </div>
 </div>
