@@ -21,7 +21,7 @@ import { CountyClaimsService } from './county-claims.service';
 import { CountyClaimsModule } from './county-claims.module';
 import { CATEGORY } from '@tamu-gisc/covid/common/enums';
 
-describe('County Claims Integration Tests', () => {
+describe('County Claims Setup', () => {
   let countyClaimsService: CountyClaimsService;
 
   let countyClaimsRepo: Repository<CountyClaim>;

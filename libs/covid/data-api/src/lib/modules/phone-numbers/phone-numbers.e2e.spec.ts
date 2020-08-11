@@ -25,7 +25,7 @@ import { PhoneNumbersService } from './phone-numbers.service';
 import { PhoneNumbersModule } from './phone-numbers.module';
 import { CATEGORY } from '@tamu-gisc/covid/common/enums';
 
-describe('Phone-Numbers Integration Tests', () => {
+describe('Phone-Numbers Setup', () => {
   let phoneNumberService: PhoneNumbersService;
   let countyClaimsService: CountyClaimsService;
   let usersService: UsersService;
@@ -164,7 +164,7 @@ describe('Phone-Numbers Integration Tests', () => {
     infos: [countyClaimInfoTest]
   };
 
-  describe('Validation', async () => {
+  describe('Phone-Numbers Integration Tests', async () => {
     it('getPhoneNumbersForCounty', async () => {
       await fieldCategoryRepo.save(fieldCategoryW);
       await fieldCategoryRepo.save(fieldCategoryPN);
@@ -196,8 +196,7 @@ describe('Phone-Numbers Integration Tests', () => {
       await countyClaimsRepo.save(countyClaimTest);
 
       const expected = await phoneNumberService.getPhoneNumbersForCounty(countyTest.countyFips.toString());
-
-      expect(expected[0]).toEqual(eV);
+      expect(expected).toMatchObject([eV]);
     });
 
     it('getPhoneNumbersForClaimInfo', async () => {
@@ -231,8 +230,7 @@ describe('Phone-Numbers Integration Tests', () => {
       await countyClaimsRepo.save(countyClaimTest);
 
       const expected = await phoneNumberService.getPhoneNumbersForClaimInfo(countyClaimTest.infos[0].guid);
-
-      expect(expected[0]).toEqual(eV);
+      expect(expected).toMatchObject([eV]);
     });
   });
 });

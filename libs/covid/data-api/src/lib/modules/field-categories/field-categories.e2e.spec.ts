@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
-import { Repository, getConnection } from 'typeorm';
+import { Repository, getConnection, DeepPartial } from 'typeorm';
 import { CategoryValue, FieldType, FieldCategory } from '@tamu-gisc/covid/common/entities';
 
 import { config } from '@tamu-gisc/covid/data-api';
@@ -8,7 +8,7 @@ import { config } from '@tamu-gisc/covid/data-api';
 import { FieldCategoriesService } from './field-categories.service';
 import { FieldCategoriesModule } from './field-categories.module';
 
-describe('fieldCategory Integration Tests', () => {
+describe('Field Category Setup', () => {
   let fieldCategoriesService: FieldCategoriesService;
 
   let fieldCategoriesRepo: Repository<FieldCategory>;
@@ -32,20 +32,6 @@ describe('fieldCategory Integration Tests', () => {
     categoryValueRepo = module.get<Repository<CategoryValue>>(getRepositoryToken(CategoryValue));
   });
 
-  /**
-   * after each test, delete everything from each table
-   */
-
-  afterEach(async () => {
-    await categoryValueRepo.query(`DELETE FROM category_values`);
-    await fieldTypeRepo.query(`DELETE FROM field_types`);
-    await fieldCategoriesRepo.query(`DELETE FROM field_categories`);
-  });
-
-  /**
-   * after all tests are done, delete everything from each table
-   */
-
   afterAll(async () => {
     const connection = getConnection();
     await connection
@@ -53,69 +39,77 @@ describe('fieldCategory Integration Tests', () => {
       .delete()
       .from(CategoryValue)
       .execute();
-    await connection
-      .createQueryBuilder()
-      .delete()
-      .from(FieldType)
-      .execute();
-    await connection
-      .createQueryBuilder()
-      .delete()
-      .from(FieldCategory)
-      .execute();
     await connection.close();
   });
 
-  const fieldCategoryTest: Partial<FieldCategory> = {
-    id: 1,
-    name: 'Foo'
-  };
-
-  const fieldCategoryTestTwo: Partial<FieldCategory> = {
-    id: 2,
-    name: 'Bar'
-  };
+  const fieldCategoryW: DeepPartial<FieldCategory> = { name: 'Website', id: 1 };
+  const fieldCategoryPN: DeepPartial<FieldCategory> = { name: 'PhoneNumber', id: 2 };
+  const fieldCategorySO: DeepPartial<FieldCategory> = { name: 'SiteOwners', id: 3 };
+  const fieldCategorySS: DeepPartial<FieldCategory> = { name: 'SiteServices', id: 4 };
+  const fieldCategorySR: DeepPartial<FieldCategory> = { name: 'SiteRestrictions', id: 5 };
+  const fieldCategorySOS: DeepPartial<FieldCategory> = { name: 'SiteOperationalStatus', id: 6 };
 
   const fieldTypeTest: Partial<FieldType> = {
     name: 'Foo',
     guid: 'Foo'
   };
-  it('getAllCategoriesWithTypes.', async () => {
-    await fieldCategoriesRepo.save(fieldCategoryTest);
-    const catsWithTypes = await fieldCategoriesService.getAllCategoriesWithTypes();
-    expect(catsWithTypes[0].types).toEqual([]);
-  });
+  describe('Field Category Integration Test', () => {
+    it('getAllCategoriesWithTypes.', async () => {
+      await fieldCategoriesRepo.save(fieldCategoryW);
+      await fieldCategoriesRepo.save(fieldCategoryPN);
+      await fieldCategoriesRepo.save(fieldCategorySO);
+      await fieldCategoriesRepo.save(fieldCategorySS);
+      await fieldCategoriesRepo.save(fieldCategorySR);
+      await fieldCategoriesRepo.save(fieldCategorySOS);
+      const catsWithTypes = await fieldCategoriesService.getAllCategoriesWithTypes();
+      expect(catsWithTypes[0].types).toEqual([]);
+    });
 
-  it('getCategoryWithValues.', async () => {
-    await fieldCategoriesRepo.save(fieldCategoryTest);
-    const catsWithTypes = await fieldCategoriesService.getCategoryWithValues(fieldCategoryTest.id.toString());
-    expect(catsWithTypes[0].values).toEqual([]);
-  });
+    it('getCategoryWithValues.', async () => {
+      await fieldCategoriesRepo.save(fieldCategoryW);
+      await fieldCategoriesRepo.save(fieldCategoryPN);
+      await fieldCategoriesRepo.save(fieldCategorySO);
+      await fieldCategoriesRepo.save(fieldCategorySS);
+      await fieldCategoriesRepo.save(fieldCategorySR);
+      await fieldCategoriesRepo.save(fieldCategorySOS);
+      const catsWithTypes = await fieldCategoriesService.getCategoryWithValues(fieldCategoryW.id.toString());
+      expect(catsWithTypes[0].values).toEqual([]);
+    });
 
-  it('getFieldTypesForCategory.', async () => {
-    await fieldCategoriesRepo.save(fieldCategoryTest);
-    const catsWithTypes = await fieldCategoriesService.getAllCategoriesWithTypes();
-    const typesForCats = await fieldCategoriesService.getFieldTypesForCategory(fieldCategoryTest.id);
-    expect(typesForCats).toEqual(catsWithTypes[0]);
-  });
+    it('getFieldTypesForCategory.', async () => {
+      await fieldCategoriesRepo.save(fieldCategoryW);
+      await fieldCategoriesRepo.save(fieldCategoryPN);
+      await fieldCategoriesRepo.save(fieldCategorySO);
+      await fieldCategoriesRepo.save(fieldCategorySS);
+      await fieldCategoriesRepo.save(fieldCategorySR);
+      await fieldCategoriesRepo.save(fieldCategorySOS);
+      const catsWithTypes = await fieldCategoriesService.getAllCategoriesWithTypes();
+      const typesForCats = await fieldCategoriesService.getFieldTypesForCategory(fieldCategoryW.id);
+      expect(typesForCats).toEqual(catsWithTypes[0]);
+    });
 
-  it('addFieldTypeToCategory.', async () => {
-    await fieldCategoriesRepo.save(fieldCategoryTest);
-    await fieldTypeRepo.save(fieldTypeTest);
-    await fieldCategoriesService.addFieldTypeToCategory(fieldCategoryTest.id, fieldTypeTest.guid);
-    const catsWithTypes = await fieldCategoriesService.getAllCategoriesWithTypes();
-    expect(catsWithTypes[0].types).toEqual([fieldTypeTest]);
-  });
-  it('addValueToCategory.', async () => {
-    await fieldCategoriesRepo.save(fieldCategoryTest);
-    await fieldCategoriesRepo.save(fieldCategoryTestTwo);
-    await fieldTypeRepo.save(fieldTypeTest);
-    const typesForCats = await fieldCategoriesService.addValueToCategory(
-      fieldCategoryTest.id.toString(),
-      fieldTypeTest.guid
-    );
-    expect([typesForCats]).toMatchObject(
-      await fieldCategoriesService.getCategoryWithValues(fieldCategoryTest.id.toString())
-    );
+    it('addFieldTypeToCategory.', async () => {
+      await fieldCategoriesRepo.save(fieldCategoryW);
+      await fieldCategoriesRepo.save(fieldCategoryPN);
+      await fieldCategoriesRepo.save(fieldCategorySO);
+      await fieldCategoriesRepo.save(fieldCategorySS);
+      await fieldCategoriesRepo.save(fieldCategorySR);
+      await fieldCategoriesRepo.save(fieldCategorySOS);
+      await fieldTypeRepo.save(fieldTypeTest);
+      await fieldCategoriesService.addFieldTypeToCategory(fieldCategoryW.id, fieldTypeTest.guid);
+      const catsWithTypes = await fieldCategoriesService.getAllCategoriesWithTypes();
+      expect(catsWithTypes[0].types).toEqual([fieldTypeTest]);
+    });
+    it('addValueToCategory.', async () => {
+      await fieldCategoriesRepo.save(fieldCategoryW);
+      await fieldCategoriesRepo.save(fieldCategoryPN);
+      await fieldCategoriesRepo.save(fieldCategorySO);
+      await fieldCategoriesRepo.save(fieldCategorySS);
+      await fieldCategoriesRepo.save(fieldCategorySR);
+      await fieldCategoriesRepo.save(fieldCategorySOS);
+      await fieldTypeRepo.save(fieldTypeTest);
+      const typesForCats = await fieldCategoriesService.addValueToCategory(fieldCategoryW.id.toString(), fieldTypeTest.guid);
+      expect([typesForCats]).toMatchObject(await fieldCategoriesService.getCategoryWithValues(fieldCategoryW.id.toString()));
+    });
   });
 });

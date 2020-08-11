@@ -198,7 +198,7 @@ describe('Testing Site Setup', () => {
   };
 
   const locationTest: DeepPartial<Location> = {
-    guid: 'Reee',
+    guid: 'Foo',
     address1: 'Foo',
     address2: 'Foo',
     city: 'Foo',
@@ -290,7 +290,20 @@ describe('Testing Site Setup', () => {
       };
       await testingSitesService.createOrUpdateTestingSite(testingSiteTest);
       const gottenSite = await testingSitesService.getSitesForCounty(countyTest.countyFips);
-      expect(gottenSite[0].claim.county.name).toEqual(countyTest.name);
+      expect(gottenSite).toMatchObject([
+        {
+          claim: { county: { countyFips: 1, name: 'Foo' } },
+          info: {
+            capacity: 1,
+            location: { address1: 'Foo' },
+            phoneNumbers: [{ value: { category: { id: 2 } } }],
+            websites: [{ value: { category: { id: 1 } } }]
+          },
+          location: {
+            address1: 'Foo'
+          }
+        }
+      ]);
     });
 
     it('getSitesForUser', async () => {
@@ -372,7 +385,20 @@ describe('Testing Site Setup', () => {
       };
       await testingSitesService.createOrUpdateTestingSite(testingSiteTest);
       const gottenSite = await testingSitesService.getSitesForUser(userTest.email);
-      expect(gottenSite[0].info.capacity).toEqual(1);
+      expect(gottenSite).toMatchObject([
+        {
+          claim: { user: { guid: 'Bar' } },
+          info: {
+            capacity: 1,
+            location: { address1: 'Foo' },
+            phoneNumbers: [{ value: { category: { id: 2 } } }],
+            websites: [{ value: { category: { id: 1 } } }]
+          },
+          location: {
+            address1: 'Foo'
+          }
+        }
+      ]);
     });
 
     it('getTestingSitesSortedByCounty', async () => {
@@ -454,7 +480,20 @@ describe('Testing Site Setup', () => {
       };
       await testingSitesService.createOrUpdateTestingSite(testingSiteTest);
       const gottenSite = await testingSitesService.getTestingSitesSortedByCounty();
-      expect(gottenSite[0].claim.county.name).toEqual(countyTest.name);
+      expect(gottenSite).toMatchObject([
+        {
+          claim: { county: { countyFips: 1, name: 'Foo' } },
+          info: {
+            capacity: 1,
+            location: { address1: 'Foo' },
+            phoneNumbers: [{ value: { category: { id: 2 } } }],
+            websites: [{ value: { category: { id: 1 } } }]
+          },
+          location: {
+            address1: 'Foo'
+          }
+        }
+      ]);
     });
     it('getInfosForSite', async () => {
       await fieldCategoryRepo.save(fieldCategoryW);
@@ -536,7 +575,7 @@ describe('Testing Site Setup', () => {
       await testingSitesService.createOrUpdateTestingSite(testingSiteTest);
       const gottenSiteFor = await testingSitesService.getTestingSitesSortedByCounty();
       const gottenSite = await testingSitesService.getInfosForSite(gottenSiteFor[0].guid);
-      expect(gottenSite[0].infos[0].driveThrough).toEqual(true);
+      expect(gottenSite).toMatchObject([{ infos: [{ driveThrough: true, driveThroughCapacity: 1 }] }]);
     });
     it('registerCountyAsSiteless', async () => {
       await fieldCategoryRepo.save(fieldCategoryW);
@@ -595,8 +634,7 @@ describe('Testing Site Setup', () => {
       await countyClaimsService.createOrUpdateClaim(countyClaimTest, [eVPn], [eVW]);
       await testingSitesService.registerCountyAsSiteless(countyTest.countyFips);
       const gottenSites = await testingSitesService.getTestingSitesSortedByCounty();
-      expect(gottenSites).toEqual([]);
-      //
+      expect(gottenSites).toMatchObject([]);
     });
     it('getSiteAndLatestInfo', async () => {
       await fieldCategoryRepo.save(fieldCategoryW);
@@ -677,9 +715,15 @@ describe('Testing Site Setup', () => {
       };
       await testingSitesService.createOrUpdateTestingSite(testingSiteTest);
       const gottenSites = await testingSitesService.getTestingSitesSortedByCounty();
-
       const gottenSite = await testingSitesService.getSiteAndLatestInfo(gottenSites[0].guid);
-      expect(gottenSite.info.capacity).toEqual(1);
+      expect(gottenSite).toMatchObject({
+        claim: undefined,
+        info: {
+          capacity: 1,
+          location: { address1: 'Foo' },
+          phoneNumbers: [{ value: { category: { id: 2, name: 'PhoneNumber' } } }]
+        }
+      });
     });
     it('getTestingSitesAdmin', async () => {
       await fieldCategoryRepo.save(fieldCategoryW);
@@ -764,7 +808,20 @@ describe('Testing Site Setup', () => {
         countyTest.countyFips,
         userTest.email
       );
-      expect(gottenSites[0].claim.county.name).toEqual('Foo');
+      expect(gottenSites).toMatchObject([
+        {
+          claim: { county: { countyFips: 1, stateFips: { name: 'Foo' } }, user: { email: 'Foo@foorbar.com' } },
+          info: {
+            capacity: 1,
+            location: { address1: 'Foo' },
+            phoneNumbers: [{ value: { category: { id: 2 } } }],
+            websites: [{ value: { category: { id: 1 } } }]
+          },
+          location: {
+            address1: 'Foo'
+          }
+        }
+      ]);
     });
   });
 });

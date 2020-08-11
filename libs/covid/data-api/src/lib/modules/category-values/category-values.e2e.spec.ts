@@ -21,24 +21,11 @@ describe('Category Values Integration Tests', () => {
   });
 
   /**
-   * after each test, delete everything from each table
-   */
-
-  afterEach(async () => {
-    await categoryValuesrepo.query(`DELETE FROM category_values`);
-  });
-
-  /**
    * after all tests are done, delete everything from each table
    */
 
   afterAll(async () => {
     const connection = getConnection();
-    await connection
-      .createQueryBuilder()
-      .delete()
-      .from(CategoryValue)
-      .execute();
     await connection.close();
   });
 

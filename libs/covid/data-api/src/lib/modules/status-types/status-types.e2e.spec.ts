@@ -22,17 +22,8 @@ describe('Status Types Integration Tests', () => {
     statusTypesRepo = module.get<Repository<StatusType>>(getRepositoryToken(StatusType));
   });
 
-  afterEach(async () => {
-    await statusTypesRepo.query(`DELETE FROM status_types`);
-  });
-
   afterAll(async () => {
     const connection = getConnection();
-    await connection
-      .createQueryBuilder()
-      .delete()
-      .from(StatusType)
-      .execute();
     await connection.close();
   });
 

@@ -27,7 +27,7 @@ import { LockdownsModule } from '../lockdowns/lockdowns.module';
 import { CountiesService } from '../counties/counties.service';
 import { CountiesModule } from '../counties/counties.module';
 
-describe('Users Integration Tests', () => {
+describe('Users Setup', () => {
   let usersService: UsersService;
   let countiesService: CountiesService;
   let countyClaimsService: CountyClaimsService;
@@ -114,96 +114,39 @@ describe('Users Integration Tests', () => {
       .execute();
     await connection.close();
   });
-
-  const countyTest: DeepPartial<County> = {
-    name: 'Foo',
-    countyFips: 1
-  };
-
-  const userTest: DeepPartial<User> = {
-    email: 'Foo'
-  };
-
-  const userTestTwo: DeepPartial<User> = {
-    email: 'Bar'
-  };
-  describe('getUsers', () => {
-    it('should be able to getUsers', async () => {
-      await usersService.createOne(userTest);
-      await usersService.createOne(userTestTwo);
-      const foundUser = await usersService.getUsers();
-      expect(foundUser).toMatchObject([{ email: 'Bar' }, { email: 'Foo' }]);
+  describe('Users Integration Tests', () => {
+    it('getUsers', async () => {
+      expect(await usersService.getUsers()).toMatchObject([]);
+      await usersService.registerEmail('Foo');
+      expect(await usersService.getUsers()).toMatchObject([{ email: 'Foo' }]);
+      await usersService.registerEmail('Bar');
+      expect(await usersService.getUsers()).toMatchObject([{ email: 'Bar' }, { email: 'Foo' }]);
     });
-  });
 
-  /*describe('getUsersWithStats', () => {
-    it('should be able to getUsersWithStats', async () => {
-      await usersService.createOne(userTest);
-      await countiesService.createOne(countyTest);
-
-      const countyClaimTest: DeepPartial<CountyClaim> = {
-        user: userTest,
-        county: countyTest,
-        statuses: [{ type: { id: 1, name: 'Foo' } }]
-      };
-
-      await countyClaimsService.createOrUpdateClaim(countyClaimTest, [], []);
-      expect(await usersService.getUsersWithStats()).toEqual([]);
+    it('getUsersWithStats', async () => {
+      expect(await usersService.getUsersWithStats()).toMatchObject([]);
+      await usersService.registerEmail('Foo');
+      expect(await usersService.getUsersWithStats()).toMatchObject([{ email: 'Foo' }]);
     });
-  });
 
-  describe('getUsersWithStats', () => {
-    it('should be able to getUsersWithStats', async () => {
-      await lockdownsService.createOne(lockdownTest);
-      await testingSitesService.createOne(testingSiteTest);
-      await usersService.createOne(userTest);
-      await countyClaimsService.createOne(countyClaimTest);
-      expect(await usersService.getUsersWithStats()).toEqual([]);
-    });
-  });
-
-  describe('verifyEmail', () => {
-    it('should return error object for undefined email', async () => {
-      expect(await usersService.verifyEmail(undefined)).toMatchObject({
+    it('verifyEmail', async () => {
+      await usersService.registerEmail('Foo');
+      expect(await usersService.verifyEmail('')).toMatchObject({
         statusCode: 500,
         success: false,
         message: 'Input parameter missing'
       });
-    });
-    it('should return error object for no user with email', async () => {
-      expect(await usersService.verifyEmail('Foobar')).toMatchObject({
+      expect(await usersService.verifyEmail('Bar')).toMatchObject({
         statusCode: 400,
         success: false,
         message: 'Email not found'
       });
+      expect(await usersService.verifyEmail('Foo')).toMatchObject({ email: 'Foo' });
     });
-    it('should be able to verify the existance of an set user email', async () => {
-      await usersService.createOne(userTest);
-      await usersService.createOne(userTestTwo);
-      const foundUser = await usersService.verifyEmail('Foo');
-      expect(foundUser).toMatchObject({ email: 'Foo' });
-    });
-  });
 
-  describe('registerEmail', () => {
-    it('should return error object for undefined email', async () => {
-      expect(await usersService.registerEmail(undefined)).toMatchObject({
-        status: 500,
-        success: false,
-        message: 'Input parameter missing'
-      });
-    });
-    it('should be able to register via Email', async () => {
-      await usersService.createOne(userTest);
-      await usersService.createOne(userTestTwo);
-      const foundUser = await usersService.registerEmail('Foo');
-      expect(foundUser).toMatchObject({ email: 'Foo' });
+    it('registerEmail', async () => {
+      const setEmail = await usersService.registerEmail('Foo');
+      expect(setEmail).toMatchObject({ email: 'Foo' });
     });
   });
-  it('should be able to register via Email for unfound user', async () => {
-    await usersService.createOne(userTest);
-    await usersService.createOne(userTestTwo);
-    const foundUser = await usersService.registerEmail('Foobar');
-    expect(foundUser).toMatchObject({ email: 'Foobar' });
-  });*/
 });

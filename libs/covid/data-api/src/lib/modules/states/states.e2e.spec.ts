@@ -6,7 +6,7 @@ import { StatesModule } from './states.module';
 import { State } from '@tamu-gisc/covid/common/entities';
 import { config } from '@tamu-gisc/covid/data-api';
 
-describe('State Integration Tests', () => {
+describe('State Setup', () => {
   let service: StatesService;
   let repo: Repository<State>;
 
@@ -54,24 +54,28 @@ describe('State Integration Tests', () => {
     abbreviation: 'B'
   };
 
-  describe('search', () => {
-    it('should be able to get a State By search', async () => {
+  describe('State Integration Test', () => {
+    it('Should be able to get a state by search', async () => {
       // create new state
-      await service.createOne(stateTest);
-      await service.createOne(stateTestTwo);
       let foundState = await service.search('9');
+      expect(foundState).toMatchObject([]);
+      await service.createOne(stateTest);
+      foundState = await service.search('9');
       expect(foundState).toMatchObject([stateTest]);
+      await service.createOne(stateTestTwo);
       foundState = await service.search('10');
       expect(foundState).toMatchObject([stateTestTwo]);
     });
-  });
 
-  describe('getStateByFips', () => {
-    it('should be able to get a State By Fips', async () => {
+    it('Should be able to get a state by Fips', async () => {
       // create new state
+      let foundState = await service.getStateByFips(stateTestTwo.stateFips);
+      expect(foundState).toBeUndefined();
       await service.createOne(stateTest);
+      foundState = await service.getStateByFips(stateTest.stateFips);
+      expect(foundState).toMatchObject(stateTest);
       await service.createOne(stateTestTwo);
-      const foundState = await service.getStateByFips(stateTestTwo.stateFips);
+      foundState = await service.getStateByFips(stateTestTwo.stateFips);
       expect(foundState).toMatchObject(stateTestTwo);
     });
   });

@@ -20,7 +20,7 @@ import { WebsitesService } from './websites.service';
 import { WebsitesModule } from './websites.module';
 import { CATEGORY } from '@tamu-gisc/covid/common/enums';
 
-describe('Websites Integration Tests', () => {
+describe('Websites Setup', () => {
   let service: WebsitesService;
 
   let countyClaimsRepo: Repository<CountyClaim>;
@@ -152,7 +152,7 @@ describe('Websites Integration Tests', () => {
     guid: 'Foo',
     infos: [countyClaimInfoTest]
   };
-  describe('Validation ', () => {
+  describe('Websites Integration Testing ', () => {
     it('getWebsitesForCounty', async () => {
       await fieldCategoryRepo.save(fieldCategoryW);
       await fieldCategoryRepo.save(fieldCategoryPN);
@@ -182,9 +182,10 @@ describe('Websites Integration Tests', () => {
       await countiesRepo.save(countyTest);
       await countyClaimInfoRepo.save(countyClaimInfoTest);
       await countyClaimsRepo.save(countyClaimTest);
-
       const expected = await service.getWebsitesForCounty(countyTest.countyFips.toString());
-      expect(expected[0]).toEqual(eV);
+      expect(expected).toMatchObject([
+        { value: { category: { id: 1, name: 'Website' }, type: { name: 'Foooo' }, value: 'Foo' } }
+      ]);
     });
 
     it('getWebsitesForClaimInfo', async () => {
@@ -216,9 +217,10 @@ describe('Websites Integration Tests', () => {
       await countiesRepo.save(countyTest);
       await countyClaimInfoRepo.save(countyClaimInfoTest);
       await countyClaimsRepo.save(countyClaimTest);
-
       const expected = await service.getWebsitesForClaimInfo(countyClaimTest.infos[0].guid);
-      expect(expected[0]).toEqual(eV);
+      expect(expected).toMatchObject([
+        { value: { category: { id: 1, name: 'Website' }, type: { name: 'Foooo' }, value: 'Foo' } }
+      ]);
     });
   });
 });

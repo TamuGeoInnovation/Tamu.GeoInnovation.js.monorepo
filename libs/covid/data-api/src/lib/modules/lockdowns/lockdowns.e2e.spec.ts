@@ -24,7 +24,7 @@ import { CountyClaimsService } from '../county-claims/county-claims.service';
 import { CountyClaimsModule } from '../county-claims/county-claims.module';
 import { CATEGORY } from '@tamu-gisc/covid/common/enums';
 
-describe('County Claims Integration Tests', () => {
+describe('Lockdowns Setup', () => {
   let lockdownsService: LockdownsService;
   let countyClaimsService: CountyClaimsService;
 
@@ -195,7 +195,82 @@ describe('County Claims Integration Tests', () => {
     county: countyTest
   };
 
-  describe('Validation', () => {
+  describe('Lockdowns Integration Tests', () => {
+    it('getActiveLockDownForEmail', async () => {
+      await fieldCategoryRepo.save(fieldCategoryW);
+      await fieldCategoryRepo.save(fieldCategoryPN);
+      await fieldCategoryRepo.save(fieldCategorySO);
+      await fieldCategoryRepo.save(fieldCategorySS);
+      await fieldCategoryRepo.save(fieldCategorySR);
+      await fieldCategoryRepo.save(fieldCategorySOS);
+      await statusTypeRepo.save(statusTypeP);
+      await statusTypeRepo.save(statusTypeC);
+      await statusTypeRepo.save(statusTypeF);
+      await statusTypeRepo.save(statusTypeCan);
+      await statusTypeRepo.save(statusTypeV);
+      await statusTypeRepo.save(statusTypeCSL);
+      await fieldTypeRepo.save(fieldTypeW);
+      await fieldTypeRepo.save(fieldTypePN);
+      const categoryW = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.WEBSITES
+        }
+      });
+      const categoryPN = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.PHONE_NUMBERS
+        }
+      });
+      const typeW = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Web'
+        }
+      });
+      const typePn = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Phone'
+        }
+      });
+      const CvW = categoryValueRepo.create({
+        value: 'WebS',
+        type: typeW,
+        category: categoryW
+      });
+      const CvPn = categoryValueRepo.create({
+        value: 'PhoneN',
+        type: typePn,
+        category: categoryPN
+      });
+      await CvW.save();
+      await CvPn.save();
+      const eVW = entityValueRepo.create({ value: CvW, guid: 'FoooWebsites' });
+      await eVW.save();
+      const eVPn = entityValueRepo.create({ value: CvPn, guid: 'FoooPhone' });
+      await eVPn.save();
+      await usersRepo.save(userTest);
+      await statesRepo.save(stateTest);
+      await countiesRepo.save(countyTest);
+      await countyClaimsService.createOrUpdateClaim(countyClaimTest, [eVPn], [eVW]);
+      const lockDownTest = {
+        claim: { user: userTest.email, county: countyTest.countyFips },
+        guid: 'Foo',
+        info: {
+          phoneNumbers: [eVPn],
+          websites: [eVW],
+          isLockdown: true,
+          startDate: null,
+          endDate: null,
+          protocol: 'Foo',
+          notes: 'Foo'
+        }
+      };
+      await lockdownsService.createOrUpdateLockdown(lockDownTest);
+      const getActive = await lockdownsService.getActiveLockDownForEmail(userTest.email);
+      expect(getActive).toMatchObject({
+        claim: { county: { countyFips: 1 } },
+        info: { isLockdown: true }
+      });
+    });
     it('getAllLockdownsForUser', async () => {
       await fieldCategoryRepo.save(fieldCategoryW);
       await fieldCategoryRepo.save(fieldCategoryPN);
@@ -265,8 +340,10 @@ describe('County Claims Integration Tests', () => {
         }
       };
       await lockdownsService.createOrUpdateLockdown(lockDownTest);
-      const getActive = await lockdownsService.getAllLockdownsForUser(userTest.email);
-      expect(getActive[0].claim.county.countyFips).toEqual(countyTest.countyFips);
+      const getter = await lockdownsService.getAllLockdownsForUser(userTest.email);
+      expect(getter).toMatchObject([
+        { claim: { county: { countyFips: 1 }, user: { guid: 'Bar' } }, infos: [{ endDate: null, isLockdown: true }] }
+      ]);
     });
     it('getLockdownForCounty', async () => {
       await fieldCategoryRepo.save(fieldCategoryW);
@@ -337,8 +414,8 @@ describe('County Claims Integration Tests', () => {
         }
       };
       await lockdownsService.createOrUpdateLockdown(lockDownTest);
-      const getActive = await lockdownsService.getLockdownForCounty(countyTest.countyFips);
-      expect(getActive.claim.county.countyFips).toEqual(countyTest.countyFips);
+      const getter = await lockdownsService.getLockdownForCounty(countyTest.countyFips);
+      expect(getter).toMatchObject({ claim: { county: { countyFips: 1 } }, info: { isLockdown: true } });
     });
 
     it('getLockdownsAdmin', async () => {
@@ -410,10 +487,12 @@ describe('County Claims Integration Tests', () => {
         }
       };
       await lockdownsService.createOrUpdateLockdown(lockDownTest);
-      const getActive = await lockdownsService.getLockdownsAdmin(stateTest.stateFips, countyTest.countyFips, userTest.email);
-      expect(getActive[0].claim.county.countyFips).toEqual(countyTest.countyFips);
+      const getter = await lockdownsService.getLockdownsAdmin(stateTest.stateFips, countyTest.countyFips, userTest.email);
+      expect(getter).toMatchObject([
+        { claim: { county: { countyFips: 1, stateFips: { name: 'Foo' } }, user: { email: 'Foo@tamu.edu' } } }
+      ]);
     });
-    it('getLockdownForCounty', async () => {
+    it('getInfosForLockdown', async () => {
       await fieldCategoryRepo.save(fieldCategoryW);
       await fieldCategoryRepo.save(fieldCategoryPN);
       await fieldCategoryRepo.save(fieldCategorySO);
@@ -482,88 +561,93 @@ describe('County Claims Integration Tests', () => {
         }
       };
       await lockdownsService.createOrUpdateLockdown(lockDownTest);
-      const getActive = await lockdownsService.getLockdownsAdmin(stateTest.stateFips, countyTest.countyFips, userTest.email);
-      const getInfo = await lockdownsService.getInfosForLockdown(getActive[0].guid);
-      expect(getInfo.infos[0].isLockdown).toEqual(true);
-    });
-
-    it('getLockdownForCounty', async () => {
-      await fieldCategoryRepo.save(fieldCategoryW);
-      await fieldCategoryRepo.save(fieldCategoryPN);
-      await fieldCategoryRepo.save(fieldCategorySO);
-      await fieldCategoryRepo.save(fieldCategorySS);
-      await fieldCategoryRepo.save(fieldCategorySR);
-      await fieldCategoryRepo.save(fieldCategorySOS);
-      await statusTypeRepo.save(statusTypeP);
-      await statusTypeRepo.save(statusTypeC);
-      await statusTypeRepo.save(statusTypeF);
-      await statusTypeRepo.save(statusTypeCan);
-      await statusTypeRepo.save(statusTypeV);
-      await statusTypeRepo.save(statusTypeCSL);
-      await fieldTypeRepo.save(fieldTypeW);
-      await fieldTypeRepo.save(fieldTypePN);
-      const categoryW = await fieldCategoryRepo.findOne({
-        where: {
-          id: CATEGORY.WEBSITES
-        }
-      });
-      const categoryPN = await fieldCategoryRepo.findOne({
-        where: {
-          id: CATEGORY.PHONE_NUMBERS
-        }
-      });
-      const typeW = await fieldTypeRepo.findOne({
-        where: {
-          name: 'Web'
-        }
-      });
-      const typePn = await fieldTypeRepo.findOne({
-        where: {
-          name: 'Phone'
-        }
-      });
-      const CvW = categoryValueRepo.create({
-        value: 'WebS',
-        type: typeW,
-        category: categoryW
-      });
-      const CvPn = categoryValueRepo.create({
-        value: 'PhoneN',
-        type: typePn,
-        category: categoryPN
-      });
-      await CvW.save();
-      await CvPn.save();
-      const eVW = entityValueRepo.create({ value: CvW, guid: 'FoooWebsites' });
-      await eVW.save();
-      const eVPn = entityValueRepo.create({ value: CvPn, guid: 'FoooPhone' });
-      await eVPn.save();
-      await usersRepo.save(userTest);
-      await statesRepo.save(stateTest);
-      await countiesRepo.save(countyTest);
-      await countyClaimsService.createOrUpdateClaim(countyClaimTest, [eVPn], [eVW]);
-      const lockDownTest = {
-        claim: { user: userTest.email, county: countyTest.countyFips },
-        guid: 'Foo',
-        info: {
-          phoneNumbers: [eVPn],
-          websites: [eVW],
-          isLockdown: true,
-          startDate: null,
-          endDate: null,
-          protocol: 'Foo',
-          notes: 'Foo'
-        }
-      };
-      await lockdownsService.createOrUpdateLockdown(lockDownTest);
-      const getActive = await lockdownsService.getActiveLockDownForEmail(userTest.email);
-      const getActiveTwo = await lockdownsService.getLockdownsAdmin(
+      const setterTest = await lockdownsService.getLockdownsAdmin(
         stateTest.stateFips,
         countyTest.countyFips,
         userTest.email
       );
+      const getter = await lockdownsService.getInfosForLockdown(setterTest[0].guid);
+      expect(getter).toMatchObject({ infos: [{ endDate: null, isLockdown: true }] });
+    });
 
-      expect(getActive).toEqual(getActiveTwo[0]);
+    it('getLockdownInfoForLockdown', async () => {
+      await fieldCategoryRepo.save(fieldCategoryW);
+      await fieldCategoryRepo.save(fieldCategoryPN);
+      await fieldCategoryRepo.save(fieldCategorySO);
+      await fieldCategoryRepo.save(fieldCategorySS);
+      await fieldCategoryRepo.save(fieldCategorySR);
+      await fieldCategoryRepo.save(fieldCategorySOS);
+      await statusTypeRepo.save(statusTypeP);
+      await statusTypeRepo.save(statusTypeC);
+      await statusTypeRepo.save(statusTypeF);
+      await statusTypeRepo.save(statusTypeCan);
+      await statusTypeRepo.save(statusTypeV);
+      await statusTypeRepo.save(statusTypeCSL);
+      await fieldTypeRepo.save(fieldTypeW);
+      await fieldTypeRepo.save(fieldTypePN);
+      const categoryW = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.WEBSITES
+        }
+      });
+      const categoryPN = await fieldCategoryRepo.findOne({
+        where: {
+          id: CATEGORY.PHONE_NUMBERS
+        }
+      });
+      const typeW = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Web'
+        }
+      });
+      const typePn = await fieldTypeRepo.findOne({
+        where: {
+          name: 'Phone'
+        }
+      });
+      const CvW = categoryValueRepo.create({
+        value: 'WebS',
+        type: typeW,
+        category: categoryW
+      });
+      const CvPn = categoryValueRepo.create({
+        value: 'PhoneN',
+        type: typePn,
+        category: categoryPN
+      });
+      await CvW.save();
+      await CvPn.save();
+      const eVW = entityValueRepo.create({ value: CvW, guid: 'FoooWebsites' });
+      await eVW.save();
+      const eVPn = entityValueRepo.create({ value: CvPn, guid: 'FoooPhone' });
+      await eVPn.save();
+      await usersRepo.save(userTest);
+      await statesRepo.save(stateTest);
+      await countiesRepo.save(countyTest);
+      await countyClaimsService.createOrUpdateClaim(countyClaimTest, [eVPn], [eVW]);
+      const lockDownTest = {
+        claim: { user: userTest.email, county: countyTest.countyFips },
+        guid: 'Foo',
+        info: {
+          phoneNumbers: [eVPn],
+          websites: [eVW],
+          isLockdown: true,
+          startDate: null,
+          endDate: null,
+          protocol: 'Foo',
+          notes: 'Foo'
+        }
+      };
+      await lockdownsService.createOrUpdateLockdown(lockDownTest);
+      const setterTest = await lockdownsService.getLockdownsAdmin(
+        stateTest.stateFips,
+        countyTest.countyFips,
+        userTest.email
+      );
+      const setterTestTwo = await lockdownsService.getInfosForLockdown(setterTest[0].guid);
+
+      const getter = await lockdownsService.getLockdownInfoForLockdown(setterTestTwo.infos[0].guid);
+      expect(getter).toMatchObject({ claim: { county: { countyFips: 1 } }, info: { endDate: null, isLockdown: true } });
     });
   });
 });
