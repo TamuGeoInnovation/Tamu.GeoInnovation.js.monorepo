@@ -221,7 +221,7 @@ export class MapComponent implements OnInit, OnDestroy {
     } else if (measurement < 0.45) {
       return [102, 187, 106];
     } else if (measurement < 0.6) {
-      return [255, 202, 40];
+      return [255, 152, 0];
     } else if (measurement < 1) {
       return [239, 83, 80];
     }

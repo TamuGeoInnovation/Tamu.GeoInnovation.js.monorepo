@@ -50,7 +50,8 @@ export class CampusTotalsComponent implements OnInit {
             return acc + curr.attributes.Sample.result;
           }, 0) / validZones.length
         );
-      })
+      }),
+      shareReplay(1)
     );
 
     this.totalFocusArea = this.zones.pipe(
@@ -58,7 +59,8 @@ export class CampusTotalsComponent implements OnInit {
         return zones.reduce((acc, curr) => {
           return acc + curr.attributes.Focus;
         }, 0);
-      })
+      }),
+      shareReplay(1)
     );
 
     this.totalNonFocusArea = this.zones.pipe(
@@ -66,7 +68,8 @@ export class CampusTotalsComponent implements OnInit {
         return zones.reduce((acc, curr) => {
           return acc + curr.attributes.Additional;
         }, 0);
-      })
+      }),
+      shareReplay(1)
     );
   }
 }

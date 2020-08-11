@@ -1,4 +1,7 @@
-<p>Campus Average: {{(zonesSampleAverage | async) | number : '1.2-2'}}</p>
+<div class="stat-card" *ngIf="(zonesSampleAverage | async) as average">
+  <div class="stat-metric" [ngClass]="{'metric-safe': average <= .45, 'metric-warning': average > .45, 'metric-alert' : average > .6}">{{average | number : '1.2-2'}}</div>
+  <div class="stat-title">Signal Average</div>
+</div>
 
 <p>Total Focus Area: {{totalFocusArea | async | number}}</p>
 
