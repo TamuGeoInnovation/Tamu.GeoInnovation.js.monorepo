@@ -188,11 +188,19 @@ export class MapComponent implements OnInit, OnDestroy {
 
     // Map to latest value
     const infos = eligible.reduce((acc, curr) => {
+      const baseColor = this.getSymbolColorForValue(curr.entries.pop().result);
+      const fillColor = [...baseColor, 0.4];
+      const strokeColor = [...baseColor, 1];
+
       const info = {
         value: curr.sample.toString(),
         symbol: {
           type: 'simple-fill',
-          color: this.getSymbolColorForValue(curr.entries.pop().result)
+          color: fillColor,
+          outline: {
+            color: strokeColor,
+            width: 1.5
+          }
         }
       };
 
@@ -211,13 +219,13 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private getSymbolColorForValue(measurement: number) {
     if (measurement === undefined) {
-      return [20, 158, 206, 0.4];
+      return [20, 158, 206];
     } else if (measurement < 0.45) {
-      return [102, 187, 106, 0.4];
+      return [102, 187, 106];
     } else if (measurement < 0.6) {
-      return [255, 202, 40, 0.4];
+      return [255, 202, 40];
     } else if (measurement < 1) {
-      return [239, 83, 80, 0.4];
+      return [239, 83, 80];
     }
   }
 }
