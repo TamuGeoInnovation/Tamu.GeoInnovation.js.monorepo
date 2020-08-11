@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { EffluentService } from '../../services/effluent.service';
 import { EffluentZonesService } from '../../services/effluent-zones.service';
 import { SamplingLocationsService } from '../../services/sampling-locations.service';
+
+import { IEffluentTierMetadata } from '@tamu-gisc/ues/common/ngx';
 
 import esri = __esri;
 
@@ -15,8 +16,9 @@ import esri = __esri;
 })
 export class CampusOverviewListComponent implements OnInit {
   public zones: Observable<Array<esri.Graphic>>;
+  public buildings: Observable<Array<IEffluentTierMetadata>>;
 
-  constructor(private ez: EffluentZonesService, private ec: SamplingLocationsService, private ef: EffluentService) {}
+  constructor(private ez: EffluentZonesService, private ec: SamplingLocationsService) {}
 
   public ngOnInit(): void {
     this.zones = this.ez.getZonesForTier(undefined, 3).pipe(

@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
 import { SamplingLocationsService } from '../../services/sampling-locations.service';
 import { EffluentZonesService } from '../../services/effluent-zones.service';
 
 import esri = __esri;
+import { IEffluentTierMetadata } from '@tamu-gisc/ues/common/ngx';
+import { SamplingBuildingsService } from '../../services/sampling-buildings.service';
 
 @Component({
   selector: 'tamu-gisc-campus-totals',
@@ -14,10 +16,15 @@ import esri = __esri;
 })
 export class CampusTotalsComponent implements OnInit {
   public zones: Observable<Array<esri.Graphic>>;
+  public buildings: Observable<Array<IEffluentTierMetadata>>;
 
   public zonesSampleAverage: Observable<number>;
 
-  constructor(private sls: SamplingLocationsService, private ezs: EffluentZonesService) {}
+  constructor(
+    private sls: SamplingLocationsService,
+    private ezs: EffluentZonesService,
+    private ebs: SamplingBuildingsService
+  ) {}
 
   public ngOnInit(): void {
     this.zones = this.ezs.getZonesForTier(undefined, 3).pipe(
@@ -50,6 +57,12 @@ export class CampusTotalsComponent implements OnInit {
         );
       }),
       shareReplay(1)
+    );
+
+    this.buildings = of(
+      this.ebs.getBuildingsIn({
+        tier: 3
+      })
     );
   }
 }

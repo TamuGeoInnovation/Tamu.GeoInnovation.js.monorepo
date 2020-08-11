@@ -18,7 +18,7 @@ export class CoverageChartComponent implements OnInit {
   public totalFocusArea: Observable<number>;
   public totalNonFocusArea: Observable<number>;
 
-  public campusAreaOptions = {
+  public chartOptions = {
     legend: {
       position: 'bottom'
     }
