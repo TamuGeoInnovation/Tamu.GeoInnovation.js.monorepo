@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
 
-const _initialState: TestingStore = { isTesting: false };
+const _initialState: TestingStore = { isTesting: false, next: false };
 
 @Injectable({ providedIn: 'root' })
 export class TestingService {
@@ -27,9 +27,14 @@ export class TestingService {
     if (window.location.host.includes('dev') || window.location.host.includes('localhost')) {
       this.set('isTesting', true);
     }
+
+    if (window.location.href.includes('next')) {
+      this.set('next', true);
+    }
   }
 }
 
 interface TestingStore {
   isTesting: boolean;
+  next: boolean;
 }
