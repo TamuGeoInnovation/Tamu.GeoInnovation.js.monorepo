@@ -1013,6 +1013,10 @@ form {
   }
 }
 
+tamu-gisc-root {
+  height: inherit;
+}
+
 tamu-gisc-select select,
 input[type='date'] {
   font-family: $primary-font-family;

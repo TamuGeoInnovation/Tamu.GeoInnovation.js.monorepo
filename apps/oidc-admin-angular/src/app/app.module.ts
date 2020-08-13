@@ -11,19 +11,24 @@ import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { AuthGuard, AuthService, AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'stats',
     loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.StatsModule)
+  },
+  {
+    path: 'users',
+    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.UsersModule)
+  },
+  {
+    path: 'roles',
+    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.RolesModule)
   }
-  // {
-  //   path: 'public',
-  //   loadChildren: () => import('@tamu-gisc/geoservices/public').then((m) => m.GeoservicesPublicModule)
-  // },
   // {
   //   path: 'internal',
   //   loadChildren: () => import('@tamu-gisc/geoservices/internal').then((m) => m.GeoservicesInternalModule)
@@ -56,7 +61,8 @@ export function getHighlightLanguages() {
     BrowserAnimationsModule,
     HighlightPlusModule,
     EnvironmentModule,
-    LocalStoreModule
+    LocalStoreModule,
+    UILayoutModule
   ],
   declarations: [AppComponent],
   providers: [
