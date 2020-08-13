@@ -1,0 +1,21 @@
+<div class="popup-section">
+  <div class="feature-style-1" tabindex="0">{{ data.attributes.name }} Social Distanced Learning Area</div>
+  <div class="feature-style-2" tabindex="0">{{ data.attributes.building }}</div>
+  <div class="feature-style-2" tabindex="0">{{data.attributes.building_abbr}} &mdash; {{data.attributes.building_number}}</div>
+</div>
+
+<div class="popup-section">
+  <p><strong>Capacity</strong>: {{data?.attributes?.capacity ? data.attributes.capacity : 'Unknown'}}</p>
+  <p><strong>Wheelchair Accessible</strong>: {{data?.attributes?.accessible === 1 ? "Yes" : 'No'}}</p>
+  <p><strong>Wireless</strong>: {{data?.attributes?.wireless === 1 ? "Yes" : 'No'}}</p>
+</div>
+
+<div class="popup-section">
+  <div class="button" tabindex="0" role="button" (click)="startDirections()">Directions To Here</div>
+</div>
+
+<div class="popup-section" *ngIf="data?.attributes?.img_name !== null">
+  <div class="image" tabindex="0" aria-label="Image of feature">
+    <img alt="" src="../assets/images/tents/{{ data.attributes.img_name }}.jpg" />
+  </div>
+</div>

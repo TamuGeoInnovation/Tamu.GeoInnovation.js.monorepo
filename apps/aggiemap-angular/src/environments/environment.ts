@@ -283,17 +283,17 @@ export const LayerSources: LayerSource[] = [
       }
     ]
   },
-  {
-    type: 'graphic',
-    id: 'drawing-layer',
-    title: 'Custom Boundary',
-    listMode: 'show',
-    loadOnInit: true,
-    visible: true,
-    native: {
-      ...commonLayerProps
-    }
-  },
+  // {
+  //   type: 'graphic',
+  //   id: 'drawing-layer',
+  //   title: 'Custom Boundary',
+  //   listMode: 'show',
+  //   loadOnInit: true,
+  //   visible: true,
+  //   native: {
+  //     ...commonLayerProps
+  //   }
+  // },
   {
     type: 'geojson',
     id: 'tents-polygons-layer',
@@ -302,6 +302,7 @@ export const LayerSources: LayerSource[] = [
     loadOnInit: true,
     visible: true,
     url: '../assets/data/teaching-tents-polygons.json',
+    popupComponent: Popups.TentAreaPopupComponent,
     native: {
       ...commonLayerProps,
       renderer: {
@@ -334,6 +335,7 @@ export const LayerSources: LayerSource[] = [
     loadOnInit: true,
     visible: true,
     url: '../assets/data/teaching-tents-points.json',
+    popupComponent: Popups.TentZonePopupComponent,
     native: {
       ...commonLayerProps,
       renderer: {

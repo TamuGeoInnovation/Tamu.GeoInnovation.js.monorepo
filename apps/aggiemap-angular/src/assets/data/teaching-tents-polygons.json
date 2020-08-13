@@ -4,7 +4,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Blocker Tents"
+        "name": "Blocker",
+        "building": "Blocker Building",
+        "building_abbr": "BLOC",
+        "building_number": "0524",
+        "capacity": 451,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "blocker"
       },
       "geometry": {
         "type": "Polygon",
@@ -22,7 +29,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Richardson West"
+        "name": "Richardson West",
+        "building": "Joe C. Richardson Petroleum Engineering Building",
+        "building_abbr": "RICH",
+        "building_number": "0387",
+        "capacity": 71,
+        "accessible": 1,
+        "wireless": 0,
+        "img_name": "richardson_a"
       },
       "geometry": {
         "type": "Polygon",
@@ -40,7 +54,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Richardson East"
+        "name": "Richardson East",
+        "building": "Joe C. Richardson Petroleum Engineering Building",
+        "building_abbr": "RICH",
+        "building_number": "0387",
+        "capacity": 71,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "richardson_b"
       },
       "geometry": {
         "type": "Polygon",
@@ -58,7 +79,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Bright"
+        "name": "Bright",
+        "building": "Bright Building",
+        "building_abbr": "HRBB",
+        "building_number": "0353",
+        "capacity": 87,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "bright"
       },
       "geometry": {
         "type": "Polygon",
@@ -76,25 +104,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Bright"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [-96.33893343781823, 30.61871950266541],
-            [-96.33896675196799, 30.61875618633947],
-            [-96.33888578059374, 30.61881163142048],
-            [-96.33885246644404, 30.618774947767413],
-            [-96.33893343781823, 30.61871950266541]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Evans East A"
+        "name": "East Evans A",
+        "building": "Evans Library",
+        "building_abbr": "EVANS",
+        "building_number": "0468",
+        "capacity": null,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": null
       },
       "geometry": {
         "type": "Polygon",
@@ -112,7 +129,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Evans East B"
+        "name": "East Evans B",
+        "building": "Evans Library",
+        "building_abbr": "EVANS",
+        "building_number": "0468",
+        "capacity": null,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": null
       },
       "geometry": {
         "type": "Polygon",
@@ -130,7 +154,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Evans North"
+        "name": "North Evans",
+        "building": "Evans Library",
+        "building_abbr": "EVANS",
+        "building_number": "0468",
+        "capacity": null,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": null
       },
       "geometry": {
         "type": "Polygon",
@@ -148,7 +179,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Evans South"
+        "name": "South Evans",
+        "building": "Evans Library",
+        "building_abbr": "EVANS",
+        "building_number": "0468",
+        "capacity": null,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "evans_south"
       },
       "geometry": {
         "type": "Polygon",
@@ -166,7 +204,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Chemistry A"
+        "name": "Chemistry A",
+        "building": "Chemistry Building",
+        "building_abbr": "CHEM",
+        "building_number": "0484",
+        "capacity": 109,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "chemistry_a"
       },
       "geometry": {
         "type": "Polygon",
@@ -184,7 +229,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Chemistry B"
+        "name": "Chemistry B",
+        "building": "Chemistry Building",
+        "building_abbr": "CHEM",
+        "building_number": "0484",
+        "capacity": 109,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "chemistry_b"
       },
       "geometry": {
         "type": "Polygon",
@@ -202,7 +254,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Harrington A"
+        "name": "Harrington A",
+        "building": "Harrington Education Center Classroom Building",
+        "building_abbr": "HECC",
+        "building_number": "0438",
+        "capacity": 224,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "harrington_a"
       },
       "geometry": {
         "type": "Polygon",
@@ -220,7 +279,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Harrington B"
+        "name": "Harrington B",
+        "building": "Harrington Education Center Classroom Building",
+        "building_abbr": "HECC",
+        "building_number": "0438",
+        "capacity": 224,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "harrington_b"
       },
       "geometry": {
         "type": "Polygon",
@@ -238,7 +304,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Psychology"
+        "name": "Psychology",
+        "building": "Psychology Building",
+        "building_abbr": "PSYC",
+        "building_number": "0463",
+        "capacity": 148,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": null
       },
       "geometry": {
         "type": "Polygon",
@@ -256,7 +329,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Heldenfels"
+        "name": "Heldenfels",
+        "building": "Heldenfels Hall",
+        "building_abbr": "HELD",
+        "building_number": "0521",
+        "capacity": 387,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "heldenfels"
       },
       "geometry": {
         "type": "Polygon",
@@ -274,7 +354,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Rudder A"
+        "name": "Rudder",
+        "building": "Rudder Tower",
+        "building_abbr": "RDER",
+        "building_number": "0446",
+        "capacity": 694,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "rudder"
       },
       "geometry": {
         "type": "Polygon",
@@ -292,7 +379,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Rudder B"
+        "name": "Rudder",
+        "building": "Rudder Tower",
+        "building_abbr": "RDER",
+        "building_number": "0446",
+        "capacity": 694,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "rudder"
       },
       "geometry": {
         "type": "Polygon",
@@ -310,7 +404,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Kleberg"
+        "name": "Kleberg",
+        "building": "Kleberg Center",
+        "building_abbr": "KLCT",
+        "building_number": "1501",
+        "capacity": 263,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "kleberg"
       },
       "geometry": {
         "type": "Polygon",
@@ -328,7 +429,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Wehner North"
+        "name": "Wehner North",
+        "building": "Wehner Building",
+        "building_abbr": "WCBA",
+        "building_number": "1510",
+        "capacity": 280,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "wehner_north"
       },
       "geometry": {
         "type": "Polygon",
@@ -346,7 +454,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Wehner South"
+        "name": "Wehner South",
+        "building": "Wehner Building",
+        "building_abbr": "WCBA",
+        "building_number": "1510",
+        "capacity": 280,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": "wehner_south"
       },
       "geometry": {
         "type": "Polygon",
@@ -364,7 +479,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Annenberg A"
+        "name": "Annenberg",
+        "building": "Annenberg Presidential Conference Center",
+        "building_abbr": "BPCC",
+        "building_number": "1608",
+        "capacity": 395,
+        "accessible": 1,
+        "wireless": 0,
+        "img_name": "annenberg"
       },
       "geometry": {
         "type": "Polygon",
@@ -375,36 +497,14 @@
             [-96.3537900990008, 30.596995901230212],
             [-96.35379695366807, 30.596989947422795],
             [-96.35416277972725, 30.597298898743833]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Annenberg B"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
+          ],
           [
             [-96.3541413220559, 30.597314482834733],
             [-96.35413446738873, 30.597320436622187],
             [-96.35376864132945, 30.597011485369826],
             [-96.3537754959967, 30.597005531563376],
             [-96.3541413220559, 30.597314482834733]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Annenberg B"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
+          ],
           [
             [-96.3537780050855, 30.596983647816174],
             [-96.35365724885035, 30.597091089686366],
@@ -415,10 +515,18 @@
         ]
       }
     },
+
     {
       "type": "Feature",
       "properties": {
-        "name": "Langford Parking Area"
+        "name": "Langford Parking Area",
+        "building": "Architecture Building B",
+        "building_abbr": "ARCB",
+        "building_number": "0359",
+        "capacity": 85,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": null
       },
       "geometry": {
         "type": "Polygon",
@@ -436,7 +544,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Langford Breezeway"
+        "name": "Langford Breezeway",
+        "building": "Architecture Building C",
+        "building_abbr": "ARCC",
+        "building_number": "0432",
+        "capacity": 129,
+        "accessible": 1,
+        "wireless": 1,
+        "img_name": null
       },
       "geometry": {
         "type": "Polygon",

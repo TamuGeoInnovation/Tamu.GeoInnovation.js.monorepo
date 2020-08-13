@@ -4,7 +4,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Blocker Area"
+        "name": "Blocker"
       },
       "geometry": {
         "type": "Point",
@@ -14,7 +14,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Richardson Area"
+        "name": "Richardson"
       },
       "geometry": {
         "type": "Point",
@@ -34,7 +34,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Evans East"
+        "name": "East Evans"
       },
       "geometry": {
         "type": "Point",
@@ -44,7 +44,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Evans North"
+        "name": "North Evans"
       },
       "geometry": {
         "type": "Point",
@@ -54,7 +54,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Evans South"
+        "name": "South Evans"
       },
       "geometry": {
         "type": "Point",
@@ -124,7 +124,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Wehner North"
+        "name": "North Wehner"
       },
       "geometry": {
         "type": "Point",
@@ -134,7 +134,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Wehner South"
+        "name": "South Wehner"
       },
       "geometry": {
         "type": "Point",
