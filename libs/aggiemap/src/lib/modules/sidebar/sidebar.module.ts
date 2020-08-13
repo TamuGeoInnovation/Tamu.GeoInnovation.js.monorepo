@@ -10,6 +10,8 @@ import { MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-plann
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 
+import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
+
 import { AggiemapSidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
 import { SidebarTripPlannerComponent } from './components/sidebar-trip-planner/sidebar-trip-planner.component';
@@ -24,7 +26,8 @@ import { SidebarTripPlannerComponent } from './components/sidebar-trip-planner/s
     SearchModule,
     MapsFeatureTripPlannerModule,
     LayerListModule,
-    LegendModule
+    LegendModule,
+    MapDrawingModule
   ],
   declarations: [AggiemapSidebarComponent, SidebarReferenceComponent, SidebarTripPlannerComponent],
   exports: [AggiemapSidebarComponent, SidebarReferenceComponent, SidebarTripPlannerComponent]
