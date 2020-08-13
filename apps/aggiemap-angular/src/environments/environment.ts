@@ -301,7 +301,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: true,
     visible: true,
-    url: '../assets/data/teaching-tents-polygons.json',
+    url: `${window.location.origin}/assets/data/teaching-tents-polygons.json`,
     popupComponent: Popups.TentAreaPopupComponent,
     native: {
       ...commonLayerProps,
@@ -322,7 +322,7 @@ export const LayerSources: LayerSource[] = [
     legendItems: [
       {
         id: 'tent-area',
-        src: '../assets/images/legend/social-distanced-learning-tent-area.svg',
+        src: `${window.location.origin}/assets/images/legend/social-distanced-learning-tent-area.svg`,
         title: 'Social Distanced Learning Area'
       }
     ]
@@ -334,7 +334,7 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     loadOnInit: true,
     visible: true,
-    url: '../assets/data/teaching-tents-points.json',
+    url: `${window.location.origin}/assets/data/teaching-tents-points.json`,
     popupComponent: Popups.TentZonePopupComponent,
     native: {
       ...commonLayerProps,
@@ -342,7 +342,7 @@ export const LayerSources: LayerSource[] = [
         type: 'simple',
         symbol: {
           type: 'picture-marker',
-          url: '../assets/images/markers/social-distance-learning-marker.svg',
+          url: `${window.location.origin}/assets/images/markers/social-distance-learning-marker.svg`,
           height: 30,
           width: 30
         }
@@ -352,7 +352,7 @@ export const LayerSources: LayerSource[] = [
     legendItems: [
       {
         id: 'tent-points',
-        src: '../assets/images/markers/social-distance-learning-marker.svg',
+        src: `${window.location.origin}/assets/images/markers/social-distance-learning-marker.svg`,
         title: 'Social Distanced Learning Zone'
       }
     ]
