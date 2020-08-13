@@ -1,3 +1,6 @@
 <section class="internal">
   <h1 class="section-header">Users</h1>
+  <div *ngFor="let user of ($users | async)">
+    <p>{{ user.email }}</p>
+  </div>
 </section>
