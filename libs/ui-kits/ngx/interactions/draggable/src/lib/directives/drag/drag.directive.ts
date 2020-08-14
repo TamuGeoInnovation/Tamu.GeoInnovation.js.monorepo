@@ -61,7 +61,7 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
   public ngAfterViewChecked() {
     // Store the initial offset which will be used to set the base snap point.
     if (this.el.nativeElement.innerText.trim() !== '' && this.initialOffset === undefined) {
-      this.deviceHeight = window.outerHeight > 0 ? window.outerHeight : window.innerHeight;
+      this.deviceHeight = window.innerHeight > 0 ? window.innerHeight : window.outerHeight;
       this.initialOffset = this.deviceHeight - this.draggable.getRect(this.el.nativeElement).top;
     }
 
@@ -112,8 +112,6 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
       const limitReached = this.deviceHeight - Math.floor(position.top) <= this.initialOffset;
 
       if (!limitReached) {
-        // console.log('speed down', event.speed)
-
         // Set transition
         target.style.webkitTransform = target.style.transform = 'translate(0px, ' + y + 'px)';
 
@@ -124,44 +122,30 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
 
         target.setAttribute('data-y', 0);
 
-        event.interaction.stop();
+        if (event && event.interaction && event.interaction.stop) {
+          event.interaction.stop();
+        }
       }
     } else if (event.dy < 0) {
       // Swipe up
-      const limitOffset = Math.floor(-(event.target.offsetHeight - Math.floor(this.initialOffset))) + 2;
+      const isMax = Math.floor(this.draggable.getRect(this.el.nativeElement).bottom - 2) <= this.deviceHeight;
 
       // If the limit has been reached, and the action is an upward movement
       // Do not attempt to reposition the element as it has nowhere to go
-      if (event.target.getAttribute('data-y') !== limitOffset) {
-        // console.log('speed up', event.speed)
-
+      if (!isMax) {
         // Limit has not been reached, continue to scroll until the limit is reached
         const target = event.target,
           // Get dragged values from attributes
           x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
-          y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+          y =
+            (parseFloat(target.getAttribute('data-y')) || 0) + event.dy <=
+            -(this.draggable.getRect(this.el.nativeElement).height - this.initialOffset)
+              ? -(this.draggable.getRect(this.el.nativeElement).height - this.initialOffset)
+              : (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
-        // Get current element position
-        // const position = ( < HTMLElement > event.target).getBoundingClientRect();
-        const position = this.draggable.getRect(this.el.nativeElement);
-        const limitReached = this.deviceHeight - Math.floor(position.top) >= Math.ceil(position.height);
+        target.style.webkitTransform = target.style.transform = 'translate(0px, ' + y + 'px)';
 
-        // If limit is not reached, simply update the object coordinates
-        if (!limitReached) {
-          target.style.webkitTransform = target.style.transform = 'translate(0px, ' + y + 'px)';
-
-          target.setAttribute('data-y', y);
-        } else {
-          // If the limit is reached, update the coordinates to by those of maximum element
-          // offset and cancel any other events.
-          if (target.getAttribute('data-y') !== limitOffset) {
-            target.style.webkitTransform = target.style.transform = 'translate(0px, ' + limitOffset + 'px)';
-
-            target.setAttribute('data-y', limitOffset);
-
-            event.interaction.end();
-          }
-        }
+        target.setAttribute('data-y', y);
       }
     }
   }

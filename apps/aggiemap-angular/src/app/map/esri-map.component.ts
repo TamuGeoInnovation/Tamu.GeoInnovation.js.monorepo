@@ -1,11 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
 import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
+
 import { Connections } from '../../environments/environment';
 
 import esri = __esri;
@@ -18,68 +19,68 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
   public view: esri.MapView;
   public isMobile: boolean;
-  public config: MapConfig;
+  public config: ReplaySubject<MapConfig> = new ReplaySubject(undefined);
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(private responsiveService: ResponsiveService) {
-    this.config = {
-      basemap: {
-        basemap: {
-          baseLayers: [
-            {
-              type: 'TileLayer',
-              url: Connections.basemapUrl,
-              spatialReference: {
-                wkid: 102100
-              },
-              listMode: 'hide',
-              visible: true,
-              minScale: 100000,
-              maxScale: 0,
-              title: 'Base Map'
-            }
-          ],
-          id: 'aggie_basemap',
-          title: 'Aggie Basemap'
-        }
-      },
-      view: {
-        mode: '2d',
-        properties: {
-          // container: this.mapViewEl.nativeElement,
-          map: undefined, // Reference to the map object created before the scene
-          center: [-96.344672, 30.61306],
-          spatialReference: {
-            wkid: 102100
-          },
-          constraints: {
-            minScale: 100000, // minZoom is the max you can zoom OUT into space
-            maxScale: 0 // maxZoom is the max you can zoom INTO the ground
-          },
-          zoom: 16,
-          ui: {
-            components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
-          },
-          popup: {
-            dockOptions: {
-              buttonEnabled: false,
-              breakpoint: false,
-              position: 'bottom-right'
-            }
-          },
-          highlightOptions: {
-            haloOpacity: 0,
-            fillOpacity: 0
-          }
-        }
-      }
-    };
-  }
+  constructor(private responsiveService: ResponsiveService) {}
 
   public ngOnInit() {
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
       this.isMobile = value;
+
+      this.config.next({
+        basemap: {
+          basemap: {
+            baseLayers: [
+              {
+                type: 'TileLayer',
+                url: Connections.basemapUrl,
+                spatialReference: {
+                  wkid: 102100
+                },
+                listMode: 'hide',
+                visible: true,
+                minScale: 100000,
+                maxScale: 0,
+                title: 'Base Map'
+              }
+            ],
+            id: 'aggie_basemap',
+            title: 'Aggie Basemap'
+          }
+        },
+        view: {
+          mode: '2d',
+          properties: {
+            // container: this.mapViewEl.nativeElement,
+            map: undefined, // Reference to the map object created before the scene
+            center: [-96.344672, 30.61306],
+            spatialReference: {
+              wkid: 102100
+            },
+            constraints: {
+              minScale: 100000, // minZoom is the max you can zoom OUT into space
+              maxScale: 0 // maxZoom is the max you can zoom INTO the ground
+            },
+            zoom: 16,
+            ui: {
+              components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
+            },
+            popup: {
+              dockOptions: {
+                buttonEnabled: false,
+                breakpoint: false,
+                position: 'bottom-right'
+              }
+            },
+            highlightOptions: {
+              haloOpacity: 0,
+              fillOpacity: 0
+            }
+          }
+        }
+      });
     });
 
     // Set loader phrases and display a random one.
@@ -99,37 +100,6 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   }
 
   public continue(instances: MapServiceInstance) {
-    // TODO: This is a debugging event used for feature zoom calculation.
-    // this.view.on('mouse-wheel', (e) => {
-    //   this.moduleProvider.require(['Point', 'GeometryEngine'])
-    //     .then(([Point, GeometryEngine]: [esri.PointConstructor, esri.geometryEngine]) => {
-    //       // Get the view xmin and xmax distance in meters
-    //       const viewXMin = new Point({
-    //         x: this.view.extent.xmax,
-    //         y: this.view.extent.ymin,
-    //         spatialReference: this.view.spatialReference
-    //       });
-
-    //       const viewXMax = new Point({
-    //         x: this.view.extent.xmin,
-    //         y: this.view.extent.ymin,
-    //         spatialReference: this.view.spatialReference
-    //       });
-
-    //       const viewScreenPointXMin = this.view.toScreen(viewXMin);
-    //       const viewScreenPointXMax = this.view.toScreen(viewXMax);
-
-    //       const viewScreenXDiff = viewScreenPointXMin.x - viewScreenPointXMax.x;
-
-    //       const decimalDegreeDistance = Math.abs(viewXMax.longitude) - Math.abs(viewXMin.longitude);
-    //       const viewDistance = GeometryEngine.distance(viewXMin, viewXMax, 'meters');
-
-    //       const ratio = decimalDegreeDistance / viewDistance;
-
-    //       console.log(viewDistance)
-    //     })
-    // })
-
     loadModules(['esri/widgets/Track', 'esri/widgets/Compass'])
       .then(([Track, Compass]) => {
         instances.view.when(() => {
@@ -172,9 +142,6 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   /**
    * Toggles a class on a DOM Element. While the .toggle() method can be used in code,
    * it cannot be used in HTML templates
-   *
-   * @param {*} event Event object
-   * @param {*} className Class to be toggled
    */
   public toggleClass = (event: KeyboardEvent | MouseEvent, className: string) => {
     if ((<HTMLElement>event.currentTarget).classList) {
