@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -6,6 +6,7 @@ import { loadModules } from 'esri-loader';
 
 import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
+
 import { Connections } from '../../environments/environment';
 
 import esri = __esri;
@@ -99,37 +100,6 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   }
 
   public continue(instances: MapServiceInstance) {
-    // TODO: This is a debugging event used for feature zoom calculation.
-    // this.view.on('mouse-wheel', (e) => {
-    //   this.moduleProvider.require(['Point', 'GeometryEngine'])
-    //     .then(([Point, GeometryEngine]: [esri.PointConstructor, esri.geometryEngine]) => {
-    //       // Get the view xmin and xmax distance in meters
-    //       const viewXMin = new Point({
-    //         x: this.view.extent.xmax,
-    //         y: this.view.extent.ymin,
-    //         spatialReference: this.view.spatialReference
-    //       });
-
-    //       const viewXMax = new Point({
-    //         x: this.view.extent.xmin,
-    //         y: this.view.extent.ymin,
-    //         spatialReference: this.view.spatialReference
-    //       });
-
-    //       const viewScreenPointXMin = this.view.toScreen(viewXMin);
-    //       const viewScreenPointXMax = this.view.toScreen(viewXMax);
-
-    //       const viewScreenXDiff = viewScreenPointXMin.x - viewScreenPointXMax.x;
-
-    //       const decimalDegreeDistance = Math.abs(viewXMax.longitude) - Math.abs(viewXMin.longitude);
-    //       const viewDistance = GeometryEngine.distance(viewXMin, viewXMax, 'meters');
-
-    //       const ratio = decimalDegreeDistance / viewDistance;
-
-    //       console.log(viewDistance)
-    //     })
-    // })
-
     loadModules(['esri/widgets/Track', 'esri/widgets/Compass'])
       .then(([Track, Compass]) => {
         instances.view.when(() => {
@@ -172,9 +142,6 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   /**
    * Toggles a class on a DOM Element. While the .toggle() method can be used in code,
    * it cannot be used in HTML templates
-   *
-   * @param {*} event Event object
-   * @param {*} className Class to be toggled
    */
   public toggleClass = (event: KeyboardEvent | MouseEvent, className: string) => {
     if ((<HTMLElement>event.currentTarget).classList) {
