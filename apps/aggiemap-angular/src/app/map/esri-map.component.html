@@ -22,7 +22,9 @@
 </div>
 
 <!-- Map component -->
-<tamu-gisc-esri-map [config]="config" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }"></tamu-gisc-esri-map>
+<ng-container *ngIf="(config | async) as c">
+  <tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }"></tamu-gisc-esri-map>
+</ng-container>
 
 <!-- Router outlet where desktop and mobile controls are rendered -->
 <router-outlet></router-outlet>

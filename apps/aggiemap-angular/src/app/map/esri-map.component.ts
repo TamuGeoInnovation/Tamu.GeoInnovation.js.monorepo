@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
@@ -18,68 +18,68 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
   public view: esri.MapView;
   public isMobile: boolean;
-  public config: MapConfig;
+  public config: ReplaySubject<MapConfig> = new ReplaySubject(undefined);
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  constructor(private responsiveService: ResponsiveService) {
-    this.config = {
-      basemap: {
-        basemap: {
-          baseLayers: [
-            {
-              type: 'TileLayer',
-              url: Connections.basemapUrl,
-              spatialReference: {
-                wkid: 102100
-              },
-              listMode: 'hide',
-              visible: true,
-              minScale: 100000,
-              maxScale: 0,
-              title: 'Base Map'
-            }
-          ],
-          id: 'aggie_basemap',
-          title: 'Aggie Basemap'
-        }
-      },
-      view: {
-        mode: '2d',
-        properties: {
-          // container: this.mapViewEl.nativeElement,
-          map: undefined, // Reference to the map object created before the scene
-          center: [-96.344672, 30.61306],
-          spatialReference: {
-            wkid: 102100
-          },
-          constraints: {
-            minScale: 100000, // minZoom is the max you can zoom OUT into space
-            maxScale: 0 // maxZoom is the max you can zoom INTO the ground
-          },
-          zoom: 16,
-          ui: {
-            components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
-          },
-          popup: {
-            dockOptions: {
-              buttonEnabled: false,
-              breakpoint: false,
-              position: 'bottom-right'
-            }
-          },
-          highlightOptions: {
-            haloOpacity: 0,
-            fillOpacity: 0
-          }
-        }
-      }
-    };
-  }
+  constructor(private responsiveService: ResponsiveService) {}
 
   public ngOnInit() {
     this.responsiveService.isMobile.pipe(takeUntil(this._destroy$)).subscribe((value) => {
       this.isMobile = value;
+
+      this.config.next({
+        basemap: {
+          basemap: {
+            baseLayers: [
+              {
+                type: 'TileLayer',
+                url: Connections.basemapUrl,
+                spatialReference: {
+                  wkid: 102100
+                },
+                listMode: 'hide',
+                visible: true,
+                minScale: 100000,
+                maxScale: 0,
+                title: 'Base Map'
+              }
+            ],
+            id: 'aggie_basemap',
+            title: 'Aggie Basemap'
+          }
+        },
+        view: {
+          mode: '2d',
+          properties: {
+            // container: this.mapViewEl.nativeElement,
+            map: undefined, // Reference to the map object created before the scene
+            center: [-96.344672, 30.61306],
+            spatialReference: {
+              wkid: 102100
+            },
+            constraints: {
+              minScale: 100000, // minZoom is the max you can zoom OUT into space
+              maxScale: 0 // maxZoom is the max you can zoom INTO the ground
+            },
+            zoom: 16,
+            ui: {
+              components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
+            },
+            popup: {
+              dockOptions: {
+                buttonEnabled: false,
+                breakpoint: false,
+                position: 'bottom-right'
+              }
+            },
+            highlightOptions: {
+              haloOpacity: 0,
+              fillOpacity: 0
+            }
+          }
+        }
+      });
     });
 
     // Set loader phrases and display a random one.
