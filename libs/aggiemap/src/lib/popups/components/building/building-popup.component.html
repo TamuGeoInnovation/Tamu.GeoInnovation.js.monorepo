@@ -1,9 +1,7 @@
 <div class="popup-section">
   <div class="feature-style-1" tabindex="0">{{ data.attributes.BldgName }}</div>
   <div class="feature-style-2" tabindex="0" *ngIf="data.attributes.Number">Building {{ data.attributes.Number }}</div>
-  <div class="feature-style-2" tabindex="0">
-    <span *ngIf="data.attributes.Address">{{ data.attributes.Address }},</span> College Station, TX 77843
-  </div>
+  <div class="feature-style-2" tabindex="0"><span *ngIf="data.attributes.Address">{{data.attributes.Address}}, </span><span>{{data.attributes.City}}</span>, TX <span>{{data.attributes.Zip}}</span></div>
 </div>
 
 <div class="popup-section">
