@@ -1,6 +1,11 @@
 <section class="internal">
   <h1 class="section-header">Users</h1>
+  <!-- <div class="form-section-toolbar">
+    <div class="form-section-name"><p>Full name</p></div>
+  </div> -->
   <div *ngFor="let user of ($users | async)">
-    <p>{{ user.email }}</p>
+    <div style="display:flex; flex-direction:row;">
+      <p>{{user.email}}</p>
+    </div>
   </div>
 </section>

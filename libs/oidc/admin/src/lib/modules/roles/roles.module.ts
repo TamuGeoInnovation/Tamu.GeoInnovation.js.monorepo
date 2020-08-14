@@ -12,7 +12,20 @@ const routes: Routes = [
   {
     path: '',
     component: RolesComponent,
-    pathMatch: 'full'
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./view-role/view-role.module').then((m) => m.ViewRoleModule)
+      },
+      {
+        path: 'add',
+        loadChildren: () => import('./add-role/add-role.module').then((m) => m.AddRoleModule)
+      }
+      // {
+      //   path: 'preferences',
+      //   loadChildren: () => import('./preferences/preferences.module').then((m) => m.PreferencesModule)
+      // }
+    ]
   }
 ];
 
