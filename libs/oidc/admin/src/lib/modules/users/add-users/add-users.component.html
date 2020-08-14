@@ -1,0 +1,35 @@
+<form [formGroup]="password">
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="name" placeholder="Full Name" type="text" floatLabel="true"> </tamu-gisc-textbox>
+      </div>
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="password" placeholder="Password" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="confirm_password" placeholder="Confirm Password" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+</form>
+<form [formGroup]="question">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Security Question</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-select formControlName="question" [data]="$questions | async" displayTemplate="Question" valueTemplate="Question"></tamu-gisc-select>
+
+        <tamu-gisc-textbox formControlName="answer" type="text" placeholder="Security Question Answer" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+</form>

@@ -1,11 +1,17 @@
 <section class="internal">
   <h1 class="section-header">Users</h1>
-  <!-- <div class="form-section-toolbar">
-    <div class="form-section-name"><p>Full name</p></div>
-  </div> -->
-  <div *ngFor="let user of ($users | async)">
-    <div style="display:flex; flex-direction:row;">
-      <p>{{user.email}}</p>
+
+  <div class="section-content">
+    <div class="tab-container row">
+      <div class="tabs">
+        <div class="tab" [routerLink]="['./']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">View</div>
+        <div class="tab" [routerLink]="['add']" routerLinkActive="active">Add</div>
+        <div class="tab" [routerLink]="['edit']" routerLinkActive="active">Edit</div>
+      </div>
+
+      <div class="tab-content">
+        <router-outlet></router-outlet>
+      </div>
     </div>
   </div>
 </section>

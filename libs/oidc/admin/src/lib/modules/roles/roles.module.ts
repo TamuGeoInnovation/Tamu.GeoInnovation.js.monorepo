@@ -20,11 +20,11 @@ const routes: Routes = [
       {
         path: 'add',
         loadChildren: () => import('./add-role/add-role.module').then((m) => m.AddRoleModule)
+      },
+      {
+        path: 'edit',
+        loadChildren: () => import('./edit-role/edit-role.module').then((m) => m.EditRoleModule)
       }
-      // {
-      //   path: 'preferences',
-      //   loadChildren: () => import('./preferences/preferences.module').then((m) => m.PreferencesModule)
-      // }
     ]
   }
 ];

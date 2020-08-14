@@ -12,7 +12,20 @@ const routes: Routes = [
   {
     path: '',
     component: UsersComponent,
-    pathMatch: 'full'
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./view-users/view-users.module').then((m) => m.ViewUsersModule)
+      },
+      {
+        path: 'add',
+        loadChildren: () => import('./add-users/add-users.module').then((m) => m.AddUsersModule)
+      },
+      {
+        path: 'edit',
+        loadChildren: () => import('./edit-users/edit-users.module').then((m) => m.EditUsersModule)
+      }
+    ]
   }
 ];
 
