@@ -44,6 +44,16 @@
     {
       "type": "Feature",
       "properties": {
+        "name": "East Evans"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-96.33843, 30.61668]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "name": "North Evans"
       },
       "geometry": {
