@@ -342,7 +342,7 @@ export const LayerSources: LayerSource[] = [
         type: 'simple',
         symbol: {
           type: 'picture-marker',
-          url: `${window.location.origin}/assets/images/markers/social-distance-learning-marker.svg`,
+          url: `${window.location.origin}/assets/images/markers/social-distance-learning-marker.png`,
           height: 30,
           width: 30
         }
@@ -352,7 +352,7 @@ export const LayerSources: LayerSource[] = [
     legendItems: [
       {
         id: 'tent-points',
-        src: `${window.location.origin}/assets/images/markers/social-distance-learning-marker.svg`,
+        src: `${window.location.origin}/assets/images/markers/social-distance-learning-marker.png`,
         title: 'Social Distanced Learning Zone'
       }
     ]
