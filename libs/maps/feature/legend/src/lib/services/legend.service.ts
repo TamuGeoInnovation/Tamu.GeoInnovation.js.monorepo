@@ -2,12 +2,10 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { LayerListItem, LayerListService } from '@tamu-gisc/maps/feature/layer-list';
-
+import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 
 import esri = __esri;
-import Layer = __esri.Layer;
 
 @Injectable()
 export class LegendService {
@@ -39,7 +37,7 @@ export class LegendService {
       if (layer.visible) {
         this.addMany((<LayerSource>(<unknown>layer)).legendItems);
       } else {
-        // If the layer visibilty is false, remove the legend item.
+        // If the layer visibility is false, remove the legend item.
         this.removeMany((<LayerSource>(<unknown>layer)).legendItems);
       }
     }
