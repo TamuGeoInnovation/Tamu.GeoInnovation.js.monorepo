@@ -1,20 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { TripPlannerService } from '../../../../services//trip-planner.service';
+import { pluck, take } from 'rxjs/operators';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-mode-picker',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss']
 })
-export class TripPlannerModePickerComponent {
-  constructor(private plannerService: TripPlannerService) {}
+export class TripPlannerModePickerComponent implements OnInit {
+  public isDev: Observable<boolean>;
+
+  constructor(private plannerService: TripPlannerService, private devTools: TestingService) {}
+
+  public ngOnInit() {
+    this.isDev = this.devTools.get('isTesting');
+  }
+
   /**
    * Calls the trip planner service and sets accessible travel mode based on the provided value
-   *
-   * @param {value} value `true` to set accessible routing mode, `false` to disable it
    */
-  public set accessibleTravel(value: boolean) {
-    this.plannerService.updateTravelOptions({ accessible: value });
+  public toggleAccessibleTravel() {
+    this.plannerService.TravelOptions.pipe(
+      take(1),
+      pluck('accessible')
+    ).subscribe((current) => {
+      this.plannerService.updateTravelOptions({ accessible: !current });
+    });
   }
 }

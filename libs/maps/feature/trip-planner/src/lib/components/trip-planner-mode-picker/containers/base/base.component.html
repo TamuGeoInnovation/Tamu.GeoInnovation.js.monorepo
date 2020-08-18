@@ -11,7 +11,7 @@
 <div class="options-container">
   <div>
     <!-- Trip from and to input components. By default, two blanks are automatically generated given that a trip has a minimum of two points -->
-    <tamu-gisc-trip-planner-time-picker></tamu-gisc-trip-planner-time-picker>
+    <tamu-gisc-trip-planner-time-picker *ngIf="(isDev | async) === true"></tamu-gisc-trip-planner-time-picker>
   </div>
 
   <div>

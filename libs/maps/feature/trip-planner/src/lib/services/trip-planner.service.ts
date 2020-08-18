@@ -1322,9 +1322,9 @@ export class TripPlannerService implements OnDestroy {
 
                           if (modeSwitch.type === 'not_walking') {
                             switch (this.getRuleForModes([parseInt(travelMode, 10)])) {
-                              case this.rule_bus:
-                                return this.busService.annotateBusGraphic(modeSwitch);
-                              case this.rule_drive:
+                              // case this.rule_bus:
+                              //   return this.busService.annotateBusGraphic(modeSwitch);
+                              // case this.rule_drive:
                               // TODO this.inrixService.annotateDriveFeature(graphic, modeSwitch, dateToHere).subscribe((f_new: esri.Graphic) => res(f_new)); break;
                               default:
                                 return of(modeSwitch);

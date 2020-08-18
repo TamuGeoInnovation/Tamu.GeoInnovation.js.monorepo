@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 import { v4 as guid } from 'uuid';
-import { CompoundSettings } from '@tamu-gisc/common/ngx/settings';
+
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { TripPlannerRuleMode, TripPlannerService } from '../../../../services/trip-planner.service';
 
@@ -12,7 +13,7 @@ import { TripPlannerRuleMode, TripPlannerService } from '../../../../services/tr
   selector: 'tamu-gisc-trip-planner-options-base',
   template: ''
 })
-export class TripPlannerOptionsBaseComponent {
+export class TripPlannerOptionsBaseComponent implements OnInit {
   /**
    * Data injected by the trip planner parking options component factory.
    */
@@ -20,7 +21,13 @@ export class TripPlannerOptionsBaseComponent {
 
   public travelOptions = this.tripPlanner.TravelOptions;
 
-  constructor(private anl: Angulartics2, private tripPlanner: TripPlannerService) {}
+  public isDev: Observable<boolean>;
+
+  constructor(private anl: Angulartics2, private tripPlanner: TripPlannerService, private devTools: TestingService) {}
+
+  public ngOnInit() {
+    this.isDev = this.devTools.get('isTesting');
+  }
 
   /**
    * Invokes the trip planner options service which updates the local store value,
@@ -42,7 +49,7 @@ export class TripPlannerOptionsBaseComponent {
     let opts;
 
     // If key is an object, then it is a `TripPlannerRuleMode`.
-    // Determine if there are any configure effects and udpate store
+    // Determine if there are any configure effects and update store
     // with created options object based on effect and value.
     if (key instanceof Object) {
       const effect = key.effect;
@@ -76,7 +83,7 @@ export class TripPlannerOptionsBaseComponent {
    * Get a key value from the  options service which values are a
    * reflection of the local store.
    */
-  public getOptionValue(key): Observable<CompoundSettings> {
+  public getOptionValue(key: string) {
     return this.travelOptions.pipe(pluck(key));
   }
 }
