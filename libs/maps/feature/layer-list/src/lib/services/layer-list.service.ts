@@ -205,9 +205,8 @@ export class LayerListService implements OnDestroy {
           // of an empty LayerListItem collection. In addition, if the collection is empty it cannot be an esri WatchCallback because
           // the length of that array is known.
           if (
-            collection instanceof Array ||
-            (collection instanceof Array &&
-              (<LayerListItem<esri.Layer>[]>collection).some((i) => i instanceof LayerListItem))
+            collection instanceof Array &&
+            (<LayerListItem<esri.Layer>[]>collection).some((i) => i instanceof LayerListItem)
           ) {
             return of(collection);
           } else if (typeof collection === 'number' || collection === undefined) {
@@ -315,7 +314,7 @@ export class LayerListItem<T extends esri.Layer> {
   public title: LayerSource['title'];
   public layer: T;
   public category: LayerSource['category'];
-  public outsideExtent: boolean;
+  public outsideExtent = false;
 
   constructor(props: { id?: string; title?: string; layer?: T; category?: string }) {
     this.layer = props.layer;
