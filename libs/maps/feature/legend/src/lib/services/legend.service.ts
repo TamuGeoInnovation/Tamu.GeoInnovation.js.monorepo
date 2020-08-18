@@ -20,7 +20,7 @@ export class LegendService {
     // This does not handle removal on layer visibility change
     this.layerListService.layers({ watchProperties: 'visible' }).subscribe((value) => {
       const layersLegendItems = value
-        .filter((item) => item.layer && item.layer.visible)
+        .filter((item) => item.layer && item.layer.visible && item.outsideExtent === false)
         .filter((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
         .map((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
         .map((obj) => obj[0]);
