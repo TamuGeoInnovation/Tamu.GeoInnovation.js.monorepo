@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { pluck, take } from 'rxjs/operators';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { TripPlannerService } from '../../../../services//trip-planner.service';
-import { pluck, take } from 'rxjs/operators';
 
 @Component({
   selector: 'tamu-gisc-trip-planner-mode-picker',
