@@ -1,5 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
+import { pluck, map } from 'rxjs/operators';
+
+import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 
 import { TripPlannerService } from '../../../../services/trip-planner.service';
 import { TripPlannerModePickerComponent } from '../base/base.component';
@@ -12,19 +15,21 @@ import { TripPlannerModePickerComponent } from '../base/base.component';
 export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerComponent implements OnInit, OnDestroy {
   private _destroy$: Subject<boolean> = new Subject();
 
-  public accessible: boolean;
+  public accessible: Observable<boolean>;
+  public isAccessibleMode: Observable<boolean>;
 
-  constructor(private tps: TripPlannerService) {
-    super(tps);
+  constructor(private tps: TripPlannerService, private dts: TestingService) {
+    super(tps, dts);
   }
 
   public ngOnInit() {
-    //
-    // TODO: Might be able to be removed, depending on new mobile travel options  UI requirements
-    //
-    // this.tps.Accessible.pipe(takeUntil(this._destroy$)).subscribe((value) => {
-    //   this.accessible = value;
-    // });
+    this.accessible = this.tps.TravelOptions.pipe(pluck('accessible'));
+    this.isAccessibleMode = this.tps.TravelOptions.pipe(
+      pluck('travel_mode'),
+      map((mode) => {
+        return this.tps.verifyRuleAccessibility();
+      })
+    );
   }
 
   public ngOnDestroy() {

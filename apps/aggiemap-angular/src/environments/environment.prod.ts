@@ -259,7 +259,7 @@ export const LayerSources: LayerSource[] = [
     id: d.BIKE_LOCATIONS.layerId,
     title: d.BIKE_LOCATIONS.name,
     url: d.BIKE_LOCATIONS.url,
-    listMode: 'show',
+    listMode: 'hide',
     loadOnInit: false,
     visible: true,
     native: {
@@ -361,10 +361,10 @@ export const SearchSources: SearchSource[] = [
         transformations: ['UPPER', 'UPPER', 'UPPER']
       },
       scoringWhere: {
-        keys: ['BldgName'],
-        operators: ['LIKE'],
-        wildcards: ['startsWith'],
-        transformations: ['UPPER']
+        keys: ['BldgName', 'BldgAbbr'],
+        operators: ['LIKE', 'LIKE'],
+        wildcards: ['startsWith', 'startsWith'],
+        transformations: ['UPPER', 'UPPER']
       }
     },
     scoringKeys: ['attributes.BldgAbbr', 'attributes.Number', 'attributes.BldgName'],
