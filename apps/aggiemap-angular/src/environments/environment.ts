@@ -74,7 +74,9 @@ export const LayerSources: LayerSource[] = [
       }
     ],
     native: {
-      ...commonLayerProps
+      ...commonLayerProps,
+      maxScale: 3000,
+      minScale: 25000
     }
   },
   {

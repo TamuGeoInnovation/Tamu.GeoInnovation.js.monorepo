@@ -27,6 +27,10 @@
   &:last-child {
     padding-bottom: 0;
   }
+
+  &.hidden {
+    display: none;
+  }
 }
 
 .sidebar-component-content-container {
