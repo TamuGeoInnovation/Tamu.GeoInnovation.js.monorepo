@@ -2,12 +2,10 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { LayerListItem, LayerListService } from '@tamu-gisc/maps/feature/layer-list';
-
+import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 
 import esri = __esri;
-import Layer = __esri.Layer;
 
 @Injectable()
 export class LegendService {
@@ -20,7 +18,7 @@ export class LegendService {
     // This does not handle removal on layer visibility change
     this.layerListService.layers({ watchProperties: 'visible' }).subscribe((value) => {
       const layersLegendItems = value
-        .filter((item) => item.layer && item.layer.visible)
+        .filter((item) => item.layer && item.layer.visible && item.outsideExtent === false)
         .filter((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
         .map((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
         .map((obj) => obj[0]);
@@ -39,7 +37,7 @@ export class LegendService {
       if (layer.visible) {
         this.addMany((<LayerSource>(<unknown>layer)).legendItems);
       } else {
-        // If the layer visibilty is false, remove the legend item.
+        // If the layer visibility is false, remove the legend item.
         this.removeMany((<LayerSource>(<unknown>layer)).legendItems);
       }
     }
