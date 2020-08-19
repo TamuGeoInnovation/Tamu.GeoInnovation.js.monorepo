@@ -3264,6 +3264,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "crossOrigin": "anonymous",
             "outputPath": "dist/apps/ues-angular",
             "index": "apps/ues-angular/src/index.html",
             "main": "apps/ues-angular/src/main.ts",

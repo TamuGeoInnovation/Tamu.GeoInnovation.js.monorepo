@@ -463,6 +463,76 @@ export const LayerSources: LayerSource[] = [
   },
   {
     type: 'feature',
+    id: d.PAD_MOUNTED_SWITCHES.layerId,
+    title: d.PAD_MOUNTED_SWITCHES.name,
+    url: d.PAD_MOUNTED_SWITCHES.url,
+    category: d.PAD_MOUNTED_SWITCHES.category,
+    listMode: 'show',
+    loadOnInit: false,
+    visible: true,
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
+  },
+  {
+    type: 'feature',
+    id: d.FEEDERS.layerId,
+    title: d.FEEDERS.name,
+    url: d.FEEDERS.url,
+    category: d.FEEDERS.category,
+    listMode: 'show',
+    loadOnInit: false,
+    visible: true,
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
+  },
+  {
+    type: 'feature',
+    id: d.FEEDER_BUILDINGS.layerId,
+    title: d.FEEDER_BUILDINGS.name,
+    url: d.FEEDER_BUILDINGS.url,
+    category: d.FEEDER_BUILDINGS.category,
+    listMode: 'show',
+    loadOnInit: false,
+    visible: true,
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
+  },
+  {
+    type: 'feature',
+    id: d.ONE_THIRTY_EIGHT_KILOVOLT.layerId,
+    title: d.ONE_THIRTY_EIGHT_KILOVOLT.name,
+    url: d.ONE_THIRTY_EIGHT_KILOVOLT.url,
+    category: d.ONE_THIRTY_EIGHT_KILOVOLT.category,
+    listMode: 'show',
+    loadOnInit: false,
+    visible: true,
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
+  },
+  {
+    type: 'feature',
+    id: d.LIGHT_POLES.layerId,
+    title: d.LIGHT_POLES.name,
+    url: d.LIGHT_POLES.url,
+    category: d.LIGHT_POLES.category,
+    listMode: 'show',
+    loadOnInit: false,
+    visible: true,
+    popupComponent: Popups.GeneralDirectionsPopupComponent,
+    native: {
+      ...commonLayerProps
+    }
+  },
+  {
+    type: 'feature',
     id: 'construction-layer',
     title: 'Construction Zone',
     url: `${Connections.constructionUrl}`,

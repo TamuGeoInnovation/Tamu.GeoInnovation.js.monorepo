@@ -219,5 +219,40 @@ export const Definitions = {
     name: 'Generators',
     url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/28',
     category: 'Electrical'
+  },
+  PAD_MOUNTED_SWITCHES: {
+    id: 'pad-mounted-switches',
+    layerId: 'pad-mounted-switches-layer',
+    name: 'Pad Mounted Switches',
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/29',
+    category: 'Electrical'
+  },
+  FEEDERS: {
+    id: 'feeders',
+    layerId: 'feeders-layer',
+    name: 'Feeders',
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/30',
+    category: 'Electrical'
+  },
+  FEEDER_BUILDINGS: {
+    id: 'feeder-buildings',
+    layerId: 'feeder-buildings-layer',
+    name: 'Feeder Buildings',
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/31',
+    category: 'Electrical'
+  },
+  ONE_THIRTY_EIGHT_KILOVOLT: {
+    id: 'one-thirty-eight-kilovolt',
+    layerId: 'one-thirty-eight-kilovolt-layer',
+    name: '138kV',
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/32',
+    category: 'Electrical'
+  },
+  LIGHT_POLES: {
+    id: 'light-poles',
+    layerId: 'light-poles-layer',
+    name: 'Light Poles',
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/33',
+    category: 'Electrical'
   }
 };
