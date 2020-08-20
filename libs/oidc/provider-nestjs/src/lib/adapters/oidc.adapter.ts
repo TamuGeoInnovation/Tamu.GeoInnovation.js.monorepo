@@ -74,6 +74,7 @@ export class OidcAdapter {
           data: JSON.stringify(payload),
           grantId: payload.grantId ? payload.grantId : undefined,
           uid: payload.uid ? payload.uid : undefined,
+          added: new Date(),
           clientId: payload.clientId ? payload.clientId : undefined,
           userCode: payload.userCode ? payload.userCode : undefined,
           expiresAt: expiresIn ? new Date(Date.now() + expiresIn * 1000).toISOString() : undefined

@@ -1,8 +1,46 @@
-<section class="internal">
+<!-- <section class="internal">
   <h1 class="section-header">Stats</h1>
   <div class="chartDiv">
     <div class="charts" *ngFor="let chart of (chartData | async)">
       <tamu-gisc-line-chart [source]="chart.data" [options]="chart.options" [title]="chart.options.title.text"></tamu-gisc-line-chart>
     </div>
+  </div>
+</section> -->
+<section class="internal">
+  <h1 class="section-header">Stats</h1>
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>How many people are currently 'logged in'?</p>
+      </div>
+    </div>
+    <h3>Chart A</h3>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Breakdown of users by client</p>
+      </div>
+    </div>
+    <h3>Chart B</h3>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Count of new users in past month</p>
+      </div>
+    </div>
+    <h3>Chart C</h3>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Number of logins in the past month</p>
+      </div>
+    </div>
+    <h3>Chart D</h3>
   </div>
 </section>
