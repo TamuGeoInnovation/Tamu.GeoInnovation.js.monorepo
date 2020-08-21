@@ -1,14 +1,18 @@
 <table>
   <tr>
-    <th>Guid</th>
     <th>Name</th>
-    <th>Email</th>
-    <th>Enabled 2FA?</th>
+    <th>Secret</th>
+    <th>Grant Types</th>
+    <th>Response Types</th>
+    <th>Redirect URIs</th>
+    <th>Auth Method</th>
   </tr>
   <tr *ngFor="let client of ($clients | async)">
-    <td>{{client.guid}}</td>
-    <td>{{user.account.name}}</td>
-    <td>{{user.email}}</td>
-    <td>{{user.enabled2fa}}</td>
+    <td>{{client.clientName}}</td>
+    <td>{{client.clientSecret}}</td>
+    <td>{{client.grantTypes}}</td>
+    <td>{{client.responseTypes}}</td>
+    <td>{{client.redirectUris}}</td>
+    <td>{{client.tokenEndpointAuthMethod}}</td>
   </tr>
 </table>

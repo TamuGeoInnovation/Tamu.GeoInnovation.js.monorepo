@@ -6,7 +6,7 @@ import { ClientMetadata } from '@tamu-gisc/oidc/provider-nest';
 @Component({
   selector: 'view-client-metadata',
   templateUrl: './view-client-metadata.component.html',
-  styleUrls: ['./view-client-metadata.component.css']
+  styleUrls: ['./view-client-metadata.component.scss']
 })
 export class ViewClientMetadataComponent implements OnInit {
   public $clients: Observable<Array<Partial<IClientMetadataResponse>>>;
