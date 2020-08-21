@@ -36,7 +36,7 @@ export class ClientMetadataService {
   }
 
   public async getAllClients() {
-    return this.clientMetadataRepo.findAllShallow();
+    return this.clientMetadataRepo.findAllDeep();
   }
 
   public async insertClientMetadata(_clientMetadata: Partial<ClientMetadata>) {

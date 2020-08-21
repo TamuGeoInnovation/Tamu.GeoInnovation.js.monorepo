@@ -28,6 +28,10 @@ const routes: Routes = [
   {
     path: 'roles',
     loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.RolesModule)
+  },
+  {
+    path: 'client-metadata',
+    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.ClientMetadataModule)
   }
   // {
   //   path: 'internal',

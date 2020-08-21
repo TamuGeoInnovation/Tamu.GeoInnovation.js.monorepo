@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
+import { SecretQuestion } from '@tamu-gisc/oidc/provider-nest';
+import { Observable } from 'rxjs';
+import { UsersService } from '@tamu-gisc/oidc/admin-data-access';
+
 @Component({
   selector: 'add-users',
   templateUrl: './add-users.component.html',
@@ -9,8 +13,10 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 export class AddUsersComponent implements OnInit {
   public password: FormGroup;
   public question: FormGroup;
-  // public $questions:
-  constructor(private fb: FormBuilder) {}
+  public $questions: Observable<Array<Partial<SecretQuestion>>>;
+  constructor(private fb: FormBuilder, private userService: UsersService) {
+    this.$questions = this.userService.getSecretQuestionsAll();
+  }
 
   ngOnInit(): void {
     this.password = this.fb.group({
