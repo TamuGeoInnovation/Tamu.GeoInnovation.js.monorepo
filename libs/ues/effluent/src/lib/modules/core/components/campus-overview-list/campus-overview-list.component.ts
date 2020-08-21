@@ -50,4 +50,8 @@ export class CampusOverviewListComponent implements OnInit {
       })
     );
   }
+
+  public highlightZone() {
+    debugger;
+  }
 }

@@ -1,4 +1,4 @@
-<div class="zone-overview-tile" *ngFor="let zone of zones | async">
+<div class="zone-overview-tile" *ngFor="let zone of zones | async" (click)="highlightZone(zone.attributes.SampleNumber)">
   <div class="zone-metric">
     <div class="zone-metric-value">{{zone.attributes.SampleNumber}}</div>
     <div class="zone-metric-name">Sample</div>

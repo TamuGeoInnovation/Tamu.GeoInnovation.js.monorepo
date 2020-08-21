@@ -260,6 +260,21 @@ export const LegendSources: LegendItem[] = [
     title: 'Railroad',
     src:
       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAHhJREFUOI3tkrENgDAMBL+I9EUmYA7WYCfCTLBG5qBz/x0VRUAkAtIg8q3t+7dlh8pyDfgnIMnwBiQpJEBJI8mpMDQAWEnGYkIA0Xs/m9llM8kkTQlYRQnQzEJuHUk9gG5PeqiFBEhyKbnnzE4Jc3e5ow89dgM+1gZwZSYCkyusZQAAAABJRU5ErkJggg=='
+  },
+  {
+    id: 'effluent-green',
+    title: 'Safe Signal Value',
+    src: './assets/images/legend/effluent-green.svg'
+  },
+  {
+    id: 'effluent-amber',
+    title: 'Moderate Signal Value',
+    src: './assets/images/legend/effluent-amber.svg'
+  },
+  {
+    id: 'effluent-red',
+    title: 'High Signal Value',
+    src: './assets/images/legend/effluent-red.svg'
   }
 ];
 
