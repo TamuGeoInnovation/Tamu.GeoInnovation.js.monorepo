@@ -135,7 +135,26 @@ export const LayerSources: LayerSource[] = [
           color: [20, 158, 206, 0.4],
           style: 'solid'
         }
-      }
+      },
+      labelingInfo: [
+        {
+          labelExpressionInfo: {
+            expression: `$feature.SampleNumber`
+          },
+          symbol: {
+            type: 'text',
+            color: 'black',
+            haloSize: '1.5pt',
+            haloColor: 'white',
+            font: {
+              size: '8.5pt',
+              family: 'Ubuntu',
+              style: 'normal',
+              weight: 'bold'
+            }
+          }
+        }
+      ]
     }
   },
   {
