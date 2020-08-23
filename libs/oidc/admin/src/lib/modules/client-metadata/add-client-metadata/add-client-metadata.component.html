@@ -1,1 +1,19 @@
-<p>add-client-metadata works!</p>
+<form [formGroup]="">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Client Information</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="client_name" type="text" placeholder="Client Name" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="client_secret" type="text" placeholder="Client Secret" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+</form>
