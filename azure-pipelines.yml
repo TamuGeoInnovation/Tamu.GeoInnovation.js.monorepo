@@ -18,4 +18,4 @@ steps:
     displayName: 'Install Node.js'
   - script: |
       npm install
-        isplayName: 'Install dependencies'
+    displayName: 'Install dependencies'
