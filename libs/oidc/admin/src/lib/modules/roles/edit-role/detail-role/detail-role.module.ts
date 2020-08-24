@@ -6,24 +6,19 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
-import { EditRoleComponent } from './edit-role.component';
-import { DetailRoleComponent } from './detail-role/detail-role.component';
+import { DetailRoleComponent } from './detail-role.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: EditRoleComponent,
+    component: DetailRoleComponent,
     pathMatch: 'full'
-  },
-  {
-    path: ':roleGuid',
-    loadChildren: () => import('./detail-role/detail-role.module').then((m) => m.DetailRoleModule)
   }
 ];
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes), FormsModule, ReactiveFormsModule, UIFormsModule, UILayoutModule],
-  declarations: [EditRoleComponent],
+  declarations: [DetailRoleComponent],
   exports: [RouterModule]
 })
-export class EditRoleModule {}
+export class DetailRoleModule {}

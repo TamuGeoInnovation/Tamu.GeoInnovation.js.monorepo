@@ -1,1 +1,12 @@
-<p>edit-role works!</p>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Level</th>
+    <th class="action-row">Actions</th>
+  </tr>
+  <tr *ngFor="let role of ($roles | async)">
+    <td>{{role.name}}</td>
+    <td>{{role.level}}</td>
+    <td><span [routerLink]="[role.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit role">edit</span><span (click)="deleteRole(role)" class="material-icons action alt" title="Delete role">delete</span></td>
+  </tr>
+</table>

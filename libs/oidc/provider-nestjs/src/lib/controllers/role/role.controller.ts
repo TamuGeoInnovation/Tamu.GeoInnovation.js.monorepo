@@ -12,6 +12,11 @@ export class RoleController {
     return this.roleService.getAllRoles();
   }
 
+  @Get(':roleGuid')
+  async specificRoleGet(@Param() params) {
+    return this.roleService.getRole(params.roleGuid);
+  }
+
   @Post()
   public async newRolePost(@Body() body) {
     const { level, name } = body;
@@ -30,5 +35,10 @@ export class RoleController {
       _roles.push(newRole);
     });
     return this.roleService.insertRoles(_roles);
+  }
+
+  @Post('update')
+  async updateRolePost(@Req() req) {
+    return this.roleService.updateRole(req);
   }
 }

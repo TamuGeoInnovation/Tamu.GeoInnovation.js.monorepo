@@ -14,8 +14,26 @@ export class RolesService {
     this.resource = this.env.value('api_url') + '/role';
   }
 
+  public updateDetails(updatedRole: Partial<Role>) {
+    return this.http.post<Partial<Role>>(`${this.resource}/update`, updatedRole, {
+      withCredentials: false
+    });
+  }
+
   public getRolesAll() {
     return this.http.get<Array<Partial<Role>>>(this.resource, {
+      withCredentials: false
+    });
+  }
+
+  public getRole(guid: string) {
+    return this.http.get<Partial<Role>>(`${this.resource}/${guid}`, {
+      withCredentials: false
+    });
+  }
+
+  public addRolePost(newRole: Partial<Role>) {
+    return this.http.post<Partial<Role>>(this.resource, newRole, {
       withCredentials: false
     });
   }
