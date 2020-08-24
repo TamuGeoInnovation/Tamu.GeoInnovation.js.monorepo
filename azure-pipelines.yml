@@ -7,16 +7,26 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'default'
+
+variables:
+  npm_config_cache: $(Pipeline.Workspace)/.npm
 
 steps:
+- checkout: self
+  clean: false
+
 - task: NodeTool@0
   inputs:
-    versionSpec: '10.x'
+    versionSpec: '12.18'
   displayName: 'Install Node.js'
 
 - script: |
-    npm install -g @angular/cli
     npm install
-    ng build --prod
-  displayName: 'npm install and build'
+    npm run coverage
+  displayName: 'npm install and output coverage'
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
