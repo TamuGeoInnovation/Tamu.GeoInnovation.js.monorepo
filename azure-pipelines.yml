@@ -3,19 +3,19 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
+trigger:
+    - release/*
+
+pr: none
 
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  npm_config_cache: $(Pipeline.Workspace)/.npm
-
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '12.18'
-  displayName: 'Install Node.js'
-
-- task: Npm@1
-  inputs:
-    command: 'install'
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '12.18'
+    displayName: 'Install Node.js'
+  - script: |
+      npm install
+        isplayName: 'Install dependencies'
