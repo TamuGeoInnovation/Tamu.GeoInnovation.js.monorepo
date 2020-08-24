@@ -16,5 +16,6 @@ steps:
     versionSpec: '12.18'
   displayName: 'Install Node.js'
 
-- script: npm install --only=dev
-  displayName: 'Install npm'
+- task: Npm@1
+  inputs:
+  command: 'install'
