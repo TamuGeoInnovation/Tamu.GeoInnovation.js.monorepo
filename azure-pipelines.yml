@@ -3,8 +3,6 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-trigger:
-- master
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -13,20 +11,10 @@ variables:
   npm_config_cache: $(Pipeline.Workspace)/.npm
 
 steps:
-- checkout: self
-  clean: false
-
 - task: NodeTool@0
   inputs:
     versionSpec: '12.18'
   displayName: 'Install Node.js'
 
-- script: |
-    npm install
-    npm run coverage
-  displayName: 'npm install and output coverage'
-
-- task: PublishCodeCoverageResults@1
-  inputs:
-    codeCoverageTool: Cobertura
-    summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
+- script: npm install
+  displayName: 'Install npm'
