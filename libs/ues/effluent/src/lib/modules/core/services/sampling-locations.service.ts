@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable, from, of } from 'rxjs';
 import { shareReplay, switchMap, pluck, map } from 'rxjs/operators';
 
+import { IChartConfiguration } from '@tamu-gisc/charts';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { IEffluentSample } from '@tamu-gisc/ues/common/ngx';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 
 import esri = __esri;
-import { IChartConfiguration } from '@tamu-gisc/charts';
 
 @Injectable({
   providedIn: 'root'

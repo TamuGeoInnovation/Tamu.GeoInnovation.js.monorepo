@@ -8,6 +8,7 @@ import { CampusTotalsComponent } from './components/campus-totals/campus-totals.
 import { CoverageChartComponent } from './components/coverage-chart/coverage-chart.component';
 import { BuildingTypeChartComponent } from './components/building-type-chart/building-type-chart.component';
 import { SiteHistoryChartComponent } from './components/site-history-chart/site-history-chart.component';
+import { ZoneOverviewTileComponent } from './components/zone-overview-tile/zone-overview-tile.component';
 
 @NgModule({
   imports: [CommonModule, ChartsModule],
@@ -16,7 +17,8 @@ import { SiteHistoryChartComponent } from './components/site-history-chart/site-
     CampusTotalsComponent,
     CoverageChartComponent,
     BuildingTypeChartComponent,
-    SiteHistoryChartComponent
+    SiteHistoryChartComponent,
+    ZoneOverviewTileComponent
   ],
   exports: [CampusOverviewListComponent, CampusTotalsComponent, SiteHistoryChartComponent]
 })
