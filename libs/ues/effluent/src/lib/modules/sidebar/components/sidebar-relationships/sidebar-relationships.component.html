@@ -27,7 +27,7 @@
 
         <ng-container *ngIf="(sampleLocationsInZone | async)?.length  > 0">
           <div class="stat-chart" *ngFor="let location of sampleLocationsInZone | async">
-            <tamu-gisc-line-chart [source]="location?.attributes?.chartData" [options]="chartOptions" [title]="'Signal value @ ' + location?.attributes?.Sample"></tamu-gisc-line-chart>
+            <tamu-gisc-site-history-chart [tier]="tier | async" [sample]="sample | async"></tamu-gisc-site-history-chart>
           </div>
         </ng-container>
       </div>

@@ -6,8 +6,6 @@ import { EsriMapService, HitTestSnapshot } from '@tamu-gisc/maps/esri';
 import { PopupService } from '@tamu-gisc/maps/feature/popup';
 import { FeatureHighlightService } from '@tamu-gisc/maps/feature/feature-highlight';
 
-import { IChartConfiguration } from '@tamu-gisc/charts';
-import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 import { SamplingLocationsService } from './sampling-locations.service';
 import { SamplingBuildingsService } from './sampling-buildings.service';
 import { EffluentZonesService } from './effluent-zones.service';
@@ -140,12 +138,6 @@ export class EffluentService {
       switchMap(([tier, graphic]) => {
         return this.effluentSampleService.getSamplingLocationsForTier(graphic.geometry, tier);
       }),
-      map((features) => {
-        return features.map((f) => {
-          f.attributes.chartData = this.getChartData();
-          return f;
-        });
-      }),
       shareReplay(1)
     );
 
@@ -251,68 +243,5 @@ export class EffluentService {
     });
 
     return r.features;
-  }
-
-  private getChartData(): Observable<IChartConfiguration['data']> {
-    return combineLatest([this.tier, this.sample]).pipe(
-      switchMap(([tier, sample]) => {
-        const data = this.effluentSampleService.getSamplingLocation({
-          tier,
-          sample
-        });
-
-        if (data) {
-          return this.getChartConfiguration({
-            values: data.entries.map((e) => e.result),
-            dates: data.entries.map((e) => e.date)
-          });
-        } else {
-          return this.getChartConfiguration({ values: this.getNRandomValues(7), dates: this.getLastNDates(7) });
-        }
-      })
-    );
-  }
-
-  private getChartConfiguration(factors: {
-    values: Array<number>;
-    dates: Array<Date>;
-  }): Observable<IChartConfiguration['data']> {
-    return of(factors).pipe(
-      map((f) => {
-        return factors.dates.map((d, i, a) => {
-          return {
-            x: d,
-            y: factors.values[i]
-          };
-        });
-      }),
-      map((dataset) => {
-        return {
-          datasets: [
-            {
-              data: dataset,
-              fill: false
-            }
-          ]
-        };
-      })
-    );
-  }
-
-  private getNRandomValues(n: number) {
-    return new Array(n).fill(undefined).map((v) => getRandomNumber(0, 1000));
-  }
-
-  private getLastNDates(days: number) {
-    return new Array(days)
-      .fill(undefined)
-      .reduce((acc, curr, ci) => {
-        if (ci === 0) {
-          return [Date.now()];
-        } else {
-          return [...acc, acc[ci - 1] - 24 * 60 * 60 * 1000];
-        }
-      }, [])
-      .reverse();
   }
 }

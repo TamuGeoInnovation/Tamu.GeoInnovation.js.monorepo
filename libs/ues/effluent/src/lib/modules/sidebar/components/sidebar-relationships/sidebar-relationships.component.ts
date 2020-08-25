@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IChartConfiguration } from '@tamu-gisc/charts';
 import { PopupService } from '@tamu-gisc/maps/feature/popup';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { FeatureHighlightService } from '@tamu-gisc/maps/feature/feature-highlight';
@@ -37,29 +36,6 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
   public isHitGraphicZone = this.effluentService.isHitGraphicZone;
 
   private _destroy: Subject<boolean> = new Subject();
-
-  public chartOptions: Partial<IChartConfiguration['options']> = {
-    scales: {
-      xAxes: [
-        {
-          type: 'time',
-          distribution: 'series',
-          time: {
-            unit: 'day'
-          }
-        }
-      ]
-    },
-    legend: {
-      position: 'bottom',
-      display: false
-    },
-    plugins: {
-      colorschemes: {
-        scheme: 'brewer.Paired8'
-      }
-    }
-  };
 
   constructor(
     private mapService: EsriMapService,

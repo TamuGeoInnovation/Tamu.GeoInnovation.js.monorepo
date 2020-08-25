@@ -7,10 +7,17 @@ import { CampusOverviewListComponent } from './components/campus-overview-list/c
 import { CampusTotalsComponent } from './components/campus-totals/campus-totals.component';
 import { CoverageChartComponent } from './components/coverage-chart/coverage-chart.component';
 import { BuildingTypeChartComponent } from './components/building-type-chart/building-type-chart.component';
+import { SiteHistoryChartComponent } from './components/site-history-chart/site-history-chart.component';
 
 @NgModule({
   imports: [CommonModule, ChartsModule],
-  declarations: [CampusOverviewListComponent, CampusTotalsComponent, CoverageChartComponent, BuildingTypeChartComponent],
-  exports: [CampusOverviewListComponent, CampusTotalsComponent]
+  declarations: [
+    CampusOverviewListComponent,
+    CampusTotalsComponent,
+    CoverageChartComponent,
+    BuildingTypeChartComponent,
+    SiteHistoryChartComponent
+  ],
+  exports: [CampusOverviewListComponent, CampusTotalsComponent, SiteHistoryChartComponent]
 })
 export class UESEffluentCoreModule {}

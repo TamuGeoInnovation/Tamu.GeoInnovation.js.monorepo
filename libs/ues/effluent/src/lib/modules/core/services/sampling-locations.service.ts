@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable, from, of } from 'rxjs';
-import { shareReplay, switchMap, pluck } from 'rxjs/operators';
+import { shareReplay, switchMap, pluck, map } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { IEffluentSample } from '@tamu-gisc/ues/common/ngx';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 
 import esri = __esri;
+import { IChartConfiguration } from '@tamu-gisc/charts';
 
 @Injectable({
   providedIn: 'root'
@@ -91,5 +93,64 @@ export class SamplingLocationsService {
       }),
       pluck<esri.FeatureSet, Array<esri.Graphic>>('features')
     );
+  }
+
+  public getChartDataForSample(tier: number, sample: number): Observable<IChartConfiguration['data']> {
+    const data = this.getSamplingLocation({
+      tier,
+      sample
+    });
+
+    if (data) {
+      return this.getChartConfiguration({
+        values: data.entries.map((e) => e.result),
+        dates: data.entries.map((e) => e.date)
+      });
+    } else {
+      return this.getChartConfiguration({ values: this.getNRandomValues(7), dates: this.getLastNDates(7) });
+    }
+  }
+
+  private getChartConfiguration(factors: {
+    values: Array<number>;
+    dates: Array<Date>;
+  }): Observable<IChartConfiguration['data']> {
+    return of(factors).pipe(
+      map((f) => {
+        return factors.dates.map((d, i, a) => {
+          return {
+            x: d,
+            y: factors.values[i]
+          };
+        });
+      }),
+      map((dataset) => {
+        return {
+          datasets: [
+            {
+              data: dataset,
+              fill: false
+            }
+          ]
+        };
+      })
+    );
+  }
+
+  private getNRandomValues(n: number) {
+    return new Array(n).fill(undefined).map((v) => getRandomNumber(0, 1000));
+  }
+
+  private getLastNDates(days: number) {
+    return new Array(days)
+      .fill(undefined)
+      .reduce((acc, curr, ci) => {
+        if (ci === 0) {
+          return [Date.now()];
+        } else {
+          return [...acc, acc[ci - 1] - 24 * 60 * 60 * 1000];
+        }
+      }, [])
+      .reverse();
   }
 }
