@@ -17,10 +17,10 @@ resources:
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '12.18'
+    versionSpec: '12.16.2'
   displayName: 'Install Node.js'
   
-- script: npm install -g @angular/cli
-  displayName: NPM Install Angular CLI
+- script: npm install
+  displayName: NPM install
 
 
