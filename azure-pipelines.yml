@@ -20,7 +20,6 @@ steps:
     versionSpec: '12.18'
   displayName: 'Install Node.js'
 
-- script: |
-    npm install --only=dev
-  displayName: 'npm install'
+- script: npm install -g @angular/cli
+
 
