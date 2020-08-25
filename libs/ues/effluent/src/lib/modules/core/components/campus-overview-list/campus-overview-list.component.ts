@@ -57,36 +57,4 @@ export class CampusOverviewListComponent implements OnInit {
       })
     );
   }
-
-  public async highlightZone(sampleNumber?: string) {
-    const layer = this.ms.findLayerById('sampling-zone-3') as esri.FeatureLayer;
-
-    if (layer) {
-      const featureSet = await layer.queryFeatures({
-        where: `SampleNumber = '${sampleNumber}'`,
-        outFields: ['*'],
-        returnGeometry: true,
-        outSpatialReference: {
-          wkid: 4326
-        }
-      });
-
-      if (featureSet.features.length > 0) {
-        this.hs.highlight({
-          features: featureSet.features,
-          options: {
-            clearAllOthers: true
-          }
-        });
-
-        const z = await this.ms.computeZoomLevel(featureSet.features);
-
-        this.ms.zoomTo({ graphics: featureSet.features, zoom: z - 1 });
-      } else {
-        console.warn(`No feature with SampleNumber ${sampleNumber} was found.`);
-      }
-    } else {
-      throw new Error('Could not highlight feature because of invalid layer reference');
-    }
-  }
 }

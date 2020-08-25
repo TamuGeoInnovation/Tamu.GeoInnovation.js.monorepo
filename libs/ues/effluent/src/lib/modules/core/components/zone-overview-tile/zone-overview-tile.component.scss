@@ -5,9 +5,7 @@
   margin: 0.5rem 0;
   position: relative;
   @include flexbox();
-  @include flex-direction(row);
-  @include align-items(center);
-  @include justify-content(space-around);
+  @include flex-direction(column);
   border: 1pt solid;
   border-color: #bdbdbd;
   border-radius: 0.5rem;
@@ -16,6 +14,17 @@
   &:hover {
     cursor: pointer;
     border-color: #616161;
+  }
+}
+
+.zone-overview-row {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+  @include justify-content(space-around);
+
+  &:not(:last-child) {
+    margin-bottom: 1rem;
   }
 }
 
