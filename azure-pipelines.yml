@@ -3,24 +3,17 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-# Node.js with Angular
-# Build a Node.js project that uses Angular.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
-trigger:
-- master
-
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '12.18'
-  displayName: 'Install Node.js'
+resources:
+  containers:
+    - container: mssql
+      image: mcr.microsoft.com/mssql/server:2017-latest
+      ports: 
+      - 1433:1433
+    options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password' -e 'MSSQL_PID=Express'
 
-- script: npm install -g @angular/cli
-  displayName: NPM Install Angular CLI
+
 
 
