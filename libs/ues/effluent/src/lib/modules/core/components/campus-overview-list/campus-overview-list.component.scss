@@ -13,8 +13,15 @@
   @include flex-direction(row);
   @include align-items(center);
   @include justify-content(space-around);
-  border: 1pt solid #bdbdbd;
+  border: 1pt solid;
+  border-color: #bdbdbd;
   border-radius: 0.5rem;
+  @include transition(border-color 0.2s);
+
+  &:hover {
+    cursor: pointer;
+    border-color: #616161;
+  }
 }
 
 .zone-metric {

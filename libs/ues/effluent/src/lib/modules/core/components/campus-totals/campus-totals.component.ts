@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
+import { IEffluentTierMetadata } from '@tamu-gisc/ues/common/ngx';
+
 import { SamplingLocationsService } from '../../services/sampling-locations.service';
 import { EffluentZonesService } from '../../services/effluent-zones.service';
+import { SamplingBuildingsService } from '../../services/sampling-buildings.service';
 
 import esri = __esri;
-import { IEffluentTierMetadata } from '@tamu-gisc/ues/common/ngx';
-import { SamplingBuildingsService } from '../../services/sampling-buildings.service';
 
 @Component({
   selector: 'tamu-gisc-campus-totals',

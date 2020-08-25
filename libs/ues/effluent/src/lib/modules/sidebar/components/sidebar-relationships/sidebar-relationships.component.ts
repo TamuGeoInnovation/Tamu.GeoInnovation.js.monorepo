@@ -15,7 +15,7 @@ import esri = __esri;
   selector: 'tamu-gisc-sidebar-relationships',
   templateUrl: './sidebar-relationships.component.html',
   styleUrls: ['./sidebar-relationships.component.scss'],
-  providers: [FeatureHighlightService, EffluentService]
+  providers: [EffluentService]
 })
 export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
   public tier = this.effluentService.tier;
