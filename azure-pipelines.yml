@@ -3,18 +3,24 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
 trigger:
 - master
 
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  npm_config_cache: $(Pipeline.Workspace)/.npm
-
 steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '12.18'
-    displayName: 'Install Node.js'
+- task: NodeTool@0
+  inputs:
+    versionSpec: '12.18'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install --only=dev
+  displayName: 'npm install'
 
