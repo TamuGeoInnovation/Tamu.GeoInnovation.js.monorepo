@@ -12,8 +12,15 @@ resources:
       image: mcr.microsoft.com/mssql/server:2017-latest
       ports: 
       - 1433:1433
-    options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password' -e 'MSSQL_PID=Express'
+      options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password' -e 'MSSQL_PID=Express'
 
-
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '12.18'
+  displayName: 'Install Node.js'
+  
+- script: npm install -g @angular/cli
+  displayName: NPM Install Angular CLI
 
 
