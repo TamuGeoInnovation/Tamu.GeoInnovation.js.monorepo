@@ -14,7 +14,11 @@ resources:
       - 1433:1433
       options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password' -e 'MSSQL_PID=Express'
 
+
 steps:
+- checkout: self
+  clean: false
+
 # Install SSH key
 # Install an SSH key prior to a build or deployment
 - task: InstallSSHKey@0
@@ -27,6 +31,6 @@ steps:
   displayName: 'Install Node.js'
   
 - script: npm install
-  displayName: NPM install
+  displayName: 'NPM install'
 
 
