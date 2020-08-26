@@ -90,7 +90,8 @@
       "@tamu-gisc/ues/common/ngx": ["libs/ues/common/ngx/src/index.ts"],
       "@tamu-gisc/common/utils/device/guards": ["libs/common/utils/device/guards/src/index.ts"],
       "@tamu-gisc/ues/effluent": ["libs/ues/effluent/src/index.ts"],
-      "@tamu-gisc/maps/feature/feature-highlight": ["libs/maps/feature/feature-highlight/src/index.ts"]
+      "@tamu-gisc/maps/feature/feature-highlight": ["libs/maps/feature/feature-highlight/src/index.ts"],
+      "@tamu-gisc/ues/effluent/data-api": ["libs/ues/effluent/data-api/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -3286,8 +3286,7 @@
               }
             ],
             "styles": ["apps/ues-angular/src/styles.scss"],
-            "scripts": [],
-            "crossOrigin": "anonymous"
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -3625,6 +3624,28 @@
       "schematics": {
         "@nrwl/angular:component": {
           "styleext": "scss"
+        }
+      }
+    },
+    "ues-effluent-data-api": {
+      "root": "libs/ues/effluent/data-api",
+      "sourceRoot": "libs/ues/effluent/data-api/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ues/effluent/data-api/tsconfig.lib.json", "libs/ues/effluent/data-api/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ues/effluent/data-api/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ues/effluent/data-api/jest.config.js",
+            "tsConfig": "libs/ues/effluent/data-api/tsconfig.spec.json"
+          }
         }
       }
     }
