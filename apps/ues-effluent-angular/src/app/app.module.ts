@@ -29,6 +29,10 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('@tamu-gisc/ues/effluent').then((m) => m.MapModule)
+  },
+  {
+    path: 'data',
+    loadChildren: () => import('@tamu-gisc/ues/effluent').then((m) => m.DataModule)
   }
 ];
 

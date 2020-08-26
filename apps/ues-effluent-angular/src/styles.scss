@@ -47,8 +47,11 @@
 //   UI Elements
 //  ==========================================================================
 
+$active-color: hsl(223, 75%, 67%);
+
 @import 'libs/sass/modules/loaders';
 @import 'libs/sass/components/datetime-picker';
+@import 'libs/sass/modules/tabs';
 
 //  ==========================================================================
 //   DEFAULTS
