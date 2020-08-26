@@ -19,6 +19,7 @@ export class DetailRoleComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private route: ActivatedRoute, private roleService: RolesService) {
     this.form = this.fb.group({
+      guid: [''],
       name: [''],
       level: ['']
     });
@@ -30,10 +31,10 @@ export class DetailRoleComponent implements OnInit {
       this.roleService.getRole(this.roleGuid).subscribe((role) => {
         this.role = role;
         this.form.patchValue(this.role);
+        this.form.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
+          this.roleService.updateRole(this.form.getRawValue()).subscribe((result) => [console.log('Updated details')]);
+        });
       });
     }
-    this.form.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
-      this.roleService.updateDetails(this.form.getRawValue()).subscribe((result) => [console.log('Updated details')]);
-    });
   }
 }

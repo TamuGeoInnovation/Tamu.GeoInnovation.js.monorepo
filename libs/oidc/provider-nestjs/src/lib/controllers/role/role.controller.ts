@@ -37,7 +37,12 @@ export class RoleController {
     return this.roleService.insertRoles(_roles);
   }
 
-  @Post('update')
+  @Delete('delete/:roleGuid')
+  async deleteRolePost(@Param() params) {
+    return this.roleService.deleteRole(params.roleGuid);
+  }
+
+  @Patch('update')
   async updateRolePost(@Req() req) {
     return this.roleService.updateRole(req);
   }

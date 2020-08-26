@@ -19,6 +19,6 @@ export class AddRoleComponent implements OnInit {
   }
 
   public submitAddRole() {
-    // this.roleService.addRolePost(this.form.value);
+    this.roleService.createRole(this.form.value);
   }
 }

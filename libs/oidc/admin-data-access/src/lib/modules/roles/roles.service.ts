@@ -14,13 +14,13 @@ export class RolesService {
     this.resource = this.env.value('api_url') + '/role';
   }
 
-  public updateDetails(updatedRole: Partial<Role>) {
-    return this.http.post<Partial<Role>>(`${this.resource}/update`, updatedRole, {
+  public updateRole(updatedRole: Partial<Role>) {
+    return this.http.patch<Partial<Role>>(`${this.resource}/update`, updatedRole, {
       withCredentials: false
     });
   }
 
-  public getRolesAll() {
+  public getRoles() {
     return this.http.get<Array<Partial<Role>>>(this.resource, {
       withCredentials: false
     });
@@ -32,9 +32,17 @@ export class RolesService {
     });
   }
 
-  public addRolePost(newRole: Partial<Role>) {
-    return this.http.post<Partial<Role>>(this.resource, newRole, {
-      withCredentials: false
-    });
+  public createRole(newRole: Partial<Role>) {
+    return this.http
+      .post<Partial<Role>>(this.resource, newRole, {
+        withCredentials: false
+      })
+      .subscribe((newestRole) => {
+        console.log('Added role', newestRole);
+      });
+  }
+
+  public deleteRole(role: Role) {
+    return this.http.delete<Partial<Role>>(`${this.resource}/delete/${role.guid}`);
   }
 }

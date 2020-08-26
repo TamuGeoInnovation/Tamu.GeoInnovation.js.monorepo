@@ -12,7 +12,7 @@ export class ViewRoleComponent implements OnInit {
   public $roles: Observable<Array<Partial<Role>>>;
 
   constructor(private readonly rolesService: RolesService) {
-    this.$roles = this.rolesService.getRolesAll();
+    this.$roles = this.rolesService.getRoles();
   }
   ngOnInit(): void {}
 }
