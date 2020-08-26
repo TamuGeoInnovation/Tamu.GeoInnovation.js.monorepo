@@ -3648,6 +3648,31 @@
           }
         }
       }
+    },
+    "ues-effluent-common-entities": {
+      "root": "libs/ues/effluent/common/entities",
+      "sourceRoot": "libs/ues/effluent/common/entities/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ues/effluent/common/entities/tsconfig.lib.json",
+              "libs/ues/effluent/common/entities/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ues/effluent/common/entities/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ues/effluent/common/entities/jest.config.js",
+            "tsConfig": "libs/ues/effluent/common/entities/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {

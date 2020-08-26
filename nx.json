@@ -310,6 +310,9 @@
     },
     "ues-effluent-data-api": {
       "tags": []
+    },
+    "ues-effluent-common-entities": {
+      "tags": []
     }
   }
 }
