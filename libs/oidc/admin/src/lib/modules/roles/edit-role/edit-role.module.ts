@@ -7,7 +7,6 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { EditRoleComponent } from './edit-role.component';
-import { DetailRoleComponent } from './detail-role/detail-role.component';
 
 const routes: Routes = [
   {

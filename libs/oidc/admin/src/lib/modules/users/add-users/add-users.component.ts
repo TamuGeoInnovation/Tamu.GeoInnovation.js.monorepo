@@ -15,7 +15,7 @@ export class AddUsersComponent implements OnInit {
   public question: FormGroup;
   public $questions: Observable<Array<Partial<SecretQuestion>>>;
   constructor(private fb: FormBuilder, private userService: UsersService) {
-    this.$questions = this.userService.getSecretQuestionsAll();
+    this.$questions = this.userService.getSecretQuestions();
   }
 
   ngOnInit(): void {

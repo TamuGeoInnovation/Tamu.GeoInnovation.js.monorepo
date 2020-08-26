@@ -18,7 +18,7 @@ export class EditRoleComponent implements OnInit {
     this.fetchRoles();
   }
 
-  deleteRole(role: Role) {
+  public deleteRole(role: Role) {
     console.log('deleteRole', role);
     this.rolesService.deleteRole(role).subscribe((deleteStatus) => {
       console.log('Deleted ', role.guid);

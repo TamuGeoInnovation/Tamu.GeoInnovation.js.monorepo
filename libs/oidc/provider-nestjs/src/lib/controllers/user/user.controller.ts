@@ -16,6 +16,11 @@ export class UserController {
     return this.userService.userRepo.findAllDeep();
   }
 
+  @Delete('delete/:userGuid')
+  async userDelete(@Param() params) {
+    return this.userService.deleteUser(params.userGuid);
+  }
+
   /**
    * Function that will load the 'register' view.
    * Will prompt user for name, email, pw, and secret answers
@@ -351,5 +356,10 @@ export class UserController {
         });
       });
     }
+  }
+
+  @Get(':userGuid')
+  async userGet(@Param() params) {
+    return this.userService.userRepo.findByKeyDeep('email', params.userGuid);
   }
 }

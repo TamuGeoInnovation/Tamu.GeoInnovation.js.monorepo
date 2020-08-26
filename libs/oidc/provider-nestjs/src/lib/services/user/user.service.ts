@@ -73,6 +73,25 @@ export class UserService {
     }
   }
 
+  public async updateUser(req: Request) {
+    const _user: Partial<User> = {
+      // guid: req.body.guid,
+      // level: req.body.level,
+      // name: req.body.name
+    };
+    const user = this.userRepo.create(_user);
+    return this.roleRepo.save(user);
+  }
+
+  public async deleteUser(userGuid: string) {
+    const user = await this.userRepo.findOne({
+      where: {
+        guid: userGuid
+      }
+    });
+    return this.userRepo.remove(user, {});
+  }
+
   /**
    * Function used to update the "email_verified" attribute to true
    */

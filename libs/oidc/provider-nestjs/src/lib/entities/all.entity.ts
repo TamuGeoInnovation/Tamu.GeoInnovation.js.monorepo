@@ -189,11 +189,11 @@ export class User extends GuidIdentity {
   @Column()
   public added: Date;
 
-  @OneToOne((type) => Account, { cascade: true })
+  @OneToOne((type) => Account, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   public account: Account;
 
-  @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true })
+  @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   public userRoles: UserRole[];
 

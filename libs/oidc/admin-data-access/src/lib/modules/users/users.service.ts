@@ -17,13 +17,29 @@ export class UsersService {
     this.questionResource = this.env.value('api_url') + '/secret-question';
   }
 
-  public getUsersAll() {
-    return this.http.get<Array<Partial<User>>>(this.userResource + '/all', {
+  public getUser(guid: string) {
+    return this.http.get<Partial<User>>(`${this.userResource}/${guid}`, {
       withCredentials: false
     });
   }
 
-  public getSecretQuestionsAll() {
+  public getUsers() {
+    return this.http.get<Array<Partial<User>>>(`${this.userResource}/all`, {
+      withCredentials: false
+    });
+  }
+
+  public deleteUser(user: User) {
+    return this.http.delete<Partial<User>>(`${this.userResource}/delete/${user.guid}`);
+  }
+
+  public updateUser(updatedUser: Partial<User>) {
+    return this.http.patch<Partial<User>>(`${this.userResource}/update`, updatedUser, {
+      withCredentials: false
+    });
+  }
+
+  public getSecretQuestions() {
     return this.http.get<Array<Partial<SecretQuestion>>>(this.questionResource, {
       withCredentials: false
     });

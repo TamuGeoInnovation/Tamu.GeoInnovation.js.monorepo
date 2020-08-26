@@ -1,1 +1,16 @@
-<p>edit-users works!</p>
+<table>
+  <tr>
+    <th>Guid</th>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Enabled 2FA?</th>
+    <th class="action-row">Actions</th>
+  </tr>
+  <tr *ngFor="let user of ($users | async)">
+    <td>{{user.guid}}</td>
+    <td>{{user.account.name}}</td>
+    <td>{{user.email}}</td>
+    <td>{{user.enabled2fa}}</td>
+    <td><span [routerLink]="[user.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit user">edit</span><span (click)="deleteUser(user)" class="material-icons action alt" title="Delete user">delete</span></td>
+  </tr>
+</table>
