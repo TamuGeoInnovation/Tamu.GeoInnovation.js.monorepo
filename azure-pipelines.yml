@@ -30,7 +30,13 @@ steps:
     versionSpec: '12.16.2'
   displayName: 'Install Node.js'
   
-- script: npm install
-  displayName: 'NPM install'
+- script: |
+    npm install
+    npm run coverage
+  displayName: 'npm install and output coverage'
 
 
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
