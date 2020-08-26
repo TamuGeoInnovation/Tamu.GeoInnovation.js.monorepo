@@ -28,11 +28,11 @@ WebFont.load({
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('@tamu-gisc/ues/effluent').then((m) => m.MapModule)
+    loadChildren: () => import('@tamu-gisc/ues/effluent/ngx').then((m) => m.MapModule)
   },
   {
     path: 'data',
-    loadChildren: () => import('@tamu-gisc/ues/effluent').then((m) => m.DataModule)
+    loadChildren: () => import('@tamu-gisc/ues/effluent/ngx').then((m) => m.DataModule)
   }
 ];
 
