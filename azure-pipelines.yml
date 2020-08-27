@@ -30,13 +30,15 @@ steps:
     versionSpec: '12.16.2'
   displayName: 'Install Node.js'
   
-- script: |
+- script: 
     npm install
-    npm run coverage
-  displayName: 'npm install and output coverage'
+  displayName: 'npm install'
 
+- script: 
+    npx jest --collectCoverage --coverageReporters=cobertura
+  displayName: 'output coverage'
 
 - task: PublishCodeCoverageResults@1
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/clover.xml
+    summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
