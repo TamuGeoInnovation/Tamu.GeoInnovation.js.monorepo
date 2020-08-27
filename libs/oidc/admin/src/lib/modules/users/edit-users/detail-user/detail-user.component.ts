@@ -4,8 +4,13 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { UsersService } from '@tamu-gisc/oidc/admin-data-access';
-import { SecretQuestion, User } from '@tamu-gisc/oidc/provider-nest';
+import {
+  UsersService,
+  ClientMetadataService,
+  RolesService,
+  IClientMetadataResponse
+} from '@tamu-gisc/oidc/admin-data-access';
+import { SecretQuestion, User, ClientMetadata, Role } from '@tamu-gisc/oidc/provider-nest';
 
 @Component({
   selector: 'detail-user',
@@ -18,10 +23,17 @@ export class DetailUserComponent implements OnInit, OnDestroy {
   public accountForm: FormGroup;
   public rolesForm: FormGroup;
   public userForm: FormGroup;
-  public $questions: Observable<Array<Partial<SecretQuestion>>>;
+  public $clients: Observable<Array<Partial<IClientMetadataResponse>>>;
+  public $roles: Observable<Array<Partial<Role>>>;
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private userService: UsersService) {}
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private userService: UsersService,
+    private clientMetadataService: ClientMetadataService,
+    private roleService: RolesService
+  ) {}
 
   public ngOnDestroy() {
     this._$destroy.next();
@@ -64,7 +76,12 @@ export class DetailUserComponent implements OnInit, OnDestroy {
       country: ['']
     });
 
-    this.rolesForm = this.fb.group({});
+    this.rolesForm = this.fb.group({
+      roles: ['']
+    });
+
+    this.$roles = this.roleService.getRoles();
+    this.$clients = this.clientMetadataService.getClientMetadatas();
 
     if (this.route.snapshot.params.userGuid) {
       this.userGuid = this.route.snapshot.params.userGuid;
@@ -107,5 +124,9 @@ export class DetailUserComponent implements OnInit, OnDestroy {
           });
       });
     }
+  }
+
+  public updateRole(role: Role) {
+    console.log('updateRole', role);
   }
 }

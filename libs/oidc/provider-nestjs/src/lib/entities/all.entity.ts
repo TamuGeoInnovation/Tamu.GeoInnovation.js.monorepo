@@ -1017,7 +1017,6 @@ export class CommonRepo<T> extends Repository<T> {
     if (includeExludedProps === true) {
       queryBuilder.addSelect([`entity.${excludedProp}`]);
     }
-    console.log(queryBuilder.getQueryAndParameters());
     return queryBuilder.where(`entity.${key} = :${key}`, op).getOne();
   }
 

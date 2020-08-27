@@ -112,3 +112,24 @@
     </div>
   </div>
 </form>
+
+<form [formGroup]="rolesForm">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Roles</p>
+      </div>
+    </div>
+
+    <table>
+      <tr *ngFor="let client of ($clients | async)">
+        <td>{{client.clientName}}</td>
+        <td>
+          <tamu-gisc-checkbox-group formControlName="roles" [referenceId]="'guid'">
+            <tamu-gisc-checkbox *ngFor="let role of ($roles | async)" [label]="role.name" [data]="role.level" (click)="updateRole(role)"></tamu-gisc-checkbox>
+          </tamu-gisc-checkbox-group>
+        </td>
+      </tr>
+    </table>
+  </div>
+</form>
