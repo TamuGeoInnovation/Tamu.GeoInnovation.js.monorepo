@@ -8,14 +8,16 @@
     <div class="form-section-body">
       <div class="form-collection row pad-top">
         <tamu-gisc-textbox formControlName="guid" placeholder="Guid" type="text" floatLabel="true" disabled> </tamu-gisc-textbox>
+      </div>
 
+      <div class="form-collection row">
         <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" floatLabel="true"></tamu-gisc-textbox>
 
         <tamu-gisc-textbox formControlName="email_verified" placeholder="Email Verified" type="text" floatLabel="true" disabled></tamu-gisc-textbox>
       </div>
 
       <div class="form-collection row">
-        <tamu-gisc-textbox formControlName="enabled2fa" placeholder="Enabled 2FA" type="text" floatLabel="true"></tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="enabled2fa" placeholder="Enabled 2FA" type="text" floatLabel="true" disabled></tamu-gisc-textbox>
       </div>
       <div class="form-collection row">
         <tamu-gisc-textbox formControlName="recovery_email" placeholder="Recovery Email" type="text" floatLabel="true"></tamu-gisc-textbox>
@@ -36,7 +38,7 @@
   </div>
 </form>
 
-<form [formGroup]="account">
+<form [formGroup]="accountForm">
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-name">

@@ -18,7 +18,7 @@ export class UsersService {
   }
 
   public getUser(guid: string) {
-    return this.http.get<Partial<User>>(`${this.userResource}/${guid}`, {
+    return this.http.get<Partial<User>>(`${this.userResource}/one/${guid}`, {
       withCredentials: false
     });
   }

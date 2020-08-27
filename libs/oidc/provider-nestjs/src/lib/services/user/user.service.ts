@@ -73,14 +73,27 @@ export class UserService {
     }
   }
 
+  public async getUserWithRoles(guid: string) {
+    const user = await this.userRepo.findByKeyDeep('guid', guid);
+    const userWithRoles = await this.userRepo.getUserWithRoles(user.account.guid, 'oidc-client-test');
+    return userWithRoles;
+  }
+
   public async updateUser(req: Request) {
-    const _user: Partial<User> = {
-      // guid: req.body.guid,
-      // level: req.body.level,
-      // name: req.body.name
-    };
-    const user = this.userRepo.create(_user);
-    return this.roleRepo.save(user);
+    const userGuid = req.body.guid;
+    const user = await this.userRepo.findByKeyDeep('guid', userGuid);
+    const merged = deepmerge(user as Partial<User>, req.body);
+    // const updatedUser: User = new User(merged);
+    return this.userRepo.save(merged);
+
+    // const _user: Partial<User> = {
+    //   ...req.body
+    // };
+    // const user = this.userRepo.create(_user);
+
+    // return this.roleRepo.save(updatedUser);
+    // merged.save();
+    // debugger;
   }
 
   public async deleteUser(userGuid: string) {

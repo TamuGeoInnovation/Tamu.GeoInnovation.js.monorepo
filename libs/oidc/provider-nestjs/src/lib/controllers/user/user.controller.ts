@@ -11,6 +11,11 @@ import { UserService, ServiceToControllerTypes } from '../../services/user/user.
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Get('one/:userGuid')
+  async userGet(@Param() params) {
+    return this.userService.getUserWithRoles(params.userGuid);
+  }
+
   @Get('all')
   async usersAllGet() {
     return this.userService.userRepo.findAllDeep();
@@ -19,6 +24,11 @@ export class UserController {
   @Delete('delete/:userGuid')
   async userDelete(@Param() params) {
     return this.userService.deleteUser(params.userGuid);
+  }
+
+  @Patch('update')
+  async updateUserPatch(@Req() req: Request) {
+    return this.userService.updateUser(req);
   }
 
   /**
@@ -356,10 +366,5 @@ export class UserController {
         });
       });
     }
-  }
-
-  @Get(':userGuid')
-  async userGet(@Param() params) {
-    return this.userService.userRepo.findByKeyDeep('email', params.userGuid);
   }
 }
