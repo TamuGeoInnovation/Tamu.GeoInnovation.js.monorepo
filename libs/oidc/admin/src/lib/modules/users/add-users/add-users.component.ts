@@ -26,8 +26,12 @@ export class AddUsersComponent implements OnInit {
       confirm_password: ['']
     });
     this.question = this.fb.group({
-      question: [''],
-      answer: ['']
+      question1: [''],
+      answer1: [''],
+      question2: [''],
+      answer2: ['']
     });
   }
+
+  public addUser() {}
 }

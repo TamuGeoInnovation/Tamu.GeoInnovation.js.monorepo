@@ -26,10 +26,19 @@
 
     <div class="form-section-body">
       <div class="form-collection row">
-        <tamu-gisc-select formControlName="question" [data]="$questions | async" displayTemplate="questionText" valueTemplate="questionText"></tamu-gisc-select>
+        <tamu-gisc-select formControlName="question1" [data]="$questions | async" displayTemplate="questionText" valueTemplate="questionText"></tamu-gisc-select>
 
-        <tamu-gisc-textbox formControlName="answer" type="text" placeholder="Security Question Answer" floatLabel="true"></tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="answer1" type="text" placeholder="Security Question Answer" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+    </div>
+    <p></p>
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-select formControlName="question2" [data]="$questions | async" displayTemplate="questionText" valueTemplate="questionText"></tamu-gisc-select>
+
+        <tamu-gisc-textbox formControlName="answer2" type="text" placeholder="Security Question Answer" floatLabel="true"></tamu-gisc-textbox>
       </div>
     </div>
   </div>
+  <tamu-gisc-button (click)="addUser()" [value]="'Add User'" type="submit"></tamu-gisc-button>
 </form>

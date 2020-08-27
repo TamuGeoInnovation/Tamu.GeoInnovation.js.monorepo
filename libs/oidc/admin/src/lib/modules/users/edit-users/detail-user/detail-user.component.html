@@ -1,1 +1,112 @@
-<p>detail-user works!</p>
+<form [formGroup]="userForm">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>User</p>
+      </div>
+    </div>
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="guid" placeholder="Guid" type="text" floatLabel="true" disabled> </tamu-gisc-textbox>
+
+        <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" floatLabel="true"></tamu-gisc-textbox>
+
+        <tamu-gisc-textbox formControlName="email_verified" placeholder="Email Verified" type="text" floatLabel="true" disabled></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="enabled2fa" placeholder="Enabled 2FA" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="recovery_email" placeholder="Recovery Email" type="text" floatLabel="true"></tamu-gisc-textbox>
+
+        <tamu-gisc-textbox formControlName="recovery_email_verified" placeholder="Recovery Email Verified" type="text" floatLabel="true" disabled></tamu-gisc-textbox>
+      </div>
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="added" placeholder="Added" type="text" floatLabel="true" disabled></tamu-gisc-textbox>
+
+        <tamu-gisc-textbox formControlName="updatedAt" placeholder="Updated At" type="text" floatLabel="true" disabled></tamu-gisc-textbox>
+      </div>
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="signup_ip_address" placeholder="Signup IP" type="text" floatLabel="true" disabled></tamu-gisc-textbox>
+
+        <tamu-gisc-textbox formControlName="last_used_ip_address" placeholder="Last Used IP" type="text" floatLabel="true" disabled></tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+</form>
+
+<form [formGroup]="account">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Account</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="given_name" placeholder="First Name" type="text" floatLabel="true"> </tamu-gisc-textbox>
+
+        <tamu-gisc-textbox formControlName="family_name" placeholder="Last Name" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="nickname" placeholder="Nickname" type="text" floatLabel="true"></tamu-gisc-textbox>
+
+        <tamu-gisc-textbox formControlName="profile" placeholder="Profile URL" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="picture" placeholder="Picture" type="text" floatLabel="true"></tamu-gisc-textbox>
+
+        <tamu-gisc-textbox formControlName="website" placeholder="Website URL" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="gender" placeholder="Gender" type="text" floatLabel="true"></tamu-gisc-textbox>
+
+        <tamu-gisc-textbox formControlName="zoneinfo" placeholder="Zone Info" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="phone_number" placeholder="Phone Number" type="text" floatLabel="true"></tamu-gisc-textbox>
+
+        <tamu-gisc-textbox formControlName="phone_number_verified" placeholder="Phone Number Verified" type="text" floatLabel="true" disabled></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="locale" placeholder="Locale" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="added" placeholder="Added" type="text" floatLabel="true" disabled></tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Address</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="street_address" placeholder="Street Address" type="text" floatLabel="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="locality" placeholder="City" type="text" floatLabel="true"></tamu-gisc-textbox>
+
+        <tamu-gisc-textbox formControlName="region" placeholder="State" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="postal_code" placeholder="Zip" type="text" floatLabel="true"></tamu-gisc-textbox>
+
+        <tamu-gisc-textbox formControlName="country" placeholder="Country" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+</form>
