@@ -43,7 +43,7 @@ const routes: Routes = [
   },
   {
     path: 'token-auth-methods',
-    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.ResponseTypesModule)
+    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.TokenAuthMethodsModule)
   }
   // {
   //   path: 'internal',
