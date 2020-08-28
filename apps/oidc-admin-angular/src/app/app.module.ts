@@ -36,6 +36,14 @@ const routes: Routes = [
   {
     path: 'grant-types',
     loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.GrantTypesModule)
+  },
+  {
+    path: 'response-types',
+    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.ResponseTypesModule)
+  },
+  {
+    path: 'token-auth-methods',
+    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.ResponseTypesModule)
   }
   // {
   //   path: 'internal',
