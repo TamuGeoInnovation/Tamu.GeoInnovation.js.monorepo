@@ -24,6 +24,26 @@ export class ClientMetadataController {
     return this.clientMetadataService.getAllGrantTypes();
   }
 
+  @Get('grant/:grantTypeGuid')
+  async oneGrantTypesGet(@Param() params) {
+    return this.clientMetadataService.getGrantType(params.grantTypeGuid);
+  }
+
+  @Post('grant')
+  async insertGrantTypePost(@Req() req: Request) {
+    return this.clientMetadataService.insertGrantType(req);
+  }
+
+  @Patch('grant/update')
+  async updateExistingGrantType(@Req() req: Request) {
+    return this.clientMetadataService.updateGrantType(req);
+  }
+
+  @Delete('grant/delete/:grantTypeGuid')
+  async deleteGrantType(@Param() params) {
+    return this.clientMetadataService.deleteGrantType(params.grantTypeGuid);
+  }
+
   @Get('response-type')
   public async allReponseTypesGet() {
     return this.clientMetadataService.getAllResponseTypes();

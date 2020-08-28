@@ -26,4 +26,24 @@ export class GrantTypesService {
       withCredentials: false
     });
   }
+
+  public updateGrantType(updatedGrantType: Partial<GrantType>) {
+    return this.http.patch<Partial<GrantType>>(`${this.resource}/update`, updatedGrantType, {
+      withCredentials: false
+    });
+  }
+
+  public createGrantType(newGrantType: Partial<GrantType>) {
+    return this.http
+      .post<Partial<GrantType>>(this.resource, newGrantType, {
+        withCredentials: false
+      })
+      .subscribe((newestRole) => {
+        console.log('Added role', newestRole);
+      });
+  }
+
+  public deleteGrantType(grantType: GrantType) {
+    return this.http.delete<Partial<GrantType>>(`${this.resource}/delete/${grantType.guid}`);
+  }
 }

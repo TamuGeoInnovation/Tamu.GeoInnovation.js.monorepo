@@ -9,7 +9,7 @@ import { GrantTypesService } from '@tamu-gisc/oidc/admin-data-access';
 })
 export class AddGrantTypesComponent implements OnInit {
   public form: FormGroup;
-  constructor(private fb: FormBuilder, private roleService: GrantTypesService) {}
+  constructor(private fb: FormBuilder, private grantService: GrantTypesService) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -20,6 +20,6 @@ export class AddGrantTypesComponent implements OnInit {
   }
 
   public submitGrantType() {
-    // this.roleService.createRole(this.form.value);
+    this.grantService.createGrantType(this.form.value);
   }
 }

@@ -15,7 +15,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: ':roleGuid',
+    path: ':grantTypeGuid',
     loadChildren: () => import('./detail-grant-type/detail-grant-type.module').then((m) => m.DetailGrantTypeModule)
   }
 ];
