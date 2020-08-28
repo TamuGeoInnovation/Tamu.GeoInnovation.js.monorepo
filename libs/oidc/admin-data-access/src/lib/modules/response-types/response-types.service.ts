@@ -26,4 +26,24 @@ export class ResponseTypesService {
       withCredentials: false
     });
   }
+
+  public updateResponseType(updatedResponseType: Partial<ResponseType>) {
+    return this.http.patch<Partial<ResponseType>>(`${this.resource}/update`, updatedResponseType, {
+      withCredentials: false
+    });
+  }
+
+  public createResponseType(newResponseType: Partial<ResponseType>) {
+    return this.http
+      .post<Partial<ResponseType>>(this.resource, newResponseType, {
+        withCredentials: false
+      })
+      .subscribe((newestResponseType) => {
+        console.log('Added response type', newestResponseType);
+      });
+  }
+
+  public deleteResponseType(newResponseType: ResponseType) {
+    return this.http.delete<Partial<ResponseType>>(`${this.resource}/delete/${newResponseType.guid}`);
+  }
 }

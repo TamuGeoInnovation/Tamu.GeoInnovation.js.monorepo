@@ -15,7 +15,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: ':roleGuid',
+    path: ':responseTypeGuid',
     loadChildren: () => import('./detail-response-type/detail-response-type.module').then((m) => m.DetailResponseTypeModule)
   }
 ];

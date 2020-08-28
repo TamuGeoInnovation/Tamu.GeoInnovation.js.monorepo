@@ -49,6 +49,21 @@ export class ClientMetadataController {
     return this.clientMetadataService.getAllResponseTypes();
   }
 
+  @Get('response-type/:responseTypeGuid')
+  async oneReponseTypesGet(@Param() params) {
+    return this.clientMetadataService.getResponseType(params.responseTypeGuid);
+  }
+
+  @Patch('response-type/update')
+  async updateResponseType(@Req() req) {
+    return this.clientMetadataService.updateResponseType(req);
+  }
+
+  @Delete('response-type/delete/:responseTypeGuid')
+  async deleteResponseType(@Param() params) {
+    return this.clientMetadataService.deleteResponseType(params.responseTypeGuid);
+  }
+
   @Get('token-endpoint')
   public async allTokenEndpointAuthMethodsGet() {
     return this.clientMetadataService.getAllTokenEndpointAuthMethods();

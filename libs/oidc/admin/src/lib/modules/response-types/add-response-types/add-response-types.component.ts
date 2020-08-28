@@ -19,6 +19,6 @@ export class AddResponseTypesComponent implements OnInit {
   }
 
   public submitResponseType() {
-    // this.roleService.createRole(this.form.value);
+    this.responseService.createResponseType(this.form.value);
   }
 }

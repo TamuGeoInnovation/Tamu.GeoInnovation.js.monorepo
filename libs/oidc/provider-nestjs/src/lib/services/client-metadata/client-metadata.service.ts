@@ -124,6 +124,36 @@ export class ClientMetadataService {
     return this.responseTypeRepo.findAllShallow();
   }
 
+  public async getResponseType(guid: string) {
+    return this.responseTypeRepo.findOne({
+      where: {
+        guid
+      }
+    });
+  }
+
+  public async updateResponseType(req: Request) {
+    const guid = req.body.guid;
+    const responseType = await this.responseTypeRepo.findOne({
+      where: {
+        guid
+      }
+    });
+    const merged = deepmerge(responseType as Partial<ResponseType>, req.body);
+    return this.responseTypeRepo.save(merged);
+  }
+
+  public async deleteResponseType(guid: string) {
+    const responseType = await this.responseTypeRepo.findOne({
+      where: {
+        guid
+      }
+    });
+    if (responseType) {
+      responseType.remove();
+    }
+  }
+
   // TokenEndpointAuthMethod functions
   public async findTokenEndpointAuthMethod(_tokenEndpoint: string): Promise<TokenEndpointAuthMethod> {
     return this.tokenEndpointRepo.findOne({
