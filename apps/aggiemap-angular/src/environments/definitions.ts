@@ -8,7 +8,8 @@ export const Connections = {
   departmentUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
   tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
   bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
-  bikeLocationsUrl: 'http://nodes.geoservices.tamu.edu/api/veoride/bikes/?format=geojson&metadata=false&fields=lat,lon'
+  bikeLocationsUrl: 'http://nodes.geoservices.tamu.edu/api/veoride/bikes/?format=geojson&metadata=false&fields=lat,lon',
+  distancedStudyAreasUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Physical_Distancing_Tents/MapServer/706'
 };
 
 export const Definitions = {
@@ -92,5 +93,11 @@ export const Definitions = {
     layerId: 'bike-locations-layer',
     name: 'VeoRide Bikes',
     url: `${Connections.bikeLocationsUrl}`
+  },
+  DISTANCED_STUDY_AREAS: {
+    id: 'distanced-study-area',
+    layerId: 'distanced-study-area-layer',
+    name: 'Physical Distance Study Area',
+    url: Connections.distancedStudyAreasUrl
   }
 };

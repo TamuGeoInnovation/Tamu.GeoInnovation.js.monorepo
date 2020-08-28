@@ -232,6 +232,27 @@ export const LayerSources: LayerSource[] = [
     }
   },
   {
+    type: 'feature',
+    id: d.DISTANCED_STUDY_AREAS.layerId,
+    title: d.DISTANCED_STUDY_AREAS.name,
+    url: d.DISTANCED_STUDY_AREAS.url,
+    listMode: 'show',
+    loadOnInit: true,
+    visible: true,
+    popupComponent: Popups.TentZonePopupComponent,
+    legendItems: [
+      {
+        id: `${d.DISTANCED_STUDY_AREAS.id}-legend`,
+        title: d.DISTANCED_STUDY_AREAS.name,
+        src:
+          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAA9pJREFUSInNlU1IXFcUx38zeTNXRa3RRW2tECG46dCSkOlAA2oXlYoBK1EKbroxWQgKDUkXxZBFxQQL+dgEYiJiaGhREmjLMBJj/AidEp2YRSSQ1oQu+kFCOtbW4Jw3nXldTK++efNmaiCUHhi4b+5993fP//zveQb/cRj/W6BlUQRqXzotNWtrvFZWxs+GoX4CiXk8JF4Y8NkztX95WT67coV9iYT4DANKS2F9HVIpYccO/rp1i7uBgPp4506ZfW5ga2traTgcXrcsKubn1eTFixJqaICDB8HrVfj9AoBpZsamifHgAcHLl2VmepqlUIj32tvflampqT+2BQyHw+uPH/P6yIiK1tdLeW8veL1bAAARhVKZsc8HgUDmt7TE3kuX1I/Dw1Pv1NWx0NLSUhaJRP4sCHz4kFfGxtRiZ6cU79pFDsA+Bkgmtw4SCChqaqRkbIz527d5MxSK/PCvGUYiKtbRsT2YztrjyTxbllBdDV1dSk1MyLfDw7x8+HAB4Pi4+rSqSl6tqysMs6zszOxhmoraWqGpiap797gAdOcDeldWpK+9PRvm8UAikQ0DsuoJ2UYC2LMHrl9XXSC9wEYO8PRpukIhyg0j86IGaJjHA+l0Zq2W0CmxUrJ5INNUHDggxYahPjp2TAZzgCJ0BwL53QgZt+osnXNOWZUS6uvh6lXpBNyAqrq8XDblcdbMHpkMM9mY5pakTllB4fNJuf3dTWBRkRTZ4HlhOjTMmaVTnZISFOAF0lnAVIqUXQ4d2o1OGS0LfD53Se3riotJAC8Bq1nAREJtgGRZ3a2e2jD5wlnbp09VCmRNP28CnzzZ+tN5z9wMsrCwpYDPJwSDmdo6G8M/+6ZzgLGYWlhdlb0VFRRBbi30BtogwWBuY9Bz+sCplKRiMb63H3QTuLzMxI0b7O/oIOh2z7LdV7gL6QPPzHA3GuWaK1BEomfPstbWxobfT3EhGJC3vwK6SSQHBpQJ8o0rEODOHTVw7px80tenmgvB3LLUmWl1RkfV9M2bMgok8wJFZO7Uqcr2UCieamigxQ5zulNffrdYXFRT3d3yKzDunMv5PMXj8SONjXw+OcmXzc3yAeCB7Aae7zMFWPPzleONjfESoAfbhc8LBNJNTU09bW3f9ff0yBeDg+z2etVbdondYMkkiydOVN4/eTKeBD7EIWUhILOzs78DR8+fV41nzsjR48flwqFD+GtrecPvlxqgCvgN+CUel6WRETb6+9kN8WvA1257FgTqEJE5YG5oSL09NMT7IvIIWLEt8QAbSqmvQGZwyPfcQBs4CkQLzG9nm+0DX2T8DXOPFlEg/aI+AAAAAElFTkSuQmCC'
+      }
+    ],
+    native: {
+      ...commonLayerProps
+    }
+  },
+  {
     type: 'graphic',
     id: 'selection-layer',
     title: 'Selected Buildings',
@@ -283,6 +304,17 @@ export const LayerSources: LayerSource[] = [
       }
     ]
   }
+  // {
+  //   type: 'graphic',
+  //   id: 'drawing-layer',
+  //   title: 'Custom Boundary',
+  //   listMode: 'show',
+  //   loadOnInit: true,
+  //   visible: true,
+  //   native: {
+  //     ...commonLayerProps
+  //   }
+  // },
 ];
 
 // Static legend items

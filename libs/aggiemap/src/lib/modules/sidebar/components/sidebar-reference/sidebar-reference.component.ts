@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { SearchSelection, AltSearchHelper } from '@tamu-gisc/search';
@@ -11,7 +11,7 @@ import esri = __esri;
   templateUrl: './sidebar-reference.component.html',
   styleUrls: ['./sidebar-reference.component.scss']
 })
-export class SidebarReferenceComponent<T extends esri.Graphic> {
+export class SidebarReferenceComponent<T extends esri.Graphic> implements OnInit {
   constructor(private helper: AltSearchHelper<T>, private mapService: EsriMapService) {}
 
   public onSearchResult(result: SearchSelection<T>) {
@@ -25,4 +25,6 @@ export class SidebarReferenceComponent<T extends esri.Graphic> {
       });
     });
   }
+
+  public ngOnInit() {}
 }

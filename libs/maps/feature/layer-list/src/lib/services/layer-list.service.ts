@@ -255,13 +255,17 @@ export class LayerListService implements OnDestroy {
             return false;
           }
 
-          if (
-            (scale !== undefined && item.layer && item.layer.maxScale !== 0 && item.layer.maxScale >= scale) ||
-            (scale !== undefined && item.layer && item.layer.minScale !== 0 && item.layer.minScale <= scale)
-          ) {
-            item.outsideExtent = true;
-          } else {
-            item.outsideExtent = false;
+          // Since the item value can be an object or a boolean, only perform the following operations if `item`
+          // is an object type
+          if (item instanceof Object) {
+            if (
+              (scale !== undefined && item.layer && item.layer.maxScale !== 0 && item.layer.maxScale >= scale) ||
+              (scale !== undefined && item.layer && item.layer.minScale !== 0 && item.layer.minScale <= scale)
+            ) {
+              item.outsideExtent = true;
+            } else {
+              item.outsideExtent = false;
+            }
           }
 
           if (props === undefined || props.layers === undefined) {

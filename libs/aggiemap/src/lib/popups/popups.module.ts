@@ -13,6 +13,7 @@ import { ParkingLotPopupComponent } from './components/parking-lot/parking-lot.c
 import { RestroomPopupComponent } from './components/restroom/restroom.component';
 import { ReferenceModule } from '../reference/reference.module';
 import { PoiPopupComponent } from './components/poi/poi.component';
+import { TentZonePopupComponent } from './components/tent-zone/tent-zone.component';
 
 const PopsArr = [
   AccessiblePopupComponent,
@@ -23,7 +24,8 @@ const PopsArr = [
   ParkingKioskPopupComponent,
   ParkingLotPopupComponent,
   RestroomPopupComponent,
-  PoiPopupComponent
+  PoiPopupComponent,
+  TentZonePopupComponent
 ];
 
 const PopsObj = {
@@ -35,7 +37,8 @@ const PopsObj = {
   ParkingKioskPopupComponent,
   ParkingLotPopupComponent,
   RestroomPopupComponent,
-  PoiPopupComponent
+  PoiPopupComponent,
+  TentZonePopupComponent
 };
 
 @NgModule({

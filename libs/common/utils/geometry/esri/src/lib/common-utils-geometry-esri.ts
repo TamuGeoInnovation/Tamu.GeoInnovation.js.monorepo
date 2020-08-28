@@ -1,6 +1,7 @@
 import { Point } from '@tamu-gisc/common/types';
 import esri = __esri;
 
+import { loadModules } from 'esri-loader';
 import { default as tCentroid } from '@turf/centroid';
 import { polygon as tPolygon, Feature as tFeature, Point as tPoint } from '@turf/helpers';
 
@@ -99,15 +100,15 @@ export function pointFromMultiPointGeometry(feature: esri.Multipoint): Point {
 }
 
 export function pointFromPointGeometry(feature: esri.Point | Point): Point {
-  if (feature && 'x' in feature && 'y' in feature) {
-    return {
-      latitude: feature.y,
-      longitude: feature.x
-    };
-  } else if (feature && feature.longitude && feature.latitude) {
+  if (feature && feature.longitude && feature.latitude) {
     return {
       latitude: feature.latitude,
       longitude: feature.longitude
+    };
+  } else if (feature && 'x' in feature && 'y' in feature) {
+    return {
+      latitude: feature.y,
+      longitude: feature.x
     };
   } else {
     throw new Error('Feature provided does not have x or y.');
@@ -122,6 +123,36 @@ export function pointFromPolylineGeometry(feature: esri.Polyline): Point {
     };
   } else {
     throw new Error('Feature provided does not contain paths.');
+  }
+}
+
+export class CoordinateConverter {
+  private modules: {
+    point: esri.PointConstructor;
+    spatialReference: esri.SpatialReferenceConstructor;
+    webMercatorUtils: esri.webMercatorUtils;
+  } = { point: undefined, spatialReference: undefined, webMercatorUtils: undefined };
+
+  constructor() {
+    loadModules(['esri/geometry/Point', 'esri/geometry/SpatialReference', 'esri/geometry/support/webMercatorUtils'])
+      .then(([p, s, u]: [esri.PointConstructor, esri.SpatialReferenceConstructor, esri.webMercatorUtils]) => {
+        this.modules.point = p;
+        this.modules.spatialReference = s;
+        this.modules.webMercatorUtils = u;
+      })
+      .catch((err) => {
+        throw new Error('Could not load CoordinateConverter modules.');
+      });
+  }
+
+  public webMercatorToGeographic(latitude: number, longitude: number) {
+    return this.modules.webMercatorUtils.webMercatorToGeographic(
+      new this.modules.point({
+        y: latitude,
+        x: longitude,
+        spatialReference: this.modules.spatialReference.WebMercator
+      })
+    ) as esri.Point;
   }
 }
 
