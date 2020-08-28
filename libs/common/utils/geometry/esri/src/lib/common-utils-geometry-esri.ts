@@ -100,15 +100,15 @@ export function pointFromMultiPointGeometry(feature: esri.Multipoint): Point {
 }
 
 export function pointFromPointGeometry(feature: esri.Point | Point): Point {
-  if (feature && 'x' in feature && 'y' in feature) {
-    return {
-      latitude: feature.y,
-      longitude: feature.x
-    };
-  } else if (feature && feature.longitude && feature.latitude) {
+  if (feature && feature.longitude && feature.latitude) {
     return {
       latitude: feature.latitude,
       longitude: feature.longitude
+    };
+  } else if (feature && 'x' in feature && 'y' in feature) {
+    return {
+      latitude: feature.y,
+      longitude: feature.x
     };
   } else {
     throw new Error('Feature provided does not have x or y.');
