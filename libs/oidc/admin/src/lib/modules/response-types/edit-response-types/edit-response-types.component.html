@@ -1,1 +1,12 @@
-<p>edit-response-types works!</p>
+<table>
+  <tr>
+    <th>Type</th>
+    <th>Details</th>
+    <th class="action-row">Actions</th>
+  </tr>
+  <tr *ngFor="let responseType of ($responseTypes | async)">
+    <td>{{responseType.type}}</td>
+    <td>{{responseType.details}}</td>
+    <td><span [routerLink]="[responseType.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit response type">edit</span><span (click)="deleteResponseType(responseType)" class="material-icons action alt" title="Delete role">delete</span></td>
+  </tr>
+</table>

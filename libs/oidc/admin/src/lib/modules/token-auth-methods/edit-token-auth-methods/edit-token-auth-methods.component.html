@@ -1,1 +1,12 @@
-<p>edit-token-auth-methods works!</p>
+<table>
+  <tr>
+    <th>Type</th>
+    <th>Details</th>
+    <th class="action-row">Actions</th>
+  </tr>
+  <tr *ngFor="let tokenAuthMethod of ($tokenAuthMethods | async)">
+    <td>{{tokenAuthMethod.type}}</td>
+    <td>{{tokenAuthMethod.details}}</td>
+    <td><span [routerLink]="[tokenAuthMethod.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit token auth method">edit</span><span (click)="deleteTokenAuthMethod(tokenAuthMethod)" class="material-icons action alt" title="Delete token auth method">delete</span></td>
+  </tr>
+</table>

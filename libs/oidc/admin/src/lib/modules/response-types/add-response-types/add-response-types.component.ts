@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ResponseTypesService } from '@tamu-gisc/oidc/admin-data-access';
 
 @Component({
   selector: 'add-response-types',
@@ -6,7 +8,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./add-response-types.component.scss']
 })
 export class AddResponseTypesComponent implements OnInit {
-  constructor() {}
+  public form: FormGroup;
+  constructor(private fb: FormBuilder, private responseService: ResponseTypesService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      type: ['', Validators.required],
+      details: ['', Validators.required]
+    });
+  }
+
+  public submitResponseType() {
+    // this.roleService.createRole(this.form.value);
+  }
 }

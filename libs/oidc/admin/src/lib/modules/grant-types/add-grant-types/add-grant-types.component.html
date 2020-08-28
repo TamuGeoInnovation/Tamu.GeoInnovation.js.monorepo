@@ -1,1 +1,16 @@
-<p>add-grant-types works!</p>
+<form [formGroup]="form">
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="name" placeholder="Name" type="text" floatLabel="true"> </tamu-gisc-textbox>
+      </div>
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="type" placeholder="Type" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="details" placeholder="Details" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+      <tamu-gisc-button (click)="submitGrantType()" [value]="'Add Grant Type'" type="submit"></tamu-gisc-button>
+    </div>
+  </div>
+</form>
