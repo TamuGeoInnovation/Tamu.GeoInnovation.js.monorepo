@@ -50,7 +50,7 @@ export class Location extends GuidIdentity {
 
 @Entity({ name: 'results' })
 export class Result extends GuidIdentity {
-  @Column()
+  @Column({type: 'float'})
   public value: number;
 
   @Column({ nullable: false })
