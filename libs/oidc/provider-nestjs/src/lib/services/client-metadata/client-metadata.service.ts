@@ -171,4 +171,34 @@ export class ClientMetadataService {
   public async getAllTokenEndpointAuthMethods() {
     return this.tokenEndpointRepo.findAllShallow();
   }
+
+  public async getTokenEndpointAuthMethod(guid: string) {
+    return this.tokenEndpointRepo.findOne({
+      where: {
+        guid
+      }
+    });
+  }
+
+  public async updateTokenEndpointAuthMethod(req: Request) {
+    const guid = req.body.guid;
+    const tokenEndpointAuthMethod = await this.tokenEndpointRepo.findOne({
+      where: {
+        guid
+      }
+    });
+    const merged = deepmerge(tokenEndpointAuthMethod as Partial<TokenEndpointAuthMethod>, req.body);
+    return this.tokenEndpointRepo.save(merged);
+  }
+
+  public async deleteTokenEndpointAuthMethod(guid: string) {
+    const tokenEndpointAuthMethod = await this.tokenEndpointRepo.findOne({
+      where: {
+        guid
+      }
+    });
+    if (tokenEndpointAuthMethod) {
+      tokenEndpointAuthMethod.remove();
+    }
+  }
 }

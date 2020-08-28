@@ -25,4 +25,24 @@ export class TokenAuthMethodsService {
       withCredentials: false
     });
   }
+
+  public updateTokenEndpointAuthMethod(updatedTokenEndpointAuthMethod: Partial<TokenEndpointAuthMethod>) {
+    return this.http.patch<Partial<TokenEndpointAuthMethod>>(`${this.resource}/update`, updatedTokenEndpointAuthMethod, {
+      withCredentials: false
+    });
+  }
+
+  public createTokenEndpointAuthMethod(newTokenEndpointAuthMethod: Partial<TokenEndpointAuthMethod>) {
+    return this.http
+      .post<Partial<TokenEndpointAuthMethod>>(this.resource, newTokenEndpointAuthMethod, {
+        withCredentials: false
+      })
+      .subscribe((newTokenEndpointAuthMethod) => {
+        console.log('Added newTokenEndpointAuthMethod', newTokenEndpointAuthMethod);
+      });
+  }
+
+  public deleteTokenEndpointAuthMethod(newTokenEndpointAuthMethod: TokenEndpointAuthMethod) {
+    return this.http.delete<Partial<TokenEndpointAuthMethod>>(`${this.resource}/delete/${newTokenEndpointAuthMethod.guid}`);
+  }
 }

@@ -1,1 +1,12 @@
-<p>detail-token-auth-method works!</p>
+<form [formGroup]="form">
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="type" placeholder="Type" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="details" placeholder="Details" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+</form>

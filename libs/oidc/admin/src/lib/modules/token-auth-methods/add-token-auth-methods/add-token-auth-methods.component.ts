@@ -19,6 +19,6 @@ export class AddTokenAuthMethodsComponent implements OnInit {
   }
 
   public submitTokenAuthMethod() {
-    // this.roleService.createRole(this.form.value);
+    this.tokenService.createTokenEndpointAuthMethod(this.form.value);
   }
 }

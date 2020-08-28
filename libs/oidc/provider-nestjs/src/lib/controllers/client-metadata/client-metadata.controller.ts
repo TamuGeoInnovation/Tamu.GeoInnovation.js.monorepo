@@ -141,4 +141,19 @@ export class ClientMetadataController {
       throw new HttpException(err, HttpStatus.PARTIAL_CONTENT);
     }
   }
+
+  @Get('token-endpoint/:tokenEndpointAuthMethodGuid')
+  async oneTokenEndpointAuthMethod(@Param() params) {
+    return this.clientMetadataService.getTokenEndpointAuthMethod(params.tokenEndpointAuthMethodGuid);
+  }
+
+  @Patch('token-endpoint/update')
+  async updateTokenEndpointAuthMethod(@Req() req) {
+    return this.clientMetadataService.updateTokenEndpointAuthMethod(req);
+  }
+
+  @Delete('token-endpoint/delete/:tokenEndpointAuthMethodGuid')
+  async deleteTokenEndpointAuthMethod(@Param() params) {
+    return this.clientMetadataService.deleteTokenEndpointAuthMethod(params.tokenEndpointAuthMethodGuid);
+  }
 }

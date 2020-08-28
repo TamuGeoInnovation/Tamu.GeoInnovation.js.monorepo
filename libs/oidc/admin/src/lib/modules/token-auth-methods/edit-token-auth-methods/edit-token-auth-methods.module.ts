@@ -15,7 +15,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: ':roleGuid',
+    path: ':tokenAuthMethodGuid',
     loadChildren: () =>
       import('./detail-token-auth-method/detail-token-auth-method.module').then((m) => m.DetailTokenAuthMethodModule)
   }
