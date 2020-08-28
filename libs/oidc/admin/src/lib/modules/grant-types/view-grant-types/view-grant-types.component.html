@@ -1,1 +1,12 @@
-<p>view-grant-types works!</p>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Details</th>
+  </tr>
+  <tr *ngFor="let grantType of ($grantTypes | async)">
+    <td>{{grantType.name}}</td>
+    <td>{{grantType.type}}</td>
+    <td>{{grantType.details}}</td>
+  </tr>
+</table>

@@ -1,1 +1,10 @@
-<p>view-response-types works!</p>
+<table>
+  <tr>
+    <th>Type</th>
+    <th>Details</th>
+  </tr>
+  <tr *ngFor="let responseType of ($responseTypes | async)">
+    <td>{{responseType.type}}</td>
+    <td>{{responseType.details}}</td>
+  </tr>
+</table>

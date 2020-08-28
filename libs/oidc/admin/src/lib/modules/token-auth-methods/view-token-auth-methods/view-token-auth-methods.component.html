@@ -1,1 +1,10 @@
-<p>view-token-auth-methods works!</p>
+<table>
+  <tr>
+    <th>Type</th>
+    <th>Details</th>
+  </tr>
+  <tr *ngFor="let tokenAuthMethod of ($tokenAuthMethods | async)">
+    <td>{{tokenAuthMethod.type}}</td>
+    <td>{{tokenAuthMethod.details}}</td>
+  </tr>
+</table>
