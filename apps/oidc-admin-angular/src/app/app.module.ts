@@ -32,6 +32,10 @@ const routes: Routes = [
   {
     path: 'client-metadata',
     loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.ClientMetadataModule)
+  },
+  {
+    path: 'grant-types',
+    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.GrantTypesModule)
   }
   // {
   //   path: 'internal',
