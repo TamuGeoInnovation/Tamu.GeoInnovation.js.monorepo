@@ -11,4 +11,13 @@ export class LocationsService extends BaseService<Location> {
   constructor(@InjectRepository(Location) private repo: Repository<Location>) {
     super(repo);
   }
+
+  public getLocations() {
+    return this.repo.find({
+      order: {
+        tier: 'ASC',
+        sample: 'ASC'
+      }
+    });
+  }
 }

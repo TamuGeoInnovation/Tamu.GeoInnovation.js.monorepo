@@ -4104,29 +4104,29 @@
     },
     "ues-effluent-ngx": {
       "projectType": "library",
-      "root": "libs/ues/effluent-ngx",
-      "sourceRoot": "libs/ues/effluent-ngx/src",
+      "root": "libs/ues/effluent/ngx",
+      "sourceRoot": "libs/ues/effluent/ngx/src",
       "prefix": "tamu-gisc",
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "libs/ues/effluent-ngx/tsconfig.lib.json",
-              "libs/ues/effluent-ngx/tsconfig.spec.json"
+              "libs/ues/effluent/ngx/tsconfig.lib.json",
+              "libs/ues/effluent/ngx/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**",
-              "!libs/ues/effluent-ngx/**"
+              "!libs/ues/effluent/ngx/**"
             ]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "libs/ues/effluent-ngx/jest.config.js",
-            "tsConfig": "libs/ues/effluent-ngx/tsconfig.spec.json",
-            "setupFile": "libs/ues/effluent-ngx/src/test-setup.ts"
+            "jestConfig": "libs/ues/effluent/ngx/jest.config.js",
+            "tsConfig": "libs/ues/effluent/ngx/tsconfig.spec.json",
+            "setupFile": "libs/ues/effluent/ngx/src/test-setup.ts"
           }
         }
       },

@@ -1,4 +1,4 @@
-import { Controller, Post, UseInterceptors, UploadedFile, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, HttpException, HttpStatus, Get } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Result } from '@tamu-gisc/ues/effluent/common/entities';
@@ -12,11 +12,16 @@ export class ResultsController extends BaseController<Result> {
     super(service);
   }
 
+  @Get()
+  public getAllResults() {
+    return this.service.getResults({ groupByDate: true });
+  }
+
   @Post('csv')
   @UseInterceptors(FileInterceptor('file', { dest: '../files' }))
   public handleFileUpload(@UploadedFile() file) {
     if (file) {
-      this.service.handleFileUpload(file.filename);
+      return this.service.handleFileUpload(file.filename);
     } else {
       throw new HttpException('Input parameter missing', HttpStatus.BAD_REQUEST);
     }

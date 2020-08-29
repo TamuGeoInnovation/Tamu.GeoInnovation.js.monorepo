@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
+import { ResultsService } from '../../../data-access/results/results.service';
+
 @Component({
   selector: 'tamu-gisc-upload',
   templateUrl: './upload.component.html',
@@ -9,7 +11,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class UploadComponent implements OnInit {
   public form: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private resultsService: ResultsService) {}
 
   public ngOnInit() {
     this.form = this.fb.group({
@@ -18,7 +20,14 @@ export class UploadComponent implements OnInit {
   }
 
   public upload() {
-    const fValue = this.form.getRawValue();
-    debugger;
+    const formValue = this.form.getRawValue();
+
+    const data: FormData = new FormData();
+
+    data.append('file', formValue.file);
+
+    this.resultsService.uploadData(data).subscribe((res) => {
+      debugger;
+    });
   }
 }

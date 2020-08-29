@@ -48,6 +48,9 @@
 //  ==========================================================================
 
 $active-color: hsl(223, 75%, 67%);
+$state-transition-color: #536dfe;
+$inactive-color: hsl(223, 15%, 60%);
+$lightened-inactive-color: lighten($inactive-color, 25%);
 
 @import 'libs/sass/modules/loaders';
 @import 'libs/sass/components/datetime-picker';
@@ -199,6 +202,67 @@ h6 {
     display: block;
     border-bottom: 1px solid #eeeeee;
     padding-bottom: 0.5rem;
+  }
+}
+
+table {
+  // All tables, except tables inside code elements.
+  &:not([class^='hljs']) {
+    width: 100%;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+
+    border: 1pt solid $lightened-inactive-color;
+    border-collapse: collapse;
+
+    td,
+    th {
+      padding: 0.75rem;
+    }
+
+    td {
+      border: 1pt solid $lightened-inactive-color;
+      border-collapse: collapse;
+    }
+
+    thead {
+      tr {
+        background: #fafafa;
+      }
+
+      th {
+        text-align: left;
+      }
+    }
+
+    tbody {
+      tr {
+        &:nth-child(2n) {
+          background: #fafafa;
+        }
+
+        // Targets the div in the "Description" column of each row
+        td:nth-child(2) {
+          & > div:first-child {
+            @include flexbox();
+            @include flex-direction(row);
+            @include justify-content(space-between);
+
+            & > div:nth-child(2) {
+              white-space: nowrap;
+              margin-left: 1rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Add small padding after line column in code blocks
+  &[class^='hljs'] {
+    td:first-child {
+      padding-right: 0.5rem;
+    }
   }
 }
 

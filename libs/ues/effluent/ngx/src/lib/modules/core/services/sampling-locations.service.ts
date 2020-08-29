@@ -8,17 +8,24 @@ import { IEffluentSample } from '@tamu-gisc/ues/common/ngx';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { getRandomNumber } from '@tamu-gisc/common/utils/number';
 
+import { ResultsService } from '../../data-access/results/results.service';
+
 import esri = __esri;
 
 @Injectable({
   providedIn: 'root'
 })
 export class SamplingLocationsService {
-  private samplesResource: Array<IEffluentSample>;
   private modules: Observable<[esri.QueryConstructor, esri.QueryTaskConstructor]>;
+
+  private samplesResource: Array<IEffluentSample>;
   private sampleLocationsResourceUrl: string;
 
-  constructor(private env: EnvironmentService, private moduleProvider: EsriModuleProviderService) {
+  constructor(
+    private env: EnvironmentService,
+    private moduleProvider: EsriModuleProviderService,
+    private resultsService: ResultsService
+  ) {
     this.samplesResource = this.env.value('effluentSamples');
     this.sampleLocationsResourceUrl = this.env.value('effluentSampleLocationsUrl');
 

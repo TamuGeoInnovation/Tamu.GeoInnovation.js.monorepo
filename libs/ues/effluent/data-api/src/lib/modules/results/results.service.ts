@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import * as Papa from 'papaparse';
 
 import { Result, Location } from '@tamu-gisc/ues/effluent/common/entities';
+import { groupBy } from '@tamu-gisc/common/utils/collection';
 
 import { BaseService } from '../base/base.service';
 
@@ -18,38 +19,62 @@ export class ResultsService extends BaseService<Result> {
     super(repo);
   }
 
-  public handleFileUpload(filename: string) {
-    let rowIndex = 0;
+  public async getResults(options: { groupByDate: boolean }) {
+    const ret = await this.repo
+      .createQueryBuilder('result')
+      .innerJoinAndSelect('result.location', 'location')
+      .orderBy('location.tier', 'ASC')
+      .addOrderBy('location.sample', 'ASC')
+      .addOrderBy('result.date', 'DESC')
+      .getMany();
 
-    // Create a readable stream that papaparse can understand.
-    const readStream = fs.createReadStream(`../files/${filename}`);
+    if (options && options.groupByDate) {
+      return groupBy<Result>(ret, 'date', 'date');
+    }
 
-    let locations: Array<Location>;
+    return ret;
+  }
 
-    // Do the parsing
-    Papa.parse(readStream, {
-      header: true,
-      encoding: 'utf8',
-      step: async (results, parser, c) => {
-        parser.pause();
+  public handleFileUpload(filename: string): Promise<unknown> {
+    return new Promise((r, rj) => {
+      let rowIndex = 0;
 
-        if (rowIndex === 0) {
-          rowIndex++;
-          try {
-            locations = await this.synchronizeLocations(results.meta.fields, parser);
-          } catch (err) {
-            throw new HttpException('Could not synchronize locations', HttpStatus.INTERNAL_SERVER_ERROR);
+      // Create a readable stream that papaparse can understand.
+      const readStream = fs.createReadStream(`../files/${filename}`);
+
+      let locations: Array<Location>;
+
+      // Do the parsing
+      Papa.parse(readStream, {
+        header: true,
+        encoding: 'utf8',
+        step: async (results, parser, c) => {
+          parser.pause();
+
+          if (rowIndex === 0) {
+            rowIndex++;
+            try {
+              locations = await this.synchronizeLocations(results.meta.fields, parser);
+            } catch (err) {
+              throw new HttpException('Could not synchronize locations', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
           }
-        }
 
-        try {
-          await this.processDataRow(results, parser, locations);
-        } catch (err) {
-          throw new HttpException('Could not update at least one row from file.', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+          try {
+            await this.processDataRow(results, parser, locations);
+          } catch (err) {
+            throw new HttpException('Could not update at least one row from file.', HttpStatus.INTERNAL_SERVER_ERROR);
+          }
 
-        parser.resume();
-      }
+          parser.resume();
+        },
+        complete: async (results, file) => {
+          r({ status: HttpStatus.OK, message: 'File processed successfully' });
+        },
+        error: async (error, file) => {
+          rj(error);
+        }
+      });
     });
   }
 

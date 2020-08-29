@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 
 import { Location } from '@tamu-gisc/ues/effluent/common/entities';
 
@@ -9,5 +9,10 @@ import { BaseController } from '../base/base.controller';
 export class LocationsController extends BaseController<Location> {
   constructor(private service: LocationsService) {
     super(service);
+  }
+
+  @Get('')
+  public getLocations() {
+    return this.service.getLocations();
   }
 }
