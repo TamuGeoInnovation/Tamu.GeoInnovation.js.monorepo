@@ -11,6 +11,7 @@ import { shareReplay } from 'rxjs/operators';
 })
 export class EditClientMetadataComponent implements OnInit {
   public $clients: Observable<Array<Partial<IClientMetadataResponse>>>;
+
   constructor(private readonly clientService: ClientMetadataService) {
     this.fetchClientMetadata();
   }
@@ -21,5 +22,11 @@ export class EditClientMetadataComponent implements OnInit {
     this.$clients = this.clientService.getClientMetadatas().pipe(shareReplay(1));
   }
 
-  public deleteClientMetadata(client: ClientMetadata) {}
+  public deleteClientMetadata(client: ClientMetadata) {
+    console.log('Deleting...', client);
+    this.clientService.deleteClientMetadata(client).subscribe((deleteStatus) => {
+      console.log('Deleted ', client.guid);
+      this.fetchClientMetadata();
+    });
+  }
 }
