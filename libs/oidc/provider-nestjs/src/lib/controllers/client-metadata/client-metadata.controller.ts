@@ -156,4 +156,29 @@ export class ClientMetadataController {
   async deleteTokenEndpointAuthMethod(@Param() params) {
     return this.clientMetadataService.deleteTokenEndpointAuthMethod(params.tokenEndpointAuthMethodGuid);
   }
+
+  @Get()
+  async allClientGet() {
+    return this.clientMetadataService.getAllClients();
+  }
+
+  @Get(':clientMetadataGuid')
+  async oneClientMetadataGet(@Param() params) {
+    return this.clientMetadataService.getClientByGuid(params.clientMetadataGuid);
+  }
+
+  @Post()
+  async insertClientPost(@Req() req: Request) {
+    return this.clientMetadataService.insertClientMetadata(req);
+  }
+
+  @Patch('update')
+  async updateClient(@Req() req) {
+    return this.clientMetadataService.updateClientMetadata(req);
+  }
+
+  @Delete('delete/:clientMetadataGuid')
+  async deleteClientMetadata(@Param() params) {
+    return this.clientMetadataService.deleteClientMetadata(params.clientMetadataGuid);
+  }
 }

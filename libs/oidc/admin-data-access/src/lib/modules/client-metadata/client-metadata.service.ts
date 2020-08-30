@@ -3,13 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, reduce } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import {
-  ClientMetadata,
-  GrantType,
-  RedirectUri,
-  TokenEndpointAuthMethod,
-  ResponseType
-} from '@tamu-gisc/oidc/provider-nest';
+import { ClientMetadata } from '@tamu-gisc/oidc/provider-nest';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +13,31 @@ export class ClientMetadataService {
 
   constructor(private env: EnvironmentService, private http: HttpClient) {
     this.resource = this.env.value('api_url') + '/client-metadata';
+  }
+
+  public getClientMetadata(guid: string) {
+    return this.http
+      .get<Array<Partial<ClientMetadata>>>(`${this.resource}/${guid}`, {
+        withCredentials: false
+      })
+      .pipe(
+        map<Partial<ClientMetadata[]>, IClientMetadataResponse[]>((clientResponse: ClientMetadata[], index: number) => {
+          const clients: IClientMetadataResponse[] = [];
+          clientResponse.forEach((client: ClientMetadata) => {
+            const newClientResponse: IClientMetadataResponse = {
+              guid: client.guid,
+              clientName: client.clientName,
+              clientSecret: client.clientSecret,
+              grantTypes: this.flattenArray(client.grantTypes, 'type'),
+              redirectUris: this.flattenArray(client.redirectUris, 'url'),
+              responseTypes: this.flattenArray(client.responseTypes, 'type'),
+              tokenEndpointAuthMethod: client.tokenEndpointAuthMethod.type
+            };
+            clients.push(newClientResponse);
+          });
+          return clients;
+        })
+      );
   }
 
   public getClientMetadatas() {
@@ -54,6 +73,26 @@ export class ClientMetadataService {
     });
     const ret = ''.concat(...vals).trimEnd();
     return ret;
+  }
+
+  public updateClientMetadata(updatedClientMetadata: Partial<ClientMetadata>) {
+    return this.http.patch<Partial<ClientMetadata>>(`${this.resource}/update`, updatedClientMetadata, {
+      withCredentials: false
+    });
+  }
+
+  public createClientMetadata(newClientMetadata: Partial<ClientMetadata>) {
+    return this.http
+      .post<Partial<ClientMetadata>>(this.resource, newClientMetadata, {
+        withCredentials: false
+      })
+      .subscribe((newestClient) => {
+        console.log('Added client', newestClient);
+      });
+  }
+
+  public deleteClientMetadata(clientMetadata: ClientMetadata) {
+    return this.http.delete<Partial<ClientMetadata>>(`${this.resource}/delete/${clientMetadata.guid}`);
   }
 }
 

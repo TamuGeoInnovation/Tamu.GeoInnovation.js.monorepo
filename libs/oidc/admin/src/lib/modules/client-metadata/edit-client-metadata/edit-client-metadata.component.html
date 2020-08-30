@@ -1,1 +1,20 @@
-<p>edit-client-metadata works!</p>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Secret</th>
+    <th>Grant Types</th>
+    <th>Response Types</th>
+    <th>Redirect URIs</th>
+    <th>Auth Method</th>
+    <th class="action-row">Actions</th>
+  </tr>
+  <tr *ngFor="let client of ($clients | async)">
+    <td>{{client.clientName}}</td>
+    <td>{{client.clientSecret}}</td>
+    <td>{{client.grantTypes}}</td>
+    <td>{{client.responseTypes}}</td>
+    <td>{{client.redirectUris}}</td>
+    <td>{{client.tokenEndpointAuthMethod}}</td>
+    <td><span [routerLink]="[client.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit client">edit</span><span (click)="deleteClientMetadata(client)" class="material-icons action alt" title="Delete client">delete</span></td>
+  </tr>
+</table>

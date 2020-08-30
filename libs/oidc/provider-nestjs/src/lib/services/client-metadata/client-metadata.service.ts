@@ -35,6 +35,14 @@ export class ClientMetadataService {
     }
   }
 
+  public async getClientByGuid(guid: string) {
+    if (guid) {
+      return this.clientMetadataRepo.findByKeyDeep('guid', guid);
+    } else {
+      throw new Error('No clientIdentifier provided');
+    }
+  }
+
   public async getAllClients() {
     return this.clientMetadataRepo.findAllDeep();
   }
@@ -53,30 +61,59 @@ export class ClientMetadataService {
 
   private flattenClientMetadataForReturn(clients: ClientMetadata[]): IClientMetadata[] {
     const flattenedClients: IClientMetadata[] = [];
-    clients.map((curr) => {
-      const flattened: IClientMetadata = {
-        client_id: null,
-        client_secret: null,
-        grant_types: [],
-        redirect_uris: [],
-        response_types: [],
-        token_endpoint_auth_method: null
-      };
-      flattened.client_id = curr.clientName;
-      flattened.client_secret = curr.clientSecret;
-      flattened.grant_types = curr.grantTypes.map((grantType) => {
-        return grantType.type;
+    try {
+      clients.map((curr) => {
+        let flattened: IClientMetadata = {
+          client_id: null,
+          client_secret: null,
+          grant_types: [],
+          redirect_uris: [],
+          response_types: [],
+          token_endpoint_auth_method: null
+        };
+        flattened.client_id = curr.clientName;
+        flattened.client_secret = curr.clientSecret;
+        flattened.grant_types = curr.grantTypes.map((grantType) => {
+          return grantType.type;
+        });
+        flattened.redirect_uris = curr.redirectUris.map((redirectUri) => {
+          return redirectUri.url;
+        });
+        flattened.response_types = curr.responseTypes.map((responseType) => {
+          return responseType.type;
+        });
+        flattened.token_endpoint_auth_method = curr.tokenEndpointAuthMethod.type;
+        // flattened.token_endpoint_auth_method = curr.tokenEndpointAuthMethods.map((tokenEndpoint) => {
+        //   return tokenEndpoint.type;
+        // });
+        flattenedClients.push(flattened);
       });
-      flattened.redirect_uris = curr.redirectUris.map((redirectUri) => {
-        return redirectUri.url;
-      });
-      flattened.response_types = curr.responseTypes.map((responseType) => {
-        return responseType.type;
-      });
-      flattened.token_endpoint_auth_method = curr.tokenEndpointAuthMethod.type;
-      flattenedClients.push(flattened);
+      return flattenedClients;
+    } catch (error) {
+      console.warn('There was an error loading a clientMetdata', error);
+    }
+  }
+
+  public async updateClientMetadata(req: Request) {
+    const guid = req.body.guid;
+    const clientMetadata = await this.clientMetadataRepo.findOne({
+      where: {
+        guid
+      }
     });
-    return flattenedClients;
+    const merged = deepmerge(clientMetadata as Partial<ClientMetadata>, req.body);
+    return this.clientMetadataRepo.save(merged);
+  }
+
+  public async deleteClientMetadata(guid: string) {
+    const clientMetadata = await this.clientMetadataRepo.findOne({
+      where: {
+        guid
+      }
+    });
+    if (clientMetadata) {
+      clientMetadata.remove();
+    }
   }
 
   // GrantType functions
@@ -96,16 +133,22 @@ export class ClientMetadataService {
   }
 
   // RedirectUri functions
-  public async createRedirectUriEntities(_redirectUris: string[]): Promise<RedirectUri[]> {
+  private async createRedirectUriEntities(_redirectUris: string): Promise<RedirectUri[]> {
+    const tokens: string[] = _redirectUris.split(',');
     const redirectUris: RedirectUri[] = [];
-    _redirectUris.map((value, i) => {
-      const redirectUriPartial: Partial<RedirectUri> = {
-        url: value
-      };
-      const redirectUri = this.redirectUriRepo.create(redirectUriPartial);
-      redirectUris.push(redirectUri);
-    });
-    return redirectUris;
+    try {
+      tokens.map((value, i) => {
+        const redirectUriPartial: Partial<RedirectUri> = {
+          url: value.trim()
+        };
+        const redirectUri = this.redirectUriRepo.create(redirectUriPartial);
+        redirectUris.push(redirectUri);
+      });
+      return redirectUris;
+    } catch (error) {
+      debugger;
+      console.warn(error);
+    }
   }
 
   // ResponseType functions

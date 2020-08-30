@@ -1,19 +1,57 @@
-<form [formGroup]="">
+<form [formGroup]="clientForm">
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-name">
-        <p>Client Information</p>
+        <p>Client Metadata</p>
+      </div>
+    </div>
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="clientName" placeholder="Client name" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="clientSecret" placeholder="Client Secret" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="redirectUris" placeholder="Redirect URIs" type="text" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+    </div>
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Grant Type</p>
+      </div>
+    </div>
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-checkbox-group formControlName="grantTypes" [referenceId]="'type'">
+          <tamu-gisc-checkbox *ngFor="let grantType of ($grantTypes | async)" [label]="grantType.name" [data]="grantType"></tamu-gisc-checkbox>
+        </tamu-gisc-checkbox-group>
       </div>
     </div>
 
-    <div class="form-section-body">
-      <div class="form-collection row pad-top">
-        <tamu-gisc-textbox formControlName="client_name" type="text" placeholder="Client Name" floatLabel="true"></tamu-gisc-textbox>
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Response Type</p>
       </div>
-
+    </div>
+    <div class="form-section-body">
       <div class="form-collection row">
-        <tamu-gisc-textbox formControlName="client_secret" type="text" placeholder="Client Secret" floatLabel="true"></tamu-gisc-textbox>
+        <tamu-gisc-checkbox-group formControlName="responseTypes" [referenceId]="'type'">
+          <tamu-gisc-checkbox *ngFor="let responseType of ($responseTypes | async)" [label]="responseType.type" [data]="responseType"></tamu-gisc-checkbox>
+        </tamu-gisc-checkbox-group>
+      </div>
+    </div>
+
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Token Endpoint Auth Method</p>
+      </div>
+    </div>
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-select formControlName="token_endpoint_auth_method" [data]="$tokenAuthMethods | async" displayTemplate="type" valueTemplate="type"></tamu-gisc-select>
       </div>
     </div>
   </div>
+  <tamu-gisc-button (click)="addClientMetadata()" [value]="'Add Client'" type="submit"></tamu-gisc-button>
 </form>
