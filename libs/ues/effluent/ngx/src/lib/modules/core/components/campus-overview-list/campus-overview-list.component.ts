@@ -3,11 +3,7 @@ import { Observable } from 'rxjs';
 import { map, withLatestFrom } from 'rxjs/operators';
 
 import { IEffluentTierMetadata } from '@tamu-gisc/ues/common/ngx';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { FeatureHighlightService } from '@tamu-gisc/maps/feature/feature-highlight';
-
 import { EffluentZonesService } from '../../services/effluent-zones.service';
-import { SamplingLocationsService } from '../../services/sampling-locations.service';
 import { ResultsService } from '../../../data-access/results/results.service';
 
 import esri = __esri;
@@ -21,13 +17,7 @@ export class CampusOverviewListComponent implements OnInit {
   public zones: Observable<Array<esri.Graphic>>;
   public buildings: Observable<Array<IEffluentTierMetadata>>;
 
-  constructor(
-    private ez: EffluentZonesService,
-    private ec: SamplingLocationsService,
-    private ms: EsriMapService,
-    private hs: FeatureHighlightService,
-    private rs: ResultsService
-  ) {}
+  constructor(private ez: EffluentZonesService, private rs: ResultsService) {}
 
   public ngOnInit(): void {
     this.zones = this.ez.getZonesForTier(undefined, 3).pipe(
@@ -49,8 +39,6 @@ export class CampusOverviewListComponent implements OnInit {
       withLatestFrom(this.rs.getLatestResults()),
       map(([zones, results]) => {
         return zones.map((zone) => {
-          const s = this.ec.getSamplingLocation(zone.attributes.SampleNumber);
-
           const matching = results.find((r) => {
             return `${r.location.tier}-${r.location.sample}` === zone.attributes.SampleNumber;
           });

@@ -7,11 +7,3 @@ export interface IEffluentTierMetadata {
     zone: number;
   }>;
 }
-
-export interface IEffluentSample {
-  sample: string;
-  entries: Array<{
-    date: Date;
-    result: number;
-  }>;
-}

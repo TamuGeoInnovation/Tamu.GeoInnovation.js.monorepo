@@ -9,7 +9,6 @@ import { Result, Location } from '@tamu-gisc/ues/effluent/common/entities';
 import { groupBy } from '@tamu-gisc/common/utils/collection';
 
 import { BaseService } from '../base/base.service';
-import { resolve } from 'dns';
 
 @Injectable()
 export class ResultsService extends BaseService<Result> {
@@ -49,15 +48,6 @@ export class ResultsService extends BaseService<Result> {
     }
 
     return ret;
-  }
-
-  public async getResultsForTierSample(tier?: number | string, sample?: number | string) {
-    if (tier !== undefined && sample !== undefined) {
-      return this.repo.createQueryBuilder('result');
-      debugger;
-    } else {
-      throw new HttpException('Bad format', HttpStatus.BAD_REQUEST);
-    }
   }
 
   /**
