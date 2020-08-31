@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Result, Location } from '@tamu-gisc/ues/effluent/common/entities';
+import { IAverageResponse } from '@tamu-gisc/ues/effluent/data-api';
 import { Group } from '@tamu-gisc/common/utils/collection';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -24,7 +25,11 @@ export class ResultsService {
   }
 
   public getLatestResults() {
-    return this.http.get<Array<Result[]>>(`${this.apiUrl}/latest`);
+    return this.http.get<Array<Result>>(`${this.apiUrl}/latest`);
+  }
+
+  public getLatestResultsAverage() {
+    return this.http.get<IAverageResponse>(`${this.apiUrl}/latest/average`);
   }
 
   public uploadData(data: FormData) {

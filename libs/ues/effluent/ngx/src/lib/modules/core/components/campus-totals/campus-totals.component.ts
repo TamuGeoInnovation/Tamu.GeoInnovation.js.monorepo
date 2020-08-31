@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
+import { IAverageResponse } from '@tamu-gisc/ues/effluent/data-api';
 import { IEffluentTierMetadata } from '@tamu-gisc/ues/common/ngx';
 
+import { ResultsService } from '../../../data-access/results/results.service';
 import { SamplingLocationsService } from '../../services/sampling-locations.service';
 import { EffluentZonesService } from '../../services/effluent-zones.service';
 import { SamplingBuildingsService } from '../../services/sampling-buildings.service';
@@ -19,12 +21,13 @@ export class CampusTotalsComponent implements OnInit {
   public zones: Observable<Array<esri.Graphic>>;
   public buildings: Observable<Array<IEffluentTierMetadata>>;
 
-  public zonesSampleAverage: Observable<number>;
+  public zonesSampleAverage: Observable<IAverageResponse>;
 
   constructor(
     private sls: SamplingLocationsService,
     private ezs: EffluentZonesService,
-    private ebs: SamplingBuildingsService
+    private ebs: SamplingBuildingsService,
+    private rss: ResultsService
   ) {}
 
   public ngOnInit(): void {
@@ -43,22 +46,7 @@ export class CampusTotalsComponent implements OnInit {
       shareReplay(1)
     );
 
-    this.zonesSampleAverage = this.zones.pipe(
-      map((zones) => {
-        // Filter out any zones without any signal values because they will skew the average value.
-
-        const validZones = zones.filter((z) => {
-          return z.attributes.Sample && z.attributes.Sample.result;
-        });
-
-        return (
-          validZones.reduce((acc, curr) => {
-            return acc + curr.attributes.Sample.result;
-          }, 0) / validZones.length
-        );
-      }),
-      shareReplay(1)
-    );
+    this.zonesSampleAverage = this.rss.getLatestResultsAverage().pipe(shareReplay(1));
 
     this.buildings = of(
       this.ebs.getBuildingsIn({

@@ -22,6 +22,11 @@ export class ResultsController extends BaseController<Result> {
     return this.service.getLatestNValuesForTierSample(undefined, undefined, 1);
   }
 
+  @Get('latest/average')
+  public getLatestAverage() {
+    return this.service.getLatestNValueAverageForTierSample(undefined, undefined, 1);
+  }
+
   @Get('latest/:days')
   public getLatestValues(@Param() params: { days: string }) {
     return this.service.getLatestNValuesForTierSample(undefined, undefined, params.days);

@@ -60,6 +60,9 @@ export class ResultsService extends BaseService<Result> {
     }
   }
 
+  /**
+   * For each location, returns the latest n recorded values.
+   */
   public async getLatestNValuesForTierSample(tier?: number | string, sample?: number | string, days?: number | string) {
     const locationsQuery = await this.locationRepo.createQueryBuilder('locations');
 
@@ -93,9 +96,36 @@ export class ResultsService extends BaseService<Result> {
 
     const resolved = await Promise.all(queries);
 
-    return resolved;
+    return resolved.reduce((acc, curr) => {
+      return [...acc, ...curr];
+    }, []);
   }
 
+  public async getLatestNValueAverageForTierSample(
+    tier?: number | string,
+    sample?: number | string,
+    days?: number | string
+  ): Promise<IAverageResponse> {
+    const results = await this.getLatestNValuesForTierSample(tier, sample, days);
+
+    const average =
+      results.reduce((acc, curr) => {
+        return acc + curr.value;
+      }, 0) / results.length;
+
+    return {
+      average,
+      results
+    };
+  }
+
+  /**
+   * Parses an input file and inserts/updates into database.
+   *
+   * Synchronizes locations based on the delimited file header.
+   *
+   * Updates values wherever an existing value for a given location exists.
+   */
   public handleFileUpload(filename: string): Promise<unknown> {
     return new Promise((r, rj) => {
       let rowIndex = 0;
@@ -281,7 +311,6 @@ export class ResultsService extends BaseService<Result> {
     return this.repo.save(entitiesToUpdate);
   }
 }
-
 export interface IParsedResultRow {
   [key: string]: string;
 }
@@ -294,4 +323,9 @@ export interface IResultsQueryArgs {
   options?: {
     groupByDate?: boolean;
   };
+}
+
+export interface IAverageResponse {
+  average: number;
+  results: Result[];
 }
