@@ -27,7 +27,7 @@ export class UploadComponent implements OnInit {
     data.append('file', formValue.file);
 
     this.resultsService.uploadData(data).subscribe((res) => {
-      debugger;
+      console.log('Updated data', res);
     });
   }
 }

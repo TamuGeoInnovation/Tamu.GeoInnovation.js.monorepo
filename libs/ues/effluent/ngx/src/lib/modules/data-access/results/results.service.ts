@@ -33,7 +33,7 @@ export class ResultsService {
   }
 
   public uploadData(data: FormData) {
-    return this.http.post(this.apiUrl + 'csv', data, {
+    return this.http.post(`${this.apiUrl}/csv`, data, {
       reportProgress: true
     });
   }

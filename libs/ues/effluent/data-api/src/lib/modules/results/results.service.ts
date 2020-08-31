@@ -162,10 +162,15 @@ export class ResultsService extends BaseService<Result> {
   private async processDataRow(row, parser, locations: Array<Location>) {
     // There is a weird issue with the CSV parser that requires the keys to be
     // lower-cased and trimmed for reliable access.
-    const trimmed = Object.entries(row.data).reduce((acc, curr) => {
-      const keyName = curr[0].toLowerCase().trim();
+    const trimmed = Object.entries(row.data).reduce((acc, [key, value]) => {
+      // Handle empty headers, which cause errors when assigning values.
+      if (key === '') {
+        return acc;
+      }
 
-      acc[keyName] = curr[1];
+      const keyName = key.toLowerCase().trim();
+
+      acc[keyName] = value;
 
       return acc;
     }, {});
@@ -189,7 +194,10 @@ export class ResultsService extends BaseService<Result> {
     //
     // The remaining locations will be '-' concatenated arrays which need to be
     // prepared by transforming into tier and zone objects .
-    const locationStrings = locations.slice(1, locations.length);
+    const locationStrings = locations.slice(1, locations.length).filter((header) => {
+      // Filters out any empty headers
+      return header !== '';
+    });
 
     const mappedLocationStrings = locationStrings.map((location) => {
       return {
