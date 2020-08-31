@@ -23,9 +23,9 @@ export class EditClientMetadataComponent implements OnInit {
   }
 
   public deleteClientMetadata(client: ClientMetadata) {
-    console.log('Deleting...', client);
+    // console.log('Deleting...', client);
     this.clientService.deleteClientMetadata(client).subscribe((deleteStatus) => {
-      console.log('Deleted ', client.guid);
+      // console.log('Deleted ', client.guid);
       this.fetchClientMetadata();
     });
   }

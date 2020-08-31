@@ -17,25 +17,23 @@ export class ClientMetadataService {
 
   public getClientMetadata(guid: string) {
     return this.http
-      .get<Array<Partial<ClientMetadata>>>(`${this.resource}/${guid}`, {
+      .get<Partial<ClientMetadata>>(`${this.resource}/${guid}`, {
         withCredentials: false
       })
       .pipe(
-        map<Partial<ClientMetadata[]>, IClientMetadataResponse[]>((clientResponse: ClientMetadata[], index: number) => {
-          const clients: IClientMetadataResponse[] = [];
-          clientResponse.forEach((client: ClientMetadata) => {
-            const newClientResponse: IClientMetadataResponse = {
-              guid: client.guid,
-              clientName: client.clientName,
-              clientSecret: client.clientSecret,
-              grantTypes: this.flattenArray(client.grantTypes, 'type'),
-              redirectUris: this.flattenArray(client.redirectUris, 'url'),
-              responseTypes: this.flattenArray(client.responseTypes, 'type'),
-              tokenEndpointAuthMethod: client.tokenEndpointAuthMethod.type
-            };
-            clients.push(newClientResponse);
-          });
-          return clients;
+        map<Partial<ClientMetadata>, IClientMetadataResponseArrayed>((clientResponse: ClientMetadata) => {
+          const newClientResponse: IClientMetadataResponseArrayed = {
+            guid: clientResponse.guid,
+            clientName: clientResponse.clientName,
+            clientSecret: clientResponse.clientSecret,
+            // grantTypes: this.flattenArray(clientResponse.grantTypes, 'type'),
+            grantTypes: clientResponse.grantTypes.map((grant) => grant.type),
+            redirectUris: this.flattenArray(clientResponse.redirectUris, 'url'),
+            responseTypes: clientResponse.responseTypes.map((response) => response.type),
+            // responseTypes: this.flattenArray(clientResponse.responseTypes, 'type'),
+            tokenEndpointAuthMethod: clientResponse.tokenEndpointAuthMethod.type
+          };
+          return newClientResponse;
         })
       );
   }
@@ -103,5 +101,15 @@ export interface IClientMetadataResponse {
   grantTypes: string;
   redirectUris: string;
   responseTypes: string;
+  tokenEndpointAuthMethod: string;
+}
+
+export interface IClientMetadataResponseArrayed {
+  guid: string;
+  clientName: string;
+  clientSecret: string;
+  grantTypes: string[];
+  redirectUris: string;
+  responseTypes: string[];
   tokenEndpointAuthMethod: string;
 }

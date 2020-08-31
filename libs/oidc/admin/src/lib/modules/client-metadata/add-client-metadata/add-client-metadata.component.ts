@@ -51,9 +51,5 @@ export class AddClientMetadataComponent implements OnInit {
     this.clientService.createClientMetadata(val);
   }
 
-  public updateGrantType(grantType: GrantType) {}
-
-  public updateResponseType(responseType: ResponseType) {}
-
   ngOnInit(): void {}
 }

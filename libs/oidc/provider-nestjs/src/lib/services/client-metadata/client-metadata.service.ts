@@ -96,12 +96,9 @@ export class ClientMetadataService {
 
   public async updateClientMetadata(req: Request) {
     const guid = req.body.guid;
-    const clientMetadata = await this.clientMetadataRepo.findOne({
-      where: {
-        guid
-      }
-    });
+    const clientMetadata = await this.clientMetadataRepo.findByKeyDeep('guid', guid);
     const merged = deepmerge(clientMetadata as Partial<ClientMetadata>, req.body);
+    // return merged.save();
     return this.clientMetadataRepo.save(merged);
   }
 

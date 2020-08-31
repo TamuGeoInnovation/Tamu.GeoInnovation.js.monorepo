@@ -756,7 +756,8 @@ export class ClientMetadata extends GuidIdentity {
 
   @ManyToMany((type) => GrantType, {
     cascade: true,
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
   @JoinTable({
     name: 'client_metadata_grant_types'
@@ -768,7 +769,8 @@ export class ClientMetadata extends GuidIdentity {
 
   @ManyToMany((type) => ResponseType, {
     cascade: true,
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
   @JoinTable({
     name: 'client_metadata_response_types'
