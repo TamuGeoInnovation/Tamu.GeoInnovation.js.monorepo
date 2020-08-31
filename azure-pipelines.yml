@@ -20,6 +20,8 @@ resources:
 
 jobs:
 - job: unit_test_db_mssql_npm
+  services:
+    mssql: mssql
   steps:
   - task: InstallSSHKey@0
     inputs:
