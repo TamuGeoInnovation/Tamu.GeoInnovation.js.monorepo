@@ -21,7 +21,7 @@ export class ResultsService {
   }
 
   public getResultsForSample(location: Partial<Location>) {
-    return this.http.get<Array<Result>>(`${this.apiUrl}/${location.tier}/${location.sample}`);
+    return this.http.get<Array<Result>>(`${this.apiUrl}/latest/${location.tier}/${location.sample}`);
   }
 
   public getLatestResults() {

@@ -108,6 +108,19 @@ export class SamplingLocationsService {
       sample
     });
 
+    return this.resultsService.getResultsForSample({ tier: tier, sample: sample }).pipe(
+      switchMap((results) => {
+        if (results.length > 0) {
+          return this.getChartConfiguration({
+            values: results.map((r) => r.value),
+            dates: results.map((r) => r.date)
+          });
+        } else {
+          return this.getChartConfiguration({ values: [], dates: [] });
+        }
+      })
+    );
+
     if (data) {
       return this.getChartConfiguration({
         values: data.entries.map((e) => e.result),

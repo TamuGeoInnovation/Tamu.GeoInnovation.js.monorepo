@@ -17,9 +17,9 @@ export class ResultsController extends BaseController<Result> {
     return this.service.getResults({ options: { groupByDate: true } });
   }
 
-  @Get('latest')
-  public getLatestValue() {
-    return this.service.getLatestNValuesForTierSample(undefined, undefined, 1);
+  @Get('latest/:tier/:sample')
+  public getLatestForTierSample(@Param() params: { tier: string; sample: string }) {
+    return this.service.getLatestNValuesForTierSample(params.tier, params.sample);
   }
 
   @Get('latest/average')
@@ -32,13 +32,9 @@ export class ResultsController extends BaseController<Result> {
     return this.service.getLatestNValuesForTierSample(undefined, undefined, params.days);
   }
 
-  @Get(':tier')
-  public getResultsForTier(@Param() params) {
-    return this.service.getResults({
-      limiters: {
-        tier: params.tier
-      }
-    });
+  @Get('latest')
+  public getLatestValue() {
+    return this.service.getLatestNValuesForTierSample(undefined, undefined, 1);
   }
 
   @Post('csv')
