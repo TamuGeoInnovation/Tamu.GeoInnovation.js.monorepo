@@ -31,7 +31,7 @@ export class ClientMetadataService {
             redirectUris: this.flattenArray(clientResponse.redirectUris, 'url'),
             responseTypes: clientResponse.responseTypes.map((response) => response.guid),
             // responseTypes: this.flattenArray(clientResponse.responseTypes, 'type'),
-            tokenEndpointAuthMethod: clientResponse.tokenEndpointAuthMethod.type
+            token_endpoint_auth_method: clientResponse.tokenEndpointAuthMethod.guid
           };
           return newClientResponse;
         })
@@ -54,7 +54,7 @@ export class ClientMetadataService {
               grantTypes: this.flattenArray(client.grantTypes, 'type'),
               redirectUris: this.flattenArray(client.redirectUris, 'url'),
               responseTypes: this.flattenArray(client.responseTypes, 'type'),
-              tokenEndpointAuthMethod: client.tokenEndpointAuthMethod.type
+              token_endpoint_auth_method: client.tokenEndpointAuthMethod.type
             };
             clients.push(newClientResponse);
           });
@@ -101,7 +101,7 @@ export interface IClientMetadataResponse {
   grantTypes: string;
   redirectUris: string;
   responseTypes: string;
-  tokenEndpointAuthMethod: string;
+  token_endpoint_auth_method: string;
 }
 
 export interface IClientMetadataResponseArrayed {
@@ -111,5 +111,5 @@ export interface IClientMetadataResponseArrayed {
   grantTypes: string[];
   redirectUris: string;
   responseTypes: string[];
-  tokenEndpointAuthMethod: string;
+  token_endpoint_auth_method: string;
 }
