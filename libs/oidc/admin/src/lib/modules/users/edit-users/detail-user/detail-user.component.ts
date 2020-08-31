@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import {
   RolesService,
   IClientMetadataResponse
 } from '@tamu-gisc/oidc/admin-data-access';
-import { SecretQuestion, User, ClientMetadata, Role } from '@tamu-gisc/oidc/provider-nest';
+import { SecretQuestion, User, ClientMetadata, Role, UserRole } from '@tamu-gisc/oidc/provider-nest';
 
 @Component({
   selector: 'detail-user',
@@ -21,7 +21,7 @@ export class DetailUserComponent implements OnInit, OnDestroy {
   public userGuid: string;
   public user: Partial<User>;
   public accountForm: FormGroup;
-  public rolesForm: FormGroup;
+  public rolesForm: FormArray;
   public userForm: FormGroup;
   public $clients: Observable<Array<Partial<IClientMetadataResponse>>>;
   public $roles: Observable<Array<Partial<Role>>>;
@@ -76,9 +76,7 @@ export class DetailUserComponent implements OnInit, OnDestroy {
       country: ['']
     });
 
-    this.rolesForm = this.fb.group({
-      roles: ['']
-    });
+    this.rolesForm = this.fb.array([]);
 
     this.$roles = this.roleService.getRoles();
     this.$clients = this.clientMetadataService.getClientMetadatas();
@@ -89,7 +87,14 @@ export class DetailUserComponent implements OnInit, OnDestroy {
         this.user = user;
         this.userForm.patchValue(this.user);
         this.accountForm.patchValue(this.user.account);
-        this.rolesForm.patchValue(this.user.userRoles);
+        // this.user.userRoles.forEach((userRole, index) => {
+        //   const group = this.fb.group({
+        //     client: userRole.client.guid,
+        //     role: userRole.guid
+        //   });
+        //   this.rolesForm.insert(index, group);
+        // });
+        this.rolesForm.patchValue(user.userRoles);
         this.userForm.valueChanges
           .pipe(
             debounceTime(1000),
@@ -122,11 +127,19 @@ export class DetailUserComponent implements OnInit, OnDestroy {
             // console.log(updatedUser);
             this.userService.updateUser(updatedUser).subscribe((result) => [console.log('Updated details')]);
           });
+        this.rolesForm.valueChanges
+          .pipe(
+            debounceTime(1000),
+            takeUntil(this._$destroy)
+          )
+          .subscribe((res) => {
+            console.log('Role', this.rolesForm.getRawValue());
+            // const role: Partial<Role> = {
+            //   ...this.rolesForm.getRawValue()
+            // };
+            debugger;
+          });
       });
     }
-  }
-
-  public updateRole(role: Role) {
-    console.log('updateRole', role);
   }
 }

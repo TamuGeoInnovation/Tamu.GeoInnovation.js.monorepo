@@ -125,9 +125,11 @@
       <tr *ngFor="let client of ($clients | async)">
         <td>{{client.clientName}}</td>
         <td>
-          <tamu-gisc-checkbox-group formControlName="roles" [referenceId]="'guid'">
-            <tamu-gisc-checkbox *ngFor="let role of ($roles | async)" [label]="role.name" [data]="role.level" (click)="updateRole(role)"></tamu-gisc-checkbox>
-          </tamu-gisc-checkbox-group>
+          <tamu-gisc-select formControlName="roles" [data]="$roles | async" displayTemplate="name" valueTemplate="guid"></tamu-gisc-select>
+          <!-- <div *ngFor="let role of ($roles | async)">
+            <input type="radio" id="{{role.level}}" name="{{client.clientName}}" value="{{role.level}}" />
+            <label for="{{client.clientName}}">{{role.name}}</label>
+          </div> -->
         </td>
       </tr>
     </table>

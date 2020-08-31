@@ -13,7 +13,12 @@ export class UserController {
 
   @Get('one/:userGuid')
   async userGet(@Param() params) {
-    return this.userService.getUserWithRoles(params.userGuid);
+    const user = await this.userService.getUserWithRoles(params.userGuid);
+    if (user) {
+      return user;
+    } else {
+      return this.userService.getUser(params.userGuid);
+    }
   }
 
   @Get('all')

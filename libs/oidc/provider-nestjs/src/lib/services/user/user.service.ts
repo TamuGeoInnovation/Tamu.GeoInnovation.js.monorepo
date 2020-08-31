@@ -73,10 +73,20 @@ export class UserService {
     }
   }
 
+  public async getUser(guid: string) {
+    return this.userRepo.findByKeyDeep('guid', guid);
+  }
+
   public async getUserWithRoles(guid: string) {
     const user = await this.userRepo.findByKeyDeep('guid', guid);
-    const userWithRoles = await this.userRepo.getUserWithRoles(user.account.guid, 'oidc-client-test');
-    return userWithRoles;
+    // const userWithRoles = await this.userRepo.getUserWithRoles(user.guid, 'oidc-client-test');
+    const roles: UserRole[] = await this.userRoleRepo.findAllByKeyDeep('guid', 'b2c4dfe3-befe-4b04-ae26-0e107b0c17a7');
+    user.userRoles = roles;
+    // user.userRoles.forEach(async (userRole: UserRole) => {
+    //   const joe = await this.userRoleRepo.findByKeyDeep('guid', userRole.guid);
+    //   debugger;
+    // });
+    return user;
   }
 
   public async updateUser(req: Request) {
