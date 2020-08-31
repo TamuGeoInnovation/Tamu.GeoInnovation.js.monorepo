@@ -17,58 +17,52 @@ resources:
         SA_PASSWORD: yourStrong(!)Password
         MSSQL_PID: Express
       options: --name mssql
-services:
-  mssql: mssql
 
-steps:
-- checkout: self
-  clean: false
+jobs:
+- job: unit_test_db_mssql_npm
+  steps:
+  - task: InstallSSHKey@0
+    inputs:
+      knownHostsEntry: 'github.com,140.82.112.3 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+      sshKeySecureFile: 'id_rsa'
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '12.16.2'
+    displayName: 'Install Node.js'
+  - task: PowerShell@2
+    displayName: 'delay 10'
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Write your PowerShell commands here.
+          
+        start-sleep -s 10
+  - task: CmdLine@2
+    displayName: 'docker logs'
+    inputs:
+      script: 'docker logs mssql'
+  - script: 
+      npm install
+    displayName: 'npm install'
+  - task: CmdLine@2
+    displayName: 'npm install mssql'
+    inputs:
+      script: 'npm install mssql'
+      workingDirectory: '$(build.sourcesdirectory)'
+  - task: CmdLine@2
+    displayName: 'docker list'
+    inputs:
+      script: 'docker ps -all'
+      
+  - script: 
+      npx jest --collectCoverage --coverageReporters=cobertura
+    displayName: 'output coverage'
+  - task: CmdLine@2
+    displayName: 'sqlcmd'
+    inputs:
+      script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@version;"'
 
-# Install SSH key
-# Install an SSH key prior to a build or deployment
-
-- task: InstallSSHKey@0
-  inputs:
-    knownHostsEntry: 'github.com,140.82.112.3 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
-    sshKeySecureFile: 'id_rsa'
-- task: NodeTool@0
-  inputs:
-    versionSpec: '12.16.2'
-  displayName: 'Install Node.js'
-- task: PowerShell@2
-  displayName: 'delay 10'
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Write your PowerShell commands here.
-        
-      start-sleep -s 10
-- task: CmdLine@2
-  displayName: 'docker logs'
-  inputs:
-    script: 'docker logs mssql'
-- script: 
-    npm install
-  displayName: 'npm install'
-- task: CmdLine@2
-  displayName: 'npm install mssql'
-  inputs:
-    script: 'npm install mssql'
-    workingDirectory: '$(build.sourcesdirectory)'
-- task: CmdLine@2
-  displayName: 'docker list'
-  inputs:
-    script: 'docker ps -all'
-    
-- script: 
-    npx jest --collectCoverage --coverageReporters=cobertura
-  displayName: 'output coverage'
-- task: CmdLine@2
-  displayName: 'sqlcmd'
-  inputs:
-    script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@version;"'
-
-- task: PublishCodeCoverageResults@1
-  inputs:
-    codeCoverageTool: Cobertura
-    summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
