@@ -10,6 +10,8 @@ import { ResultsService } from '../../../data-access/results/results.service';
 })
 export class UploadComponent implements OnInit {
   public form: FormGroup;
+  public success = false;
+  public error = false;
 
   constructor(private fb: FormBuilder, private resultsService: ResultsService) {}
 
@@ -26,8 +28,14 @@ export class UploadComponent implements OnInit {
 
     data.append('file', formValue.file);
 
-    this.resultsService.uploadData(data).subscribe((res) => {
-      console.log('Updated data', res);
-    });
+    this.resultsService.uploadData(data).subscribe(
+      (res) => {
+        console.log('Updated data', res);
+        this.success = true;
+      },
+      (err) => {
+        this.error = true;
+      }
+    );
   }
 }

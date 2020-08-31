@@ -117,132 +117,154 @@ export class ResultsService extends BaseService<Result> {
    * Updates values wherever an existing value for a given location exists.
    */
   public handleFileUpload(filename: string): Promise<unknown> {
-    return new Promise((r, rj) => {
-      let rowIndex = 0;
+    try {
+      return new Promise((r, rj) => {
+        let rowIndex = 0;
 
-      // Create a readable stream that papaparse can understand.
-      const readStream = fs.createReadStream(`../files/${filename}`);
+        // Calling papaparse abort() doesn't seem to terminate the stream with the error callback,
+        // and instead calls complete() which should only be reached if everything completed successfully.
+        let isError = false;
 
-      let locations: Array<Location>;
+        // Create a readable stream that papaparse can understand.
+        const readStream = fs.createReadStream(`../files/${filename}`);
 
-      // Do the parsing
-      Papa.parse(readStream, {
-        header: true,
-        encoding: 'utf8',
-        step: async (results, parser, c) => {
-          parser.pause();
+        let locations: Array<Location>;
 
-          if (rowIndex === 0) {
-            rowIndex++;
-            try {
-              locations = await this.synchronizeLocations(results.meta.fields, parser);
-            } catch (err) {
-              throw new HttpException('Could not synchronize locations', HttpStatus.INTERNAL_SERVER_ERROR);
+        // Do the parsing
+        Papa.parse(readStream, {
+          header: true,
+          encoding: 'utf8',
+          step: async (results, parser, c) => {
+            parser.pause();
+
+            if (rowIndex === 0) {
+              rowIndex++;
+
+              try {
+                locations = await this.synchronizeLocations(results.meta.fields, parser);
+              } catch (err) {
+                isError = true;
+                rj(err);
+                parser.abort();
+              }
             }
-          }
 
-          try {
-            await this.processDataRow(results, parser, locations);
-          } catch (err) {
-            throw new HttpException('Could not update at least one row from file.', HttpStatus.INTERNAL_SERVER_ERROR);
-          }
+            if (isError === false) {
+              try {
+                await this.processDataRow(results, parser, locations);
+                parser.resume();
+              } catch (err) {
+                rj(err);
 
-          parser.resume();
-        },
-        complete: async (results, file) => {
-          r({ status: HttpStatus.OK, message: 'File processed successfully' });
-        },
-        error: async (error, file) => {
-          rj(error);
-        }
+                parser.abort();
+              }
+            }
+          },
+          error: async (error, file) => {
+            rj(error);
+          },
+          complete: async (results, file) => {
+            r({ status: HttpStatus.OK, message: 'File processed successfully' });
+          }
+        });
       });
-    });
+    } catch (err) {
+      throw new HttpException('is this returned?', HttpStatus.BAD_REQUEST);
+    }
   }
 
   private async processDataRow(row, parser, locations: Array<Location>) {
-    // There is a weird issue with the CSV parser that requires the keys to be
-    // lower-cased and trimmed for reliable access.
-    const trimmed = Object.entries(row.data).reduce((acc, [key, value]) => {
-      // Handle empty headers, which cause errors when assigning values.
-      if (key === '') {
+    try {
+      // There is a weird issue with the CSV parser that requires the keys to be
+      // lower-cased and trimmed for reliable access.
+      const trimmed = Object.entries(row.data).reduce((acc, [key, value]) => {
+        // Handle empty headers, which cause errors when assigning values.
+        if (key === '') {
+          return acc;
+        }
+
+        const keyName = key.toLowerCase().trim();
+
+        acc[keyName] = value;
+
         return acc;
+      }, {});
+
+      // From the parsed row, pluck out the parsed date string value and convert it to a Date object.
+      const rowDate = new Date(trimmed['date']);
+
+      const dataForRowDate = await this.getResultsForDate(rowDate);
+
+      // If data exist for this date, attempt to update, otherwise all location values
+      // for the current date.
+      if (dataForRowDate.length > 0) {
+        return await this.updateValuesForDate(dataForRowDate, trimmed);
+      } else {
+        return await this.addValuesForDate(rowDate, trimmed, locations);
       }
-
-      const keyName = key.toLowerCase().trim();
-
-      acc[keyName] = value;
-
-      return acc;
-    }, {});
-
-    // From the parsed row, pluck out the parsed date string value and convert it to a Date object.
-    const rowDate = new Date(trimmed['date']);
-
-    const dataForRowDate = await this.getResultsForDate(rowDate);
-
-    // If data exist for this date, attempt to update, otherwise all location values
-    // for the current date.
-    if (dataForRowDate.length > 0) {
-      return await this.updateValuesForDate(dataForRowDate, trimmed);
-    } else {
-      return await this.addValuesForDate(rowDate, trimmed, locations);
+    } catch (err) {
+      throw new HttpException('Could not update at least one row from file.', HttpStatus.BAD_REQUEST);
     }
   }
 
   private async synchronizeLocations(locations: Array<string>, parser) {
-    // Remove the first field. It is the date column.
-    //
-    // The remaining locations will be '-' concatenated arrays which need to be
-    // prepared by transforming into tier and zone objects .
-    const locationStrings = locations.slice(1, locations.length).filter((header) => {
-      // Filters out any empty headers
-      return header !== '';
-    });
+    try {
+      // Remove the first field. It is the date column.
+      //
+      // The remaining locations will be '-' concatenated arrays which need to be
+      // prepared by transforming into tier and zone objects .
+      const locationStrings = locations.slice(1, locations.length).filter((header) => {
+        // Filters out any empty headers
+        return header !== '';
+      });
 
-    const mappedLocationStrings = locationStrings.map((location) => {
-      return {
-        tier: parseInt(location.split('-')[0], 10),
-        sample: parseInt(location.split('-')[1], 10)
-      };
-    });
+      const mappedLocationStrings = locationStrings.map((location) => {
+        return {
+          tier: parseInt(location.split('-')[0], 10),
+          sample: parseInt(location.split('-')[1], 10)
+        };
+      });
 
-    const existingLocations = await this.locationRepo.find({
-      where: mappedLocationStrings
-    });
+      const existingLocations = await this.locationRepo.find({
+        where: mappedLocationStrings
+      });
 
-    // Diff the list of entities that exist with the provided list. This list
-    // will represent the locations that are not yet added to the db.
-    //
-    // If they have not been added, yet, they will be added.
-    const nonExisting = mappedLocationStrings.filter((l) => {
-      return (
-        existingLocations.find((dbLocation) => {
-          return dbLocation.tier === l.tier && dbLocation.sample === l.sample;
-        }) === undefined
-      );
-    });
+      // Diff the list of entities that exist with the provided list. This list
+      // will represent the locations that are not yet added to the db.
+      //
+      // If they have not been added, yet, they will be added.
+      const nonExisting = mappedLocationStrings.filter((l) => {
+        return (
+          existingLocations.find((dbLocation) => {
+            return dbLocation.tier === l.tier && dbLocation.sample === l.sample;
+          }) === undefined
+        );
+      });
 
-    if (nonExisting.length === 0) {
-      return existingLocations;
+      if (nonExisting.length === 0) {
+        return existingLocations;
+      }
+
+      // Cast location objects to Location entities.
+      const entitiesFromNonExisting = nonExisting.map((nonExistingLocation) => {
+        const entity = new Location();
+
+        entity.tier = nonExistingLocation.tier;
+        entity.sample = nonExistingLocation.sample;
+
+        return entity;
+      });
+
+      await this.locationRepo.save(entitiesFromNonExisting);
+
+      // Return a list of locations as they can be used by other parts of this service to
+      // avoid unnecessary lookups.
+      return this.locationRepo.find({
+        where: mappedLocationStrings
+      });
+    } catch (err) {
+      throw new HttpException('Could not synchronize locations', HttpStatus.BAD_REQUEST);
     }
-
-    // Cast location objects to Location entities.
-    const entitiesFromNonExisting = nonExisting.map((nonExistingLocation) => {
-      const entity = new Location();
-
-      entity.tier = nonExistingLocation.tier;
-      entity.sample = nonExistingLocation.sample;
-
-      return entity;
-    });
-
-    await this.locationRepo.save(entitiesFromNonExisting);
-
-    // Return a list of locations as they can be used by other parts of this service to
-    // avoid unnecessary lookups.
-    return this.locationRepo.find({
-      where: mappedLocationStrings
-    });
   }
 
   private async getResultsForDate(date: Date) {

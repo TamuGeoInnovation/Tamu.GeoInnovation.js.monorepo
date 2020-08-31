@@ -13,7 +13,13 @@
 
   <div class="form-section">
     <div class="form-section-body flex flex-row justify-center">
-      <tamu-gisc-button value="Upload" type="submit"></tamu-gisc-button>
+      <tamu-gisc-button value="Upload" type="submit" *ngIf="success === false && error === false"></tamu-gisc-button>
+      <div *ngIf="success" class="flex flex-column justify-center align-center">
+        <p class="success">File was uploaded and processed successfully.</p>
+        <a [routerLink]="['../../']">Go back to data table.</a>
+      </div>
+
+      <p class="error" *ngIf="error">There was an error processing the uploaded file. Please ensure you have provided the correct format.</p>
     </div>
   </div>
 </form>
