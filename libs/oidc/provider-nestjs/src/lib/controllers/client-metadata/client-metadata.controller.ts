@@ -174,7 +174,7 @@ export class ClientMetadataController {
 
   @Patch('update')
   async updateClient(@Req() req) {
-    return this.clientMetadataService.updateClientMetadata(req);
+    return this.clientMetadataService.updateClientMetadataNew(req);
   }
 
   @Delete('delete/:clientMetadataGuid')

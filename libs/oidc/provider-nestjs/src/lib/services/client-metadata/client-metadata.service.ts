@@ -102,6 +102,30 @@ export class ClientMetadataService {
     return this.clientMetadataRepo.save(merged);
   }
 
+  public async updateClientMetadataNew(req: Request) {
+    try {
+      const grants = await this.findGrantTypeEntities('guid', req.body.grantTypes);
+      const redirectUris = await this.createRedirectUriEntities(req.body.redirectUris);
+      const responseTypes = await this.findResponseTypeEntities('guid', req.body.responseTypes);
+      const token_endpoint_auth_method = await this.findTokenEndpointAuthMethod('guid', req.body.token_endpoint_auth_method);
+
+      const _clientMetadata: Partial<ClientMetadata> = {
+        guid: req.body.guid,
+        clientName: req.body.clientName,
+        clientSecret: req.body.clientSecret,
+        grantTypes: grants,
+        redirectUris: redirectUris,
+        responseTypes: responseTypes,
+        tokenEndpointAuthMethod: token_endpoint_auth_method
+      };
+      const clientMetadata = this.clientMetadataRepo.create(_clientMetadata);
+      // const merged = deepmerge(_clientMetadata as Partial<ClientMetadata>, req.body);
+      return this.clientMetadataRepo.save(clientMetadata);
+    } catch (generalErr) {
+      throw generalErr;
+    }
+  }
+
   public async deleteClientMetadata(guid: string) {
     const clientMetadata = await this.clientMetadataRepo.findOne({
       where: {
@@ -116,7 +140,7 @@ export class ClientMetadataService {
   // GrantType functions
   public async findGrantTypeEntities(_grants: string[]): Promise<GrantType[]> {
     return this.grantTypeRepo.find({
-      type: In(_grants)
+      [key]: In(_grants)
     });
   }
 
@@ -151,7 +175,7 @@ export class ClientMetadataService {
   // ResponseType functions
   public async findResponseTypeEntities(_responseTypes: string[]): Promise<ResponseType[]> {
     return this.responseTypeRepo.find({
-      type: In(_responseTypes)
+      [key]: In(_responseTypes)
     });
   }
 
@@ -198,7 +222,7 @@ export class ClientMetadataService {
   public async findTokenEndpointAuthMethod(_tokenEndpoint: string): Promise<TokenEndpointAuthMethod> {
     return this.tokenEndpointRepo.findOne({
       where: {
-        type: _tokenEndpoint
+        [key]: _tokenEndpoint
       }
     });
   }

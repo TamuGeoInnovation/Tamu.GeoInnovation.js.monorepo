@@ -23,7 +23,7 @@
     </div>
     <div class="form-section-body">
       <div class="form-collection row">
-        <tamu-gisc-checkbox-group formControlName="grantTypes" [referenceId]="'type'">
+        <tamu-gisc-checkbox-group formControlName="grantTypes" [referenceId]="'guid'">
           <tamu-gisc-checkbox *ngFor="let grantType of ($grantTypes | async)" [label]="grantType.name" [data]="grantType"></tamu-gisc-checkbox>
         </tamu-gisc-checkbox-group>
       </div>
@@ -36,7 +36,7 @@
     </div>
     <div class="form-section-body">
       <div class="form-collection row">
-        <tamu-gisc-checkbox-group formControlName="responseTypes" [referenceId]="'type'">
+        <tamu-gisc-checkbox-group formControlName="responseTypes" [referenceId]="'guid'">
           <tamu-gisc-checkbox *ngFor="let responseType of ($responseTypes | async)" [label]="responseType.type" [data]="responseType"></tamu-gisc-checkbox>
         </tamu-gisc-checkbox-group>
       </div>
@@ -53,4 +53,5 @@
       </div>
     </div>
   </div>
+  <tamu-gisc-button (click)="addClientMetadata()" [value]="'Add Client'" type="submit"></tamu-gisc-button>
 </form>

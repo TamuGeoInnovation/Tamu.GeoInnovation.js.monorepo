@@ -39,7 +39,7 @@ export class DetailClientMetadataComponent implements OnInit {
       clientName: [''],
       clientSecret: [''],
       redirectUris: [''],
-      grantTypes: [['']],
+      grantTypes: [[]],
       responseTypes: [[]],
       token_endpoint_auth_method: ['']
     });
@@ -57,15 +57,19 @@ export class DetailClientMetadataComponent implements OnInit {
       this.clientMetadataGuid = this.route.snapshot.params.clientMetadataGuid;
       this.clientService.getClientMetadata(this.clientMetadataGuid).subscribe((clientMetadata) => {
         this.clientMetadata = clientMetadata;
-        // this.clientMetadata.grantTypes = this.clientMetadata.grantTypes.split(' ');
         this.clientForm.patchValue(this.clientMetadata);
-        this.clientForm.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
-          const newClientMetadata = this.clientForm.getRawValue();
-          this.clientService
-            .updateClientMetadata(newClientMetadata)
-            .subscribe((result) => [console.log('Updated client metadata')]);
-        });
+        // this.clientForm.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
+        //   const newClientMetadata = this.clientForm.getRawValue();
+        //   this.clientService
+        //     .updateClientMetadata(newClientMetadata)
+        //     .subscribe((result) => [console.log('Updated client metadata')]);
+        // });
       });
     }
+  }
+
+  public addClientMetadata() {
+    const joe = this.clientForm.getRawValue();
+    this.clientService.updateClientMetadata(joe).subscribe((result) => [console.log('Updated client metadata')]);
   }
 }

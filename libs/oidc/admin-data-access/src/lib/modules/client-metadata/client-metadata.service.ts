@@ -21,15 +21,15 @@ export class ClientMetadataService {
         withCredentials: false
       })
       .pipe(
-        map<Partial<ClientMetadata>, IClientMetadataResponseArrayed>((clientResponse: ClientMetadata) => {
+        map((clientResponse: ClientMetadata) => {
           const newClientResponse: IClientMetadataResponseArrayed = {
             guid: clientResponse.guid,
             clientName: clientResponse.clientName,
             clientSecret: clientResponse.clientSecret,
             // grantTypes: this.flattenArray(clientResponse.grantTypes, 'type'),
-            grantTypes: clientResponse.grantTypes.map((grant) => grant.type),
+            grantTypes: clientResponse.grantTypes.map((grant) => grant.guid),
             redirectUris: this.flattenArray(clientResponse.redirectUris, 'url'),
-            responseTypes: clientResponse.responseTypes.map((response) => response.type),
+            responseTypes: clientResponse.responseTypes.map((response) => response.guid),
             // responseTypes: this.flattenArray(clientResponse.responseTypes, 'type'),
             tokenEndpointAuthMethod: clientResponse.tokenEndpointAuthMethod.type
           };
