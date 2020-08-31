@@ -113,7 +113,7 @@
   </div>
 </form>
 
-<form [formGroup]="rolesForm">
+<form [formGroup]="roleForm">
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-name">
@@ -122,14 +122,10 @@
     </div>
 
     <table>
-      <tr *ngFor="let client of ($clients | async)">
-        <td>{{client.clientName}}</td>
+      <tr *ngFor="let control of roleForm.controls | keyvalue">
+        <td>{{control.key}}</td>
         <td>
-          <tamu-gisc-select formControlName="roles" [data]="$roles | async" displayTemplate="name" valueTemplate="guid"></tamu-gisc-select>
-          <!-- <div *ngFor="let role of ($roles | async)">
-            <input type="radio" id="{{role.level}}" name="{{client.clientName}}" value="{{role.level}}" />
-            <label for="{{client.clientName}}">{{role.name}}</label>
-          </div> -->
+          <tamu-gisc-select [formControlName]="control.key" [data]="($roles | async)" placeholder="No role" displayTemplate="name" valueTemplate="guid"></tamu-gisc-select>
         </td>
       </tr>
     </table>

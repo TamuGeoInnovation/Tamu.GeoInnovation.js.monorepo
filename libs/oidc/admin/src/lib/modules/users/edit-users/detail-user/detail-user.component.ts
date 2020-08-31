@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { Observable, Subject, forkJoin } from 'rxjs';
+import { debounceTime, takeUntil, shareReplay } from 'rxjs/operators';
 
 import {
   UsersService,
@@ -19,12 +19,15 @@ import { SecretQuestion, User, ClientMetadata, Role, UserRole } from '@tamu-gisc
 })
 export class DetailUserComponent implements OnInit, OnDestroy {
   public userGuid: string;
-  public user: Partial<User>;
+  public $user: Observable<Partial<User>>;
   public accountForm: FormGroup;
-  public rolesForm: FormArray;
+  public rolesForm: FormGroup;
   public userForm: FormGroup;
   public $clients: Observable<Array<Partial<IClientMetadataResponse>>>;
   public $roles: Observable<Array<Partial<Role>>>;
+
+  public roleForm: FormGroup;
+
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
@@ -41,6 +44,8 @@ export class DetailUserComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
+    this.userGuid = this.route.snapshot.params.userGuid;
+
     this.userForm = this.fb.group({
       guid: [''],
       email: [''],
@@ -76,17 +81,33 @@ export class DetailUserComponent implements OnInit, OnDestroy {
       country: ['']
     });
 
-    this.rolesForm = this.fb.array([]);
+    this.roleForm = this.fb.group({});
 
-    this.$roles = this.roleService.getRoles();
+    this.rolesForm = this.fb.group({
+      newRoles: this.fb.array([])
+    });
+
+    this.$roles = this.roleService.getRoles().pipe(shareReplay(1));
     this.$clients = this.clientMetadataService.getClientMetadatas();
+    this.$user = this.userService.getUser(this.userGuid).pipe(shareReplay(1));
+
+    forkJoin([this.$clients, this.$user]).subscribe(([clients, user]) => {
+      clients.forEach((client) => {
+        const value = user.userRoles.find((role) => {
+          return role.client.guid === client.guid;
+        });
+
+        this.roleForm.addControl(
+          `${client.clientName}`,
+          this.fb.control(value !== undefined ? value.role.guid : 'undefined')
+        );
+      });
+    });
 
     if (this.route.snapshot.params.userGuid) {
-      this.userGuid = this.route.snapshot.params.userGuid;
-      this.userService.getUser(this.userGuid).subscribe((user) => {
-        this.user = user;
-        this.userForm.patchValue(this.user);
-        this.accountForm.patchValue(this.user.account);
+      this.$user.subscribe((user) => {
+        this.userForm.patchValue(user);
+        this.accountForm.patchValue(user.account);
         // this.user.userRoles.forEach((userRole, index) => {
         //   const group = this.fb.group({
         //     client: userRole.client.guid,
@@ -127,13 +148,13 @@ export class DetailUserComponent implements OnInit, OnDestroy {
             // console.log(updatedUser);
             this.userService.updateUser(updatedUser).subscribe((result) => [console.log('Updated details')]);
           });
-        this.rolesForm.valueChanges
+        this.roleForm.valueChanges
           .pipe(
             debounceTime(1000),
             takeUntil(this._$destroy)
           )
           .subscribe((res) => {
-            console.log('Role', this.rolesForm.getRawValue());
+            console.log('Role', this.roleForm.getRawValue());
             // const role: Partial<Role> = {
             //   ...this.rolesForm.getRawValue()
             // };
