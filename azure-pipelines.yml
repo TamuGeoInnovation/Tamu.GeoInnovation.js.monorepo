@@ -9,7 +9,7 @@ pool:
 resources:
   containers:
     - container: mssql
-      image: mcr.microsoft.com/mssql/server:2019-latest
+      image: microsoft/mssql-server-windows-developer
       ports: 
       - 1433:1433
       env:
