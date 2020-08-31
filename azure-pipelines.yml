@@ -12,8 +12,13 @@ resources:
       image: mcr.microsoft.com/mssql/server:2019-latest
       ports: 
       - 1433:1433
-      options: -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password' -e 'MSSQL_PID=Express'
-
+      env:
+        ACCEPT_EULA: Y
+        SA_PASSWORD: yourStrong(!)Password
+        MSSQL_PID: Express
+      options: --name mssql
+services:
+  mssql: mssql
 
 steps:
 - checkout: self
@@ -21,6 +26,7 @@ steps:
 
 # Install SSH key
 # Install an SSH key prior to a build or deployment
+
 - task: InstallSSHKey@0
   inputs:
     knownHostsEntry: 'github.com,140.82.112.3 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
