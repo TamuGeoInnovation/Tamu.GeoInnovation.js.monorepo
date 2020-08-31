@@ -29,14 +29,38 @@ steps:
   inputs:
     versionSpec: '12.16.2'
   displayName: 'Install Node.js'
-  
+- task: PowerShell@2
+  displayName: 'delay 10'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your PowerShell commands here.
+        
+      start-sleep -s 10
+- task: CmdLine@2
+  displayName: 'docker logs'
+  inputs:
+    script: 'docker logs mssql'
 - script: 
     npm install
   displayName: 'npm install'
-
+- task: CmdLine@2
+  displayName: 'npm install mssql'
+  inputs:
+    script: 'npm install mssql'
+    workingDirectory: '$(build.sourcesdirectory)'
+- task: CmdLine@2
+  displayName: 'docker list'
+  inputs:
+    script: 'docker ps -all'
+    
 - script: 
     npx jest --collectCoverage --coverageReporters=cobertura
   displayName: 'output coverage'
+- task: CmdLine@2
+  displayName: 'sqlcmd'
+  inputs:
+    script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@version;"'
 
 - task: PublishCodeCoverageResults@1
   inputs:
