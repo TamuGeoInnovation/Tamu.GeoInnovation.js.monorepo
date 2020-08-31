@@ -9,6 +9,7 @@ import { Result, Location } from '@tamu-gisc/ues/effluent/common/entities';
 import { groupBy } from '@tamu-gisc/common/utils/collection';
 
 import { BaseService } from '../base/base.service';
+import { resolve } from 'dns';
 
 @Injectable()
 export class ResultsService extends BaseService<Result> {
@@ -19,20 +20,80 @@ export class ResultsService extends BaseService<Result> {
     super(repo);
   }
 
-  public async getResults(options: { groupByDate: boolean }) {
-    const ret = await this.repo
-      .createQueryBuilder('result')
-      .innerJoinAndSelect('result.location', 'location')
+  public async getResults(args: IResultsQueryArgs) {
+    const query = this.repo.createQueryBuilder('result').innerJoinAndSelect('result.location', 'location');
+
+    // Apply conditions
+    if (args && args.limiters) {
+      if (args.limiters.tier) {
+        query.andWhere(`location.tier = ${args.limiters.tier}`);
+      }
+
+      if (args.limiters.sample) {
+        query.andWhere(`location.sample = ${args.limiters.sample}`);
+      }
+    }
+
+    // Apply ordering
+    query
       .orderBy('location.tier', 'ASC')
       .addOrderBy('location.sample', 'ASC')
-      .addOrderBy('result.date', 'DESC')
-      .getMany();
+      .addOrderBy('result.date', 'DESC');
 
-    if (options && options.groupByDate) {
-      return groupBy<Result>(ret, 'date', 'date');
+    const ret = await query.getMany();
+
+    if (args && args.options) {
+      if (args.options.groupByDate) {
+        return groupBy<Result>(ret, 'date', 'date');
+      }
     }
 
     return ret;
+  }
+
+  public async getResultsForTierSample(tier?: number | string, sample?: number | string) {
+    if (tier !== undefined && sample !== undefined) {
+      return this.repo.createQueryBuilder('result');
+      debugger;
+    } else {
+      throw new HttpException('Bad format', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async getLatestNValuesForTierSample(tier?: number | string, sample?: number | string, days?: number | string) {
+    const locationsQuery = await this.locationRepo.createQueryBuilder('locations');
+
+    if (tier !== undefined) {
+      locationsQuery.andWhere(`tier = ${tier}`);
+    }
+
+    if (sample !== undefined) {
+      locationsQuery.andWhere(`sample = ${sample}`);
+    }
+
+    const locations = await locationsQuery
+      .orderBy('tier', 'ASC')
+      .addOrderBy('sample', 'ASC')
+      .getMany();
+
+    const queries = locations.map((l) => {
+      const query = this.repo
+        .createQueryBuilder('result')
+        .innerJoinAndSelect('result.location', 'location')
+        .where(`location.tier = ${l.tier}`)
+        .andWhere(`location.sample = ${l.sample}`)
+        .orderBy('date', 'DESC');
+
+      if (days !== undefined) {
+        query.limit(typeof days === 'string' ? parseInt(days, 10) : days);
+      }
+
+      return query.getMany();
+    });
+
+    const resolved = await Promise.all(queries);
+
+    return resolved;
   }
 
   public handleFileUpload(filename: string): Promise<unknown> {
@@ -223,4 +284,14 @@ export class ResultsService extends BaseService<Result> {
 
 export interface IParsedResultRow {
   [key: string]: string;
+}
+
+export interface IResultsQueryArgs {
+  limiters?: {
+    tier?: number | string;
+    sample?: number | string;
+  };
+  options?: {
+    groupByDate?: boolean;
+  };
 }

@@ -1,4 +1,4 @@
-import { Controller, Post, UseInterceptors, UploadedFile, HttpException, HttpStatus, Get } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, HttpException, HttpStatus, Get, Param } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Result } from '@tamu-gisc/ues/effluent/common/entities';
@@ -14,7 +14,26 @@ export class ResultsController extends BaseController<Result> {
 
   @Get()
   public getAllResults() {
-    return this.service.getResults({ groupByDate: true });
+    return this.service.getResults({ options: { groupByDate: true } });
+  }
+
+  @Get('latest')
+  public getLatestValue() {
+    return this.service.getLatestNValuesForTierSample(undefined, undefined, 1);
+  }
+
+  @Get('latest/:days')
+  public getLatestValues(@Param() params: { days: string }) {
+    return this.service.getLatestNValuesForTierSample(undefined, undefined, params.days);
+  }
+
+  @Get(':tier')
+  public getResultsForTier(@Param() params) {
+    return this.service.getResults({
+      limiters: {
+        tier: params.tier
+      }
+    });
   }
 
   @Post('csv')

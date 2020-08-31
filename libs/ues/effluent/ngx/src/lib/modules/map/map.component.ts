@@ -1,18 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map, withLatestFrom } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
-import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { IEffluentSample } from '@tamu-gisc/ues/common/ngx';
-
-import { SamplingLocationsService } from '../core/services/sampling-locations.service';
 
 import esri = __esri;
+import { ResultsService } from '../data-access/results/results.service';
 
 @Component({
   selector: 'tamu-gisc-map',
@@ -30,9 +28,8 @@ export class MapComponent implements OnInit, OnDestroy {
   constructor(
     private responsiveService: ResponsiveService,
     private environment: EnvironmentService,
-    private mapService: EsriMapService,
     private layerListService: LayerListService,
-    private samplingLocationsService: SamplingLocationsService
+    private resultsService: ResultsService
   ) {}
 
   public ngOnInit() {
@@ -101,19 +98,16 @@ export class MapComponent implements OnInit, OnDestroy {
     ];
     (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
 
-    // this.mapService.store.subscribe(({map, view}) => {
+    this.layerListService
+      .layers({ watchProperties: ['visible'], layers: ['sampling-zone-3'] })
+      .pipe(withLatestFrom(this.generateUniqueValueRenderer()))
+      .subscribe(([[result], renderer]) => {
+        const l = result.layer as esri.FeatureLayer;
 
-    // })
-
-    this.layerListService.layers({ watchProperties: ['visible'], layers: ['sampling-zone-3'] }).subscribe(([result]) => {
-      const l = result.layer as esri.FeatureLayer;
-
-      if (l) {
-        const t = this.generateUniqueValueRenderer(3);
-
-        l.renderer = (t as unknown) as any;
-      }
-    });
+        if (l) {
+          l.renderer = renderer;
+        }
+      });
   }
 
   public ngOnDestroy() {
@@ -180,39 +174,42 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   };
 
-  private generateUniqueValueRenderer(level: number) {
-    // Get a list of samples which match the given level
-    const eligible = this.samplingLocationsService.getSamplesForTier(level);
+  private generateUniqueValueRenderer() {
+    return this.resultsService.getLatestResults().pipe(
+      map((results) => {
+        const infos = results.map((locationResults, index) => {
+          // Pluck the top result from the result array for this sampling location
+          const [result] = locationResults;
 
-    // Map to latest value
-    const infos = eligible.reduce((acc, curr) => {
-      const baseColor = this.getSymbolColorForValue(curr.entries.pop().result);
-      const fillColor = [...baseColor, 0.4];
-      const strokeColor = [...baseColor, 1];
+          const baseColor = this.getSymbolColorForValue(result.value);
+          const fillColor = [...baseColor, 0.4];
+          const strokeColor = [...baseColor, 1];
 
-      const info = {
-        value: curr.sample.toString(),
-        symbol: {
-          type: 'simple-fill',
-          color: fillColor,
-          outline: {
-            color: strokeColor,
-            width: 1.5
-          }
-        }
-      };
+          const info = {
+            value: `${result.location.tier}-${result.location.sample}`,
+            symbol: {
+              type: 'simple-fill',
+              color: fillColor,
+              outline: {
+                color: strokeColor,
+                width: 1.5
+              }
+            }
+          };
 
-      return [...acc, info];
-    }, []);
+          return info;
+        });
 
-    const renderer = {
-      type: 'unique-value',
-      field: 'SampleNumber',
-      defaultSymbol: { type: 'simple-fill' },
-      uniqueValueInfos: infos
-    };
+        const renderer = ({
+          type: 'unique-value',
+          field: 'SampleNumber',
+          defaultSymbol: { type: 'simple-fill' },
+          uniqueValueInfos: infos
+        } as unknown) as esri.UniqueValueRenderer;
 
-    return renderer;
+        return renderer;
+      })
+    );
   }
 
   private getSymbolColorForValue(measurement: number) {
