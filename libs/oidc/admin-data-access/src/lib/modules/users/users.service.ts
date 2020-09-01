@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { User, SecretQuestion } from '@tamu-gisc/oidc/provider-nest';
+import { User, SecretQuestion, INewRole } from '@tamu-gisc/oidc/provider-nest';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +41,12 @@ export class UsersService {
 
   public getSecretQuestions() {
     return this.http.get<Array<Partial<SecretQuestion>>>(this.questionResource, {
+      withCredentials: false
+    });
+  }
+
+  public updateRoles(updateRoles: INewRole[]) {
+    return this.http.patch<Partial<INewRole[]>>(`${this.userResource}/role`, updateRoles, {
       withCredentials: false
     });
   }

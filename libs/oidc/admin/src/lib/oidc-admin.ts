@@ -4,6 +4,7 @@ export * from './modules/users/users.component';
 export * from './modules/roles/roles.component';
 export * from './modules/client-metadata/client-metadata.component';
 export * from './modules/grant-types/grant-types.component';
+export * from './modules/users/edit-users/detail-user/detail-user.component';
 
 // Modules
 export * from './modules/stats/stats.module';

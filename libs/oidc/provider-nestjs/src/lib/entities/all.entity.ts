@@ -42,6 +42,12 @@ export interface IClientMetadata {
   token_endpoint_auth_method: string;
 }
 
+export interface INewRole {
+  userGuid: string;
+  clientGuid: string;
+  roleGuid: string;
+}
+
 @Entity()
 export class GuidIdentity extends BaseEntity {
   @PrimaryColumn()
@@ -1096,7 +1102,7 @@ export class TokenEndpointAuthMethodRepo extends CommonRepo<TokenEndpointAuthMet
 
 @EntityRepository(User)
 export class UserRepo extends CommonRepo<User> {
-  public getUserWithRoles(userGuid: string, clientName: string) {
+  public getUserWithRoles(userGuid: string, clientGuid: string) {
     return getConnection()
       .getRepository(User)
       .createQueryBuilder('user')
@@ -1104,9 +1110,9 @@ export class UserRepo extends CommonRepo<User> {
       .leftJoinAndSelect('user.userRoles', 'userRoles')
       .leftJoinAndSelect('userRoles.role', 'role')
       .leftJoinAndSelect('userRoles.client', 'client')
-      .where(`user.guid = :userGuid AND client.clientName = :clientName`, {
+      .where(`user.guid = :userGuid AND client.guid = :clientGuid`, {
         userGuid: userGuid,
-        clientName: clientName
+        clientGuid: clientGuid
       })
       .getOne();
   }
