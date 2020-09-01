@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, forkJoin } from 'rxjs';
-import { debounceTime, takeUntil, shareReplay } from 'rxjs/operators';
+import { debounceTime, takeUntil, shareReplay, switchMap, skip, withLatestFrom } from 'rxjs/operators';
 
 import {
   UsersService,
@@ -78,20 +78,32 @@ export class DetailUserComponent implements OnInit, OnDestroy {
       })
     });
 
-    this.roleForm = this.fb.group({});
+    // We're gonna initialize this after we have the clients and the user. We'll initialize the form group there
+    // with all of the controls pre-prepared, so that it only emits once at most at the beginning.
+    //
+    // this.roleForm = this.fb.group({});
 
     this.$roles = this.roleService.getRoles().pipe(shareReplay(1));
     this.$clients = this.clientMetadataService.getClientMetadatas();
     this.$user = this.userService.getUser(this.userGuid).pipe(shareReplay(1));
 
     forkJoin([this.$clients, this.$user]).subscribe(([clients, user]) => {
+      // Setup a scoped group, to which we'll append the roles to. Once all controls are added to this
+      // scoped group, we'll initialize this.roleForm.
+      const group = this.fb.group({
+        userGuid: this.fb.control(user.guid)
+      });
+
       clients.forEach((client) => {
         const value = user.userRoles.find((role) => {
           return role.client.guid === client.guid;
         });
-        this.roleForm.addControl('userGuid', this.fb.control(user.guid));
-        this.roleForm.addControl(`${client.guid}`, this.fb.control(value !== undefined ? value.role.guid : 'undefined'));
+        group.addControl(`${client.clientName}`, this.fb.control(value !== undefined ? value.role.guid : 'undefined'));
       });
+
+      this.roleForm = group;
+
+      this.registerRoleChanges();
     });
 
     if (this.route.snapshot.params.userGuid) {
@@ -112,31 +124,50 @@ export class DetailUserComponent implements OnInit, OnDestroy {
             // console.log(updatedUser);
             this.userService.updateUser(updatedUser).subscribe((result) => [console.log('Updated details')]);
           });
-        this.roleForm.valueChanges
-          .pipe(
-            debounceTime(1000),
-            takeUntil(this._$destroy)
-          )
-          .subscribe(() => {
-            const val = this.roleForm.getRawValue();
-            const newRoles: INewRole[] = [];
-
-            const valKeys = Object.keys(val);
-            const len = valKeys.length;
-            for (var i = 0; i < len; i++) {
-              const key = valKeys[i];
-              if (key !== 'userGuid') {
-                const newRole: INewRole = {
-                  userGuid: val['userGuid'],
-                  clientGuid: key,
-                  roleGuid: val[key]
-                };
-                newRoles.push(newRole);
-              }
-            }
-            this.userService.updateRoles(newRoles).subscribe((result) => [console.log('Updated user roles')]);
-          });
       });
     }
+  }
+
+  private registerRoleChanges() {
+    // We need to call this function separately because this.roleForm.valueChanges will be undefined
+    // when its hit inside ngOninit, because clients and users are an async operation. Gotta make sure
+    // it's not undefined.
+    this.roleForm.valueChanges
+      .pipe(
+        debounceTime(1000),
+        withLatestFrom(this.$clients),
+        switchMap(([formValue, clients]) => {
+          const formRoles = this.roleForm.getRawValue();
+
+          const newRoles: INewRole[] = Object.entries(formRoles).reduce((acc, [key, value]) => {
+            if (key !== 'userGuid') {
+              const associatedClient = clients.find((r) => {
+                return r.clientName === key;
+              });
+
+              const newRole: INewRole = {
+                userGuid: formValue['userGuid'],
+                clientGuid: associatedClient.guid,
+                roleGuid: value as string
+              };
+
+              return [...acc, newRole];
+            } else {
+              return acc;
+            }
+          }, []);
+
+          const requests = newRoles.map((newRole) => {
+            return this.userService.updateRole(newRole);
+          });
+
+          return forkJoin(requests);
+        }),
+        takeUntil(this._$destroy)
+      )
+      .subscribe((result) => {
+        // this.userService.updateRoles(newRoles).subscribe((result) => [console.log('Updated user roles')]);
+        debugger;
+      });
   }
 }

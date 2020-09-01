@@ -45,6 +45,12 @@ export class UsersService {
     });
   }
 
+  public updateRole(updateRoles: INewRole) {
+    return this.http.patch<Partial<INewRole>>(`${this.userResource}/role`, updateRoles, {
+      withCredentials: false
+    });
+  }
+
   public updateRoles(updateRoles: INewRole[]) {
     return this.http.patch<Partial<INewRole[]>>(`${this.userResource}/role`, updateRoles, {
       withCredentials: false
