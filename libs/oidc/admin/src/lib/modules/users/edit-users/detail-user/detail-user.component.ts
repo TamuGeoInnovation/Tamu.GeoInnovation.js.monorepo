@@ -10,7 +10,7 @@ import {
   RolesService,
   IClientMetadataResponse
 } from '@tamu-gisc/oidc/admin-data-access';
-import { SecretQuestion, User, ClientMetadata, Role, UserRole } from '@tamu-gisc/oidc/provider-nest';
+import { User, ClientMetadata, Role, UserRole } from '@tamu-gisc/oidc/provider-nest';
 
 @Component({
   selector: 'detail-user',
@@ -20,13 +20,10 @@ import { SecretQuestion, User, ClientMetadata, Role, UserRole } from '@tamu-gisc
 export class DetailUserComponent implements OnInit, OnDestroy {
   public userGuid: string;
   public $user: Observable<Partial<User>>;
-  public accountForm: FormGroup;
-  public rolesForm: FormGroup;
+  public roleForm: FormGroup;
   public userForm: FormGroup;
   public $clients: Observable<Array<Partial<IClientMetadataResponse>>>;
   public $roles: Observable<Array<Partial<Role>>>;
-
-  public roleForm: FormGroup;
 
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -56,36 +53,32 @@ export class DetailUserComponent implements OnInit, OnDestroy {
       added: [''],
       updatedAt: [''],
       signup_ip_address: [''],
-      last_used_ip_address: ['']
-    });
-    this.accountForm = this.fb.group({
-      given_name: [''],
-      family_name: [''],
-      nickname: [''],
-      profile: [''],
-      picture: [''],
-      website: [''],
-      email: [''],
-      gender: [''],
-      birthdate: [''],
-      zoneinfo: [''],
-      locale: [''],
-      phone_number: [''],
-      phone_number_verified: [''],
-      updated_at: [''],
-      added: [''],
-      street_address: [''],
-      locality: [''],
-      region: [''],
-      postal_code: [''],
-      country: ['']
+      last_used_ip_address: [''],
+      account: this.fb.group({
+        given_name: [''],
+        family_name: [''],
+        nickname: [''],
+        profile: [''],
+        picture: [''],
+        website: [''],
+        email: [''],
+        gender: [''],
+        birthdate: [''],
+        zoneinfo: [''],
+        locale: [''],
+        phone_number: [''],
+        phone_number_verified: [''],
+        updated_at: [''],
+        added: [''],
+        street_address: [''],
+        locality: [''],
+        region: [''],
+        postal_code: [''],
+        country: ['']
+      })
     });
 
     this.roleForm = this.fb.group({});
-
-    this.rolesForm = this.fb.group({
-      newRoles: this.fb.array([])
-    });
 
     this.$roles = this.roleService.getRoles().pipe(shareReplay(1));
     this.$clients = this.clientMetadataService.getClientMetadatas();
@@ -106,16 +99,9 @@ export class DetailUserComponent implements OnInit, OnDestroy {
 
     if (this.route.snapshot.params.userGuid) {
       this.$user.subscribe((user) => {
-        this.userForm.patchValue(user);
-        this.accountForm.patchValue(user.account);
-        // this.user.userRoles.forEach((userRole, index) => {
-        //   const group = this.fb.group({
-        //     client: userRole.client.guid,
-        //     role: userRole.guid
-        //   });
-        //   this.rolesForm.insert(index, group);
-        // });
-        this.rolesForm.patchValue(user.userRoles);
+        this.userForm.patchValue({
+          ...user
+        });
         this.userForm.valueChanges
           .pipe(
             debounceTime(1000),
@@ -124,30 +110,12 @@ export class DetailUserComponent implements OnInit, OnDestroy {
           .subscribe((res) => {
             console.log('User', this.userForm.getRawValue());
             const updatedUser: Partial<User> = {
-              ...this.userForm.getRawValue(),
-              account: {
-                ...this.accountForm.getRawValue()
-              }
+              ...this.userForm.getRawValue()
             };
             // console.log(updatedUser);
             this.userService.updateUser(updatedUser).subscribe((result) => [console.log('Updated details')]);
           });
-        this.accountForm.valueChanges
-          .pipe(
-            debounceTime(1000),
-            takeUntil(this._$destroy)
-          )
-          .subscribe((res) => {
-            console.log('Account', this.accountForm.getRawValue());
-            const updatedUser: Partial<User> = {
-              ...this.userForm.getRawValue(),
-              account: {
-                ...this.accountForm.getRawValue()
-              }
-            };
-            // console.log(updatedUser);
-            this.userService.updateUser(updatedUser).subscribe((result) => [console.log('Updated details')]);
-          });
+
         this.roleForm.valueChanges
           .pipe(
             debounceTime(1000),
