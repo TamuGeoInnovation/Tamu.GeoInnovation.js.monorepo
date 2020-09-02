@@ -44,37 +44,38 @@ export class DetailUserComponent implements OnInit, OnDestroy {
     this.userGuid = this.route.snapshot.params.userGuid;
 
     this.userForm = this.fb.group({
-      guid: new FormControl({ value: '', disabled: true }),
-      email: new FormControl({ value: '' }),
+      // superGuid: '',
+      guid: new FormControl(''),
+      email: new FormControl(''),
       email_verified: new FormControl({ value: '', disabled: true }),
-      enabled2fa: new FormControl({ value: '' }),
-      recovery_email: new FormControl({ value: '' }),
+      enabled2fa: new FormControl(''),
+      recovery_email: new FormControl(''),
       recovery_email_verified: new FormControl({ value: '', disabled: true }),
       added: new FormControl({ value: '', disabled: true }),
       updatedAt: new FormControl({ value: '', disabled: true }),
       signup_ip_address: new FormControl({ value: '', disabled: true }),
       last_used_ip_address: new FormControl({ value: '', disabled: true }),
       account: this.fb.group({
-        given_name: new FormControl({ value: '' }),
-        family_name: new FormControl({ value: '' }),
-        nickname: new FormControl({ value: '' }),
-        profile: new FormControl({ value: '' }),
-        picture: new FormControl({ value: '' }),
-        website: new FormControl({ value: '' }),
-        email: new FormControl({ value: '' }),
-        gender: new FormControl({ value: '' }),
-        birthdate: new FormControl({ value: '' }),
-        zoneinfo: new FormControl({ value: '' }),
-        locale: new FormControl({ value: '' }),
-        phone_number: new FormControl({ value: '' }),
+        given_name: new FormControl(''),
+        family_name: new FormControl(''),
+        nickname: new FormControl(''),
+        profile: new FormControl(''),
+        picture: new FormControl(''),
+        website: new FormControl(''),
+        email: new FormControl(''),
+        gender: new FormControl(''),
+        birthdate: new FormControl(''),
+        zoneinfo: new FormControl(''),
+        locale: new FormControl(''),
+        phone_number: new FormControl(''),
         phone_number_verified: new FormControl({ value: '', disabled: true }),
         updated_at: new FormControl({ value: '', disabled: true }),
         added: new FormControl({ value: '', disabled: true }),
-        street_address: new FormControl({ value: '' }),
-        locality: new FormControl({ value: '' }),
-        region: new FormControl({ value: '' }),
-        postal_code: new FormControl({ value: '' }),
-        country: new FormControl({ value: '' })
+        street_address: new FormControl(''),
+        locality: new FormControl(''),
+        region: new FormControl(''),
+        postal_code: new FormControl(''),
+        country: new FormControl('')
       })
     });
 
@@ -91,7 +92,8 @@ export class DetailUserComponent implements OnInit, OnDestroy {
       // Setup a scoped group, to which we'll append the roles to. Once all controls are added to this
       // scoped group, we'll initialize this.roleForm.
       const group = this.fb.group({
-        userGuid: this.fb.control(user.guid)
+        // userGuid: this.fb.control(user.guid)
+        userGuid: [user.guid]
       });
 
       clients.forEach((client) => {
@@ -109,7 +111,8 @@ export class DetailUserComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.params.userGuid) {
       this.$user.subscribe((user) => {
         this.userForm.patchValue({
-          ...user
+          ...user,
+          account: user.account
         });
         this.userForm.valueChanges
           .pipe(
@@ -138,7 +141,6 @@ export class DetailUserComponent implements OnInit, OnDestroy {
         withLatestFrom(this.$clients),
         switchMap(([formValue, clients]) => {
           const formRoles = this.roleForm.getRawValue();
-
           const newRoles: INewRole[] = Object.entries(formRoles).reduce((acc, [key, value]) => {
             if (key !== 'userGuid') {
               const associatedClient = clients.find((r) => {
@@ -167,7 +169,7 @@ export class DetailUserComponent implements OnInit, OnDestroy {
       )
       .subscribe((result) => {
         // this.userService.updateRoles(newRoles).subscribe((result) => [console.log('Updated user roles')]);
-        debugger;
+        console.log(result);
       });
   }
 }

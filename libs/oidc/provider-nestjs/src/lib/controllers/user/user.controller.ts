@@ -180,11 +180,11 @@ export class UserController {
 
   @Patch('role')
   async updateUserRolePost(@Req() req: Request) {
-    const joe = req;
-    // this.userService.updateUserRole(req);
-    return {
-      greetings: 'HI'
-    };
+    // const joe = req;
+    this.userService.updateUserRole(req);
+    // return {
+    //   greetings: 'HI'
+    // };
   }
 
   @Get('pwr')
