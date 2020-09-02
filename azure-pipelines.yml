@@ -9,7 +9,7 @@ pool:
 resources:
   containers:
     - container: mssql
-      image: microsoft/mssql-server-windows-developer
+      image: mcr.microsoft.com/mssql/server:2019-latest
       ports: 
       - 1433:1433
       env:
@@ -23,7 +23,7 @@ jobs:
   services:
     mssql: mssql
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'ubuntu-latest'
   steps:
   - task: InstallSSHKey@0
     inputs:
