@@ -22,6 +22,8 @@ jobs:
 - job: unit_test_db_mssql_npm
   services:
     mssql: mssql
+  pool:
+    vmImage: 'windows-latest'
   steps:
   - task: InstallSSHKey@0
     inputs:
