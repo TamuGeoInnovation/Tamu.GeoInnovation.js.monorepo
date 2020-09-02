@@ -121,6 +121,7 @@ export class DetailUserComponent implements OnInit, OnDestroy {
           )
           .subscribe((res) => {
             console.log('User', this.userForm.getRawValue());
+
             const updatedUser: Partial<User> = {
               ...this.userForm.getRawValue()
             };
@@ -129,6 +130,22 @@ export class DetailUserComponent implements OnInit, OnDestroy {
           });
       });
     }
+  }
+
+  private getDirtyValues() {
+    let newRole: INewRole;
+    const controls = Object.keys(this.roleForm.controls);
+    // const userGuid = ;
+    controls.forEach((key) => {
+      if (this.roleForm.controls[key].dirty) {
+        // console.log('Client', key, 'value', this.roleForm.controls[key].value);
+
+        newRole.roleGuid = this.roleForm.controls[key].value;
+        this.roleForm.controls[key].markAsPristine();
+      }
+    });
+    this.userService.updateRole(newRole);
+    return;
   }
 
   private registerRoleChanges() {
@@ -140,6 +157,7 @@ export class DetailUserComponent implements OnInit, OnDestroy {
         debounceTime(1000),
         withLatestFrom(this.$clients),
         switchMap(([formValue, clients]) => {
+          // this.getDirtyValues();
           const formRoles = this.roleForm.getRawValue();
           const newRoles: INewRole[] = Object.entries(formRoles).reduce((acc, [key, value]) => {
             if (key !== 'userGuid') {
@@ -164,6 +182,8 @@ export class DetailUserComponent implements OnInit, OnDestroy {
           });
 
           return forkJoin(requests);
+          // return this.userService.updateRole(newRoles);
+          // return forkJoin();
         }),
         takeUntil(this._$destroy)
       )

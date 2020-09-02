@@ -123,8 +123,8 @@
 
     <table>
       <tr *ngFor="let control of roleForm.controls | keyvalue">
-        <td>{{control.key}}</td>
-        <td>
+        <td *ngIf="control.key !== 'userGuid'">{{control.key}}</td>
+        <td *ngIf="control.key !== 'userGuid'">
           <tamu-gisc-select [formControlName]="control.key" [data]="($roles | async)" placeholder="No role" displayTemplate="name" valueTemplate="guid"></tamu-gisc-select>
         </td>
       </tr>
