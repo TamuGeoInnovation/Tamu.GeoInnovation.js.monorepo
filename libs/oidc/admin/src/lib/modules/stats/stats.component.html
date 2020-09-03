@@ -11,19 +11,17 @@
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-name">
-        <p>How many people are currently 'logged in'?</p>
+        <p>How many people are currently 'logged in'? {{($countOfLoggedInUsers | async)}}</p>
       </div>
     </div>
-    <h3>Chart A</h3>
   </div>
 
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-name">
-        <p>Breakdown of users by client</p>
+        <tamu-gisc-pie-chart [source]="chart.data" [options]="chart.options" [title]="chart.options.title.text" *ngFor="let chart of ($countOfUsersByClient | async)"></tamu-gisc-pie-chart>
       </div>
     </div>
-    <h3>Chart B</h3>
   </div>
 
   <div class="form-section">
@@ -33,6 +31,7 @@
       </div>
     </div>
     <h3>Chart C</h3>
+    <!-- <tamu-gisc-line-chart [source]="chart.data" [options]="chart.options" [title]="chart.options.title.text" *ngFor="let chart of ($countOfUsersByClient | async)"></tamu-gisc-line-chart> -->
   </div>
 
   <div class="form-section">
@@ -42,5 +41,6 @@
       </div>
     </div>
     <h3>Chart D</h3>
+    <!-- <tamu-gisc-line-chart [source]="chart.data" [options]="chart.options" [title]="chart.options.title.text" *ngFor="let chart of ($countOfUsersByClient | async)"></tamu-gisc-line-chart> -->
   </div>
 </section>

@@ -16,6 +16,43 @@ export class StatsService {
   }
 
   public getCountOfLoggedInUsers() {
+    return this.http.get<number>(this.resource, {
+      withCredentials: false
+    });
+  }
+
+  public countOfUsersByClient() {
+    return this.http
+      .get<Partial<ICountOfUsersByClient>>(`${this.resource}/2`, {
+        withCredentials: false
+      })
+      .pipe(
+        map<ICountOfUsersByClient, IChartConfiguration[]>((value: Partial<ICountOfUsersByClient>, index: number) => {
+          const configs: IChartConfiguration[] = [];
+          const config: IChartConfiguration = {
+            data: {
+              datasets: [
+                {
+                  data: value.clientUsers
+                }
+              ],
+              labels: value.clientNames
+            },
+            options: {
+              cutoutPercentage: 50,
+              title: {
+                text: 'Count of users per client'
+              }
+            }
+          };
+          configs.push(config);
+
+          return configs;
+        })
+      );
+  }
+
+  public totalLoginsPastMonth() {
     return this.http
       .get<Array<Partial<IStatResponse>>>(this.resource, {
         withCredentials: true
@@ -33,13 +70,52 @@ export class StatsService {
       );
   }
 
-  public getClientsByCountOfUsers() {}
+  public countOfNewUsers() {
+    return this.http
+      .get<Array<Partial<IStatResponse>>>(this.resource, {
+        withCredentials: true
+      })
+      .pipe(
+        map<IStatResponse[], IChartConfiguration[]>((value: Partial<IStatResponse[]>, index: number) => {
+          const configs: IChartConfiguration[] = [];
+          const config: IChartConfiguration = {
+            data: {
+              datasets: [{}]
+            }
+          };
+          return configs;
+        })
+      );
+  }
 
-  public getLoginsPastMonth() {}
+  public getServerErrorCount() {
+    return this.http
+      .get<Array<Partial<IStatResponse>>>(this.resource, {
+        withCredentials: true
+      })
+      .pipe(
+        map<IStatResponse[], IChartConfiguration[]>((value: Partial<IStatResponse[]>, index: number) => {
+          return this.chartConfigurationMap();
+        })
+      );
+  }
 
-  public getRegistrationsPastMonth() {}
-
-  public getServerErrorCount() {}
+  private chartConfigurationMap() {
+    const configs: IChartConfiguration[] = [];
+    const config: IChartConfiguration = {
+      data: {
+        datasets: [{}]
+      }
+    };
+    return configs;
+  }
 }
 
-export interface IStatResponse {}
+export interface IStatResponse {
+  data: number[];
+}
+
+export interface ICountOfUsersByClient {
+  clientNames: string[];
+  clientUsers: number[];
+}

@@ -20,6 +20,13 @@ export class StatService {
   }
 
   public async countOfUsersByClient() {
+    const ret: {
+      clientNames: string[];
+      clientUsers: number[];
+    } = {
+      clientNames: [],
+      clientUsers: []
+    };
     /*
         SELECT
         COUNT(clientId) as num,
@@ -28,9 +35,15 @@ export class StatService {
         WHERE clientId IN (SELECT DISTINCT clientId as clientIds FROM [oidc-idp].[dbo].[access_tokens] WHERE clientId IS NOT NULL)
         GROUP BY clientId
     */
-    return this.accessTokenRepo.query(
+    const results = await this.accessTokenRepo.query(
       'SELECT COUNT(clientId) as num, clientId FROM [oidc-idp].[dbo].[access_tokens] WHERE clientId IN (SELECT DISTINCT clientId as clientIds FROM [oidc-idp].[dbo].[access_tokens] WHERE clientId IS NOT NULL) GROUP BY clientId'
     );
+    results.forEach((result) => {
+      ret.clientNames.push(result.clientId);
+      ret.clientUsers.push(result.num);
+    });
+
+    return ret;
   }
 
   public async countOfNewUsers() {
