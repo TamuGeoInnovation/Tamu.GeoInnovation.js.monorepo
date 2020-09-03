@@ -28,7 +28,8 @@ import esri = __esri;
 export * from './definitions';
 export * from './notification-events';
 
-export const apiUrl = `http://localhost:3333/api/`;
+export const apiUrl = `http://localhost:3001/`;
+export const auth_api_url = `http://localhost:3001/`;
 
 export const effluentZonesUrl = Connections.effluentZonesUrl;
 export const effluentSampleLocationsUrl = Connections.effluentSampleLocationsUrl;

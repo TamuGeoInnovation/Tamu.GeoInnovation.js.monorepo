@@ -21,7 +21,7 @@ export class AuthInterceptor implements HttpInterceptor {
         (err) => {
           if (err instanceof HttpErrorResponse) {
             if (err.status === 403) {
-              this.document.location.href = `${this.environment.value('covid_api_url')}oidc/login`;
+              this.document.location.href = `${this.environment.value('auth_api_url')}oidc/login`;
             }
           }
         }

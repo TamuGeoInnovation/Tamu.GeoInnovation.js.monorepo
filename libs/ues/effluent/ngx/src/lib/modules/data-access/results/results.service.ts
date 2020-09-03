@@ -25,7 +25,7 @@ export class ResultsService {
   }
 
   public getLatestResults() {
-    return this.http.get<Array<Result>>(`${this.apiUrl}/latest`);
+    return this.http.get<Array<Result>>(`${this.apiUrl}/latest`, { withCredentials: true });
   }
 
   public getLatestResultsAverage() {

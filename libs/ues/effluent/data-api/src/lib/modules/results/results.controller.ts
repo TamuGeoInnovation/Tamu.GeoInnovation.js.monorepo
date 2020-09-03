@@ -1,7 +1,18 @@
-import { Controller, Post, UseInterceptors, UploadedFile, HttpException, HttpStatus, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseInterceptors,
+  UploadedFile,
+  HttpException,
+  HttpStatus,
+  Get,
+  Param,
+  UseGuards
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Result } from '@tamu-gisc/ues/effluent/common/entities';
+import { AdminRoleGuard, LoginGuard, AzureIdpGuard } from '@tamu-gisc/oidc/client';
 
 import { BaseController } from '../base/base.controller';
 import { ResultsService } from './results.service';
@@ -32,6 +43,7 @@ export class ResultsController extends BaseController<Result> {
     return this.service.getLatestNValuesForTierSample(undefined, undefined, params.days);
   }
 
+  @UseGuards(AzureIdpGuard)
   @Get('latest')
   public getLatestValue() {
     return this.service.getLatestNValuesForTierSample(undefined, undefined, 1);

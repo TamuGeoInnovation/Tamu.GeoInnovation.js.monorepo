@@ -21,6 +21,7 @@ async function bootstrap() {
     table: 'sessions',
     dir: __dirname
   });
+
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
@@ -37,6 +38,7 @@ async function bootstrap() {
   const globalPrefix = environment.globalPrefix;
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.port || environment.port;
+
   app.use(
     session({
       name: 'geoinnovation',
@@ -51,6 +53,7 @@ async function bootstrap() {
   );
   app.use(passport.initialize());
   app.use(passport.session());
+
   await app.listen(port, () => {
     console.log('Listening at http://localhost:' + port + '/' + globalPrefix);
   });

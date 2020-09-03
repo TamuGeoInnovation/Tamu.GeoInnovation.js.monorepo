@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 
 import { Angulartics2Module } from 'angulartics2';
@@ -11,6 +11,7 @@ import { SESSION_STORAGE, LOCAL_STORAGE, StorageServiceModule } from 'angular-we
 import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
+import { AuthGuard, AuthService, AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -51,7 +52,12 @@ const routes: Routes = [
   declarations: [AppComponent],
   providers: [
     { provide: env, useValue: environment },
-    { provide: notificationStorage, useValue: 'ues-effluent-notifications' }
+    { provide: notificationStorage, useValue: 'ues-effluent-notifications' },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })
