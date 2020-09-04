@@ -154,7 +154,7 @@ export class DetailUserComponent implements OnInit, OnDestroy {
     // it's not undefined.
     this.roleForm.valueChanges
       .pipe(
-        debounceTime(1000),
+        debounceTime(500),
         withLatestFrom(this.$clients),
         switchMap(([formValue, clients]) => {
           // this.getDirtyValues();

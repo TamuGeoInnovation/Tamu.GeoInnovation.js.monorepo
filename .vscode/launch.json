@@ -50,15 +50,10 @@
     {
       // This allows debugging node apps (Nest, epxress, etc) that are being served through `ng`
       // Will attach a debugging listener so it can be debugged in VSCode
-      "name": "Launch Node App (7770)",
+      "name": "Debug Node App (7771)",
       "type": "node",
-      "request": "launch",
-      "env": {
-        "DEBUG": "oidc-provider:*"
-      },
-      "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}\\apps\\oidc-provider-nest\\src\\main.ts",
-      "outFiles": ["${workspaceFolder}/**/*.js"]
+      "request": "attach",
+      "port": 7771
     },
     {
       "type": "chrome",
