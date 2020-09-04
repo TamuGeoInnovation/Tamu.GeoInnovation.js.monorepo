@@ -59,7 +59,7 @@ jobs:
       script: 'docker ps -all'
       
   - script: 
-      npx jest --collectCoverage --coverageReporters=cobertura
+      npx jest --coverage --coverageReporters=cobertura
     displayName: 'output coverage'
   - task: CmdLine@2
     displayName: 'sqlcmd'
