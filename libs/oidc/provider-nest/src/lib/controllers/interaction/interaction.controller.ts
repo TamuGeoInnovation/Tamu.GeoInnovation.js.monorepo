@@ -1,7 +1,8 @@
 import { Controller, Get, Next, Param, Req, Res, Render, Post } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { OpenIdProvider } from '@tamu-gisc/oidc/provider';
-import { User, UserService } from '@tamu-gisc/oidc/provider';
+import { OpenIdProvider } from '../../configs/oidc-provider-config';
+import { User } from '../../entities/all.entity';
+import { UserService } from '../../services/user/user.service';
 
 @Controller('interaction')
 export class InteractionController {

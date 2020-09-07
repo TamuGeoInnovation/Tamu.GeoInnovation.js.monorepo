@@ -81,43 +81,6 @@ export class GuidIdentity {
 }
 
 @Entity({
-  name: 'access_tokens'
-})
-export class AccessToken implements IRequiredEntityAttrs {
-  @PrimaryColumn({
-    type: 'varchar',
-    nullable: false
-  })
-  id: string;
-
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  grantId: string;
-
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  data: string;
-
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  expiresAt: Date;
-
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  consumedAt: Date;
-
-  constructor() {}
-}
-
-@Entity({
   name: 'account'
 })
 export class Account extends GuidIdentity implements IAccount {
@@ -223,31 +186,177 @@ export class Account extends GuidIdentity implements IAccount {
   })
   added: string;
 
-  constructor(user: User, fullName: string, ip: string) {
+  constructor(fullName: string, ip: string) {
     super();
     try {
-      if (user) {
-        if (user.guid) {
-          this.guid = user.guid;
+      // if (user) {
+      // if (user.guid) {
+      //   this.guid = user.guid;
+      // }
+      // if (user.email) {
+      //   this.email = user.email;
+      // }
+      if (fullName) {
+        this.name = fullName;
+        if (fullName.includes(' ')) {
+          const names: string[] = fullName.split(' ');
+          this.given_name = names[0];
+          this.family_name = names[1];
         }
-        if (user.email) {
-          this.email = user.email;
-        }
-        if (fullName) {
-          this.name = fullName;
-          if (fullName.includes(' ')) {
-            const names: string[] = fullName.split(' ');
-            this.given_name = names[0];
-            this.family_name = names[1];
-          }
-        }
-        this.updated_at = new Date().toISOString();
-        this.added = new Date().toISOString();
       }
+      this.updated_at = new Date().toISOString();
+      this.added = new Date().toISOString();
+      // }
     } catch (error) {
       throw error;
     }
   }
+}
+
+@Entity({
+  name: 'user'
+})
+export class User extends GuidIdentity {
+  // @PrimaryGeneratedColumn()
+  // id: number;
+
+  @Column({
+    type: 'text',
+    nullable: true
+  })
+  added: string;
+
+  @OneToOne((type) => Account, { cascade: true })
+  @JoinColumn()
+  public account: Account;
+
+  // @Column({
+  //   type: "varchar",
+  //   nullable: true,
+  // })
+  // guid: string = v4();
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  email: string;
+
+  @Column({
+    type: 'boolean',
+    nullable: true
+  })
+  email_verified: boolean = false;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  password: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  updatedAt?: string;
+
+  @Column({
+    type: 'boolean',
+    nullable: true
+  })
+  enabled2fa?: boolean = false;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  secret2fa?: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  recovery_email: string;
+
+  @Column({
+    type: 'boolean',
+    nullable: true
+  })
+  recovery_email_verified: boolean = false;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  signup_ip_address: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  last_used_ip_address: string;
+
+  constructor(@Req() request: Request) {
+    super();
+    try {
+      if (request) {
+        if (request.body) {
+          const body = request.body;
+          if (body.login) {
+            this.email = body.login;
+          }
+          if (body.password) {
+            this.password = body.password;
+          }
+          if (body.ip) {
+            this.signup_ip_address = body.ip;
+            this.last_used_ip_address = body.ip;
+          }
+          this.updatedAt = new Date().toISOString();
+          this.added = new Date().toISOString();
+        }
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+}
+
+@Entity({
+  name: 'access_tokens'
+})
+export class AccessToken implements IRequiredEntityAttrs {
+  @PrimaryColumn({
+    type: 'varchar',
+    nullable: false
+  })
+  id: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  grantId: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  data: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  expiresAt: Date;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  consumedAt: Date;
+
+  constructor() {}
 }
 
 @Entity({
@@ -582,113 +691,4 @@ export class Session implements IRequiredEntityAttrs {
   consumedAt: Date;
 
   constructor() {}
-}
-
-@Entity({
-  name: 'user'
-})
-export class User extends GuidIdentity {
-  // @PrimaryGeneratedColumn()
-  // id: number;
-
-  @Column({
-    type: 'text',
-    nullable: true
-  })
-  added: string;
-
-  @OneToOne((type) => Account, { cascade: true })
-  @JoinColumn()
-  public account: Account;
-
-  // @Column({
-  //   type: "varchar",
-  //   nullable: true,
-  // })
-  // guid: string = v4();
-
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  email: string;
-
-  @Column({
-    type: 'boolean',
-    nullable: true
-  })
-  email_verified: boolean = false;
-
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  password: string;
-
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  updatedAt?: string;
-
-  @Column({
-    type: 'boolean',
-    nullable: true
-  })
-  enabled2fa?: boolean = false;
-
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  secret2fa?: string;
-
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  recovery_email: string;
-
-  @Column({
-    type: 'boolean',
-    nullable: true
-  })
-  recovery_email_verified: boolean = false;
-
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  signup_ip_address: string;
-
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  last_used_ip_address: string;
-
-  constructor(@Req() request: Request) {
-    super();
-    try {
-      if (request) {
-        if (request.body) {
-          const body = request.body;
-          if (body.login) {
-            this.email = body.login;
-          }
-          if (body.password) {
-            this.password = body.password;
-          }
-          if (body.ip) {
-            this.signup_ip_address = body.ip;
-            this.last_used_ip_address = body.ip;
-          }
-          this.updatedAt = new Date().toISOString();
-          this.added = new Date().toISOString();
-        }
-      }
-    } catch (err) {
-      throw err;
-    }
-  }
 }

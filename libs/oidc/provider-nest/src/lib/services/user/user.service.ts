@@ -1,5 +1,7 @@
 import { Connection, getConnection, Repository, Db, UpdateResult } from "typeorm";
-import { CommonService, SHA1HashUtils, User } from '@tamu-gisc/oidc/provider';
+import { CommonService } from '../common/common.service';
+import { SHA1HashUtils } from '../../_utils/sha1hash.util';
+import { User } from '../../entities/all.entity';
 
 import { hash, compare } from "bcrypt";
 
