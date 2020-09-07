@@ -12,6 +12,9 @@ export * from './configs/oidc-provider-config';
 // entities
 export * from './entities/all.entity';
 
+// middlewares
+export * from './middleware/input-sanitizer/input-sanitizer.middleware';
+
 // modules
 export * from './modules/interaction/interaction.module';
 export * from './modules/user/user.module';

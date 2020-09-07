@@ -4,14 +4,19 @@ import { AppModule } from './app/app.module';
 import { OpenIdProvider, ClientMetadataModule, ClientMetadataService } from '@tamu-gisc/oidc/provider-nest';
 import { Provider } from 'oidc-provider';
 import * as express from 'express';
+import * as csurf from 'csurf';
+import * as rateLimit from 'express-rate-limit';
 import { urlencoded, json } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { join } from 'path';
-import cors from 'cors';
+
+import { InputSanitizerMiddleware } from '@tamu-gisc/oidc/provider-nest';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: true
+  });
   const clientsService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
   const clients = await clientsService.loadClientMetadaForOidcSetup();
   OpenIdProvider.build(clients);
@@ -26,9 +31,21 @@ async function bootstrap() {
   app.use(express.static(join(__dirname, 'assets', 'scripts')));
   app.use(express.static(join(__dirname, 'assets', 'images')));
   app.use(json());
+  app.use(
+    rateLimit({
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 100 // limit each ip to 100 requests per windowMs
+    })
+  );
   app.use(urlencoded({ extended: true }));
   app.use(cookieParser());
-  app.use(cors());
+  // app.use(
+  //   csurf({
+  //     cookie: false // false is default
+  //   })
+  // );
+
+  // app.use(InputSanitizerMiddleware);
   app.use('/oidc', OpenIdProvider.provider.callback);
 
   app.use((err, req, res, next) => {
