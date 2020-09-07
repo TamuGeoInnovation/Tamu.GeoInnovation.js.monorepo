@@ -16,7 +16,7 @@ import {
   User,
   InteractionModule,
   UserModule,
-  ClientMetadataModule,
+  // ClientMetadataModule,
   ClientMetadata,
   GrantType,
   RedirectUri,

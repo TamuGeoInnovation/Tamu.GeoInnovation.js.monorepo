@@ -316,6 +316,9 @@
     },
     "oidc-admin-data-access": {
       "tags": []
+    },
+    "oidc-admin-nest": {
+      "tags": []
     }
   }
 }

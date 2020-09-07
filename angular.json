@@ -3692,6 +3692,28 @@
         }
       }
     },
+    "oidc-admin-nest-lib": {
+      "root": "libs/oidc/admin-nest",
+      "sourceRoot": "libs/oidc/admin-nest/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/oidc/admin-nest/tsconfig.lib.json", "libs/oidc/admin-nest/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/oidc/admin-nest/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/oidc/admin-nest/jest.config.js",
+            "tsConfig": "libs/oidc/admin-nest/tsconfig.spec.json"
+          }
+        }
+      }
+    },
     "oidc-admin-data-access": {
       "projectType": "library",
       "root": "libs/oidc/admin-data-access",
