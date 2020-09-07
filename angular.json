@@ -3433,6 +3433,122 @@
           "styleext": "scss"
         }
       }
+    },
+    "oidc-provider-nest": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/oidc-provider-nest",
+      "sourceRoot": "apps/oidc-provider-nest/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/oidc-provider-nest",
+            "index": "apps/oidc-provider-nest/src/index.html",
+            "main": "apps/oidc-provider-nest/src/main.ts",
+            "polyfills": "apps/oidc-provider-nest/src/polyfills.ts",
+            "tsConfig": "apps/oidc-provider-nest/tsconfig.app.json",
+            "aot": true,
+            "assets": ["apps/oidc-provider-nest/src/favicon.ico", "apps/oidc-provider-nest/src/assets"],
+            "styles": ["apps/oidc-provider-nest/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-provider-nest/src/environments/environment.ts",
+                  "with": "apps/oidc-provider-nest/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "oidc-provider-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "oidc-provider-nest:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "oidc-provider-nest:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/oidc-provider-nest/tsconfig.app.json", "apps/oidc-provider-nest/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/oidc-provider-nest/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/oidc-provider-nest/jest.config.js",
+            "tsConfig": "apps/oidc-provider-nest/tsconfig.spec.json",
+            "setupFile": "apps/oidc-provider-nest/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "oidc-provider-nest-e2e": {
+      "root": "apps/oidc-provider-nest-e2e",
+      "sourceRoot": "apps/oidc-provider-nest-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/oidc-provider-nest-e2e/cypress.json",
+            "tsConfig": "apps/oidc-provider-nest-e2e/tsconfig.e2e.json",
+            "devServerTarget": "oidc-provider-nest:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "oidc-provider-nest:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/oidc-provider-nest-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/oidc-provider-nest-e2e/**"]
+          }
+        }
+      }
     }
   },
   "cli": {

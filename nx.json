@@ -295,6 +295,12 @@
     },
     "common-utils-device-guards": {
       "tags": []
+    },
+    "oidc-provider-nest-e2e": {
+      "tags": []
+    },
+    "oidc-provider-nest": {
+      "tags": []
     }
   }
 }
