@@ -53,6 +53,11 @@ jobs:
     inputs:
       script: 'npm install mssql'
       workingDirectory: '$(build.sourcesdirectory)'
+  - task: DownloadSecureFile@1
+    name: ormconfig
+    displayName: 'Download ormConfig'
+    inputs:
+      secureFile: 'ormconfig.ts'
   - task: CmdLine@2
     displayName: 'docker list'
     inputs:
