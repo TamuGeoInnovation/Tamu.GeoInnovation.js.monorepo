@@ -3435,57 +3435,26 @@
       }
     },
     "oidc-provider-nest": {
-      "prefix": "oidc-provider-nest",
-      "projectType": "application",
-      "root": "apps/oidc-provider-nest",
-      "sourceRoot": "apps/oidc-provider-nest/src",
+      "root": "libs/oidc/provider-nest",
+      "sourceRoot": "libs/oidc/provider-nest/src",
+      "projectType": "library",
+      "schematics": {},
       "architect": {
-        "build": {
-          "builder": "@nrwl/node:build",
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/oidc-provider-nest/src/environments/environment.ts",
-                  "with": "apps/oidc-provider-nest/src/environments/environment.prod.ts"
-                }
-              ],
-              "extractLicenses": false,
-              "inspect": false,
-              "optimization": true,
-              "sourceMap": false
-            }
-          },
-          "options": {
-            "main": "apps/oidc-provider-nest/src/main.ts",
-            "outputPath": "dist/apps/oidc-provider-nest",
-            "tsConfig": "apps/oidc-provider-nest/tsconfig.app.json",
-            "assets": ["apps/oidc-provider-nest/src/assets"]
-          }
-        },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/oidc-provider-nest/**"],
-            "tsConfig": ["apps/oidc-provider-nest/tsconfig.app.json", "apps/oidc-provider-nest/tsconfig.spec.json"]
-          }
-        },
-        "serve": {
-          "builder": "@nrwl/node:execute",
-          "options": {
-            "buildTarget": "oidc-provider-nest:build",
-            "port": 0
+            "tsConfig": ["libs/oidc/provider-nest/tsconfig.lib.json", "libs/oidc/provider-nest/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/oidc/provider-nest/**"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "apps/oidc-provider-nest/jest.config.js",
-            "tsConfig": "apps/oidc-provider-nest/tsconfig.spec.json"
+            "jestConfig": "libs/oidc/provider-nest/jest.config.js",
+            "tsConfig": "libs/oidc/provider-nest/tsconfig.spec.json"
           }
         }
-      },
-      "schematics": {}
+      }
     }
   },
   "cli": {
