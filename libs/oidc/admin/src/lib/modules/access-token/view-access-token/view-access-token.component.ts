@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AccessTokenService } from '@tamu-gisc/oidc/admin-data-access';
+import { AccessToken } from '@tamu-gisc/oidc/provider-nest';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'view-access-token',
@@ -6,7 +9,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./view-access-token.component.scss']
 })
 export class ViewAccessTokenComponent implements OnInit {
-  constructor() {}
+  public $accessTokens: Observable<Array<Partial<AccessToken>>>;
 
+  constructor(private readonly accessTokenService: AccessTokenService) {
+    this.$accessTokens = this.accessTokenService.getAccessTokens();
+  }
   ngOnInit(): void {}
 }
