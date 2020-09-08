@@ -8,7 +8,13 @@ import { AppModule } from './app/app.module';
 import { OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL } from './environments/oidcconfig';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: ['http://localhost', 'http://localhost:4200'],
+      methods: ['GET', 'POST'],
+      credentials: true
+    }
+  });
   const sqlStore = new SQLiteStore({
     db: 'sessions.db',
     concurrentDB: true,

@@ -1,7 +1,9 @@
-import { Controller, Post, Req, Res, Get, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Req, Res, Get, Param, Patch, Delete, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { RoleService } from '../../services/role/role.service';
+import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 
+@UseGuards(AdminRoleGuard)
 @Controller('role')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}

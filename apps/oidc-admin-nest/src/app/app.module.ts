@@ -16,6 +16,7 @@ import {
   TokenEndpointAuthMethod,
   RedirectUri,
   Role,
+  RoleModule,
   UserRole,
   User
 } from '@tamu-gisc/oidc/admin-nest';
@@ -41,7 +42,8 @@ import { dbConfig } from '../environments/environment';
         User
       ]
     }),
-    ClientMetadataModule
+    ClientMetadataModule,
+    RoleModule
   ],
   controllers: [AppController],
   providers: [AppService]

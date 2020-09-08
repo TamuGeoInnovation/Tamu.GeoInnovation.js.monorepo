@@ -22,7 +22,7 @@ export class RolesService {
 
   public getRoles() {
     return this.http.get<Array<Partial<Role>>>(this.resource, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 
