@@ -1,6 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { StatService } from '../../services/stats/stats.service';
+import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 
+@UseGuards(AdminRoleGuard)
 @Controller('stats')
 export class StatsController {
   constructor(private readonly statService: StatService) {}

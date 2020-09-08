@@ -8,6 +8,7 @@ import { OIDC_IDP_ISSUER_URL } from '../environments/oidcconfig';
 import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc/client';
 
 import {
+  AccessToken,
   Account,
   ClientMetadataModule,
   ClientMetadata,
@@ -17,6 +18,7 @@ import {
   RedirectUri,
   Role,
   RoleModule,
+  StatsModule,
   UserRole,
   User
 } from '@tamu-gisc/oidc/admin-nest';
@@ -31,6 +33,7 @@ import { dbConfig } from '../environments/environment';
     TypeOrmModule.forRoot({
       ...dbConfig,
       entities: [
+        AccessToken,
         Account,
         ClientMetadata,
         GrantType,
@@ -43,7 +46,8 @@ import { dbConfig } from '../environments/environment';
       ]
     }),
     ClientMetadataModule,
-    RoleModule
+    RoleModule,
+    StatsModule
   ],
   controllers: [AppController],
   providers: [AppService]

@@ -16,26 +16,26 @@ export class TokenAuthMethodsService {
 
   public getTokenAuthMethod(guid: string) {
     return this.http.get<Partial<TokenEndpointAuthMethod>>(`${this.resource}/${guid}`, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 
   public getTokenAuthMethods() {
     return this.http.get<Array<Partial<TokenEndpointAuthMethod>>>(this.resource, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 
   public updateTokenEndpointAuthMethod(updatedTokenEndpointAuthMethod: Partial<TokenEndpointAuthMethod>) {
     return this.http.patch<Partial<TokenEndpointAuthMethod>>(`${this.resource}/update`, updatedTokenEndpointAuthMethod, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 
   public createTokenEndpointAuthMethod(newTokenEndpointAuthMethod: Partial<TokenEndpointAuthMethod>) {
     return this.http
       .post<Partial<TokenEndpointAuthMethod>>(this.resource, newTokenEndpointAuthMethod, {
-        withCredentials: false
+        withCredentials: true
       })
       .subscribe((newTokenEndpointAuthMethod) => {
         console.log('Added newTokenEndpointAuthMethod', newTokenEndpointAuthMethod);
@@ -43,6 +43,8 @@ export class TokenAuthMethodsService {
   }
 
   public deleteTokenEndpointAuthMethod(newTokenEndpointAuthMethod: TokenEndpointAuthMethod) {
-    return this.http.delete<Partial<TokenEndpointAuthMethod>>(`${this.resource}/delete/${newTokenEndpointAuthMethod.guid}`);
+    return this.http.delete<Partial<TokenEndpointAuthMethod>>(`${this.resource}/delete/${newTokenEndpointAuthMethod.guid}`, {
+      withCredentials: true
+    });
   }
 }

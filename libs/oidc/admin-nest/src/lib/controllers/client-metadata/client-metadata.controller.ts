@@ -1,8 +1,10 @@
-import { Controller, Get, Param, Post, Req, Res, Patch, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req, Res, Patch, Delete, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ClientMetadata as OidcClientMetadata } from 'oidc-provider';
 import { ClientMetadataService } from '../../services/client-metadata/client-metadata.service';
+import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 
+@UseGuards(AdminRoleGuard)
 @Controller('client-metadata')
 export class ClientMetadataController {
   constructor(private readonly clientMetadataService: ClientMetadataService) {}

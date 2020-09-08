@@ -17,14 +17,14 @@ export class StatsService {
 
   public getCountOfLoggedInUsers() {
     return this.http.get<number>(this.resource, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 
   public countOfUsersByClient() {
     return this.http
       .get<Partial<ICountOfUsersByClient>>(`${this.resource}/2`, {
-        withCredentials: false
+        withCredentials: true
       })
       .pipe(
         map<ICountOfUsersByClient, IChartConfiguration[]>((value: Partial<ICountOfUsersByClient>, index: number) => {

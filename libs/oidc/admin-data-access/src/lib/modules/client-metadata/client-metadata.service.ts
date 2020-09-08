@@ -18,7 +18,7 @@ export class ClientMetadataService {
   public getClientMetadata(guid: string) {
     return this.http
       .get<Partial<ClientMetadata>>(`${this.resource}/${guid}`, {
-        withCredentials: false
+        withCredentials: true
       })
       .pipe(
         map((clientResponse: ClientMetadata) => {
@@ -41,7 +41,7 @@ export class ClientMetadataService {
   public getClientMetadatas() {
     return this.http
       .get<Array<Partial<ClientMetadata>>>(this.resource, {
-        withCredentials: false
+        withCredentials: true
       })
       .pipe(
         map<Partial<ClientMetadata[]>, IClientMetadataResponse[]>((clientResponse: ClientMetadata[], index: number) => {
@@ -75,14 +75,14 @@ export class ClientMetadataService {
 
   public updateClientMetadata(updatedClientMetadata: Partial<ClientMetadata>) {
     return this.http.patch<Partial<ClientMetadata>>(`${this.resource}/update`, updatedClientMetadata, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 
   public createClientMetadata(newClientMetadata: Partial<ClientMetadata>) {
     return this.http
       .post<Partial<ClientMetadata>>(this.resource, newClientMetadata, {
-        withCredentials: false
+        withCredentials: true
       })
       .subscribe((newestClient) => {
         console.log('Added client', newestClient);
@@ -90,7 +90,9 @@ export class ClientMetadataService {
   }
 
   public deleteClientMetadata(clientMetadata: ClientMetadata) {
-    return this.http.delete<Partial<ClientMetadata>>(`${this.resource}/delete/${clientMetadata.guid}`);
+    return this.http.delete<Partial<ClientMetadata>>(`${this.resource}/delete/${clientMetadata.guid}`, {
+      withCredentials: true
+    });
   }
 }
 
