@@ -92,7 +92,8 @@
       "@tamu-gisc/oidc/provider-nestjs": ["libs/oidc/provider-nestjs/src/index.ts"],
       "@tamu-gisc/oidc/admin": ["libs/oidc/admin/src/index.ts"],
       "@tamu-gisc/oidc/admin-data-access": ["libs/oidc/admin-data-access/src/index.ts"],
-      "@tamu-gisc/oidc/admin-nest": ["libs/oidc/admin-nest/src/index.ts"]
+      "@tamu-gisc/oidc/admin-nest": ["libs/oidc/admin-nest/src/index.ts"],
+      "@tamu-gisc/oidc/utils": ["libs/oidc/utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
