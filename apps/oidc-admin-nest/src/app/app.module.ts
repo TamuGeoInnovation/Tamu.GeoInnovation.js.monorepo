@@ -20,7 +20,12 @@ import {
   RoleModule,
   StatsModule,
   UserRole,
-  User
+  User,
+  UserModule,
+  SecretQuestion,
+  SecretAnswer,
+  UserPasswordReset,
+  UserPasswordHistory
 } from '@tamu-gisc/oidc/admin-nest';
 
 import { dbConfig } from '../environments/environment';
@@ -40,14 +45,20 @@ import { dbConfig } from '../environments/environment';
         ResponseType,
         RedirectUri,
         Role,
+        SecretQuestion,
+        SecretAnswer,
         TokenEndpointAuthMethod,
         UserRole,
-        User
+        User,
+        UserModule,
+        UserPasswordReset,
+        UserPasswordHistory
       ]
     }),
     ClientMetadataModule,
     RoleModule,
-    StatsModule
+    StatsModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService]

@@ -19,41 +19,43 @@ export class UsersService {
 
   public getUser(guid: string) {
     return this.http.get<Partial<User>>(`${this.userResource}/one/${guid}`, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 
   public getUsers() {
     return this.http.get<Array<Partial<User>>>(`${this.userResource}/all`, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 
   public deleteUser(user: User) {
-    return this.http.delete<Partial<User>>(`${this.userResource}/delete/${user.guid}`);
+    return this.http.delete<Partial<User>>(`${this.userResource}/delete/${user.guid}`, {
+      withCredentials: true
+    });
   }
 
   public updateUser(updatedUser: Partial<User>) {
     return this.http.patch<Partial<User>>(`${this.userResource}/update`, updatedUser, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 
   public getSecretQuestions() {
     return this.http.get<Array<Partial<SecretQuestion>>>(this.questionResource, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 
   public updateRole(updateRoles: INewRole) {
     return this.http.patch<Partial<INewRole>>(`${this.userResource}/role`, updateRoles, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 
   public updateRoles(updateRoles: INewRole[]) {
     return this.http.patch<Partial<INewRole[]>>(`${this.userResource}/role`, updateRoles, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 }
