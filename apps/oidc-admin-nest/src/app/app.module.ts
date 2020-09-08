@@ -25,7 +25,7 @@ import {
   UserPasswordHistory
 } from '@tamu-gisc/oidc/provider-nest';
 
-import { ClientMetadataModule, RoleModule, StatsModule } from '@tamu-gisc/oidc/admin-nest';
+import { AccessTokenModule, ClientMetadataModule, RoleModule, StatsModule } from '@tamu-gisc/oidc/admin-nest';
 
 import { dbConfig } from '../environments/environment';
 
@@ -54,6 +54,7 @@ import { dbConfig } from '../environments/environment';
         UserPasswordHistory
       ]
     }),
+    AccessTokenModule,
     ClientMetadataModule,
     RoleModule,
     StatsModule,
