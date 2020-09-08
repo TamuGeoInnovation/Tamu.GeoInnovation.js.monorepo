@@ -14,3 +14,4 @@ export * from './modules/client-metadata/client-metadata.module';
 export * from './modules/grant-types/grant-types.module';
 export * from './modules/response-types/response-types.module';
 export * from './modules/token-auth-methods/token-auth-methods.module';
+export * from './modules/access-token/access-token.module';

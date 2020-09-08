@@ -1,0 +1,16 @@
+<section class="internal">
+  <h1 class="section-header">Access Tokens</h1>
+
+  <div class="section-content">
+    <div class="tab-container row">
+      <div class="tabs">
+        <div class="tab" [routerLink]="['./']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">View</div>
+        <div class="tab" [routerLink]="['edit']" routerLinkActive="active">Edit</div>
+      </div>
+
+      <div class="tab-content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</section>

@@ -44,16 +44,11 @@ const routes: Routes = [
   {
     path: 'token-auth-methods',
     loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.TokenAuthMethodsModule)
+  },
+  {
+    path: 'access',
+    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.AccessTokenModule)
   }
-  // {
-  //   path: 'internal',
-  //   loadChildren: () => import('@tamu-gisc/geoservices/internal').then((m) => m.GeoservicesInternalModule)
-  //   // canActivateChild: [AuthGuard]
-  // },
-  // {
-  //   path: 'api',
-  //   loadChildren: () => import('@tamu-gisc/geoservices/api').then((m) => m.GeoservicesApiModule)
-  // }
 ];
 
 WebFont.load({
