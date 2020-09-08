@@ -16,7 +16,7 @@ export class RolesService {
 
   public updateRole(updatedRole: Partial<Role>) {
     return this.http.patch<Partial<Role>>(`${this.resource}/update`, updatedRole, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 
@@ -28,14 +28,14 @@ export class RolesService {
 
   public getRole(guid: string) {
     return this.http.get<Partial<Role>>(`${this.resource}/${guid}`, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 
   public createRole(newRole: Partial<Role>) {
     return this.http
       .post<Partial<Role>>(this.resource, newRole, {
-        withCredentials: false
+        withCredentials: true
       })
       .subscribe((newestRole) => {
         console.log('Added role', newestRole);
@@ -43,6 +43,8 @@ export class RolesService {
   }
 
   public deleteRole(role: Role) {
-    return this.http.delete<Partial<Role>>(`${this.resource}/delete/${role.guid}`);
+    return this.http.delete<Partial<Role>>(`${this.resource}/delete/${role.guid}`, {
+      withCredentials: true
+    });
   }
 }
