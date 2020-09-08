@@ -10,15 +10,12 @@ import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-
 import {
   AccessToken,
   Account,
-  ClientMetadataModule,
   ClientMetadata,
   GrantType,
   ResponseType,
   TokenEndpointAuthMethod,
   RedirectUri,
   Role,
-  RoleModule,
-  StatsModule,
   UserRole,
   User,
   UserModule,
@@ -26,7 +23,9 @@ import {
   SecretAnswer,
   UserPasswordReset,
   UserPasswordHistory
-} from '@tamu-gisc/oidc/admin-nest';
+} from '@tamu-gisc/oidc/provider-nest';
+
+import { ClientMetadataModule, RoleModule, StatsModule } from '@tamu-gisc/oidc/admin-nest';
 
 import { dbConfig } from '../environments/environment';
 

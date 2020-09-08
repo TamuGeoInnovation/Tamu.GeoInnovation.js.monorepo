@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AccessToken, AccessTokenRepo, UserRepo } from '../../entities/all.entity';
+import { AccessToken, AccessTokenRepo, UserRepo } from '@tamu-gisc/oidc/provider-nest';
 import { access } from 'fs';
 
 @Injectable()
@@ -11,11 +11,13 @@ export class StatService {
       COUNT(expiresAt)
       FROM [oidc-idp].[dbo].[access_tokens]
       WHERE [expiresAt] >= GETDATE()
+      GROUP BY [accountGuid]
     */
     const accessTokens = this.accessTokenRepo.createQueryBuilder('access_tokens');
     return accessTokens
       .select()
       .where('access_tokens.expiresAt >= GETDATE()')
+      .groupBy('accountGuid')
       .getCount();
   }
 
@@ -33,7 +35,7 @@ export class StatService {
         clientId
         FROM [oidc-idp].[dbo].[access_tokens]
         WHERE clientId IN (SELECT DISTINCT clientId as clientIds FROM [oidc-idp].[dbo].[access_tokens] WHERE clientId IS NOT NULL)
-        GROUP BY clientId
+        GROUP BY [clientId], [accountGuid]
     */
     const results = await this.accessTokenRepo.query(
       'SELECT COUNT(clientId) as num, clientId FROM [oidc-idp].[dbo].[access_tokens] WHERE clientId IN (SELECT DISTINCT clientId as clientIds FROM [oidc-idp].[dbo].[access_tokens] WHERE clientId IS NOT NULL) GROUP BY clientId'

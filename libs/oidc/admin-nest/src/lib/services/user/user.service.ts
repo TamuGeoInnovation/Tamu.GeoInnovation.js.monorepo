@@ -22,7 +22,7 @@ import {
   UserPasswordHistoryRepo,
   UserPasswordReset,
   INewRole
-} from '../../entities/all.entity';
+} from '@tamu-gisc/oidc/provider-nest';
 
 import { hash, compare } from 'bcrypt';
 import { Injectable } from '@nestjs/common';

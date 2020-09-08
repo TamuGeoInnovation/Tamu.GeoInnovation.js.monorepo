@@ -322,6 +322,13 @@ export class AccessToken implements IRequiredEntityAttrs {
   clientId: string;
 
   @Column({
+    type: 'varchar',
+    nullable: true,
+    length: '128'
+  })
+  accountGuid: string;
+
+  @Column({
     type: 'datetime',
     nullable: true
   })

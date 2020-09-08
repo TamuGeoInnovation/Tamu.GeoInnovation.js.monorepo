@@ -76,6 +76,7 @@ export class OidcAdapter {
           uid: payload.uid ? payload.uid : undefined,
           added: new Date(),
           clientId: payload.clientId ? payload.clientId : undefined,
+          accountGuid: payload.accountId ? payload.accountId : undefined,
           userCode: payload.userCode ? payload.userCode : undefined,
           expiresAt: expiresIn ? new Date(Date.now() + expiresIn * 1000).toISOString() : undefined
         })

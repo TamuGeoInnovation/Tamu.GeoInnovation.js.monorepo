@@ -12,7 +12,7 @@ import {
   ResponseTypeRepo,
   TokenEndpointAuthMethod,
   TokenEndpointAuthMethodRepo
-} from '../../entities/all.entity';
+} from '@tamu-gisc/oidc/provider-nest';
 import { In } from 'typeorm';
 import * as deepmerge from 'deepmerge';
 import { merge } from 'rxjs';

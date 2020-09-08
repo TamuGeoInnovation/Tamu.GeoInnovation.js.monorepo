@@ -14,7 +14,7 @@ import {
   SecretAnswerRepo,
   UserPasswordResetRepo,
   UserPasswordHistoryRepo
-} from '../../entities/all.entity';
+} from '@tamu-gisc/oidc/provider-nest';
 
 @Module({
   imports: [

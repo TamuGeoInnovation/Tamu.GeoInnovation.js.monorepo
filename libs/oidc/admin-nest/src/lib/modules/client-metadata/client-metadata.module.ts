@@ -9,7 +9,7 @@ import {
   ResponseTypeRepo,
   TokenEndpointAuthMethodRepo,
   ClientMetadata
-} from '../../entities/all.entity';
+} from '@tamu-gisc/oidc/provider-nest';
 
 @Module({
   imports: [

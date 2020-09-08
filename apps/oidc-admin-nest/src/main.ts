@@ -16,9 +16,9 @@ async function bootstrap() {
     }
   });
   const sqlStore = new SQLiteStore({
-    db: 'sessions.db',
+    db: 'sessions_admin_nest.db',
     concurrentDB: true,
-    table: 'sessions_nestoidc',
+    table: 'sessions',
     dir: __dirname // WIN,
   });
 

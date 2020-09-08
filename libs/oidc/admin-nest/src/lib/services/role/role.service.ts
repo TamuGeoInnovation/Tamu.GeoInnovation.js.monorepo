@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
-import { Role, RoleRepo } from '../../entities/all.entity';
+import { Role, RoleRepo } from '@tamu-gisc/oidc/provider-nest';
 
 @Injectable()
 export class RoleService {

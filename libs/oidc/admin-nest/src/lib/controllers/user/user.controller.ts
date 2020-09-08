@@ -1,10 +1,12 @@
-import { Controller, Get, Param, Req, Res, Post, Delete, Patch } from '@nestjs/common';
+import { Controller, Get, Param, Req, Res, Post, Delete, Patch, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
 import { urlFragment, urlHas } from '@tamu-gisc/oidc/utils';
-import { User } from '../../entities/all.entity';
+import { User } from '@tamu-gisc/oidc/provider-nest';
 import { UserService, ServiceToControllerTypes } from '../../services/user/user.service';
+import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 
+@UseGuards(AdminRoleGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
