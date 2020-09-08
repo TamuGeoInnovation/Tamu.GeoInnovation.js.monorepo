@@ -2,7 +2,7 @@ import { Module, NestModule, HttpModule, MiddlewareConsumer, RequestMethod } fro
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { UserController } from '../../controllers/user/user.controller';
-import { SecretQuestionController } from '../../controllers/secret-question/secret-question.controller';
+// import { SecretQuestionController } from '../../controllers/secret-question/secret-question.controller';
 import { UserService } from '../../services/user/user.service';
 import { StaticAccountService } from '../../services/account/account.service';
 import { UserValidationMiddleware } from '../../middleware/user-validation/user-validation.middleware';
@@ -34,7 +34,7 @@ import {
     ]),
     HttpModule
   ],
-  controllers: [UserController, SecretQuestionController],
+  controllers: [UserController],
   providers: [UserService, StaticAccountService],
   exports: [UserService, StaticAccountService]
 })
