@@ -18,4 +18,4 @@ export * from './services/client-metadata/client-metadata.service';
 export * from './services/role/role.service';
 export * from './services/stats/stats.service';
 export * from './services/user/user.service';
-export * from './services/access-token/access-token';
+export * from './services/access-token/access-token.service';

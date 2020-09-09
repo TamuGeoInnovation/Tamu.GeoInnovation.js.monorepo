@@ -87,9 +87,6 @@ export class OidcAdapter {
   }
 
   async find(id: string) {
-    if (this.name === 'AuthorizationCode') {
-      debugger;
-    }
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
     const found: IRequiredEntityAttrs = await repo.findOne(id);
 

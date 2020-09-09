@@ -18,14 +18,13 @@ import {
   Role,
   UserRole,
   User,
-  UserModule,
   SecretQuestion,
   SecretAnswer,
   UserPasswordReset,
   UserPasswordHistory
 } from '@tamu-gisc/oidc/provider-nest';
 
-import { AccessTokenModule, ClientMetadataModule, RoleModule, StatsModule } from '@tamu-gisc/oidc/admin-nest';
+import { AccessTokenModule, ClientMetadataModule, RoleModule, StatsModule, UserModule } from '@tamu-gisc/oidc/admin-nest';
 
 import { dbConfig } from '../environments/environment';
 

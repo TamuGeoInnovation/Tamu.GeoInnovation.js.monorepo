@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AccessTokenService } from './access-token';
+import { AccessTokenService } from './access-token.service';
 
 describe('AccessTokenService', () => {
   let provider: AccessTokenService;

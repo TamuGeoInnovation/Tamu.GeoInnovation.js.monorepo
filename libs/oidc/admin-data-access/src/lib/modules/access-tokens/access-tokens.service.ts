@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { AccessToken } from '@tamu-gisc/oidc/provider-nest';
+import { access } from 'fs';
 
 @Injectable({
   providedIn: 'root'
@@ -42,9 +43,9 @@ export class AccessTokenService {
   //     });
   // }
 
-  // public deleteRole(role: Role) {
-  //   return this.http.delete<Partial<Role>>(`${this.resource}/delete/${role.guid}`, {
-  //     withCredentials: true
-  //   });
-  // }
+  public revokeAccessToken(accessToken: AccessToken) {
+    return this.http.delete<Partial<AccessToken>>(`${this.resource}/delete/${accessToken.grantId}`, {
+      withCredentials: true
+    });
+  }
 }

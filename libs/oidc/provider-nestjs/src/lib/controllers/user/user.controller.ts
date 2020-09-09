@@ -7,9 +7,16 @@ import { urlFragment, urlHas } from '../../_utils/url-utils';
 import { User } from '../../entities/all.entity';
 import { UserService, ServiceToControllerTypes } from '../../services/user/user.service';
 
+import { OpenIdProvider } from '@tamu-gisc/oidc/provider-nest';
+
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Delete('access-token/:grantId')
+  async revokeAccessToken(@Param() params) {
+    return OpenIdProvider.provider.AccessToken.revokeByGrantId(params.grantId);
+  }
 
   @Get('one/:userGuid')
   async userGet(@Param() params) {
