@@ -21,7 +21,7 @@ async function bootstrap() {
 
   app.enableCors({
     credentials: true,
-    origin: ['http://localhost:4200', 'https://login.microsoftonline.com']
+    origin: environment.allowedOrigins
   });
 
   const globalPrefix = environment.globalPrefix;
