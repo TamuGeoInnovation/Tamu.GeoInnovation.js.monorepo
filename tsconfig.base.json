@@ -101,7 +101,8 @@
       "@tamu-gisc/two/directory": ["libs/two/directory/src/index.ts"],
       "@tamu-gisc/two/valup": ["libs/two/valup/src/index.ts"],
       "@tamu-gisc/two/dashboard": ["libs/two/dashboard/src/index.ts"],
-      "@tamu-gisc/two/data-access": ["libs/two/data-access/src/index.ts"]
+      "@tamu-gisc/two/data-access": ["libs/two/data-access/src/index.ts"],
+      "@tamu-gisc/gisday/nest": ["libs/gisday/nest/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
