@@ -68,9 +68,10 @@ jobs:
     #displayName: 'output coverage'
   - task: CmdLine@2
     displayName: 'sqlcmd'
-    inputs:
-      script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@version;"'
-
+  - script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@version;"'
+  - script: 'sqlcmd -q "CREATE DATABASE TestDB"'
+  - script: 'sqlcmd -q "SELECT Name from sys.Databases"'
+  - script: 'sqlcmd -q "GO"'
   - task: PublishCodeCoverageResults@1
     inputs:
       codeCoverageTool: Cobertura
