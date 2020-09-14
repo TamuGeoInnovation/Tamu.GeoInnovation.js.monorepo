@@ -1324,6 +1324,28 @@
       },
       "schematics": {}
     },
+    "gisday-nest-lib": {
+      "root": "libs/gisday/nest",
+      "sourceRoot": "libs/gisday/nest/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/gisday/nest/tsconfig.lib.json", "libs/gisday/nest/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/gisday/nest/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/gisday/nest/jest.config.js",
+            "tsConfig": "libs/gisday/nest/tsconfig.spec.json"
+          }
+        }
+      }
+    },
     "maps-esri": {
       "prefix": "tamu-gisc",
       "projectType": "library",
