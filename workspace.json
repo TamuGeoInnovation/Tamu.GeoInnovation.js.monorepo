@@ -1027,6 +1027,58 @@
         }
       }
     },
+    "gisday-nest": {
+      "prefix": "gisday-nest",
+      "projectType": "application",
+      "root": "apps/gisday-nest",
+      "sourceRoot": "apps/gisday-nest/src",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/gisday-nest/src/environments/environment.ts",
+                  "with": "apps/gisday-nest/src/environments/environment.prod.ts"
+                }
+              ],
+              "extractLicenses": false,
+              "inspect": false,
+              "optimization": true,
+              "sourceMap": false
+            }
+          },
+          "options": {
+            "main": "apps/gisday-nest/src/main.ts",
+            "outputPath": "dist/apps/gisday-nest",
+            "tsConfig": "apps/gisday-nest/tsconfig.app.json",
+            "assets": ["apps/gisday-nest/src/assets"]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "exclude": ["**/node_modules/**", "!apps/gisday-nest/**"],
+            "tsConfig": ["apps/gisday-nest/tsconfig.app.json", "apps/gisday-nest/tsconfig.spec.json"]
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "gisday-nest:build"
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/gisday-nest/jest.config.js",
+            "tsConfig": "apps/gisday-nest/tsconfig.spec.json"
+          }
+        }
+      },
+      "schematics": {}
+    },
     "maps-esri": {
       "prefix": "tamu-gisc",
       "projectType": "library",
