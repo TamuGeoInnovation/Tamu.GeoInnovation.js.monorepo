@@ -15,7 +15,7 @@ resources:
       env:
         ACCEPT_EULA: Y
         SA_PASSWORD: yourStrong(!)Password
-        MSSQL_PID: Express
+        MSSQL_PID: Developer 
       options: --name mssql
 
 jobs:
