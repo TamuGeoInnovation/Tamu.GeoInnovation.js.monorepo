@@ -45,19 +45,19 @@ jobs:
     displayName: 'docker logs'
     inputs:
       script: 'docker logs mssql'
-  - script: 
-      npm install
-    displayName: 'npm install'
-  - task: CmdLine@2
-    displayName: 'npm install mssql'
-    inputs:
-      script: 'npm install mssql'
-      workingDirectory: '$(build.sourcesdirectory)'
-  - task: DownloadSecureFile@1
-    name: ormconfig
-    displayName: 'Download ormConfig'
-    inputs:
-      secureFile: 'ormconfig.ts'
+  #- script: 
+  #    npm install
+  #  displayName: 'npm install'
+  #- task: CmdLine@2
+  #  displayName: 'npm install mssql'
+  #  inputs:
+  #    script: 'npm install mssql'
+  #    workingDirectory: '$(build.sourcesdirectory)'
+  #- task: DownloadSecureFile@1
+  #  name: ormconfig
+  #  displayName: 'Download ormConfig'
+  #  inputs:
+  #    secureFile: 'ormconfig.ts'
   - task: CmdLine@2
     displayName: 'docker list'
     inputs:
@@ -68,10 +68,10 @@ jobs:
     #displayName: 'output coverage'
   - task: CmdLine@2
     displayName: 'sqlcmd'
-  - script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@version;"'
-  - script: 'sqlcmd -q "CREATE DATABASE TestDB"'
-  - script: 'sqlcmd -q "SELECT Name from sys.Databases"'
-  - script: 'sqlcmd -q "GO"'
+  - script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@version;" -Q "CREATE DATABASE TestDB"'
+  #- script: 'sqlcmd -q "CREATE DATABASE TestDB"'
+  #- script: 'sqlcmd -q "SELECT Name from sys.Databases"'
+  #- script: 'sqlcmd -q "GO"'
   - task: PublishCodeCoverageResults@1
     inputs:
       codeCoverageTool: Cobertura
