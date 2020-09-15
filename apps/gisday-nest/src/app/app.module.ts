@@ -1,8 +1,22 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { EventController, EventModule } from '@tamu-gisc/gisday/nest';
 import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc/client';
+
+import {
+  CheckIn,
+  Class,
+  CourseCredit,
+  Event,
+  Session,
+  Speaker,
+  SubmissionType,
+  Sponsor,
+  Tag,
+  UserClass,
+  UserRsvp,
+  UserSubmission
+} from '@tamu-gisc/gisday/nest';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -16,7 +30,20 @@ import { localDbConfig } from '../environments/ormconfig';
     // }),
     TypeOrmModule.forRoot({
       ...localDbConfig,
-      entities: []
+      entities: [
+        // CheckIn,
+        Class,
+        // CourseCredit,
+        Event,
+        Session,
+        Speaker,
+        // SubmissionType,
+        Sponsor,
+        Tag
+        // UserClass,
+        // UserRsvp,
+        // UserSubmission
+      ]
     })
   ],
   controllers: [AppController],
