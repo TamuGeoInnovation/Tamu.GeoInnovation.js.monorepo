@@ -57,7 +57,7 @@ export class Event extends GuidIdentity {
   public sessions: Session[]; // Session[]
 
   // @OneToMany(type => EventSpeaker, eventSpeaker => eventSpeaker.eventGuid)
-  public speakers: Speaker[]; // Speaker[]
+  // public speakers: Speaker[]; // Speaker[]
 
   // @OneToMany(type => EventSponsor, eventSponsor => eventSponsor.eventGuid)
   public sponsors: Sponsor[]; // Sponsor[]
@@ -66,7 +66,7 @@ export class Event extends GuidIdentity {
   public tags: Tag[]; // Tag[]
 
   // @OneToMany(type => UserRsvp, userRsvp => userRsvp.eventGuid)
-  currentRsvps: unknown[]; // UserRsvp[]
+  public currentRsvps: UserRsvp[]; // UserRsvp[]
 
   // @OneToMany(type => CourseCredit, credit => credit.eventGuid)
   public courseCredit: CourseCredit[]; // CourseCredit[]
@@ -74,164 +74,70 @@ export class Event extends GuidIdentity {
   // @OneToMany(type => UserCheckin, userCheckin => userCheckin.eventGuid)
   public userCheckins: CheckIn[]; // UserCheckin[]
 
-  @Column({
-    name: 'userGuid',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   user: unknown; // User
 
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  speaker: unknown; // Speaker
-
-  @Column({
-    name: 'ObservedAttendeeStart',
-    type: 'int',
-    nullable: true
-  })
+  @Column({ nullable: true })
   observedAttendeeStart: number;
 
-  @Column({
-    name: 'ObservedAttendeeEnd',
-    type: 'int',
-    nullable: true
-  })
+  @Column({ nullable: true })
   observedAttendeeEnd: number;
 
-  @Column({
-    name: 'OnlineBroadcastURL',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   onlineBroadcastUrl: string;
 
-  @Column({
-    name: 'OnlinePresenterURL',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   onlinePresenterUrl: string;
 
-  @Column({
-    name: 'GoogleDriveURL',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   googleDriveUrl: string;
 
-  @Column({
-    name: 'PresentationURL',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   presentationUrl: string;
 
-  @Column({
-    name: 'EventName',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   name: string;
 
-  @Column({
-    name: 'Time',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   time: Date;
 
-  @Column({
-    name: 'Title',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   title: string;
 
-  @Column({
-    name: 'Abstract',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   abstract: string;
 
-  @Column({
-    name: 'LocationRoom',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   locationRoom: string;
 
-  @Column({
-    name: 'LocationBuilding',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   locationBuilding: string;
 
-  @Column({
-    name: 'Capacity',
-    type: 'int',
-    nullable: true
-  })
+  @Column({ nullable: true })
   capacity: number;
 
-  @Column({
-    name: 'RequiresRSVP',
-    type: 'bit',
-    nullable: true
-  })
+  @Column({ nullable: true })
   requiresRsvp: boolean;
 
-  @Column({
-    name: 'QRcode',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   qrCode: string;
 
-  @Column({
-    name: 'LocationLink',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   locationLink: string;
 
-  @Column({
-    name: 'Date',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   date: string;
 
-  @Column({
-    name: 'EventType',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   type: string;
 
-  @Column({
-    name: 'PresentationType',
-    type: 'varchar',
-    nullable: true
-  })
+  @Column({ nullable: true })
   presentationType: string;
 
-  @Column({
-    name: 'IsAcceptingRSVPs',
-    type: 'bit',
-    nullable: true
-  })
+  @Column({ nullable: true })
   isAcceptingRsvps: boolean;
 
-  @Column({
-    name: 'Duration',
-    type: 'numeric',
-    nullable: true
-  })
+  @Column({ nullable: true })
   duration: number;
 
   constructor() {
@@ -243,6 +149,9 @@ export class Event extends GuidIdentity {
   name: 'sessions'
 })
 export class Session extends GuidIdentity {
+  @Column({ nullable: false })
+  public speakers: Speaker[];
+
   @Column({ nullable: false })
   public name: string;
 
