@@ -34,11 +34,17 @@ export class GuidIdentity extends TimeStampEntity {
   @CreateDateColumn()
   public added: Date;
 
+  @Column()
+  public season: string;
+
   @BeforeUpdate()
   @BeforeInsert()
   private generateGuid(): void {
     if (this.guid === undefined) {
       this.guid = guid();
+    }
+    if (this.season === undefined) {
+      this.season = new Date().getFullYear().toString();
     }
   }
 }
@@ -63,10 +69,10 @@ export class Event extends GuidIdentity {
   currentRsvps: unknown[]; // UserRsvp[]
 
   // @OneToMany(type => CourseCredit, credit => credit.eventGuid)
-  courseCredit: unknown[]; // CourseCredit[]
+  public courseCredit: CourseCredit[]; // CourseCredit[]
 
   // @OneToMany(type => UserCheckin, userCheckin => userCheckin.eventGuid)
-  userCheckins: unknown[]; // UserCheckin[]
+  public userCheckins: CheckIn[]; // UserCheckin[]
 
   @Column({
     name: 'userGuid',
@@ -215,13 +221,6 @@ export class Event extends GuidIdentity {
   presentationType: string;
 
   @Column({
-    name: 'Season',
-    type: 'varchar',
-    nullable: true
-  })
-  season: string;
-
-  @Column({
     name: 'IsAcceptingRSVPs',
     type: 'bit',
     nullable: true
@@ -256,9 +255,6 @@ export class Session extends GuidIdentity {
   @Column({ nullable: false })
   public abstract: string;
 
-  @Column({ nullable: false })
-  public season: string;
-
   constructor() {
     super();
   }
@@ -282,6 +278,10 @@ export class Speaker extends GuidIdentity {
 
   @Column({ nullable: false })
   public organization: string;
+
+  constructor() {
+    super();
+  }
 }
 
 @Entity({
@@ -290,6 +290,10 @@ export class Speaker extends GuidIdentity {
 export class Tag extends GuidIdentity {
   @Column({ nullable: false })
   public name: string;
+
+  constructor() {
+    super();
+  }
 }
 
 @Entity({
@@ -304,4 +308,128 @@ export class Sponsor extends GuidIdentity {
 
   @Column({ nullable: false })
   public logoUrl: string;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
+  name: 'checkins'
+})
+export class CheckIn extends GuidIdentity {
+  @Column({ nullable: false })
+  public event: Event;
+
+  @Column({ nullable: false })
+  public user: unknown; // User
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
+  name: 'checkins'
+})
+export class Class extends GuidIdentity {
+  @Column({ nullable: false })
+  public professor: unknown; // User
+
+  @Column({ nullable: false })
+  public title: string;
+
+  @Column({ nullable: false })
+  public code: string; // User
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
+  name: 'course_credits'
+})
+export class CourseCredit extends GuidIdentity {
+  @Column({ nullable: false })
+  public event: Event;
+
+  @Column({ nullable: false })
+  public class: Class;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
+  name: 'user_classes'
+})
+export class UserClass extends GuidIdentity {
+  @Column({ nullable: false })
+  public class: Class;
+
+  @Column({ nullable: false })
+  public user: unknown; // User
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
+  name: 'user_rsvps'
+})
+export class UserRsvp extends GuidIdentity {
+  @Column({ nullable: false })
+  public user: unknown; // User
+
+  @Column({ nullable: false })
+  public event: Event;
+
+  @Column({ nullable: false })
+  public rsvpType: unknown; // What is an RSVP Type?
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
+  name: 'submissions'
+})
+export class UserSubmission extends GuidIdentity {
+  @Column({ nullable: false })
+  public user: unknown; // User
+
+  @Column({ nullable: false })
+  public title: string;
+
+  @Column({ nullable: false })
+  public author: string;
+
+  @Column({ nullable: false })
+  public abstract: string;
+
+  @Column({ nullable: false })
+  public link: string;
+
+  @Column({ nullable: false })
+  public submissionType: SubmissionType; // Submission Type?
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
+  name: 'submission_types'
+})
+export class SubmissionType extends GuidIdentity {
+  @Column({ nullable: false })
+  public type: string;
+
+  constructor() {
+    super();
+  }
 }
