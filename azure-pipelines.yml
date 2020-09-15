@@ -69,7 +69,6 @@ jobs:
   - task: CmdLine@2
     displayName: 'sqlcmd'
   - script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@version;" -Q "CREATE DATABASE TestDB"'
-  - script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "CREATE DATABASE TestDB"'
   #- script: 'sqlcmd -q "CREATE DATABASE TestDB"'
   #- script: 'sqlcmd -q "SELECT Name from sys.Databases"'
   #- script: 'sqlcmd -q "GO"'
