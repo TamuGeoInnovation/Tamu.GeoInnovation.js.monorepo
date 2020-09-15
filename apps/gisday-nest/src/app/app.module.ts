@@ -6,13 +6,19 @@ import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-
 import {
   CheckIn,
   Class,
+  ClassModule,
   CourseCredit,
   Event,
+  EventModule,
   Session,
+  SessionModule,
   Speaker,
+  SpeakerModule,
   SubmissionType,
   Sponsor,
+  SponsorModule,
   Tag,
+  TagModule,
   UserClass,
   UserRsvp,
   UserSubmission
@@ -44,7 +50,13 @@ import { localDbConfig } from '../environments/ormconfig';
         // UserRsvp,
         // UserSubmission
       ]
-    })
+    }),
+    ClassModule,
+    EventModule,
+    SessionModule,
+    SpeakerModule,
+    SponsorModule,
+    TagModule
   ],
   controllers: [AppController],
   providers: [AppService]
