@@ -31,9 +31,6 @@ export class GuidIdentity extends TimeStampEntity {
   @PrimaryColumn()
   public guid: string;
 
-  @CreateDateColumn()
-  public added: Date;
-
   @Column()
   public season: string;
 
@@ -53,29 +50,32 @@ export class GuidIdentity extends TimeStampEntity {
   name: 'events'
 })
 export class Event extends GuidIdentity {
-  // @OneToMany(type => EventSession, eventSession => eventSession.eventGuid)
-  public sessions: Session[]; // Session[]
+  @ManyToMany((type) => Session, { cascade: true })
+  @JoinTable({ name: 'event_sessions' })
+  public sessions: Session[];
 
   // @OneToMany(type => EventSpeaker, eventSpeaker => eventSpeaker.eventGuid)
   // public speakers: Speaker[]; // Speaker[]
 
-  // @OneToMany(type => EventSponsor, eventSponsor => eventSponsor.eventGuid)
-  public sponsors: Sponsor[]; // Sponsor[]
+  @ManyToMany((type) => Sponsor, { cascade: true })
+  @JoinTable({ name: 'event_sponsors' })
+  public sponsors: Sponsor[];
 
-  // @OneToMany(type => EventTag, eventTag => eventTag.eventGuid)
-  public tags: Tag[]; // Tag[]
+  @ManyToMany((type) => Tag, { cascade: true })
+  @JoinTable({ name: 'event_tags' })
+  public tags: Tag[];
 
   // @OneToMany(type => UserRsvp, userRsvp => userRsvp.eventGuid)
-  public currentRsvps: UserRsvp[]; // UserRsvp[]
+  // public currentRsvps: UserRsvp[]; // UserRsvp[]
 
   // @OneToMany(type => CourseCredit, credit => credit.eventGuid)
-  public courseCredit: CourseCredit[]; // CourseCredit[]
+  // public courseCredit: CourseCredit[]; // CourseCredit[]
 
   // @OneToMany(type => UserCheckin, userCheckin => userCheckin.eventGuid)
-  public userCheckins: CheckIn[]; // UserCheckin[]
+  // public userCheckins: CheckIn[]; // UserCheckin[]
 
   @Column({ nullable: true })
-  user: unknown; // User
+  user: string; // User
 
   @Column({ nullable: true })
   observedAttendeeStart: number;
@@ -149,7 +149,8 @@ export class Event extends GuidIdentity {
   name: 'sessions'
 })
 export class Session extends GuidIdentity {
-  @Column({ nullable: false })
+  @ManyToMany((type) => Speaker, { cascade: true })
+  @JoinTable({ name: 'session_speakers' })
   public speakers: Speaker[];
 
   @Column({ nullable: false })
@@ -174,7 +175,7 @@ export class Session extends GuidIdentity {
 })
 export class Speaker extends GuidIdentity {
   @Column({ nullable: false })
-  public user: unknown; // User
+  public user: string; // User
 
   @Column({ nullable: false })
   public firstName: string;
@@ -243,7 +244,7 @@ export class CheckIn extends GuidIdentity {
 })
 export class Class extends GuidIdentity {
   @Column({ nullable: false })
-  public professor: unknown; // User
+  public professor: string; // User
 
   @Column({ nullable: false })
   public title: string;
@@ -265,6 +266,18 @@ export class CourseCredit extends GuidIdentity {
 
   @Column({ nullable: false })
   public class: Class;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
+  name: 'submission_types'
+})
+export class SubmissionType extends GuidIdentity {
+  @Column({ nullable: false })
+  public type: string;
 
   constructor() {
     super();
@@ -325,18 +338,6 @@ export class UserSubmission extends GuidIdentity {
 
   @Column({ nullable: false })
   public submissionType: SubmissionType; // Submission Type?
-
-  constructor() {
-    super();
-  }
-}
-
-@Entity({
-  name: 'submission_types'
-})
-export class SubmissionType extends GuidIdentity {
-  @Column({ nullable: false })
-  public type: string;
 
   constructor() {
     super();
