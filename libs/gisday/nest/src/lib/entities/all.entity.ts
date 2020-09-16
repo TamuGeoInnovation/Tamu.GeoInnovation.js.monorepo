@@ -1,5 +1,6 @@
 import {
   Entity,
+  EntityRepository,
   BaseEntity,
   PrimaryColumn,
   UpdateDateColumn,
@@ -13,7 +14,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   ManyToMany,
-  JoinTable
+  JoinTable,
+  Repository
 } from 'typeorm';
 import { v4 as guid } from 'uuid';
 
@@ -240,7 +242,7 @@ export class CheckIn extends GuidIdentity {
 }
 
 @Entity({
-  name: 'checkins'
+  name: 'classes'
 })
 export class Class extends GuidIdentity {
   @Column({ nullable: false })
@@ -343,3 +345,23 @@ export class UserSubmission extends GuidIdentity {
     super();
   }
 }
+
+export class CommonRepo<T> extends Repository<T> {}
+
+@EntityRepository(Class)
+export class ClassRepo extends CommonRepo<Class> {}
+
+@EntityRepository(Event)
+export class EventRepo extends CommonRepo<Event> {}
+
+@EntityRepository(Session)
+export class SessionRepo extends CommonRepo<Session> {}
+
+@EntityRepository(Speaker)
+export class SpeakerRepo extends CommonRepo<Speaker> {}
+
+@EntityRepository(Sponsor)
+export class SponsorRepo extends CommonRepo<Sponsor> {}
+
+@EntityRepository(Tag)
+export class TagRepo extends CommonRepo<Tag> {}
