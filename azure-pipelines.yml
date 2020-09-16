@@ -86,9 +86,9 @@ jobs:
       Contents: ormconfig.ts
       TargetFolder: $(System.DefaultWorkingDirectory)/libs/covid/data-api/src/lib
 
-  #- script: 
-  #    npx jest --coverage --coverageReporters=cobertura
-  #  displayName: 'output coverage'
+  - script: 
+      npx jest --coverage --coverageReporters=cobertura
+    displayName: 'output coverage'
   - task: PublishCodeCoverageResults@1
     inputs:
       codeCoverageTool: Cobertura
