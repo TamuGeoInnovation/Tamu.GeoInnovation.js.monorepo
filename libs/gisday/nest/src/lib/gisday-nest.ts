@@ -11,3 +11,6 @@ export * from './modules/session/session.module';
 export * from './modules/speaker/speaker.module';
 export * from './modules/sponsor/sponsor.module';
 export * from './modules/tag/tag.module';
+
+// Providers
+export * from './providers/class/class.provider';
