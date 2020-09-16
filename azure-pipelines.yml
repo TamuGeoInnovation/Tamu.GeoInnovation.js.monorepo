@@ -78,15 +78,17 @@ jobs:
     inputs:
       secureFile: 'ormconfig.ts'
 
+
   - task: CopyFiles@2
     displayName: 'Copy ormconfig'
     inputs:
-      Contents: $(ormconfig.secureFilePath)
+      SourceFolder: $(Agent.TempDirectory)
+      Contents: ormconfig.ts
       TargetFolder: $(System.DefaultWorkingDirectory)/libs/covid/data-api/src/lib
 
-  - script: 
-      npx jest --coverage --coverageReporters=cobertura
-    displayName: 'output coverage'
+  #- script: 
+  #    npx jest --coverage --coverageReporters=cobertura
+  #  displayName: 'output coverage'
   - task: PublishCodeCoverageResults@1
     inputs:
       codeCoverageTool: Cobertura
