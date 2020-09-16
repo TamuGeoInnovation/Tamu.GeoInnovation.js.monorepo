@@ -20,6 +20,7 @@ export class LoginGuard extends AuthGuard(OpenIdClient.strategyName) {
     const request = context.switchToHttp().getRequest();
 
     if (request.query && request.query.ret) {
+      console.log('Setting return url to be: ', request.query.ret);
       request.session.returnUrl = request.query.ret;
     } else if (request.headers.referer) {
       if (this.host === undefined) {
@@ -30,7 +31,7 @@ export class LoginGuard extends AuthGuard(OpenIdClient.strategyName) {
         request.session &&
         request.session.returnUrl === undefined
       ) {
-        console.log('Set return URL to:', request.headers.referer);
+        console.log('Return URL', request.headers.referer);
         request.session.returnUrl = request.headers.referer;
       }
     } else {
