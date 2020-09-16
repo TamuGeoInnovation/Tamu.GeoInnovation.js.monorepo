@@ -319,6 +319,12 @@
     },
     "gisday-nest": {
       "tags": []
+    },
+    "gisday-angular-e2e": {
+      "tags": []
+    },
+    "gisday-angular": {
+      "tags": []
     }
   }
 }

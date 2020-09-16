@@ -93,7 +93,8 @@
       "@tamu-gisc/maps/feature/feature-highlight": ["libs/maps/feature/feature-highlight/src/index.ts"],
       "@tamu-gisc/ues/effluent/data-api": ["libs/ues/effluent/data-api/src/index.ts"],
       "@tamu-gisc/ues/effluent/common/entities": ["libs/ues/effluent/common/entities/src/index.ts"],
-      "@tamu-gisc/gisday/nest": ["libs/gisday/nest/src/index.ts"]
+      "@tamu-gisc/gisday/nest": ["libs/gisday/nest/src/index.ts"],
+      "@tamu-gisc/gisday/angular": ["libs/gisday/angular/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
