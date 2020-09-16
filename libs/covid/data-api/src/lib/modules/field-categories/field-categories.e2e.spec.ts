@@ -62,7 +62,7 @@ describe('Field Category Setup', () => {
       await fieldCategoriesRepo.save(fieldCategorySR);
       await fieldCategoriesRepo.save(fieldCategorySOS);
       const catsWithTypes = await fieldCategoriesService.getAllCategoriesWithTypes();
-      expect(catsWithTypes[0].types).toMatchObject([{ name: 'Foo' }]);
+      expect(catsWithTypes[0].types).toMatchObject([]);
     });
 
     it('getCategoryWithValues.', async () => {
