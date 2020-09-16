@@ -81,7 +81,7 @@ jobs:
   - task: CmdLine@2
     displayName: 'Create login'
     inputs: 
-      script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "Use test" -Q "GO" -Q "CREATE LOGIN testing WITH PASSWORD = "test" "'
+      script: 'sqlcmd -S localhost -d test -U sa -P "yourStrong(!)Password" -Q "CREATE LOGIN testing { WITH PASSWORD = {'test'} } " '
 
 
   - task: PublishCodeCoverageResults@1
