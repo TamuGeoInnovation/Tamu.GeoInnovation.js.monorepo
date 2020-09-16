@@ -11,8 +11,15 @@
     </div>
 
     <div class="zone-metric">
-      <div class="zone-metric-value" [ngClass]="{'metric-safe': zone?.attributes?.Signal <= .45, 'metric-warning': zone?.attributes?.Signal > .45, 'metric-alert' : zone?.attributes?.Signal > .6}">{{zone?.attributes?.Signal ? zone.attributes.Signal : 'N/A'}}</div>
-      <div class="zone-metric-name">Signal</div>
+      <div class="zone-metric-value" [ngClass]="{'metric-safe': zone?.attributes?.Signal === 0, 'metric-warning': zone?.attributes?.Signal === .5, 'metric-alert' : zone?.attributes?.Signal === 1}">
+        <div [ngSwitch]="zone?.attributes?.Signal">
+          <div *ngSwitchCase=".5">Inc</div>
+          <div *ngSwitchCase="0">Neg</div>
+          <div *ngSwitchCase="1">Pos</div>
+          <div *ngSwitchDefault>N/A</div>
+        </div>
+      </div>
+      <div class="zone-metric-name">Result</div>
     </div>
   </div>
 

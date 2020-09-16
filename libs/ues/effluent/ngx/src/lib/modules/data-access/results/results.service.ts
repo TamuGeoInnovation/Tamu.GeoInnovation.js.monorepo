@@ -17,11 +17,13 @@ export class ResultsService {
   }
 
   public getResults() {
-    return this.http.get<Array<Group<Result>>>(this.apiUrl);
+    return this.http.get<Array<Group<Result>>>(this.apiUrl, { withCredentials: true });
   }
 
   public getResultsForSample(location: Partial<Location>) {
-    return this.http.get<Array<Result>>(`${this.apiUrl}/latest/${location.tier}/${location.sample}`);
+    return this.http.get<Array<Result>>(`${this.apiUrl}/latest/${location.tier}/${location.sample}`, {
+      withCredentials: true
+    });
   }
 
   public getLatestResults() {
@@ -29,12 +31,13 @@ export class ResultsService {
   }
 
   public getLatestResultsAverage() {
-    return this.http.get<IAverageResponse>(`${this.apiUrl}/latest/average`);
+    return this.http.get<IAverageResponse>(`${this.apiUrl}/latest/average`, { withCredentials: true });
   }
 
   public uploadData(data: FormData) {
     return this.http.post(`${this.apiUrl}/csv`, data, {
-      reportProgress: true
+      reportProgress: true,
+      withCredentials: true
     });
   }
 }

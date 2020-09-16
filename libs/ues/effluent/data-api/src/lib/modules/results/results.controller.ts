@@ -23,21 +23,25 @@ export class ResultsController extends BaseController<Result> {
     super(service);
   }
 
+  @UseGuards(AzureIdpGuard)
   @Get()
   public getAllResults() {
     return this.service.getResults({ options: { groupByDate: true } });
   }
 
+  @UseGuards(AzureIdpGuard)
   @Get('latest/:tier/:sample')
   public getLatestForTierSample(@Param() params: { tier: string; sample: string }) {
     return this.service.getLatestNValuesForTierSample(params.tier, params.sample);
   }
 
+  @UseGuards(AzureIdpGuard)
   @Get('latest/average')
   public getLatestAverage() {
     return this.service.getLatestNValueAverageForTierSample(undefined, undefined, 1);
   }
 
+  @UseGuards(AzureIdpGuard)
   @Get('latest/:days')
   public getLatestValues(@Param() params: { days: string }) {
     return this.service.getLatestNValuesForTierSample(undefined, undefined, params.days);
@@ -49,6 +53,7 @@ export class ResultsController extends BaseController<Result> {
     return this.service.getLatestNValuesForTierSample(undefined, undefined, 1);
   }
 
+  @UseGuards(AzureIdpGuard)
   @Post('csv')
   @UseInterceptors(FileInterceptor('file', { dest: '../files' }))
   public handleFileUpload(@UploadedFile() file) {

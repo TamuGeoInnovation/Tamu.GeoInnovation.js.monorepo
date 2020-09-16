@@ -212,13 +212,13 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private getSymbolColorForValue(measurement: number) {
-    if (measurement === undefined) {
-      return [20, 158, 206];
+    if (measurement === undefined || measurement === -1) {
+      return [0, 0, 0];
     } else if (measurement < 0.45) {
       return [102, 187, 106];
     } else if (measurement < 0.6) {
       return [255, 152, 0];
-    } else if (measurement < 1) {
+    } else if (measurement <= 1) {
       return [239, 83, 80];
     }
   }

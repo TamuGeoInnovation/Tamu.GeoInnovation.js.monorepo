@@ -284,17 +284,17 @@ export const LegendSources: LegendItem[] = [
   },
   {
     id: 'effluent-green',
-    title: 'Safe Signal Value',
+    title: 'Positive',
     src: './assets/images/legend/effluent-green.svg'
   },
   {
     id: 'effluent-amber',
-    title: 'Moderate Signal Value',
+    title: 'Inconclusive',
     src: './assets/images/legend/effluent-amber.svg'
   },
   {
     id: 'effluent-red',
-    title: 'High Signal Value',
+    title: 'Negative',
     src: './assets/images/legend/effluent-red.svg'
   }
 ];

@@ -1,7 +1,7 @@
-<div class="stat-card" *ngIf="(zonesSampleAverage | async) as res">
+<!-- <div class="stat-card" *ngIf="(zonesSampleAverage | async) as res">
   <div class="stat-metric" [ngClass]="{'metric-safe': res.average <= .45, 'metric-warning': res.average > .45, 'metric-alert' :res.average > .6}">{{res.average | number : '1.2-2'}}</div>
   <div class="stat-title">Signal Average</div>
-</div>
+</div> -->
 
 <tamu-gisc-coverage-chart [zones]="zones"></tamu-gisc-coverage-chart>
 
