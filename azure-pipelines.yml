@@ -15,7 +15,7 @@ resources:
       env:
         ACCEPT_EULA: Y
         SA_PASSWORD: yourStrong(!)Password
-        MSSQL_PID: Express
+        MSSQL_PID: Developer 
       options: --name mssql
 
 jobs:
@@ -58,14 +58,37 @@ jobs:
     inputs:
       script: 'docker ps -all'
       
-  - script: 
-      npx jest --collectCoverage --coverageReporters=cobertura
-    displayName: 'output coverage'
-  - task: CmdLine@2
-    displayName: 'sqlcmd'
-    inputs:
-      script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@version;"'
 
+  - task: CmdLine@2
+    displayName: 'Verify version of sqlcmd'
+    inputs: 
+      script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT @@version;"'
+  - task: CmdLine@2
+    displayName: 'Create test database'
+    inputs: 
+      script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "CREATE DATABASE test"'
+  - task: CmdLine@2
+    displayName: 'Verify database creation'
+    inputs: 
+      script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "SELECT Name from sys.Databases"'
+
+  - task: DownloadSecureFile@1
+    name: ormConfig
+    displayName: 'Download ormconfig.ts'
+    inputs:
+      secureFile: 'ormconfig.ts'
+
+
+  - task: CopyFiles@2
+    displayName: 'Copy ormconfig'
+    inputs:
+      SourceFolder: $(Agent.TempDirectory)
+      Contents: ormconfig.ts
+      TargetFolder: $(System.DefaultWorkingDirectory)/libs/covid/data-api/src/lib
+
+  - script: 
+      npx jest --coverage --coverageReporters=cobertura
+    displayName: 'output coverage'
   - task: PublishCodeCoverageResults@1
     inputs:
       codeCoverageTool: Cobertura
