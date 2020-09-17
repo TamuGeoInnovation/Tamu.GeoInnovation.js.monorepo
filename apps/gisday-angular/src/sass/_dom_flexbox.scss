@@ -1,0 +1,48 @@
+.flex {
+  @include flexbox();
+  @include flex-wrap(wrap);
+
+  &.flex-column {
+    @include flex-direction(column);
+  }
+
+  &.flex-row {
+    @include flex-direction(row);
+  }
+
+  &.flex-row-reverse {
+    @include flex-direction(row-reverse);
+  }
+
+  &.align-start {
+    @include align-items(flex-start);
+  }
+
+  &.align-center {
+    @include align-items(center);
+  }
+
+  &.align-baseline {
+    @include align-items(baseline);
+  }
+
+  &.align-stretch {
+    @include align-items(stretch);
+  }
+
+  &.justify-center {
+    @include justify-content(center);
+  }
+
+  &.justify-between {
+    @include justify-content(space-between);
+  }
+
+  &.justify-around {
+    @include justify-content(space-around);
+  }
+
+  &.self-align {
+    @include align-self(stretch);
+  }
+}

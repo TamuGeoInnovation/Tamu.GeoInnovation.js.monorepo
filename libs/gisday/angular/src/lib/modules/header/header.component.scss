@@ -1,0 +1,136 @@
+nav#off-canvas-menu {
+  background: #ffffff;
+  position: fixed;
+  z-index: 110;
+  right: -20rem;
+  top: 4rem;
+  height: 100%;
+  width: 20rem;
+  color: #333;
+  text-align: left;
+  font-weight: 400;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  will-change: transform;
+  -webkit-transition: all 0.35s cubic-bezier(0.25, 0, 0.25, 1.2), X;
+  -moz-transition: all 0.35s cubic-bezier(0.25, 0, 0.25, 1.2), X;
+  -ms-transition: all 0.35s cubic-bezier(0.25, 0, 0.25, 1.2), X;
+  -o-transition: all 0.35s cubic-bezier(0.25, 0, 0.25, 1.2), X;
+  transition: all 0.35s cubic-bezier(0.25, 0, 0.25, 1.2), X;
+}
+nav#off-canvas-menu.active {
+  -webkit-transform: translate3d(-19em, 0, 0);
+  -moz-transform: translate3d(-19em, 0, 0);
+  -ms-transform: translate3d(-19em, 0, 0);
+  -o-transform: translate3d(-19em, 0, 0);
+  transform: translate3d(-19em, 0, 0);
+}
+nav#off-canvas-menu ul li {
+  display: block;
+  width: 100%;
+  margin: 0 !important;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+nav#off-canvas-menu > div:last-child ul li:last-child {
+  border-bottom: none;
+  margin-bottom: 3em !important;
+}
+nav#off-canvas-menu ul {
+  padding-left: 0;
+}
+nav#off-canvas-menu ul li a,
+nav#off-canvas-menu ul li .divider-tag {
+  color: inherit;
+  text-align: inherit;
+  width: 100%;
+  display: block;
+  padding: 1em 3.5em;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+nav#off-canvas-menu ul li a::before,
+nav#off-canvas-menu ul li a::after {
+  content: none;
+}
+nav#off-canvas-menu ul li a:hover {
+  text-decoration: none;
+}
+nav#off-canvas-menu ul li .divider-tag {
+  padding: .5em 3.5em;
+  color: #9E9E9E;
+}
+nav#off-canvas-menu ul li .divider-tag:after {
+  content: '';
+  position: absolute;
+  background: #E0E0E0;
+  width: 80%;
+  height: 1px;
+  bottom: .25em;
+  left: 2.5em;
+}
+nav#off-canvas-menu ul li a span {
+  padding-right: .75em;
+}
+nav#off-canvas-menu li:hover {
+  background: #9E9E9E;
+  color: #FFFFFF;
+}
+nav#off-canvas-menu .nav-divider {
+  font-size: 1em;
+}
+nav#off-canvas-menu .nav-divider:hover {
+  background: initial;
+  color: initial;
+}
+#element-placeholder {
+  width: 100%;
+  color: #fafafa;
+}
+header #site-logo div {
+  background-image: url('../../../../../../../apps/gisday-angular/src/assets/images/logos/2020/logo/tamu-block-logo-svg.svg');
+  height: 3.8rem;
+  width: 17rem;
+  background-size: contain;
+}
+header #main-logo-container::after,
+header #main-logo-container::before {
+  content: none;
+}
+section > header#section-links-container {
+  background: #707373;
+}
+nav#section-nav {
+  box-sizing: border-box;
+  margin: .35rem 0;
+}
+nav#section-nav li {
+  display: inline-block;
+  margin: 0 !important;
+}
+nav#section-nav ul {
+  margin-bottom: 0;
+}
+nav#section-nav a {
+  padding: .65em 1rem;
+  display: block;
+  transition: all .15s;
+  color: #ffffff;
+}
+nav#section-nav a:hover {
+  text-decoration: none;
+}
+nav#section-nav li {
+  border-right: 1px solid #9E9E9E;
+}
+nav#section-nav li:last-child {
+  border-right: none;
+}
+nav#section-nav a.active,
+nav#section-nav a:hover {
+  color: #FFFFFF;
+}

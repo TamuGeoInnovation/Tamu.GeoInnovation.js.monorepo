@@ -1,0 +1,100 @@
+// body {
+//   overflow: hidden;
+// }
+
+a {
+    padding-bottom: 0px;
+}
+.map {
+    height: 36rem;
+}
+
+.containerItems {
+    height: 45rem;
+}
+
+.featurephoto {
+    height: 20rem;
+    width: 18rem;
+}
+
+.info.legend.leaflet-control{
+    background: #ffffff;
+    padding: .5rem 1rem;
+    border-radius: 3px;
+    max-width: 10rem;
+
+    span{
+        font-weight: 500;
+        font-size: .9rem;
+        margin-bottom: .5rem;
+        display: block;
+    }
+
+    &::after{
+        content: none;
+    }
+}
+
+.medium-partition {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    
+    ul {
+        display: flex;
+        list-style: none;
+        
+        li {
+            padding-left: 0.5rem;
+            
+        }
+    }
+    
+}
+
+input[type="radio"] {
+    opacity: 100;
+    z-index: 10;
+    position: relative;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    z-index: 2;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+    background-color: #f1f1f1
+
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: #3E3E3E;
+}
