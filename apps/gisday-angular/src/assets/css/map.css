@@ -1,0 +1,80 @@
+
+html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+.containerItems {
+    display: inline-block;
+    height: 96%;
+    vertical-align: top;
+    margin-right: -4px;
+}
+
+.panel {
+    box-shadow: 0 2ps 5px 1 rgba(0, 0, 0, 0.26);
+}
+
+#map {
+    width: 85%;
+    z-index: 0;
+}
+
+#pointInfo {
+    width: 15%;
+    background-color: #3E3E3E;
+    position: relative;
+}
+
+#manholePhoto {
+    background-color: #3E3E3E;
+    height: auto;
+    width: 100%;
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#pointInfo > p {
+    position: relative;
+    padding-left: 6%;
+    color: #EAEAEA;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+#header {
+    height: 3em;
+    width: 100%;
+    background-color: #3E3E3E;
+    display: block;
+    border-bottom: 2px;
+    z-index: 110;
+    position: relative;
+}
+
+#header > ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#header > ul > li {
+    margin-top: 12px;
+    margin-left: 20px;
+     display: inline-block;
+}
+
+#header > ul > li > form > span {
+    color: #EAEAEA;
+    font-family: 'Roboto Condensed', sans-serif;
+    margin-right: 20px;
+}
+
+.pointData > p {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+#total {}
