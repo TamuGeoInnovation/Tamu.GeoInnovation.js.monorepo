@@ -4,7 +4,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { FooterModule, HeaderModule } from '@tamu-gisc/gisday/ngx';
+
+import { GisdayNgxModule } from '@tamu-gisc/gisday/ngx';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -22,7 +23,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, RouterModule.forRoot(routes), FooterModule, HeaderModule, EnvironmentModule, HttpClientModule],
+  imports: [BrowserModule, RouterModule.forRoot(routes), GisdayNgxModule, EnvironmentModule, HttpClientModule],
   providers: [
     {
       provide: env,
