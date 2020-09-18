@@ -1,19 +1,22 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
-import { FooterModule, HeaderModule } from '@tamu-gisc/gisday/angular';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { HttpClientModule } from '@angular/common/http';
+import { FooterModule, HeaderModule } from '@tamu-gisc/gisday/ngx';
 
 import { AppComponent } from './app.component';
-
 import * as environment from '../environments/environment';
 
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('@tamu-gisc/gisday/angular').then((m) => m.GISDayAngularModule)
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.LandingModule)
+  },
+  {
+    path: 'sessions',
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.SessionsModule)
   }
 ];
 

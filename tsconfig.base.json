@@ -103,7 +103,7 @@
       "@tamu-gisc/two/dashboard": ["libs/two/dashboard/src/index.ts"],
       "@tamu-gisc/two/data-access": ["libs/two/data-access/src/index.ts"],
       "@tamu-gisc/gisday/nest": ["libs/gisday/nest/src/index.ts"],
-      "@tamu-gisc/gisday/angular": ["libs/gisday/angular/src/index.ts"],
+      "@tamu-gisc/gisday/ngx": ["libs/gisday/ngx/src/index.ts"],
       "@tamu-gisc/gisday/data-access": ["libs/gisday/data-access/src/index.ts"]
     }
   },

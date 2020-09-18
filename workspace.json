@@ -4248,6 +4248,28 @@
           }
         }
       }
+    },
+    "gisday-ngx": {
+      "root": "libs/gisday/ngx",
+      "sourceRoot": "libs/gisday/ngx/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/gisday/ngx/tsconfig.lib.json", "libs/gisday/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/gisday/ngx/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/gisday/ngx/jest.config.js",
+            "tsConfig": "libs/gisday/ngx/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
