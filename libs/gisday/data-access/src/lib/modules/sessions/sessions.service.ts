@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { Event } from '@tamu-gisc/gisday/nest';
+import { Event } from '@tamu-gisc/gisday/data-api';
 
 @Injectable({
   providedIn: 'root'

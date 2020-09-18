@@ -22,7 +22,7 @@ import {
   UserClass,
   UserRsvp,
   UserSubmission
-} from '@tamu-gisc/gisday/nest';
+} from '@tamu-gisc/gisday/data-api';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
