@@ -10,35 +10,15 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('@tamu-gisc/gisday/angular').then((m) => m.GISDayAngularModule)
+  },
+  {
+    path: 'sessions',
+    loadChildren: () => import('@tamu-gisc/gisday/angular').then((m) => m.SessionsModule)
+  },
+  {
+    path: 'faq',
+    loadChildren: () => import('@tamu-gisc/gisday/angular').then((m) => m.SessionsModule)
   }
-  // {
-  //   path: 'users',
-  //   loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.UsersModule)
-  // },
-  // {
-  //   path: 'roles',
-  //   loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.RolesModule)
-  // },
-  // {
-  //   path: 'client-metadata',
-  //   loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.ClientMetadataModule)
-  // },
-  // {
-  //   path: 'grant-types',
-  //   loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.GrantTypesModule)
-  // },
-  // {
-  //   path: 'response-types',
-  //   loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.ResponseTypesModule)
-  // },
-  // {
-  //   path: 'token-auth-methods',
-  //   loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.TokenAuthMethodsModule)
-  // },
-  // {
-  //   path: 'access',
-  //   loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.AccessTokenModule)
-  // }
 ];
 
 @NgModule({

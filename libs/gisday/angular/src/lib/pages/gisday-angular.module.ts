@@ -8,8 +8,8 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { GISDayAngularComponent } from './gisday-angular.component';
 
-// import { HeaderModule } from '../modules/header/header.module';
-// import { FooterModule } from '../modules/footer/footer.module';
+import { HeaderModule } from '../modules/header/header.module';
+import { FooterModule } from '../modules/footer/footer.module';
 
 const routes: Routes = [
   {
@@ -17,8 +17,12 @@ const routes: Routes = [
     component: GISDayAngularComponent,
     children: [
       {
-        path: 'landing',
+        path: '',
         loadChildren: () => import('./landing/landing.module').then((m) => m.LandingModule)
+      },
+      {
+        path: 'sessions',
+        loadChildren: () => import('./sessions/sessions.module').then((m) => m.SessionsModule)
       }
       // {
       //   path: 'add',
@@ -32,14 +36,25 @@ const routes: Routes = [
   }
 ];
 
+const routes2: Routes = [
+  {
+    path: '',
+    loadChildren: () => import('./landing/landing.module').then((m) => m.LandingModule)
+  },
+  {
+    path: 'sessions',
+    loadChildren: () => import('./sessions/sessions.module').then((m) => m.SessionsModule)
+  }
+];
+
 @NgModule({
   declarations: [GISDayAngularComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    // FooterModule,
+    FooterModule,
     FormsModule,
-    // HeaderModule,
+    HeaderModule,
     ReactiveFormsModule,
     UIFormsModule,
     UILayoutModule

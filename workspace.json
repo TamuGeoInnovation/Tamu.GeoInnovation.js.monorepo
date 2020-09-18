@@ -4226,6 +4226,28 @@
           }
         }
       }
+    },
+    "gisday-data-access": {
+      "root": "libs/gisday/data-access",
+      "sourceRoot": "libs/gisday/data-access/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/gisday/data-access/tsconfig.lib.json", "libs/gisday/data-access/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/gisday/data-access/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/gisday/data-access/jest.config.js",
+            "tsConfig": "libs/gisday/data-access/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
