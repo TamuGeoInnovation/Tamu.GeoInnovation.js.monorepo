@@ -2,19 +2,18 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { SessionsComponent } from './sessions.component';
+import { LandingComponent } from './landing.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: SessionsComponent,
-    pathMatch: 'full'
+    component: LandingComponent
   }
 ];
 
 @NgModule({
-  declarations: [SessionsComponent],
+  declarations: [LandingComponent],
   imports: [CommonModule, RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class SessionsModule {}
+export class LandingModule {}

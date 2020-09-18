@@ -1,7 +1,5 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, Renderer2 } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subscription, Observable, from, of, merge, Subject, AsyncSubject } from 'rxjs';
-import { switchMap, map, filter, mergeAll, mergeMap, concat, toArray, groupBy } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 import { Event } from '@tamu-gisc/gisday/nest';
