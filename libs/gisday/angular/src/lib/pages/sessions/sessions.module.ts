@@ -6,7 +6,7 @@ import { SessionsComponent } from './sessions.component';
 
 const routes: Routes = [
   {
-    path: 'sessions',
+    path: '',
     component: SessionsComponent,
     pathMatch: 'full'
   }

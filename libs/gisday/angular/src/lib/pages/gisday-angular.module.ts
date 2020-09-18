@@ -18,6 +18,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
+        pathMatch: 'full',
         loadChildren: () => import('./landing/landing.module').then((m) => m.LandingModule)
       },
       {
@@ -33,17 +34,6 @@ const routes: Routes = [
       //   loadChildren: () => import('./edit-role/edit-role.module').then((m) => m.EditRoleModule)
       // }
     ]
-  }
-];
-
-const routes2: Routes = [
-  {
-    path: '',
-    loadChildren: () => import('./landing/landing.module').then((m) => m.LandingModule)
-  },
-  {
-    path: 'sessions',
-    loadChildren: () => import('./sessions/sessions.module').then((m) => m.SessionsModule)
   }
 ];
 
