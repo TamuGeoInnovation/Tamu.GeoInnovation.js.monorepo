@@ -325,6 +325,9 @@
     },
     "gisday-angular": {
       "tags": []
+    },
+    "gisday-data-access": {
+      "tags": []
     }
   }
 }
