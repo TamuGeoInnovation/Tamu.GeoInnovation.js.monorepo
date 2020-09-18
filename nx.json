@@ -382,16 +382,22 @@
     "two-data-access": {
       "tags": []
     },
-    "gisday-nest": {
-      "tags": []
-    },
     "gisday-angular-e2e": {
       "tags": []
     },
     "gisday-angular": {
       "tags": []
     },
+    "gisday-ngx": {
+      "tags": []
+    },
     "gisday-data-access": {
+      "tags": []
+    },
+    "gisday-nest": {
+      "tags": []
+    },
+    "gisday-data-api": {
       "tags": []
     }
   },

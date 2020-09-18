@@ -1,1 +1,1 @@
-export * from './lib/gisday-angular';
+export * from './lib/gisday-ngx.module';
