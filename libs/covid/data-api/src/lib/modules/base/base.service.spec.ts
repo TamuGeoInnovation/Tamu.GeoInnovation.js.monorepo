@@ -23,13 +23,4 @@ describe('BaseService', () => {
       expect(baseService).toBeDefined();
     });
   });
-  /* Implementation Testing?
-  describe('getOne ', () => {
-    it('Service should be defined', async () => {
-      const mockedParamater = {};
-      const expectedResult = new BaseEntity();
-      jest.spyOn(baseService.repository, 'findOne').mockResolvedValue(expectedResult);
-      expect(await baseService.getOne(mockedParamater)).toEqual(expectedResult);
-    });
-  });*/
 });

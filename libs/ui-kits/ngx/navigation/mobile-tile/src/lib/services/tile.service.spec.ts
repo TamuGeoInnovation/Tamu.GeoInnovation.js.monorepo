@@ -12,21 +12,21 @@ describe('TileService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should toggleMenu', () => {
+  it('should toggleMenu: True to false', () => {
     service.toggleMenu();
     expect(service.menuActive.value).toBeTruthy();
     service.toggleMenu();
     expect(service.menuActive.value).toBeFalsy();
   });
 
-  it('should toggleSubmenu', () => {
+  it('should toggleSubmenu: True to false', () => {
     service.toggleSubmenu();
     expect(service.submenuActive.value).toBeTruthy();
     service.toggleSubmenu();
     expect(service.submenuActive.value).toBeFalsy();
   });
 
-  it('should toggleSubmenu', () => {
+  it('should toggleSubmenu: False to stay false', () => {
     service.toggleSubmenu(false);
     expect(service.submenuActive.value).toBeFalsy();
     service.toggleMenu(false);

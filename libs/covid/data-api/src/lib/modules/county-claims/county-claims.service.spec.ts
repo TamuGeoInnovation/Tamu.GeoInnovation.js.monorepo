@@ -42,6 +42,7 @@ describe('CountyClaims Controller', () => {
       const mockParameter = undefined;
       await expect(countyClaimsService.getActiveClaimsForEmail(mockParameter)).rejects.toThrow();
     });
+
     it('should throw error - undefined string', async () => {
       const mockParameter = 'undefined';
       await expect(countyClaimsService.getActiveClaimsForEmail(mockParameter)).rejects.toThrow();
@@ -53,6 +54,7 @@ describe('CountyClaims Controller', () => {
       const mockParameter = undefined;
       await expect(countyClaimsService.getAllUserCountyClaims(mockParameter)).rejects.toThrow();
     });
+
     it('should throw error  - undefined string', async () => {
       const mockParameter = 'undefined';
       await expect(countyClaimsService.getAllUserCountyClaims(mockParameter)).rejects.toThrow();
@@ -64,6 +66,7 @@ describe('CountyClaims Controller', () => {
       const mockParameter = undefined;
       await expect(countyClaimsService.getActiveClaimsForCountyFips(mockParameter)).rejects.toThrow();
     });
+
     it('should throw error  - undefined string', async () => {
       const mockParameter = 'undefined';
       await expect(countyClaimsService.getActiveClaimsForCountyFips(mockParameter)).rejects.toThrow();
@@ -80,18 +83,8 @@ describe('CountyClaims Controller', () => {
       };
       expect(await countyClaimsService.closeClaim(mockParameter)).toMatchObject(expectedResult);
     });
-    /* Implementation Testing?
-    it('should handle mockParameter being defined, but spyOn undefined ', async () => {
-      const mockParameter = 'foobar';
-      const expectedResult = {
-        status: 500,
-        success: false,
-        message: 'Invalid claim.'
-      };
-      jest.spyOn(countyClaimRepo, 'findOne').mockReturnValue(undefined);
-      expect(await countyClaimsService.closeClaim(mockParameter)).toMatchObject(expectedResult);
-    });*/
   });
+
   describe('getHistoricClaimsForCounty', () => {
     it('should throw error  - undefined value  ', async () => {
       const mockParameter = undefined;
@@ -102,15 +95,18 @@ describe('CountyClaims Controller', () => {
       await expect(countyClaimsService.getHistoricClaimsForCounty(mockParameter)).rejects.toThrow();
     });
   });
+
   describe('getSuggestedClaims', () => {
     it('should throw error  - undefined value ', async () => {
       const mockParameter = undefined;
       await expect(countyClaimsService.getSuggestedClaims(mockParameter)).rejects.toThrow();
     });
+
     it('should throw error  - undefined string ', async () => {
       const mockParameter = 'undefined';
       await expect(countyClaimsService.getSuggestedClaims(mockParameter)).rejects.toThrow();
     });
+
     it('should throw error  - null', async () => {
       const mockParameter = null;
       await expect(countyClaimsService.getSuggestedClaims(mockParameter)).rejects.toThrow();

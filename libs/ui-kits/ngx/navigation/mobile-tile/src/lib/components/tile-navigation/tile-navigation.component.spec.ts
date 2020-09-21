@@ -1,10 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
+
 import { TileNavigationComponent } from './tile-navigation.component';
 import { TileSubmenuContainerComponent } from '../tile-submenu-container/tile-submenu-container.component';
-import { Observable, of as observableOf } from 'rxjs';
-import { BehaviorSubject } from 'rxjs';
 import { TileService } from '../../services/tile.service';
 
 describe('TileNavigationComponent', () => {
@@ -46,7 +47,7 @@ describe('TileNavigationComponent', () => {
   });
   it('should correctly evaluate ngOnInit for toggle == defined', () => {
     const yeet = spyOn(component, 'switchState');
-    component.toggle = observableOf(true);
+    component.toggle = of(true);
     component.ngOnInit();
     expect(yeet).toHaveBeenCalled();
   });
