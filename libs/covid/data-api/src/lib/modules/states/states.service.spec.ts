@@ -24,23 +24,4 @@ describe('StatesService', () => {
       expect(statesService).toBeDefined();
     });
   });
-
-  describe('search', () => {
-    /* Implementation Testing?
-    it('should search', async () => {
-      const mockParameter = 'foo';
-      const expectedResult = [];
-      jest.spyOn(stateMockRepo, 'find').mockResolvedValue(expectedResult);
-      expect(await statesService.search(mockParameter)).toBe(expectedResult);
-    });*/
-  });
-  describe('getStateByFips', () => {
-    /* Implementation Testing?
-    it('should getStateByFips', async () => {
-      const mockParameter = 99;
-      const expectedResult = new State();
-      jest.spyOn(stateMockRepo, 'findOne').mockResolvedValue(expectedResult);
-      expect(await statesService.getStateByFips(mockParameter)).toBe(expectedResult);
-    });*/
-  });
 });

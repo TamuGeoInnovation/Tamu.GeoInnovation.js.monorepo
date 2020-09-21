@@ -66,14 +66,6 @@ describe('TestingSitesService', () => {
       expect(testingSitesService).toBeDefined();
     });
   });
-  describe('getWebsitesForClaimInfo', () => {
-    /* Implementation Testing?
-    it('should throw error with mockParameter being Empty String ', async () => {
-      const mockParameter = '';
-      jest.spyOn(userMockRepo, 'findOne').mockResolvedValue(undefined);
-      await expect(testingSitesService.createOrUpdateTestingSite(mockParameter)).rejects.toThrow();
-    });*/
-  });
 
   describe('getSitesForUser', () => {
     it('should return {} with mockParameter being Empty String ', async () => {

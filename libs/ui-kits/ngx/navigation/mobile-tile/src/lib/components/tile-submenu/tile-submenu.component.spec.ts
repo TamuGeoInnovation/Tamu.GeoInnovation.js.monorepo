@@ -35,7 +35,7 @@ describe('TileSubmenuComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should create', () => {
+  it('should call toggleSubmenu', () => {
     const yeet = spyOn(TileServiceStub, 'toggleSubmenu');
     component.close();
     expect(yeet).toBeCalled();

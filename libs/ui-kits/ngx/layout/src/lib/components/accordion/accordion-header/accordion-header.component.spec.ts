@@ -2,8 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AccordionHeaderComponent } from './accordion-header.component';
 import { AccordionService } from '../services/accordion.service';
-import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
-import { EventEmitter } from 'events';
+import { BehaviorSubject } from 'rxjs';
 
 describe('AccordionHeaderComponent', () => {
   let component: AccordionHeaderComponent;

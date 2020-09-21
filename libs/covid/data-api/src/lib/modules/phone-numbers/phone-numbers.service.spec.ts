@@ -49,6 +49,7 @@ describe('PhoneNumbersService', () => {
       };
       expect(await phoneNumbersService.getPhoneNumbersForCounty(mockParameter)).toMatchObject(expectedResult);
     });
+
     it('should return error message for undefined string mockParameter ', async () => {
       const mockParameter = 'undefined';
       const expectedResult = {
@@ -58,6 +59,7 @@ describe('PhoneNumbersService', () => {
       };
       expect(await phoneNumbersService.getPhoneNumbersForCounty(mockParameter)).toMatchObject(expectedResult);
     });
+
     it('should return error message for number mockParameter ', async () => {
       const mockParameter = 9;
       const expectedResult = {
@@ -67,13 +69,6 @@ describe('PhoneNumbersService', () => {
       };
       expect(await phoneNumbersService.getPhoneNumbersForCounty(mockParameter)).toMatchObject(expectedResult);
     });
-    /* Implementation Testing?
-    it('should return expectedResult ', async () => {
-      const mockParameter = 'yooo';
-      const expectedResult = 'foobar';
-      jest.spyOn(phoneNumbersService as any, 'getPhoneNumbers').mockResolvedValue(expectedResult);
-      expect(await phoneNumbersService.getPhoneNumbersForCounty(mockParameter)).toEqual(expectedResult);
-    });*/
   });
 
   describe('getPhoneNumbersForClaimInfo', () => {
