@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { find, map, shareReplay, takeUntil } from 'rxjs/operators';
 
-import { Event } from '@tamu-gisc/gisday/data-api';
-import { SessionsService } from '@tamu-gisc/gisday/data-access';
+import { Tag } from '@tamu-gisc/gisday/data-api';
+import { EventResponse, SessionsService } from '@tamu-gisc/gisday/data-access';
 
 @Component({
   selector: 'app-sessions',
@@ -11,14 +11,13 @@ import { SessionsService } from '@tamu-gisc/gisday/data-access';
   styleUrls: ['./sessions.component.scss']
 })
 export class SessionsComponent implements OnInit, OnDestroy {
-  public $events: Observable<Array<Partial<Event>>>;
-  public subDay1: Observable<Event>;
-  public subDay2: Observable<Event>;
-  public subDay3: Observable<Event>;
+  public $events: Observable<Partial<EventResponse>>;
+  public $tags: Observable<Array<Partial<Tag>>>;
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(private readonly sessionService: SessionsService) {
     this.fetchEvents();
+    this.fetchTags();
   }
 
   ngOnInit() {}
@@ -29,13 +28,20 @@ export class SessionsComponent implements OnInit, OnDestroy {
   }
 
   public fetchEvents() {
-    this.sessionService
-      .getEvents()
-      .pipe(shareReplay(1))
-      .subscribe((events) => {
-        console.log(events);
-      });
+    this.$events = this.sessionService.getEventsByDay().pipe(
+      takeUntil(this._$destroy),
+      shareReplay(1)
+    );
   }
+
+  public fetchTags() {
+    this.$tags = this.sessionService.getTags().pipe(
+      takeUntil(this._$destroy),
+      shareReplay(1)
+    );
+  }
+
+  public toggleFilters() {}
 }
 
 // .pipe(
