@@ -22,6 +22,10 @@ const routes: Routes = [
   {
     path: 'faq',
     loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.FaqModule)
+  },
+  {
+    path: 'sponsors',
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.SponsorsModule)
   }
 ];
 
