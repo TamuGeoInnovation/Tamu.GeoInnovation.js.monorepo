@@ -5,10 +5,11 @@ import { HeaderComponent } from './modules/header/header.component';
 
 import { LandingModule } from './pages/landing/landing.module';
 import { SessionsModule } from './pages/sessions/sessions.module';
+import { FaqModule } from './pages/faq/faq.module';
 
 @NgModule({
-  imports: [CommonModule, LandingModule, SessionsModule],
+  imports: [CommonModule, FaqModule, LandingModule, SessionsModule],
   declarations: [FooterComponent, HeaderComponent],
-  exports: [FooterComponent, HeaderComponent, LandingModule, SessionsModule]
+  exports: [FaqModule, FooterComponent, HeaderComponent, LandingModule, SessionsModule]
 })
 export class GisdayNgxModule {}
