@@ -18,6 +18,10 @@ const routes: Routes = [
   {
     path: 'sessions',
     loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.SessionsModule)
+  },
+  {
+    path: 'faq',
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.FaqModule)
   }
 ];
 
