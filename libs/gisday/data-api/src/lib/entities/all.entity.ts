@@ -101,7 +101,10 @@ export class Event extends GuidIdentity {
   name: string;
 
   @Column({ nullable: true })
-  time: Date;
+  startTime: Date;
+
+  @Column({ nullable: true })
+  endTime: Date;
 
   @Column({ nullable: true })
   title: string;

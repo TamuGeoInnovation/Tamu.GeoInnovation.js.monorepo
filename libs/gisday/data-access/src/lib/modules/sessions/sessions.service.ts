@@ -3,16 +3,18 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { Event } from '@tamu-gisc/gisday/data-api';
+import { Event, Tag } from '@tamu-gisc/gisday/data-api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionsService {
   public resource: string;
+  public tagResource: string;
 
   constructor(private env: EnvironmentService, private http: HttpClient) {
     this.resource = this.env.value('api_url') + '/event';
+    this.tagResource = this.env.value('api_url') + '/tag';
   }
 
   public getEvent(guid: string) {
@@ -23,6 +25,18 @@ export class SessionsService {
 
   public getEvents() {
     return this.http.get<Array<Partial<Event>>>(`${this.resource}/all`, {
+      withCredentials: false
+    });
+  }
+
+  public getEventsByDay() {
+    return this.http.get<Partial<EventResponse>>(`${this.resource}/by-day`, {
+      withCredentials: false
+    });
+  }
+
+  public getTags() {
+    return this.http.get<Array<Partial<Tag>>>(`${this.tagResource}/all`, {
       withCredentials: false
     });
   }
@@ -48,4 +62,10 @@ export class SessionsService {
       withCredentials: true
     });
   }
+}
+
+export interface EventResponse {
+  0: Event[];
+  1: Event[];
+  2: Event[];
 }
