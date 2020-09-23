@@ -4192,4 +4192,15 @@ img.mfp-img {
 	h3 {
 		page-break-after: avoid;
 	}
+
+
+}
+
+li:before {
+  display: inline-block;
+  height: 1rem;
+  width: 1rem;
+  margin: 0 .25rem;
+  // background-image: url('../assets/images/icons/check.svg');
+  // background-image: url('../../../../../../../apps/gisday-angular/src/assets/images/icons/check.svg');
 }

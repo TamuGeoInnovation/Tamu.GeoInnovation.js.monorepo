@@ -1,18 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'tamu-gisc-sponsors',
-  templateUrl: './sponsors.component.html',
-  styleUrls: ['./sponsors.component.scss']
+  selector: 'tamu-gisc-about',
+  templateUrl: './about.component.html',
+  styleUrls: ['./about.component.scss']
 })
-export class SponsorsComponent implements OnInit {
+export class AboutComponent implements OnInit {
   constructor() {}
 
-  ngOnInit(): void {
-    this.changeRank('point');
-  }
+  ngOnInit(): void {}
 
-  public changeRank(rank: string) {
+  public makeActive(rank: string) {
     this.clearAllOtherPlaques();
     this.setPlaqueVisibleStatus(rank);
   }
@@ -28,8 +26,8 @@ export class SponsorsComponent implements OnInit {
   }
 
   public setPlaqueVisibleStatus(rank: string) {
-    let plaque = document.querySelector(`[rank=${rank}]`);
-    let content = document.querySelector(`.content-block[rank=${rank}]`);
+    const plaque = document.querySelector(`[rank=${rank}]`);
+    const content = document.querySelector(`.content-block[rank=${rank}]`);
 
     if (plaque) {
       plaque.classList.add('active');
