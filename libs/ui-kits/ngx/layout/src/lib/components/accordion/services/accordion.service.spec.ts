@@ -13,47 +13,32 @@ describe('AccordionService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should be created', () => {
+  it('should toggle and emit correct values', (done) => {
     service.toggle('expanded');
-    expect(service.state).toEqual({
-      _isScalar: false,
-      source: {
-        _isScalar: false,
-        _value: { animate: false, expanded: true, resize: false },
-        closed: false,
-        hasError: false,
-        isStopped: false,
-        observers: [],
-        thrownError: null
-      }
+    const getEmit = service.state;
+    getEmit.subscribe((emitted) => {
+      expect(emitted).toMatchObject({ expanded: true, resize: false, animate: false });
+      done();
     });
     service.toggle('expanded');
-    expect(service.state).toEqual({
-      _isScalar: false,
-      source: {
-        _isScalar: false,
-        _value: { animate: false, expanded: false, resize: false },
-        closed: false,
-        hasError: false,
-        isStopped: false,
-        observers: [],
-        thrownError: null
-      }
+    const getEmitFinal = service.state;
+    getEmitFinal.subscribe((emitted) => {
+      expect(emitted).toMatchObject({ expanded: false, resize: false, animate: false });
+      done();
     });
   });
-  it('should be created', () => {
+  it('should update and emit correct values', (done) => {
     service.update({ expanded: true, resize: true, animate: true });
-    expect(service.state).toEqual({
-      _isScalar: false,
-      source: {
-        _isScalar: false,
-        _value: { animate: true, expanded: true, resize: true },
-        closed: false,
-        hasError: false,
-        isStopped: false,
-        observers: [],
-        thrownError: null
-      }
+    const getEmit = service.state;
+    getEmit.subscribe((emitted) => {
+      expect(emitted).toMatchObject({ expanded: true, resize: true, animate: true });
+      done();
+    });
+    service.update({ expanded: false, resize: true, animate: true });
+    const getEmitFinal = service.state;
+    getEmitFinal.subscribe((emitted) => {
+      expect(emitted).toMatchObject({ expanded: false, resize: true, animate: true });
+      done();
     });
   });
 });
