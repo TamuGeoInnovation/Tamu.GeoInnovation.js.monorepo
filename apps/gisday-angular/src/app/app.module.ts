@@ -26,6 +26,18 @@ const routes: Routes = [
   {
     path: 'sponsors',
     loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.SponsorsModule)
+  },
+  {
+    path: 'presenters',
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.PresentersModule)
+  },
+  {
+    path: 'about',
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AboutModule)
+  },
+  {
+    path: 'competitions',
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.CompetitionsModule)
   }
 ];
 

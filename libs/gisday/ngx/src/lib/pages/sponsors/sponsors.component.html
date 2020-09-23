@@ -15,15 +15,15 @@
 					from partnerships all the way to sponsorships.</p>
 
 				<div id="plaque-container" class="column12 flex flex-row justify-center content-block ends">
-					<div class="plaque" rank="point">
+					<div class="plaque" rank="point" (click)="changeRank('point')">
 						<h2>Point</h2>
 						<div class="border"></div>
 						<img src="../assets/images/icons/location.svg" class="default">
-						<img src="../assest/images/icons/location-color.svg" class="active">
+						<img src="../assets/images/icons/location-color.svg" class="active">
 						<p class="point">$256</p>
 						<p class="cta">View Perks</p>
 					</div>
-					<div class="plaque" rank="line">
+					<div class="plaque" rank="line" (click)="changeRank('line')">
 						<h2>Line</h2>
 						<div class="border"></div>
 						<img src="../assets/images/icons/connection.svg" class="default">
@@ -31,7 +31,7 @@
 						<p class="line">$512</p>
 						<p class="cta">View Perks</p>
 					</div>
-					<div class="plaque" rank="poly">
+					<div class="plaque" rank="poly" (click)="changeRank('poly')">
 						<h2>Polygon</h2>
 						<div class="border"></div>
 						<img src="../assets/images/icons/polygon.svg" class="default">
@@ -39,7 +39,7 @@
 						<p class="poly">$1,024</p>
 						<p class="cta">View Perks</p>
 					</div>
-					<div class="plaque" rank="raster">
+					<div class="plaque" rank="raster" (click)="changeRank('raster')">
 						<h2>Raster</h2>
 						<div class="border"></div>
 						<img src="../assets/images/icons/grid.svg" class="default">
