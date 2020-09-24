@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AggieAccessibilityComponent } from './aggie-accessibility.component';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [AggieAccessibilityComponent],
   imports: [
     CommonModule
   ]
