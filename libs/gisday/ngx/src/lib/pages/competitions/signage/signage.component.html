@@ -1,0 +1,682 @@
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css' rel='stylesheet' />
+
+
+<section>
+
+  <div class="container12 small-partition">
+    <div class="column12">
+      <h1 class="aggie-weight-2 clr-aggie-maroon">TAMU PERMANENT SIGNAGE CHALLENGE</h1>
+      <p class="sub-section-heading aggie-weight-1">TAMU GIS Day, 2019</p>
+    </div>
+  </div>
+
+  <div class="container12 trailer-3">
+    <div class="column8">
+      <div id='map' style='width: 100%; height: 500px;'></div>
+      <div id="competition-map-controls-container">
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container12 flex flex-row">
+    <div class="column8">
+
+      <div class="trailer-4">
+        <p>
+          This year we are yet again bringing hands-on GIS data collection to the masses.
+          In collaboration with the Texas A&amp;M Department of Geography, the Texas A&amp;M Office of Mapping &amp;
+          Space Information,
+          the Texas A&amp;M Office Division of Information Technology, and the Texas A&amp;M Office of the University
+          Architect,
+          we are hosting the TAMU Permanent Signage Challenge.
+        </p>
+
+        <p>The purpose of the challenge is to locate and categorize all permanent
+          signage features on campus from crowd-sourced photos and surveys submitted by the members and guests of the
+          TAMU community.
+          This event is proudly sponsored by the following organizations:</p>
+
+        <div class="icon-grid leader-1 trailer-1">
+
+          <div class="icon-item">
+            <img src="/assets/images/sponsors/TAMU_Mapping_and_Space_Information_Logo_2018.svg"
+              alt="TAMU Mapping and Space Information Logo">
+            <img src="/assets/images/sponsors/TAMU_Division_of_IT_Logo_2018.svg"
+              alt="TAMU Division of Information Technology Logo">
+            <img src="/assets/images/sponsors/TAMU_Architect.svg" alt="TAMU Architect Logo">
+          </div>
+
+        </div>
+
+        <p>
+          Throughout the course of the three-day long GIS Day event(s), any GIS Day participant will be able to submit
+          data in the form of photos and survey responses of any permanent signage features <b>on</b> our beautiful
+          campus including (but not limited to) stop, yield, parking (reserved, visitor, business), wheelchair
+          accessible, bus stop, and building signs with their own personal cell phones through the
+          <a href="/App/">Official Texas A&amp;M GIS Day Competitions App</a>.
+        </p>
+
+        <p>Features not allowed as a valid submission include posters, lawn signs, or any other temporary sign.</p>
+
+        <p>
+          How data collection works:
+        </p>
+        <ul class="numbered-custom">
+          <li>Install the 2019 TAMU GIS Day Competition App on your phone by
+            visiting the url <a href="/App/">https://gisday.tamu.edu/App/</a> on your phone
+            (Android or iOS) and following the install instructions.
+          </li>
+          <li>Find a permanent signage feature around campus.</li>
+          <li>In the app, find the competitions tab (denoted by a camera) and select "Permanent Signage Challenge".
+          </li>
+          <li>Take a picture with the app.</li>
+          <li>Provide details on the photo you are submitting, including the type, condition, and description.</li>
+          <li>Submit the feature, and find some more!</li>
+        </ul>
+        <p class="leader-2 aggie-weight-3">How competition points work:</p>
+
+        <div class="flex flex-row justify-around leader-1 trailer-2">
+          <img class="medium" src="/assets/images/graphics/graphic-signage-5pt.svg" alt="5 Point">
+          <img class="medium" src="/assets/images/graphics/graphic-signage-4pt.svg" alt="4 Point">
+          <img class="medium" src="/assets/images/graphics/graphic-signage-3pt.svg" alt="3 Point">
+          <img class="medium" src="/assets/images/graphics/graphic-signage-2pt.svg" alt="2 Point">
+          <img class="medium" src="/assets/images/graphics/graphic-signage-1pt.svg" alt="1 Point">
+          <img class="medium" src="/assets/images/graphics/graphic-signage-other-1pt.svg" alt="1 Point Other">
+        </div>
+
+        <ul>
+          <li>5 points for every submission where submitted sign feature is of <strong>building
+              identification</strong>.
+          </li>
+          <li>4 points for every submission where submitted sign feature is of <strong>accessible building
+              entrance</strong>.
+          </li>
+          <li>3 points for every submission where submitted sign feature is of <strong>memorial bench or tree
+              plaque</strong>. Include the memorialized feature where available.
+          </li>
+          <li>2 points for every submission where submitted sign feature is of <strong>historical marker</strong>.
+          </li>
+          <li>1 point for every submission where submitted sign feature is of <strong>parking lot and vehicular
+              directions</strong>.
+          </li>
+          <li>1 point for every submission where submitted sign feature is of <strong>ANY other category not mentioned
+              above</strong>.
+          </li>
+          <li>If multiple features in a cluster, each feature can be its own submission.</li>
+          <li>Top 3 participants with the highest number of points will be awarded one of the below prizes.</li>
+        </ul>
+      </div>
+
+      <div class="trailer-4">
+        <p class="leader-2 aggie-weight-3"><strong>Examples of Permanent Signage Submissions</strong></p>
+
+        <p>Below are a few examples of the kind of photo submissions that would be appropriate and acceptable this
+          competition. <strong>This is NOT an exhaustive list</strong> of possible and acceptable permanent signs. If
+          you spot a sign not in this list but fits into one of the categories, submit it. </p>
+
+        <div class="accordion leader-1">
+          <div class="accordion-title">
+            <div>
+              <p>Building Identification Signs (5 Pts)</p>
+            </div>
+            <div>
+              <span class="plus">&#x2b;</span>&#x2b;
+              <span class="minus">&minus;</span>
+            </div>
+          </div>
+
+          <div class="accordion-content">
+            <div class="example-gallery leader-2 trailer-2">
+              <div>
+                <a href="/assets/images/competitions/Signage/building_number.jpg" target="_blank"
+                  rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/building_number.jpg">
+                  <p class="label">Building number sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/building_sign.jpg" target="_blank" rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/building_sign.jpg">
+                  <p class="label">Building overview sign</p>
+                </a>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion leader-1">
+          <div class="accordion-title">
+            <div>
+              <p>Accessible Building Entrance Signs (4 Pts)</p>
+            </div>
+            <div>
+              <span class="plus">&#x2b;</span>
+              <span class="minus">&minus;</span>
+            </div>
+          </div>
+
+          <div class="accordion-content">
+            <div class="example-gallery leader-2 trailer-2">
+              <div>
+                <a href="/assets/images/competitions/Signage/building_entrance.jpg" target="_blank"
+                  rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/building_entrance.jpg">
+                  <p class="label">Building entrance sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/ramp.jpg" target="_blank" rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/ramp.jpg">
+                  <p class="label">Ramp sign leading to building</p>
+                </a>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion leader-1">
+          <div class="accordion-title">
+            <div>
+              <p>Memorial Bench or Tree Plaque Signs (3 Pts)</p>
+            </div>
+            <div>
+              <span class="plus">&#x2b;</span>
+              <span class="minus">&minus;</span>
+            </div>
+          </div>
+
+          <div class="accordion-content">
+            <div class="example-gallery leader-2 trailer-2">
+              <div>
+                <a href="/assets/images/competitions/Signage/memorial_bench-plaque.jpg" target="_blank"
+                  rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/memorial_bench-plaque.jpg">
+                  <p class="label">Memorial bench plaque</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/memorial_benches.jpg" target="_blank"
+                  rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/memorial_benches.jpg">
+                  <p class="label">Memorial benches</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/memorial_tree_plaque.jpg" target="_blank"
+                  rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/memorial_tree_plaque.jpg">
+                  <p class="label">Memorial tree plaque</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/memorial_plaque_bench.jpg" target="_blank"
+                  rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/memorial_plaque_bench.jpg">
+                  <p class="label">Memorial plaque with reference feature</p>
+                </a>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion leader-1">
+          <div class="accordion-title">
+            <div>
+              <p>Historical Marker Signs (2 Pts)</p>
+            </div>
+            <div>
+              <span class="plus">&#x2b;</span>
+              <span class="minus">&minus;</span>
+            </div>
+          </div>
+
+          <div class="accordion-content">
+            <div class="example-gallery leader-2 trailer-2">
+              <div>
+                <a href="/assets/images/competitions/Signage/historical_marker.jpg" target="_blank"
+                  rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/historical_marker.jpg">
+                  <p class="label">Historical marker </p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion leader-1">
+          <div class="accordion-title">
+            <div>
+              <p>Parking Lot and Vehicular Directions (1 Pt)</p>
+            </div>
+            <div>
+              <span class="plus">&#x2b;</span>
+              <span class="minus">&minus;</span>
+            </div>
+          </div>
+
+          <div class="accordion-content">
+            <div class="example-gallery leader-2 trailer-2">
+              <div>
+                <a href="/assets/images/competitions/Signage/parking_lot.jpg" target="_blank" rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/parking_lot.jpg">
+                  <p class="label">Parking lot number sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/visitor_parking.jpg" target="_blank"
+                  rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/visitor_parking.jpg">
+                  <p class="label">Visitor parking sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/speed_limit.jpg" target="_blank" rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/speed_limit.jpg">
+                  <p class="label">Speed limit sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/building_loading_zone.jpg" target="_blank"
+                  rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/building_loading_zone.jpg">
+                  <p class="label">Building loading zone sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/motorcycle_parking.jpg" target="_blank"
+                  rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/motorcycle_parking.jpg">
+                  <p class="label">Motorcycle parking sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/accessible_parking.jpg" target="_blank"
+                  rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/accessible_parking.jpg">
+                  <p class="label">Accessible parking sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/parking_numbered.jpg" target="_blank"
+                  rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/parking_numbered.jpg">
+                  <p class="label">Numbered parking sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/university_business.jpg" target="_blank"
+                  rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/university_business.jpg">
+                  <p class="label">University business parking spot sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/loading_zone.jpg" target="_blank" rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/loading_zone.jpg">
+                  <p class="label">Loading zone parking spot sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/no_parking.jpg" target="_blank" rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/no_parking.jpg">
+                  <p class="label">No parking sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/parking_garage.jpg" target="_blank" rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/parking_garage.jpg">
+                  <p class="label">Parking garage sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/stop_sign.jpg" target="_blank" rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/stop_sign.jpg">
+                  <p class="label">Stop sign</p>
+                </a>
+              </div>
+
+              <div>
+                <a href="/assets/images/competitions/Signage/fire_lane.jpg" target="_blank" rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/fire_lane.jpg">
+                  <p class="label">Fire lane sign</p>
+                </a>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion leader-1">
+          <div class="accordion-title">
+            <div>
+              <p>Any Other Permanent Signs (1 Pt)</p>
+            </div>
+            <div>
+              <span class="plus">&#x2b;</span>
+              <span class="minus">&minus;</span>
+            </div>
+          </div>
+
+          <div class="accordion-content">
+            <div class="example-gallery leader-2 trailer-2">
+              <div>
+                <a href="/assets/images/competitions/Signage/fdc.jpg" target="_blank" rel="noopener noreferrer">
+                  <img src="/assets/images/competitions/Signage/fdc.jpg">
+                  <p class="label">Fire department connector sign</p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="trailer-4" id="one">
+        <h2 class="trailer-1">Prize</h2>
+
+        <p>
+          Great prizes will be awarded to three winners.
+        </p>
+
+        <ul>
+          <li><span class="aggie-weight-3">1<sup>st</sup> Place Prize</span>&nbsp;<span>Apple iPad (7th-Generation),
+              10.2", Wi-Fi, 128GB</span></li>
+          <li><span class="aggie-weight-3">2<sup>nd</sup> Place Prize</span>&nbsp;<span>Apple iPad (7th-Generation),
+              10.2", Wi-Fi, 128GB</span></li>
+          <li><span class="aggie-weight-3">3<sup>rd</sup> Place Prize</span>&nbsp;<span>Dji SPark Drone</span></li>
+        </ul>
+
+        <p>
+          <strong>*</strong>&nbsp;
+          Prizes provided by the
+          <a href="https://msi.tamu.edu/" target="_blank" noopener noreferrer>
+            <span class="aggie-weight-3">TAMU Office of Mapping &amp; Space Information</span></a>,
+          the <a href="https://it.tamu.edu/" target="_blank" noopener noreferrer>
+            <span class="aggie-weight-3">TAMU Division of IT</span></a>,
+          and the <a href="https://universityarchitect.tamu.edu/" target="_blank" noopener noreferrer>
+            <span class="aggie-weight-3">TAMU Office of the University Architect</span>.
+          </a>
+        </p>
+        <p>
+          <strong>*</strong>&nbsp;
+          The 1<sup>st</sup> Place winner will get their first choice of prizes. The 2<sup>nd</sup> Place winner
+          will
+          choose next. The 3<sup>rd</sup> Place winner will get whichever prize remains.
+        </p>
+
+        <div class="small-partition">
+          <div class="flex-gallery">
+            <div class="full center"><img class="medium trailer-2" src="/assets/images/graphics/ipad_logo.svg"
+                title="iPad (7th-generation)"></div>
+            <div class="flex-gallery-row">
+              <div class="full" style="background-image: url(/assets/images/graphics/ipad102.jpg)"></div>
+            </div>
+            <p class="leader-1">Apple iPad (7th Generation), 10.2", Wi-Fi, 128GB</p>
+
+            <div class="full center"><img class="medium leader-6" src="/assets/images/graphics/dji-logo.png"
+                title="Dji Spark Drone"></div>
+            <div class="flex-gallery-row">
+              <div class="full" style="background-image: url(/assets/images/graphics/dji-spark-drone.jpeg)"></div>
+            </div>
+            <p>Dji Spark Drone</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="trailer-4" id="sixteen">
+        <h2 class="trailer-1">Eligibility</h2>
+
+        <p>While we encourage everyone to download the app and submit data, only current TAMU graduate and
+          undergraduate students are eligible to win.</p>
+
+      </div>
+
+      <div class="trailer-4" id="two">
+        <h2 class="trailer-1">Rules, Participation, and Winners</h2>
+
+        <p>In order for a chance to win, participants will be required to
+          <a href='/Signup/ '>have an active GIS Day account</a>.
+          Using the official <a href="/App/">Official Texas A&amp;M GIS Day Competitions
+            App</a>,
+          users will take photos of any and all permanent signage on the TAMU campus.
+          Capture permanent signage on main campus, west campus, riverside campus, and anywhere that you think is
+          TAMU
+          land and submit them.</p>
+
+        <p>Only participant submissions collected during the three days of TAMU GIS Day and
+          before the Awards Ceremony will be included as eligible submissions (12:01AM Monday - 11:15AM Wednesday).
+          The sponsoring organizations would certainly appreciate the efforts of people who collect data before and
+          after GIS Day,
+          so feel free to start collecting early and continue collecting after, but these submissions will not be
+          considered for an award.
+        </p>
+
+        <p>The participant with the highest number of points from verified submissions at the
+          conclusion of the GIS Day event will be awarded 1<sup>st</sup> place.
+          The next highest number will be awarded 2<sup>nd</sup> place, and the next 3<sup>rd</sup> place.
+        </p>
+
+
+        <p>Winners will be awarded with prizes generously provided by
+          the Texas A&amp;M Office of Mapping &amp; Space Information,
+          the Texas A&amp;M Office Division of Information Technology, and the Texas A&amp;M Office of the
+          University
+          Architect.</p>
+
+        <p>Winners will be announced on Wednesday, November 13 at the <a
+            href="https://gisday.tamu.edu/sessions/#/details/cd2b83d2-a084-43d6-b293-418b582b11c5">GIS Industry
+            Panel
+            &amp; Lunch &amp; Awards</a>
+          session.</p>
+
+        <p>Participants do not need to be present at the Awards Ceremony in order to be selected as a winner.</p>
+
+      </div>
+
+      <div class="fine-print card content-block all">
+        <h1 class="trailer-1 no-pad">Project Information Sheet</h1>
+        <div class="trailer-1" id="three">
+          <h2 class="trailer-1">Why is this study being done?</h2>
+
+          <p>
+            The purpose of this study is to leverage the data collection abilities of the 2,500+ TAMU faculty,
+            students, staff, and visitors who participate in the TAMU GIS Day events per year to gather data about
+            the
+            TAMU campus. Each year, the GIS Day planning committee organizes a GIS Mapping Competition where GIS Day
+            participants gather data (GPS, photos, and other attributes) of amenities and services on campus. You
+            are
+            invited to participate in these data collection efforts!
+          </p>
+
+
+        </div>
+
+        <div class="trailer-1" id="four">
+          <h2 class="trailer-1">Why am I being asked to be in the study?</h2>
+          <p>
+            You are being asked to be in this study because you have a relationship with Texas A&amp;M either as a
+            faculty or staff member, a student, or a visitor.
+          </p>
+
+
+        </div>
+
+        <div class="trailer-1" id="five">
+          <h2 class="trailer-1">How many people will be asked to be in the study?</h2>
+          <p>
+            The study organizers hope to engage 2,500 study participants per year for each of the four years of the
+            project. We will contact 50,000 people per year (roughly the number all TAMU students, faculty, and
+            staff)
+            in order to achieve these participant numbers for each year of the project.
+          </p>
+
+
+        </div>
+
+        <div class="trailer-1" id="six">
+          <h2 class="trailer-1">What are the alternatives to being in this study?</h2>
+          <p>
+            The alternative to being in the study is not to participate. Participation in this study is not
+            mandatory,
+            and non-participation will not impact you in any fashion.
+          </p>
+
+
+        </div>
+
+        <div class="trailer-1" id="seven">
+          <h2 class="trailer-1">What will I be asked to do in this study?</h2>
+
+          <p>
+            You will be asked to walk around the TAMU campus and take pictures of buildings. In 2019, you are being
+            asked to take pictures of the exteriors of TAMU structures. In future years, the organizing committee
+            will
+            survey different aspects of the TAMU campus.
+          </p>
+
+
+        </div>
+
+        <div class="trailer-1" id="eight">
+          <h2 class="trailer-1">Are there are risks to me?</h2>
+
+          <p>
+            The things that you will be doing will pose no greater risks than the you would come across in everyday
+            life. While collecting data, you will be submitting your location (actually the location of the thing
+            you
+            are collecting about), which could expose the locations that you collected data at, should these data be
+            stolen. Other risks include a breach of confidentiality should study information about you (name, email,
+            TAMU department, and TAMU classification) be stolen.
+          </p>
+
+
+        </div>
+
+        <div class="trailer-1" id="nine">
+          <h2 class="trailer-1">Will there be any costs to me?</h2>
+          <p>
+            Aside from your time, there are no costs for taking part in the study. Your participation can take any
+            amount of time up to seven days (the full length of the week around GIS Day), but we expect that most
+            people will participate for less than two hours.
+          </p>
+
+
+        </div>
+
+        <div class="trailer-1" id="ten">
+          <h2 class="trailer-1">Will photos, video, or audio recordings be made of me during this study?</h2>
+          <p>
+            Photos, video, and audio recordings will not be taken of you as part of this study.
+          </p>
+
+
+        </div>
+
+        <div class="trailer-1" id="eleven">
+          <h2 class="trailer-1">Will I be paid to be in the study?</h2>
+
+          <p>
+            You will not be paid for being in this study, but there will be an award given to at least one of the
+            participants who will be selected at random from all participants who create accounts. Creating an
+            account
+            is not mandatory. You can participate anonymously without creating an account, but in this case you will
+            not be eligible for winning prizes (since we won't know how you are!!).
+          </p>
+
+        </div>
+
+        <div class="trailer-1" id="twelve">
+          <h2 class="trailer-1">Will information from this study be kept private?</h2>
+
+          <p>
+            The records of this study will be kept private. Any personally identifiable information you submit
+            during
+            the course of creating an account will be removed from the data when it is used in publications or
+            presentations. You may choose to submit data anonymously, in which case no identifiable information will
+            be collected from or about you.
+          </p>
+          <p>
+            Research records will be stored securely in the TAMU West Campus Data Center, and only Dr. Daniel
+            Goldberg, other members of the project team, and TAMU IT data center staff will have access to the
+            records. Representatives of regulatory agencies such as the Office of Human Research Protections (OHRP)
+            and entities such as the Texas A&amp;M University Human Subjects Protection Program may access your
+            records to make sure the study is being run correctly and that information is collected properly.
+          </p>
+
+
+        </div>
+
+        <div class="trailer-1" id="thirteen">
+          <h2 class="trailer-1">What if I change my mind about participating?</h2>
+
+          <p>
+            This research is voluntary and you have the choice whether or not to be in this research study. You may
+            decide to not begin or to stop participating at any time. If you choose not to be in this study or stop
+            being in the study, there will be no effect on your status, grades, employment, or relationship with
+            Texas
+            A&amp;M University, etc. Any new information discovered about the research will be provided to you. This
+            information could affect your willingness to continue your participation.
+          </p>
+
+
+        </div>
+
+        <div class="trailer-1" id="fourteen">
+          <h2 class="trailer-1">Whom may I contact for more information?</h2>
+          <p>
+            You may contact the Principal Investigator, Daniel Goldberg, PhD, to tell him about a concern or
+            complaint
+            about this research at 979-845-6395 or daniel.goldberg@tamu.edu.
+          </p>
+          <p>
+            For questions about your rights as a research participant; or if you have questions, complaints, or
+            concerns about the research, you may call the Texas A&amp;M University Human Subjects Protection Program
+            office at (979) 458-4067 or irb@tamu.edu.
+          </p>
+
+
+        </div>
+
+        <div class="trailer-1" id="fifteen">
+          <h2 class="trailer-1">TAMU IRB Approvals</h2>
+          <p>
+            IRB NUMBER: IRB2016-0672M
+          </p>
+          <p>
+            IRB APPROVAL DATE: 10/06/2016
+          </p>
+          <p>
+            IRB EXPIRATION DATE: 10/01/2021
+          </p>
+
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+

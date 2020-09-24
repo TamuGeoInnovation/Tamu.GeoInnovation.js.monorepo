@@ -8,6 +8,8 @@ import { PapersComponent } from './papers/papers.component';
 import { PostersComponent } from './posters/posters.component';
 import { VgiComponent } from './vgi/vgi.component';
 
+import { SignageComponent } from './signage/signage.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -28,11 +30,42 @@ const routes: Routes = [
   {
     path: 'vgi',
     component: VgiComponent
+  },
+  {
+    path: 'signage',
+    component: SignageComponent
   }
+  // {
+  //   path: 'stormwater',
+  //   component: SignageComponent
+  // },
+  // {
+  //   path: 'sidewalk',
+  //   component: SignageComponent
+  // },
+  // {
+  //   path: 'building-bounty',
+  //   component: SignageComponent
+  // },
+  // {
+  //   path: 'aggie-accessibility',
+  //   component: SignageComponent
+  // },
+  // {
+  //   path: 'manhole',
+  //   component: SignageComponent
+  // },
 ];
 
 @NgModule({
-  declarations: [CompetitionsComponent, FeedbackComponent, PapersComponent, PostersComponent, VgiComponent],
+  declarations: [
+    CompetitionsComponent,
+    FeedbackComponent,
+    PapersComponent,
+    PostersComponent,
+    SignageComponent,
+    VgiComponent
+  ],
   imports: [CommonModule, RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
