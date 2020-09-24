@@ -2513,6 +2513,56 @@ tr:hover td>span.delete {
 	text-align: center;
 }
 
+.accordion {
+  .accordion-title {
+    font-weight: bold;
+    background: #f5f5f5;
+    padding: 0.75rem 1rem;
+    cursor: pointer;		
+		@include flexbox();
+		@include flex-direction(row);
+		@include justify-content(space-between);
+		@include align-items(center);
+
+    p {
+      padding-bottom: 0;
+    }
+
+    .plus,
+    .minus {
+      font-size: 1.25rem;
+    }
+
+    .minus {
+      display: none;
+    }
+
+    &.expanded {
+      & ~ .accordion-content {
+        max-height: 100%;
+        max-height: initial;
+      }
+
+      .plus {
+        display: none;
+      }
+
+      .minus {
+        display: inherit;
+        display: initial;
+      }
+    }
+  }
+
+  .accordion-content {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-left: 1rem;
+    max-height: 0;
+    overflow: hidden;
+  }
+}
+
 //  ==========================================================================
 //   Interior Text Pages
 //  ==========================================================================
@@ -4204,3 +4254,4 @@ li:before {
   // background-image: url('../assets/images/icons/check.svg');
   // background-image: url('../../../../../../../apps/gisday-angular/src/assets/images/icons/check.svg');
 }
+
