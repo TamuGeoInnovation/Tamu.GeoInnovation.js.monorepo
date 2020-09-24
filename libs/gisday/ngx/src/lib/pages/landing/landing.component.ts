@@ -8,5 +8,9 @@ import { Component, OnInit } from '@angular/core';
 export class LandingComponent implements OnInit {
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadCountdown();
+  }
+
+  public loadCountdown() {}
 }
