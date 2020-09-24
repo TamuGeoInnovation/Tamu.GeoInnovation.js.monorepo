@@ -179,7 +179,7 @@ export class Session extends GuidIdentity {
   name: 'speakers'
 })
 export class Speaker extends GuidIdentity {
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public user: string; // User
 
   @Column({ nullable: false })
@@ -193,6 +193,21 @@ export class Speaker extends GuidIdentity {
 
   @Column({ nullable: false })
   public organization: string;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
+  name: 'speaker_photos'
+})
+export class SpeakerPhoto extends GuidIdentity {
+  @Column({ nullable: false })
+  public speakerGuid: string;
+
+  @Column({ nullable: false, type: 'image' })
+  public blob: Buffer;
 
   constructor() {
     super();
@@ -362,6 +377,9 @@ export class SessionRepo extends CommonRepo<Session> {}
 
 @EntityRepository(Speaker)
 export class SpeakerRepo extends CommonRepo<Speaker> {}
+
+@EntityRepository(SpeakerPhoto)
+export class SpeakerPhotoRepo extends CommonRepo<SpeakerPhoto> {}
 
 @EntityRepository(Sponsor)
 export class SponsorRepo extends CommonRepo<Sponsor> {}

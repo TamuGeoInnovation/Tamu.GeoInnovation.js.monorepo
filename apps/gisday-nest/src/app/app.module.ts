@@ -14,6 +14,7 @@ import {
   SessionModule,
   Speaker,
   SpeakerModule,
+  SpeakerPhoto,
   SubmissionType,
   Sponsor,
   SponsorModule,
@@ -43,6 +44,7 @@ import { localDbConfig } from '../environments/ormconfig';
         Event,
         Session,
         Speaker,
+        SpeakerPhoto,
         // SubmissionType,
         Sponsor,
         Tag
