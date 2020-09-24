@@ -3,13 +3,10 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'tamu-gisc-sidewalk',
   templateUrl: './sidewalk.component.html',
-  styleUrls: ['./sidewalk.component.css']
+  styleUrls: ['./sidewalk.component.scss']
 })
 export class SidewalkComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }
