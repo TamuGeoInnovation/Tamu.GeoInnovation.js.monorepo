@@ -16,19 +16,19 @@ const routes: Routes = [
   {
     path: 'feedback',
     component: FeedbackComponent
+  },
+  {
+    path: 'papers',
+    component: PapersComponent
+  },
+  {
+    path: 'posters',
+    component: PostersComponent
+  },
+  {
+    path: 'vgi',
+    component: VgiComponent
   }
-  // {
-  //   path: 'papers',
-  //   component: PapersComponent
-  // },
-  // {
-  //   path: 'posters',
-  //   component: PostersComponent
-  // },
-  // {
-  //   path: 'vgi',
-  //   component: VgiComponent
-  // }
 ];
 
 @NgModule({

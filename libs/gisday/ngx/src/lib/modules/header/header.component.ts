@@ -1,6 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
-// import { AccountService, Account } from '../../modules/services/account.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -8,17 +6,40 @@ import { Observable } from 'rxjs';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  // @ViewChild('menuButton') menuButton: ElementRef;
   private modal: HTMLElement;
   public isActive: boolean = false;
-  // public account: Observable<Account>;
   public account: Account;
 
   constructor() {}
 
   ngOnInit() {}
 
-  toggleMenuButton() {}
+  toggleMenuButton() {
+    this.isActive = !this.isActive;
+    const body = document.querySelector('body');
+    if (this.isActive) {
+      body.classList.add('modal-open');
+      this.toggleModalBg(true);
+    } else {
+      body.classList.remove('modal-open');
+      this.toggleModalBg(false);
+    }
+  }
 
-  toggleModalBg(on: boolean) {}
+  toggleModalBg(on: boolean) {
+    const htmlChildren = document.documentElement.children;
+    const body = htmlChildren.item(1);
+    const section = body.children
+      .item(0)
+      .children.item(2)
+      .children.item(0);
+    if (on) {
+      this.modal = document.createElement('div');
+      this.modal.classList.add('active');
+      this.modal.id = 'modal-bg';
+      section.appendChild(this.modal);
+    } else {
+      section.removeChild(this.modal);
+    }
+  }
 }
