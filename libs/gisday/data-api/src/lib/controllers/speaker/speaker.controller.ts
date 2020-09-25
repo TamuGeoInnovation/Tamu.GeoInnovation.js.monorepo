@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, Patch, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { Speaker, SpeakerInfo } from '../../entities/all.entity';
@@ -11,6 +11,11 @@ export class SpeakerController extends BaseController<Speaker> {
     super(speakerProvider);
   }
 
+  @Get('/presenter/:guid')
+  async presenter(@Param() params) {
+    return this.speakerProvider.getPresenter(params.guid);
+  }
+
   @Get('/presenters')
   async presenters() {
     return this.speakerProvider.getPresenters();
@@ -21,5 +26,10 @@ export class SpeakerController extends BaseController<Speaker> {
   async speakerPhoto(@Req() req: Request, @UploadedFile() file) {
     const speakerGuid = req.body.speakerGuid;
     return this.speakerProvider.insertPhoto(speakerGuid, req, file);
+  }
+
+  @Patch('/info')
+  async updateSpeakerInfo(@Req() req: Request) {
+    return this.speakerProvider.updateSpeakerInfo(req);
   }
 }

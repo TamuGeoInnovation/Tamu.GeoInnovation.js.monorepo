@@ -9,6 +9,10 @@ const routes: Routes = [
   {
     path: '',
     component: PresentersComponent
+  },
+  {
+    path: ':guid',
+    component: PresenterDetailsComponent
   }
 ];
 
