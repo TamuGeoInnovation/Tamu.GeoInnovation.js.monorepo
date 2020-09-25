@@ -27,6 +27,12 @@ export class SpeakerService {
     });
   }
 
+  public getPresenter(guid: string) {
+    return this.http.get<Partial<Speaker>>(`${this.resource}/presenter/${guid}`, {
+      withCredentials: false
+    });
+  }
+
   public getPresenters() {
     return this.http.get<Array<Partial<Speaker>>>(`${this.resource}/presenters`, {
       withCredentials: false

@@ -20,9 +20,6 @@ export class PresentersComponent implements OnInit {
 
   public fetchPresenters() {
     this.$presenters = this.speakerService.getPresenters();
-    // this.speakerService.getPresenters().subscribe((response) => {
-    //   console.log(response);
-    // });
   }
 
   public onPresenterClicked(presenter: Speaker) {

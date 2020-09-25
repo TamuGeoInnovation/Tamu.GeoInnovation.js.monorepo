@@ -192,7 +192,7 @@ export class SpeakerInfo extends GuidIdentity {
   @Column({ nullable: true })
   public affiliation: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 'max' })
   public description: string;
 
   @Column({ nullable: true })
@@ -397,6 +397,14 @@ export class SessionRepo extends CommonRepo<Session> {}
 
 @EntityRepository(Speaker)
 export class SpeakerRepo extends CommonRepo<Speaker> {
+  public async getPresenter() {
+    return getConnection()
+      .getRepository(Speaker)
+      .createQueryBuilder('speaker')
+      .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
+      .getOne();
+  }
+
   public async getPresenters() {
     return getConnection()
       .getRepository(Speaker)
