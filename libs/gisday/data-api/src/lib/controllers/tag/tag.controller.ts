@@ -1,5 +1,5 @@
-import { Controller } from '@nestjs/common';
-
+import { Controller, Post, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { Tag } from '../../entities/all.entity';
 import { TagProvider } from '../../providers/tag/tag.provider';
 import { BaseController } from '../../controllers/_base/base.controller';
@@ -8,5 +8,10 @@ import { BaseController } from '../../controllers/_base/base.controller';
 export class TagController extends BaseController<Tag> {
   constructor(private readonly tagProvider: TagProvider) {
     super(tagProvider);
+  }
+
+  @Post('/all')
+  async insertTags(@Req() req: Request) {
+    return this.tagProvider.insertTags(req);
   }
 }
