@@ -1,4 +1,5 @@
 import {
+  getConnection,
   Entity,
   EntityRepository,
   BaseEntity,
@@ -176,6 +177,36 @@ export class Session extends GuidIdentity {
 }
 
 @Entity({
+  name: 'speaker_info'
+})
+export class SpeakerInfo extends GuidIdentity {
+  @Column({ nullable: true })
+  public graduationYear: string;
+
+  @Column({ nullable: true })
+  public degree: string;
+
+  @Column({ nullable: true })
+  public program: string;
+
+  @Column({ nullable: true })
+  public affiliation: string;
+
+  @Column({ nullable: true })
+  public description: string;
+
+  @Column({ nullable: true })
+  public socialMedia: string;
+
+  @Column({ nullable: true, type: 'image' })
+  public blob: Buffer;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
   name: 'speakers'
 })
 export class Speaker extends GuidIdentity {
@@ -194,20 +225,9 @@ export class Speaker extends GuidIdentity {
   @Column({ nullable: false })
   public organization: string;
 
-  constructor() {
-    super();
-  }
-}
-
-@Entity({
-  name: 'speaker_photos'
-})
-export class SpeakerPhoto extends GuidIdentity {
-  @Column({ nullable: false })
-  public speakerGuid: string;
-
-  @Column({ nullable: false, type: 'image' })
-  public blob: Buffer;
+  @OneToOne((type) => SpeakerInfo, { cascade: true, nullable: true })
+  @JoinColumn()
+  public speakerInfo: SpeakerInfo;
 
   constructor() {
     super();
@@ -376,10 +396,18 @@ export class EventRepo extends CommonRepo<Event> {}
 export class SessionRepo extends CommonRepo<Session> {}
 
 @EntityRepository(Speaker)
-export class SpeakerRepo extends CommonRepo<Speaker> {}
+export class SpeakerRepo extends CommonRepo<Speaker> {
+  public async getPresenters() {
+    return getConnection()
+      .getRepository(Speaker)
+      .createQueryBuilder('speaker')
+      .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
+      .getMany();
+  }
+}
 
-@EntityRepository(SpeakerPhoto)
-export class SpeakerPhotoRepo extends CommonRepo<SpeakerPhoto> {}
+@EntityRepository(SpeakerInfo)
+export class SpeakerInfoRepo extends CommonRepo<SpeakerInfo> {}
 
 @EntityRepository(Sponsor)
 export class SponsorRepo extends CommonRepo<Sponsor> {}

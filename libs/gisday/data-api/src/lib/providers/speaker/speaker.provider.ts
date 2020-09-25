@@ -1,20 +1,35 @@
 import { Injectable } from '@nestjs/common';
-
-import { Speaker, SpeakerPhoto, SpeakerRepo, SpeakerPhotoRepo } from '../../entities/all.entity';
+import { Request } from 'express';
+import { Speaker, SpeakerInfo, SpeakerRepo, SpeakerInfoRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
 @Injectable()
 export class SpeakerProvider extends BaseProvider<Speaker> {
-  constructor(private readonly speakerRepo: SpeakerRepo, public readonly speakerPhotoRepo: SpeakerPhotoRepo) {
+  constructor(private readonly speakerRepo: SpeakerRepo, public readonly speakerInfoRepo: SpeakerInfoRepo) {
     super(speakerRepo);
   }
 
-  async insertPhoto(speakerGuid: string, file: any) {
-    const _photo: Partial<SpeakerPhoto> = {
-      speakerGuid: speakerGuid,
-      blob: file.buffer
-    };
-    const photo = await this.speakerPhotoRepo.create(_photo);
-    debugger;
-    return this.speakerPhotoRepo.insert(photo);
+  async getPresenters() {
+    return this.speakerRepo.getPresenters();
+  }
+
+  async insertPhoto(speakerGuid: string, req: Request, file: any) {
+    const speaker = await this.speakerRepo.findOne({
+      where: {
+        guid: speakerGuid
+      }
+    });
+    if (speaker) {
+      const _photo: Partial<SpeakerInfo> = {
+        ...req.body,
+        speaker: speaker,
+        blob: file.buffer
+      };
+      const photo = await this.speakerInfoRepo.create(_photo);
+      const speakerInfo = await this.speakerInfoRepo.save(photo);
+      speaker.speakerInfo = speakerInfo;
+      return speaker.save();
+    } else {
+      throw new Error(`Speaker ${speakerGuid} not found`);
+    }
   }
 }
