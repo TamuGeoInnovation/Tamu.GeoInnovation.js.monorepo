@@ -11,7 +11,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   async getPresenter(guid: string) {
-    return this.speakerRepo.getPresenter();
+    return this.speakerRepo.getPresenter(guid);
   }
 
   async getPresenters() {

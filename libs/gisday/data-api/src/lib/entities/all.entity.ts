@@ -397,11 +397,14 @@ export class SessionRepo extends CommonRepo<Session> {}
 
 @EntityRepository(Speaker)
 export class SpeakerRepo extends CommonRepo<Speaker> {
-  public async getPresenter() {
+  public async getPresenter(guid: string) {
     return getConnection()
       .getRepository(Speaker)
       .createQueryBuilder('speaker')
       .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
+      .where(`speaker.guid = :guid`, {
+        guid: guid
+      })
       .getOne();
   }
 

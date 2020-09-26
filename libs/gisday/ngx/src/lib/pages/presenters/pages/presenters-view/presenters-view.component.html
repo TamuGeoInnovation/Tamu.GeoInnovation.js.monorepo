@@ -1,0 +1,17 @@
+<div ui-view>
+  <div class="loader" *ngIf="!$presenters"></div>
+  <div class="container12 leader-1 flex flex-row justify-center">
+    <div class="profile" *ngFor="let presenter of ($presenters | async)">
+      <!-- <a [routerLink]="['/presenters/details', presenter.speakerLastName + presenter.speakerFirstName]"> -->
+      <div class="class-banner" *ngIf="presenter.speakerInfo.graduationYear">Class of '{{ presenter.speakerInfo.graduationYear.substr(2,2) }}</div>
+      <div class="image" [routerLink]="['/presenters/details', presenter.guid]" [ngStyle]=" { 'background-image': 'url('+getPresenterImageUrl(presenter)+')'  } ">
+        <!-- <img class="image" src='../../assets/images/presenters/{{presenter.speakerLastName}}{{presenter.speakerFirstName}}.jpg' alt='image not found' onerror="this.src='../../assets/images/presenters/reveille.jpg'" /> -->
+      </div>
+      <div class="image-description">
+        <div class="name">{{presenter.firstName}} {{presenter.lastName}}</div>
+        <div class="title">{{presenter.speakerInfo.affiliation}}</div>
+      </div>
+      <!-- </a> -->
+    </div>
+  </div>
+</div>

@@ -25,7 +25,7 @@
     <div id="day1" class="modal card">
       <h2 class="aggie-weight-1 ng-binding">November 16</h2>
       <div *ngFor="let event of ($events | async)[0]">
-        <div class="row" [routerLink]="['/details', event.guid]">
+        <div class="row" [routerLink]="['/sessions/details', event.guid]">
           <div class="input-control">
             <div class="checkbox-custom-input">
               <input #eventCheck type="checkbox" class="ng-pristine ng-untouched ng-valid" />
@@ -47,7 +47,7 @@
     <div id="day2" class="modal card">
       <h2 class="aggie-weight-1 ng-binding">November 17</h2>
       <div *ngFor="let event of ($events | async)[1]">
-        <div class="row" [routerLink]="['/details', event.guid]">
+        <div class="row" [routerLink]="['/sessions/details', event.guid]">
           <div class="input-control">
             <div class="checkbox-custom-input">
               <input #eventCheck type="checkbox" class="ng-pristine ng-untouched ng-valid" />
@@ -69,7 +69,7 @@
     <div id="day3" class="modal card">
       <h2 class="aggie-weight-1 ng-binding">November 18</h2>
       <div *ngFor="let event of ($events | async)[2]">
-        <div class="row" [routerLink]="['/details', event.guid]">
+        <div class="row" [routerLink]="['/sessions/details', event.guid]">
           <div class="input-control">
             <div class="checkbox-custom-input">
               <input #eventCheck type="checkbox" class="ng-pristine ng-untouched ng-valid" />
