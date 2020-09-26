@@ -7,7 +7,17 @@ import { SessionsComponent } from './sessions.component';
 const routes: Routes = [
   {
     path: '',
-    component: SessionsComponent
+    component: SessionsComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./pages/session-view/session-view.module').then((m) => m.SessionViewModule)
+      },
+      {
+        path: 'details/:guid',
+        loadChildren: () => import('./pages/session-detail/session-detail.module').then((m) => m.SessionDetailModule)
+      }
+    ]
   }
 ];
 

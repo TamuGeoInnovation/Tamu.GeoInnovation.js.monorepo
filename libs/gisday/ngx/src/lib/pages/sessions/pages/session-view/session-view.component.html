@@ -1,0 +1,113 @@
+<div id="sub-nav-container" class="ng-scope">
+  <div class="container12 leader-3 trailer-3">
+    <h1 class="aggie-weight-2 trailer-1">EVENT SESSIONS</h1>
+    <p class="sub-section-heading aggie-weight-1">
+      Want to see a special session or topic?
+    </p>
+    <p>Email <a href="mailto:gis@tamu.edu?subject=Presentation%20Inquiry">gis@tamu.edu</a> to find out how to recommend or request a special session.</p>
+    <div id="links-container">
+      <p>
+        <a class="md-link" [routerLink]="['/sessions']" fragment="day1">Day 1</a>
+      </p>
+      <p>
+        <a class="md-link" [routerLink]="['/sessions']" fragment="day2">Day 2</a>
+      </p>
+      <p>
+        <a class="md-link" [routerLink]="['/sessions']" fragment="day3">Day 3</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="loader" *ngIf="!$events"></div>
+  <div id="default-content" class="column8" *ngIf="$events">
+    <div id="day1" class="modal card">
+      <h2 class="aggie-weight-1 ng-binding">November 16</h2>
+      <div *ngFor="let event of ($events | async)[0]">
+        <div class="row" [routerLink]="['/details', event.guid]">
+          <div class="input-control">
+            <div class="checkbox-custom-input">
+              <input #eventCheck type="checkbox" class="ng-pristine ng-untouched ng-valid" />
+              <i></i>
+            </div>
+          </div>
+          <div class="event-time">
+            <span class="ng-binding">{{event.startTime | date:'h:mm a'}}</span>
+            <span id="detail-time" class="ng-binding"> - {{event.endTime | date:'h:mm a'}}</span>
+          </div>
+          <div class="event-name">
+            <p class="ng-binding">{{event.name}}</p>
+            <p class="ng-binding">{{event.locationBuilding}} {{event.locationRoom}}</p>
+            <p></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="day2" class="modal card">
+      <h2 class="aggie-weight-1 ng-binding">November 17</h2>
+      <div *ngFor="let event of ($events | async)[1]">
+        <div class="row" [routerLink]="['/details', event.guid]">
+          <div class="input-control">
+            <div class="checkbox-custom-input">
+              <input #eventCheck type="checkbox" class="ng-pristine ng-untouched ng-valid" />
+              <i></i>
+            </div>
+          </div>
+          <div class="event-time">
+            <span class="ng-binding">{{event.startTime | date:'h:mm a'}}</span>
+            <span id="detail-time" class="ng-binding"> - {{event.endTime | date:'h:mm a'}}</span>
+          </div>
+          <div class="event-name">
+            <p class="ng-binding">{{event.name}}</p>
+            <p class="ng-binding">{{event.locationBuilding}} {{event.locationRoom}}</p>
+            <p></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="day3" class="modal card">
+      <h2 class="aggie-weight-1 ng-binding">November 18</h2>
+      <div *ngFor="let event of ($events | async)[2]">
+        <div class="row" [routerLink]="['/details', event.guid]">
+          <div class="input-control">
+            <div class="checkbox-custom-input">
+              <input #eventCheck type="checkbox" class="ng-pristine ng-untouched ng-valid" />
+              <i></i>
+            </div>
+          </div>
+          <div class="event-time">
+            <span class="ng-binding">{{event.startTime | date:'h:mm a'}}</span>
+            <span id="detail-time" class="ng-binding"> - {{event.endTime | date:'h:mm a'}}</span>
+          </div>
+          <div class="event-name">
+            <p class="ng-binding">{{event.name}}</p>
+            <p class="ng-binding">{{event.locationBuilding}} {{event.locationRoom}}</p>
+            <p></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="filter-container" class="column4" *ngIf="$events">
+  <div id="filter-toggle" (click)="toggleFilters = !toggleFilters"><span class="fa fa-lg fa-fw fa-filter"></span></div>
+  <div id="filters" class="card" [ngClass]="{ expanded : toggleFilters }">
+    <h2 class="aggie-weight-1 trailer-1">Filters</h2>
+    <div *ngFor="let tag of ($tags | async)">
+      <div class="row">
+        <div class="input-control">
+          <div class="checkbox-custom-input">
+            <input #checkbox type="checkbox" />
+            <i></i>
+          </div>
+        </div>
+        <div class="filter-name">
+          <p>{{tag.name}}</p>
+          <p></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
