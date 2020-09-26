@@ -1,0 +1,17 @@
+<div ui-view>
+  <div class="container12 presenter-details-item leader-1">
+    <div *ngIf="($speaker | async) as speaker">
+      <div class="column4">
+        <div class="image" [ngStyle]=" { 'background-image': 'url('+getPresenterImageUrl(speaker)+')'  } ">
+          <!-- <img class="image" src='../../assets/images/presenters/{{presenter.speakerLastName}}{{presenter.speakerFirstName}}.jpg' alt='image not found' onerror="this.src='../../assets/images/presenters/reveille.jpg'" /> -->
+        </div>
+      </div>
+      <div class="column6 pre-2">
+        <p class="name">{{speaker.firstName}} {{speaker.lastName}}<span class="class"> | {{speaker.organization}}</span></p>
+        <div class="description">
+          <p>{{speaker.speakerInfo.description}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
