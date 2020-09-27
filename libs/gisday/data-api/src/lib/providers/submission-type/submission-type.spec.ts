@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SubmissionType } from './submission-type';
+import { SubmissionTypeProvider } from './submission-type.provider';
 
-describe('SubmissionType', () => {
-  let provider: SubmissionType;
+describe('SubmissionTypeProvider', () => {
+  let provider: SubmissionTypeProvider;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SubmissionType],
+      providers: [SubmissionTypeProvider]
     }).compile();
 
-    provider = module.get<SubmissionType>(SubmissionType);
+    provider = module.get<SubmissionTypeProvider>(SubmissionTypeProvider);
   });
 
   it('should be defined', () => {

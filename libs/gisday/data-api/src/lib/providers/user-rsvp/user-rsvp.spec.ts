@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserRsvp } from './user-rsvp';
+import { UserRsvpProvider } from './user-rsvp.provider';
 
-describe('UserRsvp', () => {
-  let provider: UserRsvp;
+describe('UserRsvpProvider', () => {
+  let provider: UserRsvpProvider;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserRsvp],
+      providers: [UserRsvpProvider]
     }).compile();
 
-    provider = module.get<UserRsvp>(UserRsvp);
+    provider = module.get<UserRsvpProvider>(UserRsvpProvider);
   });
 
   it('should be defined', () => {
