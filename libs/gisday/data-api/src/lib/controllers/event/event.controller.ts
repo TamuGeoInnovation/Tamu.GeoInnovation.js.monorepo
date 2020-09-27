@@ -1,5 +1,5 @@
-import { Controller, Get, Param } from '@nestjs/common';
-
+import { Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { Event } from '../../entities/all.entity';
 import { EventProvider } from '../../providers/event/event.provider';
 import { BaseController } from '../../controllers/_base/base.controller';
@@ -20,5 +20,10 @@ export class EventController extends BaseController<Event> {
   @Get('by-day')
   async getEntitiesByDay() {
     return this.eventProvider.getEntitiesByDay();
+  }
+
+  @Post()
+  async insertEvent(@Req() req: Request) {
+    return this.eventProvider.insertEvent(req);
   }
 }
