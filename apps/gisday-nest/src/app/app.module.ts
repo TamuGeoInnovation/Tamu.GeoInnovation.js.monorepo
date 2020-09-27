@@ -6,24 +6,30 @@ import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-
 import {
   CheckIn,
   Class,
-  ClassModule,
   CourseCredit,
   Event,
-  EventModule,
   Session,
-  SessionModule,
   Speaker,
   SpeakerInfo,
-  SpeakerModule,
-  SubmissionType,
   Sponsor,
-  SponsorModule,
   Tag,
-  TagModule,
   User,
   UserClass,
   UserRsvp,
-  UserSubmission
+  UserSubmission,
+  SubmissionType,
+  CheckInModule,
+  ClassModule,
+  CourseCreditModule,
+  EventModule,
+  SessionModule,
+  SpeakerModule,
+  SponsorModule,
+  SubmissionTypeModule,
+  TagModule,
+  UserClassModule,
+  UserRsvpModule,
+  UserSubmissionModule
 } from '@tamu-gisc/gisday/data-api';
 
 import { AppController } from './app.controller';
@@ -55,12 +61,18 @@ import { localDbConfig } from '../environments/ormconfig';
         UserSubmission
       ]
     }),
+    CheckInModule,
     ClassModule,
+    CourseCreditModule,
     EventModule,
     SessionModule,
     SpeakerModule,
     SponsorModule,
-    TagModule
+    SubmissionTypeModule,
+    TagModule,
+    UserClassModule,
+    UserRsvpModule,
+    UserSubmissionModule
   ],
   controllers: [AppController],
   providers: [AppService]
