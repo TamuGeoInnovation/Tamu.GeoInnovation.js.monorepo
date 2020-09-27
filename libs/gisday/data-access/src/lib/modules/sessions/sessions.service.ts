@@ -17,6 +17,12 @@ export class SessionsService {
     this.tagResource = this.env.value('api_url') + '/tag';
   }
 
+  public getNumberOfRsvps(eventGuid: string) {
+    return this.http.get<number>(`${this.resource}/${eventGuid}/rsvps`, {
+      withCredentials: false
+    });
+  }
+
   public getEvent(guid: string) {
     return this.http.get<Partial<Event>>(`${this.resource}/${guid}`, {
       withCredentials: false

@@ -15,7 +15,7 @@ export class PresenterDetailsComponent implements OnInit {
   public $speaker: Observable<Partial<Speaker>>;
   constructor(private route: ActivatedRoute, private speakerService: SpeakerService) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this.route.snapshot.params.guid) {
       this.speakerGuid = this.route.snapshot.params.guid;
       this.$speaker = this.speakerService.getPresenter(this.speakerGuid);

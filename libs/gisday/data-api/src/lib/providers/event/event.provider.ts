@@ -18,7 +18,8 @@ export class EventProvider extends BaseProvider<Event> {
     const newEntities = {};
     days.forEach((day, index) => {
       const dayEvents = entities.filter((event) => {
-        return event.date.indexOf(day) !== -1;
+        const dateString = event.date.toISOString();
+        return dateString.indexOf(day) !== -1;
       });
       newEntities[index] = dayEvents;
     });

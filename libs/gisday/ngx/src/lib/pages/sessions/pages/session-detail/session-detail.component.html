@@ -1,1 +1,97 @@
-<p>session-detail works!</p>
+<div *ngIf="(event | async) as event">
+  <div class="container12 leader-3 flex flex-row">
+    <h1 class="aggie-weight-2 clr-aggie-maroon column10">{{event.name}}</h1>
+  </div>
+
+  <div class="container12">
+    <div class="column10">
+      <div id="timeAndPlace" class="trailer-1">
+        <p>{{event.startTime | date:'MMM d, y, h:mm a'}} - {{event.endTime | date:'h:mm a'}}</p>
+        <p><a href="{{event.locationLink}}" target="_blank">{{event.locationBuilding}} {{event.locationRoom}}</a></p>
+      </div>
+
+      <div class="trailer-2" *ngIf="event.abstract">
+        <h3 class="aggie-weight-2">Abstract</h3>
+        <p>{{event.abstract}}</p>
+      </div>
+
+      <div class="trailer-2" *ngIf="event.onlineBroadcastUrl">
+        <h3 class="aggie-weight-2">Online Broadcast</h3>
+        <p *ngIf="event.onlineBroadcastUrl">
+          <a href="{{event.onlineBroadcastUrl}}">Online broadcast will be available when the event begins. The password (if asked) is "gisday" (all lower case, no quotes).</a>
+        </p>
+      </div>
+
+      <div class="trailer-2" *ngIf="event.googleDriveUrl">
+        <h3 class="aggie-weight-2">Event Materials</h3>
+        <p *ngIf="event.googleDriveUrl">
+          <a href="{{event.googleDriveUrl}}">Event materials will be available at Google Drive when the event begins.</a>
+        </p>
+      </div>
+
+      <!-- <div class="trailer-1 flex flex-row half-children"> -->
+      <!-- <div> -->
+      <!-- <h3 class="aggie-weight-2">Registration Information</h3> -->
+      <!-- <p *ngIf="event.requiresRsvp == true; else requiresRsvpElse">This is a limited-seating event. You must reserve a seat by adding this event to your sessions.</p> -->
+      <!-- <ng-template #requiresRsvpElse> -->
+      <!-- <p>This is an open attendance event, no reservation is required to attend.</p> -->
+      <!-- </ng-template> -->
+      <!-- <p *ngIf="event.isAcceptingRsvps == false">Registration for this event is not open yet.</p> -->
+      <!-- <p>Capacity: {{ (count$ | async)?.count }} / {{event.capacity }}</p> -->
+
+      <!-- <p *ngIf="event.rsvp"><i class="fa fa-check clr-aggie-maroon"></i> You are currently registered for this event
+          </p> -->
+      <!-- <div class="button primary leader-1" *ngIf="event.rsvp" (click)="handleRegistration(event)">RECALL RESERVATION -->
+      <!-- </div> -->
+      <!-- <div class="button primary leader-1" *ngIf="!event.rsvp" (click)="handleRegistration(event)">REGISTER FOR -->
+      <!-- EVENT</div> -->
+      <!-- <div class="button primary leader-1 disabled" *ngIf="event.isAcceptingRsvps == false ">REGISTRATION NOT YET AVAILABLE</div> -->
+      <!-- </div> -->
+      <!-- <div> -->
+      <!-- <h3 class="aggie-weight-2">Event Checkin</h3> -->
+      <!-- <p *ngIf="event.date > now">Event checkin will be available when the event begins.</p> -->
+      <!-- <div *ngIf="(checkedIn$ | async) as checkedIn">
+
+                <p *ngIf="checkedIn.checkedIn == false && nowDate >= event.dateTime && nowDate <= event.endDateTime" class="success">Event
+                  currently is underway. Please checkin before the event ends as checkin will become unavailable afterwards.</p>
+                <p *ngIf="checkedIn.checkedIn == false && nowDate >= event.endDateTime" class="error">Event has concluded. Checkin for
+                  this event is no longer available.</p>
+                <p *ngIf="checkedIn.checkedIn == true">You are checked into this event.</p>
+                <div class="button primary leader-1" *ngIf="checkedIn.checkedIn == false && nowDate >= event.dateTime && nowDate <= event.endDateTime"
+                  (click)="handleCheckin(event)">CHECKIN</div>
+          </div> -->
+      <!-- </div> -->
+
+      <!-- <div class="trailer-2" *ngIf="event.sessions.length > 0">
+          <h3 class="aggie-weight-2">Topics</h3>
+          <div class="flex flex-row leader-1 justify-between">
+            <div class="session-item" *ngFor="let item of event.sessions">
+              <div class="details">
+                <div class="name">{{item.name}}</div>
+                <div class="abstract">
+                  <p *ngIf="!item.abstract">There is currently no abstract for this topic. Please check back later.</p>
+                  <p *ngIf="item.abstract">{{item.abstract}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+      <!-- <div class="trailer-2" *ngIf="event">
+          <h3 class="aggie-weight-2">Presenters</h3>
+          <div class="flex flex-row leader-1 justify-between">
+            <div class="presenter-item" *ngFor="let presenter of event.eventSpeakers">
+              <div class="image"
+                [ngStyle]=" { 'background-image': 'url('+getPresenterImageUrl(presenter.speaker)+')'  } "></div>
+              <div class="details">
+                <div class="name">{{presenter.speaker.speakerFirstName}} {{presenter.speaker.speakerLastName}}</div>
+                <div class="organization">{{presenter.speaker.speakerOrganization}}</div>
+                <div class="role">{{presenter.speakerRole}}</div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+      <!-- </div> -->
+    </div>
+  </div>
+</div>
