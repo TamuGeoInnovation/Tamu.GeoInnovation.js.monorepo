@@ -54,10 +54,14 @@ export class SessionViewComponent implements OnInit, OnDestroy {
         }
       });
     }
-    this.fetchEvents();
+    // this.fetchEvents();
   }
 
   public filterEventsByFilterTags(event: Event) {
+    // if no filter tags are applied, show all events
+    if (this.filterTags.length === 0) {
+      return true;
+    }
     // compare event.tags with this.filterTags
     // if we have even one in common we show the event
     let ret = false;

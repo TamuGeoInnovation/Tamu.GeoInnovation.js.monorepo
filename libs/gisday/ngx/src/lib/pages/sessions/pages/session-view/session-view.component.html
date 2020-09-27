@@ -25,7 +25,7 @@
     <div id="day1" class="modal card">
       <h2 class="aggie-weight-1 ng-binding">November 16</h2>
       <div *ngFor="let event of ($events | async)[0]">
-        <div *ngIf="filterEventsByFilterTags(event)">
+        <div class="test" *ngIf="filterEventsByFilterTags(event)">
           <div class="row" [routerLink]="['/sessions/details', event.guid]">
             <div class="input-control">
               <div class="checkbox-custom-input">
@@ -49,21 +49,23 @@
     <div id="day2" class="modal card">
       <h2 class="aggie-weight-1 ng-binding">November 17</h2>
       <div *ngFor="let event of ($events | async)[1]">
-        <div class="row" [routerLink]="['/sessions/details', event.guid]">
-          <div class="input-control">
-            <div class="checkbox-custom-input">
-              <input #eventCheck type="checkbox" class="ng-pristine ng-untouched ng-valid" />
-              <i></i>
+        <div class="test" *ngIf="filterEventsByFilterTags(event)">
+          <div class="row" [routerLink]="['/sessions/details', event.guid]">
+            <div class="input-control">
+              <div class="checkbox-custom-input">
+                <input #eventCheck type="checkbox" class="ng-pristine ng-untouched ng-valid" />
+                <i></i>
+              </div>
             </div>
-          </div>
-          <div class="event-time">
-            <span class="ng-binding">{{event.startTime | date:'h:mm a'}}</span>
-            <span id="detail-time" class="ng-binding"> - {{event.endTime | date:'h:mm a'}}</span>
-          </div>
-          <div class="event-name">
-            <p class="ng-binding">{{event.name}}</p>
-            <p class="ng-binding">{{event.locationBuilding}} {{event.locationRoom}}</p>
-            <p></p>
+            <div class="event-time">
+              <span class="ng-binding">{{event.startTime | date:'h:mm a'}}</span>
+              <span id="detail-time" class="ng-binding"> - {{event.endTime | date:'h:mm a'}}</span>
+            </div>
+            <div class="event-name">
+              <p class="ng-binding">{{event.name}}</p>
+              <p class="ng-binding">{{event.locationBuilding}} {{event.locationRoom}}</p>
+              <p></p>
+            </div>
           </div>
         </div>
       </div>
@@ -71,21 +73,23 @@
     <div id="day3" class="modal card">
       <h2 class="aggie-weight-1 ng-binding">November 18</h2>
       <div *ngFor="let event of ($events | async)[2]">
-        <div class="row" [routerLink]="['/sessions/details', event.guid]">
-          <div class="input-control">
-            <div class="checkbox-custom-input">
-              <input #eventCheck type="checkbox" class="ng-pristine ng-untouched ng-valid" />
-              <i></i>
+        <div class="test" *ngIf="filterEventsByFilterTags(event)">
+          <div class="row" [routerLink]="['/sessions/details', event.guid]">
+            <div class="input-control">
+              <div class="checkbox-custom-input">
+                <input #eventCheck type="checkbox" class="ng-pristine ng-untouched ng-valid" />
+                <i></i>
+              </div>
             </div>
-          </div>
-          <div class="event-time">
-            <span class="ng-binding">{{event.startTime | date:'h:mm a'}}</span>
-            <span id="detail-time" class="ng-binding"> - {{event.endTime | date:'h:mm a'}}</span>
-          </div>
-          <div class="event-name">
-            <p class="ng-binding">{{event.name}}</p>
-            <p class="ng-binding">{{event.locationBuilding}} {{event.locationRoom}}</p>
-            <p></p>
+            <div class="event-time">
+              <span class="ng-binding">{{event.startTime | date:'h:mm a'}}</span>
+              <span id="detail-time" class="ng-binding"> - {{event.endTime | date:'h:mm a'}}</span>
+            </div>
+            <div class="event-name">
+              <p class="ng-binding">{{event.name}}</p>
+              <p class="ng-binding">{{event.locationBuilding}} {{event.locationRoom}}</p>
+              <p></p>
+            </div>
           </div>
         </div>
       </div>
