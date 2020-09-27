@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CourseCredit } from './course-credit';
+import { CourseCreditProvider } from './course-credit.provider';
 
-describe('CourseCredit', () => {
-  let provider: CourseCredit;
+describe('CourseCreditProvider', () => {
+  let provider: CourseCreditProvider;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CourseCredit],
+      providers: [CourseCreditProvider]
     }).compile();
 
-    provider = module.get<CourseCredit>(CourseCredit);
+    provider = module.get<CourseCreditProvider>(CourseCreditProvider);
   });
 
   it('should be defined', () => {

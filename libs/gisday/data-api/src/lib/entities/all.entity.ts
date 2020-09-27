@@ -468,8 +468,14 @@ export class UserSubmission extends GuidIdentity {
 
 export class CommonRepo<T> extends Repository<T> {}
 
+@EntityRepository(CheckIn)
+export class CheckInRepo extends CommonRepo<CheckIn> {}
+
 @EntityRepository(Class)
 export class ClassRepo extends CommonRepo<Class> {}
+
+@EntityRepository(CourseCredit)
+export class CourseCreditRepo extends CommonRepo<CourseCredit> {}
 
 @EntityRepository(Event)
 export class EventRepo extends CommonRepo<Event> {}
@@ -505,5 +511,17 @@ export class SpeakerInfoRepo extends CommonRepo<SpeakerInfo> {}
 @EntityRepository(Sponsor)
 export class SponsorRepo extends CommonRepo<Sponsor> {}
 
+@EntityRepository(SubmissionType)
+export class SubmissionTypeRepo extends CommonRepo<SubmissionType> {}
+
 @EntityRepository(Tag)
 export class TagRepo extends CommonRepo<Tag> {}
+
+@EntityRepository(UserClass)
+export class UserClassRepo extends CommonRepo<UserClass> {}
+
+@EntityRepository(UserRsvp)
+export class UserRsvpRepo extends CommonRepo<UserRsvp> {}
+
+@EntityRepository(UserSubmission)
+export class UserSubmissionRepo extends CommonRepo<UserSubmission> {}
