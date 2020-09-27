@@ -132,7 +132,7 @@ export class Event extends GuidIdentity {
   locationLink: string;
 
   @Column({ nullable: true })
-  date: string;
+  date: Date;
 
   @Column({ nullable: true })
   type: string;
