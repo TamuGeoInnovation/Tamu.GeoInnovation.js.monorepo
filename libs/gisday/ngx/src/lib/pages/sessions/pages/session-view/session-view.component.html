@@ -25,21 +25,23 @@
     <div id="day1" class="modal card">
       <h2 class="aggie-weight-1 ng-binding">November 16</h2>
       <div *ngFor="let event of ($events | async)[0]">
-        <div class="row" [routerLink]="['/sessions/details', event.guid]">
-          <div class="input-control">
-            <div class="checkbox-custom-input">
-              <input #eventCheck type="checkbox" class="ng-pristine ng-untouched ng-valid" />
-              <i></i>
+        <div *ngIf="filterEventsByFilterTags(event)">
+          <div class="row" [routerLink]="['/sessions/details', event.guid]">
+            <div class="input-control">
+              <div class="checkbox-custom-input">
+                <input #eventCheck type="checkbox" class="ng-pristine ng-untouched ng-valid" />
+                <i></i>
+              </div>
             </div>
-          </div>
-          <div class="event-time">
-            <span class="ng-binding">{{event.startTime | date:'h:mm a'}}</span>
-            <span id="detail-time" class="ng-binding"> - {{event.endTime | date:'h:mm a'}}</span>
-          </div>
-          <div class="event-name">
-            <p class="ng-binding">{{event.name}}</p>
-            <p class="ng-binding">{{event.locationBuilding}} {{event.locationRoom}}</p>
-            <p></p>
+            <div class="event-time">
+              <span class="ng-binding">{{event.startTime | date:'h:mm a'}}</span>
+              <span id="detail-time" class="ng-binding"> - {{event.endTime | date:'h:mm a'}}</span>
+            </div>
+            <div class="event-name">
+              <p class="ng-binding">{{event.name}}</p>
+              <p class="ng-binding">{{event.locationBuilding}} {{event.locationRoom}}</p>
+              <p></p>
+            </div>
           </div>
         </div>
       </div>
@@ -92,14 +94,17 @@
 </div>
 
 <div id="filter-container" class="column4" *ngIf="$events">
-  <div id="filter-toggle" (click)="toggleFilters = !toggleFilters"><span class="fa fa-lg fa-fw fa-filter"></span></div>
-  <div id="filters" class="card" [ngClass]="{ expanded : toggleFilters }">
+  <div id="filter-toggle"><span class="fa fa-lg fa-fw fa-filter"></span></div>
+  <div id="filters" class="card">
     <h2 class="aggie-weight-1 trailer-1">Filters</h2>
+    <!-- <tamu-gisc-checkbox-group [referenceId]="'guid'">
+      <tamu-gisc-checkbox class="row" *ngFor="let tag of ($tags | async)" [label]="tag.name" [data]="tag"></tamu-gisc-checkbox>
+    </tamu-gisc-checkbox-group> -->
     <div *ngFor="let tag of ($tags | async)">
       <div class="row">
         <div class="input-control">
           <div class="checkbox-custom-input">
-            <input #checkbox type="checkbox" />
+            <input #checkbox type="checkbox" (click)="applyOrRemoveTag(tag, checkbox.checked)" />
             <i></i>
           </div>
         </div>

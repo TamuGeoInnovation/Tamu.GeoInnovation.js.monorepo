@@ -3,12 +3,24 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
+import * as WebFont from 'webfontloader';
+
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { GisdayNgxModule } from '@tamu-gisc/gisday/ngx';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
+
+WebFont.load({
+  google: {
+    families: ['Material Icons']
+  },
+  custom: {
+    families: ['Moriston', 'Tungsten'],
+    urls: ['assets/fonts/moriston_pro/moriston_pro.css', 'assets/fonts/tungsten/tungsten.css']
+  }
+});
 
 const routes: Routes = [
   {
