@@ -50,6 +50,75 @@ export class GuidIdentity extends TimeStampEntity {
 }
 
 @Entity({
+  name: 'user'
+})
+export class User extends GuidIdentity {
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  email: string;
+
+  @Column({
+    type: 'bit',
+    nullable: true
+  })
+  email_verified: boolean = false;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  password: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  updatedAt?: string;
+
+  @Column({
+    type: 'bit',
+    nullable: true
+  })
+  enabled2fa?: boolean = false;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  secret2fa?: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  recovery_email: string;
+
+  @Column({
+    type: 'bit',
+    nullable: true
+  })
+  recovery_email_verified: boolean = false;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  signup_ip_address: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  last_used_ip_address: string;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
   name: 'events'
 })
 export class Event extends GuidIdentity {
@@ -71,14 +140,15 @@ export class Event extends GuidIdentity {
   // @OneToMany(type => UserRsvp, userRsvp => userRsvp.eventGuid)
   // public currentRsvps: UserRsvp[]; // UserRsvp[]
 
-  // @OneToMany(type => CourseCredit, credit => credit.eventGuid)
-  // public courseCredit: CourseCredit[]; // CourseCredit[]
+  @ManyToMany((type) => CourseCredit, { cascade: true })
+  @JoinTable({ name: 'event_course_credits' })
+  public courseCredit: CourseCredit[]; // CourseCredit[]
 
   // @OneToMany(type => UserCheckin, userCheckin => userCheckin.eventGuid)
   // public userCheckins: CheckIn[]; // UserCheckin[]
 
-  @Column({ nullable: true })
-  user: string; // User
+  // @Column({ nullable: true })
+  // user: string; // User
 
   @Column({ nullable: true })
   observedAttendeeStart: number;
@@ -210,8 +280,9 @@ export class SpeakerInfo extends GuidIdentity {
   name: 'speakers'
 })
 export class Speaker extends GuidIdentity {
-  @Column({ nullable: true })
-  public user: string; // User
+  @OneToOne((type) => User, { cascade: true, nullable: true })
+  @JoinColumn()
+  public user: User; // User
 
   @Column({ nullable: false })
   public firstName: string;
@@ -268,11 +339,13 @@ export class Sponsor extends GuidIdentity {
   name: 'checkins'
 })
 export class CheckIn extends GuidIdentity {
-  @Column({ nullable: false })
+  @OneToOne((type) => Event, { cascade: true })
+  @JoinColumn()
   public event: Event;
 
-  @Column({ nullable: false })
-  public user: unknown; // User
+  @OneToOne((type) => User, { cascade: true })
+  @JoinColumn()
+  public user: User;
 
   constructor() {
     super();
@@ -283,14 +356,17 @@ export class CheckIn extends GuidIdentity {
   name: 'classes'
 })
 export class Class extends GuidIdentity {
-  @Column({ nullable: false })
-  public professor: string; // User
+  @OneToOne((type) => User, { cascade: true })
+  @JoinColumn({
+    name: 'professorUserGuid'
+  })
+  public user: User;
 
   @Column({ nullable: false })
   public title: string;
 
   @Column({ nullable: false })
-  public code: string; // User
+  public code: string;
 
   constructor() {
     super();
@@ -301,10 +377,10 @@ export class Class extends GuidIdentity {
   name: 'course_credits'
 })
 export class CourseCredit extends GuidIdentity {
-  @Column({ nullable: false })
+  @OneToOne((type) => Event, { cascade: true })
   public event: Event;
 
-  @Column({ nullable: false })
+  @OneToOne((type) => Class, { cascade: true })
   public class: Class;
 
   constructor() {
@@ -328,11 +404,13 @@ export class SubmissionType extends GuidIdentity {
   name: 'user_classes'
 })
 export class UserClass extends GuidIdentity {
-  @Column({ nullable: false })
+  @OneToOne((type) => Class, { cascade: true })
+  @JoinColumn()
   public class: Class;
 
-  @Column({ nullable: false })
-  public user: unknown; // User
+  @OneToOne((type) => User, { cascade: true })
+  @JoinColumn()
+  public user: User; // User
 
   constructor() {
     super();
@@ -343,14 +421,16 @@ export class UserClass extends GuidIdentity {
   name: 'user_rsvps'
 })
 export class UserRsvp extends GuidIdentity {
-  @Column({ nullable: false })
-  public user: unknown; // User
+  @OneToOne((type) => User, { cascade: true })
+  @JoinColumn()
+  public user: User; // User
 
-  @Column({ nullable: false })
+  @OneToOne((type) => Event, { cascade: true })
+  @JoinColumn()
   public event: Event;
 
   @Column({ nullable: false })
-  public rsvpType: unknown; // What is an RSVP Type?
+  public rsvpType: string; // What is an RSVP Type?
 
   constructor() {
     super();
@@ -361,8 +441,9 @@ export class UserRsvp extends GuidIdentity {
   name: 'submissions'
 })
 export class UserSubmission extends GuidIdentity {
-  @Column({ nullable: false })
-  public user: unknown; // User
+  @OneToOne((type) => User, { cascade: true })
+  @JoinColumn()
+  public user: User; // User
 
   @Column({ nullable: false })
   public title: string;
@@ -376,7 +457,8 @@ export class UserSubmission extends GuidIdentity {
   @Column({ nullable: false })
   public link: string;
 
-  @Column({ nullable: false })
+  @OneToOne((type) => SubmissionType, { cascade: true })
+  @JoinColumn()
   public submissionType: SubmissionType; // Submission Type?
 
   constructor() {

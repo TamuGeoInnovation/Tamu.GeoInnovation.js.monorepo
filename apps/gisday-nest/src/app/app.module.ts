@@ -20,6 +20,7 @@ import {
   SponsorModule,
   Tag,
   TagModule,
+  User,
   UserClass,
   UserRsvp,
   UserSubmission
@@ -38,19 +39,20 @@ import { localDbConfig } from '../environments/ormconfig';
     TypeOrmModule.forRoot({
       ...localDbConfig,
       entities: [
-        // CheckIn,
+        CheckIn,
         Class,
-        // CourseCredit,
+        CourseCredit,
         Event,
         Session,
         Speaker,
         SpeakerInfo,
-        // SubmissionType,
+        SubmissionType,
         Sponsor,
-        Tag
-        // UserClass,
-        // UserRsvp,
-        // UserSubmission
+        Tag,
+        User,
+        UserClass,
+        UserRsvp,
+        UserSubmission
       ]
     }),
     ClassModule,
