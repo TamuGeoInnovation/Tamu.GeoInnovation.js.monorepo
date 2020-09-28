@@ -27,6 +27,7 @@ import {
   SponsorModule,
   SubmissionTypeModule,
   TagModule,
+  UserModule,
   UserClassModule,
   UserRsvpModule,
   UserSubmissionModule
@@ -70,6 +71,7 @@ import { localDbConfig } from '../environments/ormconfig';
     SponsorModule,
     SubmissionTypeModule,
     TagModule,
+    UserModule,
     UserClassModule,
     UserRsvpModule,
     UserSubmissionModule
