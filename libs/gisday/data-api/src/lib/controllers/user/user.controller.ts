@@ -11,6 +11,15 @@ export class UserController {
       return;
     }
   }
+
+  @Get('role')
+  async getUserRole(@Req() req) {
+    if (req.user) {
+      return OpenIdClient.client.userinfo(req.user.access_token);
+    } else {
+      return;
+    }
+  }
 }
 
 // "token_endpoint": "http://localhost:4001/oidc/token",
