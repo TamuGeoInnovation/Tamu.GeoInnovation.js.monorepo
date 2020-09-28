@@ -1,1 +1,9 @@
-<p>my-checkins works!</p>
+<div class="card leader-3 trailer-2">
+  <h2>My Event Checkins</h2>
+  <div *ngIf="($checkins | async); else noCheckins">
+    <p *ngFor="let checkin of ($checkins | async)">{{checkin.event.name}}</p>
+  </div>
+  <ng-template #noCheckins>
+    <p class="leader-1 pre-2">You currently have no checkins for this season.</p>
+  </ng-template>
+</div>
