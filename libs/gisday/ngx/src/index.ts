@@ -6,6 +6,7 @@ export * from './lib/pages/sponsors/sponsors.module';
 export * from './lib/pages/about/about.module';
 export * from './lib/pages/presenters/presenters.module';
 export * from './lib/pages/competitions/competitions.module';
+export * from './lib/pages/account/account.module';
 // export * from './lib/pages/competitions/feedback/feedback.module';
 // export * from './lib/pages/competitions/papers/papers.module';
 // export * from './lib/pages/competitions/posters/posters.module';
