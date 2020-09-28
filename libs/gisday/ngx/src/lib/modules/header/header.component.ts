@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/co
 import { Observable } from 'rxjs';
 import { AuthService } from '@tamu-gisc/gisday/data-access';
 
-import { ITokenIntrospectionResponse } from '@tamu-gisc/gisday/data-access';
+import { ITokenIntrospectionResponse, IUserInfoResponse } from '@tamu-gisc/gisday/data-access';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -11,6 +11,7 @@ import { ITokenIntrospectionResponse } from '@tamu-gisc/gisday/data-access';
 export class HeaderComponent implements OnInit {
   private modal: HTMLElement;
   public loggedIn: Observable<ITokenIntrospectionResponse>;
+  public userRole: Observable<IUserInfoResponse>;
   public isActive: boolean = false;
   public account: Account;
 
@@ -18,6 +19,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.loggedIn = this.authService.state();
+    this.userRole = this.authService.getUserRole();
   }
 
   toggleMenuButton() {

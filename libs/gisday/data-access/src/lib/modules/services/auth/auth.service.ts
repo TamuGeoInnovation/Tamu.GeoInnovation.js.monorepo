@@ -28,6 +28,12 @@ export class AuthService {
     //   })
     // );
   }
+
+  public getUserRole() {
+    return this.http.get<IUserInfoResponse>(this.env.value('api_url') + '/user/role', {
+      withCredentials: true
+    });
+  }
 }
 
 export interface ITokenIntrospectionResponse {
@@ -40,4 +46,17 @@ export interface ITokenIntrospectionResponse {
   scope: string;
   sub: string;
   token_type: string;
+}
+
+export interface IUserInfoResponse {
+  sub: string;
+  family_name: string;
+  given_name: string;
+  name: string;
+  profile: string;
+  role: {
+    client_role: string;
+    level_role: string;
+    name_role: string;
+  };
 }
