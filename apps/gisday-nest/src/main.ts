@@ -39,7 +39,7 @@ async function bootstrap() {
     console.log('Listening at http://localhost:' + port);
   });
 }
-bootstrap();
+// bootstrap();
 OpenIdClient.build(OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_ISSUER)
   .then(() => bootstrap())
   .catch((err) => {

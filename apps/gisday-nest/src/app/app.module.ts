@@ -39,9 +39,9 @@ import { localDbConfig } from '../environments/ormconfig';
 
 @Module({
   imports: [
-    // OidcClientModule.forRoot({
-    //   host: OIDC_ISSUER
-    // }),
+    OidcClientModule.forRoot({
+      host: OIDC_ISSUER
+    }),
     TypeOrmModule.forRoot({
       ...localDbConfig,
       entities: [
