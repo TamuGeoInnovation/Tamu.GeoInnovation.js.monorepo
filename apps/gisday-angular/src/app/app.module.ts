@@ -55,8 +55,12 @@ const routes: Routes = [
   },
   {
     path: 'account',
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AccountModule)
+  },
+  {
+    path: 'login',
     canActivate: [LoginGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AccountModule),
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.LoginModule),
     data: {
       externalUrl: 'http://localhost:3333/oidc/login'
     }

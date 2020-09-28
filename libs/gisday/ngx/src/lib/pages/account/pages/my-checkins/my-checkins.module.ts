@@ -16,7 +16,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [MyCheckinsComponent, AccoutHeaderComponent],
+  declarations: [MyCheckinsComponent],
   imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule],
   exports: [RouterModule]
 })
