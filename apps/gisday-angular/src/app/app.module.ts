@@ -50,6 +50,10 @@ const routes: Routes = [
   {
     path: 'competitions',
     loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.CompetitionsModule)
+  },
+  {
+    path: 'account',
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AccountModule)
   }
 ];
 
