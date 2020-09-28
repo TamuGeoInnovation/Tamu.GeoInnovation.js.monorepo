@@ -7,7 +7,7 @@ import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
-import { GisdayNgxModule } from '@tamu-gisc/gisday/ngx';
+import { GisdayNgxModule, LoginGuard } from '@tamu-gisc/gisday/ngx';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -53,7 +53,11 @@ const routes: Routes = [
   },
   {
     path: 'account',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AccountModule)
+    canActivate: [LoginGuard],
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AccountModule),
+    data: {
+      externalUrl: 'http://localhost:3333/oidc/login'
+    }
   }
 ];
 
