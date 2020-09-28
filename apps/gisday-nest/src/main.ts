@@ -10,7 +10,7 @@ import { OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_ISSUER } from './environ
 
 async function bootstrap() {
   const sqlStore = new SQLiteStore({
-    db: 'covid_sessions.db',
+    db: 'gisday_nest.db',
     concurrentDB: true,
     table: 'sessions',
     dir: __dirname
@@ -40,8 +40,8 @@ async function bootstrap() {
   });
 }
 bootstrap();
-// OpenIdClient.build(OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_ISSUER)
-//   .then(() => bootstrap())
-//   .catch((err) => {
-//     console.warn(err);
-//   });
+OpenIdClient.build(OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_ISSUER)
+  .then(() => bootstrap())
+  .catch((err) => {
+    console.warn(err);
+  });

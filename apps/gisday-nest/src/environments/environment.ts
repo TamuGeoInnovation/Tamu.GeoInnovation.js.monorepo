@@ -1,7 +1,6 @@
 export const environment = {
   production: false,
-  port: 3333,
-  globalPrefix: 'api'
+  port: 3333
 };
 
 export { localDbConfig as dbConfig } from './ormconfig';
