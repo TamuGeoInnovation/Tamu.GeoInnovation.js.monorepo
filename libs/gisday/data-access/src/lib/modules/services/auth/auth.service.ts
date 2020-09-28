@@ -34,6 +34,12 @@ export class AuthService {
       withCredentials: true
     });
   }
+
+  public userLogout() {
+    return this.http.get<IUserInfoResponse>(this.env.value('api_url') + '/user/logout', {
+      withCredentials: true
+    });
+  }
 }
 
 export interface ITokenIntrospectionResponse {

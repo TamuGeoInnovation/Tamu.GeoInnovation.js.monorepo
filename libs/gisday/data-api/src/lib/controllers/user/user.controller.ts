@@ -20,6 +20,15 @@ export class UserController {
       return;
     }
   }
+
+  @Get('logout')
+  async userLogout(@Req() req) {
+    if (req.user) {
+      return OpenIdClient.client.userinfo(req.user.access_token);
+    } else {
+      return;
+    }
+  }
 }
 
 // "token_endpoint": "http://localhost:4001/oidc/token",
