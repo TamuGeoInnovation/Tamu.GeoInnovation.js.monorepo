@@ -12,7 +12,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () => import('./pages/login/login.module').then((m) => m.LoginModule)
+        loadChildren: () => import('./pages/my-details/my-details.module').then((m) => m.MyDetailsModule)
       },
       {
         path: 'my-classes',
@@ -35,7 +35,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [AccountComponent],
+  declarations: [AccountComponent, AccoutHeaderComponent],
   imports: [CommonModule, RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
