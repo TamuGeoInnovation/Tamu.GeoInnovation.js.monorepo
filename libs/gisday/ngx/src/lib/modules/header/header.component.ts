@@ -1,5 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AuthService } from '@tamu-gisc/gisday/data-access';
 
+import { ITokenIntrospectionResponse } from '@tamu-gisc/gisday/data-access';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -7,12 +10,15 @@ import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/co
 })
 export class HeaderComponent implements OnInit {
   private modal: HTMLElement;
+  public loggedIn: Observable<ITokenIntrospectionResponse>;
   public isActive: boolean = false;
   public account: Account;
 
-  constructor() {}
+  constructor(private readonly authService: AuthService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loggedIn = this.authService.state();
+  }
 
   toggleMenuButton() {
     this.isActive = !this.isActive;

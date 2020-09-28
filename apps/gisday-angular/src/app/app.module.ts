@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
@@ -8,6 +8,8 @@ import * as WebFont from 'webfontloader';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { GisdayNgxModule, LoginGuard } from '@tamu-gisc/gisday/ngx';
+
+import { AuthInterceptor, AuthService } from '@tamu-gisc/gisday/data-access';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -69,7 +71,14 @@ const routes: Routes = [
       provide: env,
       useValue: environment
     }
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: AuthInterceptor,
+    //   multi: true
+    // }
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private auth: AuthService) {}
+}
