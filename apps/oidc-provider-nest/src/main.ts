@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app/app.module';
-import { OpenIdProvider, ClientMetadataModule, ClientMetadataService } from '@tamu-gisc/oidc/provider-nest';
+import { OpenIdProvider, ClientMetadataModule, ClientMetadataService } from '@tamu-gisc/oidc/provider-nestjs';
 import { Provider } from 'oidc-provider';
 import * as express from 'express';
 import * as csurf from 'csurf';

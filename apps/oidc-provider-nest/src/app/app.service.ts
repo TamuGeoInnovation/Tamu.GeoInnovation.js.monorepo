@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { OpenIdProvider, UserService } from '@tamu-gisc/oidc/provider-nest';
+import { OpenIdProvider, UserService } from '@tamu-gisc/oidc/provider-nestjs';
 
 @Injectable()
 export class AppService {

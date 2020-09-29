@@ -40,7 +40,7 @@ import {
   UserPasswordHistory,
   PushedAuthorizationRequest,
   ReplayDetection
-} from '@tamu-gisc/oidc/provider-nest';
+} from '@tamu-gisc/oidc/provider-nestjs';
 
 import { dbConfig } from '../environments/environment';
 

@@ -3206,75 +3206,6 @@
         }
       }
     },
-    "oidc-provider-nest": {
-      "root": "apps/oidc-provider-nest",
-      "sourceRoot": "apps/oidc-provider-nest/src",
-      "projectType": "application",
-      "prefix": "oidc-provider-nest",
-      "schematics": {},
-      "architect": {
-        "build": {
-          "builder": "@nrwl/node:build",
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/oidc-provider-nest/src/environments/environment.ts",
-                  "with": "apps/oidc-provider-nest/src/environments/environment.prod.ts"
-                }
-              ],
-              "extractLicenses": false,
-              "inspect": false,
-              "optimization": true,
-              "sourceMap": false
-            }
-          },
-          "options": {
-            "main": "apps/oidc-provider-nest/src/main.ts",
-            "outputPath": "dist/apps/oidc-provider-nest",
-            "tsConfig": "apps/oidc-provider-nest/tsconfig.app.json",
-            "assets": ["apps/oidc-provider-nest/src/assets"]
-          }
-        },
-        "serve": {
-          "builder": "@nrwl/node:execute",
-          "options": {
-            "buildTarget": "oidc-provider-nest:build",
-            "port": 7770
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "exclude": ["**/node_modules/**", "!apps/oidc-provider-nest/**"],
-            "tsConfig": ["apps/oidc-provider-nest/tsconfig.app.json", "apps/oidc-provider-nest/tsconfig.spec.json"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "apps/oidc-provider-nest/jest.config.js",
-            "tsConfig": "apps/oidc-provider-nest/tsconfig.spec.json"
-          }
-        },
-        "serve-all": {
-          "builder": "@angular-devkit/architect:concat",
-          "options": {
-            "targets": [
-              {
-                "target": "oidc-provider-angular:build"
-              },
-              {
-                "target": "oidc-provider-angular:server"
-              },
-              {
-                "target": "oidc-provider-express:serve"
-              }
-            ]
-          }
-        }
-      }
-    },
     "oidc-provider": {
       "root": "libs/oidc/provider",
       "sourceRoot": "libs/oidc/provider/src",
@@ -3503,24 +3434,93 @@
         }
       }
     },
-    "oidc-provider-nest-lib": {
-      "root": "libs/oidc/provider-nest",
-      "sourceRoot": "libs/oidc/provider-nest/src",
+    "oidc-provider-nest": {
+      "root": "apps/oidc-provider-nest",
+      "sourceRoot": "apps/oidc-provider-nest/src",
+      "projectType": "application",
+      "prefix": "oidc-provider-nest",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-provider-nest/src/environments/environment.ts",
+                  "with": "apps/oidc-provider-nest/src/environments/environment.prod.ts"
+                }
+              ],
+              "extractLicenses": false,
+              "inspect": false,
+              "optimization": true,
+              "sourceMap": false
+            }
+          },
+          "options": {
+            "main": "apps/oidc-provider-nest/src/main.ts",
+            "outputPath": "dist/apps/oidc-provider-nest",
+            "tsConfig": "apps/oidc-provider-nest/tsconfig.app.json",
+            "assets": ["apps/oidc-provider-nest/src/assets"]
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "oidc-provider-nest:build",
+            "port": 7770
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "exclude": ["**/node_modules/**", "!apps/oidc-provider-nest/**"],
+            "tsConfig": ["apps/oidc-provider-nest/tsconfig.app.json", "apps/oidc-provider-nest/tsconfig.spec.json"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/oidc-provider-nest/jest.config.js",
+            "tsConfig": "apps/oidc-provider-nest/tsconfig.spec.json"
+          }
+        },
+        "serve-all": {
+          "builder": "@angular-devkit/architect:concat",
+          "options": {
+            "targets": [
+              {
+                "target": "oidc-provider-angular:build"
+              },
+              {
+                "target": "oidc-provider-angular:server"
+              },
+              {
+                "target": "oidc-provider-express:serve"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "oidc-provider-nestjs": {
+      "root": "libs/oidc/provider-nestjs",
+      "sourceRoot": "libs/oidc/provider-nestjs/src",
       "projectType": "library",
       "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["libs/oidc/provider-nest/tsconfig.lib.json", "libs/oidc/provider-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/provider-nest/**"]
+            "tsConfig": ["libs/oidc/provider-nestjs/tsconfig.lib.json", "libs/oidc/provider-nestjs/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/oidc/provider-nestjs/**"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "libs/oidc/provider-nest/jest.config.js",
-            "tsConfig": "libs/oidc/provider-nest/tsconfig.spec.json"
+            "jestConfig": "libs/oidc/provider-nestjs/jest.config.js",
+            "tsConfig": "libs/oidc/provider-nestjs/tsconfig.spec.json"
           }
         }
       }

@@ -89,7 +89,7 @@
       "@tamu-gisc/oidc/client": ["libs/oidc/client/src/index.ts"],
       "@tamu-gisc/ues/common/ngx": ["libs/ues/common/ngx/src/index.ts"],
       "@tamu-gisc/common/utils/device/guards": ["libs/common/utils/device/guards/src/index.ts"],
-      "@tamu-gisc/oidc/provider-nest": ["libs/oidc/provider-nest/src/index.ts"]
+      "@tamu-gisc/oidc/provider-nestjs": ["libs/oidc/provider-nestjs/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
