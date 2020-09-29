@@ -93,3 +93,18 @@ jobs:
     inputs:
       codeCoverageTool: Cobertura
       summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
+
+  - script: |
+      ng build --project aggiemap-angular --prod
+    displayName: 'Build Aggiemap'
+  - task: CopyFiles@2
+    inputs:
+      Contents: 'dist/**' # Pull the build directory (React)
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Copy Distribution Files'
+
+  - task: PublishBuildArtifacts@1
+    inputs: 
+      pathtoPublish: $(Build.ArtifactStagingDirectory) # dist or build files
+      ArtifactName: 'aggiemapAngular' # output artifact named aggiemapAngular
+    displayName: 'Publish Artifacts'
