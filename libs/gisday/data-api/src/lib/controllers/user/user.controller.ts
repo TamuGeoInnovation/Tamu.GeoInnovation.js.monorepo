@@ -24,7 +24,7 @@ export class UserController {
   @Get('logout')
   async userLogout(@Req() req) {
     if (req.user) {
-      return OpenIdClient.client.userinfo(req.user.access_token);
+      return OpenIdClient.client.revoke(req.user.access_token);
     } else {
       return;
     }

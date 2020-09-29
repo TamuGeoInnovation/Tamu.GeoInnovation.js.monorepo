@@ -13,7 +13,6 @@ import {
   SpeakerInfo,
   Sponsor,
   Tag,
-  User,
   UserClass,
   UserRsvp,
   UserSubmission,
@@ -41,10 +40,15 @@ import { localDbConfig } from '../environments/ormconfig';
 @Module({
   imports: [
     OidcClientModule.forRoot({
-      host: OIDC_ISSUER
+      host: 'http://localhost:4200'
     }),
+    // TypeOrmModule.forRoot({
+    //   ...localIdpConfig,
+    //   entities: [User, UserRole, Role, TokenEndpointAuthMethod, ClientMetadata, GrantType, RedirectUri, ResponseType]
+    // }),
     TypeOrmModule.forRoot({
       ...localDbConfig,
+
       entities: [
         CheckIn,
         Class,
@@ -56,7 +60,7 @@ import { localDbConfig } from '../environments/ormconfig';
         SubmissionType,
         Sponsor,
         Tag,
-        User,
+        // User,
         UserClass,
         UserRsvp,
         UserSubmission
