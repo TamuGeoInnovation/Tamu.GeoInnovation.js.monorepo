@@ -56,7 +56,7 @@ const routes: Routes = [
   {
     path: 'admin',
     canActivate: [AdminGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.CompetitionsModule)
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AdminModule)
   },
   {
     path: 'account',

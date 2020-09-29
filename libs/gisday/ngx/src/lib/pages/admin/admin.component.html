@@ -1,1 +1,21 @@
-<p>admin works!</p>
+<section>
+  <header id="section-links-container">
+    <div class="container12">
+      <div id="sectionLabel"></div>
+      <div id="ellipsis"></div>
+      <nav id="section-nav" class="clr-md-grey-0">
+        <ul>
+          <li><a [routerLink]="['/admin/checkins']"></a>Checkins</li>
+          <li><a [routerLink]="['/admin/classes']"></a>Classes</li>
+          <li><a [routerLink]="['/admin/events']">Events</a></li>
+          <li><a [routerLink]="['/admin/rsvp-types']">RSVP Types</a></li>
+          <li><a [routerLink]="['/admin/speakers']"></a>Speakers</li>
+          <li><a [routerLink]="['/admin/sponsors']">Sponsors</a></li>
+          <li><a [routerLink]="['/admin/submission-types']">Submission Types</a></li>
+          <li><a [routerLink]="['/admin/tags']"></a>Tags</li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <router-outlet></router-outlet>
+</section>

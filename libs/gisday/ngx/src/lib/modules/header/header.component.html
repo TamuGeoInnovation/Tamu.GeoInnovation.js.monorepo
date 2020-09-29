@@ -8,14 +8,9 @@
     <li (click)="toggleMenuButton()"><a [routerLink]="['/sponsors']">Sponsors</a></li>
     <li *ngIf="(loggedIn | async) == undefined; else offCanvasElse" (click)="toggleMenuButton()"><a [routerLink]="['/login']">Login</a></li>
     <ng-template #offCanvasElse>
-      <!-- <div *ngIf="(userRole | async) as userRole" id="liAccountMobile">
-        <li *ngIf="userRole.role.level_role === '99'" class="nav-divider">
-          <span class="divider-tag">Admin</span>
-        </li>
-        <li *ngIf="userRole.role.level_role === '99'" (click)="toggleMenuButton()"><a [routerLink]="['/admin/events']">Events</a></li>
-        <li *ngIf="userRole.role.level_role === '99'" (click)="toggleMenuButton()"><a [routerLink]="['/admin/tags']">Tags</a></li>
-        <li *ngIf="userRole.role.level_role === '99'" (click)="toggleMenuButton()"><a [routerLink]="['/admin/presenters']">Presenters</a></li>
-      </div> -->
+      <div *ngIf="(userRole | async) as userRole" id="liAccountMobile">
+        <li *ngIf="userRole.role.level_role === '99'"><a [routerLink]="['/admin']">Admin</a></li>
+      </div>
       <div id="liAccountMobile">
         <li class="nav-divider">
           <span class="divider-tag">
@@ -84,14 +79,9 @@
               <li id="liLogoff"><a [routerLink]="['/account/logout']">Logout</a></li>
             </ul>
           </ul>
-          <!-- <ul *ngIf="(userRole | async) as userRole" id="liAccount" visible="false" class="dropdown">
-            <a *ngIf="userRole.role.level_role === '99'">Admin</a>
-            <ul *ngIf="userRole.role.level_role === '99'">
-              <li><a [routerLink]="['/admin/events']">Events</a></li>
-              <li><a [routerLink]="['/admin/tags']">Tags</a></li>
-              <li><a [routerLink]="['/admin/presenters']">Presenters</a></li>
-            </ul>
-          </ul> -->
+          <ul *ngIf="(userRole | async) as userRole" id="liAccount" visible="false" class="dropdown">
+            <a *ngIf="userRole.role.level_role === '99'" [routerLink]="['/admin']">Admin</a>
+          </ul>
         </ng-template>
       </div>
       <div id="menu-button-container" #menuButton [ngClass]="{ active: isActive }" (click)="toggleMenuButton()">

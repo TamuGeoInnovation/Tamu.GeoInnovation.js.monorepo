@@ -2,18 +2,18 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AdminEventComponent } from './admin-event.component';
+import { AdminLandingComponent } from './admin-landing.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: AdminEventComponent
+    component: AdminLandingComponent
   }
 ];
 
 @NgModule({
-  declarations: [AdminEventComponent],
+  declarations: [AdminLandingComponent],
   imports: [CommonModule, RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AdminEventModule {}
+export class AdminLandingModule {}
