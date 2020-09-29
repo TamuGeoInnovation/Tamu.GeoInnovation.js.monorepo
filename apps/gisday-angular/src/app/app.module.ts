@@ -7,7 +7,7 @@ import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
-import { GisdayNgxModule, LoginGuard } from '@tamu-gisc/gisday/ngx';
+import { GisdayNgxModule, LoginGuard, AdminGuard } from '@tamu-gisc/gisday/ngx';
 
 import { AuthInterceptor, AuthService } from '@tamu-gisc/gisday/data-access';
 
@@ -54,8 +54,17 @@ const routes: Routes = [
     loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.CompetitionsModule)
   },
   {
+    path: 'admin',
+    canActivate: [AdminGuard],
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.CompetitionsModule)
+  },
+  {
     path: 'account',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AccountModule)
+    canActivate: [LoginGuard],
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AccountModule),
+    data: {
+      externalUrl: 'http://localhost:3333/oidc/login'
+    }
   },
   {
     path: 'login',
@@ -74,12 +83,12 @@ const routes: Routes = [
     {
       provide: env,
       useValue: environment
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
     }
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: AuthInterceptor,
-    //   multi: true
-    // }
   ],
   bootstrap: [AppComponent]
 })

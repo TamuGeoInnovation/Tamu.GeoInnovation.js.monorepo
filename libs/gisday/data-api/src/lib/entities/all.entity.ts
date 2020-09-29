@@ -49,74 +49,74 @@ export class GuidIdentity extends TimeStampEntity {
   }
 }
 
-@Entity({
-  name: 'user'
-})
-export class User extends GuidIdentity {
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  email: string;
+// @Entity({
+//   name: 'user'
+// })
+// export class User extends OldGuidIdentity {
+//   @Column({
+//     type: 'varchar',
+//     nullable: true
+//   })
+//   email: string;
 
-  @Column({
-    type: 'bit',
-    nullable: true
-  })
-  email_verified: boolean = false;
+//   @Column({
+//     type: 'bit',
+//     nullable: true
+//   })
+//   email_verified: boolean = false;
 
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  password: string;
+//   @Column({
+//     type: 'varchar',
+//     nullable: true
+//   })
+//   password: string;
 
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  updatedAt?: string;
+//   @Column({
+//     type: 'varchar',
+//     nullable: true
+//   })
+//   updatedAt?: string;
 
-  @Column({
-    type: 'bit',
-    nullable: true
-  })
-  enabled2fa?: boolean = false;
+//   @Column({
+//     type: 'bit',
+//     nullable: true
+//   })
+//   enabled2fa?: boolean = false;
 
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  secret2fa?: string;
+//   @Column({
+//     type: 'varchar',
+//     nullable: true
+//   })
+//   secret2fa?: string;
 
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  recovery_email: string;
+//   @Column({
+//     type: 'varchar',
+//     nullable: true
+//   })
+//   recovery_email: string;
 
-  @Column({
-    type: 'bit',
-    nullable: true
-  })
-  recovery_email_verified: boolean = false;
+//   @Column({
+//     type: 'bit',
+//     nullable: true
+//   })
+//   recovery_email_verified: boolean = false;
 
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  signup_ip_address: string;
+//   @Column({
+//     type: 'varchar',
+//     nullable: true
+//   })
+//   signup_ip_address: string;
 
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  last_used_ip_address: string;
+//   @Column({
+//     type: 'varchar',
+//     nullable: true
+//   })
+//   last_used_ip_address: string;
 
-  constructor() {
-    super();
-  }
-}
+//   constructor() {
+//     super();
+//   }
+// }
 
 @Entity({
   name: 'events'
@@ -280,9 +280,10 @@ export class SpeakerInfo extends GuidIdentity {
   name: 'speakers'
 })
 export class Speaker extends GuidIdentity {
-  @OneToOne((type) => User, { cascade: true, nullable: true })
-  @JoinColumn()
-  public user: User; // User
+  // @OneToOne((type) => User, { cascade: true, nullable: true })
+  // @JoinColumn()
+  @Column({ nullable: false })
+  public userGuid: string; // User
 
   @Column({ nullable: false })
   public firstName: string;
@@ -343,9 +344,10 @@ export class CheckIn extends GuidIdentity {
   @JoinColumn()
   public event: Event;
 
-  @OneToOne((type) => User, { cascade: true })
-  @JoinColumn()
-  public user: User;
+  // @OneToOne((type) => User, { cascade: true, nullable: true })
+  // @JoinColumn()
+  @Column({ nullable: false })
+  public userGuid: string; // User
 
   constructor() {
     super();
@@ -356,11 +358,12 @@ export class CheckIn extends GuidIdentity {
   name: 'classes'
 })
 export class Class extends GuidIdentity {
-  @OneToOne((type) => User, { cascade: true })
-  @JoinColumn({
-    name: 'professorUserGuid'
-  })
-  public user: User;
+  // @OneToOne((type) => User, { cascade: true })
+  // @JoinColumn({
+  //   name: 'professorUserGuid'
+  // })
+  @Column({ nullable: false })
+  public professorUserGuid: string;
 
   @Column({ nullable: false })
   public title: string;
@@ -404,13 +407,14 @@ export class SubmissionType extends GuidIdentity {
   name: 'user_classes'
 })
 export class UserClass extends GuidIdentity {
-  @OneToOne((type) => Class, { cascade: true })
+  @OneToOne((type) => Class, { cascade: true, eager: true })
   @JoinColumn()
   public class: Class;
 
-  @OneToOne((type) => User, { cascade: true })
-  @JoinColumn()
-  public user: User; // User
+  // @OneToOne((type) => User, { cascade: true, nullable: true })
+  // @JoinColumn()
+  @Column({ nullable: false })
+  public userGuid: string; // User
 
   constructor() {
     super();
@@ -421,9 +425,10 @@ export class UserClass extends GuidIdentity {
   name: 'user_rsvps'
 })
 export class UserRsvp extends GuidIdentity {
-  @OneToOne((type) => User, { cascade: true })
-  @JoinColumn()
-  public user: User; // User
+  // @OneToOne((type) => User, { cascade: true, nullable: true })
+  // @JoinColumn()
+  @Column({ nullable: false })
+  public userGuid: string; // User
 
   @OneToOne((type) => Event, { cascade: true })
   @JoinColumn()
@@ -441,9 +446,10 @@ export class UserRsvp extends GuidIdentity {
   name: 'submissions'
 })
 export class UserSubmission extends GuidIdentity {
-  @OneToOne((type) => User, { cascade: true })
-  @JoinColumn()
-  public user: User; // User
+  // @OneToOne((type) => User, { cascade: true, nullable: true })
+  // @JoinColumn()
+  @Column({ nullable: false })
+  public userGuid: string; // User
 
   @Column({ nullable: false })
   public title: string;
@@ -465,6 +471,160 @@ export class UserSubmission extends GuidIdentity {
     super();
   }
 }
+
+// @Entity({
+//   name: 'roles'
+// })
+// export class Role extends OldGuidIdentity {
+//   @Column({
+//     type: 'varchar',
+//     nullable: false
+//   })
+//   level: string;
+
+//   @Column({
+//     type: 'varchar',
+//     nullable: false
+//   })
+//   name: string;
+// }
+
+// @Entity({
+//   name: 'token_endpoint_auth_methods'
+// })
+// export class TokenEndpointAuthMethod extends OldGuidIdentity {
+//   @Column({
+//     type: 'varchar',
+//     nullable: false
+//   })
+//   type: string;
+
+//   @Column({
+//     type: 'varchar',
+//     nullable: true,
+//     length: 1024
+//   })
+//   details: string;
+
+//   clientMetadatas: ClientMetadata;
+// }
+
+// @Entity({
+//   name: 'client_metadata'
+// })
+// export class ClientMetadata extends OldGuidIdentity {
+//   @Column({
+//     type: 'varchar',
+//     nullable: false
+//   })
+//   public clientName: string;
+
+//   @Column({
+//     type: 'varchar',
+//     nullable: false
+//   })
+//   public clientSecret: string;
+
+//   @ManyToMany((type) => GrantType, {
+//     cascade: true,
+//     onDelete: 'CASCADE',
+//     onUpdate: 'CASCADE'
+//   })
+//   @JoinTable({
+//     name: 'client_metadata_grant_types'
+//   })
+//   public grantTypes: GrantType[];
+
+//   @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata, {
+//     cascade: true
+//   })
+//   redirectUris: RedirectUri[];
+
+//   @ManyToMany((type) => ResponseType, {
+//     cascade: true,
+//     onDelete: 'CASCADE',
+//     onUpdate: 'CASCADE'
+//   })
+//   @JoinTable({
+//     name: 'client_metadata_response_types'
+//   })
+//   responseTypes: ResponseType[];
+
+//   @ManyToOne((type) => TokenEndpointAuthMethod, (token) => token.clientMetadatas)
+//   tokenEndpointAuthMethod: TokenEndpointAuthMethod;
+// }
+
+// @Entity({
+//   name: 'grant_types'
+// })
+// export class GrantType extends OldGuidIdentity {
+//   @Column({
+//     type: 'varchar',
+//     nullable: false
+//   })
+//   name: string;
+
+//   @Column({
+//     type: 'varchar',
+//     nullable: false
+//   })
+//   type: string;
+
+//   @Column({
+//     type: 'varchar',
+//     nullable: true,
+//     length: 1024
+//   })
+//   details: string;
+// }
+
+// @Entity({
+//   name: 'redirect_uris'
+// })
+// export class RedirectUri extends OldGuidIdentity {
+//   @ManyToOne((type) => ClientMetadata, (client) => client.redirectUris, {
+//     onDelete: 'CASCADE'
+//   })
+//   clientMetadata: ClientMetadata;
+
+//   @Column({
+//     type: 'varchar',
+//     nullable: false
+//   })
+//   url: string;
+// }
+
+// @Entity({
+//   name: 'response_types'
+// })
+// export class ResponseType extends OldGuidIdentity {
+//   @Column({
+//     type: 'varchar',
+//     nullable: false
+//   })
+//   type: string;
+
+//   @Column({
+//     type: 'varchar',
+//     nullable: true,
+//     length: 1024
+//   })
+//   details: string;
+// }
+
+// @Entity({
+//   name: 'user_roles'
+// })
+// export class UserRole extends OldGuidIdentity {
+//   @ManyToOne((type) => Role, { eager: true })
+//   role: Role;
+
+//   @ManyToOne((type) => ClientMetadata, { eager: true })
+//   client: ClientMetadata;
+
+//   @ManyToOne((type) => User)
+//   user: User;
+// }
 
 export class CommonRepo<T> extends Repository<T> {}
 
@@ -518,7 +678,18 @@ export class SubmissionTypeRepo extends CommonRepo<SubmissionType> {}
 export class TagRepo extends CommonRepo<Tag> {}
 
 @EntityRepository(UserClass)
-export class UserClassRepo extends CommonRepo<UserClass> {}
+export class UserClassRepo extends CommonRepo<UserClass> {
+  public async getUsersClasses(userGuid: string) {
+    return getConnection()
+      .getRepository(UserClass)
+      .createQueryBuilder('userClass')
+      .leftJoinAndSelect('userClass.class', 'class')
+      .where(`userClass.userGuid = :guid`, {
+        guid: userGuid
+      })
+      .getMany();
+  }
+}
 
 @EntityRepository(UserRsvp)
 export class UserRsvpRepo extends CommonRepo<UserRsvp> {}

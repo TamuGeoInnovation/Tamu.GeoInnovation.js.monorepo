@@ -19,7 +19,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.loggedIn = this.authService.state();
-    this.userRole = this.authService.getUserRole();
+    // this.userRole = this.authService.getUserRole();
   }
 
   toggleMenuButton() {

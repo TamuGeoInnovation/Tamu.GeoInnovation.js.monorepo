@@ -1,1 +1,29 @@
-<p>my-submissions works!</p>
+<div class="card leader-3 trailer-2">
+  <h2>My VGI submissions</h2>
+  <div *ngIf="($vgiSubmissions | async); else noVGI">
+    <p *ngFor="let vgi of ($vgiSubmissions | async)">{{vgi.event.name}}</p>
+  </div>
+  <ng-template #noVGI>
+    <p class="leader-1 pre-2">You currently have no VGI submissions for this season.</p>
+  </ng-template>
+</div>
+
+<div class="card leader-3 trailer-2">
+  <h2>My Presentation/poster submissions</h2>
+  <div *ngIf="($posterSubmissions | async); else noPosters">
+    <p *ngFor="let poster of ($posterSubmissions | async)">{{poster.event.name}}</p>
+  </div>
+  <ng-template #noPosters>
+    <p class="leader-1 pre-2">You currently have no student presentation or poster competitions for this season.</p>
+  </ng-template>
+</div>
+
+<div class="card leader-3 trailer-2">
+  <h2>My feedback lottery submissions</h2>
+  <div *ngIf="($feedbackSubmissions | async); else noFeedback">
+    <p *ngFor="let feedback of ($feedbackSubmissions | async)">{{feedback.event.name}}</p>
+  </div>
+  <ng-template #noFeedback>
+    <p class="leader-1 pre-2">You currently have not rated any sessions for this season.</p>
+  </ng-template>
+</div>
