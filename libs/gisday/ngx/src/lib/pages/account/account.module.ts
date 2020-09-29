@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AccountComponent } from './account.component';
-import { AccoutHeaderComponent } from '../../modules/accout-header/accout-header.component';
 
 const routes: Routes = [
   {
@@ -35,7 +34,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [AccountComponent, AccoutHeaderComponent],
+  declarations: [AccountComponent],
   imports: [CommonModule, RouterModule.forChild(routes)],
   exports: [RouterModule]
 })

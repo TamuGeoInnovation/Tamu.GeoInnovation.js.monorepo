@@ -6,7 +6,6 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { MyDetailsComponent } from './my-details.component';
-import { AccoutHeaderComponent } from '../../../../modules/accout-header/accout-header.component';
 
 const routes: Routes = [
   {
