@@ -404,6 +404,18 @@ export class SubmissionType extends GuidIdentity {
 }
 
 @Entity({
+  name: 'rsvp_types'
+})
+export class RsvpType extends GuidIdentity {
+  @Column({ nullable: false })
+  public type: string;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
   name: 'user_classes'
 })
 export class UserClass extends GuidIdentity {
@@ -430,12 +442,13 @@ export class UserRsvp extends GuidIdentity {
   @Column({ nullable: false })
   public userGuid: string; // User
 
-  @OneToOne((type) => Event, { cascade: true })
+  @OneToOne((type) => Event, { cascade: true, eager: true })
   @JoinColumn()
   public event: Event;
 
-  @Column({ nullable: false })
-  public rsvpType: string; // What is an RSVP Type?
+  @OneToOne((type) => RsvpType, { cascade: true, eager: true })
+  @JoinColumn()
+  public rsvpType: RsvpType;
 
   constructor() {
     super();
@@ -674,6 +687,9 @@ export class SponsorRepo extends CommonRepo<Sponsor> {}
 @EntityRepository(SubmissionType)
 export class SubmissionTypeRepo extends CommonRepo<SubmissionType> {}
 
+@EntityRepository(RsvpType)
+export class RsvpTypeRepo extends CommonRepo<RsvpType> {}
+
 @EntityRepository(Tag)
 export class TagRepo extends CommonRepo<Tag> {}
 
@@ -692,7 +708,19 @@ export class UserClassRepo extends CommonRepo<UserClass> {
 }
 
 @EntityRepository(UserRsvp)
-export class UserRsvpRepo extends CommonRepo<UserRsvp> {}
+export class UserRsvpRepo extends CommonRepo<UserRsvp> {
+  public async getUserRsvps(userGuid: string) {
+    return getConnection()
+      .getRepository(UserRsvp)
+      .createQueryBuilder('userRsvp')
+      .leftJoinAndSelect('userRsvp.event', 'event')
+      .leftJoinAndSelect('userRsvp.rsvpType', 'rsvpType')
+      .where(`userRsvp.userGuid = :guid`, {
+        guid: userGuid
+      })
+      .getMany();
+  }
+}
 
 @EntityRepository(UserSubmission)
 export class UserSubmissionRepo extends CommonRepo<UserSubmission> {}

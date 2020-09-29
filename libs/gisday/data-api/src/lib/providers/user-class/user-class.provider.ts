@@ -21,6 +21,6 @@ export class UserClassProvider extends BaseProvider<UserClass> {
       userGuid: userGuid
     };
     const newUserClass = await this.userClassRepo.create(_newUserClass);
-    this.userClassRepo.save(newUserClass);
+    return this.userClassRepo.save(newUserClass);
   }
 }
