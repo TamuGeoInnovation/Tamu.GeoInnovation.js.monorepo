@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { TagService } from '@tamu-gisc/gisday/data-access';
 
 @Component({
   selector: 'tamu-gisc-admin-add-tags',
@@ -6,7 +8,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./admin-add-tags.component.scss']
 })
 export class AdminAddTagsComponent implements OnInit {
-  constructor() {}
+  public form: FormGroup;
 
-  ngOnInit(): void {}
+  constructor(private fb: FormBuilder, private tagService: TagService) {}
+
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      name: ['', Validators.required]
+    });
+  }
+
+  public submitNewTag() {
+    this.tagService.createEntity(this.form.value);
+  }
 }
