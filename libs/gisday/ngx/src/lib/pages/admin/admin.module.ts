@@ -15,7 +15,7 @@ const routes: Routes = [
       },
       {
         path: 'checkins',
-        loadChildren: () => import('./event/admin-event.module').then((m) => m.AdminEventModule)
+        loadChildren: () => import('./checkin/admin-checkins.module').then((m) => m.AdminCheckinsModule)
       },
       {
         path: 'classes',

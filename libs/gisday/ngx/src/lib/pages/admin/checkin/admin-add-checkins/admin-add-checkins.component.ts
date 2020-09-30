@@ -3,13 +3,10 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'tamu-gisc-admin-add-checkins',
   templateUrl: './admin-add-checkins.component.html',
-  styleUrls: ['./admin-add-checkins.component.css']
+  styleUrls: ['./admin-add-checkins.component.scss']
 })
 export class AdminAddCheckinsComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }
