@@ -7,7 +7,12 @@ import { AdminEditTagsComponent } from './admin-edit-tags.component';
 const routes: Routes = [
   {
     path: '',
-    component: AdminEditTagsComponent
+    component: AdminEditTagsComponent,
+    pathMatch: 'full'
+  },
+  {
+    path: ':guid',
+    loadChildren: () => import('./admin-detail-tag/admin-detail-tag.module').then((m) => m.AdminDetailTagModule)
   }
 ];
 
