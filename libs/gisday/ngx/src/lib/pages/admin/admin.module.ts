@@ -11,43 +11,44 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () => import('./landing/admin-landing.module').then((m) => m.AdminLandingModule)
+        loadChildren: () => import('./pages/landing/admin-landing.module').then((m) => m.AdminLandingModule)
       },
       {
         path: 'checkins',
-        loadChildren: () => import('./checkin/admin-checkins.module').then((m) => m.AdminCheckinsModule)
+        loadChildren: () => import('./pages/checkin/admin-checkins.module').then((m) => m.AdminCheckinsModule)
       },
       {
         path: 'classes',
-        loadChildren: () => import('./class/admin-class.module').then((m) => m.AdminClassModule)
+        loadChildren: () => import('./pages/class/admin-class.module').then((m) => m.AdminClassModule)
       },
       {
         path: 'events',
-        loadChildren: () => import('./event/admin-event.module').then((m) => m.AdminEventModule)
+        loadChildren: () => import('./pages/event/admin-event.module').then((m) => m.AdminEventModule)
       },
       {
         path: 'rsvp-types',
-        loadChildren: () => import('./rsvp-type/admin-rsvp-type.module').then((m) => m.AdminRsvpTypeModule)
+        loadChildren: () => import('./pages/rsvp-type/admin-rsvp-type.module').then((m) => m.AdminRsvpTypeModule)
       },
       {
         path: 'sessions',
-        loadChildren: () => import('./session/admin-session.module').then((m) => m.AdminSessionModule)
+        loadChildren: () => import('./pages/session/admin-session.module').then((m) => m.AdminSessionModule)
       },
       {
         path: 'speakers',
-        loadChildren: () => import('./speaker/admin-speaker.module').then((m) => m.AdminSpeakerModule)
+        loadChildren: () => import('./pages/speaker/admin-speaker.module').then((m) => m.AdminSpeakerModule)
       },
       {
         path: 'sponsors',
-        loadChildren: () => import('./sponsor/admin-sponsor.module').then((m) => m.AdminSponsorModule)
+        loadChildren: () => import('./pages/sponsor/admin-sponsor.module').then((m) => m.AdminSponsorModule)
       },
       {
         path: 'submission-types',
-        loadChildren: () => import('./submission-type/admin-submission-type.module').then((m) => m.AdminSubmissionTypeModule)
+        loadChildren: () =>
+          import('./pages/submission-type/admin-submission-type.module').then((m) => m.AdminSubmissionTypeModule)
       },
       {
         path: 'tags',
-        loadChildren: () => import('./tag/admin-tag.module').then((m) => m.AdminTagModule)
+        loadChildren: () => import('./pages/tag/admin-tag.module').then((m) => m.AdminTagModule)
       }
     ]
   }
