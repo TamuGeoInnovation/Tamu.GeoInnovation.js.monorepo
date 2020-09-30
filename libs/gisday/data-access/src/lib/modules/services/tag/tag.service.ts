@@ -45,7 +45,7 @@ export class TagService {
   }
 
   public deleteEntity(entity: Tag) {
-    return this.http.delete<Partial<Tag>>(`${this.resource}/delete/${entity.guid}`, {
+    return this.http.delete<Partial<Tag>>(`${this.resource}/${entity.guid}`, {
       withCredentials: this.withCredentials
     });
   }

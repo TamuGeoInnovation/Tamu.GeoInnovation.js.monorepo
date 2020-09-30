@@ -1,1 +1,12 @@
-<p>admin-edit-tags works!</p>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Updated</th>
+    <th class="action-row">Actions</th>
+  </tr>
+  <tr *ngFor="let tag of ($tags | async)">
+    <td>{{tag.name}}</td>
+    <td>{{tag.updated | date:'short'}}</td>
+    <td><span [routerLink]="[tag.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span><span (click)="deleteEntity(tag)" class="material-icons action alt" title="Delete entity">delete</span></td>
+  </tr>
+</table>
