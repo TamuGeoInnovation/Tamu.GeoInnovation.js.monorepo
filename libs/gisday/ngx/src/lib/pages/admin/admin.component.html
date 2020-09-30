@@ -1,4 +1,4 @@
-<section>
+<!-- <section>
   <header id="section-links-container">
     <div class="container12">
       <div id="sectionLabel"></div>
@@ -18,4 +18,28 @@
     </div>
   </header>
   <router-outlet></router-outlet>
+</section> -->
+
+<section class="internal">
+  <!-- <h1 class="section-header">Roles</h1> -->
+
+  <div class="section-content">
+    <div class="tab-container row">
+      <div class="tabs">
+        <div class="tab" [routerLink]="['./']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Landing</div>
+        <div class="tab" [routerLink]="['./checkins']" routerLinkActive="active">Checkins</div>
+        <div class="tab" [routerLink]="['./classes']" routerLinkActive="active">Classes</div>
+        <div class="tab" [routerLink]="['./events']" routerLinkActive="active">Events</div>
+        <div class="tab" [routerLink]="['./rsvp-types']" routerLinkActive="active">RSVP Types</div>
+        <div class="tab" [routerLink]="['./speakers']" routerLinkActive="active">Speakers</div>
+        <div class="tab" [routerLink]="['./sponsors']" routerLinkActive="active">Sponsors</div>
+        <div class="tab" [routerLink]="['./submission-types']" routerLinkActive="active">Submission Types</div>
+        <div class="tab" [routerLink]="['./tags']" routerLinkActive="active">Tags</div>
+      </div>
+
+      <div class="tab-content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
 </section>
