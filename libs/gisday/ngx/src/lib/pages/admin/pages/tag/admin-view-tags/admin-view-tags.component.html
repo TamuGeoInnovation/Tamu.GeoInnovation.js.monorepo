@@ -1,1 +1,10 @@
-<p>admin-view-tags works!</p>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Updated</th>
+  </tr>
+  <tr *ngFor="let tag of ($tags | async)">
+    <td>{{tag.name}}</td>
+    <td>{{tag.updated | date:'short'}}</td>
+  </tr>
+</table>
