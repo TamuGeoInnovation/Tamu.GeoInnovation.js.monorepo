@@ -1,13 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Routes, RouterModule } from '@angular/router';
+
 import { AdminEditCheckinsComponent } from './admin-edit-checkins.component';
 
-
+const routes: Routes = [
+  {
+    path: '',
+    component: AdminEditCheckinsComponent
+  }
+];
 
 @NgModule({
   declarations: [AdminEditCheckinsComponent],
-  imports: [
-    CommonModule
-  ]
+  imports: [CommonModule, RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
-export class AdminEditCheckinsModule { }
+export class AdminEditCheckinsModule {}
