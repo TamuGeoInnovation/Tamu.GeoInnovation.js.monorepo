@@ -55,7 +55,7 @@ const routes: Routes = [
   },
   {
     path: 'admin',
-    canActivate: [AdminGuard],
+    // canActivate: [AdminGuard],
     loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AdminModule)
   },
   {

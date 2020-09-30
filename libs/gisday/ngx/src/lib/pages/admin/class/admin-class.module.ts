@@ -15,7 +15,7 @@ const routes: Routes = [
       },
       {
         path: 'edit',
-        loadChildren: () => import('./edit-classes/admin-edit-classes.module').then((m) => m.EditClassesModule)
+        loadChildren: () => import('./edit-classes/admin-edit-classes.module').then((m) => m.AdminEditClassesModule)
       },
       {
         path: 'edit/:guid',

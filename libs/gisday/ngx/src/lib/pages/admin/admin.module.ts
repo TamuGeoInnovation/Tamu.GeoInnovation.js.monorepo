@@ -19,7 +19,7 @@ const routes: Routes = [
       },
       {
         path: 'classes',
-        loadChildren: () => import('./event/admin-event.module').then((m) => m.AdminEventModule)
+        loadChildren: () => import('./class/admin-class.module').then((m) => m.AdminClassModule)
       },
       {
         path: 'events',
