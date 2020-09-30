@@ -40,15 +40,15 @@ const routes: Routes = [
       {
         path: 'sponsors',
         loadChildren: () => import('./sponsor/admin-sponsor.module').then((m) => m.AdminSponsorModule)
+      },
+      {
+        path: 'submission-types',
+        loadChildren: () => import('./submission-type/admin-submission-type.module').then((m) => m.AdminSubmissionTypeModule)
+      },
+      {
+        path: 'tags',
+        loadChildren: () => import('./tag/admin-tag.module').then((m) => m.AdminTagModule)
       }
-      // {
-      //   path: 'submission-types',
-      //   loadChildren: () => import('./event/admin-event.module').then((m) => m.AdminEventModule)
-      // },
-      // {
-      //   path: 'tags',
-      //   loadChildren: () => import('./rsvp-type/admin-rsvp-type.module').then((m) => m.AdminRsvpTypeModule)
-      // }
     ]
   }
 ];
