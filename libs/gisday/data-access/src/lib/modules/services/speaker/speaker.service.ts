@@ -40,7 +40,7 @@ export class SpeakerService {
   }
 
   public updateEntity(updatedEntity: Partial<Speaker>) {
-    return this.http.patch<Partial<Speaker>>(`${this.resource}/update`, updatedEntity, {
+    return this.http.patch<Partial<Speaker>>(`${this.resource}`, updatedEntity, {
       withCredentials: true
     });
   }
@@ -56,7 +56,7 @@ export class SpeakerService {
   }
 
   public deleteEntity(entity: Speaker) {
-    return this.http.delete<Partial<Speaker>>(`${this.resource}/delete/${entity.guid}`, {
+    return this.http.delete<Partial<Speaker>>(`${this.resource}/${entity.guid}`, {
       withCredentials: true
     });
   }
