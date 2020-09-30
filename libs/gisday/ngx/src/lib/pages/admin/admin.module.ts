@@ -28,15 +28,15 @@ const routes: Routes = [
       {
         path: 'rsvp-types',
         loadChildren: () => import('./rsvp-type/admin-rsvp-type.module').then((m) => m.AdminRsvpTypeModule)
+      },
+      {
+        path: 'speakers',
+        loadChildren: () => import('./speaker/admin-speaker.module').then((m) => m.AdminSpeakerModule)
+      },
+      {
+        path: 'sponsors',
+        loadChildren: () => import('./sponsor/admin-sponsor.module').then((m) => m.AdminSponsorModule)
       }
-      // {
-      //   path: 'speakers',
-      //   loadChildren: () => import('./rsvp-type/admin-rsvp-type.module').then((m) => m.AdminRsvpTypeModule)
-      // },
-      // {
-      //   path: 'sponsors',
-      //   loadChildren: () => import('./rsvp-type/admin-rsvp-type.module').then((m) => m.AdminRsvpTypeModule)
-      // },
       // {
       //   path: 'submission-types',
       //   loadChildren: () => import('./event/admin-event.module').then((m) => m.AdminEventModule)
