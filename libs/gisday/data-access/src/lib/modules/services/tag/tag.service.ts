@@ -29,7 +29,7 @@ export class TagService {
   }
 
   public updateEntity(updatedEntity: Partial<Tag>) {
-    return this.http.patch<Partial<Tag>>(`${this.resource}/update`, updatedEntity, {
+    return this.http.patch<Partial<Tag>>(`${this.resource}`, updatedEntity, {
       withCredentials: this.withCredentials
     });
   }

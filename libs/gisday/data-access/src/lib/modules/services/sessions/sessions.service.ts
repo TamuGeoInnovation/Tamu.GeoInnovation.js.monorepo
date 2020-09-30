@@ -48,7 +48,7 @@ export class SessionsService {
   }
 
   public updateEvent(updatedEvent: Partial<Event>) {
-    return this.http.patch<Partial<Event>>(`${this.resource}/update`, updatedEvent, {
+    return this.http.patch<Partial<Event>>(`${this.resource}`, updatedEvent, {
       withCredentials: true
     });
   }
@@ -64,7 +64,7 @@ export class SessionsService {
   }
 
   public deleteEvent(event: Event) {
-    return this.http.delete<Partial<Event>>(`${this.resource}/delete/${event.guid}`, {
+    return this.http.delete<Partial<Event>>(`${this.resource}/${event.guid}`, {
       withCredentials: true
     });
   }
