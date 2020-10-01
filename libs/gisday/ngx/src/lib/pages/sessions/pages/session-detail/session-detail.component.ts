@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { SessionsService } from '@tamu-gisc/gisday/data-access';
+import { EventService, SessionsService } from '@tamu-gisc/gisday/data-access';
 import { Event } from '@tamu-gisc/gisday/data-api';
 
 @Component({
@@ -21,14 +21,14 @@ export class SessionDetailComponent implements OnInit {
   };
   public event: Observable<Partial<Event>>;
   public now: Date = new Date();
-  constructor(private route: ActivatedRoute, private sessionsService: SessionsService) {}
+  constructor(private route: ActivatedRoute, private eventService: EventService, private sessionsService: SessionsService) {}
 
   public ngOnInit(): void {
     const guid = this.route.snapshot.params.guid;
     if (guid) {
       this.eventGuid = guid;
-      this.event = this.sessionsService.getEntity(guid);
-      this.numOfRsvps = this.sessionsService.getNumberOfRsvps(guid);
+      this.event = this.eventService.getEntity(guid);
+      this.numOfRsvps = this.eventService.getNumberOfRsvps(guid);
       // this.sessionsService.getEvent(this.eventGuid).subscribe((result) => console.log(result));
     }
   }

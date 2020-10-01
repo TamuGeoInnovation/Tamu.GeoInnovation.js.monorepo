@@ -3,7 +3,7 @@ import { Observable, of, Subject } from 'rxjs';
 import { find, map, shareReplay, takeUntil } from 'rxjs/operators';
 
 import { Event, Tag } from '@tamu-gisc/gisday/data-api';
-import { EventResponse, SessionsService, TagService } from '@tamu-gisc/gisday/data-access';
+import { EventResponse, EventService, TagService } from '@tamu-gisc/gisday/data-access';
 
 @Component({
   selector: 'tamu-gisc-session-view',
@@ -16,7 +16,7 @@ export class SessionViewComponent implements OnInit, OnDestroy {
   private _$destroy: Subject<boolean> = new Subject();
   public filterTags: string[] = [];
 
-  constructor(private readonly sessionService: SessionsService, private readonly tagService: TagService) {
+  constructor(private readonly eventService: EventService, private readonly tagService: TagService) {
     this.fetchEvents();
     this.fetchTags();
   }
@@ -29,7 +29,7 @@ export class SessionViewComponent implements OnInit, OnDestroy {
   }
 
   public fetchEvents() {
-    this.$events = this.sessionService.getEventsByDay().pipe(
+    this.$events = this.eventService.getEventsByDay().pipe(
       takeUntil(this._$destroy),
       shareReplay(1)
     );
