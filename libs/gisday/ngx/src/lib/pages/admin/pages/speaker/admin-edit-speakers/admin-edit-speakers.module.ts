@@ -7,7 +7,12 @@ import { AdminEditSpeakersComponent } from './admin-edit-speakers.component';
 const routes: Routes = [
   {
     path: '',
-    component: AdminEditSpeakersComponent
+    component: AdminEditSpeakersComponent,
+    pathMatch: 'full'
+  },
+  {
+    path: ':guid',
+    loadChildren: () => import('./admin-detail-speaker/admin-detail-speaker.module').then((m) => m.AdminDetailSpeakerModule)
   }
 ];
 
