@@ -21,6 +21,7 @@ export * from './modules/user/user.module';
 export * from './modules/client-metadata/client-metadata.module';
 export * from './modules/role/role.module';
 export * from './modules/user-login/user-login.module';
+export * from './modules/stats/stats.module';
 
 // services
 export * from './services/user/user.service';

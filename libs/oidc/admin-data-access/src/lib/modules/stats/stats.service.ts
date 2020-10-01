@@ -13,9 +13,17 @@ export class StatsService {
     this.resource = this.env.value('api_url') + 'userServices/getDetails';
   }
 
-  public getDetails() {
+  public getCountOfLoggedInUsers() {
     return this.http.get(this.resource, {
       withCredentials: true
     });
   }
+
+  public getClientsByCountOfUsers() {}
+
+  public getLoginsPastMonth() {}
+
+  public getRegistrationsPastMonth() {}
+
+  public getServerErrorCount() {}
 }

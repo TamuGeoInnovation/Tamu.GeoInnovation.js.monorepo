@@ -1,11 +1,13 @@
 <table>
   <tr>
+    <th>Guid</th>
     <th>Name</th>
     <th>Email</th>
     <th>Enabled 2FA?</th>
   </tr>
   <tr *ngFor="let user of ($users | async)">
     <td>{{user.guid}}</td>
+    <td>{{user.account.name}}</td>
     <td>{{user.email}}</td>
     <td>{{user.enabled2fa}}</td>
   </tr>

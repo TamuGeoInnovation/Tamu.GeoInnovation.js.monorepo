@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { IChartConfiguration } from '@tamu-gisc/charts';
+import { Chart } from 'chart.js';
 
 @Component({
   selector: 'stats',
@@ -6,7 +10,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./stats.component.scss']
 })
 export class StatsComponent implements OnInit {
-  constructor() {}
+  public chartData: Observable<Array<IChartConfiguration>>;
+
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {}
 }

@@ -13,7 +13,7 @@ export class UserController {
 
   @Get('all')
   async usersAllGet() {
-    return this.userService.userRepo.find();
+    return this.userService.userRepo.findAllDeep();
   }
 
   /**

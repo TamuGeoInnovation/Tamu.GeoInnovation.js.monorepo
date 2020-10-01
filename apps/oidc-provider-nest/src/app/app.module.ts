@@ -29,6 +29,7 @@ import {
   UserLoginModule,
   SecretQuestion,
   SecretAnswer,
+  StatsModule,
   UserPasswordReset,
   UserPasswordHistory,
   PushedAuthorizationRequest,
@@ -76,6 +77,7 @@ import { dbConfig } from '../environments/environment';
     InteractionModule,
     ClientMetadataModule,
     RoleModule,
+    StatsModule,
     UserModule,
     UserLoginModule
   ],

@@ -122,8 +122,7 @@ export class UserService {
    * are accurate. If so, will return the user that matches this combination.
    */
   public async userLogin(email: string, password: string) {
-    const userWithAccount = await this.userRepo.findByKeyDeep('email', email);
-
+    const userWithAccount = await this.userRepo.findByKeyDeep('email', email, true, 'password');
     if (userWithAccount) {
       const same = await compare(password, userWithAccount.password);
       if (same) {

@@ -1,3 +1,8 @@
 <section class="internal">
   <h1 class="section-header">Stats</h1>
+  <div class="chartDiv">
+    <div class="charts" *ngFor="let chart of (chartData | async)">
+      <tamu-gisc-line-chart [source]="chart.data" [options]="chart.options" [title]="chart.options.title.text"></tamu-gisc-line-chart>
+    </div>
+  </div>
 </section>
