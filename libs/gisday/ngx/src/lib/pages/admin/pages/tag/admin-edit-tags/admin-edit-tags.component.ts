@@ -31,7 +31,7 @@ export class AdminEditTagsComponent implements OnInit, OnDestroy {
 
   public deleteEntity(entity: Tag) {
     console.log('deleteEntity', entity);
-    this.tagService.deleteEntity(entity).subscribe((deleteStatus) => {
+    this.tagService.deleteEntity(entity.guid).subscribe((deleteStatus) => {
       console.log('Deleted ', entity.guid);
       this.fetchEntities();
     });
