@@ -1,1 +1,15 @@
-<p>admin-add-events works!</p>
+<form [formGroup]="form">
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="name" placeholder="Event name" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="locationBuilding" placeholder="Location building" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="locationRoom" placeholder="Location room" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="startTime" placeholder="Start time" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="endTime" placeholder="End time" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="presentationType" placeholder="Presentation Type" type="text" floatLabel="true"> </tamu-gisc-textbox>
+      </div>
+      <tamu-gisc-button (click)="submitNewEntity()" [value]="'Add'" type="submit"></tamu-gisc-button>
+    </div>
+  </div>
+</form>
