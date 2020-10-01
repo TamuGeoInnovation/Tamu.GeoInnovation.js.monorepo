@@ -3691,6 +3691,34 @@
           }
         }
       }
+    },
+    "oidc-admin-data-access": {
+      "projectType": "library",
+      "root": "libs/oidc/admin-data-access",
+      "sourceRoot": "libs/oidc/admin-data-access/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/oidc/admin-data-access/tsconfig.lib.json", "libs/oidc/admin-data-access/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/oidc/admin-data-access/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/oidc/admin-data-access/jest.config.js",
+            "tsConfig": "libs/oidc/admin-data-access/tsconfig.spec.json",
+            "setupFile": "libs/oidc/admin-data-access/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {
