@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { StatsController } from '../../controllers/stats/stats.controller';
 import { StatService } from '../../services/stats/stats.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AccessTokenRepo, UserRepo } from '@tamu-gisc/oidc/provider-nest';
+import { AccessTokenRepo, UserRepo } from '@tamu-gisc/oidc/provider-nestjs';
 
 @Module({
   imports: [TypeOrmModule.forFeature([AccessTokenRepo, UserRepo])],

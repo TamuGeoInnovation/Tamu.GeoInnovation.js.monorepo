@@ -1,6 +1,6 @@
 import { HttpService, Injectable } from '@nestjs/common';
 import { Request } from 'express';
-import { AccessToken, AccessTokenRepo } from '@tamu-gisc/oidc/provider-nest';
+import { AccessToken, AccessTokenRepo } from '@tamu-gisc/oidc/provider-nestjs';
 import { map } from 'rxjs/operators';
 
 @Injectable()

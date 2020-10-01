@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersService } from '@tamu-gisc/oidc/admin-data-access';
 import { Observable } from 'rxjs';
-import { User } from '@tamu-gisc/oidc/provider-nest';
+import { User } from '@tamu-gisc/oidc/provider-nestjs';
 import { shareReplay } from 'rxjs/operators';
 
 @Component({

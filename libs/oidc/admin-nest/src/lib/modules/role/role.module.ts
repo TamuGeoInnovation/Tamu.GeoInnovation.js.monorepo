@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { RoleService } from '../../services/role/role.service';
 import { RoleController } from '../../controllers/role/role.controller';
-import { RoleRepo } from '@tamu-gisc/oidc/provider-nest';
+import { RoleRepo } from '@tamu-gisc/oidc/provider-nestjs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({

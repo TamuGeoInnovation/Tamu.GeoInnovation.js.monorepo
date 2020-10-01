@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GrantTypesService } from '@tamu-gisc/oidc/admin-data-access';
-import { GrantType } from '@tamu-gisc/oidc/provider-nest';
+import { GrantType } from '@tamu-gisc/oidc/provider-nestjs';
 import { Observable } from 'rxjs';
 
 @Component({

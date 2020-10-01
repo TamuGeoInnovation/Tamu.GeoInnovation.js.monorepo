@@ -10,7 +10,7 @@ import {
   RolesService,
   IClientMetadataResponse
 } from '@tamu-gisc/oidc/admin-data-access';
-import { User, ClientMetadata, Role, UserRole, INewRole } from '@tamu-gisc/oidc/provider-nest';
+import { User, ClientMetadata, Role, UserRole, INewRole } from '@tamu-gisc/oidc/provider-nestjs';
 
 @Component({
   selector: 'detail-user',

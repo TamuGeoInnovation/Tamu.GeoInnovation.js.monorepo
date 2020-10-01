@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
-import { Account, User, UserPasswordReset } from '@tamu-gisc/oidc/provider-nest';
+import { Account, User, UserPasswordReset } from '@tamu-gisc/oidc/provider-nestjs';
 
 export class Mailer {
   private static user: string = 'kaitlyn.schimmel@ethereal.email';

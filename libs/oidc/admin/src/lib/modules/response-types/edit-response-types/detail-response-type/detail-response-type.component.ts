@@ -5,7 +5,7 @@ import { debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { ResponseTypesService } from '@tamu-gisc/oidc/admin-data-access';
-import { ResponseType } from '@tamu-gisc/oidc/provider-nest';
+import { ResponseType } from '@tamu-gisc/oidc/provider-nestjs';
 
 @Component({
   selector: 'detail-response-type',

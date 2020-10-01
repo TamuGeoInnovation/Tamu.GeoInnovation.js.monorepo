@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/provider-nest';
+import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/provider-nestjs';
 
 @Injectable({
   providedIn: 'root'

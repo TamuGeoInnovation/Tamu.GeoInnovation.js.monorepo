@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin-data-access';
-import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/provider-nest';
+import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/provider-nestjs';
 import { Observable } from 'rxjs';
 
 @Component({

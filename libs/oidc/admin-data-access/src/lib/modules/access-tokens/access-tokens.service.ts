@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { AccessToken } from '@tamu-gisc/oidc/provider-nest';
+import { AccessToken } from '@tamu-gisc/oidc/provider-nestjs';
 import { access } from 'fs';
 
 @Injectable({

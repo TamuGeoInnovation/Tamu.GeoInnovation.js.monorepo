@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
-import { Role } from '@tamu-gisc/oidc/provider-nest';
+import { Role } from '@tamu-gisc/oidc/provider-nestjs';
 import { RolesService } from '@tamu-gisc/oidc/admin-data-access';
 import { ActivatedRoute } from '@angular/router';
 

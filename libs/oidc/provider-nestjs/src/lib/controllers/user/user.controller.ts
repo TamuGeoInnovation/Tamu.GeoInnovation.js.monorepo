@@ -7,7 +7,7 @@ import { urlFragment, urlHas } from '../../_utils/url-utils';
 import { User } from '../../entities/all.entity';
 import { UserService, ServiceToControllerTypes } from '../../services/user/user.service';
 
-import { OpenIdProvider } from '@tamu-gisc/oidc/provider-nest';
+import { OpenIdProvider } from '@tamu-gisc/oidc/provider-nestjs';
 
 @Controller('user')
 export class UserController {

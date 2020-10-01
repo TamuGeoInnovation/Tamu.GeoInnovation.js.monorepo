@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RolesService } from '@tamu-gisc/oidc/admin-data-access';
-import { Role } from '@tamu-gisc/oidc/provider-nest';
+import { Role } from '@tamu-gisc/oidc/provider-nestjs';
 import { shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 

@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
-import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/provider-nest';
+import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/provider-nestjs';
 import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin-data-access';
 import { ActivatedRoute } from '@angular/router';
 

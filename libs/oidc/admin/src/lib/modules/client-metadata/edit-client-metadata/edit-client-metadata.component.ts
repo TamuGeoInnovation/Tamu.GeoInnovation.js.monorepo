@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ClientMetadataService, IClientMetadataResponse } from '@tamu-gisc/oidc/admin-data-access';
-import { ClientMetadata } from '@tamu-gisc/oidc/provider-nest';
+import { ClientMetadata } from '@tamu-gisc/oidc/provider-nestjs';
 import { shareReplay } from 'rxjs/operators';
 
 @Component({

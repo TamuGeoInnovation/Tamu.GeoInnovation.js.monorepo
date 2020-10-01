@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 
-import { GrantType, ResponseType, TokenEndpointAuthMethod } from '@tamu-gisc/oidc/provider-nest';
+import { GrantType, ResponseType, TokenEndpointAuthMethod } from '@tamu-gisc/oidc/provider-nestjs';
 import {
   TokenAuthMethodsService,
   ResponseTypesService,

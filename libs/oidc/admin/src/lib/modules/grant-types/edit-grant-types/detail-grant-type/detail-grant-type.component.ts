@@ -5,7 +5,7 @@ import { debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { GrantTypesService } from '@tamu-gisc/oidc/admin-data-access';
-import { GrantType } from '@tamu-gisc/oidc/provider-nest';
+import { GrantType } from '@tamu-gisc/oidc/provider-nestjs';
 
 @Component({
   selector: 'detail-grant-type',

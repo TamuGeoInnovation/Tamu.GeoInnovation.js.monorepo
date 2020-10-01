@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AccessToken, AccessTokenRepo, UserRepo } from '@tamu-gisc/oidc/provider-nest';
+import { AccessToken, AccessTokenRepo, UserRepo } from '@tamu-gisc/oidc/provider-nestjs';
 import { access } from 'fs';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
-import { SecretQuestion } from '@tamu-gisc/oidc/provider-nest';
+import { SecretQuestion } from '@tamu-gisc/oidc/provider-nestjs';
 import { Observable } from 'rxjs';
 import { UsersService } from '@tamu-gisc/oidc/admin-data-access';
 

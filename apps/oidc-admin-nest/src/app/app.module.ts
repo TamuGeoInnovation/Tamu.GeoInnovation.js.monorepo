@@ -22,7 +22,7 @@ import {
   SecretAnswer,
   UserPasswordReset,
   UserPasswordHistory
-} from '@tamu-gisc/oidc/provider-nest';
+} from '@tamu-gisc/oidc/provider-nestjs';
 
 import { AccessTokenModule, ClientMetadataModule, RoleModule, StatsModule, UserModule } from '@tamu-gisc/oidc/admin-nest';
 

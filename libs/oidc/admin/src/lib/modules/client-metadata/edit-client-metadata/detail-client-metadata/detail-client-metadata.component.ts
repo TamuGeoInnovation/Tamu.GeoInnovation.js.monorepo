@@ -12,7 +12,7 @@ import {
   IClientMetadataResponse,
   IClientMetadataResponseArrayed
 } from '@tamu-gisc/oidc/admin-data-access';
-import { ClientMetadata, GrantType, TokenEndpointAuthMethod, ResponseType } from '@tamu-gisc/oidc/provider-nest';
+import { ClientMetadata, GrantType, TokenEndpointAuthMethod, ResponseType } from '@tamu-gisc/oidc/provider-nestjs';
 
 @Component({
   selector: 'detail-client-metadata',
