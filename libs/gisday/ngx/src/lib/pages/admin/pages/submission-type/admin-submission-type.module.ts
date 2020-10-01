@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AdminSubmissionTypeComponent } from './admin-submission-type.component';
+import { BaseProvider } from 'libs/gisday/data-api/src/lib/providers/_base/base-provider';
+import { SubmissionType } from '@tamu-gisc/gisday/data-api';
 
 const routes: Routes = [
   {
