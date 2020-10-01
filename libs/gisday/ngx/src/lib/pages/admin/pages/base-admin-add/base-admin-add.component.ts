@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { BaseService } from '@tamu-gisc/gisday/data-access';
 import { Subject } from 'rxjs';
 
-export abstract class BaseAdminAddComponent<T, K extends BaseService<T>> implements IBaseAdminEditComponent {
+export abstract class BaseAdminAddComponent<T, K extends BaseService<T>> implements IBaseAdminAddComponent {
   public form: FormGroup;
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -24,7 +24,7 @@ export abstract class BaseAdminAddComponent<T, K extends BaseService<T>> impleme
   }
 }
 
-export interface IBaseAdminEditComponent extends OnInit, OnDestroy {
+export interface IBaseAdminAddComponent extends OnInit, OnDestroy {
   ngOnInit(): void;
   ngOnDestroy(): void;
   submitNewEntity(): void;
