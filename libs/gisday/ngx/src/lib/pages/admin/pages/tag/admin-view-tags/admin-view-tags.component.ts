@@ -1,29 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Component } from '@angular/core';
 import { TagService } from '@tamu-gisc/gisday/data-access';
 import { Tag } from '@tamu-gisc/gisday/data-api';
+import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.component';
 
 @Component({
   selector: 'tamu-gisc-admin-view-tags',
   templateUrl: './admin-view-tags.component.html',
   styleUrls: ['./admin-view-tags.component.scss']
 })
-export class AdminViewTagsComponent implements OnDestroy, OnInit {
-  public $tags: Observable<Array<Partial<Tag>>>;
-  private _$destroy: Subject<boolean> = new Subject();
-
+export class AdminViewTagsComponent extends BaseAdminViewComponent<Tag, TagService> {
   constructor(private readonly tagService: TagService) {
-    this.fetchEntities();
-  }
-
-  ngOnInit(): void {}
-
-  public ngOnDestroy() {
-    this._$destroy.next();
-    this._$destroy.complete();
-  }
-
-  public fetchEntities() {
-    this.$tags = this.tagService.getEntities();
+    super(tagService);
   }
 }

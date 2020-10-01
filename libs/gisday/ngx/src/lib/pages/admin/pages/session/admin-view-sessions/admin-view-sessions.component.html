@@ -1,1 +1,16 @@
-<p>admin-view-sessions works!</p>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Duration</th>
+    <th>Date</th>
+    <th>Abstract</th>
+    <th>Updated</th>
+  </tr>
+  <tr *ngFor="let entity of ($entities | async)">
+    <td>{{entity.name}}</td>
+    <td>{{entity.duration}}</td>
+    <td>{{entity.date}}</td>
+    <td>{{entity.abstract}}</td>
+    <td>{{entity.updated | date:'short'}}</td>
+  </tr>
+</table>

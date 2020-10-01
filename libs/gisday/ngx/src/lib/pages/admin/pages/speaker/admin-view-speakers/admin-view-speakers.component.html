@@ -1,1 +1,14 @@
-<p>admin-view-speakers works!</p>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Organization</th>
+    <th>Updated</th>
+  </tr>
+  <tr *ngFor="let entity of ($entities | async)">
+    <td>{{entity.firstName}} {{entity.lastName}}</td>
+    <td>{{entity.email}}</td>
+    <td>{{entity.organization}}</td>
+    <td>{{entity.updated | date:'short'}}</td>
+  </tr>
+</table>
