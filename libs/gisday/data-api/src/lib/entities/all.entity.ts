@@ -213,7 +213,7 @@ export class SpeakerInfo extends GuidIdentity {
 export class Speaker extends GuidIdentity {
   // @OneToOne((type) => User, { cascade: true, nullable: true })
   // @JoinColumn()
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public userGuid: string; // User
 
   @Column({ nullable: false })

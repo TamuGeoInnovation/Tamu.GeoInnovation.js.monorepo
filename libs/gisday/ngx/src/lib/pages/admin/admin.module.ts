@@ -11,7 +11,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () => import('./pages/landing/admin-landing.module').then((m) => m.AdminLandingModule)
+        loadChildren: () => import('./pages/checkin/admin-checkins.module').then((m) => m.AdminCheckinsModule)
       },
       {
         path: 'checkins',
