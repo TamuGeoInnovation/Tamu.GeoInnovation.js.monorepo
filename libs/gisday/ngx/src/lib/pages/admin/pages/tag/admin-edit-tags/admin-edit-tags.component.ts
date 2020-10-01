@@ -14,31 +14,3 @@ export class AdminEditTagsComponent extends BaseAdminEditComponent<Tag, TagServi
     super(tagService);
   }
 }
-
-// export class AdminEditTagsComponent implements OnInit, OnDestroy {
-//   public $tags: Observable<Array<Partial<Tag>>>;
-//   private _$destroy: Subject<boolean> = new Subject();
-
-//   constructor(private readonly tagService: TagService) {}
-
-//   ngOnInit(): void {
-//     this.fetchEntities();
-//   }
-
-//   public ngOnDestroy() {
-//     this._$destroy.next();
-//     this._$destroy.complete();
-//   }
-
-//   public fetchEntities() {
-//     this.$tags = this.tagService.getEntities().pipe(shareReplay(1));
-//   }
-
-//   public deleteEntity(entity: Tag) {
-//     console.log('deleteEntity', entity);
-//     this.tagService.deleteEntity(entity.guid).subscribe((deleteStatus) => {
-//       console.log('Deleted ', entity.guid);
-//       this.fetchEntities();
-//     });
-//   }
-// }

@@ -1,1 +1,13 @@
-<p>admin-add-sessions works!</p>
+<form [formGroup]="form">
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="name" placeholder="Name" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="date" placeholder="Date" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="duration" placeholder="Duration" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="abstract" placeholder="Abstract" type="text" floatLabel="true"> </tamu-gisc-textbox>
+      </div>
+      <tamu-gisc-button (click)="submitNewEntity()" [value]="'Add'" type="submit"></tamu-gisc-button>
+    </div>
+  </div>
+</form>

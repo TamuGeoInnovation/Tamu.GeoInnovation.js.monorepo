@@ -18,19 +18,3 @@ export class AdminAddTagsComponent extends BaseAdminAddComponent<Tag, TagService
     super(fb1, tagService, config);
   }
 }
-
-// export class AdminAddTagsComponent implements OnInit {
-//   public form: FormGroup;
-
-//   constructor(private fb: FormBuilder, private tagService: TagService) {}
-
-//   ngOnInit(): void {
-//     this.form = this.fb.group({
-//       name: ['', Validators.required]
-//     });
-//   }
-
-//   public submitNewTag() {
-//     this.tagService.createEntity(this.form.value);
-//   }
-// }

@@ -1,1 +1,13 @@
-<p>admin-add-speakers works!</p>
+<form [formGroup]="form">
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="firstName" placeholder="First Name" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="lastName" placeholder="Last Name" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="organization" placeholder="Organization" type="text" floatLabel="true"> </tamu-gisc-textbox>
+      </div>
+      <tamu-gisc-button (click)="submitNewEntity()" [value]="'Add'" type="submit"></tamu-gisc-button>
+    </div>
+  </div>
+</form>
