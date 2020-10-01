@@ -6,7 +6,7 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
 @Component({
   selector: 'tamu-gisc-admin-view-checkins',
   templateUrl: './admin-view-checkins.component.html',
-  styleUrls: ['./admin-view-checkins.component.css']
+  styleUrls: ['./admin-view-checkins.component.scss']
 })
 export class AdminViewCheckinsComponent extends BaseAdminViewComponent<CheckIn, CheckinService> {
   constructor(private readonly checkinService: CheckinService) {
