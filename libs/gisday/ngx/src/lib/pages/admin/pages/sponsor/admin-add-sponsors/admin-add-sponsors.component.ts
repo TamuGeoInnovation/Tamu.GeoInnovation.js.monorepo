@@ -4,7 +4,8 @@ import { SponsorService } from '@tamu-gisc/gisday/data-access';
 import { Sponsor } from '@tamu-gisc/gisday/data-api';
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
-const config = {
+export const formConfig = {
+  guid: [''],
   name: [''],
   website: [''],
   logoUrl: ['']
@@ -17,6 +18,6 @@ const config = {
 })
 export class AdminAddSponsorsComponent extends BaseAdminAddComponent<Sponsor, SponsorService> {
   constructor(private fb1: FormBuilder, private sponsorService: SponsorService) {
-    super(fb1, sponsorService, config);
+    super(fb1, sponsorService, formConfig);
   }
 }

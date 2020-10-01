@@ -4,7 +4,8 @@ import { CheckinService } from '@tamu-gisc/gisday/data-access';
 import { CheckIn } from '@tamu-gisc/gisday/data-api';
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
-const config = {
+export const formConfig = {
+  guid: [''],
   userGuid: [''],
   eventGuid: ['']
 };
@@ -16,6 +17,6 @@ const config = {
 })
 export class AdminAddCheckinsComponent extends BaseAdminAddComponent<CheckIn, CheckinService> {
   constructor(private fb1: FormBuilder, private checkinService: CheckinService) {
-    super(fb1, checkinService, config);
+    super(fb1, checkinService, formConfig);
   }
 }

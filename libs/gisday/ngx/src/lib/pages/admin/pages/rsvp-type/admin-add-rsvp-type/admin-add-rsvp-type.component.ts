@@ -4,7 +4,8 @@ import { RsvpTypeService } from '@tamu-gisc/gisday/data-access';
 import { RsvpType } from '@tamu-gisc/gisday/data-api';
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
-const config = {
+const formConfig = {
+  guid: [''],
   type: ['']
 };
 
@@ -15,6 +16,6 @@ const config = {
 })
 export class AdminAddRsvpTypeComponent extends BaseAdminAddComponent<RsvpType, RsvpTypeService> {
   constructor(private fb1: FormBuilder, private rsvpTypeService: RsvpTypeService) {
-    super(fb1, rsvpTypeService, config);
+    super(fb1, rsvpTypeService, formConfig);
   }
 }

@@ -4,7 +4,8 @@ import { SpeakerService } from '@tamu-gisc/gisday/data-access';
 import { Speaker } from '@tamu-gisc/gisday/data-api';
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
-const config = {
+export const formConfig = {
+  guid: [''],
   firstName: [''],
   lastName: [''],
   email: [''],
@@ -18,6 +19,6 @@ const config = {
 })
 export class AdminAddSpeakersComponent extends BaseAdminAddComponent<Speaker, SpeakerService> {
   constructor(private fb1: FormBuilder, private speakerService: SpeakerService) {
-    super(fb1, speakerService, config);
+    super(fb1, speakerService, formConfig);
   }
 }
