@@ -1,1 +1,10 @@
-<p>detail-checkin works!</p>
+<form [formGroup]="form">
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="userGuid" placeholder="User Guid" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="eventGuid" placeholder="Event Guid" type="text" floatLabel="true"> </tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+</form>
