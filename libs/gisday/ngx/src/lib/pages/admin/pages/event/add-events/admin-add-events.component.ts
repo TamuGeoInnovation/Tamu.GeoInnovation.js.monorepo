@@ -4,7 +4,8 @@ import { EventService } from '@tamu-gisc/gisday/data-access';
 import { Event } from '@tamu-gisc/gisday/data-api';
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
-const config = {
+export const formConfig = {
+  guid: [''],
   name: [''],
   locationBuilding: [''],
   locationRoom: [''],
@@ -20,6 +21,6 @@ const config = {
 })
 export class AdminAddEventsComponent extends BaseAdminAddComponent<Event, EventService> {
   constructor(private fb1: FormBuilder, private eventService: EventService) {
-    super(fb1, eventService, config);
+    super(fb1, eventService, formConfig);
   }
 }
