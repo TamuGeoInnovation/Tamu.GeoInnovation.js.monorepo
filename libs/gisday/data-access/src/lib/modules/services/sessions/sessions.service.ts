@@ -3,69 +3,29 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { Event, Tag } from '@tamu-gisc/gisday/data-api';
+import { Event } from '@tamu-gisc/gisday/data-api';
+import { BaseService } from '../_base/base.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SessionsService {
+export class SessionsService extends BaseService<Event> {
+  public withCredentials = false;
   public resource: string;
-  public tagResource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient) {
-    this.resource = this.env.value('api_url') + '/event';
-    this.tagResource = this.env.value('api_url') + '/tag';
+  constructor(private env1: EnvironmentService, private http1: HttpClient) {
+    super(env1, http1, 'event');
   }
 
   public getNumberOfRsvps(eventGuid: string) {
-    return this.http.get<number>(`${this.resource}/${eventGuid}/rsvps`, {
-      withCredentials: false
-    });
-  }
-
-  public getEvent(guid: string) {
-    return this.http.get<Partial<Event>>(`${this.resource}/${guid}`, {
-      withCredentials: false
-    });
-  }
-
-  public getEvents() {
-    return this.http.get<Array<Partial<Event>>>(`${this.resource}/all`, {
+    return this.http1.get<number>(`${this.resource}/${eventGuid}/rsvps`, {
       withCredentials: false
     });
   }
 
   public getEventsByDay() {
-    return this.http.get<Partial<EventResponse>>(`${this.resource}/by-day`, {
+    return this.http1.get<Partial<EventResponse>>(`${this.resource}/by-day`, {
       withCredentials: false
-    });
-  }
-
-  public getTags() {
-    return this.http.get<Array<Partial<Tag>>>(`${this.tagResource}/all`, {
-      withCredentials: false
-    });
-  }
-
-  public updateEvent(updatedEvent: Partial<Event>) {
-    return this.http.patch<Partial<Event>>(`${this.resource}`, updatedEvent, {
-      withCredentials: true
-    });
-  }
-
-  public createEvent(newEvent: Partial<Event>) {
-    return this.http
-      .post<Partial<Event>>(this.resource, newEvent, {
-        withCredentials: true
-      })
-      .subscribe((newestEvent) => {
-        console.log('Added event', newestEvent);
-      });
-  }
-
-  public deleteEvent(event: Event) {
-    return this.http.delete<Partial<Event>>(`${this.resource}/${event.guid}`, {
-      withCredentials: true
     });
   }
 }
