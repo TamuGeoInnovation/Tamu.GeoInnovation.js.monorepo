@@ -11,7 +11,8 @@ import { AdminDetailTagComponent } from './admin-detail-tag.component';
 const routes: Routes = [
   {
     path: '',
-    component: AdminDetailTagComponent
+    component: AdminDetailTagComponent,
+    pathMatch: 'full'
   }
 ];
 

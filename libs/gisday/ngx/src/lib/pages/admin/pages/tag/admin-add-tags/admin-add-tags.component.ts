@@ -4,7 +4,8 @@ import { TagService } from '@tamu-gisc/gisday/data-access';
 import { Tag } from '@tamu-gisc/gisday/data-api';
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
-const config = {
+export const formConfig = {
+  guid: [''],
   name: ['']
 };
 
@@ -15,6 +16,6 @@ const config = {
 })
 export class AdminAddTagsComponent extends BaseAdminAddComponent<Tag, TagService> {
   constructor(private fb1: FormBuilder, private tagService: TagService) {
-    super(fb1, tagService, config);
+    super(fb1, tagService, formConfig);
   }
 }
