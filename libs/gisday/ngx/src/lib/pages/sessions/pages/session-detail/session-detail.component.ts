@@ -27,7 +27,7 @@ export class SessionDetailComponent implements OnInit {
     const guid = this.route.snapshot.params.guid;
     if (guid) {
       this.eventGuid = guid;
-      this.event = this.sessionsService.getEvent(guid);
+      this.event = this.sessionsService.getEntity(guid);
       this.numOfRsvps = this.sessionsService.getNumberOfRsvps(guid);
       // this.sessionsService.getEvent(this.eventGuid).subscribe((result) => console.log(result));
     }
