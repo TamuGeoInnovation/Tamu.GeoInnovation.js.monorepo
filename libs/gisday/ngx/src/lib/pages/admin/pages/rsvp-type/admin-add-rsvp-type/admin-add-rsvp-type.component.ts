@@ -4,7 +4,7 @@ import { RsvpTypeService } from '@tamu-gisc/gisday/data-access';
 import { RsvpType } from '@tamu-gisc/gisday/data-api';
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
-const formConfig = {
+export const formConfig = {
   guid: [''],
   type: ['']
 };
