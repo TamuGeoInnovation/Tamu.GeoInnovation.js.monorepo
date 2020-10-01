@@ -7,7 +7,12 @@ import { AdminEditSponsorsComponent } from './admin-edit-sponsors.component';
 const routes: Routes = [
   {
     path: '',
-    component: AdminEditSponsorsComponent
+    component: AdminEditSponsorsComponent,
+    pathMatch: 'full'
+  },
+  {
+    path: ':guid',
+    loadChildren: () => import('./admin-detail-sponsor/admin-detail-sponsor.module').then((m) => m.AdminDetailSponsorModule)
   }
 ];
 

@@ -7,7 +7,12 @@ import { AdminEditClassesComponent } from './admin-edit-classes.component';
 const routes: Routes = [
   {
     path: '',
-    component: AdminEditClassesComponent
+    component: AdminEditClassesComponent,
+    pathMatch: 'full'
+  },
+  {
+    path: ':guid',
+    loadChildren: () => import('./detail-class/admin-detail-class.module').then((m) => m.AdminDetailClassModule)
   }
 ];
 

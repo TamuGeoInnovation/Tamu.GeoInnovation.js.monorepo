@@ -7,7 +7,12 @@ import { AdminEditEventsComponent } from './admin-edit-events.component';
 const routes: Routes = [
   {
     path: '',
-    component: AdminEditEventsComponent
+    component: AdminEditEventsComponent,
+    pathMatch: 'full'
+  },
+  {
+    path: ':guid',
+    loadChildren: () => import('./admin-detail-event/admin-detail-event.module').then((m) => m.AdminDetailEventModule)
   }
 ];
 

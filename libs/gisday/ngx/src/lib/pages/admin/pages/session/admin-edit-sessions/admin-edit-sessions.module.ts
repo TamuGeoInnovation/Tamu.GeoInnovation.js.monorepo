@@ -7,7 +7,12 @@ import { AdminEditSessionsComponent } from './admin-edit-sessions.component';
 const routes: Routes = [
   {
     path: '',
-    component: AdminEditSessionsComponent
+    component: AdminEditSessionsComponent,
+    pathMatch: 'full'
+  },
+  {
+    path: ':guid',
+    loadChildren: () => import('./admin-detail-session/admin-detail-session.module').then((m) => m.AdminDetailSessionModule)
   }
 ];
 

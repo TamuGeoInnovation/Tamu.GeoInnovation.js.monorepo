@@ -7,7 +7,12 @@ import { AdminEditCheckinsComponent } from './admin-edit-checkins.component';
 const routes: Routes = [
   {
     path: '',
-    component: AdminEditCheckinsComponent
+    component: AdminEditCheckinsComponent,
+    pathMatch: 'full'
+  },
+  {
+    path: ':guid',
+    loadChildren: () => import('./detail-checkin/admin-detail-checkin.module').then((m) => m.AdminDetailCheckinModule)
   }
 ];
 
