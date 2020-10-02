@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { BalanceComponent } from './balance.component';
 
@@ -8,9 +9,9 @@ describe('BalanceComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BalanceComponent ]
-    })
-    .compileComponents();
+      imports: [RouterTestingModule],
+      declarations: [BalanceComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

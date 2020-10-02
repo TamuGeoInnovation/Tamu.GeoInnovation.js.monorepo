@@ -1,4 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { GeoservicesDataAccessModule } from '@tamu-gisc/geoservices/data-access';
 
 import { SecurityComponent } from './security.component';
 
@@ -8,15 +14,25 @@ describe('SecurityComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SecurityComponent ]
-    })
-    .compileComponents();
+      imports: [ReactiveFormsModule, UIFormsModule, EnvironmentModule, HttpClientTestingModule, GeoservicesDataAccessModule],
+      providers: [
+        {
+          provide: env,
+          useValue: { api_url: 'https://' }
+        }
+      ],
+      declarations: [SecurityComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SecurityComponent);
     component = fixture.componentInstance;
+    /*
+    Test passes when fixture.detectChanges() is included and runs: npx jest -o 
+    However fails when fixture.detectChanges() is included and runs:  npx jest --collectCoverage 
     fixture.detectChanges();
+    */
   });
 
   it('should create', () => {

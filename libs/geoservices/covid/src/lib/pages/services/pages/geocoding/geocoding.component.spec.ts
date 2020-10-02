@@ -1,4 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+
+import { HighlightPlusModule } from 'ngx-highlightjs/plus/';
+
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { UILayoutCodeModule } from '@tamu-gisc/ui-kits/ngx/layout/code';
 
 import { GeocodingComponent } from './geocoding.component';
 
@@ -8,9 +15,16 @@ describe('GeocodingComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GeocodingComponent ]
-    })
-    .compileComponents();
+      imports: [
+        UILayoutModule,
+        HttpClientTestingModule,
+        UILayoutCodeModule,
+        UILayoutModule,
+        HighlightPlusModule,
+        RouterTestingModule
+      ],
+      declarations: [GeocodingComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

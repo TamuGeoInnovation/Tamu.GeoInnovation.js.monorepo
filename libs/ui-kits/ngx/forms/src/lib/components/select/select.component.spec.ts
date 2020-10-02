@@ -1,36 +1,41 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { async, TestBed, ComponentFixture } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 
 import { SelectComponent } from './select.component';
-import { componentFactoryName } from '@angular/compiler';
 
 describe('SelectComponent', () => {
+  let component: SelectComponent<{}>;
+  let fixture: ComponentFixture<SelectComponent<{}>>;
   beforeEach(async(() => {
-    TestBed.configureTestingModule({ providers: [SelectComponent] }).compileComponents();
+    TestBed.configureTestingModule({
+      imports: [FormsModule],
+      declarations: [SelectComponent]
+    }).compileComponents();
   }));
 
-  it('should be created', inject([SelectComponent], (component: SelectComponent<string>) => {
+  beforeEach(() => {
+    fixture = TestBed.createComponent(SelectComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should be created', () => {
     expect(component).toBeTruthy();
-  }));
-
-  it('getDataItemValue should handle template being undefined', inject(
-    [SelectComponent],
-    (component: SelectComponent<string>) => {
-      expect(component.getDataItemValue({ test: 'value' })).toEqual({ test: 'value' });
-    }
-  ));
-
-  it('getDataItemValue should handle correct inputs', inject([SelectComponent], (component: SelectComponent<string>) => {
-    expect(component.getDataItemValue({ test: 'value' }, 'test')).toEqual('value');
-  }));
+  });
 
   it('should respond to keyboard events', (done) => {
-    inject([SelectComponent], (component: SelectComponent<string>) => {
-      component.changed.subscribe((emitted) => {
-        expect(emitted).toEqual('test');
-        done();
-      });
-      component.value = 'test';
-      component.changeEvent(new Event('test'));
-    })();
+    component.changed.subscribe((event) => {
+      expect(event).toEqual('test');
+      done();
+    });
+    component.value = 'test';
+    component.changeEvent(new Event('test'));
+  });
+
+  it('getDataItemValue should handle template being undefined', () => {
+    expect(component.getDataItemValue({ test: 'value' })).toEqual({ test: 'value' });
+  });
+  it('getDataItemValue should handle correct inputs', () => {
+    expect(component.getDataItemValue({ test: 'value' }, 'test')).toEqual('value');
   });
 });

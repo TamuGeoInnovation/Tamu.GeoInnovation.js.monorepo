@@ -8,9 +8,8 @@ describe('MobileTabNavigation', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MobileTabNavigation ]
-    })
-    .compileComponents();
+      declarations: [MobileTabNavigation]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

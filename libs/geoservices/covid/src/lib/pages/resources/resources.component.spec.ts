@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { ResourcesComponent } from './resources.component';
 
@@ -8,9 +9,9 @@ describe('ResourcesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResourcesComponent ]
-    })
-    .compileComponents();
+      imports: [RouterTestingModule],
+      declarations: [ResourcesComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

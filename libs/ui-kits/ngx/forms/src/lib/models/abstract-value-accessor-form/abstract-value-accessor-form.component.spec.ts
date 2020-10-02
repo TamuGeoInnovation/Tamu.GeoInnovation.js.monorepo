@@ -3,14 +3,13 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractValueAccessorFormComponent } from './abstract-value-accessor-form.component';
 
 describe('AbstractValueAccessorFormComponent', () => {
-  let component: AbstractValueAccessorFormComponent;
-  let fixture: ComponentFixture<AbstractValueAccessorFormComponent>;
+  let component: AbstractValueAccessorFormComponent<{}>;
+  let fixture: ComponentFixture<AbstractValueAccessorFormComponent<{}>>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AbstractValueAccessorFormComponent ]
-    })
-    .compileComponents();
+      declarations: [AbstractValueAccessorFormComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
