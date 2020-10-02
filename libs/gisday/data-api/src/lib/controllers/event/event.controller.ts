@@ -13,8 +13,8 @@ export class EventController extends BaseController<Event> {
   @Get('/:guid/rsvps')
   async getNumberOfRsvps(@Param() params) {
     // TODO: We need to use a UserRsvpProvider to search for all RSVPs of this event
-    return 0;
-    // return this.eventProvider.getNumberOfRsvps(params.guid);
+    // return 0;
+    return this.eventProvider.getNumberOfRsvps(params.guid);
   }
 
   @Get('by-day')
