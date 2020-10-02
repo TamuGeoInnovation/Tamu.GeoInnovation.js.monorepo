@@ -65,7 +65,7 @@ export class EventProvider extends BaseProvider<Event> {
     });
   }
 
-  async getEntitiesByDay(req: Request) {
+  public async getEntitiesByDay(req: Request) {
     const entities: Event[] = await this.eventRepo
       .createQueryBuilder('events')
       .leftJoinAndSelect('events.tags', 'tags')
@@ -106,6 +106,23 @@ export class EventProvider extends BaseProvider<Event> {
         newEntities[index] = dayEvents;
       });
       return newEntities;
+    }
+  }
+
+  public async getNumberOfRsvps(eventGuid: string) {
+    const event = await this.eventRepo.findOne({
+      where: {
+        guid: eventGuid
+      }
+    });
+    if (event) {
+      return this.userRsvpRepo.count({
+        where: {
+          event
+        }
+      });
+    } else {
+      return 0;
     }
   }
 }
