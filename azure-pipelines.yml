@@ -75,9 +75,9 @@ jobs:
           Contents: ormconfig.ts
           TargetFolder: $(System.DefaultWorkingDirectory)/libs/covid/data-api/src/lib
       
-      - script: yarn nx affected --target=test --base=origin/master --parallel
-      - script: yarn nx affected --target=lint --base=origin/master --parallel
-      - script: yarn nx affected --target=build --base=origin/master --prod --parallel
+      - script: npm nx affected --target=test --base=origin/development --parallel
+      - script: npm nx affected --target=lint --base=origin/development --parallel
+      - script: npm nx affected --target=build --base=origin/development --prod --parallel
 
 #jobs:
 #- job: unit_test_db_mssql_npm
