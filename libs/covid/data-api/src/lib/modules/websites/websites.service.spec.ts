@@ -8,7 +8,11 @@ import { County, CountyClaim, CategoryValue, CountyClaimInfo } from '@tamu-gisc/
 import { WebsitesService } from './websites.service';
 
 describe('WebsitesService', () => {
-  let service: WebsitesService;
+  let websitesService: WebsitesService;
+  let categoryValueMockRepo: Repository<CategoryValue>;
+  let countyMockRepo: Repository<County>;
+  let countyClaimMockRepo: Repository<CountyClaim>;
+  let countyClaimInfoMockRepo: Repository<CountyClaimInfo>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,10 +25,53 @@ describe('WebsitesService', () => {
       ]
     }).compile();
 
-    service = module.get<WebsitesService>(WebsitesService);
+    websitesService = module.get<WebsitesService>(WebsitesService);
+    categoryValueMockRepo = module.get(getRepositoryToken(CategoryValue));
+    countyMockRepo = module.get(getRepositoryToken(County));
+    countyClaimMockRepo = module.get(getRepositoryToken(CountyClaim));
+    countyClaimInfoMockRepo = module.get(getRepositoryToken(CountyClaimInfo));
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('Validation ', () => {
+    it('Service should be defined', () => {
+      expect(websitesService).toBeDefined();
+    });
+  });
+
+  describe('getWebsitesForCounty', () => {
+    it('should return expectedResult', async () => {
+      const mockParameter = 'undefined';
+      const expectedResult = {
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      };
+      expect(await websitesService.getWebsitesForCounty(mockParameter)).toMatchObject(expectedResult);
+    });
+    it('should return expectedResult', async () => {
+      const mockParameter = undefined;
+      const expectedResult = {
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      };
+      expect(await websitesService.getWebsitesForCounty(mockParameter)).toMatchObject(expectedResult);
+    });
+    it('should return expectedResult', async () => {
+      const mockParameter = 0;
+      const expectedResult = {
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      };
+      expect(await websitesService.getWebsitesForCounty(mockParameter)).toMatchObject(expectedResult);
+    });
+  });
+
+  describe('getWebsitesForClaimInfo', () => {
+    it('should throw error for undefined parameter ', async () => {
+      const mockParameter = undefined;
+      await expect(websitesService.getWebsitesForClaimInfo(mockParameter)).rejects.toThrow();
+    });
   });
 });

@@ -8,17 +8,21 @@ import { CategoryValue } from '@tamu-gisc/covid/common/entities';
 import { CategoryValuesService } from './category-values.service';
 
 describe('CategoryValuesService', () => {
-  let service: CategoryValuesService;
+  let categoryValuesService: CategoryValuesService;
+  let categoryValueRepo: Repository<CategoryValue>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [CategoryValuesService, { provide: getRepositoryToken(CategoryValue), useClass: Repository }]
     }).compile();
 
-    service = module.get<CategoryValuesService>(CategoryValuesService);
+    categoryValuesService = module.get<CategoryValuesService>(CategoryValuesService);
+    categoryValueRepo = module.get(getRepositoryToken(CategoryValue));
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('Validation ', () => {
+    it('service should be defined', () => {
+      expect(categoryValuesService).toBeDefined();
+    });
   });
 });

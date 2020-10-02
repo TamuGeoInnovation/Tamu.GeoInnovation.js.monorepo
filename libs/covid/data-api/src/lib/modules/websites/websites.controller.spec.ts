@@ -1,32 +1,54 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-
-import { Repository } from 'typeorm';
-
-import { County, CountyClaim, CategoryValue, CountyClaimInfo } from '@tamu-gisc/covid/common/entities';
 
 import { WebsitesController } from './websites.controller';
 import { WebsitesService } from './websites.service';
 
+jest.mock('../websites/websites.service');
+
 describe('Websites Controller', () => {
-  let controller: WebsitesController;
+  let websitesService: WebsitesService;
+  let websitesController: WebsitesController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        WebsitesService,
-        { provide: getRepositoryToken(CategoryValue), useClass: Repository },
-        { provide: getRepositoryToken(County), useClass: Repository },
-        { provide: getRepositoryToken(CountyClaim), useClass: Repository },
-        { provide: getRepositoryToken(CountyClaimInfo), useClass: Repository }
-      ],
+      providers: [WebsitesService],
       controllers: [WebsitesController]
     }).compile();
-
-    controller = module.get<WebsitesController>(WebsitesController);
+    websitesService = module.get<WebsitesService>(WebsitesService);
+    websitesController = module.get<WebsitesController>(WebsitesController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  const mockParameters = 'foobar';
+
+  describe('Validation ', () => {
+    it('controller should be defined', () => {
+      expect(websitesController).toBeDefined();
+    });
+  });
+
+  describe('getWebsitesForCounty', () => {
+    it('should return expectedResult', async () => {
+      const expectedResult = { status: 0, success: true, message: 'foobar' };
+      jest.spyOn(websitesService, 'getWebsitesForCounty').mockResolvedValue(expectedResult);
+      expect(await websitesController.getWebsitesForCounty(mockParameters)).toBe(expectedResult);
+    });
+  });
+
+  describe('getWebsitesForClaimInfo', () => {
+    it('should return expectedResult', async () => {
+      const expectedResult = [];
+      jest.spyOn(websitesService, 'getWebsitesForClaimInfo').mockResolvedValue(expectedResult);
+      expect(await websitesController.getWebsitesForClaimInfo(mockParameters)).toBe(expectedResult);
+    });
+  });
+
+  describe('storePhoneNumber', () => {
+    it('should throw error', async () => {
+      await expect(websitesController.storePhoneNumber(undefined)).rejects.toThrow();
+    });
   });
 });

@@ -8,17 +8,19 @@ import { StatusType } from '@tamu-gisc/covid/common/entities';
 import { StatusTypesService } from './status-types.service';
 
 describe('StatusTypesService', () => {
-  let service: StatusTypesService;
+  let statusTypesService: StatusTypesService;
+  let statusTypesMockRepo: Repository<StatusType>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [StatusTypesService, { provide: getRepositoryToken(StatusType), useClass: Repository }]
     }).compile();
-
-    service = module.get<StatusTypesService>(StatusTypesService);
+    statusTypesService = module.get<StatusTypesService>(StatusTypesService);
+    statusTypesMockRepo = module.get(getRepositoryToken(StatusType));
   });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('Validation ', () => {
+    it('Service should be defined', () => {
+      expect(statusTypesService).toBeDefined();
+    });
   });
 });

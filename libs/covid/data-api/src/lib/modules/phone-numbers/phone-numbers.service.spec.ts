@@ -8,7 +8,12 @@ import { FieldCategory, CategoryValue, County, CountyClaim, CountyClaimInfo } fr
 import { PhoneNumbersService } from './phone-numbers.service';
 
 describe('PhoneNumbersService', () => {
-  let service: PhoneNumbersService;
+  let phoneNumbersService: PhoneNumbersService;
+  let fieldCategoryMock: Repository<FieldCategory>;
+  let categoryValueMock: Repository<CategoryValue>;
+  let countyMock: Repository<County>;
+  let countyClaimMock: Repository<CountyClaim>;
+  let countyClaimInfoMock: Repository<CountyClaimInfo>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,10 +27,59 @@ describe('PhoneNumbersService', () => {
       ]
     }).compile();
 
-    service = module.get<PhoneNumbersService>(PhoneNumbersService);
+    phoneNumbersService = module.get<PhoneNumbersService>(PhoneNumbersService);
+    fieldCategoryMock = module.get(getRepositoryToken(FieldCategory));
+    categoryValueMock = module.get(getRepositoryToken(CategoryValue));
+    countyMock = module.get(getRepositoryToken(County));
+    countyClaimMock = module.get(getRepositoryToken(CountyClaim));
+    countyClaimInfoMock = module.get(getRepositoryToken(CountyClaimInfo));
+  });
+  describe('Validation ', () => {
+    it('Service should be defined', () => {
+      expect(phoneNumbersService).toBeDefined();
+    });
+  });
+  describe('getPhoneNumbersForCounty', () => {
+    it('should return error message for undefined mockParameter', async () => {
+      const mockParameter = undefined;
+      const expectedResult = {
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      };
+      expect(await phoneNumbersService.getPhoneNumbersForCounty(mockParameter)).toMatchObject(expectedResult);
+    });
+
+    it('should return error message for undefined string mockParameter ', async () => {
+      const mockParameter = 'undefined';
+      const expectedResult = {
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      };
+      expect(await phoneNumbersService.getPhoneNumbersForCounty(mockParameter)).toMatchObject(expectedResult);
+    });
+
+    it('should return error message for number mockParameter ', async () => {
+      const mockParameter = 9;
+      const expectedResult = {
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      };
+      expect(await phoneNumbersService.getPhoneNumbersForCounty(mockParameter)).toMatchObject(expectedResult);
+    });
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('getPhoneNumbersForClaimInfo', () => {
+    it('should return error message for undefined mockParameter  ', async () => {
+      const mockParameter = undefined;
+      const expectedResult = {
+        status: 400,
+        success: false,
+        message: 'Invalid county fips'
+      };
+      expect(await phoneNumbersService.getPhoneNumbersForClaimInfo(mockParameter)).toMatchObject(expectedResult);
+    });
   });
 });

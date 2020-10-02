@@ -8,16 +8,20 @@ import { State } from '@tamu-gisc/covid/common/entities';
 import { StatesService } from './states.service';
 
 describe('StatesService', () => {
-  let service: StatesService;
+  let statesService: StatesService;
+  let stateMockRepo: Repository<State>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [StatesService, { provide: getRepositoryToken(State), useClass: Repository }]
     }).compile();
-    service = module.get<StatesService>(StatesService);
+    statesService = module.get<StatesService>(StatesService);
+    stateMockRepo = module.get(getRepositoryToken(State));
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('Validation ', () => {
+    it('Service should be defined', () => {
+      expect(statesService).toBeDefined();
+    });
   });
 });

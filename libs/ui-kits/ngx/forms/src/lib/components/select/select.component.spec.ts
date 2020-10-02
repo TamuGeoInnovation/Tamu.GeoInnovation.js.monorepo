@@ -38,4 +38,9 @@ describe('SelectComponent', () => {
   it('getDataItemValue should handle correct inputs', () => {
     expect(component.getDataItemValue({ test: 'value' }, 'test')).toEqual('value');
   });
+
+  it('should correctly evaluate setDisabledState', () => {
+    component.setDisabledState(true);
+    expect(component.disabled).toBeTruthy();
+  });
 });

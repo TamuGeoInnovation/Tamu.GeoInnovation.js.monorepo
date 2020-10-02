@@ -8,9 +8,8 @@ describe('TooltipComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TooltipComponent ]
-    })
-    .compileComponents();
+      declarations: [TooltipComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -21,5 +20,11 @@ describe('TooltipComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should create', () => {
+    component.isVisible = true;
+    component.clickOutside(document.dispatchEvent(new Event('mousedown')));
+    expect(component.isVisible).toBeFalsy();
   });
 });
