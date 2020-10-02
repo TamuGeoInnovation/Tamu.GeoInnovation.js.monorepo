@@ -6,11 +6,11 @@ import { Event, Tag } from '@tamu-gisc/gisday/data-api';
 import { EventResponse, EventService, TagService } from '@tamu-gisc/gisday/data-access';
 
 @Component({
-  selector: 'tamu-gisc-session-view',
-  templateUrl: './session-view.component.html',
-  styleUrls: ['./session-view.component.scss']
+  selector: 'tamu-gisc-event-view',
+  templateUrl: './event-view.component.html',
+  styleUrls: ['./event-view.component.scss']
 })
-export class SessionViewComponent implements OnInit, OnDestroy {
+export class EventViewComponent implements OnInit, OnDestroy {
   public $events: Observable<Partial<EventResponse>>;
   public $tags: Observable<Array<Partial<Tag>>>;
   private _$destroy: Subject<boolean> = new Subject();

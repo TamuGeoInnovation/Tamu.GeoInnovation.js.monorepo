@@ -26,7 +26,7 @@ export class EventService extends BaseService<Event> {
 
   public getEventsByDay() {
     return this.http1.get<Partial<EventResponse>>(`${this.resource}/by-day`, {
-      withCredentials: false
+      withCredentials: true
     });
   }
 }

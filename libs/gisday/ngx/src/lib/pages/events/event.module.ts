@@ -2,28 +2,28 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { SessionsComponent } from './sessions.component';
+import { EventComponent } from './event.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: SessionsComponent,
+    component: EventComponent,
     children: [
       {
         path: '',
-        loadChildren: () => import('./pages/session-view/session-view.module').then((m) => m.SessionViewModule)
+        loadChildren: () => import('./pages/event-view/event-view.module').then((m) => m.EventViewModule)
       },
       {
         path: 'details/:guid',
-        loadChildren: () => import('./pages/session-detail/session-detail.module').then((m) => m.SessionDetailModule)
+        loadChildren: () => import('./pages/event-detail/event-detail.module').then((m) => m.EventDetailModule)
       }
     ]
   }
 ];
 
 @NgModule({
-  declarations: [SessionsComponent],
+  declarations: [EventComponent],
   imports: [CommonModule, RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class SessionsModule {}
+export class EventModule {}

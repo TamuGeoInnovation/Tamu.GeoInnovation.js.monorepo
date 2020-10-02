@@ -7,12 +7,12 @@ import { FooterComponent } from './modules/footer/footer.component';
 import { HeaderComponent } from './modules/header/header.component';
 
 import { LandingModule } from './pages/landing/landing.module';
-import { SessionsModule } from './pages/sessions/sessions.module';
+import { EventModule } from './pages/events/event.module';
 
 @NgModule({
-  imports: [CommonModule, LandingModule, SessionsModule],
+  imports: [CommonModule, LandingModule, EventModule],
   declarations: [FooterComponent, HeaderComponent],
   providers: [AuthService],
-  exports: [FooterComponent, HeaderComponent, LandingModule, SessionsModule]
+  exports: [FooterComponent, HeaderComponent, LandingModule, EventModule]
 })
 export class GisdayNgxModule {}

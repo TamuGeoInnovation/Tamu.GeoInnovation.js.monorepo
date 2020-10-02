@@ -147,6 +147,8 @@ export class Event extends GuidIdentity {
   @Column({ nullable: true })
   duration: number;
 
+  hasRsvp: boolean = false;
+
   constructor() {
     super();
   }
