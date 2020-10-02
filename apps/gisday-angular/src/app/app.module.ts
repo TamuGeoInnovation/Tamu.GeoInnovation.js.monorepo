@@ -31,7 +31,7 @@ const routes: Routes = [
   },
   {
     path: 'sessions',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.SessionsModule)
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.EventModule)
   },
   {
     path: 'faq',

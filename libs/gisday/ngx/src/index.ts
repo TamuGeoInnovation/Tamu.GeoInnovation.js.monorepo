@@ -3,7 +3,7 @@ export * from './lib/modules/guards/admin-guard/admin.guard';
 
 export * from './lib/gisday-ngx.module';
 export * from './lib/pages/landing/landing.module';
-export * from './lib/pages/sessions/sessions.module';
+export * from './lib/pages/events/event.module';
 export * from './lib/pages/faq/faq.module';
 export * from './lib/pages/sponsors/sponsors.module';
 export * from './lib/pages/about/about.module';

@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { EventRepo, TagRepo } from '../../entities/all.entity';
+import { EventRepo, SessionRepo, SponsorRepo, TagRepo, UserRsvpRepo } from '../../entities/all.entity';
 import { EventController } from '../../controllers/event/event.controller';
 import { EventProvider } from '../../providers/event/event.provider';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EventRepo, TagRepo])],
+  imports: [TypeOrmModule.forFeature([EventRepo, TagRepo, SessionRepo, SponsorRepo, UserRsvpRepo])],
   controllers: [EventController],
   providers: [EventProvider],
   exports: [EventProvider]

@@ -18,8 +18,8 @@ export class EventController extends BaseController<Event> {
   }
 
   @Get('by-day')
-  async getEntitiesByDay() {
-    return this.eventProvider.getEntitiesByDay();
+  async getEntitiesByDay(@Req() req: Request) {
+    return this.eventProvider.getEntitiesByDay(req);
   }
 
   @Post()

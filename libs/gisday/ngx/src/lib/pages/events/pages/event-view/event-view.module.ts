@@ -5,18 +5,18 @@ import { Routes, RouterModule } from '@angular/router';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
-import { SessionViewComponent } from './session-view.component';
+import { EventViewComponent } from './event-view.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: SessionViewComponent
+    component: EventViewComponent
   }
 ];
 
 @NgModule({
-  declarations: [SessionViewComponent],
+  declarations: [EventViewComponent],
   imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule],
   exports: [RouterModule]
 })
-export class SessionViewModule {}
+export class EventViewModule {}

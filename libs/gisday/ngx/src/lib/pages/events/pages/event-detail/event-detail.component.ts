@@ -6,12 +6,12 @@ import { EventService, SessionsService } from '@tamu-gisc/gisday/data-access';
 import { Event } from '@tamu-gisc/gisday/data-api';
 
 @Component({
-  selector: 'tamu-gisc-session-detail',
+  selector: 'tamu-gisc-event-detail',
   // templateUrl: './session-detail.component.html',
-  templateUrl: './detail-test.component.html',
-  styleUrls: ['./session-detail.component.scss']
+  templateUrl: './event-detail-test.component.html',
+  styleUrls: ['./event-detail.component.scss']
 })
-export class SessionDetailComponent implements OnInit {
+export class EventDetailComponent implements OnInit {
   public eventGuid: string;
   public numOfRsvps: Observable<number>;
   public userHasCheckedInAlready: Observable<any>;
@@ -29,7 +29,7 @@ export class SessionDetailComponent implements OnInit {
       this.eventGuid = guid;
       this.event = this.eventService.getEntity(guid);
       this.numOfRsvps = this.eventService.getNumberOfRsvps(guid);
-      // this.sessionsService.getEvent(this.eventGuid).subscribe((result) => console.log(result));
+      // this.eventService.getNumberOfRsvps(this.eventGuid).subscribe((result) => console.log(result));
     }
   }
 
