@@ -11,3 +11,4 @@ export * from './modules/services/speaker/speaker.service';
 export * from './modules/services/sponsor/sponsor.service';
 export * from './modules/services/submission-type/submission-type.service';
 export * from './modules/services/tag/tag.service';
+export * from './modules/services/user-classes/user-classes.service';

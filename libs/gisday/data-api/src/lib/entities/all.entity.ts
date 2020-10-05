@@ -301,8 +301,13 @@ export class Class extends GuidIdentity {
   @Column({ nullable: false })
   public title: string;
 
+  @Column({ nullable: true })
+  public dept: string;
+
   @Column({ nullable: false })
   public code: string;
+
+  public userInClass = false;
 
   constructor() {
     super();
