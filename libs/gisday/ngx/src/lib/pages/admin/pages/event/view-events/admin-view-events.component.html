@@ -10,8 +10,8 @@
   <tr *ngFor="let entity of ($entities | async)">
     <td>{{entity.name}}</td>
     <td>{{entity.locationBuilding}} {{entity.locationRoom}}</td>
-    <td>{{entity.startTime}}</td>
-    <td>{{entity.endTime}}</td>
+    <td>{{entity.startTime | date:'short'}}</td>
+    <td>{{entity.endTime | date:'short'}}</td>
     <td>{{entity.presentationType}}</td>
     <td>{{entity.updated | date:'short'}}</td>
   </tr>

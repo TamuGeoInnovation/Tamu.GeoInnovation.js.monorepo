@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { UserClass } from '../../entities/all.entity';
 import { UserClassProvider } from '../../providers/user-class/user-class.provider';
@@ -10,13 +10,18 @@ export class UserClassController extends BaseController<UserClass> {
     super(userClassProvider);
   }
 
-  @Get('/user/:guid')
-  async getUsersClasses(@Param() params) {
-    return this.userClassProvider.userClassRepo.getUsersClasses(params.guid);
+  @Get()
+  async getClassesAndUserClasses(@Req() req: Request) {
+    return this.userClassProvider.getClassesAndUserClasses(req);
   }
 
   @Post('/')
   async insertUserClass(@Req() req: Request) {
     return this.userClassProvider.insertUserClass(req);
+  }
+
+  @Delete()
+  async deleteUserClassWithClassGuid(@Req() req: Request) {
+    return this.userClassProvider.deleteUserClassWithClassGuid(req);
   }
 }

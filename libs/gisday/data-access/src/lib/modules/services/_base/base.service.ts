@@ -7,8 +7,9 @@ export abstract class BaseService<T> {
   public withCredentials = false;
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient, private route: string) {
+  constructor(private env: EnvironmentService, private http: HttpClient, private route: string, withCreds?: boolean) {
     this.resource = this.env.value('api_url') + `/${route}`;
+    this.withCredentials = withCreds;
   }
 
   public getEntity(guid: string) {
