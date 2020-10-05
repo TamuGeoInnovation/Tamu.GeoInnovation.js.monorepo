@@ -11,6 +11,8 @@ export * from './lib/guards/roles.guard';
 
 export * from './lib/middleware/claims.middleware';
 
+export * from './lib/types/auth-types';
+
 export interface ClientConfiguration {
   metadata: ClientMetadata;
   parameters: object;

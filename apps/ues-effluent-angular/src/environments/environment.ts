@@ -22,6 +22,7 @@ import { Connections, Definitions as d } from './definitions';
 import { tiers } from './tier-dictionary';
 
 import { Popups } from '@tamu-gisc/aggiemap';
+import { AuthOptions } from '@tamu-gisc/oidc/client';
 
 import esri = __esri;
 
@@ -29,7 +30,11 @@ export * from './definitions';
 export * from './notification-events';
 
 export const apiUrl = `http://localhost:3001/`;
-export const auth_api_url = `http://localhost:3001/`;
+
+export const auth_options: AuthOptions = {
+  url: `http://localhost:3001/`,
+  attach_href: true
+};
 
 export const effluentZonesUrl = Connections.effluentZonesUrl;
 export const effluentSampleLocationsUrl = Connections.effluentSampleLocationsUrl;

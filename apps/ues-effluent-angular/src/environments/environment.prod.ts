@@ -18,6 +18,7 @@ import { Connections, Definitions as d } from './definitions';
 import { tiers } from './tier-dictionary';
 
 import { Popups } from '@tamu-gisc/aggiemap';
+import { AuthOptions } from '@tamu-gisc/oidc/client';
 
 import esri = __esri;
 
@@ -25,7 +26,11 @@ export * from './definitions';
 export * from './notification-events';
 
 export const apiUrl = `https://nodes.geoservices.tamu.edu/api/ues/effluent/`;
-export const auth_api_url = `https://nodes.geoservices.tamu.edu/api/ues/effluent/`;
+
+export const auth_options: AuthOptions = {
+  url: `https://nodes.geoservices.tamu.edu/api/ues/effluent/`,
+  attach_href: true
+};
 
 export const effluentZonesUrl = Connections.effluentZonesUrl;
 export const effluentSampleLocationsUrl = Connections.effluentSampleLocationsUrl;
