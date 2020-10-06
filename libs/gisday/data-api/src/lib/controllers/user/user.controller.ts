@@ -8,7 +8,7 @@ export class UserController {
     if (req.user) {
       return OpenIdClient.client.introspect(req.user.access_token);
     } else {
-      return;
+      return 200;
     }
   }
 
@@ -17,7 +17,7 @@ export class UserController {
     if (req.user) {
       return OpenIdClient.client.userinfo(req.user.access_token);
     } else {
-      return;
+      return 200;
     }
   }
 
@@ -26,7 +26,7 @@ export class UserController {
     if (req.user) {
       return OpenIdClient.client.revoke(req.user.access_token);
     } else {
-      return;
+      return 200;
     }
   }
 }

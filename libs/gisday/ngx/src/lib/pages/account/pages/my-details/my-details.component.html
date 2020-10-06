@@ -1,1 +1,12 @@
-<p>my-details works!</p>
+<div>
+  <div class="loader" *ngIf="!$userDetails"></div>
+  <div id="default-content" class="column8" *ngIf="($userDetails | async) as deetz">
+    <div class="card leader-3 trailer-2">
+      <h2>My Details</h2>
+      <div class="row">
+        <p>{{deetz.name}}</p>
+        <p>{{deetz.sub}}</p>
+      </div>
+    </div>
+  </div>
+</div>
