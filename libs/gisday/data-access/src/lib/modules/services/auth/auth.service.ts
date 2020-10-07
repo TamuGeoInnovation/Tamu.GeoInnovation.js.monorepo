@@ -12,21 +12,22 @@ export class AuthService {
   public resource: string;
 
   constructor(private env: EnvironmentService, private http: HttpClient) {
-    this.resource = this.env.value('api_url') + 'login';
+    // this.resource = this.env.value('api_url') + '/login';
   }
 
   /**
    * Returns logged in state
    */
   public state() {
-    return this.http.get<ITokenIntrospectionResponse>(this.env.value('api_url') + '/user', {
+    return this.http.get<boolean>(this.env.value('api_url') + '/user', {
       withCredentials: true
     });
-    // .pipe(
-    //   switchMap((res) => {
-    //     return of(res);
-    //   })
-    // );
+  }
+
+  public getHeaderState() {
+    return this.http.get<boolean>(this.env.value('api_url') + '/user/header', {
+      withCredentials: true
+    });
   }
 
   public getUserRole() {

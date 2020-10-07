@@ -4,25 +4,31 @@ import { AuthService } from '@tamu-gisc/gisday/data-access';
 
 import { ITokenIntrospectionResponse, IUserInfoResponse } from '@tamu-gisc/gisday/data-access';
 @Component({
-  selector: 'app-header',
+  selector: 'tamu-gisc-app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
   private modal: HTMLElement;
-  public loggedIn: Observable<ITokenIntrospectionResponse>;
+  public loggedIn: Observable<boolean>;
   public userRole: Observable<IUserInfoResponse>;
-  public isActive: boolean = false;
+  public isActive = false;
   public account: Account;
 
   constructor(private readonly authService: AuthService) {}
 
-  ngOnInit() {
-    this.loggedIn = this.authService.state();
-    this.userRole = this.authService.getUserRole();
+  public ngOnInit() {
+    this.loggedIn = this.authService.getHeaderState();
+    // this.userRole = this.authService.getUserRole();
+    // this.authService.state().subscribe((result) => {
+    //   console.log(result);
+    // });
+    // this.authService.getUserRole().subscribe((result) => {
+    //   console.log(result);
+    // });
   }
 
-  toggleMenuButton() {
+  public toggleMenuButton() {
     this.isActive = !this.isActive;
     const body = document.querySelector('body');
     if (this.isActive) {
@@ -34,7 +40,7 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  toggleModalBg(on: boolean) {
+  public toggleModalBg(on: boolean) {
     const htmlChildren = document.documentElement.children;
     const body = htmlChildren.item(1);
     const section = body.children

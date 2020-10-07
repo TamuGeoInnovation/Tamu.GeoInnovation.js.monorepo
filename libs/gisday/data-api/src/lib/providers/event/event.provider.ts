@@ -94,7 +94,7 @@ export class EventProvider extends BaseProvider<Event> {
           const dateString = event.date.toISOString();
           return dateString.indexOf(day) !== -1;
         });
-        newEntities[index] = dayEvents;
+        newEntities[`day${index}`] = dayEvents;
       });
       return newEntities;
     } else {

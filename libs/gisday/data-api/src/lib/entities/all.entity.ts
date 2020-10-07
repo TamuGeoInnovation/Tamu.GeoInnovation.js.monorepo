@@ -109,9 +109,6 @@ export class Event extends GuidIdentity {
   endTime: Date;
 
   @Column({ nullable: true })
-  title: string;
-
-  @Column({ nullable: true })
   abstract: string;
 
   @Column({ nullable: true })
