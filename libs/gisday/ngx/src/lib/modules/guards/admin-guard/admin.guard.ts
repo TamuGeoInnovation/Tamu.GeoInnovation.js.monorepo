@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
 })
 export class AdminGuard implements CanActivate {
   constructor(private readonly authService: AuthService) {}
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  public canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return this.authService.getUserRole().pipe(
       map((value) => {
         if (value.role.level_role === '99') {

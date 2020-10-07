@@ -24,7 +24,7 @@
   <div id="default-content" class="column8" *ngIf="$events">
     <div id="day1" class="modal card">
       <h2 class="aggie-weight-1 ng-binding">November 16</h2>
-      <div *ngFor="let event of ($events | async)[0]">
+      <div *ngFor="let event of ($events | async)?.day0">
         <div class="test" *ngIf="filterEventsByFilterTags(event)">
           <div class="row" [routerLink]="['/sessions/details', event.guid]">
             <div class="input-control">
@@ -47,7 +47,7 @@
     </div>
     <div id="day2" class="modal card">
       <h2 class="aggie-weight-1 ng-binding">November 17</h2>
-      <div *ngFor="let event of ($events | async)[1]">
+      <div *ngFor="let event of ($events | async)[1]?.day1">
         <div class="test" *ngIf="filterEventsByFilterTags(event)">
           <div class="row" [routerLink]="['/sessions/details', event.guid]">
             <div class="input-control">
@@ -70,7 +70,7 @@
     </div>
     <div id="day3" class="modal card">
       <h2 class="aggie-weight-1 ng-binding">November 18</h2>
-      <div *ngFor="let event of ($events | async)[2]">
+      <div *ngFor="let event of ($events | async)?.day2">
         <div class="test" *ngIf="filterEventsByFilterTags(event)">
           <div class="row" [routerLink]="['/sessions/details', event.guid]">
             <div class="input-control">

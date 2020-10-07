@@ -32,7 +32,7 @@ export class EventService extends BaseService<Event> {
 }
 
 export interface EventResponse {
-  0: Event[];
-  1: Event[];
-  2: Event[];
+  day0: Event[];
+  day1: Event[];
+  day2: Event[];
 }

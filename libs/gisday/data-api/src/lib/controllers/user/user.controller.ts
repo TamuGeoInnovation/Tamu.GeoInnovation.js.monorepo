@@ -1,32 +1,73 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
 @Controller('user')
 export class UserController {
+  // @Get()
+  // async getStatus(@Req() req, @Res() res: Response) {
+  //   if (req.user) {
+  //     return OpenIdClient.client.introspect(req.user.access_token);
+  //   } else {
+  //     res.status(401);
+  //     res.send(undefined);
+  //   }
+  // }
+
   @Get()
-  async getStatus(@Req() req) {
+  async getStatus(@Req() req, @Res() res: Response) {
     if (req.user) {
-      return OpenIdClient.client.introspect(req.user.access_token);
+      if (req.user.access_token) {
+        const introspectionResult = await OpenIdClient.client.introspect(req.user.access_token);
+        if (introspectionResult) {
+          res.send(true);
+        }
+      } else {
+        // no access_token
+        res.send(false);
+      }
     } else {
-      return 200;
+      // no req.user
+      res.send(false);
+    }
+  }
+
+  @Get('header')
+  async getHeaderStatus(@Req() req, @Res() res: Response) {
+    if (req.user) {
+      const introspectionResult = await OpenIdClient.client.introspect(req.user.access_token);
+      if (introspectionResult) {
+        res.send(true);
+      } else {
+        res.send(false);
+      }
+    } else {
+      // res.status(401);
+      res.send(false);
     }
   }
 
   @Get('role')
-  async getUserRole(@Req() req) {
+  async getUserRole(@Req() req, @Res() res: Response) {
     if (req.user) {
-      return OpenIdClient.client.userinfo(req.user.access_token);
+      const accessToken = req.user.access_token;
+      const result = await OpenIdClient.client.userinfo(accessToken);
+      res.send(result);
     } else {
-      return 200;
+      res.status(401);
+      res.send(undefined);
     }
   }
 
   @Get('logout')
-  async userLogout(@Req() req) {
+  async userLogout(@Req() req, @Res() res: Response) {
     if (req.user) {
-      return OpenIdClient.client.revoke(req.user.access_token);
+      const accessToken = req.user.access_token;
+      const result = await OpenIdClient.client.revoke(accessToken);
+      res.send(result);
     } else {
-      return 200;
+      res.status(401);
+      res.send(undefined);
     }
   }
 }

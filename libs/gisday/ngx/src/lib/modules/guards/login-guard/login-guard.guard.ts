@@ -12,11 +12,10 @@ export class LoginGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return this.authService.state().pipe(
       map((value) => {
-        if (value === null || value === undefined || value.active === false) {
+        if (value === false) {
           window.location.href = route.data['externalUrl'];
           return true;
-        }
-        if (value.active === true) {
+        } else {
           return true;
         }
       })

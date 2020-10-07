@@ -60,11 +60,11 @@ const routes: Routes = [
   },
   {
     path: 'account',
-    canActivate: [LoginGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AccountModule),
-    data: {
-      externalUrl: 'http://localhost:3333/oidc/login'
-    }
+    // canActivate: [LoginGuard],
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AccountModule)
+    // data: {
+    //   externalUrl: 'http://localhost:3333/oidc/login'
+    // }
   },
   {
     path: 'login',
@@ -83,12 +83,12 @@ const routes: Routes = [
     {
       provide: env,
       useValue: environment
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
     }
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: AuthInterceptor,
+    //   multi: true
+    // }
   ],
   bootstrap: [AppComponent]
 })
