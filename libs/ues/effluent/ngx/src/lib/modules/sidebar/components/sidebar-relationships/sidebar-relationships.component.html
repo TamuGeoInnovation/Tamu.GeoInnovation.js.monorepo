@@ -33,22 +33,6 @@
       </div>
     </div>
 
-    <!-- <div *ngIf="(tierOwnedBy | async) as tob">
-      <ng-container *ngIf="tob.length > 0; else noParent">
-        <div class="stat-card" *ngFor="let child of tob">
-          <div class="stat-metric">{{child?.attributes?.SampleNumber}}</div>
-          <div class="stat-title">Parent Tier</div>
-        </div>
-      </ng-container>
-
-      <ng-template #noParent>
-        <div class="stat-card">
-          <div class="stat-metric">N/A</div>
-          <div class="stat-title">Parent Tier</div>
-        </div>
-      </ng-template>
-    </div> -->
-
     <div *ngIf="(tierOwns | async) as to">
       <ng-container *ngIf="to.length > 0">
         <div class="stat-card">

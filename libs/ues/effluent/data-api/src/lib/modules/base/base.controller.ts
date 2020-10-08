@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Post, Body, Delete, Patch } from '@nestjs/common';
-
 import { BaseEntity, DeepPartial } from 'typeorm';
+
 import { BaseService } from './base.service';
 
 @Controller('base')

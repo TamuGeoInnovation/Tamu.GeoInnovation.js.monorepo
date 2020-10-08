@@ -15,7 +15,7 @@ import {
   PopupsModule
 } from '@tamu-gisc/aggiemap';
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
-import { EsriMapModule, EsriModuleProviderService, EsriMapService } from '@tamu-gisc/maps/esri';
+import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/search';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -32,8 +32,8 @@ import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/po
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
-
 import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
+
 
 import { SidebarOverviewComponent } from '../sidebar/components/sidebar-overview/sidebar-overview.component';
 import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';

@@ -102,12 +102,3 @@ export class FileComponent implements ControlValueAccessor {
     this.value = disabled;
   }
 }
-
-// Might not need this
-export interface SelectedFile {
-  name: string;
-  type: string;
-  extension: string;
-  size: number;
-  content: string | ArrayBuffer;
-}

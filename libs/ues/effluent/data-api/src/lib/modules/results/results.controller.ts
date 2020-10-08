@@ -12,7 +12,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Result } from '@tamu-gisc/ues/effluent/common/entities';
-import { AdminRoleGuard, LoginGuard, AzureIdpGuard } from '@tamu-gisc/oidc/client';
+import { AzureIdpGuard } from '@tamu-gisc/oidc/client';
 
 import { BaseController } from '../base/base.controller';
 import { ResultsService } from './results.service';

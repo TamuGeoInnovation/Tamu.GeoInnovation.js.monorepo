@@ -9,8 +9,9 @@ import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import esri = __esri;
 import { ResultsService } from '../data-access/results/results.service';
+
+import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-map',

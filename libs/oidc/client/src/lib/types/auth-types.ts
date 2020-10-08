@@ -9,3 +9,8 @@ export interface AuthOptions {
    */
   attach_href?: boolean;
 }
+
+/**
+ * Authentication API url. For additional authentication options, use `AuthOptions` instead
+ */
+export type AuthUrl = string;
