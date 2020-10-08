@@ -6,12 +6,12 @@ import { NgModule } from '@angular/core';
 
 import { Angulartics2Module } from 'angulartics2';
 import * as WebFont from 'webfontloader';
-import { SESSION_STORAGE, LOCAL_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { StorageServiceModule } from 'angular-webstorage-service';
 
 import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
-import { AuthGuard, AuthService, AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
+import { AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';

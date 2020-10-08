@@ -18,13 +18,5 @@ export const NotificationEvents: NotificationProperties[] = [
       "Could not calculate trip with requested points. The Aggiemap team has been notified and will be working to fix the problem. If you haven't given up already, please try again with a slightly different set of points.",
     imgUrl: './assets/images/out-of-bounds.svg',
     imgAltText: 'Trip Fail Icon'
-  },
-  {
-    id: 'feedback_submit',
-    title: 'Feedback Submitted',
-    acknowledge: false,
-    message: 'Thank you! Your feedback has been submitted successfully and the Aggiemap team notified.',
-    imgUrl: './assets/images/like.svg',
-    imgAltText: 'Feedback Icon'
   }
 ];
