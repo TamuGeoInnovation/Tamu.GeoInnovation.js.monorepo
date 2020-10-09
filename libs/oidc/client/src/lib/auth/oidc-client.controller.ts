@@ -14,8 +14,9 @@ export class OidcClientController {
 
   @Get('/logout')
   public async logout(@Request() req, @Response() res) {
+    const endSessionUrl = await OpenIdClient.client.endSessionUrl();
     req.logout();
-    res.redirect(await OpenIdClient.client.endSessionUrl());
+    res.redirect(endSessionUrl);
   }
 
   @UseGuards(LoginGuard)

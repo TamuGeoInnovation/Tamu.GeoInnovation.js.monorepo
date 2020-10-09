@@ -351,6 +351,33 @@ export class RsvpType extends GuidIdentity {
 }
 
 @Entity({
+  name: 'user_info'
+})
+export class UserInfo extends GuidIdentity {
+  @Column({ nullable: true })
+  public accountGuid: string;
+
+  @Column({ nullable: true })
+  public uin: string;
+
+  @Column({ nullable: true })
+  public fieldOfStudy: string;
+
+  @Column({ nullable: true })
+  public classification: string;
+
+  @Column({ nullable: true })
+  public participantType: string;
+
+  @Column({ nullable: true })
+  public hasCompletedInitialSurvey: string;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
   name: 'user_classes'
 })
 export class UserClass extends GuidIdentity {
@@ -487,6 +514,9 @@ export class UserClassRepo extends CommonRepo<UserClass> {
       .getMany();
   }
 }
+
+@EntityRepository(UserInfo)
+export class UserInfoRepo extends CommonRepo<UserInfo> {}
 
 @EntityRepository(UserRsvp)
 export class UserRsvpRepo extends CommonRepo<UserRsvp> {

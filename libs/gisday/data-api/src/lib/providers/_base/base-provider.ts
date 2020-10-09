@@ -35,7 +35,11 @@ export abstract class BaseProvider<T> implements IBaseProvider<T> {
       const merged = deepmerge(entity as Partial<T>, req.body);
       return this.repo.save(merged);
     } else {
-      throw new Error('Could not find entity to update');
+      // throw new Error('Could not find entity to update');
+      if (req.user) {
+        req.body.accountGuid = req.user.sub;
+      }
+      this.insertEntity(req);
     }
   }
 

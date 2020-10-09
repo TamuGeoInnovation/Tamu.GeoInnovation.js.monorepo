@@ -19,6 +19,7 @@ export * from './modules/user-class/user-class.module';
 export * from './modules/user-rsvp/user-rsvp.module';
 export * from './modules/user-submission/user-submission.module';
 export * from './modules/user/user.module';
+export * from './modules/user-info/user-info.module';
 
 // Providers
 export * from './providers/class/class.provider';
