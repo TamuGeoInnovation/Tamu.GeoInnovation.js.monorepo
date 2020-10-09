@@ -424,7 +424,7 @@ export class UserSubmission extends GuidIdentity {
   // @OneToOne((type) => User, { cascade: true, nullable: true })
   // @JoinColumn()
   @Column({ nullable: false })
-  public userGuid: string; // User
+  public accountGuid: string; // User
 
   @Column({ nullable: false })
   public title: string;
