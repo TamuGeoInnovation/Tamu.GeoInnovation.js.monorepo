@@ -15,6 +15,7 @@ import {
   Sponsor,
   Tag,
   UserClass,
+  UserInfo,
   UserRsvp,
   UserSubmission,
   SubmissionType,
@@ -30,6 +31,7 @@ import {
   TagModule,
   UserModule,
   UserClassModule,
+  UserInfoModule,
   UserRsvpModule,
   UserSubmissionModule
 } from '@tamu-gisc/gisday/data-api';
@@ -64,6 +66,7 @@ import { localDbConfig } from '../environments/ormconfig';
         Sponsor,
         Tag,
         UserClass,
+        UserInfo,
         UserRsvp,
         UserSubmission
       ]
@@ -80,6 +83,7 @@ import { localDbConfig } from '../environments/ormconfig';
     TagModule,
     UserModule,
     UserClassModule,
+    UserInfoModule,
     UserRsvpModule,
     UserSubmissionModule
   ],

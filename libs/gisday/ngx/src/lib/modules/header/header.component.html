@@ -6,7 +6,7 @@
     <li (click)="toggleMenuButton()"><a [routerLink]="['/faq']">FAQ</a></li>
     <li (click)="toggleMenuButton()"><a [routerLink]="['/about']">About</a></li>
     <li (click)="toggleMenuButton()"><a [routerLink]="['/sponsors']">Sponsors</a></li>
-    <li *ngIf="(loggedIn | async) == false; else offCanvasElse" (click)="toggleMenuButton()"><a [routerLink]="['/login']">Login</a></li>
+    <li *ngIf="(loggedIn | async) === false; else offCanvasElse" (click)="toggleMenuButton()"><a [routerLink]="['/login']">Login</a></li>
     <ng-template #offCanvasElse>
       <div *ngIf="(userRole | async) as userRole" id="liAccountMobile">
         <li *ngIf="userRole.role.level_role === '99'"><a [routerLink]="['/admin']">Admin</a></li>
@@ -65,7 +65,7 @@
           </ul>
         </ul>
 
-        <ul *ngIf="(loggedIn | async) == undefined; else desktopElse" id="liLogin" visible="false">
+        <ul *ngIf="(loggedIn | async) === false; else desktopElse" id="liLogin" visible="false">
           <li><a [routerLink]="['/login']" id="linkLogin">Login</a></li>
         </ul>
         <ng-template #desktopElse>

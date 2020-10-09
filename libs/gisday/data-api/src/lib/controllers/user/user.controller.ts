@@ -20,7 +20,11 @@ export class UserController {
       if (req.user.access_token) {
         const introspectionResult = await OpenIdClient.client.introspect(req.user.access_token);
         if (introspectionResult) {
-          res.send(true);
+          if (introspectionResult.active === false) {
+            res.send(false);
+          } else {
+            res.send(true);
+          }
         }
       } else {
         // no access_token
@@ -37,7 +41,11 @@ export class UserController {
     if (req.user) {
       const introspectionResult = await OpenIdClient.client.introspect(req.user.access_token);
       if (introspectionResult) {
-        res.send(true);
+        if (introspectionResult.active === false) {
+          res.send(false);
+        } else {
+          res.send(true);
+        }
       } else {
         res.send(false);
       }

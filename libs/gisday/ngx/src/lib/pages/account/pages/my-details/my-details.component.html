@@ -1,12 +1,37 @@
-<div>
+<!-- <div>
   <div class="loader" *ngIf="!$userDetails"></div>
   <div id="default-content" class="column8" *ngIf="($userDetails | async) as deetz">
     <div class="card leader-3 trailer-2">
       <h2>My Details</h2>
       <div class="row">
-        <p>{{deetz.name}}</p>
-        <p>{{deetz.sub}}</p>
+        <form [formGroup]="form">
+          <div class="form-section">
+            <div class="form-section-body">
+              <div class="form-collection row pad-top">
+                <p></p>
+                <tamu-gisc-textbox formControlName="uin" placeholder="UIN" type="text" floatLabel="true"> </tamu-gisc-textbox>
+                <tamu-gisc-textbox formControlName="fieldOfStudy" placeholder="Field of Study" type="text" floatLabel="true"> </tamu-gisc-textbox>
+                <tamu-gisc-textbox formControlName="classification" placeholder="Classification" type="text" floatLabel="true"> </tamu-gisc-textbox>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+</div> -->
+<div class="card leader-3">
+  <h2>My Details</h2>
+  <form [formGroup]="form">
+    <div class="form-section">
+      <div class="form-section-body">
+        <div class="form-collection row pad-top">
+          <p></p>
+          <tamu-gisc-textbox formControlName="uin" placeholder="UIN" type="text" floatLabel="true"> </tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="fieldOfStudy" placeholder="Field of Study" type="text" floatLabel="true"> </tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="classification" placeholder="Classification" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
