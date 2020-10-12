@@ -13,3 +13,4 @@ export * from './modules/services/submission-type/submission-type.service';
 export * from './modules/services/tag/tag.service';
 export * from './modules/services/user-classes/user-classes.service';
 export * from './modules/services/user-info/user-info.service';
+export * from './modules/services/user-submissions/user-submissions.service';
