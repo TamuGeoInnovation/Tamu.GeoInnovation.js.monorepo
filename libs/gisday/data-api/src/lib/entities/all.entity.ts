@@ -438,7 +438,7 @@ export class UserSubmission extends GuidIdentity {
   @Column({ nullable: false })
   public link: string;
 
-  @OneToOne((type) => SubmissionType, { cascade: true })
+  @OneToOne((type) => SubmissionType, { cascade: true, eager: true })
   @JoinColumn()
   public submissionType: SubmissionType; // Submission Type?
 
