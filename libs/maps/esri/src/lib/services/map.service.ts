@@ -657,7 +657,7 @@ interface SelectFeaturesProperties {
 
 interface ZoomProperties {
   graphics: esri.Graphic[];
-  zoom: number;
+  zoom?: number;
 }
 
 export interface HitTestSnapshot {

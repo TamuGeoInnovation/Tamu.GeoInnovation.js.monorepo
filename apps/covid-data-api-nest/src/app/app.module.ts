@@ -82,7 +82,6 @@ import { dbConfig, idpConfig } from '../environments/environment';
     StatesModule,
     CountiesModule,
     CountyClaimsModule,
-    UsersModule,
     WebsitesModule,
     PhoneNumbersModule
   ],

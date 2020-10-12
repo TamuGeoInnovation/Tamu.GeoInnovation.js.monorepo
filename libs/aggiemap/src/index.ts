@@ -11,8 +11,8 @@ export * from './lib/modules/forms/forms.module';
 // Components
 export * from './lib/reference/components/building-department-list/building-department-list.component';
 
-export * from './lib/popups/components/accessible/accessible.component';
 export * from './lib/popups/components/base/base.popup.component';
+export * from './lib/popups/components/accessible/accessible.component';
 export * from './lib/popups/components/building/building-popup.component';
 export * from './lib/popups/components/construction/construction.component';
 export * from './lib/popups/components/lactation/lactation.component';

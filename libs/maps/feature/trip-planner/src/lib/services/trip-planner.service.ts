@@ -417,7 +417,7 @@ export class TripPlannerService implements OnDestroy {
     private environment: EnvironmentService
   ) {
     this.LayerSources = this.environment.value('LayerSources');
-    this.RegionalBoundary = this.environment.value('RegionalBoundary');
+    this.RegionalBoundary = this.environment.value('RegionalBoundary', true);
 
     // Update travel options and execute query if all trip requirements are met.
     this.settings.init(this.settingsConfig).subscribe((res: TravelOptions) => {

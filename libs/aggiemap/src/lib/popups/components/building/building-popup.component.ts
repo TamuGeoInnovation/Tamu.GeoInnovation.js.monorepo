@@ -7,14 +7,14 @@ import { v4 as guid } from 'uuid';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { TripPlannerService } from '@tamu-gisc/maps/feature/trip-planner';
 
-import { GeneralDirectionsPopupComponent } from '../base/base.popup.component';
+import { BaseDirectionsComponent } from '../base-directions/base-directions.component';
 
 @Component({
   selector: 'tamu-gisc-buildling-popup-component',
   templateUrl: './building-popup.component.html',
   styleUrls: ['../base/base.popup.component.scss']
 })
-export class BuildingPopupComponent extends GeneralDirectionsPopupComponent implements OnInit {
+export class BuildingPopupComponent extends BaseDirectionsComponent implements OnInit {
   public proctorURL: string;
 
   constructor(

@@ -1,12 +1,19 @@
-import { Injectable, Component } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 import { HitTestSnapshot } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerSource } from '@tamu-gisc/common/types';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PopupService {
   private layers: LayerSource[];
+
+  private _show: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  public show = this._show.asObservable();
+
+  private _suppressed: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public suppressed = this._suppressed.asObservable();
 
   constructor(private environment: EnvironmentService) {
     this.layers = this.environment.value('LayerSources');
@@ -50,5 +57,21 @@ export class PopupService {
 
       return source.popupComponent;
     }
+  }
+
+  public hidePopup() {
+    this._show.next(false);
+  }
+
+  public showPopup() {
+    this._show.next(true);
+  }
+
+  public suppressPopups() {
+    this._suppressed.next(true);
+  }
+
+  public enablePopups() {
+    this._suppressed.next(false);
   }
 }

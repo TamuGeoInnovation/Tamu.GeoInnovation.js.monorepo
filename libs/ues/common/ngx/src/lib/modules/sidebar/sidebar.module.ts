@@ -10,9 +10,9 @@ import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 
+import { UESCoreUIModule } from '../core-ui/core-ui.module';
 import { SidebarComponent } from './sidebar.component';
 import { SidebarReferenceComponent } from './components/sidebar-reference/sidebar-reference.component';
-import { UESCoreUIModule } from '../core-ui/core-ui.module';
 
 @NgModule({
   imports: [
