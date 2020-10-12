@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserSubmissionController } from '../../controllers/user-submission/user-submission.controller';
 import { UserSubmissionProvider } from '../../providers/user-submission/user-submission.provider';
-import { UserSubmission } from '../../entities/all.entity';
+import { SubmissionTypeRepo, UserSubmissionRepo } from '../../entities/all.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserSubmission])],
+  imports: [TypeOrmModule.forFeature([SubmissionTypeRepo, UserSubmissionRepo])],
   controllers: [UserSubmissionController],
-  providers: [UserSubmissionProvider]
+  providers: [UserSubmissionProvider],
+  exports: [UserSubmissionProvider]
 })
 export class UserSubmissionModule {}
