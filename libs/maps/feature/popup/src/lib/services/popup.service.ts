@@ -59,11 +59,11 @@ export class PopupService {
     }
   }
 
-  public showPopup() {
+  public hidePopup() {
     this._show.next(false);
   }
 
-  public hidePopup() {
+  public showPopup() {
     this._show.next(true);
   }
 

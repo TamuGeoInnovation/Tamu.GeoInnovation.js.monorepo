@@ -73,10 +73,9 @@ export class PopupComponent implements OnInit, OnDestroy {
         this.snapshot = snapshot;
 
         if (popupsSuppressed !== true && snapshot.graphics.length > 0 && snapshot.graphics.every((g) => g != null)) {
-          this.popupService.hidePopup();
           this.render();
         } else {
-          this.popupService.showPopup();
+          this.popupService.hidePopup();
         }
       });
   }
@@ -96,11 +95,13 @@ export class PopupComponent implements OnInit, OnDestroy {
     if (this.snapshot && this.snapshot.graphics && this.snapshot.graphics.length > 0) {
       const component = this.popupService.getComponent({ ...this.snapshot });
 
-      if (!component) {
+      if (component === undefined) {
         console.warn(`Popup component could not be resolved.`);
-        this.popupService.showPopup();
+        this.popupService.hidePopup();
         return;
       }
+
+      this.popupService.showPopup();
 
       // Resolve component
       const factory = this.componentResolver.resolveComponentFactory(component);
