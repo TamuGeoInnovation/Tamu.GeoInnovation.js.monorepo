@@ -27,22 +27,25 @@ describe('Base Controller', () => {
       expect(baseController).toBeDefined();
     });
   });
+
   describe('getAll', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method getAll', async () => {
       const serviceSpy = jest.spyOn(baseService, 'getAll');
       baseController.getAll();
       expect(serviceSpy).toHaveBeenCalled();
     });
   });
+
   describe('getOne', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method getOne', async () => {
       const serviceSpy = jest.spyOn(baseService, 'getOne');
       baseController.getOne(mockParameters);
       expect(serviceSpy).toHaveBeenCalled();
     });
   });
+
   describe('insert', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method createOne', async () => {
       const serviceSpy = jest.spyOn(baseService, 'createOne');
       baseController.insert(mockParameters);
       expect(serviceSpy).toHaveBeenCalled();

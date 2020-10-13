@@ -1,5 +1,6 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { Repository, DeepPartial, getRepository } from 'typeorm';
 
 import { Workshop, Scenario } from '@tamu-gisc/cpa/common/entities';
@@ -11,6 +12,7 @@ export class WorkshopsService extends BaseService<Workshop> {
   constructor(@InjectRepository(Workshop) private repo: Repository<Workshop>) {
     super(repo);
   }
+
   public async addNewScenario(body: IWorkshopScenarioPayload) {
     const existing = await this.repo.findOne({ where: { guid: body.workshopGuid }, relations: ['scenarios'] });
 
@@ -29,7 +31,8 @@ export class WorkshopsService extends BaseService<Workshop> {
       throw new HttpException('Not Found', 404);
     }
   }
-  public async deleteScen(params: IWorkshopScenarioPayload) {
+
+  public async deleteScenario(params: IWorkshopScenarioPayload) {
     const existing = await this.repo.findOne({
       where: { guid: params.workshopGuid },
       relations: ['scenarios']
@@ -43,6 +46,16 @@ export class WorkshopsService extends BaseService<Workshop> {
       throw new HttpException('Not Found', 404);
     }
   }
+
+  public async getOne(params) {
+    const existing = await this.repo.findOne({ where: { guid: params.guid }, relations: ['scenarios'] });
+    if (existing) {
+      return existing;
+    } else {
+      throw new HttpException('Not Found', 404);
+    }
+  }
+
   public async updateWorkshop(body: IWorkshopRequestPayload, params) {
     try {
       await this.repo.update({ guid: params.guid }, { ...body });
@@ -51,6 +64,7 @@ export class WorkshopsService extends BaseService<Workshop> {
       throw new HttpException('Internal Server Error', 500);
     }
   }
+
   public async deleteWorkshop(params) {
     try {
       await this.repo.delete({ guid: params.guid });
@@ -64,6 +78,7 @@ export class WorkshopsService extends BaseService<Workshop> {
 export interface IWorkshopRequestPayload extends DeepPartial<Workshop> {
   guid: string;
 }
+
 export interface IWorkshopScenarioPayload {
   scenarioGuid: string;
   workshopGuid: string;

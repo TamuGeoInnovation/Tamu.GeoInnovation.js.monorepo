@@ -31,7 +31,7 @@ describe('Responses Controller', () => {
   });
 
   describe('getAllForScenarioAndWorkshop', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method getAllForBoth', async () => {
       const expectedResult = [];
       jest.spyOn(responsesService, 'getAllForBoth').mockResolvedValue(expectedResult);
       expect(await responsesController.getAllForScenarioAndWorkshop(mockParameters)).toBe(expectedResult);
@@ -39,11 +39,12 @@ describe('Responses Controller', () => {
   });
 
   describe('getOne', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method getSpecific', async () => {
       const expectedResult = new Response();
       jest.spyOn(responsesService, 'getSpecific').mockResolvedValue(expectedResult);
       expect(await responsesController.getOne(mockParameters)).toBe(expectedResult);
     });
+
     it('should throw', async () => {
       const expectedResult = undefined;
       jest.spyOn(responsesService, 'getOne').mockResolvedValue(expectedResult);
@@ -52,7 +53,7 @@ describe('Responses Controller', () => {
   });
 
   describe('update', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method updateExisting', async () => {
       const expectedResult = new UpdateResult();
       jest.spyOn(responsesService, 'updateExisting').mockResolvedValue(expectedResult);
       expect(await responsesController.update(mockParameters, mockParameters)).toBe(expectedResult);
@@ -60,7 +61,7 @@ describe('Responses Controller', () => {
   });
 
   describe('delete', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method deleteExisting', async () => {
       const expectedResult = new DeleteResult();
       jest.spyOn(responsesService, 'deleteExisting').mockResolvedValue(expectedResult);
       expect(await responsesController.delete(mockParameters)).toBe(expectedResult);
@@ -68,7 +69,7 @@ describe('Responses Controller', () => {
   });
 
   describe('getAll', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method getMany', async () => {
       const expectedResult = [];
       jest.spyOn(responsesService, 'getMany').mockResolvedValue(expectedResult);
       expect(await responsesController.getAll()).toBe(expectedResult);
@@ -76,7 +77,7 @@ describe('Responses Controller', () => {
   });
 
   describe('insert', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method insertNew', async () => {
       const expectedResult = new Response();
       jest.spyOn(responsesService, 'insertNew').mockResolvedValue(expectedResult);
       expect(await responsesController.insert(mockParameters)).toBe(expectedResult);

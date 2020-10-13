@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpStatus, HttpException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -6,7 +7,6 @@ import { Repository } from 'typeorm';
 import { Workshop } from '@tamu-gisc/cpa/common/entities';
 
 import { WorkshopsService } from './workshops.service';
-import { throwError } from 'rxjs';
 
 jest.mock('../base/base.service');
 
@@ -40,44 +40,75 @@ describe('WorkshopsService', () => {
   });
 
   describe('addNewScenario', () => {
-    it('should return call repo.update, and should accept IResponseRequestPayload type as mock parameters ', async () => {
+    it('should throw error, and should accept IResponseRequestPayload type as mock parameters ', async () => {
       const mockparameter = {
         scenarioGuid: '',
         workshopGuid: ''
       };
       jest.spyOn(workshopsRepository, 'findOne').mockResolvedValue(undefined);
-      await expect(workshopsService.addNewScenario(mockparameter)).rejects.toThrowError('Not Found');
+      try {
+        await workshopsService.addNewScenario(mockparameter);
+      } catch (error) {
+        expect(error.status).toBe(HttpStatus.NOT_FOUND);
+      }
     });
   });
 
-  describe('deleteScen', () => {
-    it('should return call repo.update, and should accept IResponseRequestPayload type as mock parameters ', async () => {
+  describe('deleteScenario', () => {
+    it('should throw error, and should accept IResponseRequestPayload type as mock parameters ', async () => {
       const mockparameter = {
         scenarioGuid: '',
         workshopGuid: ''
       };
       jest.spyOn(workshopsRepository, 'findOne').mockResolvedValue(undefined);
-      await expect(workshopsService.deleteScen(mockparameter)).rejects.toThrowError('Not Found');
+      try {
+        await workshopsService.deleteScenario(mockparameter);
+      } catch (error) {
+        expect(error.status).toBe(HttpStatus.NOT_FOUND);
+      }
+    });
+  });
+
+  describe('getOne', () => {
+    it('should throw error ', async () => {
+      const mockparameter = {
+        scenarioGuid: '',
+        workshopGuid: ''
+      };
+      jest.spyOn(workshopsRepository, 'findOne').mockResolvedValue(undefined);
+      try {
+        await workshopsService.getOne(mockparameter);
+      } catch (error) {
+        expect(error.status).toBe(HttpStatus.NOT_FOUND);
+      }
     });
   });
 
   describe('updateWorkshop', () => {
-    it('should return call repo.update, and should accept IResponseRequestPayload type as mock parameters ', async () => {
+    it('should throw error, and should accept IResponseRequestPayload type as mock parameters ', async () => {
       const mockparameter = {
         guid: ''
       };
-      jest.spyOn(workshopsRepository, 'update').mockRejectedValue(throwError);
-      await expect(workshopsService.updateWorkshop(mockparameter, '')).rejects.toThrowError('Internal Server Error');
+      jest.spyOn(workshopsRepository, 'update').mockRejectedValue(new Error());
+      try {
+        await workshopsService.updateWorkshop(mockparameter, '');
+      } catch (error) {
+        expect(error.status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     });
   });
 
   describe('deleteWorkshop', () => {
-    it('should return call repo.update, and should accept IResponseRequestPayload type as mock parameters ', async () => {
+    it('should throw error, and should accept IResponseRequestPayload type as mock parameters ', async () => {
       const mockparameter = {
         guid: ''
       };
-      jest.spyOn(workshopsRepository, 'delete').mockRejectedValue(throwError);
-      await expect(workshopsService.deleteWorkshop('')).rejects.toThrowError('Internal Server Error');
+      jest.spyOn(workshopsRepository, 'delete').mockRejectedValue(new Error());
+      try {
+        await workshopsService.deleteWorkshop(mockparameter);
+      } catch (error) {
+        expect(error.status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     });
   });
 });

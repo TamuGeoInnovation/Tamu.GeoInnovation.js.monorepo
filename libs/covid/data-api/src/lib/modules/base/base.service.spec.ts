@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { BaseEntity, Repository } from 'typeorm';
 
@@ -23,6 +22,7 @@ describe('BaseService', () => {
       expect(baseService).toBeDefined();
     });
   });
+
   describe('createOne ', () => {
     it('should call repoSpy', async () => {
       const mockedParamater = {};
@@ -32,6 +32,7 @@ describe('BaseService', () => {
       expect(repoSpy).toHaveBeenCalled();
     });
   });
+
   describe('getOne ', () => {
     it('should call repoSpy', async () => {
       const mockedParamater = {};
@@ -40,6 +41,7 @@ describe('BaseService', () => {
       expect(repoSpy).toHaveBeenCalled();
     });
   });
+
   describe('getMany ', () => {
     it('should call repoSpy', async () => {
       const mockedParamater = {};
@@ -48,6 +50,7 @@ describe('BaseService', () => {
       expect(repoSpy).toHaveBeenCalled();
     });
   });
+
   describe('getAll ', () => {
     it('should call repoSpy', async () => {
       const repoSpy = jest.spyOn(baseService.repository, 'find');

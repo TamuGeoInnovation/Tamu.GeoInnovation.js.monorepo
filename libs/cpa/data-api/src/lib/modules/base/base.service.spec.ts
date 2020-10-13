@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { BaseEntity, Repository } from 'typeorm';
 
 import { BaseService } from './base.service';
@@ -38,6 +39,7 @@ describe('BaseService', () => {
       expect(repoSpy).toHaveBeenCalled();
     });
   });
+
   describe('getMany ', () => {
     it('should call repoSpy', () => {
       const mockedParamater = {};
@@ -46,6 +48,7 @@ describe('BaseService', () => {
       expect(repoSpy).toHaveBeenCalled();
     });
   });
+
   describe('createOne ', () => {
     it('should call repoSpy', () => {
       const mockedParamater = {};

@@ -3,9 +3,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
-import { Response, Workshop, Scenario } from '@tamu-gisc/cpa/common/entities';
+import { Response } from '@tamu-gisc/cpa/common/entities';
 
-import { ResponsesService, IResponseRequestPayload } from './responses.service';
+import { ResponsesService } from './responses.service';
 
 jest.mock('../base/base.service');
 

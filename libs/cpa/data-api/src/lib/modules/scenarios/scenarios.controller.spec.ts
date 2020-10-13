@@ -1,9 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { Repository, DeleteResult, UpdateResult } from 'typeorm';
-
-import { Scenario } from '@tamu-gisc/cpa/common/entities';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 import { ScenariosController } from './scenarios.controller';
 import { ScenariosService } from './scenarios.service';
@@ -32,7 +29,7 @@ describe('Scenarios Controller', () => {
   });
 
   describe('update', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method updateScenario', async () => {
       const expectedResult = new UpdateResult();
       jest.spyOn(scenariosService, 'updateScenario').mockResolvedValue(expectedResult);
       expect(await scenariosController.update(mockParameters, mockParameters)).toBe(expectedResult);
@@ -40,7 +37,7 @@ describe('Scenarios Controller', () => {
   });
 
   describe('delete', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method deleteScenario', async () => {
       const expectedResult = new DeleteResult();
       jest.spyOn(scenariosService, 'deleteScenario').mockResolvedValue(expectedResult);
       expect(await scenariosController.delete(mockParameters)).toBe(expectedResult);

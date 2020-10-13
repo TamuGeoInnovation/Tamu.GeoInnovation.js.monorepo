@@ -29,7 +29,7 @@ describe('Workshops Controller', () => {
   });
 
   describe('addScenario', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method addNewScenario', async () => {
       const expectedResult = [];
       jest.spyOn(workshopsService, 'addNewScenario').mockResolvedValue(expectedResult);
       expect(await workshopsController.addScenario(mockParameters)).toBe(expectedResult);
@@ -37,28 +37,23 @@ describe('Workshops Controller', () => {
   });
 
   describe('deleteScenario', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method deleteScenario', async () => {
       const expectedResult = new Workshop();
-      jest.spyOn(workshopsService, 'deleteScen').mockResolvedValue(expectedResult);
+      jest.spyOn(workshopsService, 'deleteScenario').mockResolvedValue(expectedResult);
       expect(await workshopsController.deleteScenario(mockParameters)).toBe(expectedResult);
     });
   });
 
   describe('getOne', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method getOne', async () => {
       const expectedResult = new Workshop();
       jest.spyOn(workshopsService, 'getOne').mockResolvedValue(expectedResult);
       expect(await workshopsController.getOne(mockParameters)).toBe(expectedResult);
     });
-    it('should throw', async () => {
-      const expectedResult = undefined;
-      jest.spyOn(workshopsService, 'getOne').mockResolvedValue(expectedResult);
-      await expect(workshopsController.getOne(mockParameters)).rejects.toThrow();
-    });
   });
 
   describe('updateOne', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method updateWorkshop', async () => {
       const serviceSpyOn = jest.spyOn(workshopsService, 'updateWorkshop');
       await workshopsController.updateOne(mockParameters, mockParameters);
       expect(serviceSpyOn).toBeCalled();
@@ -66,7 +61,7 @@ describe('Workshops Controller', () => {
   });
 
   describe('deleteOne', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method deleteWorkshop', async () => {
       const serviceSpyOn = jest.spyOn(workshopsService, 'deleteWorkshop');
       await workshopsController.deleteOne(mockParameters);
       expect(serviceSpyOn).toBeCalled();
@@ -74,7 +69,7 @@ describe('Workshops Controller', () => {
   });
 
   describe('getAll', () => {
-    it('should return expectedResult', async () => {
+    it('should call service method getMany', async () => {
       const expectedResult = [];
       jest.spyOn(workshopsService, 'getMany').mockResolvedValue(expectedResult);
       expect(await workshopsController.getAll()).toBe(expectedResult);
