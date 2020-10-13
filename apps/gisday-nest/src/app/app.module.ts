@@ -23,6 +23,8 @@ import {
   ClassModule,
   CourseCreditModule,
   EventModule,
+  InitialSurveyModule,
+  QuestionType,
   RsvpTypeModule,
   SessionModule,
   SpeakerModule,
@@ -33,7 +35,11 @@ import {
   UserClassModule,
   UserInfoModule,
   UserRsvpModule,
-  UserSubmissionModule
+  UserSubmissionModule,
+  InitialSurveyQuestion,
+  InitialSurvey,
+  QuestionTypeRepo,
+  QuestionTypeModule
 } from '@tamu-gisc/gisday/data-api';
 
 import { AppController } from './app.controller';
@@ -58,6 +64,9 @@ import { localDbConfig } from '../environments/ormconfig';
         Class,
         CourseCredit,
         Event,
+        InitialSurveyQuestion,
+        InitialSurvey,
+        QuestionType,
         RsvpType,
         Session,
         Speaker,
@@ -75,6 +84,8 @@ import { localDbConfig } from '../environments/ormconfig';
     ClassModule,
     CourseCreditModule,
     EventModule,
+    InitialSurveyModule,
+    QuestionTypeModule,
     RsvpTypeModule,
     SessionModule,
     SpeakerModule,
