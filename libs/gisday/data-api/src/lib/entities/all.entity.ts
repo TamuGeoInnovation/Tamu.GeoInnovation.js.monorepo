@@ -152,6 +152,56 @@ export class Event extends GuidIdentity {
 }
 
 @Entity({
+  name: 'question_types'
+})
+export class QuestionType extends GuidIdentity {
+  @Column({ nullable: false })
+  public type: string;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
+  name: 'initial_survey_questions'
+})
+export class InitialSurveyQuestion extends GuidIdentity {
+  @ManyToOne((type) => InitialSurveyQuestion, { cascade: true, eager: true })
+  @JoinColumn()
+  public questionType: QuestionType;
+
+  @Column({ nullable: false })
+  public questionText: string;
+
+  @Column({ nullable: false })
+  public questionOptions: string;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
+  name: 'initial_survey'
+})
+export class InitialSurvey extends GuidIdentity {
+  @Column({ nullable: false })
+  public userGuid: string; // User
+
+  @ManyToOne((type) => InitialSurveyQuestion, { cascade: true, eager: true })
+  @JoinColumn()
+  public question: InitialSurveyQuestion;
+
+  @Column({ nullable: false })
+  public responseValue: string;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
   name: 'sessions'
 })
 export class Session extends GuidIdentity {
@@ -460,6 +510,15 @@ export class CourseCreditRepo extends CommonRepo<CourseCredit> {}
 
 @EntityRepository(Event)
 export class EventRepo extends CommonRepo<Event> {}
+
+@EntityRepository(InitialSurveyQuestion)
+export class InitialSurveyQuestionRepo extends CommonRepo<InitialSurveyQuestion> {}
+
+@EntityRepository(InitialSurvey)
+export class InitialSurveyRepo extends CommonRepo<InitialSurvey> {}
+
+@EntityRepository(QuestionType)
+export class QuestionTypeRepo extends CommonRepo<QuestionType> {}
 
 @EntityRepository(Session)
 export class SessionRepo extends CommonRepo<Session> {}

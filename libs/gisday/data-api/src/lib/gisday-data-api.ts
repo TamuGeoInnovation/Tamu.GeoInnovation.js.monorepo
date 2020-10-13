@@ -9,6 +9,8 @@ export * from './modules/check-in/check-in.module';
 export * from './modules/class/class.module';
 export * from './modules/course-credit/course-credit.module';
 export * from './modules/event/event.module';
+export * from './modules/initial-survey/initial-survey.module';
+export * from './modules/question-type/question-type.module';
 export * from './modules/rsvp-type/rsvp-type.module';
 export * from './modules/session/session.module';
 export * from './modules/speaker/speaker.module';

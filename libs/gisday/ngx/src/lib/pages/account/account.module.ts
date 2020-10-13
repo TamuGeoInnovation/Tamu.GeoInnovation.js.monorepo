@@ -28,6 +28,10 @@ const routes: Routes = [
       {
         path: 'my-submissions',
         loadChildren: () => import('./pages/my-submissions/my-submissions.module').then((m) => m.MySubmissionsModule)
+      },
+      {
+        path: 'initial-survey',
+        loadChildren: () => import('./pages/initial-survey/initial-survey.module').then((m) => m.InitialSurveyModule)
       }
     ]
   }
