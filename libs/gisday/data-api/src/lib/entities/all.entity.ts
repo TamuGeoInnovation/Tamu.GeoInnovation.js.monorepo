@@ -158,6 +158,8 @@ export class QuestionType extends GuidIdentity {
   @Column({ nullable: false })
   public type: string;
 
+  public question: InitialSurveyQuestion;
+
   constructor() {
     super();
   }
@@ -167,14 +169,21 @@ export class QuestionType extends GuidIdentity {
   name: 'initial_survey_questions'
 })
 export class InitialSurveyQuestion extends GuidIdentity {
-  @ManyToOne((type) => InitialSurveyQuestion, { cascade: true, eager: true })
-  @JoinColumn()
+  @ManyToOne((type) => QuestionType, (token) => token.question)
+  // @ManyToOne(() => InitialSurveyQuestion, (question) => question.guid, { cascade: true, eager: true })
+  // @JoinColumn()
+  // @OneToOne((type) => QuestionType, { cascade: true, eager: true })
+  // @JoinColumn()
+  // @ManyToMany((type) => QuestionType, { cascade: true, eager: true })
+  // @JoinTable({ name: 'session_speakers' })
+  // @JoinColumn()
+  // public speakers: Speaker[];
   public questionType: QuestionType;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public questionText: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public questionOptions: string;
 
   constructor() {

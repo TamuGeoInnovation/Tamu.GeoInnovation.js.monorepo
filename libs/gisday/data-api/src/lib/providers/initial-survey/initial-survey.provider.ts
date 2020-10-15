@@ -4,7 +4,8 @@ import {
   InitialSurvey,
   InitialSurveyQuestion,
   InitialSurveyQuestionRepo,
-  InitialSurveyRepo
+  InitialSurveyRepo,
+  QuestionTypeRepo
 } from '../../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 
@@ -12,14 +13,23 @@ import { BaseProvider } from '../_base/base-provider';
 export class InitialSurveyProvider extends BaseProvider<InitialSurvey> {
   constructor(
     public readonly initialSurveyRepo: InitialSurveyRepo,
-    public readonly initialSurveyQuestionRepo: InitialSurveyQuestionRepo
+    public readonly initialSurveyQuestionRepo: InitialSurveyQuestionRepo,
+    public readonly questionTypeRepo: QuestionTypeRepo
   ) {
     super(initialSurveyRepo);
   }
 
   async insertQuestion(req: Request) {
-    const _question: Partial<InitialSurveyQuestion> = req.body;
-    const question = this.initialSurveyQuestionRepo.create(_question);
-    return question.save();
+    const questionType = await this.questionTypeRepo.findOne({
+      where: {
+        guid: req.body.questionTypeGuid
+      }
+    });
+    if (questionType) {
+      const _question: Partial<InitialSurveyQuestion> = req.body;
+      _question.questionType = questionType;
+      const question = this.initialSurveyQuestionRepo.create(_question);
+      return this.initialSurveyQuestionRepo.save(question);
+    }
   }
 }
