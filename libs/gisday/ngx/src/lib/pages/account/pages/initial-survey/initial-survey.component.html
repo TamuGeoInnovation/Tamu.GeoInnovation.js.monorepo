@@ -13,12 +13,15 @@
     <div class="trailer-2">
       <div *ngIf="true">
         <div class="flex flex-column session-rating-questionnaire leader-1">
-          <tamu-gisc-binary-question></tamu-gisc-binary-question>
-          <tamu-gisc-binary-question></tamu-gisc-binary-question>
+          <ng-component *ngFor="let question of ($initalSurveyQuestions | async)">
+            <!-- <tamu-gisc-binary-question *ngIf="question.questionType == ''"></tamu-gisc-binary-question> -->
+          </ng-component>
+          <!-- <tamu-gisc-binary-question></tamu-gisc-binary-question> -->
+          <!-- <tamu-gisc-binary-question></tamu-gisc-binary-question>
           <tamu-gisc-text-question></tamu-gisc-text-question>
           <tamu-gisc-scale-normal-question></tamu-gisc-scale-normal-question>
           <tamu-gisc-multiple-option-question></tamu-gisc-multiple-option-question>
-          <tamu-gisc-binary-question></tamu-gisc-binary-question>
+          <tamu-gisc-binary-question></tamu-gisc-binary-question> -->
         </div>
       </div>
     </div>

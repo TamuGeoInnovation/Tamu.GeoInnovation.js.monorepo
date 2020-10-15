@@ -3,18 +3,24 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { UserSubmission } from '@tamu-gisc/gisday/data-api';
+import { InitialSurvey, InitialSurveyQuestion } from '@tamu-gisc/gisday/data-api';
 
 import { BaseService } from '../_base/base.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class InitialSurveyService extends BaseService<UserSubmission> {
+export class InitialSurveyService extends BaseService<InitialSurvey> {
   public withCredentials = true;
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient) {
     super(env1, http1, 'initial-survey', true);
+  }
+
+  public getInitialSurveyQuestions() {
+    return this.http1.get<Array<Partial<InitialSurveyQuestion>>>(`${this.resource}/questions/all`, {
+      withCredentials: true
+    });
   }
 }

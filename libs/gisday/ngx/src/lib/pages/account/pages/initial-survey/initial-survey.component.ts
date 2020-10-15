@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { InitialSurveyService } from '@tamu-gisc/gisday/data-access';
+import { InitialSurveyQuestion } from '@tamu-gisc/gisday/data-api';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-initial-survey',
@@ -6,7 +9,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./initial-survey.component.scss']
 })
 export class InitialSurveyComponent implements OnInit {
-  constructor() {}
+  public $initalSurveyQuestions: Observable<Array<Partial<InitialSurveyQuestion>>>;
 
-  ngOnInit(): void {}
+  constructor(private readonly initialSurveyService: InitialSurveyService) {
+    this.fetchSurveyQuestions();
+  }
+
+  public ngOnInit(): void {}
+
+  public fetchSurveyQuestions() {
+    this.$initalSurveyQuestions = this.initialSurveyService.getInitialSurveyQuestions();
+    // this.initialSurveyService.getInitialSurveyQuestions().subscribe((results) => {
+    //   console.log(results);
+    // });
+  }
 }
