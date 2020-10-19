@@ -40,7 +40,7 @@ export class GuidIdentity extends TimeStampEntity {
   @BeforeUpdate()
   @BeforeInsert()
   private generateGuid(): void {
-    if (this.guid === undefined) {
+    if (this.guid === undefined || this.guid === '') {
       this.guid = guid();
     }
     if (this.season === undefined) {
@@ -169,7 +169,7 @@ export class QuestionType extends GuidIdentity {
   name: 'initial_survey_questions'
 })
 export class InitialSurveyQuestion extends GuidIdentity {
-  @ManyToOne((type) => QuestionType, (token) => token.question)
+  @ManyToOne((type) => QuestionType, (token) => token.question, { eager: true })
   // @ManyToOne(() => InitialSurveyQuestion, (question) => question.guid, { cascade: true, eager: true })
   // @JoinColumn()
   // @OneToOne((type) => QuestionType, { cascade: true, eager: true })

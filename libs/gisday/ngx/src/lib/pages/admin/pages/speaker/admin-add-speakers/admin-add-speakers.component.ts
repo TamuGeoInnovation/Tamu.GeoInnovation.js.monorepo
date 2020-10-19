@@ -9,7 +9,14 @@ export const formConfig = {
   firstName: [''],
   lastName: [''],
   email: [''],
-  organization: ['']
+  organization: [''],
+  graduationYear: [''],
+  degree: [''],
+  program: [''],
+  affiliation: [''],
+  description: [''],
+  socialMedia: [''],
+  blob: ['']
 };
 
 @Component({
