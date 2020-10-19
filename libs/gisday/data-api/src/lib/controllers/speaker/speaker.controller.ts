@@ -12,24 +12,30 @@ export class SpeakerController extends BaseController<Speaker> {
   }
 
   @Get('/presenter/:guid')
-  async presenter(@Param() params) {
+  public async presenter(@Param() params) {
     return this.speakerProvider.getPresenter(params.guid);
   }
 
   @Get('/presenters')
-  async presenters() {
+  public async presenters() {
     return this.speakerProvider.getPresenters();
+  }
+
+  @Post('')
+  @UseInterceptors(FileInterceptor('file'))
+  public async speakerAndInfo(@Req() req: Request, @UploadedFile() file) {
+    return this.speakerProvider.insertWithInfo(req, file);
   }
 
   @Post('/photo')
   @UseInterceptors(FileInterceptor('file'))
-  async speakerPhoto(@Req() req: Request, @UploadedFile() file) {
+  public async speakerPhoto(@Req() req: Request, @UploadedFile() file) {
     const speakerGuid = req.body.speakerGuid;
     return this.speakerProvider.insertPhoto(speakerGuid, req, file);
   }
 
   @Patch('/info')
-  async updateSpeakerInfo(@Req() req: Request) {
+  public async updateSpeakerInfo(@Req() req: Request) {
     return this.speakerProvider.updateSpeakerInfo(req);
   }
 }

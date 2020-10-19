@@ -7,7 +7,7 @@ import { CommonRepo } from '../../entities/all.entity';
 export abstract class BaseProvider<T> implements IBaseProvider<T> {
   constructor(private readonly repo: CommonRepo<T>) {}
 
-  async getEntity(guid: string) {
+  public async getEntity(guid: string) {
     return this.repo.findOne({
       where: {
         guid: guid
@@ -15,17 +15,17 @@ export abstract class BaseProvider<T> implements IBaseProvider<T> {
     });
   }
 
-  async getEntities() {
+  public async getEntities() {
     return this.repo.find();
   }
 
-  async insertEntity(req: Request) {
+  public async insertEntity(req: Request) {
     const _entity: DeepPartial<T> = req.body;
     const entity = this.repo.create(_entity);
     return this.repo.save(entity);
   }
 
-  async updateEntity(req: Request) {
+  public async updateEntity(req: Request) {
     const entity = await this.repo.findOne({
       where: {
         guid: req.body.guid
@@ -43,7 +43,7 @@ export abstract class BaseProvider<T> implements IBaseProvider<T> {
     }
   }
 
-  async deleteEntity(guid: string) {
+  public async deleteEntity(guid: string) {
     const entity = await this.repo.findOne({
       where: {
         guid: guid
