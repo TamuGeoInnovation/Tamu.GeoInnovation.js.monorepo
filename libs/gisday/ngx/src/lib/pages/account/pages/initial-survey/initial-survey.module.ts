@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
@@ -19,8 +20,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [InitialSurveyComponent, BinaryQuestionComponent, TextQuestionComponent, ScaleNormalQuestionComponent, MultipleOptionQuestionComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule],
+  declarations: [
+    InitialSurveyComponent,
+    BinaryQuestionComponent,
+    TextQuestionComponent,
+    ScaleNormalQuestionComponent,
+    MultipleOptionQuestionComponent
+  ],
+  imports: [CommonModule, RouterModule.forChild(routes), FormsModule, ReactiveFormsModule, UIFormsModule, UILayoutModule],
   exports: [RouterModule]
 })
 export class InitialSurveyModule {}

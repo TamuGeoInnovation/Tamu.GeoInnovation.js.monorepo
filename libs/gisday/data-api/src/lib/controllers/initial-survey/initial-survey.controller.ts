@@ -11,12 +11,17 @@ export class InitialSurveyController extends BaseController<InitialSurvey> {
   }
 
   @Get('/questions/all')
-  async getQuestionsAll() {
+  public async getQuestionsAll() {
     return this.initialSurveyProvider.initialSurveyQuestionRepo.find();
   }
 
   @Post('/questions')
-  async insertQuestion(@Req() req: Request) {
+  public async insertQuestion(@Req() req: Request) {
     return this.initialSurveyProvider.insertQuestion(req);
+  }
+
+  @Post()
+  public async insertInitialSurveyResponse(@Req() req: Request) {
+    return this.initialSurveyProvider.insertInitialSurveyResponse(req);
   }
 }

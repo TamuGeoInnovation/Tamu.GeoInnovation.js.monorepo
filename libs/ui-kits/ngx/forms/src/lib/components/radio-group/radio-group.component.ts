@@ -66,7 +66,11 @@ export class RadioGroupComponent<T extends object, V> implements ControlValueAcc
   }
 
   public renderTemplate(option: T, path: string) {
-    return getPropertyValue(option, path);
+    if (path) {
+      return getPropertyValue(option, path);
+    } else {
+      return option;
+    }
   }
 
   public evaluateSetValue(option: T) {
