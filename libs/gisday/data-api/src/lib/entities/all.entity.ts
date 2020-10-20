@@ -196,7 +196,7 @@ export class InitialSurveyQuestion extends GuidIdentity {
 })
 export class InitialSurvey extends GuidIdentity {
   @Column({ nullable: false })
-  public userGuid: string; // User
+  public accountGuid: string; // User
 
   @ManyToOne((type) => InitialSurveyQuestion, { cascade: true, eager: true })
   @JoinColumn()

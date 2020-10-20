@@ -20,6 +20,9 @@ export abstract class BaseProvider<T> implements IBaseProvider<T> {
   }
 
   public async insertEntity(req: Request) {
+    if (req.user) {
+      req.body.accountGuid = req.user.sub;
+    }
     const _entity: DeepPartial<T> = req.body;
     const entity = this.repo.create(_entity);
     return this.repo.save(entity);
