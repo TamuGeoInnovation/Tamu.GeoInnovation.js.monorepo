@@ -2,20 +2,34 @@ const { pathsToModuleNameMapper } = require('ts-jest/utils');
 const { compilerOptions } = require('./tsconfig.json');
 
 module.exports = {
-  globals: {
-    'ts-jest': {
-      tsConfig: './test/tsconfig.spec.json',
-      stringifyContentPathRegex: '\\.html$',
-      astTransformers: [require.resolve('jest-preset-angular/InlineHtmlStripStylesTransformer')],
-      diagnostics: {
-        ignoreCodes: [151001]
-      }
-    }
+  testMatch: ['**/+(*.)+(spec).+(ts|js)?(x)'],
+  transform: {
+    '^.+\\.(ts|js|html)$': 'ts-jest'
   },
-  roots: ['<rootDir>/libs/', '<rootDir>/apps/'],
-  modulePathIgnorePatterns: ['<rootDir>/apps/.*-e2e'],
-  preset: 'jest-preset-angular',
-  setupFiles: ['./test/setupJestMock.ts'],
-  setupFilesAfterEnv: ['./test/setupJest.ts'],
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' })
+  resolver: '@nrwl/jest/plugins/resolver',
+  moduleFileExtensions: ['ts', 'js', 'html'],
+  collectCoverage: true,
+  coverageReporters: ['html', 'lcov', 'text'],
+  verbose: true
 };
+
+if (process.env.IDE) {
+  const fs = require('fs');
+  let path = '<rootDir>';
+
+  try {
+    if (fs.existsSync(process.cwd() + '/src/test-setup.ts')) {
+      path = process.cwd();
+    }
+  } catch (e) {}
+
+  module.exports.globals = {
+    'ts-jest': {
+      tsConfig: `${path}/tsconfig.spec.json`,
+      stringifyContentPathRegex: '\\.html$',
+      astTransformers: ['jest-preset-angular/InlineHtmlStripStylesTransformer']
+    }
+  };
+
+  module.exports.setupFilesAfterEnv = [`${path}/src/test-setup.ts`];
+}
