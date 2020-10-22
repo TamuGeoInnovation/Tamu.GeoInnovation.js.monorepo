@@ -10,6 +10,24 @@ export class InitialSurveyController extends BaseController<InitialSurvey> {
     super(initialSurveyProvider);
   }
 
+  @Get()
+  public async userTookSurvey(@Req() req: Request) {
+    if (req.user) {
+      const tookSurvey = await this.initialSurveyProvider.initialSurveyRepo.count({
+        where: {
+          accountGuid: req.user.sub
+        }
+      });
+      if (tookSurvey) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  }
+
   @Get('/questions/all')
   public async getQuestionsAll() {
     return this.initialSurveyProvider.initialSurveyQuestionRepo.find();

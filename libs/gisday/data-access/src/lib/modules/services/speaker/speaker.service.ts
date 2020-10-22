@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -28,5 +28,15 @@ export class SpeakerService extends BaseService<Speaker> {
     return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/presenters`, {
       withCredentials: false
     });
+  }
+
+  public insertSpeakerInfo(data: FormData) {
+    return this.http1
+      .post(`${this.resource}`, data, {
+        withCredentials: true
+      })
+      .subscribe((result) => {
+        console.log(result);
+      });
   }
 }

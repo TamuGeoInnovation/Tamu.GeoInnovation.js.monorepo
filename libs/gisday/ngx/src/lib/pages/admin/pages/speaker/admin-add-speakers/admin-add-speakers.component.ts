@@ -16,7 +16,7 @@ export const formConfig = {
   affiliation: [''],
   description: [''],
   socialMedia: [''],
-  blob: ['']
+  file: ['']
 };
 
 @Component({
@@ -27,5 +27,17 @@ export const formConfig = {
 export class AdminAddSpeakersComponent extends BaseAdminAddComponent<Speaker, SpeakerService> {
   constructor(private fb1: FormBuilder, private speakerService: SpeakerService) {
     super(fb1, speakerService, formConfig);
+  }
+
+  public submitNewEntity() {
+    const form = this.form.getRawValue();
+    const data: FormData = new FormData();
+    const formKeys = Object.keys(form);
+    formKeys.forEach((key) => {
+      data.append(key, form[key]);
+    });
+
+    // data.append('file', this.form.get('file').value, 'file');
+    this.speakerService.insertSpeakerInfo(data);
   }
 }
