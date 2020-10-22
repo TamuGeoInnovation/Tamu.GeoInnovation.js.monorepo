@@ -12,6 +12,7 @@ import { debounceTime, map, takeUntil, tap } from 'rxjs/operators';
 })
 export class InitialSurveyComponent implements OnInit {
   public dataGroup: FormGroup;
+  public $tookSurveyAlready: Observable<boolean>;
   public $initalSurveyQuestions: Observable<Array<Partial<IInitialSurveyQuestionResponse>>>;
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -19,6 +20,7 @@ export class InitialSurveyComponent implements OnInit {
 
   public ngOnInit(): void {
     this.dataGroup = this.fb.group({});
+    this.$tookSurveyAlready = this.initialSurveyService.seeIfUserTookSurvey();
     this.fetchSurveyQuestions();
   }
 

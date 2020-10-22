@@ -18,6 +18,12 @@ export class InitialSurveyService extends BaseService<InitialSurvey> {
     super(env1, http1, 'initial-survey', true);
   }
 
+  public seeIfUserTookSurvey() {
+    return this.http1.get<boolean>(`${this.resource}`, {
+      withCredentials: true
+    });
+  }
+
   public getInitialSurveyQuestions() {
     return this.http1.get<Array<Partial<InitialSurveyQuestion>>>(`${this.resource}/questions/all`, {
       withCredentials: true

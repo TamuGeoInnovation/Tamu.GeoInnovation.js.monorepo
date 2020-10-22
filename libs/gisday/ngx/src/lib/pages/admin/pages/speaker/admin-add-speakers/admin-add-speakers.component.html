@@ -12,7 +12,10 @@
         <tamu-gisc-textbox formControlName="affiliation" placeholder="Affiliation" type="text" floatLabel="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="description" placeholder="Description" type="text" floatLabel="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="socialMedia" placeholder="Social Media Link" type="text" floatLabel="true"> </tamu-gisc-textbox>
-        <input type="file" name="speakerPhoto" />
+        <!-- <input type="file" formControlName="file" name="speakerPhoto" /> -->
+        <tamu-gisc-file formControlName="file">
+          <p class="placeholder">Select File</p>
+        </tamu-gisc-file>
       </div>
       <tamu-gisc-button (click)="submitNewEntity()" [value]="'Add'" type="submit"></tamu-gisc-button>
     </div>

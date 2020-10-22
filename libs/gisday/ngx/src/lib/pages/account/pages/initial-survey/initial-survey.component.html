@@ -1,4 +1,19 @@
-<div class="small-partition">
+<ng-template *ngIf="$tookSurveyAlready | async; else noFeedback">
+  <div class="small-partition">
+    <h1 class="aggie-weight-2 trailer-1 clr-aggie-maroon">Pre-Event User Impact Survey</h1>
+    <p class="sub-section-heading aggie-weight-1">Help us make GIS Day even better</p>
+  </div>
+  <div class="column10">
+    <div class="flex flex-column align-center" *ngIf="">
+      <img class="xx-small" src="../img/graphics/graphic-thumb.svg" alt="Gig 'Em Thumbs Up'" />
+      <p class="size-2">Your responses for this survey have been recorded. Thank you for your feedback!</p>
+      <p class="trailer-1">You are now eligible to register and checkin to any GIS Day event.</p>
+      <a href="../sessions/" class="button primary">Browse Sessions</a>
+    </div>
+  </div>
+</ng-template>
+
+<div #noFeedback class="small-partition">
   <h1 class="aggie-weight-2 trailer-1">Event User Impact Survey</h1>
   <p class="sub-section-heading aggie-weight-1">Help us make GIS Day even better</p>
 </div>
@@ -55,18 +70,3 @@
     </div>
   </div>
 </div>
-<!-- 
-<ng-template #noFeedback>
-  <div class="small-partition">
-    <h1 class="aggie-weight-2 trailer-1 clr-aggie-maroon">Pre-Event User Impact Survey</h1>
-    <p class="sub-section-heading aggie-weight-1">Help us make GIS Day even better</p>
-  </div>
-  <div class="column10">
-    <div class="flex flex-column align-center" *ngIf="">
-      <img class="xx-small" src="../img/graphics/graphic-thumb.svg" alt="Gig 'Em Thumbs Up'" />
-      <p class="size-2">Your responses for this survey have been recorded. Thank you for your feedback!</p>
-      <p class="trailer-1">You are now eligible to register and checkin to any GIS Day event.</p>
-      <a href="../sessions/" class="button primary">Browse Sessions</a>
-    </div>
-  </div>
-</ng-template> -->
