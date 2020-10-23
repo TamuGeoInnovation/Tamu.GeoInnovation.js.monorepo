@@ -14,7 +14,7 @@ form {
 
     // Add top and bottom margin to the form row itself
     margin-top: 1rem;
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.75rem;
 
     // First instance of form-row in a form does not need margin top
     &:first-child {
@@ -79,7 +79,7 @@ form {
     .form-section-toolbar {
       display: inherit;
       border-bottom: 1pt solid #eeeeee;
-      margin-bottom: 1rem;
+      margin-bottom: 1.75rem;
       font-weight: 600;
 
       @include flex-direction(row);
@@ -101,6 +101,7 @@ form {
           text-emphasis: center;
           margin-top: 0;
           margin-bottom: 0;
+          padding-bottom: 0;
         }
       }
     }

@@ -307,7 +307,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         // If the current guid has an entry index that is less than the total participant entries -1,
         // meaning "there are no more non-placeholder participant entries in the array", create a new
         // placeholder submission
-        if (index >= 0 && index + 1 <= responses.length - 2) {
+        if (index >= 0 && index + 1 <= responses.length - 1) {
           this.responseIndex.next(index + 1);
         } else if (index <= responses.length - 1 && this.form.valid) {
           // Create a new participant placeholder
