@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
+
 import { Request } from 'express';
 import * as deepmerge from 'deepmerge';
 
 import { Speaker, SpeakerInfo, SpeakerRepo, SpeakerInfoRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
-import { DeepPartial } from 'typeorm';
+
 @Injectable()
 export class SpeakerProvider extends BaseProvider<Speaker> {
   constructor(private readonly speakerRepo: SpeakerRepo, public readonly speakerInfoRepo: SpeakerInfoRepo) {
@@ -17,6 +19,21 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
   public async getPresenters() {
     return this.speakerRepo.getPresenters();
+  }
+
+  public async getSpeakerPhoto(guid: string) {
+    const speakerInfo = await this.speakerInfoRepo.findOne({
+      where: {
+        guid: guid
+      }
+    });
+    if (speakerInfo) {
+      // const speakerPhoto = Buffer.from(speakerInfo.blob., 'base64');
+      // const base64 = `data:image/png;base64,${speakerPhoto}`;
+      return {
+        base64: speakerInfo.blob.toString('base64')
+      };
+    }
   }
 
   public async updateSpeakerInfo(req: Request) {

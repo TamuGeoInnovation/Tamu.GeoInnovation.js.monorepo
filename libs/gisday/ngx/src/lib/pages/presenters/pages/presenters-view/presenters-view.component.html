@@ -4,7 +4,11 @@
     <div class="profile" *ngFor="let presenter of ($presenters | async)">
       <!-- <a [routerLink]="['/presenters/details', presenter.speakerLastName + presenter.speakerFirstName]"> -->
       <div class="class-banner" *ngIf="presenter.speakerInfo.graduationYear">Class of '{{ presenter.speakerInfo.graduationYear.substr(2,2) }}</div>
-      <div class="image" [routerLink]="['/presenters/details', presenter.guid]" [ngStyle]=" { 'background-image': 'url('+getPresenterImageUrl(presenter)+')'  } ">
+      <!-- <div class="image" [routerLink]="['/presenters/details', presenter.guid]" [ngStyle]=" { 'background-image': 'url('+getPresenterImageUrl(presenter)+')'  } "> -->
+      <div *ngIf="presenter.speakerInfo.guid">
+        <p>{{presenter.speakerInfo.guid}}</p>
+        <p *ngIf="(setPhoto(presenter.speakerInfo.guid) | async) as photo">{{photo}}</p>
+        <!-- <div class="image" [routerLink]="['/presenters/details', presenter.guid]" [ngStyle]=" { 'background-image': 'url('+(setPhoto(presenter.speakerInfo.guid) | async)+')'  } "></div> -->
         <!-- <img class="image" src='../../assets/images/presenters/{{presenter.speakerLastName}}{{presenter.speakerFirstName}}.jpg' alt='image not found' onerror="this.src='../../assets/images/presenters/reveille.jpg'" /> -->
       </div>
       <div class="image-description">
