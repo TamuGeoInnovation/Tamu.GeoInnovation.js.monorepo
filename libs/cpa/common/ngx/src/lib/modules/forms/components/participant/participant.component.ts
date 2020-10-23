@@ -262,24 +262,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   public async handleDrawSelection(e: esri.Graphic) {
     if (e.geometry) {
       this.form.controls.drawn.setValue(e);
-
-      const layer = this.mapService.findLayerById('highwater-claims-layer') as esri.FeatureLayer;
-
-      if (layer) {
-        let query;
-
-        try {
-          query = await layer.queryFeatures({
-            spatialRelationship: 'intersects',
-            geometry: e.geometry,
-            outFields: ['*']
-          });
-
-          this.selected.next(query.features);
-        } catch (err) {
-          console.error(err);
-        }
-      }
     } else {
       this.selected.next([]);
       this.form.controls.drawn.setValue(undefined);
@@ -395,8 +377,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   private initializeParticipant(id?: string) {
-    if (guid) {
-      this.participantGuid = guid;
+    if (id) {
+      this.participantGuid = id;
     } else {
       this.participantGuid = guid();
     }
