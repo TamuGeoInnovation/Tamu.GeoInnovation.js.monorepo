@@ -180,7 +180,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         this.form.statusChanges
           .pipe(
             throttle(() => interval(500)),
-            debounceTime(1000),
+            debounceTime(500),
             takeUntil(this._$formReset)
           )
           .subscribe((status) => {
@@ -264,7 +264,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       this.form.controls.drawn.setValue(e);
     } else {
       this.selected.next([]);
-      this.form.controls.drawn.setValue(undefined);
+      this.form.controls.drawn.setValue(e);
     }
   }
 
@@ -328,12 +328,14 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         }
       } as esri.Graphic;
 
+      // Set/Overwrite form values
+      this.form.patchValue({
+        name: submission.name,
+        notes: submission.notes
+      });
+
       // Draws submission graphics to the draw component target layer.
       this.drawComponent.draw([autoCastable]);
-
-      // Set/Overwrite form values
-      this.form.controls.name.setValue(submission.name);
-      this.form.controls.notes.setValue(submission.notes);
 
       // Set the component participant state.
       this.initializeParticipant(submission.guid);

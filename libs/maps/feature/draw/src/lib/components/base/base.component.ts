@@ -128,9 +128,13 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
               if (
                 event.state === 'complete' ||
                 (event.toolEventInfo && event.toolEventInfo.type === 'move-stop') ||
-                (event.toolEventInfo && event.toolEventInfo.type === 'reshape-stop')
+                (event.toolEventInfo && event.toolEventInfo.type === 'reshape-stop') ||
+                (event.toolEventInfo && event.toolEventInfo.type === 'rotate-stop') ||
+                (event.toolEventInfo && event.toolEventInfo.type === 'scale-stop')
               ) {
                 this.emitDrawn(event.target.layer.graphics);
+              } else {
+                console.log(event.toolEventInfo.type);
               }
             });
 
