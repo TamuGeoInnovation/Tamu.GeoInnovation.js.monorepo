@@ -30,6 +30,12 @@ export class SpeakerService extends BaseService<Speaker> {
     });
   }
 
+  public getPhoto(guid: string) {
+    return this.http1.get<IPhotoReponse>(`${this.resource}/photo/${guid}`, {
+      withCredentials: false
+    });
+  }
+
   public insertSpeakerInfo(data: FormData) {
     return this.http1
       .post(`${this.resource}`, data, {
@@ -39,4 +45,8 @@ export class SpeakerService extends BaseService<Speaker> {
         console.log(result);
       });
   }
+}
+
+export interface IPhotoReponse {
+  base64: string;
 }
