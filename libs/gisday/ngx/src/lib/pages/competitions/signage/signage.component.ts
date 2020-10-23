@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
+import { Popup } from 'mapbox-gl';
 
 @Component({
   selector: 'tamu-gisc-signage',
@@ -6,7 +8,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./signage.component.scss']
 })
 export class SignageComponent implements OnInit {
-  constructor() {}
+  constructor(private mapService: MapboxMapService) {}
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {
+    this.mapService.loaded.subscribe((map) => {
+      const zoomThreshold = 5;
+
+      const popup = new Popup({
+        closeButton: false
+      });
+
+      map.addSource('cases', {
+        type: 'vector',
+        url: 'mapbox://gsepulveda96.covid'
+      });
+    });
+  }
 }
