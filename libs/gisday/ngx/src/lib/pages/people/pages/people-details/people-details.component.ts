@@ -6,11 +6,11 @@ import { SpeakerService } from '@tamu-gisc/gisday/data-access';
 import { Speaker } from '@tamu-gisc/gisday/data-api';
 
 @Component({
-  selector: 'tamu-gisc-presenter-details',
-  templateUrl: './presenter-details.component.html',
-  styleUrls: ['./presenter-details.component.scss']
+  selector: 'tamu-gisc-people-details',
+  templateUrl: './people-details.component.html',
+  styleUrls: ['./people-details.component.scss']
 })
-export class PresenterDetailsComponent implements OnInit {
+export class PeopleDetailsComponent implements OnInit {
   public speakerGuid: string;
   public $speaker: Observable<Partial<Speaker>>;
   constructor(private route: ActivatedRoute, private speakerService: SpeakerService) {}
