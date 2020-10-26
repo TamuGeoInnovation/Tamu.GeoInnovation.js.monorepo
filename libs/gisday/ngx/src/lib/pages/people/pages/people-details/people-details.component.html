@@ -1,15 +1,14 @@
 <div ui-view>
   <div class="container12 presenter-details-item leader-1">
-    <div *ngIf="($speaker | async) as speaker">
+    <div *ngIf="($speaker | async) as person">
       <div class="column4">
-        <div class="image" [ngStyle]=" { 'background-image': 'url('+getPresenterImageUrl(speaker)+')'  } ">
-          <!-- <img class="image" src='../../assets/images/presenters/{{presenter.speakerLastName}}{{presenter.speakerFirstName}}.jpg' alt='image not found' onerror="this.src='../../assets/images/presenters/reveille.jpg'" /> -->
-        </div>
+        <div class="image" [ngStyle]=" { 'background-image': 'url('+unwrapPhoto(person.speakerInfo.base64representation)+')'  } "></div>
+        <!-- <img class="image" src='../../assets/images/presenters/{{presenter.speakerLastName}}{{presenter.speakerFirstName}}.jpg' alt='image not found' onerror="this.src='../../assets/images/presenters/reveille.jpg'" /> -->
       </div>
       <div class="column6 pre-2">
-        <p class="name">{{speaker.firstName}} {{speaker.lastName}}<span class="class"> | {{speaker.organization}}</span></p>
+        <p class="name">{{person.firstName}} {{person.lastName}}<span class="class"> | {{person.organization}}</span></p>
         <div class="description">
-          <p>{{speaker.speakerInfo.description}}</p>
+          <p>{{person.speakerInfo.description}}</p>
         </div>
       </div>
     </div>

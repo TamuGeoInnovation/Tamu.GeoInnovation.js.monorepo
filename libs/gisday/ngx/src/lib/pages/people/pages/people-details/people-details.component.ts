@@ -21,7 +21,9 @@ export class PeopleDetailsComponent implements OnInit {
       this.$speaker = this.speakerService.getPresenter(this.speakerGuid);
     }
   }
-  public getPresenterImageUrl(presenter: Speaker) {
-    return `../assets/images/presenters/${presenter.lastName}${presenter.firstName}.jpg`;
+
+  public unwrapPhoto(base64: string) {
+    const ret = `\"data:image/jpg;base64,${base64}\"`;
+    return ret;
   }
 }
