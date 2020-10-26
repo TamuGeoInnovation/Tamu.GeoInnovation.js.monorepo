@@ -82,69 +82,69 @@ export class Event extends GuidIdentity {
   // user: string; // User
 
   @Column({ nullable: true })
-  observedAttendeeStart: number;
+  public observedAttendeeStart: number;
 
   @Column({ nullable: true })
-  observedAttendeeEnd: number;
+  public observedAttendeeEnd: number;
 
   @Column({ nullable: true })
-  onlineBroadcastUrl: string;
+  public onlineBroadcastUrl: string;
 
   @Column({ nullable: true })
-  onlinePresenterUrl: string;
+  public onlinePresenterUrl: string;
 
   @Column({ nullable: true })
-  googleDriveUrl: string;
+  public googleDriveUrl: string;
 
   @Column({ nullable: true })
-  presentationUrl: string;
+  public presentationUrl: string;
 
   @Column({ nullable: true })
-  name: string;
+  public name: string;
 
   @Column({ nullable: true })
-  startTime: Date;
+  public startTime: Date;
 
   @Column({ nullable: true })
-  endTime: Date;
+  public endTime: Date;
 
   @Column({ nullable: true })
-  abstract: string;
+  public abstract: string;
 
   @Column({ nullable: true })
-  locationRoom: string;
+  public locationRoom: string;
 
   @Column({ nullable: true })
-  locationBuilding: string;
+  public locationBuilding: string;
 
   @Column({ nullable: true })
-  capacity: number;
+  public capacity: number;
 
   @Column({ nullable: true })
-  requiresRsvp: boolean;
+  public requiresRsvp: boolean;
 
   @Column({ nullable: true })
-  qrCode: string;
+  public qrCode: string;
 
   @Column({ nullable: true })
-  locationLink: string;
+  public locationLink: string;
 
   @Column({ nullable: true })
-  date: Date;
+  public date: Date;
 
   @Column({ nullable: true })
-  type: string;
+  public type: string;
 
   @Column({ nullable: true })
-  presentationType: string;
+  public presentationType: string;
 
   @Column({ nullable: true })
-  isAcceptingRsvps: boolean;
+  public isAcceptingRsvps: boolean;
 
   @Column({ nullable: true })
-  duration: number;
+  public duration: number;
 
-  hasRsvp: boolean = false;
+  public hasRsvp = false;
 
   constructor() {
     super();
@@ -336,7 +336,7 @@ export class CheckIn extends GuidIdentity {
   // @OneToOne((type) => User, { cascade: true, nullable: true })
   // @JoinColumn()
   @Column({ nullable: false })
-  public userGuid: string; // User
+  public accountGuid: string;
 
   constructor() {
     super();
@@ -534,13 +534,13 @@ export class SessionRepo extends CommonRepo<Session> {}
 
 @EntityRepository(Speaker)
 export class SpeakerRepo extends CommonRepo<Speaker> {
-  public async getPresenter(guid: string) {
+  public async getPresenter(speakerGuid: string) {
     return getConnection()
       .getRepository(Speaker)
       .createQueryBuilder('speaker')
       .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
       .where(`speaker.guid = :guid`, {
-        guid: guid
+        guid: speakerGuid
       })
       .getOne();
   }
