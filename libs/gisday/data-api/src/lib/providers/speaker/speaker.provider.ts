@@ -34,9 +34,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     if (speakerInfo) {
       // const speakerPhoto = Buffer.from(speakerInfo.blob., 'base64');
       // const base64 = `data:image/png;base64,${speakerPhoto}`;
-      return {
-        base64: speakerInfo.blob.toString('base64')
-      };
+      return speakerInfo.blob.toString('base64');
     }
   }
 
