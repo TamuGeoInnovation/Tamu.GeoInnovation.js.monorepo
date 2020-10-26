@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { EventService, SessionsService } from '@tamu-gisc/gisday/data-access';
+import { CheckinService, EventService, SessionsService } from '@tamu-gisc/gisday/data-access';
 import { Event } from '@tamu-gisc/gisday/data-api';
 
 @Component({
@@ -15,13 +15,19 @@ export class EventDetailComponent implements OnInit {
   public eventGuid: string;
   public numOfRsvps: Observable<number>;
   public userHasCheckedInAlready: Observable<any>;
+  public isCheckinOpen = false;
   public selectedEvent: Partial<Event> = {
     abstract:
       'Another great TAMU GIS Day session will be announced soon. Check back to learn about the wonderful events the TAMU GIS Day team is bringing for this year.'
   };
   public event: Observable<Partial<Event>>;
   public now: Date = new Date();
-  constructor(private route: ActivatedRoute, private eventService: EventService, private sessionsService: SessionsService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private eventService: EventService,
+    private sessionsService: SessionsService,
+    private checkinService: CheckinService
+  ) {}
 
   public ngOnInit(): void {
     const guid = this.route.snapshot.params.guid;
@@ -38,5 +44,9 @@ export class EventDetailComponent implements OnInit {
     // this.sessionsService.getNumberOfRsvps(this.eventGuid).subscribe((result) => {
     //   console.log('NumOfRsvps', result);
     // });
+  }
+
+  public checkin() {
+    this.checkinService.insertUserCheckin(this.eventGuid);
   }
 }
