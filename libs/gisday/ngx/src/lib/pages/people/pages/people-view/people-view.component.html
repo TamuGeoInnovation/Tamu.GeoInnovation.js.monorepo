@@ -1,17 +1,17 @@
 <div ui-view>
-  <div class="loader" *ngIf="!$presenters"></div>
+  <div class="loader" *ngIf="!$people"></div>
   <div class="container12 leader-1 flex flex-row justify-center">
-    <div class="profile" *ngFor="let presenter of ($presenters | async)">
+    <div class="profile" *ngFor="let people of ($people | async)">
       <!-- <a [routerLink]="['/presenters/details', presenter.speakerLastName + presenter.speakerFirstName]"> -->
-      <div class="class-banner" *ngIf="presenter.speakerInfo.graduationYear">Class of '{{ presenter.speakerInfo.graduationYear.substr(2,2) }}</div>
+      <div class="class-banner" *ngIf="people.speakerInfo.graduationYear">Class of '{{ people.speakerInfo.graduationYear.substr(2,2) }}</div>
       <!-- <div class="image" [routerLink]="['/presenters/details', presenter.guid]" [ngStyle]=" { 'background-image': 'url('+getPresenterImageUrl(presenter)+')'  } "> -->
-      <div *ngIf="presenter.speakerInfo.guid">
-        <div class="image" [routerLink]="['/presenters/details', presenter.guid]" [ngStyle]=" { 'background-image': 'url('+unwrapPhoto(presenter.speakerInfo.base64representation)+')'  } "></div>
+      <div *ngIf="people.speakerInfo.guid">
+        <div class="image" [routerLink]="['/people/details', people.guid]" [ngStyle]=" { 'background-image': 'url('+unwrapPhoto(people.speakerInfo.base64representation)+')'  } "></div>
         <!-- <img class="image" src='../../assets/images/presenters/{{presenter.speakerLastName}}{{presenter.speakerFirstName}}.jpg' alt='image not found' onerror="this.src='../../assets/images/presenters/reveille.jpg'" /> -->
       </div>
       <div class="image-description">
-        <div class="name">{{presenter.firstName}} {{presenter.lastName}}</div>
-        <div class="title">{{presenter.speakerInfo.affiliation}}</div>
+        <div class="name">{{people.firstName}} {{people.lastName}}</div>
+        <div class="title">{{people.speakerInfo.affiliation}}</div>
       </div>
       <!-- </a> -->
     </div>

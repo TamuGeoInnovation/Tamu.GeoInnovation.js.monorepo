@@ -42,8 +42,8 @@ const routes: Routes = [
     loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.SponsorsModule)
   },
   {
-    path: 'presenters',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.PresentersModule)
+    path: 'people',
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.PeopleModule)
   },
   {
     path: 'about',

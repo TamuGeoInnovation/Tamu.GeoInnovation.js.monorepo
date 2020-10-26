@@ -2,18 +2,18 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { PresenterDetailsComponent } from './presenter-details.component';
+import { PeopleViewComponent } from './people-view.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: PresenterDetailsComponent
+    component: PeopleViewComponent
   }
 ];
 
 @NgModule({
-  declarations: [PresenterDetailsComponent],
+  declarations: [PeopleViewComponent],
   imports: [CommonModule, RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class PresenterDetailsModule {}
+export class PeopleViewModule {}

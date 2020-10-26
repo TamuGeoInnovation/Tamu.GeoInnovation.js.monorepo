@@ -1,7 +1,7 @@
 <nav id="off-canvas-menu" [ngClass]="{ active: isActive }">
   <ul>
     <li (click)="toggleMenuButton()"><a [routerLink]="['/sessions']" routerLinkActive="active">Sessions</a></li>
-    <li (click)="toggleMenuButton()"><a [routerLink]="['/presenters']" routerLinkActive="active">Presenters</a></li>
+    <li (click)="toggleMenuButton()"><a [routerLink]="['/people']" routerLinkActive="active">People</a></li>
     <li (click)="toggleMenuButton()"><a [routerLink]="['/competitions']">Competitions</a></li>
     <li (click)="toggleMenuButton()"><a [routerLink]="['/faq']">FAQ</a></li>
     <li (click)="toggleMenuButton()"><a [routerLink]="['/about']">About</a></li>
@@ -38,7 +38,7 @@
       <div class="desktop-menu" id="links">
         <ul>
           <a [routerLink]="['sessions']" routerLinkActive="active" id="linkSessions">Sessions</a>
-          <a [routerLink]="['presenters']" routerLinkActive="active" id="linkPresenters">Presenters</a>
+          <a [routerLink]="['people']" routerLinkActive="active" id="linkPresenters">People</a>
         </ul>
 
         <ul class="dropdown">
