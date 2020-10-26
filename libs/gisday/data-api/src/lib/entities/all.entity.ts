@@ -329,7 +329,7 @@ export class Sponsor extends GuidIdentity {
   name: 'checkins'
 })
 export class CheckIn extends GuidIdentity {
-  @OneToOne((type) => Event, { cascade: true })
+  @OneToOne((type) => Event, { cascade: true, eager: true })
   @JoinColumn()
   public event: Event;
 

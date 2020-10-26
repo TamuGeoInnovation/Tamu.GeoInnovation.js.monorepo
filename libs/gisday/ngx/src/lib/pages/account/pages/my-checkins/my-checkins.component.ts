@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CheckinService } from '@tamu-gisc/gisday/data-access';
 import { CheckIn } from '@tamu-gisc/gisday/data-api';
 import { Observable } from 'rxjs';
 
@@ -9,7 +10,13 @@ import { Observable } from 'rxjs';
 })
 export class MyCheckinsComponent implements OnInit {
   public $checkins: Observable<Array<Partial<CheckIn>>>;
-  constructor() {}
+  constructor(private readonly checkinService: CheckinService) {}
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {
+    this.fetchCheckins();
+  }
+
+  public fetchCheckins() {
+    this.$checkins = this.checkinService.getEntities();
+  }
 }
