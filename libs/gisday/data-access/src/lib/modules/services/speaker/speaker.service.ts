@@ -31,7 +31,7 @@ export class SpeakerService extends BaseService<Speaker> {
   }
 
   public getPhoto(guid: string) {
-    return this.http1.get<IPhotoReponse>(`${this.resource}/photo/${guid}`, {
+    return this.http1.get<string>(`${this.resource}/photo/${guid}`, {
       withCredentials: false
     });
   }

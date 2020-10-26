@@ -22,25 +22,31 @@ export class PresentersViewComponent implements OnInit {
   public ngOnInit(): void {}
 
   public fetchPresenters() {
-    this.$presenters = this.speakerService.getPresenters();
+    this.$presenters = this.speakerService.getPresenters().pipe(
+      map((speakers) => {
+        speakers.forEach((speaker) => {
+          this.speakerService.getPhoto(speaker.speakerInfo.guid).subscribe((rep) => {
+            speaker.speakerInfo.base64representation = rep;
+          });
+          // speaker.speakerInfo.base64representation = this.speakerService.getPhoto(speaker.speakerInfo.guid);
+        });
+        return speakers;
+      })
+    );
   }
 
   public onPresenterClicked(presenter: Speaker) {
     this.router.navigate(['presenters/', presenter.guid]);
   }
 
-  public setPhoto(speakerInfoGuid: string) {
-    return this.speakerService.getPhoto(speakerInfoGuid).pipe(
-      map((response) => {
-        return `url("data:image/png;base64,${response.base64}")`;
-      })
-    );
+  public unwrapPhoto(base64: string) {
+    return `\"data:image/jpg;base64,${base64}\"`;
   }
 
   public getPresenterImageUrl(presenter: Speaker) {
-    this.speakerService.getPhoto(presenter.speakerInfo.guid).subscribe((response) => {
-      this.photo = `url("data:image/png;base64,${response.base64}")`;
-    });
-    // return `../assets/images/presenters/${presenter.lastName}${presenter.firstName}.jpg`;
+    // this.speakerService.getPhoto(presenter.speakerInfo.guid).subscribe((response) => {
+    //   this.photo = `url("data:image/png;base64,${response.base64}")`;
+    // });
+    return `../assets/images/presenters/${presenter.lastName}${presenter.firstName}.jpg`;
   }
 }
