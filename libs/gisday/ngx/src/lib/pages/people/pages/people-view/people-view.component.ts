@@ -23,17 +23,6 @@ export class PeopleViewComponent implements OnInit {
 
   public fetchPresenters() {
     this.$people = this.speakerService.getPresenters();
-    // this.$people = this.speakerService.getPresenters().pipe(
-    //   map((speakers) => {
-    //     speakers.forEach((speaker) => {
-    //       this.speakerService.getPhoto(speaker.speakerInfo.guid).subscribe((rep) => {
-    //         speaker.speakerInfo.base64representation = rep;
-    //       });
-    //       // speaker.speakerInfo.base64representation = this.speakerService.getPhoto(speaker.speakerInfo.guid);
-    //     });
-    //     return speakers;
-    //   })
-    // );
   }
 
   public onPresenterClicked(person: Speaker) {
@@ -43,12 +32,5 @@ export class PeopleViewComponent implements OnInit {
   public unwrapPhoto(base64: string) {
     const ret = `\"data:image/jpg;base64,${base64}\"`;
     return ret;
-  }
-
-  public getPresenterImageUrl(person: Speaker) {
-    // this.speakerService.getPhoto(person.speakerInfo.guid).subscribe((response) => {
-    //   this.photo = `url("data:image/png;base64,${response.base64}")`;
-    // });
-    return `../assets/images/presenters/${person.lastName}${person.firstName}.jpg`;
   }
 }
