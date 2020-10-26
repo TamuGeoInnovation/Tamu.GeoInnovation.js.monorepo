@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import {
   getConnection,
   Entity,
@@ -259,6 +260,8 @@ export class SpeakerInfo extends GuidIdentity {
 
   @Column({ nullable: true, type: 'image' })
   public blob: Buffer;
+
+  public base64representation: string;
 
   constructor() {
     super();

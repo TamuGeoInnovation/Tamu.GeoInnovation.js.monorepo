@@ -18,7 +18,11 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   public async getPresenters() {
-    return this.speakerRepo.getPresenters();
+    const speakers = await this.speakerRepo.getPresenters();
+    speakers.forEach((speaker) => {
+      speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.toString('base64');
+    });
+    return speakers;
   }
 
   public async getSpeakerPhoto(guid: string) {
