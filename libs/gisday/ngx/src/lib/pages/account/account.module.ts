@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AccountComponent } from './account.component';
+import { LoginGuard } from '../../modules/guards/login-guard/login-guard.guard';
 
 const routes: Routes = [
   {

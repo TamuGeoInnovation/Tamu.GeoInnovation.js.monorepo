@@ -11,6 +11,11 @@ export class UserSubmissionController extends BaseController<UserSubmission> {
     super(userSubmissionProvider);
   }
 
+  @Get('all')
+  public async getUserSubmissions(@Req() req: Request) {
+    return this.userSubmissionProvider.getEntitiesForUser(req);
+  }
+
   @Post()
   public async insertUserSubmission(@Req() req: Request) {
     return this.userSubmissionProvider.insertUserSubmission(req);

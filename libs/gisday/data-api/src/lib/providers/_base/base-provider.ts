@@ -19,6 +19,14 @@ export abstract class BaseProvider<T> implements IBaseProvider<T> {
     return this.repo.find();
   }
 
+  public async getEntitiesForUser(req: Request) {
+    return this.repo.find({
+      where: {
+        accountGuid: req.user.sub
+      }
+    });
+  }
+
   public async insertEntity(req: Request) {
     if (req.user) {
       req.body.accountGuid = req.user.sub;
