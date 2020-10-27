@@ -457,6 +457,17 @@ export class EsriMapService {
     return layer;
   }
 
+  public removeLayerById(id: string): void {
+    const map: esri.Map = this._modules.map;
+    const layer = map.findLayerById(id);
+
+    if (!layer) {
+      console.warn(`Cannot delete layer with ID ${id} that does not exist.`);
+    } else {
+      map.remove(layer);
+    }
+  }
+
   /**
    * Checks if the layer id exists in the service map instance.
    *

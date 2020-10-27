@@ -1,19 +1,22 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Optional, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, filter } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, filter, take } from 'rxjs/operators';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { v4 as guid } from 'uuid';
+
+import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-layer-configuration',
   templateUrl: './layer-configuration.component.html',
   styleUrls: ['./layer-configuration.component.scss']
 })
-export class LayerConfigurationComponent implements OnInit {
+export class LayerConfigurationComponent implements OnInit, OnDestroy {
   /**
    * Internal value. The input is piped through here so that the http query
    * rate can be throttled as the user types in a URL address.
@@ -53,6 +56,13 @@ export class LayerConfigurationComponent implements OnInit {
     this.config = new LayerConfiguration(this.fb, options);
   }
 
+  /**
+   * Describes whether the layer will be loaded/unloaded from the map upon configuration resolution (load)
+   * and component destruction (unload).
+   */
+  @Input()
+  public link: boolean;
+
   public get configOptions() {
     return this.config.form.getRawValue();
   }
@@ -63,7 +73,7 @@ export class LayerConfigurationComponent implements OnInit {
    */
   public config: LayerConfiguration;
 
-  constructor(private http: HttpClient, private fb: FormBuilder) {}
+  constructor(private http: HttpClient, private fb: FormBuilder, @Optional() private ms: EsriMapService) {}
 
   public ngOnInit() {
     if (this._url.getValue() !== undefined) {
@@ -87,7 +97,24 @@ export class LayerConfigurationComponent implements OnInit {
         .subscribe((response) => {
           // Update form values
           this.config.updateFormValues(LayerConfiguration.normalizeOptions(response));
+
+          if (this.link && this.ms !== null) {
+            const t = (this.config.toEsriLayerDefinition() as unknown) as esri.FeatureLayer;
+
+            this.ms.findLayerOrCreateFromSource({
+              id: t.id,
+              title: t.title,
+              url: t.url,
+              type: t.type
+            });
+          }
         });
+    }
+  }
+
+  public ngOnDestroy(): void {
+    if (this.link && this.ms !== null) {
+      this.ms.removeLayerById(this.config.toEsriLayerDefinition().id);
     }
   }
 }
@@ -202,6 +229,17 @@ export class LayerConfiguration {
 
       update(config, controls);
     }
+  }
+
+  public toEsriLayerDefinition(): Partial<esri.FeatureLayer> | Partial<esri.GraphicsLayer> {
+    const f = this.form.getRawValue();
+
+    return {
+      type: f.info.type === 'Feature Layer' ? 'feature' : f.info.type === 'Graphic Layer' ? 'graphics' : null,
+      title: f.info.name,
+      id: f.info.layerId,
+      url: f.url
+    };
   }
 
   private get _groupProperties() {
