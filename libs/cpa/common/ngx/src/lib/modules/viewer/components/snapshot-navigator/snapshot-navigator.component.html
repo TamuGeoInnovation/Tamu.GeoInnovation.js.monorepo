@@ -1,1 +1,6 @@
-<p>snapshot-navigator works!</p>
+<ng-container *ngFor="let snapshot of (workshop | async)?.scenarios; let i = index;">
+  <div class="snapshot" [ngClass]="{active: (snapshotIndex | async) === i}" (click)="navigate(i)">
+    <p>{{snapshot.title}}</p>
+    <span class="dot"></span>
+  </div>
+</ng-container>

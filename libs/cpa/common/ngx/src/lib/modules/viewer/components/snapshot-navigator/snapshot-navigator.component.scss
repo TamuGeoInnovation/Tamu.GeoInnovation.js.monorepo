@@ -1,0 +1,64 @@
+@import 'libs/sass/mixins';
+
+:host {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  z-index: 1;
+  padding: 0.5rem;
+  background: #ffffff;
+  border-radius: 5pt;
+  @include flexbox();
+  @include flex-direction(row);
+  @include transform(translateX(-50%));
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 90%;
+    height: 0.25rem;
+    border-radius: 1rem;
+    top: calc(100% - 1.25rem);
+    left: 50%;
+    background: #e0e0e0;
+    z-index: 0;
+    @include transform(translateX(-50%));
+  }
+}
+
+.snapshot {
+  padding: 0.25rem 0.5rem;
+  margin: 0 1rem;
+  cursor: pointer;
+  @include flexbox();
+  @include flex-direction(column);
+  @include justify-content(center);
+  @include align-items(center);
+
+  p {
+    padding-bottom: 0.25rem;
+    font-size: 0.9rem;
+    color: #9e9e9e;
+  }
+
+  .dot {
+    height: 0.5rem;
+    width: 0.5rem;
+    background: #e0e0e0;
+    border-radius: 50%;
+    z-index: 1;
+    border: 1pt solid;
+    border-color: transparent;
+  }
+
+  &.active {
+    p {
+      font-weight: 600;
+      color: #7592bd;
+    }
+
+    .dot {
+      background: #7592bd;
+    }
+  }
+}

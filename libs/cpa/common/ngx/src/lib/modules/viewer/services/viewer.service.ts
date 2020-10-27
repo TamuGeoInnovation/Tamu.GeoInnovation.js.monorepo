@@ -35,6 +35,10 @@ export class ViewerService {
     this._snapshotGuid.next(guid);
   }
 
+  public updateScenarioIndex(index: number) {
+    this.scenarioIndex.next(index);
+  }
+
   public init(): void {
     this.workshop = this._workshopGuid.pipe(
       switchMap((guid) => {
