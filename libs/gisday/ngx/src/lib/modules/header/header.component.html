@@ -21,7 +21,7 @@
         <li (click)="toggleMenuButton()"><a [routerLink]="['/account/my-classes']">My Classes</a></li>
         <li (click)="toggleMenuButton()"><a [routerLink]="['/account/my-checkins']">My Checkins</a></li>
         <li (click)="toggleMenuButton()"><a [routerLink]="['/account/my-submissions']">My Submissions</a></li>
-        <li id="liLogoff" (click)="toggleMenuButton()"><a [routerLink]="['/account/logout']">Logout</a></li>
+        <li id="liLogoff" (click)="toggleMenuButton()"><a [routerLink]="['/logout']">Logout</a></li>
       </div>
     </ng-template>
   </ul>
@@ -76,7 +76,7 @@
               <li><a [routerLink]="['/account/my-classes']">My Classes</a></li>
               <li><a [routerLink]="['/account/my-checkins']">My Checkins</a></li>
               <li><a [routerLink]="['/account/my-submissions']">My Submissions</a></li>
-              <li id="liLogoff"><a [routerLink]="['/account/logout']">Logout</a></li>
+              <li id="liLogoff"><a [routerLink]="['/logout']">Logout</a></li>
             </ul>
           </ul>
           <ul *ngIf="(userRole | async) as userRole" id="liAccount" visible="false" class="dropdown">

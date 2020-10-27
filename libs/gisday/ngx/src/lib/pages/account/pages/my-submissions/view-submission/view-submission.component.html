@@ -13,8 +13,7 @@
   <div>
     <p class="leader-1 pre-2"><a [routerLink]="['/account/my-submissions/upload']" id="linkAccountInformation">Upload a poster or paper</a></p>
   </div>
-  <div>
-    <!--*ngIf="($paperPosterSubmissions | async); else noPosters"-->
+  <div *ngIf="($paperPosterSubmissions | async).length > 0; else noPosters">
     <p class="leader-1 pre-2" *ngFor="let poster of ($paperPosterSubmissions | async)">{{poster.submissionType.type}}: {{poster.title}}</p>
   </div>
   <ng-template #noPosters>

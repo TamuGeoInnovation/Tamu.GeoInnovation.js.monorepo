@@ -1,6 +1,6 @@
 <div class="card leader-3 trailer-2">
   <h2>My Event Checkins</h2>
-  <div *ngIf="($checkins | async); else noCheckins">
+  <div *ngIf="($checkins | async).length > 0; else noCheckins">
     <div class="row" *ngFor="let checkin of ($checkins | async)">
       <p>{{checkin.event.name}} - {{checkin.created | date:"short"}}</p>
     </div>
