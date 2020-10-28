@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'tamu-gisc-contact',
@@ -6,7 +7,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./contact.component.scss']
 })
 export class ContactComponent implements OnInit {
-  constructor() {}
+  public form: FormGroup;
 
-  public ngOnInit(): void {}
+  constructor(private fb: FormBuilder) {}
+
+  public ngOnInit(): void {
+    this.form = this.fb.group({
+      firstName: [''],
+      lastName: [''],
+      email: [''],
+      contactType: [''],
+      contactMessage: ['']
+    });
+  }
+
+  public sendEmail() {
+    console.log(this.form.getRawValue());
+  }
 }

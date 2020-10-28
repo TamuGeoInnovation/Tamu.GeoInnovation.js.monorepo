@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { RouterModule, Routes } from '@angular/router';
+import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
 
@@ -89,9 +89,14 @@ const routes: Routes = [
   }
 ];
 
+const routeOptions: ExtraOptions = {
+  scrollPositionRestoration: 'enabled',
+  anchorScrolling: 'enabled'
+};
+
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, RouterModule.forRoot(routes), GisdayNgxModule, EnvironmentModule, HttpClientModule],
+  imports: [BrowserModule, RouterModule.forRoot(routes, routeOptions), GisdayNgxModule, EnvironmentModule, HttpClientModule],
   providers: [
     {
       provide: env,
