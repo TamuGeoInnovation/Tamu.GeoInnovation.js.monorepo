@@ -12,7 +12,7 @@ export class SignageComponent implements OnInit {
 
   public ngOnInit(): void {
     this.mapService.loaded.subscribe((map) => {
-      const zoomThreshold = 5;
+      const zoomThreshold = 3;
 
       const popup = new Popup({
         closeButton: false
