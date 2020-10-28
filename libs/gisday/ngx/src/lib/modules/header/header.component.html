@@ -6,6 +6,8 @@
     <li (click)="toggleMenuButton()"><a [routerLink]="['/faq']">FAQ</a></li>
     <li (click)="toggleMenuButton()"><a [routerLink]="['/about']">About</a></li>
     <li (click)="toggleMenuButton()"><a [routerLink]="['/sponsors']">Sponsors</a></li>
+    <li (click)="toggleMenuButton()"><a [routerLink]="['/contact']">Contact</a></li>
+    <li (click)="toggleMenuButton()"><a [routerLink]="['/highschool']">High School Portal</a></li>
     <li *ngIf="(loggedIn | async) === false; else offCanvasElse" (click)="toggleMenuButton()"><a [routerLink]="['/login']">Login</a></li>
     <ng-template #offCanvasElse>
       <div *ngIf="(userRole | async) as userRole" id="liAccountMobile">
@@ -53,6 +55,9 @@
 
         <ul>
           <a [routerLink]="['/faq']" id="linkFAQ">FAQ</a>
+          <a [routerLink]="['contact']" id="linkPresenters">Contact</a>
+          <a [routerLink]="['highschool']" id="linkPresenters">High School Portal</a>
+
           <a [routerLink]="['/about']" id="linkAbout">About</a>
         </ul>
 
