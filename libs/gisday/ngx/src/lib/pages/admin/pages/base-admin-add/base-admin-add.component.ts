@@ -10,16 +10,16 @@ export abstract class BaseAdminAddComponent<T, K extends BaseService<T>> impleme
   // TODO: Add better type for formGroup
   constructor(private fb: FormBuilder, private entityService: K, public formGroup: {}) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.form = this.fb.group(this.formGroup);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._$destroy.next();
     this._$destroy.complete();
   }
 
-  submitNewEntity() {
+  public submitNewEntity() {
     this.entityService.createEntity(this.form.value);
   }
 }
