@@ -54,6 +54,14 @@ const routes: Routes = [
     loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.CompetitionsModule)
   },
   {
+    path: 'contact',
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.ContactModule)
+  },
+  {
+    path: 'highschool',
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.HighschoolModule)
+  },
+  {
     path: 'admin',
     canActivate: [AdminGuard],
     loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AdminModule)
