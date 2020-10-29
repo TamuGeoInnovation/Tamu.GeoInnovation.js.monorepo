@@ -1,5 +1,5 @@
 <section>
-  <div class="lookback"><a href="./Wayback/2019/">2019 LOOKBACK</a></div>
+  <div class="lookback"><a [routerLink]="['/wayback/2019']">2019 Lookback</a></div>
 
   <div id="landing">
     <div class="bg-img"></div>
@@ -7,7 +7,6 @@
       <div class="container12 flex flex-column align-center">
         <!-- <h1 id="site-title" class="trailer-2 landing-logo"></h1> -->
         <div class="landing-container">
-
           <!-- <div class="flipclock">countdown goes here</div> -->
           <tamu-gisc-count-down class="flipclock"></tamu-gisc-count-down>
 
@@ -61,35 +60,33 @@
     </div>
   </div>
 
-
   <div id="landing-gallery" class="no-pad-partition flex flex-column">
     <img src="../../assets/images/photos/14210_045.jpg" />
     <img src="../../assets/images/photos/14210_126.jpg" />
     <img src="../../assets/images/photos/14210_376.jpg" />
     <img src="../../assets/images/photos/14210_418.jpg" />
     <img src="../../assets/images/photos/14210_593.jpg" />
-    </div>
+  </div>
 
-    <div class="medium-partition bg-md-grey-50">
-      <h1 class="aggie-weight-2">EVENT SPONSORS</h1>
-      <div class="red-line medium"></div>
-      <div class="container12 flex justify-center">
-        <p class="column10 trailer-1">
-          GIS Day sponsors are increasingly becoming the backbone of the event and with a growing attendance rate, their contributions help drive the gears that make GIS Day at Texas A&amp;M possible. As a bonus, their contributions are translated to direct communication and exposure with attendees.
-        </p>
+  <div class="medium-partition bg-md-grey-50">
+    <h1 class="aggie-weight-2">EVENT SPONSORS</h1>
+    <div class="red-line medium"></div>
+    <div class="container12 flex justify-center">
+      <p class="column10 trailer-1">
+        GIS Day sponsors are increasingly becoming the backbone of the event and with a growing attendance rate, their contributions help drive the gears that make GIS Day at Texas A&amp;M possible. As a bonus, their contributions are translated to direct communication and exposure with attendees.
+      </p>
 
-        <div class="icon-grid column12">
-          <div class="icon-item">
-            <div style="background-image:url(../../assets/images/sponsors/conoco-bw.png);"></div>
-          </div>
-
-          <div class="icon-item">
-            <div style="background-image:url(../../assets/images/sponsors/tamu-library-bw.png);"></div>
-          </div>
+      <div class="icon-grid column12">
+        <div class="icon-item">
+          <div style="background-image:url(../../assets/images/sponsors/conoco-bw.png);"></div>
         </div>
 
-        <p class="leader-2"><a [routerLink]="['/sponsors']">Learn more about sponsorship options</a></p>
+        <div class="icon-item">
+          <div style="background-image:url(../../assets/images/sponsors/tamu-library-bw.png);"></div>
+        </div>
       </div>
-    </div>
 
+      <p class="leader-2"><a [routerLink]="['/sponsors']">Learn more about sponsorship options</a></p>
+    </div>
+  </div>
 </section>
