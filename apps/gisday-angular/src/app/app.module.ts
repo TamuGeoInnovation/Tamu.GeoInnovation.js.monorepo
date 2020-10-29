@@ -62,6 +62,10 @@ const routes: Routes = [
     loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.HighschoolModule)
   },
   {
+    path: 'wayback',
+    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.WaybackModule)
+  },
+  {
     path: 'admin',
     canActivate: [AdminGuard],
     loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AdminModule)
