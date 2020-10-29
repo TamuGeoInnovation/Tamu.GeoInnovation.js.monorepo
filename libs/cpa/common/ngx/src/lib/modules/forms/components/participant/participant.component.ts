@@ -21,8 +21,8 @@ import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
 
-import { ResponseService } from '../../services/response.service';
-import { WorkshopService } from '../../services/workshop.service';
+import { ResponseService } from '../../../../services/response.service';
+import { WorkshopService } from '../../../../services/workshop.service';
 import { ViewerService } from '../../../viewer/services/viewer.service';
 
 import esri = __esri;

@@ -5,7 +5,7 @@ import { tap, map, shareReplay } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
-import { ScenarioService } from '../../services/scenario.service';
+import { ScenarioService } from '../../../../services/scenario.service';
 
 import esri = __esri;
 import { Observable } from 'rxjs';

@@ -4,8 +4,8 @@ import { pluck, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 
 import { IResponseResponse, IScenariosResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 
-import { ResponseService } from '../../forms/services/response.service';
-import { WorkshopService } from '../../forms/services/workshop.service';
+import { ResponseService } from '../../../services/response.service';
+import { WorkshopService } from '../../../services/workshop.service';
 
 @Injectable({
   providedIn: 'root'

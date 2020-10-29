@@ -7,8 +7,8 @@ import { pluck, shareReplay, map } from 'rxjs/operators';
 import { IScenariosResponse } from '@tamu-gisc/cpa/data-api';
 import { Scenario } from '@tamu-gisc/cpa/common/entities';
 
-import { WorkshopService } from '../../services/workshop.service';
-import { ScenarioService } from '../../services/scenario.service';
+import { WorkshopService } from '../../../../services/workshop.service';
+import { ScenarioService } from '../../../../services/scenario.service';
 
 @Component({
   selector: 'tamu-gisc-workshop-builder',
