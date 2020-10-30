@@ -1,12 +1,13 @@
 import { Component, ChangeDetectionStrategy, ComponentFactoryResolver, ViewChild, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, from, of } from 'rxjs';
 import { switchMap, filter, toArray, take, shareReplay, find, pluck } from 'rxjs/operators';
 
-import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout/structural';
-import { TripPlannerOptionsComponentService } from '../../services/trip-planner-options-component.service';
-
-import { TripPlannerService, TripPlannerRuleMode, TravelOptions } from '../../../../services/trip-planner.service';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
+import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout/structural';
+
+import { TripPlannerOptionsComponentService } from '../../services/trip-planner-options-component.service';
+import { TripPlannerService, TripPlannerRuleMode, TravelOptions } from '../../../../services/trip-planner.service';
 import { TripPlannerParkingOptionsComponent } from '../../components/parking/trip-planner-parking-options.component';
 import { TripPlannerBikingOptionsComponent } from '../../components/biking/trip-planner-biking-options.component';
 
@@ -71,7 +72,9 @@ export class TripPlannerOptionsComponent implements OnInit {
     private plannerService: TripPlannerService,
     private testingService: TestingService,
     private componentService: TripPlannerOptionsComponentService,
-    private componentResolver: ComponentFactoryResolver
+    private componentResolver: ComponentFactoryResolver,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   public ngOnInit(): void {
@@ -91,7 +94,7 @@ export class TripPlannerOptionsComponent implements OnInit {
     this.plannerService.updateTravelOptions(opt);
   }
 
-  public getOptionvalue<T>(option: string): Observable<T> {
+  public getOptionValue<T>(option: string): Observable<T> {
     return this.travelOptions.pipe(pluck(option));
   }
 
@@ -122,5 +125,9 @@ export class TripPlannerOptionsComponent implements OnInit {
     // Pass in feature data to the created component
     // Will only handle a single feature for now.
     resolvedComponent.instance.settings = this.ModeOptions;
+  }
+
+  public returnOptions() {
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 }
