@@ -15,3 +15,5 @@ export * from './modules/services/tag/tag.service';
 export * from './modules/services/user-classes/user-classes.service';
 export * from './modules/services/user-info/user-info.service';
 export * from './modules/services/user-submissions/user-submissions.service';
+export * from './modules/signage.service';
+// export * from './modules/services/vgi/vgi.service';

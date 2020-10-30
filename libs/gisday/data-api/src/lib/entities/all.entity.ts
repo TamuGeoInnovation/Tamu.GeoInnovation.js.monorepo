@@ -1,3 +1,4 @@
+import { Post } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import {
   getConnection,
@@ -20,6 +21,72 @@ import {
   Repository
 } from 'typeorm';
 import { v4 as guid } from 'uuid';
+
+@Entity()
+export class OldCompetitionEntity extends BaseEntity {
+  @PrimaryColumn()
+  public id: number;
+
+  @Column({
+    name: 'Guid'
+  })
+  public guid: string;
+
+  @Column({
+    name: 'UserGuid'
+  })
+  public userGuid?: string;
+
+  @Column({
+    name: 'Added'
+  })
+  public added: Date;
+
+  @Column({
+    name: 'Season'
+  })
+  public season: string;
+
+  @Column({
+    name: 'Lat'
+  })
+  public latitude: number;
+
+  @Column({
+    name: 'Lon'
+  })
+  public longitude: number;
+
+  @Column({
+    name: 'Accuracy'
+  })
+  public accuracy: number;
+
+  @Column({
+    name: 'FixTime'
+  })
+  public fixTime: string;
+
+  @Column({
+    name: 'Heading'
+  })
+  public heading: number;
+
+  @Column({
+    name: 'Altitude'
+  })
+  public altitude: number;
+
+  @Column({
+    name: 'AltitudeAccuracy'
+  })
+  public altitudeAccuracy: number;
+
+  @Column({
+    name: 'Speed'
+  })
+  public speed: number;
+}
 
 @Entity()
 export class TimeStampEntity extends BaseEntity {
@@ -507,6 +574,180 @@ export class UserSubmission extends GuidIdentity {
   constructor() {
     super();
   }
+}
+
+@Entity({
+  name: 'Signage_Categories'
+})
+export class SignageCategory {
+  @Column()
+  public id: number;
+
+  @Column()
+  public guid: string;
+
+  @Column()
+  public added: string;
+
+  @Column()
+  public name: string;
+
+  @Column()
+  public pointValue: number;
+}
+
+@Entity({
+  name: 'Signage_Submissions'
+})
+export class SignageSubmission extends OldCompetitionEntity {
+  @Column({
+    name: 'SignType'
+  })
+  public signType: string;
+
+  @Column({
+    name: 'Description'
+  })
+  public description: string;
+}
+
+@Entity({
+  name: 'Stormwater_Submissions'
+})
+export class StormwaterSubmission extends OldCompetitionEntity {
+  @Column({
+    name: 'Depth'
+  })
+  public depth: string;
+
+  @Column({
+    name: 'Flow'
+  })
+  public flow: string;
+
+  @Column({
+    name: 'Drain'
+  })
+  public drain: string;
+}
+
+@Entity({
+  name: 'Sidewalk_Conditions'
+})
+export class SidewalkCondition {
+  @PrimaryColumn()
+  public id: number;
+
+  @Column({
+    name: 'Guid'
+  })
+  public guid: string;
+
+  @Column({
+    name: 'UserGuid'
+  })
+  public userGuid: string;
+
+  @Column({
+    name: 'Added'
+  })
+  public added: string;
+
+  @Column({
+    name: 'TypeName'
+  })
+  public typeName: string;
+}
+
+@Entity({
+  name: 'Sidewalk_Materials'
+})
+export class SidewalkMaterial {
+  @PrimaryColumn()
+  public id: number;
+
+  @Column({
+    name: 'Guid'
+  })
+  public guid: string;
+
+  @Column({
+    name: 'UserGuid'
+  })
+  public userGuid: string;
+
+  @Column({
+    name: 'Added'
+  })
+  public added: string;
+
+  @Column({
+    name: 'TypeName'
+  })
+  public typeName: string;
+}
+
+@Entity({
+  name: 'Sidewalk_Submissions'
+})
+export class SidewalkSubmission extends OldCompetitionEntity {
+  @Column({
+    name: 'MaterialGuid'
+  })
+  public materialGuid: string;
+
+  @Column({
+    name: 'ConditionGuid'
+  })
+  public conditionGuid: string;
+
+  @Column({
+    name: 'ConditionDescription'
+  })
+  public conditionDescription: string;
+}
+
+@Entity({
+  name: 'manhole_submissions'
+})
+export class ManholeSubmission {
+  @PrimaryColumn()
+  public id: number;
+
+  @Column({
+    name: 'Guid'
+  })
+  public guid: string;
+
+  @Column({
+    name: 'UserGuid'
+  })
+  public userGuid: string;
+
+  @Column({
+    name: 'added'
+  })
+  public added: string;
+
+  @Column({
+    name: 'lat'
+  })
+  public latitude: number;
+
+  @Column({
+    name: 'lon'
+  })
+  public longitude: number;
+
+  @Column({
+    name: 'accuracy'
+  })
+  public accuracy: number;
+
+  @Column({
+    name: 'fixTime'
+  })
+  public fixTime: string;
 }
 
 export class CommonRepo<T> extends Repository<T> {}
