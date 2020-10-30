@@ -27,6 +27,8 @@ import {
   QuestionType,
   RsvpTypeModule,
   SessionModule,
+  SignageCategory,
+  SignageSubmission,
   SpeakerModule,
   SponsorModule,
   SubmissionTypeModule,
@@ -45,7 +47,7 @@ import {
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { OIDC_ISSUER } from '../environments/oidc-client-config';
-import { localDbConfig } from '../environments/ormconfig';
+import { localDbConfig, geoidb } from '../environments/ormconfig';
 
 @Module({
   imports: [
@@ -58,7 +60,6 @@ import { localDbConfig } from '../environments/ormconfig';
     // }),
     TypeOrmModule.forRoot({
       ...localDbConfig,
-
       entities: [
         CheckIn,
         Class,
@@ -80,6 +81,11 @@ import { localDbConfig } from '../environments/ormconfig';
         UserSubmission
       ]
     }),
+    // TypeOrmModule.forRoot({
+    //   ...geoidb,
+    //   name: 'geoidb',
+    //   entities: [SignageCategory, SignageSubmission]
+    // }),
     CheckInModule,
     ClassModule,
     CourseCreditModule,
