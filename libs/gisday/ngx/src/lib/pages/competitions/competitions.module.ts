@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import { MapboxMapService, MapsMapboxModule } from '@tamu-gisc/maps/mapbox';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { CompetitionsComponent } from './competitions.component';
 import { FeedbackComponent } from './feedback/feedback.component';
@@ -78,7 +79,7 @@ const routes: Routes = [
     StormwaterComponent,
     VgiComponent
   ],
-  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule],
+  imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, UILayoutModule],
   exports: [RouterModule]
 })
 export class CompetitionsModule {}
