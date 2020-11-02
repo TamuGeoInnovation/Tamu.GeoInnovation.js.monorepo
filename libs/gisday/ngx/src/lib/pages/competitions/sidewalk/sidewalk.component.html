@@ -1,5 +1,4 @@
 <section>
-
   <div class="container12 small-partition">
     <div class="column12">
       <h1 class="aggie-weight-2 clr-aggie-maroon">TAMU SIDEWALK CHALLENGE VGI COMPETITION</h1>
@@ -9,298 +8,266 @@
 
   <div class="container12 trailer-3">
     <div class="column8">
-      <div id='map' style='width: 100%; height: 500px;'></div>
+      <div id="map-section-map" style="width: 100%; height: 500px;">
+        <tamu-gisc-mapbox-map token="pk.eyJ1Ijoid2hhdHppdG9veWEiLCJhIjoiY2poNzI3M2M0MDNnbjMzcWVtYmZnNXExNiJ9.K-nM-JaZnZvAfutkLQitbg" [center]="['-96.3407', '30.6158']" [minZoom]="14" [maxZoom]="16"></tamu-gisc-mapbox-map>
+      </div>
       <div id="competition-map-controls-container">
         <div class="progress-bar"></div>
       </div>
     </div>
   </div>
-  
+
   <div class="container12 flex flex-row">
     <div class="column8">
-
       <div class="trailer-4">
         <p>This year we are yet again bringing hands-on GIS data collection to the masses. In collaboration with Texas A&amp;M Department of Geography and Texas A&amp;M Division of Information Technology, we are hosting the TAMU Sidewalk Challenge. The purpose of the challenge utilize crowd-sourced photos and surveys submitted by members and guests of the TAMU community to generate a comprehensive map of location, types, and condition of sidewalks in our beautiful campus that will be used in future research studies. This event is proudly sponsored by the following organizations:</p>
 
         <div class="icon-grid leader-1 trailer-1">
-
           <div class="icon-item">
-            <img src="/assets/images/sponsors/TAMU_Division_of_IT_Logo_2018.svg" alt="TAMU">
+            <img src="/assets/images/sponsors/TAMU_Division_of_IT_Logo_2018.svg" alt="TAMU" />
+          </div>
+        </div>
+
+        <p>
+          Throughout the course of the three-day long GIS Day event(s), any GIS Day participant will be able to submit data in the form of photos and survey responses of any area on campus where a sidewalk exists, with their own personal cell phones through the official Texas A&amp;M GIS Day Competition App.
+        </p>
+
+        <p>
+          How data collection works:
+        </p>
+        <ul class="numbered-custom">
+          <li>Install the TAMU GIS Day Competitions App on your mobile device (Android or iOS).</li>
+          <li>Find the nearest continuous sidewalk.</li>
+          <li>In the app, find the competitions tab (denoted by a camera) and select "Sidewalk Challenge".</li>
+          <li>Take a picture with the app.</li>
+          <li>Provide details on the photo you are submitting, including the type, condition, and a brief description for your selections.</li>
+          <li>Submit the survey, and proceed to the next sidewalk!</li>
+        </ul>
+        <p class="leader-2 aggie-weight-3">How competition points work:</p>
+
+        <div class="flex flex-row justify-around leader-1 trailer-2">
+          <!-- <img class="medium" src="/assets/images/graphics/graphic-stormwater-2pt.svg" alt="2 Points"> -->
+          <img class="medium" src="/assets/images/graphics/graphic-sidewalk-1pt.svg" alt="1 Point" />
+        </div>
+
+        <ul>
+          <li>A sidewalk is any continuous length of paved path of the same material.</li>
+          <li>If you provide a completely filled survey and a photo, you receive <strong>one</strong> point for every survey submitted.</li>
+          <!-- <li>If you provide a completely filled survey and a photo, AND additionally your photo includes a drain, you receive <strong>two</strong> points for every survey submitted.</li> -->
+          <li>Whoever gets the most points, wins the competition.</li>
+        </ul>
+      </div>
+
+      <div class="trailer-4">
+        <p class="leader-2 aggie-weight-3">Examples Photo Survey Submissions</p>
+
+        <p>Below are a few examples of the kind of photo submissions that would be appropriate and acceptable for the Sidewalk Challenge. Click to enlarge.</p>
+
+        <div class="example-gallery leader-2">
+          <div>
+            <a href="/assets/images/competitions/Sidewalk/IMG-1408.JPG" target="_blank" rel="noopener noreferrer">
+              <img src="/assets/images/competitions/Sidewalk/IMG-1408.JPG" />
+              <p class="label">Example of a concrete sidewalk.</p>
+            </a>
           </div>
 
+          <div>
+            <a href="/assets/images/competitions/Sidewalk/IMG-1415.JPG" target="_blank" rel="noopener noreferrer">
+              <img src="/assets/images/competitions/Sidewalk/IMG-1415.JPG" />
+              <p class="label">Example of an asphalt sidewalk.</p>
+            </a>
           </div>
 
-          <p>
-            Throughout the course of the three-day long GIS Day event(s), any GIS Day participant will be able to submit data in the form of photos and survey responses of any area on campus where a sidewalk exists, with their own personal cell phones 
-                          through the official Texas A&amp;M GIS Day Competition App.
-          </p>
-
-          <p>
-            How data collection works:
-          </p>
-          <ul class="numbered-custom">
-            <li>Install the TAMU GIS Day Competitions App on your mobile device (Android or iOS).</li>
-            <li>Find the nearest continuous sidewalk.</li>
-            <li>In the app, find the competitions tab (denoted by a camera) and select "Sidewalk Challenge".</li>
-            <li>Take a picture with the app.</li>
-            <li>Provide details on the photo you are submitting, including the type, condition, and a brief description for your selections.</li>
-            <li>Submit the survey, and proceed to the next sidewalk!</li>
-          </ul>
-          <p class="leader-2 aggie-weight-3">How competition points work:</p>
-
-          <div class="flex flex-row justify-around leader-1 trailer-2">
-            <!-- <img class="medium" src="/assets/images/graphics/graphic-stormwater-2pt.svg" alt="2 Points"> -->
-            <img class="medium" src="/assets/images/graphics/graphic-sidewalk-1pt.svg" alt="1 Point">
+          <div>
+            <a href="/assets/images/competitions/Sidewalk/IMG-1409.JPG" target="_blank" rel="noopener noreferrer">
+              <img src="/assets/images/competitions/Sidewalk/IMG-1409.JPG" />
+              <p class="label">Example a gravel sidewalk.</p>
+            </a>
           </div>
 
-            <ul>
-              <li>A sidewalk is any continuous length of paved path of the same material.</li>
-              <li>If you provide a completely filled survey and a photo, you receive <strong>one</strong> point for every survey submitted.</li>
-              <!-- <li>If you provide a completely filled survey and a photo, AND additionally your photo includes a drain, you receive <strong>two</strong> points for every survey submitted.</li> -->
-              <li>Whoever gets the most points, wins the competition.</li>
-            </ul>
+          <div>
+            <a href="/assets/images/competitions/Sidewalk/IMG-1410.JPG" target="_blank" rel="noopener noreferrer">
+              <img src="/assets/images/competitions/Sidewalk/IMG-1410.JPG" />
+              <p class="label">Example of a dirt sidewalk.</p>
+            </a>
           </div>
 
-          <div class="trailer-4">
-            <p class="leader-2 aggie-weight-3">Examples Photo Survey Submissions</p>
-
-            <p>Below are a few examples of the kind of photo submissions that would be appropriate and acceptable for the Sidewalk Challenge. Click to enlarge.</p>
-
-            <div class="example-gallery leader-2">
-              <div>
-                <a href="/assets/images/competitions/Sidewalk/IMG-1408.JPG" target="_blank" rel="noopener noreferrer">
-                  <img src="/assets/images/competitions/Sidewalk/IMG-1408.JPG">
-                  <p class="label">Example of a concrete sidewalk.</p>
-                </a>
-              </div>
-
-              <div>
-                <a href="/assets/images/competitions/Sidewalk/IMG-1415.JPG" target="_blank" rel="noopener noreferrer">
-                  <img src="/assets/images/competitions/Sidewalk/IMG-1415.JPG">
-                  <p class="label">Example of an asphalt sidewalk.</p>
-                </a>
-              </div>
-
-              <div>
-                <a href="/assets/images/competitions/Sidewalk/IMG-1409.JPG" target="_blank" rel="noopener noreferrer">
-                <img src="/assets/images/competitions/Sidewalk/IMG-1409.JPG">
-                <p class="label">Example a gravel sidewalk.</p>
-              </a>
-              </div>
-
-              <div>
-                <a href="/assets/images/competitions/Sidewalk/IMG-1410.JPG" target="_blank" rel="noopener noreferrer">
-                <img src="/assets/images/competitions/Sidewalk/IMG-1410.JPG">
-                <p class="label">Example of a dirt sidewalk.</p>
-              </a>
-              </div>
-
-              <div>
-                <a href="/assets/images/competitions/Sidewalk/IMG-1411.JPG" target="_blank" rel="noopener noreferrer">
-                <img src="/assets/images/competitions/Sidewalk/IMG-1411.JPG">
-                <p class="label">Example of a brick sidewalk.</p>
-              </a>
-              </div>
-
-              <div>
-                <a href="/assets/images/competitions/Sidewalk/IMG-1412.JPG" target="_blank" rel="noopener noreferrer">
-                <img src="/assets/images/competitions/Sidewalk/IMG-1412.JPG">
-                <p class="label">Example of an aggregate concrete sidewalk.</p>
-              </a>
-              </div>
-
-            </div>
+          <div>
+            <a href="/assets/images/competitions/Sidewalk/IMG-1411.JPG" target="_blank" rel="noopener noreferrer">
+              <img src="/assets/images/competitions/Sidewalk/IMG-1411.JPG" />
+              <p class="label">Example of a brick sidewalk.</p>
+            </a>
           </div>
 
-          <div class="trailer-4" id="one">
-            <h2 class="trailer-1">Prize</h2>
-
-            <p>
-              Great prizes will be awarded to the first place.
-            </p>
-
-            <ul>
-              <li><span class="aggie-weight-3">1<sup>st</sup> Prize</span>&nbsp;<span>Garmin GPSMAP 64st, with <a href="https://www.amazon.com/dp/B07CZM68W3/ref=sxts_kp_tr_2?pf_rd_m=ATVPDKIKX0DER&pf_rd_p=8778bc68-27e7-403f-8460-de48b6e788fb&pd_rd_wg=SMpmh&pf_rd_r=27AKJXYBS2X9TRF5B70C&pf_rd_s=desktop-sx-top-slot&pf_rd_t=301&pd_rd_i=B07D1MVN2Q&pd_rd_w=6ZK9l&pf_rd_i=hand+he" target="_blank" rel="noopenner noreferrer">accessories</a></span></li>
-            </ul>
-
-            <p>
-              <strong>*</strong>&nbsp;
-              <span>Prizes provided by the                   
-            <a href="https://it.tamu.edu/" target="_blank">
-                <span class="aggie-weight-3">TAMU Division of Information Technology</span>
-              </a>
-              </span>
-            </p>
-
-            <div class="small-partition">
-              <div class="flex-gallery">
-                <div class="flex-gallery-row">
-                  <div class="full" style="background-image: url('/assets/images/graphics/gpsmap-64st.jpg')"></div>
-                </div>
-                <p>Garmin GPSMAP 64st, with accessories</p>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="trailer-4" id="sixteen">
-            <h2 class="trailer-1">Eligibility</h2>
-
-            <p>While we encourage everyone to download the app and submit data, only current TAMU graduate and undergraduate students are eligible to win.</p>
-
-          </div>
-
-          <div class="trailer-4" id="two">
-            <h2 class="trailer-1">Rules, Participation, and Winners</h2>
-
-            <p>In order for a chance to win, participants will be required to
-              <a href='/Signup/ '>have an active GIS Day account</a>. Using the official 2019 GIS Day <a href="https://itunes.apple.com/us/app/tamu-gis-day/id941378974?ls=1&mt=8" target="_blank" onclick="gaLinkRedirect('iOSRedirect')">iOS</a> and <a href="https://play.google.com/store/apps/details?id=edu.tamu.geoinnovation.gisday2016&hl=en" target="_blank" onclick="gaLinkRedirect('AndroidRedirect')">Android</a> applications, users will take photos of any and all structures on the TAMU campus. Capture buildings on main campus, west campus, riverside campus, and anywhere that you think is TAMU land and submit them.</p>
-
-            <p>The participant with the highest number of points from verified submissions at the conclusion of the GIS Day event will be awarded 1st place.</p>
-
-
-            <p>Winners will be awarded with prizes generously provided by
-              <span class="aggie-weight-3">Texas A&amp;M Division of Information Technology</span>. Winners will be announced on Wednesday, November 13 at the Student Awards &amp; Closing Remarks session.</p>
-
-          </div>
-
-          <div class="fine-print card content-block all">
-            <h1 class="trailer-1 no-pad">Project Information Sheet</h1>
-            <div class="trailer-1" id="three">
-              <h2 class="trailer-1">Why is this study being done?</h2>
-
-              <p>
-                The purpose of this study is to leverage the data collection abilities of the 2,500+ TAMU faculty, students, staff, and visitors who participate in the TAMU GIS Day events per year to gather data about the TAMU campus. Each year, the GIS Day planning committee organizes a GIS Mapping Competition where GIS Day participants gather data (GPS, photos, and other attributes) of amenities and services on campus. You are invited to participate in these data collection efforts!
-              </p>
-
-
-            </div>
-
-            <div class="trailer-1" id="four">
-              <h2 class="trailer-1">Why am I being asked to be in the study?</h2>
-              <p>
-                You are being asked to be in this study because you have a relationship with Texas A&amp;M either as a faculty or staff member, a student, or a visitor.
-              </p>
-
-
-            </div>
-
-            <div class="trailer-1" id="five">
-              <h2 class="trailer-1">How many people will be asked to be in the study?</h2>
-              <p>
-                The study organizers hope to engage 2,500 study participants per year for each of the four years of the project. We will contact 50,000 people per year (roughly the number all TAMU students, faculty, and staff) in order to achieve these participant numbers for each year of the project.
-              </p>
-
-
-            </div>
-
-            <div class="trailer-1" id="six">
-              <h2 class="trailer-1">What are the alternatives to being in this study?</h2>
-              <p>
-                The alternative to being in the study is not to participate. Participation in this study is not mandatory, and non-participation will not impact you in any fashion.
-              </p>
-
-
-            </div>
-
-            <div class="trailer-1" id="seven">
-              <h2 class="trailer-1">What will I be asked to do in this study?</h2>
-
-              <p>
-                You will be asked to walk around the TAMU campus and take pictures of buildings. In 2019, you are being asked to take pictures of the exteriors of TAMU structures. In future years, the organizing committee will survey different aspects of the TAMU campus.
-              </p>
-
-
-            </div>
-
-            <div class="trailer-1" id="eight">
-              <h2 class="trailer-1">Are there are risks to me?</h2>
-
-              <p>
-                The things that you will be doing are no greater than the risks you would come across in everyday life. While collecting data, you will be submitting your location (actually the location of the thing you are collecting about), which could expose the locations that you collected data at, should these data be stolen. Other risks include a breach of confidentiality should study information about you (name, email, TAMU department, and TAMU classification) be stolen.
-              </p>
-
-
-            </div>
-
-            <div class="trailer-1" id="nine">
-              <h2 class="trailer-1">Will there be any costs to me?</h2>
-              <p>
-                Aside from your time, there are no costs for taking part in the study. Your participation can take any amount of time up to seven days (the full length of the week around GIS Day), but we expect that most people will participate for less than two hours.
-              </p>
-
-
-            </div>
-
-            <div class="trailer-1" id="ten">
-              <h2 class="trailer-1">Will photos, video, or audio recordings be made of me during this study?</h2>
-              <p>
-                Photos, video, and audio recordings will not be taken of you as part of this study.
-              </p>
-
-
-            </div>
-
-            <div class="trailer-1" id="eleven">
-              <h2 class="trailer-1">Will I be paid to be in the study?</h2>
-
-              <p>
-                You will not be paid for being in this study, but there will be an award given to at least one of the participants who will be selected at random from all participants who create accounts. creating an account is not mandatory. You can participate anonymously without creating an account, but in this case you will not be eligible for winning prizes (since we won't know how you are!!).
-              </p>
-
-            </div>
-
-            <div class="trailer-1" id="twelve">
-              <h2 class="trailer-1">Will information from this study be kept private?</h2>
-
-              <p>
-                The records of this study will be kept private. Any personally identifiable information you submit during the course of creating an account will be removed from the data when it is used in publications or presentations. You may choose to submit data anonymously, in which case no identifiable information will be collected from or about you.
-              </p>
-              <p>
-                Research records will be stored securely in the College of Geosciences data center located in the basement of the O&amp;M Building, and only Dr. Daniel Goldberg, other members of the project team, and TAMU IT data center staff will have access to the records. Representatives of regulatory agencies such as the Office of Human Research Protections (OHRP) and entities such as the Texas A&amp;M University Human Subjects Protection Program may access your records to make sure the study is being run correctly and that information is collected properly.
-              </p>
-
-
-            </div>
-
-            <div class="trailer-1" id="thirteen">
-              <h2 class="trailer-1">What if I change my mind about participating?</h2>
-
-              <p>
-                This research is voluntary and you have the choice whether or not to be in this research study. You may decide to not begin or to stop participating at any time. If you choose not to be in this study or stop being in the study, there will be no effect on your status, grades, employment, or relationship with Texas A&amp;M University, etc. Any new information discovered about the research will be provided to you. This information could affect your willingness to continue your participation.
-              </p>
-
-
-            </div>
-
-            <div class="trailer-1" id="fourteen">
-              <h2 class="trailer-1">Whom may I contact for more information?</h2>
-              <p>
-                You may contact the Principal Investigator, Daniel Goldberg, PhD, to tell him about a concern or complaint about this research at 979-845-6395 or daniel.goldberg@tamu.edu.
-              </p>
-              <p>
-                For questions about your rights as a research participant; or if you have questions, complaints, or concerns about the research, you may call the Texas A&amp;M University Human Subjects Protection Program office at (979) 458-4067 or irb@tamu.edu.
-              </p>
-
-
-            </div>
-
-            <div class="trailer-1" id="fifteen">
-              <h2 class="trailer-1">TAMU IRB Approvals</h2>
-              <p>
-                IRB NUMBER: IRB2016-0672M
-              </p>
-              <p>
-                IRB APPROVAL DATE: 10/06/2016
-              </p>
-              <p>
-                IRB EXPIRATION DATE: 10/01/2021
-              </p>
-
-
-            </div>
-
+          <div>
+            <a href="/assets/images/competitions/Sidewalk/IMG-1412.JPG" target="_blank" rel="noopener noreferrer">
+              <img src="/assets/images/competitions/Sidewalk/IMG-1412.JPG" />
+              <p class="label">Example of an aggregate concrete sidewalk.</p>
+            </a>
           </div>
         </div>
       </div>
+
+      <div class="trailer-4" id="one">
+        <h2 class="trailer-1">Prize</h2>
+
+        <p>
+          Great prizes will be awarded to the first place.
+        </p>
+
+        <ul>
+          <li>
+            <span class="aggie-weight-3">1<sup>st</sup> Prize</span>&nbsp;<span>Garmin GPSMAP 64st, with <a href="https://www.amazon.com/dp/B07CZM68W3/ref=sxts_kp_tr_2?pf_rd_m=ATVPDKIKX0DER&pf_rd_p=8778bc68-27e7-403f-8460-de48b6e788fb&pd_rd_wg=SMpmh&pf_rd_r=27AKJXYBS2X9TRF5B70C&pf_rd_s=desktop-sx-top-slot&pf_rd_t=301&pd_rd_i=B07D1MVN2Q&pd_rd_w=6ZK9l&pf_rd_i=hand+he" target="_blank" rel="noopenner noreferrer">accessories</a></span>
+          </li>
+        </ul>
+
+        <p>
+          <strong>*</strong>&nbsp;
+          <span
+            >Prizes provided by the
+            <a href="https://it.tamu.edu/" target="_blank">
+              <span class="aggie-weight-3">TAMU Division of Information Technology</span>
+            </a>
+          </span>
+        </p>
+
+        <div class="small-partition">
+          <div class="flex-gallery">
+            <div class="flex-gallery-row">
+              <div class="full" style="background-image: url('/assets/images/graphics/gpsmap-64st.jpg')"></div>
+            </div>
+            <p>Garmin GPSMAP 64st, with accessories</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="trailer-4" id="sixteen">
+        <h2 class="trailer-1">Eligibility</h2>
+
+        <p>While we encourage everyone to download the app and submit data, only current TAMU graduate and undergraduate students are eligible to win.</p>
+      </div>
+
+      <div class="trailer-4" id="two">
+        <h2 class="trailer-1">Rules, Participation, and Winners</h2>
+
+        <p>In order for a chance to win, participants will be required to <a href="/Signup/ ">have an active GIS Day account</a>. Using the official 2019 GIS Day <a href="https://itunes.apple.com/us/app/tamu-gis-day/id941378974?ls=1&mt=8" target="_blank" onclick="gaLinkRedirect('iOSRedirect')">iOS</a> and <a href="https://play.google.com/store/apps/details?id=edu.tamu.geoinnovation.gisday2016&hl=en" target="_blank" onclick="gaLinkRedirect('AndroidRedirect')">Android</a> applications, users will take photos of any and all structures on the TAMU campus. Capture buildings on main campus, west campus, riverside campus, and anywhere that you think is TAMU land and submit them.</p>
+
+        <p>The participant with the highest number of points from verified submissions at the conclusion of the GIS Day event will be awarded 1st place.</p>
+
+        <p>Winners will be awarded with prizes generously provided by <span class="aggie-weight-3">Texas A&amp;M Division of Information Technology</span>. Winners will be announced on Wednesday, November 13 at the Student Awards &amp; Closing Remarks session.</p>
+      </div>
+
+      <div class="fine-print card content-block all">
+        <h1 class="trailer-1 no-pad">Project Information Sheet</h1>
+        <div class="trailer-1" id="three">
+          <h2 class="trailer-1">Why is this study being done?</h2>
+
+          <p>
+            The purpose of this study is to leverage the data collection abilities of the 2,500+ TAMU faculty, students, staff, and visitors who participate in the TAMU GIS Day events per year to gather data about the TAMU campus. Each year, the GIS Day planning committee organizes a GIS Mapping Competition where GIS Day participants gather data (GPS, photos, and other attributes) of amenities and services on campus. You are invited to participate in these data collection efforts!
+          </p>
+        </div>
+
+        <div class="trailer-1" id="four">
+          <h2 class="trailer-1">Why am I being asked to be in the study?</h2>
+          <p>
+            You are being asked to be in this study because you have a relationship with Texas A&amp;M either as a faculty or staff member, a student, or a visitor.
+          </p>
+        </div>
+
+        <div class="trailer-1" id="five">
+          <h2 class="trailer-1">How many people will be asked to be in the study?</h2>
+          <p>
+            The study organizers hope to engage 2,500 study participants per year for each of the four years of the project. We will contact 50,000 people per year (roughly the number all TAMU students, faculty, and staff) in order to achieve these participant numbers for each year of the project.
+          </p>
+        </div>
+
+        <div class="trailer-1" id="six">
+          <h2 class="trailer-1">What are the alternatives to being in this study?</h2>
+          <p>
+            The alternative to being in the study is not to participate. Participation in this study is not mandatory, and non-participation will not impact you in any fashion.
+          </p>
+        </div>
+
+        <div class="trailer-1" id="seven">
+          <h2 class="trailer-1">What will I be asked to do in this study?</h2>
+
+          <p>
+            You will be asked to walk around the TAMU campus and take pictures of buildings. In 2019, you are being asked to take pictures of the exteriors of TAMU structures. In future years, the organizing committee will survey different aspects of the TAMU campus.
+          </p>
+        </div>
+
+        <div class="trailer-1" id="eight">
+          <h2 class="trailer-1">Are there are risks to me?</h2>
+
+          <p>
+            The things that you will be doing are no greater than the risks you would come across in everyday life. While collecting data, you will be submitting your location (actually the location of the thing you are collecting about), which could expose the locations that you collected data at, should these data be stolen. Other risks include a breach of confidentiality should study information about you (name, email, TAMU department, and TAMU classification) be stolen.
+          </p>
+        </div>
+
+        <div class="trailer-1" id="nine">
+          <h2 class="trailer-1">Will there be any costs to me?</h2>
+          <p>
+            Aside from your time, there are no costs for taking part in the study. Your participation can take any amount of time up to seven days (the full length of the week around GIS Day), but we expect that most people will participate for less than two hours.
+          </p>
+        </div>
+
+        <div class="trailer-1" id="ten">
+          <h2 class="trailer-1">Will photos, video, or audio recordings be made of me during this study?</h2>
+          <p>
+            Photos, video, and audio recordings will not be taken of you as part of this study.
+          </p>
+        </div>
+
+        <div class="trailer-1" id="eleven">
+          <h2 class="trailer-1">Will I be paid to be in the study?</h2>
+
+          <p>
+            You will not be paid for being in this study, but there will be an award given to at least one of the participants who will be selected at random from all participants who create accounts. creating an account is not mandatory. You can participate anonymously without creating an account, but in this case you will not be eligible for winning prizes (since we won't know how you are!!).
+          </p>
+        </div>
+
+        <div class="trailer-1" id="twelve">
+          <h2 class="trailer-1">Will information from this study be kept private?</h2>
+
+          <p>
+            The records of this study will be kept private. Any personally identifiable information you submit during the course of creating an account will be removed from the data when it is used in publications or presentations. You may choose to submit data anonymously, in which case no identifiable information will be collected from or about you.
+          </p>
+          <p>
+            Research records will be stored securely in the College of Geosciences data center located in the basement of the O&amp;M Building, and only Dr. Daniel Goldberg, other members of the project team, and TAMU IT data center staff will have access to the records. Representatives of regulatory agencies such as the Office of Human Research Protections (OHRP) and entities such as the Texas A&amp;M University Human Subjects Protection Program may access your records to make sure the study is being run correctly and that information is collected properly.
+          </p>
+        </div>
+
+        <div class="trailer-1" id="thirteen">
+          <h2 class="trailer-1">What if I change my mind about participating?</h2>
+
+          <p>
+            This research is voluntary and you have the choice whether or not to be in this research study. You may decide to not begin or to stop participating at any time. If you choose not to be in this study or stop being in the study, there will be no effect on your status, grades, employment, or relationship with Texas A&amp;M University, etc. Any new information discovered about the research will be provided to you. This information could affect your willingness to continue your participation.
+          </p>
+        </div>
+
+        <div class="trailer-1" id="fourteen">
+          <h2 class="trailer-1">Whom may I contact for more information?</h2>
+          <p>
+            You may contact the Principal Investigator, Daniel Goldberg, PhD, to tell him about a concern or complaint about this research at 979-845-6395 or daniel.goldberg@tamu.edu.
+          </p>
+          <p>
+            For questions about your rights as a research participant; or if you have questions, complaints, or concerns about the research, you may call the Texas A&amp;M University Human Subjects Protection Program office at (979) 458-4067 or irb@tamu.edu.
+          </p>
+        </div>
+
+        <div class="trailer-1" id="fifteen">
+          <h2 class="trailer-1">TAMU IRB Approvals</h2>
+          <p>
+            IRB NUMBER: IRB2016-0672M
+          </p>
+          <p>
+            IRB APPROVAL DATE: 10/06/2016
+          </p>
+          <p>
+            IRB EXPIRATION DATE: 10/01/2021
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
