@@ -116,6 +116,7 @@
     "@types/mapbox-gl": "^1.9.1",
     "@types/node": "~12.7.2",
     "@types/sequelize": "^4.27.33",
+    "caniuse-lite": "^1.0.30001154",
     "codelyzer": "~5.1.0",
     "coveralls": "^3.0.6",
     "cypress": "3.4.1",
