@@ -86,6 +86,20 @@ export class OldCompetitionEntity extends BaseEntity {
     name: 'Speed'
   })
   public speed: number;
+
+  public geoJsonRepresentation(): IGeoJsonFeature {
+    const keys = Object.keys(this);
+    return {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [this.longitude, this.latitude]
+      },
+      properties: {
+        ...this
+      }
+    };
+  }
 }
 
 @Entity()
@@ -847,3 +861,24 @@ export class UserRsvpRepo extends CommonRepo<UserRsvp> {
 
 @EntityRepository(UserSubmission)
 export class UserSubmissionRepo extends CommonRepo<UserSubmission> {}
+
+@EntityRepository(SignageSubmission)
+export class SignageSubmissionRepo extends CommonRepo<SignageSubmission> {}
+
+@EntityRepository(StormwaterSubmission)
+export class StormwaterSubmissionRepo extends CommonRepo<StormwaterSubmission> {}
+
+@EntityRepository(SidewalkSubmission)
+export class SidewalkSubmissionRepo extends CommonRepo<SidewalkSubmission> {}
+
+@EntityRepository(ManholeSubmission)
+export class ManholeSubmissionRepo extends CommonRepo<ManholeSubmission> {}
+
+export interface IGeoJsonFeature {
+  type: string;
+  geometry: {
+    type: string;
+    coordinates: number[];
+  };
+  properties: {};
+}
