@@ -43,7 +43,7 @@
   transition: $args;
 }
 
-@mixin flexbox {
+@mixin flexbox($args...) {
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-flex;
