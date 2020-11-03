@@ -4,6 +4,10 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
+import { NavigationBreadcrumbModule } from '@tamu-gisc/ui-kits/ngx/navigation/breadcrumb';
+import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
+import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
+
 import { CPAFormsModule } from '../forms/cpaForms.module';
 import { ScenarioBuilderComponent } from '../forms/components/scenario-builder/scenario-builder.component';
 
@@ -12,8 +16,6 @@ import { OverviewComponent } from './components/overview/overview.component';
 import { WorkshopListComponent } from './components/workshop-list/workshop-list.component';
 import { WorkshopBuilderComponent } from '../forms/components/workshop-builder/workshop-builder.component';
 import { ScenariosListComponent } from './components/scenarios-list/scenarios-list.component';
-
-import { NavigationBreadcrumbModule } from '@tamu-gisc/ui-kits/ngx/navigation/breadcrumb';
 
 const routes: Routes = [
   {
@@ -74,7 +76,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule, CPAFormsModule, NavigationBreadcrumbModule],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    UILayoutModule,
+    CPAFormsModule,
+    NavigationBreadcrumbModule,
+    SidebarModule,
+    LayerListModule
+  ],
   declarations: [CreateComponent, OverviewComponent, WorkshopListComponent, ScenariosListComponent],
   exports: [RouterModule]
 })

@@ -37,8 +37,9 @@ export class SidebarComponent extends AbstractSlidingDrawerComponent implements 
         })
       )
       .subscribe((event) => {
-        if (event && event.native && event.native.route !== undefined) {
-          this.routeHandler(event.native.route);
+        if (event && event.native) {
+          this._changeRoute(event.native.route);
+          this._toggleVisibility(event.native.route);
         }
       });
   }
@@ -55,19 +56,24 @@ export class SidebarComponent extends AbstractSlidingDrawerComponent implements 
   /**
    * Navigates to sidebar nested routes, which renders different components and allows url history
    */
-  public routeHandler(viewName: string): void {
+  private _changeRoute(viewName: string): void {
     // Update the current view state whenever the route handler is called.
-    this._updateCurrentView();
+    // this._updateCurrentView();
 
     // If selected view name is the same, hide the sidebar
-    if (viewName === this.currentView) {
+    if (viewName !== undefined && viewName !== this.currentView) {
+      this.router.navigate([`./${viewName}`], { relativeTo: this.route });
+    }
+  }
+
+  private _toggleVisibility(viewName: string): void {
+    // If selected view name is the same, hide the sidebar
+    if (viewName === this.currentView || viewName === undefined) {
       this.toggleVisibility();
     } else {
       // If selected view name is different than current, show sidebar (in case it's hidden), store the selected view name as the current, and navigate to that route
       this.visible = true;
       this.currentView = viewName;
-
-      this.router.navigate([`./${viewName}`], { relativeTo: this.route });
     }
   }
 }

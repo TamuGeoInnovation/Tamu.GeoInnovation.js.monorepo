@@ -9,13 +9,25 @@ import { AnimationOptions } from '@angular/animations';
   animations: [slide]
 })
 export class AbstractSlidingDrawerComponent implements OnInit {
+  private _visible: boolean;
+
   /**
    * Describes sliding component visible state.
    *
    * Defaults to `true`
    */
   @Input()
-  public visible = true;
+  public set visible(value: string | boolean) {
+    if (typeof value === 'string') {
+      this._visible = value.toLowerCase() === 'true';
+    } else {
+      this._visible = value;
+    }
+  }
+
+  public get visible() {
+    return this._visible;
+  }
 
   /**
    * Describes the left or right adjustment (depending on positioning) applied

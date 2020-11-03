@@ -5,3 +5,13 @@
 </tamu-gisc-drawer>
 
 <tamu-gisc-snapshot-navigator></tamu-gisc-snapshot-navigator>
+
+<tamu-gisc-sidebar width="22.5rem" position="right" visible="false">
+  <div class="tabs left">
+    <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'"></tamu-gisc-sidebar-tab>
+  </div>
+
+  <div class="content">
+    <tamu-gisc-layer-list></tamu-gisc-layer-list>
+  </div>
+</tamu-gisc-sidebar>

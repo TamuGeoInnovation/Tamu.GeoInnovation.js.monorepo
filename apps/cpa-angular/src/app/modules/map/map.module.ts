@@ -5,8 +5,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 
 import { SearchModule } from '@tamu-gisc/search';
-import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
-import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
@@ -41,8 +39,6 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     EsriMapModule,
     SearchModule,
-    SidebarModule,
-    LayerListModule,
     ResponsiveModule,
     CommonNgxRouterModule,
     MapDrawingModule,
