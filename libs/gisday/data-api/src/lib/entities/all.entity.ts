@@ -404,6 +404,12 @@ export class Sponsor extends GuidIdentity {
   @Column({ nullable: false })
   public logoUrl: string;
 
+  @Column({ nullable: false })
+  public contactEmail: string;
+
+  @Column({ nullable: false })
+  public description: string;
+
   constructor() {
     super();
   }

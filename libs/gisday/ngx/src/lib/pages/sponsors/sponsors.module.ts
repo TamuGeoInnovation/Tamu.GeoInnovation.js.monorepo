@@ -14,6 +14,10 @@ const routes: Routes = [
         loadChildren: () => import('./sponsors-main/sponsors-main.module').then((m) => m.SponsorsMainModule)
       },
       {
+        path: 'details/:guid',
+        loadChildren: () => import('./sponsors-detail/sponsors-detail.module').then((m) => m.SponsorsDetailModule)
+      },
+      {
         path: 'tamu',
         loadChildren: () => import('./sponsors-tamu/sponsors-tamu.module').then((m) => m.SponsorsTamuModule)
       }
