@@ -4276,6 +4276,10 @@
           }
         }
       }
+    },
+    "gisday-sass": {
+      "projectType": "library",
+      "root": "gisday/sass"
     }
   },
   "cli": {

@@ -399,6 +399,9 @@
     },
     "gisday-data-api": {
       "tags": []
+    },
+    "gisday-sass": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

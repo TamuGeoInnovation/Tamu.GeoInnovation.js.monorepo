@@ -5,10 +5,10 @@ import { filter, pluck, last, mergeMap, take } from 'rxjs/operators';
 
 const initial: RouterHistoryState = { historyEvents: [] };
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RouterHistoryService {
-  private _state: BehaviorSubject<RouterHistoryState> = new BehaviorSubject(initial);
-  private _state$: Observable<RouterHistoryState> = this._state.asObservable();
+  private _$state: BehaviorSubject<RouterHistoryState> = new BehaviorSubject(initial);
+  public history: Observable<RouterHistoryState> = this._$state.asObservable();
 
   constructor(private router: Router) {
     router.events
@@ -19,13 +19,13 @@ export class RouterHistoryService {
       )
       .subscribe((navigationEndEvent) => {
         // Copy the state
-        const nst = { ...this._state.value };
+        const nst = { ...this._$state.value };
 
         // Push shallow copy of current navigation event to new state history events array.
         nst.historyEvents.push({ ...navigationEndEvent });
 
         // Set new state value
-        this._state.next(nst);
+        this._$state.next(nst);
       });
   }
 
@@ -33,7 +33,7 @@ export class RouterHistoryService {
    * Returns an observable with the
    */
   public last(): Observable<Event> {
-    return this._state$.pipe(
+    return this.history.pipe(
       pluck('historyEvents'),
       mergeMap((arr) => from(arr.reverse())),
       take(2),
