@@ -1,24 +1,38 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { catchError, map, shareReplay, tap } from 'rxjs/operators';
+
 import { AuthService } from '@tamu-gisc/gisday/data-access';
+import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 
 import { ITokenIntrospectionResponse, IUserInfoResponse } from '@tamu-gisc/gisday/data-access';
+import { Location } from '@angular/common';
 @Component({
   selector: 'tamu-gisc-app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  private modal: HTMLElement;
   public loggedIn: Observable<boolean>;
   public userRole: Observable<IUserInfoResponse>;
-  public isActive = false;
-  public account: Account;
 
-  constructor(private readonly authService: AuthService) {}
+  public account: Account;
+  public isActive = false;
+  public logoVisible: Observable<boolean>;
+
+  private modal: HTMLElement;
+
+  constructor(private authService: AuthService, private location: Location, private routerHistory: RouterHistoryService) {}
 
   public ngOnInit() {
-    this.loggedIn = this.authService.getHeaderState();
+    this.loggedIn = this.authService.getHeaderState().pipe(shareReplay(1));
+
+    this.logoVisible = this.routerHistory.history.pipe(
+      map(() => {
+        return this.location.path() !== '';
+      })
+    );
+
     // this.userRole = this.authService.getUserRole();
     // this.authService.state().subscribe((result) => {
     //   console.log(result);

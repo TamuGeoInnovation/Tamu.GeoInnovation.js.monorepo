@@ -16,13 +16,11 @@ import * as environment from '../environments/environment';
 
 WebFont.load({
   google: {
-    families: ['Material Icons']
-  },
-  custom: {
-    families: ['Moriston', 'Tungsten'],
-    urls: ['assets/fonts/moriston_pro/moriston_pro.css', 'assets/fonts/tungsten/tungsten.css']
+    families: ['Material Icons', 'Open Sans:400,600,700', 'Source Sans Pro:200,400,600,800']
   }
 });
+
+// <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700|Material+Icons|Source+Sans+Pro:200,400,600,800" rel="stylesheet">
 
 const routes: Routes = [
   {
