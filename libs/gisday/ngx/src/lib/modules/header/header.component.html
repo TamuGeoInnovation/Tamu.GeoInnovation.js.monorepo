@@ -29,7 +29,7 @@
   </ul>
 </nav>
 
-<header>
+<header [ngClass]="{seamless: (logoVisible | async) === false}">
   <nav id="main-menu">
     <div id="site-logo">
       <a class="logo-container" [routerLink]="['/']" [ngClass]="{opaque: logoVisible | async}">

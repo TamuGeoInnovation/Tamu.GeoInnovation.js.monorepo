@@ -30,7 +30,8 @@ export class HeaderComponent implements OnInit {
     this.logoVisible = this.routerHistory.history.pipe(
       map(() => {
         return this.location.path() !== '';
-      })
+      }),
+      shareReplay()
     );
 
     // this.userRole = this.authService.getUserRole();

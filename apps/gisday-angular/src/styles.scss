@@ -4,22 +4,8 @@
     Author: Edgar Hernandez - TAMU GeoInnovation Services ©
    ========================================================================== */
 
-/* =========== Contents ===========*/
-
-//    1. LESS Mixins
-//    2. Application Colors
-//    3. Typography
-//    4. Global
-//    5. Branding
-//    6. Navigation
-//    7. Grid Additions
-//    8. Landing Page Specific
-
-/* =========== END Contents ===========*/
-
 @import 'libs/sass/mixins';
 
-// Imports complete material design colors for use as classes in markup
 @import 'libs/sass/colors';
 
 @import 'libs/sass/1140';
@@ -344,13 +330,9 @@ form#aspnetForm {
 //   Branding
 //  ==========================================================================
 
-
-
 footer .logo-container {
   font-size: 1.5rem !important;
 }
-
-
 
 //  ==========================================================================
 //   Navigation
@@ -1247,60 +1229,60 @@ div#links-container {
 //   Landing Page Specific
 //  ==========================================================================
 
-#landing {
-  width: 100%;
-  background: linear-gradient(fade($gisday-blue-secondary, 8%), $gisday-gray-primary);
+// #landing {
+//   width: 100%;
+//   background: linear-gradient(fade($gisday-blue-secondary, 8%), $gisday-gray-primary);
 
-  .logo-container {
-    font-size: 7rem;
-  }
+//   .logo-container {
+//     font-size: 7rem;
+//   }
 
-  .slogan {
-    max-width: 75%;
-  }
-}
+//   .slogan {
+//     max-width: 75%;
+//   }
+// }
 
-.landing-container {
-  @include flexbox();
-  @include flex-direction(column);
-  @include align-items(center);
-  border-radius: 1rem;
-  display: flex;
-}
+// .landing-container {
+//   @include flexbox();
+//   @include flex-direction(column);
+//   @include align-items(center);
+//   border-radius: 1rem;
+//   display: flex;
+// }
 
-#purpose {
-  background: darken($aggie-support-black, 3%);
+// #purpose {
+//   background: darken($aggie-support-black, 3%);
 
-  .transparent-background {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
+//   .transparent-background {
+//     position: absolute;
+//     height: 100%;
+//     width: 100%;
+//     top: 0;
+//     left: 0;
 
-    .bg-img {
-      background-image: url(assets/images/photos/14210_345.jpg);
-      opacity: 0.05;
-    }
-  }
-}
+//     .bg-img {
+//       background-image: url(assets/images/photos/14210_345.jpg);
+//       opacity: 0.05;
+//     }
+//   }
+// }
 
-#landing-gallery {
-  height: 17.5rem;
-  overflow: hidden;
+// #landing-gallery {
+//   height: 17.5rem;
+//   overflow: hidden;
 
-  img {
-    height: 100%;
-  }
+//   img {
+//     height: 100%;
+//   }
 
-  @include flexbox();
+//   @include flexbox();
 
-  div {
-    height: 100%;
-    background-position: center;
-    background-size: cover;
-  }
-}
+//   div {
+//     height: 100%;
+//     background-position: center;
+//     background-size: cover;
+//   }
+// }
 
 .bg-img {
   height: inherit;
