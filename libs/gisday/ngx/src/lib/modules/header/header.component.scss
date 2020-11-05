@@ -20,30 +20,6 @@
   content: none;
 }
 
-.site-logo {
-  font-size: 1em;
-  font-weight: 600;
-  letter-spacing: 0;
-  color: $gisday-blue-support;
-
-  span {
-    color: $gisday-blue-secondary;
-    -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
-    -webkit-text-stroke-width: 0.04em;
-    -webkit-text-stroke-color: $gisday-blue-secondary;
-  }
-
-  &.greyscale {
-    color: lighten($gisday-blue-support, 50%);
-
-    span {
-      -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
-      -webkit-text-stroke-width: 0.05em;
-      -webkit-text-stroke-color: lighten($gisday-blue-support, 40%);
-    }
-  }
-}
-
 nav#off-canvas-menu {
   background: #ffffff;
   position: fixed;
