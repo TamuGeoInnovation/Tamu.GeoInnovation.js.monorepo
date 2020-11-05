@@ -1,7 +1,7 @@
 <section *ngIf="(event | async) as event">
   <div ui-view class="ng-scope">
     <div class="container12 leader-3 flex flex-row ng-scope">
-      <h1 class="aggie-weight-2 clr-aggie-maroon session-title ng-binding">{{event.name}}</h1>
+      <h1 class="session-title">{{event.name}}</h1>
       <div id="qr-toggle" *ngIf="event" class="popup ng-scope" href="" magnific-popup>
         <i class="fa fa-qrcode fa-3x"></i>
         <span>Checkin QR</span>
