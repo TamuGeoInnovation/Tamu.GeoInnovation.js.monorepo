@@ -50,6 +50,10 @@ const routes: Routes = [
       {
         path: 'tags',
         loadChildren: () => import('./pages/tag/admin-tag.module').then((m) => m.AdminTagModule)
+      },
+      {
+        path: 'university',
+        loadChildren: () => import('./pages/university/admin-university.module').then((m) => m.AdminUniversityModule)
       }
     ]
   }
