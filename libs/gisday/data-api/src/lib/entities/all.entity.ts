@@ -318,11 +318,28 @@ export class Session extends GuidIdentity {
 }
 
 @Entity({
+  name: 'universities'
+})
+export class University extends GuidIdentity {
+  @Column()
+  public name: string;
+
+  @Column()
+  public acronym: string;
+
+  @Column()
+  public hexTriplet: string;
+}
+
+@Entity({
   name: 'speaker_info'
 })
 export class SpeakerInfo extends GuidIdentity {
   @Column({ nullable: true })
   public graduationYear: string;
+
+  @OneToOne((type) => University, { cascade: true, nullable: true, eager: true })
+  public university?: University;
 
   @Column({ nullable: true })
   public degree: string;
@@ -832,6 +849,9 @@ export class RsvpTypeRepo extends CommonRepo<RsvpType> {}
 
 @EntityRepository(Tag)
 export class TagRepo extends CommonRepo<Tag> {}
+
+@EntityRepository(University)
+export class UniversityRepo extends CommonRepo<University> {}
 
 @EntityRepository(UserClass)
 export class UserClassRepo extends CommonRepo<UserClass> {

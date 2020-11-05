@@ -19,6 +19,7 @@ import {
   UserRsvp,
   UserSubmission,
   SubmissionType,
+  University,
   CheckInModule,
   ClassModule,
   CourseCreditModule,
@@ -41,7 +42,8 @@ import {
   InitialSurveyQuestion,
   InitialSurvey,
   QuestionTypeRepo,
-  QuestionTypeModule
+  QuestionTypeModule,
+  UniversityModule
 } from '@tamu-gisc/gisday/data-api';
 
 import { AppController } from './app.controller';
@@ -78,7 +80,8 @@ import { localDbConfig, geoidb } from '../environments/ormconfig';
         UserClass,
         UserInfo,
         UserRsvp,
-        UserSubmission
+        UserSubmission,
+        University
       ]
     }),
     // TypeOrmModule.forRoot({
@@ -98,6 +101,7 @@ import { localDbConfig, geoidb } from '../environments/ormconfig';
     SponsorModule,
     SubmissionTypeModule,
     TagModule,
+    UniversityModule,
     UserModule,
     UserClassModule,
     UserInfoModule,
