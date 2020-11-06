@@ -34,7 +34,7 @@
         </div>
         <div class="trailer-1 flex flex-row half-children">
           <div>
-            <h3 class="aggie-weight-2">
+            <h3 class="">
               Registration (
               <span title="Number of registered participants">{{numOfRsvps | async}} /</span>
               <span title="Total session capacity"> {{event.capacity}}</span>
@@ -45,7 +45,7 @@
             <div class="button primary leader-1 disabled" *ngIf="event.isAcceptingRsvps == undefined || event.isAcceptingRsvps == false">REGISTRATION NOT YET AVAILABLE</div>
           </div>
           <div>
-            <h3 class="aggie-weight-2">Checkin</h3>
+            <h3 class="">Checkin</h3>
             <div *ngIf="isCheckinOpen == true; else showCheckinButton">
               <p>Checkin will be available at the start of the session.</p>
             </div>
@@ -60,7 +60,7 @@
         <div>
           <div class="border-divider leader-2 trailer-2"></div>
           <div class="trailer-2">
-            <h3 class="aggie-weight-2 trailer-1">Rate This Session</h3>
+            <h3 class=" trailer-1">Rate This Session</h3>
             <div>
               <p>This event is currently not underway. The session ratings survey will become available when it begins.</p>
             </div>
