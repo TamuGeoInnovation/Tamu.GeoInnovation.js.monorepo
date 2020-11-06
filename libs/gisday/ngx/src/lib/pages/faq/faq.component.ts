@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'tamu-gisc-faq',
@@ -6,9 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./faq.component.scss']
 })
 export class FaqComponent implements OnInit {
-  constructor() {}
+  constructor(private titleService: Title) {
+    this.titleService.setTitle('FAQ | TxGIS Day 2020');
+  }
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 
   public onFaqItemClick(event) {
     const faqItem: HTMLElement = event.srcElement;

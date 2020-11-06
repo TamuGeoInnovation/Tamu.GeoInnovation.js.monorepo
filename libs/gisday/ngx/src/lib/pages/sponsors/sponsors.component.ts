@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'tamu-gisc-sponsors',
@@ -6,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sponsors.component.scss']
 })
 export class SponsorsComponent implements OnInit {
-  constructor() {}
+  constructor(private titleService: Title) {
+    this.titleService.setTitle('Sponsors | TxGIS Day 2020');
+  }
 
   public ngOnInit(): void {}
 }

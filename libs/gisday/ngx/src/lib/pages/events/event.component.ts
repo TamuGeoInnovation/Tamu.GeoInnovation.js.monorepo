@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-event',
@@ -6,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./event.component.scss']
 })
 export class EventComponent implements OnInit {
-  constructor() {}
+  constructor(private titleService: Title) {
+    this.titleService.setTitle('Sessions | TxGIS Day 2020');
+  }
 
-  ngOnInit() {}
+  public ngOnInit() {}
 }

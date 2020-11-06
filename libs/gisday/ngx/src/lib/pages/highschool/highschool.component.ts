@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'tamu-gisc-highschool',
@@ -6,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./highschool.component.scss']
 })
 export class HighschoolComponent implements OnInit {
-  constructor() {}
+  constructor(private titleService: Title) {}
 
-  public ngOnInit(): void {}
+  public ngOnInit(): void {
+    this.titleService.setTitle('High School | TxGIS Day 2020');
+  }
 }

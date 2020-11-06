@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { SpeakerService } from '@tamu-gisc/gisday/data-access';
-import { Speaker } from '@tamu-gisc/gisday/data-api';
+import { SpeakerService, UniversityService } from '@tamu-gisc/gisday/data-access';
+import { Speaker, University } from '@tamu-gisc/gisday/data-api';
+import { Observable } from 'rxjs';
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
 export const formConfig = {
@@ -16,6 +17,7 @@ export const formConfig = {
   affiliation: [''],
   description: [''],
   socialMedia: [''],
+  university: [''],
   file: ['']
 };
 
@@ -25,8 +27,14 @@ export const formConfig = {
   styleUrls: ['./admin-add-speakers.component.scss']
 })
 export class AdminAddSpeakersComponent extends BaseAdminAddComponent<Speaker, SpeakerService> {
-  constructor(private fb1: FormBuilder, private speakerService: SpeakerService) {
+  public $universities: Observable<Array<Partial<University>>>;
+  constructor(
+    private fb1: FormBuilder,
+    private speakerService: SpeakerService,
+    private universityService: UniversityService
+  ) {
     super(fb1, speakerService, formConfig);
+    this.$universities = this.universityService.getEntities();
   }
 
   public submitNewEntity() {
