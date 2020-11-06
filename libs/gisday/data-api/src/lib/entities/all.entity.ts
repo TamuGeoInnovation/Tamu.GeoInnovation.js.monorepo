@@ -338,7 +338,8 @@ export class SpeakerInfo extends GuidIdentity {
   @Column({ nullable: true })
   public graduationYear: string;
 
-  @OneToOne((type) => University, { cascade: true, nullable: true, eager: true })
+  @OneToOne((type) => University, { cascade: true, nullable: true })
+  @JoinColumn()
   public university?: University;
 
   @Column({ nullable: true })
@@ -831,6 +832,7 @@ export class SpeakerRepo extends CommonRepo<Speaker> {
       .getRepository(Speaker)
       .createQueryBuilder('speaker')
       .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
+      .leftJoinAndSelect('speakerInfo.university', 'university')
       .getMany();
   }
 }

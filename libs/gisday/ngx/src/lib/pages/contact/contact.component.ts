@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'tamu-gisc-contact',
@@ -9,7 +10,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class ContactComponent implements OnInit {
   public form: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private titleService: Title, private fb: FormBuilder) {
+    this.titleService.setTitle('Contact | TxGIS Day 2020');
+  }
 
   public ngOnInit(): void {
     this.form = this.fb.group({

@@ -4,12 +4,16 @@ import { DeepPartial } from 'typeorm';
 import { Request } from 'express';
 import * as deepmerge from 'deepmerge';
 
-import { Speaker, SpeakerInfo, SpeakerRepo, SpeakerInfoRepo } from '../../entities/all.entity';
+import { Speaker, SpeakerInfo, SpeakerRepo, SpeakerInfoRepo, UniversityRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
 
 @Injectable()
 export class SpeakerProvider extends BaseProvider<Speaker> {
-  constructor(private readonly speakerRepo: SpeakerRepo, public readonly speakerInfoRepo: SpeakerInfoRepo) {
+  constructor(
+    private readonly speakerRepo: SpeakerRepo,
+    public readonly speakerInfoRepo: SpeakerInfoRepo,
+    public readonly uniRepo: UniversityRepo
+  ) {
     super(speakerRepo);
   }
 
@@ -74,9 +78,15 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     //   }
     // });
     if (speaker) {
+      const university = await this.uniRepo.findOne({
+        where: {
+          guid: req.body.university ? req.body.university : ''
+        }
+      });
       const _photo: Partial<SpeakerInfo> = {
         ...req.body,
         speaker: speaker,
+        university: university,
         blob: file.buffer
       };
       const photo = await this.speakerInfoRepo.create(_photo);

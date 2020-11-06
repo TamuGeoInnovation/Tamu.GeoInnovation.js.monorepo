@@ -3,7 +3,7 @@
   <div class="container12 leader-1 flex flex-row justify-center">
     <div class="profile" *ngFor="let people of ($people | async)">
       <!-- <a [routerLink]="['/presenters/details', presenter.speakerLastName + presenter.speakerFirstName]"> -->
-      <div class="class-banner" *ngIf="people.speakerInfo.graduationYear">Class of '{{ people.speakerInfo.graduationYear.substr(2,2) }}</div>
+      <div class="class-banner" [ngStyle]=" { 'background': '#'+people.speakerInfo.university.hexTriplet+'' }" *ngIf="people.speakerInfo.university">{{people.speakerInfo.university.acronym}} '{{ people.speakerInfo.graduationYear.substr(2,2) }}</div>
       <!-- <div class="image" [routerLink]="['/presenters/details', presenter.guid]" [ngStyle]=" { 'background-image': 'url('+getPresenterImageUrl(presenter)+')'  } "> -->
       <div *ngIf="people.speakerInfo.guid">
         <div class="image" [routerLink]="['/people/details', people.guid]" [ngStyle]=" { 'background-image': 'url('+unwrapPhoto(people.speakerInfo.base64representation)+')'  } "></div>

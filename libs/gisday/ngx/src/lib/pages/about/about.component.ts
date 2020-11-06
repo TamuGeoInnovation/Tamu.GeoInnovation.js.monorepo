@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'tamu-gisc-about',
@@ -6,9 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit {
-  constructor() {}
+  constructor(private titleService: Title) {
+    this.titleService.setTitle('About | TxGIS Day 2020');
+  }
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 
   public makeActive(rank: string) {
     this.clearAllOtherPlaques();
