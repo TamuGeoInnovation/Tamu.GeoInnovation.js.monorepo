@@ -1,4 +1,4 @@
-<nav id="off-canvas-menu" [ngClass]="{ active: isActive }">
+<!-- <nav id="off-canvas-menu" [ngClass]="{ active: isActive }">
   <ul>
     <li (click)="toggleMenuButton()"><a [routerLink]="['/sessions']" routerLinkActive="active">Sessions</a></li>
     <li (click)="toggleMenuButton()"><a [routerLink]="['/people']" routerLinkActive="active">People</a></li>
@@ -27,7 +27,64 @@
       </div>
     </ng-template>
   </ul>
-</nav>
+</nav> -->
+
+<tamu-gisc-hamburger-trigger *ngIf="isMobile | async" (poked)="isActive.next($event)"></tamu-gisc-hamburger-trigger>
+
+<tamu-gisc-tile-navigation [toggle]="isActive" [defaultToggle]="false">
+  <tamu-gisc-tile>
+    <tamu-gisc-tile-icon><div class="material-icons">widgets</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title>Sessions</tamu-gisc-tile-title>
+    <!-- <tamu-gisc-tile-submenu *giscTileSubmenu>
+      <p>Address Processing</p>
+      <p>Geocoding</p>
+      <p>Reverse Geocoding</p>
+      <p>Geocode Correction</p>
+      <p>Census Intersection</p>
+      <p>K-Nearest Search</p>
+      <p>Drag &amp; Drop Mapping</p>
+    </tamu-gisc-tile-submenu> -->
+  </tamu-gisc-tile>
+
+  <tamu-gisc-tile>
+    <tamu-gisc-tile-icon><div class="material-icons">attach_money</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title>People</tamu-gisc-tile-title>
+    <!-- <tamu-gisc-tile-submenu *giscTileSubmenu>
+      <p>Usage Costs</p>
+      <p>Paid Plans</p>
+      <p>Free Usage</p>
+      <p>Partner Program</p>
+      <p>Refund Policy</p>
+    </tamu-gisc-tile-submenu> -->
+  </tamu-gisc-tile>
+
+  <tamu-gisc-tile>
+    <tamu-gisc-tile-icon><div class="material-icons">help_outline</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title>Competitions</tamu-gisc-tile-title>
+    <tamu-gisc-tile-submenu *giscTileSubmenu>
+      <p>High School Essay Contest</p>
+      <p>Feedback Lottery</p>
+      <p>Presentation Competition</p>
+      <p>Poster Competition</p>
+      <p>VGI Competition</p>
+    </tamu-gisc-tile-submenu>
+  </tamu-gisc-tile>
+
+  <tamu-gisc-tile>
+    <tamu-gisc-tile-icon><div class="material-icons">menu_book</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title>FAQ</tamu-gisc-tile-title>
+  </tamu-gisc-tile>
+
+  <tamu-gisc-tile>
+    <tamu-gisc-tile-icon><div class="material-icons">person_outline</div></tamu-gisc-tile-icon>
+    <tamu-gisc-tile-title>About</tamu-gisc-tile-title>
+    <tamu-gisc-tile-submenu *giscTileSubmenu>
+      <p>Organizing Committee</p>
+      <p>Volunteer Opportunities</p>
+      <p>Resume Bank</p>
+    </tamu-gisc-tile-submenu>
+  </tamu-gisc-tile>
+</tamu-gisc-tile-navigation>
 
 <header [ngClass]="{seamless: (logoVisible | async) === false}">
   <nav id="main-menu">
@@ -115,8 +172,8 @@
       </div>
     </div>
 
-    <div id="menu-button-container">
+    <!-- <div id="menu-button-container">
       <div id="menu-button"></div>
-    </div>
+    </div> -->
   </nav>
 </header>

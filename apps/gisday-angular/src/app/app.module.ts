@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
@@ -19,8 +20,6 @@ WebFont.load({
     families: ['Material Icons', 'Open Sans:400,600,700', 'Source Sans Pro:200,400,600,800']
   }
 });
-
-// <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700|Material+Icons|Source+Sans+Pro:200,400,600,800" rel="stylesheet">
 
 const routes: Routes = [
   {
@@ -97,8 +96,15 @@ const routeOptions: ExtraOptions = {
 };
 
 @NgModule({
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    RouterModule.forRoot(routes, routeOptions),
+    GisdayNgxModule,
+    EnvironmentModule,
+    HttpClientModule
+  ],
   declarations: [AppComponent],
-  imports: [BrowserModule, RouterModule.forRoot(routes, routeOptions), GisdayNgxModule, EnvironmentModule, HttpClientModule],
   providers: [
     {
       provide: env,

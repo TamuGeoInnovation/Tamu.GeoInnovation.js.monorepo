@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { catchError, map, shareReplay, tap } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 
 import { AuthService } from '@tamu-gisc/gisday/data-access';
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
+import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 
 import { ITokenIntrospectionResponse, IUserInfoResponse } from '@tamu-gisc/gisday/data-access';
 import { Location } from '@angular/common';
@@ -17,12 +18,16 @@ export class HeaderComponent implements OnInit {
   public userRole: Observable<IUserInfoResponse>;
 
   public account: Account;
-  public isActive = false;
+  public isActive = new Subject();
   public logoVisible: Observable<boolean>;
+  public isMobile = this.rp.isMobile.pipe(shareReplay(1));
 
-  private modal: HTMLElement;
-
-  constructor(private authService: AuthService, private location: Location, private routerHistory: RouterHistoryService) {}
+  constructor(
+    private authService: AuthService,
+    private location: Location,
+    private routerHistory: RouterHistoryService,
+    private rp: ResponsiveService
+  ) {}
 
   public ngOnInit() {
     this.loggedIn = this.authService.getHeaderState().pipe(shareReplay(1));
@@ -41,34 +46,5 @@ export class HeaderComponent implements OnInit {
     // this.authService.getUserRole().subscribe((result) => {
     //   console.log(result);
     // });
-  }
-
-  public toggleMenuButton() {
-    this.isActive = !this.isActive;
-    const body = document.querySelector('body');
-    if (this.isActive) {
-      body.classList.add('modal-open');
-      this.toggleModalBg(true);
-    } else {
-      body.classList.remove('modal-open');
-      this.toggleModalBg(false);
-    }
-  }
-
-  public toggleModalBg(on: boolean) {
-    const htmlChildren = document.documentElement.children;
-    const body = htmlChildren.item(1);
-    const section = body.children
-      .item(0)
-      .children.item(2)
-      .children.item(0);
-    if (on) {
-      this.modal = document.createElement('div');
-      this.modal.classList.add('active');
-      this.modal.id = 'modal-bg';
-      section.appendChild(this.modal);
-    } else {
-      section.removeChild(this.modal);
-    }
   }
 }
