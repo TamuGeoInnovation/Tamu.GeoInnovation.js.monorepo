@@ -39,7 +39,7 @@ describe('WorkshopsService', () => {
     });
   });
 
-  /*describe('addNewScenario', () => {
+  describe('addNewScenario', () => {
     it('should throw error, and should accept IResponseRequestPayload type as mock parameters ', async () => {
       const mockparameter = {
         scenarioGuid: '',
@@ -110,5 +110,5 @@ describe('WorkshopsService', () => {
         expect(error.status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
       }
     });
-  });*/
+  });
 });

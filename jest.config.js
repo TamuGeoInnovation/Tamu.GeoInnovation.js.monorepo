@@ -10,6 +10,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js', 'html'],
   collectCoverage: true,
   coverageReporters: ['html', 'lcov', 'text'],
+  repoters: ['default', 'jest-junit'],
   verbose: true
 };
 
@@ -25,9 +26,12 @@ if (process.env.IDE) {
 
   module.exports.globals = {
     'ts-jest': {
-      tsConfig: `${path}/tsconfig.spec.json`,
+      tsConfig: './test/tsconfig.spec.json',
       stringifyContentPathRegex: '\\.html$',
-      astTransformers: ['jest-preset-angular/InlineHtmlStripStylesTransformer']
+      astTransformers: [require.resolve('jest-preset-angular/InlineHtmlStripStylesTransformer')],
+      diagnostics: {
+        ignoreCodes: [151001]
+      }
     }
   };
 
