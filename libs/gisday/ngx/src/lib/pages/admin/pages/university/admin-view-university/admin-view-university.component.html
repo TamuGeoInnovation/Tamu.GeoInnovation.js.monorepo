@@ -1,0 +1,12 @@
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Acronym</th>
+    <th>Hex Triplet</th>
+  </tr>
+  <tr *ngFor="let entity of ($entities | async)">
+    <td>{{entity.name}}</td>
+    <td>{{entity.acronym}}</td>
+    <td>{{entity.hexTriplet}}</td>
+  </tr>
+</table>

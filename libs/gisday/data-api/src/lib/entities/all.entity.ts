@@ -351,7 +351,7 @@ export class SpeakerInfo extends GuidIdentity {
   @Column({ nullable: true })
   public affiliation: string;
 
-  @Column({ nullable: true, length: 'max' })
+  @Column({ nullable: true })
   public description: string;
 
   @Column({ nullable: true })
@@ -821,6 +821,7 @@ export class SpeakerRepo extends CommonRepo<Speaker> {
       .getRepository(Speaker)
       .createQueryBuilder('speaker')
       .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
+      .leftJoinAndSelect('speakerInfo.university', 'university')
       .where(`speaker.guid = :guid`, {
         guid: speakerGuid
       })

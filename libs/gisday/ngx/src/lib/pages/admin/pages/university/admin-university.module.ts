@@ -12,7 +12,7 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('./admin-edit-university/admin-edit-university.module').then((m) => m.AdminEditUniversityModule)
+          import('./admin-view-university/admin-view-university.module').then((m) => m.AdminViewUniversityModule)
       },
       {
         path: 'edit',
