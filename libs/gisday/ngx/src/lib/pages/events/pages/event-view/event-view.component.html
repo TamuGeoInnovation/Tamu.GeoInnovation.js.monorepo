@@ -1,4 +1,4 @@
-<div id="sub-nav-container" class="">
+<div id="sub-nav-container">
   <div class="container12 leader-3 trailer-3">
     <h1 class="trailer-1">Event Sessions</h1>
     <p class="sub-section-heading">
@@ -25,7 +25,7 @@
   <div class="loader" *ngIf="!$events"></div>
   <div id="default-content" class="column8" *ngIf="$events">
     <div id="day1" class="modal card">
-      <h2 class="">November 16</h2>
+      <h2>November 16</h2>
       <div *ngFor="let event of ($events | async)?.day0">
         <div class="test" *ngIf="filterEventsByFilterTags(event)">
           <div class="row" [routerLink]="['/sessions/details', event.guid]">
@@ -36,19 +36,19 @@
               </div>
             </div>
             <div class="event-time">
-              <span class="">{{event.startTime | date:'h:mm a'}}</span>
-              <span id="detail-time" class=""> - {{event.endTime | date:'h:mm a'}}</span>
+              <span>{{event.startTime | date:'h:mm a'}}</span>
+              <span id="detail-time"> - {{event.endTime | date:'h:mm a'}}</span>
             </div>
             <div class="event-name">
-              <p class="">{{event.name}}</p>
-              <p class="">{{event.locationBuilding}} {{event.locationRoom}}</p>
+              <p>{{event.name}}</p>
+              <p>{{event.locationBuilding}} {{event.locationRoom}}</p>
             </div>
           </div>
         </div>
       </div>
     </div>
     <div id="day2" class="modal card">
-      <h2 class="">November 17</h2>
+      <h2>November 17</h2>
       <div *ngFor="let event of ($events | async)[1]?.day1">
         <div class="test" *ngIf="filterEventsByFilterTags(event)">
           <div class="row" [routerLink]="['/sessions/details', event.guid]">
@@ -59,19 +59,19 @@
               </div>
             </div>
             <div class="event-time">
-              <span class="">{{event.startTime | date:'h:mm a'}}</span>
-              <span id="detail-time" class=""> - {{event.endTime | date:'h:mm a'}}</span>
+              <span>{{event.startTime | date:'h:mm a'}}</span>
+              <span id="detail-time"> - {{event.endTime | date:'h:mm a'}}</span>
             </div>
             <div class="event-name">
-              <p class="">{{event.name}}</p>
-              <p class="">{{event.locationBuilding}} {{event.locationRoom}}</p>
+              <p>{{event.name}}</p>
+              <p>{{event.locationBuilding}} {{event.locationRoom}}</p>
             </div>
           </div>
         </div>
       </div>
     </div>
     <div id="day3" class="modal card">
-      <h2 class="">November 18</h2>
+      <h2>November 18</h2>
       <div *ngFor="let event of ($events | async)?.day2">
         <div class="test" *ngIf="filterEventsByFilterTags(event)">
           <div class="row" [routerLink]="['/sessions/details', event.guid]">
@@ -82,12 +82,12 @@
               </div>
             </div>
             <div class="event-time">
-              <span class="">{{event.startTime | date:'h:mm a'}}</span>
-              <span id="detail-time" class=""> - {{event.endTime | date:'h:mm a'}}</span>
+              <span>{{event.startTime | date:'h:mm a'}}</span>
+              <span id="detail-time"> - {{event.endTime | date:'h:mm a'}}</span>
             </div>
             <div class="event-name">
-              <p class="">{{event.name}}</p>
-              <p class="">{{event.locationBuilding}} {{event.locationRoom}}</p>
+              <p>{{event.name}}</p>
+              <p>{{event.locationBuilding}} {{event.locationRoom}}</p>
             </div>
           </div>
         </div>

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { CheckinService, EventService, SessionsService } from '@tamu-gisc/gisday/data-access';
 import { Event } from '@tamu-gisc/gisday/data-api';
+import { CheckinService, EventService, SessionsService } from '@tamu-gisc/gisday/data-access';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
@@ -18,7 +18,7 @@ export class EventDetailComponent implements OnInit {
   public isCheckinOpen = false;
   public selectedEvent: Partial<Event> = {
     abstract:
-      'Another great TAMU GIS Day session will be announced soon. Check back to learn about the wonderful events the TAMU GIS Day team is bringing for this year.'
+      'Another great TxGIS Day session will be announced soon. Check back to learn about the wonderful events the TxGIS Day team is bringing for this year.'
   };
   public event: Observable<Partial<Event>>;
   public now: Date = new Date();

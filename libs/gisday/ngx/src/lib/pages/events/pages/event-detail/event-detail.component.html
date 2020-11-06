@@ -11,19 +11,19 @@
       </div>
 
       <div class="trailer-2" *ngIf="event.abstract">
-        <h3 class="">Abstract</h3>
+        <h3>Abstract</h3>
         <p>{{event.abstract}}</p>
       </div>
 
       <div class="trailer-2" *ngIf="event.onlineBroadcastUrl">
-        <h3 class="">Online Broadcast</h3>
+        <h3>Online Broadcast</h3>
         <p *ngIf="event.onlineBroadcastUrl">
           <a href="{{event.onlineBroadcastUrl}}">Online broadcast will be available when the event begins. The password (if asked) is "gisday" (all lower case, no quotes).</a>
         </p>
       </div>
 
       <div class="trailer-2" *ngIf="event.googleDriveUrl">
-        <h3 class="">Event Materials</h3>
+        <h3>Event Materials</h3>
         <p *ngIf="event.googleDriveUrl">
           <a href="{{event.googleDriveUrl}}">Event materials will be available at Google Drive when the event begins.</a>
         </p>
@@ -31,7 +31,7 @@
 
       <!-- <div class="trailer-1 flex flex-row half-children"> -->
       <!-- <div> -->
-      <!-- <h3 class="">Registration Information</h3> -->
+      <!-- <h3 >Registration Information</h3> -->
       <!-- <p *ngIf="event.requiresRsvp == true; else requiresRsvpElse">This is a limited-seating event. You must reserve a seat by adding this event to your sessions.</p> -->
       <!-- <ng-template #requiresRsvpElse> -->
       <!-- <p>This is an open attendance event, no reservation is required to attend.</p> -->
@@ -48,7 +48,7 @@
       <!-- <div class="button primary leader-1 disabled" *ngIf="event.isAcceptingRsvps == false ">REGISTRATION NOT YET AVAILABLE</div> -->
       <!-- </div> -->
       <!-- <div> -->
-      <!-- <h3 class="">Event Checkin</h3> -->
+      <!-- <h3 >Event Checkin</h3> -->
       <!-- <p *ngIf="event.date > now">Event checkin will be available when the event begins.</p> -->
       <!-- <div *ngIf="(checkedIn$ | async) as checkedIn">
 
@@ -63,7 +63,7 @@
       <!-- </div> -->
 
       <!-- <div class="trailer-2" *ngIf="event.sessions.length > 0">
-          <h3 class="">Topics</h3>
+          <h3 >Topics</h3>
           <div class="flex flex-row leader-1 justify-between">
             <div class="session-item" *ngFor="let item of event.sessions">
               <div class="details">
@@ -78,7 +78,7 @@
         </div> -->
 
       <!-- <div class="trailer-2" *ngIf="event">
-          <h3 class="">Presenters</h3>
+          <h3 >Presenters</h3>
           <div class="flex flex-row leader-1 justify-between">
             <div class="presenter-item" *ngFor="let presenter of event.eventSpeakers">
               <div class="image"

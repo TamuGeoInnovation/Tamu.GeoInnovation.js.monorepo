@@ -10,7 +10,7 @@
     <div class="container12" *ngIf="event">
       <div class="column10">
         <div id="timeAndPlace" class="trailer-1">
-          <p class="">{{event.startTime | date:'MMM d, y, h:mm a'}} - {{event.endTime | date:'h:mm a'}}</p>
+          <p>{{event.startTime | date:'MMM d, y, h:mm a'}} - {{event.endTime | date:'h:mm a'}}</p>
           <p>
             <a href="{{event.locationLink}}" target="_blank">{{event.locationBuilding}} {{event.locationRoom}}</a>
           </p>
@@ -34,7 +34,7 @@
         </div>
         <div class="trailer-1 flex flex-row half-children">
           <div>
-            <h3 class="">
+            <h3>
               Registration (
               <span title="Number of registered participants">{{numOfRsvps | async}} /</span>
               <span title="Total session capacity"> {{event.capacity}}</span>
@@ -45,7 +45,7 @@
             <div class="button primary leader-1 disabled" *ngIf="event.isAcceptingRsvps == undefined || event.isAcceptingRsvps == false">REGISTRATION NOT YET AVAILABLE</div>
           </div>
           <div>
-            <h3 class="">Checkin</h3>
+            <h3>Checkin</h3>
             <div *ngIf="isCheckinOpen == true; else showCheckinButton">
               <p>Checkin will be available at the start of the session.</p>
             </div>
