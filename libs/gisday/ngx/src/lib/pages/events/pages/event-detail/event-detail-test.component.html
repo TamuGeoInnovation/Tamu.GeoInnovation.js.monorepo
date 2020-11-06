@@ -1,16 +1,16 @@
 <section *ngIf="(event | async) as event">
-  <div ui-view class="ng-scope">
-    <div class="container12 leader-3 flex flex-row ng-scope">
+  <div>
+    <div class="container12 leader-3 flex flex-row">
       <h1 class="session-title">{{event.name}}</h1>
-      <div id="qr-toggle" *ngIf="event" class="popup ng-scope" href="" magnific-popup>
+      <div id="qr-toggle" *ngIf="event" class="popup" href="" magnific-popup>
         <i class="fa fa-qrcode fa-3x"></i>
         <span>Checkin QR</span>
       </div>
     </div>
-    <div class="container12 ng-scope" *ngIf="event">
+    <div class="container12" *ngIf="event">
       <div class="column10">
         <div id="timeAndPlace" class="trailer-1">
-          <p class="ng-binding">{{event.startTime | date:'MMM d, y, h:mm a'}} - {{event.endTime | date:'h:mm a'}}</p>
+          <p class="">{{event.startTime | date:'MMM d, y, h:mm a'}} - {{event.endTime | date:'h:mm a'}}</p>
           <p>
             <a href="{{event.locationLink}}" target="_blank">{{event.locationBuilding}} {{event.locationRoom}}</a>
           </p>

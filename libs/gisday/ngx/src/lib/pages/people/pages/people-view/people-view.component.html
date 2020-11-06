@@ -1,4 +1,4 @@
-<div ui-view>
+<div>
   <div class="loader" *ngIf="$people === undefined"></div>
   <div class="container12 leader-1 flex flex-row justify-center">
     <div class="profile" *ngFor="let people of ($people | async)">
