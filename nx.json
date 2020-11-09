@@ -447,6 +447,15 @@
     },
     "ues-sass": {
       "tags": []
+    },
+    "cpa-data-access": {
+      "tags": []
+    },
+    "cpa-admin": {
+      "tags": []
+    },
+    "cpa-public": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {
