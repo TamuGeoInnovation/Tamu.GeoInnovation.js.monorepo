@@ -3,9 +3,7 @@ import { BehaviorSubject, combineLatest, forkJoin, Observable, of } from 'rxjs';
 import { pluck, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 
 import { IResponseResponse, IScenariosResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
-
-import { ResponseService } from '../../../services/response.service';
-import { WorkshopService } from '../../../services/workshop.service';
+import { ResponseService, WorkshopService } from '@tamu-gisc/cpa/data-access';
 
 @Injectable({
   providedIn: 'root'

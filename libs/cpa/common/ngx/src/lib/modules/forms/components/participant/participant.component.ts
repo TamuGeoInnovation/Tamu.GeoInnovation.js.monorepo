@@ -20,9 +20,8 @@ import { IResponseRequestPayload, IResponseResponse, IScenariosResponse } from '
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
+import { WorkshopService, ResponseService } from '@tamu-gisc/cpa/data-access';
 
-import { ResponseService } from '../../../../services/response.service';
-import { WorkshopService } from '../../../../services/workshop.service';
 import { ViewerService } from '../../../viewer/services/viewer.service';
 
 import esri = __esri;

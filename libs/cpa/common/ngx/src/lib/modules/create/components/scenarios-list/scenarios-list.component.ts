@@ -4,7 +4,7 @@ import { shareReplay } from 'rxjs/operators';
 
 import { IScenariosResponse } from '@tamu-gisc/cpa/data-api';
 
-import { ScenarioService } from '../../../../services/scenario.service';
+import { ScenarioService } from '@tamu-gisc/cpa/data-access';
 
 @Component({
   selector: 'tamu-gisc-scenarios-list',

@@ -5,8 +5,8 @@ import { switchMap, take, withLatestFrom } from 'rxjs/operators';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { Scenario } from '@tamu-gisc/cpa/common/entities';
 import { IScenariosResponse } from '@tamu-gisc/cpa/data-api';
+import { LayersService } from '@tamu-gisc/cpa/data-access';
 
-import { LayersService } from '../../../../services/layers.service';
 import { ViewerService } from '../../services/viewer.service';
 
 import esri = __esri;
