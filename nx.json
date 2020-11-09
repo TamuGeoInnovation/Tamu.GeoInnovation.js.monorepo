@@ -456,6 +456,9 @@
     },
     "cpa-public": {
       "tags": []
+    },
+    "cpa-sass": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

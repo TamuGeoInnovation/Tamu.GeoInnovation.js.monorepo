@@ -4911,6 +4911,10 @@
           "styleext": "scss"
         }
       }
+    },
+    "cpa-sass": {
+      "projectType": "library",
+      "root": "libs/cpa/sass"
     }
   },
   "cli": {

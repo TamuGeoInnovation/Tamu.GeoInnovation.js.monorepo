@@ -1,0 +1,4 @@
+$active-color: hsl(223, 75%, 67%);
+$state-transition-color: #536dfe;
+$inactive-color: hsl(223, 15%, 60%);
+$lightened-inactive-color: lighten($inactive-color, 25%);

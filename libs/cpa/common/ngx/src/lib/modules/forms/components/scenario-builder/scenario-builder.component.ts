@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { tap, map, shareReplay } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
-
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ScenarioService } from '@tamu-gisc/cpa/data-access';
 
 import esri = __esri;
-import { Observable } from 'rxjs';
-import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-builder',

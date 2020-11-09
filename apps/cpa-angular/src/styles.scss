@@ -1,9 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'libs/cpa/sass/variables';
 @import 'libs/sass/1140';
 @import 'libs/sass/mixins';
-@import 'libs/sass/modules/forms';
 @import 'libs/sass/dom_flexbox';
+@import 'libs/sass/modules/forms';
 @import 'libs/sass/modules/loaders';
+@import 'libs/sass/modules/tabs';
+@import 'libs/sass/modules/sidebar_menu';
 
 html {
   height: 100%;
