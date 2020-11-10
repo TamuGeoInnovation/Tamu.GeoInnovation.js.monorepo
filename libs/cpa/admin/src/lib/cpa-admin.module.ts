@@ -9,7 +9,26 @@ import { CpaAdminComponent } from './cpa-admin.component';
 const routes: Routes = [
   {
     path: '',
-    component: CpaAdminComponent
+    component: CpaAdminComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'workshops'
+      },
+      {
+        path: 'workshops',
+        loadChildren: () => import('./pages/workshops/workshops.module').then((m) => m.WorkshopsModule)
+      },
+      {
+        path: 'snapshots',
+        loadChildren: () => import('./pages/snapshots/snapshots.module').then((m) => m.SnapshotsModule)
+      },
+      {
+        path: 'scenarios',
+        loadChildren: () => import('./pages/scenarios/scenarios.module').then((m) => m.ScenariosModule)
+      }
+    ]
   }
 ];
 

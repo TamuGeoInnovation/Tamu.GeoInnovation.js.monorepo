@@ -23,6 +23,10 @@ body {
   width: inherit;
 }
 
+h1 {
+  font-size: 2.5rem;
+}
+
 h2 {
   padding-bottom: 0.75rem;
 }
@@ -33,6 +37,14 @@ h3 {
 
 p {
   padding-bottom: 0.75rem;
+}
+
+section {
+  margin: 2.5rem 0;
+
+  .section-header {
+    margin-bottom: 2rem;
+  }
 }
 
 .material-icons-container {
