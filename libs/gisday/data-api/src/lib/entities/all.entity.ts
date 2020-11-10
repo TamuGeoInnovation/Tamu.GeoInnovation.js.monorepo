@@ -144,7 +144,7 @@ export class Event extends GuidIdentity {
 
   @ManyToMany((type) => Sponsor, { cascade: true })
   @JoinTable({ name: 'event_sponsors' })
-  public sponsors: Sponsor[];
+  public sponsors?: Sponsor[];
 
   @ManyToMany((type) => Tag, { cascade: true })
   @JoinTable({ name: 'event_tags' })
@@ -155,7 +155,7 @@ export class Event extends GuidIdentity {
 
   @ManyToMany((type) => CourseCredit, { cascade: true })
   @JoinTable({ name: 'event_course_credits' })
-  public courseCredit: CourseCredit[]; // CourseCredit[]
+  public courseCredit?: CourseCredit[]; // CourseCredit[]
 
   // @OneToMany(type => UserCheckin, userCheckin => userCheckin.eventGuid)
   // public userCheckins: CheckIn[]; // UserCheckin[]
@@ -252,14 +252,6 @@ export class QuestionType extends GuidIdentity {
 })
 export class InitialSurveyQuestion extends GuidIdentity {
   @ManyToOne((type) => QuestionType, (token) => token.question, { eager: true })
-  // @ManyToOne(() => InitialSurveyQuestion, (question) => question.guid, { cascade: true, eager: true })
-  // @JoinColumn()
-  // @OneToOne((type) => QuestionType, { cascade: true, eager: true })
-  // @JoinColumn()
-  // @ManyToMany((type) => QuestionType, { cascade: true, eager: true })
-  // @JoinTable({ name: 'session_speakers' })
-  // @JoinColumn()
-  // public speakers: Speaker[];
   public questionType: QuestionType;
 
   @Column({ nullable: true })
@@ -325,7 +317,7 @@ export class University extends GuidIdentity {
   public name: string;
 
   @Column()
-  public acronym: string;
+  public acronym?: string;
 
   @Column()
   public hexTriplet: string;
@@ -338,7 +330,7 @@ export class SpeakerInfo extends GuidIdentity {
   @Column({ nullable: true })
   public graduationYear: string;
 
-  @OneToOne((type) => University, { cascade: true, nullable: true })
+  @ManyToOne((type) => University, { cascade: true, nullable: true })
   @JoinColumn()
   public university?: University;
 
@@ -351,7 +343,7 @@ export class SpeakerInfo extends GuidIdentity {
   @Column({ nullable: true })
   public affiliation: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 'max' })
   public description: string;
 
   @Column({ nullable: true })
@@ -427,6 +419,9 @@ export class Sponsor extends GuidIdentity {
 
   @Column({ nullable: false })
   public description: string;
+
+  @Column({ nullable: true })
+  public sponsorshipLevel: 'point' | 'line' | 'polygon' | 'raster';
 
   constructor() {
     super();
@@ -788,6 +783,18 @@ export class ManholeSubmission {
   public fixTime: string;
 }
 
+@Entity({
+  name: 'speaker_roles'
+})
+export class SpeakerRole extends GuidIdentity {
+  @Column({ nullable: false })
+  public name: string;
+
+  constructor() {
+    super();
+  }
+}
+
 export class CommonRepo<T> extends Repository<T> {}
 
 @EntityRepository(CheckIn)
@@ -834,9 +841,15 @@ export class SpeakerRepo extends CommonRepo<Speaker> {
       .createQueryBuilder('speaker')
       .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
       .leftJoinAndSelect('speakerInfo.university', 'university')
+      .where('speaker.season = :season', {
+        season: '2020'
+      })
       .getMany();
   }
 }
+
+@EntityRepository(SpeakerRole)
+export class SpeakerRoleRepo extends CommonRepo<SpeakerRole> {}
 
 @EntityRepository(SpeakerInfo)
 export class SpeakerInfoRepo extends CommonRepo<SpeakerInfo> {}

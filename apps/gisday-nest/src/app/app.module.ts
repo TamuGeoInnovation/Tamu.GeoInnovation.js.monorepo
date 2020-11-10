@@ -43,7 +43,9 @@ import {
   InitialSurvey,
   QuestionTypeRepo,
   QuestionTypeModule,
-  UniversityModule
+  UniversityModule,
+  SpeakerRole,
+  SpeakerRoleModule
 } from '@tamu-gisc/gisday/data-api';
 
 import { AppController } from './app.controller';
@@ -74,6 +76,7 @@ import { localDbConfig, geoidb } from '../environments/ormconfig';
         Session,
         Speaker,
         SpeakerInfo,
+        SpeakerRole,
         SubmissionType,
         Sponsor,
         Tag,
@@ -98,6 +101,7 @@ import { localDbConfig, geoidb } from '../environments/ormconfig';
     RsvpTypeModule,
     SessionModule,
     SpeakerModule,
+    SpeakerRoleModule,
     SponsorModule,
     SubmissionTypeModule,
     TagModule,
