@@ -7,7 +7,10 @@ import { WorkshopsComponent } from './workshops.component';
 const routes: Routes = [
   {
     path: '',
-    component: WorkshopsComponent
+    component: WorkshopsComponent,
+    data: {
+      title: 'Workshops'
+    }
   }
 ];
 

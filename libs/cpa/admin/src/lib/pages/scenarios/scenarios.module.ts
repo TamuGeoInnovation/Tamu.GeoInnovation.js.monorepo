@@ -7,7 +7,10 @@ import { ScenariosComponent } from './scenarios.component';
 const routes: Routes = [
   {
     path: '',
-    component: ScenariosComponent
+    component: ScenariosComponent,
+    data: {
+      title: 'Scenarios'
+    }
   }
 ];
 
