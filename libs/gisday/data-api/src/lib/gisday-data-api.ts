@@ -14,6 +14,7 @@ export * from './modules/question-type/question-type.module';
 export * from './modules/rsvp-type/rsvp-type.module';
 export * from './modules/session/session.module';
 export * from './modules/speaker/speaker.module';
+export * from './modules/speaker-role/speaker-role.module';
 export * from './modules/sponsor/sponsor.module';
 export * from './modules/submission-type/submission-type.module';
 export * from './modules/tag/tag.module';

@@ -26,7 +26,9 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   public async getPresenters() {
     const speakers = await this.speakerRepo.getPresenters();
     speakers.forEach((speaker) => {
-      speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.toString('base64');
+      if (speaker.speakerInfo.blob) {
+        speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.toString('base64');
+      }
     });
     return speakers;
   }
