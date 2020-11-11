@@ -1,0 +1,23 @@
+<div class="spinning-loader" *ngIf="(workshops | async) === null; else countyList"></div>
+
+<ng-template #countyList>
+  <div class="flex flex-column align-center">
+    <div class="floating-table">
+      <div class="floating-table-header">
+        <div class="floating-row">
+          <div class="column">Name</div>
+          <div class="column">Actions</div>
+        </div>
+      </div>
+
+      <div class="floating-table-body">
+        <div class="floating-row" *ngFor="let workshop of workshops | async">
+          <div class="column">{{workshop.title}}</div>
+          <div class="column table-actions">
+            <a routerLink="../edit" [queryParams]="{guid: workshop.guid}">Edit</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -8,9 +8,13 @@ const routes: Routes = [
   {
     path: '',
     component: WorkshopsComponent,
-    data: {
-      title: 'Workshops'
-    }
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadChildren: () => import('./pages/workshops-list/workshops-list.module').then((m) => m.WorkshopsListModule)
+      }
+    ]
   }
 ];
 

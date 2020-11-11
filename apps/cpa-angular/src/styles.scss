@@ -1,12 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'libs/cpa/sass/variables';
-@import 'libs/sass/1140';
 @import 'libs/sass/mixins';
+
+@import 'libs/sass/1140';
 @import 'libs/sass/dom_flexbox';
 @import 'libs/sass/modules/forms';
 @import 'libs/sass/modules/loaders';
 @import 'libs/sass/modules/tabs';
 @import 'libs/sass/modules/sidebar_menu';
+@import 'libs/sass/modules/tables';
+@import 'libs/sass/spacing';
 
 html {
   height: 100%;
@@ -37,6 +40,17 @@ h3 {
 
 p {
   padding-bottom: 0.75rem;
+}
+
+a {
+  color: $active-color;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 section {

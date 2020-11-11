@@ -8,9 +8,13 @@ const routes: Routes = [
   {
     path: '',
     component: SnapshotsComponent,
-    data: {
-      title: 'Snapshots'
-    }
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadChildren: () => import('./pages/snapshots-list/snapshots-list.module').then((m) => m.SnapshotsListModule)
+      }
+    ]
   }
 ];
 

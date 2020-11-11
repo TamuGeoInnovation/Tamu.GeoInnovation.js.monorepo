@@ -27,6 +27,10 @@ const routes: Routes = [
       {
         path: 'scenarios',
         loadChildren: () => import('./pages/scenarios/scenarios.module').then((m) => m.ScenariosModule)
+      },
+      {
+        path: 'users',
+        loadChildren: () => import('./pages/users/users.module').then((m) => m.UsersModule)
       }
     ]
   }

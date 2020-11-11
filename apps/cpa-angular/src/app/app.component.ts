@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
             return child.snapshot.data['title'];
           }
 
-          return this._pageTitle();
+          return undefined;
         })
       )
       .subscribe((ttl: string) => {

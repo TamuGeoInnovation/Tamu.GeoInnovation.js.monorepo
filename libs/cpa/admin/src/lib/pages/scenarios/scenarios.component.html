@@ -5,12 +5,14 @@
     <div class="tab-container row">
       <div class="tabs">
         <div class="tab" [routerLink]="['./']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">All Scenarios</div>
-        <div class="tab" [routerLink]="['security']" routerLinkActive="active">New Scenario</div>
+        <!-- <div class="tab" [routerLink]="['']" routerLinkActive="active">New Scenario</div> -->
       </div>
 
       <div class="tab-content">
         <!-- <router-outlet></router-outlet> -->
-        <p>Some other content goes here</p>
+        <p class="leader-1">List of created scenarios will go here.</p>
+
+        <p><strong>DO NOT FORGET TO INCLUDE ROUTER OUTLET.</strong></p>
       </div>
     </div>
   </div>

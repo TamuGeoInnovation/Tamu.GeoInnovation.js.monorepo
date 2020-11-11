@@ -14,7 +14,6 @@ import { ScenarioBuilderComponent } from '../forms/components/scenario-builder/s
 import { CreateComponent } from './create.component';
 import { OverviewComponent } from './components/overview/overview.component';
 import { WorkshopListComponent } from './components/workshop-list/workshop-list.component';
-import { WorkshopBuilderComponent } from '../forms/components/workshop-builder/workshop-builder.component';
 import { ScenariosListComponent } from './components/scenarios-list/scenarios-list.component';
 
 const routes: Routes = [
@@ -29,27 +28,27 @@ const routes: Routes = [
           breadcrumb: 'Home'
         }
       },
-      {
-        path: 'workshops',
-        component: WorkshopListComponent,
-        data: {
-          breadcrumb: 'Workshops'
-        }
-      },
-      {
-        path: 'workshops/create',
-        component: WorkshopBuilderComponent,
-        data: {
-          breadcrumb: 'New'
-        }
-      },
-      {
-        path: 'workshops/edit/:guid',
-        component: WorkshopBuilderComponent,
-        data: {
-          breadcrumb: 'Edit'
-        }
-      },
+      // {
+      //   path: 'workshops',
+      //   component: WorkshopListComponent,
+      //   data: {
+      //     breadcrumb: 'Workshops'
+      //   }
+      // },
+      // {
+      //   path: 'workshops/create',
+      //   component: WorkshopBuilderComponent,
+      //   data: {
+      //     breadcrumb: 'New'
+      //   }
+      // },
+      // {
+      //   path: 'workshops/edit/:guid',
+      //   component: WorkshopBuilderComponent,
+      //   data: {
+      //     breadcrumb: 'Edit'
+      //   }
+      // },
       {
         path: 'scenarios',
         component: ScenariosListComponent,
