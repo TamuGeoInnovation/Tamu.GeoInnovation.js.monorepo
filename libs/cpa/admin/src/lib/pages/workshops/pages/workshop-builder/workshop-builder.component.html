@@ -1,8 +1,3 @@
-<ng-container *ngIf="(isExisting | async) === false"><h2>CCPA: New Workshop</h2> </ng-container>
-<ng-container *ngIf="isExisting | async"><h2>CCPA: Edit Workshop</h2> </ng-container>
-
-<tamu-gisc-breadcrumb></tamu-gisc-breadcrumb>
-
 <form [formGroup]="form" (ngSubmit)="submitWorkshop()">
   <div class="form-section">
     <div class="form-section-toolbar">

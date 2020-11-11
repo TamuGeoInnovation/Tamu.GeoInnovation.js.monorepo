@@ -11,16 +11,16 @@ import { ScenarioService } from '@tamu-gisc/cpa/data-access';
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-builder',
-  templateUrl: './scenario-builder.component.html',
-  styleUrls: ['./scenario-builder.component.scss'],
+  selector: 'tamu-gisc-snapshot-builder',
+  templateUrl: './snapshot-builder.component.html',
+  styleUrls: ['./snapshot-builder.component.scss'],
   providers: [ScenarioService]
 })
-export class ScenarioBuilderComponent implements OnInit {
+export class SnapshotBuilderComponent implements OnInit {
   public builderForm: FormGroup;
 
-  public view: esri.MapView;
-  public map: esri.Map;
+  // public view: esri.MapView;
+  // public map: esri.Map;
 
   public isExisting: Observable<boolean>;
 
@@ -39,10 +39,10 @@ export class ScenarioBuilderComponent implements OnInit {
       shareReplay(1)
     );
 
-    this.mapService.store.subscribe((instances) => {
-      this.view = instances.view as esri.MapView;
-      this.map = instances.map;
-    });
+    // this.mapService.store.subscribe((instances) => {
+    //   this.view = instances.view as esri.MapView;
+    //   this.map = instances.map;
+    // });
 
     // Instantiate builder form
     this.builderForm = this.fb.group({
@@ -70,20 +70,22 @@ export class ScenarioBuilderComponent implements OnInit {
   /**
    * Gets map service instance map center and sets the center control value using lat, lon format.
    */
-  public setMapCenter(): void {
-    const center = this.view.center;
+  // TODO: Re-implement
+  // public setMapCenter(): void {
+  //   const center = this.view.center;
 
-    this.builderForm.controls.mapCenter.setValue(`${center.longitude.toFixed(4)}, ${center.latitude.toFixed(4)}`);
-  }
+  //   this.builderForm.controls.mapCenter.setValue(`${center.longitude.toFixed(4)}, ${center.latitude.toFixed(4)}`);
+  // }
 
   /**
    * Gets map service instance current zoom level and sets the zoon control value.
    */
-  public setMapZoom(): void {
-    const zoom = this.view.zoom;
+  // TODO: Re-implement
+  // public setMapZoom(): void {
+  //   const zoom = this.view.zoom;
 
-    this.builderForm.controls.zoom.setValue(zoom);
-  }
+  //   this.builderForm.controls.zoom.setValue(zoom);
+  // }
 
   /**
    * Adds a layer group to the layers form array.

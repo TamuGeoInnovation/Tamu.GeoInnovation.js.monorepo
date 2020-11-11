@@ -123,3 +123,9 @@ section {
   @include justify-content(space-between);
   @include align-items(center);
 }
+
+.table-actions {
+  a {
+    margin: 0 0.5rem;
+  }
+}

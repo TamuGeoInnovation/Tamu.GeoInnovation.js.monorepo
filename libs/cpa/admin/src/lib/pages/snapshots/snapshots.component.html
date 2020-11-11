@@ -4,8 +4,15 @@
   <div class="section-content">
     <div class="tab-container row">
       <div class="tabs">
-        <div class="tab" [routerLink]="['./']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">All Snapshots</div>
-        <div class="tab" [routerLink]="['security']" routerLinkActive="active">New Snapshot</div>
+        <ng-container *ngIf="(entityView | async) === false; else entityViewTpl">
+          <div class="tab" [routerLink]="['./']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">All Snapshots</div>
+          <div class="tab" [routerLink]="['security']" routerLinkActive="active">New Snapshot</div>
+        </ng-container>
+
+        <ng-template #entityViewTpl>
+          <div class="tab" [routerLink]="['./edit']" routerLinkActive="active">Overview</div>
+          <div class="tab" [routerLink]="['delete']" routerLinkActive="active">Delete</div>
+        </ng-template>
       </div>
 
       <div class="tab-content">

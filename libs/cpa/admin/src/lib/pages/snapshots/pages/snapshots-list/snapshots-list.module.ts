@@ -7,10 +7,7 @@ import { SnapshotsListComponent } from './snapshots-list.component';
 const routes: Routes = [
   {
     path: '',
-    component: SnapshotsListComponent,
-    data: {
-      title: 'Snapshots'
-    }
+    component: SnapshotsListComponent
   }
 ];
 

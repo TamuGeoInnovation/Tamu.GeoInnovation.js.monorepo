@@ -12,7 +12,24 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        loadChildren: () => import('./pages/snapshots-list/snapshots-list.module').then((m) => m.SnapshotsListModule)
+        loadChildren: () => import('./pages/snapshots-list/snapshots-list.module').then((m) => m.SnapshotsListModule),
+        data: {
+          title: 'Snapshots'
+        }
+      },
+      {
+        path: 'edit/:guid',
+        loadChildren: () => import('./pages/snapshot-builder/snapshot-builder.module').then((m) => m.SnapshotBuilderModule),
+        data: {
+          title: 'Edit Snapshot'
+        }
+      },
+      {
+        path: 'create',
+        loadChildren: () => import('./pages/snapshot-builder/snapshot-builder.module').then((m) => m.SnapshotBuilderModule),
+        data: {
+          title: 'Create Snapshot'
+        }
       }
     ]
   }

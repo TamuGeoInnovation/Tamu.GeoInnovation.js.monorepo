@@ -14,7 +14,8 @@
         <div class="floating-row" *ngFor="let workshop of workshops | async">
           <div class="column">{{workshop.title}}</div>
           <div class="column table-actions">
-            <a routerLink="../edit" [queryParams]="{guid: workshop.guid}">Edit</a>
+            <a [routerLink]="['../edit', workshop.guid]">Edit</a>
+            <a [routerLink]="['../../../viewer', workshop.guid]" target="_blank">Launch</a>
           </div>
         </div>
       </div>
