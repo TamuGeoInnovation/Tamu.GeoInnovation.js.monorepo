@@ -4,8 +4,8 @@ import { Request } from 'express';
 import {
   Event,
   EventRepo,
-  Session,
-  SessionRepo,
+  // Session,
+  // SessionRepo,
   Sponsor,
   SponsorRepo,
   Tag,
@@ -19,7 +19,7 @@ export class EventProvider extends BaseProvider<Event> {
   constructor(
     private readonly eventRepo: EventRepo,
     private readonly tagRepo: TagRepo,
-    private readonly sessionRepo: SessionRepo,
+    // private readonly sessionRepo: SessionRepo,
     private readonly sponsorRepo: SponsorRepo,
     private readonly userRsvpRepo: UserRsvpRepo
   ) {
@@ -31,15 +31,15 @@ export class EventProvider extends BaseProvider<Event> {
       const _newEvent: Partial<Event> = {
         ...req.body
       };
-      if (req.body.tags) {
-        _newEvent.tags = await this.getTags(req.body.tags);
-      }
-      if (req.body.sponsors) {
-        _newEvent.sponsors = await this.getSponsors(req.body.sponsors);
-      }
-      if (req.body.sessions) {
-        _newEvent.sessions = await this.getSessions(req.body.sessions);
-      }
+      // if (req.body.tags) {
+      //   _newEvent.tags = await this.getTags(req.body.tags);
+      // }
+      // if (req.body.sponsors) {
+      //   _newEvent.sponsors = await this.getSponsors(req.body.sponsors);
+      // }
+      // if (req.body.sessions) {
+      //   _newEvent.sessions = await this.getSessions(req.body.sessions);
+      // }
       const newEvent = await this.eventRepo.create(_newEvent);
       this.eventRepo.save(newEvent);
     } catch (error) {
@@ -53,11 +53,11 @@ export class EventProvider extends BaseProvider<Event> {
     });
   }
 
-  private async getSessions(_sessionGuids: string[]): Promise<Session[]> {
-    return this.sessionRepo.find({
-      guid: In(_sessionGuids)
-    });
-  }
+  // private async getSessions(_sessionGuids: string[]): Promise<Session[]> {
+  //   return this.sessionRepo.find({
+  //     guid: In(_sessionGuids)
+  //   });
+  // }
 
   private async getSponsors(_sponsorsGuids: string[]): Promise<Sponsor[]> {
     return this.sponsorRepo.find({
@@ -66,11 +66,7 @@ export class EventProvider extends BaseProvider<Event> {
   }
 
   public async getEntitiesByDay(req: Request) {
-    const entities: Event[] = await this.eventRepo
-      .createQueryBuilder('events')
-      .leftJoinAndSelect('events.tags', 'tags')
-      .orderBy('startTime', 'ASC')
-      .getMany();
+    const entities = await this.eventRepo.getAllCurrentSeasonByStartTime();
     // TODO: Update days to reflect those days that GIS Day is held
     const days = ['16', '17', '18'];
     const newEntities = {};

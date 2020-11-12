@@ -18,7 +18,7 @@ export class UserClassProvider extends BaseProvider<UserClass> {
     });
     const _newUserClass: Partial<UserClass> = {
       class: _class,
-      userGuid: req.user.sub
+      accountGuid: req.user.sub
     };
     const newUserClass = await this.userClassRepo.create(_newUserClass);
     return this.userClassRepo.save(newUserClass);
