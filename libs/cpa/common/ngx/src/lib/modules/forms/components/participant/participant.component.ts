@@ -16,7 +16,7 @@ import {
 
 import { v4 as guid } from 'uuid';
 
-import { IResponseRequestPayload, IResponseResponse, IScenariosResponse } from '@tamu-gisc/cpa/data-api';
+import { IResponseRequestPayload, IResponseResponse, ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
@@ -166,7 +166,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     // and/or removal of old scenario layers
     combineLatest([this.scenarioHistory, this.ms.store, from(this.mp.require(['FeatureLayer']))]).subscribe(
       ([scenarioHistory, instances, [FeatureLayer]]: [
-        IScenariosResponse[],
+        ISnapshotsResponse[],
         MapServiceInstance,
         [esri.FeatureLayerConstructor]
       ]) => {

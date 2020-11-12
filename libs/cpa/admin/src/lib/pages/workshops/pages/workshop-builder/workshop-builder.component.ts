@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { pluck, shareReplay, map } from 'rxjs/operators';
 
-import { IScenariosResponse } from '@tamu-gisc/cpa/data-api';
+import { ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
 import { Scenario } from '@tamu-gisc/cpa/common/entities';
 import { WorkshopService, ScenarioService } from '@tamu-gisc/cpa/data-access';
 
@@ -19,7 +19,7 @@ export class WorkshopBuilderComponent implements OnInit {
 
   public isExisting: Observable<boolean>;
 
-  public scenarioList: Observable<IScenariosResponse[]>;
+  public snapshotList: Observable<ISnapshotsResponse[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -50,7 +50,7 @@ export class WorkshopBuilderComponent implements OnInit {
         this.form.patchValue(res);
       });
 
-      this.scenarioList = this.ss.getAll();
+      this.snapshotList = this.ss.getAll();
     }
   }
 

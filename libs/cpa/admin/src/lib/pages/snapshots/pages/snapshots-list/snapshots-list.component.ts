@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 import { ScenarioService } from '@tamu-gisc/cpa/data-access';
-import { IScenariosResponse } from '@tamu-gisc/cpa/data-api';
+import { ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
 
 @Component({
   selector: 'tamu-gisc-snapshots-list',
@@ -11,7 +11,7 @@ import { IScenariosResponse } from '@tamu-gisc/cpa/data-api';
   styleUrls: ['./snapshots-list.component.scss']
 })
 export class SnapshotsListComponent implements OnInit {
-  public snapshots: Observable<IScenariosResponse[]>;
+  public snapshots: Observable<ISnapshotsResponse[]>;
   constructor(private service: ScenarioService) {}
 
   public ngOnInit() {

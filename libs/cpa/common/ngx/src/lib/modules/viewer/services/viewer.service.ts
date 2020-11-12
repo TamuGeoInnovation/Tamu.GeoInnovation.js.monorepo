@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, forkJoin, Observable, of } from 'rxjs';
 import { pluck, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 
-import { IResponseResponse, IScenariosResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IResponseResponse, ISnapshotsResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 import { ResponseService, WorkshopService } from '@tamu-gisc/cpa/data-access';
 
 @Injectable({
@@ -16,9 +16,9 @@ export class ViewerService {
   public snapshotGuid: Observable<string> = this._snapshotGuid.asObservable();
 
   public workshop: Observable<IWorkshopRequestPayload>;
-  public scenario: Observable<IScenariosResponse>;
+  public scenario: Observable<ISnapshotsResponse>;
 
-  public scenarioHistory: BehaviorSubject<IScenariosResponse[]> = new BehaviorSubject([]);
+  public scenarioHistory: BehaviorSubject<ISnapshotsResponse[]> = new BehaviorSubject([]);
   public scenarioIndex: BehaviorSubject<number> = new BehaviorSubject(0);
 
   constructor(private ws: WorkshopService, private rs: ResponseService) {
@@ -48,7 +48,7 @@ export class ViewerService {
     this.scenario = combineLatest([this.workshop, this.scenarioIndex]).pipe(
       switchMap(([workshop, scenarioIndex]: [IWorkshopRequestPayload, number]) => {
         return of(workshop).pipe(
-          pluck<IResponseResponse, IScenariosResponse[]>('scenarios'),
+          pluck<IResponseResponse, ISnapshotsResponse[]>('scenarios'),
           pluck(scenarioIndex)
         );
       }),
@@ -64,7 +64,7 @@ export class ViewerService {
    *
    * This history is used to add/remove layers for scenarios.
    */
-  private addToScenarioHistory(scenario: IScenariosResponse) {
+  private addToScenarioHistory(scenario: ISnapshotsResponse) {
     const prevValue = this.scenarioHistory.getValue();
 
     const newValue = [...prevValue, scenario].slice(-2);
