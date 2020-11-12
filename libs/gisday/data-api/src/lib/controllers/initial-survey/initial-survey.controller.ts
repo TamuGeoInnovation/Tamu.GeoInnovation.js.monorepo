@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
-import { InitialSurvey } from '../../entities/all.entity';
+import { InitialSurveyResponse } from '../../entities/all.entity';
 import { BaseController } from '../_base/base.controller';
 import { InitialSurveyProvider } from '../../providers/initial-survey/initial-survey.provider';
 
 @Controller('initial-survey')
-export class InitialSurveyController extends BaseController<InitialSurvey> {
+export class InitialSurveyController extends BaseController<InitialSurveyResponse> {
   constructor(private readonly initialSurveyProvider: InitialSurveyProvider) {
     super(initialSurveyProvider);
   }

@@ -29,7 +29,7 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
     const _newUserRsvp: Partial<UserRsvp> = {
       event: _event,
       rsvpType: _rsvpType,
-      userGuid: userGuid
+      accountGuid: userGuid
     };
     const newUserRsvp = await this.userRsvpRepo.create(_newUserRsvp);
     return this.userRsvpRepo.save(newUserRsvp);

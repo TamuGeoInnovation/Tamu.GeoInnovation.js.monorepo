@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import {
-  InitialSurvey,
+  InitialSurveyResponse,
   InitialSurveyQuestion,
   InitialSurveyQuestionRepo,
   InitialSurveyRepo,
@@ -10,7 +10,7 @@ import {
 import { BaseProvider } from '../_base/base-provider';
 
 @Injectable()
-export class InitialSurveyProvider extends BaseProvider<InitialSurvey> {
+export class InitialSurveyProvider extends BaseProvider<InitialSurveyResponse> {
   constructor(
     public readonly initialSurveyRepo: InitialSurveyRepo,
     public readonly initialSurveyQuestionRepo: InitialSurveyQuestionRepo,
@@ -42,7 +42,7 @@ export class InitialSurveyProvider extends BaseProvider<InitialSurvey> {
         }
       });
       if (req.body[guid] !== '' || req.body[guid] !== undefined || req.body[guid] !== null) {
-        const _response: Partial<InitialSurvey> = {
+        const _response: Partial<InitialSurveyResponse> = {
           accountGuid: req.user.sub,
           responseValue: req.body[guid],
           question: question

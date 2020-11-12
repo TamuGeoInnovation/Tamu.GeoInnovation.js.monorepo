@@ -9,7 +9,7 @@ import {
   CourseCredit,
   Event,
   RsvpType,
-  Session,
+  // Session,
   Speaker,
   SpeakerInfo,
   Sponsor,
@@ -27,9 +27,7 @@ import {
   InitialSurveyModule,
   QuestionType,
   RsvpTypeModule,
-  SessionModule,
-  SignageCategory,
-  SignageSubmission,
+  // SessionModule,
   SpeakerModule,
   SponsorModule,
   SubmissionTypeModule,
@@ -40,8 +38,7 @@ import {
   UserRsvpModule,
   UserSubmissionModule,
   InitialSurveyQuestion,
-  InitialSurvey,
-  QuestionTypeRepo,
+  InitialSurveyResponse,
   QuestionTypeModule,
   UniversityModule,
   SpeakerRole,
@@ -58,10 +55,6 @@ import { localDbConfig, geoidb } from '../environments/ormconfig';
     OidcClientModule.forRoot({
       host: 'http://localhost:4200'
     }),
-    // TypeOrmModule.forRoot({
-    //   ...localIdpConfig,
-    //   entities: [User, UserRole, Role, TokenEndpointAuthMethod, ClientMetadata, GrantType, RedirectUri, ResponseType]
-    // }),
     TypeOrmModule.forRoot({
       ...localDbConfig,
       entities: [
@@ -70,10 +63,10 @@ import { localDbConfig, geoidb } from '../environments/ormconfig';
         CourseCredit,
         Event,
         InitialSurveyQuestion,
-        InitialSurvey,
+        InitialSurveyResponse,
         QuestionType,
         RsvpType,
-        Session,
+        // Session,
         Speaker,
         SpeakerInfo,
         SpeakerRole,
@@ -87,11 +80,6 @@ import { localDbConfig, geoidb } from '../environments/ormconfig';
         University
       ]
     }),
-    // TypeOrmModule.forRoot({
-    //   ...geoidb,
-    //   name: 'geoidb',
-    //   entities: [SignageCategory, SignageSubmission]
-    // }),
     CheckInModule,
     ClassModule,
     CourseCreditModule,
@@ -99,7 +87,7 @@ import { localDbConfig, geoidb } from '../environments/ormconfig';
     InitialSurveyModule,
     QuestionTypeModule,
     RsvpTypeModule,
-    SessionModule,
+    // SessionModule,
     SpeakerModule,
     SpeakerRoleModule,
     SponsorModule,

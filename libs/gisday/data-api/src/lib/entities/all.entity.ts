@@ -33,9 +33,9 @@ export class OldCompetitionEntity extends BaseEntity {
   public guid: string;
 
   @Column({
-    name: 'UserGuid'
+    name: 'accountGuid'
   })
-  public userGuid?: string;
+  public accountGuid?: string;
 
   @Column({
     name: 'Added'
@@ -116,15 +116,23 @@ export class GuidIdentity extends TimeStampEntity {
   @PrimaryColumn()
   public guid: string;
 
-  @Column()
-  public season: string;
-
   @BeforeUpdate()
   @BeforeInsert()
   private generateGuid(): void {
     if (this.guid === undefined || this.guid === '') {
       this.guid = guid();
     }
+  }
+}
+
+@Entity()
+export class GISDayEntity extends GuidIdentity {
+  @Column()
+  public season: string;
+
+  @BeforeUpdate()
+  @BeforeInsert()
+  private setSeason(): void {
     if (this.season === undefined) {
       this.season = new Date().getFullYear().toString();
     }
@@ -134,13 +142,10 @@ export class GuidIdentity extends TimeStampEntity {
 @Entity({
   name: 'events'
 })
-export class Event extends GuidIdentity {
-  @ManyToMany((type) => Session, { cascade: true })
-  @JoinTable({ name: 'event_sessions' })
-  public sessions: Session[];
-
-  // @OneToMany(type => EventSpeaker, eventSpeaker => eventSpeaker.eventGuid)
-  // public speakers: Speaker[]; // Speaker[]
+export class Event extends GISDayEntity {
+  @ManyToMany((type) => Speaker, { cascade: true })
+  @JoinTable({ name: 'event_speakers' })
+  public speakers?: Speaker[];
 
   @ManyToMany((type) => Sponsor, { cascade: true })
   @JoinTable({ name: 'event_sponsors' })
@@ -148,10 +153,15 @@ export class Event extends GuidIdentity {
 
   @ManyToMany((type) => Tag, { cascade: true })
   @JoinTable({ name: 'event_tags' })
-  public tags: Tag[];
+  public tags?: Tag[];
 
-  // @OneToMany(type => UserRsvp, userRsvp => userRsvp.eventGuid)
-  // public currentRsvps: UserRsvp[]; // UserRsvp[]
+  // @OneToMany((type) => EventTag, (eventTag) => eventTag.event)
+  // @JoinColumn()
+  // public tags: EventTag[]; // UserRsvp[]
+
+  // @OneToMany((type) => EventSpeaker, (eventSpeaker) => eventSpeaker.event)
+  // @JoinColumn()
+  // public speakers: EventSpeaker[]; // UserRsvp[]
 
   @ManyToMany((type) => CourseCredit, { cascade: true })
   @JoinTable({ name: 'event_course_credits' })
@@ -159,9 +169,6 @@ export class Event extends GuidIdentity {
 
   // @OneToMany(type => UserCheckin, userCheckin => userCheckin.eventGuid)
   // public userCheckins: CheckIn[]; // UserCheckin[]
-
-  // @Column({ nullable: true })
-  // user: string; // User
 
   @Column({ nullable: true })
   public observedAttendeeStart: number;
@@ -266,9 +273,9 @@ export class InitialSurveyQuestion extends GuidIdentity {
 }
 
 @Entity({
-  name: 'initial_survey'
+  name: 'initial_survey_responses'
 })
-export class InitialSurvey extends GuidIdentity {
+export class InitialSurveyResponse extends GISDayEntity {
   @Column({ nullable: false })
   public accountGuid: string; // User
 
@@ -284,30 +291,30 @@ export class InitialSurvey extends GuidIdentity {
   }
 }
 
-@Entity({
-  name: 'sessions'
-})
-export class Session extends GuidIdentity {
-  @ManyToMany((type) => Speaker, { cascade: true })
-  @JoinTable({ name: 'session_speakers' })
-  public speakers: Speaker[];
+// @Entity({
+//   name: 'sessions'
+// })
+// export class Session extends GuidIdentity {
+//   @ManyToMany((type) => Speaker, { cascade: true })
+//   @JoinTable({ name: 'session_speakers' })
+//   public speakers: Speaker[];
 
-  @Column({ nullable: false })
-  public name: string;
+//   @Column({ nullable: false })
+//   public name: string;
 
-  @Column({ nullable: false })
-  public duration: number;
+//   @Column({ nullable: false })
+//   public duration: number;
 
-  @Column({ nullable: false })
-  public date: Date;
+//   @Column({ nullable: false })
+//   public date: Date;
 
-  @Column({ nullable: false })
-  public abstract: string;
+//   @Column({ nullable: false })
+//   public abstract: string;
 
-  constructor() {
-    super();
-  }
-}
+//   constructor() {
+//     super();
+//   }
+// }
 
 @Entity({
   name: 'universities'
@@ -362,11 +369,11 @@ export class SpeakerInfo extends GuidIdentity {
 @Entity({
   name: 'speakers'
 })
-export class Speaker extends GuidIdentity {
+export class Speaker extends GISDayEntity {
   // @OneToOne((type) => User, { cascade: true, nullable: true })
   // @JoinColumn()
   @Column({ nullable: true })
-  public userGuid: string; // User
+  public accountGuid: string; // User
 
   @Column({ nullable: false })
   public firstName: string;
@@ -404,7 +411,7 @@ export class Tag extends GuidIdentity {
 @Entity({
   name: 'sponsors'
 })
-export class Sponsor extends GuidIdentity {
+export class Sponsor extends GISDayEntity {
   @Column({ nullable: false })
   public name: string;
 
@@ -431,7 +438,7 @@ export class Sponsor extends GuidIdentity {
 @Entity({
   name: 'checkins'
 })
-export class CheckIn extends GuidIdentity {
+export class CheckIn extends GISDayEntity {
   @OneToOne((type) => Event, { cascade: true, eager: true })
   @JoinColumn()
   public event: Event;
@@ -449,13 +456,9 @@ export class CheckIn extends GuidIdentity {
 @Entity({
   name: 'classes'
 })
-export class Class extends GuidIdentity {
-  // @OneToOne((type) => User, { cascade: true })
-  // @JoinColumn({
-  //   name: 'professorUserGuid'
-  // })
+export class Class extends GISDayEntity {
   @Column({ nullable: false })
-  public professorUserGuid: string;
+  public professorAccountGuid: string;
 
   @Column({ nullable: false })
   public title: string;
@@ -476,11 +479,9 @@ export class Class extends GuidIdentity {
 @Entity({
   name: 'course_credits'
 })
-export class CourseCredit extends GuidIdentity {
-  @OneToOne((type) => Event, { cascade: true })
-  public event: Event;
-
-  @OneToOne((type) => Class, { cascade: true })
+export class CourseCredit extends GISDayEntity {
+  @ManyToOne((type) => Class, { cascade: true })
+  @JoinColumn()
   public class: Class;
 
   constructor() {
@@ -542,15 +543,13 @@ export class UserInfo extends GuidIdentity {
 @Entity({
   name: 'user_classes'
 })
-export class UserClass extends GuidIdentity {
+export class UserClass extends GISDayEntity {
   @OneToOne((type) => Class, { cascade: true, eager: true })
   @JoinColumn()
   public class: Class;
 
-  // @OneToOne((type) => User, { cascade: true, nullable: true })
-  // @JoinColumn()
   @Column({ nullable: false })
-  public userGuid: string; // User
+  public accountGuid: string; // User
 
   constructor() {
     super();
@@ -560,11 +559,9 @@ export class UserClass extends GuidIdentity {
 @Entity({
   name: 'user_rsvps'
 })
-export class UserRsvp extends GuidIdentity {
-  // @OneToOne((type) => User, { cascade: true, nullable: true })
-  // @JoinColumn()
+export class UserRsvp extends GISDayEntity {
   @Column({ nullable: false })
-  public userGuid: string; // User
+  public accountGuid: string; // User
 
   @OneToOne((type) => Event, { cascade: true, eager: true })
   @JoinColumn()
@@ -582,7 +579,7 @@ export class UserRsvp extends GuidIdentity {
 @Entity({
   name: 'submissions'
 })
-export class UserSubmission extends GuidIdentity {
+export class UserSubmission extends GISDayEntity {
   // @OneToOne((type) => User, { cascade: true, nullable: true })
   // @JoinColumn()
   @Column({ nullable: false })
@@ -677,9 +674,9 @@ export class SidewalkCondition {
   public guid: string;
 
   @Column({
-    name: 'UserGuid'
+    name: 'accountGuid'
   })
-  public userGuid: string;
+  public accountGuid: string;
 
   @Column({
     name: 'Added'
@@ -705,9 +702,9 @@ export class SidewalkMaterial {
   public guid: string;
 
   @Column({
-    name: 'UserGuid'
+    name: 'accountGuid'
   })
-  public userGuid: string;
+  public accountGuid: string;
 
   @Column({
     name: 'Added'
@@ -753,9 +750,9 @@ export class ManholeSubmission {
   public guid: string;
 
   @Column({
-    name: 'UserGuid'
+    name: 'accountGuid'
   })
-  public userGuid: string;
+  public accountGuid: string;
 
   @Column({
     name: 'added'
@@ -795,6 +792,44 @@ export class SpeakerRole extends GuidIdentity {
   }
 }
 
+// @Entity({
+//   name: 'event_speakers'
+// })
+// export class EventSpeaker extends GuidIdentity {
+//   @ManyToOne((type) => Event)
+//   @JoinColumn({ name: 'eventGuid' })
+//   public event: Event;
+
+//   @ManyToOne((type) => Speaker)
+//   @JoinColumn({ name: 'speakerGuid' })
+//   public speaker: Speaker;
+
+//   @ManyToOne((type) => SpeakerRole)
+//   @JoinColumn({ name: 'speakerRoleGuid' })
+//   public role: SpeakerRole;
+
+//   constructor() {
+//     super();
+//   }
+// }
+
+// @Entity({
+//   name: 'event_tags'
+// })
+// export class EventTag extends GuidIdentity {
+//   @ManyToOne((type) => Event)
+//   @JoinColumn({ name: 'eventGuid' })
+//   public event: Event;
+
+//   @ManyToOne((type) => Tag)
+//   @JoinColumn({ name: 'tagGuid' })
+//   public tag: Tag;
+
+//   constructor() {
+//     super();
+//   }
+// }
+
 export class CommonRepo<T> extends Repository<T> {}
 
 @EntityRepository(CheckIn)
@@ -807,19 +842,32 @@ export class ClassRepo extends CommonRepo<Class> {}
 export class CourseCreditRepo extends CommonRepo<CourseCredit> {}
 
 @EntityRepository(Event)
-export class EventRepo extends CommonRepo<Event> {}
+export class EventRepo extends CommonRepo<Event> {
+  public async getAllCurrentSeasonByStartTime() {
+    return getConnection()
+      .getRepository(Event)
+      .createQueryBuilder('events')
+      .leftJoinAndSelect('events.tags', 'tags')
+      .leftJoinAndSelect('events.speakers', 'speakers')
+      .orderBy('startTime', 'ASC')
+      .where(`events.season = :season`, {
+        season: '2020'
+      })
+      .getMany();
+  }
+}
 
 @EntityRepository(InitialSurveyQuestion)
 export class InitialSurveyQuestionRepo extends CommonRepo<InitialSurveyQuestion> {}
 
-@EntityRepository(InitialSurvey)
-export class InitialSurveyRepo extends CommonRepo<InitialSurvey> {}
+@EntityRepository(InitialSurveyResponse)
+export class InitialSurveyRepo extends CommonRepo<InitialSurveyResponse> {}
 
 @EntityRepository(QuestionType)
 export class QuestionTypeRepo extends CommonRepo<QuestionType> {}
 
-@EntityRepository(Session)
-export class SessionRepo extends CommonRepo<Session> {}
+// @EntityRepository(Session)
+// export class SessionRepo extends CommonRepo<Session> {}
 
 @EntityRepository(Speaker)
 export class SpeakerRepo extends CommonRepo<Speaker> {
@@ -871,13 +919,13 @@ export class UniversityRepo extends CommonRepo<University> {}
 
 @EntityRepository(UserClass)
 export class UserClassRepo extends CommonRepo<UserClass> {
-  public async getUsersClasses(userGuid: string) {
+  public async getUsersClasses(accountGuid: string) {
     return getConnection()
       .getRepository(UserClass)
       .createQueryBuilder('userClass')
       .leftJoinAndSelect('userClass.class', 'class')
-      .where(`userClass.userGuid = :guid`, {
-        guid: userGuid
+      .where(`userClass.accountGuid = :guid`, {
+        guid: accountGuid
       })
       .getMany();
   }
@@ -888,14 +936,14 @@ export class UserInfoRepo extends CommonRepo<UserInfo> {}
 
 @EntityRepository(UserRsvp)
 export class UserRsvpRepo extends CommonRepo<UserRsvp> {
-  public async getUserRsvps(userGuid: string) {
+  public async getUserRsvps(accountGuid: string) {
     return getConnection()
       .getRepository(UserRsvp)
       .createQueryBuilder('userRsvp')
       .leftJoinAndSelect('userRsvp.event', 'event')
       .leftJoinAndSelect('userRsvp.rsvpType', 'rsvpType')
-      .where(`userRsvp.userGuid = :guid`, {
-        guid: userGuid
+      .where(`userRsvp.accountGuid = :guid`, {
+        guid: accountGuid
       })
       .getMany();
   }
