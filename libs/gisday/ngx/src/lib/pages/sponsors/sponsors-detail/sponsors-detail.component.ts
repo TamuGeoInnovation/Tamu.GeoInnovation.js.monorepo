@@ -6,7 +6,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sponsors-detail.component.scss']
 })
 export class SponsorsDetailComponent implements OnInit {
+  public viewTitle = 'Sponsors';
   constructor() {}
 
   public ngOnInit(): void {}
 }
+
+// viewTitle, viewSubtitle, picture, entityTitle, entitySubtitle, entityText, contactName, contactEmail, website
