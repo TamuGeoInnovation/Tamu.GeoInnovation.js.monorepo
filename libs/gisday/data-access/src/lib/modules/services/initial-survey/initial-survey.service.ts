@@ -3,14 +3,14 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { InitialSurvey, InitialSurveyQuestion } from '@tamu-gisc/gisday/data-api';
+import { InitialSurveyResponse, InitialSurveyQuestion } from '@tamu-gisc/gisday/data-api';
 
 import { BaseService } from '../_base/base.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class InitialSurveyService extends BaseService<InitialSurvey> {
+export class InitialSurveyService extends BaseService<InitialSurveyResponse> {
   public withCredentials = true;
   public resource: string;
 

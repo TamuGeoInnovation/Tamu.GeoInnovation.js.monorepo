@@ -331,6 +331,18 @@ export class University extends GuidIdentity {
 }
 
 @Entity({
+  name: 'speaker_roles'
+})
+export class SpeakerRole extends GuidIdentity {
+  @Column({ nullable: false })
+  public name: string;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
   name: 'speaker_info'
 })
 export class SpeakerInfo extends GuidIdentity {
@@ -390,6 +402,10 @@ export class Speaker extends GISDayEntity {
   @OneToOne((type) => SpeakerInfo, { cascade: true, nullable: true })
   @JoinColumn()
   public speakerInfo: SpeakerInfo;
+
+  @ManyToMany((type) => SpeakerRole)
+  @JoinTable({ name: 'speaker_speaker_roles' })
+  public speakerRole: SpeakerRole;
 
   constructor() {
     super();
@@ -457,7 +473,7 @@ export class CheckIn extends GISDayEntity {
   name: 'classes'
 })
 export class Class extends GISDayEntity {
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public professorAccountGuid: string;
 
   @Column({ nullable: false })
@@ -780,18 +796,6 @@ export class ManholeSubmission {
   public fixTime: string;
 }
 
-@Entity({
-  name: 'speaker_roles'
-})
-export class SpeakerRole extends GuidIdentity {
-  @Column({ nullable: false })
-  public name: string;
-
-  constructor() {
-    super();
-  }
-}
-
 // @Entity({
 //   name: 'event_speakers'
 // })
@@ -877,6 +881,7 @@ export class SpeakerRepo extends CommonRepo<Speaker> {
       .createQueryBuilder('speaker')
       .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
       .leftJoinAndSelect('speakerInfo.university', 'university')
+      .leftJoinAndSelect('speakerInfo.speakerRole', 'speakerRole')
       .where(`speaker.guid = :guid`, {
         guid: speakerGuid
       })
@@ -889,6 +894,7 @@ export class SpeakerRepo extends CommonRepo<Speaker> {
       .createQueryBuilder('speaker')
       .leftJoinAndSelect('speaker.speakerInfo', 'speakerInfo')
       .leftJoinAndSelect('speakerInfo.university', 'university')
+      .leftJoinAndSelect('speakerInfo.speakerRole', 'speakerRole')
       .where('speaker.season = :season', {
         season: '2020'
       })
