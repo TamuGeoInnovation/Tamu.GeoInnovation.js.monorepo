@@ -1,4 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+
 import { ROLE_LEVELS, OpenIdClient } from '../auth/open-id-client';
 
 /**
@@ -20,6 +21,7 @@ export class AdminRoleGuard implements CanActivate {
         if (request.user) {
           if (request.user.role) {
             const level = request.user.role.level_role;
+
             if (level >= ROLE_LEVELS.ADMIN) {
               canProceed = true;
             }
@@ -50,6 +52,7 @@ export class ManagerRoleGuard implements CanActivate {
         if (request.user.claims) {
           if (request.user.role) {
             const level = request.user.role.level_role;
+
             if (level >= ROLE_LEVELS.MANAGER) {
               canProceed = true;
             }
@@ -80,6 +83,7 @@ export class UserRoleGuard implements CanActivate {
       if (request.user.claims) {
         if (request.user.role) {
           const level = request.user.role.level_role;
+
           if (level >= ROLE_LEVELS.USER) {
             canProceed = true;
           }

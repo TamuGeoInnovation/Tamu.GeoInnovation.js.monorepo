@@ -19,14 +19,9 @@ import {
   ClientMetadataModule,
   ClientMetadata,
   GrantType,
-  ClientMetadataRepo,
-  RedirectUriRepo,
-  ResponseTypeRepo,
-  GrantTypeRepo,
   RedirectUri,
   ResponseType,
   TokenEndpointAuthMethod,
-  TokenEndpointAuthMethodRepo,
   Role,
   RoleModule,
   UserRole,
@@ -77,15 +72,6 @@ import { dbConfig } from '../environments/environment';
         ReplayDetection
       ]
     }),
-    // TODO: Is this .forFeature here required since it's in ClientMetadataModule?
-    TypeOrmModule.forFeature([
-      ClientMetadataRepo,
-      GrantTypeRepo,
-      RedirectUriRepo,
-      ResponseTypeRepo,
-      TokenEndpointAuthMethodRepo
-    ]),
-    // AuthModule,
     InteractionModule,
     ClientMetadataModule,
     RoleModule,

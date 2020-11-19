@@ -10,7 +10,7 @@ import { OpenIdClient } from '@tamu-gisc/oidc/client';
  */
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {
-  public async canActivate(context: ExecutionContext): Promise<boolean> {
+  public async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const isAuthed = request.isAuthenticated();
     const tokenIntrospectionResult = await OpenIdClient.client.introspect(request.user.access_token);

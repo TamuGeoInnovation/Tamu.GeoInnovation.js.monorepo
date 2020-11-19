@@ -1,7 +1,7 @@
 import { sign, decode, Secret } from 'jsonwebtoken';
 
 export class JwtUtil {
-  public static generateLogoutToken(id_token_hint: string) {
+  public static generateLogoutToken(id_token_hint: string, passphrase: string) {
     const decoded: IDecoded = decode(id_token_hint);
 
     const logoutTokenUncrypted = {
@@ -15,10 +15,10 @@ export class JwtUtil {
       },
       sid: decoded.sid
     };
-    //TODO: Change passphrase
+
     const key: Secret = {
       key: 'k',
-      passphrase: 'paincakes'
+      passphrase: passphrase
     };
     const logoutJWS = sign(logoutTokenUncrypted, key, {
       algorithm: 'RS256'

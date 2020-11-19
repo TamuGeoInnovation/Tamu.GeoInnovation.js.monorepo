@@ -212,7 +212,7 @@ export class InteractionController {
       if (req.body) {
         if (req.body.id_token_hint) {
           const { id_token_hint, post_logout_redirect_uris } = req.body;
-          JwtUtil.generateLogoutToken(id_token_hint);
+
           got(post_logout_redirect_uris)
             .then((result) => {
               console.log(result);

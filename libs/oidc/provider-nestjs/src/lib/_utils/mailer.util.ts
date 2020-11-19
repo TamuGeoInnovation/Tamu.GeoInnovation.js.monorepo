@@ -15,7 +15,8 @@ export class Mailer {
       pass: Mailer.password
     }
   });
-  public static async sendPasswordResetRequestEmail(recipient: User, resetRequest: UserPasswordReset, location: string) {
+
+  public static sendPasswordResetRequestEmail(recipient: User, resetRequest: UserPasswordReset, location: string) {
     const mailOptions = {
       from: '"GISC Accounts Team" <giscaccounts@tamu.edu>',
       to: recipient.email,
@@ -28,12 +29,13 @@ export class Mailer {
         `<p>If you did <b>NOT</b> request to reset your password click the following link:</p>` +
         `<a href="">Report fraudulent reset request</a>`
     };
+
     Mailer.transporter.sendMail(mailOptions).then((response) => {
       console.log('Verification email: ', Mailer.getTestMessageUrl(response));
     });
   }
 
-  public static sendPasswordResetConfirmationEmail(toEmail: string = 'aplecore@gmail.com'): void {
+  public static sendPasswordResetConfirmationEmail(toEmail: string) {
     const mailOptions = {
       from: '"GISC Accounts Team" <giscaccounts@tamu.edu>',
       to: `${toEmail},`,
@@ -41,12 +43,13 @@ export class Mailer {
       text: 'Your password to GeoInnovation Service Center has been reset.',
       html: 'Your password to GeoInnovation Service Center has been reset.'
     };
+
     Mailer.transporter.sendMail(mailOptions).then((response) => {
-      // TODO: replace with actual email sending
       console.log('Verification email: ', Mailer.getTestMessageUrl(response));
     });
   }
-  public static sendAccountConfirmationEmail(toEmail: string = 'aplecore@gmail.com', sub: string): void {
+
+  public static sendAccountConfirmationEmail(toEmail: string = 'aplecore@gmail.com', sub: string) {
     const mailOptions = {
       from: '"GISC Accounts Team" <giscaccounts@tamu.edu>',
       to: `${toEmail},`,
@@ -54,10 +57,12 @@ export class Mailer {
       text: 'An account for GeoInnovation Service Center has been created with this email address.',
       html: `An account for GeoInnovation Service Center has been created with this email address. </br><a href="http://localhost:4001/user/register/${sub}">Verify email</a>`
     };
+
     Mailer.transporter.sendMail(mailOptions).then((response) => {
       console.log('Verification email: ', Mailer.getTestMessageUrl(response));
     });
   }
+
   public static getTestMessageUrl(response: string | {}) {
     const testUrl = nodemailer.getTestMessageUrl(response);
     console.log('TestURL: ', testUrl);
