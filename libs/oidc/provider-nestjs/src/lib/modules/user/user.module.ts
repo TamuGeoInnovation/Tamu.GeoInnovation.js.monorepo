@@ -1,5 +1,6 @@
 import { Module, NestModule, HttpModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { UserController } from '../../controllers/user/user.controller';
 import { SecretQuestionController } from '../../controllers/secret-question/secret-question.controller';
 import { UserService } from '../../services/user/user.service';
@@ -40,7 +41,7 @@ import {
   exports: [UserService, StaticAccountService]
 })
 export class UserModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
+  public configure(consumer: MiddlewareConsumer) {
     consumer.apply(UserValidationMiddleware).forRoutes({
       path: 'user/register',
       method: RequestMethod.POST

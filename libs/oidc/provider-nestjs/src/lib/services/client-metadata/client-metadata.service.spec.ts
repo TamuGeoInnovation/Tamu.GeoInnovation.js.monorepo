@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ClientMetadataService } from './client-metadata.service';
 
 describe('ClientMetadataService', () => {
@@ -6,7 +7,7 @@ describe('ClientMetadataService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ClientMetadataService],
+      providers: [ClientMetadataService]
     }).compile();
 
     service = module.get<ClientMetadataService>(ClientMetadataService);

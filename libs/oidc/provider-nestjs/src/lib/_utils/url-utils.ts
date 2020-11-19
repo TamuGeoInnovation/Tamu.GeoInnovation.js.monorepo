@@ -1,4 +1,5 @@
 import * as url from 'url';
+
 import { isFalsy } from '@tamu-gisc/common/utils/string';
 
 /**

@@ -1,4 +1,5 @@
 import { Req } from '@nestjs/common';
+
 import { Request } from 'express';
 import {
   BeforeUpdate,
@@ -7,7 +8,6 @@ import {
   EntitySchema,
   Column,
   PrimaryColumn,
-  TableForeignKey,
   ManyToOne,
   OneToOne,
   OneToMany,
@@ -16,13 +16,9 @@ import {
   ManyToMany,
   BaseEntity,
   Repository,
-  getConnection,
-  ObjectType,
   EntityRepository
 } from 'typeorm';
-
 import { v4 as guid } from 'uuid';
-import { ClientAuthMethod } from 'oidc-provider';
 
 export type TypeORMEntities = string | Function | (new () => unknown) | EntitySchema<unknown>;
 export type KindOfId = number | string;
@@ -106,103 +102,103 @@ export class Account extends GuidIdentity implements IAccount {
     type: 'varchar',
     nullable: true
   })
-  name: string;
+  public name: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  given_name: string;
+  public given_name: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  family_name: string;
+  public family_name: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  nickname: string;
+  public nickname: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  profile: string;
+  public profile: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  picture: string;
+  public picture: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  website: string;
+  public website: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  email: string;
+  public email: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  gender: string;
+  public gender: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  birthdate: string;
+  public birthdate: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  zoneinfo: string;
+  public zoneinfo: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  locale: string;
+  public locale: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  phone_number: string;
+  public phone_number: string;
 
   @Column({
     type: 'bit',
     nullable: true
   })
-  phone_number_verified: boolean = false;
+  public phone_number_verified = false;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  address: string;
+  public address: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  updated_at: string;
+  public updated_at: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  added: string;
+  public added: string;
 
   constructor(fullName: string, email: string) {
     super();
@@ -242,7 +238,7 @@ export class User extends GuidIdentity {
     type: 'text',
     nullable: true
   })
-  added: string;
+  public added: string;
 
   @OneToOne((type) => Account, { cascade: true })
   @JoinColumn()
@@ -256,61 +252,61 @@ export class User extends GuidIdentity {
     type: 'varchar',
     nullable: true
   })
-  email: string;
+  public email: string;
 
   @Column({
     type: 'bit',
     nullable: true
   })
-  email_verified: boolean = false;
+  public email_verified = false;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  password: string;
+  public password: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  updatedAt?: string;
+  public updatedAt?: string;
 
   @Column({
     type: 'bit',
     nullable: true
   })
-  enabled2fa?: boolean = false;
+  public enabled2fa? = false;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  secret2fa?: string;
+  public secret2fa?: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  recovery_email: string;
+  public recovery_email: string;
 
   @Column({
     type: 'bit',
     nullable: true
   })
-  recovery_email_verified: boolean = false;
+  public recovery_email_verified = false;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  signup_ip_address: string;
+  public signup_ip_address: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  last_used_ip_address: string;
+  public last_used_ip_address: string;
 
   constructor(@Req() request: Request) {
     super();
@@ -346,32 +342,32 @@ export class AccessToken implements IRequiredEntityAttrs {
     type: 'varchar',
     nullable: false
   })
-  id: string;
+  public id: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  grantId: string;
+  public grantId: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 'max'
   })
-  data: string;
+  public data: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  expiresAt: Date;
+  public expiresAt: Date;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  consumedAt: Date;
+  public consumedAt: Date;
 
   constructor() {}
 }
@@ -384,32 +380,32 @@ export class AuthorizationCode implements IRequiredEntityAttrs {
     type: 'varchar',
     nullable: false
   })
-  id: string;
+  public id: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  grantId: string;
+  public grantId: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 'max'
   })
-  data: string;
+  public data: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  expiresAt: Date;
+  public expiresAt: Date;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  consumedAt: Date;
+  public consumedAt: Date;
 
   constructor() {}
 }
@@ -422,26 +418,26 @@ export class ClientCredential implements IRequiredEntityAttrs {
     type: 'varchar',
     nullable: false
   })
-  id: string;
+  public id: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 'max'
   })
-  data: string;
+  public data: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  expiresAt: Date;
+  public expiresAt: Date;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  consumedAt: Date;
+  public consumedAt: Date;
 
   constructor() {}
 }
@@ -454,26 +450,26 @@ export class Client implements IRequiredEntityAttrs {
     type: 'varchar',
     nullable: false
   })
-  id: string;
+  public id: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 'max'
   })
-  data: string;
+  public data: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  expiresAt: Date;
+  public expiresAt: Date;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  consumedAt: Date;
+  public consumedAt: Date;
 
   constructor() {}
 }
@@ -486,38 +482,38 @@ export class DeviceCode implements IRequiredEntityAttrs {
     type: 'varchar',
     nullable: false
   })
-  id: string;
+  public id: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  grantId: string;
+  public grantId: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  userCode: string;
+  public userCode: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 'max'
   })
-  data: string;
+  public data: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  expiresAt: Date;
+  public expiresAt: Date;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  consumedAt: Date;
+  public consumedAt: Date;
 
   constructor() {}
 }
@@ -530,26 +526,26 @@ export class InitialAccessToken implements IRequiredEntityAttrs {
     type: 'varchar',
     nullable: false
   })
-  id: string;
+  public id: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 'max'
   })
-  data: string;
+  public data: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  expiresAt: Date;
+  public expiresAt: Date;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  consumedAt: Date;
+  public consumedAt: Date;
 
   constructor() {}
 }
@@ -562,26 +558,26 @@ export class Interaction implements IRequiredEntityAttrs {
     type: 'varchar',
     nullable: false
   })
-  id: string;
+  public id: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 'max'
   })
-  data: string;
+  public data: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  expiresAt: Date;
+  public expiresAt: Date;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  consumedAt: Date;
+  public consumedAt: Date;
 
   constructor() {}
 }
@@ -594,32 +590,32 @@ export class RefreshToken implements IRequiredEntityAttrs {
     type: 'varchar',
     nullable: false
   })
-  id: string;
+  public id: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  grantId: string;
+  public grantId: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 'max'
   })
-  data: string;
+  public data: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  expiresAt: Date;
+  public expiresAt: Date;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  consumedAt: Date;
+  public consumedAt: Date;
 
   constructor() {}
 }
@@ -632,26 +628,26 @@ export class RegistrationAccessToken implements IRequiredEntityAttrs {
     type: 'varchar',
     nullable: false
   })
-  id: string;
+  public id: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 'max'
   })
-  data: string;
+  public data: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  expiresAt: Date;
+  public expiresAt: Date;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  consumedAt: Date;
+  public consumedAt: Date;
 
   constructor() {}
 }
@@ -664,26 +660,26 @@ export class ReplayDetection implements IRequiredEntityAttrs {
     type: 'varchar',
     nullable: false
   })
-  id: string;
+  public id: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 'max'
   })
-  data: string;
+  public data: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  expiresAt: Date;
+  public expiresAt: Date;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  consumedAt: Date;
+  public consumedAt: Date;
 
   constructor() {}
 }
@@ -696,26 +692,26 @@ export class PushedAuthorizationRequest implements IRequiredEntityAttrs {
     type: 'varchar',
     nullable: false
   })
-  id: string;
+  public id: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 'max'
   })
-  data: string;
+  public data: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  expiresAt: Date;
+  public expiresAt: Date;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  consumedAt: Date;
+  public consumedAt: Date;
 
   constructor() {}
 }
@@ -728,32 +724,32 @@ export class Session implements IRequiredEntityAttrs {
     type: 'varchar',
     nullable: false
   })
-  id: string;
+  public id: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  grantId: string;
+  public grantId: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 'max'
   })
-  data: string;
+  public data: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  expiresAt: Date;
+  public expiresAt: Date;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  consumedAt: Date;
+  public consumedAt: Date;
 
   constructor() {}
 }
@@ -766,16 +762,16 @@ export class TokenEndpointAuthMethod extends GuidIdentity {
     type: 'varchar',
     nullable: false
   })
-  type: string;
+  public type: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 1024
   })
-  details: string;
+  public details: string;
 
-  clientMetadatas: ClientMetadata;
+  public clientMetadatas: ClientMetadata;
 }
 
 @Entity({
@@ -801,16 +797,16 @@ export class ClientMetadata extends GuidIdentity {
   public grantTypes: GrantType[];
 
   @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata, { cascade: true })
-  redirectUris: RedirectUri[];
+  public redirectUris: RedirectUri[];
 
   @ManyToMany((type) => ResponseType)
   @JoinTable({
     name: 'client_metadata_response_types'
   })
-  responseTypes: ResponseType[];
+  public responseTypes: ResponseType[];
 
   @ManyToOne((type) => TokenEndpointAuthMethod, (token) => token.clientMetadatas)
-  tokenEndpointAuthMethod: TokenEndpointAuthMethod;
+  public tokenEndpointAuthMethod: TokenEndpointAuthMethod;
 }
 
 @Entity({
@@ -821,20 +817,20 @@ export class GrantType extends GuidIdentity {
     type: 'varchar',
     nullable: false
   })
-  name: string;
+  public name: string;
 
   @Column({
     type: 'varchar',
     nullable: false
   })
-  type: string;
+  public type: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 1024
   })
-  details: string;
+  public details: string;
 }
 
 @Entity({
@@ -842,13 +838,13 @@ export class GrantType extends GuidIdentity {
 })
 export class RedirectUri extends GuidIdentity {
   @ManyToOne((type) => ClientMetadata, (client) => client.redirectUris)
-  clientMetadata: ClientMetadata;
+  public clientMetadata: ClientMetadata;
 
   @Column({
     type: 'varchar',
     nullable: false
   })
-  url: string;
+  public url: string;
 }
 
 @Entity({
@@ -859,14 +855,14 @@ export class ResponseType extends GuidIdentity {
     type: 'varchar',
     nullable: false
   })
-  type: string;
+  public type: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: 1024
   })
-  details: string;
+  public details: string;
 }
 
 @Entity({
@@ -877,30 +873,27 @@ export class Role extends GuidIdentity {
     type: 'varchar',
     nullable: false
   })
-  level: string;
+  public level: string;
 
   @Column({
     type: 'varchar',
     nullable: false
   })
-  name: string;
+  public name: string;
 }
 
 @Entity({
   name: 'user_roles'
 })
 export class UserRole extends GuidIdentity {
-  @OneToOne((type) => Role, { cascade: true })
-  @JoinColumn()
-  role: Role;
+  @ManyToOne((type) => Role, { eager: true })
+  public role: Role;
 
-  // @ManyToOne((type) => ClientMetadata, (client) => client.guid)
-  @OneToOne((type) => ClientMetadata, { cascade: true })
-  @JoinColumn()
-  client: ClientMetadata;
+  @ManyToOne((type) => ClientMetadata, { eager: true })
+  public client: ClientMetadata;
 
-  @ManyToOne((type) => User, (user) => user.userRoles)
-  user: User;
+  @ManyToOne((type) => User)
+  public user: User;
 }
 
 @Entity({
@@ -911,25 +904,25 @@ export class UserLogin extends GuidIdentity {
     type: 'varchar',
     nullable: true
   })
-  grantId: string;
+  public grantId: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  email_used: string;
+  public email_used: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  ip_addr: string;
+  public ip_addr: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  occured_at: string;
+  public occured_at: string;
 }
 
 @Entity({
@@ -940,7 +933,7 @@ export class SecretQuestion extends GuidIdentity {
     type: 'varchar',
     nullable: false
   })
-  questionText: string;
+  public questionText: string;
 }
 
 @Entity({
@@ -948,16 +941,16 @@ export class SecretQuestion extends GuidIdentity {
 })
 export class SecretAnswer extends GuidIdentity {
   @ManyToOne((type) => User)
-  user: User;
+  public user: User;
 
   @ManyToOne((type) => SecretQuestion)
-  secretQuestion: SecretQuestion;
+  public secretQuestion: SecretQuestion;
 
   @Column({
     type: 'varchar',
     nullable: false
   })
-  answer: string;
+  public answer: string;
 }
 
 @Entity({
@@ -968,31 +961,31 @@ export class UserPasswordReset extends GuidIdentity {
     type: 'varchar',
     nullable: true
   })
-  userGuid: string;
+  public userGuid: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  initializerIp: string;
+  public initializerIp: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  token: string;
+  public token: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  createdAt: string;
+  public createdAt: string;
 
   @Column({
     type: 'varchar',
     nullable: true
   })
-  expiresAt: string;
+  public expiresAt: string;
 
   public setToken() {
     if (this.token === undefined) {
@@ -1025,13 +1018,13 @@ export class UserPasswordReset extends GuidIdentity {
 })
 export class UserPasswordHistory extends GuidIdentity {
   @ManyToOne((type) => User)
-  user: User;
+  public user: User;
 
   @Column({
     type: 'varchar',
     nullable: false
   })
-  usedPassword: string;
+  public usedPassword: string;
 }
 
 export class CommonRepo<T> extends Repository<T> {

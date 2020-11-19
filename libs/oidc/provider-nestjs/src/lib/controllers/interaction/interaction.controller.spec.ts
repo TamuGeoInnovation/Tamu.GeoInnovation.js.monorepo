@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { InteractionController } from './interaction.controller';
 
 describe('Interaction Controller', () => {
@@ -6,7 +7,7 @@ describe('Interaction Controller', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [InteractionController],
+      controllers: [InteractionController]
     }).compile();
 
     controller = module.get<InteractionController>(InteractionController);

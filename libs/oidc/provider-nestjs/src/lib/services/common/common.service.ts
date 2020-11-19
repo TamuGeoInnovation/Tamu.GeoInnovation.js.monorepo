@@ -1,14 +1,8 @@
-import { getConnection, EntitySchema, FindConditions, BaseEntity } from "typeorm";
-import { ClientMetadata } from "../../entities/all.entity";
+import { getConnection, EntitySchema, FindConditions, BaseEntity } from 'typeorm';
 
-export type TypeORMEntities =
-  | string
-  | Function
-  | (new () => unknown)
-  | EntitySchema<unknown>;
+export type TypeORMEntities = string | Function | (new () => unknown) | EntitySchema<unknown>;
 
 export abstract class CommonService {
-
   public static async findByKey<T extends TypeORMEntities>(entity: T, key: string, value: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const op = {
@@ -16,22 +10,19 @@ export abstract class CommonService {
       };
       getConnection()
         .getRepository(entity)
-        .createQueryBuilder("entity")
+        .createQueryBuilder('entity')
         .where(`entity.${key} = :${key}`, op)
         .getOne()
         .then((res: T) => {
           resolve(res);
         })
-        .catch(err => {
+        .catch((err) => {
           throw err;
         });
     });
   }
 
-  public static async findAll<T extends TypeORMEntities>(
-    entity: T,
-    where?: {}
-  ): Promise<any[]> {
+  public static async findAll<T extends TypeORMEntities>(entity: T, where?: {}): Promise<any[]> {
     const connection = getConnection();
 
     return new Promise((resolve, reject) => {
@@ -41,21 +32,21 @@ export abstract class CommonService {
           .find({
             where
           })
-          .then(results => {
+          .then((results) => {
             return resolve(results);
           });
       } else {
         connection
           .getRepository(entity)
           .find()
-          .then(results => {
+          .then((results) => {
             return resolve(results);
           });
       }
     });
   }
 
-  async findOne<T extends TypeORMEntities>(entity: T, where: {}): Promise<any> {
+  public async findOne<T extends TypeORMEntities>(entity: T, where: {}): Promise<any> {
     const connection = getConnection();
 
     return new Promise((resolve, reject) => {
@@ -65,26 +56,23 @@ export abstract class CommonService {
         .then((result: T) => {
           return resolve(result);
         })
-        .catch(err => {
+        .catch((err) => {
           return reject(err);
         });
     });
   }
 
-  async insertAll<T extends TypeORMEntities>(
-    entity: T,
-    items: T[]
-  ): Promise<any> {
+  public async insertAll<T extends TypeORMEntities>(entity: T, items: T[]): Promise<any> {
     const connection = getConnection();
 
     return new Promise((resolve, reject) => {
       connection
         .getRepository(entity)
         .save(items)
-        .then(result => {
+        .then((result) => {
           return resolve(result);
         })
-        .catch(err => {
+        .catch((err) => {
           return reject(err);
         });
     });

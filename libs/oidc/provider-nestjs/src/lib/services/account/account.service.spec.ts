@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { StaticAccountService } from './account.service';
 
 describe('AccountService', () => {

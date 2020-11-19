@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 
 import {
   Account,
@@ -42,6 +40,8 @@ import {
   ReplayDetection
 } from '@tamu-gisc/oidc/provider-nestjs';
 
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { dbConfig } from '../environments/environment';
 
 @Module({
@@ -96,11 +96,5 @@ import { dbConfig } from '../environments/environment';
   providers: [AppService]
 })
 export class AppModule {
-  constructor() {
-    // works surprisingly
-    // OpenIdProvider.build(null, this.clientMetadataService).then(() => {
-    //   OpenIdProvider.provider.proxy = true;
-    //   adapterHost.httpAdapter.use('/oidc', OpenIdProvider.provider.callback);
-    // });
-  }
+  constructor() {}
 }

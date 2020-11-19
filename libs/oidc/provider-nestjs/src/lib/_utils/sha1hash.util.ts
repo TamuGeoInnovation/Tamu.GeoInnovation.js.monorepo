@@ -8,15 +8,15 @@ export class SHA1HashUtils {
    * @type {number}
    * @memberof SHA1HashUtils
    */
-  static SALT_ROUNDS: number = 12;
-  
+  public static SALT_ROUNDS = 12;
+
   /**
    * Magic number Dan used to compute the length of the salt
    * Taken from: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.websites.gisday.tamu.edu/blob/master/src/Main/Rest/Login/Default.aspx.cs
    * @static
    * @memberof SHA1HashUtils
    */
-  static OLD_SALT_LENGTH = 5;
+  public static OLD_SALT_LENGTH = 5;
 
   /**
    * Determines the length of the salt
@@ -26,7 +26,7 @@ export class SHA1HashUtils {
    * @returns {Promise<number>}
    * @memberof SHA1HashUtils
    */
-  static getSaltLength(base64Length: number = this.OLD_SALT_LENGTH): Promise<number> {
+  public static getSaltLength(base64Length: number = this.OLD_SALT_LENGTH): Promise<number> {
     return new Promise((resolve, reject) => {
       const buff = Buffer.alloc(base64Length);
       const s = buff.toString('base64').toUpperCase();
@@ -42,7 +42,7 @@ export class SHA1HashUtils {
    * @returns {Promise<string>}
    * @memberof SHA1HashUtils
    */
-  static getSaltFromSHA1Hash(hash: string): Promise<string> {
+  public static getSaltFromSHA1Hash(hash: string): Promise<string> {
     return new Promise((resolve, reject) => {
       this.getSaltLength().then((saltLen) => {
         const hashLen = hash.length;
@@ -60,7 +60,7 @@ export class SHA1HashUtils {
    * @returns {Promise<boolean>}
    * @memberof SHA1HashUtils
    */
-  static generateSH1Hash(password: string, salt: string): Promise<string> {
+  public static generateSH1Hash(password: string, salt: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const hash = crypto.createHash('sha1');
       const data = hash.update(password.concat(salt), 'utf8');
@@ -72,7 +72,7 @@ export class SHA1HashUtils {
     });
   }
 
-  static compareTwoHashes(hash1: string, hash2: string): Promise<boolean> {
+  public static compareTwoHashes(hash1: string, hash2: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       return resolve(hash1 === hash2);
     });

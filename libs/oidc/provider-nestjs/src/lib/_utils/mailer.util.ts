@@ -1,10 +1,11 @@
 import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
-import { Account, User, UserPasswordReset } from '../entities/all.entity';
+
+import { User, UserPasswordReset } from '../entities/all.entity';
 
 export class Mailer {
-  private static user: string = 'kaitlyn.schimmel@ethereal.email';
-  private static password: string = 'Pe6D9DhkgUDyqyBMeg';
+  private static user = 'kaitlyn.schimmel@ethereal.email';
+  private static password = 'Pe6D9DhkgUDyqyBMeg';
   private static transporter: Mail = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
@@ -14,8 +15,8 @@ export class Mailer {
       pass: Mailer.password
     }
   });
-  static async sendPasswordResetRequestEmail(recipient: User, resetRequest: UserPasswordReset, location: string) {
-    let mailOptions = {
+  public static async sendPasswordResetRequestEmail(recipient: User, resetRequest: UserPasswordReset, location: string) {
+    const mailOptions = {
       from: '"GISC Accounts Team" <giscaccounts@tamu.edu>',
       to: recipient.email,
       subject: 'Password reset request',
@@ -32,8 +33,8 @@ export class Mailer {
     });
   }
 
-  static async sendPasswordResetConfirmationEmail(toEmail: string = 'aplecore@gmail.com'): Promise<any> {
-    let mailOptions = {
+  public static sendPasswordResetConfirmationEmail(toEmail: string = 'aplecore@gmail.com'): void {
+    const mailOptions = {
       from: '"GISC Accounts Team" <giscaccounts@tamu.edu>',
       to: `${toEmail},`,
       subject: 'GeoInnovation Service Center password reset',
@@ -41,31 +42,24 @@ export class Mailer {
       html: 'Your password to GeoInnovation Service Center has been reset.'
     };
     Mailer.transporter.sendMail(mailOptions).then((response) => {
+      // TODO: replace with actual email sending
       console.log('Verification email: ', Mailer.getTestMessageUrl(response));
     });
   }
-  static async sendAccountConfirmationEmail(toEmail: string = 'aplecore@gmail.com', sub: string): Promise<any> {
-    let mailOptions = {
+  public static sendAccountConfirmationEmail(toEmail: string = 'aplecore@gmail.com', sub: string): void {
+    const mailOptions = {
       from: '"GISC Accounts Team" <giscaccounts@tamu.edu>',
       to: `${toEmail},`,
       subject: 'Your newly created GeoInnovation Service Center account',
       text: 'An account for GeoInnovation Service Center has been created with this email address.',
       html: `An account for GeoInnovation Service Center has been created with this email address. </br><a href="http://localhost:4001/user/register/${sub}">Verify email</a>`
     };
-    return new Promise((resolve, reject) => {
-      Mailer.transporter
-        .sendMail(mailOptions)
-        .then((response) => {
-          console.log('Verification email: ', Mailer.getTestMessageUrl(response));
-          resolve(response);
-        })
-        .catch((error) => {
-          reject(error);
-        });
+    Mailer.transporter.sendMail(mailOptions).then((response) => {
+      console.log('Verification email: ', Mailer.getTestMessageUrl(response));
     });
   }
-  static async getTestMessageUrl(response: any) {
-    let testUrl = nodemailer.getTestMessageUrl(response);
+  public static getTestMessageUrl(response: string | {}) {
+    const testUrl = nodemailer.getTestMessageUrl(response);
     console.log('TestURL: ', testUrl);
     return testUrl;
   }

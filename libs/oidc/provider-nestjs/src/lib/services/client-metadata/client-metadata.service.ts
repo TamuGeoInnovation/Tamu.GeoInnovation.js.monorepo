@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
+
 import { Request } from 'express';
+import { In } from 'typeorm';
+
 import {
   IClientMetadata,
   ClientMetadata,
@@ -13,8 +16,6 @@ import {
   TokenEndpointAuthMethod,
   TokenEndpointAuthMethodRepo
 } from '../../entities/all.entity';
-import { In } from 'typeorm';
-import { ClientAuthMethod } from 'oidc-provider';
 
 @Injectable()
 export class ClientMetadataService {
@@ -71,7 +72,7 @@ export class ClientMetadataService {
   private flattenClientMetadataForReturn(clients: ClientMetadata[]): IClientMetadata[] {
     const flattenedClients: IClientMetadata[] = [];
     clients.map((curr) => {
-      let flattened: IClientMetadata = {
+      const flattened: IClientMetadata = {
         client_id: null,
         client_secret: null,
         grant_types: [],

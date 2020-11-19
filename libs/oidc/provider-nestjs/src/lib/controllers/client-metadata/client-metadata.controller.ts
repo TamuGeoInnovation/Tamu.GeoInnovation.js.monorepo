@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
-import { Request, Response } from 'express';
-import { ClientMetadata as OidcClientMetadata } from 'oidc-provider';
+
+import { Request } from 'express';
+
 import { ClientMetadataService } from '../../services/client-metadata/client-metadata.service';
 
 @Controller('client-metadata')
@@ -8,53 +9,53 @@ export class ClientMetadataController {
   constructor(private readonly clientMetadataService: ClientMetadataService) {}
 
   @Get()
-  async allClientGet() {
+  public async allClientGet() {
     return this.clientMetadataService.getAllClients();
   }
 
   @Get('test')
-  async getClientMetadataForOidcSetup() {
+  public async getClientMetadataForOidcSetup() {
     const clients = await this.clientMetadataService.loadClientMetadaForOidcSetup();
     return clients;
   }
 
   @Get('grant')
-  async allGrantTypesGet() {
+  public async allGrantTypesGet() {
     return this.clientMetadataService.getAllGrantTypes();
   }
 
   @Get('response-type')
-  async allReponseTypesGet() {
+  public async allReponseTypesGet() {
     return this.clientMetadataService.getAllResponseTypes();
   }
 
   @Get('token-endpoint')
-  async allTokenEndpointAuthMethodsGet() {
+  public async allTokenEndpointAuthMethodsGet() {
     return this.clientMetadataService.getAllTokenEndpointAuthMethods();
   }
 
   @Get(':clientName')
-  async oneClientGet(@Param() params) {
+  public async oneClientGet(@Param() params) {
     return this.clientMetadataService.getClient(params.clientName);
   }
 
   @Post()
-  async insertClientPost(@Req() req: Request) {
+  public async insertClientPost(@Req() req: Request) {
     return this.clientMetadataService.insertClientMetadata(req);
   }
 
   @Post('grant')
-  async insertGrantTypePost(@Req() req: Request) {
+  public async insertGrantTypePost(@Req() req: Request) {
     return this.clientMetadataService.insertGrantType(req);
   }
 
   @Post('response-type')
-  async insertResponseTypePost(@Req() req: Request) {
+  public async insertResponseTypePost(@Req() req: Request) {
     return this.clientMetadataService.insertResponseType(req);
   }
 
   @Post('token-endpoint')
-  async insertTokenEndpointAuthMethod(@Req() req: Request) {
+  public async insertTokenEndpointAuthMethod(@Req() req: Request) {
     return this.clientMetadataService.insertTokenEndpointAuthMethod(req);
   }
 }

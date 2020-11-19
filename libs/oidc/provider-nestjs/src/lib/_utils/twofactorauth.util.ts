@@ -2,10 +2,10 @@ import * as otplib from 'otplib';
 import * as crypto from 'crypto';
 
 export class TwoFactorAuthUtils {
-  static isValid(token: string, secret: string): boolean {
+  public static isValid(token: string, secret: string): boolean {
     let ret = false;
     if (token) {
-      if (token.length == 6) {
+      if (token.length === 6) {
         otplib.authenticator.options = { crypto };
         ret = otplib.authenticator.check(token, secret);
       } else {
@@ -17,7 +17,7 @@ export class TwoFactorAuthUtils {
     return ret;
   }
 
-  static generateNewSecret(): Promise<string> {
+  public static generateNewSecret(): Promise<string> {
     otplib.authenticator.options = { crypto };
     return new Promise((resolve, reject) => {
       const secret = otplib.authenticator.generateSecret();

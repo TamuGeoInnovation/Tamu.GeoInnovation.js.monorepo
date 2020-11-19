@@ -1,10 +1,13 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
+
+import { Request, Response } from 'express';
+
 import { urlFragment, urlHas } from '../../_utils/url-utils';
 import { UserRepo, SecretQuestionRepo } from '../../entities/all.entity';
 
 export class PasswordValidationMiddleware implements NestMiddleware {
   constructor(public readonly userRepo: UserRepo, public readonly questionRepo: SecretQuestionRepo) {}
-  async use(req: any, res: any, next: () => void) {
+  public async use(req: Request, res: Response, next: () => void) {
     try {
       req.body.validationErrors = [];
       const { newPassword_confirm, newPassword } = req.body;
@@ -76,7 +79,7 @@ export class PasswordValidationMiddleware implements NestMiddleware {
 @Injectable()
 export class UserValidationMiddleware implements NestMiddleware {
   constructor(public readonly userRepo: UserRepo, public readonly questionRepo: SecretQuestionRepo) {}
-  async use(req: any, res: any, next: () => void) {
+  public async use(req: Request, res: Response, next: () => void) {
     try {
       req.body.validationErrors = [];
       const { confirm_password, password, email } = req.body;

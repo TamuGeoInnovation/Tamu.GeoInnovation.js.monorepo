@@ -1,11 +1,13 @@
-import { Controller, Get, Next, Param, Req, Res, Render, Post } from '@nestjs/common';
+import { Controller, Get, Next, Param, Req, Res, Post } from '@nestjs/common';
+
 import { Request, Response } from 'express';
 import got from 'got';
+import { InteractionResults } from 'oidc-provider';
+
 import { OpenIdProvider } from '../../configs/oidc-provider-config';
 import { User } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
 import { JwtUtil } from '../../_utils/jwt.util';
-import Provider, { InteractionResults } from 'oidc-provider';
 import { urlHas, urlFragment } from '../../_utils/url-utils';
 import { TwoFactorAuthUtils } from '../../_utils/twofactorauth.util';
 import { UserLoginService } from '../../services/user-login/user-login.service';
@@ -15,7 +17,7 @@ export class InteractionController {
   constructor(private readonly userService: UserService, private readonly loginService: UserLoginService) {}
 
   @Get(':uid')
-  async interactionGet(@Req() req: Request, @Res() res: Response) {
+  public async interactionGet(@Req() req: Request, @Res() res: Response) {
     try {
       const { uid, prompt, params, session } = await OpenIdProvider.provider.interactionDetails(req, res);
       const client = await OpenIdProvider.provider.Client.find(params.client_id);
@@ -60,7 +62,7 @@ export class InteractionController {
   }
 
   @Post(':uid')
-  async interactionLoginPost(@Req() req: Request, @Res() res: Response, @Next() next) {
+  public async interactionLoginPost(@Req() req: Request, @Res() res: Response, @Next() next) {
     await OpenIdProvider.provider.setProviderSession(req, res, {
       account: 'accountId'
     });
@@ -139,7 +141,7 @@ export class InteractionController {
   }
 
   @Post(':uid/2fa')
-  async interaction2faPost(@Req() req: Request, @Res() res: Response) {
+  public async interaction2faPost(@Req() req: Request, @Res() res: Response) {
     const details = await OpenIdProvider.provider.interactionDetails(req, res);
     const user = await this.userService.userRepo.findByKeyDeep('guid', req.body.guid);
 
@@ -190,22 +192,22 @@ export class InteractionController {
   }
 
   @Post(':uid/continue')
-  async continuePost(@Param() params, @Req() req: Request, @Res() res: Response) {
-    debugger;
+  public async continuePost(@Param() params, @Req() req: Request, @Res() res: Response) {
+    console.log(':uid/continue', 'continuePost', params);
   }
 
   @Post(':uid/confirm')
-  async confirmPost(@Param() params, @Req() req: Request, @Res() res: Response) {
-    debugger;
+  public async confirmPost(@Param() params, @Req() req: Request, @Res() res: Response) {
+    console.log(':uid/confirm', 'confirmPost', params);
   }
 
   @Post(':uid/abort')
-  async abortPost(@Param() params, @Req() req: Request, @Res() res: Response) {
-    debugger;
+  public async abortPost(@Param() params, @Req() req: Request, @Res() res: Response) {
+    console.log(':uid/abort', 'abortPost', params);
   }
 
   @Get('logout')
-  async logoutGet(@Param() params, @Req() req: Request, @Res() res: Response) {
+  public async logoutGet(@Param() params, @Req() req: Request, @Res() res: Response) {
     if (req) {
       if (req.body) {
         if (req.body.id_token_hint) {

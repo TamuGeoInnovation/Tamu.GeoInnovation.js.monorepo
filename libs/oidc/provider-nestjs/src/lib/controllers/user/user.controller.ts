@@ -1,6 +1,8 @@
 import { Controller, Get, Param, Req, Res, Post } from '@nestjs/common';
+
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
+
 import { urlFragment, urlHas } from '../../_utils/url-utils';
 import { User } from '../../entities/all.entity';
 import { UserService, ServiceToControllerTypes } from '../../services/user/user.service';
@@ -18,7 +20,7 @@ export class UserController {
    * @memberof UserController
    */
   @Get('register')
-  async registerGet(@Req() req: Request, @Res() res: Response) {
+  public async registerGet(@Req() req: Request, @Res() res: Response) {
     const questions = await this.userService.getAllSecretQuestions();
     const locals = {
       title: 'GeoInnovation Service Center SSO',
@@ -51,7 +53,7 @@ export class UserController {
    * @memberof UserController
    */
   @Post('register')
-  async registerPost(@Req() req: Request, @Res() res: Response) {
+  public async registerPost(@Req() req: Request, @Res() res: Response) {
     req.body.ip = req.ip;
     const newUser = await this.userService.insertUser(req);
     return res.send(`Welcome aboard, ${newUser.account.name}!`);
@@ -66,7 +68,7 @@ export class UserController {
    * @memberof UserController
    */
   @Get('register/:guid')
-  async registerConfirmedGet(@Param() params, @Res() res: Response) {
+  public async registerConfirmedGet(@Param() params, @Res() res: Response) {
     this.userService.userVerifiedEmail(params.guid);
     return res.redirect('/');
   }
@@ -82,10 +84,10 @@ export class UserController {
    * @memberof UserController
    */
   @Post('2fa/enable')
-  async enable2faGet(@Param() params, @Req() req: Request, @Res() res: Response) {
+  public async enable2faGet(@Param() params, @Req() req: Request, @Res() res: Response) {
     if (req.body.guid) {
       const enable2fa = await this.userService.enable2FA(req.body.guid);
-      if (enable2fa == ServiceToControllerTypes.CONDITION_ALREADY_TRUE) {
+      if (enable2fa === ServiceToControllerTypes.CONDITION_ALREADY_TRUE) {
         return res.send({
           error: '2FA already enabled for user'
         });
@@ -118,7 +120,7 @@ export class UserController {
    * @memberof UserController
    */
   @Post('2fa/disable')
-  async disable2faPost(@Req() req: Request, @Res() res: Response) {
+  public async disable2faPost(@Req() req: Request, @Res() res: Response) {
     if (req.body.guid) {
       const disable2fa = await this.userService.disable2fa(req.body.guid);
       if (disable2fa) {
@@ -135,12 +137,12 @@ export class UserController {
    * @memberof UserController
    */
   @Post('role')
-  async addUserRolePost(@Req() req: Request) {
+  public async addUserRolePost(@Req() req: Request) {
     this.userService.insertUserRole(req);
   }
 
   @Get('pwr')
-  async userForgotPasswordGet(@Req() req: Request, @Res() res: Response) {
+  public async userForgotPasswordGet(@Req() req: Request, @Res() res: Response) {
     // return res.render('forgot-password');
     const locals = {
       title: 'GeoInnovation Service Center SSO',
@@ -169,7 +171,7 @@ export class UserController {
    * @memberof UserController
    */
   @Post('pwr')
-  async userForgotPasswordPost(@Req() req: Request, @Res() res: Response) {
+  public async userForgotPasswordPost(@Req() req: Request, @Res() res: Response) {
     await this.userService.sendPasswordResetEmail(req);
     const locals = {
       title: 'GeoInnovation Service Center SSO',
@@ -200,7 +202,7 @@ export class UserController {
    * @memberof UserController
    */
   @Get('pwr/:token')
-  async loadAppropriatePWRViewGet(@Param() params, @Res() res: Response) {
+  public async loadAppropriatePWRViewGet(@Param() params, @Res() res: Response) {
     const stillValid = await this.userService.isPasswordResetTokenStillValid(params.token);
     if (stillValid) {
       const resetToken = await this.userService.passwordResetRepo.findByKeyShallow('token', params.token);
@@ -243,7 +245,7 @@ export class UserController {
    * @memberof UserController
    */
   @Post('pwr/:token')
-  async compareAgainstSecretAnswersPost(@Param() params, @Req() req: Request, @Res() res: Response) {
+  public async compareAgainstSecretAnswersPost(@Param() params, @Req() req: Request, @Res() res: Response) {
     if (this.userService.isPasswordResetTokenStillValid(params.token)) {
       const answersAreCorrect = await this.userService.areSecretAnswersCorrect(req);
       if (answersAreCorrect) {
@@ -312,7 +314,7 @@ export class UserController {
    * @memberof UserController
    */
   @Post('npw/:token')
-  async newPasswordPost(@Param() params, @Req() req: Request, @Res() res: Response) {
+  public async newPasswordPost(@Param() params, @Req() req: Request, @Res() res: Response) {
     const updatedPassword = await this.userService.ifNewUpdatePassword(req, params.token);
     if (updatedPassword) {
       res.redirect('/');

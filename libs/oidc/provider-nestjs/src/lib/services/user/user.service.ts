@@ -1,9 +1,11 @@
 import { HttpService } from '@nestjs/common';
-import { Connection, getConnection, Repository, Db, UpdateResult } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+
 import { Request } from 'express';
+import { hash, compare } from 'bcrypt';
+
 import { SHA1HashUtils } from '../../_utils/sha1hash.util';
 import { Mailer } from '../../_utils/mailer.util';
-
 import {
   Account,
   User,
@@ -22,15 +24,12 @@ import {
   UserPasswordHistoryRepo,
   UserPasswordReset
 } from '../../entities/all.entity';
-
-import { hash, compare } from 'bcrypt';
-import { Injectable } from '@nestjs/common';
 import { TwoFactorAuthUtils } from '../../_utils/twofactorauth.util';
 
 @Injectable()
 export class UserService {
-  private IPSTACK_APIKEY: string = '1e599a1240ca8f99f0b0d81a08324dbb';
-  private IPSTACK_URL: string = 'http://api.ipstack.com/';
+  private IPSTACK_APIKEY = '1e599a1240ca8f99f0b0d81a08324dbb';
+  private IPSTACK_URL = 'http://api.ipstack.com/';
   constructor(
     public readonly userRepo: UserRepo,
     public readonly accountRepo: AccountRepo,
@@ -326,17 +325,6 @@ export class UserService {
       return true;
     } else {
       return false;
-    }
-  }
-
-  // TODO: I think we can delete this function; was used before moving logic to the service
-  public async compareSecretAnswers(user: User, questionGuid: string, answer: string) {
-    const secretAnswers = await this.answerRepo.findAllByKeyDeep('user', user.guid);
-    for (var i = 0; i < secretAnswers.length; i++) {
-      const secretAnswer = secretAnswers[i];
-      if (secretAnswer.secretQuestion.guid === questionGuid) {
-        return compare(answer, secretAnswer.answer);
-      }
     }
   }
 

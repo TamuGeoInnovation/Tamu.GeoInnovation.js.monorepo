@@ -3187,22 +3187,6 @@
             "jestConfig": "apps/oidc-provider-express/jest.config.js",
             "tsConfig": "apps/oidc-provider-express/tsconfig.spec.json"
           }
-        },
-        "serve-all": {
-          "builder": "@angular-devkit/architect:concat",
-          "options": {
-            "targets": [
-              {
-                "target": "oidc-provider-angular:build"
-              },
-              {
-                "target": "oidc-provider-angular:server"
-              },
-              {
-                "target": "oidc-provider-express:serve"
-              }
-            ]
-          }
         }
       }
     },
@@ -3483,22 +3467,6 @@
           "options": {
             "jestConfig": "apps/oidc-provider-nest/jest.config.js",
             "tsConfig": "apps/oidc-provider-nest/tsconfig.spec.json"
-          }
-        },
-        "serve-all": {
-          "builder": "@angular-devkit/architect:concat",
-          "options": {
-            "targets": [
-              {
-                "target": "oidc-provider-angular:build"
-              },
-              {
-                "target": "oidc-provider-angular:server"
-              },
-              {
-                "target": "oidc-provider-express:serve"
-              }
-            ]
           }
         }
       }

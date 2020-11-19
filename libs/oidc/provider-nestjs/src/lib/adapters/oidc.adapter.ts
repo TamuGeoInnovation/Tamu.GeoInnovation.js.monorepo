@@ -1,22 +1,19 @@
-import { getConnection, getRepository, Connection, FindConditions } from 'typeorm';
-import { Adapter, AdapterPayload } from 'oidc-provider';
+import { getConnection, Connection, FindConditions } from 'typeorm';
+
 import {
   AccessToken,
-  Account,
   AuthorizationCode,
   Client,
   ClientCredential,
   DeviceCode,
   IRequiredEntityAttrs,
-  IUser,
   InitialAccessToken,
   Interaction,
   KindOfId,
   RefreshToken,
   RegistrationAccessToken,
   Session,
-  TypeORMEntities,
-  User
+  TypeORMEntities
 } from '../entities/all.entity';
 
 /**
@@ -54,39 +51,35 @@ export class OidcAdapter {
     this.repository = this.repositories[name];
   }
 
-  grantKeyFor(id: string) {
+  public grantKeyFor(id: string) {
     return `grant:${id}`;
   }
 
-  sessionUidKeyFor(id: string) {
+  public sessionUidKeyFor(id: string) {
     return `sessionUid:${id}`;
   }
 
-  key(id: KindOfId) {
+  public key(id: KindOfId) {
     return `${this.name}:${id}`;
   }
 
-  async upsert(id: KindOfId, payload: any, expiresIn: number) {
+  public async upsert(id: KindOfId, payload: any, expiresIn: number) {
     const key = this.key(id);
 
     const repo = this.connection.getRepository(this.repository);
     if (repo) {
-      await repo
-        .save({
-          id,
-          data: JSON.stringify(payload),
-          grantId: payload.grantId ? payload.grantId : undefined,
-          uid: payload.uid ? payload.uid : undefined,
-          userCode: payload.userCode ? payload.userCode : undefined,
-          expiresAt: expiresIn ? new Date(Date.now() + expiresIn * 1000).toISOString() : undefined
-        })
-        .catch((typeOrmErr) => {
-          debugger;
-        });
+      await repo.save({
+        id,
+        data: JSON.stringify(payload),
+        grantId: payload.grantId ? payload.grantId : undefined,
+        uid: payload.uid ? payload.uid : undefined,
+        userCode: payload.userCode ? payload.userCode : undefined,
+        expiresAt: expiresIn ? new Date(Date.now() + expiresIn * 1000).toISOString() : undefined
+      });
     }
   }
 
-  async find(id: string) {
+  public async find(id: string) {
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
     const found: IRequiredEntityAttrs = await repo.findOne(id);
     if (!found) {
@@ -104,7 +97,7 @@ export class OidcAdapter {
     return token;
   }
 
-  async findByUserCode(userCode: KindOfId) {
+  public async findByUserCode(userCode: KindOfId) {
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.name);
     const found = await repo.findOne({
       where: {
@@ -121,7 +114,7 @@ export class OidcAdapter {
     };
   }
 
-  async findByUid(uid: KindOfId) {
+  public async findByUid(uid: KindOfId) {
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
     const found: IRequiredEntityAttrs = await repo.findOne({
       where: {
@@ -138,7 +131,7 @@ export class OidcAdapter {
     };
   }
 
-  async consume(id: KindOfId) {
+  public async consume(id: KindOfId) {
     const key = this.key(id);
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.name);
     const findCond: FindConditions<IRequiredEntityAttrs> = {
@@ -149,19 +142,18 @@ export class OidcAdapter {
     });
   }
 
-  async destroy(id: KindOfId) {
+  public async destroy(id: KindOfId) {
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.name);
     await repo
       .delete({
         grantId: `${id}`
       })
       .catch((typeOrmErr) => {
-        debugger;
         throw typeOrmErr;
       });
   }
 
-  async revokeByGrantId(grantId: KindOfId) {
+  public async revokeByGrantId(grantId: KindOfId) {
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.name);
     await repo.delete({
       grantId: `${grantId}`

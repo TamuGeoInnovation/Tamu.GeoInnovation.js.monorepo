@@ -6,7 +6,7 @@ export function InputSanitizerMiddleware(req: Request, res: Response, next: Func
     next();
   } else {
     const propNames: string[] = [];
-    if (req.body && req.body != {}) {
+    if (req.body && req.body !== {}) {
       const keys = Object.keys(req.body);
       keys.map((key) => {
         let prop = req.body[key] as string;
@@ -27,7 +27,7 @@ export function InputSanitizerMiddleware(req: Request, res: Response, next: Func
   }
 }
 
-function isEmptyObject(obj) {
-  for (var i in obj) return false;
+function isEmptyObject(obj: object) {
+  for (const i in obj) return false;
   return true;
 }

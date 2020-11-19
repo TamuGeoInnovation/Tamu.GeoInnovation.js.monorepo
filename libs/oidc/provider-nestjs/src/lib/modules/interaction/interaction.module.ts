@@ -1,10 +1,9 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+
 import { InteractionController } from '../../controllers/interaction/interaction.controller';
-import { UserService } from '../../services/user/user.service';
 import { setPragmaAndCache } from '../../middleware/oidc/set-pragma-cache.middleware';
-import { UserModule } from '../user/user.module';
 import { UserLoginModule } from '../user-login/user-login.module';
-import { UserLoginService } from '../../services/user-login/user-login.service';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [UserModule, UserLoginModule],
@@ -13,7 +12,7 @@ import { UserLoginService } from '../../services/user-login/user-login.service';
   exports: []
 })
 export class InteractionModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
+  public configure(consumer: MiddlewareConsumer) {
     consumer.apply(setPragmaAndCache).forRoutes('interaction');
   }
 }
