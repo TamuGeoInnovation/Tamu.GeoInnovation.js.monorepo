@@ -1,4 +1,4 @@
-import { Controller, Get, Next, Param, Req, Res, Post } from '@nestjs/common';
+import { Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus } from '@nestjs/common';
 
 import { Request, Response } from 'express';
 import got from 'got';
@@ -7,7 +7,6 @@ import { InteractionResults } from 'oidc-provider';
 import { OpenIdProvider } from '../../configs/oidc-provider-config';
 import { User } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
-import { JwtUtil } from '../../_utils/jwt.util';
 import { urlHas, urlFragment } from '../../_utils/url-utils';
 import { TwoFactorAuthUtils } from '../../_utils/twofactorauth.util';
 import { UserLoginService } from '../../services/user-login/user-login.service';
@@ -23,6 +22,7 @@ export class InteractionController {
       const client = await OpenIdProvider.provider.Client.find(params.client_id);
 
       const name = prompt.name;
+
       switch (name) {
         case 'login': {
           const locals = {
@@ -33,6 +33,7 @@ export class InteractionController {
             devMode: urlHas(req.path, 'dev', true),
             requestingHost: urlFragment(client.redirectUris[0], 'hostname')
           };
+
           return res.render('user-info', locals, (err, html) => {
             if (err) throw err;
             res.render('_layout', {
@@ -41,6 +42,7 @@ export class InteractionController {
             });
           });
         }
+
         case 'consent': {
           return res.render('interaction', {
             client,
@@ -51,29 +53,30 @@ export class InteractionController {
             session: session ? console.log(session) : undefined
           });
         }
+
         default: {
-          throw new Error('Unknown prompt type');
+          throw new HttpException('Unknown prompt type', HttpStatus.BAD_REQUEST);
         }
       }
     } catch (err) {
-      throw err;
-    } finally {
+      throw new HttpException(err, HttpStatus.PARTIAL_CONTENT);
     }
   }
 
   @Post(':uid')
-  public async interactionLoginPost(@Req() req: Request, @Res() res: Response, @Next() next) {
+  public async interactionLoginPost(@Req() req: Request, @Res() res: Response) {
     await OpenIdProvider.provider.setProviderSession(req, res, {
       account: 'accountId'
     });
+
     const details = await OpenIdProvider.provider.interactionDetails(req, res);
-    const { uid, prompt, params, session } = details;
+    const { prompt, params } = details;
     const client = await OpenIdProvider.provider.Client.find(params.client_id);
 
     try {
       const email = req.body.email;
       const password = req.body.password;
-      const user: User = await this.userService.userLogin(email, password);
+      const user = await this.userService.userLogin(email, password);
       if (user) {
         if (user.enabled2fa) {
           const locals = {
@@ -82,10 +85,11 @@ export class InteractionController {
             email: user.email,
             guid: user.guid,
             error: false
-            // result: JSON.stringify(result)
           };
+
           return res.render('2fa-auth', locals, (err, html) => {
-            if (err) throw err;
+            if (err) throw new HttpException(err, HttpStatus.BAD_REQUEST);
+
             res.render('_layout-simple', {
               ...locals,
               body: html
@@ -112,12 +116,14 @@ export class InteractionController {
               }
             }
           };
+
           this.loginService.insertUserLogin(req);
           await OpenIdProvider.provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
         }
       } else {
         // could not get user; render some error page or redirect to registration
-        throw new Error('Email / password combination unknown');
+        // throw new Error('Email / password combination unknown');
+        throw new HttpException('Email / password combination unknown', HttpStatus.BAD_REQUEST);
       }
     } catch (err) {
       const locals = {
@@ -129,14 +135,15 @@ export class InteractionController {
         devMode: urlHas(req.path, 'dev', true),
         requestingHost: urlFragment(client.redirectUris[0], 'hostname')
       };
+
       return res.render('user-info', locals, (err, html) => {
-        if (err) throw err;
+        if (err) throw new HttpException(err, HttpStatus.BAD_REQUEST);
+
         res.render('_layout', {
           ...locals,
           body: html
         });
       });
-      // return next(err);
     }
   }
 
@@ -148,6 +155,7 @@ export class InteractionController {
     try {
       const inputToken = req.body.token;
       const isValid = await TwoFactorAuthUtils.isValid(inputToken, user.secret2fa);
+
       if (isValid) {
         const result: InteractionResults = {
           select_account: {},
@@ -165,11 +173,10 @@ export class InteractionController {
           },
           meta: {}
         };
-        // await this.loginService.insertNewLoginForUser(params.uid, req.body.email, req.body.guid);
         await OpenIdProvider.provider.interactionFinished(req, res, result);
       } else {
         // Incorrect code provided
-        throw new Error('Token provided was incorrect; please try again');
+        throw new HttpException('Token provided was incorrect; please try again', HttpStatus.BAD_REQUEST);
       }
     } catch (err) {
       const locals = {
@@ -181,8 +188,10 @@ export class InteractionController {
         message: err.message,
         result: JSON.stringify(req.body.result)
       };
+
       return res.render('2fa-auth', locals, (err, html) => {
-        if (err) throw err;
+        if (err) throw new HttpException(err, HttpStatus.BAD_REQUEST);
+
         res.render('_layout-simple', {
           ...locals,
           body: html
@@ -192,34 +201,33 @@ export class InteractionController {
   }
 
   @Post(':uid/continue')
-  public async continuePost(@Param() params, @Req() req: Request, @Res() res: Response) {
+  public continuePost(@Param() params) {
     console.log(':uid/continue', 'continuePost', params);
   }
 
   @Post(':uid/confirm')
-  public async confirmPost(@Param() params, @Req() req: Request, @Res() res: Response) {
+  public confirmPost(@Param() params) {
     console.log(':uid/confirm', 'confirmPost', params);
   }
 
   @Post(':uid/abort')
-  public async abortPost(@Param() params, @Req() req: Request, @Res() res: Response) {
+  public abortPost(@Param() params) {
     console.log(':uid/abort', 'abortPost', params);
   }
 
   @Get('logout')
-  public async logoutGet(@Param() params, @Req() req: Request, @Res() res: Response) {
+  public logoutGet(@Req() req: Request) {
     if (req) {
       if (req.body) {
         if (req.body.id_token_hint) {
-          const { id_token_hint, post_logout_redirect_uris } = req.body;
+          const { post_logout_redirect_uris } = req.body;
 
           got(post_logout_redirect_uris)
             .then((result) => {
               console.log(result);
             })
             .catch((err) => {
-              console.error(err);
-              throw err;
+              throw new HttpException(err, HttpStatus.BAD_REQUEST);
             });
         }
       }

@@ -2,7 +2,7 @@ import * as otplib from 'otplib';
 import * as crypto from 'crypto';
 
 export class TwoFactorAuthUtils {
-  public static isValid(token: string, secret: string): boolean {
+  public static isValid(token: string, secret: string) {
     let ret = false;
     if (token) {
       if (token.length === 6) {
@@ -17,16 +17,10 @@ export class TwoFactorAuthUtils {
     return ret;
   }
 
-  public static generateNewSecret(): Promise<string> {
+  public static generateNewSecret() {
     otplib.authenticator.options = { crypto };
-    return new Promise((resolve, reject) => {
-      const secret = otplib.authenticator.generateSecret();
-      if (secret) {
-        resolve(secret);
-      } else {
-        reject();
-      }
-    });
+    const secret = otplib.authenticator.generateSecret();
+    return secret;
   }
 }
 

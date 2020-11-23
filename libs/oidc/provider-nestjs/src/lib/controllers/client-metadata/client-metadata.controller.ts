@@ -1,7 +1,8 @@
-import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
+import { Controller, Get, HttpException, Param, Post, Req, HttpStatus } from '@nestjs/common';
 
 import { Request } from 'express';
 
+import { ClientMetadata, GrantType, ResponseType, TokenEndpointAuthMethod } from '../../entities/all.entity';
 import { ClientMetadataService } from '../../services/client-metadata/client-metadata.service';
 
 @Controller('client-metadata')
@@ -41,21 +42,69 @@ export class ClientMetadataController {
 
   @Post()
   public async insertClientPost(@Req() req: Request) {
-    return this.clientMetadataService.insertClientMetadata(req);
+    try {
+      const grants = await this.clientMetadataService.findGrantTypeEntities(req.body.grantTypes);
+      const redirectUris = await this.clientMetadataService.createRedirectUriEntities(req.body.redirectUris);
+      const responseTypes = await this.clientMetadataService.findResponseTypeEntities(req.body.responseTypes);
+      const token_endpoint_auth_method = await this.clientMetadataService.findTokenEndpointAuthMethod(
+        req.body.token_endpoint_auth_method
+      );
+
+      const _clientMetadata: Partial<ClientMetadata> = {
+        clientName: req.body.clientName,
+        clientSecret: req.body.clientSecret,
+        grantTypes: grants,
+        redirectUris: redirectUris,
+        responseTypes: responseTypes,
+        tokenEndpointAuthMethod: token_endpoint_auth_method
+      };
+
+      return this.clientMetadataService.insertClientMetadata(_clientMetadata);
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.PARTIAL_CONTENT);
+    }
   }
 
   @Post('grant')
   public async insertGrantTypePost(@Req() req: Request) {
-    return this.clientMetadataService.insertGrantType(req);
+    try {
+      const _grant: Partial<GrantType> = {
+        name: req.body.name,
+        type: req.body.type,
+        details: req.body.details
+      };
+
+      return this.clientMetadataService.insertGrantType(_grant);
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.PARTIAL_CONTENT);
+    }
   }
 
   @Post('response-type')
   public async insertResponseTypePost(@Req() req: Request) {
-    return this.clientMetadataService.insertResponseType(req);
+    try {
+      const _responseType: Partial<ResponseType> = {
+        type: req.body.type,
+        details: req.body.details
+      };
+
+      return this.clientMetadataService.insertResponseType(_responseType);
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.PARTIAL_CONTENT);
+    }
   }
 
   @Post('token-endpoint')
   public async insertTokenEndpointAuthMethod(@Req() req: Request) {
-    return this.clientMetadataService.insertTokenEndpointAuthMethod(req);
+    try {
+      const _tokenEndpointMethod: Partial<TokenEndpointAuthMethod> = {
+        type: req.body.type,
+        details: req.body.details
+      };
+
+      return this.clientMetadataService.insertTokenEndpointAuthMethod(_tokenEndpointMethod);
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.PARTIAL_CONTENT);
+    }
   }
 }

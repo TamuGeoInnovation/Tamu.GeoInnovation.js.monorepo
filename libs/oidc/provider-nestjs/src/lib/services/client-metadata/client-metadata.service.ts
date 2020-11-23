@@ -40,27 +40,10 @@ export class ClientMetadataService {
     return this.clientMetadataRepo.findAllShallow();
   }
 
-  public async insertClientMetadata(req: Request) {
-    try {
-      const grants = await this.findGrantTypeEntities(req.body.grantTypes);
-      const redirectUris = await this.createRedirectUriEntities(req.body.redirectUris);
-      const responseTypes = await this.findResponseTypeEntities(req.body.responseTypes);
-      const token_endpoint_auth_method = await this.findTokenEndpointAuthMethod(req.body.token_endpoint_auth_method);
+  public async insertClientMetadata(_clientMetadata: Partial<ClientMetadata>) {
+    const clientMetadata = this.clientMetadataRepo.create(_clientMetadata);
 
-      const _clientMetadata: Partial<ClientMetadata> = {
-        clientName: req.body.clientName,
-        clientSecret: req.body.clientSecret,
-        grantTypes: grants,
-        redirectUris: redirectUris,
-        responseTypes: responseTypes,
-        tokenEndpointAuthMethod: token_endpoint_auth_method
-      };
-      const clientMetadata = this.clientMetadataRepo.create(_clientMetadata);
-
-      return this.clientMetadataRepo.save(clientMetadata);
-    } catch (generalErr) {
-      throw generalErr;
-    }
+    return this.clientMetadataRepo.save(clientMetadata);
   }
 
   public async loadClientMetadaForOidcSetup() {
@@ -101,7 +84,7 @@ export class ClientMetadataService {
   }
 
   // GrantType functions
-  private async findGrantTypeEntities(_grants: string[]): Promise<GrantType[]> {
+  public async findGrantTypeEntities(_grants: string[]): Promise<GrantType[]> {
     return this.grantTypeRepo.find({
       type: In(_grants)
     });
@@ -111,18 +94,13 @@ export class ClientMetadataService {
     return this.grantTypeRepo.findAllShallow();
   }
 
-  public async insertGrantType(req: Request) {
-    const _grant: Partial<GrantType> = {
-      name: req.body.name,
-      type: req.body.type,
-      details: req.body.details
-    };
+  public async insertGrantType(_grant: Partial<GrantType>) {
     const grant = this.grantTypeRepo.create(_grant);
     return this.grantTypeRepo.insert(grant);
   }
 
   // RedirectUri functions
-  private async createRedirectUriEntities(_redirectUris: string[]): Promise<RedirectUri[]> {
+  public async createRedirectUriEntities(_redirectUris: string[]): Promise<RedirectUri[]> {
     const redirectUris: RedirectUri[] = [];
     _redirectUris.map((value, i) => {
       const redirectUriPartial: Partial<RedirectUri> = {
@@ -135,17 +113,13 @@ export class ClientMetadataService {
   }
 
   // ResponseType functions
-  private async findResponseTypeEntities(_responseTypes: string[]): Promise<ResponseType[]> {
+  public async findResponseTypeEntities(_responseTypes: string[]): Promise<ResponseType[]> {
     return this.responseTypeRepo.find({
       type: In(_responseTypes)
     });
   }
 
-  public async insertResponseType(req: Request) {
-    const _responseType: Partial<ResponseType> = {
-      type: req.body.type,
-      details: req.body.details
-    };
+  public async insertResponseType(_responseType: Partial<ResponseType>) {
     const responseType = this.responseTypeRepo.create(_responseType);
     return this.responseTypeRepo.insert(responseType);
   }
@@ -155,7 +129,7 @@ export class ClientMetadataService {
   }
 
   // TokenEndpointAuthMethod functions
-  private async findTokenEndpointAuthMethod(_tokenEndpoint: string): Promise<TokenEndpointAuthMethod> {
+  public async findTokenEndpointAuthMethod(_tokenEndpoint: string): Promise<TokenEndpointAuthMethod> {
     return this.tokenEndpointRepo.findOne({
       where: {
         type: _tokenEndpoint
@@ -163,11 +137,7 @@ export class ClientMetadataService {
     });
   }
 
-  public async insertTokenEndpointAuthMethod(req: Request) {
-    const _tokenEndpointMethod: Partial<TokenEndpointAuthMethod> = {
-      type: req.body.type,
-      details: req.body.details
-    };
+  public async insertTokenEndpointAuthMethod(_tokenEndpointMethod: Partial<TokenEndpointAuthMethod>) {
     const tokenEndpointMethod = this.tokenEndpointRepo.create(_tokenEndpointMethod);
     return this.tokenEndpointRepo.insert(tokenEndpointMethod);
   }

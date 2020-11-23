@@ -19,8 +19,6 @@ import {
 /**
  * Used for storing issued tokens, codes, user sessions, etc
  * https://github.com/panva/node-oidc-provider/tree/master/docs#adapter
- * @export
- * @class OidcAdapter
  */
 export class OidcAdapter {
   public name: string;
@@ -41,8 +39,6 @@ export class OidcAdapter {
   public grantable: Set<string> = new Set(['AccessToken', 'AuthorizationCode', 'RefreshToken', 'DeviceCode']);
   /**
    * Creates an instance of OidcAdapter.
-   * @param {string} name Name of the OidcAdapter model.
-   * @memberof OidcAdapter
    */
   constructor(name: string) {
     this.name = name;
@@ -64,9 +60,8 @@ export class OidcAdapter {
   }
 
   public async upsert(id: KindOfId, payload: any, expiresIn: number) {
-    const key = this.key(id);
-
     const repo = this.connection.getRepository(this.repository);
+
     if (repo) {
       await repo.save({
         id,
@@ -82,9 +77,11 @@ export class OidcAdapter {
   public async find(id: string) {
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
     const found: IRequiredEntityAttrs = await repo.findOne(id);
+
     if (!found) {
       return undefined;
     }
+
     const data = JSON.parse(found.data);
     const token = {
       ...data,
@@ -94,6 +91,7 @@ export class OidcAdapter {
           }
         : undefined)
     };
+
     return token;
   }
 
@@ -104,10 +102,13 @@ export class OidcAdapter {
         userCode
       }
     });
+
     if (!found) {
       return undefined;
     }
+
     const data = JSON.parse(found.data);
+
     return {
       ...data,
       ...(found.consumedAt ? { consumed: true } : undefined)
@@ -121,10 +122,13 @@ export class OidcAdapter {
         uid
       }
     });
+
     if (!found) {
       return undefined;
     }
+
     const data = JSON.parse(found.data);
+
     return {
       ...data,
       ...(found.consumedAt ? { consumed: true } : undefined)
@@ -132,18 +136,19 @@ export class OidcAdapter {
   }
 
   public async consume(id: KindOfId) {
-    const key = this.key(id);
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.name);
     const findCond: FindConditions<IRequiredEntityAttrs> = {
       id: `${id}`
     };
-    repo.update(findCond, {
+
+    await repo.update(findCond, {
       consumedAt: new Date().toISOString()
     });
   }
 
   public async destroy(id: KindOfId) {
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.name);
+
     await repo
       .delete({
         grantId: `${id}`
@@ -155,6 +160,7 @@ export class OidcAdapter {
 
   public async revokeByGrantId(grantId: KindOfId) {
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.name);
+
     await repo.delete({
       grantId: `${grantId}`
     });
