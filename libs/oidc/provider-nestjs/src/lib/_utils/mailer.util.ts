@@ -66,6 +66,7 @@ export class Mailer {
   public static getTestMessageUrl(response: string | {}) {
     const testUrl = nodemailer.getTestMessageUrl(response);
     console.log('TestURL: ', testUrl);
+
     return testUrl;
   }
 }

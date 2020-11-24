@@ -1,11 +1,10 @@
-import { Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus } from '@nestjs/common';
 
 import { Request, Response } from 'express';
 import got from 'got';
 import { InteractionResults } from 'oidc-provider';
 
 import { OpenIdProvider } from '../../configs/oidc-provider-config';
-import { User } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
 import { urlHas, urlFragment } from '../../_utils/url-utils';
 import { TwoFactorAuthUtils } from '../../_utils/twofactorauth.util';
@@ -64,7 +63,7 @@ export class InteractionController {
   }
 
   @Post(':uid')
-  public async interactionLoginPost(@Req() req: Request, @Res() res: Response) {
+  public async interactionLoginPost(@Body() body, @Req() req: Request, @Res() res: Response) {
     await OpenIdProvider.provider.setProviderSession(req, res, {
       account: 'accountId'
     });
@@ -74,8 +73,8 @@ export class InteractionController {
     const client = await OpenIdProvider.provider.Client.find(params.client_id);
 
     try {
-      const email = req.body.email;
-      const password = req.body.password;
+      const email = body.email;
+      const password = body.password;
       const user = await this.userService.userLogin(email, password);
       if (user) {
         if (user.enabled2fa) {
@@ -110,11 +109,7 @@ export class InteractionController {
               rejectedScopes: ['profile'], // array of strings, scope names the end-user has not granted
               rejectedClaims: [] // array of strings, claim names the end-user has not granted
             },
-            meta: {
-              test: {
-                greetings: 'hello'
-              }
-            }
+            meta: {}
           };
 
           this.loginService.insertUserLogin(req);
@@ -148,12 +143,12 @@ export class InteractionController {
   }
 
   @Post(':uid/2fa')
-  public async interaction2faPost(@Req() req: Request, @Res() res: Response) {
+  public async interaction2faPost(@Body() body, @Req() req: Request, @Res() res: Response) {
     const details = await OpenIdProvider.provider.interactionDetails(req, res);
-    const user = await this.userService.userRepo.findByKeyDeep('guid', req.body.guid);
+    const user = await this.userService.userRepo.findByKeyDeep('guid', body.guid);
 
     try {
-      const inputToken = req.body.token;
+      const inputToken = body.token;
       const isValid = await TwoFactorAuthUtils.isValid(inputToken, user.secret2fa);
 
       if (isValid) {
@@ -186,7 +181,7 @@ export class InteractionController {
         guid: user.guid,
         error: true,
         message: err.message,
-        result: JSON.stringify(req.body.result)
+        result: JSON.stringify(body.result)
       };
 
       return res.render('2fa-auth', locals, (err, html) => {
@@ -216,20 +211,18 @@ export class InteractionController {
   }
 
   @Get('logout')
-  public logoutGet(@Req() req: Request) {
-    if (req) {
-      if (req.body) {
-        if (req.body.id_token_hint) {
-          const { post_logout_redirect_uris } = req.body;
+  public logoutGet(@Body() body) {
+    if (body) {
+      if (body.id_token_hint) {
+        const { post_logout_redirect_uris } = body;
 
-          got(post_logout_redirect_uris)
-            .then((result) => {
-              console.log(result);
-            })
-            .catch((err) => {
-              throw new HttpException(err, HttpStatus.BAD_REQUEST);
-            });
-        }
+        got(post_logout_redirect_uris)
+          .then((result) => {
+            console.log(result);
+          })
+          .catch((err) => {
+            throw new HttpException(err, HttpStatus.BAD_REQUEST);
+          });
       }
     }
   }

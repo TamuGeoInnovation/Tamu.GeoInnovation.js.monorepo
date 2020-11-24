@@ -1,5 +1,6 @@
-import { Controller, Post, Req, Get } from '@nestjs/common';
+import { Controller, Post, Req, Get, Body } from '@nestjs/common';
 
+import { Role } from '../../entities/all.entity';
 import { RoleService } from '../../services/role/role.service';
 
 @Controller('role')
@@ -12,12 +13,22 @@ export class RoleController {
   }
 
   @Post()
-  public async newRolePost(@Req() req) {
-    return this.roleService.insertRole(req);
+  public async newRolePost(@Body() body) {
+    const { level, name } = body;
+
+    return this.roleService.insertRole(level, name);
   }
 
   @Post('all')
-  public async newRolesPost(@Req() req) {
-    return this.roleService.insertRoles(req);
+  public async newRolesPost(@Body() body) {
+    const _roles: Partial<Role>[] = [];
+    body.roles.map((role) => {
+      const newRole: Partial<Role> = {
+        level: role.level,
+        name: role.name
+      };
+      _roles.push(newRole);
+    });
+    return this.roleService.insertRoles(_roles);
   }
 }

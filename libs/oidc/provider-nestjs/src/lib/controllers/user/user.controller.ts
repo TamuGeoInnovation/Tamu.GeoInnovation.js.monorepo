@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req, Res, Post } from '@nestjs/common';
+import { Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus, Body } from '@nestjs/common';
 
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
@@ -14,14 +14,11 @@ export class UserController {
    * Function that will load the 'register' view.
    * Will prompt user for name, email, pw, and secret answers
    *
-   * @param {Request} req
-   * @param {Response} res
-   * @returns
-   * @memberof UserController
    */
   @Get('register')
   public async registerGet(@Req() req: Request, @Res() res: Response) {
     const questions = await this.userService.getAllSecretQuestions();
+
     const locals = {
       title: 'GeoInnovation Service Center SSO',
       client: {},
@@ -34,8 +31,10 @@ export class UserController {
       devMode: urlHas(req.path, 'dev', true),
       requestingHost: urlFragment('', 'hostname')
     };
+
     return res.render('register', locals, (err, html) => {
-      if (err) throw err;
+      if (err) throw new HttpException(err, HttpStatus.BAD_REQUEST);
+
       res.render('_registration-layout', {
         ...locals,
         body: html
@@ -47,25 +46,38 @@ export class UserController {
    * The 'register' view has a form that will post to this route.
    * This route will insert a new User entity
    *
-   * @param {Request} req
-   * @param {Response} res
-   * @returns
-   * @memberof UserController
    */
   @Post('register')
-  public async registerPost(@Req() req: Request, @Res() res: Response) {
-    req.body.ip = req.ip;
-    const newUser = await this.userService.insertUser(req);
-    return res.send(`Welcome aboard, ${newUser.account.name}!`);
+  public async registerPost(@Body() body, @Req() req: Request, @Res() res: Response) {
+    try {
+      const _user: Partial<User> = {
+        email: body.email,
+        password: body.password,
+        signup_ip_address: req.ip,
+        last_used_ip_address: req.ip,
+        updatedAt: new Date(),
+        added: new Date()
+      };
+      const user = await this.userService.userRepo.create(_user);
+      const userEnt = await this.userService.insertUser(user, body.name);
+      const { secretanswer1, secretanswer2, secretQuestion1, secretQuestion2 } = body;
+      const secretAnswers = await this.userService.insertSecretAnswers(
+        secretQuestion1,
+        secretQuestion2,
+        secretanswer1,
+        secretanswer2,
+        userEnt
+      );
+
+      return res.send(`Welcome aboard, ${userEnt.account.name}!`);
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.PARTIAL_CONTENT);
+    }
   }
 
   /**
    * Sends an email to the user for them to "verify" their email address
    *
-   * @param {*} params
-   * @param {Response} res
-   * @returns
-   * @memberof UserController
    */
   @Get('register/:guid')
   public async registerConfirmedGet(@Param() params, @Res() res: Response) {
@@ -76,15 +88,9 @@ export class UserController {
   /**
    * Enables 2FA for a given user. Will generate a new 2FA QR code and display it in a view
    * for the user to scan.
-   *
-   * @param {*} params
-   * @param {Request} req
-   * @param {Response} res
-   * @returns
-   * @memberof UserController
    */
   @Post('2fa/enable')
-  public async enable2faGet(@Param() params, @Req() req: Request, @Res() res: Response) {
+  public async enable2faGet(@Req() req: Request, @Res() res: Response) {
     if (req.body.guid) {
       const enable2fa = await this.userService.enable2FA(req.body.guid);
       if (enable2fa === ServiceToControllerTypes.CONDITION_ALREADY_TRUE) {
@@ -113,11 +119,6 @@ export class UserController {
 
   /**
    * Simply sets the user attribute "enabled2fa" to false and removes the secret
-   *
-   * @param {Request} req
-   * @param {Response} res
-   * @returns
-   * @memberof UserController
    */
   @Post('2fa/disable')
   public async disable2faPost(@Req() req: Request, @Res() res: Response) {
@@ -132,9 +133,6 @@ export class UserController {
   /**
    * Assigns a role to a user for a particular clientId.
    * Will save newly created UserRole entity object
-   *
-   * @param {Request} req
-   * @memberof UserController
    */
   @Post('role')
   public async addUserRolePost(@Req() req: Request) {
@@ -142,8 +140,7 @@ export class UserController {
   }
 
   @Get('pwr')
-  public async userForgotPasswordGet(@Req() req: Request, @Res() res: Response) {
-    // return res.render('forgot-password');
+  public async userForgotPasswordGet(@Res() res: Response) {
     const locals = {
       title: 'GeoInnovation Service Center SSO',
       client: {},
@@ -153,6 +150,7 @@ export class UserController {
       interaction: true,
       error: false
     };
+
     return res.render('forgot-password', locals, (err, html) => {
       if (err) throw err;
       res.render('_password-reset-layout', {
@@ -166,9 +164,6 @@ export class UserController {
    * Sends an email with a magic link to the user
    * Post body needs "guid" key which is the USER guid of the person
    * or "email"
-   *
-   * @param {Request} req
-   * @memberof UserController
    */
   @Post('pwr')
   public async userForgotPasswordPost(@Req() req: Request, @Res() res: Response) {
@@ -183,6 +178,7 @@ export class UserController {
       error: false,
       email: req.body.email
     };
+
     return res.render('email-was-sent', locals, (err, html) => {
       if (err) throw err;
       res.render('_password-reset-layout', {
@@ -195,11 +191,6 @@ export class UserController {
   /**
    * The email from "userForgotPasswordPost" will take the user here.
    * Loads a view where we display the user's secret questions
-   *
-   * @param {*} params
-   * @param {Response} res
-   * @returns
-   * @memberof UserController
    */
   @Get('pwr/:token')
   public async loadAppropriatePWRViewGet(@Param() params, @Res() res: Response) {
@@ -237,12 +228,6 @@ export class UserController {
    * The form from "loadAppropriatePWRViewGet" will come here.
    * Checks to see if the answers from "loadAppropriatePWRViewGet" match the hashes we have.
    * If everything is okay we show them the "new-password" view
-   *
-   * @param {*} params
-   * @param {Request} req
-   * @param {Response} res
-   * @returns
-   * @memberof UserController
    */
   @Post('pwr/:token')
   public async compareAgainstSecretAnswersPost(@Param() params, @Req() req: Request, @Res() res: Response) {
@@ -306,12 +291,6 @@ export class UserController {
    * "compareAgainstSecretAnswersPost"'s form will come here.
    * Will check to see if the password passes validation (InputValidationMiddleware)
    * then it will update the password IF it hasn't been used already
-   *
-   * @param {*} params
-   * @param {Request} req
-   * @param {Response} res
-   * @returns
-   * @memberof UserController
    */
   @Post('npw/:token')
   public async newPasswordPost(@Param() params, @Req() req: Request, @Res() res: Response) {
@@ -333,6 +312,7 @@ export class UserController {
         message: messages,
         token: params.token
       };
+
       return res.render('new-password', locals, (err, html) => {
         if (err) throw err;
         res.render('_password-reset-layout', {

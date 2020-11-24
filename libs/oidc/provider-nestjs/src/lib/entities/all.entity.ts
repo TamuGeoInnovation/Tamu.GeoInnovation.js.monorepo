@@ -28,47 +28,9 @@ export interface IRequiredEntityAttrs {
   grantId?: string;
   userCode?: string;
   uid?: string;
-  data: any;
+  data: string;
   expiresAt: Date;
   consumedAt: Date;
-}
-
-export interface IAccount {
-  // id: number;
-  guid: string;
-  name: string;
-  given_name: string;
-  family_name: string;
-  nickname: string;
-  profile: string;
-  picture: string;
-  website: string;
-  email: string;
-  gender: string;
-  birthdate: string;
-  zoneinfo: string;
-  locale: string;
-  phone_number: string;
-  phone_number_verified: boolean;
-  address: string; // actually a JSON representation
-  updated_at?: string; // tried with a type of number and it causes a dumb "cannot find 'length' of undefined" error
-  added?: string;
-}
-
-export interface IUser {
-  id: number;
-  guid: string;
-  email: string;
-  email_verified: boolean;
-  password: string;
-  updatedAt?: string;
-  added: string;
-  enabled2fa?: boolean;
-  secret2fa?: string | null;
-  recovery_email: string | null;
-  recovery_email_verified: boolean;
-  signup_ip_address: string | null;
-  last_used_ip_address: string | null;
 }
 
 export interface IClientMetadata {
@@ -97,7 +59,7 @@ export class GuidIdentity extends BaseEntity {
 @Entity({
   name: 'account'
 })
-export class Account extends GuidIdentity implements IAccount {
+export class Account extends GuidIdentity {
   @Column({
     type: 'varchar',
     nullable: true
@@ -189,24 +151,18 @@ export class Account extends GuidIdentity implements IAccount {
   public address: string;
 
   @Column({
-    type: 'varchar',
     nullable: true
   })
-  public updated_at: string;
+  public updated_at: Date;
 
   @Column({
-    type: 'varchar',
     nullable: true
   })
-  public added: string;
+  public added: Date;
 
   constructor(fullName: string, email: string) {
     super();
     try {
-      // if (user) {
-      // if (user.guid) {
-      //   this.guid = user.guid;
-      // }
       if (email) {
         this.email = email;
       }
@@ -218,9 +174,8 @@ export class Account extends GuidIdentity implements IAccount {
           this.family_name = names[1];
         }
       }
-      this.updated_at = new Date().toISOString();
-      this.added = new Date().toISOString();
-      // }
+      this.updated_at = new Date();
+      this.added = new Date();
     } catch (error) {
       throw error;
     }
@@ -231,14 +186,8 @@ export class Account extends GuidIdentity implements IAccount {
   name: 'user'
 })
 export class User extends GuidIdentity {
-  // @PrimaryGeneratedColumn()
-  // id: number;
-
-  @Column({
-    type: 'text',
-    nullable: true
-  })
-  public added: string;
+  @Column()
+  public added: Date;
 
   @OneToOne((type) => Account, { cascade: true })
   @JoinColumn()
@@ -266,11 +215,8 @@ export class User extends GuidIdentity {
   })
   public password: string;
 
-  @Column({
-    type: 'varchar',
-    nullable: true
-  })
-  public updatedAt?: string;
+  @Column()
+  public updatedAt?: Date;
 
   @Column({
     type: 'bit',
@@ -324,8 +270,8 @@ export class User extends GuidIdentity {
             this.signup_ip_address = body.ip;
             this.last_used_ip_address = body.ip;
           }
-          this.updatedAt = new Date().toISOString();
-          this.added = new Date().toISOString();
+          this.updatedAt = new Date();
+          this.added = new Date();
         }
       }
     } catch (err) {

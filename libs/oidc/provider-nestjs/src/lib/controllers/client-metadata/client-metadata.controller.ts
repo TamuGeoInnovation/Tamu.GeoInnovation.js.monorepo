@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, Param, Post, Req, HttpStatus } from '@nestjs/common';
+import { Controller, Get, HttpException, Param, Post, Req, HttpStatus, Body } from '@nestjs/common';
 
 import { Request } from 'express';
 
@@ -14,9 +14,10 @@ export class ClientMetadataController {
     return this.clientMetadataService.getAllClients();
   }
 
-  @Get('test')
+  @Get('startup')
   public async getClientMetadataForOidcSetup() {
     const clients = await this.clientMetadataService.loadClientMetadaForOidcSetup();
+
     return clients;
   }
 
@@ -41,18 +42,18 @@ export class ClientMetadataController {
   }
 
   @Post()
-  public async insertClientPost(@Req() req: Request) {
+  public async insertClientPost(@Body() body) {
     try {
-      const grants = await this.clientMetadataService.findGrantTypeEntities(req.body.grantTypes);
-      const redirectUris = await this.clientMetadataService.createRedirectUriEntities(req.body.redirectUris);
-      const responseTypes = await this.clientMetadataService.findResponseTypeEntities(req.body.responseTypes);
+      const grants = await this.clientMetadataService.findGrantTypeEntities(body.grantTypes);
+      const redirectUris = await this.clientMetadataService.createRedirectUriEntities(body.redirectUris);
+      const responseTypes = await this.clientMetadataService.findResponseTypeEntities(body.responseTypes);
       const token_endpoint_auth_method = await this.clientMetadataService.findTokenEndpointAuthMethod(
-        req.body.token_endpoint_auth_method
+        body.token_endpoint_auth_method
       );
 
       const _clientMetadata: Partial<ClientMetadata> = {
-        clientName: req.body.clientName,
-        clientSecret: req.body.clientSecret,
+        clientName: body.clientName,
+        clientSecret: body.clientSecret,
         grantTypes: grants,
         redirectUris: redirectUris,
         responseTypes: responseTypes,
@@ -66,12 +67,12 @@ export class ClientMetadataController {
   }
 
   @Post('grant')
-  public async insertGrantTypePost(@Req() req: Request) {
+  public async insertGrantTypePost(@Body() body) {
     try {
       const _grant: Partial<GrantType> = {
-        name: req.body.name,
-        type: req.body.type,
-        details: req.body.details
+        name: body.name,
+        type: body.type,
+        details: body.details
       };
 
       return this.clientMetadataService.insertGrantType(_grant);
@@ -81,11 +82,11 @@ export class ClientMetadataController {
   }
 
   @Post('response-type')
-  public async insertResponseTypePost(@Req() req: Request) {
+  public async insertResponseTypePost(@Body() body) {
     try {
       const _responseType: Partial<ResponseType> = {
-        type: req.body.type,
-        details: req.body.details
+        type: body.type,
+        details: body.details
       };
 
       return this.clientMetadataService.insertResponseType(_responseType);
@@ -95,11 +96,11 @@ export class ClientMetadataController {
   }
 
   @Post('token-endpoint')
-  public async insertTokenEndpointAuthMethod(@Req() req: Request) {
+  public async insertTokenEndpointAuthMethod(@Body() body) {
     try {
       const _tokenEndpointMethod: Partial<TokenEndpointAuthMethod> = {
-        type: req.body.type,
-        details: req.body.details
+        type: body.type,
+        details: body.details
       };
 
       return this.clientMetadataService.insertTokenEndpointAuthMethod(_tokenEndpointMethod);

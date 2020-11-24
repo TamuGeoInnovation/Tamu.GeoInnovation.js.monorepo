@@ -1,20 +1,28 @@
-import { Controller, Post, Req, Get, Res } from '@nestjs/common';
+import { Controller, Post, Get, Body } from '@nestjs/common';
 
-import { Request, Response } from 'express';
-
+import { SecretQuestion } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
 
 @Controller('secret-question')
 export class SecretQuestionController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  public async insertSecretQuestionPost(@Req() req: Request) {
-    return this.userService.insertSecretQuestion(req);
+  @Get()
+  public async secretQuestionsGet() {
+    return this.userService.getAllSecretQuestions();
   }
 
-  @Get()
-  public async secretQuestionsGet(@Req() req: Request, @Res() res: Response) {
-    return this.userService.getAllSecretQuestions();
+  @Post()
+  public async insertSecretQuestionPost(@Body() body) {
+    const questions: Partial<SecretQuestion>[] = [];
+
+    body.questions.map((value) => {
+      const question: Partial<SecretQuestion> = {
+        questionText: value.questionText
+      };
+      questions.push(question);
+    });
+
+    return this.userService.insertSecretQuestion(questions);
   }
 }

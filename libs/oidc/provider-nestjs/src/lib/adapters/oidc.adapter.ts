@@ -43,7 +43,6 @@ export class OidcAdapter {
   constructor(name: string) {
     this.name = name;
     this.connection = getConnection();
-    console.log('Adapter repo - ', name);
     this.repository = this.repositories[name];
   }
 
@@ -59,7 +58,7 @@ export class OidcAdapter {
     return `${this.name}:${id}`;
   }
 
-  public async upsert(id: KindOfId, payload: any, expiresIn: number) {
+  public async upsert(id: KindOfId, payload: OIDCUpsertPayload, expiresIn: number) {
     const repo = this.connection.getRepository(this.repository);
 
     if (repo) {
@@ -165,4 +164,32 @@ export class OidcAdapter {
       grantId: `${grantId}`
     });
   }
+}
+
+interface OIDCUpsertPayload {
+  iat?: number;
+  exp?: number;
+  uid?: string;
+  jti?: string;
+  kind?: string;
+  returnTo?: string;
+  userCode?: string;
+  params?: {
+    client_id?: string;
+    prompt?: string;
+    redirect_uri?: string;
+    response_type?: string;
+    scope?: string;
+    state?: string;
+  };
+  prompt?: {
+    details?: {
+      id_token_hint?: string;
+      login_hint?: string;
+      max_age?: number | string;
+    };
+    name: string;
+    reasons?: string[];
+  };
+  grantId?: string;
 }

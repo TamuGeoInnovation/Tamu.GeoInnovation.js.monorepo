@@ -14,12 +14,14 @@ export class TwoFactorAuthUtils {
     } else {
       throw new TwoFactorAuthError('Input token cannot be null or undefined');
     }
+
     return ret;
   }
 
   public static generateNewSecret() {
     otplib.authenticator.options = { crypto };
     const secret = otplib.authenticator.generateSecret();
+
     return secret;
   }
 }

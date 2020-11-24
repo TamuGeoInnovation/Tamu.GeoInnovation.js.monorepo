@@ -44,14 +44,9 @@ export class UserService {
   ) {}
   /**
    * Function used to insert a new user given an Express Request.
-   *
-   * @param {Request} req
-   * @returns
-   * @memberof UserService
    */
-  public async insertUser(req: Request) {
-    const user: User = new User(req);
-    const newAccount: Account = new Account(req.body.name, req.body.email);
+  public async insertUser(user: User, name: string) {
+    const newAccount: Account = new Account(name, user.email);
     user.account = newAccount;
     const existingUser = await this.userRepo.findOne({
       where: {
@@ -67,11 +62,10 @@ export class UserService {
     user.password = await hash(user.password, SHA1HashUtils.SALT_ROUNDS);
     const newUser = await this.userRepo.save(user);
     if (newUser) {
-      await this.insertSecretAnswers(req, user);
       Mailer.sendAccountConfirmationEmail(newUser.email, newUser.guid);
       const _usedPassword: Partial<UserPasswordHistory> = {
-        user: user,
-        usedPassword: user.password
+        user: newUser,
+        usedPassword: newUser.password
       };
       const usedPassword = await this.passwordHistoryRepo.create(_usedPassword);
       await this.passwordHistoryRepo.save(usedPassword);
@@ -81,9 +75,6 @@ export class UserService {
 
   /**
    * Function used to update the "email_verified" attribute to true
-   *
-   * @param {string} guid
-   * @memberof UserService
    */
   public async userVerifiedEmail(guid: string) {
     const user = await this.userRepo.findOne({
@@ -99,8 +90,6 @@ export class UserService {
    * Function used to generate a new PasswordReset entity and send an email
    * to the user with instructions on how to reset their password.
    *
-   * @param {Request} req
-   * @memberof UserService
    */
   public async sendPasswordResetEmail(req: Request) {
     const { guid, email } = req.body;
@@ -130,11 +119,6 @@ export class UserService {
   /**
    * Function that will determine if the email and password provided at login
    * are accurate. If so, will return the user that matches this combination.
-   *
-   * @param {string} email
-   * @param {string} password
-   * @returns
-   * @memberof UserService
    */
   public async userLogin(email: string, password: string) {
     const userWithAccount = await this.userRepo.findByKeyDeep('email', email);
@@ -150,10 +134,6 @@ export class UserService {
 
   /**
    * Function used to set "enabled2fa" to true and generate a new 2fa secret for a user; saves the result
-   *
-   * @param {string} guid
-   * @returns {(Promise<IServiceToControllerResponse | User>)}
-   * @memberof UserService
    */
   public async enable2FA(guid: string): Promise<IServiceToControllerResponse | User> {
     let ret: IServiceToControllerResponse;
@@ -178,10 +158,6 @@ export class UserService {
 
   /**
    * Function used to set "enabled2fa" to false and remove "secret2fa"
-   *
-   * @param {string} guid
-   * @returns
-   * @memberof UserService
    */
   public async disable2fa(guid: string) {
     const user = await this.userRepo.findOne({
@@ -198,9 +174,6 @@ export class UserService {
 
   /**
    * Function that will set a user's role for a given clientId.
-   *
-   * @param {Request} req
-   * @memberof UserService
    */
   public async insertUserRole(req: Request) {
     const existingUser = await this.userRepo.findByKeyDeep('email', req.body.email);
@@ -233,19 +206,8 @@ export class UserService {
 
   /**
    * Function used to insert a series of secret questions
-   *
-   * @param {Request} req
-   * @returns
-   * @memberof UserService
    */
-  public async insertSecretQuestion(req: Request) {
-    const questions: Partial<SecretQuestion>[] = [];
-    req.body.questions.map((value) => {
-      const question: Partial<SecretQuestion> = {
-        questionText: value.questionText
-      };
-      questions.push(question);
-    });
+  public async insertSecretQuestion(questions: Partial<SecretQuestion>[]) {
     const secretQuestions = this.questionRepo.create(questions);
 
     return this.questionRepo.insert(secretQuestions);
@@ -253,9 +215,6 @@ export class UserService {
 
   /**
    * Function used to return all of the secret questions in the db
-   *
-   * @returns
-   * @memberof UserService
    */
   public async getAllSecretQuestions() {
     return this.questionRepo.find();
@@ -264,10 +223,6 @@ export class UserService {
   /**
    * Function used to get the secret quetsions associated with a user
    * and return them in a simple object with question guid and question text
-   *
-   * @param {User} user
-   * @returns
-   * @memberof UserService
    */
   public async getUsersQuestions(user: User) {
     const questionsAndAnswers = await this.answerRepo.findAllByKeyDeep('user', user.guid);
@@ -288,20 +243,32 @@ export class UserService {
 
   /**
    * Function used to insert the secret answers provided by a user upon registration
-   *
-   * @param {Request} req
-   * @param {User} user
-   * @memberof UserService
    */
-  public async insertSecretAnswers(req: Request, user: User) {
+  public async insertSecretAnswers(
+    question1Guid: string,
+    question2Guid: string,
+    secretAnswer1: string,
+    secretAnswer2: string,
+    user: User
+  ) {
+    const secretQuestion1 = await this.questionRepo.findOne({
+      where: {
+        guid: question1Guid
+      }
+    });
+    const secretQuestion2 = await this.questionRepo.findOne({
+      where: {
+        guid: question2Guid
+      }
+    });
     const _secretAnswer1: Partial<SecretAnswer> = {
-      answer: await hash(req.body.secretanswer1.toLowerCase(), SHA1HashUtils.SALT_ROUNDS),
-      secretQuestion: req.body.secretQuestion1,
+      answer: await hash(secretAnswer1.toLowerCase(), SHA1HashUtils.SALT_ROUNDS),
+      secretQuestion: secretQuestion1,
       user: user
     };
     const _secretAnswer2: Partial<SecretAnswer> = {
-      answer: await hash(req.body.secretanswer2.toLowerCase(), SHA1HashUtils.SALT_ROUNDS),
-      secretQuestion: req.body.secretQuestion2,
+      answer: await hash(secretAnswer2.toLowerCase(), SHA1HashUtils.SALT_ROUNDS),
+      secretQuestion: secretQuestion2,
       user: user
     };
     const secretAnswers = this.answerRepo.create([_secretAnswer1, _secretAnswer2]);
@@ -314,10 +281,6 @@ export class UserService {
 
   /**
    * Function that will check to see if a given UserPasswortReset token is still valid
-   *
-   * @param {string} token
-   * @returns
-   * @memberof UserService
    */
   public async isPasswordResetTokenStillValid(token: string) {
     const resetRequest = await this.passwordResetRepo.findByKeyShallow('token', token);
@@ -330,10 +293,6 @@ export class UserService {
 
   /**
    * Function that will determine if the answers provided match the secret answer hashes we have stored
-   *
-   * @param {Request} req
-   * @returns
-   * @memberof UserService
    */
   public async areSecretAnswersCorrect(req: Request) {
     const { answer1, answer2, guid, question1, question2 } = req.body;
@@ -363,11 +322,6 @@ export class UserService {
 
   /**
    * Function that will determine if the new password given has been used in the past.
-   *
-   * @param {string} newPassword
-   * @param {User} user
-   * @returns
-   * @memberof UserService
    */
   public async isNewPasswordUsed(newPassword: string, user: User) {
     const oldPasswords = await this.passwordHistoryRepo.find({
@@ -392,11 +346,6 @@ export class UserService {
 
   /**
    * Function that will update the user's password if the new password provided hasn't been used before
-   *
-   * @param {Request} req
-   * @param {string} token
-   * @returns
-   * @memberof UserService
    */
   public async ifNewUpdatePassword(req: Request, token: string) {
     const resetRequest = await this.passwordResetRepo.findByKeyShallow('token', token);
@@ -414,16 +363,10 @@ export class UserService {
 
   /**
    * Function that will update the user's password and send an email saying their password has been changed
-   *
-   * @private
-   * @param {Request} req
-   * @param {User} user
-   * @returns
-   * @memberof UserService
    */
   private async updateUserPassword(req: Request, user: User) {
     user.password = await hash(req.body.newPassword, SHA1HashUtils.SALT_ROUNDS);
-    user.updatedAt = new Date().toISOString();
+    user.updatedAt = new Date();
     this.userRepo.save(user);
     Mailer.sendPasswordResetConfirmationEmail(user.email);
     const _newUsedPassword: Partial<UserPasswordHistory> = {

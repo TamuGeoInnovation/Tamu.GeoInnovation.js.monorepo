@@ -23,6 +23,7 @@ export class JwtUtil {
     const logoutJWS = sign(logoutTokenUncrypted, key, {
       algorithm: 'RS256'
     });
+
     return logoutJWS;
   }
 }

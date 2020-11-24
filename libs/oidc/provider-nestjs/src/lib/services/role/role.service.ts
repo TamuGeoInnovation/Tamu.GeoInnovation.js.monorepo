@@ -8,34 +8,26 @@ import { Role, RoleRepo } from '../../entities/all.entity';
 export class RoleService {
   constructor(private readonly roleRepo: RoleRepo) {}
 
-  public async insertRole(req: Request) {
+  public async insertRole(level: string, name: string) {
     const existingRole = await this.roleRepo.findOne({
       where: {
-        level: req.body.level,
-        name: req.body.name
+        level: level,
+        name: name
       }
     });
     if (existingRole) {
       throw new Error('Role already exists');
     } else {
       const _role: Partial<Role> = {
-        level: req.body.level,
-        name: req.body.name
+        level: level,
+        name: name
       };
       const role = this.roleRepo.create(_role);
       return this.roleRepo.save(role);
     }
   }
 
-  public async insertRoles(req: Request) {
-    const _roles: Partial<Role>[] = [];
-    req.body.roles.map((role) => {
-      const newRole: Partial<Role> = {
-        level: role.level,
-        name: role.name
-      };
-      _roles.push(newRole);
-    });
+  public async insertRoles(_roles: Partial<Role>[]) {
     const roles = this.roleRepo.create(_roles);
     return this.roleRepo.save(roles);
   }
