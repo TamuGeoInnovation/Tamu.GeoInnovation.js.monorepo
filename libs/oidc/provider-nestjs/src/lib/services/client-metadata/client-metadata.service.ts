@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { Request } from 'express';
 import { In } from 'typeorm';
 
 import {
@@ -75,9 +74,6 @@ export class ClientMetadataService {
         return responseType.type;
       });
       flattened.token_endpoint_auth_method = curr.tokenEndpointAuthMethod.type;
-      // flattened.token_endpoint_auth_method = curr.tokenEndpointAuthMethods.map((tokenEndpoint) => {
-      //   return tokenEndpoint.type;
-      // });
       flattenedClients.push(flattened);
     });
     return flattenedClients;

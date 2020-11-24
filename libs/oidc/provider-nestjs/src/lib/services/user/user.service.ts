@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 
-import { Request } from 'express';
 import { hash, compare } from 'bcrypt';
 
 import { SHA1HashUtils } from '../../_utils/sha1hash.util';
@@ -84,6 +83,7 @@ export class UserService {
       }
     });
     user.email_verified = true;
+
     this.userRepo.save(user);
   }
 
@@ -93,7 +93,7 @@ export class UserService {
    *
    */
   public async sendPasswordResetEmail(guid: string, email: string, ip: string) {
-    let user;
+    let user: User;
     if (guid) {
       user = await this.userRepo.findByKeyDeep('guid', guid);
     } else if (email) {
@@ -106,6 +106,7 @@ export class UserService {
     };
     const resetRequest = await this.passwordResetRepo.create(_resetRequest);
     resetRequest.setToken();
+
     // TODO: Is this subscribe a potential source of problems later on? Should we have to unsubscribe?
     this.httpService.get(`${this.IPSTACK_URL}${ip}?access_key=${this.IPSTACK_APIKEY}`).subscribe((observer) => {
       const location = observer.data.country_name;
@@ -122,6 +123,7 @@ export class UserService {
    */
   public async userLogin(email: string, password: string) {
     const userWithAccount = await this.userRepo.findByKeyDeep('email', email);
+
     if (userWithAccount) {
       const same = await compare(password, userWithAccount.password);
       if (same) {
@@ -142,6 +144,7 @@ export class UserService {
         guid: guid
       }
     });
+
     if (user.enabled2fa === false) {
       const newSecret = await TwoFactorAuthUtils.generateNewSecret();
       user.enabled2fa = true;
@@ -165,6 +168,7 @@ export class UserService {
         guid: guid
       }
     });
+
     if (user && user.enabled2fa) {
       user.enabled2fa = false;
       user.secret2fa = null;
