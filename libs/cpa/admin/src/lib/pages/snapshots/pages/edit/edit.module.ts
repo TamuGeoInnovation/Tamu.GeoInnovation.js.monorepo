@@ -3,25 +3,32 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { EditComponent } from './edit.component';
-import { SnapshotsCommonModule } from '../../common/common.module';
-import { SnapshotBuilderComponent } from '../../common/components/snapshot-builder/snapshot-builder.component';
 
 const routes: Routes = [
   {
-    path: '',
+    path: ':guid/delete',
     component: EditComponent,
     children: [
       {
         path: '',
-        pathMatch: 'full',
-        component: SnapshotBuilderComponent
+        loadChildren: () => import('./pages/delete/delete.module').then((m) => m.DeleteModule)
+      }
+    ]
+  },
+  {
+    path: ':guid',
+    component: EditComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./pages/details/details.module').then((m) => m.DetailsModule)
       }
     ]
   }
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), SnapshotsCommonModule],
+  imports: [CommonModule, RouterModule.forChild(routes)],
   declarations: [EditComponent]
 })
 export class SnapshotEditModule {}

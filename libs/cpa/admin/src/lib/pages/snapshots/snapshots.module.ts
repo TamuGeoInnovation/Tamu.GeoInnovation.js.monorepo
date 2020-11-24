@@ -12,7 +12,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/edit/edit.module').then((m) => m.SnapshotEditModule)
   },
   {
-    path: 'edit/:guid',
+    path: 'edit',
     loadChildren: () => import('./pages/edit/edit.module').then((m) => m.SnapshotEditModule)
   }
 ];
