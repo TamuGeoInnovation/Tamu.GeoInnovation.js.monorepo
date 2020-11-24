@@ -1,6 +1,4 @@
-import { Controller, Get, HttpException, Param, Post, Req, HttpStatus, Body } from '@nestjs/common';
-
-import { Request } from 'express';
+import { Controller, Get, HttpException, Param, Post, HttpStatus, Body } from '@nestjs/common';
 
 import { ClientMetadata, GrantType, ResponseType, TokenEndpointAuthMethod } from '../../entities/all.entity';
 import { ClientMetadataService } from '../../services/client-metadata/client-metadata.service';
