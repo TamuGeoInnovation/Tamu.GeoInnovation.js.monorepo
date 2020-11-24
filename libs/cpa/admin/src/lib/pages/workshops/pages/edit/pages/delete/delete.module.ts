@@ -2,20 +2,17 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { WorkshopsListComponent } from './workshops-list.component';
+import { DeleteComponent } from './delete.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: WorkshopsListComponent,
-    data: {
-      title: 'Workshops'
-    }
+    component: DeleteComponent
   }
 ];
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [WorkshopsListComponent]
+  declarations: [DeleteComponent]
 })
-export class WorkshopsListModule {}
+export class DeleteModule {}

@@ -26,7 +26,7 @@
 
     <div class="form-section-body">
       <div class="form-collection row">
-        <tamu-gisc-select [data]="scenarioList | async" placeholder="Select a snapshot" [displayTemplate]="'title'" (changed)="submitWorkshop($event)"></tamu-gisc-select>
+        <tamu-gisc-select [data]="snapshotList | async" placeholder="Select a snapshot" [displayTemplate]="'title'" (changed)="submitWorkshop($event)"></tamu-gisc-select>
       </div>
 
       <div class="form-collection column" *ngIf="form.controls?.scenarios.value.length > 0">

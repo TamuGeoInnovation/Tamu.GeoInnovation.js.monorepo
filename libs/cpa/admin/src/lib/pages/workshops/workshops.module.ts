@@ -2,38 +2,22 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { WorkshopsComponent } from './workshops.component';
-
 const routes: Routes = [
   {
     path: '',
-    component: WorkshopsComponent,
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        loadChildren: () => import('./pages/workshops-list/workshops-list.module').then((m) => m.WorkshopsListModule)
-      },
-      {
-        path: 'edit/:guid',
-        loadChildren: () => import('./pages/workshop-builder/workshop-builder.module').then((m) => m.WorkshopBuilderModule),
-        data: {
-          title: 'Edit Workshop'
-        }
-      },
-      {
-        path: 'create',
-        loadChildren: () => import('./pages/workshop-builder/workshop-builder.module').then((m) => m.WorkshopBuilderModule),
-        data: {
-          title: 'Create Workshop'
-        }
-      }
-    ]
+    loadChildren: () => import('./pages/list/list.module').then((m) => m.WorkshopListModule)
+  },
+  {
+    path: 'create',
+    loadChildren: () => import('./pages/edit/edit.module').then((m) => m.WorkshopEditModule)
+  },
+  {
+    path: 'edit',
+    loadChildren: () => import('./pages/edit/edit.module').then((m) => m.WorkshopEditModule)
   }
 ];
-
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [WorkshopsComponent]
+  declarations: []
 })
 export class WorkshopsModule {}
