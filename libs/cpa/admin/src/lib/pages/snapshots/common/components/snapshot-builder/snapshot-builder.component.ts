@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { tap, map, shareReplay } from 'rxjs/operators';
 
-import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ScenarioService } from '@tamu-gisc/cpa/data-access';
 
@@ -19,10 +19,23 @@ import esri = __esri;
 export class SnapshotBuilderComponent implements OnInit {
   public builderForm: FormGroup;
 
-  // public view: esri.MapView;
-  // public map: esri.Map;
+  public view: esri.MapView;
+  public map: esri.Map;
 
   public isExisting: Observable<boolean>;
+
+  public config: MapConfig = {
+    basemap: {
+      basemap: 'streets-navigation-vector'
+    },
+    view: {
+      mode: '2d',
+      properties: {
+        center: [-97.657046, 26.450253],
+        zoom: 11
+      }
+    }
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -39,10 +52,10 @@ export class SnapshotBuilderComponent implements OnInit {
       shareReplay(1)
     );
 
-    // this.mapService.store.subscribe((instances) => {
-    //   this.view = instances.view as esri.MapView;
-    //   this.map = instances.map;
-    // });
+    this.mapService.store.subscribe((instances) => {
+      this.view = instances.view as esri.MapView;
+      this.map = instances.map;
+    });
 
     // Instantiate builder form
     this.builderForm = this.fb.group({
@@ -70,22 +83,20 @@ export class SnapshotBuilderComponent implements OnInit {
   /**
    * Gets map service instance map center and sets the center control value using lat, lon format.
    */
-  // TODO: Re-implement
-  // public setMapCenter(): void {
-  //   const center = this.view.center;
+  public setMapCenter(): void {
+    const center = this.view.center;
 
-  //   this.builderForm.controls.mapCenter.setValue(`${center.longitude.toFixed(4)}, ${center.latitude.toFixed(4)}`);
-  // }
+    this.builderForm.controls.mapCenter.setValue(`${center.longitude.toFixed(4)}, ${center.latitude.toFixed(4)}`);
+  }
 
   /**
    * Gets map service instance current zoom level and sets the zoon control value.
    */
-  // TODO: Re-implement
-  // public setMapZoom(): void {
-  //   const zoom = this.view.zoom;
+  public setMapZoom(): void {
+    const zoom = this.view.zoom;
 
-  //   this.builderForm.controls.zoom.setValue(zoom);
-  // }
+    this.builderForm.controls.zoom.setValue(zoom);
+  }
 
   /**
    * Adds a layer group to the layers form array.
