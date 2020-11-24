@@ -61,13 +61,8 @@ export class UserController {
       const user = await this.userService.userRepo.create(_user);
       const userEnt = await this.userService.insertUser(user, body.name);
       const { secretanswer1, secretanswer2, secretQuestion1, secretQuestion2 } = body;
-      const secretAnswers = await this.userService.insertSecretAnswers(
-        secretQuestion1,
-        secretQuestion2,
-        secretanswer1,
-        secretanswer2,
-        userEnt
-      );
+
+      await this.userService.insertSecretAnswers(secretQuestion1, secretQuestion2, secretanswer1, secretanswer2, userEnt);
 
       return res.send(`Welcome aboard, ${userEnt.account.name}!`);
     } catch (err) {
@@ -82,6 +77,7 @@ export class UserController {
   @Get('register/:guid')
   public async registerConfirmedGet(@Param() params, @Res() res: Response) {
     this.userService.userVerifiedEmail(params.guid);
+
     return res.redirect('/');
   }
 
@@ -90,14 +86,16 @@ export class UserController {
    * for the user to scan.
    */
   @Post('2fa/enable')
-  public async enable2faGet(@Req() req: Request, @Res() res: Response) {
-    if (req.body.guid) {
-      const enable2fa = await this.userService.enable2FA(req.body.guid);
+  public async enable2faGet(@Body() body, @Req() req: Request, @Res() res: Response) {
+    if (body.guid) {
+      const enable2fa = await this.userService.enable2FA(body.guid);
+
       if (enable2fa === ServiceToControllerTypes.CONDITION_ALREADY_TRUE) {
         return res.send({
           error: '2FA already enabled for user'
         });
       }
+
       if (enable2fa) {
         const issuer = 'GeoInnovation Service Center';
         const otpPath = authenticator.keyuri(
@@ -105,6 +103,7 @@ export class UserController {
           issuer,
           (enable2fa as User).secret2fa
         );
+
         return res.render('2fa-scan', {
           title: 'Two-factor Authentication',
           otpPath: JSON.stringify(otpPath)
@@ -121,9 +120,9 @@ export class UserController {
    * Simply sets the user attribute "enabled2fa" to false and removes the secret
    */
   @Post('2fa/disable')
-  public async disable2faPost(@Req() req: Request, @Res() res: Response) {
-    if (req.body.guid) {
-      const disable2fa = await this.userService.disable2fa(req.body.guid);
+  public async disable2faPost(@Body() body, @Res() res: Response) {
+    if (body.guid) {
+      const disable2fa = await this.userService.disable2fa(body.guid);
       if (disable2fa) {
         return res.sendStatus(200);
       }
@@ -135,8 +134,22 @@ export class UserController {
    * Will save newly created UserRole entity object
    */
   @Post('role')
-  public async addUserRolePost(@Req() req: Request) {
-    this.userService.insertUserRole(req);
+  public async addUserRolePost(@Body() body, @Req() req: Request) {
+    const { email } = body;
+    const existingUser = await this.userService.userRepo.findOne({
+      where: {
+        email: email
+      }
+    });
+    if (existingUser) {
+      const roles = await this.userService.roleRepo.find();
+      const requestedRole = roles.find((value, index) => {
+        if (req.body.role.level === value.level) {
+          return value;
+        }
+      });
+      await this.userService.insertUserRole(existingUser, requestedRole, body.client.name);
+    }
   }
 
   @Get('pwr')
@@ -166,8 +179,10 @@ export class UserController {
    * or "email"
    */
   @Post('pwr')
-  public async userForgotPasswordPost(@Req() req: Request, @Res() res: Response) {
-    await this.userService.sendPasswordResetEmail(req);
+  public async userForgotPasswordPost(@Body() body, @Req() req: Request, @Res() res: Response) {
+    const { guid, email } = body;
+    await this.userService.sendPasswordResetEmail(guid, email, req.ip);
+
     const locals = {
       title: 'GeoInnovation Service Center SSO',
       client: {},
@@ -176,7 +191,7 @@ export class UserController {
       params: {},
       interaction: true,
       error: false,
-      email: req.body.email
+      email: body.email
     };
 
     return res.render('email-was-sent', locals, (err, html) => {
@@ -195,9 +210,11 @@ export class UserController {
   @Get('pwr/:token')
   public async loadAppropriatePWRViewGet(@Param() params, @Res() res: Response) {
     const stillValid = await this.userService.isPasswordResetTokenStillValid(params.token);
+
     if (stillValid) {
       const resetToken = await this.userService.passwordResetRepo.findByKeyShallow('token', params.token);
       const user = await this.userService.userRepo.findByKeyShallow('guid', resetToken.userGuid);
+
       // TODO: should we prompt those with 2fa to input their authcode before changing pw?
       const questions = await this.userService.getUsersQuestions(user);
       const locals = {
@@ -212,8 +229,10 @@ export class UserController {
         token: params.token,
         questions
       };
+
       return res.render('password-reset', locals, (err, html) => {
-        if (err) throw err;
+        if (err) throw new HttpException(err, HttpStatus.BAD_REQUEST);
+
         res.render('_password-reset-layout', {
           ...locals,
           body: html
@@ -230,9 +249,11 @@ export class UserController {
    * If everything is okay we show them the "new-password" view
    */
   @Post('pwr/:token')
-  public async compareAgainstSecretAnswersPost(@Param() params, @Req() req: Request, @Res() res: Response) {
+  public async compareAgainstSecretAnswersPost(@Param() params, @Body() body, @Res() res: Response) {
     if (this.userService.isPasswordResetTokenStillValid(params.token)) {
-      const answersAreCorrect = await this.userService.areSecretAnswersCorrect(req);
+      const { answer1, answer2, guid, question1, question2 } = body;
+
+      const answersAreCorrect = await this.userService.areSecretAnswersCorrect(answer1, answer2, guid, question1, question2);
       if (answersAreCorrect) {
         // both answers were correct
         const locals = {
@@ -245,6 +266,7 @@ export class UserController {
           error: false,
           token: params.token
         };
+
         return res.render('new-password', locals, (err, html) => {
           if (err) throw err;
           res.render('_password-reset-layout', {
@@ -256,7 +278,7 @@ export class UserController {
         // one was wrong, show them the screen again
         const user = await this.userService.userRepo.findOne({
           where: {
-            guid: req.body.guid
+            guid: body.guid
           }
         });
         const questions = await this.userService.getUsersQuestions(user);
@@ -269,10 +291,11 @@ export class UserController {
           interaction: true,
           error: true,
           message: 'Incorrect answer(s)',
-          guid: req.body.guid,
+          guid: body.guid,
           token: params.token,
           questions
         };
+
         return res.render('password-reset', locals, (err, html) => {
           if (err) throw err;
           res.render('_password-reset-layout', {
@@ -293,8 +316,9 @@ export class UserController {
    * then it will update the password IF it hasn't been used already
    */
   @Post('npw/:token')
-  public async newPasswordPost(@Param() params, @Req() req: Request, @Res() res: Response) {
-    const updatedPassword = await this.userService.ifNewUpdatePassword(req, params.token);
+  public async newPasswordPost(@Param() params, @Body() body, @Res() res: Response) {
+    const updatedPassword = await this.userService.ifNewUpdatePassword(body.newPassword, params.token);
+
     if (updatedPassword) {
       res.redirect('/');
     } else {

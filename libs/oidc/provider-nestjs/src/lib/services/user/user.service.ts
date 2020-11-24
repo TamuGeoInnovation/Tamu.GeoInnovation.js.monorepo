@@ -22,7 +22,8 @@ import {
   UserPasswordHistory,
   UserPasswordResetRepo,
   UserPasswordHistoryRepo,
-  UserPasswordReset
+  UserPasswordReset,
+  Role
 } from '../../entities/all.entity';
 import { TwoFactorAuthUtils } from '../../_utils/twofactorauth.util';
 
@@ -91,8 +92,7 @@ export class UserService {
    * to the user with instructions on how to reset their password.
    *
    */
-  public async sendPasswordResetEmail(req: Request) {
-    const { guid, email } = req.body;
+  public async sendPasswordResetEmail(guid: string, email: string, ip: string) {
     let user;
     if (guid) {
       user = await this.userRepo.findByKeyDeep('guid', guid);
@@ -102,12 +102,12 @@ export class UserService {
 
     const _resetRequest: Partial<UserPasswordReset> = {
       userGuid: user.guid,
-      initializerIp: req.ip
+      initializerIp: ip
     };
     const resetRequest = await this.passwordResetRepo.create(_resetRequest);
     resetRequest.setToken();
     // TODO: Is this subscribe a potential source of problems later on? Should we have to unsubscribe?
-    this.httpService.get(`${this.IPSTACK_URL}${req.ip}?access_key=${this.IPSTACK_APIKEY}`).subscribe((observer) => {
+    this.httpService.get(`${this.IPSTACK_URL}${ip}?access_key=${this.IPSTACK_APIKEY}`).subscribe((observer) => {
       const location = observer.data.country_name;
       Mailer.sendPasswordResetRequestEmail(user, resetRequest, location);
       this.passwordResetRepo.save(resetRequest).catch((typeOrmErr) => {
@@ -175,33 +175,20 @@ export class UserService {
   /**
    * Function that will set a user's role for a given clientId.
    */
-  public async insertUserRole(req: Request) {
-    const existingUser = await this.userRepo.findByKeyDeep('email', req.body.email);
-    if (existingUser) {
-      // create new role, add it to existing user, save it\
-      const roles = await this.roleRepo.findAllShallow();
-      const requestedRole = roles.find((value, index) => {
-        if (req.body.role.level == value.level) {
-          return value;
-        }
-      });
-      const clients = await this.clientMetadataRepo.findAllShallow();
-      const requestedClient = clients.find((value, index) => {
-        if (req.body.client.name == value.clientName) {
-          return value;
-        }
-      });
-      const newUserRole: Partial<UserRole> = {
-        role: requestedRole,
-        client: requestedClient,
-        user: existingUser
-      };
-      const update = this.userRoleRepo.create(newUserRole);
-      return this.userRoleRepo.save(update);
-    } else {
-      // user does not exist
-      return;
-    }
+  public async insertUserRole(user: User, role: Role, clientName: string) {
+    const clients = await this.clientMetadataRepo.findAllShallow();
+    const requestedClient = clients.find((value, index) => {
+      if (clientName === value.clientName) {
+        return value;
+      }
+    });
+    const newUserRole: Partial<UserRole> = {
+      role: role,
+      client: requestedClient,
+      user: user
+    };
+    const update = this.userRoleRepo.create(newUserRole);
+    return this.userRoleRepo.save(update);
   }
 
   /**
@@ -294,8 +281,13 @@ export class UserService {
   /**
    * Function that will determine if the answers provided match the secret answer hashes we have stored
    */
-  public async areSecretAnswersCorrect(req: Request) {
-    const { answer1, answer2, guid, question1, question2 } = req.body;
+  public async areSecretAnswersCorrect(
+    answer1: string,
+    answer2: string,
+    guid: string,
+    question1: string,
+    question2: string
+  ) {
     const user = await this.userRepo.findOne({
       where: {
         guid: guid
@@ -347,12 +339,12 @@ export class UserService {
   /**
    * Function that will update the user's password if the new password provided hasn't been used before
    */
-  public async ifNewUpdatePassword(req: Request, token: string) {
+  public async ifNewUpdatePassword(newPassword: string, token: string) {
     const resetRequest = await this.passwordResetRepo.findByKeyShallow('token', token);
     const user = await this.userRepo.findByKeyShallow('guid', resetRequest.userGuid);
-    const isUsed = await this.isNewPasswordUsed(req.body.newPassword, user);
+    const isUsed = await this.isNewPasswordUsed(newPassword, user);
     if (isUsed === false) {
-      this.updateUserPassword(req, user);
+      this.updateUserPassword(newPassword, user);
       this.passwordResetRepo.delete(resetRequest);
       return true;
     } else {
@@ -364,8 +356,8 @@ export class UserService {
   /**
    * Function that will update the user's password and send an email saying their password has been changed
    */
-  private async updateUserPassword(req: Request, user: User) {
-    user.password = await hash(req.body.newPassword, SHA1HashUtils.SALT_ROUNDS);
+  private async updateUserPassword(newPassword: string, user: User) {
+    user.password = await hash(newPassword, SHA1HashUtils.SALT_ROUNDS);
     user.updatedAt = new Date();
     this.userRepo.save(user);
     Mailer.sendPasswordResetConfirmationEmail(user.email);
