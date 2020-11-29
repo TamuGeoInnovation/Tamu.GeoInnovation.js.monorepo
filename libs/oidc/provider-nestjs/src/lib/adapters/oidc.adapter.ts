@@ -12,6 +12,7 @@ import {
   KindOfId,
   RefreshToken,
   RegistrationAccessToken,
+  ReplayDetection,
   Session,
   TypeORMEntities
 } from '../entities/all.entity';
@@ -34,7 +35,8 @@ export class OidcAdapter {
     Client,
     InitialAccessToken,
     Interaction,
-    RegistrationAccessToken
+    RegistrationAccessToken,
+    ReplayDetection
   };
   public grantable: Set<string> = new Set(['AccessToken', 'AuthorizationCode', 'RefreshToken', 'DeviceCode']);
   /**

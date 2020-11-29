@@ -70,7 +70,8 @@ import { dbConfig } from '../environments/environment';
         UserPasswordHistory,
         PushedAuthorizationRequest,
         ReplayDetection
-      ]
+      ],
+      autoLoadEntities: true
     }),
     InteractionModule,
     ClientMetadataModule,
