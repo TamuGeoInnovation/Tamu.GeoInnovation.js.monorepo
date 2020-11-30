@@ -1,16 +1,17 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HighlightPlusModule } from 'ngx-highlightjs/plus';
-import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
-import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
-
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
+import { HighlightPlusModule } from 'ngx-highlightjs/plus';
+import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import * as WebFont from 'webfontloader';
 
-import { AppComponent } from './app.component';
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 import { AuthService } from '@tamu-gisc/geoservices/data-access';
+
+import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
 
 const routes: Routes = [

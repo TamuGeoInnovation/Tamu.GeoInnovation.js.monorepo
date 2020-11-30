@@ -9,14 +9,14 @@ describe('AppController', () => {
   beforeAll(async () => {
     app = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [AppService]
     }).compile();
   });
 
   describe('getData', () => {
     it('should return "Welcome to two-directory-nest!"', () => {
       const appController = app.get<AppController>(AppController);
-      expect(appController.getData()).toEqual({message: 'Welcome to two-directory-nest!'});
+      expect(appController.getData()).toEqual({ message: 'Welcome to two-directory-nest!' });
     });
   });
 });

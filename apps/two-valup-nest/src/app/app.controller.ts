@@ -1,7 +1,5 @@
 import { Body, Controller, Get, Post, UsePipes } from '@nestjs/common';
 
-import { AppService } from './app.service';
-
 import { FileAccessPipe, IrgasonValidationService } from '@tamu-gisc/two/valup';
 
 @Controller('validate')
@@ -13,5 +11,4 @@ export class AppController {
   public whatsTheFileName(@Body('path') path: string) {
     this.irgasonService.validateAndUpload(path);
   }
-
 }
