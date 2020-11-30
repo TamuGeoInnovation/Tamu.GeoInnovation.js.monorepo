@@ -1,67 +1,79 @@
-import { Controller, Get, Param, Post, Req, Res, Patch, Delete, UseGuards } from '@nestjs/common';
-import { Request, Response } from 'express';
-import { ClientMetadata as OidcClientMetadata } from 'oidc-provider';
-import { ClientMetadataService } from '../../services/client-metadata/client-metadata.service';
+import { Controller, Get, Param, Post, Patch, Delete, UseGuards, Body, HttpStatus, HttpException } from '@nestjs/common';
+
 import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
+
+import { GrantType } from '../../../../../common/src/lib/entities/all.entity';
+import { ClientMetadataService } from '../../../../../common/src/lib/services/client-metadata/client-metadata.service';
 
 @UseGuards(AdminRoleGuard)
 @Controller('client-metadata')
 export class ClientMetadataController {
   constructor(private readonly clientMetadataService: ClientMetadataService) {}
 
-  @Get('test')
-  async getClientMetadataForOidcSetup() {
+  @Get('startup')
+  public async getClientMetadataForOidcSetup() {
     const clients = await this.clientMetadataService.loadClientMetadaForOidcSetup();
+
     return clients;
   }
 
   @Get('grant')
-  async allGrantTypesGet() {
+  public async allGrantTypesGet() {
     return this.clientMetadataService.getAllGrantTypes();
   }
 
   @Get('grant/:grantTypeGuid')
-  async oneGrantTypesGet(@Param() params) {
+  public async oneGrantTypesGet(@Param() params) {
     return this.clientMetadataService.getGrantType(params.grantTypeGuid);
   }
 
   @Post('grant')
-  async insertGrantTypePost(@Req() req: Request) {
-    return this.clientMetadataService.insertGrantType(req);
+  public async insertGrantTypePost(@Body() body) {
+    try {
+      const _grant: Partial<GrantType> = {
+        name: body.name,
+        type: body.type,
+        details: body.details
+      };
+
+      return this.clientMetadataService.insertGrantType(_grant);
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.PARTIAL_CONTENT);
+    }
   }
 
   @Patch('grant/update')
-  async updateExistingGrantType(@Req() req: Request) {
+  public async updateExistingGrantType(@Req() req: Request) {
     return this.clientMetadataService.updateGrantType(req);
   }
 
   @Delete('grant/delete/:grantTypeGuid')
-  async deleteGrantType(@Param() params) {
+  public async deleteGrantType(@Param() params) {
     return this.clientMetadataService.deleteGrantType(params.grantTypeGuid);
   }
 
   @Get('response-type')
-  async allReponseTypesGet() {
+  public async allReponseTypesGet() {
     return this.clientMetadataService.getAllResponseTypes();
   }
 
   @Get('response-type/:responseTypeGuid')
-  async oneReponseTypesGet(@Param() params) {
+  public async oneReponseTypesGet(@Param() params) {
     return this.clientMetadataService.getResponseType(params.responseTypeGuid);
   }
 
   @Patch('response-type/update')
-  async updateResponseType(@Req() req) {
+  public async updateResponseType(@Req() req) {
     return this.clientMetadataService.updateResponseType(req);
   }
 
   @Delete('response-type/delete/:responseTypeGuid')
-  async deleteResponseType(@Param() params) {
+  public async deleteResponseType(@Param() params) {
     return this.clientMetadataService.deleteResponseType(params.responseTypeGuid);
   }
 
   @Get('token-endpoint')
-  async allTokenEndpointAuthMethodsGet() {
+  public async allTokenEndpointAuthMethodsGet() {
     return this.clientMetadataService.getAllTokenEndpointAuthMethods();
   }
 
@@ -71,52 +83,52 @@ export class ClientMetadataController {
   // }
 
   @Post('response-type')
-  async insertResponseTypePost(@Req() req: Request) {
+  public async insertResponseTypePost(@Req() req: Request) {
     return this.clientMetadataService.insertResponseType(req);
   }
 
   @Post('token-endpoint')
-  async insertTokenEndpointAuthMethod(@Req() req: Request) {
+  public async insertTokenEndpointAuthMethod(@Req() req: Request) {
     return this.clientMetadataService.insertTokenEndpointAuthMethod(req);
   }
 
   @Get('token-endpoint/:tokenEndpointAuthMethodGuid')
-  async oneTokenEndpointAuthMethod(@Param() params) {
+  public async oneTokenEndpointAuthMethod(@Param() params) {
     return this.clientMetadataService.getTokenEndpointAuthMethod(params.tokenEndpointAuthMethodGuid);
   }
 
   @Patch('token-endpoint/update')
-  async updateTokenEndpointAuthMethod(@Req() req) {
+  public async updateTokenEndpointAuthMethod(@Req() req) {
     return this.clientMetadataService.updateTokenEndpointAuthMethod(req);
   }
 
   @Delete('token-endpoint/delete/:tokenEndpointAuthMethodGuid')
-  async deleteTokenEndpointAuthMethod(@Param() params) {
+  public async deleteTokenEndpointAuthMethod(@Param() params) {
     return this.clientMetadataService.deleteTokenEndpointAuthMethod(params.tokenEndpointAuthMethodGuid);
   }
 
   @Get()
-  async allClientGet() {
+  public async allClientGet() {
     return this.clientMetadataService.getAllClients();
   }
 
   @Get(':clientMetadataGuid')
-  async oneClientMetadataGet(@Param() params) {
+  public async oneClientMetadataGet(@Param() params) {
     return this.clientMetadataService.getClientByGuid(params.clientMetadataGuid);
   }
 
   @Post()
-  async insertClientPost(@Req() req: Request) {
+  public async insertClientPost(@Req() req: Request) {
     return this.clientMetadataService.insertClientMetadata(req);
   }
 
   @Patch('update')
-  async updateClient(@Req() req) {
+  public async updateClient(@Req() req) {
     return this.clientMetadataService.updateClientMetadataNew(req);
   }
 
   @Delete('delete/:clientMetadataGuid')
-  async deleteClientMetadata(@Param() params) {
+  public async deleteClientMetadata(@Param() params) {
     return this.clientMetadataService.deleteClientMetadata(params.clientMetadataGuid);
   }
 }

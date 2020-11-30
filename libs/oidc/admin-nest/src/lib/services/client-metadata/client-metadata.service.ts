@@ -1,5 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { Request } from 'express';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+
+import { In } from 'typeorm';
+import * as deepmerge from 'deepmerge';
+
 import {
   IClientMetadata,
   ClientMetadata,
@@ -13,9 +16,6 @@ import {
   TokenEndpointAuthMethod,
   TokenEndpointAuthMethodRepo
 } from '@tamu-gisc/oidc/provider-nestjs';
-import { In } from 'typeorm';
-import * as deepmerge from 'deepmerge';
-import { merge } from 'rxjs';
 
 @Injectable()
 export class ClientMetadataService {
@@ -48,29 +48,35 @@ export class ClientMetadataService {
     return this.clientMetadataRepo.findAllDeep();
   }
 
-  public async insertClientMetadata(req: Request) {
-    try {
-      const grants = await this.findGrantTypeEntities('type', req.body.grantTypes);
+  public async insertClientMetadata(_clientMetadata: Partial<ClientMetadata>) {
+    const clientMetadata = this.clientMetadataRepo.create(_clientMetadata);
 
-      const redirectUris = await this.createRedirectUriEntities(req.body.redirectUris);
-      const responseTypes = await this.findResponseTypeEntities('type', req.body.responseTypes);
-      const token_endpoint_auth_method = await this.findTokenEndpointAuthMethod('type', req.body.token_endpoint_auth_method);
-
-      const _clientMetadata: Partial<ClientMetadata> = {
-        clientName: req.body.clientName,
-        clientSecret: req.body.clientSecret,
-        grantTypes: grants,
-        redirectUris: redirectUris,
-        responseTypes: responseTypes,
-        tokenEndpointAuthMethod: token_endpoint_auth_method
-      };
-      const clientMetadata = await this.clientMetadataRepo.create(_clientMetadata);
-
-      return this.clientMetadataRepo.save(clientMetadata);
-    } catch (generalErr) {
-      throw generalErr;
-    }
+    return this.clientMetadataRepo.save(clientMetadata);
   }
+
+  // public async insertClientMetadata(req: Request) {
+  //   try {
+  //     const grants = await this.findGrantTypeEntities('type', req.body.grantTypes);
+
+  //     const redirectUris = await this.createRedirectUriEntities(req.body.redirectUris);
+  //     const responseTypes = await this.findResponseTypeEntities('type', req.body.responseTypes);
+  //     const token_endpoint_auth_method = await this.findTokenEndpointAuthMethod('type', req.body.token_endpoint_auth_method);
+
+  //     const _clientMetadata: Partial<ClientMetadata> = {
+  //       clientName: req.body.clientName,
+  //       clientSecret: req.body.clientSecret,
+  //       grantTypes: grants,
+  //       redirectUris: redirectUris,
+  //       responseTypes: responseTypes,
+  //       tokenEndpointAuthMethod: token_endpoint_auth_method
+  //     };
+  //     const clientMetadata = await this.clientMetadataRepo.create(_clientMetadata);
+
+  //     return this.clientMetadataRepo.save(clientMetadata);
+  //   } catch (generalErr) {
+  //     throw generalErr;
+  //   }
+  // }
 
   public async loadClientMetadaForOidcSetup() {
     const clients = await this.clientMetadataRepo.findAllDeep();
@@ -82,7 +88,7 @@ export class ClientMetadataService {
     const flattenedClients: IClientMetadata[] = [];
     try {
       clients.map((curr) => {
-        let flattened: IClientMetadata = {
+        const flattened: IClientMetadata = {
           client_id: null,
           client_secret: null,
           grant_types: [],
@@ -102,9 +108,6 @@ export class ClientMetadataService {
           return responseType.type;
         });
         flattened.token_endpoint_auth_method = curr.tokenEndpointAuthMethod.type;
-        // flattened.token_endpoint_auth_method = curr.tokenEndpointAuthMethods.map((tokenEndpoint) => {
-        //   return tokenEndpoint.type;
-        // });
         flattenedClients.push(flattened);
       });
       return flattenedClients;
@@ -113,36 +116,10 @@ export class ClientMetadataService {
     }
   }
 
-  public async updateClientMetadata(req: Request) {
-    const guid = req.body.guid;
-    const clientMetadata = await this.clientMetadataRepo.findByKeyDeep('guid', guid);
-    const merged = deepmerge(clientMetadata as Partial<ClientMetadata>, req.body);
-    // return merged.save();
+  public async updateClientMetadata(_clientMetadata: Partial<ClientMetadata>) {
+    const clientMetadata = await this.clientMetadataRepo.findByKeyDeep('guid', _clientMetadata.guid);
+    const merged = deepmerge(clientMetadata as Partial<ClientMetadata>, _clientMetadata);
     return this.clientMetadataRepo.save(merged);
-  }
-
-  public async updateClientMetadataNew(req: Request) {
-    try {
-      const grants = await this.findGrantTypeEntities('guid', req.body.grantTypes);
-      const redirectUris = await this.createRedirectUriEntities(req.body.redirectUris);
-      const responseTypes = await this.findResponseTypeEntities('guid', req.body.responseTypes);
-      const token_endpoint_auth_method = await this.findTokenEndpointAuthMethod('guid', req.body.token_endpoint_auth_method);
-
-      const _clientMetadata: Partial<ClientMetadata> = {
-        guid: req.body.guid,
-        clientName: req.body.clientName,
-        clientSecret: req.body.clientSecret,
-        grantTypes: grants,
-        redirectUris: redirectUris,
-        responseTypes: responseTypes,
-        tokenEndpointAuthMethod: token_endpoint_auth_method
-      };
-      const clientMetadata = this.clientMetadataRepo.create(_clientMetadata);
-      // const merged = deepmerge(_clientMetadata as Partial<ClientMetadata>, req.body);
-      return this.clientMetadataRepo.save(clientMetadata);
-    } catch (generalErr) {
-      throw generalErr;
-    }
   }
 
   public async deleteClientMetadata(guid: string) {
@@ -175,14 +152,13 @@ export class ClientMetadataService {
     });
   }
 
-  public async updateGrantType(req: Request) {
-    const guid = req.body.guid;
+  public async updateGrantType(_grantType: Partial<GrantType>) {
     const grantType = await this.grantTypeRepo.findOne({
       where: {
-        guid
+        guid: _grantType.guid
       }
     });
-    const merged = deepmerge(grantType as Partial<GrantType>, req.body);
+    const merged = deepmerge(grantType as Partial<GrantType>, _grantType);
     return this.grantTypeRepo.save(merged);
   }
 
@@ -197,12 +173,17 @@ export class ClientMetadataService {
     }
   }
 
-  public async insertGrantType(req: Request) {
-    const _grant: Partial<GrantType> = {
-      name: req.body.name,
-      type: req.body.type,
-      details: req.body.details
-    };
+  // public async insertGrantType(req: Request) {
+  //   const _grant: Partial<GrantType> = {
+  //     name: req.body.name,
+  //     type: req.body.type,
+  //     details: req.body.details
+  //   };
+  //   const grant = this.grantTypeRepo.create(_grant);
+  //   return this.grantTypeRepo.insert(grant);
+  // }
+
+  public async insertGrantType(_grant: Partial<GrantType>) {
     const grant = this.grantTypeRepo.create(_grant);
     return this.grantTypeRepo.insert(grant);
   }
@@ -221,8 +202,8 @@ export class ClientMetadataService {
       });
       return redirectUris;
     } catch (error) {
-      debugger;
       console.warn(error);
+      throw new HttpException(error, HttpStatus.PARTIAL_CONTENT);
     }
   }
 
@@ -236,17 +217,22 @@ export class ClientMetadataService {
     });
   }
 
-  public async insertResponseType(req: Request) {
-    const _responseType: Partial<ResponseType> = {
-      type: req.body.type,
-      details: req.body.details
-    };
+  public async insertResponseType(_responseType: Partial<ResponseType>) {
     const responseType = this.responseTypeRepo.create(_responseType);
     return this.responseTypeRepo.insert(responseType);
   }
 
+  // public async insertResponseType(req: Request) {
+  //   const _responseType: Partial<ResponseType> = {
+  //     type: req.body.type,
+  //     details: req.body.details
+  //   };
+  //   const responseType = this.responseTypeRepo.create(_responseType);
+  //   return this.responseTypeRepo.insert(responseType);
+  // }
+
   public async getAllResponseTypes() {
-    return this.responseTypeRepo.findAllShallow();
+    return this.responseTypeRepo.find();
   }
 
   public async getResponseType(guid: string) {
@@ -257,14 +243,13 @@ export class ClientMetadataService {
     });
   }
 
-  public async updateResponseType(req: Request) {
-    const guid = req.body.guid;
+  public async updateResponseType(_responseType: Partial<ResponseType>) {
     const responseType = await this.responseTypeRepo.findOne({
       where: {
-        guid
+        guid: _responseType
       }
     });
-    const merged = deepmerge(responseType as Partial<ResponseType>, req.body);
+    const merged = deepmerge(responseType as Partial<ResponseType>, _responseType);
     return this.responseTypeRepo.save(merged);
   }
 
@@ -291,11 +276,16 @@ export class ClientMetadataService {
     });
   }
 
-  public async insertTokenEndpointAuthMethod(req: Request) {
-    const _tokenEndpointMethod: Partial<TokenEndpointAuthMethod> = {
-      type: req.body.type,
-      details: req.body.details
-    };
+  // public async insertTokenEndpointAuthMethod(req: Request) {
+  //   const _tokenEndpointMethod: Partial<TokenEndpointAuthMethod> = {
+  //     type: req.body.type,
+  //     details: req.body.details
+  //   };
+  //   const tokenEndpointMethod = this.tokenEndpointRepo.create(_tokenEndpointMethod);
+  //   return this.tokenEndpointRepo.insert(tokenEndpointMethod);
+  // }
+
+  public async insertTokenEndpointAuthMethod(_tokenEndpointMethod: Partial<TokenEndpointAuthMethod>) {
     const tokenEndpointMethod = this.tokenEndpointRepo.create(_tokenEndpointMethod);
     return this.tokenEndpointRepo.insert(tokenEndpointMethod);
   }
@@ -312,14 +302,13 @@ export class ClientMetadataService {
     });
   }
 
-  public async updateTokenEndpointAuthMethod(req: Request) {
-    const guid = req.body.guid;
+  public async updateTokenEndpointAuthMethod(_tokenEndpointAuthMethod: Partial<TokenEndpointAuthMethod>) {
     const tokenEndpointAuthMethod = await this.tokenEndpointRepo.findOne({
       where: {
-        guid
+        guid: _tokenEndpointAuthMethod.guid
       }
     });
-    const merged = deepmerge(tokenEndpointAuthMethod as Partial<TokenEndpointAuthMethod>, req.body);
+    const merged = deepmerge(tokenEndpointAuthMethod as Partial<TokenEndpointAuthMethod>, _tokenEndpointAuthMethod);
     return this.tokenEndpointRepo.save(merged);
   }
 

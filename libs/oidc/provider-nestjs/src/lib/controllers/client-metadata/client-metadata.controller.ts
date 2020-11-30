@@ -24,45 +24,45 @@ export class ClientMetadataController {
     return this.clientMetadataService.getAllGrantTypes();
   }
 
-  @Get('grant/:grantTypeGuid')
-  async oneGrantTypesGet(@Param() params) {
-    return this.clientMetadataService.getGrantType(params.grantTypeGuid);
-  }
+  // @Get('grant/:grantTypeGuid')
+  // async oneGrantTypesGet(@Param() params) {
+  //   return this.clientMetadataService.getGrantType(params.grantTypeGuid);
+  // }
 
-  @Post('grant')
-  async insertGrantTypePost(@Req() req: Request) {
-    return this.clientMetadataService.insertGrantType(req);
-  }
+  // @Post('grant')
+  // async insertGrantTypePost(@Req() req: Request) {
+  //   return this.clientMetadataService.insertGrantType(req);
+  // }
 
-  @Patch('grant/update')
-  async updateExistingGrantType(@Req() req: Request) {
-    return this.clientMetadataService.updateGrantType(req);
-  }
+  // @Patch('grant/update')
+  // async updateExistingGrantType(@Req() req: Request) {
+  //   return this.clientMetadataService.updateGrantType(req);
+  // }
 
-  @Delete('grant/delete/:grantTypeGuid')
-  async deleteGrantType(@Param() params) {
-    return this.clientMetadataService.deleteGrantType(params.grantTypeGuid);
-  }
+  // @Delete('grant/delete/:grantTypeGuid')
+  // async deleteGrantType(@Param() params) {
+  //   return this.clientMetadataService.deleteGrantType(params.grantTypeGuid);
+  // }
 
   @Get('response-type')
   public async allReponseTypesGet() {
     return this.clientMetadataService.getAllResponseTypes();
   }
 
-  @Get('response-type/:responseTypeGuid')
-  async oneReponseTypesGet(@Param() params) {
-    return this.clientMetadataService.getResponseType(params.responseTypeGuid);
-  }
+  // @Get('response-type/:responseTypeGuid')
+  // async oneReponseTypesGet(@Param() params) {
+  //   return this.clientMetadataService.getResponseType(params.responseTypeGuid);
+  // }
 
-  @Patch('response-type/update')
-  async updateResponseType(@Req() req) {
-    return this.clientMetadataService.updateResponseType(req);
-  }
+  // @Patch('response-type/update')
+  // async updateResponseType(@Req() req) {
+  //   return this.clientMetadataService.updateResponseType(req);
+  // }
 
-  @Delete('response-type/delete/:responseTypeGuid')
-  async deleteResponseType(@Param() params) {
-    return this.clientMetadataService.deleteResponseType(params.responseTypeGuid);
-  }
+  // @Delete('response-type/delete/:responseTypeGuid')
+  // async deleteResponseType(@Param() params) {
+  //   return this.clientMetadataService.deleteResponseType(params.responseTypeGuid);
+  // }
 
   @Get('token-endpoint')
   public async allTokenEndpointAuthMethodsGet() {
@@ -140,45 +140,5 @@ export class ClientMetadataController {
     } catch (err) {
       throw new HttpException(err, HttpStatus.PARTIAL_CONTENT);
     }
-  }
-
-  @Get('token-endpoint/:tokenEndpointAuthMethodGuid')
-  async oneTokenEndpointAuthMethod(@Param() params) {
-    return this.clientMetadataService.getTokenEndpointAuthMethod(params.tokenEndpointAuthMethodGuid);
-  }
-
-  @Patch('token-endpoint/update')
-  async updateTokenEndpointAuthMethod(@Req() req) {
-    return this.clientMetadataService.updateTokenEndpointAuthMethod(req);
-  }
-
-  @Delete('token-endpoint/delete/:tokenEndpointAuthMethodGuid')
-  async deleteTokenEndpointAuthMethod(@Param() params) {
-    return this.clientMetadataService.deleteTokenEndpointAuthMethod(params.tokenEndpointAuthMethodGuid);
-  }
-
-  @Get()
-  async allClientGet() {
-    return this.clientMetadataService.getAllClients();
-  }
-
-  @Get(':clientMetadataGuid')
-  async oneClientMetadataGet(@Param() params) {
-    return this.clientMetadataService.getClientByGuid(params.clientMetadataGuid);
-  }
-
-  @Post()
-  async insertClientPost(@Req() req: Request) {
-    return this.clientMetadataService.insertClientMetadata(req);
-  }
-
-  @Patch('update')
-  async updateClient(@Req() req) {
-    return this.clientMetadataService.updateClientMetadataNew(req);
-  }
-
-  @Delete('delete/:clientMetadataGuid')
-  async deleteClientMetadata(@Param() params) {
-    return this.clientMetadataService.deleteClientMetadata(params.clientMetadataGuid);
   }
 }

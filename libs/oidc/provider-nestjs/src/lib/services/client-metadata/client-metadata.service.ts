@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Body } from '@nestjs/common';
 
 import { In } from 'typeorm';
+import * as deepmerge from 'deepmerge';
 
 import {
   IClientMetadata,
@@ -63,7 +64,7 @@ export class ClientMetadataService {
     const flattenedClients: IClientMetadata[] = [];
     try {
       clients.map((curr) => {
-        let flattened: IClientMetadata = {
+        const flattened: IClientMetadata = {
           client_id: null,
           client_secret: null,
           grant_types: [],
@@ -94,10 +95,10 @@ export class ClientMetadataService {
     }
   }
 
-  public async updateClientMetadata(req: Request) {
-    const guid = req.body.guid;
+  public async updateClientMetadata(@Body() body) {
+    const guid = body.guid;
     const clientMetadata = await this.clientMetadataRepo.findByKeyDeep('guid', guid);
-    const merged = deepmerge(clientMetadata as Partial<ClientMetadata>, req.body);
+    const merged = deepmerge(clientMetadata as Partial<ClientMetadata>, body);
     // return merged.save();
     return this.clientMetadataRepo.save(merged);
   }
@@ -154,7 +155,7 @@ export class ClientMetadataService {
   }
 
   // RedirectUri functions
-  private async createRedirectUriEntities(_redirectUris: string): Promise<RedirectUri[]> {
+  public async createRedirectUriEntities(_redirectUris: string): Promise<RedirectUri[]> {
     const tokens: string[] = _redirectUris.split(',');
     const redirectUris: RedirectUri[] = [];
     try {
