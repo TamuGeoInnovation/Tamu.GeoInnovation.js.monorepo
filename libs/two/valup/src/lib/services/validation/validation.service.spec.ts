@@ -1,15 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ValidationService } from './validation.service';
 
-describe('ValidationService', () => {
-  let service: ValidationService;
+import { IrgasonValidationService } from './validation.service';
+
+describe('IrgasonValidationService', () => {
+  let service: IrgasonValidationService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ValidationService],
+      providers: [IrgasonValidationService]
     }).compile();
 
-    service = module.get<ValidationService>(ValidationService);
+    service = module.get<IrgasonValidationService>(IrgasonValidationService);
   });
 
   it('should be defined', () => {
