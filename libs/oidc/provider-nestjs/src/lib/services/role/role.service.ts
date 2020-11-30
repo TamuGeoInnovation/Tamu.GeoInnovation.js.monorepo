@@ -30,12 +30,15 @@ export class RoleService {
     return this.roleRepo.save(roles);
   }
 
+  public async getAllRoles() {
+    return this.roleRepo.find();
+  }
+
   public async getRole(guid: string) {
     return this.roleRepo.findOne({
       where: {
-        guid: roleGuid
+        guid: guid
       }
     });
-    return this.roleRepo.remove(role);
   }
 }

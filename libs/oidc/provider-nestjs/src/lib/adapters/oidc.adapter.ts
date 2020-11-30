@@ -1,3 +1,4 @@
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { getConnection, Connection, FindConditions } from 'typeorm';
 
 import {
@@ -12,7 +13,6 @@ import {
   KindOfId,
   RefreshToken,
   RegistrationAccessToken,
-  ReplayDetection,
   Session,
   TypeORMEntities,
   ReplayDetection,
@@ -81,12 +81,12 @@ export class OidcAdapter {
           expiresAt: expiresIn ? new Date(Date.now() + expiresIn * 1000).toISOString() : undefined
         })
         .catch((typeOrmErr) => {
-          debugger;
+          throw new HttpException(typeOrmErr, HttpStatus.PARTIAL_CONTENT);
         });
     }
   }
 
-  async find(id: string) {
+  public async find(id: string) {
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
     const found: IRequiredEntityAttrs = await repo.findOne(id);
 
@@ -179,6 +179,8 @@ export class OidcAdapter {
 }
 
 interface OIDCUpsertPayload {
+  clientId?: string;
+  accountId?: string;
   iat?: number;
   exp?: number;
   uid?: string;

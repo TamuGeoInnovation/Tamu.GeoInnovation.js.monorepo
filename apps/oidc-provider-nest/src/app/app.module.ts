@@ -16,24 +16,22 @@ import {
   User,
   InteractionModule,
   UserModule,
-  // ClientMetadataModule,
   ClientMetadata,
   GrantType,
   RedirectUri,
   ResponseType,
   TokenEndpointAuthMethod,
   Role,
-  // RoleModule,
   UserRole,
   UserLogin,
   UserLoginModule,
   SecretQuestion,
   SecretAnswer,
-  // StatsModule,
   UserPasswordReset,
   UserPasswordHistory,
   PushedAuthorizationRequest,
-  ReplayDetection
+  ReplayDetection,
+  ClientMetadataModule
 } from '@tamu-gisc/oidc/provider-nestjs';
 
 import { AppController } from './app.controller';
@@ -76,8 +74,6 @@ import { dbConfig } from '../environments/environment';
     }),
     InteractionModule,
     ClientMetadataModule,
-    // RoleModule,
-    // StatsModule,
     UserModule,
     UserLoginModule
   ],

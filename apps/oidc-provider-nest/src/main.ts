@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { KoaContextWithOIDC, Provider } from 'oidc-provider';
+
+import { Provider } from 'oidc-provider';
 import * as express from 'express';
 import * as rateLimit from 'express-rate-limit';
 import { urlencoded, json } from 'body-parser';
