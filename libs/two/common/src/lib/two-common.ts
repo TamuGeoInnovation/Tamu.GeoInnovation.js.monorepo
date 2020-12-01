@@ -1,5 +1,3 @@
-import { EntitySchema } from 'typeorm';
-
 export { CNR4 } from './entities/cnr4/cnr4.entity';
 export { CR6 } from './entities/cr6/cr6.entity';
 export { CS655 } from './entities/cs655/cs655.entity';

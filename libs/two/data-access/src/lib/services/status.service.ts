@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, reduce } from 'rxjs/operators';
+
+import { map } from 'rxjs/operators';
 import date from 'date-and-time';
 
 import { IChartConfiguration } from '@tamu-gisc/charts';
@@ -23,6 +24,7 @@ export class StatusService {
   public siteHistory(siteCode: string, history: number) {
     const now = new Date();
     const dateRange = [];
+
     for (let i = history; i > 0; i--) {
       const lowerDate = date.addDays(now, -1 * i);
       const upperDate = date.addDays(now, -1 * (i - 1));
@@ -31,19 +33,22 @@ export class StatusService {
         lowerDate: date.format(lowerDate, 'YYYY-MM-DD')
       });
     }
+
     const dateHistory: IDateHistory = {
       siteCode: siteCode,
       dateRange: dateRange
     };
+
     return this.http.post<Array<Partial<IStatusResponse>>>(this.resource, dateHistory).pipe(
       map<IStatusResponse[], IChartConfiguration[]>((value: Partial<IStatusResponse[]>, index: number) => {
         const configs: IChartConfiguration[] = [];
-        for (let i = 0; i < value.length; i++) {
+
+        value.map((val: IStatusResponse) => {
           const config: IChartConfiguration = {
             data: {
               datasets: [
                 {
-                  data: [Number.parseInt(value[i].success, 10), Number.parseInt(value[i].failure, 10)]
+                  data: [Number.parseInt(val.success, 10), Number.parseInt(val.failure, 10)]
                 }
               ],
               labels: ['Successes', 'Failures']
@@ -51,19 +56,19 @@ export class StatusService {
             options: {
               cutoutPercentage: 50,
               title: {
-                text: value[i].date
+                text: val.date
               }
             }
           };
           configs.push(config);
-        }
+        });
+
         return configs;
       })
     );
   }
 
-  public demoSiteHistory(history: number) {
-    const now = new Date();
+  public demoSiteHistory() {
     const dateRange = [
       {
         upperDate: '2018-05-16',
@@ -86,12 +91,13 @@ export class StatusService {
     return this.http.post<Array<Partial<IStatusResponse>>>(this.resource, dateHistory).pipe(
       map<IStatusResponse[], IChartConfiguration[]>((value: Partial<IStatusResponse[]>, index: number) => {
         const configs: IChartConfiguration[] = [];
-        for (let i = 0; i < value.length; i++) {
+
+        value.map((val: IStatusResponse) => {
           const config: IChartConfiguration = {
             data: {
               datasets: [
                 {
-                  data: [Number.parseInt(value[i].success, 10), Number.parseInt(value[i].failure, 10)]
+                  data: [Number.parseInt(val.success, 10), Number.parseInt(val.failure, 10)]
                 }
               ],
               labels: ['Successes', 'Failures']
@@ -99,12 +105,13 @@ export class StatusService {
             options: {
               cutoutPercentage: 50,
               title: {
-                text: value[i].date
+                text: val.date
               }
             }
           };
           configs.push(config);
-        }
+        });
+
         return configs;
       })
     );

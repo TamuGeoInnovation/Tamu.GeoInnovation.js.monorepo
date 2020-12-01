@@ -4,8 +4,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
-import { SiteComponent } from './site.component';
 import { ChartsModule } from '@tamu-gisc/charts';
+
+import { SiteComponent } from './site.component';
 
 const routes: Routes = [
   {
@@ -16,12 +17,6 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [SiteComponent],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    UILayoutModule,
-    GeoservicesCoreNgxModule, 
-    ChartsModule
-  ]
+  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule, GeoservicesCoreNgxModule, ChartsModule]
 })
-export class SiteModule { }
+export class SiteModule {}

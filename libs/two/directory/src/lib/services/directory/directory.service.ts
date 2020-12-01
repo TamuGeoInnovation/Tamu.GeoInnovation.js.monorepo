@@ -34,7 +34,7 @@ export class DirectoryService {
    * Chokidar.watch() will only fire if the file has been saved
    * and then it waits 100 milliseconds before starting
    */
-  public async watchFile() {
+  public watchFile() {
     const workFile = `${this.WORK_DIRECTORY}\\${this.FILENAME}`;
 
     fs.access(this.SOURCE_DIRECTORY, fs.constants.F_OK, (accessErr) => {
@@ -112,9 +112,9 @@ export class DirectoryService {
   /**
    * Watches an array of files in the source directory
    */
-  public async watchFilesForChange() {
+  public watchFilesForChange() {
     const filePaths: string[] = [];
-    this.files.forEach((value, index) => {
+    this.files.map((value) => {
       filePaths.push(`${this.SOURCE_DIRECTORY}\\${value}`);
     });
 
@@ -152,18 +152,14 @@ export class DirectoryService {
    */
   private async extIsValid(ext: string): Promise<boolean> {
     const exts = this.ACCEPTABLE_EXTS;
-    return new Promise((resolve, reject) => {
-      const isValid = exts.includes(ext);
-      return resolve(isValid);
-    });
+    const isValid = exts.includes(ext);
+    return isValid;
   }
   /**
    * Determines if the supplied filename matches the RegEx defined in @tamu-gisc/two-shared
    */
   private async filenameIsValid(filename: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      return resolve(this.FILENAME_REGEXP.test(filename));
-    });
+    return this.FILENAME_REGEXP.test(filename);
   }
 
   /**

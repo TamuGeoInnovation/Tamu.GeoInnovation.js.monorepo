@@ -14,7 +14,3 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
-
-export const api_url = `${window.location.protocol}//${window.location.hostname}/geoservices.tamu.edu/rest/`;
-
-export const two_dashboard_api_url = `http://localhost:3333/api/`;

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { from, Observable, of, forkJoin, combineLatest } from 'rxjs';
+
+import { Observable } from 'rxjs';
 
 import { IChartConfiguration } from '@tamu-gisc/charts';
-import { StatusService, IDateHistory } from '@tamu-gisc/two/data-access';
+import { StatusService } from '@tamu-gisc/two/data-access';
 
 @Component({
   selector: 'site',
