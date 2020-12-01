@@ -2,7 +2,8 @@ import { Controller, Get, Param, Post, Patch, Delete, UseGuards, Body, HttpStatu
 
 import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 
-import { GrantType } from '@tamu-gisc/oidc/common';
+import { ClientMetadata, GrantType, ResponseType, TokenEndpointAuthMethod } from '../entities/all.entity';
+import { ClientMetadataService } from '../services/client-metadata/client-metadata.service';
 
 @UseGuards(AdminRoleGuard)
 @Controller('client-metadata')
@@ -43,7 +44,10 @@ export class ClientMetadataController {
 
   @Patch('grant/update')
   public async updateExistingGrantType(@Body() body) {
-    return this.clientMetadataService.updateGrantType(req);
+    const grantType: Partial<GrantType> = {
+      ...body
+    };
+    return this.clientMetadataService.updateGrantType(grantType);
   }
 
   @Delete('grant/delete/:grantTypeGuid')
@@ -63,7 +67,10 @@ export class ClientMetadataController {
 
   @Patch('response-type/update')
   public async updateResponseType(@Body() body) {
-    return this.clientMetadataService.updateResponseType(req);
+    const responseType: Partial<ResponseType> = {
+      ...body
+    };
+    return this.clientMetadataService.updateResponseType(responseType);
   }
 
   @Delete('response-type/delete/:responseTypeGuid')
@@ -83,12 +90,18 @@ export class ClientMetadataController {
 
   @Post('response-type')
   public async insertResponseTypePost(@Body() body) {
-    return this.clientMetadataService.insertResponseType(req);
+    const responseType: Partial<ResponseType> = {
+      ...body
+    };
+    return this.clientMetadataService.insertResponseType(responseType);
   }
 
   @Post('token-endpoint')
   public async insertTokenEndpointAuthMethod(@Body() body) {
-    return this.clientMetadataService.insertTokenEndpointAuthMethod(req);
+    const tokenEndpoint: Partial<TokenEndpointAuthMethod> = {
+      ...body
+    };
+    return this.clientMetadataService.insertTokenEndpointAuthMethod(tokenEndpoint);
   }
 
   @Get('token-endpoint/:tokenEndpointAuthMethodGuid')
@@ -98,7 +111,10 @@ export class ClientMetadataController {
 
   @Patch('token-endpoint/update')
   public async updateTokenEndpointAuthMethod(@Body() body) {
-    return this.clientMetadataService.updateTokenEndpointAuthMethod(req);
+    const tokenEndpoint: Partial<TokenEndpointAuthMethod> = {
+      ...body
+    };
+    return this.clientMetadataService.updateTokenEndpointAuthMethod(tokenEndpoint);
   }
 
   @Delete('token-endpoint/delete/:tokenEndpointAuthMethodGuid')
@@ -118,12 +134,18 @@ export class ClientMetadataController {
 
   @Post()
   public async insertClientPost(@Body() body) {
-    return this.clientMetadataService.insertClientMetadata(req);
+    const clientMetadata: Partial<ClientMetadata> = {
+      ...body
+    };
+    return this.clientMetadataService.insertClientMetadata(clientMetadata);
   }
 
   @Patch('update')
   public async updateClient(@Body() body) {
-    return this.clientMetadataService.updateClientMetadataNew(req);
+    const clientMetdata: Partial<ClientMetadata> = {
+      ...body
+    };
+    return this.clientMetadataService.updateClientMetadata(clientMetdata);
   }
 
   @Delete('delete/:clientMetadataGuid')

@@ -317,10 +317,10 @@
     "oidc-admin-data-access": {
       "tags": []
     },
-    "oidc-admin-nest": {
+    "oidc-utils": {
       "tags": []
     },
-    "oidc-utils": {
+    "oidc-common": {
       "tags": []
     }
   }

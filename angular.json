@@ -3763,6 +3763,28 @@
           }
         }
       }
+    },
+    "oidc-common": {
+      "root": "libs/oidc/common",
+      "sourceRoot": "libs/oidc/common/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/oidc/common/tsconfig.lib.json", "libs/oidc/common/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/oidc/common/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/oidc/common/jest.config.js",
+            "tsConfig": "libs/oidc/common/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
