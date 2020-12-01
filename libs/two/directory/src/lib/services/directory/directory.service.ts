@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { HttpService, Injectable } from '@nestjs/common';
 
-import axios from 'axios';
 import { Stats } from 'fs';
 import * as chokidar from 'chokidar';
 import * as fs from 'fs-extra';
@@ -25,7 +24,7 @@ export class DirectoryService {
     'DAFo_Flux_CSIFormat.dat,SUSm_Flux_CSIFormat.dat,RFPr_Flux_CSIFormat.dat,RFTA_Flux_CSIFormat.dat,TFPr_Flux_CSIFormat.dat,RFAA_Flux_CSIFormat.dat,SFPr_Flux_CSIFormat.dat,LCGr_Flux_CSIFormat.dat';
   private files: string[];
 
-  constructor() {
+  constructor(private httpService: HttpService) {
     this.files = this.FILES_LIST.split(',');
     this.watchFilesForChange();
   }
@@ -173,22 +172,10 @@ export class DirectoryService {
   private notifyValidationService(filepath: string): void {
     // const route = path.extname(filepath).substring(1);
     const route = `${this.VALIDATION_SERVICE.protocol}${this.VALIDATION_SERVICE.host}:${this.VALIDATION_SERVICE.port}/${this.VALIDATION_SERVICE.globalPrefix}/${this.VALIDATION_SERVICE.validation_route}`;
-    const options = {
-      method: 'POST',
-      uri: route,
-      body: {
-        path: filepath
-      },
-      json: true
-    };
     try {
-      axios
-        .post(route, {
-          path: filepath
-        })
-        .catch((err) => {
-          throw err;
-        });
+      this.httpService.post(route, {
+        path: filepath
+      });
     } catch (err) {
       throw err;
     }
