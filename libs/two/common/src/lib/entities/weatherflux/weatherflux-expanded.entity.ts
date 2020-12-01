@@ -1,10 +1,9 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { Allow, IsDefined, IsNotEmpty, IsString, IsNumber, } from "class-validator"
+import { Allow, IsDefined, IsNotEmpty, IsString, IsNumber } from 'class-validator';
 import { WeatherFlux } from './weatherflux.entity';
 
 @Entity({ name: 'WeatherFlux_Test' })
 export class WeatherfluxExpanded {
-  
   @IsNotEmpty()
   @IsNumber()
   @PrimaryGeneratedColumn({ name: 'RECORD' })
@@ -163,7 +162,7 @@ export class WeatherfluxExpanded {
   @Allow()
   @Column({ name: 'e_sat_probe', type: 'double precision', nullable: true })
   public e_sat_probe: number | null = null;
-  
+
   @Allow()
   @Column({ name: 'H2O_probe', type: 'double precision', nullable: true })
   public h2o_probe: number | null = null;
@@ -464,7 +463,7 @@ export class WeatherfluxExpanded {
   @Column({ name: 'Precip2_Tot', type: 'double precision', nullable: true })
   public precip2_tot: number | null = null;
 
-  constructor(row?: any) {
+  constructor(row) {
     if (row) {
       Object.keys(row).forEach((key, index) => {
         if (this.hasOwnProperty(key)) {

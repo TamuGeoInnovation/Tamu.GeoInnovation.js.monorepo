@@ -1,35 +1,32 @@
 import { Injectable } from '@nestjs/common';
+
 import axios from 'axios';
 import { Stats } from 'fs';
 import * as chokidar from 'chokidar';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import {
-  ACCEPTABLE_EXTS,
-  ARCHIVE_DIRECTORY,
-  FILENAME,
-  FILES,
-  FILENAME_REGEXP,
-  SOURCE_DIRECTORY,
-  VALIDATION_SERVICE,
-  WORK_DIRECTORY
-} from '../../environments/environment';
-
 @Injectable()
 export class DirectoryService {
-  private filename: string;
-  private sourceDir: string;
-  private workDir: string;
-  private archiveDir: string;
+  private ACCEPTABLE_EXTS = ['.csv', '.tsv'];
+  private FILENAME_REGEXP = /^\d{6,8}\_(SFPr|RFTA|RFAA|RFPr|TFPr|SUSM|DAFo|LCSh|LCGr)\S*(CSIFormat.csv)$/;
+  private VALIDATION_SERVICE = {
+    protocol: 'http://',
+    host: 'localhost',
+    port: 4010,
+    globalPrefix: 'api',
+    validation_route: 'validate'
+  };
+  private FILENAME = '04212017_SFPr_TEST_CSIFormat.csv';
+  private SOURCE_DIRECTORY = 'C:\\Upload';
+  private WORK_DIRECTORY = 'C:\\Upload\\Work';
+  private ARCHIVE_DIRECTORY = 'C:\\Upload\\Archive';
+  private FILES_LIST =
+    'DAFo_Flux_CSIFormat.dat,SUSm_Flux_CSIFormat.dat,RFPr_Flux_CSIFormat.dat,RFTA_Flux_CSIFormat.dat,TFPr_Flux_CSIFormat.dat,RFAA_Flux_CSIFormat.dat,SFPr_Flux_CSIFormat.dat,LCGr_Flux_CSIFormat.dat';
   private files: string[];
 
   constructor() {
-    this.filename = FILENAME;
-    this.sourceDir = SOURCE_DIRECTORY;
-    this.workDir = WORK_DIRECTORY;
-    this.archiveDir = ARCHIVE_DIRECTORY;
-    this.files = FILES.split(',');
+    this.files = this.FILES_LIST.split(',');
     this.watchFilesForChange();
   }
 
@@ -37,18 +34,16 @@ export class DirectoryService {
    * Watches a single file for any sort of changes.
    * Chokidar.watch() will only fire if the file has been saved
    * and then it waits 100 milliseconds before starting
-   *
-   * @memberof DirectoryService
    */
   public async watchFile() {
-    const workFile = `${this.workDir}\\${this.filename}`;
+    const workFile = `${this.WORK_DIRECTORY}\\${this.FILENAME}`;
 
-    fs.access(this.sourceDir, fs.constants.F_OK, (accessErr) => {
+    fs.access(this.SOURCE_DIRECTORY, fs.constants.F_OK, (accessErr) => {
       if (accessErr) {
         throw accessErr;
       }
       chokidar
-        .watch(`${this.sourceDir}\\${this.filename}`, {
+        .watch(`${this.SOURCE_DIRECTORY}\\${this.FILENAME}`, {
           atomic: true,
           depth: 0,
           awaitWriteFinish: true
@@ -58,41 +53,35 @@ export class DirectoryService {
             if (chokidarErr) {
               throw chokidarErr;
             }
-            this.notifyValidationService(this.filename);
+            this.notifyValidationService(this.FILENAME);
           });
         });
     });
   }
   /**
    * Used to watch a directory for added files of a set type
-   *
-   * @memberof DirectoryService
    */
   public async watchDirectory() {
-    fs.access(this.sourceDir, fs.constants.F_OK, (err) => {
+    fs.access(this.SOURCE_DIRECTORY, fs.constants.F_OK, (err) => {
       if (!err) {
         console.log('Got access');
-        chokidar.watch(this.sourceDir).on('add', (filePath, fileStats) => {
+        chokidar.watch(this.SOURCE_DIRECTORY).on('add', (filePath, fileStats) => {
           const filename = path.basename(filePath);
           if (filename) {
             const ext = path.extname(filename);
 
-            fs.access(path.join(this.sourceDir, filename), fs.constants.R_OK, (accessErr) => {
+            fs.access(path.join(this.SOURCE_DIRECTORY, filename), fs.constants.R_OK, (accessErr) => {
               if (!accessErr) {
                 this.extIsValid(ext).then((validExt) => {
                   if (validExt) {
-                    // console.log("Valid ext...", ext);
                     this.filenameIsValid(filename).then((validName) => {
                       if (validName) {
-                        // console.log("Valid filename...", filename);
-                        // this.notifyValidationService(filename);
-                        const workFile = `${this.workDir}\\${filename}`;
-                        const archFile = `${this.archiveDir}\\${filename}`;
+                        const workFile = `${this.WORK_DIRECTORY}\\${filename}`;
+                        const archFile = `${this.ARCHIVE_DIRECTORY}\\${filename}`;
                         fs.copyFile(filename, workFile, (copyErr) => {
                           if (copyErr) {
                             throw copyErr;
                           } else {
-                            // this.notifyValidationService(filename);
                             fs.move(workFile, archFile, {
                               overwrite: true
                             })
@@ -104,7 +93,6 @@ export class DirectoryService {
                               });
                           }
                         });
-                        // fs.copyFileSync(filename, destFile);
                       } else {
                         console.log('Invalid filename...');
                       }
@@ -124,16 +112,14 @@ export class DirectoryService {
   }
   /**
    * Watches an array of files in the source directory
-   *
-   * @memberof DirectoryService
    */
   public async watchFilesForChange() {
     const filePaths: string[] = [];
     this.files.forEach((value, index) => {
-      filePaths.push(`${this.sourceDir}\\${value}`);
+      filePaths.push(`${this.SOURCE_DIRECTORY}\\${value}`);
     });
 
-    fs.access(this.sourceDir, fs.constants.F_OK, (err) => {
+    fs.access(this.SOURCE_DIRECTORY, fs.constants.F_OK, (err) => {
       if (err) {
         throw err;
       }
@@ -148,7 +134,7 @@ export class DirectoryService {
             console.log(filePath);
             const tokens = filePath.split('\\');
             const fileName = tokens[tokens.length - 1];
-            const workFile = `${this.workDir}\\${fileName}`;
+            const workFile = `${this.WORK_DIRECTORY}\\${fileName}`;
             fs.copyFile(filePath, workFile, (copyErr) => {
               if (copyErr) {
                 throw copyErr;
@@ -164,13 +150,9 @@ export class DirectoryService {
 
   /**
    * Checks the current file extension against a set list of acceptable extensions.
-   *
-   * @param {string} ext
-   * @returns {Promise<boolean>}
-   * @memberof DirectoryService
    */
   private async extIsValid(ext: string): Promise<boolean> {
-    const exts = ACCEPTABLE_EXTS;
+    const exts = this.ACCEPTABLE_EXTS;
     return new Promise((resolve, reject) => {
       const isValid = exts.includes(ext);
       return resolve(isValid);
@@ -178,26 +160,19 @@ export class DirectoryService {
   }
   /**
    * Determines if the supplied filename matches the RegEx defined in @tamu-gisc/two-shared
-   *
-   * @param {string} filename
-   * @returns {Promise<boolean>}
-   * @memberof DirectoryService
    */
   private async filenameIsValid(filename: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      return resolve(FILENAME_REGEXP.test(filename));
+      return resolve(this.FILENAME_REGEXP.test(filename));
     });
   }
 
   /**
    * Informs the validation service that the watched file has been altered
-   *
-   * @param {string} filepath
-   * @memberof DirectoryService
    */
   private notifyValidationService(filepath: string): void {
     // const route = path.extname(filepath).substring(1);
-    const route = `${VALIDATION_SERVICE.protocol}${VALIDATION_SERVICE.host}:${VALIDATION_SERVICE.port}/${VALIDATION_SERVICE.globalPrefix}/${VALIDATION_SERVICE.validation_route}`;
+    const route = `${this.VALIDATION_SERVICE.protocol}${this.VALIDATION_SERVICE.host}:${this.VALIDATION_SERVICE.port}/${this.VALIDATION_SERVICE.globalPrefix}/${this.VALIDATION_SERVICE.validation_route}`;
     const options = {
       method: 'POST',
       uri: route,
@@ -214,9 +189,6 @@ export class DirectoryService {
         .catch((err) => {
           throw err;
         });
-      // rp(options).catch((err) => {
-      //   throw err;
-      // });
     } catch (err) {
       throw err;
     }
