@@ -23,7 +23,7 @@ export class SiteComponent implements OnInit {
       this.siteCode = params.get('siteCode');
     });
     if (this.siteCode === 'demo') {
-      this.chartData = this.statusService.demoSiteHistory(this.history);
+      this.chartData = this.statusService.demoSiteHistory();
     } else {
       this.chartData = this.statusService.siteHistory(this.siteCode, this.history);
     }
