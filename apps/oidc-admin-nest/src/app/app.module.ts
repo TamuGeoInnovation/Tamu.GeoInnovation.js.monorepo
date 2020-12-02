@@ -1,12 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { OIDC_IDP_ISSUER_URL } from '../environments/oidcconfig';
-
 import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc/client';
-
 import {
   AccessToken,
   Account,
@@ -21,12 +16,15 @@ import {
   SecretQuestion,
   SecretAnswer,
   UserPasswordReset,
-  UserPasswordHistory
-} from '@tamu-gisc/oidc/provider-nestjs';
-
-import { AccessTokenModule, ClientMetadataModule, RoleModule, StatsModule, UserModule } from '@tamu-gisc/oidc/admin-nest';
+  UserPasswordHistory,
+  ClientMetadataModule,
+  RoleModule,
+  UserModule
+} from '@tamu-gisc/oidc/common';
+import { AccessTokenModule, StatsModule } from '@tamu-gisc/oidc/admin-nest';
 
 import { dbConfig } from '../environments/environment';
+import { OIDC_IDP_ISSUER_URL } from '../environments/oidcconfig';
 
 @Module({
   imports: [
@@ -59,8 +57,8 @@ import { dbConfig } from '../environments/environment';
     StatsModule,
     UserModule
   ],
-  controllers: [AppController],
-  providers: [AppService]
+  controllers: [],
+  providers: []
 })
 export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {

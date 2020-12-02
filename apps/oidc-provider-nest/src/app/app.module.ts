@@ -27,10 +27,12 @@ import {
   UserPasswordReset,
   UserPasswordHistory,
   PushedAuthorizationRequest,
-  ReplayDetection
+  ReplayDetection,
+  ClientMetadataModule,
+  UserModule,
+  SecretQuestionController
 } from '@tamu-gisc/oidc/common';
 import { InteractionModule, UserLoginModule } from '@tamu-gisc/oidc/provider-nestjs';
-import { ClientMetadataModule, UserModule } from '@tamu-gisc/oidc/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -69,13 +71,13 @@ import { dbConfig } from '../environments/environment';
         ReplayDetection
       ],
       autoLoadEntities: true
-    })
-    // InteractionModule
-    // ClientMetadataModule,
-    // UserModule
-    // UserLoginModule
+    }),
+    InteractionModule,
+    ClientMetadataModule,
+    UserModule,
+    UserLoginModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, SecretQuestionController],
   providers: [AppService]
 })
 export class AppModule {

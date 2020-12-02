@@ -1,12 +1,9 @@
 import { ExecutionContext, Injectable, CanActivate } from '@nestjs/common';
+
 import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
 /**
  * NestJS guard used to prevent people from accessing "login" specific routes
- *
- * @export
- * @class AuthenticatedGuard
- * @implements {CanActivate}
  */
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {

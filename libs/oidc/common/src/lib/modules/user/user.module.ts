@@ -1,8 +1,6 @@
 import { Module, NestModule, HttpModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { SecretQuestionController } from '@tamu-gisc/oidc/provider-nestjs';
-
 import { UserController } from '../../controllers/user/user.controller';
 import { UserService } from '../../services/user/user.service';
 import { StaticAccountService } from '../../services/account/account.service';
@@ -35,7 +33,7 @@ import {
     ]),
     HttpModule
   ],
-  controllers: [UserController, SecretQuestionController],
+  controllers: [UserController],
   providers: [UserService, StaticAccountService],
   exports: [UserService, StaticAccountService]
 })

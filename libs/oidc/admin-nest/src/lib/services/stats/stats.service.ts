@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { AccessToken, AccessTokenRepo, UserRepo } from '@tamu-gisc/oidc/provider-nestjs';
-import { access } from 'fs';
+
+import { AccessTokenRepo, UserRepo } from '@tamu-gisc/oidc/common';
 
 @Injectable()
 export class StatService {
