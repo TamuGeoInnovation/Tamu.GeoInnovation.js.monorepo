@@ -1,7 +1,6 @@
 import { Controller, Post, Get, Body } from '@nestjs/common';
 
-import { SecretQuestion } from '../../entities/all.entity';
-import { UserService } from '../../services/user/user.service';
+import { SecretQuestion, UserService } from '@tamu-gisc/oidc/common';
 
 @Controller('secret-question')
 export class SecretQuestionController {

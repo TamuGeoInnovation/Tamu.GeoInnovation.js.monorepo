@@ -2,7 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 
 import { Request, Response } from 'express';
 
-import { urlFragment, urlHas } from '../../_utils/url-utils';
+import { urlFragment, urlHas } from '@tamu-gisc/oidc/utils';
 import { UserRepo, SecretQuestionRepo } from '../../entities/all.entity';
 
 @Injectable()

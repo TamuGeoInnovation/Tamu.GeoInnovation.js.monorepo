@@ -3,7 +3,7 @@ import { Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus, Body
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
 
-import { urlFragment, urlHas } from '../../_utils/url-utils';
+import { urlFragment, urlHas } from '@tamu-gisc/oidc/utils';
 import { User } from '../../entities/all.entity';
 import { UserService, ServiceToControllerTypes } from '../../services/user/user.service';
 

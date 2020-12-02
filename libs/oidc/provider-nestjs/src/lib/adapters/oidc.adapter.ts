@@ -16,9 +16,8 @@ import {
   Session,
   TypeORMEntities,
   ReplayDetection,
-  PushedAuthorizationRequest,
-  User
-} from '../entities/all.entity';
+  PushedAuthorizationRequest
+} from '@tamu-gisc/oidc/common';
 
 /**
  * Used for storing issued tokens, codes, user sessions, etc

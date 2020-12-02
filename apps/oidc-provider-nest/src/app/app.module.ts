@@ -14,8 +14,6 @@ import {
   RegistrationAccessToken,
   Session,
   User,
-  InteractionModule,
-  UserModule,
   ClientMetadata,
   GrantType,
   RedirectUri,
@@ -24,15 +22,15 @@ import {
   Role,
   UserRole,
   UserLogin,
-  UserLoginModule,
   SecretQuestion,
   SecretAnswer,
   UserPasswordReset,
   UserPasswordHistory,
   PushedAuthorizationRequest,
   ReplayDetection
-} from '@tamu-gisc/oidc/provider-nestjs';
-import { ClientMetadataModule } from '@tamu-gisc/oidc/common';
+} from '@tamu-gisc/oidc/common';
+import { InteractionModule, UserLoginModule } from '@tamu-gisc/oidc/provider-nestjs';
+import { ClientMetadataModule, UserModule } from '@tamu-gisc/oidc/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -71,11 +69,11 @@ import { dbConfig } from '../environments/environment';
         ReplayDetection
       ],
       autoLoadEntities: true
-    }),
-    InteractionModule,
-    ClientMetadataModule,
-    UserModule,
-    UserLoginModule
+    })
+    // InteractionModule
+    // ClientMetadataModule,
+    // UserModule
+    // UserLoginModule
   ],
   controllers: [AppController],
   providers: [AppService]

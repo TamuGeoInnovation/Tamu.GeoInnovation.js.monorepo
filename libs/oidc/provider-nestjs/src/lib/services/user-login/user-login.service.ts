@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { Request } from 'express';
 
-import { UserLogin, UserLoginRepo } from '../../entities/all.entity';
+import { UserLogin, UserLoginRepo } from '@tamu-gisc/oidc/common';
 
 @Injectable()
 export class UserLoginService {

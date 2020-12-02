@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { UserLoginRepo } from '@tamu-gisc/oidc/common';
+
 import { UserLoginService } from '../../services/user-login/user-login.service';
-import { UserLoginRepo } from '../../entities/all.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserLoginRepo])],

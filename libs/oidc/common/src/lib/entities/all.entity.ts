@@ -1,7 +1,6 @@
 import { Req } from '@nestjs/common';
-import { Exclude } from 'class-transformer';
-import { Request } from 'express';
 import {
+  getConnection,
   BeforeUpdate,
   BeforeInsert,
   Entity,
@@ -18,6 +17,8 @@ import {
   Repository,
   EntityRepository
 } from 'typeorm';
+
+import { Request } from 'express';
 import { v4 as guid } from 'uuid';
 
 export type TypeORMEntities = string | Function | (new () => unknown) | EntitySchema<unknown>;

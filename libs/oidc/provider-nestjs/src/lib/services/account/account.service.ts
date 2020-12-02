@@ -1,7 +1,8 @@
 import { getConnection } from 'typeorm';
 
+import { User } from '@tamu-gisc/oidc/common';
+
 import { CommonService } from '../common/common.service';
-import { User } from '../../entities/all.entity';
 
 export class StaticAccountService extends CommonService {
   public static async getUserRoles(accountGuid: string, clientName: string) {

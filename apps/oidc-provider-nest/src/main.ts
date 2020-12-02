@@ -9,7 +9,8 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { join } from 'path';
 
-import { OpenIdProvider, ClientMetadataModule, ClientMetadataService } from '@tamu-gisc/oidc/provider-nestjs';
+import { OpenIdProvider } from '@tamu-gisc/oidc/provider-nestjs';
+import { ClientMetadataModule, ClientMetadataService } from '@tamu-gisc/oidc/common';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';

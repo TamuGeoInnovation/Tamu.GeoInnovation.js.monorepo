@@ -4,8 +4,10 @@ import { Request, Response } from 'express';
 import got from 'got';
 import { InteractionResults } from 'oidc-provider';
 
+import { UserService } from '@tamu-gisc/oidc/common';
+
 import { OpenIdProvider } from '../../configs/oidc-provider-config';
-import { UserService } from '../../services/user/user.service';
+
 import { urlHas, urlFragment } from '../../_utils/url-utils';
 import { TwoFactorAuthUtils } from '../../_utils/twofactorauth.util';
 import { UserLoginService } from '../../services/user-login/user-login.service';
