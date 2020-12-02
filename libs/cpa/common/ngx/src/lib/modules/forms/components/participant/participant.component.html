@@ -25,11 +25,11 @@
   </div>
 </div>
 
-<!-- Scenario Title -->
-<h2>{{ (scenario | async)?.title }}</h2>
+<!-- Snapshot Title -->
+<h2>{{ (snapshot | async)?.title }}</h2>
 <h3>{{ (workshop | async)?.title }}</h3>
 
-<p class="scenario-description">{{ (scenario | async)?.description }}</p>
+<p class="snapshot-description">{{ (snapshot | async)?.description }}</p>
 
 <form [formGroup]="form">
   <div class="form-section">

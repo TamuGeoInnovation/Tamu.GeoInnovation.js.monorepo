@@ -6,7 +6,7 @@ import { tap, map, shareReplay } from 'rxjs/operators';
 
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { ScenarioService } from '@tamu-gisc/cpa/data-access';
+import { SnapshotService } from '@tamu-gisc/cpa/data-access';
 
 import esri = __esri;
 
@@ -14,7 +14,7 @@ import esri = __esri;
   selector: 'tamu-gisc-snapshot-builder',
   templateUrl: './snapshot-builder.component.html',
   styleUrls: ['./snapshot-builder.component.scss'],
-  providers: [ScenarioService]
+  providers: [SnapshotService]
 })
 export class SnapshotBuilderComponent implements OnInit {
   public builderForm: FormGroup;
@@ -40,7 +40,7 @@ export class SnapshotBuilderComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private mapService: EsriMapService,
-    private scenario: ScenarioService,
+    private snapshot: SnapshotService,
     private router: Router,
     private route: ActivatedRoute,
     private ns: NotificationService
@@ -67,7 +67,7 @@ export class SnapshotBuilderComponent implements OnInit {
     });
 
     if (this.route.snapshot.params.guid) {
-      this.scenario.getOne(this.route.snapshot.params.guid).subscribe((r) => {
+      this.snapshot.getOne(this.route.snapshot.params.guid).subscribe((r) => {
         this.builderForm.patchValue(r);
 
         r.layers.forEach((l) => {
@@ -101,7 +101,7 @@ export class SnapshotBuilderComponent implements OnInit {
   /**
    * Adds a layer group to the layers form array.
    *
-   * Allows adding multiple layers to the scenario.
+   * Allows adding multiple layers to the snapshot.
    */
   public addLayer(url?: object) {
     const props = url && typeof url === 'object' ? { ...url } : { url: '' };
@@ -116,11 +116,11 @@ export class SnapshotBuilderComponent implements OnInit {
     (this.builderForm.controls.layers as FormArray).removeAt(index);
   }
 
-  public createScenario() {
+  public createSnapshot() {
     const value = this.builderForm.getRawValue();
 
     if (this.route.snapshot.params.guid) {
-      this.scenario
+      this.snapshot
         .update(this.route.snapshot.params.guid, this.builderForm.value)
         .pipe(
           tap(() => {
@@ -133,19 +133,19 @@ export class SnapshotBuilderComponent implements OnInit {
           this.builderForm.enable();
 
           this.ns.toast({
-            message: 'Scenario was updated successfully.',
-            id: 'scenario-update',
-            title: 'Update Scenario'
+            message: 'Snapshot was updated successfully.',
+            id: 'snapshot-update',
+            title: 'Updated Snapshot'
           });
         });
     } else {
-      this.scenario.create(value).subscribe((res) => {
+      this.snapshot.create(value).subscribe((res) => {
         this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
 
         this.ns.toast({
-          message: 'Scenario was created successfully.',
-          id: 'scenario-create',
-          title: 'New Scenario',
+          message: 'Snapshot was created successfully.',
+          id: 'snapshot-create',
+          title: 'New Snapshot',
           acknowledge: false
         });
       });

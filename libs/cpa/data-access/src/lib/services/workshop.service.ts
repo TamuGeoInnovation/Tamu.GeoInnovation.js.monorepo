@@ -34,11 +34,11 @@ export class WorkshopService {
     return this.http.delete(`${this.resource}/${guid}`);
   }
 
-  public addScenario(wGuid: string, sGuid: string) {
-    return this.http.post(`${this.resource}/scenario`, { workshopGuid: wGuid, scenarioGuid: sGuid });
+  public addSnapshot(wGuid: string, sGuid: string) {
+    return this.http.post(`${this.resource}/snapshot`, { workshopGuid: wGuid, snapshotGuid: sGuid });
   }
 
-  public deleteScenario(wGuid: string, sGuid: string) {
-    return this.http.delete(`${this.resource}/scenario/${wGuid}/${sGuid}`);
+  public deleteSnapshot(wGuid: string, sGuid: string) {
+    return this.http.delete(`${this.resource}/snapshot/${wGuid}/${sGuid}`);
   }
 }

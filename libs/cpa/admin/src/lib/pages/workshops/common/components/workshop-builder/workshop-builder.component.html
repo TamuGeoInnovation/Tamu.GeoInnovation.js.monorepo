@@ -29,16 +29,16 @@
         <tamu-gisc-select [data]="snapshotList | async" placeholder="Select a snapshot" [displayTemplate]="'title'" (changed)="submitWorkshop($event)"></tamu-gisc-select>
       </div>
 
-      <div class="form-collection column" *ngIf="form.controls?.scenarios.value.length > 0">
-        <div class="record-item" *ngFor="let scenario of form.controls.scenarios.value">
-          <div class="record-title">{{ scenario.title }}</div>
+      <div class="form-collection column" *ngIf="form.controls?.snapshots.value.length > 0">
+        <div class="record-item" *ngFor="let snapshot of form.controls.snapshots.value">
+          <div class="record-title">{{ snapshot.title }}</div>
           <div class="record-actions material-icons-container">
-            <span class="material-icons action error" title="Delete Workshop" (click)="removeScenario(scenario)">delete</span>
+            <span class="material-icons action error" title="Delete Workshop" (click)="removeSnapshot(snapshot)">delete</span>
           </div>
         </div>
       </div>
 
-      <p *ngIf="form.controls?.scenarios.value.length === 0">There are no associated snapshots with this workshop. Select a snapshot from the above list to add.</p>
+      <p *ngIf="form.controls?.snapshots.value.length === 0">There are no associated snapshots with this workshop. Select a snapshot from the above list to add.</p>
     </div>
   </div>
 

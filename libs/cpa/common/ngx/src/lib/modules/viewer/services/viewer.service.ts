@@ -16,10 +16,10 @@ export class ViewerService {
   public snapshotGuid: Observable<string> = this._snapshotGuid.asObservable();
 
   public workshop: Observable<IWorkshopRequestPayload>;
-  public scenario: Observable<ISnapshotsResponse>;
+  public snapshot: Observable<ISnapshotsResponse>;
 
-  public scenarioHistory: BehaviorSubject<ISnapshotsResponse[]> = new BehaviorSubject([]);
-  public scenarioIndex: BehaviorSubject<number> = new BehaviorSubject(0);
+  public snapshotHistory: BehaviorSubject<ISnapshotsResponse[]> = new BehaviorSubject([]);
+  public snapshotIndex: BehaviorSubject<number> = new BehaviorSubject(0);
 
   constructor(private ws: WorkshopService, private rs: ResponseService) {
     this.init();
@@ -33,8 +33,8 @@ export class ViewerService {
     this._snapshotGuid.next(guid);
   }
 
-  public updateScenarioIndex(index: number) {
-    this.scenarioIndex.next(index);
+  public updateSnapshotIndex(index: number) {
+    this.snapshotIndex.next(index);
   }
 
   public init(): void {
@@ -45,40 +45,40 @@ export class ViewerService {
       shareReplay(1)
     );
 
-    this.scenario = combineLatest([this.workshop, this.scenarioIndex]).pipe(
-      switchMap(([workshop, scenarioIndex]: [IWorkshopRequestPayload, number]) => {
+    this.snapshot = combineLatest([this.workshop, this.snapshotIndex]).pipe(
+      switchMap(([workshop, snapshotIndex]: [IWorkshopRequestPayload, number]) => {
         return of(workshop).pipe(
-          pluck<IResponseResponse, ISnapshotsResponse[]>('scenarios'),
-          pluck(scenarioIndex)
+          pluck<IResponseResponse, ISnapshotsResponse[]>('snapshots'),
+          pluck(snapshotIndex)
         );
       }),
-      tap((scenario) => {
-        this.addToScenarioHistory(scenario);
+      tap((snapshot) => {
+        this.addToSnapshotHistory(snapshot);
       }),
       shareReplay(1)
     );
   }
 
   /**
-   * Manages the history of the ScenarioHistory behavior subject, to only keep a maximum of 2 entires (curr and prev).
+   * Manages the history of the SnapshotHistory behavior subject, to only keep a maximum of 2 entires (curr and prev).
    *
-   * This history is used to add/remove layers for scenarios.
+   * This history is used to add/remove layers for snapshots.
    */
-  private addToScenarioHistory(scenario: ISnapshotsResponse) {
-    const prevValue = this.scenarioHistory.getValue();
+  private addToSnapshotHistory(snapshot: ISnapshotsResponse) {
+    const prevValue = this.snapshotHistory.getValue();
 
-    const newValue = [...prevValue, scenario].slice(-2);
+    const newValue = [...prevValue, snapshot].slice(-2);
 
-    this.scenarioHistory.next(newValue);
+    this.snapshotHistory.next(newValue);
   }
 
-  public scanScenario(direction: 'prev' | 'next') {
-    forkJoin([this.scenarioIndex.pipe(take(1)), this.workshop]).subscribe(([scenarioIndex, workshop]) => {
+  public scanSnapshot(direction: 'prev' | 'next') {
+    forkJoin([this.snapshotIndex.pipe(take(1)), this.workshop]).subscribe(([snapshotIndex, workshop]) => {
       if (direction) {
         if (direction === 'prev') {
-          if (scenarioIndex > 0) this.scenarioIndex.next(scenarioIndex - 1);
+          if (snapshotIndex > 0) this.snapshotIndex.next(snapshotIndex - 1);
         } else if (direction === 'next') {
-          this.scenarioIndex.next(scenarioIndex + 1);
+          this.snapshotIndex.next(snapshotIndex + 1);
         }
       }
     });

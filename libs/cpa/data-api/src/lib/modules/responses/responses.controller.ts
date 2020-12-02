@@ -3,7 +3,7 @@ import { Controller, Post, Body, Get, HttpException, Delete, Param, Patch } from
 import { Response } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseController } from '../base/base.controller';
-import { ResponsesService } from './responses.service';
+import { IResponseRequestPayload, ResponsesService } from './responses.service';
 
 @Controller('responses')
 export class ResponsesController extends BaseController<Response> {
@@ -11,16 +11,16 @@ export class ResponsesController extends BaseController<Response> {
     super(service);
   }
 
-  @Get(':workshopGuid/:scenarioGuid')
-  public async getAllForScenarioAndWorkshop(@Param() params) {
+  @Get(':workshopGuid/:snapshotGuid')
+  public async getAllForSnapshotAndWorkshop(@Param() params) {
     return this.service.getAllForBoth(params);
   }
 
   /**
-   * Retrieves a specific existing scenario user response.
+   * Retrieves a specific existing snapshot user response.
    */
   @Get(':guid')
-  public async getOne(@Param() params) {
+  public async getOne(@Param() params: IResponseRequestPayload) {
     const existing = await this.service.getSpecific(params);
     if (existing) {
       return existing;
@@ -30,7 +30,7 @@ export class ResponsesController extends BaseController<Response> {
   }
 
   /**
-   * Updates an existing scenario user response.
+   * Updates an existing snapshot user response.
    */
   @Patch(':guid')
   public async update(@Param() params, @Body() body) {
@@ -38,7 +38,7 @@ export class ResponsesController extends BaseController<Response> {
   }
 
   /**
-   * Deletes an existing scenario user response.
+   * Deletes an existing snapshot user response.
    */
   @Delete(':guid')
   public async delete(@Param() params) {
@@ -46,18 +46,20 @@ export class ResponsesController extends BaseController<Response> {
   }
 
   /**
-   * Returns a list of all scenario user responses and its associated scenario.
+   * Returns a list of all snapshot user responses and its associated snapshot.
    */
   @Get('')
   public getAll() {
-    return this.service.getMany({ relations: ['scenario'] });
+    return this.service.getMany({ relations: ['snapshot'] });
   }
 
   /**
-   * Inserts a scenario user response.
+   * Inserts a snapshot user response.
    */
   @Post('')
-  public async insert(@Body() body) {
+  public async insert(@Body() body: IResponseRequestPayload) {
     return this.service.insertNew(body);
   }
 }
+
+

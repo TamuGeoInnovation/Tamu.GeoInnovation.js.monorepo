@@ -14,7 +14,7 @@ export class LayersController {
   /**
    * Returns live layers available for a workshop.
    *
-   * This is essentially a list of unique scenarios that have participant
+   * This is essentially a list of unique snapshots that have participant
    * submissions. The submissions are treated as part of a feature collection
    * used as a live layer.
    */
@@ -24,12 +24,12 @@ export class LayersController {
   }
 
   /**
-   * Retrieves all of the submissions for a workshop and scenario
+   * Retrieves all of the submissions for a workshop and snapshot
    */
-  @Get(':workshopGuid/:scenarioGuid')
-  public getScenarioSubmissionsAsLayer(@Param() params) {
-    const { workshopGuid, scenarioGuid } = params;
+  @Get(':workshopGuid/:snapshotGuid')
+  public getSnapshotSubmissionsAsLayer(@Param() params) {
+    const { workshopGuid, snapshotGuid } = params;
 
-    return this.service.getResponsesForWorkshopAndScenario(workshopGuid, scenarioGuid);
+    return this.service.getResponsesForWorkshopAndSnapshot(workshopGuid, snapshotGuid);
   }
 }

@@ -18,8 +18,8 @@ export class ResponseService {
     return this.http.get<IResponseResponse[]>(this.resource);
   }
 
-  public getResponsesForWorkshopAndScenario(workshopGuid: string, scenarioGuid: string) {
-    return this.http.get<IResponseResponse[]>(`${this.resource}/${workshopGuid}/${scenarioGuid}`);
+  public getResponsesForWorkshopAndSnapshot(workshopGuid: string, snapshotGuid: string) {
+    return this.http.get<IResponseResponse[]>(`${this.resource}/${workshopGuid}/${snapshotGuid}`);
   }
 
   public getResponse(guid: string) {

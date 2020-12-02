@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ScenarioService } from '@tamu-gisc/cpa/data-access';
+import { SnapshotService } from '@tamu-gisc/cpa/data-access';
 
 @Component({
   selector: 'tamu-gisc-delete',
@@ -11,7 +11,7 @@ import { ScenarioService } from '@tamu-gisc/cpa/data-access';
 export class DeleteComponent implements OnInit {
   public guid: string;
 
-  constructor(private router: Router, private route: ActivatedRoute, private ss: ScenarioService) {}
+  constructor(private router: Router, private route: ActivatedRoute, private ss: SnapshotService) {}
 
   public ngOnInit(): void {
     this.guid = this.route.snapshot.params.guid;

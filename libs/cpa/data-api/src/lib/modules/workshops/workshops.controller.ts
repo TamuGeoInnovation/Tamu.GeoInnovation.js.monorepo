@@ -3,7 +3,7 @@ import { Controller, Get, Post, Body, Delete, HttpException, Param, Patch } from
 import { Workshop } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseController } from '../base/base.controller';
-import { WorkshopsService } from './workshops.service';
+import { IWorkshopSnapshotPayload, WorkshopsService } from './workshops.service';
 
 @Controller('workshops')
 export class WorkshopsController extends BaseController<Workshop> {
@@ -12,19 +12,19 @@ export class WorkshopsController extends BaseController<Workshop> {
   }
 
   /**
-   * Adds a scenario to a workshop
+   * Adds a snapshot to a workshop
    */
-  @Post('scenario')
-  public async addScenario(@Body() body) {
-    return await this.service.addNewScenario(body);
+  @Post('snapshot')
+  public async addSnapshot(@Body() body: IWorkshopSnapshotPayload) {
+    return await this.service.addNewSnapshot(body);
   }
 
   /**
-   * Deletes a scenario from a workshop
+   * Deletes a snapshot from a workshop
    */
-  @Delete('scenario/:workshopGuid/:scenarioGuid')
-  public async deleteScenario(@Param() params) {
-    return await this.service.deleteScenario(params);
+  @Delete('snapshot/:workshopGuid/:snapshotGuid')
+  public async deleteSnapshot(@Param() params: IWorkshopSnapshotPayload) {
+    return await this.service.deleteSnapshot(params);
   }
 
   /**
@@ -52,10 +52,10 @@ export class WorkshopsController extends BaseController<Workshop> {
   }
 
   /**
-   * Returns a list of all workshops and their associated scenarios.
+   * Returns a list of all workshops and their associated snapshots.
    */
   @Get('')
   public getAll() {
-    return this.service.getMany({ relations: ['scenarios'] });
+    return this.service.getMany({ relations: ['snapshots'] });
   }
 }

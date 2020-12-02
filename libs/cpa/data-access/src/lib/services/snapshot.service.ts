@@ -7,15 +7,15 @@ import { ISnapshotsRequestPayload, ISnapshotsResponse } from '@tamu-gisc/cpa/dat
 @Injectable({
   providedIn: 'root'
 })
-export class ScenarioService {
+export class SnapshotService {
   private resource: string;
 
   constructor(private http: HttpClient, private environment: EnvironmentService) {
-    this.resource = this.environment.value(`api_url`) + 'scenarios';
+    this.resource = this.environment.value(`api_url`) + 'snapshots';
   }
 
-  public create(scenario: ISnapshotsRequestPayload) {
-    return this.http.post<ISnapshotsResponse>(this.resource, scenario);
+  public create(snapshot: ISnapshotsRequestPayload) {
+    return this.http.post<ISnapshotsResponse>(this.resource, snapshot);
   }
 
   public getAll() {
@@ -26,8 +26,8 @@ export class ScenarioService {
     return this.http.get<ISnapshotsResponse>(`${this.resource}/${guid}`);
   }
 
-  public update(guid: string, scenario: ISnapshotsRequestPayload) {
-    return this.http.patch(`${this.resource}/${guid}`, scenario);
+  public update(guid: string, snapshot: ISnapshotsRequestPayload) {
+    return this.http.patch(`${this.resource}/${guid}`, snapshot);
   }
 
   public delete(guid: string) {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Response, Scenario } from '@tamu-gisc/cpa/common/entities';
+import { Response, Snapshot } from '@tamu-gisc/cpa/common/entities';
 
 import esri = __esri;
 
@@ -10,20 +10,20 @@ import esri = __esri;
 export class LayersService {
   constructor(@InjectRepository(Response) private responseRepo: Repository<Response>) {}
 
-  public async getLayersForWorkshop(workshopGuid: string): Promise<Array<Scenario>> {
+  public async getLayersForWorkshop(workshopGuid: string): Promise<Array<Snapshot>> {
     const q = await this.responseRepo
       .createQueryBuilder('r')
       .where('r.workshopGuid = :w', {
         w: workshopGuid
       })
-      .leftJoinAndSelect('r.scenario', 'scenario')
+      .leftJoinAndSelect('r.snapshot', 'snapshot')
       .getMany();
 
-    const uniqueSnapshots: Array<Scenario> = q.reduce((acc, curr) => {
-      const existsInUniques = acc.find((scenario) => scenario.guid === curr.scenario.guid);
+    const uniqueSnapshots: Array<Snapshot> = q.reduce((acc, curr) => {
+      const existsInUniques = acc.find((snapshot) => snapshot.guid === curr.snapshot.guid);
 
       if (existsInUniques === undefined) {
-        return [...acc, curr.scenario];
+        return [...acc, curr.snapshot];
       } else {
         return acc;
       }
@@ -32,12 +32,12 @@ export class LayersService {
     return uniqueSnapshots;
   }
 
-  public async getResponsesForWorkshopAndScenario(workshop: string, scenario: string) {
+  public async getResponsesForWorkshopAndSnapshot(workshop: string, snapshot: string) {
     const q = await this.responseRepo
       .createQueryBuilder('r')
       .where('r.workshopGuid = :w')
-      .andWhere('r.scenarioGuid = :s')
-      .setParameters({ w: workshop, s: scenario })
+      .andWhere('r.snapshotGuid = :s')
+      .setParameters({ w: workshop, s: snapshot })
       .getMany();
 
     const features = q.map((response) => {

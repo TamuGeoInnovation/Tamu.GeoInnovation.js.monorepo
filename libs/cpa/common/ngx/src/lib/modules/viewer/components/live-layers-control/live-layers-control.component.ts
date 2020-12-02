@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
-import { switchMap, take, withLatestFrom } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
-import { Scenario } from '@tamu-gisc/cpa/common/entities';
+import { Snapshot } from '@tamu-gisc/cpa/common/entities';
 import { LayersService } from '@tamu-gisc/cpa/data-access';
 
 import { ViewerService } from '../../services/viewer.service';
@@ -16,7 +16,7 @@ import esri = __esri;
   styleUrls: ['./live-layers-control.component.scss']
 })
 export class LiveLayersControlComponent implements OnInit {
-  public layers: Observable<Array<Scenario>>;
+  public layers: Observable<Array<Snapshot>>;
 
   constructor(private layersService: LayersService, private viewerService: ViewerService, private ms: EsriMapService) {}
 
@@ -28,17 +28,17 @@ export class LiveLayersControlComponent implements OnInit {
     );
   }
 
-  public addLiveLayer(scenario: Scenario) {
+  public addLiveLayer(snapshot: Snapshot) {
     forkJoin([this.viewerService.workshop.pipe(take(1))])
       .pipe(
         switchMap(([w]) => {
-          return this.layersService.getWorkshopScenarioLayerSource(w.guid, scenario.guid);
+          return this.layersService.getWorkshopSnapshotLayerSource(w.guid, snapshot.guid);
         })
       )
       .subscribe((source: Array<esri.Graphic>) => {
         this.ms.findLayerOrCreateFromSource({
-          id: scenario.guid,
-          title: `${scenario.title} - LL`,
+          id: snapshot.guid,
+          title: `${snapshot.title} - LL`,
           type: 'feature',
           native: {
             source,

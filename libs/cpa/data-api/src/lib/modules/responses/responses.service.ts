@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, getRepository, DeepPartial } from 'typeorm';
 
-import { Response, Workshop, Scenario } from '@tamu-gisc/cpa/common/entities';
+import { Response, Workshop, Snapshot } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseService } from '../base/base.service';
 
@@ -16,15 +16,15 @@ export class ResponsesService extends BaseService<Response> {
   public async getAllForBoth(params) {
     return await this.repo
       .createQueryBuilder('r')
-      .where('r.workshopGuid = :w AND r.scenarioGuid = :s', {
+      .where('r.workshopGuid = :w AND r.snapshotGuid = :s', {
         w: params.workshopGuid,
-        s: params.scenarioGuid
+        s: params.snapshotGuid
       })
       .getMany();
   }
 
   public async getSpecific(params: IResponseRequestPayload) {
-    return await this.getOne({ where: { guid: params.guid }, relations: ['scenario'] });
+    return await this.getOne({ where: { guid: params.guid }, relations: ['snapshot'] });
   }
 
   public async updateExisting(params: IResponseRequestPayload, body: IResponseRequestPayload) {
@@ -40,10 +40,10 @@ export class ResponsesService extends BaseService<Response> {
 
     if (existing === undefined) {
       const workshop = await getRepository(Workshop).findOne({ guid: body.workshopGuid });
-      const scenario = await getRepository(Scenario).findOne({ guid: body.scenarioGuid });
+      const snapshot = await getRepository(Snapshot).findOne({ guid: body.snapshotGuid });
 
-      if (workshop && scenario) {
-        const entity = { ...body, workshop, scenario };
+      if (workshop && snapshot) {
+        const entity = { ...body, workshop, snapshot: snapshot };
 
         return this.createOne(entity);
       } else {
@@ -58,7 +58,7 @@ export class ResponsesService extends BaseService<Response> {
 export interface IResponseResponse extends DeepPartial<Response> {}
 
 export interface IResponseRequestPayload extends Omit<IResponseResponse, 'shapes'> {
-  scenarioGuid?: string;
+  snapshotGuid?: string;
   workshopGuid?: string;
   shapes: object;
 }

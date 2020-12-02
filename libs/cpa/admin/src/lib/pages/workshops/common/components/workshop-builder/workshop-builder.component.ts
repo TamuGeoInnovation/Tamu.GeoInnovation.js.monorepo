@@ -5,14 +5,14 @@ import { Observable } from 'rxjs';
 import { pluck, shareReplay, map } from 'rxjs/operators';
 
 import { ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
-import { Scenario } from '@tamu-gisc/cpa/common/entities';
-import { WorkshopService, ScenarioService } from '@tamu-gisc/cpa/data-access';
+import { Snapshot } from '@tamu-gisc/cpa/common/entities';
+import { WorkshopService, SnapshotService } from '@tamu-gisc/cpa/data-access';
 
 @Component({
   selector: 'tamu-gisc-workshop-builder',
   templateUrl: './workshop-builder.component.html',
   styleUrls: ['./workshop-builder.component.scss'],
-  providers: [WorkshopService, ScenarioService]
+  providers: [WorkshopService, SnapshotService]
 })
 export class WorkshopBuilderComponent implements OnInit {
   public form: FormGroup;
@@ -24,7 +24,7 @@ export class WorkshopBuilderComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private ws: WorkshopService,
-    private ss: ScenarioService,
+    private ss: SnapshotService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -34,7 +34,7 @@ export class WorkshopBuilderComponent implements OnInit {
       title: ['', Validators.required],
       description: ['', Validators.required],
       date: [undefined],
-      scenarios: [[]]
+      snapshots: [[]]
     });
 
     this.isExisting = this.route.params.pipe(
@@ -54,20 +54,20 @@ export class WorkshopBuilderComponent implements OnInit {
     }
   }
 
-  public submitWorkshop(scenario?: Partial<Scenario>) {
+  public submitWorkshop(snapshot?: Partial<Snapshot>) {
     if (this.route.snapshot.params['guid']) {
       const payload = this.form.getRawValue();
 
-      delete payload.scenarios;
+      delete payload.snapshots;
 
       this.ws.updateWorkshop(this.route.snapshot.params['guid'], payload).subscribe((updateStatus) => {
         console.log('Updated workshop');
       });
 
-      if (scenario) {
-        console.log('Added scenario');
-        this.ws.addScenario(this.route.snapshot.params['guid'], scenario.guid).subscribe((addScenarioStatus) => {
-          this.form.patchValue(addScenarioStatus);
+      if (snapshot) {
+        console.log('Added Snapshot');
+        this.ws.addSnapshot(this.route.snapshot.params['guid'], snapshot.guid).subscribe((addSnapshotStatus) => {
+          this.form.patchValue(addSnapshotStatus);
         });
       }
     } else {
@@ -78,9 +78,9 @@ export class WorkshopBuilderComponent implements OnInit {
     }
   }
 
-  public removeScenario(scenario: Partial<Scenario>) {
-    this.ws.deleteScenario(this.route.snapshot.params['guid'], scenario.guid).subscribe((scenarioRemoveStatus) => {
-      this.form.patchValue(scenarioRemoveStatus);
+  public removeSnapshot(snapshot: Partial<Snapshot>) {
+    this.ws.deleteSnapshot(this.route.snapshot.params['guid'], snapshot.guid).subscribe((snapshotRemoveStatus) => {
+      this.form.patchValue(snapshotRemoveStatus);
     });
   }
 }

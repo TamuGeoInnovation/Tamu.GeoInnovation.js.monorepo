@@ -50,16 +50,16 @@ export class Workshop extends CPABaseEntity {
   @Column({ nullable: true })
   public date: Date;
 
-  @ManyToMany((type) => Scenario, (s) => s.workshops)
+  @ManyToMany((type) => Snapshot, (s) => s.workshops)
   @JoinTable()
-  public scenarios: Scenario[];
+  public snapshots: Snapshot[];
 
   @OneToMany((type) => Response, (r) => r.workshop)
   public responses: Response[];
 }
 
 @Entity()
-export class Scenario extends CPABaseEntity {
+export class Snapshot extends CPABaseEntity {
   @Column({ nullable: true })
   public title: string;
 
@@ -75,10 +75,10 @@ export class Scenario extends CPABaseEntity {
   @Column({ type: 'simple-json', nullable: true })
   public layers: string;
 
-  @ManyToMany((type) => Workshop, (w) => w.scenarios)
+  @ManyToMany((type) => Workshop, (w) => w.snapshots)
   public workshops: Workshop[];
 
-  @OneToMany((type) => Response, (r) => r.scenario)
+  @OneToMany((type) => Response, (r) => r.snapshot)
   public responses: Response[];
 }
 
@@ -93,8 +93,8 @@ export class Response extends CPABaseEntity {
   @Column({ type: 'simple-json', nullable: true })
   public shapes: string | object;
 
-  @ManyToOne((type) => Scenario, (s) => s.responses, { onDelete: 'CASCADE' })
-  public scenario: Scenario;
+  @ManyToOne((type) => Snapshot, (s) => s.responses, { onDelete: 'CASCADE' })
+  public snapshot: Snapshot;
 
   @ManyToOne((type) => Workshop, (w) => w.responses, { onDelete: 'CASCADE' })
   public workshop: Workshop;

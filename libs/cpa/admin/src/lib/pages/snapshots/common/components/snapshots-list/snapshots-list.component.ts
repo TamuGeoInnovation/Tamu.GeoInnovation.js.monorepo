@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
-import { ScenarioService } from '@tamu-gisc/cpa/data-access';
+import { SnapshotService } from '@tamu-gisc/cpa/data-access';
 import { ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
 
 @Component({
@@ -12,7 +12,7 @@ import { ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
 })
 export class SnapshotsListComponent implements OnInit {
   public snapshots: Observable<ISnapshotsResponse[]>;
-  constructor(private service: ScenarioService) {}
+  constructor(private service: SnapshotService) {}
 
   public ngOnInit() {
     this.fetchRecords();

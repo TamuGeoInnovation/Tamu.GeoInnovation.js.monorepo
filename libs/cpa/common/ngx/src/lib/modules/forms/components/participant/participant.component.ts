@@ -38,10 +38,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   // Values managed by service
   public workshop = this.vs.workshop;
-  public scenario = this.vs.scenario;
+  public snapshot = this.vs.snapshot;
   public responses: Observable<IResponseResponse[]>;
-  public scenarioHistory = this.vs.scenarioHistory;
-  public scenarioIndex = this.vs.scenarioIndex;
+  public snapshotHistory = this.vs.snapshotHistory;
+  public snapshotIndex = this.vs.snapshotIndex;
 
   // Values specific to the participant component.
   public responseIndex: BehaviorSubject<number> = new BehaviorSubject(-1);
@@ -87,8 +87,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.params['guid']) {
       this.vs.updateWorkshopGuid(this.route.snapshot.params.guid);
 
-      // On scenario change, reset the workspace
-      this.scenario
+      // On snapshot change, reset the workspace
+      this.snapshot
         .pipe(
           skip(1),
           takeUntil(this._$destroy)
@@ -97,13 +97,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           this.resetWorkspace();
         });
 
-      // Fetch new responses from server whenever scenario, response index, or response save signal emits.
-      this.responses = merge(this.scenario, this.responseIndex, this.responseSave).pipe(
+      // Fetch new responses from server whenever snapshot, response index, or response save signal emits.
+      this.responses = merge(this.snapshot, this.responseIndex, this.responseSave).pipe(
         switchMap((event) => {
-          return forkJoin([this.workshop.pipe(take(1)), this.scenario.pipe(take(1))]);
+          return forkJoin([this.workshop.pipe(take(1)), this.snapshot.pipe(take(1))]);
         }),
-        switchMap(([workshop, scenario]) => {
-          return this.rs.getResponsesForWorkshopAndScenario(workshop.guid, scenario.guid);
+        switchMap(([workshop, snapshot]) => {
+          return this.rs.getResponsesForWorkshopAndSnapshot(workshop.guid, snapshot.guid);
         }),
         shareReplay(1)
       );
@@ -162,24 +162,24 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       });
     }
 
-    // Use ScenarioHistory observable to determine a scenario change which requires the addition of new layers
-    // and/or removal of old scenario layers
-    combineLatest([this.scenarioHistory, this.ms.store, from(this.mp.require(['FeatureLayer']))]).subscribe(
-      ([scenarioHistory, instances, [FeatureLayer]]: [
+    // Use SnapshotHistory observable to determine a snapshot change which requires the addition of new layers
+    // and/or removal of old snapshot layers
+    combineLatest([this.snapshotHistory, this.ms.store, from(this.mp.require(['FeatureLayer']))]).subscribe(
+      ([snapshotHistory, instances, [FeatureLayer]]: [
         ISnapshotsResponse[],
         MapServiceInstance,
         [esri.FeatureLayerConstructor]
       ]) => {
-        // Find any layers associated with the current scenario and clear them to prepare to add layers from the next scenario
-        const prevScenario = scenarioHistory.length > 1 ? scenarioHistory[0] : undefined;
-        const currScenario = scenarioHistory.length > 1 ? scenarioHistory[1] : scenarioHistory[0];
+        // Find any layers associated with the current snapshot and clear them to prepare to add layers from the next snapshot
+        const prevSnapshot = snapshotHistory.length > 1 ? snapshotHistory[0] : undefined;
+        const currSnapshot = snapshotHistory.length > 1 ? snapshotHistory[1] : snapshotHistory[0];
 
-        if (!currScenario) {
+        if (!currSnapshot) {
           return;
         }
 
-        if (prevScenario) {
-          const prevLayers = prevScenario.layers
+        if (prevSnapshot) {
+          const prevLayers = prevSnapshot.layers
             .map((l) => {
               return instances.map.layers.find((ml) => {
                 return ml.id === l.info.layerId;
@@ -195,17 +195,17 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         // Queue the new layers on the next event loop, otherwise any layers that need removed
         // will not have been removed until then and will not appear in the legend.
         setTimeout(() => {
-          // Parse coordinates form scenario string definition
-          const split = currScenario.mapCenter.split(',').map((coordinate) => parseFloat(coordinate));
+          // Parse coordinates form snapshot string definition
+          const split = currSnapshot.mapCenter.split(',').map((coordinate) => parseFloat(coordinate));
 
           // Navigate to the parsed coordinates
           instances.view.goTo({
             target: [split[0], split[1]],
-            zoom: currScenario.zoom
+            zoom: currSnapshot.zoom
           });
 
-          // Create a map of layers from the current scenario to add to the map.
-          const layers = currScenario.layers
+          // Create a map of layers from the current snapshot to add to the map.
+          const layers = currSnapshot.layers
             .map((l) => {
               return new FeatureLayer({
                 url: l.url,
@@ -317,7 +317,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    * Updates the entry value of the current participant guid with the provided geometry.
    */
   private updateOrCreateSubmission() {
-    forkJoin([this.scenario.pipe(take(1)), this.responses.pipe(take(1))]).subscribe(([scenario, responses]) => {
+    forkJoin([this.snapshot.pipe(take(1)), this.responses.pipe(take(1))]).subscribe(([snapshot, responses]) => {
       const parsed = (this.form.controls.drawn.value as esri.Graphic).toJSON();
 
       const submission: IResponseRequestPayload = {
@@ -338,7 +338,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       } else {
         // If there is no existing submission for the current participant guid, add a dictionary index for the current
         // participant guid.
-        submission.scenarioGuid = scenario.guid;
+        submission.snapshotGuid = snapshot.guid;
         submission.workshopGuid = this.route.snapshot.params['guid'];
 
         this.rs.createResponse(submission).subscribe((submissionStatus) => {

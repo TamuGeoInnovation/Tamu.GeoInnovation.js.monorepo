@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, DeepPartial, getRepository } from 'typeorm';
 
-import { Workshop, Scenario } from '@tamu-gisc/cpa/common/entities';
+import { Workshop, Snapshot } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseService } from '../base/base.service';
 
@@ -13,14 +13,14 @@ export class WorkshopsService extends BaseService<Workshop> {
     super(repo);
   }
 
-  public async addNewScenario(body: IWorkshopScenarioPayload) {
-    const existing = await this.repo.findOne({ where: { guid: body.workshopGuid }, relations: ['scenarios'] });
+  public async addNewSnapshot(body: IWorkshopSnapshotPayload) {
+    const existing = await this.repository.findOne({ where: { guid: body.workshopGuid }, relations: ['snapshots'] });
 
     if (existing) {
-      // Get the existing scenario, if it exists.
-      const scenario = await getRepository(Scenario).findOne({ where: { guid: body.scenarioGuid } });
+      // Get the existing snapshot, if it exists.
+      const snapshots = await getRepository(Snapshot).findOne({ where: { guid: body.snapshotGuid } });
 
-      existing.scenarios.push(scenario);
+      existing.snapshots.push(snapshots);
 
       try {
         return await existing.save();
@@ -32,14 +32,14 @@ export class WorkshopsService extends BaseService<Workshop> {
     }
   }
 
-  public async deleteScenario(params: IWorkshopScenarioPayload) {
-    const existing = await this.repo.findOne({
+  public async deleteSnapshot(params: IWorkshopSnapshotPayload) {
+    const existing = await this.repository.findOne({
       where: { guid: params.workshopGuid },
-      relations: ['scenarios']
+      relations: ['snapshots']
     });
 
     if (existing) {
-      existing.scenarios = existing.scenarios.filter((s) => s.guid !== params.scenarioGuid);
+      existing.snapshots = existing.snapshots.filter((s) => s.guid !== params.snapshotGuid);
 
       return await existing.save();
     } else {
@@ -48,7 +48,7 @@ export class WorkshopsService extends BaseService<Workshop> {
   }
 
   public async getOne(params) {
-    const existing = await this.repo.findOne({ where: { guid: params.guid }, relations: ['scenarios'] });
+    const existing = await this.getOne({ where: { guid: params.guid }, relations: ['snapshots'] });
     if (existing) {
       return existing;
     } else {
@@ -78,8 +78,7 @@ export class WorkshopsService extends BaseService<Workshop> {
 export interface IWorkshopRequestPayload extends DeepPartial<Workshop> {
   guid: string;
 }
-
-export interface IWorkshopScenarioPayload {
-  scenarioGuid: string;
+export interface IWorkshopSnapshotPayload {
+  snapshotGuid: string;
   workshopGuid: string;
 }

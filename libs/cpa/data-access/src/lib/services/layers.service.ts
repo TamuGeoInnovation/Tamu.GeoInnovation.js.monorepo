@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { Scenario } from '@tamu-gisc/cpa/common/entities';
+import { Snapshot } from '@tamu-gisc/cpa/common/entities';
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +15,10 @@ export class LayersService {
   }
 
   public getAvailableLayersForWorkshop(workshopGuid: string) {
-    return this.http.get<Array<Scenario>>(`${this.resource}/workshop/${workshopGuid}`);
+    return this.http.get<Array<Snapshot>>(`${this.resource}/workshop/${workshopGuid}`);
   }
 
-  public getWorkshopScenarioLayerSource(workshopGuid: string, scenarioGuid: string) {
-    return this.http.get(`${this.resource}/${workshopGuid}/${scenarioGuid}`);
+  public getWorkshopSnapshotLayerSource(workshopGuid: string, snapshotGuid: string) {
+    return this.http.get(`${this.resource}/${workshopGuid}/${snapshotGuid}`);
   }
 }
