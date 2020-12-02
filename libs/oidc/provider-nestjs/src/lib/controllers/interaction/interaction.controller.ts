@@ -5,11 +5,9 @@ import got from 'got';
 import { InteractionResults } from 'oidc-provider';
 
 import { UserService } from '@tamu-gisc/oidc/common';
+import { urlHas, urlFragment, TwoFactorAuthUtils } from '@tamu-gisc/oidc/utils';
 
 import { OpenIdProvider } from '../../configs/oidc-provider-config';
-
-import { urlHas, urlFragment } from '../../_utils/url-utils';
-import { TwoFactorAuthUtils } from '../../_utils/twofactorauth.util';
 import { UserLoginService } from '../../services/user-login/user-login.service';
 
 @Controller('interaction')
