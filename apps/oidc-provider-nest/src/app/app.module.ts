@@ -30,9 +30,9 @@ import {
   UserPasswordReset,
   UserPasswordHistory,
   PushedAuthorizationRequest,
-  ReplayDetection,
-  ClientMetadataModule
+  ReplayDetection
 } from '@tamu-gisc/oidc/provider-nestjs';
+import { ClientMetadataModule } from '@tamu-gisc/oidc/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';

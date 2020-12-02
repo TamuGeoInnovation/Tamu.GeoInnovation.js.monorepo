@@ -9,6 +9,9 @@ export * from './adapters/oidc.adapter';
 // config
 export * from './configs/oidc-provider-config';
 
+// controllers
+export * from './controllers/secret-question/secret-question.controller';
+
 // entities
 export * from './entities/all.entity';
 

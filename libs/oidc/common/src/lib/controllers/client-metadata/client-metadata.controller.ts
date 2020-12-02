@@ -2,8 +2,8 @@ import { Controller, Get, Param, Post, Patch, Delete, UseGuards, Body, HttpStatu
 
 import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 
-import { ClientMetadata, GrantType, ResponseType, TokenEndpointAuthMethod } from '../entities/all.entity';
-import { ClientMetadataService } from '../services/client-metadata/client-metadata.service';
+import { ClientMetadata, GrantType, ResponseType, TokenEndpointAuthMethod } from '../../entities/all.entity';
+import { ClientMetadataService } from '../../services/client-metadata/client-metadata.service';
 
 @UseGuards(AdminRoleGuard)
 @Controller('client-metadata')
