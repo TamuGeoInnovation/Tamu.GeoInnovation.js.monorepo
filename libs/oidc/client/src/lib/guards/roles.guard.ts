@@ -4,10 +4,6 @@ import { ROLE_LEVELS, OpenIdClient } from '../auth/open-id-client';
 
 /**
  * NestJS guard used to prevent non-admins from accessing admin routes.
- *
- * @export
- * @class AdminRoleGuard
- * @implements {CanActivate}
  */
 @Injectable()
 export class AdminRoleGuard implements CanActivate {
@@ -35,10 +31,6 @@ export class AdminRoleGuard implements CanActivate {
 
 /**
  * NestJS guard used to prevent users and guests from accessing manager routes.
- *
- * @export
- * @class ManagerRoleGuard
- * @implements {CanActivate}
  */
 @Injectable()
 export class ManagerRoleGuard implements CanActivate {
@@ -67,10 +59,6 @@ export class ManagerRoleGuard implements CanActivate {
 /**
  * NestJS guard.
  * May not be necessary as it pretty much functions exactly like the login guard at this level
- *
- * @export
- * @class UserRoleGuard
- * @implements {CanActivate}
  */
 // TODO: Remove this? Does this not just mean the user is authenticated?
 @Injectable()

@@ -32,9 +32,9 @@ export class TokenAuthMethodsService {
     });
   }
 
-  public createTokenEndpointAuthMethod(newTokenEndpointAuthMethod: Partial<TokenEndpointAuthMethod>) {
+  public createTokenEndpointAuthMethod(_newTokenEndpointAuthMethod: Partial<TokenEndpointAuthMethod>) {
     return this.http
-      .post<Partial<TokenEndpointAuthMethod>>(this.resource, newTokenEndpointAuthMethod, {
+      .post<Partial<TokenEndpointAuthMethod>>(this.resource, _newTokenEndpointAuthMethod, {
         withCredentials: true
       })
       .subscribe((newTokenEndpointAuthMethod) => {

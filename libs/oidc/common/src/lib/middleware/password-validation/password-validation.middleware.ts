@@ -23,25 +23,32 @@ export class PasswordValidationMiddleware implements NestMiddleware {
       const hasAtleastOneUpperCase = atleastOneUpperCase.test(newPassword);
       const hasAtleastOneNumber = atleastOneNumber.test(newPassword);
       const hasAtleastOneSpecialChar = atleastOneSpecialChar.test(newPassword);
+
       if (!isGreaterThan8) {
         req.body.validationErrors.push('Password must be greater than or equal to 8 chars in length\n');
       }
+
       if (!hasAtleastOneLowerCase) {
         req.body.validationErrors.push('Password must contain at least one lowercase character\n');
       }
+
       if (!hasAtleastOneUpperCase) {
         req.body.validationErrors.push('Password must contain at least one uppercase character\n');
       }
+
       if (!hasAtleastOneNumber) {
         req.body.validationErrors.push('Password must contain at least one numeric character\n');
       }
+
       if (!hasAtleastOneSpecialChar) {
         req.body.validationErrors.push('Password must contain at least one special [!@#$%^&*] character\n');
       }
+
       if (newPassword_confirm !== newPassword) {
         req.body.validationErrors.push('Both passwords must be equal');
         throw new Error('Both passwords must be equal');
       }
+
       if (
         isGreaterThan8 &&
         hasAtleastOneLowerCase &&
@@ -65,6 +72,7 @@ export class PasswordValidationMiddleware implements NestMiddleware {
         message: req.body.validationErrors,
         token: req.body.token
       };
+
       return res.render('new-password', locals, (err, html) => {
         if (err) throw err;
         res.render('_password-reset-layout', {

@@ -3,7 +3,7 @@ import { Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus, Body
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
 
-import { urlFragment, urlHas } from '@tamu-gisc/oidc/utils';
+import { urlFragment, urlHas } from '../../utils/web/url-utils';
 import { User } from '../../entities/all.entity';
 import { UserService, ServiceToControllerTypes } from '../../services/user/user.service';
 
@@ -123,6 +123,7 @@ export class UserController {
   public async disable2faPost(@Body() body, @Res() res: Response) {
     if (body.guid) {
       const disable2fa = await this.userService.disable2fa(body.guid);
+
       if (disable2fa) {
         return res.sendStatus(200);
       }
@@ -136,18 +137,22 @@ export class UserController {
   @Post('role')
   public async addUserRolePost(@Body() body, @Req() req: Request) {
     const { email } = body;
+
     const existingUser = await this.userService.userRepo.findOne({
       where: {
         email: email
       }
     });
+
     if (existingUser) {
       const roles = await this.userService.roleRepo.find();
+
       const requestedRole = roles.find((value, index) => {
         if (req.body.role.level === value.level) {
           return value;
         }
       });
+
       await this.userService.insertUserRole(existingUser, requestedRole, body.client.name);
     }
   }
@@ -181,6 +186,7 @@ export class UserController {
   @Post('pwr')
   public async userForgotPasswordPost(@Body() body, @Req() req: Request, @Res() res: Response) {
     const { guid, email } = body;
+
     await this.userService.sendPasswordResetEmail(guid, email, req.ip);
 
     const locals = {
@@ -196,6 +202,7 @@ export class UserController {
 
     return res.render('email-was-sent', locals, (err, html) => {
       if (err) throw err;
+
       res.render('_password-reset-layout', {
         ...locals,
         body: html

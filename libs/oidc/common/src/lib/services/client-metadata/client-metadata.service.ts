@@ -54,30 +54,6 @@ export class ClientMetadataService {
     return this.clientMetadataRepo.save(clientMetadata);
   }
 
-  // public async insertClientMetadata(req: Request) {
-  //   try {
-  //     const grants = await this.findGrantTypeEntities('type', req.body.grantTypes);
-
-  //     const redirectUris = await this.createRedirectUriEntities(req.body.redirectUris);
-  //     const responseTypes = await this.findResponseTypeEntities('type', req.body.responseTypes);
-  //     const token_endpoint_auth_method = await this.findTokenEndpointAuthMethod('type', req.body.token_endpoint_auth_method);
-
-  //     const _clientMetadata: Partial<ClientMetadata> = {
-  //       clientName: req.body.clientName,
-  //       clientSecret: req.body.clientSecret,
-  //       grantTypes: grants,
-  //       redirectUris: redirectUris,
-  //       responseTypes: responseTypes,
-  //       tokenEndpointAuthMethod: token_endpoint_auth_method
-  //     };
-  //     const clientMetadata = await this.clientMetadataRepo.create(_clientMetadata);
-
-  //     return this.clientMetadataRepo.save(clientMetadata);
-  //   } catch (generalErr) {
-  //     throw generalErr;
-  //   }
-  // }
-
   public async loadClientMetadaForOidcSetup() {
     const clients = await this.clientMetadataRepo.findAllDeep();
     const flattenedClients: IClientMetadata[] = this.flattenClientMetadataForReturn(clients);
@@ -96,20 +72,26 @@ export class ClientMetadataService {
           response_types: [],
           token_endpoint_auth_method: null
         };
+
         flattened.client_id = curr.clientName;
         flattened.client_secret = curr.clientSecret;
+
         flattened.grant_types = curr.grantTypes.map((grantType) => {
           return grantType.type;
         });
+
         flattened.redirect_uris = curr.redirectUris.map((redirectUri) => {
           return redirectUri.url;
         });
+
         flattened.response_types = curr.responseTypes.map((responseType) => {
           return responseType.type;
         });
+
         flattened.token_endpoint_auth_method = curr.tokenEndpointAuthMethod.type;
         flattenedClients.push(flattened);
       });
+
       return flattenedClients;
     } catch (error) {
       console.warn('There was an error loading a clientMetdata', error);
@@ -134,9 +116,9 @@ export class ClientMetadataService {
   }
 
   // GrantType functions
-  private async findGrantTypeEntities<K extends keyof GrantType>(key: K, _grants: string[]): Promise<GrantType[]> {
+  public async findGrantTypeEntities(_grants: string[]): Promise<GrantType[]> {
     return this.grantTypeRepo.find({
-      [key]: In(_grants)
+      type: In(_grants)
     });
   }
 
@@ -173,63 +155,39 @@ export class ClientMetadataService {
     }
   }
 
-  // public async insertGrantType(req: Request) {
-  //   const _grant: Partial<GrantType> = {
-  //     name: req.body.name,
-  //     type: req.body.type,
-  //     details: req.body.details
-  //   };
-  //   const grant = this.grantTypeRepo.create(_grant);
-  //   return this.grantTypeRepo.insert(grant);
-  // }
-
   public async insertGrantType(_grant: Partial<GrantType>) {
     const grant = this.grantTypeRepo.create(_grant);
+
     return this.grantTypeRepo.insert(grant);
   }
 
   // RedirectUri functions
-  private async createRedirectUriEntities(_redirectUris: string): Promise<RedirectUri[]> {
-    const tokens: string[] = _redirectUris.split(',');
+  public async createRedirectUriEntities(_redirectUris: string[]): Promise<RedirectUri[]> {
     const redirectUris: RedirectUri[] = [];
-    try {
-      tokens.map((value, i) => {
-        const redirectUriPartial: Partial<RedirectUri> = {
-          url: value.trim()
-        };
-        const redirectUri = this.redirectUriRepo.create(redirectUriPartial);
-        redirectUris.push(redirectUri);
-      });
-      return redirectUris;
-    } catch (error) {
-      console.warn(error);
-      throw new HttpException(error, HttpStatus.PARTIAL_CONTENT);
-    }
+
+    _redirectUris.map((value, i) => {
+      const redirectUriPartial: Partial<RedirectUri> = {
+        url: value
+      };
+      const redirectUri = this.redirectUriRepo.create(redirectUriPartial);
+      redirectUris.push(redirectUri);
+    });
+
+    return redirectUris;
   }
 
   // ResponseType functions
-  private async findResponseTypeEntities<K extends keyof ResponseType>(
-    key: K,
-    _responseTypes: string[]
-  ): Promise<ResponseType[]> {
+  public async findResponseTypeEntities(_responseTypes: string[]): Promise<ResponseType[]> {
     return this.responseTypeRepo.find({
-      [key]: In(_responseTypes)
+      type: In(_responseTypes)
     });
   }
 
   public async insertResponseType(_responseType: Partial<ResponseType>) {
     const responseType = this.responseTypeRepo.create(_responseType);
+
     return this.responseTypeRepo.insert(responseType);
   }
-
-  // public async insertResponseType(req: Request) {
-  //   const _responseType: Partial<ResponseType> = {
-  //     type: req.body.type,
-  //     details: req.body.details
-  //   };
-  //   const responseType = this.responseTypeRepo.create(_responseType);
-  //   return this.responseTypeRepo.insert(responseType);
-  // }
 
   public async getAllResponseTypes() {
     return this.responseTypeRepo.find();
@@ -265,13 +223,10 @@ export class ClientMetadataService {
   }
 
   // TokenEndpointAuthMethod functions
-  private async findTokenEndpointAuthMethod<K extends keyof TokenEndpointAuthMethod>(
-    key: K,
-    _tokenEndpoint: string
-  ): Promise<TokenEndpointAuthMethod> {
+  public async findTokenEndpointAuthMethod(_tokenEndpoint: string): Promise<TokenEndpointAuthMethod> {
     return this.tokenEndpointRepo.findOne({
       where: {
-        [key]: _tokenEndpoint
+        type: _tokenEndpoint
       }
     });
   }
@@ -287,6 +242,7 @@ export class ClientMetadataService {
 
   public async insertTokenEndpointAuthMethod(_tokenEndpointMethod: Partial<TokenEndpointAuthMethod>) {
     const tokenEndpointMethod = this.tokenEndpointRepo.create(_tokenEndpointMethod);
+
     return this.tokenEndpointRepo.insert(tokenEndpointMethod);
   }
 
@@ -308,7 +264,9 @@ export class ClientMetadataService {
         guid: _tokenEndpointAuthMethod.guid
       }
     });
+
     const merged = deepmerge(tokenEndpointAuthMethod as Partial<TokenEndpointAuthMethod>, _tokenEndpointAuthMethod);
+
     return this.tokenEndpointRepo.save(merged);
   }
 

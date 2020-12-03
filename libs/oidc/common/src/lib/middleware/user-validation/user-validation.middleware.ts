@@ -2,7 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 
 import { Request, Response } from 'express';
 
-import { urlFragment, urlHas } from '@tamu-gisc/oidc/utils';
+import { urlFragment, urlHas } from '../../utils/web/url-utils';
 import { UserRepo, SecretQuestionRepo } from '../../entities/all.entity';
 
 @Injectable()
@@ -24,18 +24,23 @@ export class UserValidationMiddleware implements NestMiddleware {
       const hasAtleastOneUpperCase = atleastOneUpperCase.test(password);
       const hasAtleastOneNumber = atleastOneNumber.test(password);
       const hasAtleastOneSpecialChar = atleastOneSpecialChar.test(password);
+
       if (!isGreaterThan8) {
         req.body.validationErrors.push('Password must be greater than or equal to 8 chars in length\n');
       }
+
       if (!hasAtleastOneLowerCase) {
         req.body.validationErrors.push('Password must contain at least one lowercase character\n');
       }
+
       if (!hasAtleastOneUpperCase) {
         req.body.validationErrors.push('Password must contain at least one uppercase character\n');
       }
+
       if (!hasAtleastOneNumber) {
         req.body.validationErrors.push('Password must contain at least one numeric character\n');
       }
+
       if (!hasAtleastOneSpecialChar) {
         req.body.validationErrors.push('Password must contain at least one special [!@#$%^&*] character\n');
       }
@@ -44,10 +49,12 @@ export class UserValidationMiddleware implements NestMiddleware {
         req.body.validationErrors.push('Invalid email');
         throw new Error('Invalid email');
       }
+
       if (confirm_password !== password) {
         req.body.validationErrors.push('Both passwords must be equal');
         throw new Error('Both passwords must be equal');
       }
+
       if (
         isGreaterThan8 &&
         hasAtleastOneLowerCase &&
@@ -74,6 +81,7 @@ export class UserValidationMiddleware implements NestMiddleware {
         devMode: urlHas(req.path, 'dev', true),
         requestingHost: urlFragment('', 'hostname')
       };
+
       return res.render('register', locals, (err, html) => {
         if (err) throw err;
         res.render('_registration-layout', {

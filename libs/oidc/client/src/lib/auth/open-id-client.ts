@@ -13,9 +13,6 @@ export const ROLE_LEVELS = {
 /**
  * The main class in NestJS + openid-client integration.
  * Handles IdP endpoints automatically.
- *
- * @export
- * @class OpenIdClient
  */
 export class OpenIdClient {
   public static strategyName = 'oidc';
@@ -27,10 +24,6 @@ export class OpenIdClient {
 
   /**
    * Used to initialize our static client; discovers all the endpoints from discovery doc on IdP
-   *
-   * @static
-   * @returns {Promise<Client>}
-   * @memberof OpenIdClient
    */
   public static async build(clientMetadata: ClientMetadata, clientParams: {}, issuerUrl: string): Promise<OidcClient> {
     this.params = clientParams;
@@ -52,10 +45,6 @@ export class OpenIdClient {
 
 /**
  * Used by the LoginGuard in the login process. `validate()` will eventually call `serializeUser` for PassportJS.
- *
- * @export
- * @class AuthStrategy
- * @extends {PassportStrategy(Strategy, OpenIdClient.strategyName)}
  */
 @Injectable()
 export class AuthStrategy extends PassportStrategy(Strategy, OpenIdClient.strategyName) {

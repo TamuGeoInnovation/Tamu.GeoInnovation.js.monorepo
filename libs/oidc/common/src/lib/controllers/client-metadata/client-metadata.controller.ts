@@ -47,6 +47,7 @@ export class ClientMetadataController {
     const grantType: Partial<GrantType> = {
       ...body
     };
+
     return this.clientMetadataService.updateGrantType(grantType);
   }
 
@@ -70,6 +71,7 @@ export class ClientMetadataController {
     const responseType: Partial<ResponseType> = {
       ...body
     };
+
     return this.clientMetadataService.updateResponseType(responseType);
   }
 
@@ -83,16 +85,12 @@ export class ClientMetadataController {
     return this.clientMetadataService.getAllTokenEndpointAuthMethods();
   }
 
-  // @Get(':clientName')
-  // async oneClientGet(@Param() params) {
-  //   return this.clientMetadataService.getClient(params.clientName);
-  // }
-
   @Post('response-type')
   public async insertResponseTypePost(@Body() body) {
     const responseType: Partial<ResponseType> = {
       ...body
     };
+
     return this.clientMetadataService.insertResponseType(responseType);
   }
 
@@ -101,6 +99,7 @@ export class ClientMetadataController {
     const tokenEndpoint: Partial<TokenEndpointAuthMethod> = {
       ...body
     };
+
     return this.clientMetadataService.insertTokenEndpointAuthMethod(tokenEndpoint);
   }
 
@@ -114,6 +113,7 @@ export class ClientMetadataController {
     const tokenEndpoint: Partial<TokenEndpointAuthMethod> = {
       ...body
     };
+
     return this.clientMetadataService.updateTokenEndpointAuthMethod(tokenEndpoint);
   }
 
@@ -137,6 +137,7 @@ export class ClientMetadataController {
     const clientMetadata: Partial<ClientMetadata> = {
       ...body
     };
+
     return this.clientMetadataService.insertClientMetadata(clientMetadata);
   }
 
@@ -145,6 +146,7 @@ export class ClientMetadataController {
     const clientMetdata: Partial<ClientMetadata> = {
       ...body
     };
+
     return this.clientMetadataService.updateClientMetadata(clientMetdata);
   }
 

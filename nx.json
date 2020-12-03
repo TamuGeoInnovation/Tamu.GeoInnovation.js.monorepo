@@ -320,9 +320,6 @@
     "oidc-admin-data-access": {
       "tags": []
     },
-    "oidc-utils": {
-      "tags": []
-    },
     "oidc-common": {
       "tags": []
     }

@@ -3,7 +3,7 @@ import { getConnection, EntitySchema, FindConditions, BaseEntity } from 'typeorm
 export type TypeORMEntities = string | Function | (new () => unknown) | EntitySchema<unknown>;
 
 export abstract class CommonService {
-  public static async findByKey<T extends TypeORMEntities>(entity: T, key: string, value: string): Promise<any> {
+  public static async findByKey<T extends TypeORMEntities>(entity: T, key: string, value: string) {
     return new Promise((resolve, reject) => {
       const op = {
         [key]: value
@@ -22,7 +22,7 @@ export abstract class CommonService {
     });
   }
 
-  public static async findAll<T extends TypeORMEntities>(entity: T, where?: {}): Promise<any[]> {
+  public static async findAll<T extends TypeORMEntities>(entity: T, where?: {}) {
     const connection = getConnection();
 
     return new Promise((resolve, reject) => {
@@ -46,7 +46,7 @@ export abstract class CommonService {
     });
   }
 
-  public async findOne<T extends TypeORMEntities>(entity: T, where: {}): Promise<any> {
+  public async findOne<T extends TypeORMEntities>(entity: T, where: {}) {
     const connection = getConnection();
 
     return new Promise((resolve, reject) => {
@@ -62,7 +62,7 @@ export abstract class CommonService {
     });
   }
 
-  public async insertAll<T extends TypeORMEntities>(entity: T, items: T[]): Promise<any> {
+  public async insertAll<T extends TypeORMEntities>(entity: T, items: T[]) {
     const connection = getConnection();
 
     return new Promise((resolve, reject) => {

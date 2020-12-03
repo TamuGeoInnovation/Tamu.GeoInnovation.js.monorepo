@@ -320,14 +320,14 @@ export class AccessToken implements IRequiredEntityAttrs {
     nullable: true,
     length: '128'
   })
-  clientId: string;
+  public clientId: string;
 
   @Column({
     type: 'varchar',
     nullable: true,
     length: '128'
   })
-  accountGuid: string;
+  public accountGuid: string;
 
   @Column({
     type: 'datetime',
@@ -345,7 +345,7 @@ export class AccessToken implements IRequiredEntityAttrs {
     type: 'datetime',
     nullable: true
   })
-  added: Date;
+  public added: Date;
 
   constructor() {}
 }

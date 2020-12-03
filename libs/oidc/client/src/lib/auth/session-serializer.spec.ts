@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { SessionSerializer } from './session-serializer';
 
 describe('SessionSerializer', () => {
@@ -6,7 +7,7 @@ describe('SessionSerializer', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SessionSerializer],
+      providers: [SessionSerializer]
     }).compile();
 
     provider = module.get<SessionSerializer>(SessionSerializer);

@@ -1,13 +1,10 @@
 import { Injectable, NestMiddleware, UnauthorizedException, Req, Res } from '@nestjs/common';
+
 import { OpenIdClient } from '../auth/open-id-client';
 
 /**
  * Simple middleware function that will fetch the user's claims from the IdP.
  * Only works if you have a "user" property in req.
- * @export
- * @param {*} req
- * @param {*} res
- * @param {*} next
  */
 @Injectable()
 export class ClaimsMiddleware implements NestMiddleware {
