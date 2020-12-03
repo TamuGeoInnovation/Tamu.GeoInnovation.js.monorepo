@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, reduce } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { ClientMetadata } from '@tamu-gisc/oidc/provider-nestjs';
+import { ClientMetadata } from '@tamu-gisc/oidc/common';
 
 @Injectable({
   providedIn: 'root'

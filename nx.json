@@ -311,6 +311,9 @@
     "oidc-admin-nest": {
       "tags": []
     },
+    "oidc-admin-nest-lib": {
+      "tags": []
+    },
     "oidc-admin": {
       "tags": []
     },

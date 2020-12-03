@@ -8,9 +8,8 @@ describe('AddGrantTypesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddGrantTypesComponent ]
-    })
-    .compileComponents();
+      declarations: [AddGrantTypesComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin-data-access';
-import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/provider-nestjs';
+
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
+
+import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin-data-access';
+import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'edit-token-auth-methods',
@@ -13,7 +15,8 @@ export class EditTokenAuthMethodsComponent implements OnInit {
   public $tokenAuthMethods: Observable<Array<Partial<TokenEndpointAuthMethod>>>;
 
   constructor(private readonly tokenAuthService: TokenAuthMethodsService) {}
-  ngOnInit(): void {
+
+  public ngOnInit(): void {
     this.fetchTokenAuthMethods();
   }
 

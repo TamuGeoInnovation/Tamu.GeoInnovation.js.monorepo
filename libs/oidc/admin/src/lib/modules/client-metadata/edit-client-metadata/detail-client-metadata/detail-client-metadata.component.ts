@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import {
@@ -9,10 +8,9 @@ import {
   ResponseTypesService,
   GrantTypesService,
   ClientMetadataService,
-  IClientMetadataResponse,
   IClientMetadataResponseArrayed
 } from '@tamu-gisc/oidc/admin-data-access';
-import { ClientMetadata, GrantType, TokenEndpointAuthMethod, ResponseType } from '@tamu-gisc/oidc/provider-nestjs';
+import { GrantType, TokenEndpointAuthMethod, ResponseType } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'detail-client-metadata',
@@ -51,7 +49,7 @@ export class DetailClientMetadataComponent implements OnInit {
     this.$tokenAuthMethods = this.tokenService.getTokenAuthMethods();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.fetchMetadata();
     if (this.route.snapshot.params.clientMetadataGuid) {
       this.clientMetadataGuid = this.route.snapshot.params.clientMetadataGuid;

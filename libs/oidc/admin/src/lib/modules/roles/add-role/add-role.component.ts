@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+
 import { RolesService } from '@tamu-gisc/oidc/admin-data-access';
 
 @Component({
@@ -11,7 +12,7 @@ export class AddRoleComponent implements OnInit {
   public form: FormGroup;
   constructor(private fb: FormBuilder, private roleService: RolesService) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.form = this.fb.group({
       name: ['', Validators.required],
       level: ['', Validators.required]

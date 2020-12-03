@@ -8,9 +8,8 @@ describe('AccessTokenComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AccessTokenComponent ]
-    })
-    .compileComponents();
+      declarations: [AccessTokenComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+
 import { Observable } from 'rxjs';
-import { ClientMetadataService, IClientMetadataResponse } from '@tamu-gisc/oidc/admin-data-access';
-import { ClientMetadata } from '@tamu-gisc/oidc/provider-nestjs';
 import { shareReplay } from 'rxjs/operators';
+
+import { ClientMetadataService, IClientMetadataResponse } from '@tamu-gisc/oidc/admin-data-access';
+import { ClientMetadata } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'edit-client-metadata',
@@ -16,16 +18,14 @@ export class EditClientMetadataComponent implements OnInit {
     this.fetchClientMetadata();
   }
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 
   public fetchClientMetadata() {
     this.$clients = this.clientService.getClientMetadatas().pipe(shareReplay(1));
   }
 
   public deleteClientMetadata(client: ClientMetadata) {
-    // console.log('Deleting...', client);
     this.clientService.deleteClientMetadata(client).subscribe((deleteStatus) => {
-      // console.log('Deleted ', client.guid);
       this.fetchClientMetadata();
     });
   }

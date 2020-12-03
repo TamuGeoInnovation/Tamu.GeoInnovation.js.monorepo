@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+
 import { debounceTime } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 
 import { GrantTypesService } from '@tamu-gisc/oidc/admin-data-access';
-import { GrantType } from '@tamu-gisc/oidc/provider-nestjs';
+import { GrantType } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'detail-grant-type',
@@ -25,7 +25,7 @@ export class DetailGrantTypeComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this.route.snapshot.params.grantTypeGuid) {
       this.grantTypeGuid = this.route.snapshot.params.grantTypeGuid;
       this.grantTypeService.getGrantType(this.grantTypeGuid).subscribe((grantType) => {

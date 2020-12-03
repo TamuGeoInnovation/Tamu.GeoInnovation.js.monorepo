@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+
 import { GrantTypesService } from '@tamu-gisc/oidc/admin-data-access';
 
 @Component({
@@ -11,7 +12,7 @@ export class AddGrantTypesComponent implements OnInit {
   public form: FormGroup;
   constructor(private fb: FormBuilder, private grantService: GrantTypesService) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.form = this.fb.group({
       name: ['', Validators.required],
       type: ['', Validators.required],

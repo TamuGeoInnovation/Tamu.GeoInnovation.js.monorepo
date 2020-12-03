@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ResponseTypesService } from '@tamu-gisc/oidc/admin-data-access';
-import { ResponseType } from '@tamu-gisc/oidc/provider-nestjs';
+
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
+
+import { ResponseType } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'edit-response-types',
@@ -16,7 +18,7 @@ export class EditResponseTypesComponent implements OnInit {
     this.fetchResponseTypes();
   }
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 
   public fetchResponseTypes() {
     this.$responseTypes = this.responseService.getResponseTypes().pipe(shareReplay(1));

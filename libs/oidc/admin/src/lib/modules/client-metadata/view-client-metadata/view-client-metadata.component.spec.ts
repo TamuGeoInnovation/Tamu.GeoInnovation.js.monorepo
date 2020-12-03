@@ -8,9 +8,8 @@ describe('ViewClientMetadataComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ViewClientMetadataComponent ]
-    })
-    .compileComponents();
+      declarations: [ViewClientMetadataComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

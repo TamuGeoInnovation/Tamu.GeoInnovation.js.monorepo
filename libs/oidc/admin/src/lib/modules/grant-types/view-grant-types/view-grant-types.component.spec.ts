@@ -8,9 +8,8 @@ describe('ViewGrantTypesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ViewGrantTypesComponent ]
-    })
-    .compileComponents();
+      declarations: [ViewGrantTypesComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

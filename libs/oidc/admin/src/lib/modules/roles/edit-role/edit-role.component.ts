@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { RolesService } from '@tamu-gisc/oidc/admin-data-access';
-import { Role } from '@tamu-gisc/oidc/provider-nestjs';
+
 import { shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+
+import { RolesService } from '@tamu-gisc/oidc/admin-data-access';
+import { Role } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'edit-role',
@@ -14,7 +16,7 @@ export class EditRoleComponent implements OnInit {
 
   constructor(private readonly rolesService: RolesService) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.fetchRoles();
   }
 

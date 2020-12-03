@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { RolesService } from '@tamu-gisc/oidc/admin-data-access';
-import { Role } from '@tamu-gisc/oidc/provider-nestjs';
+
 import { Observable } from 'rxjs';
+
+import { RolesService } from '@tamu-gisc/oidc/admin-data-access';
+import { Role } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'view',
@@ -14,5 +16,6 @@ export class ViewRoleComponent implements OnInit {
   constructor(private readonly rolesService: RolesService) {
     this.$roles = this.rolesService.getRoles();
   }
-  ngOnInit(): void {}
+
+  public ngOnInit(): void {}
 }

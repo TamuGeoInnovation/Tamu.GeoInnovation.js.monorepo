@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { GrantTypesService } from '@tamu-gisc/oidc/admin-data-access';
-import { GrantType } from '@tamu-gisc/oidc/provider-nestjs';
+
 import { Observable } from 'rxjs';
+
+import { GrantType } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'view-grant-types',
@@ -14,5 +16,5 @@ export class ViewGrantTypesComponent implements OnInit {
   constructor(private readonly grantService: GrantTypesService) {
     this.$grantTypes = this.grantService.getGrantTypes();
   }
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 }

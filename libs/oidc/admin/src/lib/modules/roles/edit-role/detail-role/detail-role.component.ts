@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { FormGroup, FormBuilder } from '@angular/forms';
+
 import { debounceTime } from 'rxjs/operators';
 
-import { Role } from '@tamu-gisc/oidc/provider-nestjs';
+import { Role } from '@tamu-gisc/oidc/common';
 import { RolesService } from '@tamu-gisc/oidc/admin-data-access';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'detail-role',
   templateUrl: './detail-role.component.html',
-  styleUrls: ['./detail-role.component.css']
+  styleUrls: ['./detail-role.component.scss']
 })
 export class DetailRoleComponent implements OnInit {
   public roleGuid: string;

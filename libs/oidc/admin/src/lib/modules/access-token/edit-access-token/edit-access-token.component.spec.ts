@@ -8,9 +8,8 @@ describe('EditAccessTokenComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditAccessTokenComponent ]
-    })
-    .compileComponents();
+      declarations: [EditAccessTokenComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

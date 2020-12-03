@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { GrantTypesService } from '@tamu-gisc/oidc/admin-data-access';
-import { GrantType } from '@tamu-gisc/oidc/provider-nestjs';
+
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
+
+import { GrantTypesService } from '@tamu-gisc/oidc/admin-data-access';
+import { GrantType } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'edit-grant-types',
@@ -16,7 +18,7 @@ export class EditGrantTypesComponent implements OnInit {
     this.fetchGrantTypes();
   }
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 
   public fetchGrantTypes() {
     this.$grantTypes = this.grantService.getGrantTypes().pipe(shareReplay(1));

@@ -8,9 +8,8 @@ describe('ViewAccessTokenComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ViewAccessTokenComponent ]
-    })
-    .compileComponents();
+      declarations: [ViewAccessTokenComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

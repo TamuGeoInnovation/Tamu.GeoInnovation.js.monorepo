@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+
 import { debounceTime } from 'rxjs/operators';
 
-import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/provider-nestjs';
+import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/common';
 import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin-data-access';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'detail-token-auth-method',

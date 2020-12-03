@@ -8,9 +8,8 @@ describe('DetailTokenAuthMethodComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DetailTokenAuthMethodComponent ]
-    })
-    .compileComponents();
+      declarations: [DetailTokenAuthMethodComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

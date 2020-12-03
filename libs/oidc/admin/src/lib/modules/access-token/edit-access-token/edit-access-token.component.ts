@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AccessTokenService } from '@tamu-gisc/oidc/admin-data-access';
-import { AccessToken } from '@tamu-gisc/oidc/provider-nestjs';
+
 import { Observable } from 'rxjs';
+
+import { AccessTokenService } from '@tamu-gisc/oidc/admin-data-access';
+import { AccessToken } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'edit-access-token',
@@ -14,16 +16,15 @@ export class EditAccessTokenComponent implements OnInit {
   constructor(private readonly accessTokenService: AccessTokenService) {
     this.fetchAccessTokens();
   }
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 
-  fetchAccessTokens() {
+  public fetchAccessTokens() {
     this.$accessTokens = this.accessTokenService.getAccessTokens();
   }
 
-  revokeAccessToken(accessToken: AccessToken): void {
+  public revokeAccessToken(accessToken: AccessToken): void {
     console.log('Revoking access token...', accessToken);
     this.accessTokenService.revokeAccessToken(accessToken).subscribe((deleteStatus) => {
-      // console.log('Deleted ', client.guid);
       this.fetchAccessTokens();
     });
   }

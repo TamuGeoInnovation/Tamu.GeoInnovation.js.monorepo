@@ -8,9 +8,8 @@ describe('DetailGrantTypeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DetailGrantTypeComponent ]
-    })
-    .compileComponents();
+      declarations: [DetailGrantTypeComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -8,9 +8,8 @@ describe('ResponseTypesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResponseTypesComponent ]
-    })
-    .compileComponents();
+      declarations: [ResponseTypesComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -8,9 +8,8 @@ describe('EditResponseTypesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditResponseTypesComponent ]
-    })
-    .compileComponents();
+      declarations: [EditResponseTypesComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

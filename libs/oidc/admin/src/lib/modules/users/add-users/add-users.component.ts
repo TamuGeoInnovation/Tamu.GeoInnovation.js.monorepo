@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
-import { SecretQuestion } from '@tamu-gisc/oidc/provider-nestjs';
 import { Observable } from 'rxjs';
+
+import { SecretQuestion } from '@tamu-gisc/oidc/common';
 import { UsersService } from '@tamu-gisc/oidc/admin-data-access';
 
 @Component({
@@ -14,11 +15,12 @@ export class AddUsersComponent implements OnInit {
   public password: FormGroup;
   public question: FormGroup;
   public $questions: Observable<Array<Partial<SecretQuestion>>>;
+
   constructor(private fb: FormBuilder, private userService: UsersService) {
     this.$questions = this.userService.getSecretQuestions();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.password = this.fb.group({
       name: [''],
       email: [''],

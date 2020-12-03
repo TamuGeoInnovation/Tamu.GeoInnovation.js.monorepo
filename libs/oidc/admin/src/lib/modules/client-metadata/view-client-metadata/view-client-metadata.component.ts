@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+
 import { Observable } from 'rxjs';
+
 import { ClientMetadataService, IClientMetadataResponse } from '@tamu-gisc/oidc/admin-data-access';
-import { ClientMetadata } from '@tamu-gisc/oidc/provider-nestjs';
 
 @Component({
   selector: 'view-client-metadata',
@@ -10,8 +11,10 @@ import { ClientMetadata } from '@tamu-gisc/oidc/provider-nestjs';
 })
 export class ViewClientMetadataComponent implements OnInit {
   public $clients: Observable<Array<Partial<IClientMetadataResponse>>>;
+
   constructor(private readonly clientService: ClientMetadataService) {
     this.$clients = this.clientService.getClientMetadatas();
   }
-  ngOnInit(): void {}
+
+  public ngOnInit(): void {}
 }

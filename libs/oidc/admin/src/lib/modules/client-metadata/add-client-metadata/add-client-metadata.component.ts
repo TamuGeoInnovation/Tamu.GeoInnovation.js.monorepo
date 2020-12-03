@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 
-import { GrantType, ResponseType, TokenEndpointAuthMethod } from '@tamu-gisc/oidc/provider-nestjs';
+import { GrantType, ResponseType, TokenEndpointAuthMethod } from '@tamu-gisc/oidc/common';
 import {
   TokenAuthMethodsService,
   ResponseTypesService,
@@ -51,5 +51,5 @@ export class AddClientMetadataComponent implements OnInit {
     this.clientService.createClientMetadata(val);
   }
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 }

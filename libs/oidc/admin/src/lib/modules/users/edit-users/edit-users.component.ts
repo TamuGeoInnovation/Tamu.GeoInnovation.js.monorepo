@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { UsersService } from '@tamu-gisc/oidc/admin-data-access';
+
 import { Observable } from 'rxjs';
-import { User } from '@tamu-gisc/oidc/provider-nestjs';
 import { shareReplay } from 'rxjs/operators';
+
+import { User } from '@tamu-gisc/oidc/common';
+import { UsersService } from '@tamu-gisc/oidc/admin-data-access';
 
 @Component({
   selector: 'edit-users',
@@ -14,7 +16,7 @@ export class EditUsersComponent implements OnInit {
 
   constructor(private readonly userService: UsersService) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.fetchUsers();
   }
 

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin-data-access';
-import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/provider-nestjs';
+
 import { Observable } from 'rxjs';
+
+import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin-data-access';
+import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'view-token-auth-methods',
@@ -15,5 +17,5 @@ export class ViewTokenAuthMethodsComponent implements OnInit {
     this.$tokenAuthMethods = this.tokenAuthService.getTokenAuthMethods();
   }
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 }

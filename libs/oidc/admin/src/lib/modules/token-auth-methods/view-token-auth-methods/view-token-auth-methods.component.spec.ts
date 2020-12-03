@@ -8,9 +8,8 @@ describe('ViewTokenAuthMethodsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ViewTokenAuthMethodsComponent ]
-    })
-    .compileComponents();
+      declarations: [ViewTokenAuthMethodsComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+
 import { Observable, Subject, forkJoin } from 'rxjs';
-import { debounceTime, takeUntil, shareReplay, switchMap, skip, withLatestFrom } from 'rxjs/operators';
+import { debounceTime, takeUntil, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
 
 import {
   UsersService,
@@ -10,7 +11,7 @@ import {
   RolesService,
   IClientMetadataResponse
 } from '@tamu-gisc/oidc/admin-data-access';
-import { User, ClientMetadata, Role, UserRole, INewRole } from '@tamu-gisc/oidc/provider-nestjs';
+import { User, Role, INewRole } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'detail-user',
@@ -133,7 +134,7 @@ export class DetailUserComponent implements OnInit, OnDestroy {
   }
 
   private getDirtyValues() {
-    let newRole: INewRole;
+    const newRole: Partial<INewRole> = {};
     const controls = Object.keys(this.roleForm.controls);
     // const userGuid = ;
     controls.forEach((key) => {
