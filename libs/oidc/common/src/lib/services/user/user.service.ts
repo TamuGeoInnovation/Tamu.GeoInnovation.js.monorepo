@@ -3,7 +3,9 @@ import { Injectable } from '@nestjs/common';
 
 import { hash, compare } from 'bcrypt';
 
-import { SHA1HashUtils, TwoFactorAuthUtils, Mailer } from '@tamu-gisc/oidc/utils';
+import { Mailer } from '../../utils/email/mailer.util';
+import { SHA1HashUtils } from '../../utils/security/sha1hash.util';
+import { TwoFactorAuthUtils } from '../../utils/security/twofactorauth.util';
 
 import {
   Account,

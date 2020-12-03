@@ -5,7 +5,7 @@ import got from 'got';
 import { InteractionResults } from 'oidc-provider';
 
 import { UserService } from '@tamu-gisc/oidc/common';
-import { urlHas, urlFragment, TwoFactorAuthUtils } from '@tamu-gisc/oidc/utils';
+import { urlHas, urlFragment, TwoFactorAuthUtils } from '@tamu-gisc/oidc/common';
 
 import { OpenIdProvider } from '../../configs/oidc-provider-config';
 import { UserLoginService } from '../../services/user-login/user-login.service';

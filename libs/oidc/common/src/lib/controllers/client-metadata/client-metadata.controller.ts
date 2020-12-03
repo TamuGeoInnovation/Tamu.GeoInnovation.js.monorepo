@@ -129,16 +129,39 @@ export class ClientMetadataController {
 
   @Get(':clientMetadataGuid')
   public async oneClientMetadataGet(@Param() params) {
-    return this.clientMetadataService.getClientByGuid(params.clientMetadataGuid);
+    const clientIdentifier: string = params.clientMetadataGuid;
+
+    if (clientIdentifier.includes('-')) {
+      // search by client guid
+      return this.clientMetadataService.getClientByGuid(clientIdentifier);
+    } else {
+      // looks like we're searching by client name
+      return this.clientMetadataService.getClient(clientIdentifier);
+    }
   }
+
+  @Get(':clientName')
+  public async oneClientGet(@Param() params) {}
 
   @Post()
   public async insertClientPost(@Body() body) {
-    const clientMetadata: Partial<ClientMetadata> = {
-      ...body
+    const grants = await this.clientMetadataService.findGrantTypeEntities(body.grantTypes);
+    const redirectUris = await this.clientMetadataService.createRedirectUriEntities(body.redirectUris);
+    const responseTypes = await this.clientMetadataService.findResponseTypeEntities(body.responseTypes);
+    const token_endpoint_auth_method = await this.clientMetadataService.findTokenEndpointAuthMethod(
+      body.token_endpoint_auth_method
+    );
+
+    const _clientMetadata: Partial<ClientMetadata> = {
+      clientName: body.clientName,
+      clientSecret: body.clientSecret,
+      grantTypes: grants,
+      redirectUris: redirectUris,
+      responseTypes: responseTypes,
+      tokenEndpointAuthMethod: token_endpoint_auth_method
     };
 
-    return this.clientMetadataService.insertClientMetadata(clientMetadata);
+    return this.clientMetadataService.insertClientMetadata(_clientMetadata);
   }
 
   @Patch('update')
