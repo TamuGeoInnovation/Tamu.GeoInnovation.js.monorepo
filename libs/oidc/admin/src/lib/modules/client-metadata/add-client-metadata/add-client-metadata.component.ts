@@ -47,6 +47,8 @@ export class AddClientMetadataComponent implements OnInit {
 
   public addClientMetadata() {
     const val = this.clientForm.value;
+    const redirectUris: string[] = [this.clientForm.controls.redirectUris.value];
+    val.redirectUris = redirectUris;
     console.log('ClientMetadata...', val);
     this.clientService.createClientMetadata(val);
   }

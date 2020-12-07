@@ -50,7 +50,9 @@ export class ClientMetadataService {
 
   public async insertClientMetadata(_clientMetadata: Partial<ClientMetadata>) {
     const clientMetadata = this.clientMetadataRepo.create(_clientMetadata);
-
+    clientMetadata.redirectUris.map((redirectUri) => {
+      redirectUri.save();
+    });
     return this.clientMetadataRepo.save(clientMetadata);
   }
 
@@ -60,7 +62,7 @@ export class ClientMetadataService {
     return flattenedClients;
   }
 
-  private flattenClientMetadataForReturn(clients: ClientMetadata[]): IClientMetadata[] {
+  private flattenClientMetadataForReturn(clients: ClientMetadata[]) {
     const flattenedClients: IClientMetadata[] = [];
     try {
       clients.map((curr) => {
@@ -99,24 +101,20 @@ export class ClientMetadataService {
   }
 
   public async updateClientMetadata(_clientMetadata: Partial<ClientMetadata>) {
-    const clientMetadata = await this.clientMetadataRepo.findByKeyDeep('guid', _clientMetadata.guid);
+    const clientMetadata = await this.clientMetadataRepo.getClientMetadata(_clientMetadata.guid);
     const merged = deepmerge(clientMetadata as Partial<ClientMetadata>, _clientMetadata);
     return this.clientMetadataRepo.save(merged);
   }
 
   public async deleteClientMetadata(guid: string) {
-    const clientMetadata = await this.clientMetadataRepo.findOne({
-      where: {
-        guid
-      }
-    });
+    const clientMetadata = await this.clientMetadataRepo.getClientMetadata(guid);
     if (clientMetadata) {
       clientMetadata.remove();
     }
   }
 
   // GrantType functions
-  public async findGrantTypeEntities(_grants: string[]): Promise<GrantType[]> {
+  public async findGrantTypeEntities(_grants: string[]) {
     return this.grantTypeRepo.find({
       type: In(_grants)
     });
@@ -162,7 +160,7 @@ export class ClientMetadataService {
   }
 
   // RedirectUri functions
-  public async createRedirectUriEntities(_redirectUris: string[]): Promise<RedirectUri[]> {
+  public async createRedirectUriEntities(_redirectUris: string[]) {
     const redirectUris: RedirectUri[] = [];
 
     _redirectUris.map((value, i) => {
@@ -177,7 +175,7 @@ export class ClientMetadataService {
   }
 
   // ResponseType functions
-  public async findResponseTypeEntities(_responseTypes: string[]): Promise<ResponseType[]> {
+  public async findResponseTypeEntities(_responseTypes: string[]) {
     return this.responseTypeRepo.find({
       type: In(_responseTypes)
     });
@@ -223,22 +221,13 @@ export class ClientMetadataService {
   }
 
   // TokenEndpointAuthMethod functions
-  public async findTokenEndpointAuthMethod(_tokenEndpoint: string): Promise<TokenEndpointAuthMethod> {
+  public async findTokenEndpointAuthMethod(_tokenEndpoint: string) {
     return this.tokenEndpointRepo.findOne({
       where: {
         type: _tokenEndpoint
       }
     });
   }
-
-  // public async insertTokenEndpointAuthMethod(req: Request) {
-  //   const _tokenEndpointMethod: Partial<TokenEndpointAuthMethod> = {
-  //     type: req.body.type,
-  //     details: req.body.details
-  //   };
-  //   const tokenEndpointMethod = this.tokenEndpointRepo.create(_tokenEndpointMethod);
-  //   return this.tokenEndpointRepo.insert(tokenEndpointMethod);
-  // }
 
   public async insertTokenEndpointAuthMethod(_tokenEndpointMethod: Partial<TokenEndpointAuthMethod>) {
     const tokenEndpointMethod = this.tokenEndpointRepo.create(_tokenEndpointMethod);

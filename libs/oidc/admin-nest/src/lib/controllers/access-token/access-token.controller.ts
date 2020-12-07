@@ -10,12 +10,12 @@ export class AccessTokenController {
   constructor(private readonly accessTokenService: AccessTokenService) {}
 
   @Get()
-  async accessTokensAllGet() {
+  public async accessTokensAllGet() {
     return this.accessTokenService.getAllAccessTokens();
   }
 
   @Delete('delete/:grantId')
-  async accessTokenRevoke(@Param() params) {
+  public async accessTokenRevoke(@Param() params) {
     return this.accessTokenService.revokeAccessToken(params.grantId);
   }
 }

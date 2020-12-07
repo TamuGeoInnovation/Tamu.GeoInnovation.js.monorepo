@@ -10,6 +10,23 @@ import { UserService, ServiceToControllerTypes } from '../../services/user/user.
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Get('all')
+  public async usersAllGet() {
+    return this.userService.userRepo.find({
+      relations: ['account']
+    });
+  }
+
+  @Get(':guid')
+  public async userGet(@Param() params) {
+    return this.userService.userRepo.findOne({
+      where: {
+        guid: params.guid
+      }
+    });
+  }
+
   /**
    * Function that will load the 'register' view.
    * Will prompt user for name, email, pw, and secret answers

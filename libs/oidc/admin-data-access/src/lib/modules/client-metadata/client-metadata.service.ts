@@ -27,11 +27,11 @@ export class ClientMetadataService {
             clientName: clientResponse.clientName,
             clientSecret: clientResponse.clientSecret,
             // grantTypes: this.flattenArray(clientResponse.grantTypes, 'type'),
-            grantTypes: clientResponse.grantTypes.map((grant) => grant.guid),
+            grantTypes: clientResponse.grantTypes.map((grant) => grant.type),
             redirectUris: this.flattenArray(clientResponse.redirectUris, 'url'),
-            responseTypes: clientResponse.responseTypes.map((response) => response.guid),
+            responseTypes: clientResponse.responseTypes.map((response) => response.type),
             // responseTypes: this.flattenArray(clientResponse.responseTypes, 'type'),
-            token_endpoint_auth_method: clientResponse.tokenEndpointAuthMethod.guid
+            token_endpoint_auth_method: clientResponse.tokenEndpointAuthMethod.type
           };
           return newClientResponse;
         })

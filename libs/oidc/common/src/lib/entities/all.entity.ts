@@ -778,7 +778,7 @@ export class ClientMetadata extends GuidIdentity {
   })
   public grantTypes: GrantType[];
 
-  @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata, { cascade: true })
+  @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata)
   public redirectUris: RedirectUri[];
 
   @ManyToMany((type) => ResponseType, {
@@ -823,7 +823,11 @@ export class GrantType extends GuidIdentity {
   name: 'redirect_uris'
 })
 export class RedirectUri extends GuidIdentity {
-  @ManyToOne((type) => ClientMetadata, (client) => client.redirectUris)
+  @ManyToOne((type) => ClientMetadata, (client) => client.redirectUris, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
   public clientMetadata: ClientMetadata;
 
   @Column({
@@ -1094,7 +1098,21 @@ export class CommonRepo<T> extends Repository<T> {
 }
 
 @EntityRepository(ClientMetadata)
-export class ClientMetadataRepo extends CommonRepo<ClientMetadata> {}
+export class ClientMetadataRepo extends CommonRepo<ClientMetadata> {
+  public getClientMetadata(clientGuid: string) {
+    return getConnection()
+      .getRepository(ClientMetadata)
+      .createQueryBuilder('clientmetadata')
+      .leftJoinAndSelect('clientmetadata.grantTypes', 'grantTypes')
+      .leftJoinAndSelect('clientmetadata.redirectUris', 'redirectUris')
+      .leftJoinAndSelect('clientmetadata.responseTypes', 'responseTypes')
+      .leftJoinAndSelect('clientmetadata.tokenEndpointAuthMethod', 'tokenEndpointAuthMethod')
+      .where(`clientmetadata.guid = :guid`, {
+        guid: clientGuid
+      })
+      .getOne();
+  }
+}
 
 @EntityRepository(GrantType)
 export class GrantTypeRepo extends CommonRepo<GrantType> {}

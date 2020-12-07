@@ -140,9 +140,6 @@ export class ClientMetadataController {
     }
   }
 
-  @Get(':clientName')
-  public async oneClientGet(@Param() params) {}
-
   @Post()
   public async insertClientPost(@Body() body) {
     const grants = await this.clientMetadataService.findGrantTypeEntities(body.grantTypes);
@@ -166,11 +163,24 @@ export class ClientMetadataController {
 
   @Patch('update')
   public async updateClient(@Body() body) {
-    const clientMetdata: Partial<ClientMetadata> = {
-      ...body
+    const grants = await this.clientMetadataService.findGrantTypeEntities(body.grantTypes);
+    const redirectUris = await this.clientMetadataService.createRedirectUriEntities(body.redirectUris);
+    const responseTypes = await this.clientMetadataService.findResponseTypeEntities(body.responseTypes);
+    const token_endpoint_auth_method = await this.clientMetadataService.findTokenEndpointAuthMethod(
+      body.token_endpoint_auth_method
+    );
+
+    const _clientMetadata: Partial<ClientMetadata> = {
+      guid: body.guid,
+      clientName: body.clientName,
+      clientSecret: body.clientSecret,
+      grantTypes: grants,
+      redirectUris: redirectUris,
+      responseTypes: responseTypes,
+      tokenEndpointAuthMethod: token_endpoint_auth_method
     };
 
-    return this.clientMetadataService.updateClientMetadata(clientMetdata);
+    return this.clientMetadataService.updateClientMetadata(_clientMetadata);
   }
 
   @Delete('delete/:clientMetadataGuid')

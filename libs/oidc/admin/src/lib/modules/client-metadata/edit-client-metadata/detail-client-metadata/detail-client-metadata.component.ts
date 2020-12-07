@@ -56,18 +56,14 @@ export class DetailClientMetadataComponent implements OnInit {
       this.clientService.getClientMetadata(this.clientMetadataGuid).subscribe((clientMetadata) => {
         this.clientMetadata = clientMetadata;
         this.clientForm.patchValue(this.clientMetadata);
-        // this.clientForm.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
-        //   const newClientMetadata = this.clientForm.getRawValue();
-        //   this.clientService
-        //     .updateClientMetadata(newClientMetadata)
-        //     .subscribe((result) => [console.log('Updated client metadata')]);
-        // });
       });
     }
   }
 
-  public addClientMetadata() {
-    const joe = this.clientForm.getRawValue();
-    this.clientService.updateClientMetadata(joe).subscribe((result) => [console.log('Updated client metadata')]);
+  public updateClientMetadata() {
+    const val = this.clientForm.value;
+    const redirectUris: string[] = [this.clientForm.controls.redirectUris.value];
+    val.redirectUris = redirectUris;
+    this.clientService.updateClientMetadata(val).subscribe((result) => [console.log('Updated client metadata')]);
   }
 }
