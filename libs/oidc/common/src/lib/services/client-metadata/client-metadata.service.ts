@@ -103,6 +103,10 @@ export class ClientMetadataService {
   public async updateClientMetadata(_clientMetadata: Partial<ClientMetadata>) {
     const clientMetadata = await this.clientMetadataRepo.getClientMetadata(_clientMetadata.guid);
     const merged = deepmerge(clientMetadata as Partial<ClientMetadata>, _clientMetadata);
+    merged.grantTypes = _clientMetadata.grantTypes;
+    merged.responseTypes = _clientMetadata.responseTypes;
+    merged.redirectUris = _clientMetadata.redirectUris;
+    merged.tokenEndpointAuthMethod = _clientMetadata.tokenEndpointAuthMethod;
     return this.clientMetadataRepo.save(merged);
   }
 

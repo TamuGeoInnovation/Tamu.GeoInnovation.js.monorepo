@@ -18,6 +18,6 @@ export class AccessTokenService {
   }
 
   public async revokeAccessToken(grantId: string) {
-    return this.httpService.delete(`http://localhost:4001/user/access-token/${grantId}`).pipe(map((result) => result.data));
+    return this.httpService.delete(`http://localhost:4001/access-token/${grantId}`).pipe(map((result) => result.data));
   }
 }

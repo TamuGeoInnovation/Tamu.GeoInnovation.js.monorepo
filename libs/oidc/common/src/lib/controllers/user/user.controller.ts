@@ -1,12 +1,15 @@
-import { Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus, Body } from '@nestjs/common';
+import { Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus, Body, UseGuards } from '@nestjs/common';
 
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
+
+import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 
 import { urlFragment, urlHas } from '../../utils/web/url-utils';
 import { User } from '../../entities/all.entity';
 import { UserService, ServiceToControllerTypes } from '../../services/user/user.service';
 
+@UseGuards(AdminRoleGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}

@@ -5,7 +5,7 @@ import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 import { ClientMetadata, GrantType, ResponseType, TokenEndpointAuthMethod } from '../../entities/all.entity';
 import { ClientMetadataService } from '../../services/client-metadata/client-metadata.service';
 
-// @UseGuards(AdminRoleGuard)
+@UseGuards(AdminRoleGuard)
 @Controller('client-metadata')
 export class ClientMetadataController {
   constructor(private readonly clientMetadataService: ClientMetadataService) {}

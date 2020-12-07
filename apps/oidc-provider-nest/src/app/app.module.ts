@@ -32,7 +32,7 @@ import {
   UserModule,
   SecretQuestionController
 } from '@tamu-gisc/oidc/common';
-import { InteractionModule, UserLoginModule } from '@tamu-gisc/oidc/provider-nestjs';
+import { AccessTokenModule, InteractionModule, UserLoginModule } from '@tamu-gisc/oidc/provider-nestjs';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -72,6 +72,7 @@ import { dbConfig } from '../environments/environment';
       ],
       autoLoadEntities: true
     }),
+    AccessTokenModule,
     InteractionModule,
     ClientMetadataModule,
     UserModule,
