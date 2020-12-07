@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { User, SecretQuestion, INewRole } from '@tamu-gisc/oidc/provider-nestjs';
+import { User, SecretQuestion, INewRole } from '@tamu-gisc/oidc/common';
 
 @Injectable({
   providedIn: 'root'

@@ -139,10 +139,16 @@ export class OidcAdapter {
 
     const data = JSON.parse(found.data);
 
-    return {
-      ...data,
-      ...(found.consumedAt ? { consumed: true } : undefined)
-    };
+    if (data) {
+      return {
+        ...data,
+        ...(found.consumedAt ? { consumed: true } : undefined)
+      };
+    } else {
+      return {
+        ...(found.consumedAt ? { consumed: true } : undefined)
+      };
+    }
   }
 
   public async consume(id: KindOfId) {

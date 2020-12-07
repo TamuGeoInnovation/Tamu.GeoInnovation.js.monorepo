@@ -133,21 +133,21 @@ export class DetailUserComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getDirtyValues() {
-    const newRole: Partial<INewRole> = {};
-    const controls = Object.keys(this.roleForm.controls);
-    // const userGuid = ;
-    controls.forEach((key) => {
-      if (this.roleForm.controls[key].dirty) {
-        // console.log('Client', key, 'value', this.roleForm.controls[key].value);
+  // private getDirtyValues() {
+  //   const newRole: Partial<INewRole> = {};
+  //   const controls = Object.keys(this.roleForm.controls);
+  //   // const userGuid = ;
+  //   controls.forEach((key) => {
+  //     if (this.roleForm.controls[key].dirty) {
+  //       // console.log('Client', key, 'value', this.roleForm.controls[key].value);
 
-        newRole.roleGuid = this.roleForm.controls[key].value;
-        this.roleForm.controls[key].markAsPristine();
-      }
-    });
-    this.userService.updateRole(newRole);
-    return;
-  }
+  //       newRole.roleGuid = this.roleForm.controls[key].value;
+  //       this.roleForm.controls[key].markAsPristine();
+  //     }
+  //   });
+  //   this.userService.updateRole(newRole);
+  //   return;
+  // }
 
   private registerRoleChanges() {
     // We need to call this function separately because this.roleForm.valueChanges will be undefined

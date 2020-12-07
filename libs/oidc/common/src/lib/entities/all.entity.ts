@@ -1110,6 +1110,18 @@ export class TokenEndpointAuthMethodRepo extends CommonRepo<TokenEndpointAuthMet
 
 @EntityRepository(User)
 export class UserRepo extends CommonRepo<User> {
+  public getUserWithPassword(email: string) {
+    return getConnection()
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .leftJoinAndSelect('user.account', 'account')
+      .where(`user.email = :email`, {
+        email: email
+      })
+      .getOne();
+  }
+
   public getUserWithRoles(userGuid: string, clientGuid: string) {
     return getConnection()
       .getRepository(User)
