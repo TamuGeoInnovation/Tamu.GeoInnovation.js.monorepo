@@ -26,6 +26,7 @@ import {
   UserPasswordReset,
   Role
 } from '../../entities/all.entity';
+import * as deepmerge from 'deepmerge';
 
 @Injectable()
 export class UserService {
@@ -71,6 +72,19 @@ export class UserService {
       const usedPassword = await this.passwordHistoryRepo.create(_usedPassword);
       await this.passwordHistoryRepo.save(usedPassword);
       return newUser;
+    }
+  }
+
+  public async updateUser(updatedUser: Partial<User>) {
+    const user = await this.userRepo.findOne({
+      where: {
+        guid: updatedUser.guid
+      },
+      relations: ['account']
+    });
+    if (user) {
+      const merged = deepmerge(user, updatedUser);
+      await this.userRepo.save(merged);
     }
   }
 
@@ -138,26 +152,15 @@ export class UserService {
   /**
    * Function used to set "enabled2fa" to true and generate a new 2fa secret for a user; saves the result
    */
-  public async enable2FA(guid: string): Promise<IServiceToControllerResponse | User> {
-    let ret: IServiceToControllerResponse;
-    const user = await this.userRepo.findOne({
-      where: {
-        guid: guid
-      }
-    });
-
+  public async enable2FA(user: User) {
     if (user.enabled2fa === false) {
-      const newSecret = await TwoFactorAuthUtils.generateNewSecret();
+      const newSecret = TwoFactorAuthUtils.generateNewSecret();
       user.enabled2fa = true;
       user.secret2fa = newSecret;
       await this.userRepo.save(user);
-      return user;
-    } else {
-      ret = {
-        type: ServiceToControllerTypes.CONDITION_ALREADY_TRUE
-      };
-      return ret;
     }
+
+    return user;
   }
 
   /**
@@ -374,14 +377,15 @@ export class UserService {
     this.passwordHistoryRepo.save(newUsedPassword);
     return true;
   }
-}
 
-export interface IServiceToControllerResponse {
-  message?: string;
-  type?: ServiceToControllerTypes;
-}
-
-export enum ServiceToControllerTypes {
-  CONDITION_ALREADY_TRUE,
-  TASK_COMPLETE
+  public async removeUser(guid: string) {
+    const user = await this.userRepo.findOne({
+      where: {
+        guid: guid
+      }
+    });
+    if (user) {
+      user.remove();
+    }
+  }
 }

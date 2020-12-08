@@ -18,7 +18,7 @@ export class UsersService {
   }
 
   public getUser(guid: string) {
-    return this.http.get<Partial<User>>(`${this.userResource}/one/${guid}`, {
+    return this.http.get<Partial<User>>(`${this.userResource}/${guid}`, {
       withCredentials: true
     });
   }
@@ -30,13 +30,13 @@ export class UsersService {
   }
 
   public deleteUser(user: User) {
-    return this.http.delete<Partial<User>>(`${this.userResource}/delete/${user.guid}`, {
+    return this.http.delete<Partial<User>>(`${this.userResource}/${user.guid}`, {
       withCredentials: true
     });
   }
 
   public updateUser(updatedUser: Partial<User>) {
-    return this.http.patch<Partial<User>>(`${this.userResource}/update`, updatedUser, {
+    return this.http.patch<Partial<User>>(`${this.userResource}`, updatedUser, {
       withCredentials: true
     });
   }
@@ -48,7 +48,7 @@ export class UsersService {
   }
 
   public updateRole(updateRoles: INewRole) {
-    return this.http.patch<Partial<INewRole>>(`${this.userResource}/role`, updateRoles, {
+    return this.http.post<Partial<INewRole>>(`${this.userResource}/role`, updateRoles, {
       withCredentials: true
     });
   }

@@ -930,7 +930,7 @@ export class SecretQuestion extends GuidIdentity {
   name: 'secret_answers'
 })
 export class SecretAnswer extends GuidIdentity {
-  @ManyToOne((type) => User)
+  @ManyToOne((type) => User, { onDelete: 'CASCADE' })
   public user: User;
 
   @ManyToOne((type) => SecretQuestion)
@@ -1007,7 +1007,7 @@ export class UserPasswordReset extends GuidIdentity {
   name: 'password_history'
 })
 export class UserPasswordHistory extends GuidIdentity {
-  @ManyToOne((type) => User)
+  @ManyToOne((type) => User, { onDelete: 'CASCADE' })
   public user: User;
 
   @Column({

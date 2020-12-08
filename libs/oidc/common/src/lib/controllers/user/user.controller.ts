@@ -1,4 +1,17 @@
-import { Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Req,
+  Res,
+  Post,
+  HttpException,
+  HttpStatus,
+  Body,
+  UseGuards,
+  Delete,
+  Patch
+} from '@nestjs/common';
 
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
@@ -7,9 +20,9 @@ import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 
 import { urlFragment, urlHas } from '../../utils/web/url-utils';
 import { User } from '../../entities/all.entity';
-import { UserService, ServiceToControllerTypes } from '../../services/user/user.service';
+import { UserService } from '../../services/user/user.service';
 
-@UseGuards(AdminRoleGuard)
+// @UseGuards(AdminRoleGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -26,8 +39,24 @@ export class UserController {
     return this.userService.userRepo.findOne({
       where: {
         guid: params.guid
-      }
+      },
+      relations: ['account']
     });
+  }
+
+  @Delete(':guid')
+  public async deleteUser(@Param() params) {
+    const userGuid = params.guid;
+    return this.userService.removeUser(userGuid);
+  }
+
+  @Patch()
+  public async updateUser(@Body() body) {
+    const updatedUser: Partial<User> = {
+      ...body
+    };
+    return this.userService.updateUser(updatedUser);
+    // return updatedUser;
   }
 
   /**
@@ -106,23 +135,59 @@ export class UserController {
    * for the user to scan.
    */
   @Post('2fa/enable')
-  public async enable2faGet(@Body() body, @Req() req: Request, @Res() res: Response) {
+  public async enable2faPost(@Body() body, @Res() res: Response) {
     if (body.guid) {
-      const enable2fa = await this.userService.enable2FA(body.guid);
+      const user = await this.userService.userRepo.findOne({
+        where: {
+          guid: body.guid
+        }
+      });
 
-      if (enable2fa === ServiceToControllerTypes.CONDITION_ALREADY_TRUE) {
+      if (user.enabled2fa) {
         return res.send({
           error: '2FA already enabled for user'
         });
       }
 
-      if (enable2fa) {
+      await this.userService.enable2FA(user);
+
+      if (user.enabled2fa) {
         const issuer = 'GeoInnovation Service Center';
-        const otpPath = authenticator.keyuri(
-          encodeURIComponent((enable2fa as User).email),
-          issuer,
-          (enable2fa as User).secret2fa
-        );
+        const otpPath = authenticator.keyuri(encodeURIComponent(user.email), issuer, user.secret2fa);
+
+        return res.render('2fa-scan', {
+          title: 'Two-factor Authentication',
+          otpPath: JSON.stringify(otpPath)
+        });
+      }
+    } else {
+      return res.send({
+        error: 'No guid provided'
+      });
+    }
+  }
+
+  @Get('2fa/enable/:guid')
+  public async enable2faGet(@Param() params, @Res() res: Response) {
+    const userGuid = params.guid;
+    if (userGuid) {
+      const user = await this.userService.userRepo.findOne({
+        where: {
+          guid: userGuid
+        }
+      });
+
+      if (user.enabled2fa) {
+        return res.send({
+          error: '2FA already enabled for user'
+        });
+      }
+
+      await this.userService.enable2FA(user);
+
+      if (user.enabled2fa) {
+        const issuer = 'GeoInnovation Service Center';
+        const otpPath = authenticator.keyuri(encodeURIComponent(user.email), issuer, user.secret2fa);
 
         return res.render('2fa-scan', {
           title: 'Two-factor Authentication',
