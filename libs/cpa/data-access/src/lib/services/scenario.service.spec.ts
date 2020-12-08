@@ -3,9 +3,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
-import { SnapshotService } from './snapshot.service';
+import { ScenarioService } from './scenario.service';
 
-describe('SnapshotService', () => {
+describe('ScenarioService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, EnvironmentModule],
@@ -19,7 +19,7 @@ describe('SnapshotService', () => {
   );
 
   it('should be created', () => {
-    const service: SnapshotService = TestBed.get(SnapshotService);
+    const service: ScenarioService = TestBed.get(ScenarioService);
     expect(service).toBeTruthy();
   });
 });
