@@ -7,5 +7,8 @@
   "video": true,
   "videosFolder": "../../dist/cypress/apps/aggiemap-angular-e2e/videos",
   "screenshotsFolder": "../../dist/cypress/apps/aggiemap-angular-e2e/screenshots",
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "viewportWidth": 1919,
+  "viewportHeight": 945,
+  "retries": 2
 }
