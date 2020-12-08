@@ -54,6 +54,10 @@ export class Workshop extends CPABaseEntity {
   @JoinTable()
   public snapshots: Snapshot[];
 
+  @ManyToMany((type) => Scenario, (s) => s.workshops)
+  @JoinTable()
+  public scenarios: Scenario[];
+
   @OneToMany((type) => Response, (r) => r.workshop)
   public responses: Response[];
 }
@@ -66,11 +70,47 @@ export class Snapshot extends CPABaseEntity {
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public description: string;
 
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  public alias: string;
+
   @Column({ nullable: true })
   public mapCenter: string;
 
   @Column({ nullable: true })
   public zoom: number;
+
+  @Column({ type: 'simple-json', nullable: true })
+  public extent: string;
+
+  @Column({ type: 'simple-json', nullable: true })
+  public layers: string;
+
+  @ManyToMany((type) => Workshop, (w) => w.snapshots)
+  public workshops: Workshop[];
+
+  @OneToMany((type) => Response, (r) => r.snapshot)
+  public responses: Response[];
+}
+
+@Entity()
+export class Scenario extends CPABaseEntity {
+  @Column({ nullable: true })
+  public title: string;
+
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  public description: string;
+
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  public alias: string;
+
+  @Column({ nullable: true })
+  public mapCenter: string;
+
+  @Column({ nullable: true })
+  public zoom: number;
+
+  @Column({ type: 'simple-json', nullable: true })
+  public extent: string;
 
   @Column({ type: 'simple-json', nullable: true })
   public layers: string;
@@ -95,6 +135,9 @@ export class Response extends CPABaseEntity {
 
   @ManyToOne((type) => Snapshot, (s) => s.responses, { onDelete: 'CASCADE' })
   public snapshot: Snapshot;
+
+  @ManyToOne((type) => Scenario, (s) => s.responses, { onDelete: 'CASCADE' })
+  public scenario: Scenario;
 
   @ManyToOne((type) => Workshop, (w) => w.responses, { onDelete: 'CASCADE' })
   public workshop: Workshop;

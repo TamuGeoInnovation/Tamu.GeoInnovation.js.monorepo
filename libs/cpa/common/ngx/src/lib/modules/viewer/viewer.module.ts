@@ -19,7 +19,11 @@ const routes: Routes = [
     component: ViewerComponent,
     children: [
       {
-        path: ':guid',
+        path: 'workshop/:guid',
+        component: ParticipantComponent
+      },
+      {
+        path: 'scenario/:guid',
         component: ParticipantComponent
       }
     ]
