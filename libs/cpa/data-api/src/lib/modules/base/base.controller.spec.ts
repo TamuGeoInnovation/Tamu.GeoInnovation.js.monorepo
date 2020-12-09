@@ -5,19 +5,50 @@ import { BaseEntity, Repository } from 'typeorm';
 import { BaseController } from './base.controller';
 import { BaseService } from './base.service';
 
+jest.mock('./base.service');
+
 describe('Base Controller', () => {
-  let controller: BaseController<BaseEntity>;
+  let baseService: BaseService<BaseEntity>;
+  let baseController: BaseController<BaseEntity>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [BaseService, Repository],
       controllers: [BaseController]
     }).compile();
-
-    controller = module.get<BaseController<BaseEntity>>(BaseController);
+    baseService = module.get<BaseService<BaseEntity>>(BaseService);
+    baseController = module.get<BaseController<BaseEntity>>(BaseController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  const mockParameters = new BaseEntity();
+
+  describe('Validation ', () => {
+    it('controller should be defined', () => {
+      expect(baseController).toBeDefined();
+    });
+  });
+
+  describe('getAll', () => {
+    it('should call service method getAll', async () => {
+      const serviceSpy = jest.spyOn(baseService, 'getAll');
+      baseController.getAll();
+      expect(serviceSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('getOne', () => {
+    it('should call service method getOne', async () => {
+      const serviceSpy = jest.spyOn(baseService, 'getOne');
+      baseController.getOne(mockParameters);
+      expect(serviceSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('insert', () => {
+    it('should call service method createOne', async () => {
+      const serviceSpy = jest.spyOn(baseService, 'createOne');
+      baseController.insert(mockParameters);
+      expect(serviceSpy).toHaveBeenCalled();
+    });
   });
 });

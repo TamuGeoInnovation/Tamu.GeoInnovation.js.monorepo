@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "coverage": "jest --coverage --coverageReporters=cobertura",
     "ng": "ng",
     "nx": "nx",
     "start": "ng serve",
