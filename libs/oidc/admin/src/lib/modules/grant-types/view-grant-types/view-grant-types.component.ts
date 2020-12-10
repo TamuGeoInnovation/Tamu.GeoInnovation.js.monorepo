@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { GrantTypesService } from '@tamu-gisc/oidc/admin-data-access';
 
 import { Observable } from 'rxjs';
 
 import { GrantType } from '@tamu-gisc/oidc/common';
+import { GrantTypesService } from '@tamu-gisc/oidc/admin-data-access';
 
 @Component({
   selector: 'view-grant-types',

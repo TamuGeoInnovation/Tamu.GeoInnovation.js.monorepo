@@ -20,6 +20,7 @@ export class SecretQuestionController {
       const question: Partial<SecretQuestion> = {
         questionText: value.questionText
       };
+
       questions.push(question);
     });
 

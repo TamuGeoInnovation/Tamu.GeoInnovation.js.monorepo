@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ClientMetadataController } from './client-metadata.controller';
 
 describe('ClientMetadata Controller', () => {
@@ -6,7 +7,7 @@ describe('ClientMetadata Controller', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [ClientMetadataController],
+      controllers: [ClientMetadataController]
     }).compile();
 
     controller = module.get<ClientMetadataController>(ClientMetadataController);

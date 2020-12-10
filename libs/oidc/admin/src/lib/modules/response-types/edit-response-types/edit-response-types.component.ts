@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ResponseTypesService } from '@tamu-gisc/oidc/admin-data-access';
 
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 import { ResponseType } from '@tamu-gisc/oidc/common';
+import { ResponseTypesService } from '@tamu-gisc/oidc/admin-data-access';
 
 @Component({
   selector: 'edit-response-types',

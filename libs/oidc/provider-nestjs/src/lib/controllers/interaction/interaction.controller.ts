@@ -76,6 +76,7 @@ export class InteractionController {
       const email = body.email;
       const password = body.password;
       const user = await this.userService.userLogin(email, password);
+
       if (user) {
         if (user.enabled2fa) {
           const locals = {
@@ -168,6 +169,7 @@ export class InteractionController {
           },
           meta: {}
         };
+
         await OpenIdProvider.provider.interactionFinished(req, res, result);
       } else {
         // Incorrect code provided

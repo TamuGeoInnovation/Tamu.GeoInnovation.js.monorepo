@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Res, Get, Param, Patch, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Delete, UseGuards } from '@nestjs/common';
 
 import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 

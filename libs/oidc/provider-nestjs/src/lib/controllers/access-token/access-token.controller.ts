@@ -7,6 +7,7 @@ export class AccessTokenController {
   @Delete(':grantId')
   public async revokeAccessToken(@Param() params) {
     const grantId = params.grantId;
+
     OpenIdProvider.provider.AccessToken.revokeByGrantId(grantId);
   }
 }

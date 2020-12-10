@@ -16,6 +16,7 @@ export class EditAccessTokenComponent implements OnInit {
   constructor(private readonly accessTokenService: AccessTokenService) {
     this.fetchAccessTokens();
   }
+
   public ngOnInit(): void {}
 
   public fetchAccessTokens() {

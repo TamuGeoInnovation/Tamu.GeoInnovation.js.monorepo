@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { In } from 'typeorm';
 import * as deepmerge from 'deepmerge';
@@ -50,20 +50,24 @@ export class ClientMetadataService {
 
   public async insertClientMetadata(_clientMetadata: Partial<ClientMetadata>) {
     const clientMetadata = this.clientMetadataRepo.create(_clientMetadata);
+
     clientMetadata.redirectUris.map((redirectUri) => {
       redirectUri.save();
     });
+
     return this.clientMetadataRepo.save(clientMetadata);
   }
 
   public async loadClientMetadaForOidcSetup() {
     const clients = await this.clientMetadataRepo.findAllDeep();
     const flattenedClients: IClientMetadata[] = this.flattenClientMetadataForReturn(clients);
+
     return flattenedClients;
   }
 
   private flattenClientMetadataForReturn(clients: ClientMetadata[]) {
     const flattenedClients: IClientMetadata[] = [];
+
     try {
       clients.map((curr) => {
         const flattened: IClientMetadata = {
@@ -102,16 +106,20 @@ export class ClientMetadataService {
 
   public async updateClientMetadata(_clientMetadata: Partial<ClientMetadata>) {
     const clientMetadata = await this.clientMetadataRepo.getClientMetadata(_clientMetadata.guid);
-    const merged = deepmerge(clientMetadata as Partial<ClientMetadata>, _clientMetadata);
-    merged.grantTypes = _clientMetadata.grantTypes;
-    merged.responseTypes = _clientMetadata.responseTypes;
-    merged.redirectUris = _clientMetadata.redirectUris;
-    merged.tokenEndpointAuthMethod = _clientMetadata.tokenEndpointAuthMethod;
-    return this.clientMetadataRepo.save(merged);
+    clientMetadata.grantTypes = _clientMetadata.grantTypes;
+    clientMetadata.responseTypes = _clientMetadata.responseTypes;
+    clientMetadata.redirectUris = _clientMetadata.redirectUris;
+    clientMetadata.tokenEndpointAuthMethod = _clientMetadata.tokenEndpointAuthMethod;
+    clientMetadata.redirectUris.map((redirectUri) => {
+      redirectUri.save();
+    });
+
+    return this.clientMetadataRepo.save(clientMetadata);
   }
 
   public async deleteClientMetadata(guid: string) {
     const clientMetadata = await this.clientMetadataRepo.getClientMetadata(guid);
+
     if (clientMetadata) {
       clientMetadata.remove();
     }
@@ -142,7 +150,9 @@ export class ClientMetadataService {
         guid: _grantType.guid
       }
     });
+
     const merged = deepmerge(grantType as Partial<GrantType>, _grantType);
+
     return this.grantTypeRepo.save(merged);
   }
 
@@ -152,6 +162,7 @@ export class ClientMetadataService {
         guid
       }
     });
+
     if (grantType) {
       grantType.remove();
     }
@@ -209,7 +220,9 @@ export class ClientMetadataService {
         guid: _responseType
       }
     });
+
     const merged = deepmerge(responseType as Partial<ResponseType>, _responseType);
+
     return this.responseTypeRepo.save(merged);
   }
 
@@ -219,6 +232,7 @@ export class ClientMetadataService {
         guid
       }
     });
+
     if (responseType) {
       responseType.remove();
     }
@@ -269,6 +283,7 @@ export class ClientMetadataService {
         guid
       }
     });
+
     if (tokenEndpointAuthMethod) {
       tokenEndpointAuthMethod.remove();
     }

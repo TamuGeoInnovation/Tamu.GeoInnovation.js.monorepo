@@ -109,12 +109,6 @@ export class Account extends GuidIdentity {
   })
   public website: string;
 
-  // @Column({
-  //   type: 'varchar',
-  //   nullable: true
-  // })
-  // email: string;
-
   @Column({
     type: 'varchar',
     nullable: true
@@ -170,13 +164,6 @@ export class Account extends GuidIdentity {
   constructor(fullName: string, email: string) {
     super();
     try {
-      // if (user) {
-      // if (user.guid) {
-      //   this.guid = user.guid;
-      // }
-      // if (email) {
-      //   this.email = email;
-      // }
       if (fullName) {
         this.name = fullName;
         if (fullName.includes(' ')) {

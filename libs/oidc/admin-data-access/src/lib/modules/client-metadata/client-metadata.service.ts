@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, reduce } from 'rxjs/operators';
+
+import { map } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { ClientMetadata } from '@tamu-gisc/oidc/common';
@@ -26,11 +27,9 @@ export class ClientMetadataService {
             guid: clientResponse.guid,
             clientName: clientResponse.clientName,
             clientSecret: clientResponse.clientSecret,
-            // grantTypes: this.flattenArray(clientResponse.grantTypes, 'type'),
             grantTypes: clientResponse.grantTypes.map((grant) => grant.type),
             redirectUris: this.flattenArray(clientResponse.redirectUris, 'url'),
             responseTypes: clientResponse.responseTypes.map((response) => response.type),
-            // responseTypes: this.flattenArray(clientResponse.responseTypes, 'type'),
             token_endpoint_auth_method: clientResponse.tokenEndpointAuthMethod.type
           };
           return newClientResponse;

@@ -11,6 +11,7 @@ export class AuthenticatedGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const isAuthed = request.isAuthenticated();
     const tokenIntrospectionResult = await OpenIdClient.client.introspect(request.user.access_token);
+
     if (isAuthed && tokenIntrospectionResult.active) {
       return true;
     } else {

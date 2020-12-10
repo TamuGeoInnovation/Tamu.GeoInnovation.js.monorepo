@@ -32,7 +32,6 @@ export class DetailGrantTypeComponent implements OnInit {
         this.grantType = grantType;
         this.form.patchValue(this.grantType);
         this.form.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
-          const newGrantType = this.form.getRawValue();
           this.grantTypeService
             .updateGrantType(this.form.getRawValue())
             .subscribe((result) => [console.log('Updated grant type')]);

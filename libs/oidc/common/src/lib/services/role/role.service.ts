@@ -13,6 +13,7 @@ export class RoleService {
         name: name
       }
     });
+
     if (existingRole) {
       throw new Error('Role already exists');
     } else {
@@ -20,13 +21,16 @@ export class RoleService {
         level: level,
         name: name
       };
+
       const role = this.roleRepo.create(_role);
+
       return this.roleRepo.save(role);
     }
   }
 
   public async insertRoles(_roles: Partial<Role>[]) {
     const roles = this.roleRepo.create(_roles);
+
     return this.roleRepo.save(roles);
   }
 
@@ -52,6 +56,7 @@ export class RoleService {
         guid: roleGuid
       }
     });
+
     return this.roleRepo.remove(role);
   }
 }

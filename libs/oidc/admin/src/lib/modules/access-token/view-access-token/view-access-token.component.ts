@@ -16,5 +16,6 @@ export class ViewAccessTokenComponent implements OnInit {
   constructor(private readonly accessTokenService: AccessTokenService) {
     this.$accessTokens = this.accessTokenService.getAccessTokens();
   }
+
   public ngOnInit(): void {}
 }

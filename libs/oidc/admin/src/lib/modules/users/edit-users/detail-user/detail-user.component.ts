@@ -45,7 +45,6 @@ export class DetailUserComponent implements OnInit, OnDestroy {
     this.userGuid = this.route.snapshot.params.userGuid;
 
     this.userForm = this.fb.group({
-      // superGuid: '',
       guid: new FormControl(''),
       email: new FormControl(''),
       email_verified: new FormControl({ value: '', disabled: true }),
@@ -82,9 +81,6 @@ export class DetailUserComponent implements OnInit, OnDestroy {
 
     // We're gonna initialize this after we have the clients and the user. We'll initialize the form group there
     // with all of the controls pre-prepared, so that it only emits once at most at the beginning.
-    //
-    // this.roleForm = this.fb.group({});
-
     this.$roles = this.roleService.getRoles().pipe(shareReplay(1));
     this.$clients = this.clientMetadataService.getClientMetadatas();
     this.$user = this.userService.getUser(this.userGuid).pipe(shareReplay(1));
@@ -93,7 +89,6 @@ export class DetailUserComponent implements OnInit, OnDestroy {
       // Setup a scoped group, to which we'll append the roles to. Once all controls are added to this
       // scoped group, we'll initialize this.roleForm.
       const group = this.fb.group({
-        // userGuid: this.fb.control(user.guid)
         userGuid: [user.guid]
       });
 
@@ -126,28 +121,11 @@ export class DetailUserComponent implements OnInit, OnDestroy {
             const updatedUser: Partial<User> = {
               ...this.userForm.getRawValue()
             };
-            // console.log(updatedUser);
             this.userService.updateUser(updatedUser).subscribe((result) => [console.log('Updated details')]);
           });
       });
     }
   }
-
-  // private getDirtyValues() {
-  //   const newRole: Partial<INewRole> = {};
-  //   const controls = Object.keys(this.roleForm.controls);
-  //   // const userGuid = ;
-  //   controls.forEach((key) => {
-  //     if (this.roleForm.controls[key].dirty) {
-  //       // console.log('Client', key, 'value', this.roleForm.controls[key].value);
-
-  //       newRole.roleGuid = this.roleForm.controls[key].value;
-  //       this.roleForm.controls[key].markAsPristine();
-  //     }
-  //   });
-  //   this.userService.updateRole(newRole);
-  //   return;
-  // }
 
   private registerRoleChanges() {
     // We need to call this function separately because this.roleForm.valueChanges will be undefined
@@ -158,7 +136,6 @@ export class DetailUserComponent implements OnInit, OnDestroy {
         debounceTime(500),
         withLatestFrom(this.$clients),
         switchMap(([formValue, clients]) => {
-          // this.getDirtyValues();
           const formRoles = this.roleForm.getRawValue();
           const newRoles: INewRole[] = Object.entries(formRoles).reduce((acc, [key, value]) => {
             if (key !== 'userGuid') {
@@ -183,13 +160,10 @@ export class DetailUserComponent implements OnInit, OnDestroy {
           });
 
           return forkJoin(requests);
-          // return this.userService.updateRole(newRoles);
-          // return forkJoin();
         }),
         takeUntil(this._$destroy)
       )
       .subscribe((result) => {
-        // this.userService.updateRoles(newRoles).subscribe((result) => [console.log('Updated user roles')]);
         console.log(result);
       });
   }

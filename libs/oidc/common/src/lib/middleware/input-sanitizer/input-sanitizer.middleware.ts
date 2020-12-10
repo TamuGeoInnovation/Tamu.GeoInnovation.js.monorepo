@@ -6,8 +6,10 @@ export function InputSanitizerMiddleware(req: Request, res: Response, next: Func
     next();
   } else {
     const propNames: string[] = [];
+
     if (req.body && req.body !== {}) {
       const keys = Object.keys(req.body);
+
       keys.map((key) => {
         let prop = req.body[key] as string;
         if (prop.includes('@')) {

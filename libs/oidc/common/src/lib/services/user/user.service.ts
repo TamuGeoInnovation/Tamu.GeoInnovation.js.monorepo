@@ -50,6 +50,7 @@ export class UserService {
   public async insertUser(user: User, name: string) {
     const newAccount: Account = new Account(name, user.email);
     user.account = newAccount;
+
     const existingUser = await this.userRepo.findOne({
       where: {
         email: user.email
@@ -65,12 +66,16 @@ export class UserService {
     const newUser = await this.userRepo.save(user);
     if (newUser) {
       Mailer.sendAccountConfirmationEmail(newUser.email, newUser.guid);
+
       const _usedPassword: Partial<UserPasswordHistory> = {
         user: newUser,
         usedPassword: newUser.password
       };
+
       const usedPassword = await this.passwordHistoryRepo.create(_usedPassword);
+
       await this.passwordHistoryRepo.save(usedPassword);
+
       return newUser;
     }
   }
@@ -82,6 +87,7 @@ export class UserService {
       },
       relations: ['account']
     });
+
     if (user) {
       const merged = deepmerge(user, updatedUser);
       await this.userRepo.save(merged);
@@ -109,6 +115,7 @@ export class UserService {
    */
   public async sendPasswordResetEmail(guid: string, email: string, ip: string) {
     let user: User;
+
     if (guid) {
       user = await this.userRepo.findByKeyDeep('guid', guid);
     } else if (email) {
@@ -119,12 +126,14 @@ export class UserService {
       userGuid: user.guid,
       initializerIp: ip
     };
+
     const resetRequest = await this.passwordResetRepo.create(_resetRequest);
     resetRequest.setToken();
 
     // TODO: Is this subscribe a potential source of problems later on? Should we have to unsubscribe?
     this.httpService.get(`${this.IPSTACK_URL}${ip}?access_key=${this.IPSTACK_APIKEY}`).subscribe((observer) => {
       const location = observer.data.country_name;
+
       Mailer.sendPasswordResetRequestEmail(user, resetRequest, location);
       this.passwordResetRepo.save(resetRequest).catch((typeOrmErr) => {
         console.warn(typeOrmErr);
@@ -141,6 +150,7 @@ export class UserService {
 
     if (userWithAccount) {
       const same = await compare(password, userWithAccount.password);
+
       if (same) {
         return userWithAccount;
       } else {
@@ -185,17 +195,21 @@ export class UserService {
    */
   public async insertUserRole(user: User, role: Role, clientName: string) {
     const clients = await this.clientMetadataRepo.findAllShallow();
+
     const requestedClient = clients.find((value, index) => {
       if (clientName === value.clientName) {
         return value;
       }
     });
+
     const newUserRole: Partial<UserRole> = {
       role: role,
       client: requestedClient,
       user: user
     };
+
     const update = this.userRoleRepo.create(newUserRole);
+
     return this.userRoleRepo.save(update);
   }
 
@@ -221,18 +235,23 @@ export class UserService {
    */
   public async getUsersQuestions(user: User) {
     const questionsAndAnswers = await this.answerRepo.findAllByKeyDeep('user', user.guid);
+
     const questions: {
       text: string;
       guid: string;
     }[] = [];
+
     const len = questionsAndAnswers.length;
+
     for (let i = 0; i < len; i++) {
       const secretAnswer = questionsAndAnswers[i];
+
       questions.push({
         guid: secretAnswer.secretQuestion.guid,
         text: secretAnswer.secretQuestion.questionText
       });
     }
+
     return questions;
   }
 
@@ -251,21 +270,25 @@ export class UserService {
         guid: question1Guid
       }
     });
+
     const secretQuestion2 = await this.questionRepo.findOne({
       where: {
         guid: question2Guid
       }
     });
+
     const _secretAnswer1: Partial<SecretAnswer> = {
       answer: await hash(secretAnswer1.toLowerCase(), SHA1HashUtils.SALT_ROUNDS),
       secretQuestion: secretQuestion1,
       user: user
     };
+
     const _secretAnswer2: Partial<SecretAnswer> = {
       answer: await hash(secretAnswer2.toLowerCase(), SHA1HashUtils.SALT_ROUNDS),
       secretQuestion: secretQuestion2,
       user: user
     };
+
     const secretAnswers = this.answerRepo.create([_secretAnswer1, _secretAnswer2]);
     if (secretAnswers) {
       this.answerRepo.save(secretAnswers).catch((typeOrmErr) => {
@@ -279,6 +302,7 @@ export class UserService {
    */
   public async isPasswordResetTokenStillValid(token: string) {
     const resetRequest = await this.passwordResetRepo.findByKeyShallow('token', token);
+
     if (new Date(resetRequest.expiresAt) >= new Date()) {
       return true;
     } else {
@@ -301,9 +325,11 @@ export class UserService {
         guid: guid
       }
     });
+
     const secretAnswers = await this.answerRepo.findAllByKeyDeep('user', user.guid);
     let answer1correct = false;
     let answer2correct = false;
+
     for (let i = 0; i < secretAnswers.length; i++) {
       const secretAnswer = secretAnswers[i];
       if (secretAnswer.secretQuestion.guid === question1) {

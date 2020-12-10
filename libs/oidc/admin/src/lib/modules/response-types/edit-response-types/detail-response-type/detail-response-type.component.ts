@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+
 import { debounceTime } from 'rxjs/operators';
 
 import { ResponseTypesService } from '@tamu-gisc/oidc/admin-data-access';
@@ -30,7 +31,6 @@ export class DetailResponseTypeComponent implements OnInit {
         this.responseType = responseType;
         this.form.patchValue(this.responseType);
         this.form.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
-          const newResponseType = this.form.getRawValue();
           this.responseService
             .updateResponseType(this.form.getRawValue())
             .subscribe((result) => [console.log('Updated response type')]);

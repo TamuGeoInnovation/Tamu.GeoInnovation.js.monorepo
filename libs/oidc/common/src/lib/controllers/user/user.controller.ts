@@ -1,17 +1,4 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Req,
-  Res,
-  Post,
-  HttpException,
-  HttpStatus,
-  Body,
-  UseGuards,
-  Delete,
-  Patch
-} from '@nestjs/common';
+import { Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus, Body, UseGuards, Delete } from '@nestjs/common';
 
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
@@ -19,10 +6,10 @@ import { authenticator } from 'otplib';
 import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 
 import { urlFragment, urlHas } from '../../utils/web/url-utils';
-import { User } from '../../entities/all.entity';
+import { User, UserRole } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
 
-// @UseGuards(AdminRoleGuard)
+@UseGuards(AdminRoleGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -30,7 +17,7 @@ export class UserController {
   @Get('all')
   public async usersAllGet() {
     return this.userService.userRepo.find({
-      relations: ['account']
+      relations: ['account', 'userRoles']
     });
   }
 
@@ -50,13 +37,53 @@ export class UserController {
     return this.userService.removeUser(userGuid);
   }
 
-  @Patch()
-  public async updateUser(@Body() body) {
-    const updatedUser: Partial<User> = {
-      ...body
-    };
-    return this.userService.updateUser(updatedUser);
-    // return updatedUser;
+  @Post('role')
+  public async assignRole(@Body() body) {
+    const user = await this.userService.userRepo.findOne({
+      where: {
+        guid: body.userGuid
+      }
+    });
+
+    const role = await this.userService.roleRepo.findOne({
+      where: {
+        guid: body.roleGuid
+      }
+    });
+
+    const clientMetadata = await this.userService.clientMetadataRepo.findOne({
+      where: {
+        guid: body.clientGuid
+      }
+    });
+
+    const existingRole = await this.userService.userRoleRepo.findOne({
+      where: {
+        user: user,
+        client: clientMetadata
+      }
+    });
+
+    if (user && clientMetadata && existingRole) {
+      existingRole.role = role;
+      if (role === undefined) {
+        existingRole.remove();
+      } else {
+        existingRole.save();
+      }
+    }
+    if (user && role && clientMetadata && !existingRole) {
+      const _userRole: Partial<UserRole> = {
+        client: clientMetadata,
+        role: role,
+        user: user
+      };
+
+      const userRole = await this.userService.userRoleRepo.create(_userRole);
+      await userRole.save();
+    }
+
+    return body;
   }
 
   /**
@@ -170,6 +197,7 @@ export class UserController {
   @Get('2fa/enable/:guid')
   public async enable2faGet(@Param() params, @Res() res: Response) {
     const userGuid = params.guid;
+
     if (userGuid) {
       const user = await this.userService.userRepo.findOne({
         where: {
@@ -219,7 +247,7 @@ export class UserController {
    * Assigns a role to a user for a particular clientId.
    * Will save newly created UserRole entity object
    */
-  @Post('role')
+  @Post('role/api')
   public async addUserRolePost(@Body() body, @Req() req: Request) {
     const { email } = body;
 
@@ -233,7 +261,7 @@ export class UserController {
       const roles = await this.userService.roleRepo.find();
 
       const requestedRole = roles.find((value, index) => {
-        if (req.body.role.level === value.level) {
+        if (req.body.role.level === Number(value.level)) {
           return value;
         }
       });
