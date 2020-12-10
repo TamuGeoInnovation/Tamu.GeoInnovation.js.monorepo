@@ -1,0 +1,15 @@
+describe('Test Route', () => {
+  beforeEach(() => {
+    cy.visit('https://aggiemap.tamu.edu/map/d/trip')
+    cy.get('canvas')
+      .should('be.visible', {timeout: 10000})
+      .click(1185,618)
+      cy.get(':nth-child(1) > :nth-child(1) > .input-action-container > .margin-right', {timeout: 20000})
+        .should('have.value', 'Kyle Field')
+      cy.get('canvas')
+        .should('be.visible', {timeout: 10000})
+        .click(1343,166)
+      cy.get(':nth-child(2) > :nth-child(1) > .input-action-container > .margin-right', {timeout: 20000})
+        .should('have.value', 'Jack K. Williams Administration Building')
+  })
+})

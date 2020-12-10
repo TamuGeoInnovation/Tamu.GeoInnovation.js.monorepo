@@ -2,6 +2,11 @@ describe('Correct Page', function() {
   beforeEach(() => {
     cy.visit('https://aggiemap.tamu.edu/map/d')
   })
+  /*
+  it('Check API Call', () => {
+    cy.checkApiCall('https://aggiemap.tamu.edu/map/d', 'POST')
+  })
+  */
   it('Check Location', () => {
     cy.location('protocol')
       .should('eq', 'https:')
@@ -28,6 +33,21 @@ describe('Correct Page', function() {
     .and('have.attr', 'alt', 'Toggle Features (Search, Layers, Legend)')
     .and('have.attr', 'Title', 'Features')
     .and('have.attr', 'role', 'button')
+  })
+  it('Check Sidebar Closes - Feature Toggle', () => {
+    cy.get('.tabs > :nth-child(1) > .esri-component')
+      .should('be.visible')
+      .click({force: true})
+      .click({force: true})
+    cy.get('tamu-gisc-sidebar')
+      .should('not.be.visible')
+  })
+  it('Check Sidebar Opens - Feature Toggle', () => {
+    cy.get('.tabs > :nth-child(1) > .esri-component')
+    .should('be.visible')
+    .click({force: true})
+    cy.get('tamu-gisc-sidebar')
+      .should('be.visible')
   })
   it('Headings', () => {
     cy.contains('tamu-gisc-layer-list > .sidebar-component-name', 'Layers')
