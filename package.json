@@ -54,7 +54,7 @@
     "angular-bootstrap-datetimepicker": "^2.2.1",
     "angular-webstorage-service": "^1.0.2",
     "angulartics2": "^7.4.1",
-    "bcrypt": "^4.0.1",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.18.3",
     "chart.js": "^2.9.3",
     "chartjs-plugin-colorschemes": "^0.4.0",
