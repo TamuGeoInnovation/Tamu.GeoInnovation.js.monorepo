@@ -24,7 +24,7 @@ export class FileComponent implements ControlValueAccessor {
   private _value = false;
 
   @Output()
-  public fileSelected: EventEmitter<SelectedFile> = new EventEmitter();
+  public fileSelected: EventEmitter<File> = new EventEmitter();
 
   public fileName: string;
 
@@ -43,7 +43,7 @@ export class FileComponent implements ControlValueAccessor {
   }
 
   public handleFileChange(event) {
-    const reader = new FileReader();
+    // const reader = new FileReader();
 
     if (event.target.files && event.target.files.length) {
       const [file]: [File] = event.target.files;
@@ -63,19 +63,23 @@ export class FileComponent implements ControlValueAccessor {
               .toLowerCase()
           : 'unkown';
 
-      reader.readAsDataURL(file);
+      this.value = file;
 
-      reader.onload = () => {
-        this.value = reader.result;
+      this.fileSelected.emit(file);
 
-        this.fileSelected.emit({
-          name: this.fileName,
-          type: this.dataType,
-          extension: this.fileExtension,
-          size: file.size,
-          content: reader.result
-        });
-      };
+      // reader.readAsDataURL(file);
+
+      // reader.onload = () => {
+      //   // this.value = reader.result;
+
+      //   this.fileSelected.emit({
+      //     name: this.fileName,
+      //     type: this.dataType,
+      //     extension: this.fileExtension,
+      //     size: file.size,
+      //     content: reader.result
+      //   });
+      // };
     }
   }
 
@@ -97,12 +101,4 @@ export class FileComponent implements ControlValueAccessor {
   public setDisabledState(disabled?: boolean) {
     this.value = disabled;
   }
-}
-
-export interface SelectedFile {
-  name: string;
-  type: string;
-  extension: string;
-  size: number;
-  content: string | ArrayBuffer;
 }

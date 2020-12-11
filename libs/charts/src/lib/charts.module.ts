@@ -6,11 +6,12 @@ import { ChartContainerComponent } from './components/chart-container/chart-cont
 
 import { BarChartComponent } from './components/bar/bar.component';
 import { LineChartComponent } from './components/line/line.component';
+import { DoughnutChartComponent } from './components/doughnut/doughnut.component';
 import { PieChartComponent } from './components/pie/pie.component';
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [BaseChartComponent, BarChartComponent, ChartContainerComponent, LineChartComponent, PieChartComponent],
-  exports: [BaseChartComponent, BarChartComponent, LineChartComponent, PieChartComponent]
+  declarations: [BaseChartComponent, BarChartComponent, ChartContainerComponent, LineChartComponent, DoughnutChartComponent, PieChartComponent],
+  exports: [BaseChartComponent, BarChartComponent, LineChartComponent, DoughnutChartComponent, PieChartComponent]
 })
 export class ChartsModule {}

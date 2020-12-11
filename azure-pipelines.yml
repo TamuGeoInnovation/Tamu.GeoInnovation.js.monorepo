@@ -1,0 +1,80 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+pool:
+  vmImage: 'windows-latest'
+
+resources:
+  containers:
+    - container: mssql
+      image: mcr.microsoft.com/mssql/server:2019-latest
+      ports: 
+      - 1433:1433
+      env:
+        ACCEPT_EULA: Y
+        SA_PASSWORD: yourStrong(!)Password
+        MSSQL_PID: Developer 
+      options: --name mssql
+
+jobs:
+  - job: ci
+    timeoutInMinutes: 120
+    services:
+      mssql: mssql
+    pool:
+      vmImage: 'ubuntu-latest'
+    variables:
+      IS_PR: $[ eq(variables['Build.Reason'], 'PullRequest') ]
+    steps:
+      - task: InstallSSHKey@0
+        inputs:
+          knownHostsEntry: 'github.com,140.82.112.3 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+          sshKeySecureFile: 'id_rsa'
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '12.16.2'
+        displayName: 'Install Node.js'
+      - task: PowerShell@2
+        displayName: 'delay 10'
+        inputs:
+          targetType: 'inline'
+          script: |
+            # Write your PowerShell commands here.
+              start-sleep -s 10
+      - task: CmdLine@2
+        displayName: 'docker logs'
+        inputs:
+          script: 'docker logs mssql'
+      - script: 
+         npm install
+        displayName: 'npm install'
+      - task: CmdLine@2
+        displayName: 'npm install mssql'
+        inputs:
+          script: 'npm install mssql'
+          workingDirectory: '$(build.sourcesdirectory)'
+      - task: CmdLine@2
+        displayName: 'docker list'
+        inputs:
+          script: 'docker ps -all'
+      - task: CmdLine@2
+        displayName: 'Create test database'
+        inputs: 
+          script: 'sqlcmd -S localhost -d master -U sa -P "yourStrong(!)Password" -Q "CREATE DATABASE test"'
+      - task: DownloadSecureFile@1
+        name: ormConfig
+        displayName: 'Download ormconfig.ts'
+        inputs:
+          secureFile: 'ormconfig.ts'
+      - task: CopyFiles@2
+        displayName: 'Copy ormconfig'
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)
+          Contents: ormconfig.ts
+          TargetFolder: $(System.DefaultWorkingDirectory)/libs/covid/data-api/src/lib
+      
+      - script: npx nx affected --target=test --base=origin/development --parallel
+      - script: npx nx affected --target=lint --base=origin/development --parallel
+      - script: npx nx affected --target=build --base=origin/development --prod --parallel

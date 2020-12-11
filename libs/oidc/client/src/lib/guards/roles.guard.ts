@@ -2,6 +2,22 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
 import { ROLE_LEVELS, OpenIdClient } from '../auth/open-id-client';
 
+@Injectable()
+export class AzureIdpGuard implements CanActivate {
+  public canActivate(context: ExecutionContext): boolean | Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const isAuthed = request.isAuthenticated();
+    let canProceed = false;
+    if (isAuthed) {
+      if (request.user) {
+        // Will probably need additional logic here to check for group ID's
+        canProceed = true;
+      }
+    }
+    return canProceed;
+  }
+}
+
 /**
  * NestJS guard used to prevent non-admins from accessing admin routes.
  */

@@ -92,6 +92,14 @@ export class LineChartConfiguration extends ChartConfiguration {
   }
 }
 
+export class DoughnutChartConfiguration extends ChartConfiguration {
+  constructor(args?: IChartConfiguration) {
+    super(args);
+
+    this.type = 'doughnut';
+  }
+}
+
 export class PieChartConfiguration extends ChartConfiguration {
   constructor(args?: IChartConfiguration) {
     super(args);

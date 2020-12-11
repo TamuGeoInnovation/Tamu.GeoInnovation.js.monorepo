@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 
-import { County, CountyClaim, EntityStatus, TestingSite, Lockdown, State } from '@tamu-gisc/covid/common/entities';
+import { County, CountyClaim, EntityStatus, TestingSite, Lockdown } from '@tamu-gisc/covid/common/entities';
 
 import { BaseService } from '../base/base.service';
 

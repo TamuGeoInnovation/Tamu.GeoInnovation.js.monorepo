@@ -1,5 +1,16 @@
+@import 'libs/sass/mixins';
 @import 'libs/sass/components/sidebar';
 
 .checkbox {
   margin-bottom: 1rem;
+}
+
+.sidebar-component-name p {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+}
+
+#options-return {
+  cursor: pointer;
 }

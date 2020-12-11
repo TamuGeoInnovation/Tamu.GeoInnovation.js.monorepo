@@ -1,0 +1,50 @@
+@import 'libs/sass/mixins';
+
+.zone-overview-tile {
+  padding: 1.25rem 0.5rem;
+  margin: 0.5rem 0;
+  position: relative;
+  @include flexbox();
+  @include flex-direction(column);
+  border: 1pt solid;
+  border-color: #bdbdbd;
+  border-radius: 0.5rem;
+  @include transition(border-color 0.2s);
+
+  &:hover {
+    cursor: pointer;
+    border-color: #616161;
+  }
+}
+
+.zone-overview-row {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+  @include justify-content(space-around);
+
+  &:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+}
+
+.zone-metric {
+  @include flexbox();
+  @include flex-direction(column);
+  @include align-items(center);
+
+  .zone-metric-value {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .zone-metric-name {
+    font-size: 0.8rem;
+    color: #616161;
+  }
+}
+
+.zone-history-chart {
+  margin-left: 1rem;
+}

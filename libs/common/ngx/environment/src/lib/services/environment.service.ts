@@ -14,11 +14,22 @@ export class EnvironmentService {
     }
   }
 
-  public value(property: string) {
-    if (this._config[property]) {
+  /**
+   * Retrieves a value from the environment configuration by object/property token.
+   *
+   * @param {string} property Existing key/token in environment configuration.
+   * @param {boolean} [optional] Marking a value as optional will not throw an application error. Will return `undefined` if token does not exist.
+   */
+  public value(property: string, optional?: boolean) {
+    if (this._config[property] !== undefined) {
       return this._config[property];
     } else {
-      throw new Error(`Environment does not contain a '${property}' key.`);
+      if (optional) {
+        console.log(`Environment does not contain a optional '${property}' token. Execution not interrupted.`);
+        return undefined;
+      } else {
+        throw new Error(`Environment does not contain a '${property}' token.`);
+      }
     }
   }
 }

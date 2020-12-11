@@ -1,0 +1,116 @@
+<div class="sidebar-component-name">
+  <p>Relationship Explorer</p>
+</div>
+
+<div class="sidebar-component-content">
+  <p *ngIf="(tier | async) === null else selectedDetails">Select a zone or sample to show their relationships.</p>
+
+  <ng-template #selectedDetails>
+    <div class="stat-card">
+      <ng-container *ngIf="isHitGraphicZone | async">
+        <div class="stat-metric">{{tier | async}}-{{sample | async}}</div>
+        <div class="stat-title">Selected Tier</div>
+      </ng-container>
+
+      <ng-container *ngIf="(isHitGraphicZone | async) === false">
+        <div class="stat-metric">{{tier | async}}-{{sample | async}}</div>
+        <div class="stat-title">Sample</div>
+      </ng-container>
+    </div>
+  </ng-template>
+
+  <ng-container *ngIf="isHitGraphicZone | async">
+    <div *ngIf="(sampleLocationsInZone | async) as sz">
+      <div class="stat-card">
+        <div class="stat-metric">{{sz.length > 0 ? sz.length : 0}}</div>
+        <div class="stat-title">{{sz.length > 1 ? 'Sample Locations' : 'Sample Location'}}</div>
+
+        <ng-container *ngIf="(sampleLocationsInZone | async)?.length  > 0">
+          <div class="stat-chart" *ngFor="let location of sampleLocationsInZone | async">
+            <tamu-gisc-site-history-chart [tier]="tier | async" [sample]="sample | async"></tamu-gisc-site-history-chart>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div *ngIf="(tierOwns | async) as to">
+      <ng-container *ngIf="to.length > 0">
+        <div class="stat-card">
+          <div class="stat-metric">{{to.length > 0 ? to.length : 0}}</div>
+          <div class="stat-title">{{to.length > 1 ? 'Sub Samples' : 'Sub Sample'}}</div>
+
+          <div class="checkbox-accordion">
+            <input type="checkbox" />
+            <div class="checkbox-instructions">
+              <p class="checkbox-false">Expand Sub Samples</p>
+              <p class="checkbox-true">Collapse Sub Samples</p>
+            </div>
+            <div class="stat-list accordion-content">
+              <div class="stat-list-item clip" *ngFor="let child of to" (click)="highlightSubSample(child?.attributes?.SampleNumber)">{{child?.attributes?.SampleNumber}}</div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <!-- Show only when the selected feature is a graphic zone (not a sampling location) -->
+  <ng-container *ngIf="isHitGraphicZone | async">
+    <div *ngIf="(affectedBuildings | async) as buildings">
+      <div class="stat-card">
+        <div class="stat-metric">{{buildings.length > 0 ? buildings.length : 0}}</div>
+        <div class="stat-title">{{buildings.length > 1 ? 'Covered Buildings' : 'Covered Building'}}</div>
+
+        <div class="checkbox-accordion">
+          <input type="checkbox" />
+          <div class="checkbox-instructions">
+            <p class="checkbox-false">Expand building list</p>
+            <p class="checkbox-true">Collapse building list</p>
+          </div>
+          <div class="stat-list accordion-content">
+            <div class="stat-list-item chip" *ngFor="let building of buildings" (click)="highlightBuildings(building?.attributes?.Number)">{{building?.attributes?.Number}} {{building?.attributes?.Abbrev ? '- ' + building?.attributes?.Abbrev : ''}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="(uncoveredBuildings | async) as ub">
+      <div class="stat-card">
+        <div class="stat-metric">{{ub.length > 0 ? ub.length : 0}}</div>
+        <div class="stat-title">{{ub.length > 1 ? 'Uncovered Buildings' : 'Uncovered Building'}}</div>
+
+        <div class="checkbox-accordion">
+          <input type="checkbox" />
+          <div class="checkbox-instructions">
+            <p class="checkbox-false">Expand building list</p>
+            <p class="checkbox-true">Collapse building list</p>
+          </div>
+          <div class="stat-list accordion-content">
+            <div class="stat-list-item chip" *ngFor="let building of ub" (click)="highlightBuildings(building?.attributes?.Number)">{{building?.attributes?.Number}} {{building?.attributes?.Abbrev ? '- ' + building?.attributes?.Abbrev : ''}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Show only when the selected feature is a sampling location. The affectedBuildings stream will be empty for this condition, so sampleBuildings is used instead as it performs additional lookups -->
+  <ng-container *ngIf="(isHitGraphicZone | async) === false">
+    <div *ngIf="(sampleBuildings | async) as sb">
+      <div class="stat-card">
+        <div class="stat-metric">{{sb.length > 0 ? sb.length : 0}}</div>
+        <div class="stat-title">{{sb.length > 1 ? 'Covered Buildings' : 'Covered Building'}}</div>
+
+        <div class="checkbox-accordion">
+          <input type="checkbox" />
+          <div class="checkbox-instructions">
+            <p class="checkbox-false">Expand building list</p>
+            <p class="checkbox-true">Collapse building list</p>
+          </div>
+          <div class="stat-list accordion-content">
+            <div class="stat-list-item chip" *ngFor="let building of sb" (click)="highlightBuildings(building?.attributes?.Number)">{{building?.attributes?.Number}} {{building?.attributes?.Abbrev ? '- ' + building?.attributes?.Abbrev : ''}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

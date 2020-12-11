@@ -2,8 +2,12 @@
   <span class="material-icons">attach_file</span>
 </div>
 
-<div class="placeholder">
+<div class="placeholder" *ngIf="fileName === undefined; else hasFile">
   <ng-content></ng-content>
 </div>
+
+<ng-template #hasFile>
+  <p>{{fileName}}</p>
+</ng-template>
 
 <input type="file" (change)="handleFileChange($event)" />

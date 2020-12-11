@@ -33,7 +33,7 @@ export class OpenIdClient {
       OpenIdClient.client = new Client(clientMetadata);
       OpenIdClient.code_verifier = generators.codeVerifier();
       OpenIdClient.code_challenge = generators.codeChallenge(OpenIdClient.code_verifier);
-      OpenIdClient.client[custom.clock_tolerance] = 5; // 5 second skew
+      OpenIdClient.client[custom.clock_tolerance] = 500; // 500 second skew
       custom.setHttpOptionsDefaults({
         timeout: 5000
       });

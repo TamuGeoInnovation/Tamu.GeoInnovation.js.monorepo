@@ -296,6 +296,27 @@
     "common-utils-device-guards": {
       "tags": []
     },
+    "ues-effluent-angular-e2e": {
+      "tags": []
+    },
+    "ues-effluent-angular": {
+      "tags": []
+    },
+    "ues-effluent-ngx": {
+      "tags": []
+    },
+    "maps-feature-feature-highlight": {
+      "tags": []
+    },
+    "ues-effluent-data-api": {
+      "tags": []
+    },
+    "ues-effluent-common-entities": {
+      "tags": []
+    },
+    "ues-effluent-data-api-nest": {
+      "tags": []
+    },
     "oidc-provider-nest": {
       "tags": []
     },

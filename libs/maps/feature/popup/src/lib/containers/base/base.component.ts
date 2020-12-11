@@ -7,7 +7,8 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { withLatestFrom } from 'rxjs/operators';
 
 import { EsriMapService, HitTestSnapshot } from '@tamu-gisc/maps/esri';
 import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout/structural';
@@ -20,8 +21,7 @@ import esri = __esri;
 @Component({
   selector: 'tamu-gisc-feature-popup',
   templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss'],
-  providers: [PopupService]
+  styleUrls: ['./base.component.scss']
 })
 export class PopupComponent implements OnInit, OnDestroy {
   /**
@@ -36,7 +36,7 @@ export class PopupComponent implements OnInit, OnDestroy {
    *
    * False will de-render.
    */
-  public show: boolean;
+  public show: Observable<boolean>;
 
   /**
    * Subscription to the mapServices' hitTest observable.
@@ -65,15 +65,19 @@ export class PopupComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
-    this._hitTestSubscription = this.mapService.hitTest.subscribe((snapshot) => {
-      this.snapshot = snapshot;
-      if (snapshot.graphics.length > 0 && snapshot.graphics.every((g) => g != null)) {
-        this.show = true;
-        this.render();
-      } else {
-        this.show = false;
-      }
-    });
+    this.show = this.popupService.show;
+
+    this._hitTestSubscription = this.mapService.hitTest
+      .pipe(withLatestFrom(this.popupService.suppressed))
+      .subscribe(([snapshot, popupsSuppressed]) => {
+        this.snapshot = snapshot;
+
+        if (popupsSuppressed !== true && snapshot.graphics.length > 0 && snapshot.graphics.every((g) => g != null)) {
+          this.render();
+        } else {
+          this.popupService.hidePopup();
+        }
+      });
   }
 
   public ngOnDestroy() {
@@ -91,11 +95,13 @@ export class PopupComponent implements OnInit, OnDestroy {
     if (this.snapshot && this.snapshot.graphics && this.snapshot.graphics.length > 0) {
       const component = this.popupService.getComponent({ ...this.snapshot });
 
-      if (!component) {
+      if (component === undefined) {
         console.warn(`Popup component could not be resolved.`);
-        this.show = false;
+        this.popupService.hidePopup();
         return;
       }
+
+      this.popupService.showPopup();
 
       // Resolve component
       const factory = this.componentResolver.resolveComponentFactory(component);
