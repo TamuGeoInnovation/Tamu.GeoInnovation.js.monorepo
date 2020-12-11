@@ -17,14 +17,14 @@ export class StatsService {
   }
 
   public getCountOfLoggedInUsers() {
-    return this.http.get<number>(this.resource, {
+    return this.http.get<number>(`${this.resource}/count/users/loggedin`, {
       withCredentials: true
     });
   }
 
   public countOfUsersByClient() {
     return this.http
-      .get<Partial<ICountOfUsersByClient>>(`${this.resource}/2`, {
+      .get<Partial<ICountOfUsersByClient>>(`${this.resource}/count/users/client`, {
         withCredentials: true
       })
       .pipe(
@@ -55,7 +55,7 @@ export class StatsService {
 
   public totalLoginsPastMonth() {
     return this.http
-      .get<Array<Partial<IStatResponse>>>(this.resource, {
+      .get<Array<Partial<IStatResponse>>>(`${this.resource}/count/logins`, {
         withCredentials: true
       })
       .pipe(
@@ -73,7 +73,7 @@ export class StatsService {
 
   public countOfNewUsers() {
     return this.http
-      .get<Array<Partial<IStatResponse>>>(this.resource, {
+      .get<Array<Partial<IStatResponse>>>(`${this.resource}/count/users/new`, {
         withCredentials: true
       })
       .pipe(

@@ -59,7 +59,7 @@
       "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome against localhost",
-      "url": "http://localhost:4200/stats",
+      "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}"
     }
   ]

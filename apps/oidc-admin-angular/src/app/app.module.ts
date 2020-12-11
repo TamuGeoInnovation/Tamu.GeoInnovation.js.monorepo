@@ -77,23 +77,10 @@ export function getHighlightLanguages() {
   ],
   declarations: [AppComponent],
   providers: [
-    // AuthService,
-    // {
-    //   provide: HIGHLIGHT_OPTIONS,
-    //   useValue: {
-    //     languages: getHighlightLanguages(),
-    //     lineNumbers: true
-    //   }
-    // },
     {
       provide: env,
       useValue: environment
     }
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: AuthInterceptor,
-    //   multi: true
-    // }
   ],
   bootstrap: [AppComponent]
 })

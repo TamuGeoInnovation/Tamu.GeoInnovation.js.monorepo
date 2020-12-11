@@ -9,22 +9,22 @@ import { StatService } from '../../services/stats/stats.service';
 export class StatsController {
   constructor(private readonly statService: StatService) {}
 
-  @Get()
+  @Get('count/users/loggedin')
   public async statsGet() {
     return this.statService.countOfLoggedInUsers();
   }
 
-  @Get('2')
+  @Get('count/users/client')
   public async stats2Get() {
     return this.statService.countOfUsersByClient();
   }
 
-  @Get('3')
+  @Get('count/users/new')
   public async stats3Get() {
     return this.statService.countOfNewUsers();
   }
 
-  @Get('4')
+  @Get('count/logins')
   public async stats4Get() {
     return this.statService.totalLoginsPastMonth();
   }

@@ -10,7 +10,7 @@ export function InputSanitizerMiddleware(req: Request, res: Response, next: Func
     if (req.body && req.body !== {}) {
       const keys = Object.keys(req.body);
 
-      keys.map((key) => {
+      keys.forEach((key) => {
         let prop = req.body[key] as string;
         if (prop.includes('@')) {
           // this is an email, trim all whitespace

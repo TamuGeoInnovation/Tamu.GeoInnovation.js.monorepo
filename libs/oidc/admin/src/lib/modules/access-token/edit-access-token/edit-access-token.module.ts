@@ -11,8 +11,7 @@ import { EditAccessTokenComponent } from './edit-access-token.component';
 const routes: Routes = [
   {
     path: '',
-    component: EditAccessTokenComponent,
-    pathMatch: 'full'
+    component: EditAccessTokenComponent
   }
 ];
 

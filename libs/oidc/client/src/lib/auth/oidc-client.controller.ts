@@ -24,7 +24,6 @@ export class OidcClientController {
     if (req && req.session && req.session.returnUrl) {
       res.redirect(req.session.returnUrl);
     }
-    res.redirect('/home');
   }
 
   @UseGuards(AdminRoleGuard)

@@ -34,6 +34,4 @@ export class AddUsersComponent implements OnInit {
       answer2: ['']
     });
   }
-
-  public addUser() {}
 }

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 import { debounceTime } from 'rxjs/operators';
 
 import { Role } from '@tamu-gisc/oidc/common';
 import { RolesService } from '@tamu-gisc/oidc/admin-data-access';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'detail-role',
