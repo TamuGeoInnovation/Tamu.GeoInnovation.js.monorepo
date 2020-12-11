@@ -21,16 +21,6 @@ export class UserController {
     });
   }
 
-  @Get(':guid')
-  public async userGet(@Param() params) {
-    return this.userService.userRepo.findOne({
-      where: {
-        guid: params.guid
-      },
-      relations: ['account']
-    });
-  }
-
   @Delete(':guid')
   public async deleteUser(@Param() params) {
     const userGuid = params.guid;
@@ -465,5 +455,15 @@ export class UserController {
         });
       });
     }
+  }
+
+  @Get(':guid')
+  public async userGet(@Param() params) {
+    return this.userService.userRepo.findOne({
+      where: {
+        guid: params.guid
+      },
+      relations: ['account']
+    });
   }
 }

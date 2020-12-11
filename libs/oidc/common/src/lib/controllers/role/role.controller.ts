@@ -26,14 +26,11 @@ export class RoleController {
 
   @Post('all')
   public async newRolesPost(@Body() body) {
-    const _roles: Partial<Role>[] = [];
-
-    body.roles.map((role) => {
-      const newRole: Partial<Role> = {
+    const _roles: Array<Partial<Role>> = body.roles.map((role) => {
+      return {
         level: role.level,
         name: role.name
       };
-      _roles.push(newRole);
     });
 
     return this.roleService.insertRoles(_roles);

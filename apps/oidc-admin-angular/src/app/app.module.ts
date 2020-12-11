@@ -2,14 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import * as WebFont from 'webfontloader';
-import { HighlightPlusModule } from 'ngx-highlightjs/plus';
-import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { AuthGuard, AuthService, AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
+import { AuthService } from '@tamu-gisc/geoservices/data-access';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
@@ -70,7 +67,6 @@ export function getHighlightLanguages() {
     BrowserModule,
     RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', relativeLinkResolution: 'corrected' }),
     BrowserAnimationsModule,
-    HighlightPlusModule,
     EnvironmentModule,
     LocalStoreModule,
     UILayoutModule
@@ -84,6 +80,4 @@ export function getHighlightLanguages() {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  constructor(private auth: AuthService) {}
-}
+export class AppModule {}

@@ -14,14 +14,10 @@ export class SecretQuestionController {
 
   @Post()
   public async insertSecretQuestionPost(@Body() body) {
-    const questions: Partial<SecretQuestion>[] = [];
-
-    body.questions.map((value) => {
-      const question: Partial<SecretQuestion> = {
+    const questions: Array<Partial<SecretQuestion>> = body.questions.map((value) => {
+      return {
         questionText: value.questionText
       };
-
-      questions.push(question);
     });
 
     return this.userService.insertSecretQuestion(questions);
