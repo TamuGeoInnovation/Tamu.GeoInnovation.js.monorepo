@@ -25,6 +25,8 @@ export class StatusService {
     const now = new Date();
     const dateRange = [];
 
+    // there's a reason this is done backwards, I just can't remember why
+    // since there's no array.mapBackwards() this will stay as is until I can remember why
     for (let i = history; i > 0; i--) {
       const lowerDate = date.addDays(now, -1 * i);
       const upperDate = date.addDays(now, -1 * (i - 1));

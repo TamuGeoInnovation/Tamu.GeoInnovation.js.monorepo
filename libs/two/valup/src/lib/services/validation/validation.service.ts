@@ -11,6 +11,7 @@ import { WeatherfluxExpanded, EntryFailure } from '@tamu-gisc/two/common';
 export class IrgasonValidationService {
   public currentSiteCode: string;
   public numOfFailures = 0;
+
   constructor() {}
 
   public validateAndUpload(path: string) {

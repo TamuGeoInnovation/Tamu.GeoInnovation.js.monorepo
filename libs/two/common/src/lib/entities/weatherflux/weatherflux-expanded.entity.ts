@@ -1,6 +1,6 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
 import { Allow, IsDefined, IsNotEmpty, IsString, IsNumber } from 'class-validator';
-import { WeatherFlux } from './weatherflux.entity';
 
 @Entity({ name: 'WeatherFlux_Test' })
 export class WeatherfluxExpanded {

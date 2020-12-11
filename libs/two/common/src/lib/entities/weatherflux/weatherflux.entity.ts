@@ -1,19 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, TableForeignKey } from 'typeorm';
-import {
-  validate,
-  validateOrReject,
-  Contains,
-  IsIP,
-  IsNotEmpty,
-  IsInt,
-  Length,
-  IsEmail,
-  IsFQDN,
-  IsDate,
-  Min,
-  Max,
-  IsNumber
-} from 'class-validator';
+import { Entity, PrimaryGeneratedColumn } from 'typeorm';
+
 import { CNR4 } from '../cnr4/cnr4.entity';
 import { CR6 } from '../cr6/cr6.entity';
 import { CS655 } from '../cs655/cs655.entity';

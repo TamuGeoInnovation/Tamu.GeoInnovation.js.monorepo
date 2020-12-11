@@ -9,7 +9,6 @@ import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile
 import { DashboardComponent } from './dashboard.component';
 import { TWOHeaderModule } from './components/header/header.module';
 
-
 const routes: Routes = [
   {
     path: '',
@@ -39,4 +38,4 @@ const routes: Routes = [
     UITileNavigationModule
   ]
 })
-export class DashboardModule { }
+export class DashboardModule {}

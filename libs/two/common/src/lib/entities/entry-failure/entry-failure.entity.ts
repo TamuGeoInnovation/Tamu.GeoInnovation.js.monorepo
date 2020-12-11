@@ -1,4 +1,5 @@
-import { Entity, BaseEntity, Column, PrimaryGeneratedColumn, PrimaryColumn, TableInheritance } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
 import { IsNotEmpty, IsDateString } from 'class-validator';
 
 @Entity({

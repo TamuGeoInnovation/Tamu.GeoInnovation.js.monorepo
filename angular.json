@@ -3746,7 +3746,7 @@
           "configurations": {
             "production": {
               "optimization": true,
-              "extractLicenses": true,
+              "extractLicenses": false,
               "inspect": false,
               "fileReplacements": [
                 {
@@ -3825,7 +3825,7 @@
           "configurations": {
             "production": {
               "optimization": true,
-              "extractLicenses": true,
+              "extractLicenses": false,
               "inspect": false,
               "fileReplacements": [
                 {

@@ -166,7 +166,6 @@ export class DirectoryService {
    * Informs the validation service that the watched file has been altered
    */
   private notifyValidationService(filepath: string): void {
-    // const route = path.extname(filepath).substring(1);
     const route = `${this.VALIDATION_SERVICE.protocol}${this.VALIDATION_SERVICE.host}:${this.VALIDATION_SERVICE.port}/${this.VALIDATION_SERVICE.globalPrefix}/${this.VALIDATION_SERVICE.validation_route}`;
     try {
       this.httpService.post(route, {
