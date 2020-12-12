@@ -60,7 +60,7 @@ export class DirectoryService {
   /**
    * Used to watch a directory for added files of a set type
    */
-  public async watchDirectory() {
+  public watchDirectory() {
     fs.access(this.SOURCE_DIRECTORY, fs.constants.F_OK, (err) => {
       if (!err) {
         console.log('Got access');
@@ -71,35 +71,31 @@ export class DirectoryService {
 
             fs.access(path.join(this.SOURCE_DIRECTORY, filename), fs.constants.R_OK, (accessErr) => {
               if (!accessErr) {
-                this.extIsValid(ext).then((validExt) => {
-                  if (validExt) {
-                    this.filenameIsValid(filename).then((validName) => {
-                      if (validName) {
-                        const workFile = `${this.WORK_DIRECTORY}\\${filename}`;
-                        const archFile = `${this.ARCHIVE_DIRECTORY}\\${filename}`;
-                        fs.copyFile(filename, workFile, (copyErr) => {
-                          if (copyErr) {
-                            throw copyErr;
-                          } else {
-                            fs.move(workFile, archFile, {
-                              overwrite: true
-                            })
-                              .then(() => {
-                                console.log('success');
-                              })
-                              .catch((moveErr) => {
-                                console.error(moveErr);
-                              });
-                          }
-                        });
+                if (this.extIsValid(ext)) {
+                  if (this.filenameIsValid(filename)) {
+                    const workFile = `${this.WORK_DIRECTORY}\\${filename}`;
+                    const archFile = `${this.ARCHIVE_DIRECTORY}\\${filename}`;
+                    fs.copyFile(filename, workFile, (copyErr) => {
+                      if (copyErr) {
+                        throw copyErr;
                       } else {
-                        console.log('Invalid filename...');
+                        fs.move(workFile, archFile, {
+                          overwrite: true
+                        })
+                          .then(() => {
+                            console.log('success');
+                          })
+                          .catch((moveErr) => {
+                            console.error(moveErr);
+                          });
                       }
                     });
                   } else {
-                    console.warn('Unsupported extension, ignoring...');
+                    console.log('Invalid filename...');
                   }
-                });
+                } else {
+                  console.warn('Unsupported extension, ignoring...');
+                }
               } else {
                 console.warn('File is unaccessible, ignoring...');
               }
@@ -150,7 +146,7 @@ export class DirectoryService {
   /**
    * Checks the current file extension against a set list of acceptable extensions.
    */
-  private async extIsValid(ext: string): Promise<boolean> {
+  private extIsValid(ext: string) {
     const exts = this.ACCEPTABLE_EXTS;
     const isValid = exts.includes(ext);
     return isValid;
@@ -158,7 +154,7 @@ export class DirectoryService {
   /**
    * Determines if the supplied filename matches the RegEx defined in @tamu-gisc/two-shared
    */
-  private async filenameIsValid(filename: string): Promise<boolean> {
+  private filenameIsValid(filename: string) {
     return this.FILENAME_REGEXP.test(filename);
   }
 
@@ -168,9 +164,10 @@ export class DirectoryService {
   private notifyValidationService(filepath: string): void {
     const route = `${this.VALIDATION_SERVICE.protocol}${this.VALIDATION_SERVICE.host}:${this.VALIDATION_SERVICE.port}/${this.VALIDATION_SERVICE.globalPrefix}/${this.VALIDATION_SERVICE.validation_route}`;
     try {
-      this.httpService.post(route, {
-        path: filepath
-      });
+      console.log(route, filepath);
+      // this.httpService.post(route, {
+      //   path: filepath
+      // });
     } catch (err) {
       throw err;
     }

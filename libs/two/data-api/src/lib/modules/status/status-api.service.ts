@@ -20,15 +20,14 @@ export class StatusAPIService {
   }
 
   public async getHistoryForSite(dateHistory: IDateHistory) {
-    const results = [];
-    dateHistory.dateRange.map(async (val: IHistoryRange) => {
+    const results = dateHistory.dateRange.map(async (val: IHistoryRange) => {
       const result = await this.getHistoryForSiteSingleDay(dateHistory.siteCode, val);
-      const ret = {
+      return {
         ...result[0],
         date: val.lowerDate
       };
-      results.push(ret);
     });
+
     return results;
   }
 

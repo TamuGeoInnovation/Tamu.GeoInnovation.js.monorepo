@@ -43,10 +43,8 @@ export class StatusService {
 
     return this.http.post<Array<Partial<IStatusResponse>>>(this.resource, dateHistory).pipe(
       map<IStatusResponse[], IChartConfiguration[]>((value: Partial<IStatusResponse[]>, index: number) => {
-        const configs: IChartConfiguration[] = [];
-
-        value.map((val: IStatusResponse) => {
-          const config: IChartConfiguration = {
+        const configs: IChartConfiguration[] = value.map((val: IStatusResponse) => {
+          return {
             data: {
               datasets: [
                 {
@@ -62,7 +60,6 @@ export class StatusService {
               }
             }
           };
-          configs.push(config);
         });
 
         return configs;
@@ -92,10 +89,8 @@ export class StatusService {
     };
     return this.http.post<Array<Partial<IStatusResponse>>>(this.resource, dateHistory).pipe(
       map<IStatusResponse[], IChartConfiguration[]>((value: Partial<IStatusResponse[]>, index: number) => {
-        const configs: IChartConfiguration[] = [];
-
-        value.map((val: IStatusResponse) => {
-          const config: IChartConfiguration = {
+        const configs: IChartConfiguration[] = value.map((val: IStatusResponse) => {
+          return {
             data: {
               datasets: [
                 {
@@ -111,7 +106,6 @@ export class StatusService {
               }
             }
           };
-          configs.push(config);
         });
 
         return configs;

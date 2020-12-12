@@ -3,8 +3,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { HighlightPlusModule } from 'ngx-highlightjs/plus';
-import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
@@ -41,19 +39,11 @@ export function getHighlightLanguages() {
     BrowserModule,
     RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', relativeLinkResolution: 'corrected' }),
     BrowserAnimationsModule,
-    HighlightPlusModule,
     EnvironmentModule,
     LocalStoreModule
   ],
   providers: [
     AuthService,
-    {
-      provide: HIGHLIGHT_OPTIONS,
-      useValue: {
-        languages: getHighlightLanguages(),
-        lineNumbers: true
-      }
-    },
     {
       provide: env,
       useValue: environment

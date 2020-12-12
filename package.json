@@ -42,7 +42,6 @@
     "@angular/router": "^8.2.14",
     "@angular/service-worker": "^8.2.13",
     "@nestjs/common": "^6.8.3",
-    "@nestjs/config": "^0.4.2",
     "@nestjs/core": "^6.8.3",
     "@nestjs/passport": "^6.1.1",
     "@nestjs/platform-express": "^6.8.3",
