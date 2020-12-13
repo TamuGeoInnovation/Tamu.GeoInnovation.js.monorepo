@@ -8,7 +8,7 @@ import { OpenIdClient } from './open-id-client';
 export class OidcClientController {
   @UseGuards(LoginGuard)
   @Get('/login')
-  public login(@Response() res) {
+  public login() {
     // No logic here. LoginGuard will callback to /auth/callback
   }
 

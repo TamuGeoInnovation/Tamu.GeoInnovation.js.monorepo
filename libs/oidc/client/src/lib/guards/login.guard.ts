@@ -6,10 +6,6 @@ import { OidcClientModuleParameters } from '../auth/oidc-client.module';
 
 /**
  * NestJS guard used to start the login process using the openid-client library.
- *
- * @export
- * @class LoginGuard
- * @extends {AuthGuard(OpenIdClient.strategyName)}
  */
 @Injectable()
 export class LoginGuard extends AuthGuard(OpenIdClient.strategyName) {
@@ -18,7 +14,6 @@ export class LoginGuard extends AuthGuard(OpenIdClient.strategyName) {
   }
   public async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-
     if (request.query && request.query.ret) {
       console.log('Setting return url to be: ', request.query.ret);
       request.session.returnUrl = request.query.ret;

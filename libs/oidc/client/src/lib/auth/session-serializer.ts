@@ -4,9 +4,6 @@ import { Injectable } from '@nestjs/common';
 /**
  * Injectable used in the OidcClientModule. Defines PassportJS `serializeUser` and `deserializeUser` methods.
  * Necessary for Passport to work nicely with NestJS.
- * @export
- * @class SessionSerializer
- * @extends {PassportSerializer}
  */
 @Injectable()
 export class SessionSerializer extends PassportSerializer {

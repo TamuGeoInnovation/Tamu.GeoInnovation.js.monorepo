@@ -4,7 +4,6 @@
 ![Coveralls github](https://img.shields.io/coveralls/github/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo)
 ![https://aggiemap.tamu.edu](https://img.shields.io/website?url=https%3A%2F%2Faggiemap.tamu.edu)
 
-
 ![AggieMap Logo](/libs/assets/images/logo/TAM-PrimaryMarkBB.svg)
 
 # Installation

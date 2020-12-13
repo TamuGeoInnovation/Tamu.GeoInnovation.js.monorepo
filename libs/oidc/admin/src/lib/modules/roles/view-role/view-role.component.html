@@ -1,0 +1,10 @@
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Level</th>
+  </tr>
+  <tr *ngFor="let role of ($roles | async)">
+    <td>{{role.name}}</td>
+    <td>{{role.level}}</td>
+  </tr>
+</table>
