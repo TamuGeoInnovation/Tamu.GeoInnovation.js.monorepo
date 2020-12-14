@@ -8,9 +8,8 @@ describe('CoverageChartComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CoverageChartComponent ]
-    })
-    .compileComponents();
+      declarations: [CoverageChartComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

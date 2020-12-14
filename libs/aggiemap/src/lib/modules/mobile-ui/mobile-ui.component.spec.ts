@@ -8,9 +8,8 @@ describe('MobileUIComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MobileUIComponent ]
-    })
-    .compileComponents();
+      declarations: [MobileUIComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

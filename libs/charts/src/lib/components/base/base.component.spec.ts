@@ -43,7 +43,6 @@ describe('BaseChartComponent', () => {
           config.subscribe((chart_config: ChartConfiguration) => {
             const val = chart_config;
 
-            
             expect(chart_config).toEqual({
               ...new ChartConfiguration(),
               data: {

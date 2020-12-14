@@ -34,7 +34,7 @@ export interface DbInterface {
    * Property containing a static reference Sequelize (not sure why this is required)
    *
    * @type {Sequelize.SequelizeStatic}
-   * @memberof DbInterface 
+   * @memberof DbInterface
    */
   Sequelize: Sequelize.SequelizeStatic;
 

@@ -8,9 +8,8 @@ describe('SidebarReferenceComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SidebarReferenceComponent ]
-    })
-    .compileComponents();
+      declarations: [SidebarReferenceComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

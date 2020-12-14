@@ -8,9 +8,8 @@ describe('ZoneOverviewTileComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ZoneOverviewTileComponent ]
-    })
-    .compileComponents();
+      declarations: [ZoneOverviewTileComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

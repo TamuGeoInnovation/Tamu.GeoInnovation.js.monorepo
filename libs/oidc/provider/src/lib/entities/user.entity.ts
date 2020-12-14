@@ -1,27 +1,19 @@
 import { Req } from '@nestjs/common';
 import { Request } from 'express';
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  JoinTable,
-  JoinColumn,
-  OneToOne,
-} from "typeorm";
-import { Account } from "./account.entity";
-import { GuidIdentity } from "./guid-identity.entity";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, JoinTable, JoinColumn, OneToOne } from 'typeorm';
+import { Account } from './account.entity';
+import { GuidIdentity } from './guid-identity.entity';
 
 @Entity({
-  name: "user",
+  name: 'user'
 })
 export class User extends GuidIdentity {
   // @PrimaryGeneratedColumn()
   // id: number;
 
   @Column({
-    type: "text",
-    nullable: true,
+    type: 'text',
+    nullable: true
   })
   added: string;
 
@@ -36,62 +28,62 @@ export class User extends GuidIdentity {
   // guid: string = v4();
 
   @Column({
-    type: "varchar",
-    nullable: true,
+    type: 'varchar',
+    nullable: true
   })
   email: string;
 
   @Column({
-    type: "boolean",
-    nullable: true,
+    type: 'boolean',
+    nullable: true
   })
   email_verified: boolean = false;
 
   @Column({
-    type: "varchar",
-    nullable: true,
+    type: 'varchar',
+    nullable: true
   })
   password: string;
 
   @Column({
-    type: "varchar",
-    nullable: true,
+    type: 'varchar',
+    nullable: true
   })
   updatedAt?: string;
 
   @Column({
-    type: "boolean",
-    nullable: true,
+    type: 'boolean',
+    nullable: true
   })
   enabled2fa?: boolean = false;
 
   @Column({
-    type: "varchar",
-    nullable: true,
+    type: 'varchar',
+    nullable: true
   })
   secret2fa?: string;
 
   @Column({
-    type: "varchar",
-    nullable: true,
+    type: 'varchar',
+    nullable: true
   })
   recovery_email: string;
 
   @Column({
-    type: "boolean",
-    nullable: true,
+    type: 'boolean',
+    nullable: true
   })
   recovery_email_verified: boolean = false;
 
   @Column({
-    type: "varchar",
-    nullable: true,
+    type: 'varchar',
+    nullable: true
   })
   signup_ip_address: string;
 
   @Column({
-    type: "varchar",
-    nullable: true,
+    type: 'varchar',
+    nullable: true
   })
   last_used_ip_address: string;
 
@@ -115,7 +107,6 @@ export class User extends GuidIdentity {
           this.added = new Date().toISOString();
         }
       }
-
     } catch (err) {
       throw err;
     }

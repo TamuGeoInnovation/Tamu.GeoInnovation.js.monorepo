@@ -10,4 +10,3 @@
   <!-- If trip result was successful and directions exist, display ETA. -->
   <span class="eta" *ngIf="(status | async)?.isFulfilled && (status | async)?.directions?.totalTime">{{ (status | async)?.directions?.totalDriveTime | timeUntil }}</span>
 </div>
- 

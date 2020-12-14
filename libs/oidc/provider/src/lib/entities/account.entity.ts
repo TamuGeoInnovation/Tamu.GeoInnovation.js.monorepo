@@ -1,120 +1,114 @@
-import {
-  Entity,
-  Column,
-} from "typeorm";
+import { Entity, Column } from 'typeorm';
 import * as uuid from 'uuid';
 
-import { User } from "./user.entity";
-import { GuidIdentity } from "./guid-identity.entity";
-
+import { User } from './user.entity';
+import { GuidIdentity } from './guid-identity.entity';
 
 @Entity({
-  name: "account"
+  name: 'account'
 })
 export class Account extends GuidIdentity implements IAccount {
-
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   name: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   given_name: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   family_name: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   nickname: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   profile: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   picture: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   website: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   email: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   gender: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   birthdate: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   zoneinfo: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   locale: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   phone_number: string;
 
   @Column({
-    type: "boolean",
+    type: 'boolean',
     nullable: true
   })
   phone_number_verified: boolean = false;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   address: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   updated_at: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     nullable: true
   })
   added: string;
-
 
   constructor(user: User, fullName: string, ip: string) {
     super();
@@ -128,8 +122,8 @@ export class Account extends GuidIdentity implements IAccount {
         }
         if (fullName) {
           this.name = fullName;
-          if (fullName.includes(" ")) {
-            const names: string[] = fullName.split(" ");
+          if (fullName.includes(' ')) {
+            const names: string[] = fullName.split(' ');
             this.given_name = names[0];
             this.family_name = names[1];
           }

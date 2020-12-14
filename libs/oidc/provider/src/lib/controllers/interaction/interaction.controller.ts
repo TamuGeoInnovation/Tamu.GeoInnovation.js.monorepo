@@ -45,7 +45,6 @@ export class InteractionController {
     } catch (err) {
       throw err;
     } finally {
-
     }
   }
 
@@ -59,13 +58,12 @@ export class InteractionController {
     const client = await OpenIdProvider.provider.Client.find(details.params.client_id);
 
     try {
-        const email = req.body.login;
-        const password = req.body.password;
-        // const user: User = await this.userService
+      const email = req.body.login;
+      const password = req.body.password;
+      // const user: User = await this.userService
     } catch (err) {
       throw err;
     } finally {
-
     }
   }
 

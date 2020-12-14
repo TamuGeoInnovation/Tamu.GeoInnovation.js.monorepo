@@ -8,9 +8,8 @@ describe('StepToggleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StepToggleComponent ]
-    })
-    .compileComponents();
+      declarations: [StepToggleComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

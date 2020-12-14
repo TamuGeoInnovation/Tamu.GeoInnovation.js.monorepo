@@ -6,10 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./legal.component.scss']
 })
 export class FooterLegalComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  public ngOnInit() {
-  }
-
+  public ngOnInit() {}
 }

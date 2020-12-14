@@ -9,7 +9,7 @@ export class SHA1HashUtils {
    * @memberof SHA1HashUtils
    */
   static SALT_ROUNDS: number = 12;
-  
+
   /**
    * Magic number Dan used to compute the length of the salt
    * Taken from: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.websites.gisday.tamu.edu/blob/master/src/Main/Rest/Login/Default.aspx.cs

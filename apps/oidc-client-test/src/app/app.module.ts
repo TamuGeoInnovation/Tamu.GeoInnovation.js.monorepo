@@ -8,7 +8,7 @@ import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-
 @Module({
   imports: [OidcClientModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
 export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {
