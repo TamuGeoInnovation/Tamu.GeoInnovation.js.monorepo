@@ -10,7 +10,15 @@ const SQLiteStore = require('connect-sqlite3')(session);
 
 import { OpenIdClient } from '@tamu-gisc/oidc/client';
 import { AppModule } from './app/app.module';
-import { OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL } from './environments/oidcconfig';
+import {
+  OIDC_CLIENT_METADATA_BASIC,
+  OIDC_CLIENT_METADATA_JWT,
+  OIDC_CLIENT_PARAMS,
+  OIDC_IDP_ISSUER_URL,
+  AZURE_AD_UES,
+  OIDC_CLIENT_METADATA_AD,
+  OIDC_CLIENT_PARAMS_AD
+} from './environments/oidcconfig';
 import * as path from 'path';
 
 async function bootstrap() {
@@ -25,12 +33,12 @@ async function bootstrap() {
     db: 'sessions.db',
     concurrentDB: true,
     table: 'sessions_nestoidc',
-    dir: __dirname  // WIN,
+    dir: __dirname // WIN,
   });
 
   app.use(
     session({
-      name: 'GISDay',
+      name: 'idp',
       resave: false,
       saveUninitialized: false,
       secret: 'GEOINNOVATIONSERVICECENTER',
@@ -46,7 +54,7 @@ async function bootstrap() {
   await app.listen(3001);
 }
 
-OpenIdClient.build(OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL)
+OpenIdClient.build(OIDC_CLIENT_METADATA_JWT, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL)
   .then(() => bootstrap())
   .catch((err) => {
     console.warn(err);

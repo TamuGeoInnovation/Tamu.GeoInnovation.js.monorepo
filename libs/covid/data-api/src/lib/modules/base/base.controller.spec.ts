@@ -16,11 +16,13 @@ describe('Base Controller', () => {
       providers: [BaseService],
       controllers: [BaseController]
     }).compile();
+
     baseService = module.get<BaseService<BaseEntity>>(BaseService);
     baseController = module.get<BaseController<BaseEntity>>(BaseController);
   });
 
   const mockParameters = new BaseEntity();
+
   describe('Validation ', () => {
     it('controller should be defined', () => {
       expect(baseController).toBeDefined();
@@ -28,39 +30,36 @@ describe('Base Controller', () => {
   });
 
   describe('getAll', () => {
-    it('should return expectedResult', async () => {
-      const expectedResult = [];
-      jest.spyOn(baseService, 'getAll').mockResolvedValue(expectedResult);
-      expect(await baseController.getAll()).toEqual(expectedResult);
+    it('should call service method getAll', async () => {
+      const serviceSpy = jest.spyOn(baseService, 'getAll');
+      await baseController.getAll();
+      expect(serviceSpy).toHaveBeenCalled();
     });
   });
 
   describe('getOne', () => {
-    it('should return expectedResult', async () => {
-      const expectedResult = new BaseEntity();
-      jest.spyOn(baseService, 'getOne').mockResolvedValue(expectedResult);
-      expect(await baseController.getOne(mockParameters)).toMatchObject(expectedResult);
+    it('should call service method getOne', async () => {
+      const serviceSpy = jest.spyOn(baseService, 'getOne');
+      await baseController.getOne(mockParameters);
+      expect(serviceSpy).toHaveBeenCalled();
     });
   });
 
   describe('insert', () => {
-    it('should return expectedResult', async () => {
-      const expectedResult = new BaseEntity();
-      jest.spyOn(baseService, 'createOne').mockResolvedValue(expectedResult);
-      expect(await baseController.insert(mockParameters)).toMatchObject(expectedResult);
-    });
-    it('should return toBeUndefined', async () => {
-      jest.spyOn(baseService, 'createOne').mockResolvedValue(undefined);
-      expect(await baseController.insert(undefined)).toBeUndefined();
+    it('should call service method createOne', async () => {
+      const serviceSpy = jest.spyOn(baseService, 'createOne');
+      await baseController.insert(mockParameters);
+      expect(serviceSpy).toHaveBeenCalled();
     });
   });
 
   describe('update', () => {
-    it('should return expectedResult', async () => {
-      const expectedResult = new BaseEntity();
-      jest.spyOn(baseService, 'updateOne').mockResolvedValue(expectedResult);
-      expect(await baseController.update(mockParameters, mockParameters)).toMatchObject(expectedResult);
+    it('should call service method updateOne', async () => {
+      const serviceSpy = jest.spyOn(baseService, 'updateOne');
+      await baseController.update(mockParameters, mockParameters);
+      expect(serviceSpy).toHaveBeenCalled();
     });
+
     it('should throw Error', async () => {
       jest.spyOn(baseService, 'updateOne').mockResolvedValue(undefined);
       expect(baseController.update).toThrowError();
@@ -68,11 +67,12 @@ describe('Base Controller', () => {
   });
 
   describe('delete', () => {
-    it('should return expectedResult', async () => {
-      const expectedResult = new BaseEntity();
-      jest.spyOn(baseService, 'deleteOne').mockResolvedValue(expectedResult);
-      expect(await baseController.delete(mockParameters)).toMatchObject(expectedResult);
+    it('should call service method deleteOne', async () => {
+      const serviceSpy = jest.spyOn(baseService, 'deleteOne');
+      await baseController.delete(mockParameters);
+      expect(serviceSpy).toHaveBeenCalled();
     });
+
     it('should throw Error', async () => {
       jest.spyOn(baseService, 'deleteOne').mockResolvedValue(undefined);
       expect(baseController.delete).toThrowError();

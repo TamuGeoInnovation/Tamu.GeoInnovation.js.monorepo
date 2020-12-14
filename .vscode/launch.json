@@ -40,6 +40,22 @@
       "port": 7778
     },
     {
+      // This allows debugging node apps (Nest, epxress, etc) that are being served through `ng`
+      // Will attach a debugging listener so it can be debugged in VSCode
+      "name": "Debug Node App (0)",
+      "type": "node",
+      "request": "attach",
+      "port": 7770
+    },
+    {
+      // This allows debugging node apps (Nest, epxress, etc) that are being served through `ng`
+      // Will attach a debugging listener so it can be debugged in VSCode
+      "name": "Debug Node App (7771)",
+      "type": "node",
+      "request": "attach",
+      "port": 7771
+    },
+    {
       "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome against localhost",

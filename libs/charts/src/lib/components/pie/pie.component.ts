@@ -10,15 +10,12 @@ import { PieChartConfiguration } from '../chart-container/chart-container.compon
   providers: [{ provide: BaseChartComponent, useExisting: forwardRef(() => PieChartComponent) }]
 })
 export class PieChartComponent extends BaseChartComponent implements AfterViewInit {
-
-  constructor() { 
+  constructor() {
     super();
   }
 
   public ngAfterViewInit() {
     this.baseConfig = new PieChartConfiguration();
-
     super.ngAfterViewInit();
   }
-
 }

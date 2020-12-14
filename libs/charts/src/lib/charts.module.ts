@@ -11,14 +11,7 @@ import { PieChartComponent } from './components/pie/pie.component';
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [
-    BaseChartComponent,
-    BarChartComponent,
-    ChartContainerComponent,
-    LineChartComponent,
-    DoughnutChartComponent,
-    PieChartComponent
-  ],
+  declarations: [BaseChartComponent, BarChartComponent, ChartContainerComponent, LineChartComponent, DoughnutChartComponent, PieChartComponent],
   exports: [BaseChartComponent, BarChartComponent, LineChartComponent, DoughnutChartComponent, PieChartComponent]
 })
 export class ChartsModule {}

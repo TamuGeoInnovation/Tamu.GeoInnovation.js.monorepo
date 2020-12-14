@@ -1,17 +1,21 @@
 import { ExecutionContext, Injectable, CanActivate } from '@nestjs/common';
 
+import { OpenIdClient } from '../auth/open-id-client';
+
 /**
  * NestJS guard used to prevent people from accessing "login" specific routes
- *
- * @export
- * @class AuthenticatedGuard
- * @implements {CanActivate}
  */
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {
-  public canActivate(context: ExecutionContext) {
+  public async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const isAuthed = request.isAuthenticated();
-    return isAuthed;
+    const tokenIntrospectionResult = await OpenIdClient.client.introspect(request.user.access_token);
+
+    if (isAuthed && tokenIntrospectionResult.active) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

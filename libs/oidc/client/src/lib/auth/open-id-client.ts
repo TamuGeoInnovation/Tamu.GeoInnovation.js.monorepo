@@ -1,5 +1,6 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+
 import { Client as OidcClient, custom, generators, Issuer, Strategy, ClientMetadata } from 'openid-client';
 
 export const ROLE_LEVELS = {
@@ -12,9 +13,6 @@ export const ROLE_LEVELS = {
 /**
  * The main class in NestJS + openid-client integration.
  * Handles IdP endpoints automatically.
- *
- * @export
- * @class OpenIdClient
  */
 export class OpenIdClient {
   public static strategyName = 'oidc';
@@ -26,10 +24,6 @@ export class OpenIdClient {
 
   /**
    * Used to initialize our static client; discovers all the endpoints from discovery doc on IdP
-   *
-   * @static
-   * @returns {Promise<Client>}
-   * @memberof OpenIdClient
    */
   public static async build(clientMetadata: ClientMetadata, clientParams: {}, issuerUrl: string): Promise<OidcClient> {
     this.params = clientParams;
@@ -51,10 +45,6 @@ export class OpenIdClient {
 
 /**
  * Used by the LoginGuard in the login process. `validate()` will eventually call `serializeUser` for PassportJS.
- *
- * @export
- * @class AuthStrategy
- * @extends {PassportStrategy(Strategy, OpenIdClient.strategyName)}
  */
 @Injectable()
 export class AuthStrategy extends PassportStrategy(Strategy, OpenIdClient.strategyName) {
@@ -65,30 +55,20 @@ export class AuthStrategy extends PassportStrategy(Strategy, OpenIdClient.strate
       passReqToCallback: true
     });
   }
-/**
- * Here we set the contents of req.user. We use the access_token 
- * from userinfo and exchange it for the user's claims
- *
- * @param {*} tokenset
- * @param {*} userinfo
- * @param {*} done
- * @returns
- * @memberof AuthStrategy
- */
-public async validate(tokenset, userinfo, done) {
+
+  public async validate(tokenset, userinfo, done) {
     if (!userinfo) {
       throw new UnauthorizedException();
     }
     if (userinfo.access_token) {
-      const userClaims = await OpenIdClient.client.userinfo(userinfo.access_token)
+      const userClaims = await OpenIdClient.client.userinfo(userinfo.access_token);
 
       return {
         ...userinfo,
-        ...userClaims,
+        ...userClaims
       };
     } else {
       return userinfo;
     }
-    
   }
 }

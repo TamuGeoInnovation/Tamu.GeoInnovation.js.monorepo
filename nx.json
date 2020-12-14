@@ -128,21 +128,6 @@
     "search": {
       "tags": []
     },
-    "two-angular": {
-      "tags": []
-    },
-    "two-angular-e2e": {
-      "tags": []
-    },
-    "two-common": {
-      "tags": []
-    },
-    "two-data-api": {
-      "tags": []
-    },
-    "two-data-api-nest": {
-      "tags": []
-    },
     "ui-kits-ngx-branding": {
       "tags": []
     },
@@ -315,6 +300,48 @@
       "tags": []
     },
     "ues-effluent-data-api-nest": {
+      "tags": []
+    },
+    "oidc-provider-nest": {
+      "tags": []
+    },
+    "oidc-provider-nestjs": {
+      "tags": []
+    },
+    "oidc-admin-angular": {
+      "tags": []
+    },
+    "oidc-admin-angular-e2e": {
+      "tags": []
+    },
+    "oidc-admin-nest": {
+      "tags": []
+    },
+    "oidc-admin-nest-lib": {
+      "tags": []
+    },
+    "oidc-admin": {
+      "tags": []
+    },
+    "oidc-admin-data-access": {
+      "tags": []
+    },
+    "oidc-common": {
+      "tags": []
+    },
+    "two-angular": {
+      "tags": []
+    },
+    "two-angular-e2e": {
+      "tags": []
+    },
+    "two-common": {
+      "tags": []
+    },
+    "two-data-api": {
+      "tags": []
+    },
+    "two-data-api-nest": {
       "tags": []
     },
     "two-directory-nest": {
