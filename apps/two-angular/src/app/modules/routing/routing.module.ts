@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import * as WebFont from 'webfontloader';
 
 import * as environment from '../../../environments/environment';
-import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 WebFont.load({
   google: {

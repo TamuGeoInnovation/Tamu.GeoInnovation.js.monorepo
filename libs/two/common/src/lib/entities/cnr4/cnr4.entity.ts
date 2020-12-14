@@ -1,19 +1,5 @@
-import { ChildEntity, Entity, Column, PrimaryGeneratedColumn, TableForeignKey } from 'typeorm';
-import {
-  validate,
-  validateOrReject,
-  Contains,
-  IsIP,
-  IsNotEmpty,
-  IsInt,
-  Length,
-  IsEmail,
-  IsFQDN,
-  IsDate,
-  Min,
-  Max,
-  IsNumber
-} from 'class-validator';
+import { ChildEntity, Column } from 'typeorm';
+
 import { StationInfo } from '../station/station.entity';
 import { WeatherFlux } from '../weatherflux/weatherflux.interface';
 
@@ -23,9 +9,6 @@ import { WeatherFlux } from '../weatherflux/weatherflux.interface';
  */
 @ChildEntity()
 export class CNR4 extends StationInfo {
-  // @PrimaryGeneratedColumn({ name: "RECORD" })
-  // record: number | null = null;
-
   /**
    * Average net radiation (corrected for wind)
    *
@@ -64,8 +47,6 @@ export class CNR4 extends StationInfo {
    * Units: W m-2
    */
   @Column({ name: 'LW_IN', type: 'double precision', nullable: true })
-  // @IsNotEmpty()
-  // @IsNumber()
   public lw_in: number | null = null;
 
   /**
@@ -104,13 +85,11 @@ export class CNR4 extends StationInfo {
     super();
     if (row) {
       Object.keys(row).forEach((key, index) => {
-        // console.log(key, index);
         const key_lowercase = key.toLowerCase();
         if (key_lowercase in this) {
           if (row[key]) {
             this[key_lowercase] = Number(row[key]) || null;
           }
-          // console.log("Yeah we got this")
         }
       });
     }

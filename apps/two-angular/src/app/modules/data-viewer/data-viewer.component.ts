@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+
 import { from, Observable, of, forkJoin, combineLatest } from 'rxjs';
 import { switchMap, filter, toArray, shareReplay, startWith, mergeMap, reduce, tap } from 'rxjs/operators';
-
 import * as deepMerge from 'deepmerge';
 
 import { Sites, NodeGroups, DataGroups, DataGroupFlds, WeatherfluxExpanded } from '@tamu-gisc/two/common';
+import { IChartConfiguration } from '@tamu-gisc/charts';
 
 import { SitesService } from './services/sites/sites.service';
 import { NodeTypesService } from './services/node-types/node-types.service';
 import { DataGroupsService } from './services/data-groups/data-groups.service';
 import { FieldsService } from './services/fields/fields.service';
 import { DataService } from './services/data/data.service';
-import { IChartConfiguration } from '@tamu-gisc/charts';
 
 @Component({
   selector: 'tamu-gisc-data-viewer',

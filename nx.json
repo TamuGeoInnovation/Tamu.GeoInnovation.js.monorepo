@@ -128,21 +128,6 @@
     "search": {
       "tags": []
     },
-    "two-angular": {
-      "tags": []
-    },
-    "two-angular-e2e": {
-      "tags": []
-    },
-    "two-common": {
-      "tags": []
-    },
-    "two-data-api": {
-      "tags": []
-    },
-    "two-data-api-nest": {
-      "tags": []
-    },
     "ui-kits-ngx-branding": {
       "tags": []
     },
@@ -342,6 +327,45 @@
       "tags": []
     },
     "oidc-common": {
+      "tags": []
+    },
+    "two-angular": {
+      "tags": []
+    },
+    "two-angular-e2e": {
+      "tags": []
+    },
+    "two-common": {
+      "tags": []
+    },
+    "two-data-api": {
+      "tags": []
+    },
+    "two-data-api-nest": {
+      "tags": []
+    },
+    "two-directory-nest": {
+      "tags": []
+    },
+    "two-directory": {
+      "tags": []
+    },
+    "two-valup-nest": {
+      "tags": []
+    },
+    "two-valup": {
+      "tags": []
+    },
+    "two-dashboard-angular-e2e": {
+      "tags": []
+    },
+    "two-dashboard-angular": {
+      "tags": []
+    },
+    "two-dashboard": {
+      "tags": []
+    },
+    "two-data-access": {
       "tags": []
     }
   }
