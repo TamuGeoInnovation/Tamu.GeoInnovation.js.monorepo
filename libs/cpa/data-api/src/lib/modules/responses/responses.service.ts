@@ -1,11 +1,12 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository, getRepository, DeepPartial } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 
 import { Response, Workshop, Snapshot } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseService } from '../base/base.service';
+import { IResponseRequestPayload } from './responses.controller';
 
 @Injectable()
 export class ResponsesService extends BaseService<Response> {
@@ -53,12 +54,4 @@ export class ResponsesService extends BaseService<Response> {
       throw new HttpException('Internal server error.', 500);
     }
   }
-}
-
-export interface IResponseResponse extends DeepPartial<Response> {}
-
-export interface IResponseRequestPayload extends Omit<IResponseResponse, 'shapes'> {
-  snapshotGuid?: string;
-  workshopGuid?: string;
-  shapes: object;
 }

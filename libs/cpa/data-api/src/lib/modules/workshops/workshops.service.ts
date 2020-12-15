@@ -1,11 +1,12 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository, DeepPartial, getRepository } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 
 import { Workshop, Snapshot } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseService } from '../base/base.service';
+import { IWorkshopRequestPayload, IWorkshopSnapshotPayload } from './workshops.controller';
 
 @Injectable()
 export class WorkshopsService extends BaseService<Workshop> {
@@ -47,7 +48,7 @@ export class WorkshopsService extends BaseService<Workshop> {
     }
   }
 
-  public async getOne(params) {
+  public async getWorkshop(params) {
     const existing = await this.getOne({ where: { guid: params.guid }, relations: ['snapshots'] });
     if (existing) {
       return existing;
@@ -73,12 +74,4 @@ export class WorkshopsService extends BaseService<Workshop> {
       throw new HttpException('Internal Server Error', 500);
     }
   }
-}
-
-export interface IWorkshopRequestPayload extends DeepPartial<Workshop> {
-  guid: string;
-}
-export interface IWorkshopSnapshotPayload {
-  snapshotGuid: string;
-  workshopGuid: string;
 }

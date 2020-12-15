@@ -1,9 +1,10 @@
 import { Controller, Post, Body, Get, HttpException, Delete, Param, Patch } from '@nestjs/common';
 
 import { Response } from '@tamu-gisc/cpa/common/entities';
+import { DeepPartial } from 'typeorm';
 
 import { BaseController } from '../base/base.controller';
-import { IResponseRequestPayload, ResponsesService } from './responses.service';
+import { ResponsesService } from './responses.service';
 
 @Controller('responses')
 export class ResponsesController extends BaseController<Response> {
@@ -62,4 +63,10 @@ export class ResponsesController extends BaseController<Response> {
   }
 }
 
+export interface IResponseResponse extends DeepPartial<Response> {}
 
+export interface IResponseRequestPayload extends Omit<IResponseResponse, 'shapes'> {
+  snapshotGuid?: string;
+  workshopGuid?: string;
+  shapes: object;
+}

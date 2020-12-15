@@ -1,9 +1,11 @@
 import { Controller, Patch, Param, Body, Delete } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 
 import { Snapshot } from '@tamu-gisc/cpa/common/entities';
+import { ILayerConfiguration } from '@tamu-gisc/maps/feature/forms';
 
 import { BaseController } from '../base/base.controller';
-import { SnapshotsService, ISnapshotsRequestPayload } from './snapshots.service';
+import { SnapshotsService } from './snapshots.service';
 
 @Controller('snapshots')
 export class SnapshotsController extends BaseController<Snapshot> {
@@ -26,4 +28,10 @@ export class SnapshotsController extends BaseController<Snapshot> {
   public async delete(@Param() params: ISnapshotsRequestPayload) {
     return await this.service.deleteSnapshot(params);
   }
+}
+
+export interface ISnapshotsRequestPayload extends DeepPartial<Snapshot> {}
+
+export interface ISnapshotsResponse extends Omit<DeepPartial<Snapshot>, 'layers'> {
+  layers: { url: string; info: ILayerConfiguration }[];
 }

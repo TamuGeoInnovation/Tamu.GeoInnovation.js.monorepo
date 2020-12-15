@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Delete, HttpException, Param, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param, Patch } from '@nestjs/common';
 
 import { Workshop } from '@tamu-gisc/cpa/common/entities';
+import { DeepPartial } from 'typeorm';
 
 import { BaseController } from '../base/base.controller';
-import { IWorkshopSnapshotPayload, WorkshopsService } from './workshops.service';
+import { WorkshopsService } from './workshops.service';
 
 @Controller('workshops')
 export class WorkshopsController extends BaseController<Workshop> {
@@ -32,7 +33,7 @@ export class WorkshopsController extends BaseController<Workshop> {
    */
   @Get(':guid')
   public async getOne(@Param() params) {
-    return await this.service.getOne(params);
+    return await this.service.getWorkshop(params);
   }
 
   /**
@@ -58,4 +59,12 @@ export class WorkshopsController extends BaseController<Workshop> {
   public getAll() {
     return this.service.getMany({ relations: ['snapshots'] });
   }
+}
+
+export interface IWorkshopRequestPayload extends DeepPartial<Workshop> {
+  guid: string;
+}
+export interface IWorkshopSnapshotPayload {
+  snapshotGuid: string;
+  workshopGuid: string;
 }
