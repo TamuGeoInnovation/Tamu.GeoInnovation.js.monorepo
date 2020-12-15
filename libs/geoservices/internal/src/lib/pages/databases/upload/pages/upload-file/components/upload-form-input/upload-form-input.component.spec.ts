@@ -8,9 +8,8 @@ describe('UploadFormInputComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UploadFormInputComponent ]
-    })
-    .compileComponents();
+      declarations: [UploadFormInputComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

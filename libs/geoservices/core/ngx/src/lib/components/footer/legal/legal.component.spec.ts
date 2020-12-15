@@ -8,9 +8,8 @@ describe('FooterLegalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FooterLegalComponent ]
-    })
-    .compileComponents();
+      declarations: [FooterLegalComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -7,7 +7,6 @@ import { LockdownsService } from './lockdowns.service';
 import { LockdownsController } from './lockdowns.controller';
 import { CountyClaimsModule } from '../county-claims/county-claims.module';
 
-
 @Module({
   imports: [TypeOrmModule.forFeature([Lockdown, LockdownInfo, User, EntityStatus]), CountyClaimsModule],
   controllers: [LockdownsController],

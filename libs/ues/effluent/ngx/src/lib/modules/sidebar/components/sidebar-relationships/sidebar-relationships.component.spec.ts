@@ -8,9 +8,8 @@ describe('SidebarRelationshipsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SidebarRelationshipsComponent ]
-    })
-    .compileComponents();
+      declarations: [SidebarRelationshipsComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

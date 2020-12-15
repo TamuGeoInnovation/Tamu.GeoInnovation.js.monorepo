@@ -6,10 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  public ngOnInit() {
-  }
-
+  public ngOnInit() {}
 }

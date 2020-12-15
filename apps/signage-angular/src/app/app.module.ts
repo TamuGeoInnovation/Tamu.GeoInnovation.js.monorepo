@@ -10,6 +10,6 @@ import { RoutingModule } from './modules/routing/routing.module';
   imports: [BrowserModule, BrowserAnimationsModule, RoutingModule],
   declarations: [AppComponent],
   providers: [],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

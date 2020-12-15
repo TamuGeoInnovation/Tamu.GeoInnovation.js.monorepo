@@ -6,7 +6,7 @@ describe('ClientMetadataService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ClientMetadataService],
+      providers: [ClientMetadataService]
     }).compile();
 
     service = module.get<ClientMetadataService>(ClientMetadataService);

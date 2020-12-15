@@ -42,6 +42,6 @@ export class FieldCategoriesController extends BaseController<FieldCategory> {
       status: 501,
       success: false,
       message: 'Not implemented'
-    }
     };
+  }
 }

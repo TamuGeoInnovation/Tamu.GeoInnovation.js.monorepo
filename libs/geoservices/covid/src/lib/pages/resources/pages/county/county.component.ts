@@ -37,7 +37,7 @@ export class CountyComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   public counties: Observable<Array<Partial<County>>>;
   public states: Observable<Array<Partial<State>>>;
-  
+
   public phoneTypes: Observable<Partial<FieldCategory>>;
   public websiteTypes: Observable<Partial<FieldCategory>>;
   public suggestedCounties: Observable<Array<County>>;

@@ -11,7 +11,6 @@ import { SelectedFile } from '@tamu-gisc/ui-kits/ngx/forms';
   styleUrls: ['./upload-file.component.scss']
 })
 export class UploadFileComponent implements OnInit {
-
   public form: FormGroup;
 
   public delimiters = this.db.getTextDelimiterList();

@@ -6,7 +6,7 @@ describe('AccessToken Controller', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [AccessTokenController],
+      controllers: [AccessTokenController]
     }).compile();
 
     controller = module.get<AccessTokenController>(AccessTokenController);

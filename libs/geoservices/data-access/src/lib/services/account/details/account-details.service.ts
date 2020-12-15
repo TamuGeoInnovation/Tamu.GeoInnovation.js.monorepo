@@ -20,13 +20,13 @@ export class AccountDetailsService {
     });
   }
 
-  public updateDetails(details: IAccountDetails){
+  public updateDetails(details: IAccountDetails) {
     return forkJoin([
       this._updateAccount(details),
       this._updateCompany(details),
       this._updateContact(details),
       this._updateMailing(details)
-    ])
+    ]);
   }
 
   private _updateAccount(d: IAccountDetails) {

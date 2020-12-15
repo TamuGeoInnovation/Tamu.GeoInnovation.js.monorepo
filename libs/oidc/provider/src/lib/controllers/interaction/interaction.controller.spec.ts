@@ -6,7 +6,7 @@ describe('Interaction Controller', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [InteractionController],
+      controllers: [InteractionController]
     }).compile();
 
     controller = module.get<InteractionController>(InteractionController);

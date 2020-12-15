@@ -6,10 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./geoservices-internal.component.scss']
 })
 export class InternalComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  public ngOnInit() {
-  }
-
+  public ngOnInit() {}
 }

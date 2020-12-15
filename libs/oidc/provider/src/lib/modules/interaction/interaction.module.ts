@@ -3,9 +3,9 @@ import { InteractionController } from '../../controllers/interaction/interaction
 import { UserModule } from '../user/user.module';
 
 @Module({
-    imports: [UserModule],
-    controllers: [InteractionController],
-    providers: [],
-    exports: [],
+  imports: [UserModule],
+  controllers: [InteractionController],
+  providers: [],
+  exports: []
 })
 export class InteractionModule {}

@@ -34,7 +34,6 @@ import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinate
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
 
-
 import { SidebarOverviewComponent } from '../sidebar/components/sidebar-overview/sidebar-overview.component';
 import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';

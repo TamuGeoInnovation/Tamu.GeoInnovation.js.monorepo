@@ -6,10 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./tile-icon.component.scss']
 })
 export class TileIconComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  public ngOnInit() {
-  }
-
+  public ngOnInit() {}
 }

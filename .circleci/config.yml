@@ -93,7 +93,7 @@ jobs:
           command: npm install
       - run:
           name: Run Prettier
-          command: npx prettier **/*.ts --check
+          command: npm run prettier:check
 workflows:
   version: 2
   test_lint_prettier_build:
