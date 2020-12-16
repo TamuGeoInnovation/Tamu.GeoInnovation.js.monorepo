@@ -1,19 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { CommonService } from './common.service';
 
 describe('CommonService', () => {
   let service: CommonService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       providers: [CommonService]
-    }).compile();
-
-    service = module.get<CommonService>(CommonService);
+    });
+    service = TestBed.get(CommonService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('should be created', () => {
+    expect(service).toBeTruthy();
   });
 });

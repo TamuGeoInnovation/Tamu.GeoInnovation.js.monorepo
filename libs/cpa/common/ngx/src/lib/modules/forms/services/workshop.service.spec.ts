@@ -6,20 +6,23 @@ import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { WorkshopService } from './workshop.service';
 
 describe('WorkshopService', () => {
-  beforeEach(() =>
+  let service: WorkshopService;
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, EnvironmentModule],
       providers: [
+        WorkshopService,
         {
           provide: env,
           useValue: { api_url: 'https://' }
         }
       ]
-    })
-  );
+    });
+    service = TestBed.get(WorkshopService);
+  });
 
   it('should be created', () => {
-    const service: WorkshopService = TestBed.get(WorkshopService);
     expect(service).toBeTruthy();
   });
 });
