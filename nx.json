@@ -424,6 +424,12 @@
     },
     "ues-recycling-common-entities": {
       "tags": []
+    },
+    "ues-recycling-data-api": {
+      "tags": []
+    },
+    "ues-recycling-ngx": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

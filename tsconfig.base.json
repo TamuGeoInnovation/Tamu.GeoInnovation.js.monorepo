@@ -108,7 +108,9 @@
       "@tamu-gisc/gisday/data-api": ["libs/gisday/data-api/src/index.ts"],
       "@tamu-gisc/gisday/common": ["libs/gisday/common/src/index.ts"],
       "@tamu-gisc/common/ngx/auth": ["libs/common/ngx/auth/src/index.ts"],
-      "@tamu-gisc/ues/recycling/common/entities": ["libs/ues/recycling/common/entities/src/index.ts"]
+      "@tamu-gisc/ues/recycling/common/entities": ["libs/ues/recycling/common/entities/src/index.ts"],
+      "@tamu-gisc/ues/recycling/data-api": ["libs/ues/recycling/data-api/src/index.ts"],
+      "@tamu-gisc/ues/recycling/ngx": ["libs/ues/recycling/ngx/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

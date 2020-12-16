@@ -4585,6 +4585,56 @@
           }
         }
       }
+    },
+    "ues-recycling-data-api": {
+      "root": "libs/ues/recycling/data-api",
+      "sourceRoot": "libs/ues/recycling/data-api/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ues/recycling/data-api/tsconfig.lib.json", "libs/ues/recycling/data-api/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ues/recycling/data-api/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ues/recycling/data-api/jest.config.js",
+            "tsConfig": "libs/ues/recycling/data-api/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "ues-recycling-ngx": {
+      "projectType": "library",
+      "root": "libs/ues/recycling/ngx",
+      "sourceRoot": "libs/ues/recycling/ngx/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ues/recycling/ngx/tsconfig.lib.json", "libs/ues/recycling/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ues/recycling/ngx/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ues/recycling/ngx/jest.config.js",
+            "tsConfig": "libs/ues/recycling/ngx/tsconfig.spec.json",
+            "setupFile": "libs/ues/recycling/ngx/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {
