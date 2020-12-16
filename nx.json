@@ -421,6 +421,9 @@
     },
     "ues-recycling-data-api-nest": {
       "tags": []
+    },
+    "ues-recycling-common-entities": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

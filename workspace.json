@@ -4560,6 +4560,31 @@
           }
         }
       }
+    },
+    "ues-recycling-common-entities": {
+      "root": "libs/ues/recycling/common/entities",
+      "sourceRoot": "libs/ues/recycling/common/entities/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/ues/recycling/common/entities/tsconfig.lib.json",
+              "libs/ues/recycling/common/entities/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/ues/recycling/common/entities/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ues/recycling/common/entities/jest.config.js",
+            "tsConfig": "libs/ues/recycling/common/entities/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
