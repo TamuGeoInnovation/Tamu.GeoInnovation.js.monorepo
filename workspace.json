@@ -4382,6 +4382,184 @@
           }
         }
       }
+    },
+    "ues-recycling-angular": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/ues-recycling-angular",
+      "sourceRoot": "apps/ues-recycling-angular/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/ues-recycling-angular",
+            "index": "apps/ues-recycling-angular/src/index.html",
+            "main": "apps/ues-recycling-angular/src/main.ts",
+            "polyfills": "apps/ues-recycling-angular/src/polyfills.ts",
+            "tsConfig": "apps/ues-recycling-angular/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/ues-recycling-angular/src/favicon.ico",
+              "apps/ues-recycling-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/ues/assets/",
+                "output": "./assets"
+              }
+            ],
+            "styles": ["apps/ues-recycling-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-recycling-angular/src/environments/environment.ts",
+                  "with": "apps/ues-recycling-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ues-recycling-angular:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ues-recycling-angular:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ues-recycling-angular:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/ues-recycling-angular/tsconfig.app.json", "apps/ues-recycling-angular/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/ues-recycling-angular/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/ues-recycling-angular/jest.config.js",
+            "tsConfig": "apps/ues-recycling-angular/tsconfig.spec.json",
+            "setupFile": "apps/ues-recycling-angular/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "ues-recycling-angular-e2e": {
+      "root": "apps/ues-recycling-angular-e2e",
+      "sourceRoot": "apps/ues-recycling-angular-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/ues-recycling-angular-e2e/cypress.json",
+            "tsConfig": "apps/ues-recycling-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "ues-recycling-angular:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ues-recycling-angular:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/ues-recycling-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/ues-recycling-angular-e2e/**"]
+          }
+        }
+      }
+    },
+    "ues-recycling-data-api-nest": {
+      "root": "apps/ues-recycling-data-api-nest",
+      "sourceRoot": "apps/ues-recycling-data-api-nest/src",
+      "projectType": "application",
+      "prefix": "ues-recycling-data-api-nest",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/ues-recycling-data-api-nest",
+            "main": "apps/ues-recycling-data-api-nest/src/main.ts",
+            "tsConfig": "apps/ues-recycling-data-api-nest/tsconfig.app.json",
+            "assets": ["apps/ues-recycling-data-api-nest/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-recycling-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/ues-recycling-data-api-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "ues-recycling-data-api-nest:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/ues-recycling-data-api-nest/tsconfig.app.json",
+              "apps/ues-recycling-data-api-nest/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/ues-recycling-data-api-nest/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/ues-recycling-data-api-nest/jest.config.js",
+            "tsConfig": "apps/ues-recycling-data-api-nest/tsconfig.spec.json"
+          }
+        }
+      }
     }
   },
   "cli": {
