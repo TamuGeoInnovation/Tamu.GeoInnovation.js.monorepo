@@ -1,6 +1,5 @@
 module.exports = {
-  name: 'common-ngx-ui-sidebar',
-  preset: '../../../../../jest.config.js',
+  preset: '../../../../../jest.preset.js',
   coverageDirectory: '../../../../../coverage/libs/common/ngx/ui/sidebar',
   snapshotSerializers: [
     'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
@@ -12,10 +11,10 @@ module.exports = {
     'ts-jest': {
       tsConfig: '<rootDir>/tsconfig.spec.json',
       stringifyContentPathRegex: '\\.(html|svg)$',
-      astTransformers: [
-        'jest-preset-angular/build/InlineFilesTransformer',
-        'jest-preset-angular/build/StripStylesTransformer',
-      ],
+      astTransformers: {
+        before: ['jest-preset-angular/build/InlineFilesTransformer', 'jest-preset-angular/build/StripStylesTransformer'],
+      },
     },
   },
+  displayName: 'common-ngx-ui-sidebar',
 };

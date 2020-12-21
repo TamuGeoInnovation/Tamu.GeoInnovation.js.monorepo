@@ -1,6 +1,6 @@
 module.exports = {
-  name: 'two-data-api-nest',
-  preset: '../../jest.config.js',
+  preset: '../../jest.preset.js',
   coverageDirectory: '../../coverage/apps/two-data-api-nest',
   globals: { 'ts-jest': { tsConfig: '<rootDir>/tsconfig.spec.json' } },
+  displayName: 'two-data-api-nest',
 };
