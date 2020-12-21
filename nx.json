@@ -12,13 +12,15 @@
       "tags": []
     },
     "aggiemap-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["aggiemap-angular"]
     },
     "trees-angular": {
       "tags": []
     },
     "trees-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["trees-angular"]
     },
     "assets": {
       "tags": []
@@ -27,7 +29,8 @@
       "tags": []
     },
     "bikeshare-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["bikeshare"]
     },
     "bikeshare": {
       "tags": []
@@ -102,7 +105,8 @@
       "tags": []
     },
     "gisday-competitions-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["gisday-competitions-angular"]
     },
     "maps-esri": {
       "tags": []
@@ -141,7 +145,8 @@
       "tags": []
     },
     "signage-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["signage-angular"]
     },
     "signage-angular": {
       "tags": []
@@ -177,7 +182,8 @@
       "tags": []
     },
     "cpa-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["cpa-angular"]
     },
     "cpa-angular": {
       "tags": []
@@ -201,7 +207,8 @@
       "tags": []
     },
     "geoservices-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["geoservices-angular"]
     },
     "geoservices-angular": {
       "tags": []
@@ -255,7 +262,8 @@
       "tags": []
     },
     "oidc-provider-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["oidc-provider-angular"]
     },
     "oidc-provider-angular": {
       "tags": []
@@ -270,7 +278,8 @@
       "tags": []
     },
     "ues-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["ues-angular"]
     },
     "ues-angular": {
       "tags": []
@@ -282,7 +291,8 @@
       "tags": []
     },
     "ues-effluent-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["ues-effluent-angular"]
     },
     "ues-effluent-angular": {
       "tags": []
@@ -312,7 +322,8 @@
       "tags": []
     },
     "oidc-admin-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["oidc-admin-angular"]
     },
     "oidc-admin-nest": {
       "tags": []
@@ -333,7 +344,8 @@
       "tags": []
     },
     "two-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["two-angular"]
     },
     "two-common": {
       "tags": []
@@ -357,7 +369,8 @@
       "tags": []
     },
     "two-dashboard-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["two-dashboard-angular"]
     },
     "two-dashboard-angular": {
       "tags": []
