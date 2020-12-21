@@ -39,7 +39,7 @@ WebFont.load({
   declarations: [MapComponent],
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
     BrowserAnimationsModule,
     HttpClientModule,
     EsriMapModule,
