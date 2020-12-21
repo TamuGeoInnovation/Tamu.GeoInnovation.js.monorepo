@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { StorageServiceModule, LOCAL_STORAGE } from 'angular-webstorage-service';
+import { StorageServiceModule, LOCAL_STORAGE } from 'ngx-webstorage-service';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
