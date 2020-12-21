@@ -2,8 +2,9 @@ module.exports = {
   name: 'oidc-admin-nest',
   preset: '../../../jest.config.js',
   transform: {
-    '^.+\\.[tj]sx?$': 'ts-jest'
+    '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
-  coverageDirectory: '../../../coverage/libs/oidc/admin-nest'
+  coverageDirectory: '../../../coverage/libs/oidc/admin-nest',
+  globals: { 'ts-jest': { tsConfig: '<rootDir>/tsconfig.spec.json' } },
 };

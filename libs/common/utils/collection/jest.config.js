@@ -2,8 +2,9 @@ module.exports = {
   name: 'common-utils-collection',
   preset: '../../../../jest.config.js',
   transform: {
-    '^.+\\.[tj]sx?$': 'ts-jest'
+    '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
-  coverageDirectory: '../../../../coverage/libs/common/utils/collection'
+  coverageDirectory: '../../../../coverage/libs/common/utils/collection',
+  globals: { 'ts-jest': { tsConfig: '<rootDir>/tsconfig.spec.json' } },
 };

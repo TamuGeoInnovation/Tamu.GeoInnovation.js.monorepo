@@ -2,8 +2,9 @@ module.exports = {
   name: 'oidc-provider-nestjs',
   preset: '../../../jest.config.js',
   transform: {
-    '^.+\\.[tj]sx?$': 'ts-jest'
+    '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
-  coverageDirectory: '../../../coverage/libs/oidc/provider-nestjs'
+  coverageDirectory: '../../../coverage/libs/oidc/provider-nestjs',
+  globals: { 'ts-jest': { tsConfig: '<rootDir>/tsconfig.spec.json' } },
 };
