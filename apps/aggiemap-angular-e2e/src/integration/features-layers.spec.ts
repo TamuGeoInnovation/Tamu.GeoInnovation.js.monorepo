@@ -25,7 +25,7 @@ describe('Check Map is Loaded', function() {
     cy.checkIcon('9',this.data.construction, 'Construction Area')
   })
   it('Points of Interest', function() {
-    cy.checkButtonApi('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(2)', '**/arcgis/**')
+    cy.checkButtonApi('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(2)', '**/MapInfo_20190529/**')
     cy.checkLayer('2','Points of Interest')
     cy.checkLegend('10', 'Points of Interest')
     cy.checkIcon('10',this.data.pointsOfInterest, 'Points of Interest')
