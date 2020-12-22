@@ -64,10 +64,7 @@ export class SHA1HashUtils {
     return new Promise((resolve, reject) => {
       const hash = crypto.createHash('sha1');
       const data = hash.update(password.concat(salt), 'utf8');
-      const genHash = data
-        .digest('hex')
-        .concat(salt)
-        .toUpperCase();
+      const genHash = data.digest('hex').concat(salt).toUpperCase();
       return resolve(genHash);
     });
   }

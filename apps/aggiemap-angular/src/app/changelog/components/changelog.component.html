@@ -11,9 +11,7 @@
 
     <div *ngFor="let event of events" class="changelog-event">
       <div class="changelog-event-date">
-        <div>
-          {{ event.date | date }}
-        </div>
+        <div>{{ event.date | date }}</div>
       </div>
       <div class="changelog-event-body">
         <h3>{{ event.title }}</h3>

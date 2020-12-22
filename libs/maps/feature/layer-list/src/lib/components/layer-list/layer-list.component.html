@@ -4,7 +4,5 @@
 </div>
 
 <div class="sidebar-component-content-container">
-  <p *ngFor="let item of layers | async" class="layer-item" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible, hidden: item.outsideExtent }" (click)="toggleLayer(item)">
-    {{ item.title }}
-  </p>
+  <p *ngFor="let item of layers | async" class="layer-item" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible, hidden: item.outsideExtent }" (click)="toggleLayer(item)">{{ item.title }}</p>
 </div>

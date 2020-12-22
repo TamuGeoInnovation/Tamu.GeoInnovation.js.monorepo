@@ -23,7 +23,11 @@ const routes: Routes = [
   imports: [
     CommonModule,
     HttpClientModule,
-    RouterModule.forRoot(routes, { initialNavigation: 'enabled', useHash: environment.environment.production }),
+    RouterModule.forRoot(routes, {
+      initialNavigation: 'enabled',
+      useHash: environment.environment.production,
+      relativeLinkResolution: 'legacy'
+    }),
     EnvironmentModule
   ],
   providers: [

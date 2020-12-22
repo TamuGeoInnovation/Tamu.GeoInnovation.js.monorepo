@@ -3,5 +3,8 @@
   "rules": {
     "directive-selector": [true, "attribute", "tamuGisc", "camelCase"],
     "component-selector": [true, "element", "tamu-gisc", "kebab-case"]
+  },
+  "linterOptions": {
+    "exclude": ["!**/*", "!**/*"]
   }
 }

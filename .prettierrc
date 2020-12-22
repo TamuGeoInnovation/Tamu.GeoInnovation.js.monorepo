@@ -4,6 +4,7 @@
   "singleQuote": true,
   "arrowParens": "always",
   "endOfLine": "crlf",
+  "trailingComma": "none",
   "overrides": [
     {
       "files": "*.html",

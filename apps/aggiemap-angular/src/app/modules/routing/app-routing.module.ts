@@ -149,7 +149,7 @@ const hybridRoutes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(hybridRoutes),
+    RouterModule.forRoot(hybridRoutes, { relativeLinkResolution: 'legacy' }),
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,

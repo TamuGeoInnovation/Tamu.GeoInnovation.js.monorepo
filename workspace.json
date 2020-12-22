@@ -27,7 +27,6 @@
               ],
               "aot": true,
               "buildOptimizer": true,
-              "extractCss": true,
               "extractLicenses": true,
               "namedChunks": false,
               "optimization": true,
@@ -53,7 +52,8 @@
             "scripts": [],
             "styles": ["apps/aggiemap-angular/src/styles.scss"],
             "aot": false
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -64,7 +64,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/aggiemap-angular/**"],
+            "exclude": ["**/node_modules/**", "!apps/aggiemap-angular/**/*"],
             "tsConfig": ["apps/aggiemap-angular/tsconfig.app.json", "apps/aggiemap-angular/tsconfig.spec.json"]
           }
         },
@@ -83,9 +83,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/aggiemap-angular/jest.config.js",
-            "setupFile": "apps/aggiemap-angular/src/test-setup.ts",
-            "tsConfig": "apps/aggiemap-angular/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/aggiemap-angular"]
         }
       },
       "schematics": {
@@ -115,7 +115,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/aggiemap-angular-e2e/**"],
+            "exclude": ["**/node_modules/**", "!apps/aggiemap-angular-e2e/**/*"],
             "tsConfig": ["apps/aggiemap-angular-e2e/tsconfig.e2e.json"]
           }
         }
@@ -147,7 +147,6 @@
               ],
               "aot": true,
               "buildOptimizer": true,
-              "extractCss": true,
               "extractLicenses": true,
               "namedChunks": false,
               "optimization": true,
@@ -173,7 +172,8 @@
             "scripts": [],
             "styles": ["apps/trees-angular/src/styles.scss"],
             "aot": false
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -184,7 +184,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/trees-angular/**"],
+            "exclude": ["**/node_modules/**", "!apps/trees-angular/**/*"],
             "tsConfig": ["apps/trees-angular/tsconfig.app.json", "apps/trees-angular/tsconfig.spec.json"]
           }
         },
@@ -203,9 +203,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/trees-angular/jest.config.js",
-            "setupFile": "apps/trees-angular/src/test-setup.ts",
-            "tsConfig": "apps/trees-angular/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/trees-angular"]
         }
       },
       "schematics": {
@@ -235,7 +235,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/trees-angular-e2e/**"],
+            "exclude": ["**/node_modules/**", "!apps/trees-angular-e2e/**/*"],
             "tsConfig": ["apps/trees-angular-e2e/tsconfig.e2e.json"]
           }
         }
@@ -288,7 +288,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -302,7 +301,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -325,16 +325,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/bikeshare/tsconfig.app.json", "apps/bikeshare/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/bikeshare/**"]
+            "exclude": ["**/node_modules/**", "!apps/bikeshare/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/bikeshare/jest.config.js",
-            "tsConfig": "apps/bikeshare/tsconfig.spec.json",
-            "setupFile": "apps/bikeshare/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/bikeshare"]
         }
       }
     },
@@ -360,7 +360,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/bikeshare-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/bikeshare-e2e/**"]
+            "exclude": ["**/node_modules/**", "!apps/bikeshare-e2e/**/*"]
           }
         }
       }
@@ -374,7 +374,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/charts/**"],
+            "exclude": ["**/node_modules/**", "!libs/charts/**/*"],
             "tsConfig": ["libs/charts/tsconfig.lib.json", "libs/charts/tsconfig.spec.json"]
           }
         },
@@ -382,9 +382,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/charts/jest.config.js",
-            "setupFile": "libs/charts/src/test-setup.ts",
-            "tsConfig": "libs/charts/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/charts"]
         }
       },
       "schematics": {
@@ -402,7 +402,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/ngx/environment/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/environment/**/*"],
             "tsConfig": ["libs/common/ngx/environment/tsconfig.lib.json", "libs/common/ngx/environment/tsconfig.spec.json"]
           }
         },
@@ -410,9 +410,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/environment/jest.config.js",
-            "setupFile": "libs/common/ngx/environment/src/test-setup.ts",
-            "tsConfig": "libs/common/ngx/environment/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/ngx/environment"]
         }
       },
       "schematics": {
@@ -428,7 +428,7 @@
       "sourceRoot": "libs/common/ngx/local-store/src",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "project": "libs/common/ngx/local-store/ng-package.json",
             "tsConfig": "libs/common/ngx/local-store/tsconfig.lib.json"
@@ -437,7 +437,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/ngx/local-store/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/local-store/**/*"],
             "tsConfig": ["libs/common/ngx/local-store/tsconfig.lib.json", "libs/common/ngx/local-store/tsconfig.spec.json"]
           }
         },
@@ -445,9 +445,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/local-store/jest.config.js",
-            "setupFile": "libs/common/ngx/local-store/src/test-setup.ts",
-            "tsConfig": "libs/common/ngx/local-store/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/ngx/local-store"]
         }
       },
       "schematics": {
@@ -463,7 +463,7 @@
       "sourceRoot": "libs/common/ngx/pipes/src",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "project": "libs/common/ngx/pipes/ng-package.json",
             "tsConfig": "libs/common/ngx/pipes/tsconfig.lib.json"
@@ -472,7 +472,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/ngx/pipes/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/pipes/**/*"],
             "tsConfig": ["libs/common/ngx/pipes/tsconfig.lib.json", "libs/common/ngx/pipes/tsconfig.spec.json"]
           }
         },
@@ -480,9 +480,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/pipes/jest.config.js",
-            "setupFile": "libs/common/ngx/pipes/src/test-setup.ts",
-            "tsConfig": "libs/common/ngx/pipes/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/ngx/pipes"]
         }
       },
       "schematics": {
@@ -500,7 +500,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/ngx/router/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/router/**/*"],
             "tsConfig": ["libs/common/ngx/router/tsconfig.lib.json", "libs/common/ngx/router/tsconfig.spec.json"]
           }
         },
@@ -508,9 +508,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/router/jest.config.js",
-            "setupFile": "libs/common/ngx/router/src/test-setup.ts",
-            "tsConfig": "libs/common/ngx/router/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/ngx/router"]
         }
       },
       "schematics": {
@@ -526,7 +526,7 @@
       "sourceRoot": "libs/common/ngx/settings/src",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "project": "libs/common/ngx/settings/ng-package.json",
             "tsConfig": "libs/common/ngx/settings/tsconfig.lib.json"
@@ -535,7 +535,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/ngx/settings/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/settings/**/*"],
             "tsConfig": ["libs/common/ngx/settings/tsconfig.lib.json", "libs/common/ngx/settings/tsconfig.spec.json"]
           }
         },
@@ -543,9 +543,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/settings/jest.config.js",
-            "setupFile": "libs/common/ngx/settings/src/test-setup.ts",
-            "tsConfig": "libs/common/ngx/settings/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/ngx/settings"]
         }
       },
       "schematics": {
@@ -561,7 +561,7 @@
       "sourceRoot": "libs/common/ngx/ui/notification/src",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "project": "libs/common/ngx/ui/notification/ng-package.json",
             "tsConfig": "libs/common/ngx/ui/notification/tsconfig.lib.json"
@@ -570,7 +570,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/ngx/ui/notification/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/ui/notification/**/*"],
             "tsConfig": [
               "libs/common/ngx/ui/notification/tsconfig.lib.json",
               "libs/common/ngx/ui/notification/tsconfig.spec.json"
@@ -581,9 +581,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/ui/notification/jest.config.js",
-            "setupFile": "libs/common/ngx/ui/notification/src/test-setup.ts",
-            "tsConfig": "libs/common/ngx/ui/notification/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/ngx/ui/notification"]
         }
       },
       "schematics": {
@@ -601,7 +601,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/ngx/ui/sidebar/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/ui/sidebar/**/*"],
             "tsConfig": ["libs/common/ngx/ui/sidebar/tsconfig.lib.json", "libs/common/ngx/ui/sidebar/tsconfig.spec.json"]
           }
         },
@@ -609,9 +609,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/ui/sidebar/jest.config.js",
-            "setupFile": "libs/common/ngx/ui/sidebar/src/test-setup.ts",
-            "tsConfig": "libs/common/ngx/ui/sidebar/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/ngx/ui/sidebar"]
         }
       },
       "schematics": {
@@ -628,7 +628,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/types/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/types/**/*"],
             "tsConfig": ["libs/common/types/tsconfig.lib.json", "libs/common/types/tsconfig.spec.json"]
           }
         },
@@ -636,8 +636,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/types/jest.config.js",
-            "tsConfig": "libs/common/types/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/types"]
         }
       },
       "schematics": {}
@@ -650,7 +651,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/utils/collection/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/collection/**/*"],
             "tsConfig": ["libs/common/utils/collection/tsconfig.lib.json", "libs/common/utils/collection/tsconfig.spec.json"]
           }
         },
@@ -658,8 +659,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/collection/jest.config.js",
-            "tsConfig": "libs/common/utils/collection/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/collection"]
         }
       },
       "schematics": {}
@@ -672,7 +674,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/utils/database/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/database/**/*"],
             "tsConfig": ["libs/common/utils/database/tsconfig.lib.json", "libs/common/utils/database/tsconfig.spec.json"]
           }
         },
@@ -680,8 +682,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/database/jest.config.js",
-            "tsConfig": "libs/common/utils/database/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/database"]
         }
       },
       "schematics": {}
@@ -694,7 +697,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/utils/date/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/date/**/*"],
             "tsConfig": ["libs/common/utils/date/tsconfig.lib.json", "libs/common/utils/date/tsconfig.spec.json"]
           }
         },
@@ -702,8 +705,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/date/jest.config.js",
-            "tsConfig": "libs/common/utils/date/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/date"]
         }
       },
       "schematics": {}
@@ -716,7 +720,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/utils/device/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/device/**/*"],
             "tsConfig": ["libs/common/utils/device/tsconfig.lib.json", "libs/common/utils/device/tsconfig.spec.json"]
           }
         },
@@ -724,8 +728,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/device/jest.config.js",
-            "tsConfig": "libs/common/utils/device/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/device"]
         }
       },
       "schematics": {}
@@ -738,7 +743,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/utils/geometry/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/geometry/**/*"],
             "tsConfig": ["libs/common/utils/geometry/tsconfig.lib.json", "libs/common/utils/geometry/tsconfig.spec.json"]
           }
         },
@@ -746,8 +751,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/geometry/jest.config.js",
-            "tsConfig": "libs/common/utils/geometry/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/geometry"]
         }
       },
       "schematics": {}
@@ -760,7 +766,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/utils/geometry/esri/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/geometry/esri/**/*"],
             "tsConfig": [
               "libs/common/utils/geometry/esri/tsconfig.lib.json",
               "libs/common/utils/geometry/esri/tsconfig.spec.json"
@@ -771,8 +777,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/geometry/esri/jest.config.js",
-            "tsConfig": "libs/common/utils/geometry/esri/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/geometry/esri"]
         }
       },
       "schematics": {}
@@ -785,7 +792,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/utils/geometry/generic/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/geometry/generic/**/*"],
             "tsConfig": [
               "libs/common/utils/geometry/generic/tsconfig.lib.json",
               "libs/common/utils/geometry/generic/tsconfig.spec.json"
@@ -796,8 +803,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/geometry/generic/jest.config.js",
-            "tsConfig": "libs/common/utils/geometry/generic/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/geometry/generic"]
         }
       },
       "schematics": {}
@@ -810,7 +818,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/utils/number/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/number/**/*"],
             "tsConfig": ["libs/common/utils/number/tsconfig.lib.json", "libs/common/utils/number/tsconfig.spec.json"]
           }
         },
@@ -818,8 +826,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/number/jest.config.js",
-            "tsConfig": "libs/common/utils/number/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/number"]
         }
       },
       "schematics": {}
@@ -832,7 +841,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/utils/object/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/object/**/*"],
             "tsConfig": ["libs/common/utils/object/tsconfig.lib.json", "libs/common/utils/object/tsconfig.spec.json"]
           }
         },
@@ -840,8 +849,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/object/jest.config.js",
-            "tsConfig": "libs/common/utils/object/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/object"]
         }
       },
       "schematics": {}
@@ -854,7 +864,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/utils/routing/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/routing/**/*"],
             "tsConfig": ["libs/common/utils/routing/tsconfig.lib.json", "libs/common/utils/routing/tsconfig.spec.json"]
           }
         },
@@ -862,8 +872,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/routing/jest.config.js",
-            "tsConfig": "libs/common/utils/routing/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/routing"]
         }
       },
       "schematics": {}
@@ -876,7 +887,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/utils/string/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/string/**/*"],
             "tsConfig": ["libs/common/utils/string/tsconfig.lib.json", "libs/common/utils/string/tsconfig.spec.json"]
           }
         },
@@ -884,8 +895,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/string/jest.config.js",
-            "tsConfig": "libs/common/utils/string/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/string"]
         }
       },
       "schematics": {}
@@ -898,7 +910,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/common/utils/ui/**"],
+            "exclude": ["**/node_modules/**", "!libs/common/utils/ui/**/*"],
             "tsConfig": ["libs/common/utils/ui/tsconfig.lib.json", "libs/common/utils/ui/tsconfig.spec.json"]
           }
         },
@@ -906,8 +918,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/ui/jest.config.js",
-            "tsConfig": "libs/common/utils/ui/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/ui"]
         }
       },
       "schematics": {}
@@ -921,7 +934,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/dev-tools/application-testing/**"],
+            "exclude": ["**/node_modules/**", "!libs/dev-tools/application-testing/**/*"],
             "tsConfig": [
               "libs/dev-tools/application-testing/tsconfig.lib.json",
               "libs/dev-tools/application-testing/tsconfig.spec.json"
@@ -932,9 +945,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/dev-tools/application-testing/jest.config.js",
-            "setupFile": "libs/dev-tools/application-testing/src/test-setup.ts",
-            "tsConfig": "libs/dev-tools/application-testing/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/dev-tools/application-testing"]
         }
       },
       "schematics": {
@@ -952,7 +965,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/dev-tools/responsive/**"],
+            "exclude": ["**/node_modules/**", "!libs/dev-tools/responsive/**/*"],
             "tsConfig": ["libs/dev-tools/responsive/tsconfig.lib.json", "libs/dev-tools/responsive/tsconfig.spec.json"]
           }
         },
@@ -960,9 +973,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/dev-tools/responsive/jest.config.js",
-            "setupFile": "libs/dev-tools/responsive/src/test-setup.ts",
-            "tsConfig": "libs/dev-tools/responsive/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/dev-tools/responsive"]
         }
       },
       "schematics": {
@@ -998,7 +1011,6 @@
               ],
               "aot": true,
               "buildOptimizer": true,
-              "extractCss": true,
               "extractLicenses": true,
               "namedChunks": false,
               "optimization": true,
@@ -1026,7 +1038,8 @@
             "scripts": [],
             "styles": ["apps/gisday-competitions-angular/src/styles.scss"],
             "aot": false
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -1037,7 +1050,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/gisday-competitions-angular/**"],
+            "exclude": ["**/node_modules/**", "!apps/gisday-competitions-angular/**/*"],
             "tsConfig": [
               "apps/gisday-competitions-angular/tsconfig.app.json",
               "apps/gisday-competitions-angular/tsconfig.spec.json"
@@ -1059,9 +1072,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/gisday-competitions-angular/jest.config.js",
-            "setupFile": "apps/gisday-competitions-angular/src/test-setup.ts",
-            "tsConfig": "apps/gisday-competitions-angular/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/gisday-competitions-angular"]
         }
       },
       "schematics": {
@@ -1091,7 +1104,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/gisday-competitions-angular-e2e/**"],
+            "exclude": ["**/node_modules/**", "!apps/gisday-competitions-angular-e2e/**/*"],
             "tsConfig": ["apps/gisday-competitions-angular-e2e/tsconfig.e2e.json"]
           }
         }
@@ -1106,7 +1119,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/maps/esri/**"],
+            "exclude": ["**/node_modules/**", "!libs/maps/esri/**/*"],
             "tsConfig": ["libs/maps/esri/tsconfig.lib.json", "libs/maps/esri/tsconfig.spec.json"]
           }
         },
@@ -1114,9 +1127,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/esri/jest.config.js",
-            "setupFile": "libs/maps/esri/src/test-setup.ts",
-            "tsConfig": "libs/maps/esri/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/maps/esri"]
         }
       },
       "schematics": {
@@ -1134,7 +1147,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/maps/feature/draw/**"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/draw/**/*"],
             "tsConfig": ["libs/maps/feature/draw/tsconfig.lib.json", "libs/maps/feature/draw/tsconfig.spec.json"]
           }
         },
@@ -1142,9 +1155,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/draw/jest.config.js",
-            "setupFile": "libs/maps/feature/draw/src/test-setup.ts",
-            "tsConfig": "libs/maps/feature/draw/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/maps/feature/draw"]
         }
       },
       "schematics": {
@@ -1162,7 +1175,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/maps/feature/feature-selector/**"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/feature-selector/**/*"],
             "tsConfig": [
               "libs/maps/feature/feature-selector/tsconfig.lib.json",
               "libs/maps/feature/feature-selector/tsconfig.spec.json"
@@ -1173,9 +1186,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/feature-selector/jest.config.js",
-            "setupFile": "libs/maps/feature/feature-selector/src/test-setup.ts",
-            "tsConfig": "libs/maps/feature/feature-selector/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/maps/feature/feature-selector"]
         }
       },
       "schematics": {
@@ -1193,7 +1206,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/maps/feature/layer-filter/**"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/layer-filter/**/*"],
             "tsConfig": [
               "libs/maps/feature/layer-filter/tsconfig.lib.json",
               "libs/maps/feature/layer-filter/tsconfig.spec.json"
@@ -1204,9 +1217,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/layer-filter/jest.config.js",
-            "setupFile": "libs/maps/feature/layer-filter/src/test-setup.ts",
-            "tsConfig": "libs/maps/feature/layer-filter/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/maps/feature/layer-filter"]
         }
       },
       "schematics": {
@@ -1224,7 +1237,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/maps/feature/layer-list/**"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/layer-list/**/*"],
             "tsConfig": ["libs/maps/feature/layer-list/tsconfig.lib.json", "libs/maps/feature/layer-list/tsconfig.spec.json"]
           }
         },
@@ -1232,9 +1245,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/layer-list/jest.config.js",
-            "setupFile": "libs/maps/feature/layer-list/src/test-setup.ts",
-            "tsConfig": "libs/maps/feature/layer-list/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/maps/feature/layer-list"]
         }
       },
       "schematics": {
@@ -1252,7 +1265,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/maps/feature/legend/**"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/legend/**/*"],
             "tsConfig": ["libs/maps/feature/legend/tsconfig.lib.json", "libs/maps/feature/legend/tsconfig.spec.json"]
           }
         },
@@ -1260,9 +1273,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/legend/jest.config.js",
-            "setupFile": "libs/maps/feature/legend/src/test-setup.ts",
-            "tsConfig": "libs/maps/feature/legend/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/maps/feature/legend"]
         }
       },
       "schematics": {
@@ -1284,7 +1297,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/search/**"],
+            "exclude": ["**/node_modules/**", "!libs/search/**/*"],
             "tsConfig": ["libs/search/tsconfig.lib.json", "libs/search/tsconfig.spec.json"]
           }
         },
@@ -1292,9 +1305,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/search/jest.config.js",
-            "setupFile": "libs/search/src/test-setup.ts",
-            "tsConfig": "libs/search/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/search"]
         }
       },
       "schematics": {
@@ -1312,7 +1325,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/branding/**"],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/branding/**/*"],
             "tsConfig": ["libs/ui-kits/ngx/branding/tsconfig.lib.json", "libs/ui-kits/ngx/branding/tsconfig.spec.json"]
           }
         },
@@ -1320,9 +1333,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/branding/jest.config.js",
-            "setupFile": "libs/ui-kits/ngx/branding/src/test-setup.ts",
-            "tsConfig": "libs/ui-kits/ngx/branding/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ui-kits/ngx/branding"]
         }
       },
       "schematics": {
@@ -1340,7 +1353,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/forms/**"],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/forms/**/*"],
             "tsConfig": ["libs/ui-kits/ngx/forms/tsconfig.lib.json", "libs/ui-kits/ngx/forms/tsconfig.spec.json"]
           }
         },
@@ -1348,9 +1361,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/forms/jest.config.js",
-            "setupFile": "libs/ui-kits/ngx/forms/src/test-setup.ts",
-            "tsConfig": "libs/ui-kits/ngx/forms/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ui-kits/ngx/forms"]
         }
       },
       "schematics": {
@@ -1368,7 +1381,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/layout/**"],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/layout/**/*"],
             "tsConfig": ["libs/ui-kits/ngx/layout/tsconfig.lib.json", "libs/ui-kits/ngx/layout/tsconfig.spec.json"]
           }
         },
@@ -1376,9 +1389,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/layout/jest.config.js",
-            "setupFile": "libs/ui-kits/ngx/layout/src/test-setup.ts",
-            "tsConfig": "libs/ui-kits/ngx/layout/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ui-kits/ngx/layout"]
         }
       },
       "schematics": {
@@ -1396,7 +1409,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/mobile-tab/**"],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/mobile-tab/**/*"],
             "tsConfig": [
               "libs/ui-kits/ngx/navigation/mobile-tab/tsconfig.lib.json",
               "libs/ui-kits/ngx/navigation/mobile-tab/tsconfig.spec.json"
@@ -1407,9 +1420,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tab/jest.config.js",
-            "setupFile": "libs/ui-kits/ngx/navigation/mobile-tab/src/test-setup.ts",
-            "tsConfig": "libs/ui-kits/ngx/navigation/mobile-tab/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ui-kits/ngx/navigation/mobile-tab"]
         }
       },
       "schematics": {
@@ -1461,7 +1474,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -1480,7 +1492,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -1503,16 +1516,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/signage-angular/tsconfig.app.json", "apps/signage-angular/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/signage-angular/**"]
+            "exclude": ["**/node_modules/**", "!apps/signage-angular/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/signage-angular/jest.config.js",
-            "tsConfig": "apps/signage-angular/tsconfig.spec.json",
-            "setupFile": "apps/signage-angular/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/signage-angular"]
         }
       }
     },
@@ -1538,7 +1551,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/signage-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/signage-angular-e2e/**"]
+            "exclude": ["**/node_modules/**", "!apps/signage-angular-e2e/**/*"]
           }
         }
       }
@@ -1553,16 +1566,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/maps/feature/popup/tsconfig.lib.json", "libs/maps/feature/popup/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/maps/feature/popup/**"]
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/popup/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/popup/jest.config.js",
-            "tsConfig": "libs/maps/feature/popup/tsconfig.spec.json",
-            "setupFile": "libs/maps/feature/popup/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/maps/feature/popup"]
         }
       },
       "schematics": {
@@ -1584,16 +1597,16 @@
               "libs/ui-kits/ngx/interactions/draggable/tsconfig.lib.json",
               "libs/ui-kits/ngx/interactions/draggable/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/interactions/draggable/**"]
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/interactions/draggable/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/interactions/draggable/jest.config.js",
-            "tsConfig": "libs/ui-kits/ngx/interactions/draggable/tsconfig.spec.json",
-            "setupFile": "libs/ui-kits/ngx/interactions/draggable/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ui-kits/ngx/interactions/draggable"]
         }
       },
       "schematics": {
@@ -1615,16 +1628,16 @@
               "libs/ui-kits/ngx/layout/structural/tsconfig.lib.json",
               "libs/ui-kits/ngx/layout/structural/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/layout/structural/**"]
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/layout/structural/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/layout/structural/jest.config.js",
-            "tsConfig": "libs/ui-kits/ngx/layout/structural/tsconfig.spec.json",
-            "setupFile": "libs/ui-kits/ngx/layout/structural/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ui-kits/ngx/layout/structural"]
         }
       },
       "schematics": {
@@ -1643,16 +1656,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/signage/tsconfig.lib.json", "libs/signage/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/signage/**"]
+            "exclude": ["**/node_modules/**", "!libs/signage/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/signage/jest.config.js",
-            "tsConfig": "libs/signage/tsconfig.spec.json",
-            "setupFile": "libs/signage/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/signage"]
         }
       },
       "schematics": {
@@ -1671,16 +1684,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/aggiemap/tsconfig.lib.json", "libs/aggiemap/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/aggiemap/**"]
+            "exclude": ["**/node_modules/**", "!libs/aggiemap/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/aggiemap/jest.config.js",
-            "tsConfig": "libs/aggiemap/tsconfig.spec.json",
-            "setupFile": "libs/aggiemap/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/aggiemap"]
         }
       },
       "schematics": {
@@ -1702,16 +1715,16 @@
               "libs/maps/feature/trip-planner/tsconfig.lib.json",
               "libs/maps/feature/trip-planner/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/maps/feature/trip-planner/**"]
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/trip-planner/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/trip-planner/jest.config.js",
-            "tsConfig": "libs/maps/feature/trip-planner/tsconfig.spec.json",
-            "setupFile": "libs/maps/feature/trip-planner/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/maps/feature/trip-planner"]
         }
       },
       "schematics": {
@@ -1733,16 +1746,16 @@
               "libs/ui-kits/ngx/interactions/clipboard/tsconfig.lib.json",
               "libs/ui-kits/ngx/interactions/clipboard/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/interactions/clipboard/**"]
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/interactions/clipboard/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/interactions/clipboard/jest.config.js",
-            "tsConfig": "libs/ui-kits/ngx/interactions/clipboard/tsconfig.spec.json",
-            "setupFile": "libs/ui-kits/ngx/interactions/clipboard/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ui-kits/ngx/interactions/clipboard"]
         }
       },
       "schematics": {
@@ -1764,16 +1777,16 @@
               "libs/maps/feature/accessibility/tsconfig.lib.json",
               "libs/maps/feature/accessibility/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/maps/feature/accessibility/**"]
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/accessibility/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/accessibility/jest.config.js",
-            "tsConfig": "libs/maps/feature/accessibility/tsconfig.spec.json",
-            "setupFile": "libs/maps/feature/accessibility/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/maps/feature/accessibility"]
         }
       },
       "schematics": {
@@ -1795,16 +1808,16 @@
               "libs/maps/feature/coordinates/tsconfig.lib.json",
               "libs/maps/feature/coordinates/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/maps/feature/coordinates/**"]
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/coordinates/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/coordinates/jest.config.js",
-            "tsConfig": "libs/maps/feature/coordinates/tsconfig.spec.json",
-            "setupFile": "libs/maps/feature/coordinates/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/maps/feature/coordinates"]
         }
       },
       "schematics": {
@@ -1826,15 +1839,16 @@
               "libs/common/utils/geometry/geoprocessing/tsconfig.lib.json",
               "libs/common/utils/geometry/geoprocessing/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/common/utils/geometry/geoprocessing/**"]
+            "exclude": ["**/node_modules/**", "!libs/common/utils/geometry/geoprocessing/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/geometry/geoprocessing/jest.config.js",
-            "tsConfig": "libs/common/utils/geometry/geoprocessing/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/geometry/geoprocessing"]
         }
       }
     },
@@ -1881,7 +1895,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -1900,7 +1913,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -1923,16 +1937,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/cpa-angular/tsconfig.app.json", "apps/cpa-angular/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/cpa-angular/**"]
+            "exclude": ["**/node_modules/**", "!apps/cpa-angular/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/cpa-angular/jest.config.js",
-            "tsConfig": "apps/cpa-angular/tsconfig.spec.json",
-            "setupFile": "apps/cpa-angular/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/cpa-angular"]
         }
       }
     },
@@ -1958,7 +1972,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/cpa-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/cpa-angular-e2e/**"]
+            "exclude": ["**/node_modules/**", "!apps/cpa-angular-e2e/**/*"]
           }
         }
       }
@@ -1976,7 +1990,8 @@
             "outputPath": "dist/apps/cpa-nest",
             "main": "apps/cpa-nest/src/main.ts",
             "tsConfig": "apps/cpa-nest/tsconfig.app.json",
-            "assets": ["apps/cpa-nest/src/assets"]
+            "assets": ["apps/cpa-nest/src/assets"],
+            "buildLibsFromSource": true
           },
           "configurations": {
             "production": {
@@ -1990,7 +2005,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@nrwl/node:execute",
@@ -2002,15 +2018,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/cpa-nest/tsconfig.app.json", "apps/cpa-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/cpa-nest/**"]
+            "exclude": ["**/node_modules/**", "!apps/cpa-nest/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/cpa-nest/jest.config.js",
-            "tsConfig": "apps/cpa-nest/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/cpa-nest"]
         }
       }
     },
@@ -2024,15 +2041,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/cpa/data-api/tsconfig.lib.json", "libs/cpa/data-api/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/cpa/data-api/**"]
+            "exclude": ["**/node_modules/**", "!libs/cpa/data-api/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/cpa/data-api/jest.config.js",
-            "tsConfig": "libs/cpa/data-api/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/cpa/data-api"]
         }
       }
     },
@@ -2046,16 +2064,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/cpa/common/ngx/tsconfig.lib.json", "libs/cpa/common/ngx/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/cpa/common/ngx/**"]
+            "exclude": ["**/node_modules/**", "!libs/cpa/common/ngx/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/cpa/common/ngx/jest.config.js",
-            "tsConfig": "libs/cpa/common/ngx/tsconfig.spec.json",
-            "setupFile": "libs/cpa/common/ngx/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/cpa/common/ngx"]
         }
       },
       "schematics": {
@@ -2074,16 +2092,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/maps/feature/forms/tsconfig.lib.json", "libs/maps/feature/forms/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/maps/feature/forms/**"]
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/forms/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/forms/jest.config.js",
-            "tsConfig": "libs/maps/feature/forms/tsconfig.spec.json",
-            "setupFile": "libs/maps/feature/forms/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/maps/feature/forms"]
         }
       },
       "schematics": {
@@ -2102,15 +2120,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/cpa/common/entities/tsconfig.lib.json", "libs/cpa/common/entities/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/cpa/common/entities/**"]
+            "exclude": ["**/node_modules/**", "!libs/cpa/common/entities/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/cpa/common/entities/jest.config.js",
-            "tsConfig": "libs/cpa/common/entities/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/cpa/common/entities"]
         }
       }
     },
@@ -2127,16 +2146,16 @@
               "libs/ui-kits/ngx/navigation/breadcrumb/tsconfig.lib.json",
               "libs/ui-kits/ngx/navigation/breadcrumb/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/breadcrumb/**"]
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/breadcrumb/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/navigation/breadcrumb/jest.config.js",
-            "tsConfig": "libs/ui-kits/ngx/navigation/breadcrumb/tsconfig.spec.json",
-            "setupFile": "libs/ui-kits/ngx/navigation/breadcrumb/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ui-kits/ngx/navigation/breadcrumb"]
         }
       },
       "schematics": {
@@ -2188,7 +2207,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -2207,7 +2225,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -2230,16 +2249,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/geoservices-angular/tsconfig.app.json", "apps/geoservices-angular/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/geoservices-angular/**"]
+            "exclude": ["**/node_modules/**", "!apps/geoservices-angular/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/geoservices-angular/jest.config.js",
-            "tsConfig": "apps/geoservices-angular/tsconfig.spec.json",
-            "setupFile": "apps/geoservices-angular/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/geoservices-angular"]
         }
       }
     },
@@ -2265,7 +2284,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/geoservices-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/geoservices-angular-e2e/**"]
+            "exclude": ["**/node_modules/**", "!apps/geoservices-angular-e2e/**/*"]
           }
         }
       }
@@ -2280,16 +2299,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/geoservices/api/tsconfig.lib.json", "libs/geoservices/api/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/api/**"]
+            "exclude": ["**/node_modules/**", "!libs/geoservices/api/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/geoservices/api/jest.config.js",
-            "tsConfig": "libs/geoservices/api/tsconfig.spec.json",
-            "setupFile": "libs/geoservices/api/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/geoservices/api"]
         }
       },
       "schematics": {
@@ -2308,16 +2327,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/geoservices/internal/tsconfig.lib.json", "libs/geoservices/internal/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/internal/**"]
+            "exclude": ["**/node_modules/**", "!libs/geoservices/internal/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/geoservices/internal/jest.config.js",
-            "tsConfig": "libs/geoservices/internal/tsconfig.spec.json",
-            "setupFile": "libs/geoservices/internal/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/geoservices/internal"]
         }
       },
       "schematics": {
@@ -2339,16 +2358,16 @@
               "libs/ui-kits/ngx/interactions/scroll-to/tsconfig.lib.json",
               "libs/ui-kits/ngx/interactions/scroll-to/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/interactions/scroll-to/**"]
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/interactions/scroll-to/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/interactions/scroll-to/jest.config.js",
-            "tsConfig": "libs/ui-kits/ngx/interactions/scroll-to/tsconfig.spec.json",
-            "setupFile": "libs/ui-kits/ngx/interactions/scroll-to/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ui-kits/ngx/interactions/scroll-to"]
         }
       },
       "schematics": {
@@ -2370,16 +2389,16 @@
               "libs/geoservices/data-access/tsconfig.lib.json",
               "libs/geoservices/data-access/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/data-access/**"]
+            "exclude": ["**/node_modules/**", "!libs/geoservices/data-access/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/geoservices/data-access/jest.config.js",
-            "tsConfig": "libs/geoservices/data-access/tsconfig.spec.json",
-            "setupFile": "libs/geoservices/data-access/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/geoservices/data-access"]
         }
       },
       "schematics": {
@@ -2398,16 +2417,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/geoservices/public/tsconfig.lib.json", "libs/geoservices/public/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/public/**"]
+            "exclude": ["**/node_modules/**", "!libs/geoservices/public/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/geoservices/public/jest.config.js",
-            "tsConfig": "libs/geoservices/public/tsconfig.spec.json",
-            "setupFile": "libs/geoservices/public/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/geoservices/public"]
         }
       },
       "schematics": {
@@ -2426,16 +2445,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/geoservices/core/ngx/tsconfig.lib.json", "libs/geoservices/core/ngx/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/core/ngx/**"]
+            "exclude": ["**/node_modules/**", "!libs/geoservices/core/ngx/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/geoservices/core/ngx/jest.config.js",
-            "tsConfig": "libs/geoservices/core/ngx/tsconfig.spec.json",
-            "setupFile": "libs/geoservices/core/ngx/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/geoservices/core/ngx"]
         }
       },
       "schematics": {
@@ -2457,16 +2476,16 @@
               "libs/ui-kits/ngx/navigation/mobile-tile/tsconfig.lib.json",
               "libs/ui-kits/ngx/navigation/mobile-tile/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/mobile-tile/**"]
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/mobile-tile/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tile/jest.config.js",
-            "tsConfig": "libs/ui-kits/ngx/navigation/mobile-tile/tsconfig.spec.json",
-            "setupFile": "libs/ui-kits/ngx/navigation/mobile-tile/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ui-kits/ngx/navigation/mobile-tile"]
         }
       },
       "schematics": {
@@ -2488,16 +2507,16 @@
               "libs/ui-kits/ngx/navigation/triggers/tsconfig.lib.json",
               "libs/ui-kits/ngx/navigation/triggers/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/triggers/**"]
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/navigation/triggers/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/navigation/triggers/jest.config.js",
-            "tsConfig": "libs/ui-kits/ngx/navigation/triggers/tsconfig.spec.json",
-            "setupFile": "libs/ui-kits/ngx/navigation/triggers/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ui-kits/ngx/navigation/triggers"]
         }
       },
       "schematics": {
@@ -2519,16 +2538,16 @@
               "libs/ui-kits/ngx/layout/code/tsconfig.lib.json",
               "libs/ui-kits/ngx/layout/code/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/layout/code/**"]
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/layout/code/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/layout/code/jest.config.js",
-            "tsConfig": "libs/ui-kits/ngx/layout/code/tsconfig.spec.json",
-            "setupFile": "libs/ui-kits/ngx/layout/code/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ui-kits/ngx/layout/code"]
         }
       },
       "schematics": {
@@ -2547,16 +2566,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/geoservices/covid/tsconfig.lib.json", "libs/geoservices/covid/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/covid/**"]
+            "exclude": ["**/node_modules/**", "!libs/geoservices/covid/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/geoservices/covid/jest.config.js",
-            "tsConfig": "libs/geoservices/covid/tsconfig.spec.json",
-            "setupFile": "libs/geoservices/covid/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/geoservices/covid"]
         }
       },
       "schematics": {
@@ -2575,15 +2594,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/covid/data-api/tsconfig.lib.json", "libs/covid/data-api/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/covid/data-api/**"]
+            "exclude": ["**/node_modules/**", "!libs/covid/data-api/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/covid/data-api/jest.config.js",
-            "tsConfig": "libs/covid/data-api/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/covid/data-api"]
         }
       }
     },
@@ -2600,7 +2620,8 @@
             "outputPath": "dist/apps/covid-data-api-nest",
             "main": "apps/covid-data-api-nest/src/main.ts",
             "tsConfig": "apps/covid-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/covid-data-api-nest/src/assets"]
+            "assets": ["apps/covid-data-api-nest/src/assets"],
+            "buildLibsFromSource": true
           },
           "configurations": {
             "production": {
@@ -2625,7 +2646,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@nrwl/node:execute",
@@ -2645,15 +2667,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/covid-data-api-nest/tsconfig.app.json", "apps/covid-data-api-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/covid-data-api-nest/**"]
+            "exclude": ["**/node_modules/**", "!apps/covid-data-api-nest/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/covid-data-api-nest/jest.config.js",
-            "tsConfig": "apps/covid-data-api-nest/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/covid-data-api-nest"]
         }
       }
     },
@@ -2667,15 +2690,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/covid/common/entities/tsconfig.lib.json", "libs/covid/common/entities/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/covid/common/entities/**"]
+            "exclude": ["**/node_modules/**", "!libs/covid/common/entities/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/covid/common/entities/jest.config.js",
-            "tsConfig": "libs/covid/common/entities/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/covid/common/entities"]
         }
       }
     },
@@ -2689,15 +2713,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/covid/common/enums/tsconfig.lib.json", "libs/covid/common/enums/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/covid/common/enums/**"]
+            "exclude": ["**/node_modules/**", "!libs/covid/common/enums/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/covid/common/enums/jest.config.js",
-            "tsConfig": "libs/covid/common/enums/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/covid/common/enums"]
         }
       }
     },
@@ -2711,16 +2736,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/maps/mapbox/tsconfig.lib.json", "libs/maps/mapbox/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/maps/mapbox/**"]
+            "exclude": ["**/node_modules/**", "!libs/maps/mapbox/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/mapbox/jest.config.js",
-            "tsConfig": "libs/maps/mapbox/tsconfig.spec.json",
-            "setupFile": "libs/maps/mapbox/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/maps/mapbox"]
         }
       },
       "schematics": {
@@ -2742,7 +2767,8 @@
             "outputPath": "dist/apps/oidc-client-test",
             "main": "apps/oidc-client-test/src/main.ts",
             "tsConfig": "apps/oidc-client-test/tsconfig.app.json",
-            "assets": ["apps/oidc-client-test/src/assets"]
+            "assets": ["apps/oidc-client-test/src/assets"],
+            "buildLibsFromSource": true
           },
           "configurations": {
             "production": {
@@ -2756,7 +2782,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@nrwl/node:execute",
@@ -2768,15 +2795,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/oidc-client-test/tsconfig.app.json", "apps/oidc-client-test/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-client-test/**"]
+            "exclude": ["**/node_modules/**", "!apps/oidc-client-test/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/oidc-client-test/jest.config.js",
-            "tsConfig": "apps/oidc-client-test/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/oidc-client-test"]
         }
       }
     },
@@ -2815,7 +2843,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -2833,7 +2860,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -2856,16 +2884,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/oidc-provider-angular/tsconfig.app.json", "apps/oidc-provider-angular/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-provider-angular/**"]
+            "exclude": ["**/node_modules/**", "!apps/oidc-provider-angular/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/oidc-provider-angular/jest.config.js",
-            "tsConfig": "apps/oidc-provider-angular/tsconfig.spec.json",
-            "setupFile": "apps/oidc-provider-angular/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/oidc-provider-angular"]
         },
         "server": {
           "builder": "@angular-devkit/build-angular:server",
@@ -2912,7 +2940,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/oidc-provider-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-provider-angular-e2e/**"]
+            "exclude": ["**/node_modules/**", "!apps/oidc-provider-angular-e2e/**/*"]
           }
         }
       }
@@ -2930,7 +2958,8 @@
             "outputPath": "dist/apps/oidc-provider-express",
             "main": "apps/oidc-provider-express/src/main.ts",
             "tsConfig": "apps/oidc-provider-express/tsconfig.app.json",
-            "assets": ["apps/oidc-provider-express/src/assets"]
+            "assets": ["apps/oidc-provider-express/src/assets"],
+            "buildLibsFromSource": true
           },
           "configurations": {
             "production": {
@@ -2944,7 +2973,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@nrwl/node:execute",
@@ -2957,15 +2987,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/oidc-provider-express/tsconfig.app.json", "apps/oidc-provider-express/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-provider-express/**"]
+            "exclude": ["**/node_modules/**", "!apps/oidc-provider-express/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/oidc-provider-express/jest.config.js",
-            "tsConfig": "apps/oidc-provider-express/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/oidc-provider-express"]
         }
       }
     },
@@ -2979,15 +3010,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/oidc/provider/tsconfig.lib.json", "libs/oidc/provider/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/provider/**"]
+            "exclude": ["**/node_modules/**", "!libs/oidc/provider/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/oidc/provider/jest.config.js",
-            "tsConfig": "libs/oidc/provider/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/oidc/provider"]
         }
       }
     },
@@ -3001,15 +3033,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/oidc/client/tsconfig.lib.json", "libs/oidc/client/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/client/**"]
+            "exclude": ["**/node_modules/**", "!libs/oidc/client/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/oidc/client/jest.config.js",
-            "tsConfig": "libs/oidc/client/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/oidc/client"]
         }
       }
     },
@@ -3062,7 +3095,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -3080,7 +3112,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -3103,16 +3136,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/ues-angular/tsconfig.app.json", "apps/ues-angular/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/ues-angular/**"]
+            "exclude": ["**/node_modules/**", "!apps/ues-angular/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/ues-angular/jest.config.js",
-            "tsConfig": "apps/ues-angular/tsconfig.spec.json",
-            "setupFile": "apps/ues-angular/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/ues-angular"]
         }
       }
     },
@@ -3138,7 +3171,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/ues-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/ues-angular-e2e/**"]
+            "exclude": ["**/node_modules/**", "!apps/ues-angular-e2e/**/*"]
           }
         }
       }
@@ -3153,16 +3186,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/ues/common/ngx/tsconfig.lib.json", "libs/ues/common/ngx/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/ues/common/ngx/**"]
+            "exclude": ["**/node_modules/**", "!libs/ues/common/ngx/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ues/common/ngx/jest.config.js",
-            "tsConfig": "libs/ues/common/ngx/tsconfig.spec.json",
-            "setupFile": "libs/ues/common/ngx/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ues/common/ngx"]
         }
       },
       "schematics": {
@@ -3184,16 +3217,16 @@
               "libs/common/utils/device/guards/tsconfig.lib.json",
               "libs/common/utils/device/guards/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/common/utils/device/guards/**"]
+            "exclude": ["**/node_modules/**", "!libs/common/utils/device/guards/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/device/guards/jest.config.js",
-            "tsConfig": "libs/common/utils/device/guards/tsconfig.spec.json",
-            "setupFile": "libs/common/utils/device/guards/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/common/utils/device/guards"]
         }
       },
       "schematics": {
@@ -3250,7 +3283,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -3268,7 +3300,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -3291,16 +3324,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/ues-effluent-angular/tsconfig.app.json", "apps/ues-effluent-angular/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/ues-effluent-angular/**"]
+            "exclude": ["**/node_modules/**", "!apps/ues-effluent-angular/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/ues-effluent-angular/jest.config.js",
-            "tsConfig": "apps/ues-effluent-angular/tsconfig.spec.json",
-            "setupFile": "apps/ues-effluent-angular/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/ues-effluent-angular"]
         }
       }
     },
@@ -3326,7 +3359,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/ues-effluent-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/ues-effluent-angular-e2e/**"]
+            "exclude": ["**/node_modules/**", "!apps/ues-effluent-angular-e2e/**/*"]
           }
         }
       }
@@ -3341,16 +3374,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/ues/effluent/ngx/tsconfig.lib.json", "libs/ues/effluent/ngx/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/ues/effluent/ngx/**"]
+            "exclude": ["**/node_modules/**", "!libs/ues/effluent/ngx/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ues/effluent/ngx/jest.config.js",
-            "tsConfig": "libs/ues/effluent/ngx/tsconfig.spec.json",
-            "setupFile": "libs/ues/effluent/ngx/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ues/effluent/ngx"]
         }
       },
       "schematics": {
@@ -3372,16 +3405,16 @@
               "libs/maps/feature/feature-highlight/tsconfig.lib.json",
               "libs/maps/feature/feature-highlight/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/maps/feature/feature-highlight/**"]
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/feature-highlight/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/feature-highlight/jest.config.js",
-            "tsConfig": "libs/maps/feature/feature-highlight/tsconfig.spec.json",
-            "setupFile": "libs/maps/feature/feature-highlight/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/maps/feature/feature-highlight"]
         }
       },
       "schematics": {
@@ -3400,15 +3433,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/ues/effluent/data-api/tsconfig.lib.json", "libs/ues/effluent/data-api/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/ues/effluent/data-api/**"]
+            "exclude": ["**/node_modules/**", "!libs/ues/effluent/data-api/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ues/effluent/data-api/jest.config.js",
-            "tsConfig": "libs/ues/effluent/data-api/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ues/effluent/data-api"]
         }
       }
     },
@@ -3425,15 +3459,16 @@
               "libs/ues/effluent/common/entities/tsconfig.lib.json",
               "libs/ues/effluent/common/entities/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/ues/effluent/common/entities/**"]
+            "exclude": ["**/node_modules/**", "!libs/ues/effluent/common/entities/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ues/effluent/common/entities/jest.config.js",
-            "tsConfig": "libs/ues/effluent/common/entities/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/ues/effluent/common/entities"]
         }
       }
     },
@@ -3450,7 +3485,8 @@
             "outputPath": "dist/apps/ues-effluent-data-api-nest",
             "main": "apps/ues-effluent-data-api-nest/src/main.ts",
             "tsConfig": "apps/ues-effluent-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/ues-effluent-data-api-nest/src/assets"]
+            "assets": ["apps/ues-effluent-data-api-nest/src/assets"],
+            "buildLibsFromSource": true
           },
           "configurations": {
             "production": {
@@ -3464,7 +3500,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@nrwl/node:execute",
@@ -3479,15 +3516,16 @@
               "apps/ues-effluent-data-api-nest/tsconfig.app.json",
               "apps/ues-effluent-data-api-nest/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!apps/ues-effluent-data-api-nest/**"]
+            "exclude": ["**/node_modules/**", "!apps/ues-effluent-data-api-nest/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/ues-effluent-data-api-nest/jest.config.js",
-            "tsConfig": "apps/ues-effluent-data-api-nest/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/ues-effluent-data-api-nest"]
         }
       }
     },
@@ -3504,7 +3542,8 @@
             "main": "apps/oidc-provider-nest/src/main.ts",
             "outputPath": "dist/apps/oidc-provider-nest",
             "tsConfig": "apps/oidc-provider-nest/tsconfig.app.json",
-            "assets": ["apps/oidc-provider-nest/src/assets"]
+            "assets": ["apps/oidc-provider-nest/src/assets"],
+            "buildLibsFromSource": true
           },
           "configurations": {
             "production": {
@@ -3519,7 +3558,8 @@
               "optimization": true,
               "sourceMap": false
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@nrwl/node:execute",
@@ -3539,15 +3579,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/oidc-provider-nest/tsconfig.app.json", "apps/oidc-provider-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-provider-nest/**"]
+            "exclude": ["**/node_modules/**", "!apps/oidc-provider-nest/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/oidc-provider-nest/jest.config.js",
-            "tsConfig": "apps/oidc-provider-nest/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/oidc-provider-nest"]
         }
       }
     },
@@ -3561,15 +3602,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/oidc/provider-nestjs/tsconfig.lib.json", "libs/oidc/provider-nestjs/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/provider-nestjs/**"]
+            "exclude": ["**/node_modules/**", "!libs/oidc/provider-nestjs/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/oidc/provider-nestjs/jest.config.js",
-            "tsConfig": "libs/oidc/provider-nestjs/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/oidc/provider-nestjs"]
         }
       }
     },
@@ -3608,7 +3650,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -3627,7 +3668,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -3650,16 +3692,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/oidc-admin-angular/tsconfig.app.json", "apps/oidc-admin-angular/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-admin-angular/**"]
+            "exclude": ["**/node_modules/**", "!apps/oidc-admin-angular/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/oidc-admin-angular/jest.config.js",
-            "tsConfig": "apps/oidc-admin-angular/tsconfig.spec.json",
-            "setupFile": "apps/oidc-admin-angular/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/oidc-admin-angular"]
         }
       }
     },
@@ -3685,7 +3727,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/oidc-admin-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-admin-angular-e2e/**"]
+            "exclude": ["**/node_modules/**", "!apps/oidc-admin-angular-e2e/**/*"]
           }
         }
       }
@@ -3717,8 +3759,10 @@
             "main": "apps/oidc-admin-nest/src/main.ts",
             "outputPath": "dist/apps/oidc-admin-nest",
             "tsConfig": "apps/oidc-admin-nest/tsconfig.app.json",
-            "assets": ["apps/oidc-admin-nest/src/assets"]
-          }
+            "assets": ["apps/oidc-admin-nest/src/assets"],
+            "buildLibsFromSource": true
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@nrwl/node:execute",
@@ -3730,7 +3774,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/oidc-admin-nest/**"],
+            "exclude": ["**/node_modules/**", "!apps/oidc-admin-nest/**/*"],
             "tsConfig": ["apps/oidc-admin-nest/tsconfig.app.json", "apps/oidc-admin-nest/tsconfig.spec.json"]
           }
         },
@@ -3738,8 +3782,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/oidc-admin-nest/jest.config.js",
-            "tsConfig": "apps/oidc-admin-nest/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/oidc-admin-nest"]
         }
       }
     },
@@ -3753,15 +3798,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/oidc/admin/tsconfig.lib.json", "libs/oidc/admin/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/admin/**"]
+            "exclude": ["**/node_modules/**", "!libs/oidc/admin/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/oidc/admin/jest.config.js",
-            "tsConfig": "libs/oidc/admin/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/oidc/admin"]
         }
       }
     },
@@ -3775,15 +3821,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/oidc/admin-nest/tsconfig.lib.json", "libs/oidc/admin-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/admin-nest/**"]
+            "exclude": ["**/node_modules/**", "!libs/oidc/admin-nest/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/oidc/admin-nest/jest.config.js",
-            "tsConfig": "libs/oidc/admin-nest/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/oidc/admin-nest"]
         }
       }
     },
@@ -3797,16 +3844,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/oidc/admin-data-access/tsconfig.lib.json", "libs/oidc/admin-data-access/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/admin-data-access/**"]
+            "exclude": ["**/node_modules/**", "!libs/oidc/admin-data-access/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/oidc/admin-data-access/jest.config.js",
-            "tsConfig": "libs/oidc/admin-data-access/tsconfig.spec.json",
-            "setupFile": "libs/oidc/admin-data-access/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/oidc/admin-data-access"]
         }
       },
       "schematics": {
@@ -3825,19 +3872,19 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/oidc/common/tsconfig.lib.json", "libs/oidc/common/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/common/**"]
+            "exclude": ["**/node_modules/**", "!libs/oidc/common/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/oidc/common/jest.config.js",
-            "tsConfig": "libs/oidc/common/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/oidc/common"]
         }
       }
     },
-
     "two-angular": {
       "prefix": "tamu-gisc",
       "projectType": "application",
@@ -3869,7 +3916,6 @@
               ],
               "aot": true,
               "buildOptimizer": true,
-              "extractCss": true,
               "extractLicenses": true,
               "namedChunks": false,
               "optimization": true,
@@ -3895,7 +3941,8 @@
             "scripts": [],
             "styles": ["apps/two-angular/src/styles.scss"],
             "aot": false
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -3906,7 +3953,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/two-angular/**"],
+            "exclude": ["**/node_modules/**", "!apps/two-angular/**/*"],
             "tsConfig": ["apps/two-angular/tsconfig.app.json", "apps/two-angular/tsconfig.spec.json"]
           }
         },
@@ -3925,9 +3972,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/two-angular/jest.config.js",
-            "setupFile": "apps/two-angular/src/test-setup.ts",
-            "tsConfig": "apps/two-angular/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/two-angular"]
         }
       },
       "schematics": {
@@ -3957,7 +4004,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/two-angular-e2e/**"],
+            "exclude": ["**/node_modules/**", "!apps/two-angular-e2e/**/*"],
             "tsConfig": ["apps/two-angular-e2e/tsconfig.e2e.json"]
           }
         }
@@ -3971,7 +4018,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/two/common/**"],
+            "exclude": ["**/node_modules/**", "!libs/two/common/**/*"],
             "tsConfig": ["libs/two/common/tsconfig.lib.json", "libs/two/common/tsconfig.spec.json"]
           }
         },
@@ -3979,8 +4026,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/two/common/jest.config.js",
-            "tsConfig": "libs/two/common/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/two/common"]
         }
       },
       "schematics": {}
@@ -3993,7 +4041,7 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/two/data-api/**"],
+            "exclude": ["**/node_modules/**", "!libs/two/data-api/**/*"],
             "tsConfig": ["libs/two/data-api/tsconfig.lib.json", "libs/two/data-api/tsconfig.spec.json"]
           }
         },
@@ -4001,8 +4049,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/two/data-api/jest.config.js",
-            "tsConfig": "libs/two/data-api/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/two/data-api"]
         }
       },
       "schematics": {}
@@ -4033,13 +4082,15 @@
             "main": "apps/two-data-api-nest/src/main.ts",
             "outputPath": "dist/apps/two-data-api-nest",
             "tsConfig": "apps/two-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/two-data-api-nest/src/assets"]
-          }
+            "assets": ["apps/two-data-api-nest/src/assets"],
+            "buildLibsFromSource": true
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/two-data-api-nest/**"],
+            "exclude": ["**/node_modules/**", "!apps/two-data-api-nest/**/*"],
             "tsConfig": ["apps/two-data-api-nest/tsconfig.app.json", "apps/two-data-api-nest/tsconfig.spec.json"]
           }
         },
@@ -4053,8 +4104,9 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/two-data-api-nest/jest.config.js",
-            "tsConfig": "apps/two-data-api-nest/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/two-data-api-nest"]
         }
       },
       "schematics": {}
@@ -4072,7 +4124,8 @@
             "outputPath": "dist/apps/two-directory-nest",
             "main": "apps/two-directory-nest/src/main.ts",
             "tsConfig": "apps/two-directory-nest/tsconfig.app.json",
-            "assets": ["apps/two-directory-nest/src/assets"]
+            "assets": ["apps/two-directory-nest/src/assets"],
+            "buildLibsFromSource": true
           },
           "configurations": {
             "production": {
@@ -4086,7 +4139,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@nrwl/node:execute",
@@ -4104,15 +4158,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/two-directory-nest/tsconfig.app.json", "apps/two-directory-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/two-directory-nest/**"]
+            "exclude": ["**/node_modules/**", "!apps/two-directory-nest/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/two-directory-nest/jest.config.js",
-            "tsConfig": "apps/two-directory-nest/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/two-directory-nest"]
         }
       }
     },
@@ -4126,15 +4181,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/two/directory/tsconfig.lib.json", "libs/two/directory/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/two/directory/**"]
+            "exclude": ["**/node_modules/**", "!libs/two/directory/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/two/directory/jest.config.js",
-            "tsConfig": "libs/two/directory/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/two/directory"]
         }
       }
     },
@@ -4151,7 +4207,8 @@
             "outputPath": "dist/apps/two-valup-nest",
             "main": "apps/two-valup-nest/src/main.ts",
             "tsConfig": "apps/two-valup-nest/tsconfig.app.json",
-            "assets": ["apps/two-valup-nest/src/assets"]
+            "assets": ["apps/two-valup-nest/src/assets"],
+            "buildLibsFromSource": true
           },
           "configurations": {
             "production": {
@@ -4165,7 +4222,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@nrwl/node:execute",
@@ -4183,15 +4241,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/two-valup-nest/tsconfig.app.json", "apps/two-valup-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/two-valup-nest/**"]
+            "exclude": ["**/node_modules/**", "!apps/two-valup-nest/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/two-valup-nest/jest.config.js",
-            "tsConfig": "apps/two-valup-nest/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/two-valup-nest"]
         }
       }
     },
@@ -4205,15 +4264,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/two/valup/tsconfig.lib.json", "libs/two/valup/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/two/valup/**"]
+            "exclude": ["**/node_modules/**", "!libs/two/valup/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/two/valup/jest.config.js",
-            "tsConfig": "libs/two/valup/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/two/valup"]
         }
       }
     },
@@ -4252,7 +4312,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -4271,7 +4330,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -4295,16 +4355,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/two-dashboard-angular/tsconfig.app.json", "apps/two-dashboard-angular/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/two-dashboard-angular/**"]
+            "exclude": ["**/node_modules/**", "!apps/two-dashboard-angular/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/two-dashboard-angular/jest.config.js",
-            "tsConfig": "apps/two-dashboard-angular/tsconfig.spec.json",
-            "setupFile": "apps/two-dashboard-angular/src/test-setup.ts"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/two-dashboard-angular"]
         }
       }
     },
@@ -4330,7 +4390,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/two-dashboard-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/two-dashboard-angular-e2e/**"]
+            "exclude": ["**/node_modules/**", "!apps/two-dashboard-angular-e2e/**/*"]
           }
         }
       }
@@ -4345,15 +4405,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/two/dashboard/tsconfig.lib.json", "libs/two/dashboard/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/two/dashboard/**"]
+            "exclude": ["**/node_modules/**", "!libs/two/dashboard/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/two/dashboard/jest.config.js",
-            "tsConfig": "libs/two/dashboard/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/two/dashboard"]
         }
       }
     },
@@ -4367,21 +4428,23 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/two/data-access/tsconfig.lib.json", "libs/two/data-access/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/two/data-access/**"]
+            "exclude": ["**/node_modules/**", "!libs/two/data-access/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/two/data-access/jest.config.js",
-            "tsConfig": "libs/two/data-access/tsconfig.spec.json"
-          }
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/libs/two/data-access"]
         }
       }
     }
   },
   "cli": {
-    "defaultCollection": "@nrwl/angular"
+    "defaultCollection": "@nrwl/angular",
+    "analytics": "b3417ad8-d366-42d6-9c0a-ffba263c7ff4"
   },
   "schematics": {
     "@nrwl/angular:application": {

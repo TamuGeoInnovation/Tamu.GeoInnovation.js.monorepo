@@ -7,10 +7,7 @@ import { SiteManager } from '../sequelize/site_manager';
 export const sites_routes = (app: express.Application, provider: Provider) => {
   app.get('/sites', async (req, res, next) => {
     const sites = await SiteManager.getSites();
-    res
-      .set('Access-Control-Allow-Origin', '*')
-      .status(200)
-      .send(sites);
+    res.set('Access-Control-Allow-Origin', '*').status(200).send(sites);
   });
 
   app.get('/sites/:siteGuid', async (req, res, next) => {
@@ -30,10 +27,7 @@ export const sites_routes = (app: express.Application, provider: Provider) => {
   app.get('/sites/user/:userGuid', async (req, res, next) => {
     const userGuid = req.params.userGuid;
     const sites = await SiteManager.getSitesWithUserAccess(userGuid);
-    res
-      .set('Access-Control-Allow-Origin', '*')
-      .status(200)
-      .send(sites);
+    res.set('Access-Control-Allow-Origin', '*').status(200).send(sites);
   });
 
   app.post('/sites/add', async (req, res, next) => {

@@ -101,10 +101,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
         // Only interested in the first emission that has a valid layer instance.
         // Once $loaded emits, this observable will unsubscribe so that the combineLatest
         // stream does not emit and create additional view model instances.
-        this.layerListService.layers({ layers: this.reference }).pipe(
-          takeUntil(this._$loaded),
-          pluck('0', 'layer')
-        )
+        this.layerListService.layers({ layers: this.reference }).pipe(takeUntil(this._$loaded), pluck('0', 'layer'))
       ])
         .pipe(takeUntil(this._$destroy))
         .subscribe(

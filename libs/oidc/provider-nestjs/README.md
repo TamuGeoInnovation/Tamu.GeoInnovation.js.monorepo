@@ -1,5 +1,7 @@
 # Custom adapter for oidc-provider
+
 The following is the execution order for the built-in memory adapter. When a custom adapter works in this order it seems to function well.
+
 1. Go to localhost:4003/login with the RP and IdP running
 2. Adapter.upsert() is called with a new id value
 3. Adapter.find() is called and retrieves the id of the new session
@@ -25,24 +27,34 @@ The following is the execution order for the built-in memory adapter. When a cus
 23. findById() is called once again
 24. The access token is returned to the client along with a refresh token
 
-
 # The server
-Uses Typescript, NodeJS, ExpressJS, and Sequelize to connect to geodb08.tamu.edu. This serves up data from GISDay. 
+
+Uses Typescript, NodeJS, ExpressJS, and Sequelize to connect to geodb08.tamu.edu. This serves up data from GISDay.
+
 >
+
 # Getting started
+
 - You need to have `npm` and `tsc` installed.
 - Navigate to root directory of this project and run `npm install`, this will fetch all the packages for the project found inside the file **package.json**.
 - Once this is finished go ahead and type `tsc` into the terminal / cmd to compile the Typescript.
 - Head to the **Debug** pane in VSCode and debug using the **Start server.ts** option.
 - You should see the following at **localhost:4001**:
+
 ```
 {"success":true}
 ```
+
 >
+
 # Trying it out
+
 This is an API server and as such only spits out data as JSON; no HTML is involved yet.
+
 >
+
 ## Implemented endpoints
+
 - /manholes
   - (GET) /
     - ex. http://localhost:4001/manholes

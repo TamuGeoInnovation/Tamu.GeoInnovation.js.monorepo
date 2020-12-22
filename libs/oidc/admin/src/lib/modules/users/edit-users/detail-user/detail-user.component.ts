@@ -110,19 +110,14 @@ export class DetailUserComponent implements OnInit, OnDestroy {
           ...user,
           account: user.account
         });
-        this.userForm.valueChanges
-          .pipe(
-            debounceTime(1000),
-            takeUntil(this._$destroy)
-          )
-          .subscribe((res) => {
-            console.log('User', this.userForm.getRawValue());
+        this.userForm.valueChanges.pipe(debounceTime(1000), takeUntil(this._$destroy)).subscribe((res) => {
+          console.log('User', this.userForm.getRawValue());
 
-            const updatedUser: Partial<User> = {
-              ...this.userForm.getRawValue()
-            };
-            this.userService.updateUser(updatedUser).subscribe((result) => [console.log('Updated details')]);
-          });
+          const updatedUser: Partial<User> = {
+            ...this.userForm.getRawValue()
+          };
+          this.userService.updateUser(updatedUser).subscribe((result) => [console.log('Updated details')]);
+        });
       });
     }
   }

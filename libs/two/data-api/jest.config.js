@@ -1,9 +1,10 @@
 module.exports = {
-  name: 'two-data-api',
-  preset: '../../../jest.config.js',
+  preset: '../../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'ts-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
-  coverageDirectory: '../../../coverage/libs/two/data-api'
+  coverageDirectory: '../../../coverage/libs/two/data-api',
+  globals: { 'ts-jest': { tsConfig: '<rootDir>/tsconfig.spec.json' } },
+  displayName: 'two-data-api'
 };

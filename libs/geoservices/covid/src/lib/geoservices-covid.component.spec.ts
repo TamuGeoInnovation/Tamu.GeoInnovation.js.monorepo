@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { StorageServiceModule, LOCAL_STORAGE } from 'angular-webstorage-service';
+import { StorageServiceModule, LOCAL_STORAGE } from 'ngx-webstorage-service';
 
 import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
 import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';

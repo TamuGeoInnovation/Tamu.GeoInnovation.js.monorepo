@@ -65,9 +65,7 @@
             </div>
           </tamu-gisc-textbox>
           <tamu-gisc-accordion *ngIf="controlGroup.controls.url.value.length > 0">
-            <tamu-gisc-accordion-header>
-              Edit Layer Details
-            </tamu-gisc-accordion-header>
+            <tamu-gisc-accordion-header> Edit Layer Details </tamu-gisc-accordion-header>
             <tamu-gisc-accordion-content>
               <tamu-gisc-layer-configuration [url]="controlGroup.controls.url.value" [configOptions]="controlGroup"></tamu-gisc-layer-configuration>
             </tamu-gisc-accordion-content>

@@ -114,10 +114,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
       this.scenario = combineLatest([this.workshop, this.scenarioIndex]).pipe(
         switchMap(([workshop, scenarioIndex]: [IWorkshopRequestPayload, number]) => {
-          return of(workshop).pipe(
-            pluck<IResponseResponse, IScenariosResponse[]>('scenarios'),
-            pluck(scenarioIndex)
-          );
+          return of(workshop).pipe(pluck<IResponseResponse, IScenariosResponse[]>('scenarios'), pluck(scenarioIndex));
         }),
         tap((scenario) => {
           this.addToScenarioHistory(scenario);
@@ -125,14 +122,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         shareReplay(1)
       );
 
-      this.scenario
-        .pipe(
-          skip(1),
-          takeUntil(this._$destroy)
-        )
-        .subscribe((res) => {
-          this.resetWorkspace();
-        });
+      this.scenario.pipe(skip(1), takeUntil(this._$destroy)).subscribe((res) => {
+        this.resetWorkspace();
+      });
 
       // Fetch new responses from server whenever scenario, response index, or response save signal emits.
       this.responses = merge(this.scenario, this.responseIndex, this.responseSave).pipe(

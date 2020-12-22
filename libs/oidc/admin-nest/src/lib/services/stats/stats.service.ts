@@ -16,11 +16,7 @@ export class StatService {
   public async countOfLoggedInUsers() {
     const accessTokens = this.accessTokenRepo.createQueryBuilder('access_tokens');
 
-    return accessTokens
-      .select()
-      .where('access_tokens.expiresAt >= GETDATE()')
-      .groupBy('accountGuid')
-      .getCount();
+    return accessTokens.select().where('access_tokens.expiresAt >= GETDATE()').groupBy('accountGuid').getCount();
   }
 
   /**

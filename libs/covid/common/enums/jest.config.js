@@ -1,9 +1,10 @@
 module.exports = {
-  name: 'covid-common-enums',
-  preset: '../../../../jest.config.js',
+  preset: '../../../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'ts-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
-  coverageDirectory: '../../../../coverage/libs/covid/common/enums'
+  coverageDirectory: '../../../../coverage/libs/covid/common/enums',
+  globals: { 'ts-jest': { tsConfig: '<rootDir>/tsconfig.spec.json' } },
+  displayName: 'covid-common-enums'
 };

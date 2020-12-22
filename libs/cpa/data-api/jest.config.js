@@ -1,9 +1,10 @@
 module.exports = {
-  name: 'cpa-data-api',
-  preset: '../../../jest.config.js',
+  preset: '../../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'ts-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
-  coverageDirectory: '../../../coverage/libs/cpa/data-api'
+  coverageDirectory: '../../../coverage/libs/cpa/data-api',
+  globals: { 'ts-jest': { tsConfig: '<rootDir>/tsconfig.spec.json' } },
+  displayName: 'cpa-data-api'
 };
