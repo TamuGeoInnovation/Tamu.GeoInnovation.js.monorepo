@@ -34,6 +34,9 @@ yarn-error.log
 testem.log
 /typings
 
+# Test Coverage
+libs/coverage
+
 # System Files
 .DS_Store
 Thumbs.db
