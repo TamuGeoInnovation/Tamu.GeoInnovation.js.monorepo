@@ -1,10 +1,7 @@
 {
   "extends": "../../../tsconfig.base.json",
-  "compilerOptions": {
-    "types": ["node", "jest", "mapbox-gl"]
-  },
-  "include": [],
   "files": [],
+  "include": [],
   "references": [
     {
       "path": "./tsconfig.lib.json"
