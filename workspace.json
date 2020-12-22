@@ -87,11 +87,6 @@
           },
           "outputs": ["coverage/apps/aggiemap-angular"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
       }
     },
     "aggiemap-angular-e2e": {
@@ -207,11 +202,6 @@
           },
           "outputs": ["coverage/apps/trees-angular"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
       }
     },
     "trees-angular-e2e": {
@@ -247,11 +237,6 @@
     },
     "bikeshare": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/bikeshare",
       "sourceRoot": "apps/bikeshare/src",
       "prefix": "tamu-gisc",
@@ -386,11 +371,6 @@
           },
           "outputs": ["coverage/libs/charts"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-ngx-environment": {
@@ -413,11 +393,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/common/ngx/environment"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -449,11 +424,6 @@
           },
           "outputs": ["coverage/libs/common/ngx/local-store"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-ngx-pipes": {
@@ -484,11 +454,6 @@
           },
           "outputs": ["coverage/libs/common/ngx/pipes"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-ngx-router": {
@@ -511,11 +476,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/common/ngx/router"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -546,11 +506,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/common/ngx/settings"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -585,11 +540,6 @@
           },
           "outputs": ["coverage/libs/common/ngx/ui/notification"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-ngx-ui-sidebar": {
@@ -613,11 +563,6 @@
           },
           "outputs": ["coverage/libs/common/ngx/ui/sidebar"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-types": {
@@ -640,8 +585,7 @@
           },
           "outputs": ["coverage/libs/common/types"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-collection": {
       "projectType": "library",
@@ -663,8 +607,7 @@
           },
           "outputs": ["coverage/libs/common/utils/collection"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-database": {
       "projectType": "library",
@@ -686,8 +629,7 @@
           },
           "outputs": ["coverage/libs/common/utils/database"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-date": {
       "projectType": "library",
@@ -709,8 +651,7 @@
           },
           "outputs": ["coverage/libs/common/utils/date"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-device": {
       "projectType": "library",
@@ -732,8 +673,7 @@
           },
           "outputs": ["coverage/libs/common/utils/device"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-geometry": {
       "projectType": "library",
@@ -755,8 +695,7 @@
           },
           "outputs": ["coverage/libs/common/utils/geometry"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-geometry-esri": {
       "projectType": "library",
@@ -781,8 +720,7 @@
           },
           "outputs": ["coverage/libs/common/utils/geometry/esri"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-geometry-generic": {
       "projectType": "library",
@@ -807,8 +745,7 @@
           },
           "outputs": ["coverage/libs/common/utils/geometry/generic"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-number": {
       "projectType": "library",
@@ -830,8 +767,7 @@
           },
           "outputs": ["coverage/libs/common/utils/number"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-object": {
       "projectType": "library",
@@ -853,8 +789,7 @@
           },
           "outputs": ["coverage/libs/common/utils/object"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-routing": {
       "projectType": "library",
@@ -876,8 +811,7 @@
           },
           "outputs": ["coverage/libs/common/utils/routing"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-string": {
       "projectType": "library",
@@ -899,8 +833,7 @@
           },
           "outputs": ["coverage/libs/common/utils/string"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-ui": {
       "projectType": "library",
@@ -922,8 +855,7 @@
           },
           "outputs": ["coverage/libs/common/utils/ui"]
         }
-      },
-      "schematics": {}
+      }
     },
     "dev-tools-application-testing": {
       "prefix": "tamu-gisc",
@@ -949,11 +881,6 @@
           },
           "outputs": ["coverage/libs/dev-tools/application-testing"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "dev-tools-responsive": {
@@ -976,11 +903,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/dev-tools/responsive"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1076,11 +998,6 @@
           },
           "outputs": ["coverage/apps/gisday-competitions-angular"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
       }
     },
     "gisday-competitions-angular-e2e": {
@@ -1131,11 +1048,6 @@
           },
           "outputs": ["coverage/libs/maps/esri"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-draw": {
@@ -1158,11 +1070,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/maps/feature/draw"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1190,11 +1097,6 @@
           },
           "outputs": ["coverage/libs/maps/feature/feature-selector"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-layer-filter": {
@@ -1221,11 +1123,6 @@
           },
           "outputs": ["coverage/libs/maps/feature/layer-filter"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-layer-list": {
@@ -1249,11 +1146,6 @@
           },
           "outputs": ["coverage/libs/maps/feature/layer-list"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-legend": {
@@ -1276,11 +1168,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/maps/feature/legend"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1309,11 +1196,6 @@
           },
           "outputs": ["coverage/libs/search"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ui-kits-ngx-branding": {
@@ -1336,11 +1218,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/ui-kits/ngx/branding"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1365,11 +1242,6 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/forms"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ui-kits-ngx-layout": {
@@ -1392,11 +1264,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/ui-kits/ngx/layout"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1424,20 +1291,10 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/navigation/mobile-tab"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "signage-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/signage-angular",
       "sourceRoot": "apps/signage-angular/src",
       "prefix": "tamu-gisc",
@@ -1577,11 +1434,6 @@
           },
           "outputs": ["coverage/libs/maps/feature/popup"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ui-kits-ngx-interactions-draggable": {
@@ -1607,11 +1459,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/ui-kits/ngx/interactions/draggable"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1639,11 +1486,6 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/layout/structural"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "signage": {
@@ -1667,11 +1509,6 @@
           },
           "outputs": ["coverage/libs/signage"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "aggiemap": {
@@ -1694,11 +1531,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/aggiemap"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1726,11 +1558,6 @@
           },
           "outputs": ["coverage/libs/maps/feature/trip-planner"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ui-kits-ngx-interactions-clipboard": {
@@ -1756,11 +1583,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/ui-kits/ngx/interactions/clipboard"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1788,11 +1610,6 @@
           },
           "outputs": ["coverage/libs/maps/feature/accessibility"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-coordinates": {
@@ -1819,18 +1636,12 @@
           },
           "outputs": ["coverage/libs/maps/feature/coordinates"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-utils-geometry-geoprocessing": {
       "root": "libs/common/utils/geometry/geoprocessing",
       "sourceRoot": "libs/common/utils/geometry/geoprocessing/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -1854,11 +1665,6 @@
     },
     "cpa-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/cpa-angular",
       "sourceRoot": "apps/cpa-angular/src",
       "prefix": "tamu-gisc",
@@ -2033,7 +1839,6 @@
       "root": "libs/cpa/data-api",
       "sourceRoot": "libs/cpa/data-api/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -2073,11 +1878,6 @@
           },
           "outputs": ["coverage/libs/cpa/common/ngx"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-forms": {
@@ -2101,18 +1901,12 @@
           },
           "outputs": ["coverage/libs/maps/feature/forms"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "cpa-common-entities": {
       "root": "libs/cpa/common/entities",
       "sourceRoot": "libs/cpa/common/entities/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -2155,20 +1949,10 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/navigation/breadcrumb"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "geoservices-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/geoservices-angular",
       "sourceRoot": "apps/geoservices-angular/src",
       "prefix": "tamu-gisc",
@@ -2308,11 +2092,6 @@
           },
           "outputs": ["coverage/libs/geoservices/api"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "geoservices-internal": {
@@ -2335,11 +2114,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/geoservices/internal"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -2367,11 +2141,6 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/interactions/scroll-to"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "geoservices-data-access": {
@@ -2398,11 +2167,6 @@
           },
           "outputs": ["coverage/libs/geoservices/data-access"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "geoservices-public": {
@@ -2426,11 +2190,6 @@
           },
           "outputs": ["coverage/libs/geoservices/public"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "geoservices-core-ngx": {
@@ -2453,11 +2212,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/geoservices/core/ngx"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -2485,11 +2239,6 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/navigation/mobile-tile"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ui-kits-ngx-navigation-triggers": {
@@ -2515,11 +2264,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/ui-kits/ngx/navigation/triggers"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -2547,11 +2291,6 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/layout/code"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "geoservices-covid": {
@@ -2575,18 +2314,12 @@
           },
           "outputs": ["coverage/libs/geoservices/covid"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "covid-data-api": {
       "root": "libs/covid/data-api",
       "sourceRoot": "libs/covid/data-api/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -2672,7 +2405,6 @@
       "root": "libs/covid/common/entities",
       "sourceRoot": "libs/covid/common/entities/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -2695,7 +2427,6 @@
       "root": "libs/covid/common/enums",
       "sourceRoot": "libs/covid/common/enums/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -2735,11 +2466,6 @@
           },
           "outputs": ["coverage/libs/maps/mapbox"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "oidc-client-test": {
@@ -2747,7 +2473,6 @@
       "sourceRoot": "apps/oidc-client-test/src",
       "projectType": "application",
       "prefix": "oidc-client-test",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -2798,11 +2523,6 @@
     },
     "oidc-provider-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/oidc-provider-angular",
       "sourceRoot": "apps/oidc-provider-angular/src",
       "prefix": "tamu-gisc",
@@ -2938,7 +2658,6 @@
       "sourceRoot": "apps/oidc-provider-express/src",
       "projectType": "application",
       "prefix": "oidc-provider-express",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -2992,7 +2711,6 @@
       "root": "libs/oidc/provider",
       "sourceRoot": "libs/oidc/provider/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -3015,7 +2733,6 @@
       "root": "libs/oidc/client",
       "sourceRoot": "libs/oidc/client/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -3036,11 +2753,6 @@
     },
     "ues-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/ues-angular",
       "sourceRoot": "apps/ues-angular/src",
       "prefix": "tamu-gisc",
@@ -3185,11 +2897,6 @@
           },
           "outputs": ["coverage/libs/ues/common/ngx"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-utils-device-guards": {
@@ -3216,20 +2923,10 @@
           },
           "outputs": ["coverage/libs/common/utils/device/guards"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ues-effluent-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/ues-effluent-angular",
       "sourceRoot": "apps/ues-effluent-angular/src",
       "prefix": "tamu-gisc",
@@ -3373,11 +3070,6 @@
           },
           "outputs": ["coverage/libs/ues/effluent/ngx"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-feature-highlight": {
@@ -3404,18 +3096,12 @@
           },
           "outputs": ["coverage/libs/maps/feature/feature-highlight"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ues-effluent-data-api": {
       "root": "libs/ues/effluent/data-api",
       "sourceRoot": "libs/ues/effluent/data-api/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -3438,7 +3124,6 @@
       "root": "libs/ues/effluent/common/entities",
       "sourceRoot": "libs/ues/effluent/common/entities/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -3568,7 +3253,6 @@
       "root": "libs/oidc/provider-nestjs",
       "sourceRoot": "libs/oidc/provider-nestjs/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -3589,11 +3273,6 @@
     },
     "oidc-admin-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/oidc-admin-angular",
       "sourceRoot": "apps/oidc-admin-angular/src",
       "prefix": "tamu-gisc",
@@ -3761,7 +3440,6 @@
       "root": "libs/oidc/admin",
       "sourceRoot": "libs/oidc/admin/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -3784,7 +3462,6 @@
       "root": "libs/oidc/admin-nest",
       "sourceRoot": "libs/oidc/admin-nest/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -3824,18 +3501,12 @@
           },
           "outputs": ["coverage/libs/oidc/admin-data-access"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "oidc-common": {
       "root": "libs/oidc/common",
       "sourceRoot": "libs/oidc/common/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -3945,11 +3616,6 @@
           },
           "outputs": ["coverage/apps/two-angular"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
       }
     },
     "two-angular-e2e": {
@@ -3999,8 +3665,7 @@
           },
           "outputs": ["coverage/libs/two/common"]
         }
-      },
-      "schematics": {}
+      }
     },
     "two-data-api": {
       "projectType": "library",
@@ -4022,8 +3687,7 @@
           },
           "outputs": ["coverage/libs/two/data-api"]
         }
-      },
-      "schematics": {}
+      }
     },
     "two-data-api-nest": {
       "prefix": "two-data-api-nest",
@@ -4133,7 +3797,6 @@
       "root": "libs/two/directory",
       "sourceRoot": "libs/two/directory/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -4208,7 +3871,6 @@
       "root": "libs/two/valup",
       "sourceRoot": "libs/two/valup/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -4229,11 +3891,6 @@
     },
     "two-dashboard-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/two-dashboard-angular",
       "sourceRoot": "apps/two-dashboard-angular/src",
       "prefix": "tamu-gisc",
@@ -4349,7 +4006,6 @@
       "root": "libs/two/dashboard",
       "sourceRoot": "libs/two/dashboard/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -4372,7 +4028,6 @@
       "root": "libs/two/data-access",
       "sourceRoot": "libs/two/data-access/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
