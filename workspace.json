@@ -4560,23 +4560,19 @@
       "root": "libs/ues/recycling/common/entities",
       "sourceRoot": "libs/ues/recycling/common/entities/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "libs/ues/recycling/common/entities/tsconfig.lib.json",
-              "libs/ues/recycling/common/entities/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!libs/ues/recycling/common/entities/**"]
+            "lintFilePatterns": ["libs/ues/recycling/common/entities/**/*.ts"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ues/recycling/common/entities"],
           "options": {
             "jestConfig": "libs/ues/recycling/common/entities/jest.config.js",
-            "tsConfig": "libs/ues/recycling/common/entities/tsconfig.spec.json"
+            "passWithNoTests": true
           }
         }
       }

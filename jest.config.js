@@ -108,6 +108,7 @@ module.exports = {
     '<rootDir>/libs/common/ngx/auth',
     '<rootDir>/apps/ues-operations-nest',
     '<rootDir>/apps/ues-recycling-data-api-nest',
-    '<rootDir>/apps/ues-recycling-angular'
+    '<rootDir>/apps/ues-recycling-angular',
+    '<rootDir>/libs/ues/recycling/common/entities'
   ]
 };
