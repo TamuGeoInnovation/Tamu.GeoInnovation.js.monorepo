@@ -4385,11 +4385,6 @@
     },
     "ues-recycling-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/ues-recycling-angular",
       "sourceRoot": "apps/ues-recycling-angular/src",
       "prefix": "tamu-gisc",
@@ -4426,7 +4421,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -4466,16 +4460,20 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["apps/ues-recycling-angular/tsconfig.app.json", "apps/ues-recycling-angular/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/ues-recycling-angular/**"]
+            "tsConfig": [
+              "apps/ues-recycling-angular/tsconfig.app.json",
+              "apps/ues-recycling-angular/tsconfig.spec.json",
+              "apps/ues-recycling-angular/tsconfig.editor.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/ues-recycling-angular/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/ues-recycling-angular"],
           "options": {
             "jestConfig": "apps/ues-recycling-angular/jest.config.js",
-            "tsConfig": "apps/ues-recycling-angular/tsconfig.spec.json",
-            "setupFile": "apps/ues-recycling-angular/src/test-setup.ts"
+            "passWithNoTests": true
           }
         }
       }
@@ -4502,7 +4500,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/ues-recycling-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/ues-recycling-angular-e2e/**"]
+            "exclude": ["**/node_modules/**", "!apps/ues-recycling-angular-e2e/**/*"]
           }
         }
       }

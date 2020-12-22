@@ -414,7 +414,8 @@
       "tags": []
     },
     "ues-recycling-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["ues-recycling-angular"]
     },
     "ues-recycling-angular": {
       "tags": []
