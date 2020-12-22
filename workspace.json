@@ -4040,7 +4040,10 @@
     },
     "@nrwl/angular:library": {
       "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
     }
   },
-  "defaultProject": "two-data-api-nest"
+  "defaultProject": "aggiemap-angular"
 }
