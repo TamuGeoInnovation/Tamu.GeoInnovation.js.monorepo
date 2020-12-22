@@ -1841,10 +1841,9 @@
       "projectType": "library",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/cpa/data-api/tsconfig.lib.json", "libs/cpa/data-api/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/cpa/data-api/**/*"]
+            "lintFilePatterns": ["libs/cpa/data-api/**/*.ts"]
           }
         },
         "test": {
@@ -2322,10 +2321,9 @@
       "projectType": "library",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/covid/data-api/tsconfig.lib.json", "libs/covid/data-api/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/covid/data-api/**/*"]
+            "lintFilePatterns": ["libs/covid/data-api/**/*.ts"]
           }
         },
         "test": {
@@ -2735,10 +2733,9 @@
       "projectType": "library",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/oidc/client/tsconfig.lib.json", "libs/oidc/client/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/client/**/*"]
+            "lintFilePatterns": ["libs/oidc/client/**/*.ts"]
           }
         },
         "test": {
@@ -3104,10 +3101,9 @@
       "projectType": "library",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/ues/effluent/data-api/tsconfig.lib.json", "libs/ues/effluent/data-api/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/ues/effluent/data-api/**/*"]
+            "lintFilePatterns": ["libs/ues/effluent/data-api/**/*.ts"]
           }
         },
         "test": {
@@ -3255,10 +3251,9 @@
       "projectType": "library",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/oidc/provider-nestjs/tsconfig.lib.json", "libs/oidc/provider-nestjs/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/provider-nestjs/**/*"]
+            "lintFilePatterns": ["libs/oidc/provider-nestjs/**/*.ts"]
           }
         },
         "test": {
@@ -3464,10 +3459,9 @@
       "projectType": "library",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/oidc/admin-nest/tsconfig.lib.json", "libs/oidc/admin-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/admin-nest/**/*"]
+            "lintFilePatterns": ["libs/oidc/admin-nest/**/*.ts"]
           }
         },
         "test": {
@@ -3509,10 +3503,9 @@
       "projectType": "library",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/oidc/common/tsconfig.lib.json", "libs/oidc/common/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/common/**/*"]
+            "lintFilePatterns": ["libs/oidc/common/**/*.ts"]
           }
         },
         "test": {
@@ -3673,10 +3666,9 @@
       "sourceRoot": "libs/two/data-api/src",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/two/data-api/**/*"],
-            "tsConfig": ["libs/two/data-api/tsconfig.lib.json", "libs/two/data-api/tsconfig.spec.json"]
+            "lintFilePatterns": ["libs/two/data-api/**/*.ts"]
           }
         },
         "test": {
@@ -3799,10 +3791,9 @@
       "projectType": "library",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/two/directory/tsconfig.lib.json", "libs/two/directory/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/two/directory/**/*"]
+            "lintFilePatterns": ["libs/two/directory/**/*.ts"]
           }
         },
         "test": {
@@ -3873,10 +3864,9 @@
       "projectType": "library",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/two/valup/tsconfig.lib.json", "libs/two/valup/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/two/valup/**/*"]
+            "lintFilePatterns": ["libs/two/valup/**/*.ts"]
           }
         },
         "test": {
