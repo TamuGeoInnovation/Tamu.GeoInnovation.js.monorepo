@@ -9,15 +9,11 @@
   <tamu-gisc-copy-field [text]="shareUrl"></tamu-gisc-copy-field>
 
   <!-- Directions To Button -->
-  <div class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.Number" (click)="startDirections()">
-    Directions To Here
-  </div>
+  <div class="button" tabindex="0" role="button" [attr.building-number]="data.attributes.Number" (click)="startDirections()">Directions To Here</div>
 
   <!-- Building proctors link -->
   <a [href]="proctorURL" class="no-decor" target="_blank" tabindex="0" role="button" [attr.building]="data.attributes.Number" (click)="buildingProctorClick()">
-    <div id="building-proctors" class="button secondary" [attr.building]="data.attributes.Number">
-      Building Proctors
-    </div>
+    <div id="building-proctors" class="button secondary" [attr.building]="data.attributes.Number">Building Proctors</div>
   </a>
 </div>
 

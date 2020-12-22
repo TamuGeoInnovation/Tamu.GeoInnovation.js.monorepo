@@ -9,10 +9,7 @@ import { GISCEmailer } from '../mailer';
 export const accounts_routes = (app: express.Application, provider: Provider) => {
   app.get('/accounts', async (req: Request, res: Response, next: NextFunction) => {
     const accounts = await AccountManager.getAllAccounts();
-    res
-      .set('Access-Control-Allow-Origin', '*')
-      .status(200)
-      .send(accounts);
+    res.set('Access-Control-Allow-Origin', '*').status(200).send(accounts);
   });
 
   app.get('/accounts/:sub', async (req: Request, res: Response, next: NextFunction) => {

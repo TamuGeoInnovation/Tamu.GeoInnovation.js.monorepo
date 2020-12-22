@@ -9,7 +9,7 @@ interface UniversalAppSchema {
   expressAppName: string;
 }
 
-export default function(schema: UniversalAppSchema): Rule {
+export default function (schema: UniversalAppSchema): Rule {
   return chain([
     externalSchematic('@nrwl/angular', 'application', {
       name: schema.angularAppName

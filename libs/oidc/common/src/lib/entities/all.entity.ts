@@ -1010,9 +1010,7 @@ export class CommonRepo<T> extends Repository<T> {
       [key]: value
     };
 
-    return this.createQueryBuilder('entity')
-      .where(`entity.${key} = :${key}`, op)
-      .getOne();
+    return this.createQueryBuilder('entity').where(`entity.${key} = :${key}`, op).getOne();
   }
 
   public async findByKeyDeep<K extends keyof T>(key: K, value: unknown, includeExludedProps?: boolean, excludedProp?: K) {
@@ -1038,9 +1036,7 @@ export class CommonRepo<T> extends Repository<T> {
       [key]: value
     };
 
-    return this.createQueryBuilder('entity')
-      .where(`entity.${key} = :${key}`, op)
-      .getMany();
+    return this.createQueryBuilder('entity').where(`entity.${key} = :${key}`, op).getMany();
   }
 
   public async findAllByKeyDeep<K extends keyof T>(key: K, value: unknown) {

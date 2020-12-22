@@ -18,9 +18,7 @@
       <tamu-gisc-accordion *ngIf="busStopsList.length > 1" [expanded]="timeTableExpanded">
         <tamu-gisc-accordion-content>
           <ul>
-            <li *ngFor="let stop of busStopsList">
-              {{ stop.name }}
-            </li>
+            <li *ngFor="let stop of busStopsList">{{ stop.name }}</li>
           </ul>
         </tamu-gisc-accordion-content>
       </tamu-gisc-accordion>

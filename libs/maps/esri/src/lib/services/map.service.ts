@@ -606,7 +606,8 @@ interface MapProperties extends esri.MapProperties {
         | 'streets-night-vector'
         | 'streets-navigation-vector'
         | 'topo-vector'
-        | 'streets-relief-fector');
+        | 'streets-relief-fector'
+      );
 }
 
 interface BaseMapProperties extends esri.BasemapProperties {

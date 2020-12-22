@@ -6,9 +6,7 @@ import { TabComponent } from './tab/tab.component';
 import { AbstractContentReplacerComponent } from '../../abstracts/abstract-content-swap/abstract-content-replacer.component';
 
 @Component({
-  template: `
-    <tamu-gisc-tab></tamu-gisc-tab>
-  `
+  template: ` <tamu-gisc-tab></tamu-gisc-tab> `
 })
 class TestComponent {
   @ViewChild(TabComponent, { static: true })

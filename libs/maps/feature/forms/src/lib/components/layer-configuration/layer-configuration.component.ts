@@ -207,11 +207,7 @@ export class LayerConfiguration {
   private get _groupProperties() {
     return {
       name: [''],
-      layerId: [
-        guid()
-          .split('-')
-          .pop()
-      ],
+      layerId: [guid().split('-').pop()],
       type: [''],
       description: [''],
       drawingInfo: this.fb.group({

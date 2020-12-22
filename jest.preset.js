@@ -6,14 +6,14 @@ module.exports = {
   ...nxPreset,
   testMatch: ['**/+(*.)+(spec).+(ts|js)?(x)'],
   transform: {
-    '^.+\\.(ts|js|html)$': 'ts-jest',
+    '^.+\\.(ts|js|html)$': 'ts-jest'
   },
   resolver: '@nrwl/jest/plugins/resolver',
   moduleFileExtensions: ['ts', 'js', 'html'],
   collectCoverage: true,
   coverageReporters: ['html', 'lcov', 'text'],
   repoters: ['default', 'jest-junit'],
-  verbose: true,
+  verbose: true
 };
 
 if (process.env.IDE) {
@@ -32,9 +32,9 @@ if (process.env.IDE) {
       stringifyContentPathRegex: '\\.html$',
       astTransformers: [require.resolve('jest-preset-angular/InlineHtmlStripStylesTransformer')],
       diagnostics: {
-        ignoreCodes: [151001],
-      },
-    },
+        ignoreCodes: [151001]
+      }
+    }
   };
 
   module.exports.setupFilesAfterEnv = [`${path}/src/test-setup.ts`];

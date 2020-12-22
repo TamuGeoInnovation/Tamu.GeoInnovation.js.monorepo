@@ -4,9 +4,7 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { StepperToggleDirective } from './stepper-toggle.directive';
 
 @Component({
-  template: `
-    <div giscStepperToggle></div>
-  `
+  template: ` <div giscStepperToggle></div> `
 })
 class MockStepperToggleDirectiveComponent {
   @ViewChild(StepperToggleDirective, { static: true })

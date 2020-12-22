@@ -25,7 +25,10 @@ WebFont.load({
 @NgModule({
   imports: [AppRoutingModule, Angulartics2Module.forRoot(), EnvironmentModule, NotificationModule, StorageServiceModule],
   declarations: [AppComponent],
-  providers: [{ provide: env, useValue: environment }, { provide: notificationStorage, useValue: 'ues-notifications' }],
+  providers: [
+    { provide: env, useValue: environment },
+    { provide: notificationStorage, useValue: 'ues-notifications' }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

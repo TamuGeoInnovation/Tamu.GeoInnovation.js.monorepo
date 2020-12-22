@@ -55,13 +55,7 @@ export class FileComponent implements ControlValueAccessor {
       this.dataType = file.type;
 
       // Pull the file extension from the file.
-      this.fileExtension =
-        file.name.split('.').length > 0
-          ? file.name
-              .split('.')
-              .pop()
-              .toLowerCase()
-          : 'unkown';
+      this.fileExtension = file.name.split('.').length > 0 ? file.name.split('.').pop().toLowerCase() : 'unkown';
 
       this.value = file;
 

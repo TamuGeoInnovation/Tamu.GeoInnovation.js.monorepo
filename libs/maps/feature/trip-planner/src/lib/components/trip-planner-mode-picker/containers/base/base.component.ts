@@ -24,10 +24,7 @@ export class TripPlannerModePickerComponent implements OnInit {
    * Calls the trip planner service and sets accessible travel mode based on the provided value
    */
   public toggleAccessibleTravel() {
-    this.plannerService.TravelOptions.pipe(
-      take(1),
-      pluck('accessible')
-    ).subscribe((current) => {
+    this.plannerService.TravelOptions.pipe(take(1), pluck('accessible')).subscribe((current) => {
       this.plannerService.updateTravelOptions({ accessible: !current });
     });
   }

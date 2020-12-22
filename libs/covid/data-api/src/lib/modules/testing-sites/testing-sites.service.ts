@@ -533,10 +533,7 @@ export class TestingSitesService extends BaseService<TestingSite> {
   }
 
   public async getTestingSitesAdmin(stateFips?: number | string, countyFips?: number | string, email?: string) {
-    let innerSelect = this.testingSiteInfoRepo
-      .createQueryBuilder('info')
-      .orderBy('info.created', 'DESC')
-      .limit(1);
+    let innerSelect = this.testingSiteInfoRepo.createQueryBuilder('info').orderBy('info.created', 'DESC').limit(1);
 
     const builder = this.repo
       .createQueryBuilder('site')

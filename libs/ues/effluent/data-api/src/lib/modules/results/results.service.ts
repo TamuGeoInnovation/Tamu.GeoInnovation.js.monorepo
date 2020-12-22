@@ -34,10 +34,7 @@ export class ResultsService extends BaseService<Result> {
     }
 
     // Apply ordering
-    query
-      .orderBy('location.tier', 'ASC')
-      .addOrderBy('location.sample', 'ASC')
-      .addOrderBy('result.date', 'DESC');
+    query.orderBy('location.tier', 'ASC').addOrderBy('location.sample', 'ASC').addOrderBy('result.date', 'DESC');
 
     const ret = await query.getMany();
 
@@ -64,10 +61,7 @@ export class ResultsService extends BaseService<Result> {
       locationsQuery.andWhere(`sample = ${sample}`);
     }
 
-    const locations = await locationsQuery
-      .orderBy('tier', 'ASC')
-      .addOrderBy('sample', 'ASC')
-      .getMany();
+    const locations = await locationsQuery.orderBy('tier', 'ASC').addOrderBy('sample', 'ASC').getMany();
 
     const queries = locations.map((l) => {
       const query = this.repo

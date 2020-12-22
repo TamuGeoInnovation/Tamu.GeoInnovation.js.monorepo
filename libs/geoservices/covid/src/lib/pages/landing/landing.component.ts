@@ -82,7 +82,7 @@ export class LandingComponent implements OnInit {
         }
       });
 
-      map.on('mousemove', 'county-cases', function(e) {
+      map.on('mousemove', 'county-cases', function (e) {
         // Change the cursor style as a UI indicator.
         map.getCanvas().style.cursor = 'pointer';
 
@@ -117,13 +117,13 @@ export class LandingComponent implements OnInit {
           .addTo(map);
       });
 
-      map.on('mouseleave', 'county-cases', function() {
+      map.on('mouseleave', 'county-cases', function () {
         map.getCanvas().style.cursor = '';
         popup.remove();
       });
 
       //states
-      map.on('mousemove', 'state-cases', function(e) {
+      map.on('mousemove', 'state-cases', function (e) {
         // Change the cursor style as a UI indicator.
         map.getCanvas().style.cursor = 'pointer';
 
@@ -158,7 +158,7 @@ export class LandingComponent implements OnInit {
           .addTo(map);
       });
 
-      map.on('mouseleave', 'state-cases', function() {
+      map.on('mouseleave', 'state-cases', function () {
         map.getCanvas().style.cursor = '';
         popup.remove();
       });

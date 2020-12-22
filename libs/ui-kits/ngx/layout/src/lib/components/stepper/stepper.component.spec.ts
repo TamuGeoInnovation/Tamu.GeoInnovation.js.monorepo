@@ -6,9 +6,7 @@ import { AbstractContentReplacerComponent } from '../../abstracts/abstract-conte
 import { StepToggleComponent } from './components/step-toggle/step-toggle.component';
 
 @Component({
-  template: `
-    <tamu-gisc-step-toggle></tamu-gisc-step-toggle>
-  `
+  template: ` <tamu-gisc-step-toggle></tamu-gisc-step-toggle> `
 })
 class TestComponent {
   @ViewChild(StepToggleComponent, { static: true })
