@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { dbConfig } from '../environments/environment';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({

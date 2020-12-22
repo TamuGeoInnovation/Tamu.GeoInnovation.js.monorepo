@@ -4512,10 +4512,10 @@
       "sourceRoot": "apps/ues-recycling-data-api-nest/src",
       "projectType": "application",
       "prefix": "ues-recycling-data-api-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/ues-recycling-data-api-nest",
             "main": "apps/ues-recycling-data-api-nest/src/main.ts",
@@ -4543,20 +4543,17 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "apps/ues-recycling-data-api-nest/tsconfig.app.json",
-              "apps/ues-recycling-data-api-nest/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!apps/ues-recycling-data-api-nest/**"]
+            "lintFilePatterns": ["apps/ues-recycling-data-api-nest/**/*.ts"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/ues-recycling-data-api-nest"],
           "options": {
             "jestConfig": "apps/ues-recycling-data-api-nest/jest.config.js",
-            "tsConfig": "apps/ues-recycling-data-api-nest/tsconfig.spec.json"
+            "passWithNoTests": true
           }
         }
       }
