@@ -1908,10 +1908,9 @@
       "projectType": "library",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/cpa/common/entities/tsconfig.lib.json", "libs/cpa/common/entities/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/cpa/common/entities/**/*"]
+            "lintFilePatterns": ["libs/cpa/common/entities/**/*.ts"]
           }
         },
         "test": {
@@ -2405,10 +2404,9 @@
       "projectType": "library",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/covid/common/entities/tsconfig.lib.json", "libs/covid/common/entities/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/covid/common/entities/**/*"]
+            "lintFilePatterns": ["libs/covid/common/entities/**/*.ts"]
           }
         },
         "test": {
@@ -2427,10 +2425,9 @@
       "projectType": "library",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/covid/common/enums/tsconfig.lib.json", "libs/covid/common/enums/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/covid/common/enums/**/*"]
+            "lintFilePatterns": ["libs/covid/common/enums/**/*.ts"]
           }
         },
         "test": {
@@ -3122,13 +3119,9 @@
       "projectType": "library",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "libs/ues/effluent/common/entities/tsconfig.lib.json",
-              "libs/ues/effluent/common/entities/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!libs/ues/effluent/common/entities/**/*"]
+            "lintFilePatterns": ["libs/ues/effluent/common/entities/**/*.ts"]
           }
         },
         "test": {
@@ -3644,10 +3637,9 @@
       "sourceRoot": "libs/two/common/src",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/two/common/**/*"],
-            "tsConfig": ["libs/two/common/tsconfig.lib.json", "libs/two/common/tsconfig.spec.json"]
+            "lintFilePatterns": ["libs/two/common/**/*.ts"]
           }
         },
         "test": {
