@@ -4608,21 +4608,16 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/ues/recycling/ngx/tsconfig.lib.json", "libs/ues/recycling/ngx/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/ues/recycling/ngx/**"]
+            "exclude": ["**/node_modules/**", "!libs/ues/recycling/ngx/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ues/recycling/ngx"],
           "options": {
             "jestConfig": "libs/ues/recycling/ngx/jest.config.js",
-            "tsConfig": "libs/ues/recycling/ngx/tsconfig.spec.json",
-            "setupFile": "libs/ues/recycling/ngx/src/test-setup.ts"
+            "passWithNoTests": true
           }
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     }
