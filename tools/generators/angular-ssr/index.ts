@@ -34,7 +34,7 @@ function getExpressAppName(schema: UniversalAppSchema) {
 
 function updateOutputPath(name: string): Rule {
   return (host: Tree) => {
-    const angularJson = JSON.parse(host.read('angular.json').toString());
+    const angularJson = JSON.parse(host.read('workspace.json').toString());
 
     const serverTargetFixed = angularJson.projects[name].architect.server;
     const buildTargetFixed = angularJson.projects[name].architect.build;
@@ -45,7 +45,7 @@ function updateOutputPath(name: string): Rule {
     angularJson.projects[name].architect.server = serverTargetFixed;
     angularJson.projects[name].architect.build = buildTargetFixed;
 
-    host.overwrite('angular.json', JSON.stringify(angularJson, null, '  '));
+    host.overwrite('workspace.json', JSON.stringify(angularJson, null, '  '));
   };
 }
 
@@ -62,9 +62,9 @@ function addConcatTarget(angularName: string, expressName: string): Rule {
       }
     };
 
-    const angularJson = JSON.parse(host.read('angular.json').toString());
+    const angularJson = JSON.parse(host.read('workspace.json').toString());
     angularJson.projects[`${expressName}`].architect['serve-all'] = serveAll;
-    host.overwrite('angular.json', JSON.stringify(angularJson, null, '  '));
+    host.overwrite('workspace.json', JSON.stringify(angularJson, null, '  '));
   };
 }
 

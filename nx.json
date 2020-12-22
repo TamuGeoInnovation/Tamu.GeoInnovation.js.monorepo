@@ -1,7 +1,7 @@
 {
   "npmScope": "tamu-gisc",
   "implicitDependencies": {
-    "angular.json": "*",
+    "workspace.json": "*",
     "package.json": "*",
     "tslint.json": "*",
     "nx.json": "*",
