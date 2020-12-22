@@ -1,12 +1,18 @@
-describe('Correct Page', function() {
+/// <reference path="../support/index.d.ts" />
+describe('Correct Page', () => {
   beforeEach(() => {
+    cy.server()
+    cy.checkMapApi('**/TAMU_BaseMap/**', 'GET', 'basemap')
     cy.visit('https://aggiemap.tamu.edu/map/d')
+    cy.wait('@basemap')
+    cy.get('canvas')
+      .should('be.visible', {timeout: 5000})
   })
-  /*
-  it('Check API Call', () => {
-    cy.checkApiCall('https://aggiemap.tamu.edu/map/d', 'POST')
+
+  afterEach(() => {
+    cy.server({enable: false})
   })
-  */
+  
   it('Check Location', () => {
     cy.location('protocol')
       .should('eq', 'https:')
@@ -14,43 +20,45 @@ describe('Correct Page', function() {
   it('Title', () => {
     cy.title().should('eq', 'Aggie Map - Texas A&M University')
   })
+  it('Title Logo', () => {
+    cy.checkTitleLogo()
+  })
   it('Sidebar', () => {
-    cy.get('tamu-gisc-sidebar')
-    .should('be.visible')
-    .and('have.attr', 'style', 'width: 22.5rem; transform: translateX(0px);')
-    .and('have.class', 'right')
+    cy.getSideBar('be.visible')
   })
   it('Directions Toggle', () => {
-    cy.get('.tabs > :nth-child(2) > .esri-component')
-    .should('be.visible')
-    .and('have.attr', 'alt', 'Toggle directions controls (routing and way-finding)')
-    .and('have.attr', 'Title', 'Directions')
-    .and('have.attr', 'role', 'button')
+    cy.getDirectionsToggle()
   })
   it('Feature Toggle', () => {
-    cy.get('.tabs > :nth-child(1) > .esri-component')
-    .should('be.visible')
-    .and('have.attr', 'alt', 'Toggle Features (Search, Layers, Legend)')
-    .and('have.attr', 'Title', 'Features')
-    .and('have.attr', 'role', 'button')
+    cy.getFeatureToggle()
   })
-  it('Check Sidebar Closes - Feature Toggle', () => {
-    cy.get('.tabs > :nth-child(1) > .esri-component')
-      .should('be.visible')
+  it('Check Sidebar - Feature Toggle', () => {
+    cy.getFeatureToggle()
       .click({force: true})
       .click({force: true})
-    cy.get('tamu-gisc-sidebar')
-      .should('not.be.visible')
-  })
-  it('Check Sidebar Opens - Feature Toggle', () => {
-    cy.get('.tabs > :nth-child(1) > .esri-component')
-    .should('be.visible')
-    .click({force: true})
-    cy.get('tamu-gisc-sidebar')
-      .should('be.visible')
+    cy.getSideBar('not.be.visible')
+    cy.getFeatureToggle()
+      .click({force: true})
+    cy.getSideBar('be.visible')
   })
   it('Headings', () => {
     cy.contains('tamu-gisc-layer-list > .sidebar-component-name', 'Layers')
     cy.contains('tamu-gisc-legend > .sidebar-component-name', 'Legend')
-  });
-});
+  })
+  it('Help Button', () => {
+    cy.getHelpButton()
+      .click()
+    cy.get('.topics')
+      .should('be.visible')
+    cy.checkLink('Map Instructions', '/instructions')
+    cy.checkLink('Building Directory', '/directory')
+    cy.checkLink('Feedback', 'https://aggiemap.tamu.edu/feedback.asp')
+    cy.checkLink('About', '/about')
+    cy.checkLink('Move-in Parking App', 'https://aggiemap.tamu.edu/movein/')
+    cy.checkLink('Graduation Parking App', 'https://aggiemap.tamu.edu/graduation/arrival')
+    cy.checkLink('Site Policies', 'https://www.tamu.edu/statements/index.html')
+    cy.checkLink('Accessibility Policy', 'http://itaccessibility.tamu.edu')
+    cy.checkLink('Privacy & Security', '/privacy')
+    cy.checkLink('Changelog', '/changelog')
+  })
+})

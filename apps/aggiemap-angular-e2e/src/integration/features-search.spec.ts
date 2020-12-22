@@ -1,20 +1,29 @@
+/// <reference path="../support/index.d.ts" />
 describe('Search', () => {
   before(() => {
     cy.server()
-    cy.route('POST', '*')
-      .as('apiCheck')
+    cy.checkMapApi('**/TAMU_BaseMap/**', 'GET', 'basemap')
+    cy.checkMapApi('**/Construction_2018/**', 'GET', 'construction')
+    cy.checkMapApi('**/Physical_Distancing_Tents/**', 'GET', 'tents')
     cy.visit('https://aggiemap.tamu.edu/map/d')
-    cy.wait('@apiCheck')
+    cy.wait('@basemap')
+    cy.get('canvas')
+      .should('be.visible', {timeout: 5000})
   })
+  
   it('Create Test Search', () => {
     cy.get('.margin-left')
+      .should('be.visible')
       .clear()
       .type('Computing Services Annex')
-      .click()
-    cy.get('tamu-gisc-search')
-      .find('p.focusable')
-      .eq(0)
-      .click()
+      .type('{enter}')
+    for (let i = 0; i < 3; i++) {
+      cy.wait(['@basemap', '@construction', '@tents'])
+    }
+    cy.wait(5000)
+    cy.get('.focusable', {timeout: 5000})
+      .click({force: true})
+      cy.server({enable: false})
   })
 
   it('Title', () => {

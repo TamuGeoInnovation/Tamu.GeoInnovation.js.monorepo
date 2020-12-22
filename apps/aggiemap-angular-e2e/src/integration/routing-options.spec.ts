@@ -1,11 +1,20 @@
+/// <reference path="../support/index.d.ts" />
 describe('Routing Options', () => {
   beforeEach(() => {
+    cy.server()
+    cy.checkMapApi('**/TAMU_BaseMap/**', 'GET', 'basemap')
     cy.visit('https://aggiemap.tamu.edu/map/d/trip/options')
+    cy.wait('@basemap')
+    cy.get('canvas')
+      .should('be.visible', {timeout: 5000})
   })
+
+  afterEach(() => {
+    cy.server({enable: false})
+  })
+
   it('Title Logo', () => {
-    cy.get('tamu-gisc-tamu-block > img')
-      .should('have.attr', 'alt', 'Texas A&M University Logo')
-      .and('have.attr', 'src', 'assets/images/logo/TAM-PrimaryMarkBB.svg') 
+    cy.checkTitleLogo()
   })
   it('Return Button', () => {
     cy.get('#options-return')
