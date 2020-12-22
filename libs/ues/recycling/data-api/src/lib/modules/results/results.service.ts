@@ -57,10 +57,7 @@ export class ResultsService extends BaseService<Result> {
       locationsQuery.andWhere(`sample = ${sample}`);
     }
 
-    const locations = await locationsQuery
-      .orderBy('tier', 'ASC')
-      .addOrderBy('sample', 'ASC')
-      .getMany();
+    const locations = await locationsQuery.orderBy('tier', 'ASC').addOrderBy('sample', 'ASC').getMany();
 
     const queries = locations.map((l) => {
       const query = this.repo

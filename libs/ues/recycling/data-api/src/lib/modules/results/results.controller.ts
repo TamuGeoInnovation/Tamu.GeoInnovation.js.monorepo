@@ -8,7 +8,6 @@ import { ResultsService } from './results.service';
 
 @Controller('results')
 export class ResultsController extends BaseController<Result> {
-  
   constructor(private service: ResultsService) {
     super(service);
   }
@@ -53,5 +52,4 @@ export class ResultsController extends BaseController<Result> {
       throw new HttpException('Input parameter missing', HttpStatus.BAD_REQUEST);
     }
   }
-
 }

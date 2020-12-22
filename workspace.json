@@ -4581,20 +4581,19 @@
       "root": "libs/ues/recycling/data-api",
       "sourceRoot": "libs/ues/recycling/data-api/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/ues/recycling/data-api/tsconfig.lib.json", "libs/ues/recycling/data-api/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/ues/recycling/data-api/**"]
+            "lintFilePatterns": ["libs/ues/recycling/data-api/**/*.ts"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ues/recycling/data-api"],
           "options": {
             "jestConfig": "libs/ues/recycling/data-api/jest.config.js",
-            "tsConfig": "libs/ues/recycling/data-api/tsconfig.spec.json"
+            "passWithNoTests": true
           }
         }
       }

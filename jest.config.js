@@ -109,6 +109,7 @@ module.exports = {
     '<rootDir>/apps/ues-operations-nest',
     '<rootDir>/apps/ues-recycling-data-api-nest',
     '<rootDir>/apps/ues-recycling-angular',
-    '<rootDir>/libs/ues/recycling/common/entities'
+    '<rootDir>/libs/ues/recycling/common/entities',
+    '<rootDir>/libs/ues/recycling/data-api'
   ]
 };
