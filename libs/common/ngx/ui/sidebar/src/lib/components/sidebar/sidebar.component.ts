@@ -18,7 +18,7 @@ export class SidebarComponent extends AbstractSlidingDrawerComponent implements 
 
   private _$destroy: Subject<null> = new Subject();
 
-  @ContentChildren(SidebarTabComponent)
+  @ContentChildren(SidebarTabComponent, {descendants: true})
   public tabs: QueryList<SidebarTabComponent>;
 
   constructor(private router: Router, private route: ActivatedRoute) {
