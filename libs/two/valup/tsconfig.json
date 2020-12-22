@@ -1,12 +1,7 @@
 {
   "extends": "../../../tsconfig.base.json",
-  "compilerOptions": {
-    "types": ["node", "jest"],
-    "module": "commonjs",
-    "target": "es2017"
-  },
-  "include": [],
   "files": [],
+  "include": [],
   "references": [
     {
       "path": "./tsconfig.lib.json"

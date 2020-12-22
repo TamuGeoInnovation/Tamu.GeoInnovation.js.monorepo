@@ -1,6 +1,14 @@
 module.exports = {
+  displayName: 'cpa-nest',
   preset: '../../jest.preset.js',
-  coverageDirectory: '../../coverage/apps/cpa-nest',
-  globals: { 'ts-jest': { tsConfig: '<rootDir>/tsconfig.spec.json' } },
-  displayName: 'cpa-nest'
+  globals: {
+    'ts-jest': {
+      tsConfig: '<rootDir>/tsconfig.spec.json'
+    }
+  },
+  transform: {
+    '^.+\\.[tj]s$': 'ts-jest'
+  },
+  moduleFileExtensions: ['ts', 'js', 'html'],
+  coverageDirectory: '../../coverage/apps/cpa-nest'
 };

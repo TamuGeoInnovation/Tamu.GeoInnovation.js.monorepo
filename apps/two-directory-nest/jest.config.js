@@ -1,6 +1,14 @@
 module.exports = {
+  displayName: 'two-directory-nest',
   preset: '../../jest.preset.js',
-  coverageDirectory: '../../coverage/apps/two-directory-nest',
-  globals: { 'ts-jest': { tsConfig: '<rootDir>/tsconfig.spec.json' } },
-  displayName: 'two-directory-nest'
+  globals: {
+    'ts-jest': {
+      tsConfig: '<rootDir>/tsconfig.spec.json'
+    }
+  },
+  transform: {
+    '^.+\\.[tj]s$': 'ts-jest'
+  },
+  moduleFileExtensions: ['ts', 'js', 'html'],
+  coverageDirectory: '../../coverage/apps/two-directory-nest'
 };

@@ -87,11 +87,6 @@
           },
           "outputs": ["coverage/apps/aggiemap-angular"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
       }
     },
     "aggiemap-angular-e2e": {
@@ -207,11 +202,6 @@
           },
           "outputs": ["coverage/apps/trees-angular"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
       }
     },
     "trees-angular-e2e": {
@@ -247,11 +237,6 @@
     },
     "bikeshare": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/bikeshare",
       "sourceRoot": "apps/bikeshare/src",
       "prefix": "tamu-gisc",
@@ -386,11 +371,6 @@
           },
           "outputs": ["coverage/libs/charts"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-ngx-environment": {
@@ -413,11 +393,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/common/ngx/environment"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -449,11 +424,6 @@
           },
           "outputs": ["coverage/libs/common/ngx/local-store"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-ngx-pipes": {
@@ -484,11 +454,6 @@
           },
           "outputs": ["coverage/libs/common/ngx/pipes"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-ngx-router": {
@@ -511,11 +476,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/common/ngx/router"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -546,11 +506,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/common/ngx/settings"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -585,11 +540,6 @@
           },
           "outputs": ["coverage/libs/common/ngx/ui/notification"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-ngx-ui-sidebar": {
@@ -613,11 +563,6 @@
           },
           "outputs": ["coverage/libs/common/ngx/ui/sidebar"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-types": {
@@ -640,8 +585,7 @@
           },
           "outputs": ["coverage/libs/common/types"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-collection": {
       "projectType": "library",
@@ -663,8 +607,7 @@
           },
           "outputs": ["coverage/libs/common/utils/collection"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-database": {
       "projectType": "library",
@@ -686,8 +629,7 @@
           },
           "outputs": ["coverage/libs/common/utils/database"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-date": {
       "projectType": "library",
@@ -709,8 +651,7 @@
           },
           "outputs": ["coverage/libs/common/utils/date"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-device": {
       "projectType": "library",
@@ -732,8 +673,7 @@
           },
           "outputs": ["coverage/libs/common/utils/device"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-geometry": {
       "projectType": "library",
@@ -755,8 +695,7 @@
           },
           "outputs": ["coverage/libs/common/utils/geometry"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-geometry-esri": {
       "projectType": "library",
@@ -781,8 +720,7 @@
           },
           "outputs": ["coverage/libs/common/utils/geometry/esri"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-geometry-generic": {
       "projectType": "library",
@@ -807,8 +745,7 @@
           },
           "outputs": ["coverage/libs/common/utils/geometry/generic"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-number": {
       "projectType": "library",
@@ -830,8 +767,7 @@
           },
           "outputs": ["coverage/libs/common/utils/number"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-object": {
       "projectType": "library",
@@ -853,8 +789,7 @@
           },
           "outputs": ["coverage/libs/common/utils/object"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-routing": {
       "projectType": "library",
@@ -876,8 +811,7 @@
           },
           "outputs": ["coverage/libs/common/utils/routing"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-string": {
       "projectType": "library",
@@ -899,8 +833,7 @@
           },
           "outputs": ["coverage/libs/common/utils/string"]
         }
-      },
-      "schematics": {}
+      }
     },
     "common-utils-ui": {
       "projectType": "library",
@@ -922,8 +855,7 @@
           },
           "outputs": ["coverage/libs/common/utils/ui"]
         }
-      },
-      "schematics": {}
+      }
     },
     "dev-tools-application-testing": {
       "prefix": "tamu-gisc",
@@ -949,11 +881,6 @@
           },
           "outputs": ["coverage/libs/dev-tools/application-testing"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "dev-tools-responsive": {
@@ -976,11 +903,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/dev-tools/responsive"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1076,11 +998,6 @@
           },
           "outputs": ["coverage/apps/gisday-competitions-angular"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
       }
     },
     "gisday-competitions-angular-e2e": {
@@ -1131,11 +1048,6 @@
           },
           "outputs": ["coverage/libs/maps/esri"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-draw": {
@@ -1158,11 +1070,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/maps/feature/draw"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1190,11 +1097,6 @@
           },
           "outputs": ["coverage/libs/maps/feature/feature-selector"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-layer-filter": {
@@ -1221,11 +1123,6 @@
           },
           "outputs": ["coverage/libs/maps/feature/layer-filter"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-layer-list": {
@@ -1249,11 +1146,6 @@
           },
           "outputs": ["coverage/libs/maps/feature/layer-list"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-legend": {
@@ -1276,11 +1168,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/maps/feature/legend"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1309,11 +1196,6 @@
           },
           "outputs": ["coverage/libs/search"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ui-kits-ngx-branding": {
@@ -1336,11 +1218,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/ui-kits/ngx/branding"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1365,11 +1242,6 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/forms"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ui-kits-ngx-layout": {
@@ -1392,11 +1264,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/ui-kits/ngx/layout"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1424,20 +1291,10 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/navigation/mobile-tab"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "signage-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/signage-angular",
       "sourceRoot": "apps/signage-angular/src",
       "prefix": "tamu-gisc",
@@ -1577,11 +1434,6 @@
           },
           "outputs": ["coverage/libs/maps/feature/popup"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ui-kits-ngx-interactions-draggable": {
@@ -1607,11 +1459,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/ui-kits/ngx/interactions/draggable"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1639,11 +1486,6 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/layout/structural"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "signage": {
@@ -1667,11 +1509,6 @@
           },
           "outputs": ["coverage/libs/signage"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "aggiemap": {
@@ -1694,11 +1531,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/aggiemap"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1726,11 +1558,6 @@
           },
           "outputs": ["coverage/libs/maps/feature/trip-planner"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ui-kits-ngx-interactions-clipboard": {
@@ -1756,11 +1583,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/ui-kits/ngx/interactions/clipboard"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -1788,11 +1610,6 @@
           },
           "outputs": ["coverage/libs/maps/feature/accessibility"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-coordinates": {
@@ -1819,18 +1636,12 @@
           },
           "outputs": ["coverage/libs/maps/feature/coordinates"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-utils-geometry-geoprocessing": {
       "root": "libs/common/utils/geometry/geoprocessing",
       "sourceRoot": "libs/common/utils/geometry/geoprocessing/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -1854,11 +1665,6 @@
     },
     "cpa-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/cpa-angular",
       "sourceRoot": "apps/cpa-angular/src",
       "prefix": "tamu-gisc",
@@ -1982,7 +1788,6 @@
       "sourceRoot": "apps/cpa-nest/src",
       "projectType": "application",
       "prefix": "cpa-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -2015,19 +1820,18 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["apps/cpa-nest/tsconfig.app.json", "apps/cpa-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/cpa-nest/**/*"]
+            "lintFilePatterns": ["apps/cpa-nest/**/*.ts"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/apps/cpa-nest"],
           "options": {
-            "jestConfig": "apps/cpa-nest/jest.config.js",
+            "jestConfig": "apps/apps/cpa-nest/jest.config.js",
             "passWithNoTests": true
-          },
-          "outputs": ["coverage/apps/cpa-nest"]
+          }
         }
       }
     },
@@ -2035,13 +1839,11 @@
       "root": "libs/cpa/data-api",
       "sourceRoot": "libs/cpa/data-api/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/cpa/data-api/tsconfig.lib.json", "libs/cpa/data-api/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/cpa/data-api/**/*"]
+            "lintFilePatterns": ["libs/cpa/data-api/**/*.ts"]
           }
         },
         "test": {
@@ -2075,11 +1877,6 @@
           },
           "outputs": ["coverage/libs/cpa/common/ngx"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-forms": {
@@ -2103,24 +1900,17 @@
           },
           "outputs": ["coverage/libs/maps/feature/forms"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "cpa-common-entities": {
       "root": "libs/cpa/common/entities",
       "sourceRoot": "libs/cpa/common/entities/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/cpa/common/entities/tsconfig.lib.json", "libs/cpa/common/entities/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/cpa/common/entities/**/*"]
+            "lintFilePatterns": ["libs/cpa/common/entities/**/*.ts"]
           }
         },
         "test": {
@@ -2157,20 +1947,10 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/navigation/breadcrumb"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "geoservices-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/geoservices-angular",
       "sourceRoot": "apps/geoservices-angular/src",
       "prefix": "tamu-gisc",
@@ -2310,11 +2090,6 @@
           },
           "outputs": ["coverage/libs/geoservices/api"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "geoservices-internal": {
@@ -2337,11 +2112,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/geoservices/internal"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -2369,11 +2139,6 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/interactions/scroll-to"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "geoservices-data-access": {
@@ -2400,11 +2165,6 @@
           },
           "outputs": ["coverage/libs/geoservices/data-access"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "geoservices-public": {
@@ -2428,11 +2188,6 @@
           },
           "outputs": ["coverage/libs/geoservices/public"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "geoservices-core-ngx": {
@@ -2455,11 +2210,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/geoservices/core/ngx"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -2487,11 +2237,6 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/navigation/mobile-tile"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ui-kits-ngx-navigation-triggers": {
@@ -2517,11 +2262,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/ui-kits/ngx/navigation/triggers"]
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
         }
       }
     },
@@ -2549,11 +2289,6 @@
           },
           "outputs": ["coverage/libs/ui-kits/ngx/layout/code"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "geoservices-covid": {
@@ -2577,24 +2312,17 @@
           },
           "outputs": ["coverage/libs/geoservices/covid"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "covid-data-api": {
       "root": "libs/covid/data-api",
       "sourceRoot": "libs/covid/data-api/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/covid/data-api/tsconfig.lib.json", "libs/covid/data-api/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/covid/data-api/**/*"]
+            "lintFilePatterns": ["libs/covid/data-api/**/*.ts"]
           }
         },
         "test": {
@@ -2612,7 +2340,6 @@
       "sourceRoot": "apps/covid-data-api-nest/src",
       "projectType": "application",
       "prefix": "covid-data-api-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -2653,21 +2380,12 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "covid-data-api-nest:build"
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "covid-data-api-nest:build:production"
-            },
-            "development": {
-              "buildTarget": "covid-data-api-nest:build:development"
-            }
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["apps/covid-data-api-nest/tsconfig.app.json", "apps/covid-data-api-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/covid-data-api-nest/**/*"]
+            "lintFilePatterns": ["apps/covid-data-api-nest/**/*.ts"]
           }
         },
         "test": {
@@ -2684,13 +2402,11 @@
       "root": "libs/covid/common/entities",
       "sourceRoot": "libs/covid/common/entities/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/covid/common/entities/tsconfig.lib.json", "libs/covid/common/entities/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/covid/common/entities/**/*"]
+            "lintFilePatterns": ["libs/covid/common/entities/**/*.ts"]
           }
         },
         "test": {
@@ -2707,13 +2423,11 @@
       "root": "libs/covid/common/enums",
       "sourceRoot": "libs/covid/common/enums/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/covid/common/enums/tsconfig.lib.json", "libs/covid/common/enums/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/covid/common/enums/**/*"]
+            "lintFilePatterns": ["libs/covid/common/enums/**/*.ts"]
           }
         },
         "test": {
@@ -2747,11 +2461,6 @@
           },
           "outputs": ["coverage/libs/maps/mapbox"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "oidc-client-test": {
@@ -2759,7 +2468,6 @@
       "sourceRoot": "apps/oidc-client-test/src",
       "projectType": "application",
       "prefix": "oidc-client-test",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -2810,11 +2518,6 @@
     },
     "oidc-provider-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/oidc-provider-angular",
       "sourceRoot": "apps/oidc-provider-angular/src",
       "prefix": "tamu-gisc",
@@ -2950,7 +2653,6 @@
       "sourceRoot": "apps/oidc-provider-express/src",
       "projectType": "application",
       "prefix": "oidc-provider-express",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -3004,7 +2706,6 @@
       "root": "libs/oidc/provider",
       "sourceRoot": "libs/oidc/provider/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -3027,13 +2728,11 @@
       "root": "libs/oidc/client",
       "sourceRoot": "libs/oidc/client/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/oidc/client/tsconfig.lib.json", "libs/oidc/client/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/client/**/*"]
+            "lintFilePatterns": ["libs/oidc/client/**/*.ts"]
           }
         },
         "test": {
@@ -3048,11 +2747,6 @@
     },
     "ues-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/ues-angular",
       "sourceRoot": "apps/ues-angular/src",
       "prefix": "tamu-gisc",
@@ -3197,11 +2891,6 @@
           },
           "outputs": ["coverage/libs/ues/common/ngx"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "common-utils-device-guards": {
@@ -3228,20 +2917,10 @@
           },
           "outputs": ["coverage/libs/common/utils/device/guards"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ues-effluent-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/ues-effluent-angular",
       "sourceRoot": "apps/ues-effluent-angular/src",
       "prefix": "tamu-gisc",
@@ -3385,11 +3064,6 @@
           },
           "outputs": ["coverage/libs/ues/effluent/ngx"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "maps-feature-feature-highlight": {
@@ -3416,24 +3090,17 @@
           },
           "outputs": ["coverage/libs/maps/feature/feature-highlight"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "ues-effluent-data-api": {
       "root": "libs/ues/effluent/data-api",
       "sourceRoot": "libs/ues/effluent/data-api/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/ues/effluent/data-api/tsconfig.lib.json", "libs/ues/effluent/data-api/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/ues/effluent/data-api/**/*"]
+            "lintFilePatterns": ["libs/ues/effluent/data-api/**/*.ts"]
           }
         },
         "test": {
@@ -3450,16 +3117,11 @@
       "root": "libs/ues/effluent/common/entities",
       "sourceRoot": "libs/ues/effluent/common/entities/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "libs/ues/effluent/common/entities/tsconfig.lib.json",
-              "libs/ues/effluent/common/entities/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!libs/ues/effluent/common/entities/**/*"]
+            "lintFilePatterns": ["libs/ues/effluent/common/entities/**/*.ts"]
           }
         },
         "test": {
@@ -3477,7 +3139,6 @@
       "sourceRoot": "apps/ues-effluent-data-api-nest/src",
       "projectType": "application",
       "prefix": "ues-effluent-data-api-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -3510,13 +3171,9 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "apps/ues-effluent-data-api-nest/tsconfig.app.json",
-              "apps/ues-effluent-data-api-nest/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!apps/ues-effluent-data-api-nest/**/*"]
+            "lintFilePatterns": ["apps/ues-effluent-data-api-nest/**/*.ts"]
           }
         },
         "test": {
@@ -3534,7 +3191,6 @@
       "sourceRoot": "apps/oidc-provider-nest/src",
       "projectType": "application",
       "prefix": "oidc-provider-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -3555,8 +3211,7 @@
               ],
               "extractLicenses": false,
               "inspect": false,
-              "optimization": true,
-              "sourceMap": false
+              "optimization": true
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -3565,21 +3220,12 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "oidc-provider-nest:build"
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "oidc-provider-nest:build:production"
-            },
-            "development": {
-              "buildTarget": "oidc-provider-nest:build:development"
-            }
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["apps/oidc-provider-nest/tsconfig.app.json", "apps/oidc-provider-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-provider-nest/**/*"]
+            "lintFilePatterns": ["apps/oidc-provider-nest/**/*.ts"]
           }
         },
         "test": {
@@ -3596,13 +3242,11 @@
       "root": "libs/oidc/provider-nestjs",
       "sourceRoot": "libs/oidc/provider-nestjs/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/oidc/provider-nestjs/tsconfig.lib.json", "libs/oidc/provider-nestjs/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/provider-nestjs/**/*"]
+            "lintFilePatterns": ["libs/oidc/provider-nestjs/**/*.ts"]
           }
         },
         "test": {
@@ -3617,11 +3261,6 @@
     },
     "oidc-admin-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/oidc-admin-angular",
       "sourceRoot": "apps/oidc-admin-angular/src",
       "prefix": "tamu-gisc",
@@ -3737,7 +3376,6 @@
       "sourceRoot": "apps/oidc-admin-nest/src",
       "projectType": "application",
       "prefix": "oidc-admin-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -3751,8 +3389,7 @@
               ],
               "extractLicenses": false,
               "inspect": false,
-              "optimization": true,
-              "sourceMap": false
+              "optimization": true
             }
           },
           "options": {
@@ -3772,10 +3409,9 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/oidc-admin-nest/**/*"],
-            "tsConfig": ["apps/oidc-admin-nest/tsconfig.app.json", "apps/oidc-admin-nest/tsconfig.spec.json"]
+            "lintFilePatterns": ["apps/oidc-admin-nest/**/*.ts"]
           }
         },
         "test": {
@@ -3792,7 +3428,6 @@
       "root": "libs/oidc/admin",
       "sourceRoot": "libs/oidc/admin/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -3815,13 +3450,11 @@
       "root": "libs/oidc/admin-nest",
       "sourceRoot": "libs/oidc/admin-nest/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/oidc/admin-nest/tsconfig.lib.json", "libs/oidc/admin-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/admin-nest/**/*"]
+            "lintFilePatterns": ["libs/oidc/admin-nest/**/*.ts"]
           }
         },
         "test": {
@@ -3855,24 +3488,17 @@
           },
           "outputs": ["coverage/libs/oidc/admin-data-access"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
       }
     },
     "oidc-common": {
       "root": "libs/oidc/common",
       "sourceRoot": "libs/oidc/common/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/oidc/common/tsconfig.lib.json", "libs/oidc/common/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/common/**/*"]
+            "lintFilePatterns": ["libs/oidc/common/**/*.ts"]
           }
         },
         "test": {
@@ -3976,11 +3602,6 @@
           },
           "outputs": ["coverage/apps/two-angular"]
         }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
       }
     },
     "two-angular-e2e": {
@@ -4016,10 +3637,9 @@
       "sourceRoot": "libs/two/common/src",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/two/common/**/*"],
-            "tsConfig": ["libs/two/common/tsconfig.lib.json", "libs/two/common/tsconfig.spec.json"]
+            "lintFilePatterns": ["libs/two/common/**/*.ts"]
           }
         },
         "test": {
@@ -4030,8 +3650,7 @@
           },
           "outputs": ["coverage/libs/two/common"]
         }
-      },
-      "schematics": {}
+      }
     },
     "two-data-api": {
       "projectType": "library",
@@ -4039,10 +3658,9 @@
       "sourceRoot": "libs/two/data-api/src",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!libs/two/data-api/**/*"],
-            "tsConfig": ["libs/two/data-api/tsconfig.lib.json", "libs/two/data-api/tsconfig.spec.json"]
+            "lintFilePatterns": ["libs/two/data-api/**/*.ts"]
           }
         },
         "test": {
@@ -4053,8 +3671,7 @@
           },
           "outputs": ["coverage/libs/two/data-api"]
         }
-      },
-      "schematics": {}
+      }
     },
     "two-data-api-nest": {
       "prefix": "two-data-api-nest",
@@ -4074,8 +3691,7 @@
               ],
               "extractLicenses": false,
               "inspect": false,
-              "optimization": true,
-              "sourceMap": false
+              "optimization": true
             }
           },
           "options": {
@@ -4088,10 +3704,9 @@
           "outputs": ["{options.outputPath}"]
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/two-data-api-nest/**/*"],
-            "tsConfig": ["apps/two-data-api-nest/tsconfig.app.json", "apps/two-data-api-nest/tsconfig.spec.json"]
+            "lintFilePatterns": ["apps/two-data-api-nest/**/*.ts"]
           }
         },
         "serve": {
@@ -4108,15 +3723,13 @@
           },
           "outputs": ["coverage/apps/two-data-api-nest"]
         }
-      },
-      "schematics": {}
+      }
     },
     "two-directory-nest": {
       "root": "apps/two-directory-nest",
       "sourceRoot": "apps/two-directory-nest/src",
       "projectType": "application",
       "prefix": "two-directory-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -4145,20 +3758,13 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "two-directory-nest:build",
-            "port": 0
-          },
-          "configurations": {
-            "development": {
-              "inspect": false
-            }
+            "buildTarget": "two-directory-nest:build"
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["apps/two-directory-nest/tsconfig.app.json", "apps/two-directory-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/two-directory-nest/**/*"]
+            "lintFilePatterns": ["apps/two-directory-nest/**/*.ts"]
           }
         },
         "test": {
@@ -4175,13 +3781,11 @@
       "root": "libs/two/directory",
       "sourceRoot": "libs/two/directory/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/two/directory/tsconfig.lib.json", "libs/two/directory/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/two/directory/**/*"]
+            "lintFilePatterns": ["libs/two/directory/**/*.ts"]
           }
         },
         "test": {
@@ -4199,7 +3803,6 @@
       "sourceRoot": "apps/two-valup-nest/src",
       "projectType": "application",
       "prefix": "two-valup-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -4228,20 +3831,13 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "two-valup-nest:build",
-            "port": 0
-          },
-          "configurations": {
-            "development": {
-              "inspect": false
-            }
+            "buildTarget": "two-valup-nest:build"
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["apps/two-valup-nest/tsconfig.app.json", "apps/two-valup-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/two-valup-nest/**/*"]
+            "lintFilePatterns": ["apps/two-valup-nest/**/*.ts"]
           }
         },
         "test": {
@@ -4258,13 +3854,11 @@
       "root": "libs/two/valup",
       "sourceRoot": "libs/two/valup/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/two/valup/tsconfig.lib.json", "libs/two/valup/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/two/valup/**/*"]
+            "lintFilePatterns": ["libs/two/valup/**/*.ts"]
           }
         },
         "test": {
@@ -4279,11 +3873,6 @@
     },
     "two-dashboard-angular": {
       "projectType": "application",
-      "schematics": {
-        "@nrwl/angular:component": {
-          "style": "scss"
-        }
-      },
       "root": "apps/two-dashboard-angular",
       "sourceRoot": "apps/two-dashboard-angular/src",
       "prefix": "tamu-gisc",
@@ -4399,7 +3988,6 @@
       "root": "libs/two/dashboard",
       "sourceRoot": "libs/two/dashboard/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -4422,7 +4010,6 @@
       "root": "libs/two/data-access",
       "sourceRoot": "libs/two/data-access/src",
       "projectType": "library",
-      "schematics": {},
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -4453,7 +4040,10 @@
     },
     "@nrwl/angular:library": {
       "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
     }
   },
-  "defaultProject": "two-data-api-nest"
+  "defaultProject": "aggiemap-angular"
 }

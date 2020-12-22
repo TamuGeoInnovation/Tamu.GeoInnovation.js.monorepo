@@ -1,6 +1,14 @@
 module.exports = {
+  displayName: 'oidc-admin-nest',
   preset: '../../jest.preset.js',
-  coverageDirectory: '../../coverage/apps/oidc-admin-nest',
-  globals: { 'ts-jest': { tsConfig: '<rootDir>/tsconfig.spec.json' } },
-  displayName: 'oidc-admin-nest'
+  globals: {
+    'ts-jest': {
+      tsConfig: '<rootDir>/tsconfig.spec.json'
+    }
+  },
+  transform: {
+    '^.+\\.[tj]s$': 'ts-jest'
+  },
+  moduleFileExtensions: ['ts', 'js', 'html'],
+  coverageDirectory: '../../coverage/apps/oidc-admin-nest'
 };
