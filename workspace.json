@@ -1982,7 +1982,6 @@
       "sourceRoot": "apps/cpa-nest/src",
       "projectType": "application",
       "prefix": "cpa-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -2015,19 +2014,18 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["apps/cpa-nest/tsconfig.app.json", "apps/cpa-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/cpa-nest/**/*"]
+            "lintFilePatterns": ["apps/cpa-nest/**/*.ts"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/apps/cpa-nest"],
           "options": {
-            "jestConfig": "apps/cpa-nest/jest.config.js",
+            "jestConfig": "apps/apps/cpa-nest/jest.config.js",
             "passWithNoTests": true
-          },
-          "outputs": ["coverage/apps/cpa-nest"]
+          }
         }
       }
     },
@@ -2612,7 +2610,6 @@
       "sourceRoot": "apps/covid-data-api-nest/src",
       "projectType": "application",
       "prefix": "covid-data-api-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -2653,21 +2650,12 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "covid-data-api-nest:build"
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "covid-data-api-nest:build:production"
-            },
-            "development": {
-              "buildTarget": "covid-data-api-nest:build:development"
-            }
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["apps/covid-data-api-nest/tsconfig.app.json", "apps/covid-data-api-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/covid-data-api-nest/**/*"]
+            "lintFilePatterns": ["apps/covid-data-api-nest/**/*.ts"]
           }
         },
         "test": {
@@ -3477,7 +3465,6 @@
       "sourceRoot": "apps/ues-effluent-data-api-nest/src",
       "projectType": "application",
       "prefix": "ues-effluent-data-api-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -3510,13 +3497,9 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "apps/ues-effluent-data-api-nest/tsconfig.app.json",
-              "apps/ues-effluent-data-api-nest/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!apps/ues-effluent-data-api-nest/**/*"]
+            "lintFilePatterns": ["apps/ues-effluent-data-api-nest/**/*.ts"]
           }
         },
         "test": {
@@ -3534,7 +3517,6 @@
       "sourceRoot": "apps/oidc-provider-nest/src",
       "projectType": "application",
       "prefix": "oidc-provider-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -3555,8 +3537,7 @@
               ],
               "extractLicenses": false,
               "inspect": false,
-              "optimization": true,
-              "sourceMap": false
+              "optimization": true
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -3565,21 +3546,12 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "oidc-provider-nest:build"
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "oidc-provider-nest:build:production"
-            },
-            "development": {
-              "buildTarget": "oidc-provider-nest:build:development"
-            }
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["apps/oidc-provider-nest/tsconfig.app.json", "apps/oidc-provider-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-provider-nest/**/*"]
+            "lintFilePatterns": ["apps/oidc-provider-nest/**/*.ts"]
           }
         },
         "test": {
@@ -3737,7 +3709,6 @@
       "sourceRoot": "apps/oidc-admin-nest/src",
       "projectType": "application",
       "prefix": "oidc-admin-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -3751,8 +3722,7 @@
               ],
               "extractLicenses": false,
               "inspect": false,
-              "optimization": true,
-              "sourceMap": false
+              "optimization": true
             }
           },
           "options": {
@@ -3772,10 +3742,9 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/oidc-admin-nest/**/*"],
-            "tsConfig": ["apps/oidc-admin-nest/tsconfig.app.json", "apps/oidc-admin-nest/tsconfig.spec.json"]
+            "lintFilePatterns": ["apps/oidc-admin-nest/**/*.ts"]
           }
         },
         "test": {
@@ -4074,8 +4043,7 @@
               ],
               "extractLicenses": false,
               "inspect": false,
-              "optimization": true,
-              "sourceMap": false
+              "optimization": true
             }
           },
           "options": {
@@ -4088,10 +4056,9 @@
           "outputs": ["{options.outputPath}"]
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/two-data-api-nest/**/*"],
-            "tsConfig": ["apps/two-data-api-nest/tsconfig.app.json", "apps/two-data-api-nest/tsconfig.spec.json"]
+            "lintFilePatterns": ["apps/two-data-api-nest/**/*.ts"]
           }
         },
         "serve": {
@@ -4108,15 +4075,13 @@
           },
           "outputs": ["coverage/apps/two-data-api-nest"]
         }
-      },
-      "schematics": {}
+      }
     },
     "two-directory-nest": {
       "root": "apps/two-directory-nest",
       "sourceRoot": "apps/two-directory-nest/src",
       "projectType": "application",
       "prefix": "two-directory-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -4145,20 +4110,13 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "two-directory-nest:build",
-            "port": 0
-          },
-          "configurations": {
-            "development": {
-              "inspect": false
-            }
+            "buildTarget": "two-directory-nest:build"
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["apps/two-directory-nest/tsconfig.app.json", "apps/two-directory-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/two-directory-nest/**/*"]
+            "lintFilePatterns": ["apps/two-directory-nest/**/*.ts"]
           }
         },
         "test": {
@@ -4199,7 +4157,6 @@
       "sourceRoot": "apps/two-valup-nest/src",
       "projectType": "application",
       "prefix": "two-valup-nest",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@nrwl/node:build",
@@ -4228,20 +4185,13 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "two-valup-nest:build",
-            "port": 0
-          },
-          "configurations": {
-            "development": {
-              "inspect": false
-            }
+            "buildTarget": "two-valup-nest:build"
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["apps/two-valup-nest/tsconfig.app.json", "apps/two-valup-nest/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/two-valup-nest/**/*"]
+            "lintFilePatterns": ["apps/two-valup-nest/**/*.ts"]
           }
         },
         "test": {

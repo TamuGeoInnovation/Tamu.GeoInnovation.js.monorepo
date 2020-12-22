@@ -1,17 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "types": ["node", "jest"]
-  },
-  "include": [],
   "files": [],
+  "include": [],
   "references": [
     {
       "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.build.json"
     },
     {
       "path": "./tsconfig.spec.json"
