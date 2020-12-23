@@ -30,31 +30,6 @@ Cypress.Commands.add('login', (email, password) => {
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 /// <reference types="cypress" />
-Cypress.Commands.add('checkNewPageApi', (url, type) => {
-  cy.route(`${type}`, '*')
-    .as('apiCheck')
-  cy.visit(`${url}`)
-  cy.wait('@apiCheck')
-    .then((postInterception) => {
-      assert.isNotNull(postInterception.response.body, 'API post has data')
-    })
-})
-
-Cypress.Commands.add('checkButtonApi', (button, type) => {
-  cy.route(`${type}`, '*')
-    .as('apiCheck')
-  cy.get(`${button}`)
-    .click({force: true})
-  cy.wait('@apiCheck')
-    .then((interception) => {
-      assert.isNotNull(interception.response.body, 'API post has data')
-    })
-})
-
-Cypress.Commands.add('checkMapApi', (url, type, alias) => {
-  cy.route(`${type}`, `${url}`)
-    .as(`${alias}`)
-}) 
 
 Cypress.Commands.add('checkTitleLogo', () => {
   cy.get('tamu-gisc-tamu-block > img')
