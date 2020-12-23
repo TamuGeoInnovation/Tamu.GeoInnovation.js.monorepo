@@ -9,9 +9,6 @@ declare namespace Cypress {
        * Custom command to open a website and check if the API call returns data.
        * @example cy.checkApiCall('https://somewebsite.com','GET')
       */
-     checkNewPageApi(url: string, type: string): Chainable<Element>
-     checkButtonApi(button: string, type: string): Chainable<Element>
-     checkMapApi(url: string, type: string, alias: string): Chainable<Element>
      checkTitleLogo(): Chainable<Element>
      getFeatureToggle(): Chainable<Element>
      getDirectionsToggle(): Chainable<Element>
