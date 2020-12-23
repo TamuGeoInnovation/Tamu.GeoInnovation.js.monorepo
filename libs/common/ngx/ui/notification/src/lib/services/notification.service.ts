@@ -180,7 +180,7 @@ export class NotificationService {
     // For notifications with a range, return those for which the current date is active.
     const rangeActive: NotificationProperties[] = flattened.filter((e) => {
       return (
-        e.acknowledge === false && e.range && e.range.length === 2 && (Date.now() >= e.range[0] && Date.now() <= e.range[1])
+        e.acknowledge === false && e.range && e.range.length === 2 && Date.now() >= e.range[0] && Date.now() <= e.range[1]
       );
     });
 

@@ -1,5 +1,3 @@
-import { EntitySchema } from 'typeorm';
-
 export { CNR4 } from './entities/cnr4/cnr4.entity';
 export { CR6 } from './entities/cr6/cr6.entity';
 export { CS655 } from './entities/cs655/cs655.entity';
@@ -21,6 +19,8 @@ export { DataGroups } from './entities/data-groups/data-groups.entity';
 export { Fields } from './entities/fields/fields.entity';
 export { NodeGroups } from './entities/node-groups/node-groups.entity';
 export { DataGroupFlds } from './entities/data-group-fids/data-group-fids.entity';
+
+export { EntryFailure } from './entities/entry-failure/entry-failure.entity';
 
 export {
   DIRECTORY_SERVICE,

@@ -5,11 +5,8 @@
       <tamu-gisc-checkbox label="Claims/Lockdowns" (click)="lockdownToggle()"></tamu-gisc-checkbox>
     </div>
   </tamu-gisc-drawer>
-  <tamu-gisc-mapbox-map
-    token="pk.eyJ1Ijoid2hhdHppdG9veWEiLCJhIjoiY2poNzI3M2M0MDNnbjMzcWVtYmZnNXExNiJ9.K-nM-JaZnZvAfutkLQitbg"
-    style="mapbox://styles/mapbox/dark-v10" [center]="['-110', '38.88']">
-  </tamu-gisc-mapbox-map>
-  <div class='right-sidebar'>
+  <tamu-gisc-mapbox-map token="pk.eyJ1Ijoid2hhdHppdG9veWEiLCJhIjoiY2poNzI3M2M0MDNnbjMzcWVtYmZnNXExNiJ9.K-nM-JaZnZvAfutkLQitbg" style="mapbox: //styles/mapbox/dark-v10" [center]="['-110', '38.88']"> </tamu-gisc-mapbox-map>
+  <div class="right-sidebar">
     <div *ngIf="(countyBoxModel | async) as countyInfo">
       <h4>Mouse Position</h4>
       <p>Mouse over: {{countyInfo.county}}</p>
@@ -21,10 +18,7 @@
       <p>Claims: {{info.claims}}</p>
       <p>Lockdowns: {{info.lockdowns}}</p>
       <p>Updated: {{info.updated}}</p>
-      <a [routerLink]="['/admin/claims']" [queryParams]='{state: info.state, county: info.fipsNum}' target="_blank"
-        rel="noopener">
-        Admin Page
-      </a>
+      <a [routerLink]="['/admin/claims']" [queryParams]="{state: info.state, county: info.fipsNum}" target="_blank" rel="noopener"> Admin Page </a>
     </div>
     <div *ngIf="!lockdownButtonToggle" class="legend">
       <h3>Claimed Counties</h3>

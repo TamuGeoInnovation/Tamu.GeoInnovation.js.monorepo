@@ -1,7 +1,7 @@
 import { async, inject, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { LOCAL_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { LOCAL_STORAGE, StorageServiceModule } from 'ngx-webstorage-service';
 
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { AppStorage } from '@tamu-gisc/common/ngx/local-store';

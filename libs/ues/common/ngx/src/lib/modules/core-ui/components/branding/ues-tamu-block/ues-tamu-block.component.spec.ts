@@ -8,9 +8,8 @@ describe('UESTamuBlockComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UESTamuBlockComponent ]
-    })
-    .compileComponents();
+      declarations: [UESTamuBlockComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

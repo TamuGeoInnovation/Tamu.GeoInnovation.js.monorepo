@@ -8,9 +8,8 @@ describe('BaseDirectionsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BaseDirectionsComponent ]
-    })
-    .compileComponents();
+      declarations: [BaseDirectionsComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

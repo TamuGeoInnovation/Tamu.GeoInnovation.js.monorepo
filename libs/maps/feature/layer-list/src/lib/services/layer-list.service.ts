@@ -180,10 +180,7 @@ export class LayerListService implements OnDestroy {
         this._scaleThrottled
       )
         // Normalize either emission by mapping to the exposed store observable.
-        .pipe(
-          this.mapLayerChangeEvent(),
-          this.filterLayers(props, false)
-        )
+        .pipe(this.mapLayerChangeEvent(), this.filterLayers(props, false))
     );
   }
 

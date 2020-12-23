@@ -4,9 +4,7 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { AccordionContentDirective } from './accordion-content.directive';
 
 @Component({
-  template: `
-    <div giscAccordionContent></div>
-  `
+  template: ` <div giscAccordionContent></div> `
 })
 class MockAccordionContentDirectiveComponent {
   @ViewChild(AccordionContentDirective, { static: true })

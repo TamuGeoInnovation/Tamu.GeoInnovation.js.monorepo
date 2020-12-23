@@ -6,7 +6,7 @@ import { NgModule } from '@angular/core';
 
 import { Angulartics2Module } from 'angulartics2';
 import * as WebFont from 'webfontloader';
-import { StorageServiceModule } from 'angular-webstorage-service';
+import { StorageServiceModule } from 'ngx-webstorage-service';
 
 import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
@@ -42,7 +42,7 @@ const routes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     Angulartics2Module.forRoot(),
-    RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
+    RouterModule.forRoot(routes, { initialNavigation: 'enabled', relativeLinkResolution: 'legacy' }),
     HttpClientModule,
     EnvironmentModule,
     NotificationModule,

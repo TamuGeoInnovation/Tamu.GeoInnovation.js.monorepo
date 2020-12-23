@@ -59,7 +59,7 @@ type Symbols =
 // Autocasting Symbol Typings
 //
 interface FillSymbolAutoCastOptions {
-  symbol: SimpleFillSymbol & esri.SimpleFillSymbolProperties | PictureFillSymbol & esri.PictureFillSymbolProperties;
+  symbol: (SimpleFillSymbol & esri.SimpleFillSymbolProperties) | (PictureFillSymbol & esri.PictureFillSymbolProperties);
 }
 
 interface LineSymbolAutoCastOptions {
@@ -67,16 +67,18 @@ interface LineSymbolAutoCastOptions {
 }
 
 interface MarkerSymbolAutoCastOptions {
-  symbol: SimpleMarkerSymbol & esri.SimpleMarkerSymbolProperties | PictureMarkerSymbol & esri.PictureMarkerSymbolProperties;
+  symbol:
+    | (SimpleMarkerSymbol & esri.SimpleMarkerSymbolProperties)
+    | (PictureMarkerSymbol & esri.PictureMarkerSymbolProperties);
 }
 
 interface Symbol3DAutoCastOptions {
   symbol:
-    | Point3DSymbol & esri.PointSymbol3DProperties
-    | Line3DSymbol & esri.LineSymbol3DProperties
-    | Polygon3DSymbol & esri.PolygonSymbol3DProperties
-    | Mesh3DSymbol & esri.MeshSymbol3DProperties
-    | Label3DSymbol & esri.LabelSymbol3DProperties;
+    | (Point3DSymbol & esri.PointSymbol3DProperties)
+    | (Line3DSymbol & esri.LineSymbol3DProperties)
+    | (Polygon3DSymbol & esri.PolygonSymbol3DProperties)
+    | (Mesh3DSymbol & esri.MeshSymbol3DProperties)
+    | (Label3DSymbol & esri.LabelSymbol3DProperties);
 }
 
 interface TextSymbolAutoCastOptions {

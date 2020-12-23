@@ -4,9 +4,7 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { TileSubmenuDirective } from './tile-submenu.directive';
 
 @Component({
-  template: `
-    <div giscTileSubmenu></div>
-  `
+  template: ` <div giscTileSubmenu></div> `
 })
 class MockTileSubmenuDirectiveComponent {
   @ViewChild(TileSubmenuDirective, { static: true })

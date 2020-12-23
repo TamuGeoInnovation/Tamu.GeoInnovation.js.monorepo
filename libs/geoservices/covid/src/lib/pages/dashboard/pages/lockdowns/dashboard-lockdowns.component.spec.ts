@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { LOCAL_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { LOCAL_STORAGE, StorageServiceModule } from 'ngx-webstorage-service';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { AppStorage } from '@tamu-gisc/common/ngx/local-store';

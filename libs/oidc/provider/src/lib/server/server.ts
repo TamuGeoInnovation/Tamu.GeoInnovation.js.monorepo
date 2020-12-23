@@ -12,7 +12,7 @@ import { token_routes } from '../routes/tokens';
 import { session_routes } from '../routes/sessions';
 import { SequelizeAdapter } from '../adapter/sequelize_adapter';
 import { DbManager } from '../sequelize/DbManager';
-import { setCORs } from '../middleware/middleware';
+import { setCORs } from '../middleware/setcors';
 
 export class IdpServer {
   private app: express.Application = express();

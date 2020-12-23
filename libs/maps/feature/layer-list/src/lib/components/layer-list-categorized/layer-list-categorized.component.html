@@ -8,9 +8,7 @@
     <tamu-gisc-accordion [expanded]="category.expanded">
       <tamu-gisc-accordion-header (click)="category.expanded = !category.expanded">{{category.title}}</tamu-gisc-accordion-header>
       <tamu-gisc-accordion-content>
-        <p *ngFor="let item of category.layers" class="layer-item" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible, hidden: item.outsideExtent }" (click)="toggleLayer(item)">
-          {{ item.title }}
-        </p>
+        <p *ngFor="let item of category.layers" class="layer-item" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible, hidden: item.outsideExtent }" (click)="toggleLayer(item)">{{ item.title }}</p>
       </tamu-gisc-accordion-content>
     </tamu-gisc-accordion>
   </div>

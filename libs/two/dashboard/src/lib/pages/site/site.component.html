@@ -1,0 +1,6 @@
+<h3>{{siteCode}}</h3>
+<div class="chartDiv">
+  <div class="charts" *ngFor="let chart of (chartData | async)">
+    <tamu-gisc-pie-chart [source]="chart.data" [options]="chart.options" [title]="chart.options.title.text"></tamu-gisc-pie-chart>
+  </div>
+</div>

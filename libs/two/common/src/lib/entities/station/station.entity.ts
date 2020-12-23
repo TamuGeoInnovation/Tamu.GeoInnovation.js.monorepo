@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn, TableInheritance } from 'typeorm';
+
 import { IsNotEmpty } from 'class-validator';
-import { WeatherFlux } from '../weatherflux/weatherflux.entity';
 
 @Entity({ name: 'weatherflux' })
 @TableInheritance({ column: { type: 'varchar', name: 'type' } })
@@ -23,13 +23,11 @@ export class StationInfo {
   constructor(row?) {
     if (row) {
       Object.keys(row).forEach((key, index) => {
-        // console.log(key, index);
         const key_lowercase = key.toLowerCase();
         if (key_lowercase in this) {
           if (row[key]) {
             this[key_lowercase] = Number(row[key]) || String(row[key]) || null;
           }
-          // console.log("Yeah we got this")
         }
       });
     }

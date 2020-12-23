@@ -1,9 +1,15 @@
 module.exports = {
-  name: 'covid-common-enums',
-  preset: '../../../../jest.config.js',
+  displayName: 'covid-common-enums',
+  preset: '../../../../jest.preset.js',
+  globals: {
+    'ts-jest': {
+      tsConfig: '<rootDir>/tsconfig.spec.json'
+    }
+  },
+  testEnvironment: 'node',
   transform: {
     '^.+\\.[tj]sx?$': 'ts-jest'
   },
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../../coverage/libs/covid/common/enums'
 };

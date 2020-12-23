@@ -8,9 +8,8 @@ describe('TripPlannerTopComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TripPlannerTopComponent ]
-    })
-    .compileComponents();
+      declarations: [TripPlannerTopComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -6,7 +6,7 @@ import { TripModeSwitch } from '../../trip-planner.service';
 
 import esri = __esri;
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class InrixService {
   constructor(private http: HttpClient) {}
 

@@ -15,7 +15,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { AuthService } from '../../auth/services/auth.service';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
   constructor(private http: HttpClient, private auth: AuthService, private router: Router) {}
 

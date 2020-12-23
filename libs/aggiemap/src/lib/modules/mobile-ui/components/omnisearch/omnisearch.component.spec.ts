@@ -8,9 +8,8 @@ describe('OmnisearchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OmnisearchComponent ]
-    })
-    .compileComponents();
+      declarations: [OmnisearchComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -37,7 +37,7 @@ export class CountyComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   public counties: Observable<Array<Partial<County>>>;
   public states: Observable<Array<Partial<State>>>;
-  
+
   public phoneTypes: Observable<Partial<FieldCategory>>;
   public websiteTypes: Observable<Partial<FieldCategory>>;
   public suggestedCounties: Observable<Array<County>>;
@@ -255,13 +255,7 @@ export class CountyComponent implements OnInit, OnDestroy {
 
     this.submissionStatus.next(0);
 
-    forkJoin([
-      this.is.identity.pipe(take(1)),
-      this.localCounty.pipe(
-        take(1),
-        timeoutWith(100, of(undefined))
-      )
-    ])
+    forkJoin([this.is.identity.pipe(take(1)), this.localCounty.pipe(take(1), timeoutWith(100, of(undefined)))])
       .pipe(
         switchMap(([identity, county]) => {
           return this.is.registerCountyClaim(

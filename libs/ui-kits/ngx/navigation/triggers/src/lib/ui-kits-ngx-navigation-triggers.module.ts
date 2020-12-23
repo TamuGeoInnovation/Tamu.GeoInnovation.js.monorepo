@@ -9,4 +9,3 @@ import { HamburgerTriggerComponent } from './components/hamburger-trigger/hambur
   exports: [HamburgerTriggerComponent]
 })
 export class UINavigationTriggersModule {}
-

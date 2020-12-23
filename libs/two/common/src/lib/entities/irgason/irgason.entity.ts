@@ -1,5 +1,5 @@
-import { ChildEntity, Entity, Column, PrimaryGeneratedColumn, TableForeignKey } from 'typeorm';
-import { IsNotEmpty, IsInt, IsDate, Min, Max, IsNumber } from 'class-validator';
+import { ChildEntity, Column } from 'typeorm';
+
 import { StationInfo } from '../station/station.entity';
 import { WeatherFlux } from '../weatherflux/weatherflux.interface';
 
@@ -9,12 +9,6 @@ import { WeatherFlux } from '../weatherflux/weatherflux.interface';
  */
 @ChildEntity()
 export class IRGASON extends StationInfo {
-  // [prop: string]: number | null;
-
-  // @PrimaryGeneratedColumn({ name: "RECORD" })
-  // @IsNotEmpty()
-  // record: number | null = null;
-
   /**
    * CO2 flux
    *

@@ -8,9 +8,8 @@ describe('SiteHistoryChartComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SiteHistoryChartComponent ]
-    })
-    .compileComponents();
+      declarations: [SiteHistoryChartComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

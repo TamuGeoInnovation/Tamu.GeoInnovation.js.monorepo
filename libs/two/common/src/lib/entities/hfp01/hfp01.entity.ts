@@ -1,19 +1,5 @@
-import { ChildEntity, Entity, Column, PrimaryGeneratedColumn, TableForeignKey } from 'typeorm';
-import {
-  validate,
-  validateOrReject,
-  Contains,
-  IsIP,
-  IsNotEmpty,
-  IsInt,
-  Length,
-  IsEmail,
-  IsFQDN,
-  IsDate,
-  Min,
-  Max,
-  IsNumber
-} from 'class-validator';
+import { ChildEntity, Column } from 'typeorm';
+
 import { StationInfo } from '../station/station.entity';
 import { WeatherFlux } from '../weatherflux/weatherflux.interface';
 
@@ -23,11 +9,6 @@ import { WeatherFlux } from '../weatherflux/weatherflux.interface';
  */
 @ChildEntity()
 export class HFP01 extends StationInfo {
-  // [prop: string]: number | null;
-
-  // @PrimaryGeneratedColumn({ name: "RECORD" })
-  // record: number | null = null;
-
   /**
    * Heat flux at the ground surface
    *
@@ -76,13 +57,11 @@ export class HFP01 extends StationInfo {
     super();
     if (row) {
       Object.keys(row).forEach((key, index) => {
-        // console.log(key, index);
         const key_lowercase = key.toLowerCase();
         if (key_lowercase in this) {
           if (row[key]) {
             this[key_lowercase] = Number(row[key]) || null;
           }
-          // console.log("Yeah we got this")
         }
       });
     }

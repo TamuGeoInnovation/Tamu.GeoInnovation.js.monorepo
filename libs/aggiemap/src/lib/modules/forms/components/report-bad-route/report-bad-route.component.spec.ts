@@ -8,9 +8,8 @@ describe('ReportBadRouteComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ReportBadRouteComponent ]
-    })
-    .compileComponents();
+      declarations: [ReportBadRouteComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

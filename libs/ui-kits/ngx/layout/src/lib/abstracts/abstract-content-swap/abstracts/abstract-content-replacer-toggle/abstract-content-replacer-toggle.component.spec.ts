@@ -8,9 +8,8 @@ describe('AbstractContentReplacerToggleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AbstractContentReplacerToggleComponent ]
-    })
-    .compileComponents();
+      declarations: [AbstractContentReplacerToggleComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

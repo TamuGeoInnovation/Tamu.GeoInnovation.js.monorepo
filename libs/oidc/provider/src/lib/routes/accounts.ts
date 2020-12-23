@@ -3,16 +3,13 @@ import { authenticator } from 'otplib';
 import Provider from 'oidc-provider';
 
 import { AccountManager } from '../sequelize/account_manager';
-import { TwoFactorAuthUtils } from '../misc/twofactor-auth-utils';
+import { TwoFactorAuthUtils } from '../_utils/twofactorauth.util';
 import { GISCEmailer } from '../mailer';
 
 export const accounts_routes = (app: express.Application, provider: Provider) => {
   app.get('/accounts', async (req: Request, res: Response, next: NextFunction) => {
     const accounts = await AccountManager.getAllAccounts();
-    res
-      .set('Access-Control-Allow-Origin', '*')
-      .status(200)
-      .send(accounts);
+    res.set('Access-Control-Allow-Origin', '*').status(200).send(accounts);
   });
 
   app.get('/accounts/:sub', async (req: Request, res: Response, next: NextFunction) => {

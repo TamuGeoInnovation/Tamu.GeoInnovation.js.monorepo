@@ -8,9 +8,8 @@ describe('BuildingTypeChartComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BuildingTypeChartComponent ]
-    })
-    .compileComponents();
+      declarations: [BuildingTypeChartComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

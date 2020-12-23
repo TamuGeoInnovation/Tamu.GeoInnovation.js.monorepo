@@ -74,7 +74,7 @@ WebFont.load({
   declarations: [],
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
     HttpClientModule,
     BrowserAnimationsModule,
     ResponsiveModule,

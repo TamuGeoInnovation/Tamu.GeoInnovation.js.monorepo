@@ -100,6 +100,14 @@ export class DoughnutChartConfiguration extends ChartConfiguration {
   }
 }
 
+export class PieChartConfiguration extends ChartConfiguration {
+  constructor(args?: IChartConfiguration) {
+    super(args);
+
+    this.type = 'pie';
+  }
+}
+
 export interface IChartConfiguration extends Chart.ChartConfiguration {
   type?: Chart.ChartType;
   data?: Chart.ChartData;

@@ -64,7 +64,7 @@ describe('TemplateRenderer', () => {
       template: 'Mary had one white {value} and one green {value}.',
       replacement: 'lamb'
     };
- 
+
     renderer = new TemplateRenderer(options);
 
     const value = renderer.render();
