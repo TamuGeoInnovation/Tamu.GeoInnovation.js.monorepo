@@ -1,4 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { EditAccessTokenComponent } from './edit-access-token.component';
 
@@ -8,7 +11,14 @@ describe('EditAccessTokenComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [EditAccessTokenComponent]
+      imports: [EnvironmentModule, HttpClientTestingModule],
+      declarations: [EditAccessTokenComponent],
+      providers: [
+        {
+          provide: env,
+          useValue: { api_url: 'https://' }
+        }
+      ]
     }).compileComponents();
   }));
 

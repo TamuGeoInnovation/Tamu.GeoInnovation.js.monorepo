@@ -1,4 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { UploadComponent } from './upload.component';
 
@@ -8,7 +14,14 @@ describe('UploadComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [UploadComponent]
+      imports: [ReactiveFormsModule, UIFormsModule, RouterTestingModule, HttpClientTestingModule, EnvironmentModule],
+      declarations: [UploadComponent],
+      providers: [
+        {
+          provide: env,
+          useValue: { apiUrl: 'https://' }
+        }
+      ]
     }).compileComponents();
   }));
 

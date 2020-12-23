@@ -1,4 +1,9 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+
+import { ResultLookupPipe } from '../../pipes/result-lookup.pipe';
 
 import { ExistingComponent } from './existing.component';
 
@@ -8,7 +13,14 @@ describe('ExistingComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ExistingComponent]
+      imports: [HttpClientTestingModule, EnvironmentModule],
+      declarations: [ExistingComponent, ResultLookupPipe],
+      providers: [
+        {
+          provide: env,
+          useValue: { apiUrl: '' }
+        }
+      ]
     }).compileComponents();
   }));
 

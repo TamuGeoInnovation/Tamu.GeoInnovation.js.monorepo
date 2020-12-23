@@ -1,4 +1,8 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ChartsModule } from '@tamu-gisc/charts';
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { SiteHistoryChartComponent } from './site-history-chart.component';
 
@@ -8,7 +12,14 @@ describe('SiteHistoryChartComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SiteHistoryChartComponent]
+      imports: [ChartsModule, EnvironmentModule, HttpClientTestingModule],
+      declarations: [SiteHistoryChartComponent],
+      providers: [
+        {
+          provide: env,
+          useValue: { apiUrl: 'https://', effluentSampleLocationsUrl: '' }
+        }
+      ]
     }).compileComponents();
   }));
 

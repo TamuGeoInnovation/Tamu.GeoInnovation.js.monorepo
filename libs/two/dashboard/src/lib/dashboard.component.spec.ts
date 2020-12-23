@@ -1,5 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
+import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
+
+import { TWOHeaderModule } from './components/header/header.module';
 import { DashboardComponent } from './dashboard.component';
 
 describe('DashboardComponent', () => {
@@ -8,6 +12,7 @@ describe('DashboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [RouterTestingModule, TWOHeaderModule, GeoservicesCoreNgxModule],
       declarations: [DashboardComponent]
     }).compileComponents();
   }));

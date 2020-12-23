@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { UESEffluentCoreModule } from '../../../core/core.module';
+
 import { SidebarOverviewComponent } from './sidebar-overview.component';
 
 describe('SidebarOverviewComponent', () => {
@@ -8,6 +10,7 @@ describe('SidebarOverviewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [UESEffluentCoreModule],
       declarations: [SidebarOverviewComponent]
     }).compileComponents();
   }));
