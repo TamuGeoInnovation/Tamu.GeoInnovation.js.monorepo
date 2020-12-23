@@ -135,7 +135,7 @@
     "caniuse-lite": "^1.0.30001154",
     "codelyzer": "6.0.0",
     "coveralls": "^3.0.6",
-    "cypress": "3.4.1",
+    "cypress": "^5.5.0",
     "dotenv": "8.1.0",
     "eslint": "7.10.0",
     "eslint-config-prettier": "6.0.0",
