@@ -19,5 +19,6 @@ declare namespace Cypress {
      checkLegend(num: string, legendName: string): Chainable<Element>
      checkIcon(num: string, iconPath: string, altText: string): Chainable<Element>
      checkLink(elementText: string, link: string): Chainable<Element>
+     containsAnyText(element: string): Chainable<Element>
     }
   }

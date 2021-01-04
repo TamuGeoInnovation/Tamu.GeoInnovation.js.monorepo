@@ -94,5 +94,10 @@ Cypress.Commands.add('checkLink', (elementText, link) => {
   cy.contains(elementText)
     .should('have.attr', 'href', `${link}`)
 })
+Cypress.Commands.add('containsAnyText', (element) => {
+  cy.get(element)
+    .invoke('text')
+    .should('be.ok')
+})
 
 export{}
