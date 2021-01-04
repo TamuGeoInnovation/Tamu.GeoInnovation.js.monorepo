@@ -1,18 +1,13 @@
 /// <reference path="../support/index.d.ts" />
 describe('Correct Page', () => {
   beforeEach(() => {
-    cy.server()
-    cy.checkMapApi('**/TAMU_BaseMap/**', 'GET', 'basemap')
+    cy.intercept("GET", "**/TAMU_BaseMap/**")
+      .as("basemap")
     cy.visit('https://aggiemap.tamu.edu/map/d')
     cy.wait('@basemap')
     cy.get('canvas')
       .should('be.visible', {timeout: 5000})
   })
-
-  afterEach(() => {
-    cy.server({enable: false})
-  })
-  
   it('Check Location', () => {
     cy.location('protocol')
       .should('eq', 'https:')

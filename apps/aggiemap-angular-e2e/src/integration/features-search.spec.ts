@@ -1,10 +1,11 @@
 /// <reference path="../support/index.d.ts" />
 describe('Search', () => {
-  before(() => {
-    cy.server()
-    cy.checkMapApi('**/TAMU_BaseMap/**', 'GET', 'basemap')
-    cy.checkMapApi('**/Construction_2018/**', 'GET', 'construction')
-    cy.checkMapApi('**/Physical_Distancing_Tents/**', 'GET', 'tents')
+  beforeEach(() => {
+    cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
+    cy.intercept('GET', '**/Construction_2018/**').as('construction')
+    cy.intercept('GET','**/Physical_Distancing_Tents/**').as('tents')
+  })
+  it('Open Page', () => {
     cy.visit('https://aggiemap.tamu.edu/map/d')
     cy.wait('@basemap')
     cy.get('canvas')
@@ -23,7 +24,6 @@ describe('Search', () => {
     cy.wait(5000)
     cy.get('.focusable', {timeout: 5000})
       .click({force: true})
-      cy.server({enable: false})
   })
 
   it('Title', () => {

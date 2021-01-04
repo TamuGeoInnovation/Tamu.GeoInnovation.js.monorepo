@@ -1,16 +1,11 @@
 /// <reference path="../support/index.d.ts" />
 describe('Routing Options', () => {
   beforeEach(() => {
-    cy.server()
-    cy.checkMapApi('**/TAMU_BaseMap/**', 'GET', 'basemap')
+    cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
     cy.visit('https://aggiemap.tamu.edu/map/d/trip/options')
     cy.wait('@basemap')
     cy.get('canvas')
       .should('be.visible', {timeout: 5000})
-  })
-
-  afterEach(() => {
-    cy.server({enable: false})
   })
 
   it('Title Logo', () => {
