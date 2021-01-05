@@ -28,8 +28,8 @@ export class SponsorsTamuComponent implements OnInit {
   }
 
   public setPlaqueVisibleStatus(rank: string) {
-    let plaque = document.querySelector(`[rank=${rank}]`);
-    let content = document.querySelector(`.content-block[rank=${rank}]`);
+    const plaque = document.querySelector(`[rank=${rank}]`);
+    const content = document.querySelector(`.content-block[rank=${rank}]`);
 
     if (plaque) {
       plaque.classList.add('active');

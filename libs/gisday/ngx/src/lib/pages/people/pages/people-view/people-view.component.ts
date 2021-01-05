@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+
 import { SpeakerService, IPhotoReponse } from '@tamu-gisc/gisday/data-access';
 import { Speaker } from '@tamu-gisc/gisday/data-api';
 

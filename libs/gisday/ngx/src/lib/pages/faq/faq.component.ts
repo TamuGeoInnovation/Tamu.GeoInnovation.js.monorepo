@@ -15,7 +15,7 @@ export class FaqComponent implements OnInit {
 
   public onFaqItemClick(event) {
     const faqItem: HTMLElement = event.srcElement;
-    let list = faqItem.parentElement.classList;
+    const list = faqItem.parentElement.classList;
     if (!list.contains('expanded')) {
       list.add('expanded');
     } else {

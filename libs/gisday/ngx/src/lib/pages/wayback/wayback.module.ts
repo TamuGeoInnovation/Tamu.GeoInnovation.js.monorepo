@@ -9,10 +9,6 @@ const routes: Routes = [
     path: '',
     component: WaybackComponent,
     children: [
-      // {
-      //   path: '',
-      //   loadChildren: () => import('./').then((m) => m.MyDetailsModule)
-      // },
       {
         path: '2019',
         loadChildren: () => import('./wayback-2019/wayback-2019.module').then((m) => m.Wayback2019Module)
