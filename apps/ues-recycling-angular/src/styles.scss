@@ -205,6 +205,10 @@ h6 {
   }
 }
 
+.table-overflow-scroll {
+  overflow: auto;
+}
+
 table {
   // All tables, except tables inside code elements.
   &:not([class^='hljs']) {

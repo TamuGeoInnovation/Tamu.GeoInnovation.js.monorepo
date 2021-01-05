@@ -1,13 +1,19 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
+
+import { env, EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+
+import * as environment from '../environments/environment';
 
 import { AppComponent } from './app.component';
-import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    HttpClientModule,
     RouterModule.forRoot(
       [
         {
@@ -24,7 +30,13 @@ import { RouterModule } from '@angular/router';
       { initialNavigation: 'enabled' }
     )
   ],
-  providers: [],
+  providers: [
+    EnvironmentService,
+    {
+      provide: env,
+      useValue: environment
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

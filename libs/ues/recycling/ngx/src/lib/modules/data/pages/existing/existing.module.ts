@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { ExistingComponent } from './existing.component';
+import { ResultLookupPipe } from '../../pipes/result-lookup.pipe';
 
 const routes: Routes = [
   {
@@ -13,6 +14,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [ExistingComponent]
+  declarations: [ExistingComponent, ResultLookupPipe]
 })
 export class ExistingModule {}
