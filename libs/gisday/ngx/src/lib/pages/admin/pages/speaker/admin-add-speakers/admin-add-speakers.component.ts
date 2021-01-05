@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+
+import { Observable } from 'rxjs';
+
 import { SpeakerService, UniversityService } from '@tamu-gisc/gisday/data-access';
 import { Speaker, University } from '@tamu-gisc/gisday/data-api';
-import { Observable } from 'rxjs';
+
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
 export const formConfig = {
@@ -45,7 +48,6 @@ export class AdminAddSpeakersComponent extends BaseAdminAddComponent<Speaker, Sp
       data.append(key, form[key]);
     });
 
-    // data.append('file', this.form.get('file').value, 'file');
     this.speakerService.insertSpeakerInfo(data);
   }
 }

@@ -9,13 +9,8 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 export class AuthService {
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient) {
-    // this.resource = this.env.value('api_url') + '/login';
-  }
+  constructor(private env: EnvironmentService, private http: HttpClient) {}
 
-  /**
-   * Returns logged in state
-   */
   public state() {
     return this.http.get<boolean>(this.env.value('api_url') + '/user', {
       withCredentials: true

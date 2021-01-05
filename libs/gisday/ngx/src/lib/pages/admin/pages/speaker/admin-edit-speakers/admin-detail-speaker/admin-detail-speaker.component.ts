@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+
 import { SpeakerService } from '@tamu-gisc/gisday/data-access';
 import { Speaker } from '@tamu-gisc/gisday/data-api';
+
 import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-detail.component';
 
+// TODO: Fix this -Aaron (1/5/2021)
 let formConfig: {
   guid: string[];
   firstName: string[];

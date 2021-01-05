@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
+
 import { UniversityService } from '@tamu-gisc/gisday/data-access';
 import { University } from '@tamu-gisc/gisday/data-api';
+
 import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.component';
 
 @Component({

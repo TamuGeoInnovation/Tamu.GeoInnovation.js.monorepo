@@ -8,5 +8,5 @@ import { Component, OnInit } from '@angular/core';
 export class AdminEventComponent implements OnInit {
   constructor() {}
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 }

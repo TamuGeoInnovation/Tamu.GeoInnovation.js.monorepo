@@ -9,20 +9,19 @@ import { Observable } from 'rxjs';
   styleUrls: ['./view-submission.component.scss']
 })
 export class ViewSubmissionComponent implements OnInit {
+  // TODO: Add in VGI submission count -Aaron (1/5/2021)
   public $vgiSubmissions: Observable<Array<Partial<any>>>;
   public $paperPosterSubmissions: Observable<Array<Partial<UserSubmission>>>;
+  // TODO: Add in feedback submission count -Aaron (1/5/2021)
   public $feedbackSubmissions: Observable<Array<Partial<any>>>;
 
   constructor(public readonly userSubmissionService: UserSubmissionsService) {
     this.fetchPaperPosterSubmissions();
   }
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 
   public fetchPaperPosterSubmissions() {
     this.$paperPosterSubmissions = this.userSubmissionService.getEntities();
-    // this.userSubmissionService.getEntities().subscribe((result) => {
-    //   console.log(result);
-    // });
   }
 }

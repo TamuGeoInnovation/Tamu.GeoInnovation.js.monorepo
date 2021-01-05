@@ -1,9 +1,11 @@
 import { OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { BaseService } from '@tamu-gisc/gisday/data-access';
+
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+
+import { BaseService } from '@tamu-gisc/gisday/data-access';
 
 export abstract class BaseAdminDetailComponent<T, K extends BaseService<T>> implements IBaseAdminAddComponent {
   public entityGuid: string;
@@ -16,7 +18,7 @@ export abstract class BaseAdminDetailComponent<T, K extends BaseService<T>> impl
     this.form = this.fb.group(this.formGroup);
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     if (this.route.snapshot.params.guid) {
       this.entityGuid = this.route.snapshot.params.guid;
       this.entityService.getEntity(this.entityGuid).subscribe((entity) => {
@@ -31,12 +33,12 @@ export abstract class BaseAdminDetailComponent<T, K extends BaseService<T>> impl
     }
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._$destroy.next();
     this._$destroy.complete();
   }
 
-  submitNewEntity() {
+  public submitNewEntity() {
     this.entityService.createEntity(this.form.value);
   }
 }

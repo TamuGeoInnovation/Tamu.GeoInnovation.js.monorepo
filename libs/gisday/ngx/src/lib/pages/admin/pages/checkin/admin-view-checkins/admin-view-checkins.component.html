@@ -5,7 +5,7 @@
     <th>Updated</th>
   </tr>
   <tr *ngFor="let entity of ($entities | async)">
-    <td>{{entity.userGuid}}</td>
+    <td>{{entity.accountGuid}}</td>
     <td>{{entity.event.name}}</td>
     <td>{{entity.updated | date:'short'}}</td>
   </tr>

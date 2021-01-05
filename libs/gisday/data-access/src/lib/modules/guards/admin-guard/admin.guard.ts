@@ -10,6 +10,7 @@ import { AuthService } from '@tamu-gisc/gisday/data-access';
 })
 export class AdminGuard implements CanActivate {
   constructor(private readonly authService: AuthService) {}
+
   public canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return this.authService.getUserRole().pipe(
       map((value) => {

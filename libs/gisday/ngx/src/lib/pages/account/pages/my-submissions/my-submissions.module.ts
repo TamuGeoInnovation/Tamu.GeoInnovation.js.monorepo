@@ -7,13 +7,6 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { MySubmissionsComponent } from './my-submissions.component';
 
-// const routes: Routes = [
-//   {
-//     path: '',
-//     component: MySubmissionsComponent
-//   }
-// ];
-
 const routes: Routes = [
   {
     path: '',
