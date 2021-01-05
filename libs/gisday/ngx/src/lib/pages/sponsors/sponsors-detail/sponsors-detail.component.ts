@@ -11,5 +11,3 @@ export class SponsorsDetailComponent implements OnInit {
 
   public ngOnInit(): void {}
 }
-
-// viewTitle, viewSubtitle, picture, entityTitle, entitySubtitle, entityText, contactName, contactEmail, website

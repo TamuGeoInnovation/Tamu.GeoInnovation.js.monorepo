@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
 import { Observable } from 'rxjs';
 
 import { Event } from '@tamu-gisc/gisday/data-api';
-import { CheckinService, EventService, SessionsService } from '@tamu-gisc/gisday/data-access';
+import { CheckinService, EventService } from '@tamu-gisc/gisday/data-access';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
-  // templateUrl: './session-detail.component.html',
   templateUrl: './event-detail-test.component.html',
   styleUrls: ['./event-detail.component.scss']
 })
@@ -22,12 +22,7 @@ export class EventDetailComponent implements OnInit {
   };
   public event: Observable<Partial<Event>>;
   public now: Date = new Date();
-  constructor(
-    private route: ActivatedRoute,
-    private eventService: EventService,
-    private sessionsService: SessionsService,
-    private checkinService: CheckinService
-  ) {}
+  constructor(private route: ActivatedRoute, private eventService: EventService, private checkinService: CheckinService) {}
 
   public ngOnInit(): void {
     const guid = this.route.snapshot.params.guid;
@@ -35,15 +30,11 @@ export class EventDetailComponent implements OnInit {
       this.eventGuid = guid;
       this.event = this.eventService.getEntity(guid);
       this.numOfRsvps = this.eventService.getNumberOfRsvps(guid);
-      // this.eventService.getNumberOfRsvps(this.eventGuid).subscribe((result) => console.log(result));
     }
   }
 
   public getNumberOfRsvps() {
-    //this.numOfRsvps = this.sessionsService.getNumberOfRsvps(this.eventGuid);
-    // this.sessionsService.getNumberOfRsvps(this.eventGuid).subscribe((result) => {
-    //   console.log('NumOfRsvps', result);
-    // });
+    this.numOfRsvps = this.eventService.getNumberOfRsvps(this.eventGuid);
   }
 
   public checkin() {

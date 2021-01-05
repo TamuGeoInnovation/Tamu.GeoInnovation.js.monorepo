@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, of, Subject } from 'rxjs';
-import { find, map, shareReplay, takeUntil } from 'rxjs/operators';
+
+import { Observable, Subject } from 'rxjs';
+import { shareReplay, takeUntil } from 'rxjs/operators';
 
 import { Event, Tag } from '@tamu-gisc/gisday/data-api';
 import { EventResponse, EventService, TagService } from '@tamu-gisc/gisday/data-access';
@@ -21,9 +22,9 @@ export class EventViewComponent implements OnInit, OnDestroy {
     this.fetchTags();
   }
 
-  ngOnInit() {}
+  public ngOnInit() {}
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this._$destroy.next();
     this._$destroy.complete();
   }
@@ -54,7 +55,6 @@ export class EventViewComponent implements OnInit, OnDestroy {
         }
       });
     }
-    // this.fetchEvents();
   }
 
   public filterEventsByFilterTags(event: Event) {
@@ -75,8 +75,3 @@ export class EventViewComponent implements OnInit, OnDestroy {
     return ret;
   }
 }
-
-// .pipe(
-//   debounceTime(1000),
-//   takeUntil(this._$destroy)
-// )

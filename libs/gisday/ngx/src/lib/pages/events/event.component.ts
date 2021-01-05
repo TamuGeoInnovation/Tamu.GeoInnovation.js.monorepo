@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-event',
+  selector: 'tamu-gisc-app-event',
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.scss']
 })

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { MapboxMapService, MapsMapboxModule } from '@tamu-gisc/maps/mapbox';
+import { MapsMapboxModule } from '@tamu-gisc/maps/mapbox';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { CompetitionsComponent } from './competitions.component';
