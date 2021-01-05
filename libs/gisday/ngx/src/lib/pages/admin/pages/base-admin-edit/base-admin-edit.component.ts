@@ -1,8 +1,10 @@
 import { OnDestroy, OnInit } from '@angular/core';
-import { BaseService } from '@tamu-gisc/gisday/data-access';
-import { GuidIdentity } from '@tamu-gisc/gisday/data-api';
+
 import { Observable, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
+
+import { BaseService } from '@tamu-gisc/gisday/data-access';
+import { GuidIdentity } from '@tamu-gisc/gisday/data-api';
 
 export abstract class BaseAdminEditComponent<T extends GuidIdentity, K extends BaseService<T>>
   implements IBaseAdminEditComponent {
@@ -11,20 +13,20 @@ export abstract class BaseAdminEditComponent<T extends GuidIdentity, K extends B
 
   constructor(private readonly entityService: K) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.fetchEntities();
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     this._$destroy.next();
     this._$destroy.complete();
   }
 
-  fetchEntities() {
+  public fetchEntities() {
     this.$entities = this.entityService.getEntities().pipe(shareReplay(1));
   }
 
-  deleteEntity(entity: T) {
+  public deleteEntity(entity: T) {
     console.log('deleteEntity', entity);
     this.entityService.deleteEntity(entity.guid).subscribe((deleteStatus) => {
       console.log('Deleted ', entity.guid);

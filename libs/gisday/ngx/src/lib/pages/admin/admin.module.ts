@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AdminComponent } from './admin.component';
-import { BaseAdminDetailComponent } from './pages/base-admin-detail/base-admin-detail.component';
 
 const routes: Routes = [
   {

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 import { ClassService } from '@tamu-gisc/gisday/data-access';
 import { Class } from '@tamu-gisc/gisday/data-api';
+
 import { BaseAdminEditComponent } from '../../base-admin-edit/base-admin-edit.component';
 
 @Component({

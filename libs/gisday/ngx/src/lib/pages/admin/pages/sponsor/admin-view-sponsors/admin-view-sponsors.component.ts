@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { SponsorService } from '@tamu-gisc/gisday/data-access';
 import { Sponsor } from '@tamu-gisc/gisday/data-api';
+
 import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.component';
 
 @Component({

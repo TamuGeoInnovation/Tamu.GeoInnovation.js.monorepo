@@ -25,4 +25,5 @@ export * from './modules/user/user.module';
 export * from './modules/user-info/user-info.module';
 
 // Providers
+export * from './providers/_base/base-provider';
 export * from './providers/class/class.provider';

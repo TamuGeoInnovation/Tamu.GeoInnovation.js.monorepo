@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+
+import { Observable, Subject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+
 import { InitialSurveyService } from '@tamu-gisc/gisday/data-access';
 import { InitialSurveyQuestion } from '@tamu-gisc/gisday/data-api';
-import { Observable, Subject } from 'rxjs';
-import { debounceTime, map, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'tamu-gisc-initial-survey',
   templateUrl: './initial-survey.component.html',
   styleUrls: ['./initial-survey.component.scss']
 })
-export class InitialSurveyComponent implements OnInit {
+export class InitialSurveyComponent implements OnInit, OnDestroy {
   public dataGroup: FormGroup;
   public $tookSurveyAlready: Observable<boolean>;
   public $initalSurveyQuestions: Observable<Array<Partial<IInitialSurveyQuestionResponse>>>;

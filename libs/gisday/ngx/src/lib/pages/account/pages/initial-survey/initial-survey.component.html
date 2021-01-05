@@ -30,8 +30,6 @@
         <div class="flex flex-column session-rating-questionnaire leader-1">
           <form [formGroup]="dataGroup">
             <div *ngFor="let question of ($initalSurveyQuestions | async)">
-              <!-- <tamu-gisc-binary-question *ngIf="question.questionType.type == 'boolean'" [radioButtonOptions]="question.questionOptions.split('|')" [questionText]="question.questionText"></tamu-gisc-binary-question> -->
-              <!-- <p>{{question.questionType.type}}</p> -->
               <div *ngIf="question.questionType.type == 'boolean'">
                 <p>{{question.questionText}}</p>
                 <div class="interactive-controls boolean">
@@ -59,12 +57,6 @@
               <tamu-gisc-button fit="relaxed" value="Submit" (click)="submitSurvey()"></tamu-gisc-button>
             </div>
           </form>
-          <!-- <tamu-gisc-binary-question></tamu-gisc-binary-question> -->
-          <!-- <tamu-gisc-binary-question></tamu-gisc-binary-question>
-          <tamu-gisc-text-question></tamu-gisc-text-question>
-          <tamu-gisc-scale-normal-question></tamu-gisc-scale-normal-question>
-          <tamu-gisc-multiple-option-question></tamu-gisc-multiple-option-question>
-          <tamu-gisc-binary-question></tamu-gisc-binary-question> -->
         </div>
       </div>
     </div>

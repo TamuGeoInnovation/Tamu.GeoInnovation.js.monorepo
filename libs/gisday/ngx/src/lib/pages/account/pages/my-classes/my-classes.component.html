@@ -1,13 +1,3 @@
-<!-- <div class="card leader-3 trailer-2">
-  <h2>My Classes</h2>
-  <div *ngIf="($classes | async); else noClasses">
-    <p *ngFor="let class of ($classes | async)">{{class.title}}</p>
-  </div>
-  <ng-template #noClasses>
-    <p class="leader-1 pre-2">We are working on getting a full list of eligible classes for the 2020 season. Please come back at a later time.</p>
-  </ng-template>
-</div> -->
-
 <div>
   <div class="loader" *ngIf="!$userClasses"></div>
   <div id="default-content" class="column8" *ngIf="$userClasses">
@@ -16,10 +6,6 @@
       <div class="row" *ngFor="let class of ($userClasses | async)">
         <div class="input-control">
           <tamu-gisc-checkbox [label]="class.dept + ' ' + class.code + ' | ' + class.title" [checked]="class.userInClass" (changed)="setClassValue(class, $event)"> </tamu-gisc-checkbox>
-          <!-- <div class="checkbox-custom-input">
-            <input #eventCheck type="checkbox" [checked]="class.userInClass" class="ng-pristine ng-untouched ng-valid" />
-            <i></i>
-          </div> -->
         </div>
       </div>
     </div>

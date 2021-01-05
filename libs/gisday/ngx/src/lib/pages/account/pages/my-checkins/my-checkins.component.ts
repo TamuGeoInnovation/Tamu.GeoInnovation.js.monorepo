@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+
+import { Observable } from 'rxjs';
+
 import { CheckinService } from '@tamu-gisc/gisday/data-access';
 import { CheckIn } from '@tamu-gisc/gisday/data-api';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-my-checkins',

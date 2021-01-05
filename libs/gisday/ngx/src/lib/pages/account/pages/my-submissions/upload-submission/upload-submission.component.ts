@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+
+import { Observable, Subject } from 'rxjs';
+
 import { SubmissionTypeService, UserSubmissionsService } from '@tamu-gisc/gisday/data-access';
 import { SubmissionType } from '@tamu-gisc/gisday/data-api';
-import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-upload-submission',
@@ -11,9 +13,11 @@ import { Observable, Subject } from 'rxjs';
 })
 export class UploadSubmissionComponent implements OnDestroy, OnInit {
   public form: FormGroup;
-  public $userDetails: Observable<Partial<any>>;
+  // TODO: Can we remove this? -Aaron (1/5/2021)
+  // public $userDetails: Observable<Partial<any>>;
   public $submissionTypes: Observable<Array<Partial<SubmissionType>>>;
   private _$destroy: Subject<boolean> = new Subject();
+
   constructor(
     private fb: FormBuilder,
     private submissionTypeService: SubmissionTypeService,
@@ -26,12 +30,13 @@ export class UploadSubmissionComponent implements OnDestroy, OnInit {
       link: [''],
       submissionType: ['']
     });
+
     this.fetchSubmissionTypes();
   }
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._$destroy.next();
     this._$destroy.complete();
   }

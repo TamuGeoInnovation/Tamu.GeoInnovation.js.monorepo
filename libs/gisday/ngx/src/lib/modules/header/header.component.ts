@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
+
 import { Observable, Subject } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
 import { AuthService } from '@tamu-gisc/gisday/data-access';
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
+import { IUserInfoResponse } from '@tamu-gisc/gisday/data-access';
 
-import { ITokenIntrospectionResponse, IUserInfoResponse } from '@tamu-gisc/gisday/data-access';
-import { Location } from '@angular/common';
 @Component({
   selector: 'tamu-gisc-app-header',
   templateUrl: './header.component.html',
@@ -38,13 +39,5 @@ export class HeaderComponent implements OnInit {
       }),
       shareReplay()
     );
-
-    // this.userRole = this.authService.getUserRole();
-    // this.authService.state().subscribe((result) => {
-    //   console.log(result);
-    // });
-    // this.authService.getUserRole().subscribe((result) => {
-    //   console.log(result);
-    // });
   }
 }
