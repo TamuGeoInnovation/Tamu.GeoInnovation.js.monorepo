@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  port: 3001,
-  globalPrefix: '',
+  port: 3333,
+  globalPrefix: 'api',
   allowedOrigins: ['http://localhost:4200']
 };
 

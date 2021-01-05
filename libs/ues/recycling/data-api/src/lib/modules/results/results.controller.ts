@@ -18,28 +18,28 @@ export class ResultsController extends BaseController<Result> {
     return this.service.getResults({ options: { groupByDate: true } });
   }
 
-  // @UseGuards(AzureIdpGuard)
-  @Get('latest/:tier/:sample')
-  public getLatestForTierSample(@Param() params: { tier: string; sample: string }) {
-    return this.service.getLatestNValuesForTierSample(params.tier, params.sample);
-  }
+  // // @UseGuards(AzureIdpGuard)
+  // @Get('latest/:tier/:sample')
+  // public getLatestForTierSample(@Param() params: { tier: string; sample: string }) {
+  //   return this.service.getLatestNValuesForLocation(params.tier, params.sample);
+  // }
 
   // @UseGuards(AzureIdpGuard)
   @Get('latest/average')
   public getLatestAverage() {
-    return this.service.getLatestNValueAverageForTierSample(undefined, 1);
+    return this.service.getLatestNValueAverageForLocation(undefined, 1);
   }
 
   // @UseGuards(AzureIdpGuard)
   @Get('latest/:days')
   public getLatestValues(@Param() params: { days: string }) {
-    return this.service.getLatestNValuesForTierSample(undefined, undefined, params.days);
+    return this.service.getLatestNValuesForLocation(undefined, params.days);
   }
 
   // @UseGuards(AzureIdpGuard)
   @Get('latest')
   public getLatestValue() {
-    return this.service.getLatestNValuesForTierSample(undefined, undefined, 1);
+    return this.service.getLatestNValuesForLocation(undefined, 1);
   }
 
   // @UseGuards(AzureIdpGuard)

@@ -46,24 +46,20 @@ export class ResultsService extends BaseService<Result> {
   /**
    * For each location, returns the latest n recorded values.
    */
-  public async getLatestNValuesForTierSample(tier?: number | string, sample?: number | string, days?: number | string) {
+  public async getLatestNValuesForLocation(id: string, days?: number | string) {
     const locationsQuery = await this.locationRepo.createQueryBuilder('locations');
 
-    if (tier !== undefined) {
-      locationsQuery.andWhere(`tier = ${tier}`);
+    if (id !== undefined) {
+      locationsQuery.andWhere(`id = ${id}`);
     }
 
-    if (sample !== undefined) {
-      locationsQuery.andWhere(`sample = ${sample}`);
-    }
-
-    const locations = await locationsQuery.orderBy('tier', 'ASC').addOrderBy('sample', 'ASC').getMany();
+    const locations = await locationsQuery.orderBy('id', 'ASC').getMany();
 
     const queries = locations.map((l) => {
       const query = this.repo
         .createQueryBuilder('result')
         .innerJoinAndSelect('result.location', 'location')
-        .where(`location.id = ${l.id}`)
+        .where(`location.id = '${l.id}'`)
         .orderBy('date', 'DESC');
 
       if (days !== undefined) {
@@ -80,8 +76,8 @@ export class ResultsService extends BaseService<Result> {
     }, []);
   }
 
-  public async getLatestNValueAverageForTierSample(id?: number | string, days?: number | string): Promise<IAverageResponse> {
-    const results = await this.getLatestNValuesForTierSample(id, days);
+  public async getLatestNValueAverageForLocation(id?: string, days?: number | string): Promise<IAverageResponse> {
+    const results = await this.getLatestNValuesForLocation(id, days);
 
     const average =
       results.reduce((acc, curr) => {
@@ -176,7 +172,7 @@ export class ResultsService extends BaseService<Result> {
       }, {});
 
       // From the parsed row, pluck out the parsed date string value and convert it to a Date object.
-      const rowDate = new Date(trimmed['date']);
+      const rowDate = new Date(trimmed['weeks']);
 
       const dataForRowDate = await this.getResultsForDate(rowDate);
 
@@ -203,14 +199,14 @@ export class ResultsService extends BaseService<Result> {
         return header !== '';
       });
 
-      // const mappedLocationStrings = locationStrings.map((location) => {
-      //   return {
-      //     id: parseInt(location.split('-')[0], 10)
-      //   };
-      // });
+      const mappedLocationStrings = locationStrings.map((location) => {
+        return {
+          id: location
+        };
+      });
 
       const existingLocations = await this.locationRepo.find({
-        where: locationStrings
+        where: mappedLocationStrings
       });
 
       // Diff the list of entities that exist with the provided list. This list
@@ -243,7 +239,7 @@ export class ResultsService extends BaseService<Result> {
       // Return a list of locations as they can be used by other parts of this service to
       // avoid unnecessary lookups.
       return this.locationRepo.find({
-        where: locationStrings
+        where: mappedLocationStrings
       });
     } catch (err) {
       throw new HttpException('Could not synchronize locations', HttpStatus.BAD_REQUEST);
@@ -262,19 +258,14 @@ export class ResultsService extends BaseService<Result> {
   private async addValuesForDate(date: Date, results: IParsedResultRow, locations: Array<Location>) {
     const resultEntities = Object.entries(results)
       .map(([key, value], index, arr) => {
-        if (key === 'date') {
+        if (key === 'weeks') {
           return undefined;
         }
 
         const result = new Result();
 
-        // const tierZone = {
-        //   tier: parseInt(key.split('-')[0], 10),
-        //   sample: parseInt(key.split('-')[1], 10)
-        // };
-
         result.date = date;
-        result.location = locations.find((l) => l.id === key);
+        result.location = locations.find((l) => l.id.toLowerCase().trim() === key);
         result.value = parseFloat(value);
 
         return result;
@@ -287,7 +278,7 @@ export class ResultsService extends BaseService<Result> {
   private async updateValuesForDate(dbResults: Array<Result>, newResults: IParsedResultRow) {
     // Filter and update the value if any matching new value exists.
     const entitiesToUpdate = dbResults.reduce((acc, curr) => {
-      const matchingNewResultRowValue = newResults[`${curr.location.id}`];
+      const matchingNewResultRowValue = newResults[`${curr.location.id.trim().toLowerCase()}`];
 
       // Return early if there is no new value for the current db result entity.
       if (matchingNewResultRowValue === undefined) {
@@ -295,7 +286,7 @@ export class ResultsService extends BaseService<Result> {
       }
 
       // Return early if the float parse results in not a real number
-      if (parseFloat(matchingNewResultRowValue) === NaN) {
+      if (isNaN(parseFloat(matchingNewResultRowValue))) {
         return acc;
       }
 

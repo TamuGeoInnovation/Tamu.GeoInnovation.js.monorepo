@@ -4537,7 +4537,8 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "ues-recycling-data-api-nest:build"
+            "buildTarget": "ues-recycling-data-api-nest:build",
+            "port": 7777
           }
         },
         "lint": {
