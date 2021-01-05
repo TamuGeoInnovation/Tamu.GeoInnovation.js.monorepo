@@ -6,7 +6,24 @@ import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, RouterModule.forRoot([], { initialNavigation: 'enabled' })],
+  imports: [
+    BrowserModule,
+    RouterModule.forRoot(
+      [
+        {
+          path: '',
+          component: AppComponent,
+          children: [
+            {
+              path: 'data',
+              loadChildren: () => import('@tamu-gisc/ues/recycling/ngx').then((m) => m.DataModule)
+            }
+          ]
+        }
+      ],
+      { initialNavigation: 'enabled' }
+    )
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

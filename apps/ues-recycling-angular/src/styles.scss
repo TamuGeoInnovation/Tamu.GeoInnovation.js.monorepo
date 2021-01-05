@@ -1,1 +1,929 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==========================================================================
+    main.scss - Contains all front-end styles for the web application
+    Application: Texas A&M Aggie Map
+    Author: Edgar Hernandez - TAMU GeoInnovation Service Center © 2020
+   ========================================================================== */
+
+//
+//
+// Note: This project requires a SASS compiler. Changes made here will be compiled into the <main.css> file utilized by the browser.
+// For more information on LESS visit: https://sass-lang.com/
+//
+// As it stands, this project is built with Angular and SASS compiled and bundled by Webpack.
+//
+//
+
+//  ==========================================================================
+//   GRID
+//  ==========================================================================
+
+@import 'libs/sass/1140';
+
+//  ==========================================================================
+//   VARIABLES
+//  ==========================================================================
+
+@import 'libs/sass/variables';
+
+//  ==========================================================================
+//   SASS Mixins
+//  ==========================================================================
+
+@import 'libs/sass/mixins';
+
+//  ==========================================================================
+//   QUICKFLEXBOX CLASSES
+//  ==========================================================================
+
+@import 'libs/sass/dom_flexbox';
+
+//  ==========================================================================
+//   Spacing Classes
+//  ==========================================================================
+
+@import 'libs/sass/spacing';
+
+//  ==========================================================================
+//   UI Elements
+//  ==========================================================================
+
+$active-color: hsl(223, 75%, 67%);
+$state-transition-color: #536dfe;
+$inactive-color: hsl(223, 15%, 60%);
+$lightened-inactive-color: lighten($inactive-color, 25%);
+
+@import 'libs/sass/modules/loaders';
+@import 'libs/sass/components/datetime-picker';
+@import 'libs/sass/modules/tabs';
+
+//  ==========================================================================
+//   DEFAULTS
+//  ==========================================================================
+
+html,
+body {
+  font-size: 16px;
+  font-family: $moriston-fStack;
+  margin: 0;
+  padding: 0;
+  top: 0px;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  //Disable pull to refresh
+  overscroll-behavior-y: contain;
+}
+
+body.scroll {
+  -webkit-overflow-scrolling: touch; //Preserve mobile momentum scrolling
+  overflow-y: scroll;
+}
+
+body p {
+  padding-bottom: 0.75rem;
+  color: inherit;
+  position: inherit;
+  font-weight: inherit;
+
+  &.large {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #616161;
+  }
+}
+
+ul {
+  display: block;
+  margin-bottom: 1rem !important;
+
+  &.bullet {
+    list-style: disc;
+    list-style-position: outside;
+    margin-left: 2rem;
+  }
+}
+
+li {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  color: inherit;
+  position: relative;
+}
+
+p,
+li,
+a {
+  line-height: 1.7;
+}
+
+a {
+  color: #500000;
+  text-decoration: underline;
+  font-size: inherit;
+  font-weight: 500;
+
+  &.no-decor {
+    text-decoration: none !important;
+  }
+}
+
+a:link {
+  color: #500000;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #500000;
+  text-decoration: underline;
+}
+
+a:hover,
+a:active,
+a:focus {
+  color: #500000;
+}
+
+a:visited {
+  text-decoration: none;
+  text-decoration: underline;
+}
+
+select {
+  width: 100%;
+  padding: 0.5rem;
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: 300;
+}
+
+h2 {
+  font-size: 2.1875rem;
+  font-weight: 400;
+  margin-top: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+
+h3 {
+  font-size: 1.875rem;
+  font-weight: 300;
+  margin-top: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+
+h4 {
+  font-size: 1.875rem;
+  font-weight: 300;
+  margin-top: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $tungsten-fStack;
+  line-height: 1.2;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+
+  &.short-border {
+    display: inline-block;
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 0.5rem;
+  }
+
+  &.long-border {
+    display: block;
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 0.5rem;
+  }
+}
+
+table {
+  // All tables, except tables inside code elements.
+  &:not([class^='hljs']) {
+    width: 100%;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+
+    border: 1pt solid $lightened-inactive-color;
+    border-collapse: collapse;
+
+    td,
+    th {
+      padding: 0.75rem;
+    }
+
+    td {
+      border: 1pt solid $lightened-inactive-color;
+      border-collapse: collapse;
+    }
+
+    thead {
+      tr {
+        background: #fafafa;
+      }
+
+      th {
+        text-align: left;
+      }
+    }
+
+    tbody {
+      tr {
+        &:nth-child(2n) {
+          background: #fafafa;
+        }
+
+        // Targets the div in the "Description" column of each row
+        td:nth-child(2) {
+          & > div:first-child {
+            @include flexbox();
+            @include flex-direction(row);
+            @include justify-content(space-between);
+
+            & > div:nth-child(2) {
+              white-space: nowrap;
+              margin-left: 1rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Add small padding after line column in code blocks
+  &[class^='hljs'] {
+    td:first-child {
+      padding-right: 0.5rem;
+    }
+  }
+}
+
+.accessible-viewfinder,
+.accessible-viewfinder-features {
+  z-index: 999;
+}
+
+.accessible-viewfinder {
+  position: fixed;
+  height: 15rem;
+  width: 15rem;
+  left: 50%;
+  top: 50%;
+  border: 2px solid #2979ff;
+  @include transform(translateX(-50%) translateY(-50%));
+}
+
+.accessible-viewfinder-features {
+  position: fixed;
+  background: #f5f5f5;
+  width: 40rem;
+  height: 8.5rem;
+  overflow: hidden;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  left: 50%;
+  top: calc(50% + 15rem);
+  border-radius: 3px;
+  @include transform(translateX(-50%) translateY(-50%));
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(center);
+
+  .feature-item-container {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(flex-start);
+    @include flex-wrap(wrap);
+  }
+
+  .feature-item {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(center);
+    @include align-items(center);
+    font-size: 0.75rem;
+    padding: 0.5rem;
+
+    p {
+      padding-bottom: 0;
+    }
+
+    .feature-index {
+      margin-right: 0.5rem;
+
+      .wrapper {
+        width: 1.5rem;
+        height: 1.5rem;
+        border: 1px solid #bdbdbd;
+        border-radius: 5px;
+        @include flexbox();
+        @include flex-direction(row);
+        @include justify-content(center);
+        @include align-items(center);
+      }
+
+      p {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+input[type='text'],
+input[type='email'],
+textarea {
+  font-family: $moriston-fStack;
+  background-color: $form-grey;
+  border: 1px solid transparent;
+  color: #323232;
+  outline: none;
+  box-sizing: border-box;
+  font-size: 0.9rem;
+  @include transition(border-color 0.25s);
+
+  &:focus {
+    border-color: #6150508e;
+  }
+}
+
+input[type='text'] {
+  padding: 0.5rem 0.75rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+textarea,
+input[type='email'] {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.feedback-form {
+  width: 50%;
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 0.75rem;
+
+    &:focus {
+      & + label {
+        color: black;
+      }
+    }
+
+    &[type='submit'] {
+      display: inline-block;
+      width: auto;
+      padding: 0.75rem 1rem;
+      background: #500000;
+      color: #f5f5f5;
+      cursor: pointer;
+
+      &:focus {
+        background: lighten(#500000, 5%);
+      }
+    }
+  }
+
+  textarea {
+    min-height: 10rem;
+  }
+
+  label {
+    font-weight: 500;
+    color: #616161;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+  }
+}
+
+.input-item {
+  margin: 2.5rem 0;
+  position: relative;
+
+  label {
+    position: absolute;
+    top: -1.6rem;
+    left: 0;
+  }
+
+  &.last {
+    margin-bottom: 1.5rem;
+  }
+}
+
+tamu-gisc-line-chart h3 {
+  font-family: $moriston-fStack;
+  font-size: 0.9rem;
+}
+
+.stat-card {
+  padding: 1rem;
+  border: 1pt solid #bdbdbd;
+  border-radius: 7px;
+  margin: 1.5rem 0.5rem;
+  @include flexbox();
+  @include flex-direction(column);
+  @include justify-content(center);
+  @include align-items(center);
+
+  .stat-metric {
+    font-size: 2.75rem;
+    padding: 1rem;
+  }
+
+  .stat-title {
+    font-size: 0.9rem;
+    color: #9e9e9e;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .stat-list {
+    @include flexbox();
+    @include flex-direction(row);
+    @include flex-wrap(wrap);
+    @include justify-content(center);
+
+    .stat-list-item {
+      background: transparent;
+      border: 1.1pt solid #1e88e5;
+      padding: 0.4rem 1rem;
+      margin: 0.5rem.25rem;
+      border-radius: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+
+      &:hover {
+        background: #1e88e5;
+        color: #ffffff;
+      }
+    }
+  }
+
+  .stat-chart {
+    width: 100%;
+  }
+}
+
+.checkbox-accordion {
+  position: relative;
+
+  .checkbox-instructions {
+    text-align: center;
+
+    p {
+      font-weight: 600;
+      text-decoration: underline;
+      color: #500000;
+    }
+
+    & > p.checkbox-true {
+      display: none;
+    }
+  }
+
+  .accordion-content {
+    display: none;
+  }
+
+  input[type='checkbox'] {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    padding: 0.5rem;
+    cursor: pointer;
+
+    &:checked {
+      & ~ .checkbox-instructions {
+        p.checkbox-true {
+          display: block;
+        }
+
+        p.checkbox-false {
+          display: none;
+        }
+      }
+
+      & ~ .accordion-content {
+        @include flexbox();
+      }
+    }
+  }
+}
+
+.metric-safe {
+  color: rgb(102, 187, 106);
+}
+
+.metric-warning {
+  color: rgb(255, 152, 0);
+}
+
+.metric-alert {
+  color: rgb(239, 83, 80);
+}
+
+.semi-bold {
+  font-weight: 500;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.hidden {
+  display: none;
+}
+
+.loader {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: #500000;
+  z-index: 9999;
+  opacity: 1;
+  text-align: center;
+  color: #ffffff;
+  @include transition(opacity 0.3s);
+
+  .content {
+    width: 20rem;
+    font-family: $primary-fStack;
+  }
+
+  .progress-bar {
+    margin-top: 2rem;
+    background: #ffffff;
+    height: 0.3rem;
+    width: 100%;
+    border-radius: 99rem;
+    @include transition(all 0.3s);
+    @include transform(translateZ(0));
+
+    &.anim {
+      @include animation(do-progress 15s forwards);
+    }
+  }
+
+  p {
+    margin-top: 1.5rem;
+    font-family: $moriston-fStack;
+    font-size: 0.8rem;
+    font-weight: 300;
+    font-style: italic;
+    color: #eeeeee;
+  }
+
+  &.fade-out {
+    opacity: 0;
+  }
+}
+
+@keyframes do-progress {
+  0% {
+    max-width: 0%;
+  }
+
+  100% {
+    max-width: 90%;
+  }
+}
+
+.handle {
+  height: 0.25rem;
+  width: 2rem;
+  background: #bdbdbd;
+  border-radius: 99rem;
+  position: absolute;
+  left: 50%;
+  top: 0.65rem;
+  @include transform(translateX(-50%));
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+
+//  ==========================================================================
+//   ESRI SPECIFIC
+//  ==========================================================================
+body.mapping {
+  @include flexbox();
+  @include flex-direction(column);
+
+  app-root {
+    @include flex(1);
+  }
+}
+
+.esri-zoom .esri-widget--button:last-child {
+  border-top: solid 1px rgba(50, 50, 50, 0.25);
+}
+
+.esri-component.esri-attribution.esri-widget {
+  display: none;
+}
+
+.copy-val {
+  position: absolute;
+  height: 0;
+  width: 0;
+  opacity: 0;
+  display: block;
+  z-index: -999999;
+}
+
+.copy-link {
+  overflow: hidden !important;
+  white-space: nowrap;
+  margin-right: 0.15rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  max-width: 80%;
+}
+
+.component-name {
+  font-weight: 600;
+  border-bottom: #e0e0e0 1px solid;
+  padding-bottom: 0.5rem;
+}
+
+.toggle-dots {
+  display: none;
+  @include flex-direction(row);
+  @include justify-content(center);
+  position: absolute;
+  bottom: 0.25rem;
+  left: 0;
+  width: 100%;
+
+  & > div {
+    height: 0.5rem;
+    width: 0.5rem;
+    border-radius: 99rem;
+    background: #bdbdbd;
+    margin: 0.5rem 0.3rem;
+
+    &.active {
+      background: #616161;
+    }
+  }
+}
+
+.esri-component.esri-track.esri-widget--button.esri-widget {
+  margin-left: 0;
+  border-radius: 99rem;
+  padding: 1.25rem;
+
+  span {
+    font-size: 1.25rem;
+  }
+}
+
+//  ==========================================================================
+//   APPLICATION STATUS
+//  ==========================================================================
+.error {
+  color: #f44336;
+  font-weight: 600;
+}
+
+.success {
+  color: #43a047;
+  font-weight: 600;
+}
+
+.description i {
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
+//  ==========================================================================
+//   Action feedback
+//  ==========================================================================
+
+.copy-button {
+  color: $main-blue;
+  padding: 0.8rem 0.75rem;
+  font-weight: 600;
+  width: initial;
+  position: relative;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::before {
+    content: attr(copy-label);
+    font-size: 0.6rem;
+    left: 50%;
+    top: 50%;
+    @include transform(translateX(-50%) translateY(-50%));
+    opacity: 0;
+    position: absolute;
+    color: lighten($main-blue, 5%);
+  }
+
+  &.copying {
+    &::before {
+      @include animation(float-text 0.7s);
+    }
+  }
+}
+
+@include keyframes(float-text) {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+    @include transform(translateX(-50%) translateY(-175%));
+  }
+
+  100% {
+    opacity: 0;
+    @include transform(translateX(-50%) translateY(-250%));
+  }
+}
+
+// Changelog Markdown styles
+// As to not remove view encapsulation for those component styles
+.markdown {
+  line-height: 1.4;
+
+  h2,
+  h3 {
+    font-size: 1rem;
+    font-family: $moriston-fStack;
+    text-transform: none;
+    letter-spacing: initial;
+    font-weight: 600;
+    color: #424242;
+  }
+
+  h2 {
+    margin-top: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  h3 {
+    font-size: 0.95rem;
+    margin-left: 0.75rem;
+    margin-bottom: 0.5rem;
+
+    & ~ p {
+      margin-left: 0.75rem;
+      display: block;
+    }
+
+    & ~ ul {
+      margin-left: 1.25rem;
+    }
+  }
+
+  p {
+    padding-bottom: 0.5rem;
+  }
+
+  code {
+    font-family: 'Consolas';
+    font-size: 0.95rem;
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    line-height: 1;
+    border-radius: 5px;
+    background: #eeeeee;
+    color: #ef5350;
+  }
+
+  ul {
+    // margin-bottom: .25rem !important;
+    font-size: 0.95rem;
+    list-style-position: inside;
+
+    li {
+      padding: 0;
+
+      ul {
+        margin-left: 1.25rem;
+        margin-bottom: 0 !important;
+      }
+    }
+  }
+
+  .changelong-event-body-media {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(center);
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+
+    & > a {
+      @include flexbox();
+      @include flex-direction(row);
+      @include align-items(center);
+      text-decoration: none;
+      font-size: 0.8rem;
+      text-align: center;
+      color: #616161;
+      font-weight: 400;
+      max-width: 47%;
+      margin: 0 1.5rem;
+    }
+
+    figure {
+      margin: 0;
+      font-style: italic;
+      @include flexbox();
+      @include flex-direction(column);
+      @include align-items(center);
+    }
+
+    figcaption {
+      font-size: 0.8rem;
+      text-align: center;
+      color: #616161;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      max-height: 25vh;
+      height: auto;
+      width: auto;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .material-icons {
+    font-size: 0.8rem;
+  }
+}
+
+//  ==========================================================================
+//   MEDIA QUERIES MEDIUM
+//  ==========================================================================
+
+@media only screen and (max-width: 960px) {
+}
+
+@media only screen and (max-width: 768px) {
+  .container12,
+  .container16 {
+    width: 87% !important;
+  }
+
+  .column1,
+  .column2,
+  .column3,
+  .column4,
+  .column5,
+  .column6,
+  .column7,
+  .column8,
+  .column9,
+  .column10,
+  .column11,
+  .column12 {
+    width: 100% !important;
+  }
+
+  .feedback-form {
+    width: 65%;
+  }
+
+  // Hide main header and footer for mobile view
+  body app-header {
+    display: none;
+  }
+
+  body app-footer {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 478px) {
+}
+
+@media only screen and (max-width: 350px) {
+  .loader {
+    .content {
+      width: 75%;
+    }
+  }
+}
