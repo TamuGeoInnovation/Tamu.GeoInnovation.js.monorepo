@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+
 import * as deepmerge from 'deepmerge';
 import { Request } from 'express';
+
 import { UserInfo, UserInfoRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
 
@@ -10,7 +12,7 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
     super(userInfoRepo);
   }
 
-  async getUsersInfo(req: Request) {
+  public async getUsersInfo(req: Request) {
     const accountGuid = req.user.sub;
     const userInfo = await this.userInfoRepo.findOne({
       where: {
@@ -20,7 +22,7 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
     return userInfo;
   }
 
-  async updateUserInfo(req: Request) {
+  public async updateUserInfo(req: Request) {
     const entity = await this.userInfoRepo.findOne({
       where: {
         accountGuid: req.user.sub

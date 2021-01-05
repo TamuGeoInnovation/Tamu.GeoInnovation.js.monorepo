@@ -1,5 +1,7 @@
 import { Controller, Get, Patch, Req } from '@nestjs/common';
+
 import { Request } from 'express';
+
 import { UserInfo } from '../../entities/all.entity';
 import { UserInfoProvider } from '../../providers/user-info/user-info.provider';
 import { BaseController } from '../_base/base.controller';
@@ -11,7 +13,7 @@ export class UserInfoController extends BaseController<UserInfo> {
   }
 
   @Get()
-  async getUsersInfo(@Req() req: Request) {
+  public async getUsersInfo(@Req() req: Request) {
     if (req.user) {
       return this.userInfoProvider.getUsersInfo(req);
     } else {
@@ -20,7 +22,7 @@ export class UserInfoController extends BaseController<UserInfo> {
   }
 
   @Patch()
-  async updateUserInfo(@Req() req: Request) {
+  public async updateUserInfo(@Req() req: Request) {
     if (req.user) {
       return this.userInfoProvider.updateUserInfo(req);
     }

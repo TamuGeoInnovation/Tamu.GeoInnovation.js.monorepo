@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { AuthService, ITokenIntrospectionResponse } from '@tamu-gisc/gisday/data-access';
-import { Observable } from 'rxjs';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+
 import { map } from 'rxjs/operators';
+
+import { AuthService } from '@tamu-gisc/gisday/data-access';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginGuard implements CanActivate {
   constructor(private readonly authService: AuthService) {}
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+
+  public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return this.authService.state().pipe(
       map((value) => {
         if (value === false) {

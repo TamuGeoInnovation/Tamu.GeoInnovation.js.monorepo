@@ -1,21 +1,13 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
+
 import { Response } from 'express';
+
 import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
 @Controller('user')
 export class UserController {
-  // @Get()
-  // async getStatus(@Req() req, @Res() res: Response) {
-  //   if (req.user) {
-  //     return OpenIdClient.client.introspect(req.user.access_token);
-  //   } else {
-  //     res.status(401);
-  //     res.send(undefined);
-  //   }
-  // }
-
   @Get()
-  async getStatus(@Req() req, @Res() res: Response) {
+  public async getStatus(@Req() req, @Res() res: Response) {
     if (req.user) {
       if (req.user.access_token) {
         const introspectionResult = await OpenIdClient.client.introspect(req.user.access_token);
@@ -37,7 +29,7 @@ export class UserController {
   }
 
   @Get('header')
-  async getHeaderStatus(@Req() req, @Res() res: Response) {
+  public async getHeaderStatus(@Req() req, @Res() res: Response) {
     if (req.user) {
       const introspectionResult = await OpenIdClient.client.introspect(req.user.access_token);
       if (introspectionResult) {
@@ -56,7 +48,7 @@ export class UserController {
   }
 
   @Get('role')
-  async getUserRole(@Req() req, @Res() res: Response) {
+  public async getUserRole(@Req() req, @Res() res: Response) {
     if (req.user) {
       const accessToken = req.user.access_token;
       const result = await OpenIdClient.client.userinfo(accessToken);
@@ -68,7 +60,7 @@ export class UserController {
   }
 
   @Get('logout')
-  async userLogout(@Req() req, @Res() res: Response) {
+  public async userLogout(@Req() req, @Res() res: Response) {
     if (req.user) {
       const accessToken = req.user.access_token;
       const result = await OpenIdClient.client.revoke(accessToken);
@@ -79,6 +71,3 @@ export class UserController {
     }
   }
 }
-
-// "token_endpoint": "http://localhost:4001/oidc/token",
-// "userinfo_endpoint": "http://localhost:4001/oidc/me",

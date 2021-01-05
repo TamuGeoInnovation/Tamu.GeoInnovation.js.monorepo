@@ -1,5 +1,7 @@
 import { Controller, Post, Req } from '@nestjs/common';
+
 import { Request } from 'express';
+
 import { Tag } from '../../entities/all.entity';
 import { TagProvider } from '../../providers/tag/tag.provider';
 import { BaseController } from '../../controllers/_base/base.controller';
@@ -11,7 +13,7 @@ export class TagController extends BaseController<Tag> {
   }
 
   @Post('/all')
-  async insertTags(@Req() req: Request) {
+  public async insertTags(@Req() req: Request) {
     return this.tagProvider.insertTags(req);
   }
 }

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+
 import { Request } from 'express';
+
 import { Tag, TagRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
 
@@ -9,7 +11,7 @@ export class TagProvider extends BaseProvider<Tag> {
     super(tagRepo);
   }
 
-  async insertTags(req: Request) {
+  public async insertTags(req: Request) {
     const _tags: Partial<Tag>[] = [];
     req.body.tags.map((value: Tag) => {
       const tag: Partial<Tag> = {

@@ -1,5 +1,7 @@
 import { Controller, Get, Param, Post, Req } from '@nestjs/common';
+
 import { Request } from 'express';
+
 import { Event } from '../../entities/all.entity';
 import { EventProvider } from '../../providers/event/event.provider';
 import { BaseController } from '../../controllers/_base/base.controller';
@@ -11,19 +13,17 @@ export class EventController extends BaseController<Event> {
   }
 
   @Get('/:guid/rsvps')
-  async getNumberOfRsvps(@Param() params) {
-    // TODO: We need to use a UserRsvpProvider to search for all RSVPs of this event
-    // return 0;
+  public async getNumberOfRsvps(@Param() params) {
     return this.eventProvider.getNumberOfRsvps(params.guid);
   }
 
   @Get('by-day')
-  async getEntitiesByDay(@Req() req: Request) {
+  public async getEntitiesByDay(@Req() req: Request) {
     return this.eventProvider.getEntitiesByDay(req);
   }
 
   @Post()
-  async insertEvent(@Req() req: Request) {
+  public async insertEvent(@Req() req: Request) {
     return this.eventProvider.insertEvent(req);
   }
 }
