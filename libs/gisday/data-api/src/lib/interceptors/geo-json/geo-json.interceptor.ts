@@ -1,11 +1,12 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
-import { Observable } from 'rxjs';
+
 import { map } from 'rxjs/operators';
+
 import { OldCompetitionEntity } from '../../entities/all.entity';
 
 @Injectable()
 export class GeoJsonInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  public intercept(context: ExecutionContext, next: CallHandler) {
     return next.handle().pipe(
       map((returnData) => {
         const features: IGeoJsonFeature[] = [];

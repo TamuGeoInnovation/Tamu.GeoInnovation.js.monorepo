@@ -1,5 +1,12 @@
+// Guards
+export * from './modules/guards/login-guard/login-guard.guard';
+export * from './modules/guards/logout-guard/logout-guard.guard';
+export * from './modules/guards/admin-guard/admin.guard';
+
+// Interceptors
 export * from './modules/interceptors/auth.interceptor';
 
+// Services
 export * from './modules/services/_base/base.service';
 export * from './modules/services/auth/auth.service';
 export * from './modules/services/checkin/checkin.service';
@@ -17,4 +24,3 @@ export * from './modules/services/user-classes/user-classes.service';
 export * from './modules/services/user-info/user-info.service';
 export * from './modules/services/user-submissions/user-submissions.service';
 export * from './modules/services/signage/signage.service';
-// export * from './modules/services/vgi/vgi.service';

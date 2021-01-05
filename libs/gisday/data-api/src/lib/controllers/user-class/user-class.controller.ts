@@ -1,5 +1,7 @@
-import { Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Req } from '@nestjs/common';
+
 import { Request } from 'express';
+
 import { UserClass } from '../../entities/all.entity';
 import { UserClassProvider } from '../../providers/user-class/user-class.provider';
 import { BaseController } from '../_base/base.controller';
@@ -11,17 +13,17 @@ export class UserClassController extends BaseController<UserClass> {
   }
 
   @Get()
-  async getClassesAndUserClasses(@Req() req: Request) {
+  public async getClassesAndUserClasses(@Req() req: Request) {
     return this.userClassProvider.getClassesAndUserClasses(req);
   }
 
   @Post('/')
-  async insertUserClass(@Req() req: Request) {
+  public async insertUserClass(@Req() req: Request) {
     return this.userClassProvider.insertUserClass(req);
   }
 
   @Delete()
-  async deleteUserClassWithClassGuid(@Req() req: Request) {
+  public async deleteUserClassWithClassGuid(@Req() req: Request) {
     return this.userClassProvider.deleteUserClassWithClassGuid(req);
   }
 }

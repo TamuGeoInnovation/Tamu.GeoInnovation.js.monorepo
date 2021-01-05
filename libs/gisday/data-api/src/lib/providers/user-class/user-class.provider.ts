@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { Request } from 'express';
 
 import { ClassRepo, UserClass, UserClassRepo } from '../../entities/all.entity';
@@ -9,7 +10,7 @@ export class UserClassProvider extends BaseProvider<UserClass> {
     super(userClassRepo);
   }
 
-  async insertUserClass(req: Request) {
+  public async insertUserClass(req: Request) {
     const newClass = req.body.class;
     const _class = await this.classRepo.findOne({
       where: {
@@ -24,7 +25,7 @@ export class UserClassProvider extends BaseProvider<UserClass> {
     return this.userClassRepo.save(newUserClass);
   }
 
-  async getClassesAndUserClasses(req: Request) {
+  public async getClassesAndUserClasses(req: Request) {
     const classes = await this.classRepo.find();
     if (req.user) {
       const userClasses = await this.userClassRepo.getUsersClasses(req.user.sub);
@@ -39,7 +40,7 @@ export class UserClassProvider extends BaseProvider<UserClass> {
     }
   }
 
-  async deleteUserClassWithClassGuid(req: Request) {
+  public async deleteUserClassWithClassGuid(req: Request) {
     const { classGuid } = req.body;
     const foundClass = await this.userClassRepo.find({
       where: {

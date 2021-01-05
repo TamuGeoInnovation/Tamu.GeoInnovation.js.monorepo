@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { Request } from 'express';
 
 import { UserRsvp, UserRsvpRepo, EventRepo, RsvpTypeRepo } from '../../entities/all.entity';
@@ -14,7 +15,7 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
     super(userRsvpRepo);
   }
 
-  async insertUserRsvp(req: Request) {
+  public async insertUserRsvp(req: Request) {
     const { eventGuid, rsvpTypeGuid, userGuid } = req.body;
     const _rsvpType = await this.rsvpTypeRepo.findOne({
       where: {
@@ -35,7 +36,7 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
     return this.userRsvpRepo.save(newUserRsvp);
   }
 
-  async getUserRsvps(guid: string) {
+  public async getUserRsvps(guid: string) {
     return this.userRsvpRepo.getUserRsvps(guid);
   }
 }

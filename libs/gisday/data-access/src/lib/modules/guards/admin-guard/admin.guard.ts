@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { AuthService, IUserInfoResponse } from '@tamu-gisc/gisday/data-access';
-import { Observable } from 'rxjs';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+
 import { map } from 'rxjs/operators';
+
+import { AuthService } from '@tamu-gisc/gisday/data-access';
 
 @Injectable({
   providedIn: 'root'

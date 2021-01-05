@@ -1,16 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-
-import { GisdayNgxModule, LoginGuard, LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/ngx';
-
-import { AuthInterceptor, AuthService } from '@tamu-gisc/gisday/data-access';
+import { LoginGuard, LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/data-access';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -100,7 +97,8 @@ const routeOptions: ExtraOptions = {
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, routeOptions),
-    GisdayNgxModule,
+    //TODO: What uses GisdayNgxModule? - Aaron (1/5/2021)
+    // GisdayNgxModule,
     EnvironmentModule,
     HttpClientModule
   ],
@@ -110,14 +108,7 @@ const routeOptions: ExtraOptions = {
       provide: env,
       useValue: environment
     }
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: AuthInterceptor,
-    //   multi: true
-    // }
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  constructor(private auth: AuthService) {}
-}
+export class AppModule {}
