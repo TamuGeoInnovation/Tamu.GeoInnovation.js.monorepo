@@ -1,22 +1,26 @@
-<ng-container *ngIf="(tableData | async)?.days.length > 0; else noData">
-  <div class="table-overflow-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th *ngFor="let header of (tableData | async)?.fields">{{header}}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let day of (tableData | async)?.days">
-          <td>{{day?.identity | date : 'shortDate'}}</td>
-          <td *ngFor="let header of (tableData | async)?.fields">{{day.items | resultLookup : header}}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</ng-container>
+<div class="spinning-loader" *ngIf="! (tableData | async); else dataAvailability;"></div>
 
-<ng-template #noData>
-  <p>No data.</p>
+<ng-template #dataAvailability>
+  <ng-container *ngIf="(tableData | async)?.days.length > 0; else noData">
+    <div class="table-overflow-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th *ngFor="let header of (tableData | async)?.fields">{{header}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let day of (tableData | async)?.days">
+            <td>{{day?.identity | date : 'shortDate'}}</td>
+            <td *ngFor="let header of (tableData | async)?.fields">{{day.items | resultLookup : header}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+
+  <ng-template #noData>
+    <p>No data.</p>
+  </ng-template>
 </ng-template>
