@@ -13,6 +13,10 @@ import { AppComponent } from './app.component';
 WebFont.load({
   google: {
     families: ['Material Icons']
+  },
+  custom: {
+    families: ['Moriston', 'Tungsten'],
+    urls: ['assets/fonts/moriston_pro/moriston_pro.css', 'assets/fonts/tungsten/tungsten.css']
   }
 });
 
@@ -26,6 +30,10 @@ WebFont.load({
         {
           path: 'data',
           loadChildren: () => import('@tamu-gisc/ues/recycling/ngx').then((m) => m.DataModule)
+        },
+        {
+          path: '',
+          loadChildren: () => import('@tamu-gisc/ues/recycling/ngx').then((m) => m.MapModule)
         }
       ],
       { initialNavigation: 'enabled' }

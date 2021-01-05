@@ -53,7 +53,6 @@ $inactive-color: hsl(223, 15%, 60%);
 $lightened-inactive-color: lighten($inactive-color, 25%);
 
 @import 'libs/sass/modules/loaders';
-@import 'libs/sass/components/datetime-picker';
 @import 'libs/sass/modules/tabs';
 
 //  ==========================================================================
