@@ -1,5 +1,4 @@
-import { Injectable, Req } from '@nestjs/common';
-import { Request } from 'express';
+import { Injectable } from '@nestjs/common';
 
 import { SubmissionTypeRepo, UserSubmission, UserSubmissionRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
@@ -13,15 +12,14 @@ export class UserSubmissionProvider extends BaseProvider<UserSubmission> {
     super(userSubmissionRepo);
   }
 
-  public async insertUserSubmission(@Req() req: Request) {
+  public async insertUserSubmission(accountGuid: string, _userSubmission: Partial<UserSubmission>) {
     const submissionType = await this.submissionTypeRepo.findOne({
       where: {
-        guid: req.body.submissionType
+        guid: _userSubmission.submissionType
       }
     });
     if (submissionType) {
-      const _userSubmission: Partial<UserSubmission> = req.body;
-      _userSubmission.accountGuid = req.user.sub;
+      _userSubmission.accountGuid = accountGuid;
       _userSubmission.submissionType = submissionType;
       const userSubmission = this.userSubmissionRepo.create(_userSubmission);
       return this.userSubmissionRepo.save(userSubmission);

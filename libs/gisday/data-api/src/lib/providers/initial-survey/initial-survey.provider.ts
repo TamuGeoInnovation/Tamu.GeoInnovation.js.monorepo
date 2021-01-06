@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Request } from 'express';
+
 import {
   InitialSurveyResponse,
   InitialSurveyQuestion,
@@ -19,32 +19,31 @@ export class InitialSurveyProvider extends BaseProvider<InitialSurveyResponse> {
     super(initialSurveyRepo);
   }
 
-  public async insertQuestion(req: Request) {
+  public async insertQuestion(questionTypeGuid: string, _question: Partial<InitialSurveyQuestion>) {
     const questionType = await this.questionTypeRepo.findOne({
       where: {
-        guid: req.body.questionTypeGuid
+        guid: questionTypeGuid
       }
     });
     if (questionType) {
-      const _question: Partial<InitialSurveyQuestion> = req.body;
       _question.questionType = questionType;
       const question = this.initialSurveyQuestionRepo.create(_question);
       return this.initialSurveyQuestionRepo.save(question);
     }
   }
 
-  public async insertInitialSurveyResponse(req: Request) {
-    const questionGuids: string[] = Object.keys(req.body);
+  // TODO: Does this still work? -Aaron (1/5/2021)
+  public async insertInitialSurveyResponse(questionGuids: string[], questionGuidsObj: {}, accountGuid: string) {
     questionGuids.map(async (guid) => {
       const question = await this.initialSurveyQuestionRepo.findOne({
         where: {
           guid: guid
         }
       });
-      if (req.body[guid] !== '' || req.body[guid] !== undefined || req.body[guid] !== null) {
+      if (questionGuidsObj[guid] !== '' || questionGuidsObj[guid] !== undefined || questionGuidsObj[guid] !== null) {
         const _response: Partial<InitialSurveyResponse> = {
-          accountGuid: req.user.sub,
-          responseValue: req.body[guid],
+          accountGuid: accountGuid,
+          responseValue: questionGuidsObj[guid],
           question: question
         };
         const response = await this.initialSurveyRepo.create(_response);

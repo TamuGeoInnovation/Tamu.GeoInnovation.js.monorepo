@@ -1,7 +1,10 @@
 import { Controller, Get, Param, Patch, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { DeepPartial } from 'typeorm';
+
 import { Request } from 'express';
-import { Speaker, SpeakerInfo } from '../../entities/all.entity';
+
+import { Speaker } from '../../entities/all.entity';
 import { SpeakerProvider } from '../../providers/speaker/speaker.provider';
 import { BaseController } from '../../controllers/_base/base.controller';
 
@@ -24,20 +27,15 @@ export class SpeakerController extends BaseController<Speaker> {
   @Post('')
   @UseInterceptors(FileInterceptor('file'))
   public async speakerAndInfo(@Req() req: Request, @UploadedFile() file) {
-    return this.speakerProvider.insertWithInfo(req, file);
+    // TODO: Fix this, its a pain-in-the-ass -Aaron (1/5/2021)
+    const _speaker: DeepPartial<Speaker> = req.body;
+    return this.speakerProvider.insertWithInfo(_speaker, file);
   }
 
   @Get('/photo/:guid')
   public async getSpeakerPhoto(@Param() params) {
     return this.speakerProvider.getSpeakerPhoto(params.guid);
   }
-
-  // @Post('/photo')
-  // @UseInterceptors(FileInterceptor('file'))
-  // public async speakerPhoto(@Req() req: Request, @UploadedFile() file) {
-  //   const speakerGuid = req.body.speakerGuid;
-  //   return this.speakerProvider.insertPhoto(speakerGuid, req, file);
-  // }
 
   @Patch('/info')
   public async updateSpeakerInfo(@Req() req: Request) {

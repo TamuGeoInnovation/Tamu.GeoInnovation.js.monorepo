@@ -1,4 +1,5 @@
 import { DeepPartial } from 'typeorm';
+
 import { Request } from 'express';
 import * as deepmerge from 'deepmerge';
 
@@ -19,10 +20,10 @@ export abstract class BaseProvider<T> implements IBaseProvider<T> {
     return this.repo.find();
   }
 
-  public async getEntitiesForUser(req: Request) {
+  public async getEntitiesForUser(accountGuid: string) {
     return this.repo.find({
       where: {
-        accountGuid: req.user.sub
+        accountGuid: accountGuid
       }
     });
   }
