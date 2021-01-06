@@ -1,5 +1,6 @@
 describe('Test Route', () => {
   beforeEach(() => {
+    cy.viewport(1920, 1080)
     cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
     //cy.intercept("GET","*").as("any")
     cy.intercept("GET", "**/Routing/**").as("routing")
@@ -13,7 +14,7 @@ describe('Test Route', () => {
   it('Start Route', () => {
     cy.get('canvas')
       .should('be.visible', {timeout: 10000})
-      .click(1185,618)
+      .click(1183,685)
     cy.get(':nth-child(1) > :nth-child(1) > .input-action-container > .margin-right', {timeout: 20000})
       .should('have.value', 'Kyle Field')
   })
@@ -21,7 +22,7 @@ describe('Test Route', () => {
   it('End Route', () => {
     cy.get('canvas')
       .should('be.visible', {timeout: 10000})
-      .click(1343,184)
+      .click(1343,234)
     cy.get(':nth-child(2) > :nth-child(1) > .input-action-container > .margin-right', {timeout: 20000})
       .should('have.value', 'Jack K. Williams Administration Building')
   })
