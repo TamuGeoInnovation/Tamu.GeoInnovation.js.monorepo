@@ -18,10 +18,12 @@ describe('Search', () => {
       .clear()
       .type('Computing Services Annex')
       .type('{enter}')
+      /*
     for (let i = 0; i < 3; i++) {
       cy.wait(['@basemap', '@construction', '@tents'])
     }
-    cy.wait(5000)
+    */
+    cy.wait(10000)
     cy.get('.focusable', {timeout: 5000})
       .click({force: true})
   })
