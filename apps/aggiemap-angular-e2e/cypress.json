@@ -9,10 +9,9 @@
   "videosFolder": "../../dist/cypress/apps/aggiemap-angular-e2e/videos",
   "screenshotsFolder": "../../dist/cypress/apps/aggiemap-angular-e2e/screenshots",
   "chromeWebSecurity": false,
-  "viewportWidth": 1919,
-  "viewportHeight": 978,
   "retries": 2,
   "$schema": "https://on.cypress.io/cypress.schema.json",
+  "pageLoadTimeout": 120000,
 
   "compilerOptions": {
       "outDir": "./dist/",
