@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 
-import { Request } from 'express';
-
 import { Event, EventRepo, Sponsor, SponsorRepo, Tag, TagRepo, UserRsvpRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
 

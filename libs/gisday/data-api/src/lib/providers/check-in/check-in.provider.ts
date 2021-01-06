@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { Request } from 'express';
-
 import { CheckIn, CheckInRepo, EventRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 

@@ -7,7 +7,6 @@ import {
   SidewalkSubmissionRepo,
   ManholeSubmissionRepo
 } from '../../entities/all.entity';
-
 import { WaybackCompetitionController } from '../../controllers/wayback-competition/wayback-competition.controller';
 import { WaybackCompetitionProvider } from '../../providers/wayback-competition/wayback-competition.provider';
 

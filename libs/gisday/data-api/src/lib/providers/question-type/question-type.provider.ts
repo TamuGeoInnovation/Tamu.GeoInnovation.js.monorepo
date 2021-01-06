@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { QuestionType, QuestionTypeRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
 
