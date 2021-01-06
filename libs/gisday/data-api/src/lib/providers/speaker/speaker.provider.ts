@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { Request } from 'express';
-import * as deepmerge from 'deepmerge';
 
 import { Speaker, SpeakerInfo, SpeakerRepo, SpeakerInfoRepo, UniversityRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
@@ -40,8 +39,6 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       }
     });
     if (speakerInfo) {
-      // const speakerPhoto = Buffer.from(speakerInfo.blob., 'base64');
-      // const base64 = `data:image/png;base64,${speakerPhoto}`;
       return speakerInfo.blob.toString('base64');
     }
   }
@@ -61,13 +58,6 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       }
       entity.save();
     }
-
-    // if (entity) {
-    //   const merged = deepmerge(entity as Partial<SpeakerInfo>, req.body);
-    //   return this.speakerInfoRepo.save(merged);
-    // } else {
-    //   throw new Error('Make sure you use the SpeakerInfo guid');
-    // }
   }
 
   public async insertWithInfo(req: Request, file) {

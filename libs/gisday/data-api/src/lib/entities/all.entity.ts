@@ -11,13 +11,12 @@ import {
   Column,
   OneToOne,
   JoinColumn,
-  OneToMany,
   ManyToOne,
-  PrimaryGeneratedColumn,
   ManyToMany,
   JoinTable,
   Repository
 } from 'typeorm';
+
 import { v4 as guid } from 'uuid';
 
 @Entity()
@@ -86,7 +85,6 @@ export class OldCompetitionEntity extends BaseEntity {
   public speed: number;
 
   public geoJsonRepresentation(): IGeoJsonFeature {
-    const keys = Object.keys(this);
     return {
       type: 'Feature',
       geometry: {
@@ -380,8 +378,6 @@ export class SpeakerInfo extends GuidIdentity {
   name: 'speakers'
 })
 export class Speaker extends GISDayEntity {
-  // @OneToOne((type) => User, { cascade: true, nullable: true })
-  // @JoinColumn()
   @Column({ nullable: true })
   public accountGuid: string; // User
 
@@ -457,8 +453,6 @@ export class CheckIn extends GISDayEntity {
   @JoinColumn()
   public event: Event;
 
-  // @OneToOne((type) => User, { cascade: true, nullable: true })
-  // @JoinColumn()
   @Column({ nullable: false })
   public accountGuid: string;
 
@@ -594,8 +588,6 @@ export class UserRsvp extends GISDayEntity {
   name: 'submissions'
 })
 export class UserSubmission extends GISDayEntity {
-  // @OneToOne((type) => User, { cascade: true, nullable: true })
-  // @JoinColumn()
   @Column({ nullable: false })
   public accountGuid: string; // User
 
@@ -867,9 +859,6 @@ export class InitialSurveyRepo extends CommonRepo<InitialSurveyResponse> {}
 
 @EntityRepository(QuestionType)
 export class QuestionTypeRepo extends CommonRepo<QuestionType> {}
-
-// @EntityRepository(Session)
-// export class SessionRepo extends CommonRepo<Session> {}
 
 @EntityRepository(Speaker)
 export class SpeakerRepo extends CommonRepo<Speaker> {

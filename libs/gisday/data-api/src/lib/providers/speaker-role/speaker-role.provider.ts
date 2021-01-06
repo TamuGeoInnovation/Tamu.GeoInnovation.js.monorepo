@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Request } from 'express';
+
 import { SpeakerRole, SpeakerRoleRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
 
