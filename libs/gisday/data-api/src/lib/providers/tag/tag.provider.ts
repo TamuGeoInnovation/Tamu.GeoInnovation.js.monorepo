@@ -11,14 +11,7 @@ export class TagProvider extends BaseProvider<Tag> {
     super(tagRepo);
   }
 
-  public async insertTags(req: Request) {
-    const _tags: Partial<Tag>[] = [];
-    req.body.tags.map((value: Tag) => {
-      const tag: Partial<Tag> = {
-        name: value.name
-      };
-      _tags.push(tag);
-    });
+  public async insertTags(_tags: Array<Partial<Tag>>) {
     const tags = this.tagRepo.create(_tags);
 
     return this.tagRepo.insert(tags);

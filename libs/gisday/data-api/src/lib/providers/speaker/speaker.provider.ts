@@ -74,11 +74,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     const _speaker: DeepPartial<Speaker> = req.body;
     const speakerEnt = this.speakerRepo.create(_speaker);
     const speaker = await this.speakerRepo.save(speakerEnt);
-    // const speaker = await this.speakerRepo.findOne({
-    //   where: {
-    //     guid: speakerGuid
-    //   }
-    // });
+
     if (speaker) {
       const university = await this.uniRepo.findOne({
         where: {

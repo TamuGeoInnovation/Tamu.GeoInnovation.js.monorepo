@@ -9,14 +9,7 @@ export class SpeakerRoleProvider extends BaseProvider<SpeakerRole> {
     super(speakerRoleRepo);
   }
 
-  public async insertRoles(req: Request) {
-    const _roles: Partial<SpeakerRole>[] = [];
-    req.body.roles.map((value: SpeakerRole) => {
-      const tag: Partial<SpeakerRole> = {
-        name: value.name
-      };
-      _roles.push(tag);
-    });
+  public async insertRoles(_roles: Array<Partial<SpeakerRole>>) {
     const roles = this.speakerRoleRepo.create(_roles);
 
     return this.speakerRoleRepo.insert(roles);

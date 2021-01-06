@@ -1,5 +1,7 @@
 import { Controller, Get, Post, Req } from '@nestjs/common';
+
 import { Request } from 'express';
+
 import { CheckIn } from '../../entities/all.entity';
 import { BaseController } from '../../controllers/_base/base.controller';
 import { CheckInProvider } from '../../providers/check-in/check-in.provider';
@@ -21,6 +23,13 @@ export class CheckInController extends BaseController<CheckIn> {
 
   @Post('user')
   public async insertUserCheckin(@Req() req: Request) {
-    return this.checkinProvider.insertUserCheckin(req);
+    const { eventGuid } = req.body;
+    if (req.user) {
+      const accountGuid = req.user.sub;
+      return this.checkinProvider.insertUserCheckin(eventGuid, accountGuid);
+    } else {
+      // someone not logged in tried to checkin
+      return;
+    }
   }
 }

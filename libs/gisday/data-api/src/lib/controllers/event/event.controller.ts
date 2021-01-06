@@ -19,11 +19,15 @@ export class EventController extends BaseController<Event> {
 
   @Get('by-day')
   public async getEntitiesByDay(@Req() req: Request) {
-    return this.eventProvider.getEntitiesByDay(req);
+    const accountGuid = req.user.sub;
+    return this.eventProvider.getEntitiesByDay(accountGuid);
   }
 
   @Post()
   public async insertEvent(@Req() req: Request) {
-    return this.eventProvider.insertEvent(req);
+    const _newEvent: Partial<Event> = {
+      ...req.body
+    };
+    return this.eventProvider.insertEvent(_newEvent);
   }
 }

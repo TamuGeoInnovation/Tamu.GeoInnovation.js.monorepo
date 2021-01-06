@@ -15,7 +15,7 @@ export class UserInfoController extends BaseController<UserInfo> {
   @Get()
   public async getUsersInfo(@Req() req: Request) {
     if (req.user) {
-      return this.userInfoProvider.getUsersInfo(req);
+      return this.userInfoProvider.getUsersInfo(req.user.sub);
     } else {
       return;
     }
@@ -24,7 +24,10 @@ export class UserInfoController extends BaseController<UserInfo> {
   @Patch()
   public async updateUserInfo(@Req() req: Request) {
     if (req.user) {
-      return this.userInfoProvider.updateUserInfo(req);
+      const _updatedUserInfo: Partial<UserInfo> = {
+        ...req.body
+      };
+      return this.userInfoProvider.updateUserInfo(req.user.sub, _updatedUserInfo);
     }
   }
 }

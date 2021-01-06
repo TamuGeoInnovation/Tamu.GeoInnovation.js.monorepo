@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Req } from '@nestjs/common';
+
 import { Request } from 'express';
-import { InitialSurveyResponse } from '../../entities/all.entity';
+
+import { InitialSurveyQuestion, InitialSurveyResponse } from '../../entities/all.entity';
 import { BaseController } from '../_base/base.controller';
 import { InitialSurveyProvider } from '../../providers/initial-survey/initial-survey.provider';
 
@@ -35,11 +37,18 @@ export class InitialSurveyController extends BaseController<InitialSurveyRespons
 
   @Post('/questions')
   public async insertQuestion(@Req() req: Request) {
-    return this.initialSurveyProvider.insertQuestion(req);
+    const questionTypeGuid = req.body.questionTypeGuid;
+    const _question: Partial<InitialSurveyQuestion> = {
+      ...req.body
+    };
+    return this.initialSurveyProvider.insertQuestion(questionTypeGuid, _question);
   }
 
   @Post()
   public async insertInitialSurveyResponse(@Req() req: Request) {
-    return this.initialSurveyProvider.insertInitialSurveyResponse(req);
+    const questionGuids = Object.keys(req.body);
+    const questionGuidsObj = req.body;
+
+    return this.initialSurveyProvider.insertInitialSurveyResponse(questionGuids, questionGuidsObj, req.user.sub);
   }
 }
