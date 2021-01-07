@@ -7,14 +7,12 @@ import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/tr
 
 import { FooterComponent } from './modules/footer/footer.component';
 import { HeaderComponent } from './modules/header/header.component';
-
-import { LandingModule } from './pages/landing/landing.module';
-import { EventModule } from './pages/events/event.module';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
-  imports: [CommonModule, LandingModule, EventModule, UITileNavigationModule, UINavigationTriggersModule],
+  imports: [CommonModule, RouterModule, UITileNavigationModule, UINavigationTriggersModule],
   declarations: [FooterComponent, HeaderComponent],
   providers: [AuthService],
-  exports: [FooterComponent, HeaderComponent, LandingModule, EventModule]
+  exports: [FooterComponent, HeaderComponent]
 })
 export class GisdayNgxModule {}

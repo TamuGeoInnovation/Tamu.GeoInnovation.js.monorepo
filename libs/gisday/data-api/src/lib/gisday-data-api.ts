@@ -7,7 +7,6 @@ export * from './entities/all.entity';
 // Modules
 export * from './modules/check-in/check-in.module';
 export * from './modules/class/class.module';
-export * from './modules/course-credit/course-credit.module';
 export * from './modules/event/event.module';
 export * from './modules/initial-survey/initial-survey.module';
 export * from './modules/question-type/question-type.module';
