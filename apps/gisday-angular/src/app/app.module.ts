@@ -8,6 +8,7 @@ import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { LoginGuard, LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/data-access';
+import { GisdayCommonModule } from '@tamu-gisc/gisday/common';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -97,8 +98,7 @@ const routeOptions: ExtraOptions = {
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, routeOptions),
-    //TODO: What uses GisdayNgxModule? - Aaron (1/5/2021)
-    // GisdayNgxModule,
+    GisdayCommonModule,
     EnvironmentModule,
     HttpClientModule
   ],

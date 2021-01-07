@@ -1,7 +1,9 @@
 import { NestFactory } from '@nestjs/core';
+
 import passport from 'passport';
 import session from 'express-session';
 const SQLiteStore = require('connect-sqlite3')(session);
+
 import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
 import { AppModule } from './app/app.module';
@@ -41,7 +43,7 @@ async function bootstrap() {
     console.log('Listening at http://localhost:' + port);
   });
 }
-// bootstrap();
+
 OpenIdClient.build(OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_ISSUER)
   .then(() => bootstrap())
   .catch((err) => {

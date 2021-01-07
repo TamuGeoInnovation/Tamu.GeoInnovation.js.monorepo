@@ -4280,6 +4280,34 @@
     "gisday-sass": {
       "projectType": "library",
       "root": "gisday/sass"
+    },
+    "gisday-common": {
+      "projectType": "library",
+      "root": "libs/gisday/common",
+      "sourceRoot": "libs/gisday/common/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/gisday/common/tsconfig.lib.json", "libs/gisday/common/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/gisday/common/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/gisday/common/jest.config.js",
+            "tsConfig": "libs/gisday/common/tsconfig.spec.json",
+            "setupFile": "libs/gisday/common/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
     }
   },
   "cli": {

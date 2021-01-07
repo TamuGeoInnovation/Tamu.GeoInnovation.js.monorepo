@@ -8,21 +8,20 @@ import { Speaker } from '@tamu-gisc/gisday/data-api';
 import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-detail.component';
 
 // TODO: Fix this -Aaron (1/5/2021)
-let formConfig: {
-  guid: string[];
-  firstName: string[];
-  lastName: string[];
-  email: string[];
-  organization: string[];
-  speakerInfo: {
-    graduationYear: string[];
-    degree: string[];
-    program: string[];
-    affiliation: string[];
-    description: string[];
-    socialMedia: string[];
-    file: string[];
-  };
+export const formConfig = {
+  guid: [''],
+  firstName: [''],
+  lastName: [''],
+  email: [''],
+  organization: [''],
+  graduationYear: [''],
+  degree: [''],
+  program: [''],
+  affiliation: [''],
+  description: [''],
+  socialMedia: [''],
+  university: [''],
+  file: ['']
 };
 
 @Component({

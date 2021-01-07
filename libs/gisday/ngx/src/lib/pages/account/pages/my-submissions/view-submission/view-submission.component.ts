@@ -10,10 +10,10 @@ import { Observable } from 'rxjs';
 })
 export class ViewSubmissionComponent implements OnInit {
   // TODO: Add in VGI submission count -Aaron (1/5/2021)
-  public $vgiSubmissions: Observable<Array<Partial<any>>>;
+  // public $vgiSubmissions: Observable<Array<Partial<any>>>;
   public $paperPosterSubmissions: Observable<Array<Partial<UserSubmission>>>;
   // TODO: Add in feedback submission count -Aaron (1/5/2021)
-  public $feedbackSubmissions: Observable<Array<Partial<any>>>;
+  // public $feedbackSubmissions: Observable<Array<Partial<any>>>;
 
   constructor(public readonly userSubmissionService: UserSubmissionsService) {
     this.fetchPaperPosterSubmissions();

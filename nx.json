@@ -402,6 +402,9 @@
     },
     "gisday-sass": {
       "tags": []
+    },
+    "gisday-common": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

@@ -4,9 +4,9 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { GisdayCommonModule } from '@tamu-gisc/gisday/common';
 
 import { SponsorsDetailComponent } from './sponsors-detail.component';
-import { DetailViewModule } from '../../../modules/detail-view/detail-view.module';
 
 const routes: Routes = [
   {
@@ -17,7 +17,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [SponsorsDetailComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule, DetailViewModule],
+  imports: [CommonModule, RouterModule.forChild(routes), UIFormsModule, UILayoutModule, GisdayCommonModule],
   exports: [RouterModule]
 })
 export class SponsorsDetailModule {}

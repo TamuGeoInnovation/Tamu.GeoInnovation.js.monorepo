@@ -105,7 +105,8 @@
       "@tamu-gisc/gisday/nest": ["libs/gisday/nest/src/index.ts"],
       "@tamu-gisc/gisday/ngx": ["libs/gisday/ngx/src/index.ts"],
       "@tamu-gisc/gisday/data-access": ["libs/gisday/data-access/src/index.ts"],
-      "@tamu-gisc/gisday/data-api": ["libs/gisday/data-api/src/index.ts"]
+      "@tamu-gisc/gisday/data-api": ["libs/gisday/data-api/src/index.ts"],
+      "@tamu-gisc/gisday/common": ["libs/gisday/common/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

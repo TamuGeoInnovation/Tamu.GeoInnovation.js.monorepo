@@ -3,7 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angul
 
 import { map } from 'rxjs/operators';
 
-import { AuthService } from '@tamu-gisc/gisday/data-access';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
