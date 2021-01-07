@@ -7,7 +7,6 @@ import * as WebFont from 'webfontloader';
 import { env, EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import * as environment from '../environments/environment';
-
 import { AppComponent } from './app.component';
 
 WebFont.load({

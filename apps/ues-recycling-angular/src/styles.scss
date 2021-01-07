@@ -624,6 +624,22 @@ tamu-gisc-line-chart h3 {
 //  ==========================================================================
 //   ESRI SPECIFIC
 //  ==========================================================================
+.card {
+  background: #fafafa;
+  padding: 1rem 1.5rem;
+  border-radius: 7px;
+  margin-bottom: 1.5rem;
+  min-width: 25rem;
+  box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.15);
+  @include flexbox();
+
+  p:last-child {
+    padding-bottom: 0;
+  }
+}
+//  ==========================================================================
+//   ESRI SPECIFIC
+//  ==========================================================================
 body.mapping {
   @include flexbox();
   @include flex-direction(column);

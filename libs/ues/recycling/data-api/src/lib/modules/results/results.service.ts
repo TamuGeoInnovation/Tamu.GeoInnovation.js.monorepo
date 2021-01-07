@@ -50,7 +50,7 @@ export class ResultsService extends BaseService<Result> {
     const locationsQuery = await this.locationRepo.createQueryBuilder('locations');
 
     if (id !== undefined) {
-      locationsQuery.andWhere(`id = ${id}`);
+      locationsQuery.andWhere(`id = '${id}'`);
     }
 
     const locations = await locationsQuery.orderBy('id', 'ASC').getMany();

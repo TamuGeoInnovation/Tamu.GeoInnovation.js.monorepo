@@ -1,3 +1,12 @@
+<!-- TODO: implement -->
+<!-- <tamu-gisc-omnitoolbar></tamu-gisc-omnitoolbar> -->
+
+<div class="map-ui top left">
+  <tamu-gisc-total-recycled-card></tamu-gisc-total-recycled-card>
+
+  <tamu-gisc-recycled-trends-card></tamu-gisc-recycled-trends-card>
+</div>
+
 <div class="map-ui bottom left">
   <!-- Map click coordinates, copy to click -->
   <tamu-gisc-click-coordinates class="map-ui-element" *ngIf="(isMobile | async) === false"></tamu-gisc-click-coordinates>
@@ -7,7 +16,7 @@
 <tamu-gisc-esri-map [config]="config" (loaded)="continue($event)" [ngClass]="{ mobile: (isMobile | async) === false }"></tamu-gisc-esri-map>
 
 <!-- Router outlet where desktop and mobile controls are rendered -->
-<router-outlet></router-outlet>
+<!-- <router-outlet></router-outlet> -->
 
 <!-- Mobile keyboard viewfinder/feature list -->
 <tamu-gisc-map-viewfinder *ngIf="(isMobile | async) === false" [layer]="'buildings-layer'" [template]="'{attributes.BldgName}'"></tamu-gisc-map-viewfinder>

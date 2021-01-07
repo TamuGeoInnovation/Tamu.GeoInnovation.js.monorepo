@@ -20,8 +20,14 @@ export class ResultsService {
     return this.http.get<Array<Group<Result>>>(this.apiUrl, { withCredentials: true });
   }
 
-  public getResultsForSample(location: Partial<Location>) {
+  public getResultsForLocation(location: Partial<Location>) {
     return this.http.get<Array<Result>>(`${this.apiUrl}/latest/${location.id}`, {
+      withCredentials: true
+    });
+  }
+
+  public getResultsForLocationForDays(location: Partial<Location>, days: number) {
+    return this.http.get<Array<Result>>(`${this.apiUrl}/latest/${location.id}/${days}`, {
       withCredentials: true
     });
   }

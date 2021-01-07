@@ -18,22 +18,22 @@ export class ResultsController extends BaseController<Result> {
     return this.service.getResults({ options: { groupByDate: true } });
   }
 
-  // // @UseGuards(AzureIdpGuard)
-  // @Get('latest/:tier/:sample')
-  // public getLatestForTierSample(@Param() params: { tier: string; sample: string }) {
-  //   return this.service.getLatestNValuesForLocation(params.tier, params.sample);
-  // }
+  // @UseGuards(AzureIdpGuard)
+  @Get('latest/:id/:days')
+  public getLatestForLocationForDays(@Param() params: { id: string; days: string }) {
+    return this.service.getLatestNValuesForLocation(params.id, params.days);
+  }
+
+  // @UseGuards(AzureIdpGuard)
+  @Get('latest/:id')
+  public getLatestForLocation(@Param() params: { id: string }) {
+    return this.service.getLatestNValuesForLocation(params.id, undefined);
+  }
 
   // @UseGuards(AzureIdpGuard)
   @Get('latest/average')
   public getLatestAverage() {
     return this.service.getLatestNValueAverageForLocation(undefined, 1);
-  }
-
-  // @UseGuards(AzureIdpGuard)
-  @Get('latest/:days')
-  public getLatestValues(@Param() params: { days: string }) {
-    return this.service.getLatestNValuesForLocation(undefined, params.days);
   }
 
   // @UseGuards(AzureIdpGuard)

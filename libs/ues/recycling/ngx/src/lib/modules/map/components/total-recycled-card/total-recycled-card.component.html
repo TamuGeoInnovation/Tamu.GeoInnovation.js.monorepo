@@ -1,0 +1,3 @@
+<div class="card" *ngIf="selectedLocation | async">
+  <p>{{(selectedLocation | async)?.total | number}} {{(selectedLocation | async)?.unit}}</p>
+</div>
