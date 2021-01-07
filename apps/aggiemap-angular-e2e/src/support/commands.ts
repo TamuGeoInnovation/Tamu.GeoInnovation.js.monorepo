@@ -69,12 +69,15 @@ Cypress.Commands.add('checkLayer', (num, layerName) => {
   cy.get(`tamu-gisc-layer-list > .sidebar-component-content-container >:nth-child(${num})`)
     .should('have.class', 'layer-item ng-star-inserted', {timeout: 2000})
     .and('contain', `${layerName}`, {timeout: 2000})
+    .scrollIntoView()
+    .and('be.visible')
 })
 
 Cypress.Commands.add('checkLegend', (num, legendName) => {
   cy.get(`.sidebar-component-content-container > :nth-child(${num})`)
-    .should('be.visible')
-    .and('contain', `${legendName}`)
+    .should('contain', `${legendName}`)
+    .scrollIntoView()
+    .and('be.visible')
 })
 
 Cypress.Commands.add('checkIcon', (num, iconPath, altText) => {
@@ -98,6 +101,10 @@ Cypress.Commands.add('containsAnyText', (element) => {
   cy.get(element)
     .invoke('text')
     .should('be.ok')
+})
+Cypress.Commands.add('checkMenuItem', (num, name) => {
+  cy.get(`.list-container > :nth-child(${num})`)
+    .should('contain', `${name}`)
 })
 
 export{}
