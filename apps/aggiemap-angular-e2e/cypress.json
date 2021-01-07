@@ -12,6 +12,7 @@
   "retries": 2,
   "$schema": "https://on.cypress.io/cypress.schema.json",
   "pageLoadTimeout": 120000,
+  "responseTimeout": 2000,
 
   "compilerOptions": {
       "outDir": "./dist/",
