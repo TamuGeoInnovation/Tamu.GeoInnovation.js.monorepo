@@ -14,7 +14,7 @@ import { CheckinService, EventService } from '@tamu-gisc/gisday/data-access';
 export class EventDetailComponent implements OnInit {
   public eventGuid: string;
   public numOfRsvps: Observable<number>;
-  public userHasCheckedInAlready: Observable<any>;
+  public userHasCheckedInAlready: Observable<boolean>;
   public isCheckinOpen = false;
   public selectedEvent: Partial<Event> = {
     abstract:

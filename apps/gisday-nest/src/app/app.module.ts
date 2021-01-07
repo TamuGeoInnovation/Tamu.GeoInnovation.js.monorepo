@@ -9,7 +9,6 @@ import {
   CourseCredit,
   Event,
   RsvpType,
-  // Session,
   Speaker,
   SpeakerInfo,
   Sponsor,
@@ -22,12 +21,10 @@ import {
   University,
   CheckInModule,
   ClassModule,
-  CourseCreditModule,
   EventModule,
   InitialSurveyModule,
   QuestionType,
   RsvpTypeModule,
-  // SessionModule,
   SpeakerModule,
   SponsorModule,
   SubmissionTypeModule,
@@ -47,8 +44,7 @@ import {
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { OIDC_ISSUER } from '../environments/oidc-client-config';
-import { localDbConfig, geoidb } from '../environments/ormconfig';
+import { localDbConfig } from '../environments/ormconfig';
 
 @Module({
   imports: [
@@ -82,12 +78,10 @@ import { localDbConfig, geoidb } from '../environments/ormconfig';
     }),
     CheckInModule,
     ClassModule,
-    CourseCreditModule,
     EventModule,
     InitialSurveyModule,
     QuestionTypeModule,
     RsvpTypeModule,
-    // SessionModule,
     SpeakerModule,
     SpeakerRoleModule,
     SponsorModule,

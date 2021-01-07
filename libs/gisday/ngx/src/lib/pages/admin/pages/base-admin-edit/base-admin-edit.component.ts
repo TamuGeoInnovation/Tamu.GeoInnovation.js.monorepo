@@ -7,7 +7,7 @@ import { BaseService } from '@tamu-gisc/gisday/data-access';
 import { GuidIdentity } from '@tamu-gisc/gisday/data-api';
 
 export abstract class BaseAdminEditComponent<T extends GuidIdentity, K extends BaseService<T>>
-  implements IBaseAdminEditComponent {
+  implements IBaseAdminEditComponent, OnInit, OnDestroy {
   public $entities: Observable<Array<Partial<T>>>;
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -35,9 +35,7 @@ export abstract class BaseAdminEditComponent<T extends GuidIdentity, K extends B
   }
 }
 
-export interface IBaseAdminEditComponent extends OnInit, OnDestroy {
-  ngOnInit(): void;
-  ngOnDestroy(): void;
+export interface IBaseAdminEditComponent {
   fetchEntities(): void;
   deleteEntity(entity): void;
 }

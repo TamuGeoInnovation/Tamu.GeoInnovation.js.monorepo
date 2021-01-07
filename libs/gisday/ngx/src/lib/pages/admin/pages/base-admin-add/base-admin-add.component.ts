@@ -5,7 +5,8 @@ import { Subject } from 'rxjs';
 
 import { BaseService } from '@tamu-gisc/gisday/data-access';
 
-export abstract class BaseAdminAddComponent<T, K extends BaseService<T>> implements IBaseAdminAddComponent {
+export abstract class BaseAdminAddComponent<T, K extends BaseService<T>>
+  implements IBaseAdminAddComponent, OnInit, OnDestroy {
   public form: FormGroup;
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -26,8 +27,6 @@ export abstract class BaseAdminAddComponent<T, K extends BaseService<T>> impleme
   }
 }
 
-export interface IBaseAdminAddComponent extends OnInit, OnDestroy {
-  ngOnInit(): void;
-  ngOnDestroy(): void;
+export interface IBaseAdminAddComponent {
   submitNewEntity(): void;
 }

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import { LandingComponent } from './landing.component';
-import { CountDownModule } from '../../modules/count-down/count-down.module';
 
 const routes: Routes = [
   {
@@ -14,7 +13,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [LandingComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), CountDownModule],
+  imports: [CommonModule, RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
 export class LandingModule {}

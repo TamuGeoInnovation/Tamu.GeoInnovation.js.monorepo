@@ -4,7 +4,8 @@ import { Observable, Subject } from 'rxjs';
 
 import { BaseService } from '@tamu-gisc/gisday/data-access';
 
-export abstract class BaseAdminViewComponent<T, K extends BaseService<T>> implements IBaseAdminViewComponent {
+export abstract class BaseAdminViewComponent<T, K extends BaseService<T>>
+  implements IBaseAdminViewComponent, OnInit, OnDestroy {
   public $entities: Observable<Array<Partial<T>>>;
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -24,8 +25,6 @@ export abstract class BaseAdminViewComponent<T, K extends BaseService<T>> implem
   }
 }
 
-export interface IBaseAdminViewComponent extends OnInit, OnDestroy {
-  ngOnInit(): void;
-  ngOnDestroy(): void;
+export interface IBaseAdminViewComponent {
   fetchEntities(): void;
 }

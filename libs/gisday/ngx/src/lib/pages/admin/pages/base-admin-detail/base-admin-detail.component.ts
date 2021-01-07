@@ -7,7 +7,8 @@ import { debounceTime } from 'rxjs/operators';
 
 import { BaseService } from '@tamu-gisc/gisday/data-access';
 
-export abstract class BaseAdminDetailComponent<T, K extends BaseService<T>> implements IBaseAdminAddComponent {
+export abstract class BaseAdminDetailComponent<T, K extends BaseService<T>>
+  implements IBaseAdminAddComponent, OnInit, OnDestroy {
   public entityGuid: string;
   public entity: Partial<T>;
   public form: FormGroup;
@@ -43,8 +44,6 @@ export abstract class BaseAdminDetailComponent<T, K extends BaseService<T>> impl
   }
 }
 
-export interface IBaseAdminAddComponent extends OnInit, OnDestroy {
-  ngOnInit(): void;
-  ngOnDestroy(): void;
+export interface IBaseAdminAddComponent {
   submitNewEntity(): void;
 }

@@ -337,6 +337,9 @@
     },
     "gisday-sass": {
       "tags": []
+    },
+    "gisday-common": {
+      "tags": []
     }
   }
 }
