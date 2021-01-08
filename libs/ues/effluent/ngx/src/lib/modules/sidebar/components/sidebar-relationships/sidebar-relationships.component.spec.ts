@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
+import { UESEffluentCoreModule } from '../../../core/core.module';
 
 import { SidebarRelationshipsComponent } from './sidebar-relationships.component';
 
@@ -8,6 +10,7 @@ describe('SidebarRelationshipsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [UESEffluentCoreModule],
       declarations: [SidebarRelationshipsComponent]
     }).compileComponents();
   }));

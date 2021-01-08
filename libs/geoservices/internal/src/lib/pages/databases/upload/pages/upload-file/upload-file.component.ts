@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 
 import { DatabaseService } from '@tamu-gisc/geoservices/data-access';
-import { SelectedFile } from '@tamu-gisc/ui-kits/ngx/forms';
+import { FileComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 
 @Component({
   selector: 'tamu-gisc-upload-file',
@@ -17,7 +17,7 @@ export class UploadFileComponent implements OnInit {
 
   public qualifiers = this.db.getTextQualifierList();
 
-  public file: ReplaySubject<SelectedFile> = new ReplaySubject(1);
+  public file: ReplaySubject<FileComponent> = new ReplaySubject(1);
 
   constructor(private fb: FormBuilder, private db: DatabaseService) {}
 

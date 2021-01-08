@@ -32,12 +32,4 @@ describe('FileComponent', () => {
     component.setDisabledState(true);
     expect(component.checked).toBeTruthy();
   });
-
-  it('should handleFileChange()', () => {
-    const mockFile = new File(['go'], 'go.text', { type: 'text/plain' });
-    const mockEvt = { target: { files: [mockFile] } };
-    const readAsDataURLSpy = jest.spyOn(FileReader.prototype, 'readAsDataURL');
-    component.handleFileChange(mockEvt);
-    expect(readAsDataURLSpy).toBeCalledWith(mockFile);
-  });
 });

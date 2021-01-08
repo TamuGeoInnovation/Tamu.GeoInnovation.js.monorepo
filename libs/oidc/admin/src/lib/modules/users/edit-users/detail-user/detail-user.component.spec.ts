@@ -1,4 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { DetailUserComponent } from './detail-user.component';
 
@@ -8,7 +14,9 @@ describe('DetailUserComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [DetailUserComponent]
+      imports: [ReactiveFormsModule, UIFormsModule, RouterTestingModule, EnvironmentModule, HttpClientTestingModule],
+      declarations: [DetailUserComponent],
+      providers: [{ provide: env, useValue: { api_url: [] } }]
     }).compileComponents();
   }));
 

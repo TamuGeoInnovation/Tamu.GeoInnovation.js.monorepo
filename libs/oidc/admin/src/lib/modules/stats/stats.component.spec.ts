@@ -1,4 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { ChartsModule } from '@tamu-gisc/charts';
 
 import { StatsComponent } from './stats.component';
 
@@ -8,7 +13,9 @@ describe('StatsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [StatsComponent]
+      imports: [ChartsModule, RouterTestingModule, EnvironmentModule, HttpClientTestingModule],
+      declarations: [StatsComponent],
+      providers: [{ provide: env, useValue: { api_url: [] } }]
     }).compileComponents();
   }));
 

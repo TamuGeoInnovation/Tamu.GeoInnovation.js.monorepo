@@ -11,14 +11,15 @@ describe('ClientMetadataComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [ClientMetadataComponent]
-    }).compileComponents();
-  }));
+    })
+      .compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(ClientMetadataComponent);
+        component = fixture.componentInstance;
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ClientMetadataComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        fixture.detectChanges();
+      });
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
