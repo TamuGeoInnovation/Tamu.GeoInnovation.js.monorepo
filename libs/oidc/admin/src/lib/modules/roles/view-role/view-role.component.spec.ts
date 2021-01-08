@@ -1,4 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { ViewRoleComponent } from './view-role.component';
 
@@ -8,7 +11,14 @@ describe('ViewRoleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ViewRoleComponent]
+      imports: [EnvironmentModule, HttpClientTestingModule],
+      declarations: [ViewRoleComponent],
+      providers: [
+        {
+          provide: env,
+          useValue: { api_url: 'https://' }
+        }
+      ]
     }).compileComponents();
   }));
 

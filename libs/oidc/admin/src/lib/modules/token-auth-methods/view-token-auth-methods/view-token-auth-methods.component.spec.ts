@@ -1,4 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { ViewTokenAuthMethodsComponent } from './view-token-auth-methods.component';
 
@@ -8,7 +11,14 @@ describe('ViewTokenAuthMethodsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ViewTokenAuthMethodsComponent]
+      imports: [EnvironmentModule, HttpClientTestingModule],
+      declarations: [ViewTokenAuthMethodsComponent],
+      providers: [
+        {
+          provide: env,
+          useValue: { api_url: 'https://' }
+        }
+      ]
     }).compileComponents();
   }));
 

@@ -1,4 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { EditGrantTypesComponent } from './edit-grant-types.component';
 
@@ -8,7 +12,14 @@ describe('EditGrantTypesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [EditGrantTypesComponent]
+      imports: [RouterTestingModule, EnvironmentModule, HttpClientTestingModule],
+      declarations: [EditGrantTypesComponent],
+      providers: [
+        {
+          provide: env,
+          useValue: { api_url: 'https://' }
+        }
+      ]
     }).compileComponents();
   }));
 

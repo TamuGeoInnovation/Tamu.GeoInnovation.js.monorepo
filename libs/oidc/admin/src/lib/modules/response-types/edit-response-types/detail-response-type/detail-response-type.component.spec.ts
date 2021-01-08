@@ -1,6 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { DetailResponseTypeComponent } from './detail-response-type.component';
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('DetailResponseTypeComponent', () => {
   let component: DetailResponseTypeComponent;
@@ -8,7 +14,14 @@ describe('DetailResponseTypeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [DetailResponseTypeComponent]
+      imports: [ReactiveFormsModule, UIFormsModule, RouterTestingModule, EnvironmentModule, HttpClientTestingModule],
+      declarations: [DetailResponseTypeComponent],
+      providers: [
+        {
+          provide: env,
+          useValue: { api_url: 'https://' }
+        }
+      ]
     }).compileComponents();
   }));
 

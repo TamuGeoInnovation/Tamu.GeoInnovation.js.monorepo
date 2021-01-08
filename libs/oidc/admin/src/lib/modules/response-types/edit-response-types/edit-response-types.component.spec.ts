@@ -1,4 +1,8 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { EditResponseTypesComponent } from './edit-response-types.component';
 
@@ -8,7 +12,14 @@ describe('EditResponseTypesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [EditResponseTypesComponent]
+      imports: [RouterTestingModule, EnvironmentModule, HttpClientTestingModule],
+      declarations: [EditResponseTypesComponent],
+      providers: [
+        {
+          provide: env,
+          useValue: { api_url: 'https://' }
+        }
+      ]
     }).compileComponents();
   }));
 

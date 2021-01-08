@@ -1,4 +1,8 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { StatusComponent } from './status.component';
 
@@ -8,7 +12,9 @@ describe('StatusComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [StatusComponent]
+      imports: [RouterTestingModule, EnvironmentModule, HttpClientTestingModule],
+      declarations: [StatusComponent],
+      providers: [{ provide: env, useValue: { two_dashboard_api_url: [] } }]
     }).compileComponents();
   }));
 

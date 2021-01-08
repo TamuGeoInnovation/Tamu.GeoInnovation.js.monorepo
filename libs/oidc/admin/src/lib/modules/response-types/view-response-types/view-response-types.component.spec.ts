@@ -1,4 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { ViewResponseTypesComponent } from './view-response-types.component';
 
@@ -8,7 +11,14 @@ describe('ViewResponseTypesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ViewResponseTypesComponent]
+      imports: [EnvironmentModule, HttpClientTestingModule],
+      declarations: [ViewResponseTypesComponent],
+      providers: [
+        {
+          provide: env,
+          useValue: { api_url: 'https://' }
+        }
+      ]
     }).compileComponents();
   }));
 

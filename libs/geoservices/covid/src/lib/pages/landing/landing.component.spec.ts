@@ -9,6 +9,7 @@ import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { LandingComponent } from './landing.component';
 
+/* */
 describe('LandingComponent', () => {
   let component: LandingComponent;
   let fixture: ComponentFixture<LandingComponent>;

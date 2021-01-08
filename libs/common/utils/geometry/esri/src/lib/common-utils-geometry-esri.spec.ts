@@ -17,7 +17,18 @@ describe('centroidFromGeometry', () => {
   });
 
   it('should work for valid inputs', () => {
-    expect(centroidFromGeometry(({ rings: [[[20, 4], [20, 4], [20, 4], [20, 4]]] } as unknown) as esri.Polygon)).toEqual({
+    expect(
+      centroidFromGeometry(({
+        rings: [
+          [
+            [20, 4],
+            [20, 4],
+            [20, 4],
+            [20, 4]
+          ]
+        ]
+      } as unknown) as esri.Polygon)
+    ).toEqual({
       latitude: 4,
       longitude: 20
     });
@@ -51,7 +62,16 @@ describe('centroidFromPolygonGeometry', () => {
 
   it('should work for Turf Point', () => {
     expect(
-      centroidFromPolygonGeometry(({ rings: [[[20, 4], [20, 4], [20, 4], [20, 4]]] } as unknown) as esri.Polygon)
+      centroidFromPolygonGeometry(({
+        rings: [
+          [
+            [20, 4],
+            [20, 4],
+            [20, 4],
+            [20, 4]
+          ]
+        ]
+      } as unknown) as esri.Polygon)
     ).toEqual({
       latitude: 4,
       longitude: 20

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HighlightPlusModule } from 'ngx-highlightjs/plus';
+import { HighlightModule } from 'ngx-highlightjs';
 
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
@@ -12,7 +12,7 @@ describe('CodeRunnerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HighlightPlusModule, UIClipboardModule],
+      imports: [HighlightModule, UIClipboardModule],
       declarations: [CodeRunnerComponent]
     }).compileComponents();
   }));
@@ -25,11 +25,5 @@ describe('CodeRunnerComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should correctly evaluate execute', () => {
-    component.execute();
-    component.execute();
-    expect(component.renderable).toBeFalsy();
   });
 });

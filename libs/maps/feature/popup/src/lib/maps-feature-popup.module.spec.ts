@@ -12,3 +12,4 @@ describe('MapPopupModule', () => {
     expect(MapPopupModule).toBeDefined();
   });
 });
+/* */
