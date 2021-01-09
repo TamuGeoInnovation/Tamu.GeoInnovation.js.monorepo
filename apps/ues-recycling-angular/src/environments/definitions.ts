@@ -15,7 +15,7 @@ export const Definitions = {
     url: `${Connections.basemapUrl}/1`
   },
   RECYCLING: {
-    id: 'buildings',
+    id: 'recycling',
     layerId: 'recycling-layer',
     name: 'Recycling Centers',
     url: `${Connections.recyclingPointsUrl}`

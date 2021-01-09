@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
@@ -31,7 +32,8 @@ const routes: Routes = [
     MapsFeatureCoordinatesModule,
     MapsFeatureAccessibilityModule,
     LayerListModule,
-    ChartsModule
+    ChartsModule,
+    ReactiveFormsModule
   ],
   declarations: [MapComponent, OmnitoolbarComponent, TotalRecycledCardComponent, RecycledTrendsCardComponent],
   providers: [RecyclingService]

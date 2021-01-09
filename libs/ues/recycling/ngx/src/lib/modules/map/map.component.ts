@@ -1,15 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
+import { from, Observable, of, Subject } from 'rxjs';
+import { map, pluck, shareReplay, switchMap, timeout } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
-import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
-import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-
-import { ResultsService } from '../data-access/results/results.service';
 
 import esri = __esri;
 
@@ -24,13 +21,14 @@ export class MapComponent implements OnInit, OnDestroy {
   public isMobile: Observable<boolean>;
   public config: MapConfig;
 
+  public searchSource: Observable<esri.Graphic[]>;
+
   private _destroy$: Subject<boolean> = new Subject();
 
   constructor(
     private responsiveService: ResponsiveService,
     private environment: EnvironmentService,
-    private layerListService: LayerListService,
-    private resultsService: ResultsService
+    private mapService: EsriMapService
   ) {}
 
   public ngOnInit(): void {
@@ -97,16 +95,20 @@ export class MapComponent implements OnInit, OnDestroy {
     ];
     (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
 
-    // this.layerListService
-    //   .layers({ watchProperties: ['visible'], layers: ['sampling-zone-3'] })
-    //   .pipe(withLatestFrom(this.generateUniqueValueRenderer()))
-    //   .subscribe(([[result], renderer]) => {
-    //     const l = result.layer as esri.FeatureLayer;
+    setTimeout(() => {
+      this.searchSource = this.mapService.store.pipe(
+        switchMap((instance) => {
+          const l = instance.map.findLayerById('recycling-layer') as esri.FeatureLayer;
 
-    //     if (l) {
-    //       l.renderer = renderer;
-    //     }
-    //   });
+          return from(
+            l.queryFeatures({
+              outFields: ['*'],
+              where: '1=1'
+            })
+          ).pipe(pluck('features'));
+        })
+      );
+    }, 500);
   }
 
   public ngOnDestroy() {
@@ -172,53 +174,4 @@ export class MapComponent implements OnInit, OnDestroy {
       throw new Error('No event provided.');
     }
   };
-
-  // private generateUniqueValueRenderer() {
-  //   return this.resultsService.getLatestResults().pipe(
-  //     map((results) => {
-  //       const infos = results.map((result, index) => {
-  //         // Pluck the top result from the result array for this sampling location
-
-  //         const baseColor = this.getSymbolColorForValue(result.value);
-  //         const fillColor = [...baseColor, 0.4];
-  //         const strokeColor = [...baseColor, 1];
-
-  //         const info = {
-  //           value: `${result.location.tier}-${result.location.sample}`,
-  //           symbol: {
-  //             type: 'simple-fill',
-  //             color: fillColor,
-  //             outline: {
-  //               color: strokeColor,
-  //               width: 1.5
-  //             }
-  //           }
-  //         };
-
-  //         return info;
-  //       });
-
-  //       const renderer = ({
-  //         type: 'unique-value',
-  //         field: 'SampleNumber',
-  //         defaultSymbol: { type: 'simple-fill' },
-  //         uniqueValueInfos: infos
-  //       } as unknown) as esri.UniqueValueRenderer;
-
-  //       return renderer;
-  //     })
-  //   );
-  // }
-
-  private getSymbolColorForValue(measurement: number) {
-    if (measurement === undefined || measurement === -1) {
-      return [0, 0, 0];
-    } else if (measurement < 0.45) {
-      return [102, 187, 106];
-    } else if (measurement < 0.6) {
-      return [255, 152, 0];
-    } else if (measurement <= 1) {
-      return [239, 83, 80];
-    }
-  }
 }

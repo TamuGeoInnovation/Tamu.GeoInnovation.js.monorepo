@@ -1,0 +1,91 @@
+@import 'libs/sass/mixins';
+
+:host {
+  &:focus-within {
+    .dropdown {
+      display: initial;
+    }
+  }
+}
+
+.card,
+.input-line,
+.action-section {
+  @include align-items(center);
+}
+
+.card {
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.input-line {
+  @include flexbox();
+  color: #7e7e7e;
+
+  span {
+    margin-right: 0.3rem;
+  }
+}
+
+.material-icons {
+  color: #7e7e7e;
+}
+
+.action-section {
+  @include flexbox();
+
+  .action {
+    cursor: pointer;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+form {
+  width: 100%;
+}
+
+input[type='text'] {
+  width: 100%;
+  background: none;
+  padding: 0;
+  font-size: 1rem;
+  border: none;
+}
+
+.dropdown {
+  background: #fafafa;
+  padding: 0.5rem 0;
+  position: absolute;
+  top: calc(100% - 1.75rem);
+  z-index: -1;
+  max-height: 45vh;
+  overflow: auto;
+  box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.15);
+  border-radius: 7pt;
+  width: 100%;
+  display: none;
+
+  p {
+    position: relative;
+    padding: 0.5rem 1.5rem;
+    box-sizing: border-box;
+    cursor: pointer;
+    width: 100%;
+
+    &:hover {
+      background: #eeeeee;
+    }
+  }
+}

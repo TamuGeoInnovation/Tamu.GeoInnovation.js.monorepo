@@ -1,3 +1,5 @@
-<div class="card" *ngIf="selectedLocation | async">
-  <p>{{(selectedLocation | async)?.total | number}} {{(selectedLocation | async)?.unit}}</p>
+<div class="card metric" *ngIf="selectedLocation | async">
+  <p class="large-metric">{{(selectedLocation | async)?.total | number}} {{(selectedLocation | async)?.unit}}</p>
+
+  <p class="card-title">Weight Collected</p>
 </div>

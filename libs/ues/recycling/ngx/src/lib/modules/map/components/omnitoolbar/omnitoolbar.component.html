@@ -1,1 +1,16 @@
-<p>omnitoolbar works!</p>
+<div class="card">
+  <form [formGroup]="form">
+    <div class="input-line">
+      <span class="material-icons">search</span>
+      <input type="text" formControlName="search" placeholder="Type to search or click on map location" />
+    </div>
+  </form>
+
+  <div class="action-section">
+    <div class="material-icons action closed" *ngIf="selectedLocation | async" alt="Clear selection" title="Clear selection" (click)="clear()">close</div>
+  </div>
+</div>
+
+<div class="dropdown" *ngIf="form.controls['search'].dirty">
+  <p *ngFor="let suggestion of filteredResults | async" (mousedown)="select(suggestion)">{{suggestion.attributes.Name}} <ng-container *ngIf="suggestion.attributes.bldNum" tabIndex="0">({{suggestion.attributes.bldNum}})</ng-container></p>
+</div>

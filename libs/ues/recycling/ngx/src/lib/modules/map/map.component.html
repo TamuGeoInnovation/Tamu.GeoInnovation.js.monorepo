@@ -1,10 +1,11 @@
-<!-- TODO: implement -->
-<!-- <tamu-gisc-omnitoolbar></tamu-gisc-omnitoolbar> -->
-
 <div class="map-ui top left">
   <tamu-gisc-total-recycled-card></tamu-gisc-total-recycled-card>
 
   <tamu-gisc-recycled-trends-card></tamu-gisc-recycled-trends-card>
+</div>
+
+<div class="map-ui top right">
+  <tamu-gisc-omnitoolbar [source]="searchSource | async" [searchPaths]="['attributes.Name', 'attributes.bldNum']"></tamu-gisc-omnitoolbar>
 </div>
 
 <div class="map-ui bottom left">

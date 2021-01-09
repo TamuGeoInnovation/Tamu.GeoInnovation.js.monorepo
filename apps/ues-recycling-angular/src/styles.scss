@@ -632,9 +632,29 @@ tamu-gisc-line-chart h3 {
   min-width: 25rem;
   box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.15);
   @include flexbox();
+  @include flex-direction(column);
 
   p:last-child {
     padding-bottom: 0;
+  }
+
+  &.metric {
+    @include justify-content(center);
+    @include align-items(center);
+  }
+
+  .large-metric {
+    font-size: 2.25rem;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+  }
+
+  .card-title {
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    font-weight: 600;
+    color: $inactive-color;
+    font-size: 0.9rem;
   }
 }
 //  ==========================================================================
