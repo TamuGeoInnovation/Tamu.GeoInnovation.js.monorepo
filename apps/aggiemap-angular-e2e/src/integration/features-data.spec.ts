@@ -1,6 +1,5 @@
 /// <reference path="../support/index.d.ts" />
-const desktopSizes = [[1920, 1080], [1366, 768], [1440, 900]]
-export default desktopSizes;
+import {desktopSizes} from "./resolutions";
 
 desktopSizes.forEach((size) => {
   describe(`Test Elements, Features Page: ${size} Resolution`, () => {
@@ -8,7 +7,7 @@ desktopSizes.forEach((size) => {
       cy.viewport(size[0], size[1])
       cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
       cy.visit('https://aggiemap.tamu.edu/map/d')
-      cy.wait('@basemap',{requestTimeout: 100, responseTimeout: 100})
+      cy.wait('@basemap',{requestTimeout: 1000, responseTimeout: 1000})
       cy.get('canvas').should('be.visible', {timeout: 5000})
     })
 
