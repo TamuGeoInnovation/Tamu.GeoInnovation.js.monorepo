@@ -11,12 +11,16 @@ import { Location } from '@tamu-gisc/ues/recycling/common/entities';
 })
 export class LocationsService {
   private apiUrl: string;
-  
+
   constructor(private http: HttpClient, private env: EnvironmentService) {
     this.apiUrl = this.env.value('apiUrl') + 'locations';
   }
 
   public getLocations(): Observable<Array<Location>> {
     return this.http.get<Array<Location>>(this.apiUrl);
+  }
+
+  public getLocationsResults(): Observable<Array<Location>> {
+    return this.http.get<Array<Location>>(this.apiUrl + '/results');
   }
 }

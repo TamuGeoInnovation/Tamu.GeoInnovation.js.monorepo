@@ -1,14 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { from, Observable, Subject } from 'rxjs';
-import { filter, map, pluck, shareReplay, switchMap } from 'rxjs/operators';
+import { combineLatest, from, Observable, Subject } from 'rxjs';
+import { filter, map, pluck, shareReplay } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
-import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
 import { FeatureHighlightService } from '@tamu-gisc/maps/feature/feature-highlight';
+import { Location } from '@tamu-gisc/ues/recycling/common/entities';
+
+import { LocationsService } from '../data-access/locations/locations.service';
 
 import esri = __esri;
 
@@ -20,7 +23,7 @@ import esri = __esri;
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
-  public view: esri.MapView;
+  public view: esri.MapView | esri.SceneView;
   public isMobile: Observable<boolean>;
   public config: MapConfig;
 
@@ -33,7 +36,9 @@ export class MapComponent implements OnInit, OnDestroy {
     private environment: EnvironmentService,
     private mapService: EsriMapService,
     private highlightService: FeatureHighlightService,
-    private selectionService: FeatureSelectorService
+    private selectionService: FeatureSelectorService,
+    private locationsService: LocationsService,
+    private loader: EsriModuleProviderService
   ) {}
 
   public ngOnInit(): void {
@@ -63,7 +68,7 @@ export class MapComponent implements OnInit, OnDestroy {
         }
       },
       view: {
-        mode: '2d',
+        mode: '3d',
         properties: {
           // container: this.mapViewEl.nativeElement,
           map: undefined, // Reference to the map object created before the scene
@@ -71,24 +76,31 @@ export class MapComponent implements OnInit, OnDestroy {
           spatialReference: {
             wkid: 102100
           },
+          // constraints: {
+          //   minScale: 100000, // minZoom is the max you can zoom OUT into space
+          //   maxScale: 0 // maxZoom is the max you can zoom INTO the ground
+          // },
           constraints: {
-            minScale: 100000, // minZoom is the max you can zoom OUT into space
-            maxScale: 0 // maxZoom is the max you can zoom INTO the ground
+            // altitude: {
+            //   min: 0,
+            //   max: 10000
+            // },
+            tilt: {
+              max: 179
+            }
           },
           zoom: 16,
           ui: {
             components: this.isMobile ? ['attribution'] : ['attribution', 'zoom']
-          },
-          popup: {
-            dockOptions: {
-              buttonEnabled: false,
-              breakpoint: false,
-              position: 'bottom-right'
-            }
           }
         }
       }
     };
+
+    this.mapService.store.subscribe((instance) => {
+      this.map = instance.map;
+      this.view = instance.view;
+    });
 
     // Set loader phrases and display a random one.
     const phrases = [
@@ -101,18 +113,15 @@ export class MapComponent implements OnInit, OnDestroy {
     (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
 
     setTimeout(() => {
-      this.searchSource = this.mapService.store.pipe(
-        switchMap((instance) => {
-          const l = instance.map.findLayerById('recycling-layer') as esri.FeatureLayer;
+      const l = this.map.findLayerById('recycling-layer') as esri.FeatureLayer;
 
-          return from(
-            l.queryFeatures({
-              outFields: ['*'],
-              where: '1=1'
-            })
-          ).pipe(pluck('features'));
+      this.searchSource = from(
+        l.queryFeatures({
+          outFields: ['*'],
+          where: '1=1',
+          returnGeometry: true
         })
-      );
+      ).pipe(pluck('features'));
     }, 1000);
 
     this.selectionService.snapshot
@@ -123,7 +132,7 @@ export class MapComponent implements OnInit, OnDestroy {
         filter((features) => features !== undefined)
       )
       .subscribe((res) => {
-        this.highlight(res);
+        this.highlight(res, false);
       });
   }
 
@@ -163,8 +172,8 @@ export class MapComponent implements OnInit, OnDestroy {
         if (this.isMobile) {
           instances.view.ui.add(track, 'bottom-right');
         } else {
-          instances.view.ui.add(track, 'top-left');
-          instances.view.ui.add(compass, 'top-left');
+          instances.view.ui.add(track, 'top-right');
+          instances.view.ui.add(compass, 'top-right');
         }
       })
       .catch((err) => {
@@ -191,14 +200,133 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   };
 
-  public highlight(features: esri.Graphic | esri.Graphic[]) {
+  /**
+   * Highlights the provided features.
+   *
+   * Provides ability to zoom to features.
+   */
+  public highlight(features: esri.Graphic | esri.Graphic[], focus: boolean) {
     const feats = features instanceof Array ? features : [features];
+
     this.highlightService.highlight({
       features: feats
     });
+
+    if (focus) {
+      this.view.goTo(feats);
+    }
   }
 
   public clearHighlight() {
     this.highlightService.clearAll();
+  }
+
+  public toggle3dLayer() {
+    const layerName = 'recycling-layer-three';
+
+    const existingLayer = this.map.findLayerById(layerName);
+
+    if (!existingLayer) {
+      combineLatest([
+        this.searchSource,
+        this.locationsService.getLocationsResults(),
+        this.loader.require(['FeatureLayer', 'Circle'])
+      ]).subscribe(
+        ([searchSource, locs, [FeatureLayer, Circle]]: [
+          esri.Graphic[],
+          Location[],
+          [esri.FeatureLayerConstructor, esri.CircleConstructor]
+        ]) => {
+          const cloned = searchSource.reduce((collection, graphic) => {
+            const c = graphic.clone();
+            const cg = new Circle({
+              center: {
+                latitude: (c.geometry as esri.Point).latitude,
+                longitude: (c.geometry as esri.Point).longitude
+              },
+              spatialReference: c.geometry.spatialReference,
+              radius: 10,
+              radiusUnit: 'meters'
+            });
+
+            c.geometry = cg;
+
+            const matchedLocation = locs.find((location) => {
+              if (c.attributes.bldNum) {
+                return parseInt(c.attributes.bldNum, 10) === parseInt(location.id, 10);
+              } else {
+                return c.attributes.Name === location.id;
+              }
+            });
+
+            if (matchedLocation === undefined) {
+              return collection;
+            }
+
+            c.attributes.total = matchedLocation.results.reduce((acc, curr) => {
+              const isDouble = curr.value % 1 !== 0;
+              if (isDouble) {
+                return acc + parseInt((curr.value * 2000).toFixed(0), 10);
+              } else {
+                return acc + curr.value;
+              }
+            }, 0);
+
+            return [...collection, c];
+          }, []);
+
+          const layer = new FeatureLayer({
+            id: layerName,
+            source: cloned,
+            objectIdField: 'OBJECTID',
+            fields: [
+              {
+                name: 'OBJECTID',
+                type: 'oid'
+              },
+              {
+                name: 'total',
+                type: 'integer'
+              }
+            ],
+            elevationInfo: {
+              mode: 'relative-to-scene'
+            },
+            renderer: {
+              type: 'simple',
+              symbol: {
+                type: 'polygon-3d',
+                symbolLayers: [{ type: 'extrude', material: { color: '#71C96E' } }]
+              },
+              label: '% population in poverty by county',
+              visualVariables: [
+                {
+                  type: 'size',
+                  field: 'total',
+                  stops: [
+                    {
+                      value: 0,
+                      size: 0
+                    },
+                    {
+                      value: 100000,
+                      size: 250
+                    },
+                    {
+                      value: 1000000,
+                      size: 500
+                    }
+                  ]
+                }
+              ]
+            } as esri.RendererProperties
+          });
+
+          this.map.add(layer);
+        }
+      );
+    } else {
+      this.view.goTo(existingLayer);
+    }
   }
 }

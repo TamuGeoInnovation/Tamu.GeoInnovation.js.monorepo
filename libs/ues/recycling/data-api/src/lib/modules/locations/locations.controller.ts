@@ -15,4 +15,9 @@ export class LocationsController extends BaseController<Location> {
   public getLocations() {
     return this.service.getLocations();
   }
+
+  @Get('results')
+  public getResultsPerLocation() {
+    return this.service.getLocationAndResults();
+  }
 }

@@ -7,7 +7,8 @@
 </div>
 
 <div class="map-ui top right">
-  <tamu-gisc-omnitoolbar [source]="searchSource | async" [searchPaths]="['attributes.Name', 'attributes.bldNum']" (selectedSuggestion)="highlight($event)" (clearSuggestion)="clearHighlight()"></tamu-gisc-omnitoolbar>
+  <tamu-gisc-omnitoolbar [source]="searchSource | async" [searchPaths]="['attributes.Name', 'attributes.bldNum']" (selectedSuggestion)="highlight($event, true)" (clearSuggestion)="clearHighlight()"></tamu-gisc-omnitoolbar>
+  <span (click)="toggle3dLayer()">2D</span>
 </div>
 
 <div class="map-ui bottom left">

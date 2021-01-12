@@ -19,4 +19,13 @@ export class LocationsService extends BaseService<Location> {
       }
     });
   }
+
+  public getLocationAndResults() {
+    return this.repo.find({
+      order: {
+        id: 'ASC'
+      },
+      relations: ['results']
+    });
+  }
 }
