@@ -1,5 +1,5 @@
 /// <reference path="../support/index.d.ts" />
-import desktopSizes from './features-data.spec';
+import {desktopSizes} from "./resolutions";
 
 desktopSizes.forEach((size) => {
   describe(`Test Layers, Feature Page: ${size} Resolution`, function() {
@@ -8,7 +8,7 @@ desktopSizes.forEach((size) => {
       cy.intercept("GET", "**/Construction_2018/**").as("construction")
       cy.intercept("GET", "**/Physical_Distancing_Tents/**").as("tents")
       cy.visit('https://aggiemap.tamu.edu/map/d')
-      cy.wait('@basemap',{requestTimeout: 1000, responseTimeout: 100})
+      cy.wait('@basemap',{requestTimeout: 1000, responseTimeout: 1000})
       cy.get('canvas').should('be.visible', {timeout: 5000})
       cy.fixture('icons').then(function(data) {
         this.data = data;
