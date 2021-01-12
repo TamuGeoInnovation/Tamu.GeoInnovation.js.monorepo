@@ -1,19 +1,22 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { from, Observable, of, Subject } from 'rxjs';
-import { map, pluck, shareReplay, switchMap, timeout } from 'rxjs/operators';
+import { from, Observable, Subject } from 'rxjs';
+import { filter, map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
 import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
+import { FeatureHighlightService } from '@tamu-gisc/maps/feature/feature-highlight';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
+  providers: [FeatureSelectorService]
 })
 export class MapComponent implements OnInit, OnDestroy {
   public map: esri.Map;
@@ -28,7 +31,9 @@ export class MapComponent implements OnInit, OnDestroy {
   constructor(
     private responsiveService: ResponsiveService,
     private environment: EnvironmentService,
-    private mapService: EsriMapService
+    private mapService: EsriMapService,
+    private highlightService: FeatureHighlightService,
+    private selectionService: FeatureSelectorService
   ) {}
 
   public ngOnInit(): void {
@@ -109,6 +114,17 @@ export class MapComponent implements OnInit, OnDestroy {
         })
       );
     }, 1000);
+
+    this.selectionService.snapshot
+      .pipe(
+        map((features) => {
+          return features.filter((g) => g.layer.id === 'recycling-layer');
+        }),
+        filter((features) => features !== undefined)
+      )
+      .subscribe((res) => {
+        this.highlight(res);
+      });
   }
 
   public ngOnDestroy() {
@@ -174,4 +190,15 @@ export class MapComponent implements OnInit, OnDestroy {
       throw new Error('No event provided.');
     }
   };
+
+  public highlight(features: esri.Graphic | esri.Graphic[]) {
+    const feats = features instanceof Array ? features : [features];
+    this.highlightService.highlight({
+      features: feats
+    });
+  }
+
+  public clearHighlight() {
+    this.highlightService.clearAll();
+  }
 }

@@ -181,6 +181,5 @@ export interface RecyclingLocationMetadata {
 export interface RecyclingResultsStatistics {
   records: number;
   total: number;
-  unit: 'lbs' | 'tons';
   results: Result[];
 }

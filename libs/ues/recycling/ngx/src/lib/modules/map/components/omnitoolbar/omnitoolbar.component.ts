@@ -31,6 +31,9 @@ export class OmnitoolbarComponent<T extends esri.Graphic> implements OnInit, OnD
   @Output()
   public selectedSuggestion: EventEmitter<T> = new EventEmitter();
 
+  @Output()
+  public clearSuggestion: EventEmitter<T> = new EventEmitter();
+
   public form: FormGroup;
   public selectedLocation: Observable<RecyclingLocationMetadata>;
   public name: Observable<string>;
@@ -103,6 +106,7 @@ export class OmnitoolbarComponent<T extends esri.Graphic> implements OnInit, OnD
 
   public clear(): void {
     this.recyclingService.clearSelected();
+    this.clearSuggestion.emit();
   }
 
   public select(selection: T): void {

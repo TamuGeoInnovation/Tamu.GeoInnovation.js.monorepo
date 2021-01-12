@@ -81,7 +81,7 @@ body.scroll {
 }
 
 body p {
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
   color: inherit;
   position: inherit;
   font-weight: inherit;
@@ -630,6 +630,7 @@ tamu-gisc-line-chart h3 {
   border-radius: 7px;
   margin-bottom: 1.5rem;
   min-width: 25rem;
+  max-width: 25rem;
   box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.15);
   @include flexbox();
   @include flex-direction(column);

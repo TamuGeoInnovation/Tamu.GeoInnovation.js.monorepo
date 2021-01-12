@@ -15,6 +15,7 @@ import { OmnitoolbarComponent } from './components/omnitoolbar/omnitoolbar.compo
 import { TotalRecycledCardComponent } from './components/total-recycled-card/total-recycled-card.component';
 import { RecyclingService } from '../core/services/recycling.service';
 import { RecycledTrendsCardComponent } from './components/recycled-trends-card/recycled-trends-card.component';
+import { RecycleLocationDetailsCardComponent } from './components/recycle-location-details-card/recycle-location-details-card.component';
 
 const routes: Routes = [
   {
@@ -35,7 +36,7 @@ const routes: Routes = [
     ChartsModule,
     ReactiveFormsModule
   ],
-  declarations: [MapComponent, OmnitoolbarComponent, TotalRecycledCardComponent, RecycledTrendsCardComponent],
+  declarations: [MapComponent, OmnitoolbarComponent, TotalRecycledCardComponent, RecycledTrendsCardComponent, RecycleLocationDetailsCardComponent],
   providers: [RecyclingService]
 })
 export class MapModule {}
