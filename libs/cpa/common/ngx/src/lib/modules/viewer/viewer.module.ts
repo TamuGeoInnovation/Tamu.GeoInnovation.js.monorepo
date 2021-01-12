@@ -6,8 +6,8 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { CPAFormsModule } from '../forms/cpaForms.module';
 import { ParticipantComponent } from '../forms/components/participant/participant.component';
-
 import { ViewerComponent } from './viewer.component';
+import { SnapshotNavigatorComponent } from './components/snapshot-navigator/snapshot-navigator.component';
 
 const routes: Routes = [
   {
@@ -24,7 +24,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes), CPAFormsModule, UILayoutModule],
-  declarations: [ViewerComponent],
+  declarations: [ViewerComponent, SnapshotNavigatorComponent],
   exports: [RouterModule]
 })
 export class CpaViewerModule {}

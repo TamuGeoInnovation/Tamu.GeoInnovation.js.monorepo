@@ -133,8 +133,6 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
                 (event.toolEventInfo && event.toolEventInfo.type === 'scale-stop')
               ) {
                 this.emitDrawn(event.target.layer.graphics);
-              } else {
-                console.log(event.toolEventInfo.type);
               }
             });
 

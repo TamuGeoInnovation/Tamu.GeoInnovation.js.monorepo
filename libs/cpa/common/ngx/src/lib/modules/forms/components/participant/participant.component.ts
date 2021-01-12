@@ -1,37 +1,29 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject, Observable, forkJoin, merge, interval, of, combineLatest, from } from 'rxjs';
+import { BehaviorSubject, Subject, forkJoin, interval, of, combineLatest, from, merge, Observable } from 'rxjs';
 import {
   takeUntil,
   debounceTime,
-  shareReplay,
   switchMap,
-  pluck,
   take,
   throttle,
   withLatestFrom,
   filter,
-  tap,
-  skip
+  skip,
+  shareReplay
 } from 'rxjs/operators';
 
 import { v4 as guid } from 'uuid';
 
-import {
-  IWorkshopRequestPayload,
-  IResponseResponse,
-  IResponseRequestPayload,
-  IScenariosResponse
-} from '@tamu-gisc/cpa/data-api';
-
+import { IResponseRequestPayload, IResponseResponse, IScenariosResponse } from '@tamu-gisc/cpa/data-api';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
-import { IChartConfigurationOptions } from '@tamu-gisc/charts';
 
 import { ResponseService } from '../../services/response.service';
 import { WorkshopService } from '../../services/workshop.service';
+import { ViewerService } from '../../../viewer/services/viewer.service';
 
 import esri = __esri;
 
@@ -45,32 +37,17 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   @Output()
   public responseSave: EventEmitter<boolean> = new EventEmitter();
 
-  public workshop: Observable<IWorkshopRequestPayload>;
-  public scenario: Observable<IScenariosResponse>;
+  // Values managed by service
+  public workshop = this.vs.workshop;
+  public scenario = this.vs.scenario;
   public responses: Observable<IResponseResponse[]>;
+  public scenarioHistory = this.vs.scenarioHistory;
+  public scenarioIndex = this.vs.scenarioIndex;
 
-  public scenarioHistory: BehaviorSubject<IScenariosResponse[]> = new BehaviorSubject([]);
-  public scenarioIndex: BehaviorSubject<number> = new BehaviorSubject(0);
+  // Values specific to the participant component.
   public responseIndex: BehaviorSubject<number> = new BehaviorSubject(-1);
-
   public participantGuid: string;
-
   public form: FormGroup;
-
-  /**
-   * Partial chart configuration passed to the chart component
-   */
-  public chartOptions: Partial<IChartConfigurationOptions> = {
-    scales: {
-      yAxes: [
-        {
-          ticks: {
-            beginAtZero: true
-          }
-        }
-      ]
-    }
-  };
 
   /**
    * Stores the results of the features emitted by the draw component.
@@ -92,12 +69,11 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private mapService: EsriMapService,
-    private ws: WorkshopService,
     private rs: ResponseService,
     private route: ActivatedRoute,
     private ms: EsriMapService,
-    private mp: EsriModuleProviderService
+    private mp: EsriModuleProviderService,
+    private vs: ViewerService
   ) {}
 
   public ngOnInit() {
@@ -110,26 +86,22 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     });
 
     if (this.route.snapshot.params['guid']) {
-      this.workshop = this.ws.getWorkshop(this.route.snapshot.params['guid']).pipe(shareReplay(1));
+      this.vs.updateWorkshopGuid(this.route.snapshot.params.guid);
 
-      this.scenario = combineLatest([this.workshop, this.scenarioIndex]).pipe(
-        switchMap(([workshop, scenarioIndex]: [IWorkshopRequestPayload, number]) => {
-          return of(workshop).pipe(pluck<IResponseResponse, IScenariosResponse[]>('scenarios'), pluck(scenarioIndex));
-        }),
-        tap((scenario) => {
-          this.addToScenarioHistory(scenario);
-        }),
-        shareReplay(1)
-      );
-
-      this.scenario.pipe(skip(1), takeUntil(this._$destroy)).subscribe((res) => {
-        this.resetWorkspace();
-      });
+      // On scenario change, reset the workspace
+      this.scenario
+        .pipe(
+          skip(1),
+          takeUntil(this._$destroy)
+        )
+        .subscribe((res) => {
+          this.resetWorkspace();
+        });
 
       // Fetch new responses from server whenever scenario, response index, or response save signal emits.
       this.responses = merge(this.scenario, this.responseIndex, this.responseSave).pipe(
         switchMap((event) => {
-          return forkJoin([this.workshop, this.scenario.pipe(take(1))]);
+          return forkJoin([this.workshop.pipe(take(1)), this.scenario.pipe(take(1))]);
         }),
         switchMap(([workshop, scenario]) => {
           return this.rs.getResponsesForWorkshopAndScenario(workshop.guid, scenario.guid);
@@ -179,8 +151,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         // the update method when not necessary.
         this.form.statusChanges
           .pipe(
-            throttle(() => interval(500)),
-            debounceTime(500),
+            throttle(() => interval(700)),
+            debounceTime(750),
             takeUntil(this._$formReset)
           )
           .subscribe((status) => {
@@ -384,31 +356,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     } else {
       this.participantGuid = guid();
     }
-  }
-
-  /**
-   * Manages the history of the ScenarioHistory behavior subject, to only keep a maximum of 2 entires (curr and prev).
-   *
-   * This history is used to add/remove layers for scenarios.
-   */
-  private addToScenarioHistory(scenario: IScenariosResponse) {
-    const prevValue = this.scenarioHistory.getValue();
-
-    const newValue = [...prevValue, scenario].slice(-2);
-
-    this.scenarioHistory.next(newValue);
-  }
-
-  public scanScenario(direction: 'prev' | 'next') {
-    forkJoin([this.scenarioIndex.pipe(take(1)), this.workshop]).subscribe(([scenarioIndex, workshop]) => {
-      if (direction) {
-        if (direction === 'prev') {
-          if (scenarioIndex > 0) this.scenarioIndex.next(scenarioIndex - 1);
-        } else if (direction === 'next') {
-          this.scenarioIndex.next(scenarioIndex + 1);
-        }
-      }
-    });
   }
 }
 

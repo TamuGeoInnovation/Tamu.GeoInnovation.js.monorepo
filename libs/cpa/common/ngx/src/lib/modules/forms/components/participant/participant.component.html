@@ -48,23 +48,11 @@
         </div>
         <tamu-gisc-map-draw [reference]="'drawing-layer'" [collapseGraphics]="true" (export)="handleDrawSelection($event)"></tamu-gisc-map-draw>
       </div>
-<!-- 
-      <div class="sidebar-component-content-container">
-        <div class="sidebar-component-name">
-          <p>Summary & Charts</p>
-        </div>
-
-        <tamu-gisc-selection-summary [collection]="selected">
-          <div class="charts">
-            <tamu-gisc-bar-chart [paths]="[['attributes.Qualifier', 'identity']]" [transformations]="[['categorize', 'count']]" [labels]="['Type']" [options]="chartOptions"></tamu-gisc-bar-chart>
-          </div>
-        </tamu-gisc-selection-summary>
-      </div> -->
     </div>
   </div>
 </form>
 
-<div class="actions">
+<!-- <div class="actions">
   <div class="left-actions">
     <div class="action" title="Previous Snapshot" [ngClass]="{ unavailable: (scenarioIndex | async) === 0 }" (click)="scanScenario('prev')">
       <span class="material-icons">keyboard_arrow_left</span>
@@ -78,4 +66,4 @@
       <span class="material-icons">keyboard_arrow_right</span>
     </div>
   </div>
-</div>
+</div> -->
