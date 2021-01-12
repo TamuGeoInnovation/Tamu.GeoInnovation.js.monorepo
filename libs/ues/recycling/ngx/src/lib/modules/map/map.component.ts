@@ -81,12 +81,12 @@ export class MapComponent implements OnInit, OnDestroy {
           //   maxScale: 0 // maxZoom is the max you can zoom INTO the ground
           // },
           constraints: {
-            // altitude: {
-            //   min: 0,
-            //   max: 10000
-            // },
+            altitude: {
+              min: 0,
+              max: 10000
+            },
             tilt: {
-              max: 179
+              max: 0
             }
           },
           zoom: 16,
@@ -221,112 +221,118 @@ export class MapComponent implements OnInit, OnDestroy {
     this.highlightService.clearAll();
   }
 
-  public toggle3dLayer() {
+  public toggle3dLayer(mode: '2d' | '3d') {
     const layerName = 'recycling-layer-three';
 
     const existingLayer = this.map.findLayerById(layerName);
 
-    if (!existingLayer) {
-      combineLatest([
-        this.searchSource,
-        this.locationsService.getLocationsResults(),
-        this.loader.require(['FeatureLayer', 'Circle'])
-      ]).subscribe(
-        ([searchSource, locs, [FeatureLayer, Circle]]: [
-          esri.Graphic[],
-          Location[],
-          [esri.FeatureLayerConstructor, esri.CircleConstructor]
-        ]) => {
-          const cloned = searchSource.reduce((collection, graphic) => {
-            const c = graphic.clone();
-            const cg = new Circle({
-              center: {
-                latitude: (c.geometry as esri.Point).latitude,
-                longitude: (c.geometry as esri.Point).longitude
-              },
-              spatialReference: c.geometry.spatialReference,
-              radius: 10,
-              radiusUnit: 'meters'
-            });
+    if (mode === '3d') {
+      if (!existingLayer) {
+        combineLatest([
+          this.searchSource,
+          this.locationsService.getLocationsResults(),
+          this.loader.require(['FeatureLayer', 'Circle'])
+        ]).subscribe(
+          ([searchSource, locs, [FeatureLayer, Circle]]: [
+            esri.Graphic[],
+            Location[],
+            [esri.FeatureLayerConstructor, esri.CircleConstructor]
+          ]) => {
+            const cloned = searchSource.reduce((collection, graphic) => {
+              const c = graphic.clone();
+              const cg = new Circle({
+                center: {
+                  latitude: (c.geometry as esri.Point).latitude,
+                  longitude: (c.geometry as esri.Point).longitude
+                },
+                spatialReference: c.geometry.spatialReference,
+                radius: 10,
+                radiusUnit: 'meters'
+              });
 
-            c.geometry = cg;
+              c.geometry = cg;
 
-            const matchedLocation = locs.find((location) => {
-              if (c.attributes.bldNum) {
-                return parseInt(c.attributes.bldNum, 10) === parseInt(location.id, 10);
-              } else {
-                return c.attributes.Name === location.id;
-              }
-            });
-
-            if (matchedLocation === undefined) {
-              return collection;
-            }
-
-            c.attributes.total = matchedLocation.results.reduce((acc, curr) => {
-              const isDouble = curr.value % 1 !== 0;
-              if (isDouble) {
-                return acc + parseInt((curr.value * 2000).toFixed(0), 10);
-              } else {
-                return acc + curr.value;
-              }
-            }, 0);
-
-            return [...collection, c];
-          }, []);
-
-          const layer = new FeatureLayer({
-            id: layerName,
-            source: cloned,
-            objectIdField: 'OBJECTID',
-            fields: [
-              {
-                name: 'OBJECTID',
-                type: 'oid'
-              },
-              {
-                name: 'total',
-                type: 'integer'
-              }
-            ],
-            elevationInfo: {
-              mode: 'relative-to-scene'
-            },
-            renderer: {
-              type: 'simple',
-              symbol: {
-                type: 'polygon-3d',
-                symbolLayers: [{ type: 'extrude', material: { color: '#71C96E' } }]
-              },
-              label: '% population in poverty by county',
-              visualVariables: [
-                {
-                  type: 'size',
-                  field: 'total',
-                  stops: [
-                    {
-                      value: 0,
-                      size: 0
-                    },
-                    {
-                      value: 100000,
-                      size: 250
-                    },
-                    {
-                      value: 1000000,
-                      size: 500
-                    }
-                  ]
+              const matchedLocation = locs.find((location) => {
+                if (c.attributes.bldNum) {
+                  return parseInt(c.attributes.bldNum, 10) === parseInt(location.id, 10);
+                } else {
+                  return c.attributes.Name === location.id;
                 }
-              ]
-            } as esri.RendererProperties
-          });
+              });
 
-          this.map.add(layer);
-        }
-      );
+              if (matchedLocation === undefined) {
+                return collection;
+              }
+
+              c.attributes.total = matchedLocation.results.reduce((acc, curr) => {
+                const isDouble = curr.value % 1 !== 0;
+                if (isDouble) {
+                  return acc + parseInt((curr.value * 2000).toFixed(0), 10);
+                } else {
+                  return acc + curr.value;
+                }
+              }, 0);
+
+              return [...collection, c];
+            }, []);
+
+            const layer = new FeatureLayer({
+              id: layerName,
+              source: cloned,
+              objectIdField: 'OBJECTID',
+              fields: [
+                {
+                  name: 'OBJECTID',
+                  type: 'oid'
+                },
+                {
+                  name: 'total',
+                  type: 'integer'
+                }
+              ],
+              elevationInfo: {
+                mode: 'relative-to-scene'
+              },
+              renderer: {
+                type: 'simple',
+                symbol: {
+                  type: 'polygon-3d',
+                  symbolLayers: [{ type: 'extrude', material: { color: '#71C96E' } }]
+                },
+                label: '% population in poverty by county',
+                visualVariables: [
+                  {
+                    type: 'size',
+                    field: 'total',
+                    stops: [
+                      {
+                        value: 0,
+                        size: 0
+                      },
+                      {
+                        value: 100000,
+                        size: 250
+                      },
+                      {
+                        value: 1000000,
+                        size: 500
+                      }
+                    ]
+                  }
+                ]
+              } as esri.RendererProperties
+            });
+
+            this.map.add(layer);
+          }
+        );
+      } else {
+        existingLayer.visible = true;
+      }
     } else {
-      this.view.goTo(existingLayer);
+      if (existingLayer) {
+        existingLayer.visible = false;
+      }
     }
   }
 }

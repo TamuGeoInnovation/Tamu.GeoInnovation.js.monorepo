@@ -6,9 +6,10 @@
   <tamu-gisc-recycle-location-details-card></tamu-gisc-recycle-location-details-card>
 </div>
 
-<div class="map-ui top right">
+<div class="map-ui top right horizontal">
   <tamu-gisc-omnitoolbar [source]="searchSource | async" [searchPaths]="['attributes.Name', 'attributes.bldNum']" (selectedSuggestion)="highlight($event, true)" (clearSuggestion)="clearHighlight()"></tamu-gisc-omnitoolbar>
-  <span (click)="toggle3dLayer()">2D</span>
+
+  <tamu-gisc-perspective-toggle (toggledPerspective)="toggle3dLayer($event)"></tamu-gisc-perspective-toggle>
 </div>
 
 <div class="map-ui bottom left">

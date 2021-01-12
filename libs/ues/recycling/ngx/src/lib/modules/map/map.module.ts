@@ -16,6 +16,7 @@ import { TotalRecycledCardComponent } from './components/total-recycled-card/tot
 import { RecyclingService } from '../core/services/recycling.service';
 import { RecycledTrendsCardComponent } from './components/recycled-trends-card/recycled-trends-card.component';
 import { RecycleLocationDetailsCardComponent } from './components/recycle-location-details-card/recycle-location-details-card.component';
+import { PerspectiveToggleComponent } from './components/perspective-toggle/perspective-toggle.component';
 
 const routes: Routes = [
   {
@@ -36,7 +37,7 @@ const routes: Routes = [
     ChartsModule,
     ReactiveFormsModule
   ],
-  declarations: [MapComponent, OmnitoolbarComponent, TotalRecycledCardComponent, RecycledTrendsCardComponent, RecycleLocationDetailsCardComponent],
+  declarations: [MapComponent, OmnitoolbarComponent, TotalRecycledCardComponent, RecycledTrendsCardComponent, RecycleLocationDetailsCardComponent, PerspectiveToggleComponent],
   providers: [RecyclingService]
 })
 export class MapModule {}
