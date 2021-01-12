@@ -78,23 +78,6 @@
       </div>
     </div>
 
-<<<<<<< HEAD
-    <div class="form-section-body">
-      <div class="form-collection column" *ngFor="let controlGroup of builderForm['controls'].layers['controls']; let i = index;" [ngClass]="{ valid: controlGroup.controls.url.value.length > 0 }">
-        <div [formGroup]="controlGroup">
-          <tamu-gisc-textbox formControlName="url" placeholder="Service Layer URL" type="text" floatLabel="true">
-            <div class="textbox-actions material-icons-container">
-              <span class="material-icons action error" title="Remove Layer" (click)="removeLayer(i)">close</span>
-            </div>
-          </tamu-gisc-textbox>
-          <tamu-gisc-accordion *ngIf="controlGroup.controls.url.value.length > 0">
-            <tamu-gisc-accordion-header> Edit Layer Details </tamu-gisc-accordion-header>
-            <tamu-gisc-accordion-content>
-              <!-- // TODO: Re-implement -->
-              <!-- <tamu-gisc-layer-configuration [url]="controlGroup.controls.url.value" [configOptions]="controlGroup" [link]="true"></tamu-gisc-layer-configuration> -->
-            </tamu-gisc-accordion-content>
-          </tamu-gisc-accordion>
-=======
     <div class="map-preview">
       <div class="form-section">
         <div class="form-section-toolbar">
@@ -107,7 +90,6 @@
           <div class="form-collection row">
             <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
           </div>
->>>>>>> 8c18d9e6 (Added snapshot layer preview)
         </div>
       </div>
     </div>
