@@ -100,6 +100,18 @@ export class MapComponent implements OnInit, OnDestroy {
     this.mapService.store.subscribe((instance) => {
       this.map = instance.map;
       this.view = instance.view;
+
+      this.view.when(() => {
+        const l = this.map.findLayerById('recycling-layer') as esri.FeatureLayer;
+
+        this.searchSource = from(
+          l.queryFeatures({
+            outFields: ['*'],
+            where: '1=1',
+            returnGeometry: true
+          })
+        ).pipe(pluck('features'));
+      });
     });
 
     // Set loader phrases and display a random one.
@@ -111,18 +123,6 @@ export class MapComponent implements OnInit, OnDestroy {
       'Howdy Ags!'
     ];
     (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
-
-    setTimeout(() => {
-      const l = this.map.findLayerById('recycling-layer') as esri.FeatureLayer;
-
-      this.searchSource = from(
-        l.queryFeatures({
-          outFields: ['*'],
-          where: '1=1',
-          returnGeometry: true
-        })
-      ).pipe(pluck('features'));
-    }, 1000);
 
     this.selectionService.snapshot
       .pipe(
