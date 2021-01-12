@@ -1,5 +1,6 @@
 <div class="card metric" *ngIf="selectedLocation | async">
-  <p class="large-metric">{{(selectedLocation | async)?.total | number}} {{(selectedLocation | async)?.unit}}</p>
+  <div class="toolbar"><span class="material-icons" (click)="toggleUnit()" title="Toggle units" alt="Toggle between lbs and tons">compare_arrows</span></div>
+  <p class="large-metric">{{totalWeight | async | number}} {{unit | async}}</p>
 
   <p class="card-title">Weight Collected</p>
 </div>

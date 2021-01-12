@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject, iif, Observable, of } from 'rxjs';
+import { BehaviorSubject, iif, merge, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
@@ -16,7 +16,13 @@ import esri = __esri;
 export class RecyclingService {
   public selectedLocationGraphic: BehaviorSubject<esri.Graphic> = new BehaviorSubject(undefined);
   public selectedLocationMeta: Observable<RecyclingLocationMetadata>;
+  public selectedLocationResults: Observable<Result[]>;
   public selectedLocationRecyclingStats: Observable<RecyclingResultsStatistics>;
+
+  public allLocationResults: Observable<Partial<Result>[]>;
+  public allLocationRecyclingStats: Observable<RecyclingResultsStatistics>;
+
+  public allOrSelectedRecyclingStats: Observable<RecyclingResultsStatistics>;
 
   constructor(private mapService: EsriMapService, private resultsService: ResultsService) {
     this.mapService.hitTest
@@ -50,7 +56,7 @@ export class RecyclingService {
       shareReplay(1)
     );
 
-    this.selectedLocationRecyclingStats = this.selectedLocationMeta.pipe(
+    this.selectedLocationResults = this.selectedLocationMeta.pipe(
       switchMap((meta) => {
         if (meta === undefined) {
           return of(undefined);
@@ -60,22 +66,93 @@ export class RecyclingService {
               const resolvedId = m.bldNum !== null ? m.bldNum : m.Name;
 
               return this.resultsService.getResultsForLocation({ id: resolvedId });
-            }),
-            map((results) => {
-              const totalRecycled = results.reduce((acc, curr) => acc + curr.value, 0);
-              const firstWithNonZeroValue = results.find((r) => r.value !== 0);
-
-              return {
-                records: results.length,
-                total: totalRecycled % 1 === 0 ? totalRecycled : totalRecycled.toFixed(2),
-                unit: firstWithNonZeroValue ? (firstWithNonZeroValue.value % 1 === 0 ? 'lbs' : 'tons') : undefined,
-                results
-              } as RecyclingResultsStatistics;
             })
           );
         }
       }),
       shareReplay(1)
+    );
+
+    this.selectedLocationRecyclingStats = this.selectedLocationResults.pipe(
+      map((results) => {
+        if (results === undefined) {
+          return undefined;
+        } else {
+          const totalRecycled = results.reduce((acc, curr) => {
+            const isTonUnit = curr.value % 1 !== 0;
+
+            if (isTonUnit) {
+              // Convert tons to pounds
+              return acc + parseInt((curr.value * 2000).toFixed(0), 10);
+            }
+
+            return acc + curr.value;
+          }, 0);
+
+          return {
+            records: results.length,
+            total: totalRecycled,
+            results
+          } as RecyclingResultsStatistics;
+        }
+      })
+    );
+
+    this.allLocationResults = this.resultsService.getResults().pipe(
+      map((groups) => {
+        return groups.map((group) => {
+          return {
+            date: new Date(group.identity as string),
+            value: group.items.reduce((acc, curr) => {
+              const isTonUnit = curr.value % 1 !== 0;
+
+              if (isTonUnit) {
+                // Convert tons to pounds
+                return acc + parseInt((curr.value * 2000).toFixed(0), 10);
+              }
+
+              return acc + curr.value;
+            }, 0),
+            location: undefined
+          };
+        });
+      }),
+      shareReplay(1)
+    );
+
+    this.allLocationRecyclingStats = this.allLocationResults.pipe(
+      map((results) => {
+        if (results === undefined) {
+          return undefined;
+        } else {
+          const totalRecycled = results.reduce((acc, curr) => {
+            const isTonUnit = curr.value % 1 !== 0;
+
+            if (isTonUnit) {
+              // Convert tons to pounds
+              return acc + parseInt((curr.value * 2000).toFixed(0), 10);
+            }
+
+            return acc + curr.value;
+          }, 0);
+
+          return {
+            records: results.length,
+            total: totalRecycled,
+            results
+          } as RecyclingResultsStatistics;
+        }
+      })
+    );
+
+    this.allOrSelectedRecyclingStats = this.selectedLocationRecyclingStats.pipe(
+      switchMap((stats) => {
+        if (stats === undefined) {
+          return this.allLocationRecyclingStats;
+        } else {
+          return of(stats);
+        }
+      })
     );
   }
 

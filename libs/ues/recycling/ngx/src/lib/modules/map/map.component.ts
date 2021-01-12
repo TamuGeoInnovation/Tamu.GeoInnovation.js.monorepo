@@ -108,7 +108,7 @@ export class MapComponent implements OnInit, OnDestroy {
           ).pipe(pluck('features'));
         })
       );
-    }, 500);
+    }, 1000);
   }
 
   public ngOnDestroy() {

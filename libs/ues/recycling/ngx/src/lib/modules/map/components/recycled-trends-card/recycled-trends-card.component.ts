@@ -22,6 +22,14 @@ export class RecycledTrendsCardComponent implements OnInit {
         {
           type: 'time'
         }
+      ],
+      yAxes: [
+        {
+          scaleLabel: {
+            labelString: 'Weight (lbs)',
+            display: true
+          }
+        }
       ]
     },
     legend: {
@@ -38,7 +46,7 @@ export class RecycledTrendsCardComponent implements OnInit {
   constructor(private recyclingService: RecyclingService) {}
 
   public ngOnInit(): void {
-    this.selectedLocation = this.recyclingService.selectedLocationRecyclingStats;
+    this.selectedLocation = this.recyclingService.allOrSelectedRecyclingStats;
 
     this.chartData = this.selectedLocation.pipe(
       map((locs) => {

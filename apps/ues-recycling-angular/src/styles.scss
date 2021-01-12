@@ -641,6 +641,17 @@ tamu-gisc-line-chart h3 {
   &.metric {
     @include justify-content(center);
     @include align-items(center);
+
+    .toolbar {
+      position: absolute;
+      right: 1rem;
+      top: 0.5rem;
+      font-size: 1.3rem;
+
+      span.material-icons {
+        font-size: inherit;
+      }
+    }
   }
 
   .large-metric {
