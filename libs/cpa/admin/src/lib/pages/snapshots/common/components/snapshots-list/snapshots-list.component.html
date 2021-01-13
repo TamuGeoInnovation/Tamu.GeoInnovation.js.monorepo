@@ -19,7 +19,7 @@
           <div class="floating-row" *ngFor="let snapshot of snapshots | async">
             <div class="column">{{snapshot.title}}</div>
             <div class="column table-actions">
-              <a [routerLink]="['../edit', snapshot.guid]">Edit</a>
+              <a [routerLink]="['./edit', snapshot.guid]">Edit</a>
             </div>
           </div>
         </div>
