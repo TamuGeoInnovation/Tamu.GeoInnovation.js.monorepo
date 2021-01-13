@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject, iif, merge, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
@@ -166,16 +166,14 @@ export class RecyclingService {
 }
 
 export interface RecyclingLocationMetadata {
-  CreationDate: number;
-  Creator: string;
-  EditDate: number;
-  Editor: string;
-  GlobalID: string;
-  Name: string;
+
   OBJECTID: number;
+  ID: number;
+  Name: string;
   bldNum: string;
   camPub: string;
   style: string;
+  public_view: "Yes" | 'No'
 }
 
 export interface RecyclingResultsStatistics {
