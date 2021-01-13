@@ -1,4 +1,4 @@
-import { OnDestroy, OnInit } from '@angular/core';
+import { Directive, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -7,6 +7,7 @@ import { debounceTime } from 'rxjs/operators';
 
 import { BaseService } from '@tamu-gisc/gisday/data-access';
 
+@Directive()
 export abstract class BaseAdminDetailComponent<T, K extends BaseService<T>>
   implements IBaseAdminAddComponent, OnInit, OnDestroy {
   public entityGuid: string;

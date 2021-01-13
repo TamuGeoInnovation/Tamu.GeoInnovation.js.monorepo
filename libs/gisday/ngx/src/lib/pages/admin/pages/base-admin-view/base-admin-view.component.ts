@@ -1,9 +1,10 @@
-import { OnDestroy, OnInit } from '@angular/core';
+import { Component, Directive, OnDestroy, OnInit } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
 
 import { BaseService } from '@tamu-gisc/gisday/data-access';
 
+@Directive()
 export abstract class BaseAdminViewComponent<T, K extends BaseService<T>>
   implements IBaseAdminViewComponent, OnInit, OnDestroy {
   public $entities: Observable<Array<Partial<T>>>;

@@ -1,10 +1,11 @@
-import { OnDestroy, OnInit } from '@angular/core';
+import { Directive, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { Subject } from 'rxjs';
 
 import { BaseService } from '@tamu-gisc/gisday/data-access';
 
+@Directive()
 export abstract class BaseAdminAddComponent<T, K extends BaseService<T>>
   implements IBaseAdminAddComponent, OnInit, OnDestroy {
   public form: FormGroup;

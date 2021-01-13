@@ -1,6 +1,4 @@
-import { Controller, Get, Param, Post, Req } from '@nestjs/common';
-
-import { Request } from 'express';
+import { Controller, Get, Param, Post, Request } from '@nestjs/common';
 
 import { Event } from '../../entities/all.entity';
 import { EventProvider } from '../../providers/event/event.provider';
@@ -18,13 +16,13 @@ export class EventController extends BaseController<Event> {
   }
 
   @Get('by-day')
-  public async getEntitiesByDay(@Req() req: Request) {
+  public async getEntitiesByDay(@Request() req) {
     const accountGuid = req.user.sub;
     return this.eventProvider.getEntitiesByDay(accountGuid);
   }
 
   @Post()
-  public async insertEvent(@Req() req: Request) {
+  public async insertEvent(@Request() req) {
     const _newEvent: Partial<Event> = {
       ...req.body
     };

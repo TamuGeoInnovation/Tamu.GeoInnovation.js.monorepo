@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
-import { Request } from 'express';
+import { DeepPartial } from 'typeorm';
 
-import { ClassRepo, UserClass, UserClassRepo } from '../../entities/all.entity';
+import { Class, ClassRepo, UserClass, UserClassRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
 @Injectable()
 export class UserClassProvider extends BaseProvider<UserClass> {
@@ -10,38 +10,34 @@ export class UserClassProvider extends BaseProvider<UserClass> {
     super(userClassRepo);
   }
 
-  public async insertUserClass(req: Request) {
-    const newClass = req.body.class;
+  public async insertUserClass(chosenClass: DeepPartial<Class>, accountGuid: string) {
     const _class = await this.classRepo.findOne({
       where: {
-        guid: newClass.guid
+        guid: chosenClass.guid
       }
     });
     const _newUserClass: Partial<UserClass> = {
       class: _class,
-      accountGuid: req.user.sub
+      accountGuid: accountGuid
     };
     const newUserClass = await this.userClassRepo.create(_newUserClass);
     return this.userClassRepo.save(newUserClass);
   }
 
-  public async getClassesAndUserClasses(req: Request) {
+  public async getClassesAndUserClasses(accountGuid: string) {
     const classes = await this.classRepo.find();
-    if (req.user) {
-      const userClasses = await this.userClassRepo.getUsersClasses(req.user.sub);
-      await classes.forEach((aClass) => {
-        userClasses.forEach((aUserClass) => {
-          if (aUserClass.class.guid === aClass.guid) {
-            aClass.userInClass = true;
-          }
-        });
+    const userClasses = await this.userClassRepo.getUsersClasses(accountGuid);
+    await classes.forEach((aClass) => {
+      userClasses.forEach((aUserClass) => {
+        if (aUserClass.class.guid === aClass.guid) {
+          aClass.userInClass = true;
+        }
       });
-      return classes;
-    }
+    });
+    return classes;
   }
 
-  public async deleteUserClassWithClassGuid(req: Request) {
-    const { classGuid } = req.body;
+  public async deleteUserClassWithClassGuid(classGuid: string) {
     const foundClass = await this.userClassRepo.find({
       where: {
         class: {

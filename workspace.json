@@ -4090,7 +4090,8 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -4113,7 +4114,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/gisday-angular/tsconfig.app.json", "apps/gisday-angular/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/gisday-angular/**"]
+            "exclude": ["**/node_modules/**", "!apps/gisday-angular/**/*"]
           }
         },
         "test": {
@@ -4122,7 +4123,8 @@
             "jestConfig": "apps/gisday-angular/jest.config.js",
             "tsConfig": "apps/gisday-angular/tsconfig.spec.json",
             "setupFile": "apps/gisday-angular/src/test-setup.ts"
-          }
+          },
+          "outputs": ["coverage/apps/gisday-angular"]
         }
       }
     },
@@ -4148,7 +4150,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["apps/gisday-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/gisday-angular-e2e/**"]
+            "exclude": ["**/node_modules/**", "!apps/gisday-angular-e2e/**/*"]
           }
         }
       }
@@ -4191,7 +4193,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["libs/gisday/data-access/tsconfig.lib.json", "libs/gisday/data-access/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/gisday/data-access/**"]
+            "exclude": ["**/node_modules/**", "!libs/gisday/data-access/**/*"]
           }
         },
         "test": {
@@ -4229,14 +4231,14 @@
             "main": "apps/gisday-nest/src/main.ts",
             "outputPath": "dist/apps/gisday-nest",
             "tsConfig": "apps/gisday-nest/tsconfig.app.json",
-            "assets": ["apps/gisday-nest/src/assets"]
+            "assets": ["apps/gisday-nest/src/assets"],
+            "buildLibsFromSource": true
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "exclude": ["**/node_modules/**", "!apps/gisday-nest/**"],
-            "tsConfig": ["apps/gisday-nest/tsconfig.app.json", "apps/gisday-nest/tsconfig.spec.json"]
+            "lintFilePatterns": ["apps/gisday-nest/**/*.ts"]
           }
         },
         "serve": {
@@ -4262,10 +4264,9 @@
       "schematics": {},
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/gisday/data-api/tsconfig.lib.json", "libs/gisday/data-api/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/gisday/data-api/**"]
+            "lintFilePatterns": ["libs/gisday/data-api/**/*.ts"]
           }
         },
         "test": {
@@ -4288,10 +4289,9 @@
       "prefix": "tamu-gisc",
       "architect": {
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": ["libs/gisday/common/tsconfig.lib.json", "libs/gisday/common/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/gisday/common/**"]
+            "lintFilePatterns": ["libs/gisday/common/**/*.ts"]
           }
         },
         "test": {

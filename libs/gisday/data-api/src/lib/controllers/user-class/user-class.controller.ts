@@ -1,8 +1,7 @@
-import { Controller, Delete, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Request } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 
-import { Request } from 'express';
-
-import { UserClass } from '../../entities/all.entity';
+import { Class, UserClass } from '../../entities/all.entity';
 import { UserClassProvider } from '../../providers/user-class/user-class.provider';
 import { BaseController } from '../_base/base.controller';
 
@@ -13,17 +12,28 @@ export class UserClassController extends BaseController<UserClass> {
   }
 
   @Get()
-  public async getClassesAndUserClasses(@Req() req: Request) {
-    return this.userClassProvider.getClassesAndUserClasses(req);
+  public async getClassesAndUserClasses(@Request() req) {
+    if (req.user) {
+      const accountGuid = req.user.sub;
+      return this.userClassProvider.getClassesAndUserClasses(accountGuid);
+    } else {
+      return;
+    }
   }
 
   @Post('/')
-  public async insertUserClass(@Req() req: Request) {
-    return this.userClassProvider.insertUserClass(req);
+  public async insertUserClass(@Request() req) {
+    if (req.user) {
+      const chosenClass: DeepPartial<Class> = req.body.class;
+      const accountGuid = req.user.sub;
+      return this.userClassProvider.insertUserClass(chosenClass, accountGuid);
+    } else {
+      return;
+    }
   }
 
   @Delete()
-  public async deleteUserClassWithClassGuid(@Req() req: Request) {
-    return this.userClassProvider.deleteUserClassWithClassGuid(req);
+  public async deleteUserClassWithClassGuid(@Body() body) {
+    return this.userClassProvider.deleteUserClassWithClassGuid(body.classGuid);
   }
 }

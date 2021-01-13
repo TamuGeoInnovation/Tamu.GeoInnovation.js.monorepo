@@ -60,20 +60,18 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     }
   }
 
-  public async insertWithInfo(req: Request, file) {
-    const _speaker: DeepPartial<Speaker> = req.body;
+  public async insertWithInfo(_speaker: DeepPartial<Speaker>, file) {
     const speakerEnt = this.speakerRepo.create(_speaker);
     const speaker = await this.speakerRepo.save(speakerEnt);
 
     if (speaker) {
       const university = await this.uniRepo.findOne({
         where: {
-          guid: req.body.university ? req.body.university : ''
+          guid: _speaker.speakerInfo.university ? _speaker.speakerInfo.university : ''
         }
       });
-      const _photo: Partial<SpeakerInfo> = {
-        ...req.body,
-        speaker: speaker,
+      const _photo: DeepPartial<SpeakerInfo> = {
+        ..._speaker.speakerInfo,
         university: university,
         blob: file.buffer
       };

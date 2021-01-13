@@ -1,5 +1,7 @@
-import { Controller, Delete, Get, Param, Patch, Post, Req } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Patch, Post, Request } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 
+import { GuidIdentity } from '../../gisday-data-api';
 import { BaseProvider } from '../../providers/_base/base-provider';
 
 @Controller()
@@ -16,13 +18,23 @@ export abstract class BaseController<T> implements IBaseController<T> {
   }
 
   @Post()
-  public async insertEntity(@Req() req: Request) {
-    return this.provider.insertEntity(req);
+  public async insertEntity(@Request() req) {
+    if (req.user) {
+      req.body.accountGuid = req.user.sub;
+    }
+    const _entity: DeepPartial<T> = req.body;
+
+    return this.provider.insertEntity(_entity);
   }
 
   @Patch()
-  public async updateEntity(@Req() req) {
-    return this.provider.updateEntity(req);
+  public async updateEntity(@Request() req) {
+    if (req.user) {
+      req.body.accountGuid = req.user.sub;
+    }
+    const _entity: DeepPartial<T> = req.body;
+
+    return this.provider.updateEntity(_entity);
   }
 
   @Delete(':guid')
@@ -32,9 +44,9 @@ export abstract class BaseController<T> implements IBaseController<T> {
 }
 
 export interface IBaseController<T> {
-  getEntity(guid: string): Promise<T>;
-  getEntities(): Promise<T[]>;
-  insertEntity(req: Request): Promise<T>;
-  updateEntity(req: Request): Promise<T>;
-  deleteEntity(guid: string): Promise<T>;
+  getEntity(guid: string);
+  getEntities();
+  insertEntity(req: DeepPartial<T>);
+  updateEntity(req: DeepPartial<T>);
+  deleteEntity(guid: string);
 }

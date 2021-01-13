@@ -3,7 +3,7 @@ import { DeepPartial } from 'typeorm';
 import { Request } from 'express';
 import * as deepmerge from 'deepmerge';
 
-import { CommonRepo } from '../../entities/all.entity';
+import { CommonRepo, GuidIdentity } from '../../entities/all.entity';
 
 export abstract class BaseProvider<T> implements IBaseProvider<T> {
   constructor(private readonly repo: CommonRepo<T>) {}
@@ -28,29 +28,22 @@ export abstract class BaseProvider<T> implements IBaseProvider<T> {
     });
   }
 
-  public async insertEntity(req: Request) {
-    if (req.user) {
-      req.body.accountGuid = req.user.sub;
-    }
-    const _entity: DeepPartial<T> = req.body;
+  public async insertEntity(_entity: DeepPartial<T>) {
     const entity = this.repo.create(_entity);
     return this.repo.save(entity);
   }
 
-  public async updateEntity(req: Request) {
+  public async updateEntity(_entity: DeepPartial<T>) {
     const entity = await this.repo.findOne({
       where: {
-        guid: req.body.guid
+        guid: _entity
       }
     });
     if (entity) {
-      const merged = deepmerge(entity as Partial<T>, req.body);
+      const merged = deepmerge<DeepPartial<T>>(entity, _entity);
       return this.repo.save(merged);
     } else {
-      if (req.user) {
-        req.body.accountGuid = req.user.sub;
-      }
-      this.insertEntity(req);
+      this.insertEntity(_entity);
     }
   }
 
@@ -69,9 +62,9 @@ export abstract class BaseProvider<T> implements IBaseProvider<T> {
 }
 
 export interface IBaseProvider<T> {
-  getEntity(guid: string): Promise<T>;
-  getEntities(): Promise<T[]>;
-  insertEntity(req: Request): Promise<T>;
-  updateEntity(req: Request): Promise<T>;
-  deleteEntity(guid: string): Promise<T>;
+  getEntity(guid: string);
+  getEntities();
+  insertEntity(req: DeepPartial<T>);
+  updateEntity(req: DeepPartial<T>);
+  deleteEntity(guid: string);
 }

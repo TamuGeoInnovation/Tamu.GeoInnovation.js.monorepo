@@ -1,6 +1,4 @@
-import { Controller, Get, Post, Req } from '@nestjs/common';
-
-import { Request } from 'express';
+import { Controller, Get, Post, Request } from '@nestjs/common';
 
 import { CheckIn } from '../../entities/all.entity';
 import { BaseController } from '../../controllers/_base/base.controller';
@@ -13,16 +11,16 @@ export class CheckInController extends BaseController<CheckIn> {
   }
 
   @Get('all')
-  public async getUsersCheckins(@Req() req: Request) {
+  public async getUsersCheckins(@Request() req) {
     if (req.user) {
-      return this.checkinProvider.getEntitiesForUser(req);
+      return this.checkinProvider.getEntitiesForUser(req.user.sub);
     } else {
       return;
     }
   }
 
   @Post('user')
-  public async insertUserCheckin(@Req() req: Request) {
+  public async insertUserCheckin(@Request() req) {
     const { eventGuid } = req.body;
     if (req.user) {
       const accountGuid = req.user.sub;

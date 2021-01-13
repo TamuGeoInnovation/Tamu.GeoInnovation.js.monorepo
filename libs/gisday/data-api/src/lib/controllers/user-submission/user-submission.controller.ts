@@ -1,6 +1,4 @@
-import { Controller, Get, Post, Req } from '@nestjs/common';
-
-import { Request } from 'express';
+import { Controller, Get, Post, Request } from '@nestjs/common';
 
 import { UserSubmission } from '../../entities/all.entity';
 import { UserSubmissionProvider } from '../../providers/user-submission/user-submission.provider';
@@ -13,7 +11,7 @@ export class UserSubmissionController extends BaseController<UserSubmission> {
   }
 
   @Get('all')
-  public async getUserSubmissions(@Req() req: Request) {
+  public async getUserSubmissions(@Request() req) {
     if (req.user) {
       return this.userSubmissionProvider.getEntitiesForUser(req.user.sub);
     } else {
@@ -22,7 +20,7 @@ export class UserSubmissionController extends BaseController<UserSubmission> {
   }
 
   @Post()
-  public async insertUserSubmission(@Req() req: Request) {
+  public async insertUserSubmission(@Request() req) {
     if (req.user) {
       const _userSubmission: Partial<UserSubmission> = req.body;
       return this.userSubmissionProvider.insertUserSubmission(req.user.sub, _userSubmission);
