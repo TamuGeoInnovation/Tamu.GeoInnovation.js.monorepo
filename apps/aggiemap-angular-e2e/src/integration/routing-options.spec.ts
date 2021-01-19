@@ -6,9 +6,8 @@ desktopSizes.forEach((size) => {
     beforeEach(() => {
       cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
       cy.visit('https://aggiemap.tamu.edu/map/d/trip/options')
+      cy.get('canvas').should('be.visible', {timeout: 5000})
       cy.wait('@basemap')
-      cy.get('canvas')
-        .should('be.visible', {timeout: 5000})
     })
 
     it('Title Logo', () => {
