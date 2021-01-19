@@ -7,8 +7,8 @@ desktopSizes.forEach((size) => {
       cy.viewport(size[0], size[1])
       cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
       cy.visit('https://aggiemap.tamu.edu/map/d')
-      cy.wait('@basemap',{requestTimeout: 1000, responseTimeout: 1000})
       cy.get('canvas').should('be.visible', {timeout: 5000})
+      cy.wait('@basemap',{requestTimeout: 1000, responseTimeout: 1000})
     })
 
     it('Check Location', () => {
@@ -23,10 +23,8 @@ desktopSizes.forEach((size) => {
     it(`Displays Sidebar`, () => {
       cy.getSideBar('be.visible')
     })
-    it(`Displays Direction Toggle`, () => {
+    it(`Displays Toggles`, () => {
       cy.getDirectionsToggle()
-    })
-    it(`Displays Feature Toggle`, () => {
       cy.getFeatureToggle()
     })
     it(`Sidebar Movement - Feature Toggle`, () => {

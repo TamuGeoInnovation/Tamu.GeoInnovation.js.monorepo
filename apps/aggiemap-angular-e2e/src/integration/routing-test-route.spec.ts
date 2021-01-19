@@ -9,12 +9,11 @@ describe('Test Route', () => {
   })
   it('Open Page', () => {
     cy.visit('https://aggiemap.tamu.edu/map/d/trip')
+    cy.get('canvas').should('be.visible', {timeout: 10000})
     cy.wait('@basemap')
   })
   it('Start Route', () => {
-    cy.get('canvas')
-      .should('be.visible', {timeout: 10000})
-      .click(1183,685)
+    cy.get('canvas').click(1183,685)
     cy.get(':nth-child(1) > :nth-child(1) > .input-action-container > .margin-right', {timeout: 20000})
       .should('have.value', 'Kyle Field')
   })

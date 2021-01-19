@@ -7,8 +7,8 @@ desktopSizes.forEach((size) => {
       cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
       cy.intercept("GET", "**/www.google-analytics.com/**").as("collect")
       cy.visit('https://aggiemap.tamu.edu/map/d/trip')
-      cy.wait('@basemap')
       cy.get('canvas').should('be.visible', {timeout: 5000})
+      cy.wait('@basemap')
     })
     it('Sidebar Movement - Directions Toggle', () => {
       cy.getDirectionsToggle().click({force: true}).click({force: true})

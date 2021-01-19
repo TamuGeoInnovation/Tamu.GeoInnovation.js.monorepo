@@ -10,9 +10,8 @@ desktopSizes.forEach((size) => {
     })
     it('Open Page', () => {
       cy.visit('https://aggiemap.tamu.edu/map/d')
+      cy.get('canvas').should('be.visible', {timeout: 5000})
       cy.wait('@basemap')
-      cy.get('canvas')
-        .should('be.visible', {timeout: 5000})
     })
     
     it('Create Test Search', () => {
