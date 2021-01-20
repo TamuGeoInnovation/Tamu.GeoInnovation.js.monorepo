@@ -112,6 +112,7 @@ module.exports = {
     '<rootDir>/libs/ues/recycling/common/entities',
     '<rootDir>/libs/ues/recycling/data-api',
     '<rootDir>/libs/ues/recycling/ngx',
-    '<rootDir>/apps/ues-valves-angular'
+    '<rootDir>/apps/ues-valves-angular',
+    '<rootDir>/libs/ues/cold-water/ngx'
   ]
 };

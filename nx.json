@@ -438,6 +438,9 @@
     "ues-valves-angular-e2e": {
       "tags": [],
       "implicitDependencies": ["ues-valves-angular"]
+    },
+    "ues-cold-water-ngx": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

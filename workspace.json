@@ -4740,6 +4740,29 @@
           }
         }
       }
+    },
+    "ues-cold-water-ngx": {
+      "projectType": "library",
+      "root": "libs/ues/cold-water/ngx",
+      "sourceRoot": "libs/ues/cold-water/ngx/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ues/cold-water/ngx/tsconfig.lib.json", "libs/ues/cold-water/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ues/cold-water/ngx/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ues/cold-water/ngx"],
+          "options": {
+            "jestConfig": "libs/ues/cold-water/ngx/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {
