@@ -8,7 +8,7 @@ export const Connections = {
   inforUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/MapInfo_20190529/MapServer',
   accessibleUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/ADA_120717/MapServer/0',
   constructionUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Construction_2018/MapServer',
-  recyclingPointsUrl: 'https://ues-arc.tamu.edu/arcgis/rest/services/Recycling/Utilities_Recycilng_WebMap/MapServer/0'
+  uesGisUrl: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer'
 };
 
 export const Definitions = {
@@ -18,11 +18,17 @@ export const Definitions = {
     name: 'Buildings',
     url: `${Connections.basemapUrl}/1`
   },
-  RECYCLING: {
-    id: 'recycling',
-    layerId: 'recycling-layer',
-    name: 'Recycling Centers',
-    url: `${Connections.recyclingPointsUrl}`
+  VALVES: {
+    id: 'cold-water-valves',
+    layerId: 'cold-water-valves-layer',
+    name: 'Cold Water Valves',
+    url: `${Connections.uesGisUrl}/2`
+  },
+  COLD_WATER: {
+    id: 'cold-water',
+    layerId: 'cold-water-layer',
+    name: 'Cold Water',
+    url: `${Connections.uesGisUrl}/1`
   }
 };
 
@@ -38,18 +44,30 @@ const commonLayerProps = {
 export const LayerSources: LayerSource[] = [
   {
     type: 'feature',
-    id: Definitions.RECYCLING.layerId,
-    title: Definitions.RECYCLING.name,
-    url: Definitions.RECYCLING.url,
+    id: Definitions.VALVES.layerId,
+    title: Definitions.VALVES.name,
+    url: Definitions.VALVES.url,
     listMode: 'hide',
     loadOnInit: true,
     visible: true,
     layerIndex: 2,
     native: {
-      ...commonLayerProps,
-      definitionExpression: "public_view LIKE 'Yes'"
+      ...commonLayerProps
     }
   },
+  // {
+  //   type: 'feature',
+  //   id: Definitions.COLD_WATER.layerId,
+  //   title: Definitions.COLD_WATER.name,
+  //   url: Definitions.COLD_WATER.url,
+  //   listMode: 'hide',
+  //   loadOnInit: true,
+  //   visible: true,
+  //   layerIndex: 2,
+  //   native: {
+  //     ...commonLayerProps
+  //   }
+  // },
   {
     type: 'graphic',
     id: 'selection-layer',

@@ -1,0 +1,10 @@
+<div class="card" [ngClass]="{collapsed: collapsed}">
+  <div class="content">
+    <ng-content></ng-content>
+  </div>
+
+  <div class="toggle" (click)="toggle()">
+    <ng-container *ngIf="collapsed; else showLess">Show more <span class="material-icons">keyboard_arrow_down</span></ng-container>
+    <ng-template #showLess>Show less <span class="material-icons">keyboard_arrow_up</span></ng-template>
+  </div>
+</div>

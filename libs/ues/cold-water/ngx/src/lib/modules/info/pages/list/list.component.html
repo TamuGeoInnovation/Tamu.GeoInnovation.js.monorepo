@@ -1,0 +1,28 @@
+<div class="breadcrumb trailer-2">
+  <div class="crumb">Valves</div>
+  <span class="material-icons">keyboard_arrow_right</span>
+  <div class="crumb">All</div>
+</div>
+
+<div class="card table-overflow-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Status</th>
+        <th>Reason Code</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let valve of (valves | async)">
+        <td>{{valve.attributes.OBJECTID}}</td>
+        <td class="status"><span class="pill" [ngClass]="{closed: valve.attributes.State === 'closed'}">{{valve.attributes.State.toUpperCase()}}</span></td>
+        <td></td>
+        <td class="actions"><span class="material-icons" [routerLink]="['../../details', valve.attributes.OBJECTID]">keyboard_arrow_right</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="spinning-loader" *ngIf="(valves | async) === undefined"></div>
+</div>

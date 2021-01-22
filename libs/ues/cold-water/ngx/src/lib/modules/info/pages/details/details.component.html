@@ -1,0 +1,34 @@
+<div class="breadcrumb trailer-2">
+  <div class="crumb" routerLink="../../">Valves</div>
+  <span class="material-icons">keyboard_arrow_right</span>
+  <div class="crumb">Details</div>
+  <span class="material-icons">keyboard_arrow_right</span>
+  <div class="crumb">{{(valve | async)?.attributes.OBJECTID}}</div>
+</div>
+
+<div class="card">
+  <h2 class="card-title">Status</h2>
+
+  <p>
+    Valve state: <span class="status"><span class="pill" [ngClass]="{closed: v.attributes.State === 'closed'}" *ngIf="(valve | async) as v" (click)="toggleValveState(v)">{{v.attributes.State.toUpperCase()}}</span></span>
+  </p>
+</div>
+
+<tamu-gisc-expandable-card>
+  <div>
+    <h2 class="card-title">Properties</h2>
+    <p *ngFor="let v of ((valve | async)?.attributes | keyvalue)"><strong>{{v.key}}</strong>: {{v.value}}</p>
+
+    <div class="trailer-1 leader-1" *ngIf="!(valve | async)">
+      <div class="spinning-loader"></div>
+    </div>
+  </div>
+</tamu-gisc-expandable-card>
+
+<tamu-gisc-expandable-card>
+  <h2 class="card-title">Intervention History</h2>
+  <p *ngFor="let v of ((valve | async)?.attributes | keyvalue)"><strong>{{v.key}}</strong>: {{v.value}}</p>
+  <div class="trailer-1 leader-1" *ngIf="!(valve | async)">
+    <div class="spinning-loader"></div>
+  </div>
+</tamu-gisc-expandable-card>

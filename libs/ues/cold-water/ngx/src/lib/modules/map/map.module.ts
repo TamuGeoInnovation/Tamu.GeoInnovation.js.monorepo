@@ -12,7 +12,13 @@ import { MapComponent } from './map.component';
 const routes: Routes = [
   {
     path: '',
-    component: MapComponent
+    component: MapComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('../info/info.module').then((m) => m.InfoModule)
+      }
+    ]
   }
 ];
 

@@ -1,0 +1,28 @@
+@import 'libs/sass/mixins';
+
+table {
+  tr:hover {
+    .material-icons {
+      opacity: 0.4;
+    }
+  }
+
+  td:hover {
+    .material-icons {
+      opacity: 0.9;
+    }
+  }
+
+  .material-icons {
+    opacity: .2;
+    vertical-align: middle;
+    @include transition(opacity 0.4s);
+
+    cursor: pointer;
+  }
+}
+
+.spinning-loader {
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}

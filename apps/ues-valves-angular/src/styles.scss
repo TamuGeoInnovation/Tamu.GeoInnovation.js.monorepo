@@ -52,8 +52,9 @@ $lightened-inactive-color: lighten($inactive-color, 25%);
 
 html,
 body {
-  font-size: 16px;
+  font-size: 14px;
   font-family: $primary-font;
+  color: $font-color;
   margin: 0;
   padding: 0;
   top: 0px;
@@ -146,8 +147,8 @@ select {
 }
 
 h1 {
-  font-size: 3rem;
-  font-weight: 300;
+  font-size: 2.5rem;
+  font-weight: 600;
 }
 
 h2 {
@@ -177,10 +178,8 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: $secondary-font;
+  font-family: $primary-font;
   line-height: 1.2;
-  letter-spacing: 1.25px;
-  text-transform: uppercase;
 
   &.short-border {
     display: inline-block;
@@ -206,7 +205,7 @@ table {
     margin: 1rem 0;
     font-size: 0.95rem;
 
-    border: 1pt solid $lightened-inactive-color;
+    // border: 1pt solid $lightened-inactive-color;
     border-collapse: collapse;
 
     td,
@@ -215,7 +214,7 @@ table {
     }
 
     td {
-      border: 1pt solid $lightened-inactive-color;
+      // border: 1pt solid $lightened-inactive-color;
       border-collapse: collapse;
     }
 
@@ -232,7 +231,7 @@ table {
     tbody {
       tr {
         &:nth-child(2n) {
-          background: #fafafa;
+          // background: #f5f5f5;
         }
 
         // Targets the div in the "Description" column of each row
@@ -247,6 +246,10 @@ table {
               margin-left: 1rem;
             }
           }
+        }
+
+        &:hover {
+          background: $support-grey;
         }
       }
     }
@@ -390,8 +393,6 @@ input[type='email'] {
   padding: 1rem 1.5rem;
   border-radius: 7px;
   margin-bottom: 1.5rem;
-  min-width: 25rem;
-  max-width: 25rem;
   box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.15);
   @include flexbox();
   @include flex-direction(column);
@@ -416,18 +417,14 @@ input[type='email'] {
     }
   }
 
-  .large-metric {
-    font-size: 2.25rem;
-    font-weight: 600;
-    padding-bottom: 0.5rem;
-  }
-
   .card-title {
-    text-transform: uppercase;
-    letter-spacing: 1.4px;
     font-weight: 600;
-    color: $inactive-color;
-    font-size: 0.9rem;
+    color: $font-color;
+    font-size: 1.5rem;
+    // margin-bottom: .5rem;
+    padding-bottom: 0.75rem;
+    // border-bottom: 1.5pt solid #eee;
+    display: block;
   }
 }
 
@@ -533,6 +530,55 @@ input[type='email'] {
   100% {
     opacity: 0;
     @include transform(translateX(-50%) translateY(-250%));
+  }
+}
+
+tamu-gisc-esri-map {
+  @include flex(2);
+}
+
+tamu-gisc-info {
+  @include flex(1);
+}
+
+.breadcrumb {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: lighten($font-color, 45%);
+
+  .crumb {
+    &[routerLink] {
+      &:hover {
+        color: $font-color;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .material-icons {
+    font-size: 1rem;
+    margin: 0 0.3rem;
+  }
+}
+
+.status {
+  .pill {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    border-radius: 5pt;
+    font-weight: 600;
+
+    //Default is open
+    background: rgba(96, 177, 88, 0.25);
+    color: rgba(96, 177, 88, 1);
+
+    &.closed {
+      background: rgba(244, 67, 54, 0.25);
+      color: rgba(244, 67, 54, 1);
+    }
   }
 }
 
