@@ -1,0 +1,9 @@
+<!-- Map component -->
+<tamu-gisc-esri-map [config]="config" (loaded)="continue($event); loaded.next(true)" [ngClass]="{ mobile: (isMobile | async) === false }"></tamu-gisc-esri-map>
+
+<!-- Application Loader -->
+<tamu-gisc-page-loader [toggle]="!(loaded | async)">
+  <div class="logo">
+    <tamu-gisc-ues-tamu-block [version]="'negative'"></tamu-gisc-ues-tamu-block>
+  </div>
+</tamu-gisc-page-loader>

@@ -4765,6 +4765,10 @@
       }
     }
   },
+  "ues-sass": {
+    "projectType": "library",
+    "root": "libs/ues/sass"
+  },
   "cli": {
     "defaultCollection": "@nrwl/angular",
     "analytics": "b3417ad8-d366-42d6-9c0a-ffba263c7ff4"

@@ -1,1 +1,1 @@
-export * from './lib/ues-cold-water-ngx.module';
+export * from './lib/modules/map/map.module';
