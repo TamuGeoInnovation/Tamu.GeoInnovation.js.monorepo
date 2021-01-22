@@ -2,20 +2,23 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { ScenariosComponent } from './scenarios.component';
-
 const routes: Routes = [
   {
     path: '',
-    component: ScenariosComponent,
-    data: {
-      title: 'Scenarios'
-    }
-  }
+    loadChildren: () => import('./pages/list/list.module').then((m) => m.ScenarioListModule),
+  },
+  {
+    path: 'create',
+    loadChildren: () => import('./pages/edit/edit.module').then((m) => m.ScenarioEditModule),
+  },
+  {
+    path: 'edit',
+    loadChildren: () => import('./pages/edit/edit.module').then((m) => m.ScenarioEditModule),
+  },
 ];
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes)],
-  declarations: [ScenariosComponent]
+  declarations: [],
 })
 export class ScenariosModule {}

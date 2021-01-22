@@ -1,23 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable } from 'rxjs';
-import { tap, map, shareReplay } from 'rxjs/operators';
 
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
+import { ScenarioService, SnapshotService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { SnapshotService } from '@tamu-gisc/cpa/data-access';
 
 import esri = __esri;
+import { map, shareReplay } from 'rxjs/operators';
 
 @Component({
-  selector: 'tamu-gisc-snapshot-builder',
-  templateUrl: './snapshot-builder.component.html',
-  styleUrls: ['./snapshot-builder.component.scss'],
-  providers: [SnapshotService],
+  selector: 'tamu-gisc-scenario-builder',
+  templateUrl: './scenario-builder.component.html',
+  styleUrls: ['./scenario-builder.component.scss'],
+  providers: [ScenarioService],
 })
-export class SnapshotBuilderComponent implements OnInit {
+export class ScenarioBuilderComponent implements OnInit {
   public builderForm: FormGroup;
 
   public view: esri.MapView;
@@ -41,6 +41,7 @@ export class SnapshotBuilderComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private mapService: EsriMapService,
+    private scenario: ScenarioService,
     private snapshot: SnapshotService,
     private router: Router,
     private route: ActivatedRoute,
@@ -57,7 +58,6 @@ export class SnapshotBuilderComponent implements OnInit {
       this.view = instances.view as esri.MapView;
       this.map = instances.map;
     });
-
     // Instantiate builder form
     this.builderForm = this.fb.group({
       title: ['', Validators.required],
@@ -66,25 +66,14 @@ export class SnapshotBuilderComponent implements OnInit {
       zoom: ['', Validators.required],
       layers: this.fb.array([]),
     });
-
-    if (this.route.snapshot.params.guid) {
-      this.snapshot.getOne(this.route.snapshot.params.guid).subscribe((r) => {
-        this.builderForm.patchValue(r);
-
-        r.layers.forEach((l) => {
-          this.addLayer(l);
-        });
-      });
-    } else {
-      // Adds an initial layer group to the layers form array.
-      this.addLayer();
-    }
   }
+
+  public createScenario() {}
 
   /**
    * Gets map service instance map center and sets the center control value using lat, lon format.
    */
-  public setMapCenter(): void {
+  public setMapCenter() {
     const center = this.view.center;
 
     this.builderForm.controls.mapCenter.setValue(`${center.longitude.toFixed(4)}, ${center.latitude.toFixed(4)}`);
@@ -93,7 +82,7 @@ export class SnapshotBuilderComponent implements OnInit {
   /**
    * Gets map service instance current zoom level and sets the zoon control value.
    */
-  public setMapZoom(): void {
+  public setMapZoom() {
     const zoom = this.view.zoom;
 
     this.builderForm.controls.zoom.setValue(zoom);
@@ -115,41 +104,5 @@ export class SnapshotBuilderComponent implements OnInit {
    */
   public removeLayer(index: number) {
     (this.builderForm.controls.layers as FormArray).removeAt(index);
-  }
-
-  public createSnapshot() {
-    const value = this.builderForm.getRawValue();
-
-    if (this.route.snapshot.params.guid) {
-      this.snapshot
-        .update(this.route.snapshot.params.guid, this.builderForm.value)
-        .pipe(
-          tap(() => {
-            // Disable the form while the async operation is executed.
-            this.builderForm.disable();
-          })
-        )
-        .subscribe((updateStatus) => {
-          // Re-enable the form
-          this.builderForm.enable();
-
-          this.ns.toast({
-            message: 'Snapshot was updated successfully.',
-            id: 'snapshot-update',
-            title: 'Updated Snapshot',
-          });
-        });
-    } else {
-      this.snapshot.create(value).subscribe((res) => {
-        this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
-
-        this.ns.toast({
-          message: 'Snapshot was created successfully.',
-          id: 'snapshot-create',
-          title: 'New Snapshot',
-          acknowledge: false,
-        });
-      });
-    }
   }
 }
