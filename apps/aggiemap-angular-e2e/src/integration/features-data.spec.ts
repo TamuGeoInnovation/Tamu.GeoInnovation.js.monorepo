@@ -8,7 +8,7 @@ desktopSizes.forEach((size) => {
       cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
       cy.visit('https://aggiemap.tamu.edu/map/d')
       cy.get('canvas').should('be.visible', {timeout: 5000})
-      cy.wait('@basemap',{requestTimeout: 1000, responseTimeout: 1000})
+      cy.wait('@basemap',{requestTimeout: 2000, responseTimeout: 2000})
     })
 
     it('Check Location', () => {
