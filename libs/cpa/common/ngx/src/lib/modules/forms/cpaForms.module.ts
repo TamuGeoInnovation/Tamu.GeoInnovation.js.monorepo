@@ -13,6 +13,7 @@ import { ChartsModule } from '@tamu-gisc/charts';
 
 import { ParticipantComponent } from './components/participant/participant.component';
 import { NavigationBreadcrumbModule } from '@tamu-gisc/ui-kits/ngx/navigation/breadcrumb';
+import { ScenarioComponent } from './components/scenario/scenario.component';
 
 @NgModule({
   imports: [
@@ -28,7 +29,7 @@ import { NavigationBreadcrumbModule } from '@tamu-gisc/ui-kits/ngx/navigation/br
     ChartsModule,
     NavigationBreadcrumbModule
   ],
-  declarations: [ParticipantComponent],
+  declarations: [ParticipantComponent, ScenarioComponent],
   exports: [ParticipantComponent]
 })
 export class CPAFormsModule {}

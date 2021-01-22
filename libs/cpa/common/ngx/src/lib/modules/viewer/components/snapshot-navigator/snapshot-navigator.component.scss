@@ -51,6 +51,14 @@
     border-color: transparent;
   }
 
+  .triangle {
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: calc(12px * 0.866) solid #e0e0e0;
+    z-index: 1;
+    margin-bottom: 0.094rem;
+  }
+
   &.active {
     p {
       font-weight: 600;
@@ -60,5 +68,12 @@
     .dot {
       background: #7592bd;
     }
+
+    .triangle {
+      border-bottom: calc(12px * 0.866) solid #7592bd;
+    }
   }
+}
+
+@function calculate-triangle-height($width) {
 }

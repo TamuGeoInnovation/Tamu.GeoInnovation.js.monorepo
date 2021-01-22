@@ -5,8 +5,12 @@ import { BaseEntity, Repository, FindManyOptions, DeepPartial, FindOneOptions } 
 export class BaseService<T extends BaseEntity> {
   constructor(public readonly repository: Repository<T>) {}
 
-  public async getAll() {
-    return await this.repository.find();
+  public async getAll(options?: FindManyOptions) {
+    if (options) {
+      return await this.repository.find(options);
+    } else {
+      return await this.repository.find();
+    }
   }
 
   public async getOne(options: FindOneOptions) {

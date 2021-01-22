@@ -9,6 +9,7 @@ import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 
 import { CPAFormsModule } from '../forms/cpaForms.module';
 import { ParticipantComponent } from '../forms/components/participant/participant.component';
+import { ScenarioComponent } from '../forms/components/scenario/scenario.component';
 import { ViewerComponent } from './viewer.component';
 import { SnapshotNavigatorComponent } from './components/snapshot-navigator/snapshot-navigator.component';
 import { LiveLayersControlComponent } from './components/live-layers-control/live-layers-control.component';
@@ -20,14 +21,14 @@ const routes: Routes = [
     children: [
       {
         path: 'workshop/:guid',
-        component: ParticipantComponent
+        component: ParticipantComponent,
       },
       {
         path: 'scenario/:guid',
-        component: ParticipantComponent
-      }
-    ]
-  }
+        component: ScenarioComponent,
+      },
+    ],
+  },
 ];
 
 @NgModule({
@@ -38,9 +39,9 @@ const routes: Routes = [
     UILayoutModule,
     SidebarModule,
     LayerListModule,
-    UIFormsModule
+    UIFormsModule,
   ],
   declarations: [ViewerComponent, SnapshotNavigatorComponent, LiveLayersControlComponent],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class CpaViewerModule {}

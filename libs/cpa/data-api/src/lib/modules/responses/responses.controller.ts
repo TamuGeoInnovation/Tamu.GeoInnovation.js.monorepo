@@ -12,6 +12,18 @@ export class ResponsesController extends BaseController<Response> {
     super(service);
   }
 
+  /**
+   * Retrieves all user responses for a given workshop
+   */
+  @Get('workshop/:workshopGuid')
+  public async getAllForWorkshop(@Param() params) {
+    return this.service.getAll({
+      where: {
+        workshopGuid: params.workshopGuid,
+      },
+    });
+  }
+
   @Get(':workshopGuid/:snapshotGuid')
   public async getAllForSnapshotAndWorkshop(@Param() params) {
     return this.service.getAllForBoth(params);

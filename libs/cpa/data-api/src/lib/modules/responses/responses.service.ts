@@ -19,7 +19,7 @@ export class ResponsesService extends BaseService<Response> {
       .createQueryBuilder('r')
       .where('r.workshopGuid = :w AND r.snapshotGuid = :s', {
         w: params.workshopGuid,
-        s: params.snapshotGuid
+        s: params.snapshotGuid,
       })
       .getMany();
   }
