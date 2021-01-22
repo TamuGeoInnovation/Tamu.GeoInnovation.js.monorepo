@@ -1,0 +1,21 @@
+<div class="logo">
+  <ng-container *ngIf="theme === 'light'; else dark">
+    <img alt="Texas A&amp;M University Logo" src="assets/images/logo/TAM-LogoBox.svg" />
+  </ng-container>
+
+  <ng-template #dark>
+    <img alt="Texas A&amp;M University Logo" src="assets/images/logo/TAM-Logo-white.svg" />
+  </ng-template>
+</div>
+
+<div class="identity">
+  <ng-container *ngIf="type === 'college' || type === 'department'">
+    <span class="tamu-name">Texas A&amp;M University</span>
+  </ng-container>
+
+  <div class="entity-name"><ng-content select=".entity"></ng-content></div>
+
+  <ng-container *ngIf="type === 'deptWDivision'">
+    <span class="division-name"><ng-content select=".division"></ng-content></span>
+  </ng-container>
+</div>

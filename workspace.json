@@ -4642,7 +4642,15 @@
             "polyfills": "apps/ues-valves-angular/src/polyfills.ts",
             "tsConfig": "apps/ues-valves-angular/tsconfig.app.json",
             "aot": true,
-            "assets": ["apps/ues-valves-angular/src/favicon.ico", "apps/ues-valves-angular/src/assets"],
+            "assets": [
+              "apps/ues-valves-angular/src/favicon.ico",
+              "apps/ues-valves-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
             "styles": ["apps/ues-valves-angular/src/styles.scss"],
             "scripts": []
           },
