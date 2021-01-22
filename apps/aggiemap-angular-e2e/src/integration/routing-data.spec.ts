@@ -4,6 +4,7 @@ import {desktopSizes} from "./resolutions";
 desktopSizes.forEach((size) => {
   describe(`Test Elements, Routing Page: ${size} Resolution`, () => {
     beforeEach(() => {
+      cy.viewport(size[0], size[1])
       cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
       cy.intercept("GET", "**/www.google-analytics.com/**").as("collect")
       cy.visit('https://aggiemap.tamu.edu/map/d/trip')
