@@ -2,8 +2,9 @@
 import {desktopSizes} from "./resolutions";
 
 desktopSizes.forEach((size) => {
-  describe('Routing Options', () => {
+  describe(`Routing Options: ${size} Resolution`, () => {
     beforeEach(() => {
+      cy.viewport(size[0], size[1])
       cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
       cy.visit('https://aggiemap.tamu.edu/map/d/trip/options')
       cy.get('canvas').should('be.visible', {timeout: 5000})
