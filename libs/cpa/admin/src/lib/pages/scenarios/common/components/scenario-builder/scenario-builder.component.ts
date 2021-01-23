@@ -2,14 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 
-import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
-import { ScenarioService, SnapshotService } from '@tamu-gisc/cpa/data-access';
+import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
+import { ResponseService, ScenarioService, SnapshotService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { IResponseResponse } from '@tamu-gisc/cpa/data-api';
 
 import esri = __esri;
-import { map, shareReplay } from 'rxjs/operators';
+// import GraphicsLayer = __esri.GraphicsLayer;
 
 @Component({
   selector: 'tamu-gisc-scenario-builder',
@@ -22,8 +24,11 @@ export class ScenarioBuilderComponent implements OnInit {
 
   public view: esri.MapView;
   public map: esri.Map;
+  public graphicPreview: esri.GraphicsLayer;
+  public featureLayer: esri.FeatureLayer;
 
   public isExisting: Observable<boolean>;
+  public responses: Observable<IResponseResponse[]>;
 
   public config: MapConfig = {
     basemap: {
@@ -41,7 +46,9 @@ export class ScenarioBuilderComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private mapService: EsriMapService,
+    private mp: EsriModuleProviderService,
     private scenario: ScenarioService,
+    private response: ResponseService,
     private snapshot: SnapshotService,
     private router: Router,
     private route: ActivatedRoute,
@@ -57,7 +64,12 @@ export class ScenarioBuilderComponent implements OnInit {
     this.mapService.store.subscribe((instances) => {
       this.view = instances.view as esri.MapView;
       this.map = instances.map;
+      this.mp.require(['GraphicsLayer']).then(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
+        this.graphicPreview = new GraphicsLayer();
+        this.map.add(this.graphicPreview);
+      });
     });
+
     // Instantiate builder form
     this.builderForm = this.fb.group({
       title: ['', Validators.required],
@@ -66,6 +78,47 @@ export class ScenarioBuilderComponent implements OnInit {
       zoom: ['', Validators.required],
       layers: this.fb.array([]),
     });
+
+    // Create a GraphicsLayer to hold the Response preview data
+    // this.graphicPreview = new esri.GraphicsLayer();
+    // this.map.add(this.graphicPreview);
+
+    // Fetch all Responses
+    this.responses = this.response.getResponses();
+  }
+
+  public loadPreviewResponseLayer(response: IResponseResponse) {
+    // Remove existing Response preview graphic
+    this.graphicPreview.removeAll();
+    // Add this Repsonse preview
+    this.mp
+      .require(['Graphic', 'Polygon', 'SimpleFillSymbol', 'SimpleLineSymbol'])
+      .then(
+        ([Graphic, Polygon, SimpleFillSymbol, SimpleLineSymbol]: [
+          esri.GraphicConstructor,
+          esri.PolygonConstructor,
+          esri.SimpleFillSymbolConstructor,
+          esri.SimpleLineSymbolConstructor
+        ]) => {
+          const graphicProperties = response.shapes as IGraphic;
+          const graphic = new Graphic({
+            geometry: new Polygon({
+              rings: graphicProperties.geometry.rings,
+              spatialReference: graphicProperties.geometry.spatialReference,
+            }),
+            symbol: new SimpleFillSymbol({
+              color: graphicProperties.symbol.color,
+              outline: new SimpleLineSymbol({
+                type: 'simple-line',
+                style: 'solid',
+                color: graphicProperties.symbol.outline.color,
+                width: graphicProperties.symbol.outline.width,
+              }),
+            }),
+          });
+          this.graphicPreview.add(graphic);
+        }
+      );
   }
 
   public createScenario() {}
@@ -105,4 +158,27 @@ export class ScenarioBuilderComponent implements OnInit {
   public removeLayer(index: number) {
     (this.builderForm.controls.layers as FormArray).removeAt(index);
   }
+}
+
+export interface IGraphic {
+  geometry: {
+    spatialReference: {
+      latestWkid: number;
+      wkid: number;
+    };
+    rings: [[]];
+  };
+  symbol: {
+    type: string;
+    color: number[];
+    outline: {
+      type: string;
+      color: number[];
+      width: number;
+      style: string;
+    };
+    style: string;
+  };
+  attributes: {};
+  popupTemplate: {};
 }
