@@ -17,3 +17,20 @@ tamu-gisc-esri-map {
   padding: 0 1rem;
   box-sizing: border-box;
 }
+
+#response-list {
+  overflow: auto;
+  max-height: 13rem;
+}
+
+#response-list-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  line-height: normal;
+  padding: 0 0.5rem;
+
+  &:hover {
+    background: darken(#e3e3e3, 10%);
+  }
+}

@@ -17,7 +17,7 @@ import esri = __esri;
   selector: 'tamu-gisc-scenario-builder',
   templateUrl: './scenario-builder.component.html',
   styleUrls: ['./scenario-builder.component.scss'],
-  providers: [ScenarioService],
+  providers: [ScenarioService]
 })
 export class ScenarioBuilderComponent implements OnInit {
   public builderForm: FormGroup;
@@ -25,6 +25,7 @@ export class ScenarioBuilderComponent implements OnInit {
   public view: esri.MapView;
   public map: esri.Map;
   public graphicPreview: esri.GraphicsLayer;
+  public scenarioPreview: esri.GraphicsLayer;
   public featureLayer: esri.FeatureLayer;
 
   public isExisting: Observable<boolean>;
@@ -32,15 +33,15 @@ export class ScenarioBuilderComponent implements OnInit {
 
   public config: MapConfig = {
     basemap: {
-      basemap: 'streets-navigation-vector',
+      basemap: 'streets-navigation-vector'
     },
     view: {
       mode: '2d',
       properties: {
         center: [-97.657046, 26.450253],
-        zoom: 11,
-      },
-    },
+        zoom: 11
+      }
+    }
   };
 
   constructor(
@@ -66,7 +67,9 @@ export class ScenarioBuilderComponent implements OnInit {
       this.map = instances.map;
       this.mp.require(['GraphicsLayer']).then(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
         this.graphicPreview = new GraphicsLayer();
+        this.scenarioPreview = new GraphicsLayer();
         this.map.add(this.graphicPreview);
+        this.map.add(this.scenarioPreview);
       });
     });
 
@@ -76,12 +79,47 @@ export class ScenarioBuilderComponent implements OnInit {
       description: ['', Validators.required],
       mapCenter: ['', Validators.required],
       zoom: ['', Validators.required],
-      layers: this.fb.array([]),
+      layers: [[]]
     });
 
-    // Create a GraphicsLayer to hold the Response preview data
-    // this.graphicPreview = new esri.GraphicsLayer();
-    // this.map.add(this.graphicPreview);
+    this.builderForm.controls.layers.valueChanges.subscribe((shapes: IGraphic[]) => {
+      // Clear the scenario preview layer
+      this.scenarioPreview.removeAll();
+      // Get the required esri modules
+      this.mp
+        .require(['Graphic', 'Polygon', 'SimpleFillSymbol', 'SimpleLineSymbol'])
+        .then(
+          ([Graphic, Polygon, SimpleFillSymbol, SimpleLineSymbol]: [
+            esri.GraphicConstructor,
+            esri.PolygonConstructor,
+            esri.SimpleFillSymbolConstructor,
+            esri.SimpleLineSymbolConstructor
+          ]) => {
+            shapes.forEach((shape) => {
+              const graphicProperties = shape as IGraphic;
+
+              // Use the values from the database to create a new Graphic and add it to the graphicPreview layer
+              const graphic = new Graphic({
+                geometry: new Polygon({
+                  rings: graphicProperties.geometry.rings,
+                  spatialReference: graphicProperties.geometry.spatialReference
+                }),
+                symbol: new SimpleFillSymbol({
+                  color: [114, 168, 250, 0.4],
+                  outline: new SimpleLineSymbol({
+                    type: 'simple-line',
+                    style: 'solid',
+                    color: [114, 168, 250, 0.7],
+                    width: graphicProperties.symbol.outline.width
+                  })
+                })
+              });
+
+              this.scenarioPreview.add(graphic);
+            });
+          }
+        );
+    });
 
     // Fetch all Responses
     this.responses = this.response.getResponses();
@@ -90,7 +128,8 @@ export class ScenarioBuilderComponent implements OnInit {
   public loadPreviewResponseLayer(response: IResponseResponse) {
     // Remove existing Response preview graphic
     this.graphicPreview.removeAll();
-    // Add this Repsonse preview
+
+    // Get the required esri modules
     this.mp
       .require(['Graphic', 'Polygon', 'SimpleFillSymbol', 'SimpleLineSymbol'])
       .then(
@@ -101,24 +140,31 @@ export class ScenarioBuilderComponent implements OnInit {
           esri.SimpleLineSymbolConstructor
         ]) => {
           const graphicProperties = response.shapes as IGraphic;
+
+          // Use the values from the database to create a new Graphic and add it to the graphicPreview layer
           const graphic = new Graphic({
             geometry: new Polygon({
               rings: graphicProperties.geometry.rings,
-              spatialReference: graphicProperties.geometry.spatialReference,
+              spatialReference: graphicProperties.geometry.spatialReference
             }),
             symbol: new SimpleFillSymbol({
-              color: graphicProperties.symbol.color,
+              color: [250, 128, 114, 0.4],
               outline: new SimpleLineSymbol({
                 type: 'simple-line',
                 style: 'solid',
-                color: graphicProperties.symbol.outline.color,
-                width: graphicProperties.symbol.outline.width,
-              }),
-            }),
+                color: [250, 128, 114, 0.7],
+                width: graphicProperties.symbol.outline.width
+              })
+            })
           });
+
           this.graphicPreview.add(graphic);
         }
       );
+  }
+
+  public clearPreviewLayer() {
+    this.graphicPreview.removeAll();
   }
 
   public createScenario() {}
@@ -144,13 +190,9 @@ export class ScenarioBuilderComponent implements OnInit {
   /**
    * Adds a layer group to the layers form array.
    *
-   * Allows adding multiple layers to the snapshot.
+   * Allows adding multiple response layers to the scenario.
    */
-  public addLayer(url?: object) {
-    const props = url && typeof url === 'object' ? { ...url } : { url: '' };
-
-    (this.builderForm.controls.layers as FormArray).push(this.fb.group(props));
-  }
+  public addLayer(url?: object) {}
 
   /**
    * Removes a layer form group from the form array at a given index.
