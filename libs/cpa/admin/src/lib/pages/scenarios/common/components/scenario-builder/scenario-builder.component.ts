@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { combineLatest, forkJoin, from, Observable } from 'rxjs';
-import { map, mergeAll, mergeMap, mergeMapTo, merge, shareReplay } from 'rxjs/operators';
+import { map, mergeAll, mergeMap, mergeMapTo, merge, shareReplay, tap } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponseService, ScenarioService, SnapshotService } from '@tamu-gisc/cpa/data-access';
@@ -78,13 +78,22 @@ export class ScenarioBuilderComponent implements OnInit {
       description: ['', Validators.required],
       mapCenter: ['', Validators.required],
       zoom: ['', Validators.required],
-      layers: [[]]
+      layers: [[]],
+      layerGuids: [[]]
     });
 
     // Get both the layer guids and the responses
-    this.builderForm.controls.layers.valueChanges.subscribe((guids: string[]) => {
+    this.builderForm.controls.layerGuids.valueChanges.subscribe((guids: string[]) => {
       this.responses.subscribe((responses) => {
         const selectedResponses = responses.filter((currentResponse) => guids.includes(currentResponse.guid));
+
+        // Add these responses to the form for submission
+        this.builderForm.controls.layers.setValue(
+          selectedResponses.map((value) => {
+            return value.shapes;
+          })
+        );
+
         this.mp
           .require(['Graphic', 'Polygon', 'SimpleFillSymbol', 'SimpleLineSymbol'])
           .then(
@@ -171,7 +180,41 @@ export class ScenarioBuilderComponent implements OnInit {
     this.graphicPreview.removeAll();
   }
 
-  public createScenario() {}
+  public createScenario() {
+    const value = this.builderForm.getRawValue();
+
+    if (this.route.snapshot.params.guid) {
+      this.scenario
+        .update(this.route.snapshot.params.guid, this.builderForm.value)
+        .pipe(
+          tap(() => {
+            // Disable the form while the async operation is executed.
+            this.builderForm.disable();
+          })
+        )
+        .subscribe((updateStatus) => {
+          // Re-enable the form
+          this.builderForm.enable();
+
+          this.ns.toast({
+            message: 'Scenario was updated successfully.',
+            id: 'scenario-update',
+            title: 'Updated Scenario'
+          });
+        });
+    } else {
+      this.scenario.create(value).subscribe((res) => {
+        this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
+
+        this.ns.toast({
+          message: 'Scenario was created successfully.',
+          id: 'scenario-create',
+          title: 'New Scenario',
+          acknowledge: false
+        });
+      });
+    }
+  }
 
   /**
    * Gets map service instance map center and sets the center control value using lat, lon format.

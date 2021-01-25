@@ -50,7 +50,7 @@
           </div>
         </div>
 
-        <tamu-gisc-checkbox-group id="response-list" class="form-section-body" formControlName="layers" [referenceId]="'guid'">
+        <tamu-gisc-checkbox-group id="response-list" class="form-section-body" formControlName="layerGuids" [referenceId]="'guid'">
           <div id="response-list-item" class="form-section-actions material-icons-container" *ngFor="let response of (responses | async)">
             <tamu-gisc-checkbox (mouseover)="loadPreviewResponseLayer(response)" (mouseleave)="clearPreviewLayer()" [label]="response.name + ' ' +'(' + response.snapshot.title + ')'" [data]="response"> </tamu-gisc-checkbox>
           </div>
