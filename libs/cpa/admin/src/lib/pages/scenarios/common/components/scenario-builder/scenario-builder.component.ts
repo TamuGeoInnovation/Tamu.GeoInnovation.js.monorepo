@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { combineLatest, forkJoin, from, Observable } from 'rxjs';
-import { map, mergeAll, mergeMap, mergeMapTo, merge, shareReplay, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, shareReplay, tap } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponseService, ScenarioService, SnapshotService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { IResponseResponse } from '@tamu-gisc/cpa/data-api';
+import { IGraphic, IResponseResponse } from '@tamu-gisc/cpa/data-api';
 
 import esri = __esri;
 
@@ -81,6 +81,20 @@ export class ScenarioBuilderComponent implements OnInit {
       layers: [[]],
       layerGuids: [[]]
     });
+
+    if (this.route.snapshot.params.guid) {
+      this.scenario.getOne(this.route.snapshot.params.guid).subscribe((r) => {
+        this.builderForm.patchValue(r);
+
+        this.responses.subscribe((responses) => {
+          const goodOnes = responses.filter((currentResponse) => {
+            if (r.layers.includes(currentResponse.shapes as IGraphic)) {
+              return currentResponse;
+            }
+          });
+        });
+      });
+    }
 
     // Get both the layer guids and the responses
     this.builderForm.controls.layerGuids.valueChanges.subscribe((guids: string[]) => {
@@ -247,27 +261,4 @@ export class ScenarioBuilderComponent implements OnInit {
   public removeLayer(index: number) {
     (this.builderForm.controls.layers as FormArray).removeAt(index);
   }
-}
-
-export interface IGraphic {
-  geometry: {
-    spatialReference: {
-      latestWkid: number;
-      wkid: number;
-    };
-    rings: [[]];
-  };
-  symbol: {
-    type: string;
-    color: number[];
-    outline: {
-      type: string;
-      color: number[];
-      width: number;
-      style: string;
-    };
-    style: string;
-  };
-  attributes: {};
-  popupTemplate: {};
 }

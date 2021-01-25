@@ -33,5 +33,29 @@ export class ScenariosController extends BaseController<Scenario> {
 export interface IScenariosRequestPayload extends DeepPartial<Scenario> {}
 
 export interface IScenariosResponse extends Omit<DeepPartial<Scenario>, 'layers'> {
-  layers: { url: string; info: ILayerConfiguration }[];
+  // layers: { url: string; info: ILayerConfiguration }[];
+  layers: IGraphic[];
+}
+
+export interface IGraphic {
+  geometry: {
+    spatialReference: {
+      latestWkid: number;
+      wkid: number;
+    };
+    rings: [[]];
+  };
+  symbol: {
+    type: string;
+    color: number[];
+    outline: {
+      type: string;
+      color: number[];
+      width: number;
+      style: string;
+    };
+    style: string;
+  };
+  attributes: {};
+  popupTemplate: {};
 }
