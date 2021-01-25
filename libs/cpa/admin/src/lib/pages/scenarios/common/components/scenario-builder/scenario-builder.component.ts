@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { from, Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { combineLatest, forkJoin, from, Observable } from 'rxjs';
+import { map, mergeAll, mergeMap, mergeMapTo, merge, shareReplay } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponseService, ScenarioService, SnapshotService } from '@tamu-gisc/cpa/data-access';
@@ -11,7 +11,6 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { IResponseResponse } from '@tamu-gisc/cpa/data-api';
 
 import esri = __esri;
-// import GraphicsLayer = __esri.GraphicsLayer;
 
 @Component({
   selector: 'tamu-gisc-scenario-builder',
@@ -82,43 +81,48 @@ export class ScenarioBuilderComponent implements OnInit {
       layers: [[]]
     });
 
-    this.builderForm.controls.layers.valueChanges.subscribe((shapes: IGraphic[]) => {
-      // Clear the scenario preview layer
-      this.scenarioPreview.removeAll();
-      // Get the required esri modules
-      this.mp
-        .require(['Graphic', 'Polygon', 'SimpleFillSymbol', 'SimpleLineSymbol'])
-        .then(
-          ([Graphic, Polygon, SimpleFillSymbol, SimpleLineSymbol]: [
-            esri.GraphicConstructor,
-            esri.PolygonConstructor,
-            esri.SimpleFillSymbolConstructor,
-            esri.SimpleLineSymbolConstructor
-          ]) => {
-            shapes.forEach((shape) => {
-              const graphicProperties = shape as IGraphic;
+    // Get both the layer guids and the responses
+    this.builderForm.controls.layers.valueChanges.subscribe((guids: string[]) => {
+      this.responses.subscribe((responses) => {
+        const selectedResponses = responses.filter((currentResponse) => guids.includes(currentResponse.guid));
+        this.mp
+          .require(['Graphic', 'Polygon', 'SimpleFillSymbol', 'SimpleLineSymbol'])
+          .then(
+            ([Graphic, Polygon, SimpleFillSymbol, SimpleLineSymbol]: [
+              esri.GraphicConstructor,
+              esri.PolygonConstructor,
+              esri.SimpleFillSymbolConstructor,
+              esri.SimpleLineSymbolConstructor
+            ]) => {
+              // Clear the scenarioPreview layer
+              this.scenarioPreview.removeAll();
 
-              // Use the values from the database to create a new Graphic and add it to the graphicPreview layer
-              const graphic = new Graphic({
-                geometry: new Polygon({
-                  rings: graphicProperties.geometry.rings,
-                  spatialReference: graphicProperties.geometry.spatialReference
-                }),
-                symbol: new SimpleFillSymbol({
-                  color: [114, 168, 250, 0.4],
-                  outline: new SimpleLineSymbol({
-                    type: 'simple-line',
-                    style: 'solid',
-                    color: [114, 168, 250, 0.7],
-                    width: graphicProperties.symbol.outline.width
+              const graphics: Array<esri.Graphic> = selectedResponses.map((response) => {
+                const graphicProperties = response.shapes as IGraphic;
+                // Use the values from the database to create a new Graphic and add it to the graphicPreview layer
+                const graphic = new Graphic({
+                  geometry: new Polygon({
+                    rings: graphicProperties.geometry.rings,
+                    spatialReference: graphicProperties.geometry.spatialReference
+                  }),
+                  symbol: new SimpleFillSymbol({
+                    color: [114, 168, 250, 0.4],
+                    outline: new SimpleLineSymbol({
+                      type: 'simple-line',
+                      style: 'solid',
+                      color: [114, 168, 250, 0.7],
+                      width: graphicProperties.symbol.outline.width
+                    })
                   })
-                })
+                });
+
+                return graphic;
               });
 
-              this.scenarioPreview.add(graphic);
-            });
-          }
-        );
+              this.scenarioPreview.addMany(graphics);
+            }
+          );
+      });
     });
 
     // Fetch all Responses
