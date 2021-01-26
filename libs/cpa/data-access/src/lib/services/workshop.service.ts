@@ -41,4 +41,8 @@ export class WorkshopService {
   public deleteSnapshot(wGuid: string, sGuid: string) {
     return this.http.delete(`${this.resource}/snapshot/${wGuid}/${sGuid}`);
   }
+
+  public addScenario(wGuid: string, sGuid: string) {
+    return this.http.post(`${this.resource}/scenario`, { workshopGuid: wGuid, scenarioGuid: sGuid });
+  }
 }

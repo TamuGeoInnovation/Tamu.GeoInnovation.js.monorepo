@@ -1,7 +1,8 @@
 import { Controller, Post, Body, Get, HttpException, Delete, Param, Patch } from '@nestjs/common';
 
-import { Response } from '@tamu-gisc/cpa/common/entities';
 import { DeepPartial } from 'typeorm';
+
+import { Response } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseController } from '../base/base.controller';
 import { ResponsesService } from './responses.service';
@@ -17,11 +18,7 @@ export class ResponsesController extends BaseController<Response> {
    */
   @Get('workshop/:workshopGuid')
   public async getAllForWorkshop(@Param() params) {
-    return this.service.getAll({
-      where: {
-        workshopGuid: params.workshopGuid,
-      },
-    });
+    return await this.service.getManyForWorkshop(params.workshopGuid);
   }
 
   @Get(':workshopGuid/:snapshotGuid')

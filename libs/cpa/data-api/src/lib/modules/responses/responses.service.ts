@@ -19,7 +19,17 @@ export class ResponsesService extends BaseService<Response> {
       .createQueryBuilder('r')
       .where('r.workshopGuid = :w AND r.snapshotGuid = :s', {
         w: params.workshopGuid,
-        s: params.snapshotGuid,
+        s: params.snapshotGuid
+      })
+      .getMany();
+  }
+
+  public async getManyForWorkshop(params) {
+    return await this.repo
+      .createQueryBuilder('r')
+      .leftJoinAndSelect('r.snapshot', 'snapshot')
+      .where('r.workshopGuid = :w', {
+        w: params
       })
       .getMany();
   }

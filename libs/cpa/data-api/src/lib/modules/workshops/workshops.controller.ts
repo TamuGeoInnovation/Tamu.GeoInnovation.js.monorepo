@@ -29,6 +29,14 @@ export class WorkshopsController extends BaseController<Workshop> {
   }
 
   /**
+   * Adds a Scenario to a workshop
+   */
+  @Post('scenario')
+  public async addScenario(@Body() body: IWorkshopScenarioPayload) {
+    return await this.service.addNewScenario(body);
+  }
+
+  /**
    * Returns a specific workshop record.
    */
   @Get(':guid')
@@ -66,5 +74,10 @@ export interface IWorkshopRequestPayload extends DeepPartial<Workshop> {
 }
 export interface IWorkshopSnapshotPayload {
   snapshotGuid: string;
+  workshopGuid: string;
+}
+
+export interface IWorkshopScenarioPayload {
+  scenarioGuid: string;
   workshopGuid: string;
 }

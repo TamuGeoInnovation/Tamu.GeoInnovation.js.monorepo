@@ -1,4 +1,20 @@
 <form [formGroup]="builderForm" (ngSubmit)="createScenario()">
+  <div class="form-section" *ngIf="isExisting | async">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Workshops</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-select [data]="this.workshops | async" placeholder="Select a workshop" [displayTemplate]="'title'" (changed)="setWorkshopScenario($event)"></tamu-gisc-select>
+      </div>
+
+      <p *ngIf="(this.workshops | async).length === 0">There are no associated workshops. Select a workshop from the above list to add.</p>
+    </div>
+  </div>
+
   <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-name">
@@ -17,7 +33,7 @@
     </div>
   </div>
 
-  <div class="map-configuration-container">
+  <div class="map-configuration-container" *ngIf="this.selectedWorkshop">
     <div class="map-configuration">
       <div class="form-section">
         <div class="form-section-toolbar">
@@ -52,10 +68,10 @@
 
         <tamu-gisc-checkbox-group id="response-list" class="form-section-body" formControlName="layerGuids" [referenceId]="'guid'">
           <div id="response-list-item" class="form-section-actions material-icons-container" *ngFor="let response of (responses | async)">
-            <tamu-gisc-checkbox (mouseover)="loadPreviewResponseLayer(response)" (mouseleave)="clearPreviewLayer()" [label]="response.name + ' ' +'(' + response.snapshot.title + ')'" [data]="response"> </tamu-gisc-checkbox>
+            <tamu-gisc-checkbox (mouseover)="loadPreviewResponseLayer(response)" (mouseleave)="clearPreviewLayer()" [label]="response.name + ' ' +'(' + response.snapshot.title + ')'" [data]="response"></tamu-gisc-checkbox>
           </div>
         </tamu-gisc-checkbox-group>
-
+        <p>{{this.builderForm.controls.layers.value}}</p>
         <p *ngIf="(responses | async).length === 0">There are no responses for this workshop.</p>
       </div>
     </div>

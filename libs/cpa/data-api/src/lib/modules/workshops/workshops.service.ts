@@ -3,10 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, getRepository } from 'typeorm';
 
-import { Workshop, Snapshot } from '@tamu-gisc/cpa/common/entities';
+import { Workshop, Snapshot, Scenario } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseService } from '../base/base.service';
-import { IWorkshopRequestPayload, IWorkshopSnapshotPayload } from './workshops.controller';
+import { IWorkshopRequestPayload, IWorkshopScenarioPayload, IWorkshopSnapshotPayload } from './workshops.controller';
 
 @Injectable()
 export class WorkshopsService extends BaseService<Workshop> {
@@ -22,6 +22,25 @@ export class WorkshopsService extends BaseService<Workshop> {
       const snapshots = await getRepository(Snapshot).findOne({ where: { guid: body.snapshotGuid } });
 
       existing.snapshots.push(snapshots);
+
+      try {
+        return await existing.save();
+      } catch (err) {
+        return err;
+      }
+    } else {
+      throw new HttpException('Not Found', 404);
+    }
+  }
+
+  public async addNewScenario(body: IWorkshopScenarioPayload) {
+    const existing = await this.repository.findOne({ where: { guid: body.workshopGuid }, relations: ['scenarios'] });
+
+    if (existing) {
+      // Get the existing snapshot, if it exists.
+      const scenarios = await getRepository(Scenario).findOne({ where: { guid: body.scenarioGuid } });
+
+      existing.scenarios.push(scenarios);
 
       try {
         return await existing.save();
