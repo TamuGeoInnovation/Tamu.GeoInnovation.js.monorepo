@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
-import { filter, map, pluck, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { filter, map, shareReplay, skip, takeUntil } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 import { loadModules } from 'esri-loader';
 
@@ -9,6 +10,8 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
 import { FeatureHighlightService } from '@tamu-gisc/maps/feature/feature-highlight';
+
+import { ColdWaterValvesService } from '../core/services/cold-water-valves/cold-water-valves.service';
 
 import esri = __esri;
 
@@ -24,15 +27,15 @@ export class MapComponent implements OnInit, OnDestroy {
   public config: MapConfig;
   public loaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  public searchSource: Observable<esri.Graphic[]>;
-
   private _destroy$: Subject<boolean> = new Subject();
   constructor(
     private responsiveService: ResponsiveService,
     private environment: EnvironmentService,
     private mapService: EsriMapService,
     private highlightService: FeatureHighlightService,
-    private selectionService: FeatureSelectorService
+    private selectionService: FeatureSelectorService,
+    private coldWaterValveService: ColdWaterValvesService,
+    private router: Router
   ) {}
 
   public ngOnInit(): void {
@@ -86,27 +89,63 @@ export class MapComponent implements OnInit, OnDestroy {
       this.view = instance.view;
 
       this.view.when(() => {
-        const l = this.map.findLayerById('recycling-layer') as esri.FeatureLayer;
+        const l = this.map.findLayerById('cold-water-valves-layer') as esri.FeatureLayer;
 
-        this.searchSource = from(
-          l.queryFeatures({
-            outFields: ['*'],
-            where: '1=1',
-            returnGeometry: true
-          })
-        ).pipe(pluck('features'));
+        // When layer is loaded, overwrite the default renderer
+        l.when((layer: esri.FeatureLayer) => {
+          this.coldWaterValveService.valves.pipe(skip(1), takeUntil(this._destroy$)).subscribe((res) => {
+            const closedIdValues = res
+              .filter((v) => {
+                return v.attributes.State === 'closed';
+              })
+              .map((v) => {
+                return {
+                  value: v.attributes.OBJECTID,
+                  symbol: {
+                    type: 'simple-marker',
+                    style: 'circle',
+                    color: 'red',
+                    size: '9pt'
+                  }
+                };
+              });
+
+            const renderer = {
+              type: 'unique-value',
+              field: 'OBJECTID',
+              defaultSymbol: {
+                type: 'picture-marker',
+                url:
+                  'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/2/images/9646fa9794e95441d1da92c53066819e'
+              },
+              uniqueValueInfos: closedIdValues
+            };
+
+            layer.renderer = (renderer as unknown) as esri.Renderer;
+          });
+        });
       });
     });
 
     this.selectionService.snapshot
       .pipe(
         map((features) => {
-          return features.filter((g) => g.layer.id === 'recycling-layer');
+          return features.filter((g) => g.layer.id === 'cold-water-valves-layer');
         }),
-        filter((features) => features !== undefined)
+        filter((features) => features !== undefined && features.length > 0),
+        takeUntil(this._destroy$)
       )
       .subscribe((res) => {
-        this.highlight(res, false);
+        this.router.navigate(['details', res[0].attributes.OBJECTID]);
+      });
+
+    this.coldWaterValveService.selectedValve
+      .pipe(
+        filter((p) => p !== undefined),
+        takeUntil(this._destroy$)
+      )
+      .subscribe((res) => {
+        this.highlight(res, true);
       });
   }
 

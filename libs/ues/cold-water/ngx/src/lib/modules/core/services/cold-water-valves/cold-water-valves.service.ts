@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
+import { filter, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,21 @@ export class ColdWaterValvesService {
   private _valves: BehaviorSubject<Array<MappedValve>> = new BehaviorSubject(undefined);
   public valves = this._valves.asObservable();
 
+  private _selectedValveId: BehaviorSubject<number> = new BehaviorSubject(undefined);
+
+  public selectedValve: Observable<MappedValve>;
+
   constructor(private mapService: EsriMapService) {
     this.getDefaultValves();
+
+    this.selectedValve = combineLatest([this.valves, this._selectedValveId]).pipe(
+      filter(([valves, value]) => {
+        return valves !== undefined;
+      }),
+      map(([valves, id]) => {
+        return valves.find((v) => v.attributes.OBJECTID === id);
+      })
+    );
   }
 
   private getDefaultValves() {
@@ -25,7 +39,8 @@ export class ColdWaterValvesService {
           const q = l.queryFeatures({
             where: '1 = 1',
             outFields: ['*'],
-            returnGeometry: true
+            returnGeometry: true,
+            maxRecordCountFactor: 5
           });
 
           q.then((features) => {
@@ -52,9 +67,27 @@ export class ColdWaterValvesService {
     this._valves.next(valves);
   }
 
+  public setSelectedValve(valveId: number | string): void {
+    let id;
+    if (typeof valveId === 'string') {
+      id = parseInt(valveId, 10);
+    } else {
+      id = valveId;
+    }
+
+    this._selectedValveId.next(id);
+  }
+
+  public clearSelectedValve(): void {
+    this._selectedValveId.next(undefined);
+  }
+
   private addValveState(valves: Array<Valve>): Array<MappedValve> {
     return valves.map((v) => {
-      v.setAttribute('State', 'closed');
+      // Only 10% of valves will be set to closed, initially.
+      const shouldBeClosed = Math.random() < 0.05;
+
+      v.setAttribute('State', shouldBeClosed ? 'closed' : 'open');
       return v as MappedValve;
     });
   }

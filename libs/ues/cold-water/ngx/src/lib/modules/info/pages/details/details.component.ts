@@ -1,30 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
-import { Observable } from 'rxjs';
-import { filter, map, pluck, withLatestFrom } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
-import { ColdWaterValvesService, MappedValve } from '../../../data-access/cold-water-valves/cold-water-valves.service';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { ColdWaterValvesService, MappedValve } from '../../../core/services/cold-water-valves/cold-water-valves.service';
 
 @Component({
   selector: 'tamu-gisc-details',
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss']
 })
-export class DetailsComponent implements OnInit {
+export class DetailsComponent implements OnInit, OnDestroy {
   public valve: Observable<MappedValve>;
+
+  private _$destroy: Subject<boolean> = new Subject();
 
   constructor(private vs: ColdWaterValvesService, private route: ActivatedRoute) {}
 
   public ngOnInit(): void {
-    this.valve = this.vs.valves.pipe(
-      filter((valves) => {
-        return valves !== undefined;
-      }),
-      withLatestFrom(this.route.params.pipe(pluck<Params, string>('id'))),
-      map(([valves, id]) => {
-        return valves.find((valve) => valve.attributes.OBJECTID === parseInt(id, 10));
-      })
-    );
+    this.valve = this.vs.selectedValve;
+
+    this.route.params.pipe(takeUntil(this._$destroy)).subscribe((params) => {
+      this.vs.setSelectedValve(params.id);
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this._$destroy.next();
+    this._$destroy.complete();
   }
 
   public toggleValveState(valve: MappedValve) {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ColdWaterValvesService, MappedValve } from '../../../data-access/cold-water-valves/cold-water-valves.service';
+import { ColdWaterValvesService, MappedValve } from '../../../core/services/cold-water-valves/cold-water-valves.service';
 
 @Component({
   selector: 'tamu-gisc-list',

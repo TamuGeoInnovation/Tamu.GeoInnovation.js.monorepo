@@ -8,4 +8,4 @@ import { ExpandableCardComponent } from './components/expandable-card/expandable
   declarations: [ExpandableCardComponent],
   exports: [ExpandableCardComponent]
 })
-export class ValveCommonModule {}
+export class ValveCoreModule {}

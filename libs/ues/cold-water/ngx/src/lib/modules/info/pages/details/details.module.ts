@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { DetailsComponent } from './details.component';
-import { ValveCommonModule } from '../../../common/common.module';
+import { ValveCoreModule } from '../../../core/core.module';
 
 const routes: Routes = [
   {
@@ -13,7 +13,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), ValveCommonModule],
+  imports: [CommonModule, RouterModule.forChild(routes), ValveCoreModule],
   declarations: [DetailsComponent]
 })
 export class DetailsModule {}
