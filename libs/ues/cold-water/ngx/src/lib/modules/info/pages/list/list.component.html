@@ -4,6 +4,16 @@
   <div class="crumb">All</div>
 </div>
 
+<div class="ratio-bar">
+  <div class="open-valves" [style.width.%]="(ratio | async)?.open" [title]="'Open valves: ' + (ratio | async)?.open + '%'"></div>
+  <div class="closed-valves" [style.width.%]="(ratio | async)?.closed" [style.left.%]="(ratio | async)?.open" [title]="'Closed valves: ' + (ratio | async)?.closed + '%'"></div>
+</div>
+
+<div class="pill-layer-list">
+  <div class="pill-layer" [ngClass]="{open: !(filterOpen | async)}" (click)="tableFilter('open')"><span class="material-icons">circle</span> Open Valves</div>
+  <div class="pill-layer" [ngClass]="{closed: !(filterClosed | async)}" (click)="tableFilter('closed')"><span class="material-icons">circle</span> Closed Valves</div>
+</div>
+
 <div class="card table-overflow-scroll">
   <table>
     <thead>
@@ -15,11 +25,11 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let valve of (valves | async)">
-        <td>{{valve.attributes.OBJECTID}}</td>
-        <td class="status"><span class="pill" [ngClass]="{closed: valve.attributes.State === 'closed'}">{{valve.attributes.State.toUpperCase()}}</span></td>
+      <tr *ngFor="let valve of (filtered | async)">
+        <td>{{valve?.attributes?.OBJECTID}}</td>
+        <td class="status"><span class="pill" [ngClass]="{closed: valve?.attributes?.State === 'closed'}">{{valve?.attributes?.State?.toUpperCase()}}</span></td>
         <td></td>
-        <td class="actions"><span class="material-icons" [routerLink]="['../../details', valve.attributes.OBJECTID]">keyboard_arrow_right</span></td>
+        <td class="actions"><span class="material-icons" [routerLink]="['../../details', valve?.attributes?.OBJECTID]">keyboard_arrow_right</span></td>
       </tr>
     </tbody>
   </table>
