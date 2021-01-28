@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable } from 'rxjs';
-import { map, shareReplay, tap } from 'rxjs/operators';
+import { map, shareReplay, tap, withLatestFrom } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponseService, ScenarioService, WorkshopService } from '@tamu-gisc/cpa/data-access';
@@ -91,62 +91,8 @@ export class ScenarioBuilderComponent implements OnInit {
       });
     }
 
-    // Get both the layer guids and the responses
-    this.builderForm.controls.layerGuids.valueChanges.subscribe((guids: string[]) => {
-      this.responses.subscribe((responses) => {
-        // Find those responses that intersect with the currently selected guids (checkboxes)
-        const selectedResponses = responses.filter((currentResponse) => guids.includes(currentResponse.guid));
-
-        // Add these responses to the form for submission
-        this.builderForm.controls.layers.setValue(
-          selectedResponses.map((value) => {
-            return value.shapes;
-          })
-        );
-
-        this.mp
-          .require(['Graphic', 'Polygon', 'SimpleFillSymbol', 'SimpleLineSymbol'])
-          .then(
-            ([Graphic, Polygon, SimpleFillSymbol, SimpleLineSymbol]: [
-              esri.GraphicConstructor,
-              esri.PolygonConstructor,
-              esri.SimpleFillSymbolConstructor,
-              esri.SimpleLineSymbolConstructor
-            ]) => {
-              // Clear the scenarioPreview layer
-              this.scenarioPreview.removeAll();
-
-              // Get an array of esri.Graphics
-              const graphics: Array<esri.Graphic> = selectedResponses.map((response) => {
-                const graphicProperties = response.shapes as IGraphic;
-                // Use the values from the database to create a new Graphic and add it to the graphicPreview layer
-                const graphic = new Graphic({
-                  geometry: new Polygon({
-                    rings: graphicProperties.geometry.rings,
-                    spatialReference: graphicProperties.geometry.spatialReference
-                  }),
-                  symbol: new SimpleFillSymbol({
-                    color: [114, 168, 250, 0.4],
-                    outline: new SimpleLineSymbol({
-                      type: 'simple-line',
-                      style: 'solid',
-                      color: [114, 168, 250, 0.7],
-                      width: graphicProperties.symbol.outline.width
-                    })
-                  })
-                });
-
-                return graphic;
-              });
-
-              this.scenarioPreview.addMany(graphics);
-            }
-          );
-      });
-    });
-
     // Fetch all Workshops
-    this.workshops = this.workshop.getWorkshops();
+    this.workshops = this.workshop.getWorkshops().pipe(shareReplay(1));
   }
 
   public async loadPreviewResponseLayer(response: IResponseResponse) {
@@ -238,8 +184,14 @@ export class ScenarioBuilderComponent implements OnInit {
     // Workshop can be undefined
     if (workshop) {
       this.selectedWorkshop = workshop;
-      this.responses = this.response.getResponsesForWorkshop(workshop.guid);
+      this.responses = this.response.getResponsesForWorkshop(workshop.guid).pipe(shareReplay());
       this.workshop.addScenario(workshop.guid, this.route.snapshot.params['guid']).subscribe(() => {});
+
+      this.builderForm.controls.layerGuids.valueChanges
+        .pipe(withLatestFrom(this.responses))
+        .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
+          this.addResponseGraphics(guids, responses);
+        });
     }
   }
 
@@ -259,6 +211,57 @@ export class ScenarioBuilderComponent implements OnInit {
     const zoom = this.view.zoom;
 
     this.builderForm.controls.zoom.setValue(zoom);
+  }
+
+  public addResponseGraphics(guids: string[], responses: IResponseResponse[]) {
+    // Find those responses that intersect with the currently selected guids (checkboxes)
+    const selectedResponses = responses.filter((currentResponse) => guids.includes(currentResponse.guid));
+
+    // Add these responses to the form for submission
+    this.builderForm.controls.layers.setValue(
+      selectedResponses.map((value) => {
+        return value.shapes;
+      })
+    );
+
+    this.mp
+      .require(['Graphic', 'Polygon', 'SimpleFillSymbol', 'SimpleLineSymbol'])
+      .then(
+        ([Graphic, Polygon, SimpleFillSymbol, SimpleLineSymbol]: [
+          esri.GraphicConstructor,
+          esri.PolygonConstructor,
+          esri.SimpleFillSymbolConstructor,
+          esri.SimpleLineSymbolConstructor
+        ]) => {
+          // Clear the scenarioPreview layer
+          this.scenarioPreview.removeAll();
+
+          // Get an array of esri.Graphics
+          const graphics: Array<esri.Graphic> = selectedResponses.map((response) => {
+            const graphicProperties = response.shapes as IGraphic;
+            // Use the values from the database to create a new Graphic and add it to the graphicPreview layer
+            const graphic = new Graphic({
+              geometry: new Polygon({
+                rings: graphicProperties.geometry.rings,
+                spatialReference: graphicProperties.geometry.spatialReference
+              }),
+              symbol: new SimpleFillSymbol({
+                color: [114, 168, 250, 0.4],
+                outline: new SimpleLineSymbol({
+                  type: 'simple-line',
+                  style: 'solid',
+                  color: [114, 168, 250, 0.7],
+                  width: graphicProperties.symbol.outline.width
+                })
+              })
+            });
+
+            return graphic;
+          });
+
+          this.scenarioPreview.addMany(graphics);
+        }
+      );
   }
 }
 
