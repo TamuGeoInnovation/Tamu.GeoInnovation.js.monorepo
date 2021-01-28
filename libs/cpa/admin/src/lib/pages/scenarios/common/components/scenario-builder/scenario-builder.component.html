@@ -11,7 +11,7 @@
         <tamu-gisc-select [data]="this.workshops | async" placeholder="Select a workshop" [displayTemplate]="'title'" (changed)="setWorkshopScenario($event)"></tamu-gisc-select>
       </div>
 
-      <p *ngIf="(this.workshops | async).length === 0">There are no associated workshops. Select a workshop from the above list to add.</p>
+      <p *ngIf="(this.workshops | async)?.length === 0">There are no associated workshops. Select a workshop from the above list to add.</p>
     </div>
   </div>
 
@@ -72,7 +72,7 @@
           </div>
         </tamu-gisc-checkbox-group>
         <p>{{this.builderForm.controls.layers.value}}</p>
-        <p *ngIf="(responses | async).length === 0">There are no responses for this workshop.</p>
+        <p *ngIf="(responses | async)?.length === 0">There are no responses for this workshop.</p>
       </div>
     </div>
 

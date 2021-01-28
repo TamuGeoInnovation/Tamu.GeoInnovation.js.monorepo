@@ -19,7 +19,7 @@
           <div class="floating-row" *ngFor="let scenario of scenarios | async">
             <div class="column">{{scenario.title}}</div>
             <div class="column table-actions">
-              <a [routerLink]="['../edit', scenario.guid]">Edit</a>
+              <a [routerLink]="['./edit', scenario.guid]">Edit</a>
             </div>
           </div>
         </div>
