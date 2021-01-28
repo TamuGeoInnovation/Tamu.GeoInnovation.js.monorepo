@@ -48,11 +48,12 @@ export interface IGraphic {
   symbol: {
     type: string;
     color: number[];
+    width: number;
     outline: {
       type: string;
       color: number[];
-      width: number;
       style: string;
+      width: number;
     };
     style: string;
   };

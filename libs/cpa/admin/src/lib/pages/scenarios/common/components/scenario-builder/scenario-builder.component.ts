@@ -260,20 +260,6 @@ export class ScenarioBuilderComponent implements OnInit {
 
     this.builderForm.controls.zoom.setValue(zoom);
   }
-
-  /**
-   * Adds a layer group to the layers form array.
-   *
-   * Allows adding multiple response layers to the scenario.
-   */
-  public addLayer(url?: object) {}
-
-  /**
-   * Removes a layer form group from the form array at a given index.
-   */
-  public removeLayer(index: number) {
-    (this.builderForm.controls.layers as FormArray).removeAt(index);
-  }
 }
 
 export class EsriGraphicTools {

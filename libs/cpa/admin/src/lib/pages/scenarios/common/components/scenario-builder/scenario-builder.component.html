@@ -66,12 +66,12 @@
           </div>
         </div>
 
-        <tamu-gisc-checkbox-group id="response-list" class="form-section-body" formControlName="layerGuids" [referenceId]="'guid'">
+        <tamu-gisc-checkbox-group formControlName="layerGuids" id="response-list" class="form-section-body" [referenceId]="'guid'">
           <div id="response-list-item" class="form-section-actions material-icons-container" *ngFor="let response of (responses | async)">
-            <tamu-gisc-checkbox (mouseover)="loadPreviewResponseLayer(response)" (mouseleave)="clearPreviewLayer()" [label]="response.name + ' ' +'(' + response.snapshot.title + ')'" [data]="response"></tamu-gisc-checkbox>
+            <tamu-gisc-checkbox (mouseover)="loadPreviewResponseLayer(response)" (mouseleave)="clearPreviewLayer()" [label]="response.guid + ' ' +'(' + response.snapshot.title + ')'" [data]="response"></tamu-gisc-checkbox>
           </div>
         </tamu-gisc-checkbox-group>
-        <p>{{this.builderForm.controls.layers.value}}</p>
+        <p>{{this.builderForm.controls.layerGuids.value}}</p>
         <p *ngIf="(responses | async)?.length === 0">There are no responses for this workshop.</p>
       </div>
     </div>
