@@ -85,11 +85,11 @@ export class ScenarioBuilderComponent implements OnInit {
     });
 
     // If we are in /details, populate the form
-    // if (this.route.snapshot.params.guid) {
-    //   this.scenario.getOne(this.route.snapshot.params.guid).subscribe((r) => {
-    //     this.builderForm.patchValue(r);
-    //   });
-    // }
+    if (this.route.snapshot.params.guid) {
+      this.scenario.getOne(this.route.snapshot.params.guid).subscribe((r) => {
+        this.builderForm.patchValue(r);
+      });
+    }
 
     // Get both the layer guids and the responses
     this.builderForm.controls.layerGuids.valueChanges.subscribe((guids: string[]) => {
@@ -239,9 +239,7 @@ export class ScenarioBuilderComponent implements OnInit {
     if (workshop) {
       this.selectedWorkshop = workshop;
       this.responses = this.response.getResponsesForWorkshop(workshop.guid);
-      this.workshop.addScenario(workshop.guid, this.route.snapshot.params['guid']).subscribe((addScenarioStatus) => {
-        this.builderForm.patchValue(addScenarioStatus);
-      });
+      this.workshop.addScenario(workshop.guid, this.route.snapshot.params['guid']).subscribe(() => {});
     }
   }
 
