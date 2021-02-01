@@ -1,8 +1,7 @@
-import { Body, Controller, Delete, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { Scenario } from '@tamu-gisc/cpa/common/entities';
-import { ILayerConfiguration } from '@tamu-gisc/maps/feature/forms';
 
 import { BaseController } from '../base/base.controller';
 import { ScenariosService } from './scenarios.service';
@@ -11,6 +10,11 @@ import { ScenariosService } from './scenarios.service';
 export class ScenariosController extends BaseController<Scenario> {
   constructor(private service: ScenariosService) {
     super(service);
+  }
+
+  @Get('workshop/:guid')
+  public getScenariosForWorkshop(@Param() params: { guid: string }) {
+    return this.service.getScenariosForWorkshop(params.guid);
   }
 
   /**

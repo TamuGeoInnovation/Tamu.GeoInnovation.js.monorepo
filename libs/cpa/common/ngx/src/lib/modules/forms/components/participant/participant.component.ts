@@ -38,10 +38,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   // Values managed by service
   public workshop = this.vs.workshop;
-  public snapshot = this.vs.snapshot;
+  public snapshot = this.vs.snapshotOrScenario;
   public responses: Observable<IResponseResponse[]>;
   public snapshotHistory = this.vs.snapshotHistory;
-  public snapshotIndex = this.vs.snapshotIndex;
+  public snapshotIndex = this.vs.selectionIndex;
 
   // Values specific to the participant component.
   public responseIndex: BehaviorSubject<number> = new BehaviorSubject(-1);

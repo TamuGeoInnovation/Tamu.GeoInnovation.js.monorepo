@@ -26,6 +26,10 @@ export class SnapshotService {
     return this.http.get<ISnapshotsResponse>(`${this.resource}/${guid}`);
   }
 
+  public getForWorkshop(workshopGuid: string) {
+    return this.http.get<Array<ISnapshotsResponse>>(`${this.resource}/workshop/${workshopGuid}`);
+  }
+
   public update(guid: string, snapshot: ISnapshotsRequestPayload) {
     return this.http.patch(`${this.resource}/${guid}`, snapshot);
   }

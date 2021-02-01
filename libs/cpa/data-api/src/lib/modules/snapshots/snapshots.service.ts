@@ -21,4 +21,12 @@ export class SnapshotsService extends BaseService<Snapshot> {
   public async deleteSnapshot(params: ISnapshotsRequestPayload) {
     return await this.repo.delete({ guid: params.guid });
   }
+
+  public async getSnapshotsForWorkshop(workshopGuid: string) {
+    return await this.repo.find({
+      where: {
+        workshops: workshopGuid
+      }
+    });
+  }
 }

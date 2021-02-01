@@ -1815,7 +1815,8 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "cpa-nest:build"
+            "buildTarget": "cpa-nest:build",
+            "port": 7777
           }
         },
         "lint": {

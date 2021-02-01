@@ -1,25 +1,25 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IScenariosResponse, ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
 
 import { ViewerService } from '../../services/viewer.service';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'tamu-gisc-snapshot-navigator',
   templateUrl: './snapshot-navigator.component.html',
-  styleUrls: ['./snapshot-navigator.component.scss'],
+  styleUrls: ['./snapshot-navigator.component.scss']
 })
 export class SnapshotNavigatorComponent implements OnInit {
-  public workshop: Observable<IWorkshopRequestPayload> = this.vs.workshop;
-  public snapshotIndex: Observable<number> = this.vs.snapshotIndex;
+  public snapshots: Observable<Array<ISnapshotsResponse | IScenariosResponse>> = this.vs.snapshotsAndScenarios;
+  public index: Observable<number> = this.vs.selectionIndex;
 
   constructor(public router: ActivatedRoute, private vs: ViewerService) {}
 
   public ngOnInit(): void {}
 
   public navigate(index: number) {
-    this.vs.updateSnapshotIndex(index);
+    this.vs.updateSelectionIndex(index);
   }
 }

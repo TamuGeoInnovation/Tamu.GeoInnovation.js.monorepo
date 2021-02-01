@@ -1,5 +1,5 @@
-<ng-container *ngFor="let snapshot of (workshop | async)?.snapshots; let i = index;">
-  <div class="snapshot" [ngClass]="{active: (snapshotIndex | async) === i}" (click)="navigate(i)">
+<ng-container *ngFor="let snapshot of (snapshots | async); let i = index;">
+  <div class="snapshot" [ngClass]="{active: (index | async) === i}" (click)="navigate(i)">
     <p>{{snapshot.title}}</p>
     <span [ngClass]="(this.router.snapshot.url.includes('workshop'))?'dot':'dot'"></span>
   </div>

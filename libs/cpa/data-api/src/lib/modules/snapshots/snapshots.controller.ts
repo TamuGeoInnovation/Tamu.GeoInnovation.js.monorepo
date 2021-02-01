@@ -1,4 +1,4 @@
-import { Controller, Patch, Param, Body, Delete } from '@nestjs/common';
+import { Controller, Patch, Param, Body, Delete, Get } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { Snapshot } from '@tamu-gisc/cpa/common/entities';
@@ -11,6 +11,14 @@ import { SnapshotsService } from './snapshots.service';
 export class SnapshotsController extends BaseController<Snapshot> {
   constructor(private service: SnapshotsService) {
     super(service);
+  }
+
+  /**
+   * Gets a list of snapshots for a workshop
+   */
+  @Get('workshop/:guid')
+  public async getSnapshotsForWorkshop(@Param() params: { guid: string }) {
+    return this.service.getSnapshotsForWorkshop(params.guid);
   }
 
   /**
