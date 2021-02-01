@@ -163,6 +163,83 @@ export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): Autocast
     };
   }
 }
+export class PolygonMaker {
+  private static modules: {
+    graphic: esri.GraphicConstructor;
+    polygon: esri.PolygonConstructor;
+    simpleFillSymbol: esri.SimpleFillSymbolConstructor;
+    simpleLineSymbol: esri.SimpleLineSymbolConstructor;
+  } = { graphic: undefined, polygon: undefined, simpleFillSymbol: undefined, simpleLineSymbol: undefined };
+
+  public static async build() {
+    loadModules(['esri/Graphic', 'esri/geometry/Polygon', 'esri/symbols/SimpleFillSymbol', 'esri/symbols/SimpleLineSymbol'])
+      .then(
+        ([g, p, sfs, sls]: [
+          esri.GraphicConstructor,
+          esri.PolygonConstructor,
+          esri.SimpleFillSymbolConstructor,
+          esri.SimpleLineSymbolConstructor
+        ]) => {
+          this.modules.graphic = g;
+          this.modules.polygon = p;
+          this.modules.simpleFillSymbol = sfs;
+          this.modules.simpleLineSymbol = sls;
+        }
+      )
+      .catch((err) => {
+        throw new Error('Could not load PolygonMaker modules.');
+      });
+  }
+
+  public static async makePolygon(shape: IGraphic, color: number[] = [250, 128, 114]): Promise<esri.Graphic> {
+    return new this.modules.graphic({
+      geometry: new this.modules.polygon({
+        // we use IGraphic instead of esri.Graphic because geometry.rings does not exist on type esri.Graphic
+        rings: shape.geometry.rings,
+        spatialReference: shape.geometry.spatialReference
+      }),
+      symbol: new this.modules.simpleFillSymbol({
+        color: [...color, 0.4],
+        outline: new this.modules.simpleLineSymbol({
+          type: 'simple-line',
+          style: 'solid',
+          color: [...color, 0.7],
+          // we use IGraphic instead of esri.Graphic because symbol.outline does not exist on type esri.Graphic
+          width: shape.symbol.outline.width
+        })
+      })
+    });
+  }
+
+  public static async makeArrayOfPolygons(
+    shapes: IGraphic[],
+    color: number[] = [114, 168, 250]
+  ): Promise<Array<esri.Graphic>> {
+    const graphics = shapes.map((graphicProperties: IGraphic) => {
+      const graphic = new this.modules.graphic({
+        geometry: new this.modules.polygon({
+          // we use IGraphic instead of esri.Graphic because geometry.rings does not exist on type esri.Graphic
+          rings: graphicProperties.geometry.rings,
+          spatialReference: graphicProperties.geometry.spatialReference
+        }),
+        symbol: new this.modules.simpleFillSymbol({
+          color: [...color, 0.4],
+          outline: new this.modules.simpleLineSymbol({
+            type: 'simple-line',
+            style: 'solid',
+            color: [...color, 0.7],
+            // we use IGraphic instead of esri.Graphic because symbol.outline does not exist on type esri.Graphic
+            width: graphicProperties.symbol.outline.width
+          })
+        })
+      });
+
+      return graphic;
+    });
+
+    return graphics;
+  }
+}
 
 export class CoordinateConverter {
   private modules: {
@@ -240,3 +317,26 @@ export type IPortalLayer = IPortalFeatureLayer | IPortalGroupLayer;
 export type AutocastableLayer =
   | { type: 'group'; layers: Array<AutocastableLayer>; title?: string }
   | { type: 'feature'; url: string; title?: string };
+export interface IGraphic {
+  geometry: {
+    spatialReference: {
+      latestWkid: number;
+      wkid: number;
+    };
+    rings: [[]];
+  };
+  symbol: {
+    type: string;
+    color: number[];
+    width: number;
+    outline: {
+      type: string;
+      color: number[];
+      style: string;
+      width: number;
+    };
+    style: string;
+  };
+  attributes: {};
+  popupTemplate: {};
+}

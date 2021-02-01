@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { Scenario } from '@tamu-gisc/cpa/common/entities';
+import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseController } from '../base/base.controller';
 import { ScenariosService } from './scenarios.service';
@@ -46,28 +47,4 @@ export interface IScenariosRequestPayload extends DeepPartial<Scenario> {}
 export interface IScenariosResponse extends Omit<DeepPartial<Scenario>, 'layers'> {
   // layers: { url: string; info: ILayerConfiguration }[];
   layers: IGraphic[];
-}
-
-export interface IGraphic {
-  geometry: {
-    spatialReference: {
-      latestWkid: number;
-      wkid: number;
-    };
-    rings: [[]];
-  };
-  symbol: {
-    type: string;
-    color: number[];
-    width: number;
-    outline: {
-      type: string;
-      color: number[];
-      style: string;
-      width: number;
-    };
-    style: string;
-  };
-  attributes: {};
-  popupTemplate: {};
 }

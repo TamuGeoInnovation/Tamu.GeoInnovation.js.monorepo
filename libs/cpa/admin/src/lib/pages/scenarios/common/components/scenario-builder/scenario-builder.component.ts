@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable } from 'rxjs';
@@ -8,7 +8,8 @@ import { map, shareReplay, tap, withLatestFrom } from 'rxjs/operators';
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponseService, ScenarioService, WorkshopService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { IGraphic, IScenariosResponse, IResponseResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IResponseResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IGraphic, PolygonMaker } from '@tamu-gisc/common/utils/geometry/esri';
 
 import esri = __esri;
 
@@ -84,24 +85,15 @@ export class ScenarioBuilderComponent implements OnInit {
       layerGuids: [[]]
     });
 
+    // Setup the PolygonMaker
+    PolygonMaker.build();
+
     // If we are in /details, populate the form
     if (this.route.snapshot.params.guid) {
-      this.scenario
-        .getOne(this.route.snapshot.params.guid)
-        // .pipe(withLatestFrom(this.responses))
-        .subscribe((r) => {
-          this.builderForm.patchValue(r);
-          // this.addResponseGraphics(r.layers, responses);
-        });
+      this.scenario.getOne(this.route.snapshot.params.guid).subscribe((r) => {
+        this.builderForm.patchValue(r);
+      });
     }
-
-    // this.responses = this.response.getResponsesForWorkshop(workshop.guid).pipe(shareReplay());
-
-    // this.builderForm.controls.layerGuids.valueChanges
-    //   .pipe(withLatestFrom(this.responses))
-    //   .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
-    //     this.addResponseGraphics(guids, responses);
-    //   });
 
     // Fetch all Workshops
     this.workshops = this.workshop.getWorkshops().pipe(shareReplay(1));
@@ -111,12 +103,8 @@ export class ScenarioBuilderComponent implements OnInit {
     // Remove existing Response preview graphic
     this.graphicPreview.removeAll();
 
-    // Get the required esri modules
-    this.graphicPreview.add(await EsriGraphicTools.makeGraphic(this.mp, response.shapes as IGraphic));
-  }
-
-  public clearPreviewLayer() {
-    this.graphicPreview.removeAll();
+    const graphic = await PolygonMaker.makePolygon(response.shapes as IGraphic);
+    this.graphicPreview.add(graphic);
   }
 
   public createScenario() {
@@ -194,7 +182,7 @@ export class ScenarioBuilderComponent implements OnInit {
     this.builderForm.controls.zoom.setValue(zoom);
   }
 
-  public addResponseGraphics(guids: string[], responses: IResponseResponse[]) {
+  public async addResponseGraphics(guids: string[], responses: IResponseResponse[]) {
     // Find those responses that intersect with the currently selected guids (checkboxes)
     const selectedResponses = responses.filter((currentResponse) => guids.includes(currentResponse.guid));
 
@@ -205,112 +193,9 @@ export class ScenarioBuilderComponent implements OnInit {
       })
     );
 
-    this.mp
-      .require(['Graphic', 'Polygon', 'SimpleFillSymbol', 'SimpleLineSymbol'])
-      .then(
-        ([Graphic, Polygon, SimpleFillSymbol, SimpleLineSymbol]: [
-          esri.GraphicConstructor,
-          esri.PolygonConstructor,
-          esri.SimpleFillSymbolConstructor,
-          esri.SimpleLineSymbolConstructor
-        ]) => {
-          // Clear the scenarioPreview layer
-          this.scenarioPreview.removeAll();
-
-          // Get an array of esri.Graphics
-          const graphics: Array<esri.Graphic> = selectedResponses.map((response) => {
-            const graphicProperties = response.shapes as IGraphic;
-            // Use the values from the database to create a new Graphic and add it to the graphicPreview layer
-            const graphic = new Graphic({
-              geometry: new Polygon({
-                rings: graphicProperties.geometry.rings,
-                spatialReference: graphicProperties.geometry.spatialReference
-              }),
-              symbol: new SimpleFillSymbol({
-                color: [114, 168, 250, 0.4],
-                outline: new SimpleLineSymbol({
-                  type: 'simple-line',
-                  style: 'solid',
-                  color: [114, 168, 250, 0.7],
-                  width: graphicProperties.symbol.outline.width
-                })
-              })
-            });
-
-            return graphic;
-          });
-
-          this.scenarioPreview.addMany(graphics);
-        }
-      );
-  }
-}
-
-export class EsriGraphicTools {
-  public static makeArrayOfGraphics(mp: EsriModuleProviderService, shapes: IGraphic[], color: number[] = [250, 128, 114]) {
-    return mp
-      .require(['Graphic', 'Polygon', 'SimpleFillSymbol', 'SimpleLineSymbol'])
-      .then(
-        ([Graphic, Polygon, SimpleFillSymbol, SimpleLineSymbol]: [
-          esri.GraphicConstructor,
-          esri.PolygonConstructor,
-          esri.SimpleFillSymbolConstructor,
-          esri.SimpleLineSymbolConstructor
-        ]) => {
-          const graphics: esri.Graphic[] = [];
-          shapes.forEach((graphicProperties: IGraphic) => {
-            // Use the values from the database to create a new Graphic and add it to the graphicPreview layer
-            const graphic = new Graphic({
-              geometry: new Polygon({
-                rings: graphicProperties.geometry.rings,
-                spatialReference: graphicProperties.geometry.spatialReference
-              }),
-              symbol: new SimpleFillSymbol({
-                color: [...color, 0.4],
-                outline: new SimpleLineSymbol({
-                  type: 'simple-line',
-                  style: 'solid',
-                  color: [...color, 0.7],
-                  width: graphicProperties.symbol.outline.width
-                })
-              })
-            });
-
-            graphics.push(graphic);
-          });
-        }
-      );
-  }
-
-  public static makeGraphic(mp: EsriModuleProviderService, shape: IGraphic, color: number[] = [250, 128, 114]) {
-    return mp
-      .require(['Graphic', 'Polygon', 'SimpleFillSymbol', 'SimpleLineSymbol'])
-      .then(
-        ([Graphic, Polygon, SimpleFillSymbol, SimpleLineSymbol]: [
-          esri.GraphicConstructor,
-          esri.PolygonConstructor,
-          esri.SimpleFillSymbolConstructor,
-          esri.SimpleLineSymbolConstructor
-        ]) => {
-          // Use the values from the database to create a new Graphic and add it to the graphicPreview layer
-          const graphic = new Graphic({
-            geometry: new Polygon({
-              rings: shape.geometry.rings,
-              spatialReference: shape.geometry.spatialReference
-            }),
-            symbol: new SimpleFillSymbol({
-              color: [...color, 0.4],
-              outline: new SimpleLineSymbol({
-                type: 'simple-line',
-                style: 'solid',
-                color: [...color, 0.7],
-                width: shape.symbol.outline.width
-              })
-            })
-          });
-
-          return graphic;
-        }
-      );
+    const graphics = await PolygonMaker.makeArrayOfPolygons(
+      selectedResponses.map((response) => response.shapes) as IGraphic[]
+    );
+    this.scenarioPreview.addMany(graphics);
   }
 }
