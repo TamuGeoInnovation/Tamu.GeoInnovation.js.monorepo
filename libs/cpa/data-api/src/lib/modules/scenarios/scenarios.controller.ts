@@ -14,7 +14,14 @@ export class ScenariosController extends BaseController<Scenario> {
 
   @Get('workshop/:guid')
   public getScenariosForWorkshop(@Param() params: { guid: string }) {
-    return this.service.getScenariosForWorkshop(params.guid);
+    // return this.service.getScenariosForWorkshop(params.guid);
+  }
+
+  @Get(':guid')
+  public async get(@Param() params: { guid: string }) {
+    return this.service.getOne({
+      relations: ['workshops', 'workshops.responses']
+    });
   }
 
   /**
