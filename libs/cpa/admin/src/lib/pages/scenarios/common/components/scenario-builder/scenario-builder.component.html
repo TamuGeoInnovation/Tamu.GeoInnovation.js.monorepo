@@ -2,7 +2,7 @@
   <div class="form-section" *ngIf="isExisting | async">
     <div class="form-section-toolbar">
       <div class="form-section-name">
-        <p>Workshops</p>
+        <p>What workshop would you like to base this scenario on?</p>
       </div>
     </div>
 
@@ -11,7 +11,7 @@
         <tamu-gisc-select [data]="workshops | async" placeholder="Select a workshop" [displayTemplate]="'title'" (changed)="setWorkshopScenario($event)"></tamu-gisc-select>
       </div>
 
-      <p *ngIf="(workshops | async)?.length === 0">There are no associated workshops. Select a workshop from the above list to add.</p>
+      <p *ngIf="(workshops | async)?.length === 0">Currently there are no workshops</p>
     </div>
   </div>
 
@@ -33,7 +33,7 @@
     </div>
   </div>
 
-  <div class="map-configuration-container" *ngIf="this.selectedWorkshop">
+  <div class="map-configuration-container" *ngIf="responses">
     <div class="map-configuration">
       <div class="form-section">
         <div class="form-section-toolbar">
@@ -59,7 +59,7 @@
         </div>
       </div>
 
-      <div class="form-section">
+      <div class="form-section" *ngIf="this.selectedWorkshop">
         <div class="form-section-toolbar">
           <div class="form-section-name">
             <p>Layers</p>
@@ -69,7 +69,7 @@
         <tamu-gisc-checkbox-group id="response-list" class="form-section-body" formControlName="layerGuids" [referenceId]="'guid'">
           <tamu-gisc-checkbox *ngFor="let response of (responses | async)" (mouseover)="loadPreviewResponseLayer(response)" (mouseleave)="clearPreviewLayer()" [label]="response.name + ' ' +'(' + response.snapshot.title + ')'" [data]="response"></tamu-gisc-checkbox>
         </tamu-gisc-checkbox-group>
-        <p>{{this.builderForm.controls.layers.value}}</p>
+
         <p *ngIf="(responses | async)?.length === 0">There are no responses for this workshop.</p>
       </div>
     </div>

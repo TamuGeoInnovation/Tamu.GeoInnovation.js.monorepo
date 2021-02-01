@@ -67,8 +67,24 @@ export class WorkshopsService extends BaseService<Workshop> {
     }
   }
 
+  public async deleteScenario(params: IWorkshopScenarioPayload) {
+    const existing = await this.repository.findOne({
+      where: { guid: params.workshopGuid },
+      relations: ['scenarios']
+    });
+
+    if (existing) {
+      existing.scenarios = existing.scenarios.filter((s) => s.guid !== params.scenarioGuid);
+
+      return await existing.save();
+    } else {
+      throw new HttpException('Not Found', 404);
+    }
+  }
+
   public async getWorkshop(params) {
     const existing = await this.getOne({ where: { guid: params.guid } });
+
     if (existing) {
       return existing;
     } else {

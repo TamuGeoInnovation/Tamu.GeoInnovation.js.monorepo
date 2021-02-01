@@ -8,7 +8,7 @@ import { map, shareReplay, tap, withLatestFrom } from 'rxjs/operators';
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponseService, ScenarioService, WorkshopService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { IGraphic, IResponseResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IGraphic, IScenariosResponse, IResponseResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 
 import esri = __esri;
 
@@ -86,10 +86,22 @@ export class ScenarioBuilderComponent implements OnInit {
 
     // If we are in /details, populate the form
     if (this.route.snapshot.params.guid) {
-      this.scenario.getOne(this.route.snapshot.params.guid).subscribe((r) => {
-        this.builderForm.patchValue(r);
-      });
+      this.scenario
+        .getOne(this.route.snapshot.params.guid)
+        // .pipe(withLatestFrom(this.responses))
+        .subscribe((r) => {
+          this.builderForm.patchValue(r);
+          // this.addResponseGraphics(r.layers, responses);
+        });
     }
+
+    // this.responses = this.response.getResponsesForWorkshop(workshop.guid).pipe(shareReplay());
+
+    // this.builderForm.controls.layerGuids.valueChanges
+    //   .pipe(withLatestFrom(this.responses))
+    //   .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
+    //     this.addResponseGraphics(guids, responses);
+    //   });
 
     // Fetch all Workshops
     this.workshops = this.workshop.getWorkshops().pipe(shareReplay(1));
@@ -101,37 +113,6 @@ export class ScenarioBuilderComponent implements OnInit {
 
     // Get the required esri modules
     this.graphicPreview.add(await EsriGraphicTools.makeGraphic(this.mp, response.shapes as IGraphic));
-    // this.mp
-    //   .require(['Graphic', 'Polygon', 'SimpleFillSymbol', 'SimpleLineSymbol'])
-    //   .then(
-    //     ([Graphic, Polygon, SimpleFillSymbol, SimpleLineSymbol]: [
-    //       esri.GraphicConstructor,
-    //       esri.PolygonConstructor,
-    //       esri.SimpleFillSymbolConstructor,
-    //       esri.SimpleLineSymbolConstructor
-    //     ]) => {
-    //       const graphicProperties = response.shapes as IGraphic;
-
-    //       // Use the values from the database to create a new Graphic and add it to the graphicPreview layer
-    //       const graphic = new Graphic({
-    //         geometry: new Polygon({
-    //           rings: graphicProperties.geometry.rings,
-    //           spatialReference: graphicProperties.geometry.spatialReference
-    //         }),
-    //         symbol: new SimpleFillSymbol({
-    //           color: [250, 128, 114, 0.4],
-    //           outline: new SimpleLineSymbol({
-    //             type: 'simple-line',
-    //             style: 'solid',
-    //             color: [250, 128, 114, 0.7],
-    //             width: graphicProperties.symbol.outline.width
-    //           })
-    //         })
-    //       });
-
-    //       this.graphicPreview.add(graphic);
-    //     }
-    //   );
   }
 
   public clearPreviewLayer() {
@@ -147,6 +128,7 @@ export class ScenarioBuilderComponent implements OnInit {
       zoom: rawValue.zoom,
       layers: rawValue.layerGuids
     };
+    // console.log('createScenario', value);
     if (this.route.snapshot.params.guid) {
       this.scenario
         .update(this.route.snapshot.params.guid, value)
@@ -185,7 +167,6 @@ export class ScenarioBuilderComponent implements OnInit {
     if (workshop) {
       this.selectedWorkshop = workshop;
       this.responses = this.response.getResponsesForWorkshop(workshop.guid).pipe(shareReplay());
-      this.workshop.addScenario(workshop.guid, this.route.snapshot.params['guid']).subscribe(() => {});
 
       this.builderForm.controls.layerGuids.valueChanges
         .pipe(withLatestFrom(this.responses))

@@ -29,6 +29,14 @@ export class WorkshopsController extends BaseController<Workshop> {
   }
 
   /**
+   * Deletes a snapshot from a workshop
+   */
+  @Delete('scenario/:workshopGuid/:scenarioGuid')
+  public async deleteScenario(@Param() params: IWorkshopScenarioPayload) {
+    return await this.service.deleteScenario(params);
+  }
+
+  /**
    * Adds a Scenario to a workshop
    */
   @Post('scenario')

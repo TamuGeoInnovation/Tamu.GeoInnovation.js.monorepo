@@ -115,10 +115,10 @@ export class Scenario extends CPABaseEntity {
   @Column({ type: 'simple-json', nullable: true })
   public layers: string;
 
-  @ManyToMany((type) => Workshop, (w) => w.snapshots)
+  @ManyToMany((type) => Workshop, (w) => w.scenarios)
   public workshops: Workshop[];
 
-  @OneToMany((type) => Response, (r) => r.snapshot)
+  @OneToMany((type) => Response, (r) => r.scenario)
   public responses: Response[];
 }
 
