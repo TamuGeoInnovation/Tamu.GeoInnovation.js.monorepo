@@ -25,7 +25,7 @@ export class ViewerService {
   /**
    * Flattened collection of both snapshots and scenarios for a workshop
    */
-  public snapshotsAndScenarios: Observable<Array<ISnapshotsResponse | IScenariosResponse>>;
+  public snapshotsAndScenarios: Observable<Array<TypedSnapshotOrScenario>>;
 
   /**
    * Selected snapshot and scenario by index
@@ -95,7 +95,15 @@ export class ViewerService {
       )
     ]).pipe(
       map(([snapshots, scenarios]) => {
-        return [...snapshots, ...scenarios];
+        const typedSnapshots: Array<TypedSnapshotOrScenario> = snapshots.map((s) => {
+          return { ...s, type: 'snapshot' };
+        });
+
+        const typedScenarios: Array<TypedSnapshotOrScenario> = snapshots.map((s) => {
+          return { ...s, type: 'scenario' };
+        });
+
+        return [...typedSnapshots, ...typedScenarios];
       })
     );
 
@@ -135,3 +143,7 @@ export class ViewerService {
     });
   }
 }
+
+type ISnapshotOrScenario = ISnapshotsResponse | IScenariosResponse;
+
+export type TypedSnapshotOrScenario = ISnapshotOrScenario & { type: 'scenario' | 'snapshot' };

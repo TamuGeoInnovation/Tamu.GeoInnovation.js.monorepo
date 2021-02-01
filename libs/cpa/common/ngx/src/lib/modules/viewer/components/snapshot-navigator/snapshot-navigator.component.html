@@ -1,6 +1,11 @@
 <ng-container *ngFor="let snapshot of (snapshots | async); let i = index;">
   <div class="snapshot" [ngClass]="{active: (index | async) === i}" (click)="navigate(i)">
     <p>{{snapshot.title}}</p>
-    <span [ngClass]="(this.router.snapshot.url.includes('workshop'))?'dot':'dot'"></span>
+    <ng-container *ngIf="snapshot.type === 'snapshot'; else scenarioBadge">
+      <span class="snapshot-badge">T</span>
+    </ng-container>
+    <ng-template #scenarioBadge>
+      <span class="scenario-badge">S</span>
+    </ng-template>
   </div>
 </ng-container>

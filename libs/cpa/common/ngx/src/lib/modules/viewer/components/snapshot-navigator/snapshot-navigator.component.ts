@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { IScenariosResponse, ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
-
-import { ViewerService } from '../../services/viewer.service';
+import { TypedSnapshotOrScenario, ViewerService } from '../../services/viewer.service';
 
 @Component({
   selector: 'tamu-gisc-snapshot-navigator',
@@ -12,7 +10,7 @@ import { ViewerService } from '../../services/viewer.service';
   styleUrls: ['./snapshot-navigator.component.scss']
 })
 export class SnapshotNavigatorComponent implements OnInit {
-  public snapshots: Observable<Array<ISnapshotsResponse | IScenariosResponse>> = this.vs.snapshotsAndScenarios;
+  public snapshots: Observable<Array<TypedSnapshotOrScenario>> = this.vs.snapshotsAndScenarios;
   public index: Observable<number> = this.vs.selectionIndex;
 
   constructor(public router: ActivatedRoute, private vs: ViewerService) {}

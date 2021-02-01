@@ -18,7 +18,7 @@
     width: 90%;
     height: 0.25rem;
     border-radius: 1rem;
-    top: calc(100% - 1.25rem);
+    top: calc(100% - 1.55rem);
     left: 50%;
     background: #e0e0e0;
     z-index: 0;
@@ -36,7 +36,7 @@
   @include align-items(center);
 
   p {
-    padding-bottom: 0.25rem;
+    padding-bottom: 0.5rem;
     font-size: 0.9rem;
     color: #9e9e9e;
   }
@@ -59,10 +59,44 @@
     margin-bottom: 0.094rem;
   }
 
+  .snapshot-badge,
+  .scenario-badge {
+    font-size: 0.65rem;
+    font-weight: bolder;
+    background: #e0e0e0;
+    color: #757575;
+    z-index: 1;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3pt;
+    border: 1pt solid;
+    border-color: transparent;
+    @include transition(background 0.25s);
+  }
+
+  .snapshot-badge {
+    background: #ede7f6;
+    border-color: hsl(275, 100%, 94%);
+  }
+
+  .scenario-badge {
+    background: #fff3e0;
+    border-color: hsl(38, 83%, 88%);
+  }
+
   &.active {
     p {
       font-weight: 600;
-      color: #7592bd;
+      color: #424242;
+    }
+
+    .snapshot-badge {
+      background: #651fff;
+      color: #fafafa;
+    }
+
+    .scenario-badge {
+      background: #ffab40;
+      color: #424242;
     }
 
     .dot {
