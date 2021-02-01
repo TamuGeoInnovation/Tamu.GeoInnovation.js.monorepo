@@ -83,7 +83,7 @@ export class WorkshopsService extends BaseService<Workshop> {
   }
 
   public async getWorkshop(params) {
-    const existing = await this.getOne({ where: { guid: params.guid } });
+    const existing = await this.getOne({ where: [{ alias: params.guid }, { guid: params.guid }] });
 
     if (existing) {
       return existing;

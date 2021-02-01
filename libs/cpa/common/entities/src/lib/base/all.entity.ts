@@ -47,6 +47,9 @@ export class Workshop extends CPABaseEntity {
   @Column({ type: 'nvarchar', length: 'MAX' })
   public description: string;
 
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  public alias: string;
+
   @Column({ nullable: true })
   public date: Date;
 
@@ -69,9 +72,6 @@ export class Snapshot extends CPABaseEntity {
 
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public description: string;
-
-  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
-  public alias: string;
 
   @Column({ nullable: true })
   public mapCenter: string;
@@ -99,9 +99,6 @@ export class Scenario extends CPABaseEntity {
 
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public description: string;
-
-  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
-  public alias: string;
 
   @Column({ nullable: true })
   public mapCenter: string;

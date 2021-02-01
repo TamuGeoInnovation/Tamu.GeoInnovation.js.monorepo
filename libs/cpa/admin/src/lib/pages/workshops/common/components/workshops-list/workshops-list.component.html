@@ -14,18 +14,17 @@
             <div class="column"></div>
           </div>
         </div>
-  
+
         <div class="floating-table-body">
           <div class="floating-row" *ngFor="let workshop of workshops | async">
             <div class="column">{{workshop.title}}</div>
             <div class="column table-actions">
               <a [routerLink]="['./edit', workshop.guid]">Edit</a>
-              <a [routerLink]="['../../viewer/workshop', workshop.guid]" target="_blank">Launch</a>
+              <a [routerLink]="['../../viewer/workshop', workshop.alias ? workshop.alias : workshop.guid]" target="_blank">Launch</a>
             </div>
           </div>
         </div>
       </div>
     </div>
   </ng-template>
-  
 </ng-template>

@@ -22,6 +22,8 @@ export class WorkshopBuilderComponent implements OnInit {
   public snapshotList: Observable<ISnapshotsResponse[]>;
   public scenarioList: Observable<IScenariosResponse[]>;
 
+  public host = `${window.location.origin}`;
+
   constructor(
     private fb: FormBuilder,
     private ws: WorkshopService,
@@ -35,6 +37,7 @@ export class WorkshopBuilderComponent implements OnInit {
     this.form = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
+      alias: [undefined],
       date: [undefined],
       snapshots: [[]],
       scenarios: [[]]

@@ -109,6 +109,12 @@ form {
     .form-section-body {
       display: inherit;
       @include flex-direction(column);
+
+      .form-input-description {
+        margin-top: 0.75rem;
+        margin-bottom: 0.75rem;
+        margin-left: 0.75rem;
+      }
     }
   }
 }

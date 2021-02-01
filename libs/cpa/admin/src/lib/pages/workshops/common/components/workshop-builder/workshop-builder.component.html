@@ -14,6 +14,12 @@
       <div class="form-collection row">
         <tamu-gisc-textbox type="textarea" formControlName="description" placeholder="Description" floatLabel="true" rows="5"></tamu-gisc-textbox>
       </div>
+
+      <div class="form-collection column">
+        <p class="form-input-description">A user-friendly URL alias that can be used to access the workshop instead of only relying on the randomly generated workshop unique identifier.</p>
+        <tamu-gisc-textbox type="text" formControlName="alias" placeholder="Alias (Optional)" floatLabel="true"></tamu-gisc-textbox>
+        <p class="form-input-description" *ngIf="form.controls?.alias?.value?.length > 0">This workshop will be accessible through {{host}}/viewer/workshop/{{form.controls.alias.value}}</p>
+      </div>
     </div>
   </div>
 
