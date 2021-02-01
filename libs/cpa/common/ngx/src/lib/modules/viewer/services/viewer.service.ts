@@ -99,7 +99,7 @@ export class ViewerService {
           return { ...s, type: 'snapshot' };
         });
 
-        const typedScenarios: Array<TypedSnapshotOrScenario> = snapshots.map((s) => {
+        const typedScenarios: Array<TypedSnapshotOrScenario> = scenarios.map((s) => {
           return { ...s, type: 'scenario' };
         });
 
