@@ -77,5 +77,6 @@ export interface IResponseResponse extends DeepPartial<Response> {}
 export interface IResponseRequestPayload extends Omit<IResponseResponse, 'shapes'> {
   snapshotGuid?: string;
   workshopGuid?: string;
+  scenarioGuid?: string;
   shapes: object;
 }

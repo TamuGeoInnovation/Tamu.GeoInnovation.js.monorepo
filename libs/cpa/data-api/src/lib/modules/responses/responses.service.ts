@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, getRepository } from 'typeorm';
 
-import { Response, Workshop, Snapshot } from '@tamu-gisc/cpa/common/entities';
+import { Response, Workshop, Snapshot, Scenario } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseService } from '../base/base.service';
 import { IResponseRequestPayload } from './responses.controller';
@@ -50,11 +50,28 @@ export class ResponsesService extends BaseService<Response> {
     const existing = await this.getOne({ where: { guid: body.guid } });
 
     if (existing === undefined) {
-      const workshop = await getRepository(Workshop).findOne({ guid: body.workshopGuid });
-      const snapshot = await getRepository(Snapshot).findOne({ guid: body.snapshotGuid });
+      const workshop = await getRepository(Workshop).findOne({
+        where: [{ guid: body.workshopGuid }, { alias: body.workshopGuid }]
+      });
+      let snapshot;
+      let scenario;
 
-      if (workshop && snapshot) {
-        const entity = { ...body, workshop, snapshot: snapshot };
+      if (body.snapshotGuid) {
+        snapshot = await getRepository(Snapshot).findOne({ guid: body.snapshotGuid });
+      } else if (body.scenarioGuid) {
+        scenario = await getRepository(Scenario).findOne({ guid: body.scenarioGuid });
+      }
+
+      if ((workshop && snapshot) || (workshop && scenario)) {
+        const entity = { ...body, workshop, snapshot, scenario };
+
+        // Prevent any unnecessary values from being set in database
+        // since a response can only belong to one of a snapshot or a scenario
+        if (snapshot === undefined) {
+          delete entity.snapshot;
+        } else if (scenario === undefined) {
+          delete entity.scenario;
+        }
 
         return this.createOne(entity);
       } else {
