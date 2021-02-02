@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { getRepository, In, Repository } from 'typeorm';
 
-import { Snapshot } from '@tamu-gisc/cpa/common/entities';
+import { Snapshot, Workshop } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseService } from '../base/base.service';
 import { ISnapshotsRequestPayload } from './snapshots.controller';
@@ -23,10 +23,18 @@ export class SnapshotsService extends BaseService<Snapshot> {
   }
 
   public async getSnapshotsForWorkshop(workshopGuid: string) {
-    return await this.repo.find({
-      where: {
-        workshops: workshopGuid
-      }
+    const workshop = await getRepository(Workshop).findOne({
+      where: [
+        {
+          guid: workshopGuid
+        },
+        {
+          alias: workshopGuid
+        }
+      ],
+      relations: ['snapshots']
     });
+
+    return workshop.snapshots;
   }
 }

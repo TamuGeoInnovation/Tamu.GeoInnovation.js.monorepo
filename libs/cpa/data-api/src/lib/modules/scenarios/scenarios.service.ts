@@ -22,11 +22,19 @@ export class ScenariosService extends BaseService<Scenario> {
    *
    */
   public async getScenariosForWorkshop(workshopGuid: string) {
-    return this.scenarioRepo.find({
-      where: {
-        workshops: workshopGuid
-      }
+    const workshop = await getRepository(Workshop).findOne({
+      where: [
+        {
+          guid: workshopGuid
+        },
+        {
+          alias: workshopGuid
+        }
+      ],
+      relations: ['scenarios']
     });
+
+    return workshop.scenarios;
   }
 
   public async updateScenario(wGuid: string, sGuid: string) {
