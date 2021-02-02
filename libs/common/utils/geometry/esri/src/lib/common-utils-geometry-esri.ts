@@ -325,6 +325,7 @@ export interface IGraphic {
       wkid: number;
     };
     rings: [[]];
+    type: string;
   };
   symbol: {
     type: string;

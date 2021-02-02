@@ -6,6 +6,7 @@ import { ILayerConfiguration } from '@tamu-gisc/maps/feature/forms';
 
 import { BaseController } from '../base/base.controller';
 import { SnapshotsService } from './snapshots.service';
+import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 @Controller('snapshots')
 export class SnapshotsController extends BaseController<Snapshot> {
@@ -41,5 +42,5 @@ export class SnapshotsController extends BaseController<Snapshot> {
 export interface ISnapshotsRequestPayload extends DeepPartial<Snapshot> {}
 
 export interface ISnapshotsResponse extends Omit<DeepPartial<Snapshot>, 'layers'> {
-  layers: { url: string; info: ILayerConfiguration }[];
+  layers: Array<{ url?: string; graphics?: IGraphic[]; info?: ILayerConfiguration }>;
 }

@@ -16,13 +16,13 @@ import {
 
 import { v4 as guid } from 'uuid';
 
-import { IResponseRequestPayload, IResponseResponse, ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
+import { IResponseRequestPayload, IResponseResponse } from '@tamu-gisc/cpa/data-api';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
-import { WorkshopService, ResponseService } from '@tamu-gisc/cpa/data-access';
+import { WorkshopService, ResponseService, ScenarioService } from '@tamu-gisc/cpa/data-access';
 
-import { ViewerService } from '../../../viewer/services/viewer.service';
+import { TypedSnapshotOrScenario, ViewerService } from '../../../viewer/services/viewer.service';
 
 import esri = __esri;
 
@@ -41,7 +41,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   public snapshot = this.vs.snapshotOrScenario;
   public responses: Observable<IResponseResponse[]>;
   public snapshotHistory = this.vs.snapshotHistory;
-  public snapshotIndex = this.vs.selectionIndex;
+  public selectionIndex = this.vs.selectionIndex;
 
   // Values specific to the participant component.
   public responseIndex: BehaviorSubject<number> = new BehaviorSubject(-1);
@@ -72,7 +72,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private ms: EsriMapService,
     private mp: EsriModuleProviderService,
-    private vs: ViewerService
+    private vs: ViewerService,
+    private sc: ScenarioService
   ) {}
 
   public ngOnInit() {
@@ -88,14 +89,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       this.vs.updateWorkshopGuid(this.route.snapshot.params.guid);
 
       // On snapshot change, reset the workspace
-      this.snapshot
-        .pipe(
-          skip(1),
-          takeUntil(this._$destroy)
-        )
-        .subscribe((res) => {
-          this.resetWorkspace();
-        });
+      this.snapshot.pipe(skip(1), takeUntil(this._$destroy)).subscribe((res) => {
+        this.resetWorkspace();
+      });
 
       // Fetch new responses from server whenever snapshot, response index, or response save signal emits.
       this.responses = merge(this.snapshot, this.responseIndex, this.responseSave).pipe(
@@ -164,11 +160,11 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
     // Use SnapshotHistory observable to determine a snapshot change which requires the addition of new layers
     // and/or removal of old snapshot layers
-    combineLatest([this.snapshotHistory, this.ms.store, from(this.mp.require(['FeatureLayer']))]).subscribe(
-      ([snapshotHistory, instances, [FeatureLayer]]: [
-        ISnapshotsResponse[],
+    combineLatest([this.snapshotHistory, this.ms.store, from(this.mp.require(['FeatureLayer', 'GraphicsLayer']))]).subscribe(
+      ([snapshotHistory, instances, [FeatureLayer, GraphicsLayer]]: [
+        TypedSnapshotOrScenario[],
         MapServiceInstance,
-        [esri.FeatureLayerConstructor]
+        [esri.FeatureLayerConstructor, esri.GraphicsLayerConstructor]
       ]) => {
         // Find any layers associated with the current snapshot and clear them to prepare to add layers from the next snapshot
         const prevSnapshot = snapshotHistory.length > 1 ? snapshotHistory[0] : undefined;
@@ -182,7 +178,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           const prevLayers = prevSnapshot.layers
             .map((l) => {
               return instances.map.layers.find((ml) => {
-                return ml.id === l.info.layerId;
+                // Find layer ID from either a snapshot guid array, or the actual layer object id
+                const layerid = typeof l === 'string' ? l : l.info.layerId;
+
+                return ml.id === layerid;
               });
             })
             .filter((r) => r !== undefined);
@@ -204,20 +203,58 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             zoom: currSnapshot.zoom
           });
 
-          // Create a map of layers from the current snapshot to add to the map.
-          const layers = currSnapshot.layers
-            .map((l) => {
-              return new FeatureLayer({
-                url: l.url,
-                title: l.info.name,
-                id: l.info.layerId,
-                opacity: 1 - parseInt((l.info.drawingInfo.transparency as unknown) as string, 10) / 100,
-                listMode: 'show'
-              });
-            })
-            .reverse();
+          if (currSnapshot.type === 'scenario') {
+            this.getLayerForScenarioGuid(currSnapshot.guid)
+              .then((layer) => {
+                const layers = layer.layers
+                  .map((l) => {
+                    const g = l.graphics.map((g) => {
+                      const geometryType = getGeometryType((g.geometry as unknown) as esri.Geometry);
 
-          instances.map.addMany(layers);
+                      const copy = { ...g };
+                      copy.geometry.type = geometryType;
+
+                      return {
+                        ...g,
+                        symbol: {
+                          type: 'simple-fill',
+                          color: [25, 118, 210, 0.2],
+                          outline: { type: 'simple-line', color: [25, 118, 210, 0.5], width: 2, style: 'solid' },
+                          style: 'solid'
+                        }
+                      };
+                    });
+
+                    return new GraphicsLayer({
+                      title: l.info.name,
+                      id: l.info.layerId,
+                      graphics: g,
+                      listMode: 'show'
+                    });
+                  })
+                  .reverse();
+
+                instances.map.addMany(layers);
+              })
+              .catch((err) => {
+                throw new Error(err);
+              });
+          } else {
+            // Create a map of layers from the current snapshot to add to the map.
+            const layers = currSnapshot.layers
+              .map((l) => {
+                return new FeatureLayer({
+                  url: l.url,
+                  title: l.info.name,
+                  id: l.info.layerId,
+                  opacity: 1 - parseInt((l.info.drawingInfo.transparency as unknown) as string, 10) / 100,
+                  listMode: 'show'
+                });
+              })
+              .reverse();
+
+            instances.map.addMany(layers);
+          }
         }, 0);
       }
     );
@@ -228,6 +265,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this._$formReset.complete();
     this._$destroy.next();
     this._$destroy.complete();
+  }
+
+  public getLayerForScenarioGuid(scenarioGuid: string) {
+    return this.sc.getLayerForScenario(scenarioGuid).toPromise();
   }
 
   public async handleDrawSelection(e: esri.Graphic) {

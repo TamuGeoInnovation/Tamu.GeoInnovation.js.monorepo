@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { getRepository, In, Repository } from 'typeorm';
 
-import { Scenario, Workshop } from '@tamu-gisc/cpa/common/entities';
+import { Scenario, Workshop, Response } from '@tamu-gisc/cpa/common/entities';
+import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseService } from '../base/base.service';
+import { IScenariosResponseResolved } from './scenarios.controller';
 
 @Injectable()
 export class ScenariosService extends BaseService<Scenario> {
@@ -35,5 +37,38 @@ export class ScenariosService extends BaseService<Scenario> {
       scenario.workshop = newWorkshop;
       scenario.save();
     }
+  }
+  // Promise<IScenariosResponse>
+  public async getGeometryLayerForScenario(scenarioGuid: string): Promise<IScenariosResponseResolved> {
+    const scenario = await this.scenarioRepo.findOne({
+      where: {
+        guid: scenarioGuid
+      }
+    });
+
+    const responsesFromLayerGuids = await getRepository(Response).find({
+      where: {
+        guid: In((scenario.layers as unknown) as string[])
+      }
+    });
+
+    const layers = responsesFromLayerGuids.map((r) => {
+      return r.shapes;
+    });
+
+    return {
+      ...scenario,
+      layers: responsesFromLayerGuids.map((r) => {
+        return {
+          graphics: ([r.shapes] as unknown) as IGraphic[],
+          info: {
+            name: r.name,
+            description: r.notes,
+            type: 'graphics',
+            layerId: r.guid
+          }
+        };
+      })
+    };
   }
 }

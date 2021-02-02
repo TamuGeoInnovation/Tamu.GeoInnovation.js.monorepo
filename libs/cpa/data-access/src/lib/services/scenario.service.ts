@@ -41,4 +41,8 @@ export class ScenarioService {
   public delete(guid: string) {
     return this.http.delete(`${this.resource}/${guid}`);
   }
+
+  public getLayerForScenario(guid: string) {
+    return this.http.get<IScenariosResponse>(`${this.resource}/${guid}/layer`);
+  }
 }

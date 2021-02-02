@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Optional, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, filter, take } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, filter } from 'rxjs/operators';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
@@ -260,7 +260,7 @@ export interface ILayerConfiguration {
 
   layerId?: string;
 
-  type?: 'Feature Layer' | 'Graphic Layer';
+  type?: 'feature' | 'graphics';
 
   description?: string;
 

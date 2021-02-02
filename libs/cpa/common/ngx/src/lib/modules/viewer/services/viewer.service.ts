@@ -30,9 +30,9 @@ export class ViewerService {
   /**
    * Selected snapshot and scenario by index
    */
-  public snapshotOrScenario: Observable<ISnapshotsResponse>;
+  public snapshotOrScenario: Observable<TypedSnapshotOrScenario>;
 
-  public snapshotHistory: BehaviorSubject<ISnapshotsResponse[]> = new BehaviorSubject([]);
+  public snapshotHistory: BehaviorSubject<TypedSnapshotOrScenario[]> = new BehaviorSubject([]);
   public selectionIndex: BehaviorSubject<number> = new BehaviorSubject(0);
 
   constructor(
@@ -107,8 +107,8 @@ export class ViewerService {
       })
     );
 
-    this.snapshotOrScenario = combineLatest([this.workshopSnapshots, this.selectionIndex]).pipe(
-      map(([snapshots, index]: [Array<ISnapshotsResponse>, number]) => {
+    this.snapshotOrScenario = combineLatest([this.snapshotsAndScenarios, this.selectionIndex]).pipe(
+      map(([snapshots, index]: [Array<TypedSnapshotOrScenario>, number]) => {
         return snapshots[index];
       }),
       tap((snapshot) => {
@@ -123,7 +123,7 @@ export class ViewerService {
    *
    * This history is used to add/remove layers for snapshots.
    */
-  private addToSnapshotHistory(snapshot: ISnapshotsResponse) {
+  private addToSnapshotHistory(snapshot: TypedSnapshotOrScenario) {
     const prevValue = this.snapshotHistory.getValue();
 
     const newValue = [...prevValue, snapshot].slice(-2);

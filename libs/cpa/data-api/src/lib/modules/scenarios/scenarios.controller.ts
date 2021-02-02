@@ -6,6 +6,7 @@ import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseController } from '../base/base.controller';
 import { ScenariosService } from './scenarios.service';
+import { ILayerConfiguration } from '@tamu-gisc/maps/feature/forms';
 
 @Controller('scenarios')
 export class ScenariosController extends BaseController<Scenario> {
@@ -23,6 +24,11 @@ export class ScenariosController extends BaseController<Scenario> {
     return this.service.getMany({
       relations: ['workshop']
     });
+  }
+
+  @Get(':guid/layer')
+  public async getLayerForScenario(@Param() params: { guid: string }) {
+    return this.service.getGeometryLayerForScenario(params.guid);
   }
 
   @Get(':guid')
@@ -60,7 +66,9 @@ export class ScenariosController extends BaseController<Scenario> {
 export interface IScenariosRequestPayload extends DeepPartial<Scenario> {}
 
 export interface IScenariosResponse extends Omit<DeepPartial<Scenario>, 'layers'> {
-  // layers: { url: string; info: ILayerConfiguration }[];
-  // layers: IGraphic[];
   layers: string[];
+}
+
+export interface IScenariosResponseResolved extends Omit<DeepPartial<Scenario>, 'layers'> {
+  layers: Array<{ url?: string; graphics?: Array<IGraphic>; info?: ILayerConfiguration }>;
 }
