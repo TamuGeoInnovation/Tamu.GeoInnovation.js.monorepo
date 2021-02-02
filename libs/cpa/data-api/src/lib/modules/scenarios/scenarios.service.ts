@@ -35,7 +35,7 @@ export class ScenariosService extends BaseService<Scenario> {
 
     if (scenario) {
       scenario.workshop = newWorkshop;
-      scenario.save();
+      return scenario.save();
     }
   }
   // Promise<IScenariosResponse>

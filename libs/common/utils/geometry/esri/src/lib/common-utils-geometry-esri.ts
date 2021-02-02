@@ -1,4 +1,4 @@
-import { Observable, from } from 'rxjs';
+import { Observable, from, ReplaySubject } from 'rxjs';
 
 import { Point } from '@tamu-gisc/common/types';
 
@@ -166,6 +166,8 @@ export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): Autocast
   }
 }
 export class PolygonMaker {
+  public loaded: ReplaySubject<boolean> = new ReplaySubject();
+
   private modules: {
     graphic: esri.GraphicConstructor;
     polygon: esri.PolygonConstructor;
@@ -186,6 +188,8 @@ export class PolygonMaker {
           this.modules.polygon = p;
           this.modules.simpleFillSymbol = sfs;
           this.modules.simpleLineSymbol = sls;
+
+          this.loaded.next(true);
         }
       )
       .catch((err) => {
@@ -193,7 +197,7 @@ export class PolygonMaker {
       });
   }
 
-  public async makePolygon(shape: IGraphic, color: number[] = [250, 128, 114]): Promise<esri.Graphic> {
+  public makePolygon(shape: IGraphic, color: number[] = [250, 128, 114]): esri.Graphic {
     return new this.modules.graphic({
       geometry: new this.modules.polygon({
         // we use IGraphic instead of esri.Graphic because geometry.rings does not exist on type esri.Graphic
@@ -213,7 +217,7 @@ export class PolygonMaker {
     });
   }
 
-  public async makeArrayOfPolygons(shapes: IGraphic[], color: number[] = [114, 168, 250]): Promise<Array<esri.Graphic>> {
+  public makeArrayOfPolygons(shapes: IGraphic[], color: number[] = [114, 168, 250]): Array<esri.Graphic> {
     const graphics = shapes.map((graphicProperties: IGraphic) => {
       const graphic = new this.modules.graphic({
         geometry: new this.modules.polygon({

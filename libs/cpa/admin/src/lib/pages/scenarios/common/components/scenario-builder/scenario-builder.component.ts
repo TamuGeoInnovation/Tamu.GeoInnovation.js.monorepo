@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Observable } from 'rxjs';
-import { map, shareReplay, tap, withLatestFrom } from 'rxjs/operators';
+import { forkJoin, from, Observable } from 'rxjs';
+import { map, pluck, shareReplay, take, tap, withLatestFrom } from 'rxjs/operators';
 
-import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService, MapConfig, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { ResponseService, ScenarioService, WorkshopService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { IResponseResponse, IScenariosResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IResponseResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 import { IGraphic, PolygonMaker } from '@tamu-gisc/common/utils/geometry/esri';
 
 import esri = __esri;
@@ -32,7 +32,6 @@ export class ScenarioBuilderComponent implements OnInit {
   public responses: Observable<IResponseResponse[]>;
   public workshops: Observable<IWorkshopRequestPayload[]>;
   public selectedWorkshop: string;
-  public existingScenario: Observable<IScenariosResponse>;
 
   public polygonMaker: PolygonMaker;
 
@@ -65,23 +64,64 @@ export class ScenarioBuilderComponent implements OnInit {
 
   public ngOnInit() {
     this.isExisting = this.route.params.pipe(
-      map((params) => Boolean(params['guid'])),
+      map((params) => {
+        return params.guid !== undefined;
+      }),
       shareReplay(1)
     );
 
-    this.mapService.store.subscribe((instances) => {
-      this.view = instances.view as esri.MapView;
-      this.map = instances.map;
-      this.mp.require(['GraphicsLayer']).then(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
-        this.graphicPreview = new GraphicsLayer();
-        this.scenarioPreview = new GraphicsLayer();
-        this.map.add(this.graphicPreview);
-        this.map.add(this.scenarioPreview);
+    // If we are in /details, populate the form
+    this.route.params.pipe(pluck('guid')).subscribe((guid) => {
+      if (guid) {
+        this.scenario.getOne(guid).subscribe((r) => {
+          this.builderForm.patchValue(r);
 
-        this.existingScenario.subscribe((r) => {
-          console.log('Look, we have r again');
+          // Check to see we have workshops
+          if (r.workshop) {
+            this.selectedWorkshop = r.workshop?.guid;
+            this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
+
+            this.builderForm.controls.layers.valueChanges
+              .pipe(withLatestFrom(this.responses))
+              .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
+                this.scenarioPreview.removeAll();
+                this.addResponseGraphics(guids, responses);
+              });
+
+            forkJoin([this.mapService.store.pipe(take(1)), from(this.mp.require(['GraphicsLayer']))]).subscribe(
+              ([instance, [GraphicsLayer]]: [MapServiceInstance, [esri.GraphicsLayerConstructor]]) => {
+                this.view = instance.view as esri.MapView;
+                this.map = instance.map;
+                this.graphicPreview = new GraphicsLayer();
+                this.scenarioPreview = new GraphicsLayer();
+
+                this.map.add(this.graphicPreview);
+                this.map.add(this.scenarioPreview);
+
+                if (r.layers) {
+                  if (r.workshop.responses) {
+                    // For each workshop, look through it's responses and see if any match those found inside r.layers
+                    // If we have a match, we know this scenario is based off of this workshop
+                    const matched = r.workshop.responses.filter((response) => r.layers.includes(response.guid));
+
+                    if (matched.length !== 0) {
+                      const shapes = matched.map((response) => response.shapes);
+
+                      this.polygonMaker.loaded.pipe(take(1)).subscribe((res) => {
+                        const graphics = this.polygonMaker.makeArrayOfPolygons(shapes as IGraphic[]);
+
+                        this.scenarioPreview.addMany(graphics);
+                      });
+                    }
+                  }
+                }
+              }
+            );
+          } else {
+            console.warn('No workshops');
+          }
         });
-      });
+      }
     });
 
     // Instantiate builder form
@@ -93,51 +133,15 @@ export class ScenarioBuilderComponent implements OnInit {
       layers: [[]]
     });
 
-    // If we are in /details, populate the form
-    if (this.route.snapshot.params.guid) {
-      this.existingScenario = this.scenario.getOne(this.route.snapshot.params.guid).pipe(shareReplay(1));
-
-      this.existingScenario.subscribe(async (r) => {
-        this.builderForm.patchValue(r);
-        // Check to see we have workshops
-        if (r.workshop) {
-          this.selectedWorkshop = r.workshop?.guid;
-          //   this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
-
-          //   this.builderForm.controls.layers.valueChanges
-          //     .pipe(withLatestFrom(this.responses))
-          //     .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
-          //       this.scenarioPreview.removeAll();
-          //       this.addResponseGraphics(guids, responses);
-          //     });
-
-          //   if (r.layers) {
-          //     if (r.workshop.responses) {
-          //       // For each workshop, look through it's responses and see if any match those found inside r.layers
-          //       // If we have a match, we know this scenario is based off of this workshop
-          //       // const matched = r.workshop.responses.filter((response) => r.layers.includes(response.guid));
-          //       // if (matched.length !== 0) {
-          //       //   const shapes = matched.map((response) => response.shapes);
-          //       //   const graphics = await this.polygonMaker.makeArrayOfPolygons(shapes as IGraphic[]);
-          //       //   this.scenarioPreview.addMany(graphics);
-          //       // }
-          //     }
-          //   }
-        } else {
-          console.warn('No workshops');
-        }
-      });
-    }
-
     // Fetch all Workshops
     this.workshops = this.workshop.getWorkshops().pipe(shareReplay(1));
   }
 
-  public async loadPreviewResponseLayer(response: IResponseResponse) {
+  public loadPreviewResponseLayer(response: IResponseResponse) {
     // Remove existing Response preview graphic
     this.graphicPreview.removeAll();
 
-    const graphic = await this.polygonMaker.makePolygon(response.shapes as IGraphic);
+    const graphic = this.polygonMaker.makePolygon(response.shapes as IGraphic);
     this.graphicPreview.add(graphic);
   }
 
@@ -227,9 +231,10 @@ export class ScenarioBuilderComponent implements OnInit {
     //   })
     // );
 
-    const graphics = await this.polygonMaker.makeArrayOfPolygons(
+    const graphics = this.polygonMaker.makeArrayOfPolygons(
       selectedResponses.map((response) => response.shapes) as IGraphic[]
     );
+
     this.scenarioPreview.addMany(graphics);
   }
 }

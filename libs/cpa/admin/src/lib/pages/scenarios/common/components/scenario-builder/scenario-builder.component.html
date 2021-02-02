@@ -32,7 +32,7 @@
     </div>
   </div>
 
-  <div class="map-configuration-container" *ngIf="responses">
+  <div class="map-configuration-container" *ngIf="responses && (isExisting | async)">
     <div class="map-configuration">
       <div class="form-section">
         <div class="form-section-toolbar">
