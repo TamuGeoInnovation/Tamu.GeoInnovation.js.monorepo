@@ -166,8 +166,6 @@ export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): Autocast
   }
 }
 export class PolygonMaker {
-  public isReady: Observable<any>;
-
   private modules: {
     graphic: esri.GraphicConstructor;
     polygon: esri.PolygonConstructor;

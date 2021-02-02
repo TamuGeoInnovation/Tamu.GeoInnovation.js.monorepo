@@ -8,7 +8,7 @@ import { map, shareReplay, tap, withLatestFrom } from 'rxjs/operators';
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponseService, ScenarioService, WorkshopService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { IResponseResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IResponseResponse, IScenariosResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 import { IGraphic, PolygonMaker } from '@tamu-gisc/common/utils/geometry/esri';
 
 import esri = __esri;
@@ -32,6 +32,7 @@ export class ScenarioBuilderComponent implements OnInit {
   public responses: Observable<IResponseResponse[]>;
   public workshops: Observable<IWorkshopRequestPayload[]>;
   public selectedWorkshop: string;
+  public existingScenario: Observable<IScenariosResponse>;
 
   public polygonMaker: PolygonMaker;
 
@@ -76,6 +77,10 @@ export class ScenarioBuilderComponent implements OnInit {
         this.scenarioPreview = new GraphicsLayer();
         this.map.add(this.graphicPreview);
         this.map.add(this.scenarioPreview);
+
+        this.existingScenario.subscribe((r) => {
+          console.log('Look, we have r again');
+        });
       });
     });
 
@@ -90,39 +95,34 @@ export class ScenarioBuilderComponent implements OnInit {
 
     // If we are in /details, populate the form
     if (this.route.snapshot.params.guid) {
-      this.scenario.getOne(this.route.snapshot.params.guid).subscribe(async (r) => {
-        this.builderForm.patchValue(r);
+      this.existingScenario = this.scenario.getOne(this.route.snapshot.params.guid).pipe(shareReplay(1));
 
+      this.existingScenario.subscribe(async (r) => {
+        this.builderForm.patchValue(r);
         // Check to see we have workshops
         if (r.workshop) {
           this.selectedWorkshop = r.workshop?.guid;
-          this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
+          //   this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
 
-          this.builderForm.controls.layers.valueChanges
-            .pipe(withLatestFrom(this.responses))
-            .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
-              this.scenarioPreview.removeAll();
-              this.addResponseGraphics(guids, responses);
-            });
+          //   this.builderForm.controls.layers.valueChanges
+          //     .pipe(withLatestFrom(this.responses))
+          //     .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
+          //       this.scenarioPreview.removeAll();
+          //       this.addResponseGraphics(guids, responses);
+          //     });
 
-          if (r.layers) {
-            if (r.workshop.responses) {
-              // For each workshop, look through it's responses and see if any match those found inside r.layers
-              // If we have a match, we know this scenario is based off of this workshop
-              const matched = r.workshop.responses.filter((response) => r.layers.includes(response.guid));
-              if (matched.length !== 0) {
-                // this.polygonMaker.isReady().subscribe((isReady) => {
-                //   console.log('polygonMaker is ready?', isReady);
-                // });
-                // const shapes = matched.map((response) => response.shapes);
-                // const graphics = await this.polygonMaker.makeArrayOfPolygons(shapes as IGraphic[]);
-                // this.scenarioPreview.addMany(graphics);
-                // this.polygonMaker.makeArrayOfPolygons(shapes as IGraphic[]).then((graphics) => {
-                //   this.scenarioPreview.addMany(graphics);
-                // });
-              }
-            }
-          }
+          //   if (r.layers) {
+          //     if (r.workshop.responses) {
+          //       // For each workshop, look through it's responses and see if any match those found inside r.layers
+          //       // If we have a match, we know this scenario is based off of this workshop
+          //       // const matched = r.workshop.responses.filter((response) => r.layers.includes(response.guid));
+          //       // if (matched.length !== 0) {
+          //       //   const shapes = matched.map((response) => response.shapes);
+          //       //   const graphics = await this.polygonMaker.makeArrayOfPolygons(shapes as IGraphic[]);
+          //       //   this.scenarioPreview.addMany(graphics);
+          //       // }
+          //     }
+          //   }
         } else {
           console.warn('No workshops');
         }
