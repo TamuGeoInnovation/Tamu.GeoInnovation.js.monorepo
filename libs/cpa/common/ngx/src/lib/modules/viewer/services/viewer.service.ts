@@ -3,7 +3,12 @@ import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject, combineLatest, forkJoin, iif, interval, NEVER, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
 
-import { IScenariosResponse, ISnapshotsResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import {
+  IScenariosResponse,
+  IScenariosResponseResolved,
+  ISnapshotsResponse,
+  IWorkshopRequestPayload
+} from '@tamu-gisc/cpa/data-api';
 import { ResponseService, WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/data-access';
 
 @Injectable({
@@ -144,6 +149,6 @@ export class ViewerService {
   }
 }
 
-type ISnapshotOrScenario = ISnapshotsResponse | IScenariosResponse;
+type ISnapshotOrScenario = ISnapshotsResponse | IScenariosResponseResolved;
 
 export type TypedSnapshotOrScenario = ISnapshotOrScenario & { type: 'scenario' | 'snapshot' };
