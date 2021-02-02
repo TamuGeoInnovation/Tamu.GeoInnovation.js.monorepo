@@ -60,7 +60,7 @@
         <tamu-gisc-select [data]="scenarioList | async" placeholder="Select a scenario" [displayTemplate]="'title'" (changed)="submitWorkshopScenario($event)"></tamu-gisc-select>
       </div>
 
-      <div class="form-collection column" *ngIf="form.controls?.snapshots.value.length > 0">
+      <div class="form-collection column" *ngIf="form.controls?.scenarios.value.length > 0">
         <div class="record-item" *ngFor="let scenario of form.controls.scenarios.value">
           <div class="record-title">{{ scenario.title }}</div>
           <div class="record-actions material-icons-container">

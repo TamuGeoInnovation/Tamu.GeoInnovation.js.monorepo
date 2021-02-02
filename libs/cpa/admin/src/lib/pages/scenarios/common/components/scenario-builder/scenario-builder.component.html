@@ -1,5 +1,5 @@
 <form [formGroup]="builderForm" (ngSubmit)="createScenario()">
-  <div class="form-section" *ngIf="isExisting | async">
+  <div class="form-section">
     <div class="form-section-toolbar">
       <div class="form-section-name">
         <p>What workshop would you like to base this scenario on?</p>
@@ -8,9 +8,8 @@
 
     <div class="form-section-body">
       <div class="form-collection row">
-        <tamu-gisc-select [data]="workshops | async" placeholder="Select a workshop" [displayTemplate]="'title'" (changed)="setWorkshopScenario($event)"></tamu-gisc-select>
+        <tamu-gisc-select [value]="selectedWorkshop" [valueTemplate]="'guid'" [data]="workshops | async" [displayTemplate]="'title'" (changed)="setWorkshopScenario($event)"></tamu-gisc-select>
       </div>
-
       <p *ngIf="(workshops | async)?.length === 0">Currently there are no workshops</p>
     </div>
   </div>
@@ -66,8 +65,8 @@
           </div>
         </div>
 
-        <tamu-gisc-checkbox-group id="response-list" class="form-section-body" formControlName="layerGuids" [referenceId]="'guid'">
-          <tamu-gisc-checkbox *ngFor="let response of (responses | async)" (mouseover)="loadPreviewResponseLayer(response)" (mouseleave)="clearPreviewLayer()" [label]="response.name + ' ' +'(' + response.snapshot.title + ')'" [data]="response"></tamu-gisc-checkbox>
+        <tamu-gisc-checkbox-group id="response-list" class="form-section-body" formControlName="layers" [referenceId]="'guid'">
+          <tamu-gisc-checkbox *ngFor="let response of (responses | async)" (mouseover)="loadPreviewResponseLayer(response)" (mouseleave)="this.graphicPreview.removeAll()" [label]="response.name + ' ' +'(' + response.snapshot.title + ')'" [data]="response"></tamu-gisc-checkbox>
         </tamu-gisc-checkbox-group>
 
         <p *ngIf="(responses | async)?.length === 0">There are no responses for this workshop.</p>

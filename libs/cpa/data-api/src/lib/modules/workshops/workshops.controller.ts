@@ -73,7 +73,7 @@ export class WorkshopsController extends BaseController<Workshop> {
    */
   @Get('')
   public getAll() {
-    return this.service.getMany({ relations: ['snapshots'] });
+    return this.service.getMany({ relations: ['snapshots', 'scenarios'] });
   }
 }
 

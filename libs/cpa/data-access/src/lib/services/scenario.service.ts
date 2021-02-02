@@ -34,6 +34,10 @@ export class ScenarioService {
     return this.http.patch(`${this.resource}/${guid}`, scenario);
   }
 
+  public updateWorkshop(wGuid: string, sGuid: string) {
+    return this.http.post(`${this.resource}/workshop`, { workshopGuid: wGuid, scenarioGuid: sGuid });
+  }
+
   public delete(guid: string) {
     return this.http.delete(`${this.resource}/${guid}`);
   }

@@ -1,3 +1,5 @@
+import { Observable, from } from 'rxjs';
+
 import { Point } from '@tamu-gisc/common/types';
 
 import { loadModules } from 'esri-loader';
@@ -164,14 +166,16 @@ export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): Autocast
   }
 }
 export class PolygonMaker {
-  private static modules: {
+  public isReady: Observable<any>;
+
+  private modules: {
     graphic: esri.GraphicConstructor;
     polygon: esri.PolygonConstructor;
     simpleFillSymbol: esri.SimpleFillSymbolConstructor;
     simpleLineSymbol: esri.SimpleLineSymbolConstructor;
   } = { graphic: undefined, polygon: undefined, simpleFillSymbol: undefined, simpleLineSymbol: undefined };
 
-  public static async build() {
+  constructor() {
     loadModules(['esri/Graphic', 'esri/geometry/Polygon', 'esri/symbols/SimpleFillSymbol', 'esri/symbols/SimpleLineSymbol'])
       .then(
         ([g, p, sfs, sls]: [
@@ -191,7 +195,7 @@ export class PolygonMaker {
       });
   }
 
-  public static async makePolygon(shape: IGraphic, color: number[] = [250, 128, 114]): Promise<esri.Graphic> {
+  public async makePolygon(shape: IGraphic, color: number[] = [250, 128, 114]): Promise<esri.Graphic> {
     return new this.modules.graphic({
       geometry: new this.modules.polygon({
         // we use IGraphic instead of esri.Graphic because geometry.rings does not exist on type esri.Graphic
@@ -211,10 +215,7 @@ export class PolygonMaker {
     });
   }
 
-  public static async makeArrayOfPolygons(
-    shapes: IGraphic[],
-    color: number[] = [114, 168, 250]
-  ): Promise<Array<esri.Graphic>> {
+  public async makeArrayOfPolygons(shapes: IGraphic[], color: number[] = [114, 168, 250]): Promise<Array<esri.Graphic>> {
     const graphics = shapes.map((graphicProperties: IGraphic) => {
       const graphic = new this.modules.graphic({
         geometry: new this.modules.polygon({

@@ -57,8 +57,11 @@ export class Workshop extends CPABaseEntity {
   @JoinTable()
   public snapshots: Snapshot[];
 
-  @ManyToMany((type) => Scenario, (s) => s.workshops)
-  @JoinTable()
+  // @ManyToMany((type) => Scenario, (s) => s.workshops)
+  // @JoinTable()
+  // public scenarios: Scenario[];
+
+  @OneToMany((type) => Scenario, (s) => s.workshop)
   public scenarios: Scenario[];
 
   @OneToMany((type) => Response, (r) => r.workshop)
@@ -112,8 +115,11 @@ export class Scenario extends CPABaseEntity {
   @Column({ type: 'simple-json', nullable: true })
   public layers: string;
 
-  @ManyToMany((type) => Workshop, (w) => w.scenarios)
-  public workshops: Workshop[];
+  // @ManyToMany((type) => Workshop, (w) => w.scenarios)
+  // public workshops: Workshop[];
+
+  @ManyToOne((type) => Workshop, (w) => w.scenarios)
+  public workshop: Workshop;
 
   @OneToMany((type) => Response, (r) => r.scenario)
   public responses: Response[];

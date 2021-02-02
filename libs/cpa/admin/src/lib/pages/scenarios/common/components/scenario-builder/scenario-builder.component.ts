@@ -31,7 +31,9 @@ export class ScenarioBuilderComponent implements OnInit {
   public isExisting: Observable<boolean>;
   public responses: Observable<IResponseResponse[]>;
   public workshops: Observable<IWorkshopRequestPayload[]>;
-  public selectedWorkshop: IWorkshopRequestPayload;
+  public selectedWorkshop: string;
+
+  public polygonMaker: PolygonMaker;
 
   public config: MapConfig = {
     basemap: {
@@ -56,7 +58,9 @@ export class ScenarioBuilderComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private ns: NotificationService
-  ) {}
+  ) {
+    this.polygonMaker = new PolygonMaker();
+  }
 
   public ngOnInit() {
     this.isExisting = this.route.params.pipe(
@@ -81,17 +85,47 @@ export class ScenarioBuilderComponent implements OnInit {
       description: ['', Validators.required],
       mapCenter: [''],
       zoom: [''],
-      layers: [[]],
-      layerGuids: [[]]
+      layers: [[]]
     });
-
-    // Setup the PolygonMaker
-    PolygonMaker.build();
 
     // If we are in /details, populate the form
     if (this.route.snapshot.params.guid) {
-      this.scenario.getOne(this.route.snapshot.params.guid).subscribe((r) => {
+      this.scenario.getOne(this.route.snapshot.params.guid).subscribe(async (r) => {
         this.builderForm.patchValue(r);
+
+        // Check to see we have workshops
+        if (r.workshop) {
+          this.selectedWorkshop = r.workshop?.guid;
+          this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
+
+          this.builderForm.controls.layers.valueChanges
+            .pipe(withLatestFrom(this.responses))
+            .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
+              this.scenarioPreview.removeAll();
+              this.addResponseGraphics(guids, responses);
+            });
+
+          if (r.layers) {
+            if (r.workshop.responses) {
+              // For each workshop, look through it's responses and see if any match those found inside r.layers
+              // If we have a match, we know this scenario is based off of this workshop
+              const matched = r.workshop.responses.filter((response) => r.layers.includes(response.guid));
+              if (matched.length !== 0) {
+                this.polygonMaker.isReady().subscribe((isReady) => {
+                  console.log('polygonMaker is ready?', isReady);
+                });
+                // const shapes = matched.map((response) => response.shapes);
+                // const graphics = await this.polygonMaker.makeArrayOfPolygons(shapes as IGraphic[]);
+                // this.scenarioPreview.addMany(graphics);
+                // this.polygonMaker.makeArrayOfPolygons(shapes as IGraphic[]).then((graphics) => {
+                //   this.scenarioPreview.addMany(graphics);
+                // });
+              }
+            }
+          }
+        } else {
+          console.warn('No workshops');
+        }
       });
     }
 
@@ -103,21 +137,18 @@ export class ScenarioBuilderComponent implements OnInit {
     // Remove existing Response preview graphic
     this.graphicPreview.removeAll();
 
-    const graphic = await PolygonMaker.makePolygon(response.shapes as IGraphic);
+    const graphic = await this.polygonMaker.makePolygon(response.shapes as IGraphic);
     this.graphicPreview.add(graphic);
   }
 
   public createScenario() {
-    const rawValue = this.builderForm.getRawValue();
-    const value = {
-      title: rawValue.title,
-      description: rawValue.description,
-      mapCenter: rawValue.mapCenter,
-      zoom: rawValue.zoom,
-      layers: rawValue.layerGuids
-    };
-    // console.log('createScenario', value);
+    const value = this.builderForm.getRawValue();
+
     if (this.route.snapshot.params.guid) {
+      this.scenario.updateWorkshop(this.selectedWorkshop, this.route.snapshot.params.guid).subscribe((addScenarioStatus) => {
+        console.log(addScenarioStatus);
+      });
+
       this.scenario
         .update(this.route.snapshot.params.guid, value)
         .pipe(
@@ -129,7 +160,6 @@ export class ScenarioBuilderComponent implements OnInit {
         .subscribe((updateStatus) => {
           // Re-enable the form
           this.builderForm.enable();
-
           this.ns.toast({
             message: 'Scenario was updated successfully.',
             id: 'scenario-update',
@@ -139,6 +169,10 @@ export class ScenarioBuilderComponent implements OnInit {
     } else {
       this.scenario.create(value).subscribe((res) => {
         this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
+
+        this.workshop.addScenario(this.selectedWorkshop, res.guid).subscribe((addScenarioStatus) => {
+          console.log(addScenarioStatus);
+        });
 
         this.ns.toast({
           message: 'Scenario was created successfully.',
@@ -150,17 +184,17 @@ export class ScenarioBuilderComponent implements OnInit {
     }
   }
 
-  public setWorkshopScenario(workshop: IWorkshopRequestPayload) {
+  public setWorkshopScenario(workshop: string) {
     // Workshop can be undefined
     if (workshop) {
       this.selectedWorkshop = workshop;
-      this.responses = this.response.getResponsesForWorkshop(workshop.guid).pipe(shareReplay());
+      this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
 
-      this.builderForm.controls.layerGuids.valueChanges
-        .pipe(withLatestFrom(this.responses))
-        .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
-          this.addResponseGraphics(guids, responses);
-        });
+      // this.builderForm.controls.layers.valueChanges
+      //   .pipe(withLatestFrom(this.responses))
+      //   .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
+      //     this.addResponseGraphics(guids, responses);
+      //   });
     }
   }
 
@@ -187,13 +221,13 @@ export class ScenarioBuilderComponent implements OnInit {
     const selectedResponses = responses.filter((currentResponse) => guids.includes(currentResponse.guid));
 
     // Add these responses to the form for submission
-    this.builderForm.controls.layers.setValue(
-      selectedResponses.map((value) => {
-        return value.shapes;
-      })
-    );
+    // this.builderForm.controls.layers.setValue(
+    //   selectedResponses.map((value) => {
+    //     return value.shapes;
+    //   })
+    // );
 
-    const graphics = await PolygonMaker.makeArrayOfPolygons(
+    const graphics = await this.polygonMaker.makeArrayOfPolygons(
       selectedResponses.map((response) => response.shapes) as IGraphic[]
     );
     this.scenarioPreview.addMany(graphics);
