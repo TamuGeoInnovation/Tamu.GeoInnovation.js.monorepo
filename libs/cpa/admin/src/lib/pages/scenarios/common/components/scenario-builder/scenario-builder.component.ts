@@ -111,9 +111,9 @@ export class ScenarioBuilderComponent implements OnInit {
               // If we have a match, we know this scenario is based off of this workshop
               const matched = r.workshop.responses.filter((response) => r.layers.includes(response.guid));
               if (matched.length !== 0) {
-                this.polygonMaker.isReady().subscribe((isReady) => {
-                  console.log('polygonMaker is ready?', isReady);
-                });
+                // this.polygonMaker.isReady().subscribe((isReady) => {
+                //   console.log('polygonMaker is ready?', isReady);
+                // });
                 // const shapes = matched.map((response) => response.shapes);
                 // const graphics = await this.polygonMaker.makeArrayOfPolygons(shapes as IGraphic[]);
                 // this.scenarioPreview.addMany(graphics);
