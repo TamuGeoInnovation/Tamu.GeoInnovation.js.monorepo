@@ -195,6 +195,10 @@ export class EsriModuleProviderService {
     {
       class: 'esri/geometry/Circle',
       name: 'Circle'
+    },
+    {
+      class: 'esri/symbols/Symbol',
+      name: 'Symbol'
     }
   ];
 

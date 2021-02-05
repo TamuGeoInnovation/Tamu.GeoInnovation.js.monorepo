@@ -18,10 +18,6 @@ export class ViewerService {
   private _workshopGuid: BehaviorSubject<string> = new BehaviorSubject(undefined);
   public workshopGuid: Observable<string> = this._workshopGuid.asObservable();
 
-  // TODO: This might not be necessary. Commenting out for now, delete later when sure.
-  // private _snapshotGuid: BehaviorSubject<string> = new BehaviorSubject(undefined);
-  // public snapshotGuid: Observable<string> = this._snapshotGuid.asObservable();
-
   public workshop: Observable<IWorkshopRequestPayload>;
 
   public workshopSnapshots: Observable<Array<ISnapshotsResponse>>;
@@ -53,11 +49,6 @@ export class ViewerService {
   public updateWorkshopGuid(guid: string) {
     this._workshopGuid.next(guid);
   }
-
-  // TODO: This might not be necessary. Commenting for now, deleting when certain.
-  // public updateSnapshotGuid(guid: string) {
-  //   this._snapshotGuid.next(guid);
-  // }
 
   public updateSelectionIndex(index: number) {
     this.selectionIndex.next(index);

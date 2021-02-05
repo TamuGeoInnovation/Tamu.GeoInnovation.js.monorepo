@@ -18,7 +18,6 @@ import { v4 as guid } from 'uuid';
 
 import { IResponseRequestPayload, IResponseResponse } from '@tamu-gisc/cpa/data-api';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
-import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
 import { WorkshopService, ResponseService, ScenarioService } from '@tamu-gisc/cpa/data-access';
 
@@ -160,11 +159,15 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
     // Use SnapshotHistory observable to determine a snapshot change which requires the addition of new layers
     // and/or removal of old snapshot layers
-    combineLatest([this.snapshotHistory, this.ms.store, from(this.mp.require(['FeatureLayer', 'GraphicsLayer']))]).subscribe(
-      ([snapshotHistory, instances, [FeatureLayer, GraphicsLayer]]: [
+    combineLatest([
+      this.snapshotHistory,
+      this.ms.store,
+      from(this.mp.require(['FeatureLayer', 'GraphicsLayer', 'Graphic']))
+    ]).subscribe(
+      ([snapshotHistory, instances, [FeatureLayer, GraphicsLayer, Graphic]]: [
         TypedSnapshotOrScenario[],
         MapServiceInstance,
-        [esri.FeatureLayerConstructor, esri.GraphicsLayerConstructor]
+        [esri.FeatureLayerConstructor, esri.GraphicsLayerConstructor, esri.GraphicConstructor]
       ]) => {
         // Find any layers associated with the current snapshot and clear them to prepare to add layers from the next snapshot
         const prevSnapshot = snapshotHistory.length > 1 ? snapshotHistory[0] : undefined;
@@ -209,20 +212,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
                 const layers = layer.layers
                   .map((l) => {
                     const g = l.graphics.map((g) => {
-                      const geometryType = getGeometryType((g.geometry as unknown) as esri.Geometry);
-
-                      const copy = { ...g };
-                      copy.geometry.type = geometryType;
-
-                      return {
-                        ...g,
-                        symbol: {
-                          type: 'simple-fill',
-                          color: [25, 118, 210, 0.2],
-                          outline: { type: 'simple-line', color: [25, 118, 210, 0.5], width: 2, style: 'solid' },
-                          style: 'solid'
-                        }
-                      };
+                      return Graphic.fromJSON(g);
                     });
 
                     return new GraphicsLayer({
@@ -271,12 +261,15 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     return this.sc.getLayerForScenario(scenarioGuid).toPromise();
   }
 
-  public async handleDrawSelection(e: esri.Graphic) {
-    if (e.geometry) {
+  public async handleDrawSelection(e: Array<esri.Graphic>) {
+    // Test if all drawn features have geometry
+    const allHaveGeometry = e.every((g) => g.geometry !== undefined);
+
+    if (e.length > 0 && allHaveGeometry) {
       this.form.controls.drawn.setValue(e);
     } else {
       this.selected.next([]);
-      this.form.controls.drawn.setValue(e);
+      this.form.controls.drawn.setValue(undefined);
     }
   }
 
@@ -329,28 +322,25 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       this.initializeParticipant();
       this.responseIndex.next(-1);
     } else {
-      this.drawComponent.reset();
-      // Create an auto-castable graphic.
-      // The cloned graphic does not have a geometry type so without it, the arcgis api will
-      // error out.
-      const autoCastable = {
-        geometry: {
-          ...submission.shapes.geometry,
-          type: getGeometryType(submission.shapes.geometry)
-        }
-      } as esri.Graphic;
+      this.mp.require(['Graphic', 'Symbol', 'Geometry']).then(([Graphic]: [esri.GraphicConstructor]) => {
+        this.drawComponent.reset();
+        // Create an auto-castable graphic.
+        const graphics = submission.shapes.map((s) => {
+          return Graphic.fromJSON(s);
+        });
 
-      // Set/Overwrite form values
-      this.form.patchValue({
-        name: submission.name,
-        notes: submission.notes
+        // Set/Overwrite form values
+        this.form.patchValue({
+          name: submission.name,
+          notes: submission.notes
+        });
+
+        // Draws submission graphics to the draw component target layer.
+        this.drawComponent.draw(graphics);
+
+        // Set the component participant state.
+        this.initializeParticipant(submission.guid);
       });
-
-      // Draws submission graphics to the draw component target layer.
-      this.drawComponent.draw([autoCastable]);
-
-      // Set the component participant state.
-      this.initializeParticipant(submission.guid);
     }
   }
 
@@ -359,7 +349,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    */
   private updateOrCreateSubmission() {
     forkJoin([this.snapshot.pipe(take(1)), this.responses.pipe(take(1))]).subscribe(([snapshot, responses]) => {
-      const parsed = (this.form.controls.drawn.value as esri.Graphic).toJSON();
+      const parsed = (this.form.controls.drawn.value as Array<esri.Graphic>).map((graphic) => {
+        return graphic.toJSON();
+      });
 
       const submission: IResponseRequestPayload = {
         guid: this.participantGuid,
@@ -400,5 +392,5 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 }
 
 interface IParticipantSubmission extends Omit<IResponseRequestPayload, 'shapes'> {
-  shapes: esri.Graphic;
+  shapes: esri.Graphic[];
 }

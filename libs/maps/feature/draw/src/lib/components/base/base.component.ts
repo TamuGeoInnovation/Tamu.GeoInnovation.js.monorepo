@@ -30,10 +30,11 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
    * will emit individual graphics for each feature.
    *
    * If `true` is provided, the component is limited to exporting only a single type of geometry,
-   * due to the single-geometry type limitation per graphic.
+   * due to the single-geometry type limitation per graphic. Use when the desired output is a SINGLE
+   * graphic with multiple polygons/lines/points.
    */
   @Input()
-  public collapseGraphics: false;
+  public collapseGraphics = false;
 
   // Update group/tools default rendering states
 
@@ -269,7 +270,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
           this.export.emit(cloned);
         } else {
           console.warn(
-            `Drawn feature condensation is set to ${this.collapseGraphics}. Multiple geometry types were identified. Will not emit geometry.`
+            `Drawn feature collapsing is set to ${this.collapseGraphics}. Multiple geometry types were identified. Will not emit geometry.`
           );
         }
       } else {
@@ -286,7 +287,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
    * Emits a 'create' event.
    */
   public draw(graphics: esri.Graphic[]) {
-    this.model.layer.addMany(this.applySymbol(graphics));
+    this.model.layer.addMany(graphics);
     this.model.emit('create', {
       type: 'create',
       state: 'complete',
@@ -305,43 +306,6 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
       graphics: this.model.layer.graphics,
       type: 'delete'
     });
-  }
-
-  /**
-   * For graphics added through the `draw` methods, their symbols will typically
-   * not match the correct symbols used by the SketchView model and so on first render
-   * they will display incorrectly. This method applies the correct symbol for the graphics
-   * before adding them to the target layer.
-   */
-  private applySymbol(graphics: esri.Graphic[]): esri.Graphic[] {
-    const symbol = (type: string | 'point' | 'polygon' | 'polyline'): esri.Symbol => {
-      if (type === 'point') {
-        return this.model.pointSymbol;
-      } else if (type === 'polyline') {
-        return this.model.polylineSymbol;
-      } else if (type === 'polygon') {
-        return this.model.polygonSymbol;
-      }
-    };
-
-    const symbolized = graphics.map((g) => {
-      // Handle graphic instances as well as auto-castable objects.
-      if (g.toJSON === undefined) {
-        const copy = JSON.parse(JSON.stringify(g));
-
-        copy.symbol = symbol(copy.geometry.type);
-
-        return copy;
-      } else {
-        const copy = g.toJSON();
-
-        copy.symbol = symbol(g.geometry.type);
-
-        return copy;
-      }
-    });
-
-    return symbolized;
   }
 }
 
