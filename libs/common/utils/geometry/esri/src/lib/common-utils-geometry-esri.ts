@@ -1,4 +1,4 @@
-import { Observable, from, ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 
 import { Point } from '@tamu-gisc/common/types';
 

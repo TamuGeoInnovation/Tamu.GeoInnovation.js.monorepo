@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { forkJoin, from, Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { map, pluck, shareReplay, take, tap, withLatestFrom } from 'rxjs/operators';
 
-import { EsriMapService, EsriModuleProviderService, MapConfig, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponseService, ScenarioService, WorkshopService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { IResponseResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
-import { IGraphic, PolygonMaker } from '@tamu-gisc/common/utils/geometry/esri';
+import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import esri = __esri;
 
@@ -33,7 +33,10 @@ export class ScenarioBuilderComponent implements OnInit {
   public workshops: Observable<IWorkshopRequestPayload[]>;
   public selectedWorkshop: string;
 
-  public polygonMaker: PolygonMaker;
+  private _modules: {
+    graphic: esri.GraphicConstructor;
+    graphicsLayer: esri.GraphicsLayerConstructor;
+  };
 
   public config: MapConfig = {
     basemap: {
@@ -58,9 +61,7 @@ export class ScenarioBuilderComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private ns: NotificationService
-  ) {
-    this.polygonMaker = new PolygonMaker();
-  }
+  ) {}
 
   public ngOnInit() {
     this.isExisting = this.route.params.pipe(
@@ -69,60 +70,6 @@ export class ScenarioBuilderComponent implements OnInit {
       }),
       shareReplay(1)
     );
-
-    // If we are in /details, populate the form
-    this.route.params.pipe(pluck('guid')).subscribe((guid) => {
-      if (guid) {
-        this.scenario.getOne(guid).subscribe((r) => {
-          this.builderForm.patchValue(r);
-
-          // Check to see we have workshops
-          if (r.workshop) {
-            this.selectedWorkshop = r.workshop?.guid;
-            this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
-
-            this.builderForm.controls.layers.valueChanges
-              .pipe(withLatestFrom(this.responses))
-              .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
-                this.scenarioPreview.removeAll();
-                this.addResponseGraphics(guids, responses);
-              });
-
-            forkJoin([this.mapService.store.pipe(take(1)), from(this.mp.require(['GraphicsLayer']))]).subscribe(
-              ([instance, [GraphicsLayer]]: [MapServiceInstance, [esri.GraphicsLayerConstructor]]) => {
-                this.view = instance.view as esri.MapView;
-                this.map = instance.map;
-                this.graphicPreview = new GraphicsLayer();
-                this.scenarioPreview = new GraphicsLayer();
-
-                this.map.add(this.graphicPreview);
-                this.map.add(this.scenarioPreview);
-
-                if (r.layers) {
-                  if (r.workshop.responses) {
-                    // For each workshop, look through it's responses and see if any match those found inside r.layers
-                    // If we have a match, we know this scenario is based off of this workshop
-                    const matched = r.workshop.responses.filter((response) => r.layers.includes(response.guid));
-
-                    if (matched.length !== 0) {
-                      const shapes = matched.map((response) => response.shapes);
-
-                      this.polygonMaker.loaded.pipe(take(1)).subscribe((res) => {
-                        const graphics = this.polygonMaker.makeArrayOfPolygons(shapes as IGraphic[]);
-
-                        this.scenarioPreview.addMany(graphics);
-                      });
-                    }
-                  }
-                }
-              }
-            );
-          } else {
-            console.warn('No workshops');
-          }
-        });
-      }
-    });
 
     // Instantiate builder form
     this.builderForm = this.fb.group({
@@ -135,14 +82,81 @@ export class ScenarioBuilderComponent implements OnInit {
 
     // Fetch all Workshops
     this.workshops = this.workshop.getWorkshops().pipe(shareReplay(1));
+
+    // Get esri modules first. We'll need these for basically anything else in the builder, so
+    // it makes sense to ensure they are available before we continue any additional setup
+    from(this.mp.require(['Graphic', 'GraphicsLayer'])).subscribe(
+      ([g, gl]: [esri.GraphicConstructor, esri.GraphicsLayerConstructor]) => {
+        this._modules = {
+          graphic: g,
+          graphicsLayer: gl
+        };
+
+        // If we are in /details, populate the form
+        this.route.params.pipe(pluck('guid')).subscribe((guid) => {
+          if (guid) {
+            this.scenario.getOne(guid).subscribe((r) => {
+              this.builderForm.patchValue(r);
+
+              // Check to see we have workshops
+              if (r.workshop) {
+                this.selectedWorkshop = r.workshop?.guid;
+                this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
+
+                this.builderForm.controls.layers.valueChanges
+                  .pipe(withLatestFrom(this.responses))
+                  .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
+                    this.scenarioPreview.removeAll();
+                    this.addResponseGraphics(guids, responses);
+                  });
+
+                this.mapService.store.pipe(take(1)).subscribe((instance) => {
+                  this.view = instance.view as esri.MapView;
+                  this.map = instance.map;
+                  this.graphicPreview = new this._modules.graphicsLayer();
+                  this.scenarioPreview = new this._modules.graphicsLayer();
+
+                  this.map.add(this.graphicPreview);
+                  this.map.add(this.scenarioPreview);
+
+                  if (r.layers) {
+                    if (r.workshop.responses) {
+                      // For each workshop, look through it's responses and see if any match those found inside r.layers
+                      // If we have a match, we know this scenario is based off of this workshop
+                      const matched = r.workshop.responses.filter((response) => r.layers.includes(response.guid));
+
+                      if (matched.length !== 0) {
+                        // For every submission, pull out the graphics. This generates a single array of graphics
+                        const flattened = this.flattenResponsesGraphics(matched);
+
+                        this.scenarioPreview.addMany(flattened);
+                      }
+                    }
+                  }
+                });
+              } else {
+                console.warn('No workshops');
+              }
+            });
+          }
+        });
+      }
+    );
   }
 
   public loadPreviewResponseLayer(response: IResponseResponse) {
     // Remove existing Response preview graphic
     this.graphicPreview.removeAll();
 
-    const graphic = this.polygonMaker.makePolygon(response.shapes as IGraphic);
-    this.graphicPreview.add(graphic);
+    // Since the graphics were created through the `toJSON` Graphic method,
+    // here we'll just let the API do its thing in the opposite direction so we
+    // don't have to manually construct them. In this way, they will also inherit
+    // custom symbol colors.
+    const graphics = (response.shapes as Array<IGraphic>).map((graphic) => {
+      return this._modules.graphic.fromJSON(graphic);
+    });
+
+    this.graphicPreview.addMany(graphics);
   }
 
   public createScenario() {
@@ -193,12 +207,6 @@ export class ScenarioBuilderComponent implements OnInit {
     if (workshop) {
       this.selectedWorkshop = workshop;
       this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
-
-      // this.builderForm.controls.layers.valueChanges
-      //   .pipe(withLatestFrom(this.responses))
-      //   .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
-      //     this.addResponseGraphics(guids, responses);
-      //   });
     }
   }
 
@@ -224,17 +232,24 @@ export class ScenarioBuilderComponent implements OnInit {
     // Find those responses that intersect with the currently selected guids (checkboxes)
     const selectedResponses = responses.filter((currentResponse) => guids.includes(currentResponse.guid));
 
-    // Add these responses to the form for submission
-    // this.builderForm.controls.layers.setValue(
-    //   selectedResponses.map((value) => {
-    //     return value.shapes;
-    //   })
-    // );
+    const flattened = this.flattenResponsesGraphics(selectedResponses);
 
-    const graphics = this.polygonMaker.makeArrayOfPolygons(
-      selectedResponses.map((response) => response.shapes) as IGraphic[]
-    );
+    this.scenarioPreview.addMany(flattened);
+  }
 
-    this.scenarioPreview.addMany(graphics);
+  /**
+   * From a collection of responses, extracts and accumulates all of the graphics from each
+   * to return a one-dimensional array of esri graphics.
+   */
+  private flattenResponsesGraphics(responses: Array<IResponseResponse>) {
+    const flattenedShapesCollection = responses.reduce((accumulated, current) => {
+      const shapes = (current.shapes as Array<IGraphic>).map((g) => {
+        return this._modules.graphic.fromJSON(g);
+      });
+
+      return [...accumulated, ...shapes];
+    }, []);
+
+    return flattenedShapesCollection;
   }
 }
