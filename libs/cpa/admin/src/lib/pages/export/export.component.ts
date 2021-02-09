@@ -6,7 +6,7 @@ import { shareReplay } from 'rxjs/operators';
 
 import { IGraphic, PolygonMaker } from '@tamu-gisc/common/utils/geometry/esri';
 import { ResponseService, WorkshopService } from '@tamu-gisc/cpa/data-access';
-import { IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IResponseResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
@@ -25,7 +25,10 @@ export class ExportComponent implements OnInit {
 
   public workshops: Observable<IWorkshopRequestPayload[]>;
 
-  public polygonMaker: PolygonMaker;
+  private _modules: {
+    graphic: esri.GraphicConstructor;
+    graphicsLayer: esri.GraphicsLayerConstructor;
+  };
 
   public config: MapConfig = {
     basemap: {
@@ -46,9 +49,7 @@ export class ExportComponent implements OnInit {
     private mp: EsriModuleProviderService,
     private response: ResponseService,
     private workshop: WorkshopService
-  ) {
-    this.polygonMaker = new PolygonMaker();
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.form = this.fb.group({
@@ -71,14 +72,21 @@ export class ExportComponent implements OnInit {
         if (shapes) {
           this.form.controls.shapes.setValue(shapes);
         }
-        const polygons = this.polygonMaker.makeArrayOfPolygons(shapes as IGraphic[]);
-        this.mp.require(['GraphicsLayer']).then(([graphicsLayer]: [esri.GraphicsLayerConstructor]) => {
-          // Add the polygons to a new graphics layer
-          const previewLayer = new graphicsLayer({
-            graphics: polygons
+        // const polygons = this.polygonMaker.makeArrayOfPolygons(shapes as IGraphic[]);
+        this.mp
+          .require(['Graphic', 'GraphicsLayer'])
+          .then(([g, gl]: [esri.GraphicConstructor, esri.GraphicsLayerConstructor]) => {
+            this._modules = {
+              graphic: g,
+              graphicsLayer: gl
+            };
+            const polygons = this.flattenResponsesGraphics(responsesResponse);
+            // Add the polygons to a new graphics layer
+            const previewLayer = new this._modules.graphicsLayer({
+              graphics: polygons
+            });
+            this.map.add(previewLayer);
           });
-          this.map.add(previewLayer);
-        });
       });
     });
 
@@ -93,6 +101,43 @@ export class ExportComponent implements OnInit {
 
   public exportData() {
     const value = this.form.getRawValue();
-    // console.log(toFeatureCollection(value.shapes, 'Polygon'));
+    delete value.workshopGuid;
+    const export2: IEsriJsonFormat = {
+      geometryType: 'idk',
+      features: value,
+      spatialReference: 'mercator'
+    };
+    const a = document.createElement('a');
+    const blob = new Blob([JSON.stringify(export2)], { type: 'application/json' });
+    const objectUrl = URL.createObjectURL(blob);
+    a.href = objectUrl;
+    a.download = this.form.controls.workshopGuid.value;
+    a.click();
+    URL.revokeObjectURL(objectUrl);
   }
+
+  private flattenResponsesGraphics(responses: Array<IResponseResponse>) {
+    const flattenedShapesCollection = responses.reduce((accumulated, current) => {
+      const shapes = (current.shapes as Array<IGraphic>).map((g) => {
+        return this._modules.graphic.fromJSON(g);
+      });
+
+      return [...accumulated, ...shapes];
+    }, []);
+
+    return flattenedShapesCollection;
+  }
+}
+
+export interface IEsriJsonFormat {
+  displayFieldName?: string;
+  fieldAliases?: {
+    ['field']: string;
+  };
+  geometryType: string;
+  hasZ?: boolean;
+  hasM?: boolean;
+  spatialReference: string;
+  fields?: [];
+  features: [IGraphic];
 }
