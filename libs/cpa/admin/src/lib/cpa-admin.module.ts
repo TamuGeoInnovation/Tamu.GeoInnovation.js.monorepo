@@ -31,6 +31,10 @@ const routes: Routes = [
       {
         path: 'users',
         loadChildren: () => import('./pages/users/users.module').then((m) => m.UsersModule)
+      },
+      {
+        path: 'export',
+        loadChildren: () => import('./pages/export/export.module').then((m) => m.ExportModule)
       }
     ]
   }
