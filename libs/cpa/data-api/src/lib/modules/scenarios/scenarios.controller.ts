@@ -27,8 +27,8 @@ export class ScenariosController extends BaseController<Scenario> {
   }
 
   @Get(':guid/layer')
-  public async getLayerForScenario(@Param() params: { guid: string }) {
-    return this.service.getGeometryLayerForScenario(params.guid);
+  public async getLayersForScenario(@Param() params: { guid: string }) {
+    return this.service.getGeometryLayersForScenario(params.guid);
   }
 
   @Get(':guid')

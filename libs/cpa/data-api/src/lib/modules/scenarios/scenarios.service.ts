@@ -47,7 +47,7 @@ export class ScenariosService extends BaseService<Scenario> {
     }
   }
 
-  public async getGeometryLayerForScenario(scenarioGuid: string): Promise<IScenariosResponseResolved> {
+  public async getGeometryLayersForScenario(scenarioGuid: string): Promise<IScenariosResponseResolved> {
     const scenario = await this.scenarioRepo.findOne({
       where: {
         guid: scenarioGuid
@@ -60,15 +60,11 @@ export class ScenariosService extends BaseService<Scenario> {
       }
     });
 
-    const layers = responsesFromLayerGuids.map((r) => {
-      return r.shapes;
-    });
-
     return {
       ...scenario,
       layers: responsesFromLayerGuids.map((r) => {
         return {
-          graphics: ([r.shapes] as unknown) as IGraphic[],
+          graphics: (r.shapes as unknown) as IGraphic[],
           info: {
             name: r.name,
             description: r.notes,
