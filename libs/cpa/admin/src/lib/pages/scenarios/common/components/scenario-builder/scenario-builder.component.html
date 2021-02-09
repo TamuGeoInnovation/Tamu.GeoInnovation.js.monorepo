@@ -1,5 +1,5 @@
 <form [formGroup]="builderForm" (ngSubmit)="createScenario()">
-  <div class="form-section">
+  <div class="form-section" *ngIf="(isExisting | async) === false">
     <div class="form-section-toolbar">
       <div class="form-section-name">
         <p>What workshop would you like to base this scenario on?</p>

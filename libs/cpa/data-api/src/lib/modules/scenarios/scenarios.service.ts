@@ -46,7 +46,7 @@ export class ScenariosService extends BaseService<Scenario> {
       return scenario.save();
     }
   }
-  // Promise<IScenariosResponse>
+
   public async getGeometryLayerForScenario(scenarioGuid: string): Promise<IScenariosResponseResolved> {
     const scenario = await this.scenarioRepo.findOne({
       where: {

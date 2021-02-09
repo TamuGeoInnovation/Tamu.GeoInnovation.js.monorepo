@@ -163,9 +163,10 @@ export class ScenarioBuilderComponent implements OnInit {
     const value = this.builderForm.getRawValue();
 
     if (this.route.snapshot.params.guid) {
-      this.scenario.updateWorkshop(this.selectedWorkshop, this.route.snapshot.params.guid).subscribe((addScenarioStatus) => {
-        console.log(addScenarioStatus);
-      });
+      // TODO: What does this do? Causes a race condition
+      // this.scenario.updateWorkshop(this.selectedWorkshop, this.route.snapshot.params.guid).subscribe((addScenarioStatus) => {
+      //   console.log(addScenarioStatus);
+      // });
 
       this.scenario
         .update(this.route.snapshot.params.guid, value)
@@ -189,7 +190,7 @@ export class ScenarioBuilderComponent implements OnInit {
         this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
 
         this.workshop.addScenario(this.selectedWorkshop, res.guid).subscribe((addScenarioStatus) => {
-          console.log(addScenarioStatus);
+          console.log(addScenarioStatus.guid);
         });
 
         this.ns.toast({
