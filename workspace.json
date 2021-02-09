@@ -4875,34 +4875,6 @@
         }
       }
     },
-    "cpa-public": {
-      "projectType": "library",
-      "root": "libs/cpa/public",
-      "sourceRoot": "libs/cpa/public/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/cpa/public/tsconfig.lib.json", "libs/cpa/public/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/cpa/public/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/cpa/public/jest.config.js",
-            "tsConfig": "libs/cpa/public/tsconfig.spec.json",
-            "setupFile": "libs/cpa/public/src/test-setup.ts"
-          }
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
-      }
-    },
     "cpa-sass": {
       "projectType": "library",
       "root": "libs/cpa/sass"
