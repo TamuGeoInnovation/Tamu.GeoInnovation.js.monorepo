@@ -6,9 +6,9 @@ import { from, Observable } from 'rxjs';
 import { map, pluck, shareReplay, take, tap, withLatestFrom } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
-import { ResponseService, ScenarioService, WorkshopService } from '@tamu-gisc/cpa/data-access';
+import { ResponseService, ScenarioService, SnapshotService, WorkshopService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { IResponseResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IResponseResponse, ISnapshotsResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import esri = __esri;
@@ -26,16 +26,19 @@ export class ScenarioBuilderComponent implements OnInit {
   public map: esri.Map;
   public graphicPreview: esri.GraphicsLayer;
   public scenarioPreview: esri.GraphicsLayer;
-  public featureLayer: esri.FeatureLayer;
+  public scenarioSnapshots: { [key: string]: ISnapshotsResponse } = {};
 
+  public selectedWorkshop: string;
   public isExisting: Observable<boolean>;
+
   public responses: Observable<IResponseResponse[]>;
   public workshops: Observable<IWorkshopRequestPayload[]>;
-  public selectedWorkshop: string;
+  public snapshots: Observable<ISnapshotsResponse[]>;
 
   private _modules: {
     graphic: esri.GraphicConstructor;
     graphicsLayer: esri.GraphicsLayerConstructor;
+    featureLayer: esri.FeatureLayerConstructor;
   };
 
   public config: MapConfig = {
@@ -57,6 +60,7 @@ export class ScenarioBuilderComponent implements OnInit {
     private mp: EsriModuleProviderService,
     private scenario: ScenarioService,
     private response: ResponseService,
+    private snapshot: SnapshotService,
     private workshop: WorkshopService,
     private router: Router,
     private route: ActivatedRoute,
@@ -77,19 +81,23 @@ export class ScenarioBuilderComponent implements OnInit {
       description: ['', Validators.required],
       mapCenter: [''],
       zoom: [''],
-      layers: [[]]
+      layers: [[]],
+      snapshots: [[]]
     });
 
     // Fetch all Workshops
     this.workshops = this.workshop.getWorkshops().pipe(shareReplay(1));
 
+    this.snapshots = this.snapshot.getAll().pipe(shareReplay(1));
+
     // Get esri modules first. We'll need these for basically anything else in the builder, so
     // it makes sense to ensure they are available before we continue any additional setup
-    from(this.mp.require(['Graphic', 'GraphicsLayer'])).subscribe(
-      ([g, gl]: [esri.GraphicConstructor, esri.GraphicsLayerConstructor]) => {
+    from(this.mp.require(['Graphic', 'GraphicsLayer', 'FeatureLayer'])).subscribe(
+      ([g, gl, fl]: [esri.GraphicConstructor, esri.GraphicsLayerConstructor, esri.FeatureLayerConstructor]) => {
         this._modules = {
           graphic: g,
-          graphicsLayer: gl
+          graphicsLayer: gl,
+          featureLayer: fl
         };
 
         // If we are in /details, populate the form
@@ -108,6 +116,12 @@ export class ScenarioBuilderComponent implements OnInit {
                   .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
                     this.scenarioPreview.removeAll();
                     this.addResponseGraphics(guids, responses);
+                  });
+
+                this.builderForm.controls.snapshots.valueChanges
+                  .pipe(withLatestFrom(this.snapshots))
+                  .subscribe(([guids, snapshots]) => {
+                    this.addOrRemoveSnapshots(snapshots, guids);
                   });
 
                 this.mapService.store.pipe(take(1)).subscribe((instance) => {
@@ -157,6 +171,66 @@ export class ScenarioBuilderComponent implements OnInit {
     });
 
     this.graphicPreview.addMany(graphics);
+  }
+
+  public addOrRemoveSnapshots(snapshots: ISnapshotsResponse[], selectedSnapshots: string[]) {
+    const removedSnapshots = Object.keys(this.scenarioSnapshots).filter(([key]) => {
+      return selectedSnapshots.find((ss) => ss === key) === undefined;
+    });
+
+    const addedSnapshots = selectedSnapshots.filter((ss) => {
+      return ss in this.scenarioSnapshots === false;
+    });
+
+    if (removedSnapshots.length > 0) {
+      const layerIds = removedSnapshots.reduce((acc, snapshot) => {
+        const s = snapshots.find((snap) => snap.guid === snapshot);
+
+        const ids = s.layers.map((l) => {
+          return l.info.layerId;
+        });
+
+        return [...acc, ...ids];
+      }, []);
+
+      const layers = layerIds.map((lid) => {
+        return this.map.findLayerById(lid);
+      });
+
+      if (layers.length > 0) {
+        this.map.removeMany(layers);
+
+        for (const snapshot of removedSnapshots) {
+          const s = snapshots.find((snap) => snap.guid === snapshot);
+
+          delete this.scenarioSnapshots[s.guid];
+        }
+      }
+    }
+
+    if (addedSnapshots.length > 0) {
+      const layers = addedSnapshots.reduce((acc, snapshotGuid) => {
+        const s = snapshots.find((snap) => snap.guid === snapshotGuid);
+
+        const l = s.layers.map((layer) => {
+          return new this._modules.featureLayer({
+            id: layer.info.layerId,
+            title: layer.info.name,
+            url: layer.url
+          });
+        });
+
+        return [...acc, ...l];
+      }, []);
+
+      this.map.addMany(layers);
+
+      for (const snapshot of addedSnapshots) {
+        const s = snapshots.find((snap) => snap.guid === snapshot);
+
+        this.scenarioSnapshots[snapshot] = s;
+      }
+    }
   }
 
   public createScenario() {

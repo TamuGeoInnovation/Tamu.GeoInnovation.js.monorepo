@@ -65,11 +65,25 @@
           </div>
         </div>
 
-        <tamu-gisc-checkbox-group id="response-list" class="form-section-body" formControlName="layers" [referenceId]="'guid'">
-          <tamu-gisc-checkbox *ngFor="let response of (responses | async)" (mouseover)="loadPreviewResponseLayer(response)" (mouseleave)="this.graphicPreview.removeAll()" [label]="response.name + ' ' +'(' + response.snapshot.title + ')'" [data]="response"></tamu-gisc-checkbox>
-        </tamu-gisc-checkbox-group>
+        <tamu-gisc-tabs>
+          <tamu-gisc-tab label="Snapshots">
+            <div class="leader-1 trailer-1">
+              <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="snapshots" [referenceId]="'guid'">
+                <tamu-gisc-checkbox *ngFor="let snapshot of (snapshots | async)" [label]="snapshot.title" [data]="snapshot"></tamu-gisc-checkbox>
+              </tamu-gisc-checkbox-group>
+            </div>
+          </tamu-gisc-tab>
 
-        <p *ngIf="(responses | async)?.length === 0">There are no responses for this workshop.</p>
+          <tamu-gisc-tab label="Responses">
+            <div class="leader-1 trailer-1">
+              <tamu-gisc-checkbox-group id="response-list" class="form-section-body" formControlName="layers" [referenceId]="'guid'">
+                <tamu-gisc-checkbox *ngFor="let response of (responses | async)" (mouseover)="loadPreviewResponseLayer(response)" (mouseleave)="this.graphicPreview.removeAll()" [label]="response.name + ' ' +'(' + response.snapshot.title + ')'" [data]="response"></tamu-gisc-checkbox>
+              </tamu-gisc-checkbox-group>
+
+              <p *ngIf="(responses | async)?.length === 0">There are no responses for this workshop.</p>
+            </div>
+          </tamu-gisc-tab>
+        </tamu-gisc-tabs>
       </div>
     </div>
 
@@ -100,3 +114,5 @@
     </ng-container>
   </div>
 </form>
+
+{{snapshots | async | json}}
