@@ -2,12 +2,18 @@
   <h1 class="section-header">Export</h1>
 
   <div class="section-content">
-    <form [formGroup]="form" (ngSubmit)="exportData()">
+    <form [formGroup]="form" (ngSubmit)="exportAllData()">
       <div class="export-controls">
-        <tamu-gisc-select formControlName="workshopGuid" [data]="(workshops | async)" [displayTemplate]="'title'" [valueTemplate]="'guid'"></tamu-gisc-select>
-        <tamu-gisc-button type="submit" [fit]="'snug'" [disabled]="!form.valid" value="Download"></tamu-gisc-button>
+        <div>
+          <tamu-gisc-select formControlName="workshop" [data]="(workshops | async)" [displayTemplate]="'title'"></tamu-gisc-select>
+          <!-- <tamu-gisc-select formControlName="snapshotGuid" [data]="(snapshots | async)" [displayTemplate]="'title'" [valueTemplate]="'guid'"></tamu-gisc-select> -->
+          <!-- <tamu-gisc-select [data]="geometryTypes" [displayTemplate]="'title'" [valueTemplate]="'id'"></tamu-gisc-select> -->
+        </div>
+        <div>
+          <tamu-gisc-button type="submit" [fit]="'snug'" [disabled]="!form.valid" value="Download"></tamu-gisc-button>
+        </div>
       </div>
-      <!-- form-section-body -->
+
       <div class="map-preview">
         <div class="form-section">
           <div class="form-section-toolbar">

@@ -326,7 +326,10 @@ export interface IGraphic {
       latestWkid: number;
       wkid: number;
     };
-    rings: [[]];
+    rings?: [[]];
+    x?: number;
+    y?: number;
+    paths?: [[]];
     type: string;
   };
   symbol: {
