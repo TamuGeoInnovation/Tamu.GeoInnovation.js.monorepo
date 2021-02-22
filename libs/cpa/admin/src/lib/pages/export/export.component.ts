@@ -29,11 +29,6 @@ export class ExportComponent implements OnInit {
 
   public workshops: Observable<IWorkshopRequestPayload[]>;
   public snapshots: Observable<DeepPartial<Snapshot>[]>;
-  public geometryTypes = [
-    { title: 'Points', id: 0 },
-    { title: 'Lines', id: 1 },
-    { title: 'Polygons', id: 2 }
-  ];
 
   public config: MapConfig = {
     basemap: {
@@ -170,6 +165,10 @@ export class ExportComponent implements OnInit {
   }
 
   public exportAllData() {
+    // Clear all existing files in the in-memory zip
+    this.zip.forEach((fileName: string) => {
+      this.zip.remove(fileName);
+    });
     const formData = this.form.getRawValue();
     const wad = {
       points: [],
@@ -192,19 +191,14 @@ export class ExportComponent implements OnInit {
           });
         }
       });
-      if (wad.points) {
-        // export the points to a featureset.json inside the temp dir
-        // console.log('These are the points:', wad.points);
+      // export to a featureset.json inside the temp dir
+      if (wad.points.length > 0) {
         this.geometryArrayToEsriJson(wad.points, 'esriGeometryPoint');
       }
-      if (wad.polylines) {
-        // export the polylines to a featureset.json inside the temp dir
-        // console.log('These are the polylines:', wad.polylines);
+      if (wad.polylines.length > 0) {
         this.geometryArrayToEsriJson(wad.polylines, 'esriGeometryPolyline');
       }
-      if (wad.polygons) {
-        // export the polygons to a featureset.json inside the temp dir
-        // console.log('These are the polygons:', wad.polygons);
+      if (wad.polygons.length > 0) {
         this.geometryArrayToEsriJson(wad.polygons, 'esriGeometryPolygon');
       }
     }
@@ -253,8 +247,6 @@ export class ExportComponent implements OnInit {
     const fileName = `${this.form.controls.workshop.value.title}_${geometryName}s.json`;
     this.zip.file(fileName, JSON.stringify(featureSet));
   }
-
-  private writeEsriJsonToFile(featureSet: IEsriJsonFormat) {}
 
   private responseToEsriJson(snapshotResponses: Array<IResponseResponse[]>) {
     snapshotResponses.forEach((snapshotResponse) => {

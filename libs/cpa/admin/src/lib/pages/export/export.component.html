@@ -6,8 +6,6 @@
       <div class="export-controls">
         <div>
           <tamu-gisc-select formControlName="workshop" [data]="(workshops | async)" [displayTemplate]="'title'"></tamu-gisc-select>
-          <!-- <tamu-gisc-select formControlName="snapshotGuid" [data]="(snapshots | async)" [displayTemplate]="'title'" [valueTemplate]="'guid'"></tamu-gisc-select> -->
-          <!-- <tamu-gisc-select [data]="geometryTypes" [displayTemplate]="'title'" [valueTemplate]="'id'"></tamu-gisc-select> -->
         </div>
         <div>
           <tamu-gisc-button type="submit" [fit]="'snug'" [disabled]="!form.valid" value="Download"></tamu-gisc-button>
