@@ -2,17 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, In, Repository } from 'typeorm';
 
-import { Scenario, Workshop, Response } from '@tamu-gisc/cpa/common/entities';
+import { Scenario, Workshop, Response, Snapshot } from '@tamu-gisc/cpa/common/entities';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseService } from '../base/base.service';
-import { IScenariosResponseResolved } from './scenarios.controller';
+import { IScenariosResponse, IScenariosResponseResolved } from './scenarios.controller';
 
 @Injectable()
 export class ScenariosService extends BaseService<Scenario> {
   constructor(
     @InjectRepository(Scenario) private scenarioRepo: Repository<Scenario>,
-    @InjectRepository(Workshop) private workshopRepo: Repository<Workshop>
+    @InjectRepository(Response) private responseRepo: Repository<Response>,
+    @InjectRepository(Snapshot) private snapshotRepo: Repository<Snapshot>
   ) {
     super(scenarioRepo);
   }
@@ -37,13 +38,45 @@ export class ScenariosService extends BaseService<Scenario> {
     return workshop.scenarios;
   }
 
-  public async updateScenario(wGuid: string, sGuid: string) {
-    const scenario = await this.scenarioRepo.findOne({ where: { guid: sGuid }, relations: ['workshop'] });
-    const newWorkshop = await this.workshopRepo.findOne({ where: { guid: wGuid } });
+  public async updateScenario(scenarioGuid: string, scenarioDetails: IScenariosResponse) {
+    const existingScenario = await this.scenarioRepo.findOne({ where: { guid: scenarioGuid } });
 
-    if (scenario) {
-      scenario.workshop = newWorkshop;
-      return scenario.save();
+    if (existingScenario) {
+      // Resolve if the provided layer guid's are of type response or snapshot.
+      // The input layer guids will be mapped to an object with a "type" property describing them as such
+      const snapLayers = this.snapshotRepo.find({
+        where: {
+          guid: In(scenarioDetails.layers)
+        }
+      });
+
+      const respLayers = this.responseRepo.find({
+        where: {
+          guid: In(scenarioDetails.layers)
+        }
+      });
+
+      const [resolvedSnapLayers, resolvedRespLayers] = await Promise.all([snapLayers, respLayers]);
+
+      const categorizedLayers = scenarioDetails.layers.map((polyGuid) => {
+        let type = '';
+        if (resolvedSnapLayers.find((l) => l.guid === polyGuid)) {
+          type = 'snapshot';
+        } else if (resolvedRespLayers.find((l) => l.guid === polyGuid)) {
+          type = 'response';
+        }
+
+        return {
+          guid: polyGuid,
+          type
+        };
+      });
+
+      // Assert categorized as a string, otherwise `update` method will throw an error due to
+      // incompatible types.
+      const detailed = { ...scenarioDetails, layers: (categorizedLayers as unknown) as string };
+
+      return this.scenarioRepo.update({ guid: scenarioGuid }, detailed);
     }
   }
 

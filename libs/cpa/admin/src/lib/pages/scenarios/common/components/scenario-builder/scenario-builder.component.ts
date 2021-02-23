@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { from, Observable } from 'rxjs';
-import { map, pluck, shareReplay, take, tap, withLatestFrom } from 'rxjs/operators';
+import { from, Observable, Subject } from 'rxjs';
+import { delay, map, pluck, shareReplay, skip, take, tap, withLatestFrom } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponseService, ScenarioService, SnapshotService, WorkshopService } from '@tamu-gisc/cpa/data-access';
@@ -17,9 +17,9 @@ import esri = __esri;
   selector: 'tamu-gisc-scenario-builder',
   templateUrl: './scenario-builder.component.html',
   styleUrls: ['./scenario-builder.component.scss'],
-  providers: [ScenarioService]
+  providers: [ScenarioService, EsriMapService]
 })
-export class ScenarioBuilderComponent implements OnInit {
+export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public builderForm: FormGroup;
 
   public view: esri.MapView;
@@ -40,6 +40,8 @@ export class ScenarioBuilderComponent implements OnInit {
     graphicsLayer: esri.GraphicsLayerConstructor;
     featureLayer: esri.FeatureLayerConstructor;
   };
+
+  private $destroy: Subject<boolean> = new Subject();
 
   public config: MapConfig = {
     basemap: {
@@ -104,27 +106,28 @@ export class ScenarioBuilderComponent implements OnInit {
         this.route.params.pipe(pluck('guid')).subscribe((guid) => {
           if (guid) {
             this.scenario.getOne(guid).subscribe((r) => {
-              this.builderForm.patchValue(r);
+              const responsesGuids = r.layers.filter((l) => l.type === 'response').map((l) => l.guid);
+              const snapshotsGuids = r.layers.filter((l) => l.type === 'snapshot').map((l) => l.guid);
 
               // Check to see we have workshops
               if (r.workshop) {
                 this.selectedWorkshop = r.workshop?.guid;
                 this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
 
+                this.builderForm.controls.snapshots.valueChanges
+                  .pipe(skip(1), withLatestFrom(this.snapshots))
+                  .subscribe(([guids, snapshots]) => {
+                    this.addOrRemoveSnapshots(snapshots, guids);
+                  });
+
                 this.builderForm.controls.layers.valueChanges
-                  .pipe(withLatestFrom(this.responses))
+                  .pipe(skip(1), withLatestFrom(this.responses))
                   .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
                     this.scenarioPreview.removeAll();
                     this.addResponseGraphics(guids, responses);
                   });
 
-                this.builderForm.controls.snapshots.valueChanges
-                  .pipe(withLatestFrom(this.snapshots))
-                  .subscribe(([guids, snapshots]) => {
-                    this.addOrRemoveSnapshots(snapshots, guids);
-                  });
-
-                this.mapService.store.pipe(take(1)).subscribe((instance) => {
+                this.mapService.store.pipe(take(1), delay(100)).subscribe((instance) => {
                   this.view = instance.view as esri.MapView;
                   this.map = instance.map;
                   this.graphicPreview = new this._modules.graphicsLayer();
@@ -134,18 +137,7 @@ export class ScenarioBuilderComponent implements OnInit {
                   this.map.add(this.scenarioPreview);
 
                   if (r.layers) {
-                    if (r.workshop.responses) {
-                      // For each workshop, look through it's responses and see if any match those found inside r.layers
-                      // If we have a match, we know this scenario is based off of this workshop
-                      const matched = r.workshop.responses.filter((response) => r.layers.includes(response.guid));
-
-                      if (matched.length !== 0) {
-                        // For every submission, pull out the graphics. This generates a single array of graphics
-                        const flattened = this.flattenResponsesGraphics(matched);
-
-                        this.scenarioPreview.addMany(flattened);
-                      }
-                    }
+                    this.builderForm.patchValue({ ...r, layers: responsesGuids, snapshots: snapshotsGuids });
                   }
                 });
               } else {
@@ -156,6 +148,11 @@ export class ScenarioBuilderComponent implements OnInit {
         });
       }
     );
+  }
+
+  public ngOnDestroy() {
+    this.$destroy.next();
+    this.$destroy.complete();
   }
 
   public loadPreviewResponseLayer(response: IResponseResponse) {
@@ -173,9 +170,16 @@ export class ScenarioBuilderComponent implements OnInit {
     this.graphicPreview.addMany(graphics);
   }
 
+  /**
+   * Diffs the loc
+   */
   public addOrRemoveSnapshots(snapshots: ISnapshotsResponse[], selectedSnapshots: string[]) {
-    const removedSnapshots = Object.keys(this.scenarioSnapshots).filter(([key]) => {
-      return selectedSnapshots.find((ss) => ss === key) === undefined;
+    const removedSnapshots = Object.keys(this.scenarioSnapshots).filter((key) => {
+      return (
+        selectedSnapshots.find((ss) => {
+          return ss === key;
+        }) === undefined
+      );
     });
 
     const addedSnapshots = selectedSnapshots.filter((ss) => {
@@ -200,6 +204,7 @@ export class ScenarioBuilderComponent implements OnInit {
       if (layers.length > 0) {
         this.map.removeMany(layers);
 
+        // Once the layers have been removed from the map, remove the dictionary
         for (const snapshot of removedSnapshots) {
           const s = snapshots.find((snap) => snap.guid === snapshot);
 
@@ -208,6 +213,7 @@ export class ScenarioBuilderComponent implements OnInit {
       }
     }
 
+    // If snapshots have been added as a result of a form change, load their constituting layers.
     if (addedSnapshots.length > 0) {
       const layers = addedSnapshots.reduce((acc, snapshotGuid) => {
         const s = snapshots.find((snap) => snap.guid === snapshotGuid);
@@ -225,6 +231,10 @@ export class ScenarioBuilderComponent implements OnInit {
 
       this.map.addMany(layers);
 
+      // For each snapshot guid, add the key to the state variable along with the snapshot definition.
+      //
+      // The state variable is used to deconstruct a snapshot since it contains definitions for all the layers
+      // which it is made of.
       for (const snapshot of addedSnapshots) {
         const s = snapshots.find((snap) => snap.guid === snapshot);
 
@@ -241,6 +251,15 @@ export class ScenarioBuilderComponent implements OnInit {
       // this.scenario.updateWorkshop(this.selectedWorkshop, this.route.snapshot.params.guid).subscribe((addScenarioStatus) => {
       //   console.log(addScenarioStatus);
       // });
+
+      // Combine the snapshots and responses. Snapshots are typically used as contextual base layers for responses, so they
+      // they are at the bottom of the stack.
+      const combinedLayers = [...value.snapshots, ...value.layers];
+
+      // Remove the snapshots object from the form value, as the backend calls an update function and fails if provided.
+      delete value.snapshots;
+
+      value.layers = combinedLayers;
 
       this.scenario
         .update(this.route.snapshot.params.guid, value)

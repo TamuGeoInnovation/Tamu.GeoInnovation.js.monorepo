@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { Scenario } from '@tamu-gisc/cpa/common/entities';
@@ -33,25 +33,24 @@ export class ScenariosController extends BaseController<Scenario> {
 
   @Get(':guid')
   public async get(@Param() params) {
-    return this.service.getOne({
+    const scenario = await this.service.getOne({
       where: {
         guid: params.guid
       },
       relations: ['workshop', 'workshop.responses']
     });
+
+    return scenario;
   }
 
   /**
    * Updates an existing scenario
    */
   @Patch(':guid')
-  public async update(@Param() params: IScenariosRequestPayload, @Body() body: IScenariosRequestPayload) {
-    return await this.service.repository.update({ guid: params.guid }, { ...body });
-  }
+  public async update(@Param() params: IScenariosRequestPayload, @Body() body: IScenariosResponse) {
+    const result = await this.service.updateScenario(params.guid, body);
 
-  @Post('workshop')
-  public async updateScenarioPost(@Body() body) {
-    return this.service.updateScenario(body.workshopGuid, body.scenarioGuid);
+    return result;
   }
 
   /**
@@ -67,6 +66,10 @@ export interface IScenariosRequestPayload extends DeepPartial<Scenario> {}
 
 export interface IScenariosResponse extends Omit<DeepPartial<Scenario>, 'layers'> {
   layers: string[];
+}
+
+export interface IScenariosResponseDetails extends Omit<DeepPartial<Scenario>, 'layers'> {
+  layers: Array<{ guid: string; type: 'snapshot' | 'response' }>;
 }
 
 export interface IScenariosResponseResolved extends Omit<DeepPartial<Scenario>, 'layers'> {

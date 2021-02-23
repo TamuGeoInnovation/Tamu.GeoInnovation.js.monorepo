@@ -15,7 +15,7 @@ import esri = __esri;
   selector: 'tamu-gisc-snapshot-builder',
   templateUrl: './snapshot-builder.component.html',
   styleUrls: ['./snapshot-builder.component.scss'],
-  providers: [SnapshotService],
+  providers: [SnapshotService, EsriMapService]
 })
 export class SnapshotBuilderComponent implements OnInit {
   public builderForm: FormGroup;
@@ -27,15 +27,15 @@ export class SnapshotBuilderComponent implements OnInit {
 
   public config: MapConfig = {
     basemap: {
-      basemap: 'streets-navigation-vector',
+      basemap: 'streets-navigation-vector'
     },
     view: {
       mode: '2d',
       properties: {
         center: [-97.657046, 26.450253],
-        zoom: 11,
-      },
-    },
+        zoom: 11
+      }
+    }
   };
 
   constructor(
@@ -64,7 +64,7 @@ export class SnapshotBuilderComponent implements OnInit {
       description: ['', Validators.required],
       mapCenter: ['', Validators.required],
       zoom: ['', Validators.required],
-      layers: this.fb.array([]),
+      layers: this.fb.array([])
     });
 
     if (this.route.snapshot.params.guid) {
@@ -136,7 +136,7 @@ export class SnapshotBuilderComponent implements OnInit {
           this.ns.toast({
             message: 'Snapshot was updated successfully.',
             id: 'snapshot-update',
-            title: 'Updated Snapshot',
+            title: 'Updated Snapshot'
           });
         });
     } else {
@@ -147,7 +147,7 @@ export class SnapshotBuilderComponent implements OnInit {
           message: 'Snapshot was created successfully.',
           id: 'snapshot-create',
           title: 'New Snapshot',
-          acknowledge: false,
+          acknowledge: false
         });
       });
     }
