@@ -50,7 +50,7 @@ export const LayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'graphic',
+    type: 'graphics',
     id: 'drawing-layer',
     title: 'Drawn Features',
     native: {

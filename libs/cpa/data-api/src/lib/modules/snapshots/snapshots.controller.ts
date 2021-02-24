@@ -2,11 +2,10 @@ import { Controller, Patch, Param, Body, Delete, Get } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { Snapshot } from '@tamu-gisc/cpa/common/entities';
-import { ILayerConfiguration } from '@tamu-gisc/maps/feature/forms';
 
 import { BaseController } from '../base/base.controller';
 import { SnapshotsService } from './snapshots.service';
-import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
+import { CPALayer } from '../layers/layers.controller';
 
 @Controller('snapshots')
 export class SnapshotsController extends BaseController<Snapshot> {
@@ -42,5 +41,5 @@ export class SnapshotsController extends BaseController<Snapshot> {
 export interface ISnapshotsRequestPayload extends DeepPartial<Snapshot> {}
 
 export interface ISnapshotsResponse extends Omit<DeepPartial<Snapshot>, 'layers'> {
-  layers: Array<{ url?: string; graphics?: IGraphic[]; info?: ILayerConfiguration }>;
+  layers: Array<CPALayer>;
 }

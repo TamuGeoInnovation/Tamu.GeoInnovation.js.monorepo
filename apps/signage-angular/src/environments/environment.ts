@@ -44,7 +44,7 @@ export const LayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'graphic',
+    type: 'graphics',
     id: 'drawing-layer',
     title: 'Custom Boundary',
     listMode: 'show',
@@ -55,7 +55,7 @@ export const LayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'graphic',
+    type: 'graphics',
     id: 'selection-layer',
     title: 'Selected Buildings',
     listMode: 'hide',

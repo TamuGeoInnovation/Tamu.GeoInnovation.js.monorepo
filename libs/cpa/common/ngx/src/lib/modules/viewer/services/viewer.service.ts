@@ -4,7 +4,6 @@ import { BehaviorSubject, combineLatest, forkJoin, iif, interval, NEVER, Observa
 import { distinctUntilChanged, map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
 
 import {
-  IScenariosResponse,
   IScenariosResponseResolved,
   ISnapshotsResponse,
   IWorkshopRequestPayload
@@ -21,7 +20,7 @@ export class ViewerService {
   public workshop: Observable<IWorkshopRequestPayload>;
 
   public workshopSnapshots: Observable<Array<ISnapshotsResponse>>;
-  public workshopScenarios: Observable<Array<IScenariosResponse>>;
+  public workshopScenarios: Observable<Array<IScenariosResponseResolved>>;
 
   /**
    * Flattened collection of both snapshots and scenarios for a workshop
@@ -100,7 +99,8 @@ export class ViewerService {
         });
 
         return [...typedSnapshots, ...typedScenarios];
-      })
+      }),
+      shareReplay(1)
     );
 
     this.snapshotOrScenario = combineLatest([this.snapshotsAndScenarios, this.selectionIndex]).pipe(

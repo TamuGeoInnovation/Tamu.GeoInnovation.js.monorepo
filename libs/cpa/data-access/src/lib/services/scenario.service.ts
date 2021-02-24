@@ -2,12 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import {
-  IScenariosRequestPayload,
-  IScenariosResponse,
-  IScenariosResponseDetails,
-  IScenariosResponseResolved
-} from '@tamu-gisc/cpa/data-api';
+import { Scenario } from '@tamu-gisc/cpa/common/entities';
+import { IScenariosResponse, IScenariosResponseDetails, IScenariosResponseResolved } from '@tamu-gisc/cpa/data-api';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +15,7 @@ export class ScenarioService {
     this.resource = this.environment.value(`api_url`) + 'scenarios';
   }
 
-  public create(scenario: IScenariosRequestPayload) {
+  public create(scenario: Scenario) {
     return this.http.post<IScenariosResponse>(this.resource, scenario);
   }
 
@@ -32,10 +28,10 @@ export class ScenarioService {
   }
 
   public getForWorkshop(workshopGuid: string) {
-    return this.http.get<Array<IScenariosResponse>>(`${this.resource}/workshop/${workshopGuid}`);
+    return this.http.get<Array<IScenariosResponseResolved>>(`${this.resource}/workshop/${workshopGuid}`);
   }
 
-  public update(guid: string, scenario: IScenariosRequestPayload) {
+  public update(guid: string, scenario: Scenario) {
     return this.http.patch(`${this.resource}/${guid}`, scenario);
   }
 

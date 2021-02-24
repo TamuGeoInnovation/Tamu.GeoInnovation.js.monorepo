@@ -6,7 +6,8 @@ import { Scenario, Workshop, Response, Snapshot } from '@tamu-gisc/cpa/common/en
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseService } from '../base/base.service';
-import { IScenariosResponse, IScenariosResponseResolved } from './scenarios.controller';
+import { IScenariosResponse, IScenariosResponseDetails, IScenariosResponseResolved } from './scenarios.controller';
+import { CPALayer } from '../layers/layers.controller';
 
 @Injectable()
 export class ScenariosService extends BaseService<Scenario> {
@@ -35,7 +36,10 @@ export class ScenariosService extends BaseService<Scenario> {
       relations: ['scenarios']
     });
 
-    return workshop.scenarios;
+    // Resolve the layers for each of the scenarios
+    const resolvedScenarios = Promise.all(workshop.scenarios.map((s) => this.getGeometryLayersForScenario(s.guid)));
+
+    return resolvedScenarios;
   }
 
   public async updateScenario(scenarioGuid: string, scenarioDetails: IScenariosResponse) {
@@ -81,31 +85,88 @@ export class ScenariosService extends BaseService<Scenario> {
   }
 
   public async getGeometryLayersForScenario(scenarioGuid: string): Promise<IScenariosResponseResolved> {
-    const scenario = await this.scenarioRepo.findOne({
+    const scenario = ((await this.scenarioRepo.findOne({
       where: {
         guid: scenarioGuid
       }
-    });
+    })) as unknown) as IScenariosResponseDetails;
 
-    const responsesFromLayerGuids = await getRepository(Response).find({
-      where: {
-        guid: In((scenario.layers as unknown) as string[])
+    if (scenario.layers.length === 0) {
+      const mappedScenario = { ...scenario, layers: [] };
+      return mappedScenario;
+    } else {
+      // Separate the scenario layers into types and map out the guid to query for all of them.
+      const responseLayersGuids = scenario.layers.filter((l) => l.type === 'response').map((r) => r.guid);
+      const snapshotLayersGuids = scenario.layers.filter((l) => l.type === 'snapshot').map((r) => r.guid);
+
+      // Because the queries fail if any of the above arrays are empty due to invalid `In(<empty array>)`,
+      // we have to only run the queries for which the respective entity array has a length greater than 0.
+      const queries = [];
+
+      if (responseLayersGuids.length > 0) {
+        queries.push(
+          this.responseRepo.find({
+            where: {
+              guid: In(responseLayersGuids)
+            }
+          })
+        );
       }
-    });
 
-    return {
-      ...scenario,
-      layers: responsesFromLayerGuids.map((r) => {
-        return {
-          graphics: (r.shapes as unknown) as IGraphic[],
-          info: {
-            name: r.name,
-            description: r.notes,
-            type: 'graphics',
-            layerId: r.guid
+      if (snapshotLayersGuids.length > 0) {
+        queries.push(
+          this.snapshotRepo.find({
+            where: {
+              guid: In(snapshotLayersGuids)
+            }
+          })
+        );
+      }
+
+      const resolvedLayers = await Promise.all(queries);
+
+      // resolvedLayers resolves into an array containing arrays.
+      // Need to spread the inner arrays to avoid deep nesting iterations.
+      const flattened = resolvedLayers.flat();
+
+      // Order the resolved layers so that they match the original order specified by the scenario.
+      // This is because the queries for both snapshots and responses are not guaranteed to be in the
+      // original order.
+      //
+      // After that, map each depending on the type to the correct format used by the front-end.
+      const orderedResolved: IScenariosResponseResolved['layers'] = scenario.layers
+        .map((layerMeta) => {
+          return flattened.find((respOrSnap) => layerMeta.guid === respOrSnap.guid);
+        })
+        .map((resolved) => {
+          if (resolved instanceof Response) {
+            return {
+              graphics: (resolved.shapes as unknown) as IGraphic[],
+              info: {
+                name: resolved.name,
+                description: resolved.notes,
+                type: 'graphics',
+                layerId: resolved.guid
+              }
+            };
+          } else if (resolved instanceof Snapshot) {
+            return {
+              layers: (resolved.layers as unknown) as Array<CPALayer>,
+              info: {
+                name: resolved.title,
+                description: resolved.description,
+                type: 'group',
+                layerId: resolved.guid
+              }
+            };
           }
-        };
-      })
-    };
+        });
+
+      // Shallow copy the properties from the original scenario and overwrite the layers with the resolved,
+      // ordered, and mapped array.
+      const detailedScenario: IScenariosResponseResolved = { ...scenario, layers: orderedResolved };
+
+      return detailedScenario;
+    }
   }
 }

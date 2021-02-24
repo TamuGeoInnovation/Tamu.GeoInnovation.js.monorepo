@@ -199,6 +199,10 @@ export class EsriModuleProviderService {
     {
       class: 'esri/symbols/Symbol',
       name: 'Symbol'
+    },
+    {
+      class: 'esri/layers/GroupLayer',
+      name: 'GroupLayer'
     }
   ];
 

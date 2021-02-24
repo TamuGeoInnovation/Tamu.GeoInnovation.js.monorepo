@@ -96,6 +96,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy {
         )
         .subscribe((response) => {
           // Update form values
+
           this.config.updateFormValues(LayerConfiguration.normalizeOptions(response));
 
           if (this.link && this.ms !== null) {
@@ -156,6 +157,18 @@ export class LayerConfiguration {
     }
   }
 
+  public static getLayerType(type: string): 'feature' | 'graphics' | 'group' {
+    if (type === 'Feature Layer') {
+      return 'feature';
+    } else if (type === 'Graphics Layer') {
+      return 'graphics';
+    } else if (type === 'Group Layer') {
+      return 'group';
+    } else {
+      return type as ILayerConfiguration['type'];
+    }
+  }
+
   /**
    * Accepts an object and creates a LayerConfiguration object from
    * matching keys.
@@ -170,7 +183,7 @@ export class LayerConfiguration {
         type: '',
         description: '',
         drawingInfo: {
-          transparency: ''
+          opacity: ''
         }
       };
 
@@ -184,7 +197,11 @@ export class LayerConfiguration {
             if (shouldKeep instanceof Object) {
               value = getMatching(o[curr], shouldKeep);
             } else {
-              value = o[curr];
+              if (curr === 'type') {
+                value = this.getLayerType(o[curr]);
+              } else {
+                value = o[curr];
+              }
             }
 
             acc[curr] = value;
@@ -231,11 +248,11 @@ export class LayerConfiguration {
     }
   }
 
-  public toEsriLayerDefinition(): Partial<esri.FeatureLayer> | Partial<esri.GraphicsLayer> {
+  public toEsriLayerDefinition(): Partial<esri.FeatureLayer> | Partial<esri.GraphicsLayer> | Partial<esri.GroupLayer> {
     const f = this.form.getRawValue();
 
     return {
-      type: f.info.type === 'Feature Layer' ? 'feature' : f.info.type === 'Graphic Layer' ? 'graphics' : null,
+      type: LayerConfiguration.getLayerType(f.info.type),
       title: f.info.name,
       id: f.info.layerId,
       url: f.url
@@ -249,7 +266,7 @@ export class LayerConfiguration {
       type: [''],
       description: [''],
       drawingInfo: this.fb.group({
-        transparency: [0]
+        opacity: [1]
       })
     };
   }
@@ -260,11 +277,11 @@ export interface ILayerConfiguration {
 
   layerId?: string;
 
-  type?: 'feature' | 'graphics';
+  type?: 'feature' | 'graphics' | 'group';
 
   description?: string;
 
   drawingInfo?: {
-    transparency?: number;
+    opacity?: number;
   };
 }

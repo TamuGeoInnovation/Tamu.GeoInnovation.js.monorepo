@@ -16,7 +16,7 @@ import {
 
 import { v4 as guid } from 'uuid';
 
-import { IResponseRequestPayload, IResponseResponse } from '@tamu-gisc/cpa/data-api';
+import { IResponseRequestPayload, IResponseResponse, CPALayer } from '@tamu-gisc/cpa/data-api';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
 import { WorkshopService, ResponseService, ScenarioService } from '@tamu-gisc/cpa/data-access';
@@ -64,6 +64,14 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   private _$formReset: Subject<boolean> = new Subject();
   private _$destroy: Subject<boolean> = new Subject();
+  private _modules: {
+    featureLayer: esri.FeatureLayerConstructor;
+    graphicsLayer: esri.GraphicsLayerConstructor;
+    groupLayer: esri.GroupLayerConstructor;
+    graphic: esri.GraphicConstructor;
+  };
+  private _map: esri.Map;
+  private _view: esri.MapView;
 
   constructor(
     private fb: FormBuilder,
@@ -76,7 +84,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
-    this.initializeParticipant();
+    this._initializeParticipant();
 
     this.form = this.fb.group({
       name: [''],
@@ -151,7 +159,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           )
           .subscribe((status) => {
             if (status === 'VALID') {
-              this.updateOrCreateSubmission();
+              this._updateOrCreateSubmission();
             }
           });
       });
@@ -162,13 +170,23 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     combineLatest([
       this.snapshotHistory,
       this.ms.store,
-      from(this.mp.require(['FeatureLayer', 'GraphicsLayer', 'Graphic']))
+      from(this.mp.require(['FeatureLayer', 'GraphicsLayer', 'GroupLayer', 'Graphic']))
     ]).subscribe(
-      ([snapshotHistory, instances, [FeatureLayer, GraphicsLayer, Graphic]]: [
+      ([snapshotHistory, instances, [FeatureLayer, GraphicsLayer, GroupLayer, Graphic]]: [
         TypedSnapshotOrScenario[],
         MapServiceInstance,
-        [esri.FeatureLayerConstructor, esri.GraphicsLayerConstructor, esri.GraphicConstructor]
+        [esri.FeatureLayerConstructor, esri.GraphicsLayerConstructor, esri.GroupLayerConstructor, esri.GraphicConstructor]
       ]) => {
+        this._modules = {
+          featureLayer: FeatureLayer,
+          graphic: Graphic,
+          graphicsLayer: GraphicsLayer,
+          groupLayer: GroupLayer
+        };
+
+        this._map = instances.map;
+        this._view = instances.view as esri.MapView;
+
         // Find any layers associated with the current snapshot and clear them to prepare to add layers from the next snapshot
         const prevSnapshot = snapshotHistory.length > 1 ? snapshotHistory[0] : undefined;
         const currSnapshot = snapshotHistory.length > 1 ? snapshotHistory[1] : snapshotHistory[0];
@@ -178,20 +196,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         }
 
         if (prevSnapshot) {
-          const prevLayers = prevSnapshot.layers
-            .map((l) => {
-              return instances.map.layers.find((ml) => {
-                // Find layer ID from either a snapshot guid array, or the actual layer object id
-                const layerid = typeof l === 'string' ? l : l.info.layerId;
-
-                return ml.id === layerid;
-              });
-            })
-            .filter((r) => r !== undefined);
-
-          if (prevLayers.length > 0) {
-            instances.map.removeMany(prevLayers);
-          }
+          this._removeTimelineEventLayers(prevSnapshot);
         }
 
         // Queue the new layers on the next event loop, otherwise any layers that need removed
@@ -209,39 +214,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           if (currSnapshot.type === 'scenario') {
             this.getLayerForScenarioGuid(currSnapshot.guid)
               .then((layer) => {
-                const layers = layer.layers
-                  .map((l) => {
-                    const g = l.graphics.map((g) => {
-                      return Graphic.fromJSON(g);
-                    });
-
-                    return new GraphicsLayer({
-                      title: l.info.name,
-                      id: l.info.layerId,
-                      graphics: g,
-                      listMode: 'show'
-                    });
-                  })
-                  .reverse();
+                const layers = (this._generateCPALayers(layer.layers) as unknown) as Array<esri.Layer>;
 
                 instances.map.addMany(layers);
               })
               .catch((err) => {
                 throw new Error(err);
               });
-          } else {
+          } else if (currSnapshot.type === 'snapshot') {
             // Create a map of layers from the current snapshot to add to the map.
-            const layers = currSnapshot.layers
-              .map((l) => {
-                return new FeatureLayer({
-                  url: l.url,
-                  title: l.info.name,
-                  id: l.info.layerId,
-                  opacity: 1 - parseInt((l.info.drawingInfo.transparency as unknown) as string, 10) / 100,
-                  listMode: 'show'
-                });
-              })
-              .reverse();
+            const layers = this._generateCPALayers(currSnapshot.layers);
 
             instances.map.addMany(layers);
           }
@@ -319,7 +301,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         this.drawComponent.reset();
       }
       this.form.reset();
-      this.initializeParticipant();
+      this._initializeParticipant();
       this.responseIndex.next(-1);
     } else {
       this.mp.require(['Graphic', 'Symbol', 'Geometry']).then(([Graphic]: [esri.GraphicConstructor]) => {
@@ -339,7 +321,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         this.drawComponent.draw(graphics);
 
         // Set the component participant state.
-        this.initializeParticipant(submission.guid);
+        this._initializeParticipant(submission.guid);
       });
     }
   }
@@ -347,7 +329,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   /**
    * Updates the entry value of the current participant guid with the provided geometry.
    */
-  private updateOrCreateSubmission() {
+  private _updateOrCreateSubmission() {
     forkJoin([this.snapshot.pipe(take(1)), this.responses.pipe(take(1))]).subscribe(([snapshot, responses]) => {
       const parsed = (this.form.controls.drawn.value as Array<esri.Graphic>).map((graphic) => {
         return graphic.toJSON();
@@ -382,7 +364,82 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     });
   }
 
-  private initializeParticipant(id?: string) {
+  /**
+   * Generates esri layer classes from an array of CPA Layer definitions.
+   *
+   * The returned objects can be added directly to the map.
+   */
+  private _generateCPALayers(definitions: Array<CPALayer>) {
+    return definitions
+      .map((layer) => {
+        if (layer.info.type === 'group') {
+          // Construct GroupLayer
+          return new this._modules.groupLayer({
+            id: layer.info.layerId,
+            title: layer.info.name,
+            layers: layer.layers.map((l) => {
+              return new this._modules.featureLayer({
+                id: l.info.layerId,
+                url: l.url,
+                title: l.info.name,
+                opacity: l.info.drawingInfo.opacity < 1 ? l.info.drawingInfo.opacity / 100 : 1
+              });
+            }),
+            listMode: 'hide-children'
+          });
+        } else if (layer.info.type === 'graphics') {
+          const g = layer.graphics.map((g) => {
+            return this._modules.graphic.fromJSON(g);
+          });
+
+          return new this._modules.graphicsLayer({
+            title: layer.info.name,
+            id: layer.info.layerId,
+            graphics: g,
+            listMode: 'show'
+          });
+        } else if (layer.info.type === 'feature') {
+          return new this._modules.featureLayer({
+            id: layer.info.layerId,
+            url: layer.url,
+            title: layer.info.name,
+            opacity: layer.info.drawingInfo.opacity < 1 ? layer.info.drawingInfo.opacity / 100 : 1
+          });
+        } else {
+          console.warn(`Layer with object structure could not be generated:`, layer);
+          return undefined;
+        }
+      })
+      .filter((l) => {
+        return l !== undefined;
+      });
+  }
+
+  /**
+   * Accepts a timeline event object and extracts the layer ID's from its definition,
+   * used to remove all of the resolved layers from the map if they exist.
+   */
+  private _removeTimelineEventLayers(event: TypedSnapshotOrScenario): void {
+    const prevLayers = event.layers
+      .map((l) => {
+        return this._map.layers.find((ml) => {
+          // Find layer ID from either a snapshot guid array, or the actual layer object id
+          const layerid = typeof l === 'string' ? l : l.info.layerId;
+
+          return ml.id === layerid;
+        });
+      })
+      .filter((r) => r !== undefined);
+
+    if (prevLayers.length > 0) {
+      this._map.removeMany(prevLayers);
+    }
+  }
+
+  /**
+   * Sets the participant ID to be a provided one or generates one if not provided.
+   */
+  private _initializeParticipant(id?: string) {
     if (id) {
       this.participantGuid = id;
     } else {
