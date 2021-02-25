@@ -47,6 +47,8 @@ export class ScenariosController extends BaseController<Scenario> {
    */
   @Patch(':guid')
   public async update(@Param() params: Scenario, @Body() body: IScenariosResponse) {
+    debugger
+    
     const result = await this.service.updateScenario(params.guid, body);
 
     return result;
