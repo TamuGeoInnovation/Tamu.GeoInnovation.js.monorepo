@@ -382,10 +382,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
                 id: l.info.layerId,
                 url: l.url,
                 title: l.info.name,
-                opacity: l.info.drawingInfo.opacity < 1 ? l.info.drawingInfo.opacity / 100 : 1
+                opacity: l.info.drawingInfo.opacity < 1 ? l.info.drawingInfo.opacity / 100 : 1,
+                listMode: 'hide'
               });
             }),
-            listMode: 'hide-children'
           });
         } else if (layer.info.type === 'graphics') {
           const g = layer.graphics.map((g) => {
