@@ -3,11 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject, combineLatest, forkJoin, iif, interval, NEVER, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
 
-import {
-  IScenariosResponseResolved,
-  ISnapshotsResponse,
-  IWorkshopRequestPayload
-} from '@tamu-gisc/cpa/data-api';
+import { IScenariosResponseResolved, ISnapshotsResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 import { ResponseService, WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/data-access';
 
 @Injectable({
@@ -76,16 +72,28 @@ export class ViewerService {
 
     this.snapshotsAndScenarios = combineLatest([
       this.workshopSnapshots,
-      interval(5000).pipe(
+      interval(7500).pipe(
         startWith(0),
         switchMap(() => {
           return iif(() => this.document.hidden === false, this.workshopScenarios, NEVER);
         }),
         // Limit emissions only whenever the scenario response is different between intervals
         distinctUntilChanged((prev, curr) => {
-          // Simple compare function. If ANYTHING (order, title, description, etc) about the response is
-          // different,this will evaluate to true.
-          return JSON.stringify(prev) === JSON.stringify(curr);
+          // Simple compare function. If ANYTHING (order, title, description, etc), except layer definitions,
+          // about the response is different,this will evaluate to true.
+          //
+          // This is to prevent the viewer from resetting the view whenever an admin makes a change during a workshop.
+          const layerlessPrevious = prev.map((p) => {
+            delete p.layers;
+            return p;
+          });
+
+          const layerlessCurr = prev.map((c) => {
+            delete c.layers;
+            return c;
+          });
+
+          return JSON.stringify(layerlessPrevious) === JSON.stringify(layerlessCurr);
         })
       )
     ]).pipe(
