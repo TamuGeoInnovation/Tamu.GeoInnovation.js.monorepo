@@ -112,9 +112,7 @@ export class SiteManager {
             //   name: results.access_control_user_role.access_control_role.name,
             // })
           })
-          .catch((error) => {
-            debugger;
-          });
+          .catch((error) => {});
       });
     });
   }

@@ -88,7 +88,6 @@ export const accounts_routes = (app: express.Application, provider: Provider) =>
     // rp.get(`${IPSTACK_URL}${req.ip},${account.signup_ip_address}?access_key=${IPSTACK_APIKEY}`).then(response => {
     //   const locations = JSON.parse(response);
     //   // TODO: YOU NEED TO PAY IPSTACK FOR BATCH ACCESS
-    //   debugger
 
     // });
     if (user.enabled2fa) {
@@ -265,13 +264,11 @@ export const accounts_routes = (app: express.Application, provider: Provider) =>
 
   // app.get("/admin/userrole/:userGuid", async (req, res, next) => {
   //   OIDCAccount.getAccountAccess(req.params.userGuid).then((result: any) => {
-  //     debugger
   //     res.status(200).send({
   //       role: result.access_control_role.name,
   //       name: result.account.name,
   //     })
   //   }).catch(error => {
-  //     debugger
   //     res.status(500).send({ operation: "failed" })
   //   })
   // })
