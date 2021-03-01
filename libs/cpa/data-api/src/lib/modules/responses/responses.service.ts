@@ -28,6 +28,7 @@ export class ResponsesService extends BaseService<Response> {
     return await this.repo
       .createQueryBuilder('r')
       .leftJoinAndSelect('r.snapshot', 'snapshot')
+      .leftJoinAndSelect('r.scenario', 'scenario')
       .where('r.workshopGuid = :w', {
         w: params
       })

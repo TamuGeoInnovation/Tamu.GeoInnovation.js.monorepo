@@ -6,6 +6,7 @@ import {
   takeUntil,
   debounceTime,
   switchMap,
+  map,
   take,
   throttle,
   withLatestFrom,
@@ -105,8 +106,24 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         switchMap((event) => {
           return forkJoin([this.workshop.pipe(take(1)), this.snapshot.pipe(take(1))]);
         }),
-        switchMap(([workshop, snapshot]) => {
-          return this.rs.getResponsesForWorkshopAndSnapshot(workshop.guid, snapshot.guid);
+        switchMap(([workshop, snapshotOrScenario]) => {
+          if (snapshotOrScenario?.type === 'snapshot') {
+            return this.rs.getResponsesForWorkshopAndSnapshot(workshop.guid, snapshotOrScenario.guid);
+          } else if (snapshotOrScenario.type === 'scenario') {
+            return this.rs.getResponsesForWorkshop(workshop.guid).pipe(
+              map((responses) => {
+                return responses.filter((response) => {
+                  if (response.scenario) {
+                    return response;
+                  }
+                });
+              })
+            );
+          } else {
+            const message = 'snapshotOrScenario without type';
+            console.warn(message);
+            throw Error(message);
+          }
         }),
         shareReplay(1)
       );
@@ -353,12 +370,17 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       } else {
         // If there is no existing submission for the current participant guid, add a dictionary index for the current
         // participant guid.
-        submission.snapshotGuid = snapshot.guid;
-        submission.workshopGuid = this.route.snapshot.params['guid'];
-
-        this.rs.createResponse(submission).subscribe((submissionStatus) => {
-          this.responseSave.emit();
-          console.log('Created response');
+        this.snapshot.pipe(take(1)).subscribe((snapShotOrScenario) => {
+          if (snapShotOrScenario.type === 'scenario') {
+            submission.scenarioGuid = snapshot.guid;
+          } else {
+            submission.snapshotGuid = snapshot.guid;
+          }
+          submission.workshopGuid = this.route.snapshot.params['guid'];
+          this.rs.createResponse(submission).subscribe((submissionStatus) => {
+            this.responseSave.emit();
+            console.log('Created response');
+          });
         });
       }
     });
@@ -385,7 +407,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
                 opacity: l.info.drawingInfo.opacity < 1 ? l.info.drawingInfo.opacity / 100 : 1,
                 listMode: 'hide'
               });
-            }),
+            })
           });
         } else if (layer.info.type === 'graphics') {
           const g = layer.graphics.map((g) => {
