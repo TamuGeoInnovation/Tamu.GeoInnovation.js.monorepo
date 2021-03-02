@@ -8,7 +8,14 @@ import { delay, map, pluck, shareReplay, skip, take, tap, withLatestFrom } from 
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponseService, ScenarioService, SnapshotService, WorkshopService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { IResponseResponse, ISnapshotsResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import {
+  IResponseResponse,
+  IScenariosResponse,
+  IScenariosResponseResolved,
+  ISnapshotsResponse,
+  IWorkshopRequestPayload,
+  ResponsesController
+} from '@tamu-gisc/cpa/data-api';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import esri = __esri;
@@ -34,6 +41,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public responses: Observable<IResponseResponse[]>;
   public workshops: Observable<IWorkshopRequestPayload[]>;
   public snapshots: Observable<ISnapshotsResponse[]>;
+  public scenarios: Observable<IScenariosResponseResolved[]>;
 
   private _modules: {
     graphic: esri.GraphicConstructor;
@@ -84,7 +92,8 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
       mapCenter: [''],
       zoom: [''],
       layers: [[]],
-      snapshots: [[]]
+      snapshots: [[]],
+      scenarios: [[]]
     });
 
     // Fetch all Workshops
@@ -113,6 +122,12 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
               if (r.workshop) {
                 this.selectedWorkshop = r.workshop?.guid;
                 this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
+
+                this.scenarios = this.scenario.getForWorkshop(this.selectedWorkshop).pipe(
+                  map((scenarios) => {
+                    return scenarios.filter((scenario) => scenario.guid !== this.selectedWorkshop);
+                  })
+                );
 
                 this.builderForm.controls.snapshots.valueChanges
                   .pipe(skip(1), withLatestFrom(this.snapshots))
@@ -168,6 +183,15 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     });
 
     this.graphicPreview.addMany(graphics);
+  }
+
+  public getTitleFromResponseSource(response: IResponseResponse) {
+    if (response.scenario) {
+      return response.scenario.title;
+    }
+    if (response.snapshot) {
+      return response.snapshot.title;
+    }
   }
 
   /**
@@ -258,6 +282,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
 
       // Remove the snapshots object from the form value, as the backend calls an update function and fails if provided.
       delete value.snapshots;
+      delete value.scenarios;
 
       value.layers = combinedLayers;
 
