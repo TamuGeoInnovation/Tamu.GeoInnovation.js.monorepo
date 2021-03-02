@@ -179,6 +179,13 @@ export class ExportComponent implements OnInit {
       formData.responses.forEach((response) => {
         if (response.shapes) {
           response.shapes.forEach((shape) => {
+            shape.attributes = {
+              name: response.name,
+              notes: response.notes,
+              created: response.created,
+              snapshot: response.snapshot?.title,
+              snapshot_description: response.snapshot?.description
+            };
             if (shape.geometry?.x && shape.geometry?.y) {
               wad.points.push(shape);
             } else if (shape.geometry?.paths) {
@@ -236,8 +243,20 @@ export class ExportComponent implements OnInit {
         {
           alias: 'Created',
           name: 'created',
-          type: 'esriFieldTypeDate',
+          type: 'esriFieldTypeString',
           length: 128
+        },
+        {
+          alias: 'Snapshot_title',
+          name: 'snapshot',
+          type: 'esriFieldTypeString',
+          length: 128
+        },
+        {
+          alias: 'Snapshot_description',
+          name: 'snapshot_description',
+          type: 'esriFieldTypeString',
+          length: 256
         }
       ]
     };
