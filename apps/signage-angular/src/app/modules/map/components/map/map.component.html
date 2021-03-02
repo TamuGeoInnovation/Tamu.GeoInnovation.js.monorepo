@@ -12,7 +12,7 @@
 
     <tamu-gisc-layer-filter [reference]="'signage-layer'" [setDefinitionExpression]="true" [executeFilterQuery]="true" [filterGeometry]="spatialFeatures" [spatialRelationship]="'intersects'" (filterQueryResults)="filterFeatures.next($event)"></tamu-gisc-layer-filter>
 
-    <tamu-gisc-map-draw [reference]="'drawing-layer'" [defaultUpdateTool]="'reshape'" [collapseGraphics]="true" (export)="spatialFeatures.next($event)"></tamu-gisc-map-draw>
+    <tamu-gisc-map-draw-basic [reference]="'drawing-layer'" [defaultUpdateTool]="'reshape'" [collapseGraphics]="true" (export)="spatialFeatures.next($event)"></tamu-gisc-map-draw-basic>
 
     <tamu-gisc-selection-summary [selfCollect]="false" [collection]="filterFeatures" [deleteDuplicates]="true" [identifier]="'guid'" [layers]="'signage-layer'">
       <div class="charts">

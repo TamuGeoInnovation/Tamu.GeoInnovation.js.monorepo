@@ -203,6 +203,10 @@ export class EsriModuleProviderService {
     {
       class: 'esri/layers/GroupLayer',
       name: 'GroupLayer'
+    },
+    {
+      class: 'esri/Color',
+      name: 'Color'
     }
   ];
 

@@ -19,7 +19,7 @@ import { v4 as guid } from 'uuid';
 
 import { IResponseRequestPayload, IResponseResponse, CPALayer } from '@tamu-gisc/cpa/data-api';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
-import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
+import { MapDrawAdvancedComponent } from '@tamu-gisc/maps/feature/draw';
 import { WorkshopService, ResponseService, ScenarioService } from '@tamu-gisc/cpa/data-access';
 
 import { TypedSnapshotOrScenario, ViewerService } from '../../../viewer/services/viewer.service';
@@ -60,8 +60,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    *
    * Needed to call its public `draw` and `reset` methods.
    */
-  @ViewChild(BaseDrawComponent, { static: true })
-  private drawComponent: BaseDrawComponent;
+  @ViewChild(MapDrawAdvancedComponent, { static: true })
+  private drawComponent: MapDrawAdvancedComponent;
 
   private _$formReset: Subject<boolean> = new Subject();
   private _$destroy: Subject<boolean> = new Subject();

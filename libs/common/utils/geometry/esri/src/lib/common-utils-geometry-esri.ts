@@ -321,6 +321,7 @@ export type AutocastableLayer =
   | { type: 'group'; layers: Array<AutocastableLayer>; title?: string }
   | { type: 'feature'; url: string; title?: string };
 export interface IGraphic {
+  uid: number;
   geometry: {
     spatialReference: {
       latestWkid: number;

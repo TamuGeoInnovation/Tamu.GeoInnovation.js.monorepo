@@ -9,9 +9,7 @@ import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-map-draw',
-  templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss'],
+  template: '',
   providers: [FeatureSelectorService]
 })
 export class BaseDrawComponent implements OnInit, OnDestroy {
@@ -86,9 +84,9 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
   private _activeToolWatchHandle: esri.WatchHandle;
 
   constructor(
-    private moduleProvider: EsriModuleProviderService,
     private mapService: EsriMapService,
     private layerListService: LayerListService,
+    public moduleProvider: EsriModuleProviderService,
     private selector: FeatureSelectorService
   ) {}
 
@@ -116,7 +114,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
 
             this.model.on('create', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) => {
               if (event.state === 'complete') {
-                this.emitDrawn(event.target.layer.graphics);
+                this.onCreate(event);
               }
             });
 
@@ -133,12 +131,12 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
                 (event.toolEventInfo && event.toolEventInfo.type === 'rotate-stop') ||
                 (event.toolEventInfo && event.toolEventInfo.type === 'scale-stop')
               ) {
-                this.emitDrawn(event.target.layer.graphics);
+                this.onUpdate(event);
               }
             });
 
             this.model.on('delete', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelDeleteEvent>) => {
-              this.emitDrawn(event.target.layer.graphics);
+              this.onDelete(event);
             });
 
             this._activeToolWatchHandle = this.model.watch('activeTool', (tool) => {
@@ -181,6 +179,18 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
     if (Boolean(this._activeToolWatchHandle)) {
       this._activeToolWatchHandle.remove();
     }
+  }
+
+  public onCreate(event?: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) {
+    this.emitDrawn(this.model.layer.graphics);
+  }
+
+  public onUpdate(event?: Partial<ISketchViewModelEvent & esri.SketchViewModelUpdateEvent>) {
+    this.emitDrawn(this.model.layer.graphics);
+  }
+
+  public onDelete(event?: Partial<ISketchViewModelEvent & esri.SketchViewModelDeleteEvent>) {
+    this.emitDrawn(this.model.layer.graphics);
   }
 
   /**
@@ -287,6 +297,13 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
    * Emits a 'create' event.
    */
   public draw(graphics: esri.Graphic[]) {
+    // const currentLayerCount = this.model.layer.graphics.length;
+
+    // graphics.forEach((graphic) => {
+    //   if(graphic.getObjectId() === undefined){
+    //     graphic.attributes.id
+    //   }
+    // })
     this.model.layer.addMany(graphics);
     this.model.emit('create', {
       type: 'create',
@@ -309,10 +326,12 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
   }
 }
 
-interface ISketchViewModel extends esri.SketchViewModel {
+export interface ISketchViewModel extends esri.SketchViewModel {
   toggleUpdateTool?: () => {};
+  canUndo?: () => {};
+  canRedo?: () => {};
 }
 
-interface ISketchViewModelEvent {
+export interface ISketchViewModelEvent {
   target: ISketchViewModel;
 }
