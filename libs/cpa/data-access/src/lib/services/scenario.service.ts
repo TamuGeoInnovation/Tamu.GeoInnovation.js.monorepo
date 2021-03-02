@@ -28,7 +28,7 @@ export class ScenarioService {
   }
 
   public getForWorkshop(workshopGuid: string) {
-    return this.http.get<Array<IScenariosResponseResolved>>(`${this.resource}/workshop/${workshopGuid}`);
+    return this.http.get<Array<IScenariosResponseDetails>>(`${this.resource}/workshop/${workshopGuid}`);
   }
 
   public update(guid: string, scenario: Scenario) {

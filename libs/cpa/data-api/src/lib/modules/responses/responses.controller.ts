@@ -3,6 +3,7 @@ import { Controller, Post, Body, Get, HttpException, Delete, Param, Patch } from
 import { DeepPartial } from 'typeorm';
 
 import { Response } from '@tamu-gisc/cpa/common/entities';
+import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseController } from '../base/base.controller';
 import { ResponsesService } from './responses.service';
@@ -73,6 +74,10 @@ export class ResponsesController extends BaseController<Response> {
 }
 
 export interface IResponseResponse extends DeepPartial<Response> {}
+
+export interface IResponseResolved extends Omit<IResponseResponse, 'shapes'> {
+  shapes: Array<IGraphic>;
+}
 
 export interface IResponseRequestPayload extends Omit<IResponseResponse, 'shapes'> {
   snapshotGuid?: string;

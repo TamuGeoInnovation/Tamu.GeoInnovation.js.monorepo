@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { HttpClient } from '@angular/common/http';
-import { IResponseResponse, IResponseRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IResponseResponse, IResponseRequestPayload, IResponseResolved } from '@tamu-gisc/cpa/data-api';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ResponseService {
   public resource: string;
@@ -19,7 +19,7 @@ export class ResponseService {
   }
 
   public getResponsesForWorkshop(workshopGuid: string) {
-    return this.http.get<IResponseResponse[]>(`${this.resource}/workshop/${workshopGuid}`);
+    return this.http.get<IResponseResolved[]>(`${this.resource}/workshop/${workshopGuid}`);
   }
 
   public getResponsesForWorkshopAndSnapshot(workshopGuid: string, snapshotGuid: string) {

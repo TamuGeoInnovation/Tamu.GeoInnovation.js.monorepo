@@ -3,18 +3,17 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { from, Observable, Subject } from 'rxjs';
-import { delay, map, pluck, shareReplay, skip, take, tap, withLatestFrom } from 'rxjs/operators';
+import { delay, filter, map, pluck, reduce, shareReplay, skip, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponseService, ScenarioService, SnapshotService, WorkshopService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
   IResponseResponse,
-  IScenariosResponse,
-  IScenariosResponseResolved,
+  IResponseResolved,
+  IScenariosResponseDetails,
   ISnapshotsResponse,
-  IWorkshopRequestPayload,
-  ResponsesController
+  IWorkshopRequestPayload
 } from '@tamu-gisc/cpa/data-api';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
@@ -38,10 +37,10 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public selectedWorkshop: string;
   public isExisting: Observable<boolean>;
 
-  public responses: Observable<IResponseResponse[]>;
+  public responses: Observable<IResponseResolved[]>;
   public workshops: Observable<IWorkshopRequestPayload[]>;
   public snapshots: Observable<ISnapshotsResponse[]>;
-  public scenarios: Observable<IScenariosResponseResolved[]>;
+  public scenarios: Observable<IScenariosResponseDetails[]>;
 
   private _modules: {
     graphic: esri.GraphicConstructor;
@@ -112,29 +111,31 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
         };
 
         // If we are in /details, populate the form
-        this.route.params.pipe(pluck('guid')).subscribe((guid) => {
-          if (guid) {
-            this.scenario.getOne(guid).subscribe((r) => {
+        this.route.params.pipe(pluck('guid')).subscribe((scenarioGuid) => {
+          if (scenarioGuid) {
+            this.scenario.getOne(scenarioGuid).subscribe((r) => {
               const responsesGuids = r.layers.filter((l) => l.type === 'response').map((l) => l.guid);
               const snapshotsGuids = r.layers.filter((l) => l.type === 'snapshot').map((l) => l.guid);
 
               // Check to see we have workshops
               if (r.workshop) {
                 this.selectedWorkshop = r.workshop?.guid;
-                this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
+                this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay(1));
 
                 this.scenarios = this.scenario.getForWorkshop(this.selectedWorkshop).pipe(
                   map((scenarios) => {
-                    return scenarios.filter((scenario) => scenario.guid !== this.selectedWorkshop);
+                    return scenarios.filter((scenario) => scenario.guid !== scenarioGuid);
                   })
                 );
 
+                // Setup event handler for form snapshot selection
                 this.builderForm.controls.snapshots.valueChanges
                   .pipe(skip(1), withLatestFrom(this.snapshots))
                   .subscribe(([guids, snapshots]) => {
                     this.addOrRemoveSnapshots(snapshots, guids);
                   });
 
+                // Setup event handler for form individual response selection
                 this.builderForm.controls.layers.valueChanges
                   .pipe(skip(1), withLatestFrom(this.responses))
                   .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
@@ -142,6 +143,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
                     this.addResponseGraphics(guids, responses);
                   });
 
+                // Instantiate the preview layers
                 this.mapService.store.pipe(take(1), delay(100)).subscribe((instance) => {
                   this.view = instance.view as esri.MapView;
                   this.map = instance.map;
@@ -170,19 +172,48 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     this.$destroy.complete();
   }
 
-  public loadPreviewResponseLayer(response: IResponseResponse) {
+  public loadPreviewResponseLayer(response: IResponseResolved) {
     // Remove existing Response preview graphic
-    this.graphicPreview.removeAll();
+    this.clearGraphicPreview();
 
     // Since the graphics were created through the `toJSON` Graphic method,
     // here we'll just let the API do its thing in the opposite direction so we
     // don't have to manually construct them. In this way, they will also inherit
     // custom symbol colors.
-    const graphics = (response.shapes as Array<IGraphic>).map((graphic) => {
-      return this._modules.graphic.fromJSON(graphic);
-    });
+    const graphics = this.instantiateGraphicsFromJSON(response.shapes);
 
     this.graphicPreview.addMany(graphics);
+  }
+
+  /**
+   * Filters out the responses that belong to the provided scenario guid, and adds them to the map for preview.
+   */
+  public loadPreviewScenario(scenario: IScenariosResponseDetails) {
+    this.responses
+      .pipe(
+        switchMap((s) => from(s)),
+        filter((response) => {
+          return response.scenario !== null;
+        }),
+        reduce((acc, response) => {
+          return [...acc, ...response.shapes];
+        }, [] as Array<IGraphic>)
+      )
+      .subscribe((wsResponses) => {
+        this.clearGraphicPreview();
+
+        const graphics = this.instantiateGraphicsFromJSON(wsResponses);
+
+        this.graphicPreview.addMany(graphics);
+      });
+  }
+
+  /**
+   * Clears all of the graphics form the graphic preview layer used
+   * to preview individual responses and entire scenario responses.
+   */
+  public clearGraphicPreview() {
+    this.graphicPreview.removeAll();
   }
 
   public getTitleFromResponseSource(response: IResponseResponse) {
@@ -370,5 +401,11 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     }, []);
 
     return flattenedShapesCollection;
+  }
+
+  private instantiateGraphicsFromJSON(graphics: Array<IGraphic>) {
+    return graphics.map((graphic) => {
+      return this._modules.graphic.fromJSON(graphic);
+    });
   }
 }

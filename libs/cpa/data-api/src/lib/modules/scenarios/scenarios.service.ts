@@ -36,10 +36,7 @@ export class ScenariosService extends BaseService<Scenario> {
       relations: ['scenarios']
     });
 
-    // Resolve the layers for each of the scenarios
-    const resolvedScenarios = Promise.all(workshop.scenarios.map((s) => this.getGeometryLayersForScenario(s.guid)));
-
-    return resolvedScenarios;
+    return workshop.scenarios;
   }
 
   public async updateScenario(scenarioGuid: string, scenarioDetails: IScenariosResponse) {
