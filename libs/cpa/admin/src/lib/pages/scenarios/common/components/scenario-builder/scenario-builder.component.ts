@@ -13,7 +13,8 @@ import {
   IResponseResolved,
   IScenariosResponseDetails,
   ISnapshotsResponse,
-  IWorkshopRequestPayload
+  IWorkshopRequestPayload,
+  IScenariosResponseResolved
 } from '@tamu-gisc/cpa/data-api';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
@@ -31,6 +32,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public view: esri.MapView;
   public map: esri.Map;
   public graphicPreview: esri.GraphicsLayer;
+  public responsePreview: esri.GraphicsLayer;
   public scenarioPreview: esri.GraphicsLayer;
   public scenarioSnapshots: { [key: string]: ISnapshotsResponse } = {};
 
@@ -40,7 +42,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public responses: Observable<IResponseResolved[]>;
   public workshops: Observable<IWorkshopRequestPayload[]>;
   public snapshots: Observable<ISnapshotsResponse[]>;
-  public scenarios: Observable<IScenariosResponseDetails[]>;
+  public scenarios: Observable<IScenariosResponseResolved[]>;
 
   private _modules: {
     graphic: esri.GraphicConstructor;
@@ -116,6 +118,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
             this.scenario.getOne(scenarioGuid).subscribe((r) => {
               const responsesGuids = r.layers.filter((l) => l.type === 'response').map((l) => l.guid);
               const snapshotsGuids = r.layers.filter((l) => l.type === 'snapshot').map((l) => l.guid);
+              const scenarioGuids = r.layers.filter((l) => l.type === 'scenario').map((l) => l.guid);
 
               // Check to see we have workshops
               if (r.workshop) {
@@ -138,9 +141,14 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
                 // Setup event handler for form individual response selection
                 this.builderForm.controls.layers.valueChanges
                   .pipe(skip(1), withLatestFrom(this.responses))
-                  .subscribe(([guids, responses]: [string[], IResponseResponse[]]) => {
-                    this.scenarioPreview.removeAll();
+                  .subscribe(([guids, responses]: [string[], IResponseResolved[]]) => {
                     this.addResponseGraphics(guids, responses);
+                  });
+
+                this.builderForm.controls.scenarios.valueChanges
+                  .pipe(skip(1), withLatestFrom(this.responses))
+                  .subscribe(([scenarioGuids, responses]) => {
+                    this.setScenarioResponseGraphics(scenarioGuids, responses);
                   });
 
                 // Instantiate the preview layers
@@ -148,13 +156,18 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
                   this.view = instance.view as esri.MapView;
                   this.map = instance.map;
                   this.graphicPreview = new this._modules.graphicsLayer();
+                  this.responsePreview = new this._modules.graphicsLayer();
                   this.scenarioPreview = new this._modules.graphicsLayer();
 
-                  this.map.add(this.graphicPreview);
-                  this.map.add(this.scenarioPreview);
+                  this.map.addMany([this.graphicPreview, this.responsePreview, this.scenarioPreview]);
 
                   if (r.layers) {
-                    this.builderForm.patchValue({ ...r, layers: responsesGuids, snapshots: snapshotsGuids });
+                    this.builderForm.patchValue({
+                      ...r,
+                      layers: responsesGuids,
+                      snapshots: snapshotsGuids,
+                      scenarios: scenarioGuids
+                    });
                   }
                 });
               } else {
@@ -172,7 +185,36 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     this.$destroy.complete();
   }
 
-  public loadPreviewResponseLayer(response: IResponseResolved) {
+  public setWorkshopScenario(workshop: string) {
+    // Workshop can be undefined
+    if (workshop) {
+      this.selectedWorkshop = workshop;
+      this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
+    }
+  }
+
+  /**
+   * Gets map service instance map center and sets the center control value using lat, lon format.
+   */
+  public setMapCenter() {
+    const center = this.view.center;
+
+    this.builderForm.controls.mapCenter.setValue(`${center.longitude.toFixed(4)}, ${center.latitude.toFixed(4)}`);
+  }
+
+  /**
+   * Gets map service instance current zoom level and sets the zoon control value.
+   */
+  public setMapZoom() {
+    const zoom = this.view.zoom;
+
+    this.builderForm.controls.zoom.setValue(zoom);
+  }
+
+  /**
+   * Previews response shapes from a snapshot or a scenario.
+   */
+  public loadPreviewResponse(response: IResponseResolved) {
     // Remove existing Response preview graphic
     this.clearGraphicPreview();
 
@@ -193,7 +235,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap((s) => from(s)),
         filter((response) => {
-          return response.scenario !== null;
+          return response.scenario !== null && response.scenario.guid === scenario.guid;
         }),
         reduce((acc, response) => {
           return [...acc, ...response.shapes];
@@ -298,6 +340,31 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     }
   }
 
+  public addResponseGraphics(guids: string[], responses: IResponseResolved[]) {
+    this.responsePreview.removeAll();
+    // Find those responses that intersect with the currently selected guids (checkboxes)
+    const selectedResponses = responses.filter((currentResponse) => guids.includes(currentResponse.guid));
+
+    const flattened = this.flattenResponsesGraphics(selectedResponses);
+
+    this.responsePreview.addMany(flattened);
+  }
+
+  /**
+   *
+   */
+  public setScenarioResponseGraphics(selectedScenarioGuids: string[], responses: IResponseResolved[]) {
+    this.scenarioPreview.removeAll();
+
+    const selectedScenariosResponses = responses.filter((response) => {
+      return response.scenario !== null && selectedScenarioGuids.includes(response.scenario.guid);
+    });
+
+    const flattened = this.flattenResponsesGraphics(selectedScenariosResponses);
+
+    this.scenarioPreview.addMany(flattened);
+  }
+
   public createScenario() {
     const value = this.builderForm.getRawValue();
 
@@ -309,7 +376,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
 
       // Combine the snapshots and responses. Snapshots are typically used as contextual base layers for responses, so they
       // they are at the bottom of the stack.
-      const combinedLayers = [...value.snapshots, ...value.layers];
+      const combinedLayers = [...value.snapshots, ...value.layers, ...value.scenarios];
 
       // Remove the snapshots object from the form value, as the backend calls an update function and fails if provided.
       delete value.snapshots;
@@ -352,41 +419,6 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public setWorkshopScenario(workshop: string) {
-    // Workshop can be undefined
-    if (workshop) {
-      this.selectedWorkshop = workshop;
-      this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
-    }
-  }
-
-  /**
-   * Gets map service instance map center and sets the center control value using lat, lon format.
-   */
-  public setMapCenter() {
-    const center = this.view.center;
-
-    this.builderForm.controls.mapCenter.setValue(`${center.longitude.toFixed(4)}, ${center.latitude.toFixed(4)}`);
-  }
-
-  /**
-   * Gets map service instance current zoom level and sets the zoon control value.
-   */
-  public setMapZoom() {
-    const zoom = this.view.zoom;
-
-    this.builderForm.controls.zoom.setValue(zoom);
-  }
-
-  public async addResponseGraphics(guids: string[], responses: IResponseResponse[]) {
-    // Find those responses that intersect with the currently selected guids (checkboxes)
-    const selectedResponses = responses.filter((currentResponse) => guids.includes(currentResponse.guid));
-
-    const flattened = this.flattenResponsesGraphics(selectedResponses);
-
-    this.scenarioPreview.addMany(flattened);
-  }
-
   /**
    * From a collection of responses, extracts and accumulates all of the graphics from each
    * to return a one-dimensional array of esri graphics.
@@ -403,6 +435,9 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     return flattenedShapesCollection;
   }
 
+  /**
+   * Creates graphic class instances from graphic portal JSON representations.
+   */
   private instantiateGraphicsFromJSON(graphics: Array<IGraphic>) {
     return graphics.map((graphic) => {
       return this._modules.graphic.fromJSON(graphic);

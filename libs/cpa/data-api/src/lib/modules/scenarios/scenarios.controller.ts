@@ -66,7 +66,7 @@ export interface IScenariosResponse extends Omit<DeepPartial<Scenario>, 'layers'
 }
 
 export interface IScenariosResponseDetails extends Omit<DeepPartial<Scenario>, 'layers'> {
-  layers: Array<{ guid: string; type: 'snapshot' | 'response' }>;
+  layers: Array<{ guid: string; type: 'snapshot' | 'response' | 'scenario' }>;
 }
 
 export interface IScenariosResponseResolved extends Omit<DeepPartial<Scenario>, 'layers'> {

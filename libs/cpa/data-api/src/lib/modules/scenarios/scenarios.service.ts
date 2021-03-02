@@ -36,7 +36,10 @@ export class ScenariosService extends BaseService<Scenario> {
       relations: ['scenarios']
     });
 
-    return workshop.scenarios;
+    // Resolve the layers for each of the scenarios
+    const resolvedScenarios = Promise.all(workshop.scenarios.map((s) => this.getGeometryLayersForScenario(s.guid)));
+
+    return resolvedScenarios;
   }
 
   public async updateScenario(scenarioGuid: string, scenarioDetails: IScenariosResponse) {
@@ -63,7 +66,17 @@ export class ScenariosService extends BaseService<Scenario> {
           }
         });
 
-        const [resolvedSnapLayers, resolvedRespLayers] = await Promise.all([snapLayers, respLayers]);
+        const scenLayers = this.scenarioRepo.find({
+          where: {
+            guid: In(scenarioDetails.layers)
+          }
+        });
+
+        const [resolvedSnapLayers, resolvedRespLayers, resolvedScenLayers] = await Promise.all([
+          snapLayers,
+          respLayers,
+          scenLayers
+        ]);
 
         categorizedLayers = scenarioDetails.layers.map((polyGuid) => {
           let type = '';
@@ -71,6 +84,8 @@ export class ScenariosService extends BaseService<Scenario> {
             type = 'snapshot';
           } else if (resolvedRespLayers.find((l) => l.guid === polyGuid)) {
             type = 'response';
+          } else if (resolvedScenLayers.find((l) => l.guid === polyGuid)) {
+            type = 'scenario';
           }
 
           return {
@@ -102,6 +117,7 @@ export class ScenariosService extends BaseService<Scenario> {
       // Separate the scenario layers into types and map out the guid to query for all of them.
       const responseLayersGuids = scenario.layers.filter((l) => l.type === 'response').map((r) => r.guid);
       const snapshotLayersGuids = scenario.layers.filter((l) => l.type === 'snapshot').map((r) => r.guid);
+      const scenarioLayersGuids = scenario.layers.filter((l) => l.type === 'scenario').map((r) => r.guid);
 
       // Because the queries fail if any of the above arrays are empty due to invalid `In(<empty array>)`,
       // we have to only run the queries for which the respective entity array has a length greater than 0.
@@ -127,6 +143,17 @@ export class ScenariosService extends BaseService<Scenario> {
         );
       }
 
+      if (scenarioLayersGuids.length > 0) {
+        queries.push(
+          this.scenarioRepo.find({
+            where: {
+              guid: In(scenarioLayersGuids)
+            },
+            relations: ['responses']
+          })
+        );
+      }
+
       const resolvedLayers = await Promise.all(queries);
 
       // resolvedLayers resolves into an array containing arrays.
@@ -147,7 +174,7 @@ export class ScenariosService extends BaseService<Scenario> {
             return {
               graphics: (resolved.shapes as unknown) as IGraphic[],
               info: {
-                name: resolved.name,
+                name: `${resolved.name} (Response)`,
                 description: resolved.notes,
                 type: 'graphics',
                 layerId: resolved.guid
@@ -157,9 +184,21 @@ export class ScenariosService extends BaseService<Scenario> {
             return {
               layers: (resolved.layers as unknown) as Array<CPALayer>,
               info: {
-                name: resolved.title,
+                name: `${resolved.title} (Snapshot)`,
                 description: resolved.description,
                 type: 'group',
+                layerId: resolved.guid
+              }
+            };
+          } else if (resolved instanceof Scenario) {
+            return {
+              graphics: resolved.responses.reduce((acc, curr) => {
+                return [...acc, ...((curr.shapes as unknown) as IGraphic[])];
+              }, []),
+              info: {
+                name: `${resolved.title} (Scenario)`,
+                description: resolved.description,
+                type: 'graphics',
                 layerId: resolved.guid
               }
             };
