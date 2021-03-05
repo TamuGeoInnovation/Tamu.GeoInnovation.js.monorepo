@@ -1808,6 +1808,17 @@
                   "with": "apps/cpa-nest/src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/cpa-nest/src/environments/environment.ts",
+                  "with": "apps/cpa-nest/src/environments/environment.dev.ts"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
