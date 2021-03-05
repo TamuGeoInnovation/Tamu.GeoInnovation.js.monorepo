@@ -1795,7 +1795,7 @@
             "outputPath": "dist/apps/cpa-nest",
             "main": "apps/cpa-nest/src/main.ts",
             "tsConfig": "apps/cpa-nest/tsconfig.app.json",
-            "assets": ["apps/cpa-nest/src/assets"]
+            "assets": ["apps/cpa-nest/src/assets", "apps/cpa-nest/src/package.json"]
           },
           "configurations": {
             "production": {
