@@ -4,4 +4,4 @@ export const environment = {
 
 export * from './common';
 
-export const api_url = 'https://cpa.geoservices.tamu.edu/api/';
+export const api_url = 'https://cpa-dev.geoservices.tamu.edu/api/';
