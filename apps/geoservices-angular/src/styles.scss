@@ -2,13 +2,8 @@
 @import 'libs/sass/1140';
 
 @import 'libs/sass/mixins';
-@import 'libs/sass/modules/forms';
 @import 'libs/sass/dom_flexbox';
 @import 'libs/sass/spacing';
-
-@import 'libs/sass/modules/loaders';
-
-@import 'libs/sass/modules/tabs';
 
 @import '~highlight.js/styles/atom-one-dark.css';
 
@@ -27,6 +22,12 @@ $lightened-alert-color: lighten($alert-color, 25%);
 $lightened-warning-color: lighten($warning-color, 25%);
 
 $primary-text-color: #62707d;
+
+@import 'libs/sass/modules/forms';
+
+@import 'libs/sass/modules/loaders';
+
+@import 'libs/sass/modules/tabs';
 
 html {
   height: 100%;
