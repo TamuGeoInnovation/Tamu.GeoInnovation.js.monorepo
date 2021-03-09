@@ -2347,7 +2347,7 @@
             "outputPath": "dist/apps/covid-data-api-nest",
             "main": "apps/covid-data-api-nest/src/main.ts",
             "tsConfig": "apps/covid-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/covid-data-api-nest/src/assets"],
+            "assets": ["apps/covid-data-api-nest/src/assets", "apps/covid-data-api-nest/src/package.json"],
             "buildLibsFromSource": true
           },
           "configurations": {
@@ -3146,7 +3146,7 @@
             "outputPath": "dist/apps/ues-effluent-data-api-nest",
             "main": "apps/ues-effluent-data-api-nest/src/main.ts",
             "tsConfig": "apps/ues-effluent-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/ues-effluent-data-api-nest/src/assets"],
+            "assets": ["apps/ues-effluent-data-api-nest/src/assets", "apps/ues-effluent-data-api-nest/src/package.json"],
             "buildLibsFromSource": true
           },
           "configurations": {
@@ -3198,7 +3198,7 @@
             "main": "apps/oidc-provider-nest/src/main.ts",
             "outputPath": "dist/apps/oidc-provider-nest",
             "tsConfig": "apps/oidc-provider-nest/tsconfig.app.json",
-            "assets": ["apps/oidc-provider-nest/src/assets"],
+            "assets": ["apps/oidc-provider-nest/src/assets", "apps/oidc-provider-nest/src/package.json"],
             "buildLibsFromSource": true
           },
           "configurations": {
@@ -3396,7 +3396,7 @@
             "main": "apps/oidc-admin-nest/src/main.ts",
             "outputPath": "dist/apps/oidc-admin-nest",
             "tsConfig": "apps/oidc-admin-nest/tsconfig.app.json",
-            "assets": ["apps/oidc-admin-nest/src/assets"],
+            "assets": ["apps/oidc-admin-nest/src/assets", "apps/oidc-admin-nest/src/package.json"],
             "buildLibsFromSource": true
           },
           "outputs": ["{options.outputPath}"]
@@ -3698,7 +3698,7 @@
             "main": "apps/two-data-api-nest/src/main.ts",
             "outputPath": "dist/apps/two-data-api-nest",
             "tsConfig": "apps/two-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/two-data-api-nest/src/assets"],
+            "assets": ["apps/two-data-api-nest/src/assets", "apps/two-data-api-nest/src/package.json"],
             "buildLibsFromSource": true
           },
           "outputs": ["{options.outputPath}"]
@@ -3810,7 +3810,7 @@
             "outputPath": "dist/apps/two-valup-nest",
             "main": "apps/two-valup-nest/src/main.ts",
             "tsConfig": "apps/two-valup-nest/tsconfig.app.json",
-            "assets": ["apps/two-valup-nest/src/assets"],
+            "assets": ["apps/two-valup-nest/src/assets", "apps/two-valup-nest/src/package.json"],
             "buildLibsFromSource": true
           },
           "configurations": {
