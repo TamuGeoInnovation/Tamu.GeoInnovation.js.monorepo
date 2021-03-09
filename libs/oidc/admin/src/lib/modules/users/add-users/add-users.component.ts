@@ -34,4 +34,9 @@ export class AddUsersComponent implements OnInit {
       answer2: ['']
     });
   }
+
+  public addUser() {
+    // TODO: This method was referenced in the template but was never implemented.
+    console.error('Not implemented.');
+  }
 }
