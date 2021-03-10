@@ -50,7 +50,9 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use('/oidc', OpenIdProvider.provider.callback);
 
-  await app.listenAsync(environment.port);
+  await app.listen(environment.port, () => {
+    console.log('Listening at http://localhost:' + environment.port + '/' + environment.globalPrefix);
+  });
 }
 
 bootstrap();
