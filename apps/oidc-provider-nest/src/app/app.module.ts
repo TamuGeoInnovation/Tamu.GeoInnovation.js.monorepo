@@ -81,6 +81,4 @@ import { dbConfig } from '../environments/environment';
   controllers: [AppController, SecretQuestionController],
   providers: [AppService]
 })
-export class AppModule {
-  constructor() {}
-}
+export class AppModule {}
