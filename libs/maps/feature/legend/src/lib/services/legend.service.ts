@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, forkJoin, fromEventPattern, Observable, ReplaySubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, startWith, switchMap, take } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
@@ -18,6 +18,7 @@ export class LegendService {
   public legendItems: Observable<Array<esri.ActiveLayerInfo>> = this._legendItems.asObservable();
 
   private _handle: esri.WatchHandle;
+  private _model: ReplaySubject<esri.LegendViewModel> = new ReplaySubject(1);
 
   constructor(
     private layerListService: LayerListService,
@@ -40,38 +41,35 @@ export class LegendService {
         this._store.next([...LegendSources, ...layersLegendItems]);
       });
     }
+  }
 
-    forkJoin([this.moduleProvider.require(['LegendViewModel']), this.mapService.store]).subscribe(
-      ([[LegendViewModel], instances]: [[esri.LegendViewModelConstructor], MapServiceInstance]) => {
+  public legend() {
+    return forkJoin([this.moduleProvider.require(['LegendViewModel']), this.mapService.store.pipe(take(1))]).pipe(
+      switchMap(([[LegendViewModel], instances]: [[esri.LegendViewModelConstructor], MapServiceInstance]) => {
         const model = new LegendViewModel({
           view: instances.view
         });
 
         // Create add/remove watch handlers for the activeLayerInfos property of the view model.
         // These are used to create a subscribable event stream.
+        let handle;
+
         const add = (handler) => {
-          if (this._handle === undefined) {
-            this._handle = model.activeLayerInfos.on('change', handler);
-          }
+          handle = model.activeLayerInfos.on('change', handler);
         };
 
         const remove = (handler): void => {
-          if (this._handle) {
-            this._handle.remove();
-          }
+          handle.remove();
         };
 
         // For every item, attempt to create a layer
-        fromEventPattern(add, remove)
-          .pipe(
-            map((event: IActiveLayerInfosChangeEvent) => {
-              return event.target.toArray();
-            })
-          )
-          .subscribe((layers) => {
-            this._legendItems.next(layers);
-          });
-      }
+        return fromEventPattern(add, remove).pipe(
+          startWith({ target: model.activeLayerInfos }),
+          map((event: IActiveLayerInfosChangeEvent) => {
+            return event.target.toArray();
+          })
+        );
+      })
     );
   }
 

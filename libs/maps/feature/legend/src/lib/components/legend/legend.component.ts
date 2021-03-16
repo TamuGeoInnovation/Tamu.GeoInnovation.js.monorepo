@@ -41,7 +41,7 @@ export class LegendComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.legend = this.legendService.store;
-    this.legendItems = this.legendService.legendItems;
+    this.legendItems = this.legendService.legend();
 
     this.responsive = this.responsiveService.snapshot;
 
