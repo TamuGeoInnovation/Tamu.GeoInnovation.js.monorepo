@@ -1,18 +1,17 @@
 import { Component, OnInit, OnDestroy, Optional } from '@angular/core';
 import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 import { Location } from '@angular/common';
-import { forkJoin, fromEvent, fromEventPattern, Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 import { v4 as guid } from 'uuid';
 
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
-import { LegendService } from '../../services/legend.service';
-
 import { LegendItem } from '@tamu-gisc/common/types';
-import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+
+import { LegendService } from '../../services/legend.service';
 
 import esri = __esri;
 
@@ -31,22 +30,19 @@ export class LegendComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<boolean> = new Subject();
 
-  private model: esri.LegendViewModel;
-  private _handle: esri.Handle;
-
   constructor(
     private legendService: LegendService,
     private responsiveService: ResponsiveService,
     private location: Location,
     private router: Router,
     private route: ActivatedRoute,
-    private history: RouterHistoryService,
-    private moduleProvider: EsriModuleProviderService,
-    private mapService: EsriMapService
+    private history: RouterHistoryService
   ) {}
 
   public ngOnInit() {
     this.legend = this.legendService.store;
+    this.legendItems = this.legendService.legendItems;
+
     this.responsive = this.responsiveService.snapshot;
 
     this.history
@@ -55,35 +51,6 @@ export class LegendComponent implements OnInit, OnDestroy {
       .subscribe((event: RouterEvent) => {
         this._lastRoute = event.url;
       });
-
-    forkJoin([this.moduleProvider.require(['LegendViewModel']), this.mapService.store]).subscribe(
-      ([[LegendViewModel], instances]: [[esri.LegendViewModelConstructor], MapServiceInstance]) => {
-        this.model = new LegendViewModel({
-          view: instances.view
-        });
-
-        // Create add/remove watch handlers for the activeLayerInfos property of the view model.
-        // These are used to create a subscribable event stream.
-        const add = (handler) => {
-          if (this._handle === undefined) {
-            this._handle = this.model.activeLayerInfos.on('change', handler);
-          }
-        };
-
-        const remove = (handler): void => {
-          if (this._handle) {
-            this._handle.remove();
-          }
-        };
-
-        // For every item, attempt to create a layer
-        this.legendItems = fromEventPattern(add, remove).pipe(
-          map((event: IActiveLayerInfosChangeEvent) => {
-            return event.target.toArray();
-          })
-        );
-      }
-    );
   }
 
   public ngOnDestroy() {
@@ -119,11 +86,4 @@ export class LegendComponent implements OnInit, OnDestroy {
 
     this.router.navigate(['../'], { relativeTo: this.route });
   }
-}
-
-interface IActiveLayerInfosChangeEvent {
-  added: Array<esri.ActiveLayerInfo>;
-  moved: Array<esri.ActiveLayerInfo>;
-  removed: Array<esri.ActiveLayerInfo>;
-  target: esri.LegendViewModel['activeLayerInfos'];
 }

@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, forkJoin, fromEventPattern, Observable, ReplaySubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
+import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 
@@ -12,7 +14,17 @@ export class LegendService {
   private _store: BehaviorSubject<LegendItem[]> = new BehaviorSubject([]);
   public store: Observable<LegendItem[]> = this._store.asObservable();
 
-  constructor(private layerListService: LayerListService, private environment: EnvironmentService) {
+  private _legendItems: ReplaySubject<Array<esri.ActiveLayerInfo>> = new ReplaySubject(1);
+  public legendItems: Observable<Array<esri.ActiveLayerInfo>> = this._legendItems.asObservable();
+
+  private _handle: esri.WatchHandle;
+
+  constructor(
+    private layerListService: LayerListService,
+    private environment: EnvironmentService,
+    private moduleProvider: EsriModuleProviderService,
+    private mapService: EsriMapService
+  ) {
     const LegendSources = this.environment.value('LegendSources', true);
     // Handle automatic layer addition and removal legend item display.
     // This does not handle removal on layer visibility change
@@ -28,6 +40,39 @@ export class LegendService {
         this._store.next([...LegendSources, ...layersLegendItems]);
       });
     }
+
+    forkJoin([this.moduleProvider.require(['LegendViewModel']), this.mapService.store]).subscribe(
+      ([[LegendViewModel], instances]: [[esri.LegendViewModelConstructor], MapServiceInstance]) => {
+        const model = new LegendViewModel({
+          view: instances.view
+        });
+
+        // Create add/remove watch handlers for the activeLayerInfos property of the view model.
+        // These are used to create a subscribable event stream.
+        const add = (handler) => {
+          if (this._handle === undefined) {
+            this._handle = model.activeLayerInfos.on('change', handler);
+          }
+        };
+
+        const remove = (handler): void => {
+          if (this._handle) {
+            this._handle.remove();
+          }
+        };
+
+        // For every item, attempt to create a layer
+        fromEventPattern(add, remove)
+          .pipe(
+            map((event: IActiveLayerInfosChangeEvent) => {
+              return event.target.toArray();
+            })
+          )
+          .subscribe((layers) => {
+            this._legendItems.next(layers);
+          });
+      }
+    );
   }
 
   /**
@@ -82,4 +127,11 @@ export class LegendService {
     // Set new store value with removed items
     this._store.next([...removed]);
   }
+}
+
+export interface IActiveLayerInfosChangeEvent {
+  added: Array<esri.ActiveLayerInfo>;
+  moved: Array<esri.ActiveLayerInfo>;
+  removed: Array<esri.ActiveLayerInfo>;
+  target: esri.LegendViewModel['activeLayerInfos'];
 }
