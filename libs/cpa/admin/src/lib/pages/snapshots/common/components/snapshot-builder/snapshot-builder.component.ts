@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { tap, map, shareReplay } from 'rxjs/operators';
 
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
@@ -32,8 +32,8 @@ export class SnapshotBuilderComponent implements OnInit {
     view: {
       mode: '2d',
       properties: {
-        center: [-97.657046, 26.450253],
-        zoom: 11
+        center: [-99.20987760767717, 31.225356084754477],
+        zoom: 4
       }
     }
   };
@@ -68,13 +68,22 @@ export class SnapshotBuilderComponent implements OnInit {
     });
 
     if (this.route.snapshot.params.guid) {
-      this.snapshot.getOne(this.route.snapshot.params.guid).subscribe((r) => {
-        this.builderForm.patchValue(r);
+      forkJoin([this.snapshot.getOne(this.route.snapshot.params.guid), this.mapService.store]).subscribe(
+        ([snapshot, instances]) => {
+          this.builderForm.patchValue(snapshot);
 
-        r.layers.forEach((l) => {
-          this.addLayer(l);
-        });
-      });
+          snapshot.layers.forEach((l) => {
+            this.addLayer(l);
+          });
+
+          if (snapshot.mapCenter !== undefined) {
+            instances.view.goTo({
+              center: snapshot.mapCenter.split(',').map((c) => parseFloat(c)),
+              zoom: snapshot.zoom
+            });
+          }
+        }
+      );
     } else {
       // Adds an initial layer group to the layers form array.
       this.addLayer();
