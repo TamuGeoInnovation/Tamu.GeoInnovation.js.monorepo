@@ -13,18 +13,21 @@ export class LegendService {
   public store: Observable<LegendItem[]> = this._store.asObservable();
 
   constructor(private layerListService: LayerListService, private environment: EnvironmentService) {
-    const LegendSources = this.environment.value('LegendSources');
+    const LegendSources = this.environment.value('LegendSources', true);
     // Handle automatic layer addition and removal legend item display.
     // This does not handle removal on layer visibility change
-    this.layerListService.layers({ watchProperties: 'visible' }).subscribe((value) => {
-      const layersLegendItems = value
-        .filter((item) => item.layer && item.layer.visible && item.outsideExtent === false)
-        .filter((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
-        .map((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
-        .map((obj) => obj[0]);
 
-      this._store.next([...LegendSources, ...layersLegendItems]);
-    });
+    if (LegendSources) {
+      this.layerListService.layers({ watchProperties: 'visible' }).subscribe((value) => {
+        const layersLegendItems = value
+          .filter((item) => item.layer && item.layer.visible && item.outsideExtent === false)
+          .filter((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
+          .map((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
+          .map((obj) => obj[0]);
+
+        this._store.next([...LegendSources, ...layersLegendItems]);
+      });
+    }
   }
 
   /**

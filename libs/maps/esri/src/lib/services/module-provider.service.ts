@@ -179,6 +179,10 @@ export class EsriModuleProviderService {
     {
       class: 'esri/widgets/Sketch/SketchViewModel',
       name: 'SketchViewModel'
+    },
+    {
+      class: 'esri/widgets/Legend/LegendViewModel',
+      name: 'LegendViewModel'
     }
   ];
 

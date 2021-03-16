@@ -4,10 +4,16 @@
 </div>
 
 <div class="sidebar-component-content-container">
-  <div class="legend-item" *ngFor="let item of legend | async" (click)="analyticsReport(item)">
-    <div class="image-container">
-      <img [src]="item.src" [alt]="item.title" />
+  <div class="legend-group" *ngFor="let group of legendItems | async">
+    <div class="layer-parent">{{ group.title }}</div>
+
+    <div class="legend-elements">
+      <div *ngFor="let elements of group.legendElements">
+        <div class="legend-info" *ngFor="let info of elements.infos">
+          <div class="image-container" [elementInsert]="info.preview"></div>
+          <div>{{info.value}}</div>
+        </div>
+      </div>
     </div>
-    <div>{{ item.title }}</div>
   </div>
 </div>

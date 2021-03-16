@@ -1,9 +1,24 @@
 @import 'libs/sass/components/sidebar';
+@import 'libs/sass/mixins';
 
-.legend-item {
+.layer-parent {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.legend-elements {
+  margin-left: 0.5rem;
+}
+
+.legend-info {
   @include flexbox();
   @include flex-direction(row);
   @include align-items(center);
+}
+
+.legend-group {
+  @include flexbox();
+  @include flex-direction(column);
 
   margin-bottom: 0.8rem;
   font-size: 0.875rem;
@@ -11,8 +26,6 @@
 
 .image-container {
   margin-right: 0.5rem;
-  width: 1.4rem;
-  height: 1.4rem;
 }
 
 img {
