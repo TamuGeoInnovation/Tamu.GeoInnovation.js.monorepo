@@ -61,7 +61,7 @@ export class SnapshotBuilderComponent implements OnInit {
     // Instantiate builder form
     this.builderForm = this.fb.group({
       title: ['', Validators.required],
-      description: ['', Validators.required],
+      description: [''],
       mapCenter: ['', Validators.required],
       zoom: ['', Validators.required],
       layers: this.fb.array([])
