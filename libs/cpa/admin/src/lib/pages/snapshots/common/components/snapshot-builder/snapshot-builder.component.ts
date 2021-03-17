@@ -76,6 +76,7 @@ export class SnapshotBuilderComponent implements OnInit {
             this.addLayer(l);
           });
 
+          // Change default zoom and center to values in snapshot response.
           if (snapshot.mapCenter !== undefined) {
             instances.view.goTo({
               center: snapshot.mapCenter.split(',').map((c) => parseFloat(c)),

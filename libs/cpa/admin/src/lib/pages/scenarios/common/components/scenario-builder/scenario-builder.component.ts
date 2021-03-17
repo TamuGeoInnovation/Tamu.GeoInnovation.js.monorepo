@@ -115,14 +115,14 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
         // If we are in /details, populate the form
         this.route.params.pipe(pluck('guid')).subscribe((scenarioGuid) => {
           if (scenarioGuid) {
-            this.scenario.getOne(scenarioGuid).subscribe((r) => {
-              const responsesGuids = r.layers.filter((l) => l.type === 'response').map((l) => l.guid);
-              const snapshotsGuids = r.layers.filter((l) => l.type === 'snapshot').map((l) => l.guid);
-              const scenarioGuids = r.layers.filter((l) => l.type === 'scenario').map((l) => l.guid);
+            this.scenario.getOne(scenarioGuid).subscribe((s) => {
+              const responsesGuids = s.layers.filter((l) => l.type === 'response').map((l) => l.guid);
+              const snapshotsGuids = s.layers.filter((l) => l.type === 'snapshot').map((l) => l.guid);
+              const scenarioGuids = s.layers.filter((l) => l.type === 'scenario').map((l) => l.guid);
 
               // Check to see we have workshops
-              if (r.workshopScenario.workshop !== undefined) {
-                this.selectedWorkshop = r.workshopScenario?.workshop?.guid;
+              if (s.workshopScenario.workshop !== undefined) {
+                this.selectedWorkshop = s.workshopScenario?.workshop?.guid;
                 this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay(1));
 
                 this.scenarios = this.scenario.getForWorkshop(this.selectedWorkshop).pipe(
@@ -161,13 +161,21 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
 
                   this.map.addMany([this.graphicPreview, this.responsePreview, this.scenarioPreview]);
 
-                  if (r.layers) {
+                  if (s.layers) {
                     this.builderForm.patchValue({
-                      ...r,
+                      ...s,
                       layers: responsesGuids,
                       snapshots: snapshotsGuids,
                       scenarios: scenarioGuids
                     });
+
+                    // Change default zoom and center to values in scenario response.
+                    if (s.mapCenter !== undefined) {
+                      this.view.goTo({
+                        center: s.mapCenter.split(',').map((c) => parseFloat(c)),
+                        zoom: s.zoom
+                      });
+                    }
                   }
                 });
               } else {
