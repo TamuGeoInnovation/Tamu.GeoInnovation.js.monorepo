@@ -2,12 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, In, Repository } from 'typeorm';
 
-import { Scenario, Workshop, Response, Snapshot } from '@tamu-gisc/cpa/common/entities';
+import { Scenario, Workshop, Response, Snapshot, WorkshopScenario, CPALayer } from '@tamu-gisc/cpa/common/entities';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseService } from '../base/base.service';
 import { IScenariosResponse, IScenariosResponseDetails, IScenariosResponseResolved } from './scenarios.controller';
-import { CPALayer } from '../layers/layers.controller';
 
 @Injectable()
 export class ScenariosService extends BaseService<Scenario> {
@@ -48,7 +47,7 @@ export class ScenariosService extends BaseService<Scenario> {
     // Scenario details layer guid's are mapped into objects with a type attribute describing whether they are of type
     // snapshot or response. If scenario detail layers array is empty, default to this array as a default update value,
     // otherwise, it will be re-assigned with the mapped array.
-    let categorizedLayers = [];
+    let categorizedLayers: Array<CPALayer> = [];
 
     if (existingScenario) {
       if (scenarioDetails.layers.length > 0) {
@@ -91,28 +90,38 @@ export class ScenariosService extends BaseService<Scenario> {
           return {
             guid: polyGuid,
             type
-          };
+          } as CPALayer;
         });
       }
 
       // Assert categorized as a string, otherwise `update` method will throw an error due to
       // incompatible types.
-      const detailed = { ...scenarioDetails, layers: (categorizedLayers as unknown) as string };
+      const detailed = { ...scenarioDetails, layers: categorizedLayers };
 
       return this.scenarioRepo.update({ guid: scenarioGuid }, detailed);
     }
   }
 
-  public async getGeometryLayersForScenario(scenarioGuid: string): Promise<IScenariosResponseResolved> {
-    const scenario = ((await this.scenarioRepo.findOne({
+  /**
+   * Retrieves the inner geometry layers for a workshop scenario relationship guid.
+   *
+   * @param {string} workshopScenarioRelationshipGuid The guid of the `workshopScenario` relationship. A secondary query will be
+   * run to get the actual scenario entity.
+   * @return {*}  {Promise<IScenariosResponseResolved>}
+   */
+  public async getGeometryLayersForScenario(workshopScenarioRelationshipGuid: string): Promise<IScenariosResponseResolved> {
+    const relation = await getRepository(WorkshopScenario).findOne({
       where: {
-        guid: scenarioGuid
-      }
-    })) as unknown) as IScenariosResponseDetails;
+        guid: workshopScenarioRelationshipGuid
+      },
+      relations: ['scenario']
+    });
+
+    const scenario = (relation.scenario as unknown) as IScenariosResponseDetails;
 
     if (scenario.layers.length === 0) {
-      const mappedScenario = { ...scenario, layers: [] };
-      return mappedScenario;
+      const mappedScenario = { ...relation, layers: [] };
+      return (mappedScenario as unknown) as IScenariosResponseResolved;
     } else {
       // Separate the scenario layers into types and map out the guid to query for all of them.
       const responseLayersGuids = scenario.layers.filter((l) => l.type === 'response').map((r) => r.guid);
@@ -207,7 +216,7 @@ export class ScenariosService extends BaseService<Scenario> {
 
       // Shallow copy the properties from the original scenario and overwrite the layers with the resolved,
       // ordered, and mapped array.
-      const detailedScenario: IScenariosResponseResolved = { ...scenario, layers: orderedResolved };
+      const detailedScenario: IScenariosResponseResolved = { ...relation, layers: orderedResolved };
 
       return detailedScenario;
     }

@@ -17,7 +17,8 @@ import {
 
 import { v4 as guid } from 'uuid';
 
-import { IResponseRequestPayload, IResponseResponse, CPALayer } from '@tamu-gisc/cpa/data-api';
+import { CPALayer } from '@tamu-gisc/cpa/common/entities';
+import { IResponseRequestPayload, IResponseResponse } from '@tamu-gisc/cpa/data-api';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { MapDrawAdvancedComponent } from '@tamu-gisc/maps/feature/draw';
 import { WorkshopService, ResponseService, ScenarioService } from '@tamu-gisc/cpa/data-access';
@@ -231,9 +232,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           if (currSnapshot.type === 'scenario') {
             this.getLayerForScenarioGuid(currSnapshot.guid)
               .then((layer) => {
-                const layers = (this._generateCPALayers(layer.layers) as unknown) as Array<esri.Layer>;
+                debugger
+                // const layers = (this._generateCPALayers(layer.layers) as unknown) as Array<esri.Layer>;
 
-                instances.map.addMany(layers);
+                // instances.map.addMany(layers);
               })
               .catch((err) => {
                 throw new Error(err);

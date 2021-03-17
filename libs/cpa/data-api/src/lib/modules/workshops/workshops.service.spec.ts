@@ -62,7 +62,7 @@ describe('WorkshopsService', () => {
       };
       jest.spyOn(workshopsRepository, 'findOne').mockResolvedValue(undefined);
       try {
-        await workshopsService.deleteSnapshot(mockparameter);
+        await workshopsService.removeWorkshopSnapshot(mockparameter);
       } catch (error) {
         expect(error.status).toBe(HttpStatus.NOT_FOUND);
       }

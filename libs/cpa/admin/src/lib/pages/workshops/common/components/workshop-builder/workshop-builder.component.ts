@@ -4,8 +4,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { pluck, shareReplay, map } from 'rxjs/operators';
 
-import { IScenariosResponse, ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
-import { Scenario, Snapshot } from '@tamu-gisc/cpa/common/entities';
+import { ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
+import { IScenario, Scenario, Snapshot } from '@tamu-gisc/cpa/common/entities';
 import { WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/data-access';
 
 @Component({
@@ -20,7 +20,7 @@ export class WorkshopBuilderComponent implements OnInit {
   public isExisting: Observable<boolean>;
 
   public snapshotList: Observable<ISnapshotsResponse[]>;
-  public scenarioList: Observable<IScenariosResponse[]>;
+  public scenarioList: Observable<IScenario[]>;
 
   public host = `${window.location.origin}`;
 
@@ -56,8 +56,13 @@ export class WorkshopBuilderComponent implements OnInit {
         this.form.patchValue(res);
       });
 
-      this.snapshotList = this.ss.getAll();
-      this.scenarioList = this.scenarioService.getAll();
+      this.snapshotList = this.ss.getAll().pipe(shareReplay(1));
+      this.scenarioList = this.scenarioService.getForWorkshop(this.route.snapshot.params['guid']).pipe(
+        map((rels) => {
+          return rels.map((r) => r.scenario);
+        }),
+        shareReplay(1)
+      );
     }
   }
 

@@ -13,12 +13,12 @@ import {
   IResponseResolved,
   IScenariosResponseDetails,
   ISnapshotsResponse,
-  IWorkshopRequestPayload,
-  IScenariosResponseResolved
+  IWorkshopRequestPayload
 } from '@tamu-gisc/cpa/data-api';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import esri = __esri;
+import { IWorkshopScenario } from '@tamu-gisc/cpa/common/entities';
 
 @Component({
   selector: 'tamu-gisc-scenario-builder',
@@ -42,7 +42,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public responses: Observable<IResponseResolved[]>;
   public workshops: Observable<IWorkshopRequestPayload[]>;
   public snapshots: Observable<ISnapshotsResponse[]>;
-  public scenarios: Observable<IScenariosResponseResolved[]>;
+  public scenarios: Observable<IWorkshopScenario[]>;
 
   private _modules: {
     graphic: esri.GraphicConstructor;
@@ -59,8 +59,8 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     view: {
       mode: '2d',
       properties: {
-        center: [-97.657046, 26.450253],
-        zoom: 11
+        center: [-99.20987760767717, 31.225356084754477],
+        zoom: 4
       }
     }
   };
@@ -121,13 +121,13 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
               const scenarioGuids = r.layers.filter((l) => l.type === 'scenario').map((l) => l.guid);
 
               // Check to see we have workshops
-              if (r.workshop) {
-                this.selectedWorkshop = r.workshop?.guid;
+              if (r.workshopScenario.workshop !== undefined) {
+                this.selectedWorkshop = r.workshopScenario?.workshop?.guid;
                 this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay(1));
 
                 this.scenarios = this.scenario.getForWorkshop(this.selectedWorkshop).pipe(
                   map((scenarios) => {
-                    return scenarios.filter((scenario) => scenario.guid !== scenarioGuid);
+                    return scenarios.filter((scenario) => scenario.scenario.guid !== scenarioGuid);
                   })
                 );
 
@@ -147,8 +147,8 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
 
                 this.builderForm.controls.scenarios.valueChanges
                   .pipe(skip(1), withLatestFrom(this.responses))
-                  .subscribe(([scenarioGuids, responses]) => {
-                    this.setScenarioResponseGraphics(scenarioGuids, responses);
+                  .subscribe(([scenGuids, responses]) => {
+                    this.setScenarioResponseGraphics(scenGuids, responses);
                   });
 
                 // Instantiate the preview layers

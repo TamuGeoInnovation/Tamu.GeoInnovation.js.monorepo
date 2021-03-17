@@ -1,8 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
 
-import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
-import { ILayerConfiguration } from '@tamu-gisc/maps/feature/forms';
-
 import { LayersService } from './layers.service';
 
 @Controller('layers')
@@ -35,32 +32,4 @@ export class LayersController {
 
     return this.service.getResponsesForWorkshopAndSnapshot(workshopGuid, snapshotGuid);
   }
-}
-
-export interface CPALayer {
-  /**
-   * Esri layer definition.
-   *
-   * Used when the layer group is 'feature'.
-   */
-  url?: string;
-
-  /**
-   * Esri graphics in their JSON portal representation.
-   *
-   * Used when the layer type is 'graphic'.
-   */
-  graphics?: Array<IGraphic>;
-
-  /**
-   * Esri layer definitions.
-   *
-   * Used when the layer type is 'group'
-   */
-  layers?: Array<CPALayer>;
-
-  /**
-   * Layer metadata
-   */
-  info?: ILayerConfiguration;
 }

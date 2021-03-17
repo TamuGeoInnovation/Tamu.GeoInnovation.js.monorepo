@@ -1,11 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
-import { Scenario } from '@tamu-gisc/cpa/common/entities';
+import { Scenario, CPALayer } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseController } from '../base/base.controller';
 import { ScenariosService } from './scenarios.service';
-import { CPALayer } from '../layers/layers.controller';
 
 @Controller('scenarios')
 export class ScenariosController extends BaseController<Scenario> {
@@ -21,7 +20,7 @@ export class ScenariosController extends BaseController<Scenario> {
   @Get()
   public getAll() {
     return this.service.getMany({
-      relations: ['workshop']
+      relations: ['workshopScenario', 'workshopScenario.scenario', 'workshopScenario.workshop']
     });
   }
 
@@ -36,7 +35,7 @@ export class ScenariosController extends BaseController<Scenario> {
       where: {
         guid: params.guid
       },
-      relations: ['workshop', 'workshop.responses']
+      relations: ['workshopScenario', 'workshopScenario.scenario', 'workshopScenario.workshop']
     });
 
     return scenario;

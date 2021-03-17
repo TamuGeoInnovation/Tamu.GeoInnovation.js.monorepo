@@ -7,7 +7,8 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-collection row">
+      <div class="form-collection column">
+        <p>Upon creating a scenario based on a workshop, the available responses will be limited to those drawn in the chosen workshop.</p>
         <tamu-gisc-select [value]="selectedWorkshop" [valueTemplate]="'guid'" [data]="workshops | async" [displayTemplate]="'title'" (changed)="setWorkshopScenario($event)"></tamu-gisc-select>
       </div>
       <p *ngIf="(workshops | async)?.length === 0">Currently there are no workshops</p>
@@ -71,14 +72,18 @@
               <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="snapshots" [referenceId]="'guid'">
                 <tamu-gisc-checkbox *ngFor="let snapshot of (snapshots | async)" [label]="snapshot.title" [data]="snapshot"></tamu-gisc-checkbox>
               </tamu-gisc-checkbox-group>
+
+              <p *ngIf="(snapshots | async)?.length === 0">There are no snapshots created yet.</p>
             </div>
           </tamu-gisc-tab>
 
           <tamu-gisc-tab label="Scenarios">
             <div class="leader-1 trailer-1">
               <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="scenarios" [referenceId]="'guid'">
-                <tamu-gisc-checkbox *ngFor="let scenario of (scenarios | async)" [label]="scenario.title" [data]="scenario" (mouseover)="loadPreviewScenario(scenario)" (mouseleave)="this.clearGraphicPreview()"></tamu-gisc-checkbox>
+                <tamu-gisc-checkbox *ngFor="let scenario of (scenarios | async)" [label]="scenario.scenario.title" [data]="scenario" (mouseover)="loadPreviewScenario(scenario)" (mouseleave)="this.clearGraphicPreview()"></tamu-gisc-checkbox>
               </tamu-gisc-checkbox-group>
+
+              <p *ngIf="(scenarios | async)?.length === 0">There are no scenarios created yet.</p>
             </div>
           </tamu-gisc-tab>
 

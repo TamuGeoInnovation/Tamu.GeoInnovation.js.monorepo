@@ -1,11 +1,10 @@
 import { Controller, Patch, Param, Body, Delete, Get } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
-import { Snapshot } from '@tamu-gisc/cpa/common/entities';
+import { Snapshot, CPALayer } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseController } from '../base/base.controller';
 import { SnapshotsService } from './snapshots.service';
-import { CPALayer } from '../layers/layers.controller';
 
 @Controller('snapshots')
 export class SnapshotsController extends BaseController<Snapshot> {

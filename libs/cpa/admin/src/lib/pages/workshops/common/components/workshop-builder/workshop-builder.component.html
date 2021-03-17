@@ -31,8 +31,12 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-collection row">
-        <tamu-gisc-select [data]="snapshotList | async" placeholder="Select a snapshot" [displayTemplate]="'title'" (changed)="submitWorkshop($event)"></tamu-gisc-select>
+      <p *ngIf="(snapshotList | async)?.length === 0">No snapshots have been created yet. <a [routerLink]="['/admin/snapshots/create']">Create a workshop snapshot</a> to be able to add it to the workshop.</p>
+
+      <div class="form-collection column" *ngIf="(snapshotList | async)?.length > 0">
+        <p>Select a snapshot from the dropdown list below to add to the workshop.</p>
+
+        <tamu-gisc-select [data]="snapshotList | async" placeholder="Select snapshot" [displayTemplate]="'title'" (changed)="submitWorkshop($event)"></tamu-gisc-select>
       </div>
 
       <div class="form-collection column" *ngIf="form.controls?.snapshots.value.length > 0">
@@ -43,8 +47,6 @@
           </div>
         </div>
       </div>
-
-      <p *ngIf="form.controls?.snapshots.value.length === 0">There are no associated snapshots with this workshop. Select a snapshot from the above list to add.</p>
     </div>
   </div>
 
@@ -56,8 +58,12 @@
     </div>
 
     <div class="form-section-body">
-      <div class="form-collection row">
-        <tamu-gisc-select [data]="scenarioList | async" placeholder="Select a scenario" [displayTemplate]="'title'" (changed)="submitWorkshopScenario($event)"></tamu-gisc-select>
+      <p *ngIf="(scenarioList | async)?.length === 0">There are no associated scenarios with this workshop. <a [routerLink]="['/admin/scenarios/create']">Create a workshop scenario</a> to add/remove.</p>
+
+      <div class="form-collection column" *ngIf="(scenarioList | async)?.length > 0">
+        <p>Select a scenario from the dropdown list below to add to the workshop.</p>
+
+        <tamu-gisc-select [data]="scenarioList | async" placeholder="Select scenario" [displayTemplate]="'title'" (changed)="submitWorkshopScenario($event)"></tamu-gisc-select>
       </div>
 
       <div class="form-collection column" *ngIf="form.controls?.scenarios.value.length > 0">
@@ -68,8 +74,6 @@
           </div>
         </div>
       </div>
-
-      <p *ngIf="form.controls?.scenarios.value.length === 0">There are no associated scenarios with this workshop. Select a scenario from the above list to add.</p>
     </div>
   </div>
 

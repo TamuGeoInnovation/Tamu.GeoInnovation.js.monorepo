@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Delete, Param, Patch } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 
 import { Workshop } from '@tamu-gisc/cpa/common/entities';
-import { DeepPartial } from 'typeorm';
 
 import { BaseController } from '../base/base.controller';
 import { IWorkshopExtractedSnapshots, WorkshopsService } from './workshops.service';
@@ -25,7 +25,7 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
    */
   @Delete('snapshot/:workshopGuid/:snapshotGuid')
   public async deleteSnapshot(@Param() params: IWorkshopSnapshotPayload) {
-    return await this.service.deleteSnapshot(params);
+    return await this.service.removeWorkshopSnapshot(params);
   }
 
   /**
@@ -33,7 +33,7 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
    */
   @Delete('scenario/:workshopGuid/:scenarioGuid')
   public async deleteScenario(@Param() params: IWorkshopScenarioPayload) {
-    return await this.service.deleteScenario(params);
+    return await this.service.removeWorkshopScenario(params);
   }
 
   /**

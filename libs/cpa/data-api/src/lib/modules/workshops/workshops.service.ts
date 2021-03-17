@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, getRepository } from 'typeorm';
 
-import { Workshop, Snapshot, Scenario, WorkshopSnapshots } from '@tamu-gisc/cpa/common/entities';
+import { Workshop, Snapshot, Scenario, WorkshopSnapshot, WorkshopScenario, IScenario } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseService } from '../base/base.service';
 import { IWorkshopRequestPayload, IWorkshopScenarioPayload, IWorkshopSnapshotPayload } from './workshops.controller';
@@ -15,18 +15,19 @@ export class WorkshopsService extends BaseService<Workshop> {
   }
 
   public async addNewSnapshot(body: IWorkshopSnapshotPayload) {
-    const existing = await this.getWorkshop(body.workshopGuid, true, false, false);
+    const workshop = await this.getWorkshop(body.workshopGuid, true, false, false);
 
-    if (existing) {
-      // Get the existing snapshot, if it exists.
+    if (workshop) {
+      // Quick check to see if the workshop already has the incoming snapshot. We'll skip the adding
+      // process if so.
       const snapshot = await getRepository(Snapshot).findOne({ where: { guid: body.snapshotGuid } });
 
-      const snapshotExistsInWorkshop = existing.snapshots.some((s) => s.guid === snapshot.guid);
+      const workshopHasSnapshot = workshop.snapshots.some((s) => s.guid === snapshot.guid);
 
-      if (snapshotExistsInWorkshop === false) {
-        const workshopSnapshot = getRepository(WorkshopSnapshots).create({
+      if (workshopHasSnapshot === false) {
+        const workshopSnapshot = getRepository(WorkshopSnapshot).create({
           snapshot: snapshot,
-          workshop: existing
+          workshop: workshop
         });
 
         await workshopSnapshot.save();
@@ -43,16 +44,27 @@ export class WorkshopsService extends BaseService<Workshop> {
   }
 
   public async addNewScenario(body: IWorkshopScenarioPayload) {
-    const existing = await this.repository.findOne({ where: { guid: body.workshopGuid }, relations: ['scenarios'] });
+    const workshop = await this.getWorkshop(body.workshopGuid, true, true, false);
 
-    if (existing) {
-      // Get the existing snapshot, if it exists.
-      const scenarios = await getRepository(Scenario).findOne({ where: { guid: body.scenarioGuid } });
+    if (workshop) {
+      // Get the existing scenario, if it exists.
+      const scenario = await getRepository(Scenario).findOne({ where: { guid: body.scenarioGuid } });
 
-      existing.scenarios.push(scenarios);
+      // Quick check to see if the workshop already has the incoming scenario. We'll skip the adding
+      // process if so.
+      const workshopHasScenario = workshop.scenarios.some((ws) => ws.guid === scenario.guid);
+
+      if (workshopHasScenario === false) {
+        const workshopScenarios = getRepository(WorkshopScenario).create({
+          workshop: workshop,
+          scenario: scenario
+        });
+
+        await workshopScenarios.save();
+      }
 
       try {
-        return await existing.save();
+        return this.getWorkshop(body.workshopGuid, true, true, false);
       } catch (err) {
         return err;
       }
@@ -61,7 +73,7 @@ export class WorkshopsService extends BaseService<Workshop> {
     }
   }
 
-  public async deleteSnapshot(params: IWorkshopSnapshotPayload) {
+  public async removeWorkshopSnapshot(params: IWorkshopSnapshotPayload) {
     const existing = await this.getWorkshop(params.workshopGuid, true, false, true);
 
     if (existing) {
@@ -75,16 +87,17 @@ export class WorkshopsService extends BaseService<Workshop> {
     }
   }
 
-  public async deleteScenario(params: IWorkshopScenarioPayload) {
-    const existing = await this.repository.findOne({
-      where: { guid: params.workshopGuid },
-      relations: ['scenarios']
-    });
+  public async removeWorkshopScenario(params: IWorkshopScenarioPayload) {
+    const workshop = await this.getWorkshop(params.workshopGuid, true, true, true);
 
-    if (existing) {
-      existing.scenarios = existing.scenarios.filter((s) => s.guid !== params.scenarioGuid);
+    if (workshop) {
+      const relationshipToDelete = workshop.scenarios.find((rel) => rel.scenario.guid === params.scenarioGuid);
 
-      return await existing.save();
+      if (relationshipToDelete) {
+        await relationshipToDelete.remove();
+
+        return this.getWorkshop(params.workshopGuid, true, true, false);
+      }
     } else {
       throw new HttpException('Not Found', 404);
     }
@@ -115,6 +128,7 @@ export class WorkshopsService extends BaseService<Workshop> {
 
     if (scenarios) {
       queryParams.relations.push('scenarios');
+      queryParams.relations.push('scenarios.scenario');
     }
     const existing = await this.getOne(queryParams);
 
@@ -123,11 +137,21 @@ export class WorkshopsService extends BaseService<Workshop> {
       if (returnMetadata) {
         return existing;
       } else {
-        const snaps = existing.snapshots.map((s) => s.snapshot);
+        let snaps: Array<Snapshot>;
+        let scens: Array<IScenario>;
+
+        if (snapshots) {
+          snaps = existing.snapshots.map((s) => s.snapshot);
+        }
+
+        if (scenarios) {
+          scens = existing.scenarios.map((s) => s.scenario);
+        }
 
         return {
           ...existing,
-          snapshots: snaps
+          snapshots: snaps,
+          scenarios: scens
         } as IWorkshopExtractedSnapshots;
       }
     } else {
@@ -154,8 +178,9 @@ export class WorkshopsService extends BaseService<Workshop> {
   }
 }
 
-export interface IWorkshopExtractedSnapshots extends Omit<Workshop, 'snapshots'> {
+export interface IWorkshopExtractedSnapshots extends Omit<Workshop, 'snapshots' | 'scenarios'> {
   snapshots: Array<Snapshot>;
+  scenarios: Array<IScenario>;
 }
 
 export type ISnapshotsOrWorkshopSnapshots = Workshop | IWorkshopExtractedSnapshots;
