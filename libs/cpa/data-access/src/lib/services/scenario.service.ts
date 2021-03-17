@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { IWorkshopScenario, Scenario } from '@tamu-gisc/cpa/common/entities';
+import { Scenario } from '@tamu-gisc/cpa/common/entities';
 import { IScenariosResponse, IScenariosResponseDetails, IScenariosResponseResolved } from '@tamu-gisc/cpa/data-api';
 
 @Injectable({
