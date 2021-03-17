@@ -188,12 +188,18 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     combineLatest([
       this.snapshotHistory,
       this.ms.store,
-      from(this.mp.require(['FeatureLayer', 'GraphicsLayer', 'GroupLayer', 'Graphic']))
+      from(this.mp.require(['FeatureLayer', 'GraphicsLayer', 'GroupLayer', 'Graphic', 'Extent']))
     ]).subscribe(
-      ([snapshotHistory, instances, [FeatureLayer, GraphicsLayer, GroupLayer, Graphic]]: [
+      ([snapshotHistory, instances, [FeatureLayer, GraphicsLayer, GroupLayer, Graphic, Extent]]: [
         TypedSnapshotOrScenario[],
         MapServiceInstance,
-        [esri.FeatureLayerConstructor, esri.GraphicsLayerConstructor, esri.GroupLayerConstructor, esri.GraphicConstructor]
+        [
+          esri.FeatureLayerConstructor,
+          esri.GraphicsLayerConstructor,
+          esri.GroupLayerConstructor,
+          esri.GraphicConstructor,
+          esri.ExtentConstructor
+        ]
       ]) => {
         this._modules = {
           featureLayer: FeatureLayer,
@@ -213,6 +219,17 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           return;
         }
 
+        if (currSnapshot.extent !== undefined || currSnapshot !== null) {
+          const ext = Extent.fromJSON(currSnapshot.extent);
+
+          this._view.goTo(ext);
+        } else if (currSnapshot.mapCenter !== undefined || currSnapshot.zoom !== undefined) {
+          this._view.goTo({
+            center: currSnapshot.mapCenter.split(',').map((c) => parseFloat(c)),
+            zoom: currSnapshot.zoom
+          });
+        }
+
         if (prevSnapshot) {
           this._removeTimelineEventLayers(prevSnapshot);
         }
@@ -220,15 +237,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         // Queue the new layers on the next event loop, otherwise any layers that need removed
         // will not have been removed until then and will not appear in the legend.
         setTimeout(() => {
-          // Parse coordinates form snapshot string definition
-          const split = currSnapshot.mapCenter.split(',').map((coordinate) => parseFloat(coordinate));
-
-          // Navigate to the parsed coordinates
-          instances.view.goTo({
-            target: [split[0], split[1]],
-            zoom: currSnapshot.zoom
-          });
-
           if (currSnapshot.type === 'scenario') {
             this.getLayerForScenarioGuid(currSnapshot.guid)
               .then((layer) => {

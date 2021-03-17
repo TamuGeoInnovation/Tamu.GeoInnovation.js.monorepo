@@ -207,6 +207,10 @@ export class EsriModuleProviderService {
     {
       class: 'esri/Color',
       name: 'Color'
+    },
+    {
+      class: 'esri/geometry/Extent',
+      name: 'Extent'
     }
   ];
 

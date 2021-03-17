@@ -62,8 +62,9 @@ export class SnapshotBuilderComponent implements OnInit {
     this.builderForm = this.fb.group({
       title: ['', Validators.required],
       description: [''],
-      mapCenter: ['', Validators.required],
-      zoom: ['', Validators.required],
+      mapCenter: [''],
+      zoom: [''],
+      extent: [undefined],
       layers: this.fb.array([])
     });
 
@@ -77,7 +78,9 @@ export class SnapshotBuilderComponent implements OnInit {
           });
 
           // Change default zoom and center to values in snapshot response.
-          if (snapshot.mapCenter !== undefined) {
+          if (snapshot.extent !== null) {
+            instances.view.extent = snapshot.extent as esri.Extent;
+          } else if (snapshot.mapCenter !== null || snapshot.zoom !== null) {
             instances.view.goTo({
               center: snapshot.mapCenter.split(',').map((c) => parseFloat(c)),
               zoom: snapshot.zoom
@@ -132,7 +135,7 @@ export class SnapshotBuilderComponent implements OnInit {
 
     if (this.route.snapshot.params.guid) {
       this.snapshot
-        .update(this.route.snapshot.params.guid, this.builderForm.value)
+        .update(this.route.snapshot.params.guid, value)
         .pipe(
           tap(() => {
             // Disable the form while the async operation is executed.
@@ -161,5 +164,11 @@ export class SnapshotBuilderComponent implements OnInit {
         });
       });
     }
+  }
+
+  public recordExtent() {
+    const extent = this.view.extent.toJSON();
+
+    this.builderForm.patchValue({ extent });
   }
 }

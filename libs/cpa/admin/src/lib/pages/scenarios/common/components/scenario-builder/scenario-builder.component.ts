@@ -92,6 +92,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
       description: ['', Validators.required],
       mapCenter: [''],
       zoom: [''],
+      extent: [undefined],
       layers: [[]],
       snapshots: [[]],
       scenarios: [[]]
@@ -171,10 +172,15 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
 
                     // Change default zoom and center to values in scenario response.
                     if (s.mapCenter !== undefined) {
-                      this.view.goTo({
-                        center: s.mapCenter.split(',').map((c) => parseFloat(c)),
-                        zoom: s.zoom
-                      });
+                      // Change default zoom and center to values in snapshot response.
+                      if (s.extent !== null) {
+                        this.view.extent = s.extent as esri.Extent;
+                      } else if (s.mapCenter !== null || s.zoom !== null) {
+                        this.view.goTo({
+                          center: s.mapCenter.split(',').map((c) => parseFloat(c)),
+                          zoom: s.zoom
+                        });
+                      }
                     }
                   }
                 });
@@ -450,5 +456,11 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     return graphics.map((graphic) => {
       return this._modules.graphic.fromJSON(graphic);
     });
+  }
+
+  public recordExtent() {
+    const extent = this.view.extent.toJSON();
+
+    this.builderForm.patchValue({ extent });
   }
 }

@@ -81,7 +81,7 @@ export class Snapshot extends CPABaseEntity {
   public zoom: number;
 
   @Column({ type: 'simple-json', nullable: true })
-  public extent: string;
+  public extent: __esri.Extent;
 
   @Column({ type: 'simple-json', nullable: true })
   public layers: Array<CPALayer>;
@@ -119,7 +119,7 @@ export class Scenario extends CPABaseEntity implements IScenario {
   public zoom: number;
 
   @Column({ type: 'simple-json', nullable: true })
-  public extent: string;
+  public extent: __esri.Extent;
 
   @Column({ type: 'simple-json', nullable: true })
   public layers: Array<LayerReference>;
@@ -192,7 +192,7 @@ export interface IScenario extends CPABaseEntity {
 
   zoom: number;
 
-  extent: string;
+  extent: __esri.Extent;
 
   layers: Array<LayerReference>;
 

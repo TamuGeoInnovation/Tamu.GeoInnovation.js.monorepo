@@ -43,18 +43,9 @@
         </div>
 
         <div class="form-section-body">
-          <div class="form-collection row">
-            <tamu-gisc-textbox formControlName="mapCenter" placeholder="Map Center" type="text" floatLabel="true">
-              <div class="textbox-actions material-icons-container">
-                <span class="material-icons action alt" title="Set Current Center" (click)="setMapCenter()">crop</span>
-              </div>
-            </tamu-gisc-textbox>
-
-            <tamu-gisc-textbox formControlName="zoom" placeholder="Map Zoom" type="number" floatLabel="true">
-              <div class="textbox-actions material-icons-container">
-                <span class="material-icons action alt" title="Set Current Zoom" (click)="setMapZoom()">search</span>
-              </div>
-            </tamu-gisc-textbox>
+          <div class="form-collection column">
+            <p>Adjust the map view using the map preview to the desired area/region and press the button below to record the extent. The recorded bounds will be the same for participants loading the scenario.</p>
+            <tamu-gisc-button [value]="'Record Map Extent'" (go)="recordExtent()"></tamu-gisc-button>
           </div>
         </div>
       </div>
