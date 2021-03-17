@@ -4,10 +4,10 @@ import { Workshop } from '@tamu-gisc/cpa/common/entities';
 import { DeepPartial } from 'typeorm';
 
 import { BaseController } from '../base/base.controller';
-import { WorkshopsService } from './workshops.service';
+import { IWorkshopExtractedSnapshots, WorkshopsService } from './workshops.service';
 
 @Controller('workshops')
-export class WorkshopsController extends BaseController<Workshop> {
+export class WorkshopsController extends BaseController<Workshop | IWorkshopExtractedSnapshots> {
   constructor(private service: WorkshopsService) {
     super(service);
   }
@@ -45,11 +45,11 @@ export class WorkshopsController extends BaseController<Workshop> {
   }
 
   /**
-   * Returns a specific workshop record.
+   * Returns a specific workshop record which includes snapshots and scenarios
    */
   @Get(':guid')
   public async getOne(@Param() params) {
-    return await this.service.getWorkshop(params);
+    return await this.service.getWorkshop(params.guid, true, true, false);
   }
 
   /**

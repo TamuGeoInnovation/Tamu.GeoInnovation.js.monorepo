@@ -32,9 +32,9 @@ export class SnapshotsService extends BaseService<Snapshot> {
           alias: workshopGuid
         }
       ],
-      relations: ['snapshots']
+      relations: ['snapshots', 'snapshots.snapshot']
     });
 
-    return workshop.snapshots;
+    return workshop.snapshots.map((s) => s.snapshot);
   }
 }
