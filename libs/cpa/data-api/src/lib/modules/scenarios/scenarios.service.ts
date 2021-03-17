@@ -2,11 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, In, Repository } from 'typeorm';
 
-import { Scenario, Workshop, Response, Snapshot, WorkshopScenario, CPALayer } from '@tamu-gisc/cpa/common/entities';
+import {
+  Scenario,
+  Workshop,
+  Response,
+  Snapshot,
+  WorkshopScenario,
+  CPALayer,
+  IScenario,
+  LayerReference
+} from '@tamu-gisc/cpa/common/entities';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseService } from '../base/base.service';
-import { IScenariosResponse, IScenariosResponseDetails, IScenariosResponseResolved } from './scenarios.controller';
+import { IScenariosResponse, IScenariosResponseResolved } from './scenarios.controller';
 
 @Injectable()
 export class ScenariosService extends BaseService<Scenario> {
@@ -36,7 +45,9 @@ export class ScenariosService extends BaseService<Scenario> {
     });
 
     // Resolve the layers for each of the scenarios
-    const resolvedScenarios = Promise.all(workshop.scenarios.map((s) => this.getGeometryLayersForScenario(s.guid)));
+    const resolvedScenarios = Promise.all(
+      workshop.scenarios.map((s) => this.getGeometryLayersForScenarioRelationship(s.guid))
+    );
 
     return resolvedScenarios;
   }
@@ -47,7 +58,7 @@ export class ScenariosService extends BaseService<Scenario> {
     // Scenario details layer guid's are mapped into objects with a type attribute describing whether they are of type
     // snapshot or response. If scenario detail layers array is empty, default to this array as a default update value,
     // otherwise, it will be re-assigned with the mapped array.
-    let categorizedLayers: Array<CPALayer> = [];
+    let categorizedLayers: Array<LayerReference> = [];
 
     if (existingScenario) {
       if (scenarioDetails.layers.length > 0) {
@@ -90,7 +101,7 @@ export class ScenariosService extends BaseService<Scenario> {
           return {
             guid: polyGuid,
             type
-          } as CPALayer;
+          } as LayerReference;
         });
       }
 
@@ -102,14 +113,9 @@ export class ScenariosService extends BaseService<Scenario> {
     }
   }
 
-  /**
-   * Retrieves the inner geometry layers for a workshop scenario relationship guid.
-   *
-   * @param {string} workshopScenarioRelationshipGuid The guid of the `workshopScenario` relationship. A secondary query will be
-   * run to get the actual scenario entity.
-   * @return {*}  {Promise<IScenariosResponseResolved>}
-   */
-  public async getGeometryLayersForScenario(workshopScenarioRelationshipGuid: string): Promise<IScenariosResponseResolved> {
+  public async getGeometryLayersForScenarioRelationship(
+    workshopScenarioRelationshipGuid: string
+  ): Promise<IScenariosResponseResolved> {
     const relation = await getRepository(WorkshopScenario).findOne({
       where: {
         guid: workshopScenarioRelationshipGuid
@@ -117,16 +123,33 @@ export class ScenariosService extends BaseService<Scenario> {
       relations: ['scenario']
     });
 
-    const scenario = (relation.scenario as unknown) as IScenariosResponseDetails;
+    return this.getGeometryLayersForScenario(relation.scenario);
+  }
 
-    if (scenario.layers.length === 0) {
-      const mappedScenario = { ...relation, layers: [] };
-      return (mappedScenario as unknown) as IScenariosResponseResolved;
+  /**
+   * Retrieves the inner geometry layers for a workshop scenario relationship guid.
+   *
+   * @param {string} workshopScenarioRelationshipGuid The guid of the `workshopScenario` relationship. A secondary query will be
+   * run to get the actual scenario entity.
+   * @return {*}  {Promise<IScenariosResponseResolved>}
+   */
+  public async getGeometryLayersForScenario(scenario: string | IScenario): Promise<IScenariosResponseResolved> {
+    let scen: IScenario;
+
+    if (typeof scenario === 'string') {
+      scen = await this.scenarioRepo.findOne({ where: { guid: scenario } });
+    } else {
+      scen = scenario;
+    }
+
+    if (scen.layers.length === 0) {
+      const mappedScenario = { ...scen, layers: [] };
+      return mappedScenario as IScenariosResponseResolved;
     } else {
       // Separate the scenario layers into types and map out the guid to query for all of them.
-      const responseLayersGuids = scenario.layers.filter((l) => l.type === 'response').map((r) => r.guid);
-      const snapshotLayersGuids = scenario.layers.filter((l) => l.type === 'snapshot').map((r) => r.guid);
-      const scenarioLayersGuids = scenario.layers.filter((l) => l.type === 'scenario').map((r) => r.guid);
+      const responseLayersGuids = scen.layers.filter((l) => l.type === 'response').map((r) => r.guid);
+      const snapshotLayersGuids = scen.layers.filter((l) => l.type === 'snapshot').map((r) => r.guid);
+      const scenarioLayersGuids = scen.layers.filter((l) => l.type === 'scenario').map((r) => r.guid);
 
       // Because the queries fail if any of the above arrays are empty due to invalid `In(<empty array>)`,
       // we have to only run the queries for which the respective entity array has a length greater than 0.
@@ -174,7 +197,7 @@ export class ScenariosService extends BaseService<Scenario> {
       // original order.
       //
       // After that, map each depending on the type to the correct format used by the front-end.
-      const orderedResolved: IScenariosResponseResolved['layers'] = scenario.layers
+      const orderedResolved: IScenariosResponseResolved['layers'] = scen.layers
         .map((layerMeta) => {
           return flattened.find((respOrSnap) => layerMeta.guid === respOrSnap.guid);
         })
@@ -216,7 +239,7 @@ export class ScenariosService extends BaseService<Scenario> {
 
       // Shallow copy the properties from the original scenario and overwrite the layers with the resolved,
       // ordered, and mapped array.
-      const detailedScenario: IScenariosResponseResolved = { ...relation, layers: orderedResolved };
+      const detailedScenario: IScenariosResponseResolved = { ...scen, layers: orderedResolved };
 
       return detailedScenario;
     }

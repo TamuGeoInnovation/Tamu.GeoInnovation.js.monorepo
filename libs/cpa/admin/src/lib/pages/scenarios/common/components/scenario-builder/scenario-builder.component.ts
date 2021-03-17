@@ -13,12 +13,12 @@ import {
   IResponseResolved,
   IScenariosResponseDetails,
   ISnapshotsResponse,
-  IWorkshopRequestPayload
+  IWorkshopRequestPayload,
+  IScenariosResponseResolved
 } from '@tamu-gisc/cpa/data-api';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import esri = __esri;
-import { IWorkshopScenario } from '@tamu-gisc/cpa/common/entities';
 
 @Component({
   selector: 'tamu-gisc-scenario-builder',
@@ -42,7 +42,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public responses: Observable<IResponseResolved[]>;
   public workshops: Observable<IWorkshopRequestPayload[]>;
   public snapshots: Observable<ISnapshotsResponse[]>;
-  public scenarios: Observable<IWorkshopScenario[]>;
+  public scenarios: Observable<IScenariosResponseResolved[]>;
 
   private _modules: {
     graphic: esri.GraphicConstructor;
@@ -127,7 +127,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
 
                 this.scenarios = this.scenario.getForWorkshop(this.selectedWorkshop).pipe(
                   map((scenarios) => {
-                    return scenarios.filter((scenario) => scenario.scenario.guid !== scenarioGuid);
+                    return scenarios.filter((scenario) => scenario.guid !== scenarioGuid);
                   })
                 );
 

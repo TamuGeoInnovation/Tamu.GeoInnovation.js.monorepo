@@ -122,7 +122,7 @@ export class Scenario extends CPABaseEntity implements IScenario {
   public extent: string;
 
   @Column({ type: 'simple-json', nullable: true })
-  public layers: Array<CPALayer>;
+  public layers: Array<LayerReference>;
 
   @OneToOne((type) => WorkshopScenario, (w) => w.scenario)
   public workshopScenario: IWorkshopScenario;
@@ -194,7 +194,7 @@ export interface IScenario extends CPABaseEntity {
 
   extent: string;
 
-  layers: Array<CPALayer>;
+  layers: Array<LayerReference>;
 
   workshopScenario: WorkshopScenario;
 
@@ -234,3 +234,10 @@ export interface CPALayer {
    */
   info?: ILayerConfiguration;
 }
+
+export interface LayerReference {
+  guid: string;
+  type: 'snapshot' | 'response' | 'scenario';
+}
+
+export type ScenarioLayers = CPALayer | LayerReference;

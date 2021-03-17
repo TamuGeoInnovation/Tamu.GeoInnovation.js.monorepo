@@ -232,10 +232,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           if (currSnapshot.type === 'scenario') {
             this.getLayerForScenarioGuid(currSnapshot.guid)
               .then((layer) => {
-                debugger
-                // const layers = (this._generateCPALayers(layer.layers) as unknown) as Array<esri.Layer>;
+                const layers = (this._generateCPALayers(layer.layers) as unknown) as Array<esri.Layer>;
 
-                // instances.map.addMany(layers);
+                instances.map.addMany(layers);
               })
               .catch((err) => {
                 throw new Error(err);

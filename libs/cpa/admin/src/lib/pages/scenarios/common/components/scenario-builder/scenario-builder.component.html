@@ -80,7 +80,7 @@
           <tamu-gisc-tab label="Scenarios">
             <div class="leader-1 trailer-1">
               <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="scenarios" [referenceId]="'guid'">
-                <tamu-gisc-checkbox *ngFor="let scenario of (scenarios | async)" [label]="scenario.scenario.title" [data]="scenario" (mouseover)="loadPreviewScenario(scenario)" (mouseleave)="this.clearGraphicPreview()"></tamu-gisc-checkbox>
+                <tamu-gisc-checkbox *ngFor="let scenario of (scenarios | async)" [label]="scenario.title" [data]="scenario" (mouseover)="loadPreviewScenario(scenario)" (mouseleave)="this.clearGraphicPreview()"></tamu-gisc-checkbox>
               </tamu-gisc-checkbox-group>
 
               <p *ngIf="(scenarios | async)?.length === 0">There are no scenarios created yet.</p>

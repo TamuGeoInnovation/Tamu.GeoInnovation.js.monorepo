@@ -27,8 +27,16 @@ export class ScenarioService {
     return this.http.get<IScenariosResponseDetails>(`${this.resource}/${guid}`);
   }
 
+  public getLayerForScenarioRelationship(relationshipGuid: string) {
+    return this.http.get<Array<IScenariosResponseResolved>>(`${this.resource}/rel/${relationshipGuid}/layer`);
+  }
+
+  public getLayerForScenario(relationshipGuid: string) {
+    return this.http.get<IScenariosResponseResolved>(`${this.resource}/${relationshipGuid}/layer`);
+  }
+
   public getForWorkshop(workshopGuid: string) {
-    return this.http.get<Array<IWorkshopScenario>>(`${this.resource}/workshop/${workshopGuid}`);
+    return this.http.get<Array<IScenariosResponseResolved>>(`${this.resource}/workshop/${workshopGuid}`);
   }
 
   public update(guid: string, scenario: Scenario) {
@@ -37,9 +45,5 @@ export class ScenarioService {
 
   public delete(guid: string) {
     return this.http.delete(`${this.resource}/${guid}`);
-  }
-
-  public getLayerForScenario(guid: string) {
-    return this.http.get<Array<IWorkshopScenario>>(`${this.resource}/${guid}/layer`);
   }
 }
