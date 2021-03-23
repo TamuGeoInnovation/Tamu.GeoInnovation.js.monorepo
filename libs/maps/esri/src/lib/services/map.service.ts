@@ -1,10 +1,10 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AsyncSubject, Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 
 import { SearchService } from '@tamu-gisc/search';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
-
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -24,14 +24,17 @@ export class EsriMapService {
   //
   private _modules: NullableMapServiceInstance = {};
 
-  private _store: AsyncSubject<MapServiceInstance> = new AsyncSubject();
+  private _store: BehaviorSubject<MapServiceInstance> = new BehaviorSubject(undefined);
 
   private _hitTest: BehaviorSubject<HitTestSnapshot> = new BehaviorSubject({ graphics: [] });
 
   public hitTest: Observable<HitTestSnapshot> = this._hitTest.asObservable();
 
   // Exposed observable that will be responsible for emitting values to subscribers
-  public readonly store: Observable<MapServiceInstance> = this._store.asObservable();
+  public readonly store: Observable<MapServiceInstance> = this._store.asObservable().pipe(
+    filter((s) => s !== undefined),
+    take(1)
+  );
 
   constructor(
     private moduleProvider: EsriModuleProviderService,
@@ -101,15 +104,12 @@ export class EsriMapService {
       view: this._modules.view
     });
 
-    // Declare the async subject complete to emit value.
-    this._store.complete();
-
     // Filter list of layers that need to be added on map load
     this.loadLayers(
       this.environment.value('LayerSources').filter((l) => l.loadOnInit === undefined || l.loadOnInit === true)
     );
 
-    // Load faeture list from url (e.g. howdy links)
+    // Load feature list from url (e.g. howdy links)
     this.selectFeaturesFromUrl();
 
     // Set up a hit test wrapper that can be subscribed to anywhere in the application.
@@ -126,6 +126,22 @@ export class EsriMapService {
         }
       });
     });
+  }
+
+  public destroy() {
+    if (this._modules.map !== undefined && this._modules.view !== undefined) {
+      this._modules.map.destroy();
+      this._modules.view.destroy();
+
+      this._store.next(undefined);
+
+      // Deal with the side-effects originating from mutating the environment variable.
+      // A more permanent and appropriate solution will be implemented at a later time.
+      this.environment.update(
+        'LayerSources',
+        this.environment.value('LayerSources').filter((s) => !s.runtimeAdded)
+      );
+    }
   }
 
   /**
@@ -323,7 +339,7 @@ export class EsriMapService {
           // If the source being processed does not exist in LayerSources, add it.
           // This is the case in dynamically added layers
           if (existingSourceIndex === -1) {
-            sources.push(source);
+            sources.push({ ...source, runtimeAdded: true });
           }
 
           // Add layer to map

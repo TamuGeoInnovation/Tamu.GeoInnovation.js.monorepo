@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Optional } from '@angular/core';
 import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
@@ -9,9 +9,11 @@ import { v4 as guid } from 'uuid';
 
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/responsive';
+import { LegendItem } from '@tamu-gisc/common/types';
+
 import { LegendService } from '../../services/legend.service';
 
-import { LegendItem } from '@tamu-gisc/common/types';
+import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-legend',
@@ -20,6 +22,7 @@ import { LegendItem } from '@tamu-gisc/common/types';
 })
 export class LegendComponent implements OnInit, OnDestroy {
   public legend: Observable<LegendItem[]>;
+  public legendItems: Observable<Array<esri.ActiveLayerInfo>>;
 
   public responsive: ResponsiveSnapshot;
 
@@ -29,7 +32,6 @@ export class LegendComponent implements OnInit, OnDestroy {
 
   constructor(
     private legendService: LegendService,
-    private analytics: Angulartics2,
     private responsiveService: ResponsiveService,
     private location: Location,
     private router: Router,
@@ -39,6 +41,8 @@ export class LegendComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.legend = this.legendService.store;
+    this.legendItems = this.legendService.legend();
+
     this.responsive = this.responsiveService.snapshot;
 
     this.history
@@ -57,21 +61,21 @@ export class LegendComponent implements OnInit, OnDestroy {
   /**
    * Reports any legend clicks to Google Analytics
    */
-  public analyticsReport(item: LegendItem): void {
-    const label = {
-      guid: guid(),
-      date: Date.now(),
-      value: item.title
-    };
+  // public analyticsReport(item: LegendItem): void {
+  //   const label = {
+  //     guid: guid(),
+  //     date: Date.now(),
+  //     value: item.title
+  //   };
 
-    this.analytics.eventTrack.next({
-      action: 'Legend Click',
-      properties: {
-        category: 'UI Interaction',
-        label: JSON.stringify(label)
-      }
-    });
-  }
+  //   this.analytics.eventTrack.next({
+  //     action: 'Legend Click',
+  //     properties: {
+  //       category: 'UI Interaction',
+  //       label: JSON.stringify(label)
+  //     }
+  //   });
+  // }
 
   public backAction(): void {
     // if (this._lastRoute) {

@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+
 import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/map.service';
 
 @Component({
@@ -6,7 +7,7 @@ import { EsriMapService, MapConfig, MapServiceInstance } from '../../services/ma
   templateUrl: './esri-map.component.html',
   styleUrls: ['./esri-map.component.scss']
 })
-export class EsriMapComponent implements OnInit {
+export class EsriMapComponent implements OnInit, OnDestroy {
   @Input()
   public config: MapConfig;
 
@@ -30,5 +31,9 @@ export class EsriMapComponent implements OnInit {
     this.mapService.store.subscribe((store) => {
       this.loaded.emit(store);
     });
+  }
+
+  public ngOnDestroy() {
+    this.mapService.destroy();
   }
 }

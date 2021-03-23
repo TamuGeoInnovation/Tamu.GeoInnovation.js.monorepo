@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, forkJoin, fromEventPattern, Observable, ReplaySubject } from 'rxjs';
+import { map, startWith, switchMap, take } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
+import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 
@@ -12,19 +14,63 @@ export class LegendService {
   private _store: BehaviorSubject<LegendItem[]> = new BehaviorSubject([]);
   public store: Observable<LegendItem[]> = this._store.asObservable();
 
-  constructor(private layerListService: LayerListService, private environment: EnvironmentService) {
-    const LegendSources = this.environment.value('LegendSources');
+  private _legendItems: ReplaySubject<Array<esri.ActiveLayerInfo>> = new ReplaySubject(1);
+  public legendItems: Observable<Array<esri.ActiveLayerInfo>> = this._legendItems.asObservable();
+
+  private _handle: esri.WatchHandle;
+  private _model: ReplaySubject<esri.LegendViewModel> = new ReplaySubject(1);
+
+  constructor(
+    private layerListService: LayerListService,
+    private environment: EnvironmentService,
+    private moduleProvider: EsriModuleProviderService,
+    private mapService: EsriMapService
+  ) {
+    const LegendSources = this.environment.value('LegendSources', true);
     // Handle automatic layer addition and removal legend item display.
     // This does not handle removal on layer visibility change
-    this.layerListService.layers({ watchProperties: 'visible' }).subscribe((value) => {
-      const layersLegendItems = value
-        .filter((item) => item.layer && item.layer.visible && item.outsideExtent === false)
-        .filter((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
-        .map((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
-        .map((obj) => obj[0]);
 
-      this._store.next([...LegendSources, ...layersLegendItems]);
-    });
+    if (LegendSources) {
+      this.layerListService.layers({ watchProperties: 'visible' }).subscribe((value) => {
+        const layersLegendItems = value
+          .filter((item) => item.layer && item.layer.visible && item.outsideExtent === false)
+          .filter((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
+          .map((lyr) => (<LayerSource>(<unknown>lyr.layer)).legendItems)
+          .map((obj) => obj[0]);
+
+        this._store.next([...LegendSources, ...layersLegendItems]);
+      });
+    }
+  }
+
+  public legend() {
+    return forkJoin([this.moduleProvider.require(['LegendViewModel']), this.mapService.store.pipe(take(1))]).pipe(
+      switchMap(([[LegendViewModel], instances]: [[esri.LegendViewModelConstructor], MapServiceInstance]) => {
+        const model = new LegendViewModel({
+          view: instances.view
+        });
+
+        // Create add/remove watch handlers for the activeLayerInfos property of the view model.
+        // These are used to create a subscribable event stream.
+        let handle;
+
+        const add = (handler) => {
+          handle = model.activeLayerInfos.on('change', handler);
+        };
+
+        const remove = (handler): void => {
+          handle.remove();
+        };
+
+        // For every item, attempt to create a layer
+        return fromEventPattern(add, remove).pipe(
+          startWith({ target: model.activeLayerInfos }),
+          map((event: IActiveLayerInfosChangeEvent) => {
+            return event.target.toArray();
+          })
+        );
+      })
+    );
   }
 
   /**
@@ -79,4 +125,11 @@ export class LegendService {
     // Set new store value with removed items
     this._store.next([...removed]);
   }
+}
+
+export interface IActiveLayerInfosChangeEvent {
+  added: Array<esri.ActiveLayerInfo>;
+  moved: Array<esri.ActiveLayerInfo>;
+  removed: Array<esri.ActiveLayerInfo>;
+  target: esri.LegendViewModel['activeLayerInfos'];
 }

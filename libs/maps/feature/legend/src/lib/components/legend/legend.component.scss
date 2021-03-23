@@ -1,18 +1,34 @@
 @import 'libs/sass/components/sidebar';
+@import 'libs/sass/mixins';
 
-.legend-item {
+.element-parent-name {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+
+  // Add a left margin to any subsequent info group
+  & ~ div {
+    margin-left: 0.75rem;
+  }
+}
+
+.legend-info {
   @include flexbox();
   @include flex-direction(row);
   @include align-items(center);
+}
 
-  margin-bottom: 0.8rem;
+.legend-collection {
+  @include flexbox();
+  @include flex-direction(column);
   font-size: 0.875rem;
+}
+
+.legend-info {
+  margin-bottom: 0.5rem;
 }
 
 .image-container {
   margin-right: 0.5rem;
-  width: 1.4rem;
-  height: 1.4rem;
 }
 
 img {
