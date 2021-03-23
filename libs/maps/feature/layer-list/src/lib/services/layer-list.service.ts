@@ -35,7 +35,7 @@ export class LayerListService implements OnDestroy {
     const LayerSources = this.environment.value('LayerSources');
     this._scaleThrottled = this._scale.asObservable().pipe(debounceTime(250));
 
-    forkJoin([from(this.moduleProvider.require(['Handles'])), this.mapService.store.pipe(take(1))]).subscribe(
+    forkJoin([from(this.moduleProvider.require(['Handles'])), this.mapService.store]).subscribe(
       ([[HandlesConstructor], instance]: [[esri.HandlesConstructor], MapServiceInstance]) => {
         this._handles = new HandlesConstructor();
         // Perform a check against the map instance to add existing layers. Layers added after this
