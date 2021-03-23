@@ -263,6 +263,14 @@ export type LayerSource = LayerSourceType & {
   layerIndex?: number;
 
   category?: string;
+
+  /**
+   * Describes if the layer source was added at runtime and not statically defined in application environments.
+   *
+   * This is used internally to manage side-effects until a better solution is implemented. This property will be
+   * removed in the future.
+   */
+  runtimeAdded?: boolean;
 };
 
 export interface LegendItem {

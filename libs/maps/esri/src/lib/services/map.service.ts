@@ -1,7 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 
 import { SearchService } from '@tamu-gisc/search';
 import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
@@ -31,7 +31,10 @@ export class EsriMapService {
   public hitTest: Observable<HitTestSnapshot> = this._hitTest.asObservable();
 
   // Exposed observable that will be responsible for emitting values to subscribers
-  public readonly store: Observable<MapServiceInstance> = this._store.asObservable().pipe(filter((s) => s !== undefined));
+  public readonly store: Observable<MapServiceInstance> = this._store.asObservable().pipe(
+    filter((s) => s !== undefined),
+    take(1)
+  );
 
   constructor(
     private moduleProvider: EsriModuleProviderService,
@@ -131,6 +134,13 @@ export class EsriMapService {
       this._modules.view.destroy();
 
       this._store.next(undefined);
+
+      // Deal with the side-effects originating from mutating the environment variable.
+      // A more permanent and appropriate solution will be implemented at a later time.
+      this.environment.update(
+        'LayerSources',
+        this.environment.value('LayerSources').filter((s) => !s.runtimeAdded)
+      );
     }
   }
 
@@ -329,7 +339,7 @@ export class EsriMapService {
           // If the source being processed does not exist in LayerSources, add it.
           // This is the case in dynamically added layers
           if (existingSourceIndex === -1) {
-            sources.push(source);
+            sources.push({ ...source, runtimeAdded: true });
           }
 
           // Add layer to map

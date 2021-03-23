@@ -8,7 +8,7 @@ export class EnvironmentService {
 
   constructor(@Optional() @Inject(env) private environment) {
     if (environment) {
-      this._config = this.environment;
+      this._config = JSON.parse(JSON.stringify(this.environment));
     } else {
       throw new Error(`Environment module expects an 'env' token value. None provided.`);
     }
@@ -30,6 +30,14 @@ export class EnvironmentService {
       } else {
         throw new Error(`Environment does not contain a '${property}' token.`);
       }
+    }
+  }
+
+  public update(property: string, value: unknown) {
+    if (this._config[property] !== undefined) {
+      this._config[property] = value;
+    } else {
+      console.warn(`Could not set value. Environment does not contain ${property} token.`);
     }
   }
 }
