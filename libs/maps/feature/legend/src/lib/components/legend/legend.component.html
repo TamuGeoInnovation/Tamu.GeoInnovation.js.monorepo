@@ -4,7 +4,7 @@
 </div>
 
 <div class="sidebar-component-content-container">
-  <div class="legend-collection" *ngFor="let group of legendItems | async">
+  <div class="legend-collection" *ngFor="let group of legend | async">
     <div class="legend-element" *ngFor="let element of group.legendElements">
       <!-- If there is only one legend element, don't apply a group title. Will apply the parent label on the 
     single child so that there aren't groups with a single child, because it will break the cleanliness
@@ -18,7 +18,7 @@
           <div class="legend-info" *ngFor="let info of element.infos">
             <div class="image-container" [elementInsert]="info.preview"></div>
             <!-- Apply the legend item from the parent group or child -->
-            <div>{{element.infos.length === 1 ? group?.title: info?.label}}</div>
+            <div (click)="analyticsReport(element.infos.length === 1 ? group?.title: info?.label)">{{element.infos.length === 1 ? group?.title: info?.label}}</div>
           </div>
         </div>
 

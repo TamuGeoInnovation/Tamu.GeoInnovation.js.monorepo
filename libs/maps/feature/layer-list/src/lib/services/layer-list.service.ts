@@ -8,9 +8,21 @@ import {
   NEVER,
   MonoTypeOperatorFunction,
   of,
-  forkJoin
+  forkJoin,
+  ReplaySubject
 } from 'rxjs';
-import { mergeMap, filter, switchMap, scan, take, toArray, withLatestFrom, debounceTime } from 'rxjs/operators';
+import {
+  mergeMap,
+  filter,
+  switchMap,
+  scan,
+  take,
+  toArray,
+  withLatestFrom,
+  debounceTime,
+  startWith,
+  map
+} from 'rxjs/operators';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
@@ -27,6 +39,10 @@ export class LayerListService implements OnDestroy {
 
   private _handles: esri.Handles;
 
+  private _model: esri.LayerListViewModel;
+
+  public allLayers: Observable<Array<esri.ListItem>>;
+
   constructor(
     private moduleProvider: EsriModuleProviderService,
     private mapService: EsriMapService,
@@ -35,8 +51,37 @@ export class LayerListService implements OnDestroy {
     const LayerSources = this.environment.value('LayerSources');
     this._scaleThrottled = this._scale.asObservable().pipe(debounceTime(250));
 
-    forkJoin([from(this.moduleProvider.require(['Handles'])), this.mapService.store]).subscribe(
-      ([[HandlesConstructor], instance]: [[esri.HandlesConstructor], MapServiceInstance]) => {
+    forkJoin([from(this.moduleProvider.require(['Handles', 'LayerListViewModel'])), this.mapService.store]).subscribe(
+      ([[HandlesConstructor, LayerListViewModel], instance]: [
+        [esri.HandlesConstructor, esri.LayerListViewModelConstructor],
+        MapServiceInstance
+      ]) => {
+        this._model = new LayerListViewModel({
+          view: instance.view
+        });
+
+        let handle: esri.Handle;
+
+        const add = (handler) => {
+          handle = this._model.operationalItems.watch('length', handler);
+        };
+
+        /**
+         * Destroys a property watch handler for a layer by handleKey if it exists.
+         *
+         * Function executed whenever the source observable is unsubscribed from.
+         *
+         */
+        const remove = (handler): void => {
+          handle.remove();
+        };
+
+        // For every item, attempt to create a layer
+        this.allLayers = fromEventPattern(add, remove).pipe(
+          startWith(-1),
+          map(() => this._model.operationalItems.toArray())
+        );
+
         this._handles = new HandlesConstructor();
         // Perform a check against the map instance to add existing layers. Layers added after this
         // point will be handled by the change event.
@@ -119,6 +164,32 @@ export class LayerListService implements OnDestroy {
   public ngOnDestroy() {
     // Clean up all layer handle references.
     this._handles.removeAll();
+  }
+
+  public layers2() {
+    return forkJoin([from(this.moduleProvider.require(['LayerListViewModel'])), this.mapService.store]).pipe(
+      switchMap(([[LayerListViewModel], instance]: [[esri.LayerListViewModelConstructor], MapServiceInstance]) => {
+        this._model = new LayerListViewModel({
+          view: instance.view
+        });
+
+        let handle: esri.Handle;
+
+        const add = (handler) => {
+          handle = this._model.operationalItems.watch('length', handler);
+        };
+
+        const remove = (handler): void => {
+          handle.remove();
+        };
+
+        // For every item, attempt to create a layer
+        return fromEventPattern(add, remove).pipe(
+          startWith(-1),
+          map(() => this._model.operationalItems.toArray())
+        );
+      })
+    );
   }
 
   /**

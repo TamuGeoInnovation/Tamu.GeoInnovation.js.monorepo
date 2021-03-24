@@ -4,9 +4,9 @@
 </div>
 
 <div class="sidebar-component-content-container">
-  <div class="layer-item" *ngFor="let item of layers | async" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible, hidden: item.outsideExtent }" (click)="toggleLayer(item)">
-    <div [ngSwitch]="item?.layer?.loaded">
-      <div *ngSwitchCase="true" class="layer-visibility-dot"></div>
+  <div class="layer-item" *ngFor="let item of layerList | async" [ngClass]="{ 'visible': item?.visible, 'outside-extent': item.visibleAtCurrentScale === false, 'error': item?.error }" (click)="toggleLayer(item)">
+    <div [ngSwitch]="item.updating">
+      <div *ngSwitchCase="false" class="layer-visibility-dot"></div>
 
       <div *ngSwitchDefault>
         <div class="loader-container">
@@ -14,6 +14,6 @@
         </div>
       </div>
     </div>
-    <p>{{ item.title }} {{item?.layer?.loadStatus}}</p>
+    <p>{{ item.title }}</p>
   </div>
 </div>

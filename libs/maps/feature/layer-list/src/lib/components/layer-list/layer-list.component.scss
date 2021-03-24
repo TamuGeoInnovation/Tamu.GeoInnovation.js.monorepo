@@ -25,7 +25,7 @@
     margin-left: 0.3rem;
   }
 
-  &.loaded {
+  &.visible {
     color: initial;
 
     .layer-visibility-dot {
@@ -33,12 +33,33 @@
     }
   }
 
-  &:last-child {
-    padding-bottom: 0;
+  &.outside-extent {
+    color: #bdbdbd;
+
+    .layer-visibility-dot {
+      border-color: #bdbdbd;
+    }
+
+    &.visible {
+      .layer-visibility-dot {
+        background: #bdbdbd;
+      }
+    }
   }
 
-  &.hidden {
-    display: none;
+  &.error {
+    $red: #e57373;
+    color: $red;
+    text-decoration: line-through;
+
+    .layer-visibility-dot {
+      background: lighten($red, 10%);
+      border-color: lighten($red, 10%);
+    }
+  }
+
+  &:last-child {
+    padding-bottom: 0;
   }
 }
 

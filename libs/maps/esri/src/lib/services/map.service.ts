@@ -105,9 +105,7 @@ export class EsriMapService {
     });
 
     // Filter list of layers that need to be added on map load
-    this.loadLayers(
-      this.environment.value('LayerSources').filter((l) => l.loadOnInit === undefined || l.loadOnInit === true)
-    );
+    this.loadLayers(this.environment.value('LayerSources'));
 
     // Load feature list from url (e.g. howdy links)
     this.selectFeaturesFromUrl();
@@ -134,13 +132,6 @@ export class EsriMapService {
       this._modules.view.destroy();
 
       this._store.next(undefined);
-
-      // Deal with the side-effects originating from mutating the environment variable.
-      // A more permanent and appropriate solution will be implemented at a later time.
-      this.environment.update(
-        'LayerSources',
-        this.environment.value('LayerSources').filter((s) => !s.runtimeAdded)
-      );
     }
   }
 
@@ -338,18 +329,6 @@ export class EsriMapService {
       // Generate the layer
       return generateLayer(source).then((layer) => {
         if (layer) {
-          const sources: LayerSource[] = this.environment.value('LayerSources');
-
-          const existingSourceIndex = sources.findIndex((s: LayerSource) => {
-            return s.id === source.id;
-          });
-
-          // If the source being processed does not exist in LayerSources, add it.
-          // This is the case in dynamically added layers
-          if (existingSourceIndex === -1) {
-            sources.push({ ...source, runtimeAdded: true });
-          }
-
           // Add layer to map
           (<esri.Map>this._modules.map).add(layer, source.layerIndex ? source.layerIndex : undefined);
 

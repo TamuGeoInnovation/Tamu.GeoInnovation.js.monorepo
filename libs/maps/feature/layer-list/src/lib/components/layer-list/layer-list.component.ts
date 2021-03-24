@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil, shareReplay } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 // import { Angulartics2 } from 'angulartics2';
 import { v4 as guid } from 'uuid';
@@ -23,6 +23,7 @@ import esri = __esri;
 })
 export class LayerListComponent implements OnInit, OnDestroy {
   public layers: Observable<{}>;
+  public layerList: Observable<Array<esri.ListItem>> = this.layerListService.layers2();
 
   public responsive: ResponsiveSnapshot;
 
@@ -55,6 +56,10 @@ export class LayerListComponent implements OnInit, OnDestroy {
       .subscribe((event: RouterEvent) => {
         this._lastRoute = event.url;
       });
+
+    this.layerList.subscribe((res) => {
+      console.dir(res);
+    });
   }
 
   public ngOnDestroy() {

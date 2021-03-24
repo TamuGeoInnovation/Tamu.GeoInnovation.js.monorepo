@@ -224,13 +224,15 @@ export type LayerSource = LayerSourceType & {
    */
   listMode?: 'show' | 'hide';
 
-  /**
+  /** 
    * Determines whether the layer will be loaded on application load.
    *
    * A layer can be listed as "show" but not load on init. This will enable layer lazy-loading,
    * meaning layers will only load when requested.
    *
    * Defaults to `true`
+   * 
+   * @deprecated Property has no function
    */
   loadOnInit?: boolean;
 
@@ -272,14 +274,6 @@ export type LayerSource = LayerSourceType & {
   layerIndex?: number;
 
   category?: string;
-
-  /**
-   * Describes if the layer source was added at runtime and not statically defined in application environments.
-   *
-   * This is used internally to manage side-effects until a better solution is implemented. This property will be
-   * removed in the future.
-   */
-  runtimeAdded?: boolean;
 };
 
 export interface LegendItem {
