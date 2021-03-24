@@ -324,6 +324,14 @@ export class EsriMapService {
             // Create and return new geojson layer
             return new CSVLayer(props as esri.CSVLayerProperties);
           });
+        } else if (layerSource.type === 'group') {
+          return this.moduleProvider.require(['GroupLayer']).then(([GroupLayer]: [esri.GroupLayerConstructor]) => {
+            // Delete the type property as it cannot be set on layer creation.
+            delete props.type;
+
+            // Create and return new geojson layer
+            return new GroupLayer(props as esri.GroupLayerProperties);
+          });
         }
       };
 

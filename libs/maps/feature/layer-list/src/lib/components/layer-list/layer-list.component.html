@@ -4,5 +4,16 @@
 </div>
 
 <div class="sidebar-component-content-container">
-  <p *ngFor="let item of layers | async" class="layer-item" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible, hidden: item.outsideExtent }" (click)="toggleLayer(item)">{{ item.title }}</p>
+  <div class="layer-item" *ngFor="let item of layers | async" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible, hidden: item.outsideExtent }" (click)="toggleLayer(item)">
+    <div [ngSwitch]="item?.layer?.loaded">
+      <div *ngSwitchCase="true" class="layer-visibility-dot"></div>
+
+      <div *ngSwitchDefault>
+        <div class="loader-container">
+          <div class="spinning-loader"></div>
+        </div>
+      </div>
+    </div>
+    <p>{{ item.title }} {{item?.layer?.loadStatus}}</p>
+  </div>
 </div>

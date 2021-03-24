@@ -185,12 +185,21 @@ interface GraphicLayerSourceProperties {
   native?: esri.GraphicsLayerProperties;
 }
 
+interface GroupLayerSourceProperties {
+  type: 'group';
+  /**
+   * Graphics used in the creation of the layer
+   */
+  native?: esri.GroupLayerProperties;
+}
+
 export type LayerSourceType =
   | FeatureLayerSourceProperties
   | SceneLayerSourceProperties
   | GeoJSONLayerSourceProperties
   | CSVLayerSourceProperties
-  | GraphicLayerSourceProperties;
+  | GraphicLayerSourceProperties
+  | GroupLayerSourceProperties;
 
 /**
  * Describes the properties for each layer source used by a layer factory to add layers to the map as required.

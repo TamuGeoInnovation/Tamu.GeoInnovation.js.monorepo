@@ -1,3 +1,4 @@
+@import 'libs/sass/mixins';
 @import 'libs/sass/components/sidebar';
 
 .layer-item {
@@ -5,8 +6,15 @@
   color: #6e6e6e;
   font-size: 0.875rem;
   padding-bottom: 0.75rem;
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
 
-  &::before {
+  p {
+    padding-bottom: 0;
+  }
+
+  .layer-visibility-dot {
     content: '';
     display: inline-block;
     height: 0.4rem;
@@ -14,12 +22,13 @@
     border-radius: 99rem;
     border: 1px solid #6e6e6e;
     margin-right: 0.5rem;
+    margin-left: 0.3rem;
   }
 
   &.loaded {
     color: initial;
 
-    &::before {
+    .layer-visibility-dot {
       background: #6e6e6e;
     }
   }
@@ -59,4 +68,14 @@
       margin-bottom: 0.75rem;
     }
   }
+}
+
+.loader-container {
+  margin-right: 0.45rem;
+}
+.spinning-loader {
+  margin-top: 0;
+  height: 0.5rem;
+  width: 0.5rem;
+  border-width: 0.29em;
 }
