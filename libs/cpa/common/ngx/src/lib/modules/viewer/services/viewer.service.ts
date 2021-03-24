@@ -16,6 +16,7 @@ export class ViewerService {
   public workshop: Observable<IWorkshopRequestPayload>;
 
   public workshopSnapshots: Observable<Array<ISnapshotsResponse>>;
+  public workshopContexts: Observable<Array<ISnapshotsResponse>>;
   public workshopScenarios: Observable<Array<IScenariosResponseResolved>>;
 
   /**
@@ -60,6 +61,16 @@ export class ViewerService {
     this.workshopSnapshots = this.workshop.pipe(
       switchMap((workshop) => {
         return this.sss.getForWorkshop(workshop.guid);
+      }),
+      shareReplay(1)
+    );
+
+    this.workshopContexts = this.workshop.pipe(
+      switchMap((workshop) => {
+        return this.sss.getMany({
+          prop: 'isContextual',
+          value: true
+        });
       }),
       shareReplay(1)
     );

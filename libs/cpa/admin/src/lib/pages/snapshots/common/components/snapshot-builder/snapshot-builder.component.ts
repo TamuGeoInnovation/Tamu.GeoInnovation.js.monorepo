@@ -65,7 +65,8 @@ export class SnapshotBuilderComponent implements OnInit {
       mapCenter: [''],
       zoom: [''],
       extent: [undefined],
-      layers: this.fb.array([])
+      layers: this.fb.array([]),
+      isContextual: ['']
     });
 
     if (this.route.snapshot.params.guid) {

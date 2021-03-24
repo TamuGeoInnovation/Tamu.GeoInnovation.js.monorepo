@@ -49,4 +49,12 @@ export class WorkshopService {
   public deleteScenario(wGuid: string, sGuid: string) {
     return this.http.delete(`${this.resource}/scenario/${wGuid}/${sGuid}`);
   }
+
+  public addContextualSnapshot(wGuid: string, sGuid: string) {
+    return this.http.post(`${this.resource}/context`, { workshopGuid: wGuid, snapshotGuid: sGuid });
+  }
+
+  public deleteContextualSnapshot(wGuid: string, sGuid: string) {
+    return this.http.delete(`${this.resource}/context/${wGuid}/${sGuid}`);
+  }
 }

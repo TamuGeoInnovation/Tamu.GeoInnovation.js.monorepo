@@ -3,7 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, getRepository } from 'typeorm';
 
-import { Workshop, Snapshot, Scenario, WorkshopSnapshot, WorkshopScenario, IScenario } from '@tamu-gisc/cpa/common/entities';
+import {
+  Workshop,
+  Snapshot,
+  Scenario,
+  WorkshopSnapshot,
+  WorkshopScenario,
+  WorkshopContext,
+  IScenario
+} from '@tamu-gisc/cpa/common/entities';
 
 import { BaseService } from '../base/base.service';
 import { IWorkshopRequestPayload, IWorkshopScenarioPayload, IWorkshopSnapshotPayload } from './workshops.controller';
@@ -15,7 +23,7 @@ export class WorkshopsService extends BaseService<Workshop> {
   }
 
   public async addNewSnapshot(body: IWorkshopSnapshotPayload) {
-    const workshop = await this.getWorkshop(body.workshopGuid, true, false, false);
+    const workshop = await this.getWorkshop(body.workshopGuid, true, false, false, false);
 
     if (workshop) {
       // Quick check to see if the workshop already has the incoming snapshot. We'll skip the adding
@@ -34,7 +42,7 @@ export class WorkshopsService extends BaseService<Workshop> {
       }
 
       try {
-        return await this.getWorkshop(body.workshopGuid, true, false, false);
+        return await this.getWorkshop(body.workshopGuid, true, false, false, false);
       } catch (err) {
         return err;
       }
@@ -44,7 +52,7 @@ export class WorkshopsService extends BaseService<Workshop> {
   }
 
   public async addNewScenario(body: IWorkshopScenarioPayload) {
-    const workshop = await this.getWorkshop(body.workshopGuid, true, true, false);
+    const workshop = await this.getWorkshop(body.workshopGuid, true, true, true, false);
 
     if (workshop) {
       // Get the existing scenario, if it exists.
@@ -64,7 +72,37 @@ export class WorkshopsService extends BaseService<Workshop> {
       }
 
       try {
-        return this.getWorkshop(body.workshopGuid, true, true, false);
+        return this.getWorkshop(body.workshopGuid, true, true, true, false);
+      } catch (err) {
+        return err;
+      }
+    } else {
+      throw new HttpException('Not Found', 404);
+    }
+  }
+
+  public async addNewContextSnapshot(body: IWorkshopSnapshotPayload) {
+    const workshop = await this.getWorkshop(body.workshopGuid, true, true, true, false);
+
+    if (workshop) {
+      // Get the existing contextual snapshot, if it exists.
+      const contextualSnap = await getRepository(Snapshot).findOne({ where: { guid: body.snapshotGuid } });
+
+      // Quick check to see if the workshop already has the incoming scenario. We'll skip the adding
+      // process if so.
+      const workshopHasContext = workshop.scenarios.some((ws) => ws.guid === contextualSnap.guid);
+
+      if (workshopHasContext === false) {
+        const workshopContexts = getRepository(WorkshopContext).create({
+          workshop: workshop,
+          snapshot: contextualSnap
+        });
+
+        await workshopContexts.save();
+      }
+
+      try {
+        return this.getWorkshop(body.workshopGuid, true, true, true, false);
       } catch (err) {
         return err;
       }
@@ -74,21 +112,21 @@ export class WorkshopsService extends BaseService<Workshop> {
   }
 
   public async removeWorkshopSnapshot(params: IWorkshopSnapshotPayload) {
-    const existing = await this.getWorkshop(params.workshopGuid, true, false, true);
+    const existing = await this.getWorkshop(params.workshopGuid, true, false, false, true);
 
     if (existing) {
       existing.snapshots = existing.snapshots.filter((s) => s.snapshot.guid !== params.snapshotGuid);
 
       await existing.save();
 
-      return this.getWorkshop(params.workshopGuid, true, false, false);
+      return this.getWorkshop(params.workshopGuid, true, false, false, false);
     } else {
       throw new HttpException('Not Found', 404);
     }
   }
 
   public async removeWorkshopScenario(params: IWorkshopScenarioPayload) {
-    const workshop = await this.getWorkshop(params.workshopGuid, true, true, true);
+    const workshop = await this.getWorkshop(params.workshopGuid, true, true, true, true);
 
     if (workshop) {
       const relationshipToDelete = workshop.scenarios.find((rel) => rel.scenario.guid === params.scenarioGuid);
@@ -96,8 +134,22 @@ export class WorkshopsService extends BaseService<Workshop> {
       if (relationshipToDelete) {
         await relationshipToDelete.remove();
 
-        return this.getWorkshop(params.workshopGuid, true, true, false);
+        return this.getWorkshop(params.workshopGuid, true, true, true, false);
       }
+    } else {
+      throw new HttpException('Not Found', 404);
+    }
+  }
+
+  public async removeWorkshopContextSnapshot(params: IWorkshopSnapshotPayload) {
+    const existing = await this.getWorkshop(params.workshopGuid, true, true, true, true);
+
+    if (existing) {
+      existing.contexts = existing.contexts.filter((s) => s.snapshot.guid !== params.snapshotGuid);
+
+      await existing.save();
+
+      return this.getWorkshop(params.workshopGuid, true, true, true, false);
     } else {
       throw new HttpException('Not Found', 404);
     }
@@ -107,13 +159,21 @@ export class WorkshopsService extends BaseService<Workshop> {
     guid: string,
     snapshots: boolean,
     scenarios: boolean,
+    contexts: boolean,
     returnMetadata: false
   ): Promise<IWorkshopExtractedSnapshots>;
-  public async getWorkshop(guid: string, snapshots: boolean, scenarios: boolean, returnMetadata: true): Promise<Workshop>;
   public async getWorkshop(
     guid: string,
     snapshots: boolean,
     scenarios: boolean,
+    contexts: boolean,
+    returnMetadata: true
+  ): Promise<Workshop>;
+  public async getWorkshop(
+    guid: string,
+    snapshots: boolean,
+    scenarios: boolean,
+    contexts: boolean,
     returnMetadata: boolean
   ): Promise<ISnapshotsOrWorkshopSnapshots> {
     const queryParams = {
@@ -130,6 +190,12 @@ export class WorkshopsService extends BaseService<Workshop> {
       queryParams.relations.push('scenarios');
       queryParams.relations.push('scenarios.scenario');
     }
+
+    if (contexts) {
+      queryParams.relations.push('contexts');
+      queryParams.relations.push('contexts.snapshot');
+    }
+
     const existing = await this.getOne(queryParams);
 
     if (existing) {
@@ -139,6 +205,7 @@ export class WorkshopsService extends BaseService<Workshop> {
       } else {
         let snaps: Array<Snapshot>;
         let scens: Array<IScenario>;
+        let cntxs: Array<Snapshot>;
 
         if (snapshots) {
           snaps = existing.snapshots.map((s) => s.snapshot);
@@ -148,10 +215,15 @@ export class WorkshopsService extends BaseService<Workshop> {
           scens = existing.scenarios.map((s) => s.scenario);
         }
 
+        if (contexts) {
+          cntxs = existing.contexts.map((s) => s.snapshot);
+        }
+
         return {
           ...existing,
           snapshots: snaps,
-          scenarios: scens
+          scenarios: scens,
+          contexts: cntxs
         } as IWorkshopExtractedSnapshots;
       }
     } else {
@@ -178,9 +250,10 @@ export class WorkshopsService extends BaseService<Workshop> {
   }
 }
 
-export interface IWorkshopExtractedSnapshots extends Omit<Workshop, 'snapshots' | 'scenarios'> {
+export interface IWorkshopExtractedSnapshots extends Omit<Workshop, 'snapshots' | 'scenarios' | 'contexts'> {
   snapshots: Array<Snapshot>;
   scenarios: Array<IScenario>;
+  contexts: Array<Snapshot>;
 }
 
 export type ISnapshotsOrWorkshopSnapshots = Workshop | IWorkshopExtractedSnapshots;

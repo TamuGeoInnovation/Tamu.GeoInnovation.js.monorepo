@@ -26,6 +26,32 @@
   <div class="form-section" *ngIf="isExisting | async">
     <div class="form-section-toolbar">
       <div class="form-section-name">
+        <p>Contextual Snapshots</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <p *ngIf="(snapshotList | async)?.length === 0">No snapshots have been created yet.</p>
+
+      <div class="form-collection column" *ngIf="(contextualSnapshotList | async)?.length > 0">
+        <p>Select a contextual snapshot from the dropdown list below to add to the workshop</p>
+        <tamu-gisc-select [data]="contextualSnapshotList | async" placeholder="Select contextual snapshot" [displayTemplate]="'title'" (changed)="submitWorkshopContext($event)"></tamu-gisc-select>
+      </div>
+
+      <div class="form-collection column" *ngIf="form.controls?.contexts.value.length > 0">
+        <div class="record-item" *ngFor="let context of form.controls.contexts.value">
+          <div class="record-title">{{ context.title }}</div>
+          <div class="record-actions material-icons-container">
+            <span class="material-icons action error" title="Delete Workshop" (click)="removeContext(context)">delete</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section" *ngIf="isExisting | async">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
         <p>Snapshots</p>
       </div>
     </div>

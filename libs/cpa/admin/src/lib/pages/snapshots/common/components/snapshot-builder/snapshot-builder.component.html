@@ -14,7 +14,12 @@
       <div class="form-collection row">
         <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" floatLabel="true" rows="8"></tamu-gisc-textbox>
       </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-checkbox formControlName="isContextual" [label]="'Should this Snapshot be used for context?'"></tamu-gisc-checkbox>
+      </div>
     </div>
+
   </div>
 
   <div class="map-configuration-container">

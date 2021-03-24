@@ -215,6 +215,18 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         const prevSnapshot = snapshotHistory.length > 1 ? snapshotHistory[0] : undefined;
         const currSnapshot = snapshotHistory.length > 1 ? snapshotHistory[1] : snapshotHistory[0];
 
+        // Filter snapshots to get contextual snapshots
+        // Create a layers = (this._generateCPALayers(layer.layers) as unknown) as Array<esri.Layer> for contextual layers and add them
+
+        this.vs.workshopContexts.subscribe((contextuals) => {
+          contextuals.forEach((val) => {
+            const layer = (this._generateCPALayers(val.layers) as unknown) as Array<esri.Layer>;
+            instances.map.addMany(layer);
+            this._view.goTo(val.extent);
+          });
+          // const layers = (this._generateCPALayers() as unknown) as Array<esri.Layer>
+        });
+
         if (!currSnapshot) {
           return;
         }

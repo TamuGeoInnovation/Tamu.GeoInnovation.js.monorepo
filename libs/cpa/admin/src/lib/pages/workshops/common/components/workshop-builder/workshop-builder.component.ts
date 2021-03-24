@@ -20,6 +20,7 @@ export class WorkshopBuilderComponent implements OnInit {
   public isExisting: Observable<boolean>;
 
   public snapshotList: Observable<ISnapshotsResponse[]>;
+  public contextualSnapshotList: Observable<IScenariosResponseResolved[]>;
   public scenarioList: Observable<IScenariosResponseResolved[]>;
 
   public host = `${window.location.origin}`;
@@ -40,7 +41,8 @@ export class WorkshopBuilderComponent implements OnInit {
       alias: [undefined],
       date: [undefined],
       snapshots: [[]],
-      scenarios: [[]]
+      scenarios: [[]],
+      contexts: [[]]
     });
 
     this.isExisting = this.route.params.pipe(
@@ -57,6 +59,10 @@ export class WorkshopBuilderComponent implements OnInit {
       });
 
       this.snapshotList = this.ss.getAll().pipe(shareReplay(1));
+      this.contextualSnapshotList = this.ss.getMany({
+        prop: 'isContextual',
+        value: true
+      });
       this.scenarioList = this.scenarioService.getForWorkshop(this.route.snapshot.params['guid']).pipe(shareReplay(1));
     }
   }
@@ -67,6 +73,7 @@ export class WorkshopBuilderComponent implements OnInit {
 
       delete payload.snapshots;
       delete payload.scenarios;
+      delete payload.contexts;
 
       this.ws.updateWorkshop(this.route.snapshot.params['guid'], payload).subscribe((updateStatus) => {
         console.log('Updated workshop');
@@ -94,6 +101,14 @@ export class WorkshopBuilderComponent implements OnInit {
     }
   }
 
+  public submitWorkshopContext(snapshot?: Partial<Snapshot>) {
+    if (snapshot) {
+      this.ws.addContextualSnapshot(this.route.snapshot.params['guid'], snapshot.guid).subscribe((addSnapshotStatus) => {
+        this.form.patchValue(addSnapshotStatus);
+      });
+    }
+  }
+
   public removeSnapshot(snapshot: Partial<Snapshot>) {
     this.ws.deleteSnapshot(this.route.snapshot.params['guid'], snapshot.guid).subscribe((snapshotRemoveStatus) => {
       this.form.patchValue(snapshotRemoveStatus);
@@ -103,6 +118,12 @@ export class WorkshopBuilderComponent implements OnInit {
   public removeScenario(scenario: Partial<Scenario>) {
     this.ws.deleteScenario(this.route.snapshot.params['guid'], scenario.guid).subscribe((scenarioRemoveStatus) => {
       this.form.patchValue(scenarioRemoveStatus);
+    });
+  }
+
+  public removeContext(snapshot: Partial<Snapshot>) {
+    this.ws.deleteContextualSnapshot(this.route.snapshot.params['guid'], snapshot.guid).subscribe((snapshotRemoveStatus) => {
+      this.form.patchValue(snapshotRemoveStatus);
     });
   }
 }

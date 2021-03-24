@@ -45,11 +45,11 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   }
 
   /**
-   * Returns a specific workshop record which includes snapshots and scenarios
+   * Returns a specific workshop record which includes snapshots, scenarios, and contexts
    */
   @Get(':guid')
   public async getOne(@Param() params) {
-    return await this.service.getWorkshop(params.guid, true, true, false);
+    return await this.service.getWorkshop(params.guid, true, true, true, false);
   }
 
   /**
@@ -74,6 +74,22 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   @Get('')
   public getAll() {
     return this.service.getMany({ relations: ['snapshots', 'scenarios'] });
+  }
+
+  /**
+   * Adds a contextual Snapshot to a workshop
+   */
+  @Post('context')
+  public async addContext(@Body() body: IWorkshopSnapshotPayload) {
+    return await this.service.addNewContextSnapshot(body);
+  }
+
+  /**
+   * Deletes a contextual Snapshot from a workshop
+   */
+  @Delete('context/:workshopGuid/:snapshotGuid')
+  public async deleteContext(@Param() params: IWorkshopSnapshotPayload) {
+    return await this.service.removeWorkshopContextSnapshot(params);
   }
 }
 

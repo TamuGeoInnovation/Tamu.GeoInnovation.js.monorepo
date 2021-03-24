@@ -1,4 +1,4 @@
-import { Controller, Patch, Param, Body, Delete, Get } from '@nestjs/common';
+import { Controller, Patch, Param, Body, Delete, Get, Post } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { Snapshot, CPALayer } from '@tamu-gisc/cpa/common/entities';
@@ -18,6 +18,16 @@ export class SnapshotsController extends BaseController<Snapshot> {
   @Get('workshop/:guid')
   public async getSnapshotsForWorkshop(@Param() params: { guid: string }) {
     return this.service.getSnapshotsForWorkshop(params.guid);
+  }
+
+  @Post('many')
+  public async getManySnapshotsWhere(@Body() body) {
+    const where = {
+      where: {
+        [body.prop]: body.value
+      }
+    }
+    return this.service.getMany(where);
   }
 
   /**

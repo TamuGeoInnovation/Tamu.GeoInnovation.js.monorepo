@@ -62,6 +62,9 @@ export class Workshop extends CPABaseEntity implements IWorkshop {
   @OneToMany((type) => WorkshopScenario, (s) => s.workshop)
   public scenarios: WorkshopScenario[];
 
+  @OneToMany((type) => WorkshopContext, (s) => s.workshop)
+  public contexts: WorkshopContext[];
+
   @OneToMany((type) => Response, (r) => r.workshop)
   public responses: Response[];
 }
@@ -85,6 +88,9 @@ export class Snapshot extends CPABaseEntity {
 
   @Column({ type: 'simple-json', nullable: true })
   public layers: Array<CPALayer>;
+
+  @Column({ type: 'bit', nullable: false })
+  public isContextual = false;
 
   @OneToMany((type) => WorkshopSnapshot, (w) => w.snapshot)
   public workshops: WorkshopSnapshot[];
@@ -141,6 +147,18 @@ export class WorkshopScenario extends CPABaseEntity implements IWorkshopScenario
   })
   @JoinColumn()
   public scenario: IScenario;
+}
+
+@Entity({ name: 'workshop_contexts' })
+export class WorkshopContext extends CPABaseEntity {
+  @ManyToOne((type) => Workshop, (w) => w.contexts)
+  public workshop: IWorkshop;
+
+  @ManyToOne((type) => Snapshot, (s) => s.workshops, {
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn()
+  public snapshot: Snapshot;
 }
 
 @Entity()
