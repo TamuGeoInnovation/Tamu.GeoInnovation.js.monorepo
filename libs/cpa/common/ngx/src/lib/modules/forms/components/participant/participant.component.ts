@@ -222,7 +222,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           contextuals.forEach((val) => {
             const layer = (this._generateCPALayers(val.layers) as unknown) as Array<esri.Layer>;
             instances.map.addMany(layer);
-            this._view.goTo(val.extent);
+            const extent = Extent.fromJSON(val.extent);
+            this._view.goTo(extent);
           });
           // const layers = (this._generateCPALayers() as unknown) as Array<esri.Layer>
         });
