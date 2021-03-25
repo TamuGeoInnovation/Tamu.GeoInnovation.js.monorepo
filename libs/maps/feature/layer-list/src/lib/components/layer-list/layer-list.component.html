@@ -4,16 +4,5 @@
 </div>
 
 <div class="sidebar-component-content-container">
-  <div class="layer-item" *ngFor="let item of layerList | async" [ngClass]="{ 'visible': item?.visible, 'outside-extent': item.visibleAtCurrentScale === false, 'error': item?.error }" (click)="toggleLayer(item)">
-    <div [ngSwitch]="item.updating">
-      <div *ngSwitchCase="false" class="layer-visibility-dot"></div>
-
-      <div *ngSwitchDefault>
-        <div class="loader-container">
-          <div class="spinning-loader"></div>
-        </div>
-      </div>
-    </div>
-    <p>{{ item.title }}</p>
-  </div>
+  <tamu-gisc-layer-list-item *ngFor="let item of layers | async" [listItem]="item"></tamu-gisc-layer-list-item>
 </div>

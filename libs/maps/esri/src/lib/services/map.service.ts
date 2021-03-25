@@ -10,10 +10,9 @@ import {
   cleanPortalJSONLayer,
   getGeometryType,
   getLayerTypeFromPortalJSON,
-  IPortalLayer,
-  IResolveUnloadedLayersProperties
+  IPortalLayer
 } from '@tamu-gisc/common/utils/geometry/esri';
-import { LayerSource } from '@tamu-gisc/common/types';
+import { LayerSource, IRemoteLayerService } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { EsriModuleProviderService } from './module-provider.service';
@@ -324,7 +323,7 @@ export class EsriMapService {
         .then((res: { layers: Array<IPortalLayer> }) => {
           return this.resolveUnloadedLayers({
             layers: res.layers,
-            baseUrl: source.url
+            source: source
           });
         });
     }
@@ -381,9 +380,19 @@ export class EsriMapService {
 
     const casted = await Promise.all(
       typed.map((t) => {
-        const cleaned = cleanPortalJSONLayer(t, args.baseUrl);
+        const cleaned = cleanPortalJSONLayer(t, (args.source as IRemoteLayerService).url);
 
-        return this.generateLayer(cleaned);
+        // `map-server` layer source type can have additional native properties for different kinds of layers.
+        // We need to unpack them and merge them to the `cleaned` auto-castable layer props.
+        if (args.source.type === 'map-server') {
+          if (cleaned.type === 'feature') {
+            Object.assign(cleaned, args.source.native.defaultFeatureLayerProperties);
+          } else if (cleaned.type === 'group') {
+            Object.assign(cleaned, args.source.native.defaultGroupLayerProperties);
+          }
+        }
+
+        return this.generateLayer(({ ...cleaned, ...args.source.native } as unknown) as AutocastableLayer);
       })
     );
 
@@ -783,3 +792,8 @@ export interface SceneViewProperties {
 }
 
 export type ViewProperties = MapViewProperties | SceneViewProperties;
+
+export interface IResolveUnloadedLayersProperties {
+  layers: Array<IPortalLayer>;
+  source: LayerSource;
+}

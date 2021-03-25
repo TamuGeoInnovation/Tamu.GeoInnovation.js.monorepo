@@ -1,4 +1,4 @@
-import { Point } from '@tamu-gisc/common/types';
+import { LayerSource, Point } from '@tamu-gisc/common/types';
 import esri = __esri;
 
 import { loadModules } from 'esri-loader';
@@ -235,11 +235,6 @@ export interface IPortalGroupLayer extends IBasePortalLayer {
 }
 
 export type IPortalLayer = IPortalFeatureLayer | IPortalGroupLayer;
-
-export interface IResolveUnloadedLayersProperties {
-  layers: Array<IPortalLayer>;
-  baseUrl: string;
-}
 
 export type AutocastableLayer =
   | { type: 'group'; layers: Array<AutocastableLayer>; title?: string }
