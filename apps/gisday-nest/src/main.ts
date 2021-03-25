@@ -8,7 +8,7 @@ import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-import { OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_ISSUER } from './environments/environment';
+import { OIDC_IDP_ISSUER_URL, OIDC_CLIENT_PARAMS, OIDC_CLIENT_METADATA_BASIC } from './environments/environment';
 
 async function bootstrap() {
   const sqlStore = new SQLiteStore({
@@ -44,7 +44,7 @@ async function bootstrap() {
   });
 }
 
-OpenIdClient.build(OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_ISSUER)
+OpenIdClient.build(OIDC_CLIENT_METADATA_BASIC, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL)
   .then(() => bootstrap())
   .catch((err) => {
     console.warn(err);

@@ -5,4 +5,4 @@ export const environment = {
 };
 
 export { productionDbConfig as dbConfig } from './ormconfig';
-export { productionClientConfig as idpConfig } from './oidc-client-config';
+export { OIDC_IDP_ISSUER_URL, OIDC_CLIENT_METADATA_BASIC, OIDC_CLIENT_PARAMS } from './oidc-client-config';
