@@ -1,8 +1,11 @@
 <div class="legend-collection">
   <div [ngSwitch]="group.children">
+    <!-- If there are no children in the current group, then iterate through them and list them out -->
     <div *ngSwitchCase="0">
       <tamu-gisc-legend-element *ngFor="let element of group.legendElements" [element]="element" [groupTitle]="group.title"></tamu-gisc-legend-element>
     </div>
+
+    <!-- If the current group has more children, render another collection group. This represents nested layers/groups. -->
     <div *ngSwitchDefault>
       <tamu-gisc-legend-collection *ngFor="let group of group.children.items" [group]="group"></tamu-gisc-legend-collection>
     </div>

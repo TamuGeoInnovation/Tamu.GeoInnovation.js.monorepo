@@ -12,6 +12,6 @@ import { LayerListItemComponent } from './components/layer-list-item/layer-list-
   imports: [CommonModule, UILayoutModule],
   providers: [LayerListService],
   declarations: [LayerListComponent, LayerListCategorizedComponent, LayerListItemComponent],
-  exports: [LayerListComponent, LayerListCategorizedComponent, LayerListComponent]
+  exports: [LayerListComponent, LayerListCategorizedComponent, LayerListItemComponent]
 })
 export class LayerListModule {}

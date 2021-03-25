@@ -16,4 +16,5 @@ export class LegendCollectionComponent implements OnInit {
   public ngOnInit(): void {}
 }
 
+// Browser doesn't like direct esri types for inputs.
 type IActiveLayerInfo = esri.ActiveLayerInfo;

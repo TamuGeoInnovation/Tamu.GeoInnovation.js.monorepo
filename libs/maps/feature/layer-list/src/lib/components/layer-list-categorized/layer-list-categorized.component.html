@@ -5,7 +5,7 @@
 
 <div class="sidebar-component-content-container">
   <div class="category" *ngFor="let category of layers | async">
-    <tamu-gisc-accordion [expanded]="false">
+    <tamu-gisc-accordion>
       <tamu-gisc-accordion-header>{{category.title}}</tamu-gisc-accordion-header>
       <tamu-gisc-accordion-content>
         <div [ngSwitch]="category.children.length">

@@ -12,6 +12,6 @@ import { LegendCollectionComponent } from './components/legend-collection/legend
   imports: [CommonModule, UIStructuralLayoutModule],
   providers: [LegendService],
   declarations: [LegendComponent, LegendElementComponent, LegendCollectionComponent],
-  exports: [LegendComponent]
+  exports: [LegendComponent, LegendElementComponent, LegendCollectionComponent]
 })
 export class LegendModule {}

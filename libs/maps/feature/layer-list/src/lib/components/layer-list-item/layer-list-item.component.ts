@@ -23,5 +23,5 @@ export class LayerListItemComponent implements OnInit {
   }
 }
 
-// Browser doesn't like esri input types for inputs.
+// Browser doesn't like direct esri types for inputs.
 type IListItem = esri.ListItem;

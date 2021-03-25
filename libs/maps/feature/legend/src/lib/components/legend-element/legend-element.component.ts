@@ -19,4 +19,5 @@ export class LegendElementComponent implements OnInit {
   public ngOnInit(): void {}
 }
 
+// Browser doesn't like direct esri types for inputs.
 type ILegendElement = esri.LegendElement;
