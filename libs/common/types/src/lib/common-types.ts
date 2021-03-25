@@ -235,7 +235,8 @@ interface PortalMapServerLayerSourceProperties {
     /**
      * Default feature layer properties appended to all feature layers found in the service.
      */
-    defaultFeatureLayerProperties?: esri.FeatureLayerProperties;
+    // tslint:disable-next-line: no-any
+    defaultFeatureLayerProperties?: esri.FeatureLayerProperties & { popupComponent?: any };
   };
 }
 

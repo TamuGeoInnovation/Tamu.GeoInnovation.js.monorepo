@@ -3,21 +3,18 @@ import { BehaviorSubject } from 'rxjs';
 
 import { HitTestSnapshot } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { LayerSource } from '@tamu-gisc/common/types';
+
+import esri = __esri;
 
 @Injectable({ providedIn: 'root' })
 export class PopupService {
-  private layers: LayerSource[];
-
   private _show: BehaviorSubject<boolean> = new BehaviorSubject(true);
   public show = this._show.asObservable();
 
   private _suppressed: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public suppressed = this._suppressed.asObservable();
 
-  constructor(private environment: EnvironmentService) {
-    this.layers = this.environment.value('LayerSources');
-  }
+  constructor(private environment: EnvironmentService) {}
 
   /**
    * Determine component ID by one of two methods:
@@ -40,22 +37,14 @@ export class PopupService {
       const validGraphics = snapshot.graphics.filter((g) => g.layer && g.layer.id);
 
       // Layer source ID for the first graphic in the collection
-      const graphicLayerId = validGraphics[0].layer.id;
-
-      // Determined layer source by graphicLayerId
-      const source = this.layers.find((src) => src.id === graphicLayerId);
-
-      // Check if there is a source match
-      if (!source) {
-        return;
-      }
+      const graphicLayer = (validGraphics[0].layer as unknown) as ILayerWithPopupComponent;
 
       // Check if the source has a component declaration
-      if (!source.popupComponent) {
+      if (!graphicLayer.popupComponent) {
         return;
       }
 
-      return source.popupComponent;
+      return graphicLayer.popupComponent;
     }
   }
 
@@ -74,4 +63,9 @@ export class PopupService {
   public enablePopups() {
     this._suppressed.next(false);
   }
+}
+
+interface ILayerWithPopupComponent extends esri.Layer {
+  // tslint:disable-next-line: no-any
+  popupComponent: any;
 }
