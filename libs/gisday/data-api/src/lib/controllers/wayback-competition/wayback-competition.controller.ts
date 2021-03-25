@@ -1,6 +1,5 @@
-import { Controller, Get, Post, Req } from '@nestjs/common';
-import { Request } from 'express';
-import { SignageSubmission } from '../../entities/all.entity';
+import { Controller, Get } from '@nestjs/common';
+
 import { WaybackCompetitionProvider } from '../../providers/wayback-competition/wayback-competition.provider';
 
 @Controller('wayback-competition')

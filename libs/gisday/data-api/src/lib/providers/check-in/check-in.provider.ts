@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CheckIn, CheckInRepo, EventRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
@@ -21,7 +21,9 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
         accountGuid: accountGuid
       };
       const checkin = this.checkInRepo.create(_checkin);
-      checkin.save();
+      return checkin.save();
+    } else {
+      throw new HttpException('Event could not be found', HttpStatus.PARTIAL_CONTENT);
     }
   }
 }

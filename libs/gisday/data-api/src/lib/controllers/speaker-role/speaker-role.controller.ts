@@ -14,12 +14,11 @@ export class SpeakerRoleController extends BaseController<SpeakerRole> {
 
   @Post('/all')
   public async insertSpeakerRoles(@Req() req: Request) {
-    const _roles: Partial<SpeakerRole>[] = [];
-    req.body.roles.map((value: SpeakerRole) => {
+    const _roles: Partial<SpeakerRole>[] = req.body.roles.map((value: SpeakerRole) => {
       const tag: Partial<SpeakerRole> = {
         name: value.name
       };
-      _roles.push(tag);
+      return tag;
     });
     return this.speakerRoleProvider.insertRoles(_roles);
   }

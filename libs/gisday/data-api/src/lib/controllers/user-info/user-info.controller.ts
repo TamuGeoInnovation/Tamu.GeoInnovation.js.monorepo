@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Request } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Patch, Request } from '@nestjs/common';
 
 import { UserInfo } from '../../entities/all.entity';
 import { UserInfoProvider } from '../../providers/user-info/user-info.provider';
@@ -15,7 +15,7 @@ export class UserInfoController extends BaseController<UserInfo> {
     if (req.user) {
       return this.userInfoProvider.getUsersInfo(req.user.sub);
     } else {
-      return;
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -26,6 +26,8 @@ export class UserInfoController extends BaseController<UserInfo> {
         ...req.body
       };
       return this.userInfoProvider.updateUserInfo(req.user.sub, _updatedUserInfo);
+    } else {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
   }
 }

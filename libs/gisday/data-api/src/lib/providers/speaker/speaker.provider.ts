@@ -40,6 +40,8 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     });
     if (speakerInfo) {
       return speakerInfo.blob.toString('base64');
+    } else {
+      throw new Error('Could not find speakerInfo with provided guid');
     }
   }
 
@@ -56,7 +58,9 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       if (req.body.affiliation) {
         entity.affiliation = req.body.affiliation;
       }
-      entity.save();
+      return entity.save();
+    } else {
+      throw new Error('Could not find speakerInfo with provided guid');
     }
   }
 

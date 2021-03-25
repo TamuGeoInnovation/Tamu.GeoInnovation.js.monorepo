@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'gisday-data-api',
+  displayName: 'gisday-data-api',
   preset: '../../../jest.config.js',
   globals: {
     'ts-jest': {

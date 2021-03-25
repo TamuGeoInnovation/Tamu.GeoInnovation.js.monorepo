@@ -18,7 +18,6 @@ export class HeaderComponent implements OnInit {
   public loggedIn: Observable<boolean>;
   public userRole: Observable<IUserInfoResponse>;
 
-  public account: Account;
   public isActive = new Subject();
   public logoVisible: Observable<boolean>;
   public isMobile = this.rp.isMobile.pipe(shareReplay(1));

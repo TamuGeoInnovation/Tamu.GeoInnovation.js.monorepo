@@ -151,20 +151,9 @@ export class Event extends GISDayEntity {
   @JoinTable({ name: 'event_tags' })
   public tags?: Tag[];
 
-  // @OneToMany((type) => EventTag, (eventTag) => eventTag.event)
-  // @JoinColumn()
-  // public tags: EventTag[]; // UserRsvp[]
-
-  // @OneToMany((type) => EventSpeaker, (eventSpeaker) => eventSpeaker.event)
-  // @JoinColumn()
-  // public speakers: EventSpeaker[]; // UserRsvp[]
-
   @ManyToMany((type) => CourseCredit, { cascade: true })
   @JoinTable({ name: 'event_course_credits' })
   public courseCredit?: CourseCredit[]; // CourseCredit[]
-
-  // @OneToMany(type => UserCheckin, userCheckin => userCheckin.eventGuid)
-  // public userCheckins: CheckIn[]; // UserCheckin[]
 
   @Column({ nullable: true })
   public observedAttendeeStart: number;

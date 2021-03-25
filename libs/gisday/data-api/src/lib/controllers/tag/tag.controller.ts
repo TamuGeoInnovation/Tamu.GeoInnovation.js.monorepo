@@ -14,12 +14,11 @@ export class TagController extends BaseController<Tag> {
 
   @Post('/all')
   public async insertTags(@Req() req: Request) {
-    const _tags: Partial<Tag>[] = [];
-    req.body.tags.map((value: Tag) => {
+    const _tags: Partial<Tag>[] = req.body.tags.map((value: Tag) => {
       const tag: Partial<Tag> = {
         name: value.name
       };
-      _tags.push(tag);
+      return tag;
     });
 
     return this.tagProvider.insertTags(_tags);

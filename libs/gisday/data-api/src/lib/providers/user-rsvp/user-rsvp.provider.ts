@@ -29,7 +29,7 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
       rsvpType: _rsvpType,
       accountGuid: accountGuid
     };
-    const newUserRsvp = await this.userRsvpRepo.create(_newUserRsvp);
+    const newUserRsvp = this.userRsvpRepo.create(_newUserRsvp);
     return this.userRsvpRepo.save(newUserRsvp);
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpService, HttpStatus, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 
 import { Event, EventRepo, Sponsor, SponsorRepo, Tag, TagRepo, UserRsvpRepo } from '../../entities/all.entity';
@@ -18,9 +18,9 @@ export class EventProvider extends BaseProvider<Event> {
   public async insertEvent(_newEvent: Partial<Event>) {
     try {
       const newEvent = await this.eventRepo.create(_newEvent);
-      this.eventRepo.save(newEvent);
+      return this.eventRepo.save(newEvent);
     } catch (error) {
-      throw new Error('something went wrong inserting new event');
+      throw new HttpException('Could not insert new Event', HttpStatus.PARTIAL_CONTENT);
     }
   }
 

@@ -1,7 +1,7 @@
 module.exports = {
   displayName: 'gisday-common',
   preset: '../../../jest.config.js',
-  setupFilesAfterEnv: ['<rootDir>/src/test/test-setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {
       tsConfig: '<rootDir>/tsconfig.spec.json',

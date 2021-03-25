@@ -27,13 +27,17 @@ export class UserClassProvider extends BaseProvider<UserClass> {
   public async getClassesAndUserClasses(accountGuid: string) {
     const classes = await this.classRepo.find();
     const userClasses = await this.userClassRepo.getUsersClasses(accountGuid);
-    await classes.forEach((aClass) => {
-      userClasses.forEach((aUserClass) => {
-        if (aUserClass.class.guid === aClass.guid) {
-          aClass.userInClass = true;
-        }
+
+    classes.map((aClass) => {
+      const intersection = userClasses.find((aUserClass) => {
+        aUserClass.guid === aClass.guid;
       });
+
+      if (intersection) {
+        aClass.userInClass = true;
+      }
     });
+
     return classes;
   }
 
@@ -46,7 +50,9 @@ export class UserClassProvider extends BaseProvider<UserClass> {
       }
     });
     if (foundClass) {
-      this.userClassRepo.remove(foundClass);
+      return this.userClassRepo.remove(foundClass);
+    } else {
+      throw new Error('Could not find class with provided guid');
     }
   }
 }
