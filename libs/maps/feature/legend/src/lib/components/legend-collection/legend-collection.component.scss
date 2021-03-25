@@ -1,0 +1,7 @@
+@import 'libs/sass/mixins';
+
+.legend-collection {
+  @include flexbox();
+  @include flex-direction(column);
+  font-size: 0.875rem;
+}

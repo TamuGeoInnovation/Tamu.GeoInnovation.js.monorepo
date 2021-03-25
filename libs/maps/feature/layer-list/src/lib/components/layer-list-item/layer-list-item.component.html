@@ -1,0 +1,12 @@
+<div class="layer-item" [ngClass]="{ 'visible': listItem?.visible, 'outside-extent': listItem.visibleAtCurrentScale === false, 'error': listItem?.error }" (click)="toggleLayer()">
+  <div [ngSwitch]="listItem.updating">
+    <div *ngSwitchCase="false" class="layer-visibility-dot"></div>
+
+    <div *ngSwitchDefault>
+      <div class="loader-container">
+        <div class="spinning-loader"></div>
+      </div>
+    </div>
+  </div>
+  <p>{{ listItem.title }}</p>
+</div>

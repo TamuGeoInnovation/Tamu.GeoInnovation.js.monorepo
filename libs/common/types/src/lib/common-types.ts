@@ -148,11 +148,22 @@ type RendererAutoCastNativeOptions =
   | HeatmapRendererNativeOptions
   | UniqueValueRendererNativeOptions;
 
+export interface IRemoteLayerService {
+  /**
+   * URL for the layer service
+   *
+   * If the service contains multiple layers, point to the sub layer that will be added. For example:
+   *
+   * `http://source.com/to/layer/0`
+   */
+  url: string;
+}
+
 //
 // Layer Source Type Typings
 //
 
-interface FeatureLayerSourceProperties {
+interface FeatureLayerSourceProperties extends IRemoteLayerService {
   type: 'feature';
 
   native?: Omit<esri.FeatureLayerProperties, 'renderer' | 'labelingInfo'> & {
@@ -161,23 +172,27 @@ interface FeatureLayerSourceProperties {
   };
 }
 
-interface SceneLayerSourceProperties {
+interface SceneLayerSourceProperties extends IRemoteLayerService {
   type: 'scene';
+
   native?: Omit<esri.SceneLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
 }
 
-interface GeoJSONLayerSourceProperties {
+interface GeoJSONLayerSourceProperties extends IRemoteLayerService {
   type: 'geojson';
+
   native?: Omit<esri.GeoJSONLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
 }
 
-interface CSVLayerSourceProperties {
+interface CSVLayerSourceProperties extends IRemoteLayerService {
   type: 'csv';
+
   native?: Omit<esri.CSVLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
 }
 
 interface GraphicLayerSourceProperties {
   type: 'graphic';
+
   /**
    * Graphics used in the creation of the layer
    */
@@ -185,12 +200,47 @@ interface GraphicLayerSourceProperties {
   native?: esri.GraphicsLayerProperties;
 }
 
+interface GroupLayerSourceProperties {
+  type: 'group';
+
+  /**
+   * Graphics used in the creation of the layer
+   */
+  native?: esri.GroupLayerProperties;
+}
+
+interface PortalMapServerLayerSourceProperties {
+  type: 'map-server';
+
+  /**
+   * Portal service base URL. The schema for the service will be pulled and all layers contained in the definition
+   * will be loaded.
+   *
+   * Example: https://service.domain/arcgis/rest/services/Folder/Folder/MapServer
+   */
+  url: string;
+
+  native?: {
+    /**
+     * Default group layer properties appended to all group layers found in the service.
+     */
+    defaultGroupLayerProperties?: esri.GroupLayerProperties;
+
+    /**
+     * Default feature layer properties appended to all feature layers found in the service.
+     */
+    defaultFeatureLayerProperties?: esri.FeatureLayerProperties;
+  };
+}
+
 export type LayerSourceType =
   | FeatureLayerSourceProperties
   | SceneLayerSourceProperties
   | GeoJSONLayerSourceProperties
   | CSVLayerSourceProperties
-  | GraphicLayerSourceProperties;
+  | GraphicLayerSourceProperties
+  | GroupLayerSourceProperties
+  | PortalMapServerLayerSourceProperties;
 
 /**
  * Describes the properties for each layer source used by a layer factory to add layers to the map as required.
@@ -222,17 +272,10 @@ export type LayerSource = LayerSourceType & {
    * meaning layers will only load when requested.
    *
    * Defaults to `true`
+   *
+   * @deprecated Property has no function since implementation of esri's LayerListViewModel.
    */
   loadOnInit?: boolean;
-
-  /**
-   * URL for the layer service, if applicable.
-   *
-   * If the service contains multiple layers, point to the sub layer that will be added. For example:
-   *
-   * `http://source.com/to/layer/0`
-   */
-  url?: string;
 
   /**
    * Current visible state for a layer.
@@ -263,14 +306,6 @@ export type LayerSource = LayerSourceType & {
   layerIndex?: number;
 
   category?: string;
-
-  /**
-   * Describes if the layer source was added at runtime and not statically defined in application environments.
-   *
-   * This is used internally to manage side-effects until a better solution is implemented. This property will be
-   * removed in the future.
-   */
-  runtimeAdded?: boolean;
 };
 
 export interface LegendItem {

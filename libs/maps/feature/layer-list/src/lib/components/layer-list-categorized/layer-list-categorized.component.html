@@ -4,11 +4,18 @@
 </div>
 
 <div class="sidebar-component-content-container">
-  <div class="category" *ngFor="let category of categorized">
-    <tamu-gisc-accordion [expanded]="category.expanded">
-      <tamu-gisc-accordion-header (click)="category.expanded = !category.expanded">{{category.title}}</tamu-gisc-accordion-header>
+  <div class="category" *ngFor="let category of layers | async">
+    <tamu-gisc-accordion>
+      <tamu-gisc-accordion-header>{{category.title}}</tamu-gisc-accordion-header>
       <tamu-gisc-accordion-content>
-        <p *ngFor="let item of category.layers" class="layer-item" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible, hidden: item.outsideExtent }" (click)="toggleLayer(item)">{{ item.title }}</p>
+        <div [ngSwitch]="category.children.length">
+          <div *ngSwitchCase="0">
+            <tamu-gisc-layer-list-item [listItem]="category"></tamu-gisc-layer-list-item>
+          </div>
+          <div *ngSwitchDefault>
+            <tamu-gisc-layer-list-item *ngFor="let layer of category.children.toArray()" [listItem]="layer"></tamu-gisc-layer-list-item>
+          </div>
+        </div>
       </tamu-gisc-accordion-content>
     </tamu-gisc-accordion>
   </div>

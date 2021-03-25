@@ -4,5 +4,5 @@
 </div>
 
 <div class="sidebar-component-content-container">
-  <p *ngFor="let item of layers | async" class="layer-item" [ngClass]="{ loaded: item?.layer?.loaded && item?.layer?.visible, hidden: item.outsideExtent }" (click)="toggleLayer(item)">{{ item.title }}</p>
+  <tamu-gisc-layer-list-item *ngFor="let item of layers | async" [listItem]="item"></tamu-gisc-layer-list-item>
 </div>

@@ -1,11 +1,18 @@
 import { Injectable, Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
 import { SearchService } from '@tamu-gisc/search';
-import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
-import { LayerSource } from '@tamu-gisc/common/types';
+import {
+  AutocastableLayer,
+  cleanPortalJSONLayer,
+  getGeometryType,
+  getLayerTypeFromPortalJSON,
+  IPortalLayer
+} from '@tamu-gisc/common/utils/geometry/esri';
+import { LayerSource, IRemoteLayerService } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { EsriModuleProviderService } from './module-provider.service';
@@ -40,7 +47,8 @@ export class EsriMapService {
     private moduleProvider: EsriModuleProviderService,
     private router: Router,
     private searchService: SearchService<esri.Graphic>,
-    private environment: EnvironmentService
+    private environment: EnvironmentService,
+    private http: HttpClient
   ) {}
 
   public loadMap(mapProperties: MapProperties, viewProperties: ViewProperties) {
@@ -105,9 +113,7 @@ export class EsriMapService {
     });
 
     // Filter list of layers that need to be added on map load
-    this.loadLayers(
-      this.environment.value('LayerSources').filter((l) => l.loadOnInit === undefined || l.loadOnInit === true)
-    );
+    this.loadLayers(this.environment.value('LayerSources'));
 
     // Load feature list from url (e.g. howdy links)
     this.selectFeaturesFromUrl();
@@ -134,13 +140,6 @@ export class EsriMapService {
       this._modules.view.destroy();
 
       this._store.next(undefined);
-
-      // Deal with the side-effects originating from mutating the environment variable.
-      // A more permanent and appropriate solution will be implemented at a later time.
-      this.environment.update(
-        'LayerSources',
-        this.environment.value('LayerSources').filter((s) => !s.runtimeAdded)
-      );
     }
   }
 
@@ -249,6 +248,87 @@ export class EsriMapService {
     });
   }
 
+  public async generateLayer(source: LayerSource | AutocastableLayer): Promise<esri.Layer | Array<esri.Layer>> {
+    // Object with merged root level properties, native properties, and persistent properties.
+    let props;
+
+    if (source.hasOwnProperty('native')) {
+      props = { ...source, ...(source as LayerSource).native };
+    } else {
+      props = { ...source };
+    }
+
+    // Remove the 'native' property from the object since it's not needed in the layer creation.
+    if (props.hasOwnProperty('native')) {
+      delete props.native;
+    }
+
+    // Delete any additional properties to avoid polluting layer instances
+    if ('loadOnInit' in props) {
+      delete props.loadOnInit;
+    }
+
+    if (source.type === 'feature') {
+      return this.moduleProvider.require(['FeatureLayer']).then(([FeatureLayer]: [esri.FeatureLayerConstructor]) => {
+        // Delete the type property as it cannot be set on layer creation.
+        delete props.type;
+
+        // Create and return new feature layer
+        return new FeatureLayer(props as esri.FeatureLayerProperties);
+      });
+    } else if (source.type === 'scene') {
+      return this.moduleProvider.require(['SceneLayer']).then(([SceneLayer]: [esri.SceneLayerConstructor]) => {
+        // Delete the type property as it cannot be set on layer creation.
+        delete props.type;
+
+        // Create and return new scene layer
+        return new SceneLayer(props as esri.SceneViewProperties);
+      });
+    } else if (source.type === 'graphic') {
+      return this.moduleProvider.require(['GraphicsLayer']).then(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
+        // Delete the type property as it cannot be set on layer creation.
+        delete props.type;
+
+        // Create and return new graphics layer
+        return new GraphicsLayer(props as esri.GraphicsLayerProperties);
+      });
+    } else if (source.type === 'geojson') {
+      return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [esri.GeoJSONLayerConstructor]) => {
+        // Delete the type property as it cannot be set on layer creation.
+        delete props.type;
+
+        // Create and return new geojson layer
+        return new GeoJSONLayer(props as esri.GeoJSONLayerProperties);
+      });
+    } else if (source.type === 'csv') {
+      return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [esri.CSVLayerConstructor]) => {
+        // Delete the type property as it cannot be set on layer creation.
+        delete props.type;
+
+        // Create and return new geojson layer
+        return new CSVLayer(props as esri.CSVLayerProperties);
+      });
+    } else if (source.type === 'group') {
+      return this.moduleProvider.require(['GroupLayer']).then(([GroupLayer]: [esri.GroupLayerConstructor]) => {
+        // Delete the type property as it cannot be set on layer creation.
+        delete props.type;
+
+        // Create and return new geojson layer
+        return new GroupLayer(props as esri.GroupLayerProperties);
+      });
+    } else if (source.type === 'map-server') {
+      return this.http
+        .get(`${source.url}`, { params: { f: 'pjson' } })
+        .toPromise()
+        .then((res: { layers: Array<IPortalLayer> }) => {
+          return this.resolveUnloadedLayers({
+            layers: res.layers,
+            source: source
+          });
+        });
+    }
+  }
+
   /**
    * Check if a layer exists, source object.
    *
@@ -258,7 +338,7 @@ export class EsriMapService {
    *
    * @param {LayerSource} source
    */
-  public findLayerOrCreateFromSource(source: LayerSource): Promise<esri.Layer> {
+  public findLayerOrCreateFromSource(source: LayerSource): Promise<esri.Layer | Array<esri.Layer>> {
     const map: esri.Map = this._modules.map;
 
     if (this.layerExists(source.id)) {
@@ -270,86 +350,83 @@ export class EsriMapService {
         }
       });
     } else {
-      const generateLayer = (layerSource: LayerSource): Promise<esri.Layer> => {
-        // Object with merged root level properties, native properties, and persistent properties.
-        const props = { ...layerSource, ...layerSource.native };
-
-        // Remove the 'native' property from the object since it's not needed in the layer creation.
-        if (props.hasOwnProperty('native')) {
-          delete props.native;
-        }
-
-        // Delete any additional properties to avoid polluting layer instances
-        if ('loadOnInit' in props) {
-          delete props.loadOnInit;
-        }
-
-        if (layerSource.type === 'feature') {
-          return this.moduleProvider.require(['FeatureLayer']).then(([FeatureLayer]: [esri.FeatureLayerConstructor]) => {
-            // Delete the type property as it cannot be set on layer creation.
-            delete props.type;
-
-            // Create and return new feature layer
-            return new FeatureLayer(props as esri.FeatureLayerProperties);
-          });
-        } else if (layerSource.type === 'scene') {
-          return this.moduleProvider.require(['SceneLayer']).then(([SceneLayer]: [esri.SceneLayerConstructor]) => {
-            // Delete the type property as it cannot be set on layer creation.
-            delete props.type;
-
-            // Create and return new scene layer
-            return new SceneLayer(props as esri.SceneViewProperties);
-          });
-        } else if (layerSource.type === 'graphic') {
-          return this.moduleProvider.require(['GraphicsLayer']).then(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
-            // Delete the type property as it cannot be set on layer creation.
-            delete props.type;
-
-            // Create and return new graphics layer
-            return new GraphicsLayer(props as esri.GraphicsLayerProperties);
-          });
-        } else if (layerSource.type === 'geojson') {
-          return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [esri.GeoJSONLayerConstructor]) => {
-            // Delete the type property as it cannot be set on layer creation.
-            delete props.type;
-
-            // Create and return new geojson layer
-            return new GeoJSONLayer(props as esri.GeoJSONLayerProperties);
-          });
-        } else if (layerSource.type === 'csv') {
-          return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [esri.CSVLayerConstructor]) => {
-            // Delete the type property as it cannot be set on layer creation.
-            delete props.type;
-
-            // Create and return new geojson layer
-            return new CSVLayer(props as esri.CSVLayerProperties);
-          });
-        }
-      };
-
       // Generate the layer
-      return generateLayer(source).then((layer) => {
-        if (layer) {
-          const sources: LayerSource[] = this.environment.value('LayerSources');
-
-          const existingSourceIndex = sources.findIndex((s: LayerSource) => {
-            return s.id === source.id;
-          });
-
-          // If the source being processed does not exist in LayerSources, add it.
-          // This is the case in dynamically added layers
-          if (existingSourceIndex === -1) {
-            sources.push({ ...source, runtimeAdded: true });
-          }
-
+      return this.generateLayer(source).then((layerOrLayers) => {
+        if (layerOrLayers instanceof Array) {
           // Add layer to map
-          (<esri.Map>this._modules.map).add(layer, source.layerIndex ? source.layerIndex : undefined);
+          (<esri.Map>this._modules.map).addMany(layerOrLayers, source.layerIndex ? source.layerIndex : undefined);
 
           // Return layer in case further manipulation is needed.
-          return layer;
+          return layerOrLayers;
+        } else {
+          // Add layer to map
+          (<esri.Map>this._modules.map).add(layerOrLayers, source.layerIndex ? source.layerIndex : undefined);
+
+          // Return layer in case further manipulation is needed.
+          return layerOrLayers;
         }
       });
     }
+  }
+
+  public async resolveUnloadedLayers(args: IResolveUnloadedLayersProperties): Promise<Array<esri.Layer>> {
+    if (args.layers.length === 0) {
+      return await [];
+    }
+
+    const typed = args.layers.map((sl) => {
+      return { ...sl, type: getLayerTypeFromPortalJSON(sl) } as IPortalLayer;
+    });
+
+    const casted = await Promise.all(
+      typed.map((t) => {
+        const cleaned = cleanPortalJSONLayer(t, (args.source as IRemoteLayerService).url);
+
+        // `map-server` layer source type can have additional native properties for different kinds of layers.
+        // We need to unpack them and merge them to the `cleaned` auto-castable layer props.
+        if (args.source.type === 'map-server') {
+          if (cleaned.type === 'feature') {
+            Object.assign(cleaned, args.source.native.defaultFeatureLayerProperties);
+          } else if (cleaned.type === 'group') {
+            Object.assign(cleaned, args.source.native.defaultGroupLayerProperties);
+          }
+        }
+
+        return this.generateLayer(({ ...cleaned, ...args.source.native } as unknown) as AutocastableLayer);
+      })
+    );
+
+    // Merge the resolved layer inside the typed layer definitions. The grouping will be done against the typed object properties
+    // to avoid having to deal with needing to resolve nested promises.
+    const merged = typed.map((t, index) => {
+      return ({ ...t, resolvedLayer: casted[index] } as unknown) as IPortalLayer;
+    });
+
+    const rootParents = merged.filter((p) => p.parentLayerId === -1);
+
+    const mapped = rootParents.map((parent) => {
+      return this.getChildLayers(parent, { ...args, layers: merged });
+    });
+
+    return mapped;
+  }
+
+  private getChildLayers(parent: IPortalLayer, args: IResolveUnloadedLayersProperties) {
+    if (parent.subLayerIds !== null) {
+      const layers = parent.subLayerIds.map((sl) => {
+        const child = args.layers.find((listItem) => listItem.id === sl);
+
+        return this.getChildLayers(child, args);
+      });
+
+      const inverted = parent.resolvedLayer;
+
+      ((inverted as unknown) as esri.GroupLayerProperties).layers = layers;
+
+      return inverted;
+    }
+
+    return parent.resolvedLayer;
   }
 
   /**
@@ -391,7 +468,7 @@ export class EsriMapService {
   }
 
   /**
-   * Method wrapper that gets a list of features from URL params, andcalls the search
+   * Method wrapper that gets a list of features from URL params, and calls the search
    * service to find matching features.
    *
    * Search results then get passed to a selector method that takes care of symbolizing and adding to map.
@@ -715,3 +792,8 @@ export interface SceneViewProperties {
 }
 
 export type ViewProperties = MapViewProperties | SceneViewProperties;
+
+export interface IResolveUnloadedLayersProperties {
+  layers: Array<IPortalLayer>;
+  source: LayerSource;
+}

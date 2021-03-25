@@ -1,9 +1,10 @@
 import { Point } from '@tamu-gisc/common/types';
-import esri = __esri;
 
 import { loadModules } from 'esri-loader';
 import { default as tCentroid } from '@turf/centroid';
 import { polygon as tPolygon, Feature as tFeature, Point as tPoint } from '@turf/helpers';
+
+import esri = __esri;
 
 /**
  * Attempts to determine a singular point (latitude and longitude) utilizing
@@ -126,6 +127,43 @@ export function pointFromPolylineGeometry(feature: esri.Polyline): Point {
   }
 }
 
+export function getLayerTypeFromPortalJSON(layer: { type: string }) {
+  switch (layer.type) {
+    case PORTAL_LAYER_TYPES.FEATURE_LAYER:
+      return API_LAYER_TYPES.FEATURE_LAYER;
+    case PORTAL_LAYER_TYPES.GRAPHICS_LAYER:
+      return API_LAYER_TYPES.GRAPHICS_LAYER;
+    case PORTAL_LAYER_TYPES.GROUP_LAYER:
+      return API_LAYER_TYPES.GROUP_LAYER;
+    case PORTAL_LAYER_TYPES.CSV_LAYER:
+      return API_LAYER_TYPES.CSV_LAYER;
+    case PORTAL_LAYER_TYPES.SCENE_LAYER:
+      return API_LAYER_TYPES.SCENE_LAYER;
+    default:
+      return 'unknown';
+  }
+}
+
+/**
+ * Strips unnecessary layer definition properties from a Portal JSON representation
+ * to create bare minimum auto-castable layers.
+ */
+export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): AutocastableLayer {
+  if (layer.type === API_LAYER_TYPES.FEATURE_LAYER) {
+    return {
+      type: 'feature',
+      url: `${url}/${layer.id}`,
+      title: layer.name
+    };
+  } else if (layer.type === API_LAYER_TYPES.GROUP_LAYER) {
+    return {
+      type: 'group',
+      layers: (((layer as IPortalGroupLayer).layers as unknown) as Array<AutocastableLayer>) || [],
+      title: layer.name
+    };
+  }
+}
+
 export class CoordinateConverter {
   private modules: {
     point: esri.PointConstructor;
@@ -157,3 +195,48 @@ export class CoordinateConverter {
 }
 
 export type FeatureUnion = esri.Geometry | esri.Polygon | esri.Multipoint | esri.Point | esri.Polyline | Point;
+
+export enum PORTAL_LAYER_TYPES {
+  GRAPHICS_LAYER = 'Graphics Layer',
+  FEATURE_LAYER = 'Feature Layer',
+  GROUP_LAYER = 'Group Layer',
+  CSV_LAYER = 'CSV Layer',
+  GEOJSON_LAYER = 'GeoJSON Layer',
+  SCENE_LAYER = 'Scene Layer'
+}
+
+export enum API_LAYER_TYPES {
+  GRAPHICS_LAYER = 'graphics',
+  FEATURE_LAYER = 'feature',
+  GROUP_LAYER = 'group',
+  CSV_LAYER = 'csv',
+  GEOJSON_LAYER = 'geojson',
+  SCENE_LAYER = 'scene'
+}
+
+interface IBasePortalLayer {
+  id: number;
+  name: string;
+  parentLayerId: number;
+  defaultVisibility: boolean;
+  minScale: number;
+  maxScale: number;
+  type: string;
+  supportsDynamicLegends: boolean;
+  resolvedLayer: esri.Layer;
+}
+
+export interface IPortalFeatureLayer extends IBasePortalLayer {
+  subLayerIds: null;
+}
+
+export interface IPortalGroupLayer extends IBasePortalLayer {
+  subLayerIds: Array<number>;
+  layers?: Array<IPortalLayer>;
+}
+
+export type IPortalLayer = IPortalFeatureLayer | IPortalGroupLayer;
+
+export type AutocastableLayer =
+  | { type: 'group'; layers: Array<AutocastableLayer>; title?: string }
+  | { type: 'feature'; url: string; title?: string };

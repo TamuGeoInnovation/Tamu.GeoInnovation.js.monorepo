@@ -183,6 +183,14 @@ export class EsriModuleProviderService {
     {
       class: 'esri/widgets/Legend/LegendViewModel',
       name: 'LegendViewModel'
+    },
+    {
+      class: 'esri/layers/Layer',
+      name: 'Layer'
+    },
+    {
+      class: 'esri/layers/GroupLayer',
+      name: 'GroupLayer'
     }
   ];
 

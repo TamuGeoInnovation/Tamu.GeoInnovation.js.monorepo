@@ -1,0 +1,75 @@
+@import 'libs/sass/mixins';
+
+:host {
+  padding-bottom: 0.75rem;
+  position: relative;
+  display: block;
+}
+
+.layer-item {
+  cursor: pointer;
+  color: #6e6e6e;
+  font-size: 0.875rem;
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+
+  p {
+    padding-bottom: 0;
+  }
+
+  .layer-visibility-dot {
+    content: '';
+    display: inline-block;
+    height: 0.4rem;
+    width: 0.4rem;
+    border-radius: 99rem;
+    border: 1px solid #6e6e6e;
+    margin-right: 0.5rem;
+    margin-left: 0.3rem;
+  }
+
+  &.visible {
+    color: initial;
+
+    .layer-visibility-dot {
+      background: #6e6e6e;
+    }
+  }
+
+  &.outside-extent {
+    color: #bdbdbd;
+
+    .layer-visibility-dot {
+      border-color: #bdbdbd;
+    }
+
+    &.visible {
+      .layer-visibility-dot {
+        background: #bdbdbd;
+      }
+    }
+  }
+
+  &.error {
+    $red: #e57373;
+    color: $red;
+    text-decoration: line-through;
+
+    .layer-visibility-dot {
+      background: lighten($red, 10%);
+      border-color: lighten($red, 10%);
+    }
+  }
+}
+
+.loader-container {
+  margin-right: 0.45rem;
+}
+
+.spinning-loader {
+  margin-top: 0;
+  height: 0.5rem;
+  width: 0.5rem;
+  border-width: 0.29em;
+}
