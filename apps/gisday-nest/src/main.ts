@@ -7,7 +7,7 @@ const SQLiteStore = require('connect-sqlite3')(session);
 import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
 import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
+import { environment, origins } from './environments/environment';
 import { OIDC_IDP_ISSUER_URL, OIDC_CLIENT_PARAMS, OIDC_CLIENT_METADATA_BASIC } from './environments/environment';
 
 async function bootstrap() {
@@ -19,7 +19,7 @@ async function bootstrap() {
   });
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: ['http://localhost', 'http://localhost:4200'],
+      origin: origins,
       methods: ['GET', 'POST', 'PATCH', 'DELETE'],
       credentials: true
     }
