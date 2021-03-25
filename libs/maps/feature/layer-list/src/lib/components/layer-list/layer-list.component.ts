@@ -97,27 +97,27 @@ export class LayerListComponent implements OnInit, OnDestroy {
       const source = this._layerSources.find((src) => src.id === listItem.id);
 
       // If source is found, create a layer from it.
-      if (source) {
-        this.mapService.findLayerOrCreateFromSource(source).then((layer) => {
-          const label = {
-            guid: guid(),
-            date: Date.now(),
-            value: {
-              layer: layer.title,
-              visible: layer.visible
-            }
-          };
+      // if (source) {
+      //   this.mapService.findLayerOrCreateFromSource(source).then((layer) => {
+      //     const label = {
+      //       guid: guid(),
+      //       date: Date.now(),
+      //       value: {
+      //         layer: layer.title,
+      //         visible: layer.visible
+      //       }
+      //     };
 
-          // // Report the event when we have a layer value
-          // this.analytics.eventTrack.next({
-          //   action: 'Layer Toggle',
-          //   properties: {
-          //     category: 'UI Interaction',
-          //     label: JSON.stringify(label)
-          //   }
-          // });
-        });
-      }
+      //     // // Report the event when we have a layer value
+      //     // this.analytics.eventTrack.next({
+      //     //   action: 'Layer Toggle',
+      //     //   properties: {
+      //     //     category: 'UI Interaction',
+      //     //     label: JSON.stringify(label)
+      //     //   }
+      //     // });
+      //   });
+      // }
     }
   }
 

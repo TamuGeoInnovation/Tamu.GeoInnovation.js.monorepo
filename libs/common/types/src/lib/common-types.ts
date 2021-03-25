@@ -178,6 +178,7 @@ interface CSVLayerSourceProperties {
 
 interface GraphicLayerSourceProperties {
   type: 'graphic';
+
   /**
    * Graphics used in the creation of the layer
    */
@@ -187,10 +188,23 @@ interface GraphicLayerSourceProperties {
 
 interface GroupLayerSourceProperties {
   type: 'group';
+
   /**
    * Graphics used in the creation of the layer
    */
   native?: esri.GroupLayerProperties;
+}
+
+interface PortalMapServerLayerSourceProperties {
+  type: 'map-server';
+
+  /**
+   * Portal service base URL. The schema for the service will be pulled and all layers contained in the definition
+   * will be loaded.
+   */
+  url: string;
+
+  native: {};
 }
 
 export type LayerSourceType =
@@ -199,7 +213,8 @@ export type LayerSourceType =
   | GeoJSONLayerSourceProperties
   | CSVLayerSourceProperties
   | GraphicLayerSourceProperties
-  | GroupLayerSourceProperties;
+  | GroupLayerSourceProperties
+  | PortalMapServerLayerSourceProperties;
 
 /**
  * Describes the properties for each layer source used by a layer factory to add layers to the map as required.
@@ -224,15 +239,15 @@ export type LayerSource = LayerSourceType & {
    */
   listMode?: 'show' | 'hide';
 
-  /** 
+  /**
    * Determines whether the layer will be loaded on application load.
    *
    * A layer can be listed as "show" but not load on init. This will enable layer lazy-loading,
    * meaning layers will only load when requested.
    *
    * Defaults to `true`
-   * 
-   * @deprecated Property has no function
+   *
+   * @deprecated Property has no function since implementation of esri's LayerListViewModel.
    */
   loadOnInit?: boolean;
 
