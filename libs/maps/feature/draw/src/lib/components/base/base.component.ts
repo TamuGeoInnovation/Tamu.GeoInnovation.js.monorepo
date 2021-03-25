@@ -94,60 +94,53 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
     this.activeUpdateTool = this.defaultUpdateTool;
 
     if (this.reference !== undefined) {
-      combineLatest([
-        from(this.moduleProvider.require(['SketchViewModel'])),
-        this.mapService.store,
-        // Only interested in the first emission that has a valid layer instance.
-        // Once $loaded emits, this observable will unsubscribe so that the combineLatest
-        // stream does not emit and create additional view model instances.
-        this.layerListService.layers({ layers: this.reference }).pipe(takeUntil(this._$loaded), pluck('0', 'layer'))
-      ])
+      combineLatest([from(this.moduleProvider.require(['SketchViewModel'])), this.mapService.store])
         .pipe(takeUntil(this._$destroy))
-        .subscribe(
-          ([[SketchViewModel], mapInstance, layer]: [[esri.SketchViewModelConstructor], MapServiceInstance, esri.Layer]) => {
-            // Emit $loaded which functions as a scheduler on the layer list service to prevent
-            // the layer reference stream from emitting again, which would in turn force the
-            // combineLatest stream to emit and create additional view models.
-            this._$loaded.next();
+        .subscribe(([[SketchViewModel], mapInstance]: [[esri.SketchViewModelConstructor], MapServiceInstance]) => {
+          // Emit $loaded which functions as a scheduler on the layer list service to prevent
+          // the layer reference stream from emitting again, which would in turn force the
+          // combineLatest stream to emit and create additional view models.
+          this._$loaded.next();
 
-            this.model = new SketchViewModel({ view: mapInstance.view, layer, updateOnGraphicClick: !this.updateTools });
+          const l = mapInstance.map.findLayerById(this.reference);
 
-            this.model.on('create', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) => {
-              if (event.state === 'complete') {
-                this.onCreate(event);
-              }
-            });
+          this.model = new SketchViewModel({ view: mapInstance.view, layer: l, updateOnGraphicClick: !this.updateTools });
 
-            // Handle component graphic emissions on any valid update event type:
-            //
-            // - Shape update complete
-            // - Shape move stop
-            // - Shape reshape stop
-            this.model.on('update', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelUpdateEvent>) => {
-              if (
-                event.state === 'complete' ||
-                (event.toolEventInfo && event.toolEventInfo.type === 'move-stop') ||
-                (event.toolEventInfo && event.toolEventInfo.type === 'reshape-stop') ||
-                (event.toolEventInfo && event.toolEventInfo.type === 'rotate-stop') ||
-                (event.toolEventInfo && event.toolEventInfo.type === 'scale-stop')
-              ) {
-                this.onUpdate(event);
-              }
-            });
+          this.model.on('create', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) => {
+            if (event.state === 'complete') {
+              this.onCreate(event);
+            }
+          });
 
-            this.model.on('delete', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelDeleteEvent>) => {
-              this.onDelete(event);
-            });
+          // Handle component graphic emissions on any valid update event type:
+          //
+          // - Shape update complete
+          // - Shape move stop
+          // - Shape reshape stop
+          this.model.on('update', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelUpdateEvent>) => {
+            if (
+              event.state === 'complete' ||
+              (event.toolEventInfo && event.toolEventInfo.type === 'move-stop') ||
+              (event.toolEventInfo && event.toolEventInfo.type === 'reshape-stop') ||
+              (event.toolEventInfo && event.toolEventInfo.type === 'rotate-stop') ||
+              (event.toolEventInfo && event.toolEventInfo.type === 'scale-stop')
+            ) {
+              this.onUpdate(event);
+            }
+          });
 
-            this._activeToolWatchHandle = this.model.watch('activeTool', (tool) => {
-              if (tool === null) {
-                this.activeUpdateTool = this.defaultUpdateTool;
-              } else {
-                this.activeUpdateTool = tool;
-              }
-            });
-          }
-        );
+          this.model.on('delete', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelDeleteEvent>) => {
+            this.onDelete(event);
+          });
+
+          this._activeToolWatchHandle = this.model.watch('activeTool', (tool) => {
+            if (tool === null) {
+              this.activeUpdateTool = this.defaultUpdateTool;
+            } else {
+              this.activeUpdateTool = tool;
+            }
+          });
+        });
 
       // If our update tools are disabled, default to the default model updating implementation.
       if (this.updateTools) {
