@@ -1,9 +1,10 @@
-import { LayerSource, Point } from '@tamu-gisc/common/types';
-import esri = __esri;
+import { Point } from '@tamu-gisc/common/types';
 
 import { loadModules } from 'esri-loader';
 import { default as tCentroid } from '@turf/centroid';
 import { polygon as tPolygon, Feature as tFeature, Point as tPoint } from '@turf/helpers';
+
+import esri = __esri;
 
 /**
  * Attempts to determine a singular point (latitude and longitude) utilizing
