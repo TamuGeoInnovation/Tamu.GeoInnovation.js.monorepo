@@ -236,7 +236,7 @@ export interface CPALayer {
   /**
    * Esri graphics in their JSON portal representation.
    *
-   * Used when the layer type is 'graphic'.
+   * Used when the layer type is 'graphics'.
    */
   graphics?: Array<IGraphic>;
 

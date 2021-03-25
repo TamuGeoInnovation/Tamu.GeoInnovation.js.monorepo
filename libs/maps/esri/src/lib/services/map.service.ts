@@ -285,7 +285,7 @@ export class EsriMapService {
         // Create and return new scene layer
         return new SceneLayer(props as esri.SceneViewProperties);
       });
-    } else if (source.type === 'graphic') {
+    } else if (source.type === 'graphics') {
       return this.moduleProvider.require(['GraphicsLayer']).then(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
