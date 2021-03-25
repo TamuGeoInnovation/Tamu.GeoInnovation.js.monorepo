@@ -163,7 +163,7 @@ export interface IRemoteLayerService {
 // Layer Source Type Typings
 //
 
-interface FeatureLayerSourceProperties extends IRemoteLayerService {
+export interface FeatureLayerSourceProperties extends IRemoteLayerService {
   type: 'feature';
 
   native?: Omit<esri.FeatureLayerProperties, 'renderer' | 'labelingInfo'> & {
@@ -172,25 +172,25 @@ interface FeatureLayerSourceProperties extends IRemoteLayerService {
   };
 }
 
-interface SceneLayerSourceProperties extends IRemoteLayerService {
+export interface SceneLayerSourceProperties extends IRemoteLayerService {
   type: 'scene';
 
   native?: Omit<esri.SceneLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
 }
 
-interface GeoJSONLayerSourceProperties extends IRemoteLayerService {
+export interface GeoJSONLayerSourceProperties extends IRemoteLayerService {
   type: 'geojson';
 
   native?: Omit<esri.GeoJSONLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
 }
 
-interface CSVLayerSourceProperties extends IRemoteLayerService {
+export interface CSVLayerSourceProperties extends IRemoteLayerService {
   type: 'csv';
 
   native?: Omit<esri.CSVLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
 }
 
-interface GraphicLayerSourceProperties {
+export interface GraphicLayerSourceProperties {
   type: 'graphic';
 
   /**
@@ -200,11 +200,17 @@ interface GraphicLayerSourceProperties {
   native?: esri.GraphicsLayerProperties;
 }
 
-interface GroupLayerSourceProperties {
+export interface GroupLayerSourceProperties {
   type: 'group';
 
   /**
-   * Graphics used in the creation of the layer
+   * Collection of layer sources that will be casted into their respective layer types and added to the
+   * group layer construction.
+   */
+  sources?: LayerSource[];
+
+  /**
+   * Native group layer properties.
    */
   native?: esri.GroupLayerProperties;
 }
@@ -229,7 +235,8 @@ interface PortalMapServerLayerSourceProperties {
     /**
      * Default feature layer properties appended to all feature layers found in the service.
      */
-    defaultFeatureLayerProperties?: esri.FeatureLayerProperties;
+    // tslint:disable-next-line: no-any
+    defaultFeatureLayerProperties?: esri.FeatureLayerProperties & { popupComponent?: any };
   };
 }
 
@@ -296,6 +303,8 @@ export type LayerSource = LayerSourceType & {
 
   /**
    * Legend items that are shown disabled in the legend as the layer visibility is on/off
+   *
+   * @deprecated Legend items are now rendered through the legend view model
    */
   legendItems?: LegendItem[];
 
@@ -305,6 +314,11 @@ export type LayerSource = LayerSourceType & {
    */
   layerIndex?: number;
 
+  /**
+   * String used to categorize layers in like groups.
+   *
+   * @deprecated Categorization is now done through group layers
+   */
   category?: string;
 };
 

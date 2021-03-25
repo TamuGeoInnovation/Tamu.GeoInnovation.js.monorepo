@@ -12,7 +12,7 @@ import {
   getLayerTypeFromPortalJSON,
   IPortalLayer
 } from '@tamu-gisc/common/utils/geometry/esri';
-import { LayerSource, IRemoteLayerService } from '@tamu-gisc/common/types';
+import { LayerSource, IRemoteLayerService, GroupLayerSourceProperties } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { EsriModuleProviderService } from './module-provider.service';
@@ -252,6 +252,7 @@ export class EsriMapService {
     // Object with merged root level properties, native properties, and persistent properties.
     let props;
 
+    // Check if the incoming source has the native property because Autocastable layers do not.
     if (source.hasOwnProperty('native')) {
       props = { ...source, ...(source as LayerSource).native };
     } else {
@@ -305,16 +306,27 @@ export class EsriMapService {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
-        // Create and return new geojson layer
+        // Create and return new csv layer
         return new CSVLayer(props as esri.CSVLayerProperties);
       });
     } else if (source.type === 'group') {
-      return this.moduleProvider.require(['GroupLayer']).then(([GroupLayer]: [esri.GroupLayerConstructor]) => {
+      return this.moduleProvider.require(['GroupLayer']).then(async ([GroupLayer]: [esri.GroupLayerConstructor]) => {
+        const s: GroupLayerSourceProperties = source;
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
 
-        // Create and return new geojson layer
-        return new GroupLayer(props as esri.GroupLayerProperties);
+        // If sources have been defined in the layer source, cast them into their respective layer types.
+        if (s.sources) {
+          const layerPromises = s.sources.map((ls) => this.generateLayer(ls));
+
+          const layers = await Promise.all(layerPromises);
+
+          // Create and return new group layer
+          return new GroupLayer({ ...props, layers: layers } as esri.GroupLayerProperties);
+        } else {
+          // Create and return new group layer
+          return new GroupLayer(props as esri.GroupLayerProperties);
+        }
       });
     } else if (source.type === 'map-server') {
       return this.http
