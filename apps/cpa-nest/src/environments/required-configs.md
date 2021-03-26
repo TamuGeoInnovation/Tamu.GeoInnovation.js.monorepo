@@ -9,6 +9,8 @@ This directory must have an `ormconfig.ts` with the exports:
 The format for each of the exports is:
 
 ```js
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+
 export const config: TypeOrmModuleOptions = {
   type: '',
   host: '',
@@ -22,7 +24,6 @@ export const config: TypeOrmModuleOptions = {
     options: {
       enableArithAbort: true
     }
-  },
-  entities: []
+  }
 };
 ```
