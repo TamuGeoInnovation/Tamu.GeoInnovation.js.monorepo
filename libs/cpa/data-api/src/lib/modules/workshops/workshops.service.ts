@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, getRepository } from 'typeorm';
@@ -242,10 +242,15 @@ export class WorkshopsService extends BaseService<Workshop> {
 
   public async deleteWorkshop(params) {
     try {
-      await this.repo.delete({ guid: params.guid });
-      return;
+      const workshop = await this.repo.findOne({ guid: params.guid });
+
+      if (workshop) {
+        return workshop.remove();
+      } else {
+        throw new HttpException('Internal Server Error', HttpStatus.UNPROCESSABLE_ENTITY);
+      }
     } catch (err) {
-      throw new HttpException('Internal Server Error', 500);
+      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

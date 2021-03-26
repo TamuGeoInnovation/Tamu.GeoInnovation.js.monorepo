@@ -92,7 +92,7 @@ export class Snapshot extends CPABaseEntity {
   @Column({ type: 'bit', nullable: false })
   public isContextual = false;
 
-  @OneToMany((type) => WorkshopSnapshot, (w) => w.snapshot)
+  @OneToMany((type) => WorkshopSnapshot, (w) => w.snapshot, { onDelete: 'CASCADE' })
   public workshops: WorkshopSnapshot[];
 
   @OneToMany((type) => Response, (r) => r.snapshot)
@@ -101,7 +101,7 @@ export class Snapshot extends CPABaseEntity {
 
 @Entity({ name: 'workshop_snapshots' })
 export class WorkshopSnapshot extends CPABaseEntity {
-  @ManyToOne((type) => Workshop, (w) => w.snapshots)
+  @ManyToOne((type) => Workshop, (w) => w.snapshots, { onDelete: 'CASCADE' })
   public workshop: Workshop;
 
   @ManyToOne((type) => Snapshot, (s) => s.workshops, {
@@ -139,7 +139,7 @@ export class Scenario extends CPABaseEntity implements IScenario {
 
 @Entity({ name: 'workshop_scenarios' })
 export class WorkshopScenario extends CPABaseEntity implements IWorkshopScenario {
-  @ManyToOne((type) => Workshop, (w) => w.scenarios)
+  @ManyToOne((type) => Workshop, (w) => w.scenarios, { onDelete: 'CASCADE' })
   public workshop: IWorkshop;
 
   @OneToOne((type) => Scenario, (s) => s.workshopScenario, {

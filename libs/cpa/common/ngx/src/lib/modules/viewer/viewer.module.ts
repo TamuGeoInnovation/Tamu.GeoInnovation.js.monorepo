@@ -6,6 +6,7 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
+import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 
 import { CPAFormsModule } from '../forms/cpaForms.module';
 import { ParticipantComponent } from '../forms/components/participant/participant.component';
@@ -38,6 +39,7 @@ const routes: Routes = [
     UILayoutModule,
     SidebarModule,
     LayerListModule,
+    LegendModule,
     UIFormsModule
   ],
   declarations: [ViewerComponent, SnapshotNavigatorComponent],

@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
+import { Angulartics2Module } from 'angulartics2';
 
 import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
@@ -39,7 +40,8 @@ const routes: Routes = [
     RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
     EnvironmentModule,
     LocalStoreModule,
-    NotificationModule
+    NotificationModule,
+    Angulartics2Module.forRoot()
   ],
   declarations: [AppComponent],
   providers: [
