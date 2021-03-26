@@ -89,9 +89,6 @@ export class SnapshotBuilderComponent implements OnInit {
           }
         }
       );
-    } else {
-      // Adds an initial layer group to the layers form array.
-      this.addLayer();
     }
   }
 
