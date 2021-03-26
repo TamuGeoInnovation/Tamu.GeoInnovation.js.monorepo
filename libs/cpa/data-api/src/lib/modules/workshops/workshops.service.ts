@@ -242,9 +242,23 @@ export class WorkshopsService extends BaseService<Workshop> {
 
   public async deleteWorkshop(params) {
     try {
-      const workshop = await this.repo.findOne({ guid: params.guid });
+      const workshop = await this.repo.findOne({
+        where: {
+          guid: params.guid
+        },
+        relations: ['scenarios', 'scenarios.scenario']
+      });
 
       if (workshop) {
+        if (workshop.scenarios.length > 0) {
+          for (let sc of workshop.scenarios) {
+            if (sc.scenario) {
+              await sc.scenario.remove();
+            }
+
+            await sc.remove();
+          }
+        }
         return workshop.remove();
       } else {
         throw new HttpException('Internal Server Error', HttpStatus.UNPROCESSABLE_ENTITY);
