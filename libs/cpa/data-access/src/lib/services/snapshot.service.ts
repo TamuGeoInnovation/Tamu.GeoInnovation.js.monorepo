@@ -27,15 +27,19 @@ export class SnapshotService {
     return this.http.get<ISnapshotsResponse>(`${this.resource}/${guid}`);
   }
 
-  public getMany(where: { prop: keyof Snapshot, value: boolean | number | string}) {
+  public getMany(where: { prop: keyof Snapshot; value: boolean | number | string }) {
     return this.http.post<ISnapshotsResponse[]>(`${this.resource}/many`, {
       prop: where.prop,
       value: where.value
-    })
+    });
   }
 
   public getForWorkshop(workshopGuid: string) {
     return this.http.get<Array<ISnapshotsResponse>>(`${this.resource}/workshop/${workshopGuid}`);
+  }
+
+  public getContextsForWorkshop(workshopGuid: string) {
+    return this.http.get<Array<ISnapshotsResponse>>(`${this.resource}/context/workshop/${workshopGuid}`);
   }
 
   public update(guid: string, snapshot: ISnapshotsRequestPayload) {

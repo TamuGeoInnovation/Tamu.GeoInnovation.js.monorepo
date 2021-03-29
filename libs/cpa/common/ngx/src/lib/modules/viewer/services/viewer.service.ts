@@ -67,10 +67,7 @@ export class ViewerService {
 
     this.workshopContexts = this.workshop.pipe(
       switchMap((workshop) => {
-        return this.sss.getMany({
-          prop: 'isContextual',
-          value: true
-        });
+        return this.sss.getContextsForWorkshop(workshop.guid);
       }),
       shareReplay(1)
     );

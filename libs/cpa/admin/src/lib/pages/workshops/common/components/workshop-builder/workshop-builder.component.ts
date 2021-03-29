@@ -58,11 +58,20 @@ export class WorkshopBuilderComponent implements OnInit {
         this.form.patchValue(res);
       });
 
-      this.snapshotList = this.ss.getAll().pipe(shareReplay(1));
-      this.contextualSnapshotList = this.ss.getMany({
-        prop: 'isContextual',
-        value: true
-      });
+      this.snapshotList = this.ss
+        .getMany({
+          prop: 'isContextual',
+          value: false
+        })
+        .pipe(shareReplay(1));
+
+      this.contextualSnapshotList = this.ss
+        .getMany({
+          prop: 'isContextual',
+          value: true
+        })
+        .pipe(shareReplay(1));
+
       this.scenarioList = this.scenarioService.getForWorkshop(this.route.snapshot.params['guid']).pipe(shareReplay(1));
     }
   }

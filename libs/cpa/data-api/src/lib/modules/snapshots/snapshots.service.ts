@@ -37,4 +37,20 @@ export class SnapshotsService extends BaseService<Snapshot> {
 
     return workshop.snapshots.map((s) => s.snapshot);
   }
+
+  public async getContextsForWorkshop(workshopGuid: string) {
+    const workshop = await getRepository(Workshop).findOne({
+      where: [
+        {
+          guid: workshopGuid
+        },
+        {
+          alias: workshopGuid
+        }
+      ],
+      relations: ['contexts', 'contexts.snapshot']
+    });
+
+    return workshop.contexts.map((c) => c.snapshot);
+  }
 }
