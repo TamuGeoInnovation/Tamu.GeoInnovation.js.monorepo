@@ -9,11 +9,11 @@ import { urlFragment, urlHas } from '../../utils/web/url-utils';
 import { User, UserRole } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
 
-@UseGuards(AdminRoleGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @UseGuards(AdminRoleGuard)
   @Get('all')
   public async usersAllGet() {
     return this.userService.userRepo.find({
@@ -21,12 +21,14 @@ export class UserController {
     });
   }
 
+  @UseGuards(AdminRoleGuard)
   @Delete(':guid')
   public async deleteUser(@Param() params) {
     const userGuid = params.guid;
     return this.userService.removeUser(userGuid);
   }
 
+  @UseGuards(AdminRoleGuard)
   @Post('role')
   public async assignRole(@Body() body) {
     const user = await this.userService.userRepo.findOne({

@@ -54,7 +54,7 @@ async function bootstrap() {
   await app.listen(3001);
 }
 
-OpenIdClient.build(OIDC_CLIENT_METADATA_JWT, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL)
+OpenIdClient.build(OIDC_CLIENT_METADATA_BASIC, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL)
   .then(() => bootstrap())
   .catch((err) => {
     console.warn(err);
