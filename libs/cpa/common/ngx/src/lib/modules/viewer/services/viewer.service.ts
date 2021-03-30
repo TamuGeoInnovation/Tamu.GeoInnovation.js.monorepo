@@ -119,7 +119,10 @@ export class ViewerService {
       shareReplay(1)
     );
 
-    this.snapshotOrScenario = combineLatest([this.snapshotsAndScenarios, this.selectionIndex]).pipe(
+    this.snapshotOrScenario = combineLatest([
+      this.snapshotsAndScenarios,
+      this.selectionIndex.pipe(distinctUntilChanged())
+    ]).pipe(
       map(([snapshots, index]: [Array<TypedSnapshotOrScenario>, number]) => {
         return snapshots[index];
       }),
