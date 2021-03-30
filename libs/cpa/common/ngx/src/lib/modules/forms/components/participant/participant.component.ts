@@ -183,6 +183,21 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       });
     }
 
+    // Create a new subscription to the map service, load up the contexts, and add to map
+    combineLatest([this.ms.store, from(this.mp.require(['Extent']))]).subscribe(
+      ([instances, [Extent]]: [MapServiceInstance, [esri.ExtentConstructor]]) => {
+        // Get workshop contexts
+        this.vs.workshopContexts.subscribe((contexts) => {
+          contexts.forEach((val) => {
+            const layer = (this._generateCPALayers(val.layers) as unknown) as Array<esri.Layer>;
+            instances.map.addMany(layer);
+            const extent = Extent.fromJSON(val.extent);
+            this._view.goTo(extent);
+          });
+        });
+      }
+    );
+
     // Use SnapshotHistory observable to determine a snapshot change which requires the addition of new layers
     // and/or removal of old snapshot layers
     combineLatest([
@@ -214,19 +229,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         // Find any layers associated with the current snapshot and clear them to prepare to add layers from the next snapshot
         const prevSnapshot = snapshotHistory.length > 1 ? snapshotHistory[0] : undefined;
         const currSnapshot = snapshotHistory.length > 1 ? snapshotHistory[1] : snapshotHistory[0];
-
-        // Filter snapshots to get contextual snapshots
-        // Create a layers = (this._generateCPALayers(layer.layers) as unknown) as Array<esri.Layer> for contextual layers and add them
-
-        this.vs.workshopContexts.subscribe((contextuals) => {
-          contextuals.forEach((val) => {
-            const layer = (this._generateCPALayers(val.layers) as unknown) as Array<esri.Layer>;
-            instances.map.addMany(layer);
-            const extent = Extent.fromJSON(val.extent);
-            this._view.goTo(extent);
-          });
-          // const layers = (this._generateCPALayers() as unknown) as Array<esri.Layer>
-        });
 
         if (!currSnapshot) {
           return;
