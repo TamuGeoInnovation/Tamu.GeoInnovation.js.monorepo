@@ -96,7 +96,7 @@ export class MapComponent implements OnInit, OnDestroy {
           this.coldWaterValveService.valves.pipe(skip(1), takeUntil(this._destroy$)).subscribe((res) => {
             const closedIdValues = res
               .filter((v) => {
-                return v.attributes.State === 'closed';
+                return v.attributes.CurrentPosition_1 === v.attributes.NormalPosition_1;
               })
               .map((v) => {
                 return ({

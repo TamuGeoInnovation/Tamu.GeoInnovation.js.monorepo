@@ -23,14 +23,14 @@ export class ListComponent implements OnInit {
     this.valves = this.valveService.valves.pipe(shareReplay());
 
     this.filtered = combineLatest([this.filterOpen, this.filterClosed]).pipe(
-      switchMap(([fo, fc]) => {
+      switchMap(([shouldFilterOpen, shouldFilterClosed]) => {
         return this.valves.pipe(
           filter((v) => v !== undefined),
           map((valves) => {
             return valves.filter((v) => {
-              if (v.attributes.State === 'open' && fo === false) {
+              if (v.attributes.NormalPosition_1 === v.attributes.CurrentPosition_1 && shouldFilterOpen === false) {
                 return true;
-              } else if (v.attributes.State === 'closed' && fc === false) {
+              } else if (v.attributes.NormalPosition_1 !== v.attributes.CurrentPosition_1 && shouldFilterClosed === false) {
                 return true;
               }
 
@@ -46,7 +46,7 @@ export class ListComponent implements OnInit {
       map((valves) => {
         return valves.reduce(
           (acc, curr, index, arr) => {
-            if (curr.attributes.State === 'closed') {
+            if (curr.attributes.NormalPosition_1 !== curr.attributes.CurrentPosition_1) {
               acc.closed++;
             } else {
               acc.open++;

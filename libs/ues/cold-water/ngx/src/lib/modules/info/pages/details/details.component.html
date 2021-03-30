@@ -10,7 +10,7 @@
   <h2 class="card-title">Status</h2>
 
   <p>
-    Valve state: <span class="status"><span class="pill" [ngClass]="{closed: v.attributes.State === 'closed'}" *ngIf="(valve | async) as v" (click)="toggleValveState(v)">{{v.attributes.State.toUpperCase()}}</span></span>
+    Valve state: <span class="status"><span class="pill" [ngClass]="{closed: v?.attributes?.NormalPosition_1 !== v?.attributes?.CurrentPosition_1}" *ngIf="(valve | async) as v" (click)="toggleValveState(v)">{{v?.attributes?.CurrentPosition_1 ? v.attributes.CurrentPosition_1 : 'null'}}</span></span>
   </p>
 </div>
 
