@@ -99,7 +99,7 @@ export class MapComponent implements OnInit, OnDestroy {
                 return v.attributes.State === 'closed';
               })
               .map((v) => {
-                return {
+                return ({
                   value: v.attributes.OBJECTID,
                   symbol: {
                     type: 'simple-marker',
@@ -107,21 +107,14 @@ export class MapComponent implements OnInit, OnDestroy {
                     color: 'red',
                     size: '9pt'
                   }
-                };
+                } as unknown) as esri.UniqueValueInfo;
               });
 
-            const renderer = {
-              type: 'unique-value',
-              field: 'OBJECTID',
-              defaultSymbol: {
-                type: 'picture-marker',
-                url:
-                  'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/2/images/9646fa9794e95441d1da92c53066819e'
-              },
-              uniqueValueInfos: closedIdValues
-            };
+            const clone = (layer.renderer as esri.UniqueValueRenderer).clone();
 
-            layer.renderer = (renderer as unknown) as esri.Renderer;
+            clone.uniqueValueInfos = closedIdValues;
+
+            layer.renderer = clone;
           });
         });
       });
