@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 import { SubmissionTypeService } from '@tamu-gisc/gisday/data-access';
 import { SubmissionType } from '@tamu-gisc/gisday/data-api';
+
 import { BaseAdminEditComponent } from '../../base-admin-edit/base-admin-edit.component';
 
 @Component({

@@ -1,97 +1,72 @@
-<div *ngIf="(event | async) as event">
-  <div class="container12 leader-3 flex flex-row">
-    <h1 class="column10">{{event.name}}</h1>
-  </div>
-
-  <div class="container12">
-    <div class="column10">
-      <div id="timeAndPlace" class="trailer-1">
-        <p>{{event.startTime | date:'MMM d, y, h:mm a'}} - {{event.endTime | date:'h:mm a'}}</p>
-        <p><a href="{{event.locationLink}}" target="_blank">{{event.locationBuilding}} {{event.locationRoom}}</a></p>
+<section *ngIf="(event | async) as event">
+  <div>
+    <div class="container12 leader-3 flex flex-row">
+      <h1 class="session-title">{{event.name}}</h1>
+      <div id="qr-toggle" *ngIf="event" class="popup" href="" magnific-popup>
+        <i class="fa fa-qrcode fa-3x"></i>
+        <span>Checkin QR</span>
       </div>
-
-      <div class="trailer-2" *ngIf="event.abstract">
-        <h3>Abstract</h3>
-        <p>{{event.abstract}}</p>
-      </div>
-
-      <div class="trailer-2" *ngIf="event.onlineBroadcastUrl">
-        <h3>Online Broadcast</h3>
-        <p *ngIf="event.onlineBroadcastUrl">
-          <a href="{{event.onlineBroadcastUrl}}">Online broadcast will be available when the event begins. The password (if asked) is "gisday" (all lower case, no quotes).</a>
-        </p>
-      </div>
-
-      <div class="trailer-2" *ngIf="event.googleDriveUrl">
-        <h3>Event Materials</h3>
-        <p *ngIf="event.googleDriveUrl">
-          <a href="{{event.googleDriveUrl}}">Event materials will be available at Google Drive when the event begins.</a>
-        </p>
-      </div>
-
-      <!-- <div class="trailer-1 flex flex-row half-children"> -->
-      <!-- <div> -->
-      <!-- <h3 >Registration Information</h3> -->
-      <!-- <p *ngIf="event.requiresRsvp == true; else requiresRsvpElse">This is a limited-seating event. You must reserve a seat by adding this event to your sessions.</p> -->
-      <!-- <ng-template #requiresRsvpElse> -->
-      <!-- <p>This is an open attendance event, no reservation is required to attend.</p> -->
-      <!-- </ng-template> -->
-      <!-- <p *ngIf="event.isAcceptingRsvps == false">Registration for this event is not open yet.</p> -->
-      <!-- <p>Capacity: {{ (count$ | async)?.count }} / {{event.capacity }}</p> -->
-
-      <!-- <p *ngIf="event.rsvp"><i class="fa fa-check"></i> You are currently registered for this event
-          </p> -->
-      <!-- <div class="button primary leader-1" *ngIf="event.rsvp" (click)="handleRegistration(event)">RECALL RESERVATION -->
-      <!-- </div> -->
-      <!-- <div class="button primary leader-1" *ngIf="!event.rsvp" (click)="handleRegistration(event)">REGISTER FOR -->
-      <!-- EVENT</div> -->
-      <!-- <div class="button primary leader-1 disabled" *ngIf="event.isAcceptingRsvps == false ">REGISTRATION NOT YET AVAILABLE</div> -->
-      <!-- </div> -->
-      <!-- <div> -->
-      <!-- <h3 >Event Checkin</h3> -->
-      <!-- <p *ngIf="event.date > now">Event checkin will be available when the event begins.</p> -->
-      <!-- <div *ngIf="(checkedIn$ | async) as checkedIn">
-
-                <p *ngIf="checkedIn.checkedIn == false && nowDate >= event.dateTime && nowDate <= event.endDateTime" class="success">Event
-                  currently is underway. Please checkin before the event ends as checkin will become unavailable afterwards.</p>
-                <p *ngIf="checkedIn.checkedIn == false && nowDate >= event.endDateTime" class="error">Event has concluded. Checkin for
-                  this event is no longer available.</p>
-                <p *ngIf="checkedIn.checkedIn == true">You are checked into this event.</p>
-                <div class="button primary leader-1" *ngIf="checkedIn.checkedIn == false && nowDate >= event.dateTime && nowDate <= event.endDateTime"
-                  (click)="handleCheckin(event)">CHECKIN</div>
-          </div> -->
-      <!-- </div> -->
-
-      <!-- <div class="trailer-2" *ngIf="event.sessions.length > 0">
-          <h3 >Topics</h3>
-          <div class="flex flex-row leader-1 justify-between">
-            <div class="session-item" *ngFor="let item of event.sessions">
-              <div class="details">
-                <div class="name">{{item.name}}</div>
-                <div class="abstract">
-                  <p *ngIf="!item.abstract">There is currently no abstract for this topic. Please check back later.</p>
-                  <p *ngIf="item.abstract">{{item.abstract}}</p>
-                </div>
+    </div>
+    <div class="container12" *ngIf="event">
+      <div class="column10">
+        <div id="timeAndPlace" class="trailer-1">
+          <p>{{event.startTime | date:'MMM d, y, h:mm a'}} - {{event.endTime | date:'h:mm a'}}</p>
+          <p>
+            <a href="{{event.locationLink}}" target="_blank">{{event.locationBuilding}} {{event.locationRoom}}</a>
+          </p>
+        </div>
+        <div class="trailer-2">
+          <div class="trailer-1" *ngIf="event.abstract !== ''"><p>{{event.abstract}}</p></div>
+          <tamu-gisc-accordion>
+            <tamu-gisc-accordion-header>Learning Resources (None)</tamu-gisc-accordion-header>
+            <tamu-gisc-accordion-content>
+              <p>Some resources will only be available at the start of the session</p>
+              <ul>
+                <li>There are no materials for this session.</li>
+                <li>There is no online broadcast for this session.</li>
+              </ul>
+            </tamu-gisc-accordion-content>
+          </tamu-gisc-accordion>
+          <tamu-gisc-accordion>
+            <tamu-gisc-accordion-header>Session Requirements (None)</tamu-gisc-accordion-header>
+            <tamu-gisc-accordion-content><p>This session has no special requirements.</p></tamu-gisc-accordion-content>
+          </tamu-gisc-accordion>
+        </div>
+        <div class="trailer-1 flex flex-row half-children">
+          <div>
+            <h3>
+              Registration (
+              <span title="Number of registered participants">{{numOfRsvps | async}} /</span>
+              <span title="Total session capacity"> {{event.capacity}}</span>
+              )
+            </h3>
+            <p *ngIf="event.requiresRsvp === true || event.requiresRsvp === null">This is a limited-seating event. Register to reserve your seat.</p>
+            <p *ngIf="event.isAcceptingRsvps == undefined || event.isAcceptingRsvps == false">Registration for this event is not open yet.</p>
+            <div class="button primary leader-1 disabled" *ngIf="event.isAcceptingRsvps == undefined || event.isAcceptingRsvps == false">REGISTRATION NOT YET AVAILABLE</div>
+          </div>
+          <div>
+            <h3>Checkin</h3>
+            <div *ngIf="isCheckinOpen == true; else showCheckinButton">
+              <p>Checkin will be available at the start of the session.</p>
+            </div>
+            <ng-template #showCheckinButton>
+              <div>
+                <p>Use the button below to checkin into this event.</p>
+                <tamu-gisc-button fit="snug" value="CheckIn" (click)="checkin()"></tamu-gisc-button>
               </div>
+            </ng-template>
+          </div>
+        </div>
+        <div>
+          <div class="border-divider leader-2 trailer-2"></div>
+          <div class="trailer-2">
+            <h3 class="trailer-1">Rate This Session</h3>
+            <div>
+              <p>This event is currently not underway. The session ratings survey will become available when it begins.</p>
             </div>
           </div>
-        </div> -->
-
-      <!-- <div class="trailer-2" *ngIf="event">
-          <h3 >Presenters</h3>
-          <div class="flex flex-row leader-1 justify-between">
-            <div class="presenter-item" *ngFor="let presenter of event.eventSpeakers">
-              <div class="image"
-                [ngStyle]=" { 'background-image': 'url('+getPresenterImageUrl(presenter.speaker)+')'  } "></div>
-              <div class="details">
-                <div class="name">{{presenter.speaker.speakerFirstName}} {{presenter.speaker.speakerLastName}}</div>
-                <div class="organization">{{presenter.speaker.speakerOrganization}}</div>
-                <div class="role">{{presenter.speakerRole}}</div>
-              </div>
-            </div>
-          </div>
-        </div> -->
-      <!-- </div> -->
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</section>

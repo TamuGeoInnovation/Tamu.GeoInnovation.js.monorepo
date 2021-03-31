@@ -8,7 +8,7 @@ import { CheckinService, EventService } from '@tamu-gisc/gisday/data-access';
 
 @Component({
   selector: 'tamu-gisc-event-detail',
-  templateUrl: './event-detail-test.component.html',
+  templateUrl: './event-detail.component.html',
   styleUrls: ['./event-detail.component.scss']
 })
 export class EventDetailComponent implements OnInit {

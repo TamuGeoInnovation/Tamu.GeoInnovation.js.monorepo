@@ -383,7 +383,8 @@
       "tags": []
     },
     "gisday-angular-e2e": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["gisday-angular"]
     },
     "gisday-angular": {
       "tags": []
