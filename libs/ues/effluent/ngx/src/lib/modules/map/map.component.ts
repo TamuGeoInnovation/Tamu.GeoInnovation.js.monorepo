@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil, map, withLatestFrom } from 'rxjs/operators';
+import { from, Subject } from 'rxjs';
+import { takeUntil, map, withLatestFrom, filter, switchMap } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
@@ -12,6 +12,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { ResultsService } from '../data-access/results/results.service';
 
 import esri = __esri;
+import { Popups } from '@tamu-gisc/aggiemap';
 
 @Component({
   selector: 'tamu-gisc-map',
@@ -99,15 +100,28 @@ export class MapComponent implements OnInit, OnDestroy {
     ];
     (<HTMLInputElement>document.querySelector('.phrase')).innerText = phrases[Math.floor(Math.random() * phrases.length)];
 
+    // Generate and apply renderer for the sampling zone layer whenever.
+    // This renderer is based on the effluent results and not on any feature attribute.
     this.layerListService
-      .layers({ watchProperties: ['visible'], layers: ['sampling-zone-3'] })
-      .pipe(withLatestFrom(this.generateUniqueValueRenderer()))
-      .subscribe(([[result], renderer]) => {
-        const l = result.layer as esri.FeatureLayer;
+      .layers()
+      .pipe(
+        switchMap((listItems) => {
+          return from(listItems).pipe(
+            filter((listItem) => {
+              return listItem.layer.id === 'sampling-zone-3';
+            })
+          );
+        }),
+        withLatestFrom(this.generateUniqueValueRenderer())
+      )
+      .subscribe(([listItem, renderer]) => {
+        // listItem.layer.watch('visible', () => {
+        const l = listItem.layer as esri.FeatureLayer;
 
         if (l) {
           l.renderer = renderer;
         }
+        // });
       });
   }
 
