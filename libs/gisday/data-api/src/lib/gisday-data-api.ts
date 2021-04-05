@@ -1,3 +1,6 @@
+// Controllers
+export * from './controllers/user/user.controller';
+
 // Entities
 export * from './entities/all.entity';
 
@@ -17,7 +20,6 @@ export * from './modules/university/university.module';
 export * from './modules/user-class/user-class.module';
 export * from './modules/user-rsvp/user-rsvp.module';
 export * from './modules/user-submission/user-submission.module';
-export * from './modules/user/user.module';
 export * from './modules/user-info/user-info.module';
 
 // Providers

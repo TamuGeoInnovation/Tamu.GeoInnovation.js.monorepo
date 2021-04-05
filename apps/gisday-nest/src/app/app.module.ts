@@ -29,7 +29,7 @@ import {
   SponsorModule,
   SubmissionTypeModule,
   TagModule,
-  UserModule,
+  UserController,
   UserClassModule,
   UserInfoModule,
   UserRsvpModule,
@@ -88,13 +88,12 @@ import { localDbConfig } from '../environments/ormconfig';
     SubmissionTypeModule,
     TagModule,
     UniversityModule,
-    UserModule,
     UserClassModule,
     UserInfoModule,
     UserRsvpModule,
     UserSubmissionModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, UserController],
   providers: [AppService]
 })
 export class AppModule implements NestModule {

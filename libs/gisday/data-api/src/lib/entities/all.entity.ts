@@ -276,31 +276,6 @@ export class InitialSurveyResponse extends GISDayEntity {
   }
 }
 
-// @Entity({
-//   name: 'sessions'
-// })
-// export class Session extends GuidIdentity {
-//   @ManyToMany((type) => Speaker, { cascade: true })
-//   @JoinTable({ name: 'session_speakers' })
-//   public speakers: Speaker[];
-
-//   @Column({ nullable: false })
-//   public name: string;
-
-//   @Column({ nullable: false })
-//   public duration: number;
-
-//   @Column({ nullable: false })
-//   public date: Date;
-
-//   @Column({ nullable: false })
-//   public abstract: string;
-
-//   constructor() {
-//     super();
-//   }
-// }
-
 @Entity({
   name: 'universities'
 })
@@ -774,44 +749,6 @@ export class ManholeSubmission {
   })
   public fixTime: string;
 }
-
-// @Entity({
-//   name: 'event_speakers'
-// })
-// export class EventSpeaker extends GuidIdentity {
-//   @ManyToOne((type) => Event)
-//   @JoinColumn({ name: 'eventGuid' })
-//   public event: Event;
-
-//   @ManyToOne((type) => Speaker)
-//   @JoinColumn({ name: 'speakerGuid' })
-//   public speaker: Speaker;
-
-//   @ManyToOne((type) => SpeakerRole)
-//   @JoinColumn({ name: 'speakerRoleGuid' })
-//   public role: SpeakerRole;
-
-//   constructor() {
-//     super();
-//   }
-// }
-
-// @Entity({
-//   name: 'event_tags'
-// })
-// export class EventTag extends GuidIdentity {
-//   @ManyToOne((type) => Event)
-//   @JoinColumn({ name: 'eventGuid' })
-//   public event: Event;
-
-//   @ManyToOne((type) => Tag)
-//   @JoinColumn({ name: 'tagGuid' })
-//   public tag: Tag;
-
-//   constructor() {
-//     super();
-//   }
-// }
 
 export class CommonRepo<T> extends Repository<T> {}
 

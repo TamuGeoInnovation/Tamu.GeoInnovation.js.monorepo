@@ -30,10 +30,6 @@ const routes: Routes = [
         loadChildren: () => import('./pages/rsvp-type/admin-rsvp-type.module').then((m) => m.AdminRsvpTypeModule)
       },
       {
-        path: 'sessions',
-        loadChildren: () => import('./pages/session/admin-session.module').then((m) => m.AdminSessionModule)
-      },
-      {
         path: 'speakers',
         loadChildren: () => import('./pages/speaker/admin-speaker.module').then((m) => m.AdminSpeakerModule)
       },
