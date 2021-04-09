@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 import { UserInfoService } from '@tamu-gisc/gisday/data-access';
@@ -13,8 +13,7 @@ import { UserInfoService } from '@tamu-gisc/gisday/data-access';
 })
 export class MyDetailsComponent implements OnDestroy, OnInit {
   public form: FormGroup;
-  // TODO: Can we remove this? - Aaron (1/5/2021)
-  // public $userDetails: Observable<Partial<any>>;
+
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(private fb: FormBuilder, private readonly userInfoService: UserInfoService) {

@@ -33,7 +33,7 @@ export class InitialSurveyProvider extends BaseProvider<InitialSurveyResponse> {
   }
 
   // TODO: Does this still work? -Aaron (1/5/2021)
-  public async insertInitialSurveyResponse(questionGuids: string[], questionGuidsObj: {}, accountGuid: string) {
+  public async insertInitialSurveyResponse(questionGuids: string[], questionGuidsObj: unknown, accountGuid: string) {
     questionGuids.forEach(async (guid) => {
       const question = await this.initialSurveyQuestionRepo.findOne({
         where: {

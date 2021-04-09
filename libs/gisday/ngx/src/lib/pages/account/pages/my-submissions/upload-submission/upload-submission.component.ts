@@ -13,8 +13,7 @@ import { SubmissionType } from '@tamu-gisc/gisday/data-api';
 })
 export class UploadSubmissionComponent implements OnDestroy, OnInit {
   public form: FormGroup;
-  // TODO: Can we remove this? -Aaron (1/5/2021)
-  // public $userDetails: Observable<Partial<any>>;
+
   public $submissionTypes: Observable<Array<Partial<SubmissionType>>>;
   private _$destroy: Subject<boolean> = new Subject();
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+import { shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { Class } from '@tamu-gisc/gisday/data-api';
@@ -19,7 +20,7 @@ export class MyClassesComponent implements OnInit {
   public ngOnInit(): void {}
 
   public fetchEntities() {
-    this.$userClasses = this.userService.getClassesAndUserClasses();
+    this.$userClasses = this.userService.getClassesAndUserClasses().pipe(shareReplay(1));
   }
 
   public setClassValue(_class: Class, event: boolean) {
