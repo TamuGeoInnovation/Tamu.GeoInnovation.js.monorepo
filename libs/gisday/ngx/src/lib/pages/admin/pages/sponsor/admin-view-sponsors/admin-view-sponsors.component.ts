@@ -9,7 +9,7 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
   templateUrl: './admin-view-sponsors.component.html',
   styleUrls: ['./admin-view-sponsors.component.scss']
 })
-export class AdminViewSponsorsComponent extends BaseAdminViewComponent<Sponsor, SponsorService> {
+export class AdminViewSponsorsComponent extends BaseAdminViewComponent<Sponsor> {
   constructor(private readonly sponsorService: SponsorService) {
     super(sponsorService);
   }

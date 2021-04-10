@@ -10,7 +10,7 @@ import { BaseAdminEditComponent } from '../../base-admin-edit/base-admin-edit.co
   templateUrl: './admin-edit-university.component.html',
   styleUrls: ['./admin-edit-university.component.scss']
 })
-export class AdminEditUniversityComponent extends BaseAdminEditComponent<University, UniversityService> {
+export class AdminEditUniversityComponent extends BaseAdminEditComponent<University> {
   constructor(private readonly universityService: UniversityService) {
     super(universityService);
   }

@@ -16,8 +16,9 @@ export const formConfig = {
   templateUrl: './admin-add-tags.component.html',
   styleUrls: ['./admin-add-tags.component.scss']
 })
-export class AdminAddTagsComponent extends BaseAdminAddComponent<Tag, TagService> {
+export class AdminAddTagsComponent extends BaseAdminAddComponent<Tag> {
   constructor(private fb1: FormBuilder, private tagService: TagService) {
-    super(fb1, tagService, formConfig);
+    super(fb1, tagService);
+    this.formGroup = formConfig;
   }
 }

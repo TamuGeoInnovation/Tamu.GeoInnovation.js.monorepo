@@ -13,8 +13,9 @@ import { formConfig } from '../../admin-add-tags/admin-add-tags.component';
   templateUrl: './admin-detail-tag.component.html',
   styleUrls: ['./admin-detail-tag.component.scss']
 })
-export class AdminDetailTagComponent extends BaseAdminDetailComponent<Tag, TagService> {
+export class AdminDetailTagComponent extends BaseAdminDetailComponent<Tag> {
   constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private tagService: TagService) {
-    super(fb1, route1, tagService, formConfig);
+    super(fb1, route1, tagService);
+    this.formGroup = formConfig;
   }
 }

@@ -16,8 +16,9 @@ export const formConfig = {
   templateUrl: './admin-add-submission-types.component.html',
   styleUrls: ['./admin-add-submission-types.component.scss']
 })
-export class AdminAddSubmissionTypesComponent extends BaseAdminAddComponent<SubmissionType, SubmissionTypeService> {
+export class AdminAddSubmissionTypesComponent extends BaseAdminAddComponent<SubmissionType> {
   constructor(private fb1: FormBuilder, private submissionTypeService: SubmissionTypeService) {
-    super(fb1, submissionTypeService, formConfig);
+    super(fb1, submissionTypeService);
+    this.formGroup = formConfig;
   }
 }

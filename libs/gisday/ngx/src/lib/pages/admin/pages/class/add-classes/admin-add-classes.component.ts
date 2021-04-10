@@ -17,8 +17,9 @@ export const formConfig = {
   templateUrl: './admin-add-classes.component.html',
   styleUrls: ['./admin-add-classes.component.scss']
 })
-export class AdminAddClassesComponent extends BaseAdminAddComponent<Class, ClassService> {
+export class AdminAddClassesComponent extends BaseAdminAddComponent<Class> {
   constructor(private fb1: FormBuilder, private classService: ClassService) {
-    super(fb1, classService, formConfig);
+    super(fb1, classService);
+    this.formGroup = formConfig;
   }
 }

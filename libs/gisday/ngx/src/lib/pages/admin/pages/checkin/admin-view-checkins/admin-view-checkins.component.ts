@@ -10,7 +10,7 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
   templateUrl: './admin-view-checkins.component.html',
   styleUrls: ['./admin-view-checkins.component.scss']
 })
-export class AdminViewCheckinsComponent extends BaseAdminViewComponent<CheckIn, CheckinService> {
+export class AdminViewCheckinsComponent extends BaseAdminViewComponent<CheckIn> {
   constructor(private readonly checkinService: CheckinService) {
     super(checkinService);
   }

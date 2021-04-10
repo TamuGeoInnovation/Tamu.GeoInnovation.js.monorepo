@@ -13,8 +13,9 @@ import { formConfig } from '../../add-events/admin-add-events.component';
   templateUrl: './admin-detail-event.component.html',
   styleUrls: ['./admin-detail-event.component.scss']
 })
-export class AdminDetailEventComponent extends BaseAdminDetailComponent<Event, EventService> {
+export class AdminDetailEventComponent extends BaseAdminDetailComponent<Event> {
   constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private eventService: EventService) {
-    super(fb1, route1, eventService, formConfig);
+    super(fb1, route1, eventService);
+    this.formGroup = formConfig;
   }
 }

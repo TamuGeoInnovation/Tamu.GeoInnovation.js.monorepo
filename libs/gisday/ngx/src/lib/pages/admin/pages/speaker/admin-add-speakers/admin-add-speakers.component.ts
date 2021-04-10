@@ -29,15 +29,16 @@ export const formConfig = {
   templateUrl: './admin-add-speakers.component.html',
   styleUrls: ['./admin-add-speakers.component.scss']
 })
-export class AdminAddSpeakersComponent extends BaseAdminAddComponent<Speaker, SpeakerService> {
+export class AdminAddSpeakersComponent extends BaseAdminAddComponent<Speaker> {
   public $universities: Observable<Array<Partial<University>>>;
   constructor(
     private fb1: FormBuilder,
     private speakerService: SpeakerService,
     private universityService: UniversityService
   ) {
-    super(fb1, speakerService, formConfig);
+    super(fb1, speakerService);
     this.$universities = this.universityService.getEntities();
+    this.formGroup = formConfig;
   }
 
   public submitNewEntity() {

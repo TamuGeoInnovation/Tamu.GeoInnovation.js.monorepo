@@ -1,4 +1,4 @@
-import { Directive, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
@@ -6,13 +6,15 @@ import { shareReplay } from 'rxjs/operators';
 import { BaseService } from '@tamu-gisc/gisday/data-access';
 import { GuidIdentity } from '@tamu-gisc/gisday/data-api';
 
-@Directive()
-export abstract class BaseAdminEditComponent<T extends GuidIdentity, K extends BaseService<T>>
-  implements IBaseAdminEditComponent, OnInit, OnDestroy {
+@Component({
+  selector: 'tamu-gisc-base-admin-edit',
+  template: ''
+})
+export abstract class BaseAdminEditComponent<T extends GuidIdentity> implements IBaseAdminEditComponent, OnInit, OnDestroy {
   public $entities: Observable<Array<Partial<T>>>;
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private readonly entityService: K) {}
+  constructor(private readonly entityService: BaseService<T>) {}
 
   public ngOnInit(): void {
     this.fetchEntities();

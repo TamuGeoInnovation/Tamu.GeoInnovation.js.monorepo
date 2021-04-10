@@ -1,18 +1,21 @@
-import { Directive, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { Subject } from 'rxjs';
 
 import { BaseService } from '@tamu-gisc/gisday/data-access';
 
-@Directive()
-export abstract class BaseAdminAddComponent<T, K extends BaseService<T>>
-  implements IBaseAdminAddComponent, OnInit, OnDestroy {
+@Component({
+  selector: 'tamu-gisc-base-admin-add',
+  template: ''
+})
+export abstract class BaseAdminAddComponent<T> implements IBaseAdminAddComponent, OnInit, OnDestroy {
+  public formGroup: {};
+
   public form: FormGroup;
   private _$destroy: Subject<boolean> = new Subject();
 
-  // TODO: Add better type for formGroup
-  constructor(private fb: FormBuilder, private entityService: K, public formGroup: {}) {}
+  constructor(private fb: FormBuilder, private entityService: BaseService<T>) {}
 
   public ngOnInit() {
     this.form = this.fb.group(this.formGroup);

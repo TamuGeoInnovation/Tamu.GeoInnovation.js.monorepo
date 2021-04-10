@@ -13,12 +13,13 @@ import { formConfig } from '../../admin-add-submission-types/admin-add-submissio
   templateUrl: './admin-detail-session-type.component.html',
   styleUrls: ['./admin-detail-session-type.component.scss']
 })
-export class AdminDetailSessionTypeComponent extends BaseAdminDetailComponent<SubmissionType, SubmissionTypeService> {
+export class AdminDetailSessionTypeComponent extends BaseAdminDetailComponent<SubmissionType> {
   constructor(
     private fb1: FormBuilder,
     private route1: ActivatedRoute,
     private submissionTypeService: SubmissionTypeService
   ) {
-    super(fb1, route1, submissionTypeService, formConfig);
+    super(fb1, route1, submissionTypeService);
+    this.formGroup = formConfig;
   }
 }

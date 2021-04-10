@@ -18,8 +18,9 @@ export const formConfig = {
   templateUrl: './admin-add-sponsors.component.html',
   styleUrls: ['./admin-add-sponsors.component.scss']
 })
-export class AdminAddSponsorsComponent extends BaseAdminAddComponent<Sponsor, SponsorService> {
+export class AdminAddSponsorsComponent extends BaseAdminAddComponent<Sponsor> {
   constructor(private fb1: FormBuilder, private sponsorService: SponsorService) {
-    super(fb1, sponsorService, formConfig);
+    super(fb1, sponsorService);
+    this.formGroup = formConfig;
   }
 }

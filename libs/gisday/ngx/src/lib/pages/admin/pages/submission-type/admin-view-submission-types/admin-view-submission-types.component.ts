@@ -9,7 +9,7 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
   templateUrl: './admin-view-submission-types.component.html',
   styleUrls: ['./admin-view-submission-types.component.scss']
 })
-export class AdminViewSubmissionTypesComponent extends BaseAdminViewComponent<SubmissionType, SubmissionTypeService> {
+export class AdminViewSubmissionTypesComponent extends BaseAdminViewComponent<SubmissionType> {
   constructor(private readonly submissionTypeService: SubmissionTypeService) {
     super(submissionTypeService);
   }

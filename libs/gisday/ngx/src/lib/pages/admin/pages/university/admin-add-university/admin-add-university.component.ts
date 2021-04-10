@@ -18,8 +18,9 @@ export const formConfig = {
   templateUrl: './admin-add-university.component.html',
   styleUrls: ['./admin-add-university.component.scss']
 })
-export class AdminAddUniversityComponent extends BaseAdminAddComponent<University, UniversityService> {
+export class AdminAddUniversityComponent extends BaseAdminAddComponent<University> {
   constructor(private fb1: FormBuilder, private universityService: UniversityService) {
-    super(fb1, universityService, formConfig);
+    super(fb1, universityService);
+    this.formGroup = formConfig;
   }
 }

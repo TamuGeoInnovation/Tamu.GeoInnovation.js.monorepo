@@ -10,7 +10,7 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
   templateUrl: './admin-view-classes.component.html',
   styleUrls: ['./admin-view-classes.component.scss']
 })
-export class AdminViewClassesComponent extends BaseAdminViewComponent<Class, ClassService> {
+export class AdminViewClassesComponent extends BaseAdminViewComponent<Class> {
   constructor(private readonly classService: ClassService) {
     super(classService);
   }

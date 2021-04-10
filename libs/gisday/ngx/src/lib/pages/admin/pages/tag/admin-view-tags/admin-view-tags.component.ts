@@ -8,7 +8,7 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
   templateUrl: './admin-view-tags.component.html',
   styleUrls: ['./admin-view-tags.component.scss']
 })
-export class AdminViewTagsComponent extends BaseAdminViewComponent<Tag, TagService> {
+export class AdminViewTagsComponent extends BaseAdminViewComponent<Tag> {
   constructor(private readonly tagService: TagService) {
     super(tagService);
   }

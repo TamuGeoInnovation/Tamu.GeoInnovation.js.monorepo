@@ -17,8 +17,9 @@ export const formConfig = {
   templateUrl: './admin-add-checkins.component.html',
   styleUrls: ['./admin-add-checkins.component.scss']
 })
-export class AdminAddCheckinsComponent extends BaseAdminAddComponent<CheckIn, CheckinService> {
+export class AdminAddCheckinsComponent extends BaseAdminAddComponent<CheckIn> {
   constructor(private fb1: FormBuilder, private checkinService: CheckinService) {
-    super(fb1, checkinService, formConfig);
+    super(fb1, checkinService);
+    this.formGroup = formConfig;
   }
 }

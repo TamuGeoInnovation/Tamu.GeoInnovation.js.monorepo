@@ -21,8 +21,9 @@ export const formConfig = {
   templateUrl: './admin-add-events.component.html',
   styleUrls: ['./admin-add-events.component.scss']
 })
-export class AdminAddEventsComponent extends BaseAdminAddComponent<Event, EventService> {
+export class AdminAddEventsComponent extends BaseAdminAddComponent<Event> {
   constructor(private fb1: FormBuilder, private eventService: EventService) {
-    super(fb1, eventService, formConfig);
+    super(fb1, eventService);
+    this.formGroup = formConfig;
   }
 }

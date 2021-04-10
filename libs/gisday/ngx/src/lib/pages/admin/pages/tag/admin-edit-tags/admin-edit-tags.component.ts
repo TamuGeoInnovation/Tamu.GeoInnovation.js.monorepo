@@ -9,7 +9,7 @@ import { BaseAdminEditComponent } from '../../base-admin-edit/base-admin-edit.co
   templateUrl: './admin-edit-tags.component.html',
   styleUrls: ['./admin-edit-tags.component.scss']
 })
-export class AdminEditTagsComponent extends BaseAdminEditComponent<Tag, TagService> {
+export class AdminEditTagsComponent extends BaseAdminEditComponent<Tag> {
   constructor(private readonly tagService: TagService) {
     super(tagService);
   }

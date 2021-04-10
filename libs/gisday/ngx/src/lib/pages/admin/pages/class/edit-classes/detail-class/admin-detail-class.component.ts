@@ -13,8 +13,9 @@ import { formConfig } from '../../add-classes/admin-add-classes.component';
   templateUrl: './admin-detail-class.component.html',
   styleUrls: ['./admin-detail-class.component.scss']
 })
-export class AdminDetailClassComponent extends BaseAdminDetailComponent<Class, ClassService> {
+export class AdminDetailClassComponent extends BaseAdminDetailComponent<Class> {
   constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private classService: ClassService) {
-    super(fb1, route1, classService, formConfig);
+    super(fb1, route1, classService);
+    this.formGroup = formConfig;
   }
 }

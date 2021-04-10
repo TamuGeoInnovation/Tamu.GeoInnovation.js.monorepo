@@ -13,8 +13,9 @@ import { formConfig } from '../../admin-add-checkins/admin-add-checkins.componen
   templateUrl: './admin-detail-checkin.component.html',
   styleUrls: ['./admin-detail-checkin.component.scss']
 })
-export class AdminDetailCheckinComponent extends BaseAdminDetailComponent<CheckIn, CheckinService> {
+export class AdminDetailCheckinComponent extends BaseAdminDetailComponent<CheckIn> {
   constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private checkinService: CheckinService) {
-    super(fb1, route1, checkinService, formConfig);
+    super(fb1, route1, checkinService);
+    this.formGroup = formConfig;
   }
 }

@@ -10,7 +10,7 @@ import { BaseAdminEditComponent } from '../../base-admin-edit/base-admin-edit.co
   templateUrl: './admin-edit-sponsors.component.html',
   styleUrls: ['./admin-edit-sponsors.component.scss']
 })
-export class AdminEditSponsorsComponent extends BaseAdminEditComponent<Sponsor, SponsorService> {
+export class AdminEditSponsorsComponent extends BaseAdminEditComponent<Sponsor> {
   constructor(private readonly sponsorService: SponsorService) {
     super(sponsorService);
   }

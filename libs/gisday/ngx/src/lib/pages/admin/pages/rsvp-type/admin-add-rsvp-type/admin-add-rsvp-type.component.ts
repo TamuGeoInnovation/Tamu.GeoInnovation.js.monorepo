@@ -16,8 +16,9 @@ export const formConfig = {
   templateUrl: './admin-add-rsvp-type.component.html',
   styleUrls: ['./admin-add-rsvp-type.component.scss']
 })
-export class AdminAddRsvpTypeComponent extends BaseAdminAddComponent<RsvpType, RsvpTypeService> {
+export class AdminAddRsvpTypeComponent extends BaseAdminAddComponent<RsvpType> {
   constructor(private fb1: FormBuilder, private rsvpTypeService: RsvpTypeService) {
-    super(fb1, rsvpTypeService, formConfig);
+    super(fb1, rsvpTypeService);
+    this.formGroup = formConfig;
   }
 }

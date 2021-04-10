@@ -10,7 +10,7 @@ import { BaseAdminEditComponent } from '../../base-admin-edit/base-admin-edit.co
   templateUrl: './admin-edit-events.component.html',
   styleUrls: ['./admin-edit-events.component.scss']
 })
-export class AdminEditEventsComponent extends BaseAdminEditComponent<Event, EventService> {
+export class AdminEditEventsComponent extends BaseAdminEditComponent<Event> {
   constructor(private readonly eventService: EventService) {
     super(eventService);
   }

@@ -10,7 +10,7 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
   templateUrl: './admin-view-speakers.component.html',
   styleUrls: ['./admin-view-speakers.component.scss']
 })
-export class AdminViewSpeakersComponent extends BaseAdminViewComponent<Speaker, SpeakerService> {
+export class AdminViewSpeakersComponent extends BaseAdminViewComponent<Speaker> {
   constructor(private readonly speakerService: SpeakerService) {
     super(speakerService);
   }

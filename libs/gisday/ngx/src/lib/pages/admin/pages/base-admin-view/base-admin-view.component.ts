@@ -1,16 +1,18 @@
-import { Component, Directive, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
 
 import { BaseService } from '@tamu-gisc/gisday/data-access';
 
-@Directive()
-export abstract class BaseAdminViewComponent<T, K extends BaseService<T>>
-  implements IBaseAdminViewComponent, OnInit, OnDestroy {
+@Component({
+  selector: 'tamu-gisc-base-admin-view',
+  template: ''
+})
+export abstract class BaseAdminViewComponent<T> implements IBaseAdminViewComponent, OnInit, OnDestroy {
   public $entities: Observable<Array<Partial<T>>>;
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(public readonly entityService: K) {
+  constructor(public readonly entityService: BaseService<T>) {
     this.fetchEntities();
   }
 

@@ -10,7 +10,7 @@ import { BaseAdminEditComponent } from '../../base-admin-edit/base-admin-edit.co
   templateUrl: './admin-edit-submission-types.component.html',
   styleUrls: ['./admin-edit-submission-types.component.scss']
 })
-export class AdminEditSubmissionTypesComponent extends BaseAdminEditComponent<SubmissionType, SubmissionTypeService> {
+export class AdminEditSubmissionTypesComponent extends BaseAdminEditComponent<SubmissionType> {
   constructor(private readonly submissionTypeService: SubmissionTypeService) {
     super(submissionTypeService);
   }

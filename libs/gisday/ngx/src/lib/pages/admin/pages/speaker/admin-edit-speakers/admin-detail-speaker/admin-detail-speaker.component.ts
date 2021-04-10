@@ -29,9 +29,10 @@ export const formConfig = {
   templateUrl: './admin-detail-speaker.component.html',
   styleUrls: ['./admin-detail-speaker.component.scss']
 })
-export class AdminDetailSpeakerComponent extends BaseAdminDetailComponent<Speaker, SpeakerService> {
+export class AdminDetailSpeakerComponent extends BaseAdminDetailComponent<Speaker> {
   constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private speakerService: SpeakerService) {
-    super(fb1, route1, speakerService, formConfig);
+    super(fb1, route1, speakerService);
+    this.formGroup = formConfig;
   }
 
   public submitNewEntity() {

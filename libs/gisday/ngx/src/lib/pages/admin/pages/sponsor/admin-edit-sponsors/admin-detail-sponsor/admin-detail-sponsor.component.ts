@@ -13,8 +13,9 @@ import { formConfig } from '../../admin-add-sponsors/admin-add-sponsors.componen
   templateUrl: './admin-detail-sponsor.component.html',
   styleUrls: ['./admin-detail-sponsor.component.scss']
 })
-export class AdminDetailSponsorComponent extends BaseAdminDetailComponent<Sponsor, SponsorService> {
+export class AdminDetailSponsorComponent extends BaseAdminDetailComponent<Sponsor> {
   constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private sponsorService: SponsorService) {
-    super(fb1, route1, sponsorService, formConfig);
+    super(fb1, route1, sponsorService);
+    this.formGroup = formConfig;
   }
 }

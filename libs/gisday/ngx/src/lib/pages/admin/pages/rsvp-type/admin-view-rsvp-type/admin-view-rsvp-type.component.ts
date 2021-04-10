@@ -10,7 +10,7 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
   templateUrl: './admin-view-rsvp-type.component.html',
   styleUrls: ['./admin-view-rsvp-type.component.scss']
 })
-export class AdminViewRsvpTypeComponent extends BaseAdminViewComponent<RsvpType, RsvpTypeService> {
+export class AdminViewRsvpTypeComponent extends BaseAdminViewComponent<RsvpType> {
   constructor(private readonly rsvpTypeService: RsvpTypeService) {
     super(rsvpTypeService);
   }

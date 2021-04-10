@@ -10,7 +10,7 @@ import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.co
   templateUrl: './admin-view-events.component.html',
   styleUrls: ['./admin-view-events.component.scss']
 })
-export class AdminViewEventsComponent extends BaseAdminViewComponent<Event, EventService> {
+export class AdminViewEventsComponent extends BaseAdminViewComponent<Event> {
   constructor(private readonly eventService: EventService) {
     super(eventService);
   }
