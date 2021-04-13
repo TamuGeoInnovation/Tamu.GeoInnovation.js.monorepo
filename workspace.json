@@ -4771,6 +4771,57 @@
           }
         }
       }
+    },
+    "ues-valves-nest": {
+      "root": "apps/ues-valves-nest",
+      "sourceRoot": "apps/ues-valves-nest/src",
+      "projectType": "application",
+      "prefix": "ues-valves-nest",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/ues-valves-nest",
+            "main": "apps/ues-valves-nest/src/main.ts",
+            "tsConfig": "apps/ues-valves-nest/tsconfig.app.json",
+            "assets": ["apps/ues-valves-nest/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-valves-nest/src/environments/environment.ts",
+                  "with": "apps/ues-valves-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "ues-valves-nest:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/ues-valves-nest/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/ues-valves-nest"],
+          "options": {
+            "jestConfig": "apps/ues-valves-nest/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "ues-sass": {
