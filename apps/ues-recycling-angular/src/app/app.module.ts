@@ -1,10 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
 import { env, EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
 
 import * as environment from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -43,6 +44,11 @@ WebFont.load({
     {
       provide: env,
       useValue: environment
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
     }
   ],
   bootstrap: [AppComponent]

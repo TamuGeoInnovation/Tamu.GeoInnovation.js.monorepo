@@ -18,4 +18,4 @@ import 'zone.js/dist/zone-error'; // Included with Angular CLI.
 export * from './definitions';
 
 export const apiUrl = 'http://localhost:3333/api/';
-
+export const auth_api_url = 'http://localhost:3333/api/';

@@ -1,7 +1,18 @@
-import { Controller, Get, HttpException, HttpStatus, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+  UseGuards
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Result } from '@tamu-gisc/ues/recycling/common/entities';
+import { AzureIdpGuard } from '@tamu-gisc/oidc/client';
 
 import { BaseController } from '../base/base.controller';
 import { ResultsService } from './results.service';
@@ -12,37 +23,37 @@ export class ResultsController extends BaseController<Result> {
     super(service);
   }
 
-  // @UseGuards(AzureIdpGuard)
+  @UseGuards(AzureIdpGuard)
   @Get()
   public getAllResults() {
     return this.service.getResults({ options: { groupByDate: true } });
   }
 
-  // @UseGuards(AzureIdpGuard)
+  @UseGuards(AzureIdpGuard)
   @Get('latest/:id/:days')
   public getLatestForLocationForDays(@Param() params: { id: string; days: string }) {
     return this.service.getLatestNValuesForLocation(params.id, params.days);
   }
 
-  // @UseGuards(AzureIdpGuard)
+  @UseGuards(AzureIdpGuard)
   @Get('latest/:id')
   public getLatestForLocation(@Param() params: { id: string }) {
     return this.service.getLatestNValuesForLocation(params.id, undefined);
   }
 
-  // @UseGuards(AzureIdpGuard)
+  @UseGuards(AzureIdpGuard)
   @Get('latest/average')
   public getLatestAverage() {
     return this.service.getLatestNValueAverageForLocation(undefined, 1);
   }
 
-  // @UseGuards(AzureIdpGuard)
+  @UseGuards(AzureIdpGuard)
   @Get('latest')
   public getLatestValue() {
     return this.service.getLatestNValuesForLocation(undefined, 1);
   }
 
-  // @UseGuards(AzureIdpGuard)
+  @UseGuards(AzureIdpGuard)
   @Post('csv')
   @UseInterceptors(FileInterceptor('file', { dest: '../files' }))
   public handleFileUpload(@UploadedFile() file) {
