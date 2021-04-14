@@ -4405,6 +4405,11 @@
                 "glob": "**/*",
                 "input": "./libs/ues/assets/",
                 "output": "./assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
               }
             ],
             "styles": ["apps/ues-recycling-angular/src/styles.scss"],
