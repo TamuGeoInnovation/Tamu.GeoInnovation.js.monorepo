@@ -23,7 +23,7 @@ jobs:
         displayName: 'Clean dependencies'
 
       - script: |
-          npx nx run ues-recycling-angular:build --prod --baseHref /recycling/
+          npx nx run ues-recycling-angular:build --prod --baseHref /recycling/ --skip-nx-cache
         displayName: 'Build ues-recycling-angular'
 
       - task: CopyFiles@2
