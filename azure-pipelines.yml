@@ -4,11 +4,8 @@
 pool:
   name: 'default'
 
-# variables:
-#   npm_config_cache: $(Pipeline.Workspace)/.npm
-
 jobs:
-  - job: UESRecyclingCI  
+  - job: UESDispatchCI
     steps:
       - checkout: self
         clean: false
@@ -23,8 +20,8 @@ jobs:
         displayName: 'Clean dependencies'
 
       - script: |
-          npx nx run ues-recycling-angular:build --prod --baseHref /recycling/ --skip-nx-cache
-        displayName: 'Build ues-recycling-angular'
+          npx nx run ues-valves-angular:build --prod --baseHref /dispatch/ --skip-nx-cache
+        displayName: 'Build ues-valves-angular (dispatch)'
 
       - task: CopyFiles@2
         inputs:
@@ -37,4 +34,3 @@ jobs:
           pathtoPublish: $(Build.ArtifactStagingDirectory) # dist or build files
           ArtifactName: 'js-monorepo' # output artifact named www
         displayName: 'Publish Artifacts'
-        
