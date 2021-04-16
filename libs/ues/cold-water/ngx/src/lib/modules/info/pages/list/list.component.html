@@ -11,7 +11,7 @@
 
 <div class="pill-layer-list">
   <div class="pill-layer" [ngClass]="{open: !(filterOpen | async)}" (click)="tableFilter('open')"><span class="material-icons">circle</span> Normal Valves</div>
-  <div class="pill-layer" [ngClass]="{closed: !(filterClosed | async)}" (click)="tableFilter('closed')"><span class="material-icons">circle</span> Inverted Valves</div>
+  <div class="pill-layer" [ngClass]="{closed: !(filterClosed | async)}" (click)="tableFilter('closed')"><span class="material-icons">circle</span> Abnormal Valves</div>
 </div>
 
 <div class="card table-overflow-scroll">
@@ -19,7 +19,7 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>Status</th>
+        <th>State</th>
         <th>Reason Code</th>
         <th></th>
       </tr>
@@ -27,8 +27,8 @@
     <tbody>
       <tr *ngFor="let valve of (filtered | async)">
         <td>{{valve?.attributes?.OBJECTID}}</td>
-        <!-- // Inverted valve state -->
-        <td class="status"><span class="pill" [ngClass]="{closed: valve?.attributes?.CurrentPosition_1 !== valve?.attributes?.NormalPosition_1}">{{valve?.attributes?.CurrentPosition_1 ? valve.attributes.CurrentPosition_1 : 'null'}}</span></td>
+        <!-- Inverted valve state -->
+        <td class="status"><span class="pill" [ngClass]="{closed: valve?.attributes?.CurrentPosition_1 !== valve?.attributes?.NormalPosition_1, missing_fields: valve?.attributes?.CurrentPosition_1 === null || valve?.attributes?.NormalPosition_1 === null }">{{valve?.attributes?.CurrentPosition_1 ?  valve?.attributes?.CurrentPosition_1 : 'NULL'}}</span></td>
         <td></td>
         <td class="actions"><span class="material-icons" [routerLink]="['../../details', valve?.attributes?.OBJECTID]">keyboard_arrow_right</span></td>
       </tr>

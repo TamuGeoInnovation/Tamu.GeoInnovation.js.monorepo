@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, map, shareReplay, skip, takeUntil } from 'rxjs/operators';
+import { filter, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 import { loadModules } from 'esri-loader';
@@ -87,37 +87,6 @@ export class MapComponent implements OnInit, OnDestroy {
     this.mapService.store.subscribe((instance) => {
       this.map = instance.map;
       this.view = instance.view;
-
-      this.view.when(() => {
-        const l = this.map.findLayerById('cold-water-valves-layer') as esri.FeatureLayer;
-
-        // When layer is loaded, overwrite the default renderer
-        l.when((layer: esri.FeatureLayer) => {
-          this.coldWaterValveService.valves.pipe(skip(1), takeUntil(this._destroy$)).subscribe((res) => {
-            const closedIdValues = res
-              .filter((v) => {
-                return v.attributes.CurrentPosition_1 === v.attributes.NormalPosition_1;
-              })
-              .map((v) => {
-                return ({
-                  value: v.attributes.OBJECTID,
-                  symbol: {
-                    type: 'simple-marker',
-                    style: 'circle',
-                    color: 'red',
-                    size: '9pt'
-                  }
-                } as unknown) as esri.UniqueValueInfo;
-              });
-
-            const clone = (layer.renderer as esri.UniqueValueRenderer).clone();
-
-            clone.uniqueValueInfos = closedIdValues;
-
-            layer.renderer = clone;
-          });
-        });
-      });
     });
 
     this.selectionService.snapshot

@@ -581,6 +581,11 @@ tamu-gisc-info {
       background: rgba(244, 67, 54, 0.25);
       color: rgba(244, 67, 54, 1);
     }
+
+    &.missing_fields {
+      background: rgba(130, 130, 130, 0.25);
+      color: rgba(0, 0, 0, 0.75);
+    }
   }
 }
 

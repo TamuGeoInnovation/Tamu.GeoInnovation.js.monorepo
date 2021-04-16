@@ -9,15 +9,19 @@
 <div class="card">
   <h2 class="card-title">Status</h2>
 
-  <p>
-    Valve state: <span class="status"><span class="pill" [ngClass]="{closed: v?.attributes?.NormalPosition_1 !== v?.attributes?.CurrentPosition_1}" *ngIf="(valve | async) as v" (click)="toggleValveState(v)">{{v?.attributes?.CurrentPosition_1 ? v.attributes.CurrentPosition_1 : 'null'}}</span></span>
-  </p>
+  <div class="status-container">
+    <p>Valve State:</p>
+    <div class="status">
+      <div class="pill" *ngIf="(valve | async) as v" [ngClass]="{closed: v?.attributes?.NormalPosition_1 !== v?.attributes?.CurrentPosition_1, missing_fields: v?.attributes?.CurrentPosition_1 === null || v?.attributes?.NormalPosition_1 === null, busy: updating === true}" (click)="toggleValveState(v)">{{v?.attributes?.CurrentPosition_1 ? v.attributes.CurrentPosition_1 : 'null'}}</div>
+    </div>
+    <div class="spinning-loader" *ngIf="updating"></div>
+  </div>
 </div>
 
 <tamu-gisc-expandable-card>
   <div>
     <h2 class="card-title">Properties</h2>
-    <p *ngFor="let v of ((valve | async)?.attributes | keyvalue)"><strong>{{v.key}}</strong>: {{v.value}}</p>
+    <p *ngFor="let v of ((valve | async)?.attributes | keyvalue)"><strong>{{v.key}}</strong>: {{v.value | json}}</p>
 
     <div class="trailer-1 leader-1" *ngIf="!(valve | async)">
       <div class="spinning-loader"></div>
@@ -25,10 +29,10 @@
   </div>
 </tamu-gisc-expandable-card>
 
-<tamu-gisc-expandable-card>
+<!-- <tamu-gisc-expandable-card>
   <h2 class="card-title">Intervention History</h2>
   <p *ngFor="let v of ((valve | async)?.attributes | keyvalue)"><strong>{{v.key}}</strong>: {{v.value}}</p>
   <div class="trailer-1 leader-1" *ngIf="!(valve | async)">
     <div class="spinning-loader"></div>
   </div>
-</tamu-gisc-expandable-card>
+</tamu-gisc-expandable-card> -->

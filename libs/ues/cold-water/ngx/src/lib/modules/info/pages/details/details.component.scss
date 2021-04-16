@@ -1,3 +1,33 @@
+@import 'libs/sass/mixins';
+
 .pill {
   cursor: pointer;
+
+  &.missing_fields,
+  &.busy {
+    cursor: not-allowed;
+    filter: grayscale(50%);
+  }
+}
+
+.status-container {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+
+  p {
+    padding-bottom: 0;
+    margin-right: 0.5rem;
+  }
+
+  .pill {
+    margin-right: 0.5rem;
+  }
+
+  .spinning-loader {
+    margin: 0;
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.29em;
+  }
 }
