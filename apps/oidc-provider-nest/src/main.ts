@@ -10,7 +10,14 @@ import helmet from 'helmet';
 import { join } from 'path';
 
 import { OpenIdProvider } from '@tamu-gisc/oidc/provider-nestjs';
-import { ClientMetadataModule, ClientMetadataService } from '@tamu-gisc/oidc/common';
+import {
+  ClientMetadataModule,
+  ClientMetadataService,
+  RoleModule,
+  RoleService,
+  UserModule,
+  UserService
+} from '@tamu-gisc/oidc/common';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
@@ -20,11 +27,17 @@ async function bootstrap() {
     cors: true
   });
 
-  const clientsService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
+  if (!environment.create_defaults) {
+    console.log('Not creating defaults... Loading clients');
+    const service = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
 
-  const clients = await clientsService.loadClientMetadaForOidcSetup();
-
-  OpenIdProvider.build(clients);
+    const clients = await service.loadClientMetadaForOidcSetup();
+    console.log('Clients:', clients);
+    OpenIdProvider.build(clients);
+  } else {
+    console.log('Creating defaults...');
+    OpenIdProvider.build();
+  }
 
   enableOIDCDebug(OpenIdProvider.provider);
 
@@ -52,6 +65,27 @@ async function bootstrap() {
 
   await app.listen(environment.port, () => {
     console.log('Listening at http://localhost:' + environment.port + '/' + environment.globalPrefix);
+
+    setTimeout(() => {
+      if (environment.create_defaults) {
+        const clientMetadataService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
+        // Insert default Grant Types
+        clientMetadataService.insertDefaultGrantTypes();
+        // Insert default Responses Types
+        clientMetadataService.insertDefaultResponseTypes();
+        // Insert default Token Auth Methods
+        clientMetadataService.insertDefaultTokenEndpointAuthMethods();
+        // Create ClientMetadata for oidc-idp-admin (angular site)
+        clientMetadataService.insertClientMetadataForAdminSite();
+        // Insert default Roles
+        const roleService = app.select(RoleModule).get(RoleService, { strict: true });
+        roleService.insertDefaultUserRoles();
+        // Create Admin user with known password
+        const userService = app.select(UserModule).get(UserService, { strict: true });
+        userService.insertDefaultAdmin();
+        // TODO: Add field to User that will prompt a user to change their password on next login
+      }
+    }, 3000);
   });
 }
 

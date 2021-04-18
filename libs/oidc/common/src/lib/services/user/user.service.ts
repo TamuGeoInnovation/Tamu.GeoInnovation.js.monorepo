@@ -44,6 +44,37 @@ export class UserService {
     public readonly passwordHistoryRepo: UserPasswordHistoryRepo,
     private readonly httpService: HttpService
   ) {}
+
+  public async insertDefaultAdmin() {
+    const email = 'tamugeoservices@tamu.edu';
+    const password = 'T@patio14';
+
+    const _user: Partial<User> = {
+      email: email,
+      password: password,
+      signup_ip_address: '1.1.1.1',
+      last_used_ip_address: '1.1.1.1',
+      updatedAt: new Date(),
+      added: new Date()
+    };
+
+    const user = await this.userRepo.create(_user);
+    const entUser = await this.insertUser(user, 'admin');
+
+    // Set Admin role for admin user
+    const adminRole = await this.roleRepo.findOne({
+      where: {
+        level: '99'
+      }
+    });
+
+    console.log('Admin userGuid:', entUser.guid);
+    await this.insertUserRole(entUser, adminRole, 'oidc-idp-admin');
+    // const { secretanswer1, secretanswer2, secretQuestion1, secretQuestion2 } = body;
+
+    // await this.insertSecretAnswers(secretQuestion1, secretQuestion2, secretanswer1, secretanswer2, userEnt);
+  }
+
   /**
    * Function used to insert a new user given an Express Request.
    */

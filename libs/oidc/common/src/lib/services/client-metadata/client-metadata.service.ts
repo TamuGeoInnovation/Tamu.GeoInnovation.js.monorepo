@@ -48,6 +48,32 @@ export class ClientMetadataService {
     return this.clientMetadataRepo.findAllDeep();
   }
 
+  public async insertClientMetadataForAdminSite() {
+    const adminMetadata = {
+      clientName: 'oidc-idp-admin',
+      clientSecret: '1234abcd5e6f7g8h9i',
+      grants: ['refresh_token', 'authorization_code'],
+      redirectUris: ['http://localhost:27000/oidc/auth/callback'],
+      responseTypes: ['code'],
+      token_endpoint_auth_method: 'client_secret_basic'
+    };
+    const grants = await this.findGrantTypeEntities(adminMetadata.grants);
+    const redirectUris = await this.createRedirectUriEntities(adminMetadata.redirectUris);
+    const responseTypes = await this.findResponseTypeEntities(adminMetadata.responseTypes);
+    const token_endpoint_auth_method = await this.findTokenEndpointAuthMethod(adminMetadata.token_endpoint_auth_method);
+
+    const _clientMetadata: Partial<ClientMetadata> = {
+      clientName: adminMetadata.clientName,
+      clientSecret: adminMetadata.clientSecret,
+      grantTypes: grants,
+      redirectUris: redirectUris,
+      responseTypes: responseTypes,
+      tokenEndpointAuthMethod: token_endpoint_auth_method
+    };
+
+    return this.insertClientMetadata(_clientMetadata);
+  }
+
   public async insertClientMetadata(_clientMetadata: Partial<ClientMetadata>) {
     const clientMetadata = this.clientMetadataRepo.create(_clientMetadata);
 
@@ -168,6 +194,24 @@ export class ClientMetadataService {
     }
   }
 
+  public async insertDefaultGrantTypes() {
+    // https://oauth.net/2/grant-types/
+    // https://stackoverflow.com/questions/51403066/grant-type-vs-response-type-in-oauth2-0-oidc
+    // 'refresh_token', 'authorization_code'
+
+    this.insertGrantType({
+      type: 'refresh_token',
+      name: 'Refresh',
+      details: 'Allows you to get a Refresh Token back'
+    });
+
+    this.insertGrantType({
+      type: 'authorization_code',
+      name: 'Authorization',
+      details: 'Authorization'
+    });
+  }
+
   public async insertGrantType(_grant: Partial<GrantType>) {
     const grant = this.grantTypeRepo.create(_grant);
 
@@ -193,6 +237,20 @@ export class ClientMetadataService {
   public async findResponseTypeEntities(_responseTypes: string[]) {
     return this.responseTypeRepo.find({
       type: In(_responseTypes)
+    });
+  }
+
+  public async insertDefaultResponseTypes() {
+    // https://tools.ietf.org/html/rfc6749#section-3.1.1
+
+    this.insertResponseType({
+      details: 'Authorization Code',
+      type: 'code'
+    });
+
+    this.insertResponseType({
+      details: 'Authorization Token',
+      type: 'token'
     });
   }
 
@@ -244,6 +302,19 @@ export class ClientMetadataService {
       where: {
         type: _tokenEndpoint
       }
+    });
+  }
+
+  public async insertDefaultTokenEndpointAuthMethods() {
+    // client_secret_basic, client_secret_jwt
+    this.insertTokenEndpointAuthMethod({
+      type: 'client_secret_basic',
+      details: 'Allows usage of the bearer token header'
+    });
+
+    this.insertTokenEndpointAuthMethod({
+      type: 'client_secret_jwt',
+      details: 'Allows usage of JWTs'
     });
   }
 

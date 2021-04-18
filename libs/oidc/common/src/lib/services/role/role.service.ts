@@ -6,6 +6,15 @@ import { Role, RoleRepo } from '../../entities/all.entity';
 export class RoleService {
   constructor(private readonly roleRepo: RoleRepo) {}
 
+  public async insertDefaultUserRoles() {
+    const adminRole: Partial<Role> = {
+      level: '99',
+      name: 'Admin'
+    };
+    const _adminRole = this.roleRepo.create(adminRole);
+    return this.roleRepo.save(_adminRole);
+  }
+
   public async insertRole(level: string, name: string) {
     const existingRole = await this.roleRepo.findOne({
       where: {

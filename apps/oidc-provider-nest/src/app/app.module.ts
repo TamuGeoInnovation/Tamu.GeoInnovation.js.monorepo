@@ -30,6 +30,7 @@ import {
   ReplayDetection,
   ClientMetadataModule,
   UserModule,
+  RoleModule,
   SecretQuestionController
 } from '@tamu-gisc/oidc/common';
 import { AccessTokenModule, InteractionModule, UserLoginModule } from '@tamu-gisc/oidc/provider-nestjs';
@@ -75,6 +76,7 @@ import { dbConfig } from '../environments/environment';
     AccessTokenModule,
     InteractionModule,
     ClientMetadataModule,
+    RoleModule,
     UserModule,
     UserLoginModule
   ],
