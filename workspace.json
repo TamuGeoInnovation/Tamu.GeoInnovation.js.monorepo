@@ -4085,8 +4085,7 @@
                 }
               ]
             }
-          },
-          "outputs": ["{options.outputPath}"]
+          }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -4168,6 +4167,7 @@
         },
         "test": {
           "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/ngx"],
           "options": {
             "jestConfig": "libs/gisday/ngx/jest.config.js",
             "passWithNoTests": true
@@ -4176,9 +4176,9 @@
       }
     },
     "gisday-data-access": {
+      "projectType": "library",
       "root": "libs/gisday/data-access",
       "sourceRoot": "libs/gisday/data-access/src",
-      "projectType": "library",
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
@@ -4189,6 +4189,7 @@
         },
         "test": {
           "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/data-access"],
           "options": {
             "jestConfig": "libs/gisday/data-access/jest.config.js",
             "passWithNoTests": true
@@ -4261,6 +4262,7 @@
         },
         "test": {
           "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/data-api"],
           "options": {
             "jestConfig": "libs/gisday/data-api/jest.config.js",
             "passWithNoTests": true
@@ -4281,11 +4283,13 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "lintFilePatterns": ["libs/gisday/common/**/*.ts"]
+            "tsConfig": ["libs/gisday/common/tsconfig.lib.json", "libs/gisday/common/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/gisday/common/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/common"],
           "options": {
             "jestConfig": "libs/gisday/common/jest.config.js",
             "passWithNoTests": true

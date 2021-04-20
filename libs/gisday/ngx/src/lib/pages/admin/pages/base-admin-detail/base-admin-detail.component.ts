@@ -19,7 +19,6 @@ export abstract class BaseAdminDetailComponent<T> implements IBaseAdminAddCompon
   public form: FormGroup;
   private _$destroy: Subject<boolean> = new Subject();
 
-  // TODO: Add better type for formGroup
   constructor(private fb: FormBuilder, private route: ActivatedRoute, private entityService: BaseService<T>) {
     this.form = this.fb.group(this.formGroup);
   }
