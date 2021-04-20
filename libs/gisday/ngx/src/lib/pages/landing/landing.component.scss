@@ -1,0 +1,42 @@
+@import 'libs/sass/mixins';
+@import 'libs/gisday/sass/variables';
+
+#landing {
+  width: 100%;
+  background: linear-gradient(rgba($gisday-blue-secondary, .08), $gisday-gray-primary);
+
+  .logo-container {
+    font-size: 7rem;
+  }
+
+  .slogan {
+    max-width: 75%;
+  }
+}
+
+.landing-container {
+  @include flexbox();
+  @include flex-direction(column);
+  @include align-items(center);
+  border-radius: 1rem;
+  display: flex;
+}
+
+#landing-gallery {
+  height: 17.5rem;
+  overflow: hidden;
+
+  img {
+    height: 100%;
+  }
+
+  @include flexbox();
+  @include flex-direction(row);
+
+  div {
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+    @include flex(1);
+  }
+}

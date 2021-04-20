@@ -1,0 +1,23 @@
+<form [formGroup]="form">
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="firstName" placeholder="First Name" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="lastName" placeholder="Last Name" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="email" placeholder="Email" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="organization" placeholder="Organization" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="graduationYear" placeholder="Graduation Year (A&M)" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="degree" placeholder="Degree" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="program" placeholder="Program" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="affiliation" placeholder="Affiliation" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="description" placeholder="Description" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="socialMedia" placeholder="Social Media Link" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <tamu-gisc-select formControlName="university" [data]="$universities | async" [displayTemplate]="'name'" [valueTemplate]="'guid'"></tamu-gisc-select>
+        <tamu-gisc-file formControlName="file">
+          <p class="placeholder">Select File</p>
+        </tamu-gisc-file>
+      </div>
+      <tamu-gisc-button (click)="submitNewEntity()" [value]="'Add'" type="submit"></tamu-gisc-button>
+    </div>
+  </div>
+</form>

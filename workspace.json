@@ -4027,6 +4027,275 @@
           "outputs": ["coverage/libs/two/data-access"]
         }
       }
+    },
+    "gisday-angular": {
+      "projectType": "application",
+      "root": "apps/gisday-angular",
+      "sourceRoot": "apps/gisday-angular/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "crossOrigin": "anonymous",
+            "outputPath": "dist/apps/gisday-angular",
+            "index": "apps/gisday-angular/src/index.html",
+            "main": "apps/gisday-angular/src/main.ts",
+            "polyfills": "apps/gisday-angular/src/polyfills.ts",
+            "tsConfig": "apps/gisday-angular/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/gisday-angular/src/favicon.ico",
+              "apps/gisday-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
+            "styles": ["apps/gisday-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/gisday-angular/src/environments/environment.ts",
+                  "with": "apps/gisday-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "gisday-angular:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "gisday-angular:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "gisday-angular:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/gisday-angular/tsconfig.app.json",
+              "apps/gisday-angular/tsconfig.spec.json",
+              "apps/gisday-angular/tsconfig.editor.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/gisday-angular/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/gisday-angular/jest.config.js",
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/gisday-angular"]
+        }
+      }
+    },
+    "gisday-angular-e2e": {
+      "root": "apps/gisday-angular-e2e",
+      "sourceRoot": "apps/gisday-angular-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/gisday-angular-e2e/cypress.json",
+            "tsConfig": "apps/gisday-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "gisday-angular:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "gisday-angular:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/gisday-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/gisday-angular-e2e/**/*"]
+          }
+        }
+      }
+    },
+    "gisday-ngx": {
+      "projectType": "library",
+      "root": "libs/gisday/ngx",
+      "sourceRoot": "libs/gisday/ngx/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/gisday/ngx/tsconfig.lib.json", "libs/gisday/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/gisday/ngx/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/ngx"],
+          "options": {
+            "jestConfig": "libs/gisday/ngx/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-data-access": {
+      "projectType": "library",
+      "root": "libs/gisday/data-access",
+      "sourceRoot": "libs/gisday/data-access/src",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/gisday/data-access/tsconfig.lib.json", "libs/gisday/data-access/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/gisday/data-access/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/data-access"],
+          "options": {
+            "jestConfig": "libs/gisday/data-access/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-nest": {
+      "root": "apps/gisday-nest",
+      "sourceRoot": "apps/gisday-nest/src",
+      "projectType": "application",
+      "prefix": "gisday-nest",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/gisday-nest",
+            "main": "apps/gisday-nest/src/main.ts",
+            "tsConfig": "apps/gisday-nest/tsconfig.app.json",
+            "assets": ["apps/gisday-nest/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/gisday-nest/src/environments/environment.ts",
+                  "with": "apps/gisday-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "gisday-nest:build",
+            "port": 7777
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/gisday-nest/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/gisday-nest"],
+          "options": {
+            "jestConfig": "apps/gisday-nest/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-data-api": {
+      "root": "libs/gisday/data-api",
+      "sourceRoot": "libs/gisday/data-api/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/gisday/data-api/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/data-api"],
+          "options": {
+            "jestConfig": "libs/gisday/data-api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-sass": {
+      "projectType": "library",
+      "root": "gisday/sass"
+    },
+    "gisday-common": {
+      "projectType": "library",
+      "root": "libs/gisday/common",
+      "sourceRoot": "libs/gisday/common/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/gisday/common/tsconfig.lib.json", "libs/gisday/common/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/gisday/common/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/common"],
+          "options": {
+            "jestConfig": "libs/gisday/common/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

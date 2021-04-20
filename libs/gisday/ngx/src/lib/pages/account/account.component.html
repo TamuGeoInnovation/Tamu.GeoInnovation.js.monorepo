@@ -1,0 +1,19 @@
+<section>
+  <header id="section-links-container">
+    <div class="container12">
+      <div id="sectionLabel"></div>
+      <div id="ellipsis"></div>
+      <nav id="section-nav" class="clr-md-grey-0">
+        <ul>
+          <li><a [routerLink]="['/account/my-classes']" id="linkClasses">My Classes</a></li>
+          <li><a [routerLink]="['/account/my-checkins']" id="linkCheckIns">My CheckIns</a></li>
+          <li><a [routerLink]="['/account/my-submissions']" id="linkSubmissions">My Submissions</a></li>
+          <li><a [routerLink]="['/account/my-details']" id="linkAccountInformation">My Details</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <div class="container12 flex flex-column">
+    <router-outlet></router-outlet>
+  </div>
+</section>

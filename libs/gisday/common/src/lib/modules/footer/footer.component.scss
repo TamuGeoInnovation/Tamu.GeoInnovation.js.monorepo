@@ -1,0 +1,118 @@
+@import 'libs/sass/mixins';
+@import 'libs/gisday/sass/variables';
+
+footer {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+  font-weight: 300;
+  background: $gisday-gray-primary;
+  position: relative;
+  border-top: 1px solid #e0e0e0;
+
+  .top-section {
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      font-size: 0.75rem;
+
+      &::after {
+        content: '';
+        display: block;
+        width: 100%;
+        height: 0px;
+        left: 0;
+        bottom: -3px;
+        position: absolute;
+        background: transparent;
+        @include transition(background 0.3s, height 0.3s);
+      }
+    }
+
+    ul {
+      font-size: 0.95rem;
+      padding-left: 0;
+
+      li {
+        display: block;
+        font-size: inherit;
+        list-style: none;
+        font-weight: 300;
+
+        a {
+          font-size: inherit;
+          font-weight: inherit;
+          color: inherit;
+          text-decoration: none;
+        }
+      }
+
+      a:hover,
+      li:hover {
+        color: #212121;
+        cursor: pointer;
+        font-weight: 400;
+      }
+    }
+
+    .footer-column-title {
+      font-weight: 400;
+    }
+
+    .branding-detail {
+      font-size: 0.9rem !important;
+      @include flexbox();
+      @include flex-direction(row);
+
+      .branding-detail-icon {
+        img {
+          height: 1.1rem;
+          margin-right: 0.75rem;
+          margin-top: 0.25rem;
+        }
+      }
+
+      .branding-detail-content {
+        margin-bottom: 0.75rem;
+
+        p {
+          padding-bottom: 0.25rem;
+        }
+      }
+    }
+  }
+
+  .bottom-section {
+    font-size: 0.7rem;
+    color: #757575; // sets color of all text in the bottom section of the footer
+    text-align: center;
+
+    .copyright,
+    .legal,
+    .statement {
+      text-align: center;
+      box-sizing: border-box;
+
+      p,
+      a {
+        color: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        padding: 0.25rem 0;
+        display: inline-block;
+      }
+
+      a {
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .copyright {
+      margin-bottom: 1.5rem;
+    }
+  }
+}

@@ -1,0 +1,64 @@
+<ng-template *ngIf="$tookSurveyAlready | async; else noFeedback">
+  <div class="small-partition">
+    <h1 class="trailer-1">Pre-Event User Impact Survey</h1>
+    <p class="sub-section-heading">Help us make TxGIS Day even better</p>
+  </div>
+  <div class="column10">
+    <div class="flex flex-column align-center" *ngIf="">
+      <img class="xx-small" src="../img/graphics/graphic-thumb.svg" alt="Gig 'Em Thumbs Up'" />
+      <p class="size-2">Your responses for this survey have been recorded. Thank you for your feedback!</p>
+      <p class="trailer-1">You are now eligible to register and checkin to any TxGIS Day event.</p>
+      <a href="../sessions/" class="button primary">Browse Sessions</a>
+    </div>
+  </div>
+</ng-template>
+
+<div #noFeedback class="small-partition">
+  <h1 class="trailer-1">Event User Impact Survey</h1>
+  <p class="sub-section-heading">Help us make TxGIS Day even better</p>
+</div>
+<div class="container12 flex flex-column align-center">
+  <div class="column10">
+    <div *ngIf="true">
+      <p>Hosting the largest GIS Day event in the State of Texas, our goal is to make each successive event even better than the last. The purpose of this survey is to measure the impact and interest of TxGIS Day to improve the structure of an increasingly successful event.</p>
+      <p>Please take a minute to answer the following questions. After doing so, you will become eligible to register for any of the TxGIS Day events.</p>
+    </div>
+  </div>
+  <div>
+    <div class="trailer-2">
+      <div *ngIf="true">
+        <div class="flex flex-column session-rating-questionnaire leader-1">
+          <form [formGroup]="dataGroup">
+            <div *ngFor="let question of ($initalSurveyQuestions | async)">
+              <div *ngIf="question.questionType.type == 'boolean'">
+                <p>{{question.questionText}}</p>
+                <div class="interactive-controls boolean">
+                  <div class="control-inputs trailer-1 flex flex-row">
+                    <tamu-gisc-radio-group [formControlName]="question.guid" [options]="question.questionOptions.split('|')"></tamu-gisc-radio-group>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="question.questionType.type == 'text'">
+                <p>{{question.questionText}}</p>
+                <tamu-gisc-textbox [formControlName]="question.guid" type="textarea" floatLabel="true"></tamu-gisc-textbox>
+              </div>
+              <div *ngIf="question.questionType.type == 'multiple-option'">
+                <p>{{question.questionText}}</p>
+                <tamu-gisc-checkbox-group [formControlName]="question.guid" referenceId="value">
+                  <tamu-gisc-checkbox *ngFor="let option of question.options" [label]="option.value" [data]="option"> </tamu-gisc-checkbox>
+                </tamu-gisc-checkbox-group>
+              </div>
+              <div *ngIf="question.questionType.type == 'scale-normal'">
+                <p>{{question.questionText}}</p>
+                <tamu-gisc-select [formControlName]="question.guid" [data]="question.options" [displayTemplate]="'value'" [valueTemplate]="'value'"> </tamu-gisc-select>
+              </div>
+            </div>
+            <div>
+              <tamu-gisc-button fit="relaxed" value="Submit" (click)="submitSurvey()"></tamu-gisc-button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

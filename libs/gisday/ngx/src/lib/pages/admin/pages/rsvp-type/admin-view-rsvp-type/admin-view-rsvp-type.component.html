@@ -1,0 +1,10 @@
+<table>
+  <tr>
+    <th>Type</th>
+    <th>Updated</th>
+  </tr>
+  <tr *ngFor="let entity of ($entities | async)">
+    <td>{{entity.type}}</td>
+    <td>{{entity.updated | date:'short'}}</td>
+  </tr>
+</table>

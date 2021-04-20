@@ -381,6 +381,31 @@
     },
     "two-data-access": {
       "tags": []
+    },
+    "gisday-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["gisday-angular"]
+    },
+    "gisday-angular": {
+      "tags": []
+    },
+    "gisday-ngx": {
+      "tags": []
+    },
+    "gisday-data-access": {
+      "tags": []
+    },
+    "gisday-nest": {
+      "tags": []
+    },
+    "gisday-data-api": {
+      "tags": []
+    },
+    "gisday-sass": {
+      "tags": []
+    },
+    "gisday-common": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

@@ -1,0 +1,10 @@
+<form [formGroup]="form">
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row pad-top">
+        <tamu-gisc-textbox formControlName="name" placeholder="Tag name" type="text" floatLabel="true"> </tamu-gisc-textbox>
+      </div>
+      <tamu-gisc-button (click)="submitNewEntity()" [value]="'Add'" type="submit"></tamu-gisc-button>
+    </div>
+  </div>
+</form>
