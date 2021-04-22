@@ -132,7 +132,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy {
       const layer = this.ms.findLayerById(res.layerId);
 
       if (layer) {
-        layer.opacity = res.drawingInfo.opacity / 100;
+        layer.opacity = res.drawingInfo.opacity;
       }
     });
   }
@@ -284,7 +284,7 @@ export class LayerConfiguration {
     }
 
     if (formValues.drawingInfo) {
-      layer.opacity = formValues.drawingInfo.opacity / 100;
+      layer.opacity = formValues.drawingInfo.opacity;
     }
   }
 

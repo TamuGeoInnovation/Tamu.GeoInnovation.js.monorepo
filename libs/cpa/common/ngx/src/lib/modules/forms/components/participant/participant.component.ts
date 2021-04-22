@@ -428,7 +428,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
                 id: l.info.layerId,
                 url: l.url,
                 title: l.info.name,
-                opacity: l.info.drawingInfo.opacity < 1 ? l.info.drawingInfo.opacity / 100 : 1,
+                opacity: l.info.drawingInfo.opacity,
                 listMode: 'hide'
               });
             })
@@ -449,7 +449,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             id: layer.info.layerId,
             url: layer.url,
             title: layer.info.name,
-            opacity: layer.info.drawingInfo.opacity < 1 ? layer.info.drawingInfo.opacity / 100 : 1
+            opacity: layer.info.drawingInfo.opacity
           });
         } else {
           console.warn(`Layer with object structure could not be generated:`, layer);
