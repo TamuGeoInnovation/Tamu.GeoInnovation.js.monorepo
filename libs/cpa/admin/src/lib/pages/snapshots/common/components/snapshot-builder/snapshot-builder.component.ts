@@ -118,7 +118,7 @@ export class SnapshotBuilderComponent implements OnInit {
   public addLayer(url?: object) {
     const props = url && typeof url === 'object' ? { ...url } : { url: '' };
 
-    (this.builderForm.controls.layers as FormArray).push(this.fb.group(props));
+    (this.builderForm.controls.layers as FormArray).insert(0, this.fb.group(props));
   }
 
   /**
