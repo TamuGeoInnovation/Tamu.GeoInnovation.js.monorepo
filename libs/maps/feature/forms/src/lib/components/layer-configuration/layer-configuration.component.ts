@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, Optional, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, filter } from 'rxjs/operators';
+import { BehaviorSubject, from } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, filter, withLatestFrom, pluck } from 'rxjs/operators';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
 import { v4 as guid } from 'uuid';
 
@@ -67,13 +67,20 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy {
     return this.config.form.getRawValue();
   }
 
+  private layer: esri.FeatureLayer;
+
   /**
    * Component model. Initializes a form group that is used to attach it to the parent
    * form group, if any.
    */
   public config: LayerConfiguration;
 
-  constructor(private http: HttpClient, private fb: FormBuilder, @Optional() private ms: EsriMapService) {}
+  constructor(
+    private http: HttpClient,
+    private fb: FormBuilder,
+    @Optional() private ms: EsriMapService,
+    private mp: EsriModuleProviderService
+  ) {}
 
   public ngOnInit() {
     if (this._url.getValue() !== undefined) {
@@ -91,31 +98,48 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy {
             return test.test(url);
           }),
           switchMap((url: string) => {
-            return this.http.get<ILayerConfiguration>(`${this.url}?f=json`);
-          })
+            return from(this.mp.require(['Layer'])).pipe(
+              switchMap(([Layer]: [esri.LayerConstructor]) => {
+                return Layer.fromArcGISServerUrl({
+                  url
+                });
+              })
+            );
+          }),
+          withLatestFrom(this.ms.store)
         )
-        .subscribe((response) => {
+        .subscribe(([response, instances]) => {
           // Update form values
 
-          this.config.updateFormValues(LayerConfiguration.normalizeOptions(response));
+          this.layer = response as esri.FeatureLayer;
+
+          if (this.config) {
+            this.config.applyConfigValuesToLayer(this.layer);
+          }
+
+          //
+          // If there is no config, apply default values from the layer instance.
+          // this.config.updateFormValues(LayerConfiguration.normalizeOptions(response));
 
           if (this.link && this.ms !== null) {
-            const t = (this.config.toEsriLayerDefinition() as unknown) as esri.FeatureLayer;
-
-            this.ms.findLayerOrCreateFromSource({
-              id: t.id,
-              title: t.title,
-              url: t.url,
-              type: t.type
-            });
+            instances.map.add(this.layer);
           }
         });
     }
+
+    // Configure listeners for property edits to the form (opacity, etc)
+    this.config.form.valueChanges.pipe(pluck('info')).subscribe((res: ILayerConfiguration) => {
+      const layer = this.ms.findLayerById(res.layerId);
+
+      if (layer) {
+        layer.opacity = res.drawingInfo.opacity / 100;
+      }
+    });
   }
 
   public ngOnDestroy(): void {
     if (this.link && this.ms !== null) {
-      this.ms.removeLayerById(this.config.toEsriLayerDefinition().id);
+      this.ms.removeLayerById(this.layer.id);
     }
   }
 }
@@ -248,16 +272,32 @@ export class LayerConfiguration {
     }
   }
 
-  public toEsriLayerDefinition(): Partial<esri.FeatureLayer> | Partial<esri.GraphicsLayer> | Partial<esri.GroupLayer> {
-    const f = this.form.getRawValue();
+  public applyConfigValuesToLayer(layer: esri.FeatureLayer) {
+    const formValues = this.form.getRawValue().info as ILayerConfiguration;
 
-    return {
-      type: LayerConfiguration.getLayerType(f.info.type),
-      title: f.info.name,
-      id: f.info.layerId,
-      url: f.url
-    };
+    if (formValues.name) {
+      layer.title = formValues.name;
+    }
+
+    if (formValues.layerId) {
+      layer.id = formValues.layerId;
+    }
+
+    if (formValues.drawingInfo) {
+      layer.opacity = formValues.drawingInfo.opacity / 100;
+    }
   }
+
+  // public toEsriLayerDefinition(): Partial<esri.FeatureLayer> | Partial<esri.GraphicsLayer> | Partial<esri.GroupLayer> {
+  //   const f = this.form.getRawValue();
+
+  //   return {
+  //     type: LayerConfiguration.getLayerType(f.info.type),
+  //     title: f.info.name,
+  //     id: f.info.layerId,
+  //     url: f.url
+  //   };
+  // }
 
   private get _groupProperties() {
     return {
