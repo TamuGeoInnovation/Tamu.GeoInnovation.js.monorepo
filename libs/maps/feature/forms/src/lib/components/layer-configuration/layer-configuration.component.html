@@ -23,8 +23,7 @@
         </div>
 
         <div class="form-collection row" formGroupName="drawingInfo">
-          <!-- <tamu-gisc-textbox type="number" formControlName="opacity" floatLabel="true" placeholder="Opacity %"></tamu-gisc-textbox> -->
-          <input type="range" name="" id="" mix="0" max="1" step=".01" formControlName="opacity" />
+          <tamu-gisc-range [min]="0" [max]="1" [step]=".01" formControlName="opacity" label="Opacity"></tamu-gisc-range>
         </div>
       </div>
     </div>

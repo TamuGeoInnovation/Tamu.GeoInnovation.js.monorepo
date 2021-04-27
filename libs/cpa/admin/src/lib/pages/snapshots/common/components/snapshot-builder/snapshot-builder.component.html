@@ -51,7 +51,7 @@
         </div>
 
         <div class="form-section-body">
-          <div class="form-collection column" *ngFor="let controlGroup of builderForm['controls'].layers['controls']; let i = index;" [ngClass]="{ valid: controlGroup.controls.url.value.length > 0 }">
+          <div class="form-collection column layer-configuration" *ngFor="let controlGroup of builderForm['controls'].layers['controls']; let i = index;" [ngClass]="{ valid: controlGroup.controls.url.value.length > 0 }">
             <div [formGroup]="controlGroup">
               <tamu-gisc-textbox formControlName="url" placeholder="Service Layer URL" type="text" floatLabel="true">
                 <div class="textbox-actions material-icons-container">

@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, Input, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 
 import { AbstractValueAccessorFormComponent } from '../../models/abstract-value-accessor-form/abstract-value-accessor-form.component';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';

@@ -1,0 +1,7 @@
+<label [for]="formControlName">{{label}}</label>
+<input type="range" [name]="formControlName" [id]="formControlName + 'range'" [(ngModel)]="value" [disabled]="disabled" [min]="min" [max]="max" [step]="step" />
+
+<div class="labels">
+  <div>{{min}}</div>
+  <div>{{max}}</div>
+</div>
