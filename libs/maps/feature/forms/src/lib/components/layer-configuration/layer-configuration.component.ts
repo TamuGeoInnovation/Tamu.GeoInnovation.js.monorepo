@@ -5,7 +5,7 @@ import { BehaviorSubject, from } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, filter, withLatestFrom, pluck } from 'rxjs/operators';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
-import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 import { v4 as guid } from 'uuid';
 
@@ -108,8 +108,29 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy {
           }),
           withLatestFrom(this.ms.store)
         )
-        .subscribe(([response, instances]) => {
+        .subscribe(([response, instances]: [esri.FeatureLayer, MapServiceInstance]) => {
           // Update form values
+
+          // TODO: Clear and add new layer whenever the URL changes. Current issue:
+          //
+          // https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer/8
+          //
+          // Replacing the URL with the above results  in the response URL being the base map server
+          // and not the layer itself
+          //
+          //
+          // // If there is a current layer instance and the url has changed
+          // if (this.layer && response.url) {
+          //   // If the changed url is different we need to clean up and remove the current layer from the map
+          //   // to add the new one
+          //   if (this.layer.url !== response.url) {
+          //     // Also reset the form to prepare it for new resolved values
+          //     this.config.form.reset();
+
+          //     // Cleanup
+          //     this.ngOnDestroy();
+          //   }
+          // }
 
           this.layer = response as esri.FeatureLayer;
 
@@ -128,13 +149,16 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy {
     }
 
     // Configure listeners for property edits to the form (opacity, etc)
-    this.config.form.valueChanges.pipe(pluck('info')).subscribe((res: ILayerConfiguration) => {
-      const layer = this.ms.findLayerById(res.layerId);
-
-      if (layer) {
-        layer.opacity = res.drawingInfo.opacity;
-      }
-    });
+    this.config.form.valueChanges
+      .pipe(
+        pluck('info'),
+        filter((config) => config !== undefined)
+      )
+      .subscribe((res: ILayerConfiguration) => {
+        if (this.layer) {
+          this.layer.opacity = res.drawingInfo.opacity;
+        }
+      });
   }
 
   public ngOnDestroy(): void {

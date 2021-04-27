@@ -19,7 +19,6 @@
         <tamu-gisc-checkbox formControlName="isContextual" [label]="'Should this Snapshot be used for context?'"></tamu-gisc-checkbox>
       </div>
     </div>
-
   </div>
 
   <div class="map-configuration-container">
@@ -51,14 +50,14 @@
         </div>
 
         <div class="form-section-body">
-          <div class="form-collection column layer-configuration" *ngFor="let controlGroup of builderForm['controls'].layers['controls']; let i = index;" [ngClass]="{ valid: controlGroup.controls.url.value.length > 0 }">
+          <div class="form-collection column layer-configuration" *ngFor="let controlGroup of builderForm['controls'].layers['controls']; let i = index;" [ngClass]="{ valid: controlGroup?.controls?.url?.value?.length > 0 }">
             <div [formGroup]="controlGroup">
               <tamu-gisc-textbox formControlName="url" placeholder="Service Layer URL" type="text" floatLabel="true">
                 <div class="textbox-actions material-icons-container">
                   <span class="material-icons action error" title="Remove Layer" (click)="removeLayer(i)">close</span>
                 </div>
               </tamu-gisc-textbox>
-              <tamu-gisc-accordion *ngIf="controlGroup.controls.url.value.length > 0">
+              <tamu-gisc-accordion *ngIf="controlGroup?.controls?.url?.value?.length > 0">
                 <tamu-gisc-accordion-header> Edit Layer Details </tamu-gisc-accordion-header>
                 <tamu-gisc-accordion-content>
                   <tamu-gisc-layer-configuration [url]="controlGroup.controls.url.value" [configOptions]="controlGroup" [link]="true"></tamu-gisc-layer-configuration>
