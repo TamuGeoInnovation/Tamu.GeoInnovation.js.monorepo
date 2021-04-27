@@ -4,6 +4,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { Provider } from 'oidc-provider';
 import * as express from 'express';
 import * as rateLimit from 'express-rate-limit';
+import * as yargs from 'yargs';
 import { urlencoded, json } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
@@ -27,17 +28,40 @@ async function bootstrap() {
     cors: true
   });
 
-  if (!environment.create_defaults) {
+  const argv = yargs
+    .command('oidc-provider-nest', 'OIDC Identity Provider')
+    .option('setup', {
+      alias: 's',
+      description: 'Create default admin user and oidc-angular client metadata',
+      type: 'boolean'
+    })
+    .help()
+    .alias('help', 'h').argv;
+
+  if (argv.setup) {
+    console.log('Setup detected; creating defaults...');
+    OpenIdProvider.build();
+    console.warn("After setup, you will need to restart without '-s' so the oidc-admin client can be loaded");
+  } else {
     console.log('Not creating defaults... Loading clients');
     const service = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
 
     const clients = await service.loadClientMetadaForOidcSetup();
     console.log('Clients:', clients);
     OpenIdProvider.build(clients);
-  } else {
-    console.log('Creating defaults...');
-    OpenIdProvider.build();
   }
+
+  // if (!environment.create_defaults) {
+  //   console.log('Not creating defaults... Loading clients');
+  //   const service = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
+
+  //   const clients = await service.loadClientMetadaForOidcSetup();
+  //   console.log('Clients:', clients);
+  //   OpenIdProvider.build(clients);
+  // } else {
+  //   console.log('Creating defaults...');
+  //   OpenIdProvider.build();
+  // }
 
   enableOIDCDebug(OpenIdProvider.provider);
 
@@ -67,8 +91,9 @@ async function bootstrap() {
     console.log('Listening at http://localhost:' + environment.port + '/' + environment.globalPrefix);
 
     setTimeout(() => {
-      if (environment.create_defaults) {
+      if (argv.setup) {
         const clientMetadataService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
+
         // Insert default Grant Types
         clientMetadataService.insertDefaultGrantTypes();
         // Insert default Responses Types

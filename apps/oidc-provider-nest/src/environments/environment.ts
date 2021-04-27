@@ -1,8 +1,7 @@
 export const environment = {
   production: false,
   port: 4001,
-  globalPrefix: '',
-  create_defaults: false
+  globalPrefix: ''
 };
 
 export { localDbConfig as dbConfig } from './ormconfig';
