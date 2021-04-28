@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 
 import { ColdWaterValvesService, MappedValve } from '../../../core/services/cold-water-valves/cold-water-valves.service';
 
@@ -11,59 +11,65 @@ import { ColdWaterValvesService, MappedValve } from '../../../core/services/cold
 })
 export class ListComponent implements OnInit {
   public valves: Observable<Array<MappedValve>>;
+
+  public categorized: Observable<ValvesCategorized>;
   public ratio: Observable<ValveStateRatio>;
   public filtered: Observable<Array<MappedValve>>;
 
   public filterOpen: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public filterClosed: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public filterClosed: BehaviorSubject<boolean> = new BehaviorSubject(true);
 
   constructor(private valveService: ColdWaterValvesService) {}
 
   public ngOnInit(): void {
-    this.valves = this.valveService.valves.pipe(shareReplay());
+    this.valves = this.valveService.valves.pipe(shareReplay(1));
 
-    this.filtered = combineLatest([this.filterOpen, this.filterClosed]).pipe(
-      switchMap(([shouldFilterOpen, shouldFilterClosed]) => {
-        return this.valves.pipe(
-          filter((v) => v !== undefined),
-          map((valves) => {
-            return valves.filter((v) => {
-              if (v.attributes.NormalPosition_1 === v.attributes.CurrentPosition_1 && shouldFilterOpen === false) {
-                return true;
-              } else if (v.attributes.NormalPosition_1 !== v.attributes.CurrentPosition_1 && shouldFilterClosed === false) {
-                return true;
-              }
-
-              return false;
-            });
-          })
-        );
-      })
-    );
-
-    this.ratio = this.valves.pipe(
-      filter((v) => v !== undefined),
+    this.categorized = this.valves.pipe(
       map((valves) => {
         return valves.reduce(
-          (acc, curr, index, arr) => {
-            if (curr.attributes.NormalPosition_1 !== curr.attributes.CurrentPosition_1) {
-              acc.closed++;
-            } else {
-              acc.open++;
-            }
-
-            if (index === arr.length - 1) {
-              acc.open = (acc.open / arr.length) * 100;
-              acc.closed = (acc.closed / arr.length) * 100;
+          (acc, valve) => {
+            if (valve.attributes.NormalPosition_1 === valve.attributes.CurrentPosition_1) {
+              acc.normal.push(valve);
+            } else if (valve.attributes.NormalPosition_1 !== valve.attributes.CurrentPosition_1) {
+              acc.abnormal.push(valve);
             }
 
             return acc;
           },
           {
-            open: 0,
-            closed: 0
+            abnormal: [],
+            normal: []
           }
         );
+      }),
+      shareReplay(1)
+    );
+
+    this.filtered = combineLatest([this.filterOpen, this.filterClosed]).pipe(
+      switchMap(([shouldFilterOpen, shouldFilterClosed]) => {
+        return this.categorized.pipe(
+          map((categorized) => {
+            const filteredIn = [];
+            if (shouldFilterClosed) {
+              filteredIn.push(...categorized.abnormal);
+            }
+
+            if (shouldFilterOpen) {
+              filteredIn.push(...categorized.normal);
+            }
+
+            return filteredIn;
+          })
+        );
+      })
+    );
+
+    this.ratio = this.categorized.pipe(
+      map((categorized) => {
+        return {
+          open: (categorized.normal.length / (categorized.abnormal.length + categorized.normal.length)) * 100,
+          closed: (categorized.abnormal.length / (categorized.abnormal.length + categorized.normal.length)) * 100
+        };
       })
     );
   }
@@ -80,4 +86,9 @@ export class ListComponent implements OnInit {
 interface ValveStateRatio {
   open: number;
   closed: number;
+}
+
+interface ValvesCategorized {
+  normal: Array<MappedValve>;
+  abnormal: Array<MappedValve>;
 }
