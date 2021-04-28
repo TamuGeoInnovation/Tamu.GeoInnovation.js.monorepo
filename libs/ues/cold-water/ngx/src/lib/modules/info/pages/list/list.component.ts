@@ -18,6 +18,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
   public filterOpen: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public filterClosed: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  public dcwToggled: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(private valveService: ColdWaterValvesService) {}
 
@@ -86,6 +87,11 @@ export class ListComponent implements OnInit, OnDestroy {
     } else {
       this.filterOpen.next(!this.filterOpen.getValue());
     }
+  }
+
+  public toggleDcw() {
+    this.valveService.toggleColdWaterLines();
+    this.dcwToggled.next(!this.dcwToggled.getValue());
   }
 }
 

@@ -116,5 +116,11 @@ table {
         color: rgb(244, 67, 54);
       }
     }
+
+    &.active {
+      .material-icons {
+        color: rgb(171, 71, 188);
+      }
+    }
   }
 }

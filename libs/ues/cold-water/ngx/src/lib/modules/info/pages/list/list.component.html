@@ -12,6 +12,7 @@
 <div class="pill-layer-list">
   <div class="pill-layer" [ngClass]="{open: (filterOpen | async)}" (click)="tableFilter('open')"><span class="material-icons">circle</span> Normal Valves <ng-container *ngIf="categorized | async">({{(categorized | async)?.normal?.length | number}})</ng-container></div>
   <div class="pill-layer" [ngClass]="{closed: (filterClosed | async)}" (click)="tableFilter('closed')"><span class="material-icons">circle</span> Abnormal Valves <ng-container *ngIf="categorized | async">({{(categorized | async)?.abnormal?.length | number}})</ng-container></div>
+  <div class="pill-layer cwl" [ngClass]="{active: (dcwToggled | async)}" (click)="toggleDcw()"><span class="material-icons">water_drop</span> Cold Water Linework</div>
 </div>
 
 <div class="card table-overflow-scroll">

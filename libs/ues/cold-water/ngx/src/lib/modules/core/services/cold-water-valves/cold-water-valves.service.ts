@@ -101,6 +101,14 @@ export class ColdWaterValvesService {
       });
     }
   }
+
+  public toggleColdWaterLines() {
+    const layer = this.mapService.findLayerById('cold-water-layer');
+
+    if (layer) {
+      layer.visible = !layer.visible;
+    }
+  }
 }
 
 type IValvePositionState = null | 'Open' | 'Closed';

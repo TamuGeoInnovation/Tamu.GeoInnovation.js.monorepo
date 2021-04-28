@@ -44,9 +44,19 @@ const commonLayerProps = {
 export const LayerSources: LayerSource[] = [
   {
     type: 'feature',
+    id: Definitions.COLD_WATER.layerId,
+    title: Definitions.COLD_WATER.name,
+    url: Definitions.COLD_WATER.url,
+    listMode: 'hide',
+    visible: false,
+    native: {
+      ...commonLayerProps
+    }
+  },
+  {
+    type: 'feature',
     id: Definitions.VALVES.layerId,
     title: Definitions.VALVES.name,
-    // url: Definitions.VALVES.url,
     url: 'https://ues-arc.tamu.edu/arcgis/rest/services/BrownTown/TESTWebMap/FeatureServer/0',
     listMode: 'hide',
     visible: true,
