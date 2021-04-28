@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 
@@ -9,7 +9,7 @@ import { ColdWaterValvesService, MappedValve } from '../../../core/services/cold
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
-export class ListComponent implements OnInit {
+export class ListComponent implements OnInit, OnDestroy {
   public valves: Observable<Array<MappedValve>>;
 
   public categorized: Observable<ValvesCategorized>;
@@ -22,6 +22,8 @@ export class ListComponent implements OnInit {
   constructor(private valveService: ColdWaterValvesService) {}
 
   public ngOnInit(): void {
+    this.valveService.restoreMapExtent();
+
     this.valves = this.valveService.valves.pipe(shareReplay(1));
 
     this.categorized = this.valves.pipe(
@@ -72,6 +74,10 @@ export class ListComponent implements OnInit {
         };
       })
     );
+  }
+
+  public ngOnDestroy() {
+    this.valveService.cacheMapExtent();
   }
 
   public tableFilter(toggle: 'closed' | 'open') {

@@ -14,6 +14,7 @@ export class ColdWaterValvesService {
   public valves = this._valves.asObservable();
 
   private _selectedValveId: BehaviorSubject<number> = new BehaviorSubject(undefined);
+  private _extent: esri.Extent;
 
   public selectedValve: Observable<MappedValve>;
 
@@ -40,7 +41,10 @@ export class ColdWaterValvesService {
             where: '1 = 1',
             outFields: ['*'],
             returnGeometry: true,
-            maxRecordCountFactor: 5
+            maxRecordCountFactor: 5,
+            outSpatialReference: {
+              wkid: 102100
+            }
           });
 
           q.then((valves) => {
@@ -82,6 +86,20 @@ export class ColdWaterValvesService {
 
   public clearSelectedValve(): void {
     this._selectedValveId.next(undefined);
+  }
+
+  public cacheMapExtent() {
+    this.mapService.store.pipe(take(1)).subscribe((instance) => {
+      this._extent = instance.view.extent;
+    });
+  }
+
+  public restoreMapExtent() {
+    if (this._extent !== undefined) {
+      this.mapService.store.pipe(take(1)).subscribe((instance) => {
+        instance.view.goTo(this._extent);
+      });
+    }
   }
 }
 

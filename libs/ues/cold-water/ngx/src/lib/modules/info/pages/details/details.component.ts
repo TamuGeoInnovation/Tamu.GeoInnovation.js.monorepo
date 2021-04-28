@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 
 import { ColdWaterValvesService, MappedValve } from '../../../core/services/cold-water-valves/cold-water-valves.service';
 
@@ -19,13 +20,19 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private vs: ColdWaterValvesService, private route: ActivatedRoute) {}
+  constructor(private vs: ColdWaterValvesService, private route: ActivatedRoute, private ms: EsriMapService) {}
 
   public ngOnInit(): void {
     this.valve = this.vs.selectedValve;
 
     this.route.params.pipe(takeUntil(this._$destroy)).subscribe((params) => {
       this.vs.setSelectedValve(params.id);
+    });
+
+    this.valve.pipe(take(1)).subscribe((valve) => {
+      this.ms.zoomTo({
+        graphics: [valve]
+      });
     });
   }
 
