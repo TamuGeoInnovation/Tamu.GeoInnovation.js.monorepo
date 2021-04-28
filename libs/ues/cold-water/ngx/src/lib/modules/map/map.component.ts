@@ -101,14 +101,13 @@ export class MapComponent implements OnInit, OnDestroy {
         this.router.navigate(['details', res[0].attributes.OBJECTID]);
       });
 
-    this.coldWaterValveService.selectedValve
-      .pipe(
-        filter((p) => p !== undefined),
-        takeUntil(this._destroy$)
-      )
-      .subscribe((res) => {
-        this.highlight(res, true);
-      });
+    this.coldWaterValveService.selectedValve.pipe(takeUntil(this._destroy$)).subscribe((feature) => {
+      if (feature) {
+        this.highlight(feature, true);
+      } else {
+        this.highlightService.clearAll();
+      }
+    });
   }
 
   public ngOnDestroy() {

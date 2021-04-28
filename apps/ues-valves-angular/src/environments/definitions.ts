@@ -47,7 +47,7 @@ export const LayerSources: LayerSource[] = [
     id: Definitions.VALVES.layerId,
     title: Definitions.VALVES.name,
     // url: Definitions.VALVES.url,
-    url: "https://ues-arc.tamu.edu/arcgis/rest/services/BrownTown/TESTWebMap/FeatureServer/0",
+    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/BrownTown/TESTWebMap/FeatureServer/0',
     listMode: 'hide',
     visible: true,
     layerIndex: 2,
@@ -77,7 +77,8 @@ export const LayerSources: LayerSource[] = [
             symbol: {
               type: 'simple-marker',
               color: 'red',
-              size: '5pt'
+              size: '15pt',
+              style: 'diamond'
             } as unknown
           },
           {
@@ -93,7 +94,8 @@ export const LayerSources: LayerSource[] = [
             symbol: {
               type: 'simple-marker',
               color: 'red',
-              size: '5pt'
+              size: '15pt',
+              style: 'diamond'
             } as unknown
           }
         ]

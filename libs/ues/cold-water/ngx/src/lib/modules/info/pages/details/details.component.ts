@@ -37,6 +37,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.vs.clearSelectedValve();
     this._$destroy.next();
     this._$destroy.complete();
   }
