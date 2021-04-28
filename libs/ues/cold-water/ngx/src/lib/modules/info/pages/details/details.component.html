@@ -1,9 +1,15 @@
-<div class="breadcrumb trailer-2">
-  <div class="crumb" routerLink="../../">Valves</div>
-  <span class="material-icons">keyboard_arrow_right</span>
-  <div class="crumb">Details</div>
-  <span class="material-icons">keyboard_arrow_right</span>
-  <div class="crumb">{{(valve | async)?.attributes.OBJECTID}}</div>
+<div class="action-bar">
+  <div class="breadcrumb trailer-2">
+    <div class="crumb" routerLink="../../">Valves</div>
+    <span class="material-icons">keyboard_arrow_right</span>
+    <div class="crumb">Details</div>
+    <span class="material-icons">keyboard_arrow_right</span>
+    <div class="crumb">{{(valve | async)?.attributes.OBJECTID}}</div>
+  </div>
+
+  <div class="back">
+    <p routerLink="../../"><span class="material-icons">arrow_back</span> Return to list</p>
+  </div>
 </div>
 
 <div class="card">
