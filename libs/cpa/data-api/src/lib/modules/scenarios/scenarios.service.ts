@@ -158,6 +158,7 @@ export class ScenariosService extends BaseService<Scenario> {
       if (responseLayersGuids.length > 0) {
         queries.push(
           this.responseRepo.find({
+            relations: ['snapshot', 'scenario'],
             where: {
               guid: In(responseLayersGuids)
             }
@@ -203,10 +204,11 @@ export class ScenariosService extends BaseService<Scenario> {
         })
         .map((resolved) => {
           if (resolved instanceof Response) {
+            const responseType = this.getResponseType(resolved);
             return {
               graphics: (resolved.shapes as unknown) as IGraphic[],
               info: {
-                name: `${resolved.name} (Response)`,
+                name: `${resolved.name} (Response - ${responseType})`,
                 description: resolved.notes,
                 type: 'graphics',
                 layerId: resolved.guid
@@ -242,6 +244,16 @@ export class ScenariosService extends BaseService<Scenario> {
       const detailedScenario: IScenariosResponseResolved = { ...scen, layers: orderedResolved };
 
       return detailedScenario;
+    }
+  }
+
+  private getResponseType(response: Response) {
+    if (response.hasOwnProperty('snapshot')) {
+      return 'Snapshot';
+    } else if (response.hasOwnProperty('scenario')) {
+      return 'Scenario';
+    } else {
+      return;
     }
   }
 }
