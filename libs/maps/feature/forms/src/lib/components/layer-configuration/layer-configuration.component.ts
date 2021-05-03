@@ -140,7 +140,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy {
 
           //
           // If there is no config, apply default values from the layer instance.
-          // this.config.updateFormValues(LayerConfiguration.normalizeOptions(response));
+          this.config.updateFormValues(LayerConfiguration.normalizeOptions(response));
 
           if (this.link && this.ms !== null) {
             instances.map.add(this.layer);
@@ -221,49 +221,62 @@ export class LayerConfiguration {
    * Accepts an object and creates a LayerConfiguration object from
    * matching keys.
    */
-  public static normalizeOptions(obj: object): ILayerConfiguration {
+  public static normalizeOptions(obj: object | esri.FeatureLayer): ILayerConfiguration {
     if (obj instanceof Object) {
-      // Using this as schema since form builder groups cannot be stringified
-      // without running into a recursive overflow.
-      const lookup = {
-        name: '',
-        layerId: '',
-        type: '',
-        description: '',
-        drawingInfo: {
-          opacity: ''
-        }
-      };
+      // If the provided object is a plain jane object, assume it's a configuration object, otherwise a feature layer.
+      if (obj.constructor.name === 'Object') {
+        // Using this as schema since form builder groups cannot be stringified
+        // without running into a recursive overflow.
+        const lookup = {
+          name: '',
+          layerId: '',
+          type: '',
+          description: '',
+          drawingInfo: {
+            opacity: ''
+          }
+        };
 
-      const getMatching = (o, ref) => {
-        const matching = Object.keys(o).reduce((acc, curr) => {
-          const shouldKeep = getPropertyValue(ref, curr);
+        const getMatching = (o, ref) => {
+          const matching = Object.keys(o).reduce((acc, curr) => {
+            const shouldKeep = getPropertyValue(ref, curr);
 
-          if (shouldKeep !== undefined) {
-            let value;
+            if (shouldKeep !== undefined) {
+              let value;
 
-            if (shouldKeep instanceof Object) {
-              value = getMatching(o[curr], shouldKeep);
-            } else {
-              if (curr === 'type') {
-                value = this.getLayerType(o[curr]);
+              if (shouldKeep instanceof Object) {
+                value = getMatching(o[curr], shouldKeep);
               } else {
-                value = o[curr];
+                if (curr === 'type') {
+                  value = this.getLayerType(o[curr]);
+                } else {
+                  value = o[curr];
+                }
               }
+
+              acc[curr] = value;
             }
 
-            acc[curr] = value;
+            return acc;
+          }, {});
+
+          return matching;
+        };
+
+        const config = getMatching(obj, lookup);
+
+        return config as ILayerConfiguration;
+      } else {
+        const layer = obj as esri.FeatureLayer;
+        return {
+          name: layer.title,
+          layerId: layer.id,
+          type: layer.type,
+          drawingInfo: {
+            opacity: layer.opacity
           }
-
-          return acc;
-        }, {});
-
-        return matching;
-      };
-
-      const config = getMatching(obj, lookup);
-
-      return config as ILayerConfiguration;
+        } as ILayerConfiguration;
+      }
     }
   }
 
@@ -311,17 +324,6 @@ export class LayerConfiguration {
       layer.opacity = formValues.drawingInfo.opacity;
     }
   }
-
-  // public toEsriLayerDefinition(): Partial<esri.FeatureLayer> | Partial<esri.GraphicsLayer> | Partial<esri.GroupLayer> {
-  //   const f = this.form.getRawValue();
-
-  //   return {
-  //     type: LayerConfiguration.getLayerType(f.info.type),
-  //     title: f.info.name,
-  //     id: f.info.layerId,
-  //     url: f.url
-  //   };
-  // }
 
   private get _groupProperties() {
     return {
