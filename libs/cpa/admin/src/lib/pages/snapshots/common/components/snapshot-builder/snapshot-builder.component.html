@@ -49,18 +49,28 @@
           </div>
         </div>
 
-        <div class="form-section-body">
+        <div class="form-section-body" id="configurator-container" dragula="LAYERS" [(dragulaModel)]="builderForm['controls'].layers['controls']">
           <div class="form-collection column layer-configuration" *ngFor="let controlGroup of builderForm['controls'].layers['controls']; let i = index;" [ngClass]="{ valid: controlGroup?.controls?.url?.value?.length > 0 }">
+            <div class="handle"><span class="material-icons">drag_handle</span></div>
+
             <div [formGroup]="controlGroup">
               <tamu-gisc-textbox formControlName="url" placeholder="Service Layer URL" type="text" floatLabel="true">
                 <div class="textbox-actions material-icons-container">
                   <span class="material-icons action error" title="Remove Layer" (click)="removeLayer(i)">close</span>
                 </div>
               </tamu-gisc-textbox>
-              <tamu-gisc-accordion *ngIf="controlGroup?.controls?.url?.value?.length > 0">
-                <tamu-gisc-accordion-header> Edit Layer Details </tamu-gisc-accordion-header>
+
+              <tamu-gisc-accordion>
+                <tamu-gisc-accordion-header>
+                  <div>
+                    <div [ngSwitch]="controlGroup?.controls?.info?.controls?.name?.value !== ''">
+                      <div *ngSwitchCase="true">{{controlGroup?.controls?.info?.controls?.name?.value}}</div>
+                      <div *ngSwitchDefault>Edit Layer Details</div>
+                    </div>
+                  </div>
+                </tamu-gisc-accordion-header>
                 <tamu-gisc-accordion-content>
-                  <tamu-gisc-layer-configuration [url]="controlGroup.controls.url.value" [configOptions]="controlGroup" [link]="true"></tamu-gisc-layer-configuration>
+                  <tamu-gisc-layer-configuration [url]="controlGroup.controls.url.value" [configOptions]="controlGroup" [link]="true" [index]="i"></tamu-gisc-layer-configuration>
                 </tamu-gisc-accordion-content>
               </tamu-gisc-accordion>
             </div>

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 
+import { DragulaService } from 'ng2-dragula';
+
 import { forkJoin, Observable } from 'rxjs';
 import { tap, map, shareReplay } from 'rxjs/operators';
 
@@ -44,8 +46,16 @@ export class SnapshotBuilderComponent implements OnInit {
     private snapshot: SnapshotService,
     private router: Router,
     private route: ActivatedRoute,
-    private ns: NotificationService
-  ) {}
+    private ns: NotificationService,
+    private ds: DragulaService
+  ) {
+    // Limit layer configuration dragging to the handle element.
+    ds.createGroup('LAYERS', {
+      moves: (el, container, handle) => {
+        return handle.className === 'handle' || handle.className === 'material-icons';
+      }
+    });
+  }
 
   public ngOnInit() {
     this.isExisting = this.route.params.pipe(
@@ -74,7 +84,15 @@ export class SnapshotBuilderComponent implements OnInit {
         ([snapshot, instances]) => {
           this.builderForm.patchValue(snapshot);
 
-          snapshot.layers.forEach((l) => {
+          // The desired behavior is: top-most layer in the UI should result in a layer on top of all others on map
+          // Adding layers increases the their stack index, and the highest index means above everything else.
+          //
+          // In order to do this, we must add layers the other way around so that the first item in the array
+          // is actually last to be added so it receives the highest index, even though in the model it occupies
+          // the 0th position.
+          const layers = snapshot.layers.reverse();
+
+          layers.forEach((l) => {
             this.addLayer(l);
           });
 
@@ -113,12 +131,12 @@ export class SnapshotBuilderComponent implements OnInit {
   /**
    * Adds a layer group to the layers form array.
    *
-   * Allows adding multiple layers to the snapshot.
+   * @param {object} [url] URL of the layer. Layer will be resolved by inner layer configurator
    */
   public addLayer(url?: object) {
     const props = url && typeof url === 'object' ? { ...url } : { url: '' };
 
-    (this.builderForm.controls.layers as FormArray).insert(0, this.fb.group(props));
+    (this.builderForm.controls.layers as FormArray).push(this.fb.group(props));
   }
 
   /**
@@ -130,6 +148,11 @@ export class SnapshotBuilderComponent implements OnInit {
 
   public createSnapshot() {
     const value = this.builderForm.getRawValue();
+
+    // Because the layer order in the UI and model are inverted due to how layers
+    // are loaded and their indexes work, the model has the layers in a reversed order,
+    // so before updating, their order has to be reversed once more.
+    value.layers = value.layers.reverse();
 
     if (this.route.snapshot.params.guid) {
       this.snapshot

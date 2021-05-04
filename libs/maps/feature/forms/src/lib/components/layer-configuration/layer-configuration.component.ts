@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, Optional, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Optional, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { BehaviorSubject, from } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, filter, withLatestFrom, pluck } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, filter, withLatestFrom, pluck, take } from 'rxjs/operators';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
@@ -16,7 +16,7 @@ import esri = __esri;
   templateUrl: './layer-configuration.component.html',
   styleUrls: ['./layer-configuration.component.scss']
 })
-export class LayerConfigurationComponent implements OnInit, OnDestroy {
+export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges {
   /**
    * Internal value. The input is piped through here so that the http query
    * rate can be throttled as the user types in a URL address.
@@ -62,6 +62,15 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy {
    */
   @Input()
   public link: boolean;
+
+  /**
+   * The layer positioning index. This is the index that will be used to create the layer.
+   *
+   * This property is also watched for changes to apply a new index to the layer if it has been
+   * re-ordered.
+   */
+  @Input()
+  public index = 0;
 
   public get configOptions() {
     return this.config.form.getRawValue();
@@ -143,7 +152,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy {
           this.config.updateFormValues(LayerConfiguration.normalizeOptions(response));
 
           if (this.link && this.ms !== null) {
-            instances.map.add(this.layer);
+            instances.map.add(this.layer, this.index);
           }
         });
     }
@@ -159,6 +168,14 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy {
           this.layer.opacity = res.drawingInfo.opacity;
         }
       });
+  }
+
+  public ngOnChanges(changes: SimpleChanges) {
+    if (changes.index.previousValue !== changes.index.currentValue && this.layer !== undefined) {
+      this.ms.store.pipe(take(1)).subscribe((instances) => {
+        instances.map.reorder(this.layer, this.index);
+      });
+    }
   }
 
   public ngOnDestroy(): void {
