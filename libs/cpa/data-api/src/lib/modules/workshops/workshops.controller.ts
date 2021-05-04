@@ -21,6 +21,14 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   }
 
   /**
+   * Sets snapshots for a workshop from an array of snapshot guids
+   */
+  @Post('snapshots')
+  public async setSnapshots(@Body() body: IWorkshopSnapshotsPayload) {
+    return await this.service.setSnapshots(body);
+  }
+
+  /**
    * Deletes a snapshot from a workshop
    */
   @Delete('snapshot/:workshopGuid/:snapshotGuid')
@@ -96,12 +104,23 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
 export interface IWorkshopRequestPayload extends DeepPartial<Workshop> {
   guid: string;
 }
+
 export interface IWorkshopSnapshotPayload {
   snapshotGuid: string;
   workshopGuid: string;
 }
 
+export interface IWorkshopSnapshotsPayload {
+  snapshotGuids: Array<string>;
+  workshopGuid: string;
+}
+
 export interface IWorkshopScenarioPayload {
   scenarioGuid: string;
+  workshopGuid: string;
+}
+
+export interface IWorkshopScenariosPayload {
+  scenarioGuids: Array<string>;
   workshopGuid: string;
 }

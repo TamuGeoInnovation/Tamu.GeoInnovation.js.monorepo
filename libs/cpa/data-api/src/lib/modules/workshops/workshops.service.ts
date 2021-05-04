@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository, getRepository } from 'typeorm';
+import { Repository, getRepository, In } from 'typeorm';
 
 import {
   Workshop,
@@ -14,7 +14,12 @@ import {
 } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseService } from '../base/base.service';
-import { IWorkshopRequestPayload, IWorkshopScenarioPayload, IWorkshopSnapshotPayload } from './workshops.controller';
+import {
+  IWorkshopRequestPayload,
+  IWorkshopScenarioPayload,
+  IWorkshopSnapshotPayload,
+  IWorkshopSnapshotsPayload
+} from './workshops.controller';
 
 @Injectable()
 export class WorkshopsService extends BaseService<Workshop> {
@@ -48,6 +53,41 @@ export class WorkshopsService extends BaseService<Workshop> {
       }
     } else {
       throw new HttpException('Not Found', 404);
+    }
+  }
+
+  public async setSnapshots(body: IWorkshopSnapshotsPayload) {
+    if (body.snapshotGuids && body.snapshotGuids.length !== 0) {
+      const workshop = await this.getWorkshop(body.workshopGuid, true, false, false, true);
+
+      if (workshop) {
+        const snapshots = await getRepository(Snapshot).find({ guid: In(body.snapshotGuids) });
+
+        workshop.snapshots = [];
+
+        await workshop.save();
+
+        const promised = body.snapshotGuids.map((guid) => {
+          return getRepository(WorkshopSnapshot)
+            .create({
+              workshop: workshop,
+              snapshot: snapshots.find((r) => r.guid === guid)
+            })
+            .save();
+        });
+
+        await Promise.all(promised);
+
+        try {
+          return await this.getWorkshop(body.workshopGuid, true, false, false, false);
+        } catch (err) {
+          return err;
+        }
+      } else {
+        throw new HttpException('Not Found', 404);
+      }
+    } else {
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 

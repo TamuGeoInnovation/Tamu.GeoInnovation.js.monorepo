@@ -65,10 +65,14 @@
         <tamu-gisc-select [data]="snapshotList | async" placeholder="Select snapshot" [displayTemplate]="'title'" (changed)="submitWorkshop($event)"></tamu-gisc-select>
       </div>
 
-      <div class="form-collection column" *ngIf="form.controls?.snapshots.value.length > 0">
+      <div class="form-collection column" *ngIf="form.controls?.snapshots.value.length > 0" dragula="SNAPSHOTS" [(dragulaModel)]="form.controls.snapshots.value">
         <div class="record-item" *ngFor="let snapshot of form.controls.snapshots.value">
-          <div class="record-title">{{ snapshot.title }}</div>
-          <div class="record-actions material-icons-container">
+          <div class="l-container">
+            <div class="handle"><span class="material-icons">drag_handle</span></div>
+            <div class="record-title">{{ snapshot.title }}</div>
+          </div>
+
+          <div class="r-container record-actions material-icons-container">
             <span class="material-icons action error" title="Delete Workshop" (click)="removeSnapshot(snapshot)">delete</span>
           </div>
         </div>
@@ -92,9 +96,12 @@
         <tamu-gisc-select [data]="scenarioList | async" placeholder="Select scenario" [displayTemplate]="'title'" (changed)="submitWorkshopScenario($event)"></tamu-gisc-select>
       </div>
 
-      <div class="form-collection column" *ngIf="form.controls?.scenarios.value.length > 0">
+      <div class="form-collection column" *ngIf="form.controls?.scenarios.value.length > 0" dragula="SCENARIOS" [(dragulaModel)]="form.controls.scenarios.value">
         <div class="record-item" *ngFor="let scenario of form.controls.scenarios.value">
-          <div class="record-title">{{ scenario.title }}</div>
+          <div class="l-container">
+            <div class="handle"><span class="material-icons">drag_handle</span></div>
+            <div class="record-title">{{ scenario.title }}</div>
+          </div>
           <div class="record-actions material-icons-container">
             <span class="material-icons action error" title="Delete Workshop" (click)="removeScenario(scenario)">delete</span>
           </div>

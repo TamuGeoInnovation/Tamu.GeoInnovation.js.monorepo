@@ -93,6 +93,12 @@ export class WorkshopBuilderComponent implements OnInit {
         this.ws.addSnapshot(this.route.snapshot.params['guid'], snapshot.guid).subscribe((addSnapshotStatus) => {
           this.form.patchValue(addSnapshotStatus);
         });
+      } else {
+        const snapshots = (this.form.getRawValue().snapshots as Array<Snapshot>).map((s) => s.guid);
+
+        this.ws.setSnapshots(this.route.snapshot.params['guid'], snapshots).subscribe((addSnapshotStatus) => {
+          console.log('Updated snapshots');
+        });
       }
     } else {
       this.ws.createWorkshop(this.form.getRawValue()).subscribe((createStatus) => {

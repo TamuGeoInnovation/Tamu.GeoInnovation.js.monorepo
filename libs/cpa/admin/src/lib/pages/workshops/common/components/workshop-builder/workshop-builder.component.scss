@@ -1,0 +1,22 @@
+@import 'libs/sass/mixins';
+
+.l-container,
+.r-container {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+
+  .handle {
+    span {
+      padding: 0.5rem;
+      opacity: 0.5;
+      cursor: pointer;
+      @include transition(opacity 0.3s);
+      @include no-select;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}

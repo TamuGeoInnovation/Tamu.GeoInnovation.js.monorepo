@@ -34,6 +34,10 @@ export class WorkshopService {
     return this.http.delete(`${this.resource}/${guid}`);
   }
 
+  public setSnapshots(wGuid: string, guids: Array<string>) {
+    return this.http.post(`${this.resource}/snapshots`, { workshopGuid: wGuid, snapshotGuids: guids });
+  }
+
   public addSnapshot(wGuid: string, sGuid: string) {
     return this.http.post(`${this.resource}/snapshot`, { workshopGuid: wGuid, snapshotGuid: sGuid });
   }
