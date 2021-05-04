@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 
 import { DragulaService } from 'ng2-dragula';
 
 import { forkJoin, Observable } from 'rxjs';
-import { tap, map, shareReplay } from 'rxjs/operators';
+import { tap, map, shareReplay, take } from 'rxjs/operators';
 
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -19,7 +19,7 @@ import esri = __esri;
   styleUrls: ['./snapshot-builder.component.scss'],
   providers: [EsriMapService]
 })
-export class SnapshotBuilderComponent implements OnInit {
+export class SnapshotBuilderComponent implements OnInit, OnDestroy {
   public builderForm: FormGroup;
 
   public view: esri.MapView;
@@ -108,6 +108,10 @@ export class SnapshotBuilderComponent implements OnInit {
         }
       );
     }
+  }
+
+  public ngOnDestroy() {
+    this.ds.destroy('LAYERS');
   }
 
   /**
