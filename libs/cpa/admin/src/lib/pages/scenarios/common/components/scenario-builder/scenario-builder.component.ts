@@ -122,7 +122,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
               const scenarioGuids = s.layers.filter((l) => l.type === 'scenario').map((l) => l.guid);
 
               // Check to see we have workshops
-              if (s.workshopScenario.workshop !== undefined) {
+              if (s.workshopScenario && s.workshopScenario.workshop !== undefined) {
                 this.selectedWorkshop = s.workshopScenario?.workshop?.guid;
                 this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay(1));
 
@@ -383,11 +383,6 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     const value = this.builderForm.getRawValue();
 
     if (this.route.snapshot.params.guid) {
-      // TODO: What does this do? Causes a race condition
-      // this.scenario.updateWorkshop(this.selectedWorkshop, this.route.snapshot.params.guid).subscribe((addScenarioStatus) => {
-      //   console.log(addScenarioStatus);
-      // });
-
       // Combine the snapshots and responses. Snapshots are typically used as contextual base layers for responses, so they
       // they are at the bottom of the stack.
       const combinedLayers = [...value.snapshots, ...value.layers, ...value.scenarios];
@@ -417,17 +412,15 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
         });
     } else {
       this.scenario.create(value).subscribe((res) => {
-        this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
-
         this.workshop.addScenario(this.selectedWorkshop, res.guid).subscribe((addScenarioStatus) => {
-          console.log(addScenarioStatus.guid);
-        });
+          this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
 
-        this.ns.toast({
-          message: 'Scenario was created successfully.',
-          id: 'scenario-create',
-          title: 'New Scenario',
-          acknowledge: false
+          this.ns.toast({
+            message: 'Scenario was created successfully.',
+            id: 'scenario-create',
+            title: 'New Scenario',
+            acknowledge: false
+          });
         });
       });
     }

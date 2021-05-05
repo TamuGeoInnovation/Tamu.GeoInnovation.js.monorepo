@@ -62,7 +62,7 @@
       <div class="form-collection column" *ngIf="(snapshotList | async)?.length > 0">
         <p>Select a snapshot from the dropdown list below to add to the workshop.</p>
 
-        <tamu-gisc-select [data]="snapshotList | async" placeholder="Select snapshot" [displayTemplate]="'title'" (changed)="submitWorkshop($event)"></tamu-gisc-select>
+        <tamu-gisc-select [data]="snapshotList | async" placeholder="Select snapshot" [displayTemplate]="'title'" (changed)="addSnapshot($event)"></tamu-gisc-select>
       </div>
 
       <div class="form-collection column" *ngIf="form.controls?.snapshots.value.length > 0" dragula="SNAPSHOTS" [(dragulaModel)]="form.controls.snapshots.value">
@@ -93,7 +93,7 @@
       <div class="form-collection column" *ngIf="(scenarioList | async)?.length > 0">
         <p>Select a scenario from the dropdown list below to add to the workshop.</p>
 
-        <tamu-gisc-select [data]="scenarioList | async" placeholder="Select scenario" [displayTemplate]="'title'" (changed)="submitWorkshopScenario($event)"></tamu-gisc-select>
+        <tamu-gisc-select [data]="scenarioList | async" placeholder="Select scenario" [displayTemplate]="'title'" (changed)="addScenario($event)"></tamu-gisc-select>
       </div>
 
       <div class="form-collection column" *ngIf="form.controls?.scenarios.value.length > 0" dragula="SCENARIOS" [(dragulaModel)]="form.controls.scenarios.value">

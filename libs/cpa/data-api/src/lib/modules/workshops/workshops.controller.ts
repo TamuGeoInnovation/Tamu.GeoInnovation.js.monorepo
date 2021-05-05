@@ -45,11 +45,35 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   }
 
   /**
+   * Sets scenarios for a workshop from an array of snapshot guids
+   */
+  @Post('scenarios')
+  public async setScenarios(@Body() body: IWorkshopScenariosPayload) {
+    return await this.service.setScenarios(body);
+  }
+
+  /**
    * Adds a Scenario to a workshop
    */
   @Post('scenario')
   public async addScenario(@Body() body: IWorkshopScenarioPayload) {
     return await this.service.addNewScenario(body);
+  }
+
+  /**
+   * Adds a contextual Snapshot to a workshop
+   */
+  @Post('context')
+  public async addContext(@Body() body: IWorkshopSnapshotPayload) {
+    return await this.service.addNewContextSnapshot(body);
+  }
+
+  /**
+   * Deletes a contextual Snapshot from a workshop
+   */
+  @Delete('context/:workshopGuid/:snapshotGuid')
+  public async deleteContext(@Param() params: IWorkshopSnapshotPayload) {
+    return await this.service.removeWorkshopContextSnapshot(params);
   }
 
   /**
@@ -82,22 +106,6 @@ export class WorkshopsController extends BaseController<Workshop | IWorkshopExtr
   @Get('')
   public getAll() {
     return this.service.getMany({ relations: ['snapshots', 'scenarios'] });
-  }
-
-  /**
-   * Adds a contextual Snapshot to a workshop
-   */
-  @Post('context')
-  public async addContext(@Body() body: IWorkshopSnapshotPayload) {
-    return await this.service.addNewContextSnapshot(body);
-  }
-
-  /**
-   * Deletes a contextual Snapshot from a workshop
-   */
-  @Delete('context/:workshopGuid/:snapshotGuid')
-  public async deleteContext(@Param() params: IWorkshopSnapshotPayload) {
-    return await this.service.removeWorkshopContextSnapshot(params);
   }
 }
 

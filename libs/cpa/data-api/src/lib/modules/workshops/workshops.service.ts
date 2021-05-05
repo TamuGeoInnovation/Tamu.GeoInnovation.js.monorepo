@@ -17,6 +17,7 @@ import { BaseService } from '../base/base.service';
 import {
   IWorkshopRequestPayload,
   IWorkshopScenarioPayload,
+  IWorkshopScenariosPayload,
   IWorkshopSnapshotPayload,
   IWorkshopSnapshotsPayload
 } from './workshops.controller';
@@ -57,37 +58,37 @@ export class WorkshopsService extends BaseService<Workshop> {
   }
 
   public async setSnapshots(body: IWorkshopSnapshotsPayload) {
-    if (body.snapshotGuids && body.snapshotGuids.length !== 0) {
-      const workshop = await this.getWorkshop(body.workshopGuid, true, false, false, true);
+    if (!body.snapshotGuids || body.snapshotGuids.length === 0) {
+      // No-op but still need to return something
+      return await this.getWorkshop(body.workshopGuid, true, false, false, false);
+    }
+    const workshop = await this.getWorkshop(body.workshopGuid, true, false, false, true);
 
-      if (workshop) {
-        const snapshots = await getRepository(Snapshot).find({ guid: In(body.snapshotGuids) });
+    if (workshop) {
+      const snapshots = await getRepository(Snapshot).find({ guid: In(body.snapshotGuids) });
 
-        workshop.snapshots = [];
+      workshop.snapshots = [];
 
-        await workshop.save();
+      await workshop.save();
 
-        const promised = body.snapshotGuids.map((guid) => {
-          return getRepository(WorkshopSnapshot)
-            .create({
-              workshop: workshop,
-              snapshot: snapshots.find((r) => r.guid === guid)
-            })
-            .save();
-        });
+      const promised = body.snapshotGuids.map((guid) => {
+        return getRepository(WorkshopSnapshot)
+          .create({
+            workshop: workshop,
+            snapshot: snapshots.find((r) => r.guid === guid)
+          })
+          .save();
+      });
 
-        await Promise.all(promised);
+      await Promise.all(promised);
 
-        try {
-          return await this.getWorkshop(body.workshopGuid, true, false, false, false);
-        } catch (err) {
-          return err;
-        }
-      } else {
-        throw new HttpException('Not Found', 404);
+      try {
+        return await this.getWorkshop(body.workshopGuid, true, false, false, false);
+      } catch (err) {
+        return err;
       }
     } else {
-      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Not Found', 404);
     }
   }
 
@@ -110,6 +111,46 @@ export class WorkshopsService extends BaseService<Workshop> {
 
         await workshopScenarios.save();
       }
+
+      try {
+        return this.getWorkshop(body.workshopGuid, true, true, true, false);
+      } catch (err) {
+        return err;
+      }
+    } else {
+      throw new HttpException('Not Found', 404);
+    }
+  }
+
+  public async setScenarios(body: IWorkshopScenariosPayload) {
+    if (!body.scenarioGuids || body.scenarioGuids.length === 0) {
+      // No-op, but still need to return something.
+      return this.getWorkshop(body.workshopGuid, true, true, true, false);
+    }
+
+    const workshop = await this.getWorkshop(body.workshopGuid, false, true, false, true);
+
+    if (workshop) {
+      const scenarios = await getRepository(Scenario).find({ guid: In(body.scenarioGuids) });
+
+      // Since emptying the workshop.scenarios and then calling workshop.remove() does not
+      // actually clear the relationship and causes conflicts when adding a new row,
+      // call the remove() method on each relationship before proceeding.
+      //
+      // Cascades may be set incorrectly or the relationship does not work as expected.
+      const existingWorkshopScenarios = workshop.scenarios.map((s) => s.remove());
+      await Promise.all(existingWorkshopScenarios);
+
+      const promised = body.scenarioGuids.map((guid) => {
+        return getRepository(WorkshopScenario)
+          .create({
+            workshop: workshop,
+            scenario: scenarios.find((r) => r.guid === guid)
+          })
+          .save();
+      });
+
+      await Promise.all(promised);
 
       try {
         return this.getWorkshop(body.workshopGuid, true, true, true, false);

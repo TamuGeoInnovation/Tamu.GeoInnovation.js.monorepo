@@ -130,7 +130,7 @@ export class Scenario extends CPABaseEntity implements IScenario {
   @Column({ type: 'simple-json', nullable: true })
   public layers: Array<LayerReference>;
 
-  @OneToOne((type) => WorkshopScenario, (w) => w.scenario)
+  @OneToOne((type) => WorkshopScenario, (w) => w.scenario, { onDelete: 'CASCADE' })
   public workshopScenario: IWorkshopScenario;
 
   @OneToMany((type) => Response, (r) => r.scenario)
