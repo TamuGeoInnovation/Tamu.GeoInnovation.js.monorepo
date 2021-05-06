@@ -26,7 +26,7 @@ export class AbstractSlidingDrawerComponent implements OnInit {
   }
 
   public get visible() {
-    return this._visible;
+    return this._visible !== undefined ? this._visible : true;
   }
 
   /**
