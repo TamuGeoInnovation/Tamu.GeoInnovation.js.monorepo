@@ -159,3 +159,12 @@ section {
   -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=20)';
   filter: alpha(opacity=20);
 }
+
+// Notification tweaks
+tamu-gisc-notification-item {
+  @include transform(translateY(100%) translateX(-10rem));
+
+  .status {
+    background: $active-color !important;
+  }
+}
