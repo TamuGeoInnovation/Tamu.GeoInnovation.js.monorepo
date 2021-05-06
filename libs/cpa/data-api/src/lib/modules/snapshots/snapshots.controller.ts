@@ -38,6 +38,11 @@ export class SnapshotsController extends BaseController<Snapshot> {
     return this.service.getMany(where);
   }
 
+  @Post('copy')
+  public async createSnapshotCopy(@Body() body: { guid: string }) {
+    return await this.service.createSnapshotCopy(body.guid);
+  }
+
   /**
    * Updates an existing snapshot
    */

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
@@ -12,7 +13,7 @@ import { ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
 })
 export class SnapshotsListComponent implements OnInit {
   public snapshots: Observable<ISnapshotsResponse[]>;
-  constructor(private service: SnapshotService) {}
+  constructor(private service: SnapshotService, private router: Router, private route: ActivatedRoute) {}
 
   public ngOnInit() {
     this.fetchRecords();
@@ -27,5 +28,11 @@ export class SnapshotsListComponent implements OnInit {
 
   public fetchRecords() {
     this.snapshots = this.service.getAll().pipe(shareReplay(1));
+  }
+
+  public createCopy(donorGuid: string) {
+    this.service.createCopy(donorGuid).subscribe((status) => {
+      this.router.navigate(['./edit', status.guid], { relativeTo: this.route });
+    });
   }
 }

@@ -20,6 +20,7 @@
             <div class="column">{{snapshot.title}}</div>
             <div class="column table-actions">
               <a [routerLink]="['./edit', snapshot.guid]">Edit</a>
+              <a (click)="createCopy(snapshot.guid)">Copy</a>
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { getRepository, In, Repository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 
 import { Snapshot, Workshop } from '@tamu-gisc/cpa/common/entities';
 
@@ -20,6 +20,26 @@ export class SnapshotsService extends BaseService<Snapshot> {
 
   public async deleteSnapshot(params: ISnapshotsRequestPayload) {
     return await this.repo.delete({ guid: params.guid });
+  }
+
+  public async createSnapshotCopy(donorSnapshotGuid: string) {
+    const existing = await this.repo.findOne({ guid: donorSnapshotGuid });
+
+    if (existing) {
+      const snapshotCopy = this.repo.create({
+        description: existing.description,
+        extent: existing.extent,
+        isContextual: existing.isContextual,
+        layers: existing.layers,
+        mapCenter: existing.mapCenter,
+        title: `Copy of ${existing.title}`,
+        zoom: existing.zoom
+      });
+
+      return snapshotCopy.save();
+    } else {
+      throw new HttpException('Snapshot does not exist.', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
   }
 
   public async getSnapshotsForWorkshop(workshopGuid: string) {

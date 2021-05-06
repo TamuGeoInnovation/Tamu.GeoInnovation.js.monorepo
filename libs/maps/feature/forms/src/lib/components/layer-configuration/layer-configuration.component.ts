@@ -179,7 +179,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public ngOnDestroy(): void {
-    if (this.link && this.ms !== null) {
+    if (this.link && this.ms !== null && this.layer && this.layer.id) {
       this.ms.removeLayerById(this.layer.id);
     }
   }

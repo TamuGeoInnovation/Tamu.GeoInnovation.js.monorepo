@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { ISnapshotsRequestPayload, ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
-import { Response, Scenario, Snapshot, Workshop } from '@tamu-gisc/cpa/common/entities';
+import { Snapshot } from '@tamu-gisc/cpa/common/entities';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,10 @@ export class SnapshotService {
 
   public create(snapshot: ISnapshotsRequestPayload) {
     return this.http.post<ISnapshotsResponse>(this.resource, snapshot);
+  }
+
+  public createCopy(snapshotGuid: string) {
+    return this.http.post<ISnapshotsResponse>(`${this.resource}/copy`, { guid: snapshotGuid });
   }
 
   public getAll() {
