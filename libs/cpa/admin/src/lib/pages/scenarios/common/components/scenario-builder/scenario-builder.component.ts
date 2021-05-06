@@ -48,6 +48,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     graphic: esri.GraphicConstructor;
     graphicsLayer: esri.GraphicsLayerConstructor;
     featureLayer: esri.FeatureLayerConstructor;
+    groupLayer: esri.GroupLayerConstructor;
   };
 
   private $destroy: Subject<boolean> = new Subject();
@@ -105,12 +106,18 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
 
     // Get esri modules first. We'll need these for basically anything else in the builder, so
     // it makes sense to ensure they are available before we continue any additional setup
-    from(this.mp.require(['Graphic', 'GraphicsLayer', 'FeatureLayer'])).subscribe(
-      ([g, gl, fl]: [esri.GraphicConstructor, esri.GraphicsLayerConstructor, esri.FeatureLayerConstructor]) => {
+    from(this.mp.require(['Graphic', 'GraphicsLayer', 'FeatureLayer', 'GroupLayer'])).subscribe(
+      ([graphic, graphicsLayer, featureLayer, groupLayer]: [
+        esri.GraphicConstructor,
+        esri.GraphicsLayerConstructor,
+        esri.FeatureLayerConstructor,
+        esri.GroupLayerConstructor
+      ]) => {
         this._modules = {
-          graphic: g,
-          graphicsLayer: gl,
-          featureLayer: fl
+          graphic: graphic,
+          graphicsLayer: graphicsLayer,
+          featureLayer: featureLayer,
+          groupLayer: groupLayer
         };
 
         // If we are in /details, populate the form
@@ -281,9 +288,6 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Diffs the loc
-   */
   public addOrRemoveSnapshots(snapshots: ISnapshotsResponse[], selectedSnapshots: string[]) {
     const removedSnapshots = Object.keys(this.scenarioSnapshots).filter((key) => {
       return (
@@ -298,24 +302,14 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     });
 
     if (removedSnapshots.length > 0) {
-      const layerIds = removedSnapshots.reduce((acc, snapshot) => {
-        const s = snapshots.find((snap) => snap.guid === snapshot);
-
-        const ids = s.layers.map((l) => {
-          return l.info.layerId;
-        });
-
-        return [...acc, ...ids];
-      }, []);
-
-      const layers = layerIds.map((lid) => {
-        return this.map.findLayerById(lid);
+      const layers = removedSnapshots.map((removedGuid) => {
+        return this.map.findLayerById(removedGuid);
       });
 
       if (layers.length > 0) {
         this.map.removeMany(layers);
 
-        // Once the layers have been removed from the map, remove the dictionary
+        // Once the layers have been removed from the map, remove them from the dictionary
         for (const snapshot of removedSnapshots) {
           const s = snapshots.find((snap) => snap.guid === snapshot);
 
@@ -325,19 +319,25 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     }
 
     // If snapshots have been added as a result of a form change, load their constituting layers.
+    // Each snapshot is added as a group layer, and all layers for the group layer are added as sub-layers
     if (addedSnapshots.length > 0) {
       const layers = addedSnapshots.reduce((acc, snapshotGuid) => {
-        const s = snapshots.find((snap) => snap.guid === snapshotGuid);
+        const snapshot = snapshots.find((snap) => snap.guid === snapshotGuid);
 
-        const l = s.layers.map((layer) => {
-          return new this._modules.featureLayer({
-            id: layer.info.layerId,
-            title: layer.info.name,
-            url: layer.url
-          });
+        const groupLyr = new this._modules.groupLayer({
+          title: snapshot.title,
+          id: snapshot.guid,
+          layers: snapshot.layers.reverse().map((layer) => {
+            return new this._modules.featureLayer({
+              id: layer.info.layerId,
+              title: layer.info.name,
+              url: layer.url,
+              opacity: layer.info.drawingInfo.opacity
+            });
+          })
         });
 
-        return [...acc, ...l];
+        return [...acc, groupLyr];
       }, []);
 
       this.map.addMany(layers);
