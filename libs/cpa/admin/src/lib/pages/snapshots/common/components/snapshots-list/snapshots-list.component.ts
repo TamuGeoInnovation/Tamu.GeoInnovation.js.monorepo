@@ -5,6 +5,7 @@ import { shareReplay } from 'rxjs/operators';
 
 import { SnapshotService } from '@tamu-gisc/cpa/data-access';
 import { ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-snapshots-list',
@@ -13,7 +14,12 @@ import { ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
 })
 export class SnapshotsListComponent implements OnInit {
   public snapshots: Observable<ISnapshotsResponse[]>;
-  constructor(private service: SnapshotService, private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private service: SnapshotService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private ns: NotificationService
+  ) {}
 
   public ngOnInit() {
     this.fetchRecords();
@@ -31,8 +37,23 @@ export class SnapshotsListComponent implements OnInit {
   }
 
   public createCopy(donorGuid: string) {
-    this.service.createCopy(donorGuid).subscribe((status) => {
-      this.router.navigate(['./edit', status.guid], { relativeTo: this.route });
-    });
+    this.service.createCopy(donorGuid).subscribe(
+      (status) => {
+        this.ns.toast({
+          message: 'Snapshot was successfully copied.',
+          id: 'snapshot-copy',
+          title: 'Snapshot Copied'
+        });
+
+        this.router.navigate(['./edit', status.guid], { relativeTo: this.route });
+      },
+      (err) => {
+        this.ns.toast({
+          message: 'Snapshot could not be copied.',
+          id: 'snapshot-copy',
+          title: 'Snapshot Copy Failed'
+        });
+      }
+    );
   }
 }

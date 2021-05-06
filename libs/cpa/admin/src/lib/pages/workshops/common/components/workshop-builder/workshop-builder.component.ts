@@ -7,6 +7,7 @@ import { pluck, shareReplay, map } from 'rxjs/operators';
 import { IScenariosResponseResolved, ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
 import { Scenario, Snapshot } from '@tamu-gisc/cpa/common/entities';
 import { WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/data-access';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-workshop-builder',
@@ -31,7 +32,8 @@ export class WorkshopBuilderComponent implements OnInit {
     private ss: SnapshotService,
     private scenarioService: ScenarioService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private ns: NotificationService
   ) {}
 
   public ngOnInit() {
@@ -95,19 +97,43 @@ export class WorkshopBuilderComponent implements OnInit {
 
       forkJoin([wsUpdate, snUpdate, scUpdate]).subscribe(
         (status) => {
-          console.log('Successfully updated workshop and snapshot.');
+          this.ns.toast({
+            message: 'Workshop was successfully updated.',
+            id: 'workshop-update',
+            title: 'Updated Workshop'
+          });
         },
         (err) => {
           if (err) {
-            console.error('Error updating workshop and snapshots.');
+            console.error(err);
+
+            this.ns.toast({
+              message: 'There was an error updating the workshop.',
+              id: 'workshop-update',
+              title: 'Workshop Update Failed'
+            });
           }
         }
       );
     } else {
-      this.ws.createWorkshop(this.form.getRawValue()).subscribe((createStatus) => {
-        console.log('Created workshop');
-        this.router.navigate(['../'], { relativeTo: this.route });
-      });
+      this.ws.createWorkshop(this.form.getRawValue()).subscribe(
+        (createStatus) => {
+          this.ns.toast({
+            message: 'Workshop was successfully created.',
+            id: 'workshop-create',
+            title: 'Workshop Created'
+          });
+
+          this.router.navigate(['../'], { relativeTo: this.route });
+        },
+        (err) => {
+          this.ns.toast({
+            message: 'Workshop could not be created.',
+            id: 'workshop-create',
+            title: 'Workshop Create Failed'
+          });
+        }
+      );
     }
   }
 

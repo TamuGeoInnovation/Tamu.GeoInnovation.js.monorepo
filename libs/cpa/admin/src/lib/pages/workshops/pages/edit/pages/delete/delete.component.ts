@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { WorkshopService } from '@tamu-gisc/cpa/data-access';
 
 @Component({
@@ -11,7 +12,12 @@ import { WorkshopService } from '@tamu-gisc/cpa/data-access';
 export class DeleteComponent implements OnInit {
   private guid: string;
 
-  constructor(private ws: WorkshopService, private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private ws: WorkshopService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private ns: NotificationService
+  ) {}
 
   public ngOnInit(): void {
     this.guid = this.route.snapshot.params.guid;
@@ -19,9 +25,24 @@ export class DeleteComponent implements OnInit {
 
   public deleteWorkshop() {
     if (this.guid) {
-      this.ws.deleteWorkshop(this.guid).subscribe((res) => {
-        this.router.navigate(['admin/workshops']);
-      });
+      this.ws.deleteWorkshop(this.guid).subscribe(
+        (res) => {
+          this.ns.toast({
+            message: 'Workshop was successfully deleted.',
+            id: 'workshop-delete',
+            title: 'Workshop Deleted'
+          });
+
+          this.router.navigate(['admin/workshops']);
+        },
+        (err) => {
+          this.ns.toast({
+            message: 'Workshop could not be deleted.',
+            id: 'workshop-delete',
+            title: 'Workshop Delete Failed'
+          });
+        }
+      );
     }
   }
 }

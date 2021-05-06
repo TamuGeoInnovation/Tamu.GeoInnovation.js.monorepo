@@ -401,27 +401,46 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
             this.builderForm.disable();
           })
         )
-        .subscribe((updateStatus) => {
-          // Re-enable the form
-          this.builderForm.enable();
-          this.ns.toast({
-            message: 'Scenario was updated successfully.',
-            id: 'scenario-update',
-            title: 'Updated Scenario'
-          });
-        });
+        .subscribe(
+          (updateStatus) => {
+            // Re-enable the form
+            this.builderForm.enable();
+
+            this.ns.toast({
+              message: 'Scenario was successfully updated.',
+              id: 'scenario-update',
+              title: 'Scenario Updated'
+            });
+          },
+          (err) => {
+            this.ns.toast({
+              message: 'Scenario could not be updated.',
+              id: 'scenario-update',
+              title: 'Scenario Update Failed'
+            });
+          }
+        );
     } else {
       this.scenario.create(value).subscribe((res) => {
-        this.workshop.addScenario(this.selectedWorkshop, res.guid).subscribe((addScenarioStatus) => {
-          this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
+        this.workshop.addScenario(this.selectedWorkshop, res.guid).subscribe(
+          (addScenarioStatus) => {
+            this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
 
-          this.ns.toast({
-            message: 'Scenario was created successfully.',
-            id: 'scenario-create',
-            title: 'New Scenario',
-            acknowledge: false
-          });
-        });
+            this.ns.toast({
+              message: 'Scenario was successfully created.',
+              id: 'scenario-create',
+              title: 'Scenario Created'
+            });
+          },
+          (err) => {
+            this.ns.toast({
+              message: 'Scenario could not be created.',
+              id: 'scenario-create',
+              title: 'Scenario Create Failed',
+              acknowledge: false
+            });
+          }
+        );
       });
     }
   }

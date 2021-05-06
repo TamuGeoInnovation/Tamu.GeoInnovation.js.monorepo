@@ -167,27 +167,44 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
             this.builderForm.disable();
           })
         )
-        .subscribe((updateStatus) => {
-          // Re-enable the form
-          this.builderForm.enable();
+        .subscribe(
+          (updateStatus) => {
+            // Re-enable the form
+            this.builderForm.enable();
+
+            this.ns.toast({
+              message: 'Snapshot was successfully updated.',
+              id: 'snapshot-update',
+              title: 'Snapshot Updated'
+            });
+          },
+          (err) => {
+            this.ns.toast({
+              message: 'Snapshot could not be updated.',
+              id: 'snapshot-update',
+              title: 'Snapshot Update Failed'
+            });
+          }
+        );
+    } else {
+      this.snapshot.create(value).subscribe(
+        (res) => {
+          this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
 
           this.ns.toast({
-            message: 'Snapshot was updated successfully.',
-            id: 'snapshot-update',
-            title: 'Updated Snapshot'
+            message: 'Snapshot was successfully created.',
+            id: 'snapshot-create',
+            title: 'Snapshot Created'
           });
-        });
-    } else {
-      this.snapshot.create(value).subscribe((res) => {
-        this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
-
-        this.ns.toast({
-          message: 'Snapshot was created successfully.',
-          id: 'snapshot-create',
-          title: 'New Snapshot',
-          acknowledge: false
-        });
-      });
+        },
+        (err) => {
+          this.ns.toast({
+            message: 'Snapshot could not be created.',
+            id: 'snapshot-create',
+            title: 'Snapshot Create Failed'
+          });
+        }
+      );
     }
   }
 
