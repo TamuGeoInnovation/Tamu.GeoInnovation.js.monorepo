@@ -4804,7 +4804,8 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "ues-valves-nest:build"
+            "buildTarget": "ues-valves-nest:build",
+            "port": 7777
           }
         },
         "lint": {
@@ -4818,6 +4819,27 @@
           "outputs": ["coverage/apps/ues-valves-nest"],
           "options": {
             "jestConfig": "apps/ues-valves-nest/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ues-cold-water-data-api": {
+      "root": "libs/ues/cold-water/data-api",
+      "sourceRoot": "libs/ues/cold-water/data-api/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ues/cold-water/data-api/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ues/cold-water/data-api"],
+          "options": {
+            "jestConfig": "libs/ues/cold-water/data-api/jest.config.js",
             "passWithNoTests": true
           }
         }

@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 
 import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc/client';
+import { AuthModule } from '@tamu-gisc/ues/cold-water/data-api';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -11,7 +12,8 @@ import { idpConfig } from '../environments/environment';
   imports: [
     OidcClientModule.forRoot({
       host: idpConfig.issuer_url
-    })
+    }),
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService]

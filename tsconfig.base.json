@@ -111,7 +111,8 @@
       "@tamu-gisc/ues/recycling/common/entities": ["libs/ues/recycling/common/entities/src/index.ts"],
       "@tamu-gisc/ues/recycling/data-api": ["libs/ues/recycling/data-api/src/index.ts"],
       "@tamu-gisc/ues/recycling/ngx": ["libs/ues/recycling/ngx/src/index.ts"],
-      "@tamu-gisc/ues/cold-water/ngx": ["libs/ues/cold-water/ngx/src/index.ts"]
+      "@tamu-gisc/ues/cold-water/ngx": ["libs/ues/cold-water/ngx/src/index.ts"],
+      "@tamu-gisc/ues/cold-water/data-api": ["libs/ues/cold-water/data-api/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
