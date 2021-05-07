@@ -406,6 +406,9 @@
     },
     "gisday-common": {
       "tags": []
+    },
+    "common-ngx-auth": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {
