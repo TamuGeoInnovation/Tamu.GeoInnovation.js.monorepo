@@ -17,10 +17,10 @@ export class LocationsService {
   }
 
   public getLocations(): Observable<Array<Location>> {
-    return this.http.get<Array<Location>>(this.apiUrl);
+    return this.http.get<Array<Location>>(this.apiUrl, { withCredentials: true });
   }
 
   public getLocationsResults(): Observable<Array<Location>> {
-    return this.http.get<Array<Location>>(this.apiUrl + '/results');
+    return this.http.get<Array<Location>>(this.apiUrl + '/results', { withCredentials: true });
   }
 }
