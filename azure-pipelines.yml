@@ -4,10 +4,6 @@ pool:
 jobs:
   - job: CdForOIDCProviderNest
     steps:
-      - task: InstallSSHKey@0
-        inputs:
-          knownHostsEntry: 'github.com,140.82.112.3 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
-          sshKeySecureFile: 'id_rsa'
       - task: NodeTool@0
         inputs:
           versionSpec: '12.18'
@@ -15,12 +11,45 @@ jobs:
 
       - script: npm install
         displayName: 'npm install'
-      #- bash: |
-      #    npm run nx affected  -- --target=build --base=origin/development~1  --head=origin/devOpAffected --prod  --exclude="two-data-api-nest,two-directory-nest,ues-recycling-data-api-nest,ues-valves-nest,bikeshare,ues-effluent-data-api-nest,covid-data-api-nest,oidc-provider-nest,oidc-provider-express,oidc-admin-nest,oidc-client-test,two-valup-nest,cpa-nest"
-      #  displayName: 'Running build'
+
+      - task: DownloadSecureFile@1
+        name: oidcenv
+        displayName: 'Download oidcenv'
+        inputs:
+          secureFile: 'uesConfigs.zip'
+      - task: ExtractFiles@1
+        inputs:
+          archiveFilePatterns: $(Agent.TempDirectory)/uesConfigs.zip
+          cleanDestinationFolder: false
+          destinationFolder: $(Agent.TempDirectory)/uesConfigs
+
+      - task: CopyFiles@2
+        displayName: 'Copying environment files to ues-effluent-data-api-nest'
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)/uesConfigs/ues-effluent-data-api-nest
+          Contents: '*'
+          TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-effluent-data-api-nest/src/environments
+
+      - task: CopyFiles@2
+        displayName: 'Copying environment files to ues-valves-nest'
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)/uesConfigs/ues-valves-nest
+          Contents: '*'
+          TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-valves-nest/src/environments
+
+      - task: CopyFiles@2
+        displayName: 'Copying environment files to ues-recycling-data-api-nest'
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)/uesConfigs/ues-recycling-data-api-nest
+          Contents: '*'
+          TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-recycling-data-api-nest/src/environments
 
       - bash: |
-          nx affected:apps --base=development --head=HEAD --exclude="aggiemap-angular,signage-angular,trees-angular,bikeshare,cpa-angular,gisday-competitions-angular,oidc-admin-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-provider-express,oidc-provider-nest,oidc-admin-nest,cpa-nest,oidc-client-test,oidc-provider-angular,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes" | grep -E '( - )(\w|-|\d|_)+' | sed -E 's/ - /##vso[build.addbuildtag]/g'
+          npm run nx affected:build -- --base=origin/development --head=HEAD --prod  --exclude="aggiemap-angular,signage-angular,trees-angular,bikeshare,cpa-angular,gisday-competitions-angular,oidc-admin-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-provider-express,oidc-provider-nest,oidc-admin-nest,cpa-nest,oidc-client-test,oidc-provider-angular,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes"
+        displayName: 'Running build'
+
+      - bash: |
+          npm run nx affected:apps --  --base=origin/development --head=HEAD --exclude="aggiemap-angular,signage-angular,trees-angular,bikeshare,cpa-angular,gisday-competitions-angular,oidc-admin-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-provider-express,oidc-provider-nest,oidc-admin-nest,cpa-nest,oidc-client-test,oidc-provider-angular,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes" | grep -E '( - )(\w|-|\d|_)+' | sed -E 's/ - /##vso[build.addbuildtag]/g'
         displayName: 'add affected apps as buildtags'
       - task: CopyFiles@2
         inputs:
@@ -30,5 +59,5 @@ jobs:
       - task: PublishBuildArtifacts@1
         inputs:
           pathtoPublish: $(Build.ArtifactStagingDirectory) # dist or build files
-          ArtifactName: 'www' # output artifact named www
+          ArtifactName: 'js-monorepo' # output artifact named www
         displayName: 'Publish Artifacts'
