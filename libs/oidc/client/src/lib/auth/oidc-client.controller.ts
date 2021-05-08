@@ -1,6 +1,6 @@
 import { Controller, Get, Request, Response, UseGuards } from '@nestjs/common';
 
-import { AdminRoleGuard, ManagerRoleGuard, UserRoleGuard } from '../guards/roles.guard';
+import { AdminRoleGuard, AzureIdpGuard, ManagerRoleGuard, UserRoleGuard } from '../guards/roles.guard';
 import { LoginGuard } from '../guards/login.guard';
 import { OpenIdClient } from './open-id-client';
 
@@ -49,5 +49,11 @@ export class OidcClientController {
     return {
       greeting: 'Hello user, manager, or admin'
     };
+  }
+
+  @UseGuards(AzureIdpGuard)
+  @Get('/userinfo')
+  public getUserInfo(@Request() req) {
+    return req.user;
   }
 }

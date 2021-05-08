@@ -3167,7 +3167,8 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "ues-effluent-data-api-nest:build"
+            "buildTarget": "ues-effluent-data-api-nest:build",
+            "port": 7777
           }
         },
         "lint": {

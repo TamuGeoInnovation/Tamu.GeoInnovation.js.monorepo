@@ -29,10 +29,10 @@ import esri = __esri;
 export * from './definitions';
 export * from './notification-events';
 
-export const apiUrl = `http://localhost:3001/`;
+export const apiUrl = `http://localhost:3001`;
 
 export const auth_options: AuthOptions = {
-  url: `http://localhost:3001/`,
+  url: `http://localhost:3001`,
   attach_href: true
 };
 

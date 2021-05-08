@@ -13,7 +13,7 @@ export class ResultsService {
   private apiUrl: string;
 
   constructor(private http: HttpClient, private env: EnvironmentService) {
-    this.apiUrl = this.env.value('apiUrl') + 'results';
+    this.apiUrl = this.env.value('apiUrl') + '/results';
   }
 
   public getResults() {
