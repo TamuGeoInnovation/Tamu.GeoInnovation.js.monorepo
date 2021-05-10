@@ -189,8 +189,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         // Get workshop contexts
         this.vs.workshopContexts.subscribe((contexts) => {
           contexts.forEach((val) => {
-            const layer = (this._generateCPALayers(val.layers) as unknown) as Array<esri.Layer>;
-            instances.map.addMany(layer);
+            const contextLayer = this._generateGroupLayers(val.layers, 'Context');
+            instances.map.add(contextLayer);
             const extent = Extent.fromJSON(val.extent);
             this._view.goTo(extent);
           });
@@ -255,18 +255,20 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           if (currSnapshot.type === 'scenario') {
             this.getLayerForScenarioGuid(currSnapshot.guid)
               .then((layer) => {
-                const layers = (this._generateCPALayers(layer.layers) as unknown) as Array<esri.Layer>;
-
-                instances.map.addMany(layers);
+                // const layers = (this._generateCPALayers(layer.layers) as unknown) as Array<esri.Layer>;
+                // instances.map.addMany(layers);
+                const groupLayer = this._generateGroupLayers(layer.layers, currSnapshot.title);
+                instances.map.add(groupLayer);
               })
               .catch((err) => {
                 throw new Error(err);
               });
           } else if (currSnapshot.type === 'snapshot') {
             // Create a map of layers from the current snapshot to add to the map.
-            const layers = this._generateCPALayers(currSnapshot.layers);
-
-            instances.map.addMany(layers);
+            // const layers = this._generateCPALayers(currSnapshot.layers);
+            // instances.map.addMany(layers);
+            const groupLayer = this._generateGroupLayers(currSnapshot.layers, currSnapshot.title);
+            instances.map.add(groupLayer);
           }
         }, 0);
       }
@@ -407,6 +409,25 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           });
         });
       }
+    });
+  }
+
+  private _generateGroupLayers(definitions: Array<CPALayer>, snapOrScenTitle: string) {
+    console.log('_generateGroupLayers', snapOrScenTitle);
+
+    // Construct GroupLayer
+    return new this._modules.groupLayer({
+      title: snapOrScenTitle,
+
+      layers: definitions.map((l) => {
+        return new this._modules.featureLayer({
+          id: l.info.layerId,
+          url: l.url,
+          title: l.info.name,
+          opacity: l.info.drawingInfo.opacity < 1 ? l.info.drawingInfo.opacity / 100 : 1,
+          listMode: 'hide'
+        });
+      })
     });
   }
 

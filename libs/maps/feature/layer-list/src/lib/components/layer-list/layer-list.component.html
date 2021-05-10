@@ -3,6 +3,35 @@
   <p>Layers</p>
 </div>
 
+<!-- <div class="sidebar-component-content-container">
+  <div class="category" *ngFor="let item of layers | async">
+    <tamu-gisc-accordion>
+      <tamu-gisc-accordion-header>{{item.title}}</tamu-gisc-accordion-header>
+      <tamu-gisc-accordion-content>
+        <tamu-gisc-layer-list-item *ngFor="let item of item.layer.layers?.toArray()" [listItem]="item"></tamu-gisc-layer-list-item>
+      </tamu-gisc-accordion-content>
+    </tamu-gisc-accordion>
+  </div>
+</div> -->
+
 <div class="sidebar-component-content-container">
-  <tamu-gisc-layer-list-item *ngFor="let item of layers | async" [listItem]="item"></tamu-gisc-layer-list-item>
+  <div *ngFor="let item of layers | async">
+    <div [ngSwitch]="item.layer.layers?.length">
+      <div *ngSwitchCase="0">
+        <tamu-gisc-layer-list-item [itemList]="item"></tamu-gisc-layer-list-item>
+      </div>
+      <div *ngSwitchDefault>
+        <tamu-gisc-accordion>
+          <tamu-gisc-accordion-header>{{item.title}}</tamu-gisc-accordion-header>
+          <tamu-gisc-accordion-content>
+            <tamu-gisc-layer-list-item *ngFor="let innerItem of item.layer.layers?.toArray()" [listItem]="innerItem"></tamu-gisc-layer-list-item>
+          </tamu-gisc-accordion-content>
+        </tamu-gisc-accordion>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- <div class="sidebar-component-content-container">
+  <tamu-gisc-layer-list-item *ngFor="let item of layers | async" [listItem]="item"></tamu-gisc-layer-list-item>
+</div> -->
