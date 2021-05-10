@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnInit } from '@angular/core';
 
 import esri = __esri;
 
@@ -11,6 +11,9 @@ export class LayerListItemComponent implements OnInit {
   @Input()
   public listItem: IListItem;
 
+  @Input()
+  public expanded = true;
+
   constructor() {}
 
   public ngOnInit(): void {}
@@ -20,6 +23,10 @@ export class LayerListItemComponent implements OnInit {
     if (this.listItem.layer) {
       this.listItem.layer.visible = !this.listItem.layer.visible;
     }
+  }
+
+  public toggleExpanded() {
+    this.expanded = !this.expanded;
   }
 }
 

@@ -418,14 +418,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     // Construct GroupLayer
     return new this._modules.groupLayer({
       title: snapOrScenTitle,
-
+      visibilityMode: 'independent',
       layers: definitions.map((l) => {
         return new this._modules.featureLayer({
           id: l.info.layerId,
           url: l.url,
           title: l.info.name,
-          opacity: l.info.drawingInfo.opacity < 1 ? l.info.drawingInfo.opacity / 100 : 1,
-          listMode: 'hide'
+          opacity: l.info.drawingInfo.opacity
         });
       })
     });
