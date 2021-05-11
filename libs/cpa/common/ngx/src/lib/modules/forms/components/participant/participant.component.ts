@@ -16,6 +16,7 @@ import {
 } from 'rxjs/operators';
 
 import { v4 as guid } from 'uuid';
+import * as md5 from 'md5';
 
 import { CPALayer } from '@tamu-gisc/cpa/common/entities';
 import { IResponseRequestPayload, IResponseResponse } from '@tamu-gisc/cpa/data-api';
@@ -413,20 +414,37 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   private _generateGroupLayers(definitions: Array<CPALayer>, snapOrScenTitle: string) {
-    console.log('_generateGroupLayers', snapOrScenTitle);
+    const idHash = this._generateGroupLayerId(definitions);
 
-    // Construct GroupLayer
     return new this._modules.groupLayer({
+      id: idHash,
       title: snapOrScenTitle,
       visibilityMode: 'independent',
-      layers: definitions.map((l) => {
-        return new this._modules.featureLayer({
-          id: l.info.layerId,
-          url: l.url,
-          title: l.info.name,
-          opacity: l.info.drawingInfo.opacity
-        });
-      })
+      layers: definitions
+        .map((l) => {
+          if (l.info.type === 'group' || l.info.type === 'feature') {
+            return new this._modules.featureLayer({
+              id: l.info.layerId,
+              url: l.url,
+              title: l.info.name,
+              opacity: l.info.drawingInfo.opacity
+            });
+          } else if (l.info.type === 'graphics') {
+            const g = l.graphics.map((g) => {
+              return this._modules.graphic.fromJSON(g);
+            });
+            return new this._modules.graphicsLayer({
+              title: l.info.name,
+              id: l.info.layerId,
+              graphics: g,
+              listMode: 'show'
+            });
+          } else {
+            console.warn(`Layer with object structure could not be generated:`, l);
+            return undefined;
+          }
+        })
+        .filter((l) => l !== undefined)
     });
   }
 
@@ -486,13 +504,14 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    * used to remove all of the resolved layers from the map if they exist.
    */
   private _removeTimelineEventLayers(event: TypedSnapshotOrScenario): void {
+    const idHash = this._generateGroupLayerId(event.layers);
+
     const prevLayers = event.layers
       .map((l) => {
         return this._map.layers.find((ml) => {
           // Find layer ID from either a snapshot guid array, or the actual layer object id
-          const layerid = typeof l === 'string' ? l : l.info.layerId;
 
-          return ml.id === layerid;
+          return ml.id === idHash;
         });
       })
       .filter((r) => r !== undefined);
@@ -511,6 +530,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     } else {
       this.participantGuid = guid();
     }
+  }
+
+  private _generateGroupLayerId(layers: CPALayer[]) {
+    // Join all sub layer ids into a string, then hash it
+    const totalSubLayerIds = layers
+      .map((l) => {
+        return l.info.layerId;
+      })
+      .join();
+    return md5(totalSubLayerIds);
   }
 }
 
