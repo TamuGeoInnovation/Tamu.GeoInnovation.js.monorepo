@@ -3,13 +3,15 @@ import { NestFactory } from '@nestjs/core';
 
 import passport from 'passport';
 import session from 'express-session';
-const SQLiteStore = require('connect-sqlite3')(session);
+import * as sqlite from 'connect-sqlite3';
 
 import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 import { idpConfig } from './environments/environment';
+
+const SQLiteStore = sqlite(session);
 
 async function bootstrap() {
   const sqlStore = new SQLiteStore({

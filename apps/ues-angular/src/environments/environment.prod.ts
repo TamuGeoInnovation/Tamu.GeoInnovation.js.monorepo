@@ -3,6 +3,8 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
+import { AuthOptions } from '@tamu-gisc/oidc/client';
+
 export const environment = {
   production: true
 };
@@ -10,3 +12,8 @@ export const environment = {
 export * from './definitions';
 export * from './notification-events';
 export * from './polygons';
+
+export const auth_options: AuthOptions = {
+  url: 'https://nodes.geoservices.tamu.edu/api/ues/operations',
+  attach_href: true
+};

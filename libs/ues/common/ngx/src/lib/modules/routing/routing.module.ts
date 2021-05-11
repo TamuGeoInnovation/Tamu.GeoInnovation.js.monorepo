@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
+import { AuthGuard } from '@tamu-gisc/common/ngx/auth';
 
 // Services
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
@@ -20,7 +21,8 @@ const hybridRoutes: Routes = [
   },
   {
     path: 'map',
-    loadChildren: () => import('../map/map.module').then((m) => m.MapModule)
+    loadChildren: () => import('../map/map.module').then((m) => m.MapModule),
+    canActivate: [AuthGuard]
   }
 ];
 
