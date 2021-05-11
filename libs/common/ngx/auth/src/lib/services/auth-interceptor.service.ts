@@ -34,7 +34,7 @@ export class AuthInterceptor implements HttpInterceptor {
         },
         (err) => {
           if (err instanceof HttpErrorResponse) {
-            if (err.status === 403) {
+            if (err.status === 403 || err.status === 401) {
               if (typeof this.auth.authOptions === 'string') {
                 this.document.location.href = `${this.auth.authOptions}/oidc/login`;
               } else if (typeof this.auth.authOptions === 'object') {
