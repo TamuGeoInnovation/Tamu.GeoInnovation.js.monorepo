@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 
 import { Angulartics2Module } from 'angulartics2';
@@ -11,7 +11,7 @@ import { StorageServiceModule } from 'ngx-webstorage-service';
 import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
-import { AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
+import { AuthGuard, AuthProvider } from '@tamu-gisc/common/ngx/auth';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -29,11 +29,13 @@ WebFont.load({
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('@tamu-gisc/ues/effluent/ngx').then((m) => m.MapModule)
+    loadChildren: () => import('@tamu-gisc/ues/effluent/ngx').then((m) => m.MapModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'data',
-    loadChildren: () => import('@tamu-gisc/ues/effluent/ngx').then((m) => m.DataModule)
+    loadChildren: () => import('@tamu-gisc/ues/effluent/ngx').then((m) => m.DataModule),
+    canActivate: [AuthGuard]
   }
 ];
 
@@ -51,13 +53,9 @@ const routes: Routes = [
   ],
   declarations: [AppComponent],
   providers: [
+    AuthProvider,
     { provide: env, useValue: environment },
-    { provide: notificationStorage, useValue: 'ues-effluent-notifications' },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    }
+    { provide: notificationStorage, useValue: 'ues-effluent-notifications' }
   ],
   bootstrap: [AppComponent]
 })

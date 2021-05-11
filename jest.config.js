@@ -104,6 +104,7 @@ module.exports = {
     '<rootDir>/libs/two/valup',
     '<rootDir>/apps/two-dashboard-angular',
     '<rootDir>/libs/two/dashboard',
-    '<rootDir>/libs/two/data-access'
+    '<rootDir>/libs/two/data-access',
+    '<rootDir>/libs/common/ngx/auth'
   ]
 };

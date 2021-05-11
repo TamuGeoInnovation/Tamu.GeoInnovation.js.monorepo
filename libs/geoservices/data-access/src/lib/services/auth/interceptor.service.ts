@@ -15,7 +15,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   public intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const urlOrOptions: string | AuthOptions =
-      this.environment.value('auth_api_url', true) || this.environment.value('auth_options', true);
+      this.environment.value('auth_url', true) || this.environment.value('auth_options', true);
 
     return next.handle(req).pipe(
       tap(

@@ -3167,7 +3167,8 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "ues-effluent-data-api-nest:build"
+            "buildTarget": "ues-effluent-data-api-nest:build",
+            "port": 7777
           }
         },
         "lint": {
@@ -4292,6 +4293,29 @@
           "outputs": ["coverage/libs/gisday/common"],
           "options": {
             "jestConfig": "libs/gisday/common/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "common-ngx-auth": {
+      "projectType": "library",
+      "root": "libs/common/ngx/auth",
+      "sourceRoot": "libs/common/ngx/auth/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/ngx/auth/tsconfig.lib.json", "libs/common/ngx/auth/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/auth/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/common/ngx/auth"],
+          "options": {
+            "jestConfig": "libs/common/ngx/auth/jest.config.js",
             "passWithNoTests": true
           }
         }
