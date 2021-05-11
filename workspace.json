@@ -3145,7 +3145,15 @@
             "outputPath": "dist/apps/ues-effluent-data-api-nest",
             "main": "apps/ues-effluent-data-api-nest/src/main.ts",
             "tsConfig": "apps/ues-effluent-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/ues-effluent-data-api-nest/src/assets", "apps/ues-effluent-data-api-nest/src/package.json"]
+            "assets": [
+              "apps/ues-effluent-data-api-nest/src/assets",
+              "apps/ues-effluent-data-api-nest/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
           },
           "configurations": {
             "production": {
@@ -4517,7 +4525,15 @@
             "outputPath": "dist/apps/ues-recycling-data-api-nest",
             "main": "apps/ues-recycling-data-api-nest/src/main.ts",
             "tsConfig": "apps/ues-recycling-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/ues-recycling-data-api-nest/src/assets"]
+            "assets": [
+              "apps/ues-recycling-data-api-nest/src/assets",
+              "apps/ues-recycling-data-api-nest/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
           },
           "configurations": {
             "production": {
@@ -4780,7 +4796,15 @@
             "outputPath": "dist/apps/ues-valves-nest",
             "main": "apps/ues-valves-nest/src/main.ts",
             "tsConfig": "apps/ues-valves-nest/tsconfig.app.json",
-            "assets": ["apps/ues-valves-nest/src/assets"]
+            "assets": [
+              "apps/ues-valves-nest/src/assets",
+              "apps/ues-valves-nest/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
           },
           "configurations": {
             "production": {
