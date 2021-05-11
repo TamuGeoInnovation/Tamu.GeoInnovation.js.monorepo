@@ -1691,34 +1691,6 @@
             "scripts": []
           },
           "configurations": {
-            "development": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/cpa-angular/src/environments/environment.ts",
-                  "with": "apps/cpa-angular/src/environments/environment.dev.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ]
-            },
             "production": {
               "fileReplacements": [
                 {
@@ -1834,17 +1806,6 @@
                 {
                   "replace": "apps/cpa-nest/src/environments/environment.ts",
                   "with": "apps/cpa-nest/src/environments/environment.prod.ts"
-                }
-              ]
-            },
-            "development": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/cpa-nest/src/environments/environment.ts",
-                  "with": "apps/cpa-nest/src/environments/environment.dev.ts"
                 }
               ]
             }
@@ -2822,6 +2783,7 @@
                   "with": "apps/ues-angular/src/environments/environment.prod.ts"
                 }
               ],
+              "baseHref": "/operations/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -2995,6 +2957,7 @@
                   "with": "apps/ues-effluent-angular/src/environments/environment.prod.ts"
                 }
               ],
+              "baseHref": "/effluent/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -4453,6 +4416,7 @@
                   "with": "apps/ues-recycling-angular/src/environments/environment.prod.ts"
                 }
               ],
+              "baseHref": "/recycling/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -4692,6 +4656,7 @@
                   "with": "apps/ues-valves-angular/src/environments/environment.prod.ts"
                 }
               ],
+              "baseHref": "/dispatch/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
