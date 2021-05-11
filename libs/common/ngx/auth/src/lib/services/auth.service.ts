@@ -10,7 +10,10 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   providedIn: 'root'
 })
 export class AuthService {
-  public authOptions: AuthOptions;
+  public authOptions: AuthOptions = {
+    url: undefined,
+    attach_href: undefined
+  };
 
   constructor(private http: HttpClient, private env: EnvironmentService) {
     if (this.env.value('auth_url', true)) {

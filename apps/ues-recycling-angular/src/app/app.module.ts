@@ -1,11 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
 import { env, EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
+import { AuthGuard, AuthProvider } from '@tamu-gisc/common/ngx/auth';
 
 import * as environment from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -29,7 +29,8 @@ WebFont.load({
       [
         {
           path: 'data',
-          loadChildren: () => import('@tamu-gisc/ues/recycling/ngx').then((m) => m.DataModule)
+          loadChildren: () => import('@tamu-gisc/ues/recycling/ngx').then((m) => m.DataModule),
+          canActivate: [AuthGuard]
         },
         {
           path: '',
@@ -45,11 +46,7 @@ WebFont.load({
       provide: env,
       useValue: environment
     },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    }
+    AuthProvider
   ],
   bootstrap: [AppComponent]
 })
