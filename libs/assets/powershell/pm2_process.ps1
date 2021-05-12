@@ -23,7 +23,7 @@ if((pm2 pid $ProcessName).length -eq 0){
     }
 } else {
     if($Action -eq 'stop'){
-        write-host "Starting Serivce...";
+        write-host "Stopping Serivce...";
         pm2 stop $ProcessName;
     } elseif($Action -eq 'start') {
         write-host "Stopping Serivce...";

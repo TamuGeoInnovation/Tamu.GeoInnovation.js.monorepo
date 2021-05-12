@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  port: 3001,
+  port: 3333,
   globalPrefix: '',
   allowedOrigins: ['http://localhost:4200']
 };
