@@ -2589,6 +2589,14 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "covid-data-api-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "covid-data-api-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "covid-data-api-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -3488,6 +3496,14 @@
           "options": {
             "buildTarget": "ues-effluent-data-api-nest:build",
             "port": 7777
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "ues-effluent-data-api-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "ues-effluent-data-api-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -3550,6 +3566,14 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "oidc-provider-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "oidc-provider-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "oidc-provider-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -3777,6 +3801,14 @@
           "options": {
             "buildTarget": "oidc-admin-nest:build",
             "port": 7771
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "oidc-admin-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "oidc-admin-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -4125,6 +4157,14 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "two-data-api-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "two-data-api-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "two-data-api-nest:build:development"
+            }
           }
         },
         "test": {
@@ -4181,6 +4221,14 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "two-directory-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "two-directory-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "two-directory-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -4264,6 +4312,14 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "two-valup-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "two-valup-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "two-valup-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -4736,6 +4792,14 @@
           "options": {
             "buildTarget": "gisday-nest:build",
             "port": 7777
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "gisday-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "gisday-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -4869,6 +4933,14 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "ues-operations-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "ues-operations-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "ues-operations-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -5099,6 +5171,14 @@
           "options": {
             "buildTarget": "ues-recycling-data-api-nest:build",
             "port": 7777
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "ues-recycling-data-api-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "ues-recycling-data-api-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -5412,6 +5492,14 @@
           "options": {
             "buildTarget": "ues-valves-nest:build",
             "port": 7777
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "ues-valves-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "ues-valves-nest:build:development"
+            }
           }
         },
         "lint": {
