@@ -32,6 +32,29 @@
               "optimization": true,
               "sourceMap": false,
               "vendorChunk": false
+            },
+            "development": {
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "maximumError": "5mb",
+                  "maximumWarning": "2mb",
+                  "type": "initial"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/aggiemap-angular/src/environments/environment.ts",
+                  "with": "apps/aggiemap-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "aot": true,
+              "buildOptimizer": true,
+              "extractLicenses": true,
+              "namedChunks": false,
+              "optimization": true,
+              "sourceMap": false,
+              "vendorChunk": false
             }
           },
           "options": {
@@ -73,6 +96,9 @@
           "configurations": {
             "production": {
               "browserTarget": "aggiemap-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "aggiemap-angular:build:development"
             }
           },
           "options": {
@@ -147,6 +173,29 @@
               "optimization": true,
               "sourceMap": false,
               "vendorChunk": false
+            },
+            "development": {
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "maximumError": "5mb",
+                  "maximumWarning": "2mb",
+                  "type": "initial"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/trees-angular/src/environments/environment.ts",
+                  "with": "apps/trees-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "aot": true,
+              "buildOptimizer": true,
+              "extractLicenses": true,
+              "namedChunks": false,
+              "optimization": true,
+              "sourceMap": false,
+              "vendorChunk": false
             }
           },
           "options": {
@@ -188,6 +237,9 @@
           "configurations": {
             "production": {
               "browserTarget": "trees-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "trees-angular:build:development"
             }
           },
           "options": {
@@ -285,6 +337,29 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/bikeshare/src/environments/environment.ts",
+                  "with": "apps/bikeshare/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -297,6 +372,9 @@
           "configurations": {
             "production": {
               "browserTarget": "bikeshare:build:production"
+            },
+            "development": {
+              "browserTarget": "bikeshare:build:development"
             }
           }
         },
@@ -939,6 +1017,31 @@
               "serviceWorker": true,
               "sourceMap": false,
               "vendorChunk": false
+            },
+            "development": {
+              "ngswConfigPath": "apps/gisday-competitions-angular/ngsw-config.json",
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "maximumError": "5mb",
+                  "maximumWarning": "2mb",
+                  "type": "initial"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/gisday-competitions-angular/src/environments/environment.ts",
+                  "with": "apps/gisday-competitions-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "aot": true,
+              "buildOptimizer": true,
+              "extractLicenses": true,
+              "namedChunks": false,
+              "optimization": true,
+              "serviceWorker": true,
+              "sourceMap": false,
+              "vendorChunk": false
             }
           },
           "options": {
@@ -984,6 +1087,9 @@
           "configurations": {
             "production": {
               "browserTarget": "gisday-competitions-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "gisday-competitions-angular:build:development"
             }
           },
           "options": {
@@ -1348,6 +1454,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/signage-angular/src/environments/environment.ts",
+                  "with": "apps/signage-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -1360,6 +1494,9 @@
           "configurations": {
             "production": {
               "browserTarget": "signage-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "signage-angular:build:development"
             }
           }
         },
@@ -1718,6 +1855,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/cpa-angular/src/environments/environment.ts",
+                  "with": "apps/cpa-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -1730,6 +1895,9 @@
           "configurations": {
             "production": {
               "browserTarget": "cpa-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "cpa-angular:build:development"
             }
           }
         },
@@ -1806,6 +1974,17 @@
                 {
                   "replace": "apps/cpa-nest/src/environments/environment.ts",
                   "with": "apps/cpa-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/cpa-nest/src/environments/environment.ts",
+                  "with": "apps/cpa-nest/src/environments/environment.dev.ts"
                 }
               ]
             }
@@ -2004,6 +2183,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/geoservices-angular/src/environments/environment.ts",
+                  "with": "apps/geoservices-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -2016,6 +2223,9 @@
           "configurations": {
             "production": {
               "browserTarget": "geoservices-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "geoservices-angular:build:development"
             }
           }
         },
@@ -2560,6 +2770,33 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-provider-angular/src/environments/environment.ts",
+                  "with": "apps/oidc-provider-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -2572,6 +2809,9 @@
           "configurations": {
             "production": {
               "browserTarget": "oidc-provider-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "oidc-provider-angular:build:development"
             }
           }
         },
@@ -2803,6 +3043,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-angular/src/environments/environment.ts",
+                  "with": "apps/ues-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "baseHref": "/operations/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -2815,6 +3083,9 @@
           "configurations": {
             "production": {
               "browserTarget": "ues-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "ues-angular:build:development"
             }
           }
         },
@@ -2977,6 +3248,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-effluent-angular/src/environments/environment.ts",
+                  "with": "apps/ues-effluent-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "baseHref": "/effluent/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -2989,6 +3288,9 @@
           "configurations": {
             "production": {
               "browserTarget": "ues-effluent-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "ues-effluent-angular:build:development"
             }
           }
         },
@@ -3166,6 +3468,17 @@
                   "with": "apps/ues-effluent-data-api-nest/src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": false,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-effluent-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/ues-effluent-data-api-nest/src/environments/environment.dev.ts"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -3213,6 +3526,17 @@
                 {
                   "replace": "apps/oidc-provider-nest/src/environments/environment.ts",
                   "with": "apps/oidc-provider-nest/src/environments/environment.prod.ts"
+                }
+              ],
+              "extractLicenses": false,
+              "inspect": false,
+              "optimization": true
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-provider-nest/src/environments/environment.ts",
+                  "with": "apps/oidc-provider-nest/src/environments/environment.dev.ts"
                 }
               ],
               "extractLicenses": false,
@@ -3312,6 +3636,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-admin-angular/src/environments/environment.ts",
+                  "with": "apps/oidc-admin-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -3324,6 +3676,9 @@
           "configurations": {
             "production": {
               "browserTarget": "oidc-admin-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "oidc-admin-angular:build:development"
             }
           }
         },
@@ -3391,6 +3746,17 @@
                 {
                   "replace": "apps/oidc-admin-nest/src/environments/environment.ts",
                   "with": "apps/oidc-admin-nest/src/environments/environment.prod.ts"
+                }
+              ],
+              "extractLicenses": false,
+              "inspect": false,
+              "optimization": true
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-admin-nest/src/environments/environment.ts",
+                  "with": "apps/oidc-admin-nest/src/environments/environment.dev.ts"
                 }
               ],
               "extractLicenses": false,
@@ -3552,6 +3918,34 @@
               "optimization": true,
               "sourceMap": false,
               "vendorChunk": false
+            },
+            "development": {
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "maximumError": "5mb",
+                  "maximumWarning": "2mb",
+                  "type": "initial"
+                },
+                {
+                  "maximumError": "10kb",
+                  "maximumWarning": "6kb",
+                  "type": "anyComponentStyle"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-angular/src/environments/environment.ts",
+                  "with": "apps/two-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "aot": true,
+              "buildOptimizer": true,
+              "extractLicenses": true,
+              "namedChunks": false,
+              "optimization": true,
+              "sourceMap": false,
+              "vendorChunk": false
             }
           },
           "options": {
@@ -3593,6 +3987,9 @@
           "configurations": {
             "production": {
               "browserTarget": "two-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "two-angular:build:development"
             }
           },
           "options": {
@@ -3697,6 +4094,17 @@
               "extractLicenses": false,
               "inspect": false,
               "optimization": true
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/two-data-api-nest/src/environments/environment.dev.ts"
+                }
+              ],
+              "extractLicenses": false,
+              "inspect": false,
+              "optimization": true
             }
           },
           "options": {
@@ -3752,6 +4160,17 @@
                 {
                   "replace": "apps/two-directory-nest/src/environments/environment.ts",
                   "with": "apps/two-directory-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": false,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-directory-nest/src/environments/environment.ts",
+                  "with": "apps/two-directory-nest/src/environments/environment.dev.ts"
                 }
               ]
             }
@@ -3824,6 +4243,17 @@
                 {
                   "replace": "apps/two-valup-nest/src/environments/environment.ts",
                   "with": "apps/two-valup-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": false,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-valup-nest/src/environments/environment.ts",
+                  "with": "apps/two-valup-nest/src/environments/environment.dev.ts"
                 }
               ]
             }
@@ -3920,6 +4350,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-dashboard-angular/src/environments/environment.ts",
+                  "with": "apps/two-dashboard-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -3933,6 +4391,9 @@
           "configurations": {
             "production": {
               "browserTarget": "two-dashboard-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "two-dashboard-angular:build:development"
             }
           }
         },
@@ -4086,6 +4547,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/gisday-angular/src/environments/environment.ts",
+                  "with": "apps/gisday-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           }
         },
@@ -4097,6 +4586,9 @@
           "configurations": {
             "production": {
               "browserTarget": "gisday-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "gisday-angular:build:development"
             }
           }
         },
@@ -4223,6 +4715,17 @@
                 {
                   "replace": "apps/gisday-nest/src/environments/environment.ts",
                   "with": "apps/gisday-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/gisday-nest/src/environments/environment.ts",
+                  "with": "apps/gisday-nest/src/environments/environment.dev.ts"
                 }
               ]
             }
@@ -4444,6 +4947,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-recycling-angular/src/environments/environment.ts",
+                  "with": "apps/ues-recycling-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "baseHref": "/recycling/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           }
         },
@@ -4455,6 +4986,9 @@
           "configurations": {
             "production": {
               "browserTarget": "ues-recycling-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "ues-recycling-angular:build:development"
             }
           }
         },
@@ -4544,6 +5078,17 @@
                 {
                   "replace": "apps/ues-recycling-data-api-nest/src/environments/environment.ts",
                   "with": "apps/ues-recycling-data-api-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-recycling-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/ues-recycling-data-api-nest/src/environments/environment.dev.ts"
                 }
               ]
             }
@@ -4692,6 +5237,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-valves-angular/src/environments/environment.ts",
+                  "with": "apps/ues-valves-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "baseHref": "/dispatch/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           }
         },
@@ -4703,6 +5276,9 @@
           "configurations": {
             "production": {
               "browserTarget": "ues-valves-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "ues-valves-angular:build:development"
             }
           }
         },
@@ -4815,6 +5391,17 @@
                 {
                   "replace": "apps/ues-valves-nest/src/environments/environment.ts",
                   "with": "apps/ues-valves-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-valves-nest/src/environments/environment.ts",
+                  "with": "apps/ues-valves-nest/src/environments/environment.dev.ts"
                 }
               ]
             }
