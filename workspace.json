@@ -4347,6 +4347,17 @@
                   "with": "apps/ues-operations-nest/src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-operations-nest/src/environments/environment.ts",
+                  "with": "apps/ues-operations-nest/src/environments/environment.dev.ts"
+                }
+              ]
             }
           }
         },
