@@ -413,22 +413,24 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _generateGroupLayers(definitions: Array<CPALayer>, snapOrScenTitle: string) {
+  private _generateGroupLayers(definitions: Array<CPALayer>, snapOrScenTitle: string): esri.Layer {
     const idHash = this._generateGroupLayerId(definitions);
 
-    return new this._modules.groupLayer({
+    const groupLayer = new this._modules.groupLayer({
       id: idHash,
       title: snapOrScenTitle,
       visibilityMode: 'independent',
       layers: definitions
         .map((l) => {
-          if (l.info.type === 'group' || l.info.type === 'feature') {
+          if (l.info.type === 'feature') {
             return new this._modules.featureLayer({
               id: l.info.layerId,
               url: l.url,
               title: l.info.name,
               opacity: l.info.drawingInfo.opacity
             });
+          } else if (l.info.type === 'group') {
+            return this._generateGroupLayers(l.layers, l.info.name);
           } else if (l.info.type === 'graphics') {
             const g = l.graphics.map((g) => {
               return this._modules.graphic.fromJSON(g);
@@ -446,6 +448,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         })
         .filter((l) => l !== undefined)
     });
+
+    return groupLayer;
   }
 
   /**
