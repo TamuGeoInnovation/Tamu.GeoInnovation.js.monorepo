@@ -9,4 +9,4 @@ export const environment = {
   ]
 };
 
-export { productionClientConfig as idpConfig } from './oidc-client-config';
+export { devClientConfig as idpConfig } from './oidc-client-config';
