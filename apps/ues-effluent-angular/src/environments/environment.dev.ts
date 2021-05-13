@@ -7,9 +7,9 @@ import { AuthOptions } from '@tamu-gisc/oidc/client';
 export * from './definitions';
 export * from './notification-events';
 
-export const apiUrl = `https://nodes.geoservices.tamu.edu/api/ues/effluent/`;
+export const apiUrl = `https://ues-dev.geoservices.tamu.edu/api/effluent/`;
 
 export const auth_options: AuthOptions = {
-  url: `https://nodes.geoservices.tamu.edu/api/ues/effluent/`,
+  url: `https://ues-dev.geoservices.tamu.edu/api/effluent/`,
   attach_href: true
 };
