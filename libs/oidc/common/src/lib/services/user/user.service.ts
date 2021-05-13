@@ -45,10 +45,7 @@ export class UserService {
     private readonly httpService: HttpService
   ) {}
 
-  public async insertDefaultAdmin() {
-    const email = 'tamugeoservices@tamu.edu';
-    const password = 'T@patio14';
-
+  public async insertDefaultAdmin(email: string, password: string) {
     const _user: Partial<User> = {
       email: email,
       password: password,

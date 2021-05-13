@@ -28,16 +28,55 @@ async function bootstrap() {
     cors: true
   });
 
-  const argv = yargs
-    .command('oidc-provider-nest', 'OIDC Identity Provider')
-    .option('setup', {
-      alias: 's',
+  const { argv } = yargs(process.argv.slice(2))
+    .scriptName('oidc-provider-nest')
+    .option('s', {
+      alias: 'setup',
       description: 'Create default admin user and oidc-angular client metadata',
+      type: 'boolean',
+      implies: ['n', 't', 'r', 'e', 'p']
+    })
+    .option('x', {
+      alias: 'dropSchema',
+      description: "Sets the TypeORM 'dropSchema' value to true",
       type: 'boolean'
     })
+    .option('n', {
+      alias: 'clientName',
+      description: 'With -s, determines what to set the default client_name as',
+      type: 'string',
+      nargs: 1
+    })
+    .option('t', {
+      alias: 'clientSecret',
+      description: 'With -s, determines what to set the default client_secret as',
+      type: 'string',
+      nargs: 1
+    })
+    .option('r', {
+      alias: 'redirectUri',
+      description: 'With -s, determines what to set the default client redirect_uri as',
+      type: 'string',
+      nargs: 1
+    })
+    .option('e', {
+      alias: 'admin-email',
+      description: 'Email used for the admin account',
+      type: 'string',
+      nargs: 1
+    })
+    .option('p', {
+      alias: 'admin-password',
+      description: 'Password used for the admin account',
+      type: 'string',
+      nargs: 1
+    })
     .help()
-    .alias('help', 'h').argv;
+    .alias('help', 'h');
 
+  if (argv.x) {
+    console.warn('dropSchema set to true! Dropping all data in db');
+  }
   if (argv.setup) {
     console.log('Setup detected; creating defaults...');
     OpenIdProvider.build();
@@ -50,18 +89,6 @@ async function bootstrap() {
     console.log('Clients:', clients);
     OpenIdProvider.build(clients);
   }
-
-  // if (!environment.create_defaults) {
-  //   console.log('Not creating defaults... Loading clients');
-  //   const service = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
-
-  //   const clients = await service.loadClientMetadaForOidcSetup();
-  //   console.log('Clients:', clients);
-  //   OpenIdProvider.build(clients);
-  // } else {
-  //   console.log('Creating defaults...');
-  //   OpenIdProvider.build();
-  // }
 
   enableOIDCDebug(OpenIdProvider.provider);
 
@@ -101,13 +128,13 @@ async function bootstrap() {
         // Insert default Token Auth Methods
         clientMetadataService.insertDefaultTokenEndpointAuthMethods();
         // Create ClientMetadata for oidc-idp-admin (angular site)
-        clientMetadataService.insertClientMetadataForAdminSite();
+        clientMetadataService.insertClientMetadataForAdminSite(argv.n, argv.t, argv.r);
         // Insert default Roles
         const roleService = app.select(RoleModule).get(RoleService, { strict: true });
         roleService.insertDefaultUserRoles();
         // Create Admin user with known password
         const userService = app.select(UserModule).get(UserService, { strict: true });
-        userService.insertDefaultAdmin();
+        userService.insertDefaultAdmin(argv.e, argv.p);
         // TODO: Add field to User that will prompt a user to change their password on next login
       }
     }, 3000);

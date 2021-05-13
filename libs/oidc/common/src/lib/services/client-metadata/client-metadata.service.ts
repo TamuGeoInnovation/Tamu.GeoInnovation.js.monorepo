@@ -48,12 +48,12 @@ export class ClientMetadataService {
     return this.clientMetadataRepo.findAllDeep();
   }
 
-  public async insertClientMetadataForAdminSite() {
+  public async insertClientMetadataForAdminSite(clientName: string, clientSecret: string, redirectUri: string) {
     const adminMetadata = {
-      clientName: 'oidc-idp-admin',
-      clientSecret: '1234abcd5e6f7g8h9i',
+      clientName: clientName,
+      clientSecret: clientSecret,
       grants: ['refresh_token', 'authorization_code'],
-      redirectUris: ['http://localhost:27000/oidc/auth/callback'],
+      redirectUris: [redirectUri],
       responseTypes: ['code'],
       token_endpoint_auth_method: 'client_secret_basic'
     };
