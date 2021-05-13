@@ -409,6 +409,9 @@
     },
     "common-ngx-auth": {
       "tags": []
+    },
+    "ues-operations-nest": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

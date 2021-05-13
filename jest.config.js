@@ -105,6 +105,7 @@ module.exports = {
     '<rootDir>/apps/two-dashboard-angular',
     '<rootDir>/libs/two/dashboard',
     '<rootDir>/libs/two/data-access',
-    '<rootDir>/libs/common/ngx/auth'
+    '<rootDir>/libs/common/ngx/auth',
+    '<rootDir>/apps/ues-operations-nest'
   ]
 };

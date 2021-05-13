@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 
 import { Angulartics2Module } from 'angulartics2';
-import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import * as WebFont from 'webfontloader';
-import { SESSION_STORAGE, LOCAL_STORAGE, StorageServiceModule } from 'ngx-webstorage-service';
+import { StorageServiceModule } from 'ngx-webstorage-service';
 
 import { AppRoutingModule } from '@tamu-gisc/ues/common/ngx';
 import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
+import { AuthProvider } from '@tamu-gisc/common/ngx/auth';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -27,7 +27,8 @@ WebFont.load({
   declarations: [AppComponent],
   providers: [
     { provide: env, useValue: environment },
-    { provide: notificationStorage, useValue: 'ues-notifications' }
+    { provide: notificationStorage, useValue: 'ues-notifications' },
+    AuthProvider
   ],
   bootstrap: [AppComponent]
 })
