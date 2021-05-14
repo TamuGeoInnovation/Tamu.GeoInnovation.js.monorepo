@@ -166,14 +166,13 @@ export class RecyclingService {
 }
 
 export interface RecyclingLocationMetadata {
-
   OBJECTID: number;
   ID: number;
   Name: string;
   bldNum: string;
   camPub: string;
   style: string;
-  public_view: "Yes" | 'No'
+  public_view: 'Yes' | 'No';
 }
 
 export interface RecyclingResultsStatistics {

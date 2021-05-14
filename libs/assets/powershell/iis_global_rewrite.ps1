@@ -41,7 +41,6 @@ if(($ExistingRule).length -eq 0)  {
 
 Set-WebConfigurationProperty -pspath $path -Filter "$filter/match" -Name "url" -Value $UrlPattern;
 Set-WebConfigurationProperty –pspath $path –Filter "$filter/action" –Name "type" –Value "Rewrite";
-# Set-WebConfigurationProperty –pspath $path –Filter "$filter/action" –Name "url" –Value $RedirectUrl;
 
 if($RewriteType -eq "url"){
     Set-WebConfigurationProperty –pspath $path –Filter "$filter/action" –Name "url" –Value $RedirectUrl;

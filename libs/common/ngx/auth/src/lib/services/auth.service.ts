@@ -10,6 +10,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   providedIn: 'root'
 })
 export class AuthService {
+  // Default auth options so they can be overwritten.
   public authOptions: AuthOptions = {
     url: undefined,
     attach_href: undefined
