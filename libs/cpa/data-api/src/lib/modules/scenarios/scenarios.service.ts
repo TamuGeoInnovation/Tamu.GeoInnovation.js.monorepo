@@ -190,70 +190,123 @@ export class ScenariosService extends BaseService<Scenario> {
       const resolvedLayers = await Promise.all(queries);
 
       // resolvedLayers resolves into an array containing arrays.
-      // Need to spread the inner arrays to avoid deep nesting iterations.
+      // Need to spread the inner arrays to avoid deep nested iterations.
       const flattened = resolvedLayers.flat();
 
-      // Order the resolved layers so that they match the original order specified by the scenario.
-      // This is because the queries for both snapshots and responses are not guaranteed to be in the
-      // original order.
+      // Even though we added response, snapshot,and scenario queries in order, we don't have a guarantee that there were
+      // three queries total sent every time meaning we can't use array destructuring to assign categories.
       //
-      // After that, map each depending on the type to the correct format used by the front-end.
-      const orderedResolved: IScenariosResponseResolved['layers'] = scen.layers
-        .map((layerMeta) => {
-          return flattened.find((respOrSnap) => layerMeta.guid === respOrSnap.guid);
-        })
-        .map((resolved) => {
-          if (resolved instanceof Response) {
-            const responseType = this.getResponseType(resolved);
-            return {
-              graphics: (resolved.shapes as unknown) as IGraphic[],
-              info: {
-                name: `${resolved.name} (Response - ${responseType})`,
-                description: resolved.notes,
-                type: 'graphics',
-                layerId: resolved.guid
-              }
-            };
-          } else if (resolved instanceof Snapshot) {
-            return {
-              layers: (resolved.layers as unknown) as Array<CPALayer>,
-              info: {
-                name: `${resolved.title} (Snapshot)`,
-                description: resolved.description,
-                type: 'group',
-                layerId: resolved.guid
-              }
-            };
-          } else if (resolved instanceof Scenario) {
-            return {
-              graphics: resolved.responses.reduce((acc, curr) => {
-                return [...acc, ...((curr.shapes as unknown) as IGraphic[])];
-              }, []),
-              info: {
-                name: `${resolved.title} (Scenario)`,
-                description: resolved.description,
-                type: 'graphics',
-                layerId: resolved.guid
-              }
-            };
+      // Because of it, we have to group each layer type into categories again. This is specifically done so we can
+      // group any responses by scenario or snapshot.
+      const groupedLayers: { responses: Response[]; snapshots: Snapshot[]; scenarios: Scenario[] } = flattened.reduce(
+        (acc, curr) => {
+          if (curr instanceof Response) {
+            acc.responses.push(curr);
+          } else if (curr instanceof Snapshot) {
+            acc.snapshots.push(curr);
+          } else if (curr instanceof Scenario) {
+            acc.scenarios.push(curr);
           }
-        });
+
+          return acc;
+        },
+        { responses: [], snapshots: [], scenarios: [] }
+      );
+
+      // Group responses by snapshot/scenarios. Each group will be one group layer and each
+      // response will be a graphics sub-layer
+      const responseGroupLayers: GroupedResponsesDictionary = groupedLayers.responses.reduce((acc, curr) => {
+        if (curr.snapshot) {
+          if (!acc[curr.snapshot.guid]) {
+            acc[curr.snapshot.guid] = [];
+          }
+
+          acc[curr.snapshot.guid].push(curr);
+        } else if (curr.scenario) {
+          if (!acc[curr.scenario.guid]) {
+            acc[curr.scenario.guid] = [];
+          }
+
+          acc[curr.scenario.guid].push(curr);
+        }
+
+        return acc;
+      }, {});
+
+      const constructedResponseLayers: CPALayer[] = Object.entries(responseGroupLayers).map(
+        ([key, responses]): CPALayer => {
+          const entity = responses[0].snapshot ? responses[0].snapshot : responses[0].scenario;
+
+          return {
+            info: {
+              name: `${entity.title} (Responses)`,
+              description: entity.description,
+              type: 'group',
+              layerId: entity.guid
+            },
+            layers: responses.map((response) => {
+              return {
+                graphics: (response.shapes as unknown) as IGraphic[],
+                info: {
+                  name: response.name ?? 'Anonymous',
+                  description: response.notes,
+                  type: 'graphics',
+                  layerId: response.guid
+                }
+              };
+            })
+          };
+        }
+      );
+
+      const constructedSnapshotLayers = groupedLayers.snapshots.map((snap) => {
+        return {
+          layers: (snap.layers as unknown) as Array<CPALayer>,
+          info: {
+            name: `${snap.title} (Snapshot)`,
+            description: snap.description,
+            type: 'group',
+            layerId: snap.guid
+          }
+        } as CPALayer;
+      });
+
+      const constructedScenarioLayers = groupedLayers.scenarios.map((scen) => {
+        return {
+          // graphics: scen.responses.reduce((acc, curr) => {
+          //   return [...acc, ...((curr.shapes as unknown) as IGraphic[])];
+          // }, []),
+          layers: scen.responses.map((response) => {
+            return {
+              graphics: (response.shapes as unknown) as IGraphic[],
+              info: {
+                name: response.name ?? 'Anonymous',
+                description: response.notes,
+                type: 'graphics',
+                layerId: response.guid
+              }
+            };
+          }),
+          info: {
+            name: `${scen.title} (Scenario Responses)`,
+            description: scen.description,
+            type: 'group',
+            layerId: scen.guid
+          }
+        } as CPALayer;
+      });
 
       // Shallow copy the properties from the original scenario and overwrite the layers with the resolved,
       // ordered, and mapped array.
-      const detailedScenario: IScenariosResponseResolved = { ...scen, layers: orderedResolved };
+      const detailedScenario: IScenariosResponseResolved = {
+        ...scen,
+        layers: [...constructedScenarioLayers, ...constructedResponseLayers, ...constructedSnapshotLayers]
+      };
 
       return detailedScenario;
     }
   }
-
-  private getResponseType(response: Response) {
-    if (response.hasOwnProperty('snapshot')) {
-      return 'Snapshot';
-    } else if (response.hasOwnProperty('scenario')) {
-      return 'Scenario';
-    } else {
-      return;
-    }
-  }
+}
+interface GroupedResponsesDictionary {
+  [snapOrScenGuid: string]: Response[];
 }

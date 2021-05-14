@@ -256,8 +256,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           if (currSnapshot.type === 'scenario') {
             this.getLayerForScenarioGuid(currSnapshot.guid)
               .then((layer) => {
-                // const layers = (this._generateCPALayers(layer.layers) as unknown) as Array<esri.Layer>;
-                // instances.map.addMany(layers);
                 const groupLayer = this._generateGroupLayers(layer.layers, currSnapshot.title);
                 instances.map.add(groupLayer);
               })
@@ -266,8 +264,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               });
           } else if (currSnapshot.type === 'snapshot') {
             // Create a map of layers from the current snapshot to add to the map.
-            // const layers = this._generateCPALayers(currSnapshot.layers);
-            // instances.map.addMany(layers);
             const groupLayer = this._generateGroupLayers(currSnapshot.layers, currSnapshot.title);
             instances.map.add(groupLayer);
           }
@@ -450,57 +446,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     });
 
     return groupLayer;
-  }
-
-  /**
-   * Generates esri layer classes from an array of CPA Layer definitions.
-   *
-   * The returned objects can be added directly to the map.
-   */
-  private _generateCPALayers(definitions: Array<CPALayer>) {
-    return definitions
-      .map((layer) => {
-        if (layer.info.type === 'group') {
-          // Construct GroupLayer
-          return new this._modules.groupLayer({
-            id: layer.info.layerId,
-            title: layer.info.name,
-            layers: layer.layers.map((l) => {
-              return new this._modules.featureLayer({
-                id: l.info.layerId,
-                url: l.url,
-                title: l.info.name,
-                opacity: l.info.drawingInfo.opacity,
-                listMode: 'hide'
-              });
-            })
-          });
-        } else if (layer.info.type === 'graphics') {
-          const g = layer.graphics.map((g) => {
-            return this._modules.graphic.fromJSON(g);
-          });
-
-          return new this._modules.graphicsLayer({
-            title: layer.info.name,
-            id: layer.info.layerId,
-            graphics: g,
-            listMode: 'show'
-          });
-        } else if (layer.info.type === 'feature') {
-          return new this._modules.featureLayer({
-            id: layer.info.layerId,
-            url: layer.url,
-            title: layer.info.name,
-            opacity: layer.info.drawingInfo.opacity
-          });
-        } else {
-          console.warn(`Layer with object structure could not be generated:`, layer);
-          return undefined;
-        }
-      })
-      .filter((l) => {
-        return l !== undefined;
-      });
   }
 
   /**

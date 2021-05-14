@@ -81,7 +81,7 @@
           <tamu-gisc-tab label="Responses">
             <div class="leader-1 trailer-1">
               <tamu-gisc-checkbox-group id="response-list" class="form-section-body" formControlName="layers" [referenceId]="'guid'">
-                <tamu-gisc-checkbox *ngFor="let response of (responses | async)" (mouseover)="loadPreviewResponse(response)" (mouseleave)="this.clearGraphicPreview()" [label]="response.name + ' ' +'(' + getTitleFromResponseSource(response) + ')'" [data]="response"></tamu-gisc-checkbox>
+                <tamu-gisc-checkbox *ngFor="let response of (responses | async)" (mouseover)="loadPreviewResponse(response)" (mouseleave)="this.clearGraphicPreview()" [label]="(response.name !== null ? response.name : 'Anonymous') + ' ' +'(' + getTitleFromResponseSource(response) + ')'" [data]="response"></tamu-gisc-checkbox>
               </tamu-gisc-checkbox-group>
 
               <p *ngIf="(responses | async)?.length === 0">There are no responses for this workshop.</p>
