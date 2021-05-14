@@ -16,6 +16,10 @@
     }
   }
 
+  &.horizontal {
+    @include flex-direction(row);
+  }
+
   &.bottom {
     bottom: 0.75rem;
   }

@@ -688,7 +688,7 @@ export class EsriMapService {
 
 export interface MapConfig {
   basemap: MapProperties;
-  view: MapViewProperties;
+  view: ViewProperties;
 }
 
 interface MapProperties extends esri.MapProperties {

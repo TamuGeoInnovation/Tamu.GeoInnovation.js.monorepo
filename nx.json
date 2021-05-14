@@ -412,6 +412,25 @@
     },
     "ues-operations-nest": {
       "tags": []
+    },
+    "ues-recycling-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["ues-recycling-angular"]
+    },
+    "ues-recycling-angular": {
+      "tags": []
+    },
+    "ues-recycling-data-api-nest": {
+      "tags": []
+    },
+    "ues-recycling-common-entities": {
+      "tags": []
+    },
+    "ues-recycling-data-api": {
+      "tags": []
+    },
+    "ues-recycling-ngx": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {
