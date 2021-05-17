@@ -10,6 +10,6 @@ export * from './notification-events';
 export const apiUrl = `https://ues-dev.geoservices.tamu.edu/api/effluent/`;
 
 export const auth_options: AuthOptions = {
-  url: `https://ues-dev.geoservices.tamu.edu/api/effluent/`,
+  url: `https://ues-dev.geoservices.tamu.edu/api/effluent`,
   attach_href: true
 };

@@ -11,6 +11,6 @@ export const apiUrl = 'https://ues-dev.geoservices.tamu.edu/api/dispatch/';
 
 // IDP client auth options
 export const auth_options: AuthOptions = {
-  url: apiUrl,
+  url: 'https://ues-dev.geoservices.tamu.edu/api/dispatch',
   attach_href: true
 };
