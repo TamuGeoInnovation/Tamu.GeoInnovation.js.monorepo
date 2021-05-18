@@ -6,7 +6,7 @@
 </div>
 
 <!-- Application Loader -->
-<tamu-gisc-page-loader [toggle]="!(loaded | async)">
+<tamu-gisc-page-loader [toggle]="(loaded | async) === false">
   <div class="logo">
     <tamu-gisc-lockup theme="dark" type="service">
       <span class="entity">UES Cold Water Valve System</span>

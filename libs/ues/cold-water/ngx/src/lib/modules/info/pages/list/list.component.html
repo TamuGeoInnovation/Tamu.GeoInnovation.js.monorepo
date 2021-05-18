@@ -35,5 +35,5 @@
     </tbody>
   </table>
 
-  <div class="spinning-loader" *ngIf="!(valves | async)"></div>
+  <div class="spinning-loader" *ngIf="(valves | async) === null"></div>
 </div>

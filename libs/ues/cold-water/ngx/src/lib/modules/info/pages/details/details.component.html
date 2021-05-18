@@ -29,7 +29,7 @@
     <h2 class="card-title">Properties</h2>
     <p *ngFor="let v of ((valve | async)?.attributes | keyvalue)"><strong>{{v.key}}</strong>: {{v.value | json}}</p>
 
-    <div class="trailer-1 leader-1" *ngIf="!(valve | async)">
+    <div class="trailer-1 leader-1" *ngIf="(valve | async) === null">
       <div class="spinning-loader"></div>
     </div>
   </div>
