@@ -12,7 +12,6 @@ import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector
 import { FeatureHighlightService } from '@tamu-gisc/maps/feature/feature-highlight';
 
 import { ColdWaterValvesService } from '../core/services/cold-water-valves/cold-water-valves.service';
-import { AuthService } from '../data-access/auth/auth.service';
 
 import esri = __esri;
 
@@ -36,15 +35,10 @@ export class MapComponent implements OnInit, OnDestroy {
     private highlightService: FeatureHighlightService,
     private selectionService: FeatureSelectorService,
     private coldWaterValveService: ColdWaterValvesService,
-    private router: Router,
-    private auth: AuthService
+    private router: Router
   ) {}
 
   public ngOnInit(): void {
-    this.auth.getStatus().subscribe((res) => {
-      console.log('Auth state', res);
-    });
-
     this.isMobile = this.responsiveService.isMobile.pipe(shareReplay());
 
     const connections = this.environment.value('Connections');

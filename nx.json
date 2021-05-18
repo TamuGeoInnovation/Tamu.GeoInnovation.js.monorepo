@@ -444,9 +444,6 @@
     },
     "ues-valves-nest": {
       "tags": []
-    },
-    "ues-cold-water-data-api": {
-      "tags": []
     }
   },
   "tasksRunnerOptions": {
