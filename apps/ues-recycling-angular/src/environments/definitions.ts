@@ -50,7 +50,7 @@ export const LayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'graphic',
+    type: 'graphics',
     id: 'selection-layer',
     title: 'Selected Buildings',
     category: 'Infrastructure',
