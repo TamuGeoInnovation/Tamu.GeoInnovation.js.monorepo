@@ -27,10 +27,6 @@ export class ScenarioService {
     return this.http.get<IScenariosResponseDetails>(`${this.resource}/${guid}`);
   }
 
-  public getLayerForScenarioRelationship(relationshipGuid: string) {
-    return this.http.get<Array<IScenariosResponseResolved>>(`${this.resource}/rel/${relationshipGuid}/layer`);
-  }
-
   public getLayerForScenario(relationshipGuid: string) {
     return this.http.get<IScenariosResponseResolved>(`${this.resource}/${relationshipGuid}/layer`);
   }

@@ -22,17 +22,6 @@ export class SnapshotsListComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this.fetchRecords();
-  }
-
-  public delete(guid: string) {
-    this.service.delete(guid).subscribe((deleteStatus) => {
-      console.log(`Deleted ${guid}`);
-      this.fetchRecords();
-    });
-  }
-
-  public fetchRecords() {
     this.snapshots = this.service.getAll().pipe(shareReplay(1));
   }
 

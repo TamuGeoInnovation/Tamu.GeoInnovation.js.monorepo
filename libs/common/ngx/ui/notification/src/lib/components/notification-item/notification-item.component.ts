@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, HostBinding } from '@angular/core';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
 
-import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Notification } from '../../services/notification.service';
 
 @Component({

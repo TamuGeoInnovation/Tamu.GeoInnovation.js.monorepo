@@ -14,20 +14,12 @@ export class ResponseService {
     this.resource = this.environment.value(`api_url`) + 'responses';
   }
 
-  public getResponses() {
-    return this.http.get<IResponseResponse[]>(this.resource);
-  }
-
   public getResponsesForWorkshop(workshopGuid: string) {
     return this.http.get<IResponseResolved[]>(`${this.resource}/workshop/${workshopGuid}`);
   }
 
   public getResponsesForWorkshopAndSnapshot(workshopGuid: string, snapshotGuid: string) {
     return this.http.get<IResponseResponse[]>(`${this.resource}/${workshopGuid}/${snapshotGuid}`);
-  }
-
-  public getResponse(guid: string) {
-    return this.http.get<IResponseResponse>(`${this.resource}/${guid}`);
   }
 
   public createResponse(response: IResponseRequestPayload) {

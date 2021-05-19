@@ -1,5 +1,8 @@
 @import 'libs/sass/mixins';
 
+// Left and right inline containers for rows.
+// Left holds the handle and title
+// Right holds actions (delete).
 .l-container,
 .r-container {
   @include flexbox();

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { WorkshopsModule, SnapshotsModule, ResponsesModule, LayersModule, ScenariosModule } from '@tamu-gisc/cpa/data-api';
+import { WorkshopsModule, SnapshotsModule, ResponsesModule, ScenariosModule } from '@tamu-gisc/cpa/data-api';
 import {
   Workshop,
   Snapshot,
@@ -22,7 +22,6 @@ const entities = [Workshop, Snapshot, WorkshopSnapshot, Response, WorkshopScenar
     WorkshopsModule,
     SnapshotsModule,
     ResponsesModule,
-    LayersModule,
     ScenariosModule
   ]
 })

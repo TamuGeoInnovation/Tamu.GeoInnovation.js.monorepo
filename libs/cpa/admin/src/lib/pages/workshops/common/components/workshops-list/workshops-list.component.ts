@@ -17,17 +17,7 @@ export class WorkshopsListComponent implements OnInit {
   constructor(private service: WorkshopService) {}
 
   public ngOnInit() {
-    this.fetchRecords();
-  }
-
-  public delete(guid: string) {
-    this.service.deleteWorkshop(guid).subscribe((deleteStatus) => {
-      console.log(`Deleted ${guid}`);
-      this.fetchRecords();
-    });
-  }
-
-  public fetchRecords() {
     this.workshops = this.service.getWorkshops().pipe(shareReplay(1));
   }
 }
+  

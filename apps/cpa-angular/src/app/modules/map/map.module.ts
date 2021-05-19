@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/search';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
@@ -33,7 +32,6 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     EsriMapModule,
-    SearchModule,
     ResponsiveModule,
     CommonNgxRouterModule,
     MapDrawingModule,

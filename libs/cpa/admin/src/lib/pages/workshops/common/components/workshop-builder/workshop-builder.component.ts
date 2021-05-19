@@ -79,6 +79,7 @@ export class WorkshopBuilderComponent implements OnInit {
   }
 
   public submitWorkshop(snapshot?: Partial<Snapshot>) {
+    // If there is a guid in the URL, update the workshop guid, otherwise attempt an insertion.
     if (this.route.snapshot.params['guid']) {
       const payload = this.form.getRawValue();
       const snapshots = (this.form.getRawValue().snapshots as Array<Snapshot>).map((s) => s.guid);

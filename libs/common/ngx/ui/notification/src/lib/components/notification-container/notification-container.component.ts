@@ -19,7 +19,6 @@ export class NotificationContainerComponent implements OnInit {
   constructor(private service: NotificationService) {}
 
   public ngOnInit() {
-    // Only display one notification at a time.
     this.notifications = this.service.notifications;
   }
 

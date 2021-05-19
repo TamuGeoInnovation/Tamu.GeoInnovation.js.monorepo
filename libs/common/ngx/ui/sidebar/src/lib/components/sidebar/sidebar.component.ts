@@ -57,9 +57,6 @@ export class SidebarComponent extends AbstractSlidingDrawerComponent implements 
    * Navigates to sidebar nested routes, which renders different components and allows url history
    */
   private _changeRoute(viewName: string): void {
-    // Update the current view state whenever the route handler is called.
-    // this._updateCurrentView();
-
     // If selected view name is the same, hide the sidebar
     if (viewName !== undefined && viewName !== this.currentView) {
       this.router.navigate([`./${viewName}`], { relativeTo: this.route });

@@ -273,9 +273,6 @@ export class ScenariosService extends BaseService<Scenario> {
 
       const constructedScenarioLayers = groupedLayers.scenarios.map((scen) => {
         return {
-          // graphics: scen.responses.reduce((acc, curr) => {
-          //   return [...acc, ...((curr.shapes as unknown) as IGraphic[])];
-          // }, []),
           layers: scen.responses.map((response) => {
             return {
               graphics: (response.shapes as unknown) as IGraphic[],

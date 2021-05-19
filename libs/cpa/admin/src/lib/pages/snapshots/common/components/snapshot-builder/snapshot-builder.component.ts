@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { DragulaService } from 'ng2-dragula';
 
 import { forkJoin, Observable } from 'rxjs';
-import { tap, map, shareReplay, take } from 'rxjs/operators';
+import { tap, map, shareReplay } from 'rxjs/operators';
 
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';

@@ -31,7 +31,7 @@
     </div>
 
     <div class="form-section-body">
-      <p *ngIf="(snapshotList | async)?.length === 0">No snapshots have been created yet.</p>
+      <p *ngIf="(contextualSnapshotList | async)?.length === 0">No contextual snapshots have been created yet.</p>
 
       <div class="form-collection column" *ngIf="(contextualSnapshotList | async)?.length > 0">
         <p>Select a contextual snapshot from the dropdown list below to add to the workshop</p>

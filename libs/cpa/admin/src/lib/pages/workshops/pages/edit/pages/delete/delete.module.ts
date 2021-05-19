@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { DeleteComponent } from './delete.component';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+
+import { DeleteComponent } from './delete.component';
 
 const routes: Routes = [
   {

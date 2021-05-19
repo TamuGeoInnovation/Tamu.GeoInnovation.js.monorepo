@@ -1,18 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { DeepPartial } from 'typeorm';
 import { Observable } from 'rxjs';
 import { pluck, shareReplay } from 'rxjs/operators';
+
 import * as JSZip from 'jszip';
 
-import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 import { ResponseService, WorkshopService } from '@tamu-gisc/cpa/data-access';
 import { IResponseResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
-import { Response, Snapshot } from '@tamu-gisc/cpa/common/entities';
+import { Snapshot } from '@tamu-gisc/cpa/common/entities';
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
-import { DeepPartial } from 'typeorm';
 
 @Component({
   selector: 'tamu-gisc-export',
@@ -37,13 +36,11 @@ export class ExportComponent implements OnInit {
     view: {
       mode: '2d',
       properties: {
-        center: [-97.657046, 26.450253],
-        zoom: 11
+        center: [-99.20987760767717, 31.225356084754477],
+        zoom: 4
       }
     }
   };
-
-  private SOURCE_DIRECTORY = 'C:\\CPA_TEMP';
 
   private _modules: {
     graphic: esri.GraphicConstructor;
@@ -63,10 +60,16 @@ export class ExportComponent implements OnInit {
   public ngOnInit(): void {
     this.form = this.fb.group({
       workshopGuid: [''],
-      // snapshotGuid: ['', Validators.required],
       workshop: ['', Validators.required],
       shapes: ['', Validators.required],
       responses: [[]]
+    });
+
+    this.workshops = this.workshop.getWorkshops().pipe(shareReplay(1));
+
+    this.mapService.store.subscribe((instance) => {
+      this.view = instance.view as esri.MapView;
+      this.map = instance.map;
     });
 
     this.form.controls.workshop.valueChanges.subscribe((workshop: IWorkshopRequestPayload) => {
@@ -85,14 +88,18 @@ export class ExportComponent implements OnInit {
         const onlyResponses = responsesResponse.map((response) => {
           return response;
         });
+
         // This is used when we export the data
         this.form.controls.responses.setValue(onlyResponses);
+
         const shapes = responsesResponse.map((response) => {
           return response.shapes;
         });
+
         if (shapes) {
           this.form.controls.shapes.setValue(shapes);
         }
+
         this.mp
           .require(['Graphic', 'GraphicsLayer'])
           .then(([g, gl]: [esri.GraphicConstructor, esri.GraphicsLayerConstructor]) => {
@@ -100,68 +107,18 @@ export class ExportComponent implements OnInit {
               graphic: g,
               graphicsLayer: gl
             };
+
             const polygons = this.flattenResponsesGraphics(responsesResponse);
+
             // Add the polygons to a new graphics layer
             const previewLayer = new this._modules.graphicsLayer({
               graphics: polygons
             });
+
             this.map.add(previewLayer);
           });
       });
     });
-
-    this.mapService.store.subscribe((instance) => {
-      this.view = instance.view as esri.MapView;
-      this.map = instance.map;
-    });
-
-    // Load workshops
-    this.workshops = this.workshop.getWorkshops().pipe(shareReplay(1));
-  }
-
-  public exportData() {
-    const formData = this.form.getRawValue();
-    const responsesBySnapshot = [];
-
-    // Separate the responses by snapshot
-    const snapshotTitles = new Set();
-    formData.responses.forEach((response: Response) => {
-      snapshotTitles.add(response.snapshot?.title);
-    });
-    snapshotTitles.forEach((snapshotTitle) => {
-      const snapshotShapes = formData.responses.filter((response) => {
-        if (response.snapshot?.title === snapshotTitle) {
-          // Set the attributes inside the shapes props
-          response.shapes.forEach((shape) => {
-            if (shape.geometry?.x && shape.geometry?.y) {
-              console.log('This is a point', shape);
-            } else if (shape.geometry?.paths) {
-              console.log('This is a polyline', shape);
-            } else if (shape.geometry?.rings) {
-              console.log('This is a polygon, rect, or circle', shape);
-            } else {
-              console.log('We have no idea what this geometry type is', shape);
-            }
-            shape.attributes = {
-              name: response.name,
-              notes: response.notes,
-              created: response.created
-            };
-          });
-          return response;
-        }
-      });
-      responsesBySnapshot.push(snapshotShapes);
-    });
-    const specificSnapshot = responsesBySnapshot.filter((responses) => {
-      return responses.filter((response) => {
-        if (response.snapshot.guid === this.form.controls.snapshotGuid.value) {
-          return response;
-        }
-      });
-    });
-    console.log('specificSnapshot', this.form.controls.snapshotGuid.value, specificSnapshot);
-    this.responseToEsriJson(responsesBySnapshot);
   }
 
   public exportAllData() {
@@ -175,6 +132,7 @@ export class ExportComponent implements OnInit {
       polylines: [],
       polygons: []
     };
+
     if (formData.responses) {
       formData.responses.forEach((response) => {
         if (response.shapes) {
@@ -186,6 +144,7 @@ export class ExportComponent implements OnInit {
               snapshot: response.snapshot?.title,
               snapshot_description: response.snapshot?.description
             };
+
             if (shape.geometry?.x && shape.geometry?.y) {
               wad.points.push(shape);
             } else if (shape.geometry?.paths) {
@@ -198,17 +157,21 @@ export class ExportComponent implements OnInit {
           });
         }
       });
+
       // export to a featureset.json inside the temp dir
       if (wad.points.length > 0) {
         this.geometryArrayToEsriJson(wad.points, 'esriGeometryPoint');
       }
+
       if (wad.polylines.length > 0) {
         this.geometryArrayToEsriJson(wad.polylines, 'esriGeometryPolyline');
       }
+
       if (wad.polygons.length > 0) {
         this.geometryArrayToEsriJson(wad.polygons, 'esriGeometryPolygon');
       }
     }
+
     this.zip.generateAsync({ type: 'blob' }).then((blob) => {
       const a = document.createElement('a');
       const objectUrl = URL.createObjectURL(blob);
@@ -219,8 +182,8 @@ export class ExportComponent implements OnInit {
     });
   }
 
-  private geometryArrayToEsriJson(geometries: IGraphic[], geometry: IEsriJsonGeometryType) {
-    const featureSet: IEsriJsonFormat = {
+  private geometryArrayToEsriJson(geometries: esri.Graphic[], geometry: IEsriGeometryPortalJSONType) {
+    const featureSet: IEsriFeatureSetPortalJSON = {
       spatialReference: {
         latestWkid: 3857,
         wkid: 102100
@@ -267,55 +230,9 @@ export class ExportComponent implements OnInit {
     this.zip.file(fileName, JSON.stringify(featureSet));
   }
 
-  private responseToEsriJson(snapshotResponses: Array<IResponseResponse[]>) {
-    snapshotResponses.forEach((snapshotResponse) => {
-      const features = snapshotResponse.map((response: IResponseResponse) => {
-        const shape = response.shapes[0];
-        return shape;
-      });
-
-      const featureSet: IEsriJsonFormat = {
-        spatialReference: {
-          latestWkid: 3857,
-          wkid: 102100
-        },
-        geometryType: 'esriGeometryPolyline',
-        features: features,
-        fields: [
-          {
-            alias: 'Name',
-            name: 'name',
-            type: 'esriFieldTypeString',
-            length: 25
-          },
-          {
-            alias: 'Notes',
-            name: 'notes',
-            type: 'esriFieldTypeString',
-            length: 512
-          },
-          {
-            alias: 'Created',
-            name: 'created',
-            type: 'esriFieldTypeDate',
-            length: 128
-          }
-        ]
-      };
-      // console.log('Here is a featureset: ', esri);
-      const a = document.createElement('a');
-      const blob = new Blob([JSON.stringify(featureSet)], { type: 'application/json' });
-      const objectUrl = URL.createObjectURL(blob);
-      a.href = objectUrl;
-      a.download = this.form.controls.workshopGuid.value;
-      a.click();
-      URL.revokeObjectURL(objectUrl);
-    });
-  }
-
   private flattenResponsesGraphics(responses: Array<IResponseResponse>) {
     const flattenedShapesCollection = responses.reduce((accumulated, current) => {
-      const shapes = (current.shapes as Array<IGraphic>).map((g) => {
+      const shapes = (current.shapes as Array<esri.Graphic>).map((g) => {
         return this._modules.graphic.fromJSON(g);
       });
 
@@ -326,25 +243,25 @@ export class ExportComponent implements OnInit {
   }
 }
 
-export interface IEsriJsonFormat {
+export interface IEsriFeatureSetPortalJSON {
   displayFieldName?: string;
   fieldAliases?: {
     ['field']: string;
   };
-  geometryType: IEsriJsonGeometryType;
+  geometryType: IEsriGeometryPortalJSONType;
   hasZ?: boolean;
   hasM?: boolean;
   spatialReference: {
     wkid: number;
     latestWkid: number;
   };
-  fields: [] | IEsriJsonFieldFormat[];
-  features: (string | object)[] | IGraphic[];
+  fields: [] | IEsriFieldPortalJSON[];
+  features: (string | object)[] | esri.Graphic[];
 }
 
-export type IEsriJsonGeometryType = 'esriGeometryPoint' | 'esriGeometryPolyline' | 'esriGeometryPolygon';
+export type IEsriGeometryPortalJSONType = 'esriGeometryPoint' | 'esriGeometryPolyline' | 'esriGeometryPolygon';
 
-export interface IEsriJsonFieldFormat {
+export interface IEsriFieldPortalJSON {
   name: string;
   alias: string;
   type:

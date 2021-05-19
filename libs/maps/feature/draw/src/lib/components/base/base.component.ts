@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { from, Subject, combineLatest } from 'rxjs';
-import { takeUntil, pluck, filter, switchMap } from 'rxjs/operators';
+import { takeUntil, filter, switchMap } from 'rxjs/operators';
 
-import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { EsriModuleProviderService, EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
 
@@ -85,7 +84,6 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
 
   constructor(
     private mapService: EsriMapService,
-    private layerListService: LayerListService,
     public moduleProvider: EsriModuleProviderService,
     private selector: FeatureSelectorService
   ) {}
@@ -290,13 +288,6 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
    * Emits a 'create' event.
    */
   public draw(graphics: esri.Graphic[]) {
-    // const currentLayerCount = this.model.layer.graphics.length;
-
-    // graphics.forEach((graphic) => {
-    //   if(graphic.getObjectId() === undefined){
-    //     graphic.attributes.id
-    //   }
-    // })
     this.model.layer.addMany(graphics);
     this.model.emit('create', {
       type: 'create',
