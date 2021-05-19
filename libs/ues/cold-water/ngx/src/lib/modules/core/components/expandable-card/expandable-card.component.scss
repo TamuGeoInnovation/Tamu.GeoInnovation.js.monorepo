@@ -1,0 +1,24 @@
+@import 'libs/sass/mixins';
+
+.collapsed {
+  .content {
+    max-height: 15rem;
+    overflow: hidden;
+  }
+}
+
+.toggle {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(flex-end);
+  @include align-items(center);
+
+  font-style: italic;
+  cursor: pointer;
+  font-size: 0.9rem;
+
+  .material-icons {
+    margin-left: 0.4rem;
+    font-size: 1.25rem;
+  }
+}
