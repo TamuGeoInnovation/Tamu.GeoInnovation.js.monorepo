@@ -4902,7 +4902,15 @@
             "outputPath": "dist/apps/ues-operations-nest",
             "main": "apps/ues-operations-nest/src/main.ts",
             "tsConfig": "apps/ues-operations-nest/tsconfig.app.json",
-            "assets": ["apps/ues-operations-nest/src/assets"]
+            "assets": [
+              "apps/ues-operations-nest/src/assets",
+              "apps/ues-operations-nest/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
           },
           "configurations": {
             "production": {
