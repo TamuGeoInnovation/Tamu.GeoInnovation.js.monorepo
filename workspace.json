@@ -4823,11 +4823,11 @@
           }
         }
       }
+    },
+    "ues-sass": {
+      "projectType": "library",
+      "root": "libs/ues/sass"
     }
-  },
-  "ues-sass": {
-    "projectType": "library",
-    "root": "libs/ues/sass"
   },
   "cli": {
     "defaultCollection": "@nrwl/angular",
