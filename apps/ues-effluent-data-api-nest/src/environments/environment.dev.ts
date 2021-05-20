@@ -1,7 +1,12 @@
 export const environment = {
-  port: 27023,
   production: true,
-  globalPrefix: ''
+  port: 27000,
+  globalPrefix: '',
+  allowedOrigins: [
+    'https://maps.apogee.tamu.edu',
+    'https://ues-dev.geoservices.tamu.edu',
+    'https://ues.geoservices.tamu.edu'
+  ]
 };
 
 export { devDbConfig as dbConfig } from './ormconfig';
