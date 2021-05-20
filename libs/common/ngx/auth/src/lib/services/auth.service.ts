@@ -34,7 +34,7 @@ export class AuthService {
    * This method works best with HTTP interceptors to redirect to login if a 401/403 is returned.
    */
   public isAuthenticated() {
-    return this.http.get(this.authOptions.url + '/oidc/userinfo', { withCredentials: true }).pipe(
+    return this.http.get(this.cleanUrl(this.authOptions.url) + '/oidc/userinfo', { withCredentials: true }).pipe(
       map((result) => {
         return true;
       }),
@@ -42,5 +42,16 @@ export class AuthService {
         return of(false);
       })
     );
+  }
+
+  /**
+   * Cleans the trailing end of the auth url to fix any api routing issues.
+   */
+  public cleanUrl(url: string): string {
+    if (url.endsWith('/')) {
+      return url.slice(0, url.length - 1);
+    } else {
+      return url;
+    }
   }
 }
