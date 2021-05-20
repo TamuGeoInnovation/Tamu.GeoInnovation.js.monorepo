@@ -8,9 +8,8 @@ describe('CpaAdminComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CpaAdminComponent ]
-    })
-    .compileComponents();
+      declarations: [CpaAdminComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

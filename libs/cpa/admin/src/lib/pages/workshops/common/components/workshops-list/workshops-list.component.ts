@@ -20,4 +20,3 @@ export class WorkshopsListComponent implements OnInit {
     this.workshops = this.service.getWorkshops().pipe(shareReplay(1));
   }
 }
-  

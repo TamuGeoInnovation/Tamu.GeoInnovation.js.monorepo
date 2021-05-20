@@ -15,18 +15,18 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        component: ScenarioListComponent,
+        component: ScenarioListComponent
       },
       {
         path: 'create',
-        component: ScenarioBuilderComponent,
-      },
-    ],
-  },
+        component: ScenarioBuilderComponent
+      }
+    ]
+  }
 ];
 
 @NgModule({
   declarations: [ListComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), ScenarioCommonModule],
+  imports: [CommonModule, RouterModule.forChild(routes), ScenarioCommonModule]
 })
 export class ScenarioListModule {}

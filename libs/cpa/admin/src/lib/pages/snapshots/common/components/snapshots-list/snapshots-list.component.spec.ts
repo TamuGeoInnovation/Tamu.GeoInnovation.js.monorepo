@@ -8,9 +8,8 @@ describe('SnapshotsListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SnapshotsListComponent ]
-    })
-    .compileComponents();
+      declarations: [SnapshotsListComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
