@@ -38,7 +38,7 @@ export class AuthInterceptor implements HttpInterceptor {
               if (typeof this.auth.authOptions === 'string') {
                 this.document.location.href = `${this.auth.authOptions}/oidc/login`;
               } else if (typeof this.auth.authOptions === 'object') {
-                this.document.location.href = `${this.auth.authOptions.url}/oidc/login${
+                this.document.location.href = `${this.auth.cleanUrl(this.auth.authOptions.url)}/oidc/login${
                   this.auth.authOptions.attach_href === true ? '?ret=' + window.location.href : ''
                 }`;
               } else {
