@@ -1,1 +1,1 @@
-<tamu-gisc-notification-item *ngFor="let item of notifications | async" [notification]="item" (closeNotification)="close($event)" (actionNotification)="action($event)"></tamu-gisc-notification-item>
+<tamu-gisc-notification-item *ngFor="let item of notifications | async" [notification]="item" (closeNotification)="close($event)" (actionNotification)="action($event)" [position]="position"></tamu-gisc-notification-item>

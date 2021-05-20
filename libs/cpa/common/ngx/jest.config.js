@@ -1,11 +1,6 @@
 module.exports = {
+  displayName: 'cpa-common-ngx',
   preset: '../../../../jest.preset.js',
-  coverageDirectory: '../../../coverage/libs/cpa/common/ngx',
-  snapshotSerializers: [
-    'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
-    'jest-preset-angular/build/AngularSnapshotSerializer.js',
-    'jest-preset-angular/build/HTMLCommentSerializer.js'
-  ],
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {
@@ -16,5 +11,10 @@ module.exports = {
       }
     }
   },
-  displayName: 'cpa-common-ngx'
+  coverageDirectory: '../../../../coverage/libs/cpa/common/ngx',
+  snapshotSerializers: [
+    'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
+    'jest-preset-angular/build/AngularSnapshotSerializer.js',
+    'jest-preset-angular/build/HTMLCommentSerializer.js'
+  ]
 };

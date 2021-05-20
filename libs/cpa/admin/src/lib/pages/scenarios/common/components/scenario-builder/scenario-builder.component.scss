@@ -1,0 +1,24 @@
+@import 'libs/sass/mixins';
+
+.map-configuration-container {
+  @include flexbox();
+  @include flex-direction(row);
+}
+
+.map-configuration,
+.map-preview {
+  @include flexbox();
+  @include flex-direction(column);
+  @include flex(1);
+}
+
+tamu-gisc-esri-map {
+  height: 20rem;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+#response-list {
+  overflow: auto;
+  max-height: 13rem;
+}

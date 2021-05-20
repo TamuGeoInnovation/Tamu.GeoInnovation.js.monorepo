@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
+import { Angulartics2Module } from 'angulartics2';
 
 import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
@@ -21,6 +23,10 @@ WebFont.load({
 
 const routes: Routes = [
   {
+    path: 'admin',
+    loadChildren: () => import('@tamu-gisc/cpa/admin').then((m) => m.CpaAdminModule)
+  },
+  {
     path: '',
     loadChildren: () => import('./modules/map/map.module').then((m) => m.MapModule)
   }
@@ -30,13 +36,16 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes, { initialNavigation: 'enabled', relativeLinkResolution: 'legacy' }),
+    HttpClientModule,
+    RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
     EnvironmentModule,
     LocalStoreModule,
-    NotificationModule
+    NotificationModule,
+    Angulartics2Module.forRoot()
   ],
   declarations: [AppComponent],
   providers: [
+    Title,
     {
       provide: env,
       useValue: environment

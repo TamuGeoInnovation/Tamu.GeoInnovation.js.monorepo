@@ -195,6 +195,22 @@ export class EsriModuleProviderService {
     {
       class: 'esri/geometry/Circle',
       name: 'Circle'
+    },
+    {
+      class: 'esri/symbols/Symbol',
+      name: 'Symbol'
+    },
+    {
+      class: 'esri/layers/GroupLayer',
+      name: 'GroupLayer'
+    },
+    {
+      class: 'esri/Color',
+      name: 'Color'
+    },
+    {
+      class: 'esri/geometry/Extent',
+      name: 'Extent'
     }
   ];
 

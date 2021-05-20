@@ -19,11 +19,15 @@
         </div>
 
         <div class="form-collection row">
+          <tamu-gisc-textbox type="text" floatLabel="true" placeholder="URL" [value]="url"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
           <tamu-gisc-textbox type="textarea" formControlName="description" floatLabel="true" placeholder="Description"></tamu-gisc-textbox>
         </div>
 
         <div class="form-collection row" formGroupName="drawingInfo">
-          <tamu-gisc-textbox type="number" formControlName="transparency" floatLabel="true" placeholder="Transparency %"></tamu-gisc-textbox>
+          <tamu-gisc-range [min]="0" [max]="1" [step]=".01" formControlName="opacity" label="Opacity"></tamu-gisc-range>
         </div>
       </div>
     </div>

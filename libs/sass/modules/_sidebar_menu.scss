@@ -1,0 +1,79 @@
+.sidebar-menu {
+  .menu-item {
+    @include flexbox();
+    @include flex-direction(row);
+    font-size: 1.05rem;
+    color: $inactive-color;
+    padding: 0.75rem 0.5rem 0rem 0.5rem;
+    margin: 0.5rem 0;
+    cursor: pointer;
+    outline: none;
+
+    // Have material icons inherit the color from the sidebar menu item,
+    // instead of using global styles which are OK, but not 100% in line
+    // with the application color scheme.
+    .material-icons {
+      color: inherit;
+    }
+
+    &:hover {
+      color: $state-transition-color;
+    }
+
+    &.active {
+      color: $active-color;
+      font-weight: 500;
+
+      ul > li + ul {
+        display: block;
+      }
+    }
+
+    p,
+    li {
+      margin: 0 1rem;
+    }
+
+    ul {
+      list-style: none;
+      margin-left: 0;
+
+      ul {
+        margin-top: 0.5rem;
+        margin-left: 0.5rem;
+        display: none;
+
+        li:first-child {
+          margin-bottom: 0;
+        }
+
+        li {
+          padding: 0.4rem 0;
+          font-weight: 400;
+          font-size: 0.95rem;
+          color: $inactive-color;
+          position: relative;
+
+          &::before {
+            content: '';
+            height: 100%;
+            top: 0;
+            left: -0.9rem;
+            width: 2pt;
+            background: transparent;
+            position: absolute;
+            @include transition(background 0.25s);
+          }
+
+          &:hover {
+            color: $state-transition-color;
+
+            &::before {
+              background: $state-transition-color;
+            }
+          }
+        }
+      }
+    }
+  }
+}

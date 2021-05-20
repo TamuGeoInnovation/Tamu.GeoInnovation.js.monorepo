@@ -17,8 +17,8 @@ export class MapComponent implements OnInit {
     view: {
       mode: '2d',
       properties: {
-        center: [-97.657046, 26.450253],
-        zoom: 11
+        center: [-99.20987760767717, 31.225356084754477],
+        zoom: 6
       }
     }
   };

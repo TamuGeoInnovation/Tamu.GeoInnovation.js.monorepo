@@ -28,19 +28,19 @@ describe('Workshops Controller', () => {
     });
   });
 
-  describe('addScenario', () => {
-    it('should call service method addNewScenario', async () => {
+  describe('addSnapshot', () => {
+    it('should call service method addNewSnapshot', async () => {
       const expectedResult = [];
-      jest.spyOn(workshopsService, 'addNewScenario').mockResolvedValue(expectedResult);
-      expect(await workshopsController.addScenario(mockParameters)).toBe(expectedResult);
+      jest.spyOn(workshopsService, 'addNewSnapshot').mockResolvedValue(expectedResult);
+      expect(await workshopsController.addSnapshot(mockParameters)).toBe(expectedResult);
     });
   });
 
-  describe('deleteScenario', () => {
-    it('should call service method deleteScenario', async () => {
+  describe('deleteSnapshot', () => {
+    it('should call service method deleteSnapshot', async () => {
       const expectedResult = new Workshop();
-      jest.spyOn(workshopsService, 'deleteScenario').mockResolvedValue(expectedResult);
-      expect(await workshopsController.deleteScenario(mockParameters)).toBe(expectedResult);
+      jest.spyOn(workshopsService, 'deleteSnapshot').mockResolvedValue(expectedResult);
+      expect(await workshopsController.addSnapshot(mockParameters)).toBe(expectedResult);
     });
   });
 

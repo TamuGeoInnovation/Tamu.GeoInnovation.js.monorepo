@@ -1,0 +1,18 @@
+@import 'libs/sass/mixins';
+
+.map-preview {
+  @include flexbox();
+  @include flex-direction(column);
+  @include flex(1);
+}
+
+tamu-gisc-esri-map {
+  height: 40rem;
+  box-sizing: border-box;
+}
+
+.export-controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

@@ -1,0 +1,120 @@
+<form [formGroup]="builderForm" (ngSubmit)="createScenario()">
+  <div class="form-section" *ngIf="(isExisting | async) === false">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>What workshop would you like to base this scenario on?</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <p>Upon creating a scenario based on a workshop, the available responses will be limited to those drawn in the chosen workshop.</p>
+        <tamu-gisc-select [value]="selectedWorkshop" [valueTemplate]="'guid'" [data]="workshops | async" [displayTemplate]="'title'" (changed)="setWorkshopScenario($event)"></tamu-gisc-select>
+      </div>
+      <p *ngIf="(workshops | async)?.length === 0">Currently there are no workshops</p>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>General</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="title" placeholder="Title" type="text" floatLabel="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" floatLabel="true" rows="8"></tamu-gisc-textbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="map-configuration-container" *ngIf="responses && (isExisting | async)">
+    <div class="map-configuration">
+      <div class="form-section">
+        <div class="form-section-toolbar">
+          <div class="form-section-name">
+            <p>Map Properties</p>
+          </div>
+        </div>
+
+        <div class="form-section-body">
+          <div class="form-collection column">
+            <p>Adjust the map view using the map preview to the desired area/region and press the button below to record the extent. The recorded bounds will be the same for participants loading the scenario.</p>
+            <tamu-gisc-button [value]="'Record Map Extent'" (go)="recordExtent()"></tamu-gisc-button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section" *ngIf="this.selectedWorkshop">
+        <div class="form-section-toolbar">
+          <div class="form-section-name">
+            <p>Layers</p>
+          </div>
+        </div>
+
+        <tamu-gisc-tabs>
+          <tamu-gisc-tab label="Snapshots">
+            <div class="leader-1 trailer-1">
+              <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="snapshots" [referenceId]="'guid'">
+                <tamu-gisc-checkbox *ngFor="let snapshot of (snapshots | async)" [label]="snapshot.title" [data]="snapshot"></tamu-gisc-checkbox>
+              </tamu-gisc-checkbox-group>
+
+              <p *ngIf="(snapshots | async)?.length === 0">There are no snapshots created yet.</p>
+            </div>
+          </tamu-gisc-tab>
+
+          <tamu-gisc-tab label="Scenarios">
+            <div class="leader-1 trailer-1">
+              <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="scenarios" [referenceId]="'guid'">
+                <tamu-gisc-checkbox *ngFor="let scenario of (scenarios | async)" [label]="scenario.title" [data]="scenario" (mouseover)="loadPreviewScenario(scenario)" (mouseleave)="this.clearGraphicPreview()"></tamu-gisc-checkbox>
+              </tamu-gisc-checkbox-group>
+
+              <p *ngIf="(scenarios | async)?.length === 0">There are no scenarios created yet.</p>
+            </div>
+          </tamu-gisc-tab>
+
+          <tamu-gisc-tab label="Responses">
+            <div class="leader-1 trailer-1">
+              <tamu-gisc-checkbox-group id="response-list" class="form-section-body" formControlName="layers" [referenceId]="'guid'">
+                <tamu-gisc-checkbox *ngFor="let response of (responses | async)" (mouseover)="loadPreviewResponse(response)" (mouseleave)="this.clearGraphicPreview()" [label]="(response.name !== null ? response.name : 'Anonymous') + ' ' +'(' + getTitleFromResponseSource(response) + ')'" [data]="response"></tamu-gisc-checkbox>
+              </tamu-gisc-checkbox-group>
+
+              <p *ngIf="(responses | async)?.length === 0">There are no responses for this workshop.</p>
+            </div>
+          </tamu-gisc-tab>
+        </tamu-gisc-tabs>
+      </div>
+    </div>
+
+    <div class="map-preview">
+      <div class="form-section">
+        <div class="form-section-toolbar">
+          <div class="form-section-name">
+            <p>Preview</p>
+          </div>
+        </div>
+
+        <div class="form-section-body">
+          <div class="form-collection row">
+            <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-collection row">
+    <ng-container *ngIf="(isExisting | async) === false">
+      <tamu-gisc-button type="submit" value="Publish" [disabled]="!builderForm.valid"></tamu-gisc-button>
+    </ng-container>
+
+    <ng-container *ngIf="isExisting | async">
+      <tamu-gisc-button type="submit" value="Update" [disabled]="!builderForm.valid"></tamu-gisc-button>
+    </ng-container>
+  </div>
+</form>

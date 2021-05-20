@@ -285,7 +285,7 @@ export class EsriMapService {
         // Create and return new scene layer
         return new SceneLayer(props as esri.SceneViewProperties);
       });
-    } else if (source.type === 'graphic') {
+    } else if (source.type === 'graphics') {
       return this.moduleProvider.require(['GraphicsLayer']).then(([GraphicsLayer]: [esri.GraphicsLayerConstructor]) => {
         // Delete the type property as it cannot be set on layer creation.
         delete props.type;
@@ -455,6 +455,17 @@ export class EsriMapService {
     }
 
     return layer;
+  }
+
+  public removeLayerById(id: string): void {
+    const map: esri.Map = this._modules.map;
+    const layer = map.findLayerById(id);
+
+    if (!layer) {
+      console.warn(`Cannot delete layer with ID ${id} that does not exist.`);
+    } else {
+      map.remove(layer);
+    }
   }
 
   /**

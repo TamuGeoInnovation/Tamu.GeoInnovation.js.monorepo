@@ -12,6 +12,7 @@ import { CheckboxGroupComponent } from './components/checkbox-group/checkbox-gro
 import { DateTimePickerComponent } from './components/date-time-picker/date-time-picker.component';
 import { TextboxComponent } from './components/textbox/textbox.component';
 import { ButtonComponent } from './components/button/button.component';
+import { RangeComponent } from './components/range/range.component';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { FileComponent } from './components/file/file.component';
@@ -28,7 +29,8 @@ import { RadioGroupComponent } from './components/radio-group/radio-group.compon
     AbstractValueAccessorFormComponent,
     ButtonComponent,
     FileComponent,
-    RadioGroupComponent
+    RadioGroupComponent,
+    RangeComponent
   ],
   exports: [
     SelectComponent,
@@ -38,7 +40,8 @@ import { RadioGroupComponent } from './components/radio-group/radio-group.compon
     TextboxComponent,
     ButtonComponent,
     FileComponent,
-    RadioGroupComponent
+    RadioGroupComponent,
+    RangeComponent
   ]
 })
 export class UIFormsModule {}

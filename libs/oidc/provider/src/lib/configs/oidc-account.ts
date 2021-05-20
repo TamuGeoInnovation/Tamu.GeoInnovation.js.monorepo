@@ -26,23 +26,19 @@ export class OIDCAccount {
       })
         .then((account) => {
           if (!account) {
-            debugger;
             // The user does not have an account; redirect to sign up page
             // AccountManager.db.Users.upsert({
             //   sub: "newSUb",
             //   email: loginEmail,
             //   password: "idk",
             // }).then(result => {
-            //   debugger;
             // })
           }
           resolve({
             account
           });
         })
-        .catch((error) => {
-          debugger;
-        });
+        .catch((error) => {});
     });
   }
 
@@ -60,16 +56,13 @@ export class OIDCAccount {
       })
         .then((account) => {
           if (!account) {
-            debugger;
             // insert a new account?
           }
           resolve({
             account
           });
         })
-        .catch((error) => {
-          debugger;
-        });
+        .catch((error) => {});
     });
   }
 

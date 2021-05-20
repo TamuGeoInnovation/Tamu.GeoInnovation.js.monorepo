@@ -1,0 +1,16 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flexbox;
+  @include flex-direction(row);
+
+  height: inherit;
+  width: 100%;
+}
+
+#root {
+  @include flex(1);
+  margin: 0rem 5rem;
+  box-sizing: border-box;
+  max-width: 80rem; // Limit container widths, a little over 1140px
+}

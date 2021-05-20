@@ -240,3 +240,35 @@ export type IPortalLayer = IPortalFeatureLayer | IPortalGroupLayer;
 export type AutocastableLayer =
   | { type: 'group'; layers: Array<AutocastableLayer>; title?: string }
   | { type: 'feature'; url: string; title?: string };
+
+/**
+ * JSON Portal representation for a Graphic class.
+ */
+export interface IGraphic {
+  uid: number;
+  geometry: {
+    spatialReference: {
+      latestWkid: number;
+      wkid: number;
+    };
+    rings?: [[]];
+    x?: number;
+    y?: number;
+    paths?: [[]];
+    type: string;
+  };
+  symbol: {
+    type: string;
+    color: number[];
+    width: number;
+    outline: {
+      type: string;
+      color: number[];
+      style: string;
+      width: number;
+    };
+    style: string;
+  };
+  attributes: {};
+  popupTemplate: {};
+}

@@ -1691,6 +1691,34 @@
             "scripts": []
           },
           "configurations": {
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/cpa-angular/src/environments/environment.ts",
+                  "with": "apps/cpa-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -1795,8 +1823,7 @@
             "outputPath": "dist/apps/cpa-nest",
             "main": "apps/cpa-nest/src/main.ts",
             "tsConfig": "apps/cpa-nest/tsconfig.app.json",
-            "assets": ["apps/cpa-nest/src/assets"],
-            "buildLibsFromSource": true
+            "assets": ["apps/cpa-nest/src/assets", "apps/cpa-nest/src/package.json"]
           },
           "configurations": {
             "production": {
@@ -1809,6 +1836,17 @@
                   "with": "apps/cpa-nest/src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/cpa-nest/src/environments/environment.ts",
+                  "with": "apps/cpa-nest/src/environments/environment.dev.ts"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -1816,7 +1854,8 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "cpa-nest:build"
+            "buildTarget": "cpa-nest:build",
+            "port": 7777
           }
         },
         "lint": {
@@ -2347,8 +2386,7 @@
             "outputPath": "dist/apps/covid-data-api-nest",
             "main": "apps/covid-data-api-nest/src/main.ts",
             "tsConfig": "apps/covid-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/covid-data-api-nest/src/assets", "apps/covid-data-api-nest/src/package.json"],
-            "buildLibsFromSource": true
+            "assets": ["apps/covid-data-api-nest/src/assets", "apps/covid-data-api-nest/src/package.json"]
           },
           "configurations": {
             "production": {
@@ -2475,8 +2513,7 @@
             "outputPath": "dist/apps/oidc-client-test",
             "main": "apps/oidc-client-test/src/main.ts",
             "tsConfig": "apps/oidc-client-test/tsconfig.app.json",
-            "assets": ["apps/oidc-client-test/src/assets"],
-            "buildLibsFromSource": true
+            "assets": ["apps/oidc-client-test/src/assets"]
           },
           "configurations": {
             "production": {
@@ -2660,8 +2697,7 @@
             "outputPath": "dist/apps/oidc-provider-express",
             "main": "apps/oidc-provider-express/src/main.ts",
             "tsConfig": "apps/oidc-provider-express/tsconfig.app.json",
-            "assets": ["apps/oidc-provider-express/src/assets"],
-            "buildLibsFromSource": true
+            "assets": ["apps/oidc-provider-express/src/assets"]
           },
           "configurations": {
             "production": {
@@ -3146,8 +3182,7 @@
             "outputPath": "dist/apps/ues-effluent-data-api-nest",
             "main": "apps/ues-effluent-data-api-nest/src/main.ts",
             "tsConfig": "apps/ues-effluent-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/ues-effluent-data-api-nest/src/assets", "apps/ues-effluent-data-api-nest/src/package.json"],
-            "buildLibsFromSource": true
+            "assets": ["apps/ues-effluent-data-api-nest/src/assets", "apps/ues-effluent-data-api-nest/src/package.json"]
           },
           "configurations": {
             "production": {
@@ -3199,8 +3234,7 @@
             "main": "apps/oidc-provider-nest/src/main.ts",
             "outputPath": "dist/apps/oidc-provider-nest",
             "tsConfig": "apps/oidc-provider-nest/tsconfig.app.json",
-            "assets": ["apps/oidc-provider-nest/src/assets", "apps/oidc-provider-nest/src/package.json"],
-            "buildLibsFromSource": true
+            "assets": ["apps/oidc-provider-nest/src/assets", "apps/oidc-provider-nest/src/package.json"]
           },
           "configurations": {
             "production": {
@@ -3397,8 +3431,7 @@
             "main": "apps/oidc-admin-nest/src/main.ts",
             "outputPath": "dist/apps/oidc-admin-nest",
             "tsConfig": "apps/oidc-admin-nest/tsconfig.app.json",
-            "assets": ["apps/oidc-admin-nest/src/assets", "apps/oidc-admin-nest/src/package.json"],
-            "buildLibsFromSource": true
+            "assets": ["apps/oidc-admin-nest/src/assets", "apps/oidc-admin-nest/src/package.json"]
           },
           "outputs": ["{options.outputPath}"]
         },
@@ -3699,8 +3732,7 @@
             "main": "apps/two-data-api-nest/src/main.ts",
             "outputPath": "dist/apps/two-data-api-nest",
             "tsConfig": "apps/two-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/two-data-api-nest/src/assets", "apps/two-data-api-nest/src/package.json"],
-            "buildLibsFromSource": true
+            "assets": ["apps/two-data-api-nest/src/assets", "apps/two-data-api-nest/src/package.json"]
           },
           "outputs": ["{options.outputPath}"]
         },
@@ -3738,8 +3770,7 @@
             "outputPath": "dist/apps/two-directory-nest",
             "main": "apps/two-directory-nest/src/main.ts",
             "tsConfig": "apps/two-directory-nest/tsconfig.app.json",
-            "assets": ["apps/two-directory-nest/src/assets"],
-            "buildLibsFromSource": true
+            "assets": ["apps/two-directory-nest/src/assets"]
           },
           "configurations": {
             "production": {
@@ -3811,8 +3842,7 @@
             "outputPath": "dist/apps/two-valup-nest",
             "main": "apps/two-valup-nest/src/main.ts",
             "tsConfig": "apps/two-valup-nest/tsconfig.app.json",
-            "assets": ["apps/two-valup-nest/src/assets", "apps/two-valup-nest/src/package.json"],
-            "buildLibsFromSource": true
+            "assets": ["apps/two-valup-nest/src/assets", "apps/two-valup-nest/src/package.json"]
           },
           "configurations": {
             "production": {
@@ -4827,6 +4857,66 @@
     "ues-sass": {
       "projectType": "library",
       "root": "libs/ues/sass"
+    },
+    "cpa-data-access": {
+      "projectType": "library",
+      "root": "libs/cpa/data-access",
+      "sourceRoot": "libs/cpa/data-access/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/cpa/data-access/tsconfig.lib.json", "libs/cpa/data-access/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/cpa/data-access/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/cpa/data-access/jest.config.js",
+            "tsConfig": "libs/cpa/data-access/tsconfig.spec.json",
+            "setupFile": "libs/cpa/data-access/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "cpa-admin": {
+      "projectType": "library",
+      "root": "libs/cpa/admin",
+      "sourceRoot": "libs/cpa/admin/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/cpa/admin/tsconfig.lib.json", "libs/cpa/admin/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/cpa/admin/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/cpa/admin/jest.config.js",
+            "tsConfig": "libs/cpa/admin/tsconfig.spec.json",
+            "setupFile": "libs/cpa/admin/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "cpa-sass": {
+      "projectType": "library",
+      "root": "libs/cpa/sass"
     }
   },
   "cli": {
