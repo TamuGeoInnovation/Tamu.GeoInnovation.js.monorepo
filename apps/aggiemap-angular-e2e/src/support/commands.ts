@@ -66,17 +66,17 @@ Cypress.Commands.add('getSideBar', (visibility) => {
 })
 
 Cypress.Commands.add('checkLayer', (num, layerName) => {
-  cy.get(`tamu-gisc-layer-list > .sidebar-component-content-container >:nth-child(${num})`)
-    .should('have.class', 'layer-item ng-star-inserted', {timeout: 2000})
+  cy.get(`tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(${num})`)
+    .should('have.class', 'ng-star-inserted', {timeout: 2000})
     .and('contain', `${layerName}`, {timeout: 2000})
-    .scrollIntoView()
+    //.scrollIntoView()
     .and('be.visible')
 })
 
 Cypress.Commands.add('checkLegend', (num, legendName) => {
   cy.get(`.sidebar-component-content-container > :nth-child(${num})`)
     .should('contain', `${legendName}`)
-    .scrollIntoView()
+    //.scrollIntoView()
     .and('be.visible')
 })
 

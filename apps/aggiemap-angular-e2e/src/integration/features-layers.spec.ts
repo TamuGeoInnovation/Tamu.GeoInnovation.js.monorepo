@@ -18,9 +18,9 @@ desktopSizes.forEach((size) => {
 
     it('Construction Zone', function() {
       cy.wait('@construction')
-      cy.checkLayer('1', 'Construction Zone')
-      cy.checkLegend('9', 'Construction Area')
-      cy.checkIcon('9',this.data.construction, 'Construction Area')
+      cy.checkLayer('8', 'Construction Zone')
+      cy.checkLegend('8', 'Construction Zone')
+      cy.checkIcon('8',this.data.construction, 'Construction Area')
     })
     it('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
