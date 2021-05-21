@@ -23,10 +23,10 @@
 
     h3 {
       margin-top: 0;
-      font-size: 1.05rem;
-      font-weight: 500;
+      font-size: 1.1rem;
+      font-weight: 600;
       text-transform: none;
-      font-family: 'Moriston';
+      font-family: $open-sans-fStack;
       letter-spacing: 0;
     }
 
@@ -59,7 +59,7 @@
     h2,
     h3 {
       font-size: 1rem;
-      font-family: $moriston-fStack;
+      font-family: $open-sans-fStack;
       text-transform: none;
       letter-spacing: initial;
       font-weight: 600;

@@ -12,11 +12,7 @@ import { AppComponent } from './app.component';
 
 WebFont.load({
   google: {
-    families: ['Material Icons']
-  },
-  custom: {
-    families: ['Moriston', 'Tungsten'],
-    urls: ['assets/fonts/moriston_pro/moriston_pro.css', 'assets/fonts/tungsten/tungsten.css']
+    families: ['Material Icons', 'Material Icons', 'Open Sans:300,400,600', 'Oswald:200,300,400,500']
   }
 });
 
