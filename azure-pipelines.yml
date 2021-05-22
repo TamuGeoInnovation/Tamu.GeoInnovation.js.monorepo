@@ -1,12 +1,20 @@
 variables:
-  isDevelopment: $[eq(variables['Build.SourceBranch'], 'refs/heads/development')]
-  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+  - name: isDevelopment
+    value: $[eq(variables['Build.SourceBranch'], 'refs/heads/development')]
+  - name: isMaster
+    value: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+  - name: affectedBase
+    value: 'origin/development'
+    ${{ if eq(variables.isDevelopment, false) }}:
+      value: 'origin/development~1'
+    ${{ if eq(variables.isMaster, false) }}:
+      value: 'origin/master~1'
 
 pool:
   vmImage: 'ubuntu-latest'
 stages:
   - stage: Development
-    condition: or(eq(variables.isMain, false), eq(variables.isDevelopment, false))
+    condition: or(eq(variables.isMaster, false), eq(variables.isDevelopment, false))
     jobs:
       - job: Build
         steps:
@@ -58,7 +66,7 @@ stages:
               TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-operations-nest/src/environments
 
           - bash: |
-              npm run nx affected:build -- --base=origin/development --head=HEAD --configuration=development --exclude="aggiemap-angular,signage-angular,trees-angular,bikeshare,cpa-angular,gisday-competitions-angular,oidc-admin-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-provider-express,oidc-provider-nest,oidc-admin-nest,cpa-nest,oidc-client-test,oidc-provider-angular,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes"
+              npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=development --exclude="aggiemap-angular,signage-angular,trees-angular,bikeshare,cpa-angular,gisday-competitions-angular,oidc-admin-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-provider-express,oidc-provider-nest,oidc-admin-nest,cpa-nest,oidc-client-test,oidc-provider-angular,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes"
             displayName: 'Running build for development'
 
           - task: CopyFiles@2
@@ -126,7 +134,7 @@ stages:
               TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-operations-nest/src/environments
 
           - bash: |
-              npm run nx affected:build -- --base=origin/development --head=HEAD --configuration=production --exclude="aggiemap-angular,signage-angular,trees-angular,bikeshare,cpa-angular,gisday-competitions-angular,oidc-admin-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-provider-express,oidc-provider-nest,oidc-admin-nest,cpa-nest,oidc-client-test,oidc-provider-angular,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes"
+              npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=production --exclude="aggiemap-angular,signage-angular,trees-angular,bikeshare,cpa-angular,gisday-competitions-angular,oidc-admin-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-provider-express,oidc-provider-nest,oidc-admin-nest,cpa-nest,oidc-client-test,oidc-provider-angular,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes"
             displayName: 'Running build for production'
 
           - task: CopyFiles@2
@@ -194,5 +202,5 @@ stages:
               TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-operations-nest/src/environments
 
           - bash: |
-              npm run nx affected:apps --  --base=origin/development --head=HEAD --exclude="aggiemap-angular,signage-angular,trees-angular,bikeshare,cpa-angular,gisday-competitions-angular,oidc-admin-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-provider-express,oidc-provider-nest,oidc-admin-nest,cpa-nest,oidc-client-test,oidc-provider-angular,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes" | grep -E '( - )(\w|-|\d|_)+' | sed -E 's/ - /##vso[build.addbuildtag]/g'
+              npm run nx affected:apps -- --base=$(affectedBase) --head=HEAD --exclude="aggiemap-angular,signage-angular,trees-angular,bikeshare,cpa-angular,gisday-competitions-angular,oidc-admin-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-provider-express,oidc-provider-nest,oidc-admin-nest,cpa-nest,oidc-client-test,oidc-provider-angular,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes" | grep -E '( - )(\w|-|\d|_)+' | sed -E 's/ - /##vso[build.addbuildtag]/g'
             displayName: 'add affected apps as buildtags'
