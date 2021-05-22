@@ -13,8 +13,8 @@ if((pm2 pid $ProcessName).length -eq 0){
         write-host "Service does not exist. Doing nuffin'...";
         #No-op
     } elseif($Action -eq 'start') {
-        write-host "Service does no exist. Creating...";    
-        pm2 start $EntryPoint --name $ProcessName;
+        write-host "Service does no exist. Creating...";
+        pm2 start $EntryPoint --name $ProcessName --exp-backoff-restart-delay=100;
 
         write-host "Service has been created. Saving..."
         pm2 save;
