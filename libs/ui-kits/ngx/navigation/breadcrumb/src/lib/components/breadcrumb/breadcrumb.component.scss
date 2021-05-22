@@ -1,0 +1,42 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flexbox();
+  @include flex-direction(row);
+  color: lighten(#424242, 40%);
+}
+
+.crumb {
+  font-size: 0.9rem;
+  padding: 0.25rem;
+  margin: 0 0.25rem;
+  font-weight: 300;
+  cursor: pointer;
+  position: relative;
+
+  &::after {
+    content: '»';
+    font-size: 1rem;
+    pointer-events: none;
+    margin-left: 0.75rem;
+    position: inline-block;
+  }
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+
+    &::after {
+      content: none;
+    }
+  }
+
+  &.last {
+    color: #424242;
+    font-weight: 400;
+    cursor: default;
+  }
+}

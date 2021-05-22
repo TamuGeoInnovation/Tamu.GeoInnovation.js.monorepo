@@ -1,0 +1,30 @@
+<div class="spinning-loader" *ngIf="(workshops | async) === null; else workshopsContent"></div>
+
+<ng-template #workshopsContent>
+  <div *ngIf="(workshops | async).length === 0; else workshopsTable">
+    <p class="leader-1 trailer-1">There are no workshops. <a [routerLink]="['create']">Get started.</a></p>
+  </div>
+
+  <ng-template #workshopsTable>
+    <div class="flex flex-column align-center">
+      <div class="floating-table">
+        <div class="floating-table-header">
+          <div class="floating-row">
+            <div class="column">Name</div>
+            <div class="column"></div>
+          </div>
+        </div>
+
+        <div class="floating-table-body">
+          <div class="floating-row" *ngFor="let workshop of workshops | async">
+            <div class="column">{{workshop.title}}</div>
+            <div class="column table-actions">
+              <a [routerLink]="['./edit', workshop.guid]">Edit</a>
+              <a [routerLink]="['../../viewer/workshop', workshop.alias ? workshop.alias : workshop.guid]" target="_blank">Launch</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>

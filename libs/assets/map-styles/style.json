@@ -1,0 +1,778 @@
+{
+  "version": 8,
+  "sprite": "../sprites/sprite",
+  "glyphs": "../fonts/{fontstack}/{range}.pbf",
+  "sources": { "esri": { "type": "vector", "url": "../../" } },
+  "layers": [
+    {
+      "id": "County Boundary",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "County Boundary",
+      "minzoom": 11.85,
+      "layout": {},
+      "paint": { "fill-color": "#F5F5F5" }
+    },
+    {
+      "id": "Road Names/Overpass",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Road Names",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 13,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#FAFAFA", "line-width": 5.33333 }
+    },
+    {
+      "id": "Road Names/Major Street",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Road Names",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 13,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#FAFAFA", "line-width": 5.33333 }
+    },
+    {
+      "id": "Road Names/Local Street",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Road Names",
+      "filter": ["==", "_symbol", 2],
+      "minzoom": 13,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#FAFAFA", "line-width": 5.33333 }
+    },
+    {
+      "id": "Road Names/Access Road",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Road Names",
+      "filter": ["==", "_symbol", 3],
+      "minzoom": 13,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#FAFAFA", "line-width": 5.33333 }
+    },
+    {
+      "id": "Road Names/Drivewway",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Road Names",
+      "filter": ["==", "_symbol", 4],
+      "minzoom": 13,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#FAFAFA", "line-width": 5.33333 }
+    },
+    {
+      "id": "Brazos County Road Centerline:1/Overpass/1",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Brazos County Road Centerline:1",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 13,
+      "layout": { "line-cap": "square", "line-join": "round" },
+      "paint": { "line-color": "#B2B2B2", "line-width": 6.66667 }
+    },
+    {
+      "id": "Brazos County Road Centerline:1/Major Street/1",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Brazos County Road Centerline:1",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 13,
+      "layout": { "line-cap": "square", "line-join": "round" },
+      "paint": { "line-color": "#B2B2B2", "line-width": 6.66667 }
+    },
+    {
+      "id": "Brazos County Road Centerline:1/Local Street/1",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Brazos County Road Centerline:1",
+      "filter": ["==", "_symbol", 2],
+      "minzoom": 13,
+      "layout": { "line-cap": "square", "line-join": "round" },
+      "paint": { "line-color": "#B2B2B2", "line-width": 5.33333 }
+    },
+    {
+      "id": "Brazos County Road Centerline:1/Access Road/1",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Brazos County Road Centerline:1",
+      "filter": ["==", "_symbol", 3],
+      "minzoom": 13,
+      "layout": { "line-cap": "square", "line-join": "round" },
+      "paint": { "line-color": "#B2B2B2", "line-width": 4 }
+    },
+    {
+      "id": "Brazos County Road Centerline:1/Drivewway/1",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Brazos County Road Centerline:1",
+      "filter": ["==", "_symbol", 4],
+      "minzoom": 13,
+      "layout": { "line-cap": "square", "line-join": "round" },
+      "paint": { "line-color": "#B2B2B2", "line-width": 2.66667 }
+    },
+    {
+      "id": "Brazos County Road Centerline:1/Overpass/0",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Brazos County Road Centerline:1",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 13,
+      "layout": { "line-cap": "square", "line-join": "round" },
+      "paint": { "line-color": "#CCCCCC", "line-width": 5.098 }
+    },
+    {
+      "id": "Brazos County Road Centerline:1/Major Street/0",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Brazos County Road Centerline:1",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 13,
+      "layout": { "line-cap": "square", "line-join": "round" },
+      "paint": { "line-color": "#CCCCCC", "line-width": 5.098 }
+    },
+    {
+      "id": "Brazos County Road Centerline:1/Local Street/0",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Brazos County Road Centerline:1",
+      "filter": ["==", "_symbol", 2],
+      "minzoom": 13,
+      "layout": { "line-cap": "square", "line-join": "round" },
+      "paint": { "line-color": "#CCCCCC", "line-width": 4.0784 }
+    },
+    {
+      "id": "Brazos County Road Centerline:1/Access Road/0",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Brazos County Road Centerline:1",
+      "filter": ["==", "_symbol", 3],
+      "minzoom": 13,
+      "layout": { "line-cap": "square", "line-join": "round" },
+      "paint": { "line-color": "#CCCCCC", "line-width": 3.0588 }
+    },
+    {
+      "id": "Brazos County Road Centerline:1/Drivewway/0",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Brazos County Road Centerline:1",
+      "filter": ["==", "_symbol", 4],
+      "minzoom": 13,
+      "layout": { "line-cap": "square", "line-join": "round" },
+      "paint": { "line-color": "#CCCCCC", "line-width": 2.0392 }
+    },
+    {
+      "id": "Campus Background/Campus Boundary",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Campus Background",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 11.85,
+      "layout": {},
+      "paint": { "fill-color": "#9EBA87" }
+    },
+    {
+      "id": "Campus Background/Railroad ROW/2",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Campus Background",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 11.85,
+      "layout": {},
+      "paint": { "fill-pattern": "Campus Background/Railroad ROW/2" }
+    },
+    {
+      "id": "Campus Background/Railroad ROW/1",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Campus Background",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 11.85,
+      "layout": {},
+      "paint": { "fill-pattern": "Campus Background/Railroad ROW/1" }
+    },
+    {
+      "id": "Campus Background/Railroad ROW/0",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Campus Background",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 11.85,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#000000", "line-width": 0.266667 }
+    },
+    {
+      "id": "Electrical Substation/2",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Electrical Substation",
+      "minzoom": 13,
+      "layout": {},
+      "paint": { "fill-color": "#BAB7B0" }
+    },
+    {
+      "id": "Electrical Substation/1",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Electrical Substation",
+      "minzoom": 13,
+      "layout": {},
+      "paint": { "fill-color": "#CCCCCC" }
+    },
+    {
+      "id": "Electrical Substation/0",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Electrical Substation",
+      "minzoom": 13,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#9C9C9C", "line-width": 0.533333 }
+    },
+    {
+      "id": "Airport Runway",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Airport Runway",
+      "minzoom": 11.85,
+      "layout": {},
+      "paint": { "fill-color": "#CCCCCC", "fill-outline-color": "#B2B2B2" }
+    },
+    {
+      "id": "Greenbelt",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Greenbelt",
+      "minzoom": 12,
+      "layout": {},
+      "paint": { "fill-color": "#8A9C6A" }
+    },
+    { "id": "Pond/1", "type": "fill", "source": "esri", "source-layer": "Pond", "minzoom": 12, "layout": {}, "paint": {} },
+    {
+      "id": "Pond/0",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Pond",
+      "minzoom": 12,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#98C0CD", "line-width": 0.133333 }
+    },
+    {
+      "id": "Golf Course",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Golf Course",
+      "minzoom": 12,
+      "layout": {},
+      "paint": { "fill-color": "#779E34", "fill-outline-color": "#779E34" }
+    },
+    {
+      "id": "Rec Fields/Sports and Rec Field Area",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Sports and Rec Field Area",
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-color": "#5C8944", "fill-outline-color": "#E1E1E1" }
+    },
+    {
+      "id": "Rec Fields/Sports and Rec Field Line",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Sports and Rec Field Line",
+      "minzoom": 15.97,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#E1E1E1", "line-width": 0.266667 }
+    },
+    {
+      "id": "Sports Fields/Mitchell Tennis Center/Tennis Court/Tennis Court",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Tennis Court",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-color": "#8C4F42" }
+    },
+    {
+      "id": "Sports Fields/Mitchell Tennis Center/Tennis Court/Tennis Center",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Tennis Court",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-color": "#5C8944", "fill-outline-color": "#E1E1E1" }
+    },
+    {
+      "id": "Sports Fields/Mitchell Tennis Center/Tennis Line",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Tennis Line",
+      "minzoom": 15.97,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#E1E1E1", "line-width": 0.266667 }
+    },
+    {
+      "id": "Sports Fields/Anderson Track & Field/Field:2/Track Field/2",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Field:2",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-color": "#8E5752" }
+    },
+    {
+      "id": "Sports Fields/Anderson Track & Field/Field:2/Track Field/1",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Field:2",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-pattern": "Sports Fields/Anderson Track & Field/Field:2/Track Field/1" }
+    },
+    {
+      "id": "Sports Fields/Anderson Track & Field/Field:2/Track Field/0",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Field:2",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 13.85,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#E1E1E1", "line-width": 0.133333 }
+    },
+    {
+      "id": "Sports Fields/Anderson Track & Field/Field:2/Track Field Grass",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Field:2",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-color": "#5C8944" }
+    },
+    {
+      "id": "Sports Fields/Anderson Track & Field/Field Line:1",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Field Line:1",
+      "minzoom": 15.97,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#E1E1E1", "line-width": 0.266667 }
+    },
+    {
+      "id": "Sports Fields/Aggie Softball Complex/Field:1/Softball Grass/2",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Field:1",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-color": "#5C8944" }
+    },
+    {
+      "id": "Sports Fields/Aggie Softball Complex/Field:1/Softball Grass/1",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Field:1",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 13.85,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#5C8944", "line-width": 0.133333 }
+    },
+    {
+      "id": "Sports Fields/Aggie Softball Complex/Field:1/Softball Grass/0",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Field:1",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-color": "#8A9C6A" }
+    },
+    {
+      "id": "Sports Fields/Aggie Softball Complex/Field:1/Softball Dirt/2",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Field:1",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-color": "#A17435" }
+    },
+    {
+      "id": "Sports Fields/Aggie Softball Complex/Field:1/Softball Dirt/1",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Field:1",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 13.85,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#A17435", "line-width": 0.133333 }
+    },
+    {
+      "id": "Sports Fields/Aggie Softball Complex/Field:1/Softball Dirt/0",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Field:1",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-pattern": "Sports Fields/Aggie Softball Complex/Field:1/Softball Dirt/0" }
+    },
+    {
+      "id": "Sports Fields/Aggie Softball Complex/Field Line:2",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Field Line:2",
+      "minzoom": 15.97,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#E1E1E1", "line-width": 0.266667 }
+    },
+    {
+      "id": "Sports Fields/Olsen Field/Field:4/Baseball Field Grass/2",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Field:4",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-color": "#5C8944" }
+    },
+    {
+      "id": "Sports Fields/Olsen Field/Field:4/Baseball Field Grass/1",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Field:4",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 13.85,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#5C8944", "line-width": 0.133333 }
+    },
+    {
+      "id": "Sports Fields/Olsen Field/Field:4/Baseball Field Grass/0",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Field:4",
+      "filter": ["==", "_symbol", 0],
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-color": "#8A9C6A" }
+    },
+    {
+      "id": "Sports Fields/Olsen Field/Field:4/Baseball Field Dirt/2",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Field:4",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-color": "#A17435" }
+    },
+    {
+      "id": "Sports Fields/Olsen Field/Field:4/Baseball Field Dirt/1",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Field:4",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 13.85,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#A17435", "line-width": 0.133333 }
+    },
+    {
+      "id": "Sports Fields/Olsen Field/Field:4/Baseball Field Dirt/0",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Field:4",
+      "filter": ["==", "_symbol", 1],
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-pattern": "Sports Fields/Olsen Field/Field:4/Baseball Field Dirt/0" }
+    },
+    {
+      "id": "Sports Fields/Olsen Field/Field Line:3",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Field Line:3",
+      "minzoom": 15.97,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#E1E1E1", "line-width": 0.266667 }
+    },
+    {
+      "id": "Sports Fields/Kyle Field/Field:3",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Field:3",
+      "minzoom": 13.85,
+      "layout": {},
+      "paint": { "fill-color": "#5C8944", "fill-outline-color": "#CCCCCC" }
+    },
+    {
+      "id": "Sports Fields/Kyle Field/Field Line:4",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Field Line:4",
+      "minzoom": 15.97,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#E1E1E1", "line-width": 0.266667 }
+    },
+    {
+      "id": "Sports Fields/Kyle Field/Bevel",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Bevel",
+      "minzoom": 15.97,
+      "layout": {},
+      "paint": { "fill-color": "#F5F5F5", "fill-outline-color": "#500000" }
+    },
+    {
+      "id": "Sports Fields/Kyle Field/Mid Field",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Mid Field",
+      "minzoom": 15.97,
+      "layout": {},
+      "paint": { "fill-color": "#500000", "fill-outline-color": "#F5F5F5" }
+    },
+    {
+      "id": "Sports Fields/Kyle Field/End Zone",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "End Zone",
+      "minzoom": 15.97,
+      "layout": {},
+      "paint": { "fill-color": "#F5F5F5", "fill-outline-color": "#500000" }
+    },
+    {
+      "id": "Brazos County Road Centerline:2/1",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Brazos County Road Centerline:2",
+      "minzoom": 11.85,
+      "maxzoom": 13,
+      "layout": { "line-cap": "square", "line-join": "round" },
+      "paint": { "line-color": "#828282", "line-width": 2.66667 }
+    },
+    {
+      "id": "Brazos County Road Centerline:2/0",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Brazos County Road Centerline:2",
+      "minzoom": 11.85,
+      "maxzoom": 13,
+      "layout": { "line-cap": "square", "line-join": "round" },
+      "paint": { "line-color": "#828282", "line-width": 2.0392 }
+    },
+    {
+      "id": "Sidewalk",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Sidewalk",
+      "minzoom": 14.85,
+      "layout": {},
+      "paint": { "fill-color": "#DED2BC", "fill-outline-color": "#DED2BC" }
+    },
+    {
+      "id": "Fountain/1",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Fountain",
+      "minzoom": 15.97,
+      "layout": {},
+      "paint": {}
+    },
+    {
+      "id": "Fountain/0",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Fountain",
+      "minzoom": 15.97,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#9EBBD7", "line-width": 0.133333 }
+    },
+    {
+      "id": "Street Pavement",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Street Pavement",
+      "minzoom": 13,
+      "layout": {},
+      "paint": { "fill-color": "#CCCCCC", "fill-outline-color": "#B2B2B2" }
+    },
+    {
+      "id": "Restricted Street 6am - 6pm",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Restricted Street 6am - 6pm",
+      "minzoom": 13,
+      "layout": {},
+      "paint": { "fill-color": "#F57A7A", "fill-outline-color": "#F57A7A" }
+    },
+    {
+      "id": "Private Parking Lot",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Private Parking Lot",
+      "minzoom": 13,
+      "layout": {},
+      "paint": { "fill-color": "#BAB7B0", "fill-outline-color": "#828282" }
+    },
+    {
+      "id": "Surface Parking",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Surface Parking",
+      "minzoom": 13,
+      "layout": {},
+      "paint": { "fill-color": "#BAB7B0", "fill-outline-color": "#828282" }
+    },
+    {
+      "id": "Parking Line",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Parking Line",
+      "minzoom": 15.97,
+      "layout": { "line-cap": "round", "line-join": "round" },
+      "paint": { "line-color": "#F5F5F5", "line-width": 1.33333 }
+    },
+    {
+      "id": "Railroad/2",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Railroad",
+      "minzoom": 13,
+      "layout": { "line-join": "round" },
+      "paint": { "line-color": "#000000", "line-width": 1.06667 }
+    },
+    {
+      "id": "Railroad/1",
+      "type": "line",
+      "source": "esri",
+      "source-layer": "Railroad",
+      "minzoom": 13,
+      "layout": { "line-join": "round" },
+      "paint": { "line-color": "#000000", "line-width": 1.06667 }
+    },
+    {
+      "id": "Railroad/0",
+      "type": "symbol",
+      "source": "esri",
+      "source-layer": "Railroad",
+      "minzoom": 13,
+      "layout": {
+        "symbol-placement": "line",
+        "icon-image": "Railroad/0",
+        "icon-rotate": -90,
+        "symbol-spacing": 9.33333,
+        "icon-rotation-alignment": "map",
+        "icon-allow-overlap": true
+      },
+      "paint": { "icon-color": "#000000" }
+    },
+    {
+      "id": "Off Campus Building",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Off Campus Building",
+      "minzoom": 14.85,
+      "layout": {},
+      "paint": { "fill-color": "#FFFFFF", "fill-outline-color": "#B2B2B2" }
+    },
+    {
+      "id": "Visitor Center",
+      "type": "symbol",
+      "source": "esri",
+      "source-layer": "Visitor Center",
+      "minzoom": 15.97,
+      "layout": { "icon-image": "Visitor Center", "icon-allow-overlap": true },
+      "paint": { "icon-color": "#FFFFFF" }
+    },
+    {
+      "id": "Garage Parking",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Garage Parking",
+      "minzoom": 13,
+      "layout": {},
+      "paint": { "fill-color": "#BAB7B0", "fill-outline-color": "#828282" }
+    },
+    {
+      "id": "Structure",
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Structure",
+      "layout": {},
+      "paint": { "fill-color": "#DEC8FA", "fill-outline-color": "#6E6E6E" }
+    },
+    {
+      "id": "Road Names/label/Local Street",
+      "type": "symbol",
+      "source": "esri",
+      "source-layer": "Road Names/label",
+      "filter": ["==", "_label_class", 2],
+      "minzoom": 16,
+      "layout": {
+        "symbol-placement": "line",
+        "text-font": ["Arial Bold"],
+        "text-size": 12,
+        "text-letter-spacing": 0.1,
+        "text-field": "{_name}",
+        "text-optional": true
+      },
+      "paint": { "text-color": "#000000" }
+    },
+    {
+      "id": "Road Names/label/Major Street",
+      "type": "symbol",
+      "source": "esri",
+      "source-layer": "Road Names/label",
+      "filter": ["==", "_label_class", 1],
+      "minzoom": 14,
+      "layout": {
+        "symbol-placement": "line",
+        "text-font": ["Arial Bold"],
+        "text-size": 13.3333,
+        "text-letter-spacing": 0.1,
+        "text-field": "{_name}",
+        "text-optional": true
+      },
+      "paint": { "text-color": "#000000" }
+    },
+    {
+      "id": "Surface Parking/label/Default",
+      "type": "symbol",
+      "source": "esri",
+      "source-layer": "Surface Parking/label",
+      "minzoom": 15.17,
+      "layout": {
+        "text-font": ["Arial Bold"],
+        "text-size": 12,
+        "text-letter-spacing": 0.03,
+        "text-field": "{_name}",
+        "text-optional": true
+      },
+      "paint": { "text-color": "#000000", "text-halo-color": "#BAB7B0", "text-halo-width": 0.8 }
+    },
+    {
+      "id": "Rec Fields/Sports and Rec Field Area/label/Default",
+      "type": "symbol",
+      "source": "esri",
+      "source-layer": "Sports and Rec Field Area/label",
+      "minzoom": 15.17,
+      "layout": { "text-font": ["Arial Bold"], "text-size": 14.6667, "text-field": "{_name}", "text-optional": true },
+      "paint": { "text-color": "#FFFFFF", "text-halo-color": "#5C8944", "text-halo-width": 1.33333 }
+    },
+    {
+      "id": "Land Use/label/Default",
+      "type": "symbol",
+      "source": "esri",
+      "source-layer": "Land Use/label",
+      "minzoom": 15,
+      "layout": { "text-font": ["Arial Regular"], "text-size": 12, "text-field": "{_name}", "text-optional": true },
+      "paint": { "text-color": "#000000" }
+    }
+  ]
+}

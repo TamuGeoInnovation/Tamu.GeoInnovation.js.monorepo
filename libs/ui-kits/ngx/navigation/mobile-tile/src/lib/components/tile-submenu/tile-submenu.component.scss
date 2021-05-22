@@ -1,0 +1,33 @@
+@import 'libs/sass/mixins';
+
+.header {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+  margin-bottom: 1rem;
+
+  .header__name {
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+
+  .material-icons {
+    margin-right: 1rem;
+  }
+}
+
+::ng-deep {
+  .body {
+    text-align: center;
+
+    p {
+      margin: 0;
+      padding: 1.25rem 0;
+
+      // Add border bottom to all submenu list items except the last
+      &:not(:last-child) {
+        border-bottom: 1pt solid #eeeeee;
+      }
+    }
+  }
+}

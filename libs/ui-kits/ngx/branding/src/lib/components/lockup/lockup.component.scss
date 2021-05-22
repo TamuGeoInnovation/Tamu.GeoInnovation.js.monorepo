@@ -1,0 +1,17 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+}
+
+.entity-name {
+  text-align: left;
+  font-size: 1.5em;
+  margin-left: 0.5rem;
+}
+
+img {
+  height: 7em;
+}

@@ -1,0 +1,12 @@
+<table>
+  <tr>
+    <th>Type</th>
+    <th>Updated</th>
+    <th class="action-row">Actions</th>
+  </tr>
+  <tr *ngFor="let entity of ($entities | async)">
+    <td>{{entity.type}}</td>
+    <td>{{entity.updated | date:'short'}}</td>
+    <td><span [routerLink]="[entity.guid]" routerLinkActive="active" class="material-icons action alt" title="Edit entity">edit</span><span (click)="deleteEntity(entity)" class="material-icons action alt" title="Delete entity">delete</span></td>
+  </tr>
+</table>

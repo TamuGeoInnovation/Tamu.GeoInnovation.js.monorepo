@@ -1,0 +1,26 @@
+@import 'libs/sass/mixins';
+@import '../base/base.component';
+
+:host {
+  position: absolute;
+  top: calc(100% - 6.25rem);
+  width: 100%;
+  height: auto;
+  display: block;
+  z-index: 9;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+}
+
+.popup {
+  position: relative;
+  width: inherit;
+  height: initial;
+  bottom: initial;
+  border-top-right-radius: 1rem;
+  border-top-left-radius: 1rem;
+  padding-top: 1.5rem;
+  touch-action: none;
+  pointer-events: initial;
+  overflow: hidden;
+}

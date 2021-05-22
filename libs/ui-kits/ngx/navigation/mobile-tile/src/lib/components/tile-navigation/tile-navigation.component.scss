@@ -1,0 +1,39 @@
+@import 'libs/sass/mixins';
+
+:host {
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.menu-host {
+  @include flexbox();
+  @include flex-direction(column);
+  @include justify-content(center);
+  position: fixed;
+  background: #fafafa;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1.5rem 2rem;
+  font-size: 1.5rem;
+}
+
+.tiles {
+  position: relative;
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(center);
+  @include align-items(center);
+  @include flex-wrap(wrap);
+}

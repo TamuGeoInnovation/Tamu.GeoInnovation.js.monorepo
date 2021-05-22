@@ -1,0 +1,15 @@
+<div class="map-info-container">
+  <!-- Map component -->
+  <tamu-gisc-esri-map [config]="config" (loaded)="continue($event); loaded.next(true)" [ngClass]="{ mobile: (isMobile | async) === false }"></tamu-gisc-esri-map>
+
+  <router-outlet></router-outlet>
+</div>
+
+<!-- Application Loader -->
+<tamu-gisc-page-loader [toggle]="(loaded | async) === false">
+  <div class="logo">
+    <tamu-gisc-lockup theme="dark" type="service">
+      <span class="entity">UES Cold Water Valve System</span>
+    </tamu-gisc-lockup>
+  </div>
+</tamu-gisc-page-loader>

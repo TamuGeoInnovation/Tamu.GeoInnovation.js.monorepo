@@ -1,0 +1,40 @@
+@import 'libs/sass/mixins';
+@import '../../maps.component.scss';
+
+#mortality-zero {
+  background-color: #f2f0f7;
+}
+#mortality-one {
+  background-color: #dadaeb;
+}
+#mortality-ten {
+  background-color: #bcbddc;
+}
+#mortality-fifty {
+  background-color: #9e9ac8;
+}
+#mortality-seventy-five {
+  background-color: #756bb1;
+}
+#mortality-one-hundred {
+  background-color: #54278f;
+}
+
+#infection-zero {
+  background-color: #fff7ec;
+}
+#infection-one {
+  background-color: #fde6e6;
+}
+#infection-ten {
+  background-color: #fdc4c4;
+}
+#infection-one-hundred {
+  background-color: #fc8b8b;
+}
+#infection-five-hundred {
+  background-color: #d18080;
+}
+#infection-one-thousand {
+  background-color: #ae8080;
+}

@@ -1,0 +1,17 @@
+<div class="popup-section">
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let prop of (data.attributes | keyvalue)">
+        <td>{{ prop.key }}</td>
+        <td>{{ prop.value }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

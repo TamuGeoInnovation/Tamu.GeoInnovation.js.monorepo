@@ -1,0 +1,49 @@
+@import 'libs/sass/mixins';
+
+.map-configuration-container {
+  @include flexbox();
+  @include flex-direction(row);
+}
+
+.map-configuration,
+.map-preview {
+  @include flexbox();
+  @include flex-direction(column);
+  @include flex(1);
+}
+
+tamu-gisc-esri-map {
+  height: 20rem;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+#configurator-container {
+  @include flex-direction(column-reverse);
+
+  &:hover {
+    .layer-configuration {
+      .handle {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .layer-configuration {
+    position: relative;
+
+    .handle {
+      position: absolute;
+      top: 0.25rem;
+      left: -2.5rem;
+      padding: 0.5rem;
+      opacity: 0;
+      cursor: pointer;
+      @include transition(opacity 0.3s);
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}

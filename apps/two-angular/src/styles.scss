@@ -1,0 +1,66 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'libs/sass/1140';
+@import 'libs/sass/mixins';
+@import 'libs/sass/components/datetime-picker';
+
+html {
+  line-height: 1.4;
+  font-size: 16px;
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #332c2c;
+  font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  // font-family: 'Oswald', sans-serif;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.container12 {
+  @include flexbox();
+  @include flex-direction(column);
+  padding: 1rem 0;
+}
+
+p {
+  margin-bottom: 0.5rem;
+  &.weight-2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+}
+
+.form-block {
+  margin-bottom: 1.5rem;
+}
+
+button {
+  font-size: 1rem;
+  background: #500000;
+  color: #fafafa;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  @include transition(background-color 0.3s, color 0.3s);
+
+  &[disabled] {
+    background: #b0b0b0;
+    color: #212121;
+  }
+
+  &:active {
+    background: lighten(#500000, 3%);
+  }
+}

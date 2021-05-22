@@ -1,0 +1,61 @@
+@import 'libs/sass/mixins';
+
+.bus-timetable {
+  text-align: center;
+  border-collapse: collapse;
+  margin-top: 7px;
+
+  td,
+  th {
+    border: 1px solid grey;
+    margin: 0;
+    padding: 3px;
+  }
+
+  th {
+    background-color: #ccc;
+  }
+}
+
+.bus-load {
+  margin-top: 5px;
+  color: #444;
+}
+
+.stops-accordion {
+  margin-bottom: 0.5rem;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0.5rem 0;
+
+  .title {
+    font-weight: 600;
+    padding-bottom: 0;
+    padding: 0.5rem 0;
+    cursor: pointer;
+
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+
+    i {
+      font-size: 1rem;
+      font-weight: 400;
+      @include transform(rotate3d(1, 1, 0, 0deg));
+      @include transition(transform 0.35s);
+    }
+
+    &.expanded {
+      i {
+        @include transform(rotate3d(1, 1, 0, 170deg));
+      }
+    }
+  }
+
+  ul {
+    margin-bottom: 0 !important;
+    list-style: disc;
+    list-style-position: inside;
+    margin-left: 0.5rem;
+  }
+}

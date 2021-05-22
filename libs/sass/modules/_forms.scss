@@ -1,0 +1,120 @@
+@import 'libs/sass/mixins';
+
+form {
+  @include flexbox();
+  @include flex-direction(column);
+
+  // Add margin top and bottom to the form
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  .form-collection {
+    display: inherit;
+    @include justify-content(space-around);
+
+    // Add top and bottom margin to the form row itself
+    margin-top: 1rem;
+    margin-bottom: 0.75rem;
+
+    // First instance of form-row in a form does not need margin top
+    &:first-child {
+      margin-top: 0;
+    }
+
+    // First instance of form-row in a form does not need margin top
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &.row {
+      @include flex-direction(row);
+
+      // For any element inside a form row. Items in a form row should,
+      // be lined up horizontally
+      //
+      // TODO: This selector is expensive. Create an app selector variable,
+      // that only includes all possible element matchers
+      & > * {
+        @include flex(1);
+        margin-right: 0.5rem;
+        margin-left: 0.5rem;
+
+        // First item in a form row does not need margin left
+        &:first-child {
+          margin-left: 0;
+        }
+
+        // Last item in a form group does not need margin right
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+
+    &.column {
+      @include flex-direction(column);
+    }
+
+    &.pad-top {
+      margin-top: 1rem;
+    }
+
+    &.pad-bottom {
+      margin-top: 1rem;
+    }
+  }
+
+  .form-section {
+    display: inherit;
+    @include flex-direction(column);
+    margin-bottom: 1rem;
+    font-weight: 400;
+
+    // Do not add extra margin to the last instance of form section inside a form.
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    // Two things can exist in a form section toolbar: title and custom actions
+    .form-section-toolbar {
+      display: inherit;
+      border-bottom: 1pt solid #eeeeee;
+      margin-bottom: 1.75rem;
+      font-weight: 600;
+
+      @include flex-direction(row);
+      @include justify-content(space-between);
+      @include align-items(center);
+
+      .form-section-name,
+      .form-section-actions {
+        padding: 0.5rem;
+      }
+
+      .form-section-name {
+        p {
+          position: relative;
+          font-size: 0.9rem;
+          font-weight: inherit;
+          color: #525252;
+          text-transform: uppercase;
+          text-emphasis: center;
+          margin-top: 0;
+          margin-bottom: 0;
+          padding-bottom: 0;
+        }
+      }
+    }
+
+    .form-section-body {
+      display: inherit;
+      @include flex-direction(column);
+
+      .form-input-description {
+        margin-top: 0.75rem;
+        margin-bottom: 0.75rem;
+        margin-left: 0.75rem;
+      }
+    }
+  }
+}

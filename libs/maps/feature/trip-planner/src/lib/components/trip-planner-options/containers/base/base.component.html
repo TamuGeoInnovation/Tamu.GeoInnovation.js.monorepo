@@ -1,0 +1,18 @@
+<div>
+  <div class="sidebar-component-name">
+    <p><span class="material-icons" id="options-return" (click)="returnOptions()" alt="Return to trip planner" title="Return to trip planner" tabindex="0" role="button">arrow_back</span> General</p>
+  </div>
+
+  <div class="sidebar-component-content-container">
+    <!-- // TODO: For disabled state, check siblings for any existing accessible mode. -->
+    <tamu-gisc-checkbox (changed)="updateOption('accessible', $event)" [checked]="getOptionValue('accessible') | async" [disabled]="(currentRuleAccessibility | async) === false" [label]="'Accessible Friendly Directions'" [description]="'Will attempt to calculate a route with accessible access such as ramps, doors, etc.'"></tamu-gisc-checkbox>
+
+    <tamu-gisc-checkbox *ngIf="isDev | async" (changed)="updateOption('nearest_door', $event)" [checked]="getOptionValue('nearest_door') | async" [disabled]="true" [label]="'Use Nearest Door'" [description]="'Overrides trip start and end points using an algorithm that finds the nearest doors (if building intersect) between them.'"></tamu-gisc-checkbox>
+
+    <tamu-gisc-checkbox *ngIf="isDev | async" (changed)="updateOption('a_b_networks', $event)" [checked]="getOptionValue('a_b_networks') | async" [disabled]="true" [label]="'Use A/B Networks'" [description]="'If A/B networks are available, select a random one on each trip calculation. Manual network selection will disable this feature.'"></tamu-gisc-checkbox>
+
+    <tamu-gisc-checkbox *ngIf="isDev | async" (changed)="updateOption('polygon_barriers', $event)" [checked]="getOptionValue('polygon_barriers') | async" [disabled]="true" [label]="'Use Polygon Barriers'" [description]="'If selected, every trip calculation will include the construction layer as polygon barriers in the request.'"></tamu-gisc-checkbox>
+  </div>
+</div>
+
+<ng-template render-host></ng-template>

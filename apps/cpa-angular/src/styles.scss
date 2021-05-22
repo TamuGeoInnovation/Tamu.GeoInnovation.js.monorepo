@@ -1,0 +1,170 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'libs/cpa/sass/variables';
+@import 'libs/sass/mixins';
+
+@import 'libs/sass/1140';
+@import 'libs/sass/dom_flexbox';
+@import 'libs/sass/modules/forms';
+@import 'libs/sass/modules/loaders';
+@import 'libs/sass/modules/tabs';
+@import 'libs/sass/modules/sidebar_menu';
+@import 'libs/sass/modules/tables';
+@import 'libs/sass/spacing';
+
+html {
+  height: 100%;
+  font-weight: 300;
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #424242;
+}
+
+body {
+  height: inherit;
+  width: inherit;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  padding-bottom: 0.75rem;
+}
+
+h3 {
+  padding-bottom: 0.5rem;
+}
+
+p {
+  padding-bottom: 0.75rem;
+}
+
+a {
+  color: $active-color;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+section {
+  margin: 2.5rem 0;
+
+  .section-header {
+    margin-bottom: 2rem;
+  }
+}
+
+.material-icons-container {
+  line-height: 0;
+}
+
+.material-icons {
+  color: #bdbdbd;
+  font-size: 1.4rem;
+  @include transition(color 0.3s);
+
+  &.alt {
+    color: hsla(216, 20%, 60%, 1);
+  }
+
+  &.action {
+    cursor: pointer;
+
+    &:hover {
+      color: #616161;
+    }
+
+    &.alt {
+      &:hover {
+        color: hsl(216, 63%, 59%);
+      }
+    }
+
+    &.error {
+      &:hover {
+        color: hsla(10, 100%, 59%, 1);
+      }
+    }
+  }
+}
+
+.view-container {
+  margin-top: 1rem;
+}
+
+.record-item {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  @include align-content(center);
+  padding: 0.4rem 0;
+
+  .record-title {
+    font-weight: 500;
+  }
+
+  .material-icons-container {
+    .material-icons {
+      padding: 0 0.25rem;
+    }
+  }
+}
+
+.actionable-header {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  @include align-items(center);
+}
+
+.table-actions {
+  a {
+    margin: 0 0.5rem;
+  }
+}
+
+// Dragula CSS
+
+/* in-flight clone */
+.gu-mirror {
+  position: fixed !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+  opacity: 0.8;
+  -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=80)';
+  filter: alpha(opacity=80);
+  pointer-events: none;
+}
+/* high-performance display:none; helper */
+.gu-hide {
+  left: -9999px !important;
+}
+/* added to mirrorContainer (default = body) while dragging */
+.gu-unselectable {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+/* added to the source element while its mirror is dragged */
+.gu-transit {
+  opacity: 0.2;
+  -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=20)';
+  filter: alpha(opacity=20);
+}
+
+// Notification tweaks
+tamu-gisc-notification-item {
+  @include transform(translateY(100%) translateX(-10rem));
+
+  .status {
+    background: $active-color !important;
+  }
+}

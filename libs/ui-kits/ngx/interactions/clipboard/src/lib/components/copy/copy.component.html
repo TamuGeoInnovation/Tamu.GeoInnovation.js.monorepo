@@ -1,0 +1,4 @@
+<div class="copy-element" clipboard-copy [text]="text" (copying)="copying = $event" (click)="copyCoordsClick()">
+  <div class="copy-text" tabindex="0" aria-label="Click to copy to clipboard." role="button">{{ text }}</div>
+  <div class="copy-button" tabindex="0" role="button" aria-label="Click to copy to clipboard." copy-label="Copied!" [class.copying]="copying | async">Copy</div>
+</div>

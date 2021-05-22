@@ -1,0 +1,64 @@
+@import 'libs/sass/mixins';
+
+.loader {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: #500000;
+  z-index: 9999;
+  opacity: 1;
+  text-align: center;
+  color: #ffffff;
+  @include transition(opacity 0.3s);
+
+  .content {
+    width: 20rem;
+  }
+
+  .progress-bar {
+    margin-top: 2rem;
+    background: #ffffff;
+    height: 0.3rem;
+    width: 100%;
+    border-radius: 99rem;
+    max-width: 100%;
+    @include transition(all 0.3s);
+    @include transform(translateZ(0));
+
+    &.anim {
+      @include animation(do-progress 15s forwards);
+    }
+  }
+
+  p {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    font-weight: 300;
+    font-style: italic;
+    color: #eeeeee;
+  }
+
+  &.fade-out {
+    opacity: 0;
+  }
+}
+
+@keyframes do-progress {
+  0% {
+    max-width: 0%;
+  }
+
+  100% {
+    max-width: 90%;
+  }
+}
+
+@media only screen and (max-width: 350px) {
+  .loader {
+    .content {
+      width: 75%;
+    }
+  }
+}

@@ -1,0 +1,23 @@
+@import 'libs/sass/mixins';
+
+h5 {
+  padding-bottom: 0.4rem;
+}
+
+.site-container {
+  @include flexbox();
+  @include flex-direction(column);
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.site-item {
+  @include flexbox();
+  @include flex-direction(row);
+  padding-bottom: 0.25rem;
+}
+
+.material-icons {
+  margin-right: 0.25rem;
+  color: hsl(223, 15%, 60%);
+}

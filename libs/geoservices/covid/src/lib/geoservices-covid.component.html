@@ -1,0 +1,52 @@
+<!-- Persistent desktop header -->
+<tamu-gisc-header-covid *ngIf="(rp.isMobile | async) === false"></tamu-gisc-header-covid>
+
+<!-- Persistent mobile header -->
+<tamu-gisc-header-mobile *ngIf="(rp.isMobile | async)"></tamu-gisc-header-mobile>
+
+<!-- Persistent tile nav menu trigger -->
+<tamu-gisc-hamburger-trigger *ngIf="rp.isMobile | async" (poked)="mobileNavToggle.next($event)"></tamu-gisc-hamburger-trigger>
+
+<div *ngIf="(rp.isMobile | async)">
+  <tamu-gisc-tile-navigation [toggle]="mobileNavToggle" [defaultToggle]="false">
+    <tamu-gisc-tile>
+      <tamu-gisc-tile-icon><div class="material-icons">widgets</div></tamu-gisc-tile-icon>
+      <tamu-gisc-tile-title>Data</tamu-gisc-tile-title>
+      <!-- <tamu-gisc-tile-submenu *giscTileSubmenu>
+        <p>Submit Data</p>
+        <p>View</p>
+        <p>Reverse Geocoding</p>
+        <p>Geocode Correction</p>
+        <p>Census Intersection</p>
+        <p>K-Nearest Search</p>
+        <p>Drag &amp; Drop Mapping</p>
+      </tamu-gisc-tile-submenu> -->
+    </tamu-gisc-tile>
+
+    <tamu-gisc-tile>
+      <tamu-gisc-tile-icon><div class="material-icons">help_outline</div></tamu-gisc-tile-icon>
+      <tamu-gisc-tile-title>Maps</tamu-gisc-tile-title>
+      <!-- <tamu-gisc-tile-submenu *giscTileSubmenu>
+        <p>API Documentation</p>
+        <p>Contact Us</p>
+      </tamu-gisc-tile-submenu> -->
+    </tamu-gisc-tile>
+
+    <tamu-gisc-tile>
+      <tamu-gisc-tile-icon><div class="material-icons">menu_book</div></tamu-gisc-tile-icon>
+      <tamu-gisc-tile-title>Resources</tamu-gisc-tile-title>
+    </tamu-gisc-tile>
+
+    <!-- <tamu-gisc-tile>
+      <tamu-gisc-tile-icon><div class="material-icons">person_outline</div></tamu-gisc-tile-icon>
+      <tamu-gisc-tile-title>Login</tamu-gisc-tile-title>
+    </tamu-gisc-tile> -->
+  </tamu-gisc-tile-navigation>
+</div>
+
+<router-outlet></router-outlet>
+
+<!-- Persistent footer -->
+<tamu-gisc-footer>
+  <tamu-gisc-footer-legal></tamu-gisc-footer-legal>
+</tamu-gisc-footer>

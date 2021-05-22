@@ -1,0 +1,13 @@
+<div>
+  <div class="loader" *ngIf="!($userClasses | async)"></div>
+  <div id="default-content" class="column8" *ngIf="$userClasses">
+    <div class="card leader-3 trailer-2">
+      <h2>My Classes</h2>
+      <div class="row" *ngFor="let class of ($userClasses | async)">
+        <div class="input-control">
+          <tamu-gisc-checkbox [label]="class.dept + ' ' + class.code + ' | ' + class.title" [checked]="class.userInClass" (changed)="setClassValue(class, $event)"> </tamu-gisc-checkbox>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

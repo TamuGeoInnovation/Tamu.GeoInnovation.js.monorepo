@@ -1,0 +1,31 @@
+<div class="spinning-loader" *ngIf="(scenarios | async) === null; else scenariosContent"></div>
+
+<ng-template #scenariosContent>
+  <div *ngIf="(scenarios | async).length === 0; else scenariosTable">
+    <p class="leader-1 trailer-1">There are no scenarios. <a [routerLink]="['create']">Get started.</a></p>
+  </div>
+
+  <ng-template #scenariosTable>
+    <div class="flex flex-column align-center">
+      <div class="floating-table">
+        <div class="floating-table-header">
+          <div class="floating-row">
+            <div class="column">Name</div>
+            <div class="column">Workshop</div>
+            <div class="column"></div>
+          </div>
+        </div>
+
+        <div class="floating-table-body">
+          <div class="floating-row" *ngFor="let scenario of scenarios | async">
+            <div class="column">{{scenario.title}}</div>
+            <div class="column">{{scenario.workshopScenario?.workshop?.title}}</div>
+            <div class="column table-actions">
+              <a [routerLink]="['./edit', scenario.guid]">Edit</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>

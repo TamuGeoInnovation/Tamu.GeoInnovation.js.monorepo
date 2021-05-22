@@ -1,0 +1,20 @@
+@import '~libs/sass/mixins';
+
+//  ==========================================================================
+//   Map Styles
+//  ==========================================================================
+@import 'https://js.arcgis.com/4.13/esri/css/main.css';
+
+:host {
+  & > div {
+    height: 100%;
+    width: 100%;
+    min-height: 1px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  :host {
+    height: 100%; // Needed for iOS Safari
+  }
+}

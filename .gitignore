@@ -34,6 +34,18 @@ yarn-error.log
 testem.log
 /typings
 
+# Test Coverage
+libs/coverage
+
 # System Files
 .DS_Store
 Thumbs.db
+
+# TypeORM Configurations
+ormconfig.*
+
+# OIDC Configurations
+oidcconfig.*
+oidc-client-config.*
+oidc-provider-config.*
+oidc.db

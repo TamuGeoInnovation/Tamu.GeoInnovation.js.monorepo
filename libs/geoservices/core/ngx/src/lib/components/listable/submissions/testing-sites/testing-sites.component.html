@@ -1,0 +1,24 @@
+<div class="flex flex-column align-start">
+  <ng-container *ngFor="let site of (testingSites | async)">
+    <div class="site-container" *ngIf="site.info && site.location">
+      <h5>{{site.info.locationName}}</h5>
+
+      <div class="site-item" *ngIf="site.location">
+        <span class="material-icons site-detail-icon">place</span>
+        <div class="form-section-name">{{site.location.county}} county, {{site.location.state}}</div>
+      </div>
+
+      <div class="site-item" *ngIf="site.info.locationPhoneNumber">
+        <span class="material-icons site-detail-icon">phone</span>
+        <div class="form-section-name">{{site.info.locationPhoneNumber | phoneNumberFormat}}</div>
+      </div>
+
+      <div class="site-item" *ngIf="site.info.notes">
+        <span class="material-icons site-detail-icon">language</span>
+        <!-- TODO: Need to write a pipe to parse url into host name only -->
+        <!-- <div class="form-section-name"><a href="{{site.info.notes}}">{{site.info.notes}}</a></div>-->
+        <div class="form-section-name"><a href="{{site.info.notes}}" target="_blank" rel="noopener noreferrer">Website</a></div>
+      </div>
+    </div>
+  </ng-container>
+</div>

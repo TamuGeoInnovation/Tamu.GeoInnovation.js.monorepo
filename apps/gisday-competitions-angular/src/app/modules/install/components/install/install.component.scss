@@ -1,0 +1,22 @@
+@import 'libs/sass/mixins';
+
+:host {
+  padding: 1rem;
+  @include flexbox();
+  @include flex-direction(column);
+  // @include justify-content(center);
+  @include align-items(center);
+}
+
+h1 {
+  margin-bottom: 1rem;
+}
+
+.app-install {
+  @include flexbox();
+  @include flex-direction(column);
+
+  &.mobile {
+    width: 100%;
+  }
+}

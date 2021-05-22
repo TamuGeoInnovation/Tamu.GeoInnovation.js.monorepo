@@ -1,0 +1,18 @@
+@import 'libs/sass/mixins';
+@import 'libs/sass/components/sidebar';
+
+.group {
+  margin-bottom: 1rem;
+}
+
+.group-name {
+  font-weight: 600;
+  padding-bottom: 0.3rem;
+}
+
+.routes {
+  @include flexbox();
+  @include flex-direction(row);
+  @include flex-wrap(wrap);
+  @include justify-content(space-around);
+}

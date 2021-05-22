@@ -1,0 +1,16 @@
+ul {
+  list-style: none;
+  margin-left: 0;
+  color: inherit;
+
+  li {
+    font-size: 0.9rem;
+    color: inherit;
+
+    a {
+      color: inherit;
+      font-weight: inherit;
+      font-size: inherit;
+    }
+  }
+}

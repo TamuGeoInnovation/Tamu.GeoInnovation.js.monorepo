@@ -1,0 +1,126 @@
+<form [formGroup]="form" (ngSubmit)="submitWorkshop()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>General</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-textbox type="text" formControlName="title" placeholder="Title" floatLabel="true"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox type="textarea" formControlName="description" placeholder="Description" floatLabel="true" rows="5"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection column">
+        <p class="form-input-description">A user-friendly URL alias that can be used to access the workshop instead of only relying on the randomly generated workshop unique identifier.</p>
+        <tamu-gisc-textbox type="text" formControlName="alias" placeholder="Alias (Optional)" floatLabel="true"></tamu-gisc-textbox>
+        <p class="form-input-description" *ngIf="form.controls?.alias?.value?.length > 0">This workshop will be accessible through {{host}}/viewer/workshop/{{form.controls.alias.value}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section" *ngIf="isExisting | async">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Contextual Snapshots</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <p *ngIf="(contextualSnapshotList | async)?.length === 0">No contextual snapshots have been created yet.</p>
+
+      <div class="form-collection column" *ngIf="(contextualSnapshotList | async)?.length > 0">
+        <p>Select a contextual snapshot from the dropdown list below to add to the workshop</p>
+        <tamu-gisc-select [data]="contextualSnapshotList | async" placeholder="Select contextual snapshot" [displayTemplate]="'title'" (changed)="submitWorkshopContext($event)"></tamu-gisc-select>
+      </div>
+
+      <div class="form-collection column" *ngIf="form.controls?.contexts.value.length > 0">
+        <div class="record-item" *ngFor="let context of form.controls.contexts.value">
+          <div class="record-title">{{ context.title }}</div>
+          <div class="record-actions material-icons-container">
+            <span class="material-icons action error" title="Delete Workshop" (click)="removeContext(context)">delete</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section" *ngIf="isExisting | async">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Snapshots</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <p *ngIf="(snapshotList | async)?.length === 0">No snapshots have been created yet. <a [routerLink]="['/admin/snapshots/create']">Create a workshop snapshot</a> to be able to add it to the workshop.</p>
+
+      <div class="form-collection column" *ngIf="(snapshotList | async)?.length > 0">
+        <p>Select a snapshot from the dropdown list below to add to the workshop.</p>
+
+        <tamu-gisc-select [data]="snapshotList | async" placeholder="Select snapshot" [displayTemplate]="'title'" (changed)="addSnapshot($event)"></tamu-gisc-select>
+      </div>
+
+      <div class="form-collection column" *ngIf="form.controls?.snapshots.value.length > 0" dragula="SNAPSHOTS" [(dragulaModel)]="form.controls.snapshots.value">
+        <div class="record-item" *ngFor="let snapshot of form.controls.snapshots.value">
+          <div class="l-container">
+            <div class="handle"><span class="material-icons">drag_handle</span></div>
+            <div class="record-title">{{ snapshot.title }}</div>
+          </div>
+
+          <div class="r-container record-actions material-icons-container">
+            <span class="material-icons action error" title="Delete Workshop" (click)="removeSnapshot(snapshot)">delete</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section" *ngIf="isExisting | async">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Scenarios</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <p *ngIf="(scenarioList | async)?.length === 0">There are no associated scenarios with this workshop. <a [routerLink]="['/admin/scenarios/create']">Create a workshop scenario</a> to add/remove.</p>
+
+      <div class="form-collection column" *ngIf="(scenarioList | async)?.length > 0">
+        <p>Select a scenario from the dropdown list below to add to the workshop.</p>
+
+        <tamu-gisc-select [data]="scenarioList | async" placeholder="Select scenario" [displayTemplate]="'title'" (changed)="addScenario($event)"></tamu-gisc-select>
+      </div>
+
+      <div class="form-collection column" *ngIf="form.controls?.scenarios.value.length > 0" dragula="SCENARIOS" [(dragulaModel)]="form.controls.scenarios.value">
+        <div class="record-item" *ngFor="let scenario of form.controls.scenarios.value">
+          <div class="l-container">
+            <div class="handle"><span class="material-icons">drag_handle</span></div>
+            <div class="record-title">{{ scenario.title }}</div>
+          </div>
+          <div class="record-actions material-icons-container">
+            <span class="material-icons action error" title="Delete Workshop" (click)="removeScenario(scenario)">delete</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <ng-container *ngIf="(isExisting | async) === false">
+          <tamu-gisc-button type="submit" value="Create" [disabled]="!form.valid"></tamu-gisc-button>
+        </ng-container>
+
+        <ng-container *ngIf="isExisting | async">
+          <tamu-gisc-button type="submit" value="Update" [disabled]="!form.valid"></tamu-gisc-button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</form>

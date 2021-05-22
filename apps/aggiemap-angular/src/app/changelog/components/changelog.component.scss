@@ -1,0 +1,176 @@
+@import 'libs/sass/variables';
+@import 'libs/sass/mixins';
+
+.changelog-event {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  border-bottom: 1px solid #e0e0e0;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .changelog-event-date {
+    @include flex(2);
+    color: #757575;
+  }
+
+  .changelog-event-body {
+    @include flex(10);
+
+    h3 {
+      margin-top: 0;
+      font-size: 1.05rem;
+      font-weight: 500;
+      text-transform: none;
+      font-family: 'Moriston';
+      letter-spacing: 0;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+  }
+
+  .changelog-event-tag-container {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    span {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      margin-left: 0.25rem;
+      margin-right: 0.25rem;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+  }
+
+  .changelog-event-body-description {
+    line-height: 1.4;
+
+    h2,
+    h3 {
+      font-size: 1rem;
+      font-family: $moriston-fStack;
+      text-transform: none;
+      letter-spacing: initial;
+      font-weight: 600;
+      color: #424242;
+    }
+
+    h2 {
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      font-size: 0.95rem;
+      margin-left: 0.75rem;
+      margin-bottom: 0.5rem;
+
+      & ~ p {
+        margin-left: 0.75rem;
+        display: block;
+      }
+
+      & ~ ul {
+        margin-left: 1.25rem;
+      }
+    }
+
+    p {
+      padding-bottom: 0.5rem;
+    }
+
+    code {
+      font-family: 'Consolas';
+      font-size: 0.95rem;
+      display: inline-block;
+      padding: 0.1rem 0.5rem;
+      line-height: 1;
+      border-radius: 5px;
+      background: #eeeeee;
+      color: #ef5350;
+    }
+
+    ul {
+      margin-bottom: 0.25rem !important;
+      font-size: 0.95rem;
+      list-style-position: inside;
+
+      li {
+        padding: 0;
+
+        ul {
+          margin-left: 1.25rem;
+        }
+      }
+    }
+  }
+
+  .changelong-event-body-media {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(center);
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+
+    & > a {
+      @include flexbox();
+      @include flex-direction(row);
+      @include align-items(center);
+      text-decoration: none;
+      font-size: 0.8rem;
+      text-align: center;
+      color: #616161;
+      font-weight: 400;
+      max-width: 47%;
+      margin: 0 1.5rem;
+    }
+
+    figure {
+      margin: 0;
+      font-style: italic;
+      @include flexbox();
+      @include flex-direction(column);
+      @include align-items(center);
+    }
+
+    figcaption {
+      font-size: 0.8rem;
+      text-align: center;
+      color: #616161;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      max-height: 25vh;
+      height: auto;
+      width: auto;
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .changelog-event {
+    @include flexbox();
+    @include flex-direction(column);
+    @include justify-content(space-between);
+  }
+
+  .changelog-event-date {
+    margin-bottom: 0.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}

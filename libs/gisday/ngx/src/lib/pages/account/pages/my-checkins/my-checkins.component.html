@@ -1,0 +1,11 @@
+<div class="card leader-3 trailer-2">
+  <h2>My Event Checkins</h2>
+  <div *ngIf="($checkins | async).length > 0; else noCheckins">
+    <div class="row" *ngFor="let checkin of ($checkins | async)">
+      <p>{{checkin.event.name}} - {{checkin.created | date:"short"}}</p>
+    </div>
+  </div>
+  <ng-template #noCheckins>
+    <p class="leader-1 pre-2">You currently have no checkins for this season.</p>
+  </ng-template>
+</div>

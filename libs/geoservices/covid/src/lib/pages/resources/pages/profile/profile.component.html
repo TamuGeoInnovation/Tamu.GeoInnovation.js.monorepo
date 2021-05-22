@@ -1,0 +1,34 @@
+<div class="column8">
+  <ng-container *ngIf="(storeEmail | async) === null; else registered">
+    <p>Please enter your email address below. Your email will only be used to validate submissions and allow you to take ownership for reporting data on a county-level basis.</p>
+
+    <form [formGroup]="form" (ngSubmit)="handleUserLink()">
+      <div class="form-section">
+        <div class="form-section-body">
+          <div class="form-collection row pad-top">
+            <tamu-gisc-textbox formControlName="email" placeholder="Email Address" floatLabel="true"></tamu-gisc-textbox>
+          </div>
+
+          <div class="form-collection row">
+            <tamu-gisc-button value="Register" type="submit" [disabled]="form.invalid"></tamu-gisc-button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-template #registered>
+    <div class="flex flex-column justify-center">
+      <p>
+        Your registered email is <span class="emphasis"><em>{{(storeEmail | async)}}</em></span
+        >. Your email will be used to register submissions.
+      </p>
+
+      <p>You can now claim a county. By claiming a county, you will become the reporting manager for a specific county in a given state for the duration of the claim. During this time, other users will be unable to submit data on the county to avoid submission conflicts.</p>
+
+      <br />
+
+      <tamu-gisc-button [routerLink]="['../county']" value="Claim a County"></tamu-gisc-button>
+    </div>
+  </ng-template>
+</div>

@@ -1,0 +1,7 @@
+<div class="radio-option" *ngFor="let option of options" (click)="evaluateSetValue(option)" [ngClass]="{disabled: disabled}">
+  <div class="radio-toggle" [ngSwitch]="renderTemplate(option, valuePath) === value">
+    <div *ngSwitchCase="true" class="material-icons active">radio_button_checked</div>
+    <div *ngSwitchDefault class="material-icons">radio_button_unchecked</div>
+  </div>
+  <p class="radio-label">{{renderTemplate(option, displayPath)}}</p>
+</div>

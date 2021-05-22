@@ -1,0 +1,6 @@
+<ng-container *ngFor="let crumb of crumbs | async; let i = index; last as last;">
+  <ng-container [ngSwitch]="last">
+    <div *ngSwitchCase="false" class="crumb" (click)="follow(crumb.path, i)">{{ crumb.text }}</div>
+    <div *ngSwitchCase="true" class="crumb last">{{ crumb.text }}</div>
+  </ng-container>
+</ng-container>

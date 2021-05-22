@@ -1,0 +1,13 @@
+.closed,
+.open {
+  font-weight: 500;
+}
+
+.closed {
+  color: #f44336;
+}
+
+.open {
+  color: #4caf50;
+  cursor: pointer;
+}

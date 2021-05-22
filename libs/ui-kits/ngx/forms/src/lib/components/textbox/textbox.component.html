@@ -1,0 +1,11 @@
+<div class="textbox-control">
+  <input *ngIf="type !== 'textarea'" [type]="type" [name]="formControlName" [(ngModel)]="value" [disabled]="disabled" />
+  <textarea *ngIf="type === 'textarea'" [name]="formControlName" [(ngModel)]="value" [rows]="rows" [disabled]="disabled"></textarea>
+
+  <label [for]="formControlName" *ngIf="!floatLabel && placeholder && value !== undefined && value.toString().length === 0">{{ placeholder }}</label>
+  <label [for]="formControlName" *ngIf="floatLabel && placeholder" [ngClass]="{ float: value !== undefined && value.toString().length > 0 }">{{ placeholder }}</label>
+</div>
+
+<div class="textbox-actions">
+  <ng-content select=".textbox-actions"></ng-content>
+</div>

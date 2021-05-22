@@ -1,0 +1,16 @@
+@import 'libs/sass/mixins';
+@import 'libs/sass/modules/esri_map';
+@import 'libs/sass/components/sidebar';
+
+:host {
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.sidebar-component-content-container {
+  margin-bottom: 0.75rem;
+}
+
+input[type='submit'] {
+  padding: 0.25rem;
+}

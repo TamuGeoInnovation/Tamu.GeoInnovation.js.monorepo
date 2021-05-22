@@ -1,0 +1,16 @@
+@import 'libs/sass/mixins';
+
+p {
+  padding: 0.9rem 0.9rem;
+  font-weight: 600;
+  background: #fafafa;
+  margin-left: 1rem;
+  border-radius: 7pt;
+  box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  @include transition(color 0.3s);
+
+  &.toggled {
+    color: #2196f3;
+  }
+}

@@ -1,0 +1,95 @@
+@import 'libs/sass/mixins';
+
+$slow-color: lighten(#4d88ee, 5%);
+$not-slow-color: lighten(#ff5252, 5%);
+
+:host {
+  @include flexbox();
+  @include flex-direction(row);
+}
+
+.mode-icon {
+  box-sizing: border-box;
+  position: relative;
+
+  border-radius: 1rem;
+
+  background-color: $not-slow-color;
+  margin-right: 0.25rem;
+
+  i {
+    font-size: inherit;
+    color: #fafafa;
+
+    border-radius: 50%;
+    font-size: 1rem;
+    padding: 0.5rem 0.1rem;
+  }
+
+  &.slow {
+    background-color: $slow-color;
+    i {
+      background: $slow-color;
+    }
+  }
+}
+
+.directions-container,
+#mobile-directions-container {
+  padding: 0.5rem 0;
+
+  .direction-item {
+    @include flexbox();
+    @include flex-direction(row);
+
+    .direction-icon {
+      @include flex-grow(0);
+      @include flex-shrink(0);
+      height: 1.5rem;
+      width: 2rem;
+      margin: 0;
+
+      div {
+        margin: inherit;
+        height: inherit;
+        width: inherit;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+    }
+
+    // For mode switches that have written maneuver instruction,
+    // ensure that the padding and margin is zero. This allows equal spacing
+    // between switches with embeds vs written.
+    &:last-child {
+      margin-bottom: 0;
+
+      p {
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  .direction-embed {
+    margin-left: 0.75rem;
+
+    .has-misc {
+      p:first-child {
+        padding-bottom: 0;
+      }
+
+      p:nth-child(n + 2) {
+        font-size: 0.8rem;
+        padding-bottom: 0.25rem;
+
+        strong {
+          font-size: inherit;
+        }
+      }
+
+      p:last-child {
+        padding-bottom: 0.75rem;
+      }
+    }
+  }
+}

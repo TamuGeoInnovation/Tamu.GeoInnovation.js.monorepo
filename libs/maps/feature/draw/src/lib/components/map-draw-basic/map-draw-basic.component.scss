@@ -1,0 +1,48 @@
+@import 'libs/sass/mixins';
+
+:host {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(center);
+  @include align-items(center);
+  padding: 0.5rem 0;
+}
+
+.tool-set {
+  padding: 0 0.5rem;
+  border-right: 1px solid #bdbdbd;
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(center);
+
+  &:last-child {
+    border-right-color: transparent;
+  }
+
+  p {
+    color: #757575;
+    padding: 0.3rem;
+    font-size: 1.2rem;
+    border-radius: 3px;
+    @include transition(color 0.3s, background 0.3s);
+
+    &:hover {
+      cursor: pointer;
+      background: #e0e0e0;
+    }
+
+    &.active {
+      color: #eeeeee;
+      background: #616161;
+    }
+  }
+
+  &.version {
+    p {
+      color: #bdbdbd;
+    }
+    p.available {
+      color: #212121;
+    }
+  }
+}

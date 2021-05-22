@@ -1,0 +1,40 @@
+<div id="map-section">
+  <tamu-gisc-drawer width="15rem" position="left">
+    <div class="content">
+      <h3>Map Controls</h3>
+      <tamu-gisc-checkbox label="Claims/Lockdowns" (click)="lockdownToggle()"></tamu-gisc-checkbox>
+    </div>
+  </tamu-gisc-drawer>
+  <tamu-gisc-mapbox-map token="pk.eyJ1Ijoid2hhdHppdG9veWEiLCJhIjoiY2poNzI3M2M0MDNnbjMzcWVtYmZnNXExNiJ9.K-nM-JaZnZvAfutkLQitbg" style="mapbox: //styles/mapbox/dark-v10" [center]="['-110', '38.88']"> </tamu-gisc-mapbox-map>
+  <div class="right-sidebar">
+    <div *ngIf="(countyBoxModel | async) as countyInfo">
+      <h4>Mouse Position</h4>
+      <p>Mouse over: {{countyInfo.county}}</p>
+    </div>
+    <div #infobox *ngIf="(infoBoxModel | async) as info">
+      <h4>Lockdown Info</h4>
+      <p>County: {{info.name}}</p>
+      <p>FIPS: {{info.fips}}</p>
+      <p>Claims: {{info.claims}}</p>
+      <p>Lockdowns: {{info.lockdowns}}</p>
+      <p>Updated: {{info.updated}}</p>
+      <a [routerLink]="['/admin/claims']" [queryParams]="{state: info.state, county: info.fipsNum}" target="_blank" rel="noopener"> Admin Page </a>
+    </div>
+    <div *ngIf="!lockdownButtonToggle" class="legend">
+      <h3>Claimed Counties</h3>
+      <div><span id="unclaimed"></span>Unclaimed</div>
+      <div><span id="claimed"></span>Claimed</div>
+    </div>
+    <div *ngIf="lockdownButtonToggle" class="legend">
+      <h3>Age of lockdown submission</h3>
+      <div><span id="no-lockdown"></span>> No Lockdowns</div>
+      <div><span id="stop-one"></span>> 0 days</div>
+      <div><span id="stop-two"></span>> 10 days</div>
+      <div><span id="stop-three"></span>> 20 days</div>
+      <div><span id="stop-four"></span>> 30 days</div>
+      <div><span id="stop-five"></span>> 40 days</div>
+      <div><span id="stop-six"></span>> 50 days</div>
+      <div><span id="stop-seven"></span>> 60 days</div>
+    </div>
+  </div>
+</div>

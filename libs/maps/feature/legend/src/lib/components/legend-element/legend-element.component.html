@@ -1,0 +1,21 @@
+<div class="legend-element">
+  <!-- If there is only one legend element, don't apply a group title. Will apply the parent label on the 
+single child so that there aren't groups with a single child, because it will break the cleanliness
+of the table -->
+  <div class="element-parent-name" *ngIf="element.infos.length > 1">{{ groupTitle }}</div>
+
+  <!-- Switch through the different element types. The default is a "not supported" message printout. -->
+  <ng-container [ngSwitch]="element.type">
+    <!-- For SymbolTable element type -->
+    <div *ngSwitchCase="'symbol-table'" class="element-group">
+      <div class="legend-info" *ngFor="let info of element.infos">
+        <div class="image-container" [elementInsert]="info.preview"></div>
+        <!-- Apply the legend item from the parent group or child -->
+        <div>{{element.infos.length === 1 ? groupTitle: info?.label}}</div>
+      </div>
+    </div>
+
+    <!-- Default printout -->
+    <div *ngSwitchDefault>Unsupported legend element type: {{element.type}}</div>
+  </ng-container>
+</div>

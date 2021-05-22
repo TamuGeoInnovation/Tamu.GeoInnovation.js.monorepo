@@ -1,0 +1,35 @@
+<ng-container *ngIf="config !== undefined && config.form && config.form.controls && config.form.controls">
+  <form [formGroup]="config.form.controls.info">
+    <div class="form-section">
+      <!-- <div class="form-section-toolbar">
+        <div class="form-section-name">Layer Properties</div>
+      </div> -->
+
+      <div class="form-section-body">
+        <div class="form-collection row">
+          <tamu-gisc-textbox type="text" formControlName="name" floatLabel="true" placeholder="Layer Name"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox type="text" formControlName="type" floatLabel="true" placeholder="Type"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox type="text" formControlName="layerId" floatLabel="true" placeholder="Layer ID"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox type="text" floatLabel="true" placeholder="URL" [value]="url"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox type="textarea" formControlName="description" floatLabel="true" placeholder="Description"></tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row" formGroupName="drawingInfo">
+          <tamu-gisc-range [min]="0" [max]="1" [step]=".01" formControlName="opacity" label="Opacity"></tamu-gisc-range>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-container>

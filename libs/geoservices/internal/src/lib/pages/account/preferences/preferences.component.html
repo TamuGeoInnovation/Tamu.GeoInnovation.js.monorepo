@@ -1,0 +1,17 @@
+<form [formGroup]="form">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>Notifications</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection column">
+        <tamu-gisc-checkbox formControlName="NewsUpdates" label="Notify me on news updates."></tamu-gisc-checkbox>
+        <tamu-gisc-checkbox formControlName="ServiceUpdates" label="Notify me on service updates."></tamu-gisc-checkbox>
+        <tamu-gisc-checkbox formControlName="ServiceOutages" label="Notify me on service outages."></tamu-gisc-checkbox>
+      </div>
+    </div>
+  </div>
+</form>

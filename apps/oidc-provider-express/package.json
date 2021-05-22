@@ -1,0 +1,33 @@
+{
+  "name": "oidc-provider-express",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@nestjs/common": "^6.8.3",
+    "@nestjs/core": "^6.8.3",
+    "@nestjs/passport": "^6.1.1",
+    "@nestjs/platform-express": "^6.8.3",
+    "@nestjs/typeorm": "^6.2.0",
+    "@nguniversal/express-engine": "^9.1.1",
+    "@nguniversal/module-map-ngfactory-loader": "^8.2.6",
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.18.3",
+    "connect-sqlite3": "^0.9.11",
+    "cookie-parser": "^1.4.3",
+    "core-js": "^3.2.1",
+    "express-session": "^1.17.0",
+    "helmet": "^3.21.2",
+    "jsonwebtoken": "^8.5.0",
+    "mssql": "^6.0.1",
+    "mysql": "^2.17.1",
+    "nodemailer": "^5.1.1",
+    "oidc-provider": "^5.5.2",
+    "otplib": "^10.2.3",
+    "passport": "^0.4.1",
+    "qrcode": "^1.4.4",
+    "reflect-metadata": "^0.1.13",
+    "sequelize": "^4.44.3",
+    "uuid": "^8.1.0"
+  }
+}

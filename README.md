@@ -1,84 +1,50 @@
-# TestWorkspaced
+# AggieMap & Friends Monorepo
 
-This project was generated using [Nx](https://nx.dev).
+![CircleCI](https://img.shields.io/circleci/build/github/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/master)
+![Coveralls github](https://img.shields.io/coveralls/github/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo)
+![https://aggiemap.tamu.edu](https://img.shields.io/website?url=https%3A%2F%2Faggiemap.tamu.edu)
 
-<p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/nx-logo.png" width="450"></p>
+![AggieMap Logo](/libs/assets/images/logo/TAM-PrimaryMarkBB.svg)
 
-🔎 **Nx is a set of Extensible Dev Tools for Monorepos.**
+# Installation
 
-## Quick Start & Documentation
+1. Clone this repo
+2. `npm install` from the root of the directory
 
-[Nx Documentation](https://nx.dev/angular)
+# Creating a new app
 
-[10-minute video showing all Nx features](https://nx.dev/angular/getting-started/what-is-nx)
+1. Use `ng g app myapp --style=scss` to scaffold the app
 
-[Interactive Tutorial](https://nx.dev/angular/tutorial/01-create-application)
+# Create NestJS app
 
-## Adding capabilities to your workspace
+1. `nx list @nrwl/nest`
+2. `ng g @nrwl/nest:application`
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+# Create NestJS modules / controllers / services / etc
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+1. `nx list @nestjs/schematics`
+2. `ng g @nestjs/schematics:service`
+3. `ng g @nestjs/schematics:module test --source-root=libs/two/data-api/src/lib/modules --dry-run`
 
-Below are some plugins which you can add to your workspace:
+# Creating libraries
 
-- [Angular](https://angular.io)
-  - `ng add @nrwl/angular`
-- [React](https://reactjs.org)
-  - `ng add @nrwl/react`
-- Web (no framework frontends)
-  - `ng add @nrwl/web`
-- [Nest](https://nestjs.com)
-  - `ng add @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `ng add @nrwl/express`
-- [Node](https://nodejs.org)
-  - `ng add @nrwl/node`
+1. `ng g @nrwl/web:library`
 
-## Generate an application
+# Viewing on mobile device
 
-Run `ng g @nrwl/angular:app my-app` to generate an application.
+1. Use `ng serve --aot --project=myapp --host 0.0.0.0`
 
-> You can use any of the plugins above to generate applications as well.
+# Running AggieMap
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
+Run `ng serve --project=aggiemap-angular --aot` to start a local webserver at https://localhost:4200.
 
-## Generate a library
+As you make changes to the project, the local webserver will automatically rebuild and, if AggieMap is open in a webbrowser, the page will reload automatically
 
-Run `ng g @nrwl/angular:lib my-lib` to generate a library.
+# Submitting Pull Requests
 
-> You can also use any of the plugins above to generate libraries as well.
+When submitting PRs be sure that your changes pass Continuous Integration.
 
-Libraries are sharable across libraries and applications. They can be imported from `@test-workspaced/mylib`.
+# Starting inspector on localhost:7777 failed: address already in use
 
-## Development server
-
-Run `ng serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng g component my-component --project=my-app` to generate a new component.
-
-## Build
-
-Run `ng build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test my-app` to execute the unit tests via [Jest](https://jestjs.io).
-
-Run `nx affected:test` to execute the unit tests affected by a change.
-
-## Running end-to-end tests
-
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
-
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
-
-## Understand your workspace
-
-Run `nx dep-graph` to see a diagram of the dependencies of your projects.
-
-## Further help
-
-Visit the [Nx Documentation](https://nx.dev/angular) to learn more.
+1. https://github.com/nrwl/nx/issues/1248
+2. Use `ng serve {projectname} --configuration=development` to launch

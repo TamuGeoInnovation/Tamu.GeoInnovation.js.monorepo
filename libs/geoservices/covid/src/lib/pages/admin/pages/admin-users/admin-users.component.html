@@ -1,0 +1,26 @@
+<div class="spinning-loader" *ngIf="(users | async) === null; else lockdownsList"></div>
+
+<ng-template #lockdownsList>
+  <div class="flex flex-column align-center">
+    <div *ngIf="users | async">{{(users | async)?.length}} users</div>
+    <div *ngIf="users | async" class="floating-table">
+      <div class="floating-table-header">
+        <div class="floating-row">
+          <div class="column">Email</div>
+          <div class="column">Claims</div>
+          <div class="column">Lockdowns</div>
+          <div class="column">Testing Sites</div>
+        </div>
+      </div>
+
+      <div class="floating-table-body">
+        <div class="floating-row" *ngFor="let user of users | async">
+          <div class="column">{{user.email}}</div>
+          <div class="column"><a routerLink="../claims" [queryParams]="{email: user.email}">{{user.claimsCount}}</a></div>
+          <div class="column"><a routerLink="../lockdowns" [queryParams]="{email: user.email}">{{user.lockdownsCount}}</a></div>
+          <div class="column"><a routerLink="../testing-sites" [queryParams]="{email: user.email}">{{user.sitesCount}}</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

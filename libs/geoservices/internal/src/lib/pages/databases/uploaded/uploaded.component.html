@@ -1,0 +1,30 @@
+<div class="placeholder-instruction flex flex-column justify-center align-center" *ngIf="!databases || (databases | async) === undefined || (databases | async)?.length === 0">
+  <span class="material-icons instruction__icon">cloud_upload</span>
+  <h4 class="instruction__header">You Have Not Uploaded Any Databases</h4>
+  <p class="instruction__context">Upload your database and use it across any of our services, including geocoding.</p>
+  <p class="instruction__cta"><a [routerLink]="['../../../upload']">Upload a Database</a></p>
+</div>
+
+<table class="floating-table" *ngIf="(databases | async)?.length > 0">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Date Uploaded</th>
+      <th>Size</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let db of databases | async">
+      <td>{{db.name}}</td>
+      <td>{{db.type}}</td>
+      <td>{{db.date | date : 'mediumDate'}}</td>
+      <td>{{db.size}}</td>
+      <td>{{db.status}}</td>
+      <td class="material-icons-container"><span class="material-icons action alt" title="Download">cloud_download</span> <span class="material-icons action alt" title="Share">share</span> <span class="material-icons action alt error" title="Delete">delete</span></td>
+    </tr>
+  </tbody>
+</table>

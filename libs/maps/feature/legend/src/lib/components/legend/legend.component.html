@@ -1,0 +1,19 @@
+<div class="sidebar-component-name">
+  <span class="material-icons" *ngIf="responsive?.isMobile" (click)="backAction()">arrow_back</span>
+  <p>Legend</p>
+</div>
+
+<div class="sidebar-component-content-container">
+  <!-- Show static legend items at the top -->
+  <ng-container *ngIf="staticLegend !== undefined">
+    <div class="legend-info" *ngFor="let staticItem of staticLegend">
+      <div class="image-container">
+        <img [src]="staticItem.src" [alt]="staticItem.title" />
+      </div>
+      <div>{{staticItem.title}}</div>
+    </div>
+  </ng-container>
+
+  <!-- Followed by dynamic legend items -->
+  <tamu-gisc-legend-collection *ngFor="let group of legend | async" [group]="group"></tamu-gisc-legend-collection>
+</div>

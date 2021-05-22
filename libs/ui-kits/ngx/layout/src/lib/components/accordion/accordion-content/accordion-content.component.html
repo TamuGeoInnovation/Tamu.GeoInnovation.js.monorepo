@@ -1,0 +1,3 @@
+<div class="content-container" [ngClass]="{ expanded: (state | async)?.expanded, animate: (state | async)?.animate }" #content>
+  <ng-content></ng-content>
+</div>

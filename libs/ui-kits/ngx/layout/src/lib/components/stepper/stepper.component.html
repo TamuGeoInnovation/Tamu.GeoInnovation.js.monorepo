@@ -1,0 +1,9 @@
+<div class="stepper__steps">
+  <ng-container *ngFor="let step of toggleList; let i = index;">
+    <tamu-gisc-step-toggle [template]="step.toggle.template" (click)="swapContent(i)" [ngClass]="{active: toggleIndex === i}"></tamu-gisc-step-toggle>
+  </ng-container>
+</div>
+
+<div class="stepper__content">
+  <ng-container [ngTemplateOutlet]="toggles[toggleIndex].template"></ng-container>
+</div>

@@ -1,0 +1,16 @@
+@import 'libs/sass/mixins';
+
+:host {
+  height: inherit;
+  width: inherit;
+}
+
+:host {
+  display: flex;
+  background: rgba(250, 250, 250, 0.31);
+}
+
+router-outlet {
+  display: none;
+  visibility: hidden;
+}

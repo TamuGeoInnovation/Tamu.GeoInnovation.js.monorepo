@@ -1,0 +1,106 @@
+<div class="column8">
+  <ng-container *ngIf="!(localIdentity | async)?.email; else hasIdentity">
+    <p>Email registration required to claim a county. <a [routerLink]="['../profile']">Register your email to proceed.</a></p>
+  </ng-container>
+
+  <ng-template #hasIdentity>
+    <ng-container *ngIf="(localCounty | async)?.countyFips; else hasClaim">
+      <p>Your active county claim is detailed below. While your claim is active, only you can submit information for this county.</p>
+    </ng-container>
+
+    <ng-template #hasClaim>
+      <p>Select the state and county to set or change a claim.</p>
+    </ng-template>
+
+    <form [formGroup]="form" (ngSubmit)="submitCountyOwnership()">
+      <div class="form-section">
+        <div class="form-section-toolbar">
+          <div class="form-section-name">County Claim</div>
+        </div>
+
+        <div class="form-section-body">
+          <div class="form-collection row pad-top">
+            <tamu-gisc-select formControlName="state" [data]="states | async" placeholder="Select State" [valueTemplate]="'stateFips'" [displayTemplate]="'name'" [disabled]="(localCounty | async)?.countyFips"></tamu-gisc-select>
+            <tamu-gisc-select formControlName="county" [data]="counties | async" placeholder="Select County" [valueTemplate]="'countyFips'" [displayTemplate]="'name'" [disabled]="(localCounty | async)?.countyFips"></tamu-gisc-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Only show county suggestions whenever the form state form values are invalid (not equal to undefined or null) AND form county values are not set (equal to null or undefined) AND when the local county is invalid -->
+      <div class="form-section" *ngIf="( (form.get('state').valueChanges | async) !== undefined && (form.get('state').valueChanges | async) !== null) && ((form.get('county').valueChanges | async) === undefined || (form.get('county').valueChanges | async) === null) && (!(localCounty | async)?.countyFips)">
+        <div class="form-section-body">
+          <div class="inform-context">
+            <p>
+              Consider contributing to any of the following counties, as they don't currently have any associated data submissions: <a *ngFor="let suggested of (suggestedCounties | async); let last = last" (click)="setCountySuggestion(suggested)">{{suggested.name}}<span *ngIf="!last">, </span></a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="(countyClaimable | async) === false && (countyClaims | async)?.length > 0 && (this.form.controls.county.valueChanges | async) !== undefined && (this.form.controls.state.valueChanges | async) !== undefined" class="form-section">
+        <div class="form-section-body">
+          <div class="inform-context alert">
+            <p>This county is actively claimed by another user. Please choose another county.</p>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="(countyContributedByOther | async) && (countyClaimable | async) && !(localCounty | async)?.countyFips && (this.form.controls.county.valueChanges | async) !== undefined && (this.form.controls.county.valueChanges | async) !== undefined && (this.form.controls.state.valueChanges | async) !== undefined && (this.form.controls.state.valueChanges | async) !== undefined" class="form-section">
+        <div class="form-section-body">
+          <div class="inform-context warning">
+            <p>This county has been previously claimed and has associated data. Please consider claiming a county with no entered data.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Only show phone numbers input field if there is a local county stored AND if the form countyFips value is the same as the local value -->
+      <ng-container *ngIf="(localCounty | async)?.countyFips && ((localCounty | async)?.countyFips === (this.form.controls.county.value)) && ((localCounty | async)?.stateFips.stateFips === (this.form.controls.state.value)) && (localCounty | async)?.countyFips !== null && (localCounty | async)?.stateFips !== null && ((this.form.controls.county.value) !== 'undefined' && (this.form.controls.state.value) !== 'undefined')">
+        <tamu-gisc-county-claim [form]="form"></tamu-gisc-county-claim>
+      </ng-container>
+
+      <div class="form-section">
+        <div class="form-section-body">
+          <div class="form-collection row">
+            <div class="button-row flex flex-row" *ngIf="(localCounty | async) === undefined || !(localCounty | async)?.countyFips; else buttonsHasClaim">
+              <tamu-gisc-button
+                [value]="(localCounty | async)?.countyFips ? 'Update' : 'Claim'"
+                type="submit"
+                [look]="(localCounty | async)?.countyFips ? 'secondary': ''"
+                [disabled]="form.invalid
+            || (countyClaimable | async) === false 
+            || (this.form.controls.county.value) === undefined || (this.form.controls.state.value) === undefined"
+              ></tamu-gisc-button>
+            </div>
+
+            <ng-template #buttonsHasClaim>
+              <div class="button-row flex flex-row justify-between align-center">
+                <div class="flex flex-row align-center">
+                  <tamu-gisc-button look="danger" fit="relaxed" value="Close Claim" (click)="submitCloseClaim()" *ngIf="(localCounty | async)?.countyFips"></tamu-gisc-button>
+
+                  <tamu-gisc-button
+                    [value]="(localCounty | async)?.countyFips ? 'Update' : 'Claim'"
+                    type="submit"
+                    [look]="(localCounty | async)?.countyFips ? 'secondary': ''"
+                    [disabled]="form.invalid
+            || (countyClaimable | async) === false 
+            || (this.form.controls.county.value) === undefined || (this.form.controls.state.value) === undefined"
+                  ></tamu-gisc-button>
+
+                  <div [ngSwitch]="submissionStatus | async" class="submission-statuses">
+                    <div class="status" *ngSwitchCase="0">Saving...</div>
+                    <div class="status" *ngSwitchCase="1">Saved!</div>
+                    <div class="status" *ngSwitchCase="2">Error!</div>
+                  </div>
+                </div>
+
+                <div>
+                  <a [routerLink]="['../lockdown']" *ngIf="(localCounty | async)?.countyFips" class="flex flex-row justify-center align-center">County Lockdown <span class="material-icons">keyboard_arrow_right</span></a>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+</div>
