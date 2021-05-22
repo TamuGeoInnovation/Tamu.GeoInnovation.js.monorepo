@@ -57,7 +57,7 @@
 html,
 body {
   font-size: 16px;
-  font-family: $moriston-fStack;
+  font-family: $open-sans-fStack;
   margin: 0;
   padding: 0;
   top: 0px;
@@ -181,7 +181,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: $tungsten-fStack;
+  font-family: $oswald-fStack;
   line-height: 1.2;
   letter-spacing: 1.25px;
   text-transform: uppercase;
@@ -333,7 +333,7 @@ h6 {
 input[type='text'],
 input[type='email'],
 textarea {
-  font-family: $moriston-fStack;
+  font-family: $open-sans-fStack;
   background-color: $form-grey;
   border: 1px solid transparent;
   color: #323232;
@@ -518,7 +518,7 @@ input[type='email'] {
 
   .content {
     width: 20rem;
-    font-family: $primary-fStack;
+    font-family: $open-sans-fStack;
   }
 
   .progress-bar {
@@ -537,7 +537,7 @@ input[type='email'] {
 
   p {
     margin-top: 1.5rem;
-    font-family: $moriston-fStack;
+    font-family: $open-sans-fStack;
     font-size: 0.8rem;
     font-weight: 300;
     font-style: italic;
@@ -963,7 +963,7 @@ button[type='submit'] {
   h2,
   h3 {
     font-size: 1rem;
-    font-family: $moriston-fStack;
+    font-family: $open-sans-fStack;
     text-transform: none;
     letter-spacing: initial;
     font-weight: 600;
