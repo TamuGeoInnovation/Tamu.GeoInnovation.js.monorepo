@@ -1,9 +1,14 @@
+variables:
+  isDevelopment: $[eq(variables['Build.SourceBranch'], 'refs/heads/development')]
+  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+
 pool:
   vmImage: 'ubuntu-latest'
 stages:
   - stage: Development
+    condition: or(eq(variables.isMain, false), eq(variables.isDevelopment, false))
     jobs:
-      - job: Development
+      - job: Build
         steps:
           - task: NodeTool@0
             inputs:
@@ -69,9 +74,9 @@ stages:
             displayName: 'Publish Artifacts'
 
   - stage: Production
-    dependsOn: []
+    dependsOn: Development
     jobs:
-      - job: Prodcution
+      - job: Build
         steps:
           - task: NodeTool@0
             inputs:
@@ -136,10 +141,10 @@ stages:
               ArtifactName: 'js-monorepo-production' # output artifact named www
             displayName: 'Publish Artifacts'
 
-  - stage: buildTags
-    dependsOn: []
+  - stage: AssignBuildTags
+    dependsOn: Development
     jobs:
-      - job: buildTags
+      - job: Tag
         steps:
           - task: NodeTool@0
             inputs:
