@@ -1,20 +1,20 @@
 variables:
   - name: isDevelopment
-    value: $[eq(variables['Build.SourceBranch'], 'refs/heads/development')]
+    value: $[eq(variables['Build.SourceBranchName'], 'development')]
   - name: isMaster
-    value: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+    value: $[eq(variables['Build.SourceBranchName'], 'master')]
   - name: affectedBase
-    value: 'origin/development'
-    ${{ if eq(variables.isDevelopment, false) }}:
-      value: 'origin/development~1'
-    ${{ if eq(variables.isMaster, false) }}:
-      value: 'origin/master~1'
+    ${{ if and(ne(variables['Build.SourceBranchName'], 'master'), ne(variables['Build.SourceBranchName'], 'development')) }}:
+      value: origin/development # Default affected base base
+    ${{ if eq(variables['Build.SourceBranchName'], 'development') }}:
+      value: origin/development~ # Affected base if build branch name is development
+    ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+      value: origin/maser~ # Affected base if build branch name is master
 
 pool:
   vmImage: 'ubuntu-latest'
 stages:
   - stage: Development
-    condition: or(eq(variables.isMaster, false), eq(variables.isDevelopment, false))
     jobs:
       - job: Build
         steps:
