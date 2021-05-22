@@ -105,15 +105,23 @@ module.exports = {
     '<rootDir>/apps/two-dashboard-angular',
     '<rootDir>/libs/two/dashboard',
     '<rootDir>/libs/two/data-access',
+    '<rootDir>/apps/gisday-angular',
+    '<rootDir>/libs/gisday/ngx',
+    '<rootDir>/libs/gisday/data-access',
+    '<rootDir>/apps/gisday-nest',
+    '<rootDir>/libs/gisday/data-api',
+    '<rootDir>/libs/gisday/common',
     '<rootDir>/libs/common/ngx/auth',
     '<rootDir>/apps/ues-operations-nest',
-    '<rootDir>/apps/ues-recycling-data-api-nest',
     '<rootDir>/apps/ues-recycling-angular',
+    '<rootDir>/apps/ues-recycling-data-api-nest',
     '<rootDir>/libs/ues/recycling/common/entities',
     '<rootDir>/libs/ues/recycling/data-api',
     '<rootDir>/libs/ues/recycling/ngx',
     '<rootDir>/apps/ues-valves-angular',
     '<rootDir>/libs/ues/cold-water/ngx',
-    '<rootDir>/apps/ues-valves-nest'
+    '<rootDir>/apps/ues-valves-nest',
+    '<rootDir>/libs/cpa/data-access',
+    '<rootDir>/libs/cpa/admin'
   ]
 };
