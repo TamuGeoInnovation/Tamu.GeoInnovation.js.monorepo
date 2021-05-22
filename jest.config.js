@@ -73,7 +73,6 @@ module.exports = {
     '<rootDir>/libs/covid/common/enums',
     '<rootDir>/libs/maps/mapbox',
     '<rootDir>/apps/oidc-client-test',
-    '<rootDir>/libs/oidc/provider',
     '<rootDir>/libs/oidc/client',
     '<rootDir>/apps/ues-angular',
     '<rootDir>/libs/ues/common/ngx',

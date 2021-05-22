@@ -2732,28 +2732,6 @@
         }
       }
     },
-    "oidc-provider": {
-      "root": "libs/oidc/provider",
-      "sourceRoot": "libs/oidc/provider/src",
-      "projectType": "library",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/oidc/provider/tsconfig.lib.json", "libs/oidc/provider/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/provider/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/oidc/provider/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/libs/oidc/provider"]
-        }
-      }
-    },
     "oidc-client": {
       "root": "libs/oidc/client",
       "sourceRoot": "libs/oidc/client/src",
