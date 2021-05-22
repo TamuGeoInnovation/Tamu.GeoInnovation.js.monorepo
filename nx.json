@@ -270,14 +270,6 @@
     "oidc-client-test": {
       "tags": []
     },
-    "oidc-provider-angular": {
-      "tags": [],
-      "implicitDependencies": ["assets", "sass"]
-    },
-    "oidc-provider-angular-e2e": {
-      "tags": [],
-      "implicitDependencies": ["oidc-provider-angular"]
-    },
     "oidc-provider-express": {
       "tags": []
     },
