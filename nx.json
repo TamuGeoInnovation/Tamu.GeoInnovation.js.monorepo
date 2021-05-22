@@ -28,16 +28,16 @@
     "assets": {
       "tags": ["scope:shared", "type: assets"]
     },
-    "charts": {
-      "tags": []
+    "bikeshare": {
+      "tags": [],
+      "implicitDependencies": ["assets", "sass"]
     },
     "bikeshare-e2e": {
       "tags": [],
       "implicitDependencies": ["bikeshare"]
     },
-    "bikeshare": {
-      "tags": [],
-      "implicitDependencies": ["assets", "sass"]
+    "charts": {
+      "tags": []
     },
     "common-ngx-environment": {
       "tags": []
@@ -149,13 +149,13 @@
     "ui-kits-ngx-navigation-mobile-tab": {
       "tags": []
     },
-    "signage-angular-e2e": {
-      "tags": [],
-      "implicitDependencies": ["signage-angular"]
-    },
     "signage-angular": {
       "tags": [],
       "implicitDependencies": ["assets", "sass"]
+    },
+    "signage-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["signage-angular"]
     },
     "maps-feature-popup": {
       "tags": []
@@ -202,25 +202,25 @@
     "cpa-data-api": {
       "tags": []
     },
+    "cpa-common-ngx": {
+      "tags": []
+    },
     "maps-feature-forms": {
       "tags": []
     },
     "cpa-common-entities": {
       "tags": []
     },
-    "cpa-common-ngx": {
-      "tags": []
-    },
     "ui-kits-ngx-navigation-breadcrumb": {
       "tags": []
-    },
-    "geoservices-angular-e2e": {
-      "tags": [],
-      "implicitDependencies": ["geoservices-angular"]
     },
     "geoservices-angular": {
       "tags": [],
       "implicitDependencies": ["assets", "sass"]
+    },
+    "geoservices-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["geoservices-angular"]
     },
     "geoservices-api": {
       "tags": []
@@ -270,13 +270,13 @@
     "oidc-client-test": {
       "tags": []
     },
-    "oidc-provider-angular-e2e": {
-      "tags": [],
-      "implicitDependencies": ["oidc-provider-angular"]
-    },
     "oidc-provider-angular": {
       "tags": [],
       "implicitDependencies": ["assets", "sass"]
+    },
+    "oidc-provider-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["oidc-provider-angular"]
     },
     "oidc-provider-express": {
       "tags": []
@@ -287,13 +287,13 @@
     "oidc-client": {
       "tags": []
     },
-    "ues-angular-e2e": {
-      "tags": [],
-      "implicitDependencies": ["ues-angular"]
-    },
     "ues-angular": {
       "tags": [],
       "implicitDependencies": ["assets", "sass", "ues-sass"]
+    },
+    "ues-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["ues-angular"]
     },
     "ues-common-ngx": {
       "tags": []
@@ -301,13 +301,13 @@
     "common-utils-device-guards": {
       "tags": []
     },
-    "ues-effluent-angular-e2e": {
-      "tags": [],
-      "implicitDependencies": ["ues-effluent-angular"]
-    },
     "ues-effluent-angular": {
       "tags": [],
       "implicitDependencies": ["assets", "sass", "ues-sass"]
+    },
+    "ues-effluent-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["ues-effluent-angular"]
     },
     "ues-effluent-ngx": {
       "tags": []
@@ -341,10 +341,10 @@
     "oidc-admin-nest": {
       "tags": ["assets"]
     },
-    "oidc-admin-nest-lib": {
+    "oidc-admin": {
       "tags": []
     },
-    "oidc-admin": {
+    "oidc-admin-nest-lib": {
       "tags": []
     },
     "oidc-admin-data-access": {
@@ -382,13 +382,13 @@
     "two-valup": {
       "tags": []
     },
-    "two-dashboard-angular-e2e": {
-      "tags": [],
-      "implicitDependencies": ["two-dashboard-angular"]
-    },
     "two-dashboard-angular": {
       "tags": [],
       "implicitDependencies": ["assets", "sass"]
+    },
+    "two-dashboard-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["two-dashboard-angular"]
     },
     "two-dashboard": {
       "tags": []
@@ -396,13 +396,13 @@
     "two-data-access": {
       "tags": []
     },
-    "gisday-angular-e2e": {
-      "tags": [],
-      "implicitDependencies": ["gisday-angular"]
-    },
     "gisday-angular": {
       "tags": [],
       "implicitDependencies": ["assets", "sass", "gisday-sass"]
+    },
+    "gisday-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["gisday-angular"]
     },
     "gisday-ngx": {
       "tags": []
@@ -428,13 +428,13 @@
     "ues-operations-nest": {
       "tags": ["assets"]
     },
-    "ues-recycling-angular-e2e": {
-      "tags": [],
-      "implicitDependencies": ["ues-recycling-angular"]
-    },
     "ues-recycling-angular": {
       "tags": [],
       "implicitDependencies": ["assets", "sass", "ues-sass"]
+    },
+    "ues-recycling-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["ues-recycling-angular"]
     },
     "ues-recycling-data-api-nest": {
       "tags": ["assets"]
