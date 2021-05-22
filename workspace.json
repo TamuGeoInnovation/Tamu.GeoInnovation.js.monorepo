@@ -2732,59 +2732,6 @@
         }
       }
     },
-    "oidc-provider-express": {
-      "root": "apps/oidc-provider-express",
-      "sourceRoot": "apps/oidc-provider-express/src",
-      "projectType": "application",
-      "prefix": "oidc-provider-express",
-      "architect": {
-        "build": {
-          "builder": "@nrwl/node:build",
-          "options": {
-            "outputPath": "dist/apps/oidc-provider-express",
-            "main": "apps/oidc-provider-express/src/main.ts",
-            "tsConfig": "apps/oidc-provider-express/tsconfig.app.json",
-            "assets": ["apps/oidc-provider-express/src/assets"]
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "extractLicenses": false,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/oidc-provider-express/src/environments/environment.ts",
-                  "with": "apps/oidc-provider-express/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          },
-          "outputs": ["{options.outputPath}"]
-        },
-        "serve": {
-          "builder": "@nrwl/node:execute",
-          "options": {
-            "buildTarget": "oidc-provider-express:build",
-            "port": 7778
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["apps/oidc-provider-express/tsconfig.app.json", "apps/oidc-provider-express/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-provider-express/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "apps/oidc-provider-express/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/apps/oidc-provider-express"]
-        }
-      }
-    },
     "oidc-provider": {
       "root": "libs/oidc/provider",
       "sourceRoot": "libs/oidc/provider/src",

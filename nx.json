@@ -270,9 +270,6 @@
     "oidc-client-test": {
       "tags": []
     },
-    "oidc-provider-express": {
-      "tags": []
-    },
     "oidc-provider": {
       "tags": []
     },
