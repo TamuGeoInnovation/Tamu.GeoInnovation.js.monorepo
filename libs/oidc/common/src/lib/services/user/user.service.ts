@@ -72,6 +72,33 @@ export class UserService {
     // await this.insertSecretAnswers(secretQuestion1, secretQuestion2, secretanswer1, secretanswer2, userEnt);
   }
 
+  public async insertDefaultSecretQuestions() {
+    const questions = [
+      {
+        questionText: 'What was the house number and street name you lived in as a child?'
+      },
+      {
+        questionText: 'What were the last four digits of your childhood telephone number?'
+      },
+      {
+        questionText: 'What elementary school did you attend?'
+      },
+      {
+        questionText: 'In what town or city was your first full time job?'
+      },
+      {
+        questionText: 'In what town or city did you meet your spouse or partner?'
+      },
+      {
+        questionText: 'What is the middle name of your oldest child?'
+      }
+    ];
+
+    questions.forEach((question: Partial<SecretQuestion>) => {
+      this.questionRepo.create(question).save();
+    });
+  }
+
   /**
    * Function used to insert a new user given an Express Request.
    */

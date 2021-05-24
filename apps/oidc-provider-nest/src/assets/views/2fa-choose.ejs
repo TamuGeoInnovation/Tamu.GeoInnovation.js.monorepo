@@ -1,0 +1,14 @@
+<form autocomplete="off" action="/interaction/<%= details.uid %>/2fa/method" method="post">
+  <input type="hidden" name="uuid" value="<%= details.uid %>" />
+  <input type="hidden" name="guid" value="<%= guid %>" />
+  <input type="hidden" name="email" value="<%= email %>" />
+  <input type="hidden" name="method" />
+
+  <p>Select a method below to continue</p>
+  <select name="method" required>
+    <option value="authenticator">Device</option>
+    <option value="totp">Email</option>
+  </select>
+  <p></p>
+  <button type="submit" class="login login-submit">Submit</button>
+</form>

@@ -16,6 +16,21 @@ export class Mailer {
     }
   });
 
+  public static sendTokenByEmail(recipient: User, token: string) {
+    const mailOptions = {
+      from: '"GISC Accounts Team" <giscaccounts@tamu.edu>',
+      to: recipient.email,
+      subject: 'Your Two-step Login Verification Code',
+      text: `Your two-step verification code is: ${token}`,
+      html:
+        `<p>Your two-step verification code is: <b>${token}</b></p>` + `<p>Use this code to complete loggin in with GISC</p>`
+    };
+
+    Mailer.transporter.sendMail(mailOptions).then((response) => {
+      console.log('2FA: ', Mailer.getTestMessageUrl(response));
+    });
+  }
+
   public static sendPasswordResetRequestEmail(recipient: User, resetRequest: UserPasswordReset, location: string) {
     const mailOptions = {
       from: '"GISC Accounts Team" <giscaccounts@tamu.edu>',
@@ -49,7 +64,7 @@ export class Mailer {
     });
   }
 
-  public static sendAccountConfirmationEmail(toEmail: string = 'aplecore@gmail.com', sub: string) {
+  public static sendAccountConfirmationEmail(toEmail: string, sub: string) {
     const mailOptions = {
       from: '"GISC Accounts Team" <giscaccounts@tamu.edu>',
       to: `${toEmail},`,

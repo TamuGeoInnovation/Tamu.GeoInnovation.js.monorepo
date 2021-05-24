@@ -17,7 +17,8 @@ import {
   RoleModule,
   RoleService,
   UserModule,
-  UserService
+  UserService,
+  TwoFactorAuthUtils
 } from '@tamu-gisc/oidc/common';
 
 import { AppModule } from './app/app.module';
@@ -28,6 +29,9 @@ async function bootstrap() {
     cors: true
   });
 
+  // Sets up various parameters used during deployment
+  // When passing in multiple args in the monorepo you need to use this format:
+  // --args='-h=6','-w=9','-d=3'
   const { argv } = yargs(process.argv.slice(2))
     .scriptName('oidc-provider-nest')
     .option('s', {
@@ -90,11 +94,15 @@ async function bootstrap() {
     OpenIdProvider.build(clients);
   }
 
-  enableOIDCDebug(OpenIdProvider.provider);
+  // Only needed during development
+  // enableOIDCDebug(OpenIdProvider.provider);
 
   OpenIdProvider.provider.proxy = true;
 
   const dir = join(__dirname, 'assets/views');
+
+  // This will set the default time step for otplib to 5 minutes
+  TwoFactorAuthUtils.build();
 
   app.use(helmet());
   app.setViewEngine('ejs');
@@ -120,6 +128,8 @@ async function bootstrap() {
     setTimeout(() => {
       if (argv.setup) {
         const clientMetadataService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
+        const roleService = app.select(RoleModule).get(RoleService, { strict: true });
+        const userService = app.select(UserModule).get(UserService, { strict: true });
 
         // Insert default Grant Types
         clientMetadataService.insertDefaultGrantTypes();
@@ -130,11 +140,11 @@ async function bootstrap() {
         // Create ClientMetadata for oidc-idp-admin (angular site)
         clientMetadataService.insertClientMetadataForAdminSite(argv.n, argv.t, argv.r);
         // Insert default Roles
-        const roleService = app.select(RoleModule).get(RoleService, { strict: true });
         roleService.insertDefaultUserRoles();
         // Create Admin user with known password
-        const userService = app.select(UserModule).get(UserService, { strict: true });
         userService.insertDefaultAdmin(argv.e, argv.p);
+        // Insert the secret questions for others to register
+        userService.insertDefaultSecretQuestions();
         // TODO: Add field to User that will prompt a user to change their password on next login
       }
     }, 3000);
