@@ -184,6 +184,12 @@ export interface GeoJSONLayerSourceProperties extends IRemoteLayerService {
   native?: Omit<esri.GeoJSONLayerProperties, 'renderer'> & { renderer?: RendererAutoCastNativeOptions };
 }
 
+export interface MapImageLayerSourceProperties extends IRemoteLayerService {
+  type: 'map-image';
+
+  native?: esri.MapImageLayerProperties;
+}
+
 export interface CSVLayerSourceProperties extends IRemoteLayerService {
   type: 'csv';
 
@@ -247,6 +253,7 @@ export type LayerSourceType =
   | CSVLayerSourceProperties
   | GraphicLayerSourceProperties
   | GroupLayerSourceProperties
+  | MapImageLayerSourceProperties
   | PortalMapServerLayerSourceProperties;
 
 /**

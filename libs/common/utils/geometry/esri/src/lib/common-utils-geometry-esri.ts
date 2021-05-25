@@ -239,7 +239,8 @@ export type IPortalLayer = IPortalFeatureLayer | IPortalGroupLayer;
 
 export type AutocastableLayer =
   | { type: 'group'; layers: Array<AutocastableLayer>; title?: string }
-  | { type: 'feature'; url: string; title?: string };
+  | { type: 'feature'; url: string; title?: string }
+  | { type: 'map-image'; title?: string };
 
 /**
  * JSON Portal representation for a Graphic class.

@@ -277,6 +277,14 @@ export class EsriMapService {
         // Create and return new feature layer
         return new FeatureLayer(props as esri.FeatureLayerProperties);
       });
+    } else if (source.type === 'map-image') {
+      return this.moduleProvider.require(['MapImageLayer']).then(([ImageLayer]: [esri.MapImageLayerConstructor]) => {
+        // Delete the type property as it cannot be set on layer creation.
+        delete props.type;
+
+        // Create and return new map image layer
+        return new ImageLayer(props as esri.MapImageLayerProperties);
+      });
     } else if (source.type === 'scene') {
       return this.moduleProvider.require(['SceneLayer']).then(([SceneLayer]: [esri.SceneLayerConstructor]) => {
         // Delete the type property as it cannot be set on layer creation.
