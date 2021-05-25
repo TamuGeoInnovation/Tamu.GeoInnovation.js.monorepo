@@ -234,8 +234,8 @@ export class LayerConfiguration {
       return 'graphics';
     } else if (type === 'Group Layer') {
       return 'group';
-    } else if (type === 'Raster Layer') {
-      return 'raster';
+    } else if (type === 'Map Layer') {
+      return 'map-image';
     } else {
       return type as ILayerConfiguration['type'];
     }
@@ -367,7 +367,7 @@ export interface ILayerConfiguration {
 
   layerId?: string;
 
-  type?: 'feature' | 'graphics' | 'group' | 'raster';
+  type?: 'feature' | 'graphics' | 'group' | 'map-image';
 
   description?: string;
 
