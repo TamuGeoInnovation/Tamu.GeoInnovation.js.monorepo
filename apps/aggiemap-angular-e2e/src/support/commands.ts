@@ -70,7 +70,7 @@ Cypress.Commands.add('checkLayer', (num, layerName) => {
     .should('have.class', 'ng-star-inserted', {timeout: 2000})
     .and('contain', `${layerName}`, {timeout: 2000})
     //.scrollIntoView()
-    .and('be.visible')
+    //.and('be.visible')
 })
 
 Cypress.Commands.add('checkLegend', (num, legendName) => {
