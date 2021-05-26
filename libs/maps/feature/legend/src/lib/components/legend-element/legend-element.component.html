@@ -11,7 +11,7 @@ of the table -->
       <div class="legend-info" *ngFor="let info of element.infos">
         <ng-container [ngSwitch]="info.preview !== undefined">
           <div *ngSwitchCase="true" class="image-container" [elementInsert]="info.preview"></div>
-          <img *ngSwitchCase="false" class="image-container" [src]="info.src" alt="" />
+          <img *ngSwitchCase="false" class="image-container" [src]="info.src" [ngStyle]="{opacity: info.opacity}" />
         </ng-container>
         <!-- Apply the legend item from the parent group or child -->
         <div>{{element.infos.length === 1 ? groupTitle: info?.label}}</div>
