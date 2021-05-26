@@ -103,6 +103,7 @@
     "typeorm": "^0.2.20",
     "uuid": "^8.1.0",
     "webfontloader": "^1.6.28",
+    "yargs": "^16.2.0",
     "zone.js": "^0.10.3"
   },
   "devDependencies": {
@@ -130,6 +131,7 @@
     "@types/mapbox-gl": "^1.9.1",
     "@types/node": "12.12.38",
     "@types/sequelize": "^4.27.33",
+    "@types/yargs": "^16.0.1",
     "@typescript-eslint/eslint-plugin": "4.3.0",
     "@typescript-eslint/parser": "4.3.0",
     "caniuse-lite": "^1.0.30001154",

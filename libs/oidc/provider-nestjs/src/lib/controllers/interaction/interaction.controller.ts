@@ -3,9 +3,10 @@ import { Body, Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus
 import { Request, Response } from 'express';
 import got from 'got';
 import { InteractionResults } from 'oidc-provider';
+import * as otplib from 'otplib';
 
 import { UserService } from '@tamu-gisc/oidc/common';
-import { urlHas, urlFragment, TwoFactorAuthUtils } from '@tamu-gisc/oidc/common';
+import { urlHas, urlFragment, TwoFactorAuthUtils, Mailer } from '@tamu-gisc/oidc/common';
 
 import { OpenIdProvider } from '../../configs/oidc-provider-config';
 import { UserLoginService } from '../../services/user-login/user-login.service';
@@ -87,7 +88,7 @@ export class InteractionController {
             error: false
           };
 
-          return res.render('2fa-auth', locals, (err, html) => {
+          return res.render('2fa-choose', locals, (err, html) => {
             if (err) throw new HttpException(err, HttpStatus.BAD_REQUEST);
 
             res.render('_layout-simple', {
@@ -118,7 +119,6 @@ export class InteractionController {
         }
       } else {
         // could not get user; render some error page or redirect to registration
-        // throw new Error('Email / password combination unknown');
         throw new HttpException('Email / password combination unknown', HttpStatus.BAD_REQUEST);
       }
     } catch (err) {
@@ -143,6 +143,38 @@ export class InteractionController {
     }
   }
 
+  @Post(':uid/2fa/method')
+  public async interaction2faMethod(@Body() body, @Req() req: Request, @Res() res: Response) {
+    const details = await OpenIdProvider.provider.interactionDetails(req, res);
+    const user = await this.userService.userRepo.findByKeyDeep('guid', body.guid);
+
+    // body.method is returned as an array for some reason
+    const locals = {
+      title: 'Sign-in',
+      details: details,
+      email: user.email,
+      guid: user.guid,
+      method: body.method[1],
+      error: false
+    };
+
+    if (locals.method) {
+      if (locals.method === 'totp') {
+        const token = otplib.totp.generate(user.secret2fa);
+        Mailer.sendTokenByEmail(user, token);
+      }
+    }
+
+    return res.render('2fa-auth', locals, (err, html) => {
+      if (err) throw new HttpException(err, HttpStatus.BAD_REQUEST);
+
+      res.render('_layout-simple', {
+        ...locals,
+        body: html
+      });
+    });
+  }
+
   @Post(':uid/2fa')
   public async interaction2faPost(@Body() body, @Req() req: Request, @Res() res: Response) {
     const details = await OpenIdProvider.provider.interactionDetails(req, res);
@@ -150,7 +182,8 @@ export class InteractionController {
 
     try {
       const inputToken = body.token;
-      const isValid = await TwoFactorAuthUtils.isValid(inputToken, user.secret2fa);
+
+      const isValid = await TwoFactorAuthUtils.isValid(inputToken, user.secret2fa, body.method);
 
       if (isValid) {
         const result: InteractionResults = {
@@ -181,6 +214,7 @@ export class InteractionController {
         details: details,
         email: user.email,
         guid: user.guid,
+        method: body.method,
         error: true,
         message: err.message,
         result: JSON.stringify(body.result)

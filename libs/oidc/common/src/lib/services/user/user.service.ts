@@ -44,6 +44,58 @@ export class UserService {
     public readonly passwordHistoryRepo: UserPasswordHistoryRepo,
     private readonly httpService: HttpService
   ) {}
+
+  public async insertDefaultAdmin(email: string, password: string) {
+    const _user: Partial<User> = {
+      email: email,
+      password: password,
+      signup_ip_address: '1.1.1.1',
+      last_used_ip_address: '1.1.1.1',
+      updatedAt: new Date(),
+      added: new Date()
+    };
+
+    const user = await this.userRepo.create(_user);
+    const entUser = await this.insertUser(user, 'admin');
+
+    // Set Admin role for admin user
+    const adminRole = await this.roleRepo.findOne({
+      where: {
+        level: '99'
+      }
+    });
+
+    console.log('Admin userGuid:', entUser.guid);
+    await this.insertUserRole(entUser, adminRole, 'oidc-idp-admin');
+  }
+
+  public async insertDefaultSecretQuestions() {
+    const questions = [
+      {
+        questionText: 'What was the house number and street name you lived in as a child?'
+      },
+      {
+        questionText: 'What were the last four digits of your childhood telephone number?'
+      },
+      {
+        questionText: 'What elementary school did you attend?'
+      },
+      {
+        questionText: 'In what town or city was your first full time job?'
+      },
+      {
+        questionText: 'In what town or city did you meet your spouse or partner?'
+      },
+      {
+        questionText: 'What is the middle name of your oldest child?'
+      }
+    ];
+
+    questions.forEach((question: Partial<SecretQuestion>) => {
+      this.questionRepo.create(question).save();
+    });
+  }
+
   /**
    * Function used to insert a new user given an Express Request.
    */

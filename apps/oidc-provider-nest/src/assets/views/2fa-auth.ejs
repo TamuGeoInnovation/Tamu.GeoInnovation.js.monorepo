@@ -2,11 +2,12 @@
   <input type="hidden" name="uuid" value="<%= details.uid %>" />
   <input type="hidden" name="guid" value="<%= guid %>" />
   <input type="hidden" name="email" value="<%= email %>" />
+  <input type="hidden" name="method" value="<%= method %>" />
 
   <% if (error) {%>
   <p id="error-message"><%= message %></p>
   <%}%>
-  <p>Enter the 6 digit code from your authenticator app</p>
+  <p>Enter the 6 digit code sent to either your authenticator app or email</p>
   <input required type="text" name="token" class="error-input" placeholder="6 digit code" autofocus="on" />
 
   <button type="submit" class="login login-submit">Check code</button>

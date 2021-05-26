@@ -2,12 +2,17 @@ import * as otplib from 'otplib';
 import * as crypto from 'crypto';
 
 export class TwoFactorAuthUtils {
-  public static isValid(token: string, secret: string) {
+  public static build() {
+    // Set time limit to 5 minutes
+    otplib.totp.options = { step: 300 };
+  }
+
+  public static isValid(token: string, secret: string, method: TwoFactorAuthMethod) {
     let ret = false;
     if (token) {
       if (token.length === 6) {
-        otplib.authenticator.options = { crypto };
-        ret = otplib.authenticator.check(token, secret);
+        otplib[method].options = { crypto };
+        ret = otplib[method].check(token, secret);
       } else {
         throw new TwoFactorAuthError('Invalid input token');
       }
@@ -26,6 +31,7 @@ export class TwoFactorAuthUtils {
   }
 }
 
+type TwoFactorAuthMethod = 'authenticator' | 'totp';
 class TwoFactorAuthError extends Error {
   constructor(message: string) {
     super(message);
