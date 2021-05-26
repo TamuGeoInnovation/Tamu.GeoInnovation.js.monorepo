@@ -6,7 +6,7 @@ import { InteractionResults } from 'oidc-provider';
 import * as otplib from 'otplib';
 
 import { UserService } from '@tamu-gisc/oidc/common';
-import { urlHas, urlFragment, TwoFactorAuthUtils } from '@tamu-gisc/oidc/common';
+import { urlHas, urlFragment, TwoFactorAuthUtils, Mailer } from '@tamu-gisc/oidc/common';
 
 import { OpenIdProvider } from '../../configs/oidc-provider-config';
 import { UserLoginService } from '../../services/user-login/user-login.service';
@@ -119,7 +119,6 @@ export class InteractionController {
         }
       } else {
         // could not get user; render some error page or redirect to registration
-        // throw new Error('Email / password combination unknown');
         throw new HttpException('Email / password combination unknown', HttpStatus.BAD_REQUEST);
       }
     } catch (err) {
@@ -162,8 +161,7 @@ export class InteractionController {
     if (locals.method) {
       if (locals.method === 'totp') {
         const token = otplib.totp.generate(user.secret2fa);
-        // Mailer.sendTokenByEmail(user, token);
-        console.log(token);
+        Mailer.sendTokenByEmail(user, token);
       }
     }
 

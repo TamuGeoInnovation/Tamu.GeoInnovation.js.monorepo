@@ -95,7 +95,9 @@ async function bootstrap() {
   }
 
   // Only needed during development
-  // enableOIDCDebug(OpenIdProvider.provider);
+  if (!environment.production) {
+    enableOIDCDebug(OpenIdProvider.provider);
+  }
 
   OpenIdProvider.provider.proxy = true;
 

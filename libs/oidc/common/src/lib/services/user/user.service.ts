@@ -67,9 +67,6 @@ export class UserService {
 
     console.log('Admin userGuid:', entUser.guid);
     await this.insertUserRole(entUser, adminRole, 'oidc-idp-admin');
-    // const { secretanswer1, secretanswer2, secretQuestion1, secretQuestion2 } = body;
-
-    // await this.insertSecretAnswers(secretQuestion1, secretQuestion2, secretanswer1, secretanswer2, userEnt);
   }
 
   public async insertDefaultSecretQuestions() {
