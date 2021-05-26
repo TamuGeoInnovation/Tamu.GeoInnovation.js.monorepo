@@ -161,11 +161,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
       )
       .subscribe((res: ILayerConfiguration) => {
         if (this.layer) {
-          if (this.layer.type === 'feature') {
-            this.layer.opacity = res.drawingInfo.opacity;
-          } else if (this.layer.type === 'map-image') {
-            this.layer.allSublayers.forEach((l) => (l.opacity = res.drawingInfo.opacity));
-          }
+          this.layer.opacity = res.drawingInfo.opacity;
         }
       });
   }
@@ -184,7 +180,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
   }
 
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes.index.previousValue !== changes.index.currentValue && this.layer !== undefined) {
+    if (changes.index && changes.index.previousValue !== changes.index.currentValue && this.layer !== undefined) {
       this.ms.store.pipe(take(1)).subscribe((instances) => {
         instances.map.reorder(this.layer, this.index);
       });
@@ -200,6 +196,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
 
 export class LayerConfiguration {
   public form: FormGroup;
+  public info: FormGroup;
 
   constructor(public fb: FormBuilder, args: ILayerConfiguration | FormGroup) {
     if (args !== undefined) {

@@ -438,10 +438,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               id: l.info.layerId,
               url: url.join('/'),
               title: l.info.name,
+              opacity: l.info.drawingInfo.opacity,
               sublayers: [
                 {
                   id: id,
-                  opacity: l.info.drawingInfo.opacity,
                   listMode: 'hide'
                 }
               ]
