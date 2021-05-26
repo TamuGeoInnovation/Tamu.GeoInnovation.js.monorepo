@@ -413,13 +413,14 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   private _generateGroupLayers(definitions: Array<CPALayer>, snapOrScenTitle: string): esri.Layer {
-    const idHash = this._generateGroupLayerId(definitions);
+    const reversedLayers = [...definitions].reverse();
+    const idHash = this._generateGroupLayerId(reversedLayers);
 
     const groupLayer = new this._modules.groupLayer({
       id: idHash,
       title: snapOrScenTitle,
       visibilityMode: 'independent',
-      layers: definitions
+      layers: reversedLayers
         .map((l) => {
           if (l.info.type === 'feature') {
             return new this._modules.featureLayer({
@@ -472,7 +473,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    * used to remove all of the resolved layers from the map if they exist.
    */
   private _removeTimelineEventLayers(event: TypedSnapshotOrScenario): void {
-    const idHash = this._generateGroupLayerId(event.layers);
+    const reversedLayers = [...event.layers].reverse();
+    const idHash = this._generateGroupLayerId(reversedLayers);
 
     const prevLayers = event.layers
       .map((l) => {
