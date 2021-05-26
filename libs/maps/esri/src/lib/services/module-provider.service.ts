@@ -211,6 +211,10 @@ export class EsriModuleProviderService {
     {
       class: 'esri/geometry/Extent',
       name: 'Extent'
+    },
+    {
+      class: 'esri/layers/MapImageLayer',
+      name: 'MapImageLayer'
     }
   ];
 

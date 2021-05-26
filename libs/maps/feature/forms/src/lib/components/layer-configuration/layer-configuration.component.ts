@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Optional, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
-import { BehaviorSubject, from } from 'rxjs';
+import { BehaviorSubject, forkJoin, from } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, filter, withLatestFrom, pluck, take } from 'rxjs/operators';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
@@ -76,7 +76,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
     return this.config.form.getRawValue();
   }
 
-  private layer: esri.FeatureLayer;
+  private layer: LayerConfigLayer;
 
   /**
    * Component model. Initializes a form group that is used to attach it to the parent
@@ -107,30 +107,47 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
             return test.test(url);
           }),
           switchMap((url: string) => {
-            return from(this.mp.require(['Layer'])).pipe(
-              switchMap(([Layer]: [esri.LayerConstructor]) => {
-                return Layer.fromArcGISServerUrl({
-                  url
-                });
-              })
-            );
+            // Attempt to load the layer from its portal JSON representation but also get the raw layer jsonp in case the Layer class
+            // cannot auto-instantiate the layer type correct as is the case with map-image layers. It renders them as `feature` layers.
+            return forkJoin([
+              from(this.mp.require(['Layer'])).pipe(
+                switchMap(([Layer]: [esri.LayerConstructor]) => {
+                  return Layer.fromArcGISServerUrl({
+                    url
+                  });
+                })
+              ),
+              this.http.get(url + '?f=pjson')
+            ]);
           }),
           withLatestFrom(this.ms.store)
         )
-        .subscribe(([response, instances]: [esri.FeatureLayer, MapServiceInstance]) => {
-          // Update form values
-          this.layer = response as esri.FeatureLayer;
-
-          if (this.config) {
-            this.config.applyConfigValuesToLayer(this.layer);
-          }
-
-          //
-          // If there is no config, apply default values from the layer instance.
-          this.config.updateFormValues(LayerConfiguration.normalizeOptions(response));
-
+        .subscribe(([[response, metadata], instances]: [[esri.FeatureLayer, PortalLayerJSON], MapServiceInstance]) => {
           if (this.link && this.ms !== null) {
-            instances.map.add(this.layer, this.index);
+            if (metadata.type === 'Raster Layer') {
+              this.ms
+                .findLayerOrCreateFromSource({
+                  type: 'map-image',
+                  id: response.id,
+                  title: response.title,
+                  url: response.url,
+                  native: {
+                    sublayers: [{ id: metadata.id }]
+                  }
+                })
+                .then((layer) => {
+                  if (layer instanceof Array) {
+                    // No-op
+                    console.warn('Multiple map image sub layers unsupported');
+                  } else {
+                    this.assignMetadata(layer as esri.MapImageLayer);
+                    instances.map.add(layer, this.index);
+                  }
+                });
+            } else {
+              this.assignMetadata(response as esri.FeatureLayer);
+              instances.map.add(this.layer, this.index);
+            }
           }
         });
     }
@@ -139,7 +156,8 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
     this.config.form.valueChanges
       .pipe(
         pluck('info'),
-        filter((config) => config !== undefined)
+        filter((config) => config !== undefined),
+        debounceTime(250)
       )
       .subscribe((res: ILayerConfiguration) => {
         if (this.layer) {
@@ -148,8 +166,21 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
       });
   }
 
+  public assignMetadata(layer: LayerConfigLayer) {
+    // Update form values
+    this.layer = layer;
+
+    if (this.config) {
+      this.config.applyConfigValuesToLayer(this.layer);
+    }
+
+    //
+    // If there is no config, apply default values from the layer instance.
+    this.config.updateFormValues(LayerConfiguration.normalizeOptions(layer));
+  }
+
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes.index.previousValue !== changes.index.currentValue && this.layer !== undefined) {
+    if (changes.index && changes.index.previousValue !== changes.index.currentValue && this.layer !== undefined) {
       this.ms.store.pipe(take(1)).subscribe((instances) => {
         instances.map.reorder(this.layer, this.index);
       });
@@ -165,6 +196,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
 
 export class LayerConfiguration {
   public form: FormGroup;
+  public info: FormGroup;
 
   constructor(public fb: FormBuilder, args: ILayerConfiguration | FormGroup) {
     if (args !== undefined) {
@@ -200,13 +232,15 @@ export class LayerConfiguration {
     }
   }
 
-  public static getLayerType(type: string): 'feature' | 'graphics' | 'group' {
+  public static getLayerType(type: string): ILayerConfiguration['type'] {
     if (type === 'Feature Layer') {
       return 'feature';
     } else if (type === 'Graphics Layer') {
       return 'graphics';
     } else if (type === 'Group Layer') {
       return 'group';
+    } else if (type === 'Map Layer') {
+      return 'map-image';
     } else {
       return type as ILayerConfiguration['type'];
     }
@@ -216,7 +250,7 @@ export class LayerConfiguration {
    * Accepts an object and creates a LayerConfiguration object from
    * matching keys.
    */
-  public static normalizeOptions(obj: object | esri.FeatureLayer): ILayerConfiguration {
+  public static normalizeOptions(obj: object | LayerConfigLayer): ILayerConfiguration {
     if (obj instanceof Object) {
       // If the provided object is a plain jane object, assume it's a configuration object, otherwise a feature layer.
       if (obj.constructor.name === 'Object') {
@@ -304,7 +338,7 @@ export class LayerConfiguration {
     }
   }
 
-  public applyConfigValuesToLayer(layer: esri.FeatureLayer) {
+  public applyConfigValuesToLayer(layer: LayerConfigLayer) {
     const formValues = this.form.getRawValue().info as ILayerConfiguration;
 
     if (formValues.name) {
@@ -338,7 +372,7 @@ export interface ILayerConfiguration {
 
   layerId?: string;
 
-  type?: 'feature' | 'graphics' | 'group';
+  type?: 'feature' | 'graphics' | 'group' | 'map-image';
 
   description?: string;
 
@@ -346,3 +380,16 @@ export interface ILayerConfiguration {
     opacity?: number;
   };
 }
+
+/**
+ * Short list of operational properties found in layer portal JSON representations.
+ *
+ * This is not an exhaustive list and is only here to avoid polluting class members
+ * with large object type definitions in the signature.
+ */
+export interface PortalLayerJSON {
+  type: 'Raster Layer' | 'Feature Layer' | 'Group Layer';
+  id: number;
+}
+
+export type LayerConfigLayer = esri.FeatureLayer | esri.GroupLayer | esri.MapImageLayer;

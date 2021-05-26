@@ -72,6 +72,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     graphicsLayer: esri.GraphicsLayerConstructor;
     groupLayer: esri.GroupLayerConstructor;
     graphic: esri.GraphicConstructor;
+    mapImageLayer: esri.MapImageLayerConstructor;
   };
   private _map: esri.Map;
   private _view: esri.MapView;
@@ -204,9 +205,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     combineLatest([
       this.snapshotHistory,
       this.ms.store,
-      from(this.mp.require(['FeatureLayer', 'GraphicsLayer', 'GroupLayer', 'Graphic', 'Extent']))
+      from(this.mp.require(['FeatureLayer', 'GraphicsLayer', 'GroupLayer', 'Graphic', 'Extent', 'MapImageLayer']))
     ]).subscribe(
-      ([snapshotHistory, instances, [FeatureLayer, GraphicsLayer, GroupLayer, Graphic, Extent]]: [
+      ([snapshotHistory, instances, [FeatureLayer, GraphicsLayer, GroupLayer, Graphic, Extent, MapImageLayer]]: [
         TypedSnapshotOrScenario[],
         MapServiceInstance,
         [
@@ -214,14 +215,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           esri.GraphicsLayerConstructor,
           esri.GroupLayerConstructor,
           esri.GraphicConstructor,
-          esri.ExtentConstructor
+          esri.ExtentConstructor,
+          esri.MapImageLayerConstructor
         ]
       ]) => {
         this._modules = {
           featureLayer: FeatureLayer,
           graphic: Graphic,
           graphicsLayer: GraphicsLayer,
-          groupLayer: GroupLayer
+          groupLayer: GroupLayer,
+          mapImageLayer: MapImageLayer
         };
 
         this._map = instances.map;
@@ -410,13 +413,14 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   }
 
   private _generateGroupLayers(definitions: Array<CPALayer>, snapOrScenTitle: string): esri.Layer {
-    const idHash = this._generateGroupLayerId(definitions);
+    const reversedLayers = [...definitions].reverse();
+    const idHash = this._generateGroupLayerId(reversedLayers);
 
     const groupLayer = new this._modules.groupLayer({
       id: idHash,
       title: snapOrScenTitle,
       visibilityMode: 'independent',
-      layers: definitions
+      layers: reversedLayers
         .map((l) => {
           if (l.info.type === 'feature') {
             return new this._modules.featureLayer({
@@ -427,6 +431,22 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             });
           } else if (l.info.type === 'group') {
             return this._generateGroupLayers(l.layers, l.info.name);
+          } else if (l.info.type === 'map-image') {
+            const url = l.url.split('/');
+            const id = parseInt(url.pop(), 10);
+
+            return new this._modules.mapImageLayer({
+              id: l.info.layerId,
+              url: url.join('/'),
+              title: l.info.name,
+              opacity: l.info.drawingInfo.opacity,
+              sublayers: [
+                {
+                  id: id,
+                  listMode: 'hide'
+                }
+              ]
+            });
           } else if (l.info.type === 'graphics') {
             const g = l.graphics.map((g) => {
               return this._modules.graphic.fromJSON(g);
@@ -453,7 +473,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    * used to remove all of the resolved layers from the map if they exist.
    */
   private _removeTimelineEventLayers(event: TypedSnapshotOrScenario): void {
-    const idHash = this._generateGroupLayerId(event.layers);
+    const reversedLayers = [...event.layers].reverse();
+    const idHash = this._generateGroupLayerId(reversedLayers);
 
     const prevLayers = event.layers
       .map((l) => {
