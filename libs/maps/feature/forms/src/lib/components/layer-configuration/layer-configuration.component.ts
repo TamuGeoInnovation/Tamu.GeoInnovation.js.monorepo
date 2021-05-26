@@ -10,7 +10,6 @@ import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@
 import { v4 as guid } from 'uuid';
 
 import esri = __esri;
-import { group } from '@angular/animations';
 
 @Component({
   selector: 'tamu-gisc-layer-configuration',
@@ -108,6 +107,8 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
             return test.test(url);
           }),
           switchMap((url: string) => {
+            // Attempt to load the layer from its portal JSON representation but also get the raw layer jsonp in case the Layer class
+            // cannot auto-instantiate the layer type correct as is the case with map-image layers. It renders them as `feature` layers.
             return forkJoin([
               from(this.mp.require(['Layer'])).pipe(
                 switchMap(([Layer]: [esri.LayerConstructor]) => {
@@ -155,10 +156,17 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
     this.config.form.valueChanges
       .pipe(
         pluck('info'),
-        filter((config) => config !== undefined)
+        filter((config) => config !== undefined),
+        debounceTime(250)
       )
       .subscribe((res: ILayerConfiguration) => {
-        this.layer.opacity = res.drawingInfo.opacity;
+        if (this.layer) {
+          if (this.layer.type === 'feature') {
+            this.layer.opacity = res.drawingInfo.opacity;
+          } else if (this.layer.type === 'map-image') {
+            this.layer.allSublayers.forEach((l) => (l.opacity = res.drawingInfo.opacity));
+          }
+        }
       });
   }
 
@@ -376,8 +384,14 @@ export interface ILayerConfiguration {
   };
 }
 
+/**
+ * Short list of operational properties found in layer portal JSON representations.
+ *
+ * This is not an exhaustive list and is only here to avoid polluting class members
+ * with large object type definitions in the signature.
+ */
 export interface PortalLayerJSON {
-  type: 'Raster Layer';
+  type: 'Raster Layer' | 'Feature Layer' | 'Group Layer';
   id: number;
 }
 

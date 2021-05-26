@@ -9,7 +9,10 @@ of the table -->
     <!-- For SymbolTable element type -->
     <div *ngSwitchCase="'symbol-table'" class="element-group">
       <div class="legend-info" *ngFor="let info of element.infos">
-        <div class="image-container" [elementInsert]="info.preview"></div>
+        <ng-container [ngSwitch]="info.preview !== undefined">
+          <div *ngSwitchCase="true" class="image-container" [elementInsert]="info.preview"></div>
+          <img *ngSwitchCase="false" class="image-container" [src]="info.src" alt="" />
+        </ng-container>
         <!-- Apply the legend item from the parent group or child -->
         <div>{{element.infos.length === 1 ? groupTitle: info?.label}}</div>
       </div>
