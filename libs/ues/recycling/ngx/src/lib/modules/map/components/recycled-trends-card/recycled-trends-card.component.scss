@@ -1,0 +1,6 @@
+@import 'libs/sass/mixins';
+
+tamu-gisc-bar-chart {
+  @include flex(1);
+  width: 100%;
+}

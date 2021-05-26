@@ -1,0 +1,36 @@
+<div class="action-bar">
+  <div class="breadcrumb trailer-2">
+    <div class="crumb" routerLink="../../">Valves</div>
+    <span class="material-icons">keyboard_arrow_right</span>
+    <div class="crumb">Details</div>
+    <span class="material-icons">keyboard_arrow_right</span>
+    <div class="crumb">{{(valve | async)?.attributes.OBJECTID}}</div>
+  </div>
+
+  <div class="back">
+    <p routerLink="../../"><span class="material-icons">arrow_back</span> Return to list</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2 class="card-title">Status</h2>
+
+  <div class="status-container">
+    <p>Valve State:</p>
+    <div class="status">
+      <div class="pill" *ngIf="(valve | async) as v" [ngClass]="{closed: v?.attributes?.NormalPosition_1 !== v?.attributes?.CurrentPosition_1, missing_fields: v?.attributes?.CurrentPosition_1 === null || v?.attributes?.NormalPosition_1 === null, busy: updating === true}" (click)="toggleValveState(v)">{{v?.attributes?.CurrentPosition_1 ? v.attributes.CurrentPosition_1 : 'null'}}</div>
+    </div>
+    <div class="spinning-loader" *ngIf="updating"></div>
+  </div>
+</div>
+
+<tamu-gisc-expandable-card>
+  <div>
+    <h2 class="card-title">Properties</h2>
+    <p *ngFor="let v of ((valve | async)?.attributes | keyvalue)"><strong>{{v.key}}</strong>: {{v.value | json}}</p>
+
+    <div class="trailer-1 leader-1" *ngIf="(valve | async) === null">
+      <div class="spinning-loader"></div>
+    </div>
+  </div>
+</tamu-gisc-expandable-card>

@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, from } from 'rxjs';
-import { take, flatMap, toArray } from 'rxjs/operators';
+import { Component, Input, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 
 import { v4 as guid } from 'uuid';
 
@@ -12,17 +11,15 @@ import { Notification, NotificationService } from '../../services/notification.s
   styleUrls: ['./notification-container.component.scss']
 })
 export class NotificationContainerComponent implements OnInit {
+  @Input()
+  public position: 'left' | 'center' | 'right' = 'center';
+
   public notifications: Observable<Notification[]>;
 
-  constructor(private notification: NotificationService) {}
+  constructor(private service: NotificationService) {}
 
   public ngOnInit() {
-    // Only display one notification at a time.
-    this.notifications = this.notification.notifications.pipe(
-      flatMap((val) => from(val)),
-      take(1),
-      toArray()
-    );
+    this.notifications = this.service.notifications;
   }
 
   /**
@@ -31,7 +28,7 @@ export class NotificationContainerComponent implements OnInit {
    * @param event Notification object
    */
   public close(event: Notification): void {
-    this.notification.remove(event);
+    this.service.remove(event);
   }
 
   public action(event: Notification): void {

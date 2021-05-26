@@ -1,0 +1,15 @@
+<div>
+  <div class="container12 presenter-details-item leader-1">
+    <div *ngIf="($speaker | async) as person">
+      <div class="column4">
+        <div class="image" [ngStyle]=" { 'background-image': 'url('+unwrapPhoto(person.speakerInfo.base64representation)+')'  } "></div>
+      </div>
+      <div class="column6 pre-2">
+        <p class="name">{{person.firstName}} {{person.lastName}}<span class="class"> | {{person.organization}}</span></p>
+        <div class="description">
+          <p>{{person.speakerInfo.description}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

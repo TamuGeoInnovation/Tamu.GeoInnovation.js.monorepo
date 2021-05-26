@@ -1,0 +1,32 @@
+<section class="internal">
+  <h1 class="section-header">Export</h1>
+
+  <div class="section-content">
+    <form [formGroup]="form" (ngSubmit)="exportAllData()">
+      <div class="export-controls">
+        <div>
+          <tamu-gisc-select formControlName="workshop" [data]="(workshops | async)" [displayTemplate]="'title'"></tamu-gisc-select>
+        </div>
+        <div>
+          <tamu-gisc-button type="submit" [fit]="'snug'" [disabled]="!form.valid" value="Download"></tamu-gisc-button>
+        </div>
+      </div>
+
+      <div class="map-preview">
+        <div class="form-section">
+          <div class="form-section-toolbar">
+            <div class="form-section-name">
+              <p>Preview</p>
+            </div>
+          </div>
+
+          <div class="form-section-body">
+            <div class="form-collection row">
+              <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>

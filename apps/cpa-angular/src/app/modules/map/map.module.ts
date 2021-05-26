@@ -1,13 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
-
-import { SearchModule } from '@tamu-gisc/search';
-import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
-import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
@@ -22,11 +17,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'create'
-      },
-      {
-        path: 'create',
-        loadChildren: () => import('@tamu-gisc/cpa/common/ngx').then((m) => m.CpaCreateModule)
+        redirectTo: 'viewer'
       },
       {
         path: 'viewer',
@@ -40,11 +31,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    HttpClientModule,
     EsriMapModule,
-    SearchModule,
-    SidebarModule,
-    LayerListModule,
     ResponsiveModule,
     CommonNgxRouterModule,
     MapDrawingModule,

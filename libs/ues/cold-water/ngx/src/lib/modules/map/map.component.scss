@@ -1,0 +1,8 @@
+@import 'libs/sass/mixins';
+
+.map-info-container {
+  @include flexbox();
+  @include flex-direction(row);
+
+  height: 100%;
+}

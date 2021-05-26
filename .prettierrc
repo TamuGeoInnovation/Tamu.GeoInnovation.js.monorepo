@@ -13,6 +13,12 @@
         "semi": true,
         "parser": "html"
       }
+    },
+    {
+      "files": "*.yml",
+      "options": {
+        "printWidth": 9999
+      }
     }
   ]
 }

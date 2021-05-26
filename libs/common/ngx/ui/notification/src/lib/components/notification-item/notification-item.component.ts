@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, HostBinding } from '@angular/core';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
 
-import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Notification } from '../../services/notification.service';
 
 @Component({
@@ -31,6 +31,14 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
   @Input()
   public notification: Notification;
 
+  @Input()
+  public position: 'left' | 'center' | 'right';
+
+  @HostBinding('class')
+  private get _classes() {
+    return this.position;
+  }
+
   // Output event that triggers the notification container to call the
   @Output()
   public closeNotification: EventEmitter<Notification> = new EventEmitter();
@@ -54,7 +62,7 @@ export class NotificationItemComponent implements OnInit, OnDestroy {
    * Fn: Stores the spawned notification timing function
    */
   public timer = {
-    step: 10,
+    step: 50,
     current: 0,
     limit: 10000,
     fn: undefined

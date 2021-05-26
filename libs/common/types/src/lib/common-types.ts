@@ -191,7 +191,7 @@ export interface CSVLayerSourceProperties extends IRemoteLayerService {
 }
 
 export interface GraphicLayerSourceProperties {
-  type: 'graphic';
+  type: 'graphics';
 
   /**
    * Graphics used in the creation of the layer

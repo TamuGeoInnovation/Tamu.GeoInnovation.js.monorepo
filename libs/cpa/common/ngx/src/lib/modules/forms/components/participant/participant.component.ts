@@ -1,37 +1,30 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject, Observable, forkJoin, merge, interval, of, combineLatest, from } from 'rxjs';
+import { BehaviorSubject, Subject, forkJoin, interval, of, combineLatest, from, merge, Observable } from 'rxjs';
 import {
   takeUntil,
   debounceTime,
-  shareReplay,
   switchMap,
-  pluck,
+  map,
   take,
   throttle,
   withLatestFrom,
   filter,
-  tap,
-  skip
+  skip,
+  shareReplay
 } from 'rxjs/operators';
 
 import { v4 as guid } from 'uuid';
+import * as md5 from 'md5';
 
-import {
-  IWorkshopRequestPayload,
-  IResponseResponse,
-  IResponseRequestPayload,
-  IScenariosResponse
-} from '@tamu-gisc/cpa/data-api';
-
+import { CPALayer } from '@tamu-gisc/cpa/common/entities';
+import { IResponseRequestPayload, IResponseResponse } from '@tamu-gisc/cpa/data-api';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
-import { getGeometryType } from '@tamu-gisc/common/utils/geometry/esri';
-import { BaseDrawComponent } from '@tamu-gisc/maps/feature/draw';
-import { IChartConfigurationOptions } from '@tamu-gisc/charts';
+import { MapDrawAdvancedComponent } from '@tamu-gisc/maps/feature/draw';
+import { WorkshopService, ResponseService, ScenarioService } from '@tamu-gisc/cpa/data-access';
 
-import { ResponseService } from '../../services/response.service';
-import { WorkshopService } from '../../services/workshop.service';
+import { TypedSnapshotOrScenario, ViewerService } from '../../../viewer/services/viewer.service';
 
 import esri = __esri;
 
@@ -45,32 +38,17 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   @Output()
   public responseSave: EventEmitter<boolean> = new EventEmitter();
 
-  public workshop: Observable<IWorkshopRequestPayload>;
-  public scenario: Observable<IScenariosResponse>;
+  // Values managed by service
+  public workshop = this.vs.workshop;
+  public snapshot = this.vs.snapshotOrScenario;
   public responses: Observable<IResponseResponse[]>;
+  public snapshotHistory = this.vs.snapshotHistory;
+  public selectionIndex = this.vs.selectionIndex;
 
-  public scenarioHistory: BehaviorSubject<IScenariosResponse[]> = new BehaviorSubject([]);
-  public scenarioIndex: BehaviorSubject<number> = new BehaviorSubject(0);
+  // Values specific to the participant component.
   public responseIndex: BehaviorSubject<number> = new BehaviorSubject(-1);
-
   public participantGuid: string;
-
   public form: FormGroup;
-
-  /**
-   * Partial chart configuration passed to the chart component
-   */
-  public chartOptions: Partial<IChartConfigurationOptions> = {
-    scales: {
-      yAxes: [
-        {
-          ticks: {
-            beginAtZero: true
-          }
-        }
-      ]
-    }
-  };
 
   /**
    * Stores the results of the features emitted by the draw component.
@@ -84,24 +62,32 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    *
    * Needed to call its public `draw` and `reset` methods.
    */
-  @ViewChild(BaseDrawComponent, { static: true })
-  private drawComponent: BaseDrawComponent;
+  @ViewChild(MapDrawAdvancedComponent, { static: true })
+  private drawComponent: MapDrawAdvancedComponent;
 
   private _$formReset: Subject<boolean> = new Subject();
   private _$destroy: Subject<boolean> = new Subject();
+  private _modules: {
+    featureLayer: esri.FeatureLayerConstructor;
+    graphicsLayer: esri.GraphicsLayerConstructor;
+    groupLayer: esri.GroupLayerConstructor;
+    graphic: esri.GraphicConstructor;
+  };
+  private _map: esri.Map;
+  private _view: esri.MapView;
 
   constructor(
     private fb: FormBuilder,
-    private mapService: EsriMapService,
-    private ws: WorkshopService,
     private rs: ResponseService,
     private route: ActivatedRoute,
     private ms: EsriMapService,
-    private mp: EsriModuleProviderService
+    private mp: EsriModuleProviderService,
+    private vs: ViewerService,
+    private sc: ScenarioService
   ) {}
 
   public ngOnInit() {
-    this.initializeParticipant();
+    this._initializeParticipant();
 
     this.form = this.fb.group({
       name: [''],
@@ -110,29 +96,36 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     });
 
     if (this.route.snapshot.params['guid']) {
-      this.workshop = this.ws.getWorkshop(this.route.snapshot.params['guid']).pipe(shareReplay(1));
+      this.vs.updateWorkshopGuid(this.route.snapshot.params.guid);
 
-      this.scenario = combineLatest([this.workshop, this.scenarioIndex]).pipe(
-        switchMap(([workshop, scenarioIndex]: [IWorkshopRequestPayload, number]) => {
-          return of(workshop).pipe(pluck<IResponseResponse, IScenariosResponse[]>('scenarios'), pluck(scenarioIndex));
-        }),
-        tap((scenario) => {
-          this.addToScenarioHistory(scenario);
-        }),
-        shareReplay(1)
-      );
-
-      this.scenario.pipe(skip(1), takeUntil(this._$destroy)).subscribe((res) => {
+      // On snapshot change, reset the workspace
+      this.snapshot.pipe(skip(1), takeUntil(this._$destroy)).subscribe((res) => {
         this.resetWorkspace();
       });
 
-      // Fetch new responses from server whenever scenario, response index, or response save signal emits.
-      this.responses = merge(this.scenario, this.responseIndex, this.responseSave).pipe(
+      // Fetch new responses from server whenever snapshot, response index, or response save signal emits.
+      this.responses = merge(this.snapshot, this.responseIndex, this.responseSave).pipe(
         switchMap((event) => {
-          return forkJoin([this.workshop, this.scenario.pipe(take(1))]);
+          return forkJoin([this.workshop.pipe(take(1)), this.snapshot.pipe(take(1))]);
         }),
-        switchMap(([workshop, scenario]) => {
-          return this.rs.getResponsesForWorkshopAndScenario(workshop.guid, scenario.guid);
+        switchMap(([workshop, snapshotOrScenario]) => {
+          if (snapshotOrScenario?.type === 'snapshot') {
+            return this.rs.getResponsesForWorkshopAndSnapshot(workshop.guid, snapshotOrScenario.guid);
+          } else if (snapshotOrScenario.type === 'scenario') {
+            return this.rs.getResponsesForWorkshop(workshop.guid).pipe(
+              map((responses) => {
+                return responses.filter((response) => {
+                  if (response.scenario) {
+                    return response;
+                  }
+                });
+              })
+            );
+          } else {
+            const message = 'snapshotOrScenario without type';
+            console.warn(message);
+            throw Error(message);
+          }
         }),
         shareReplay(1)
       );
@@ -179,74 +172,101 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         // the update method when not necessary.
         this.form.statusChanges
           .pipe(
-            throttle(() => interval(500)),
-            debounceTime(1000),
+            throttle(() => interval(700)),
+            debounceTime(750),
             takeUntil(this._$formReset)
           )
           .subscribe((status) => {
             if (status === 'VALID') {
-              this.updateOrCreateSubmission();
+              this._updateOrCreateSubmission();
             }
           });
       });
     }
 
-    // Use ScenarioHistory observable to determine a scenario change which requires the addition of new layers
-    // and/or removal of old scenario layers
-    combineLatest([this.scenarioHistory, this.ms.store, from(this.mp.require(['FeatureLayer']))]).subscribe(
-      ([scenarioHistory, instances, [FeatureLayer]]: [
-        IScenariosResponse[],
-        MapServiceInstance,
-        [esri.FeatureLayerConstructor]
-      ]) => {
-        // Find any layers associated with the current scenario and clear them to prepare to add layers from the next scenario
-        const prevScenario = scenarioHistory.length > 1 ? scenarioHistory[0] : undefined;
-        const currScenario = scenarioHistory.length > 1 ? scenarioHistory[1] : scenarioHistory[0];
+    // Create a new subscription to the map service, load up the contexts, and add to map
+    combineLatest([this.ms.store, from(this.mp.require(['Extent']))]).subscribe(
+      ([instances, [Extent]]: [MapServiceInstance, [esri.ExtentConstructor]]) => {
+        // Get workshop contexts
+        this.vs.workshopContexts.subscribe((contexts) => {
+          contexts.forEach((val) => {
+            const contextLayer = this._generateGroupLayers(val.layers, 'Context');
+            instances.map.add(contextLayer);
+            const extent = Extent.fromJSON(val.extent);
+            this._view.goTo(extent);
+          });
+        });
+      }
+    );
 
-        if (!currScenario) {
+    // Use SnapshotHistory observable to determine a snapshot change which requires the addition of new layers
+    // and/or removal of old snapshot layers
+    combineLatest([
+      this.snapshotHistory,
+      this.ms.store,
+      from(this.mp.require(['FeatureLayer', 'GraphicsLayer', 'GroupLayer', 'Graphic', 'Extent']))
+    ]).subscribe(
+      ([snapshotHistory, instances, [FeatureLayer, GraphicsLayer, GroupLayer, Graphic, Extent]]: [
+        TypedSnapshotOrScenario[],
+        MapServiceInstance,
+        [
+          esri.FeatureLayerConstructor,
+          esri.GraphicsLayerConstructor,
+          esri.GroupLayerConstructor,
+          esri.GraphicConstructor,
+          esri.ExtentConstructor
+        ]
+      ]) => {
+        this._modules = {
+          featureLayer: FeatureLayer,
+          graphic: Graphic,
+          graphicsLayer: GraphicsLayer,
+          groupLayer: GroupLayer
+        };
+
+        this._map = instances.map;
+        this._view = instances.view as esri.MapView;
+
+        // Find any layers associated with the current snapshot and clear them to prepare to add layers from the next snapshot
+        const prevSnapshot = snapshotHistory.length > 1 ? snapshotHistory[0] : undefined;
+        const currSnapshot = snapshotHistory.length > 1 ? snapshotHistory[1] : snapshotHistory[0];
+
+        if (!currSnapshot) {
           return;
         }
 
-        if (prevScenario) {
-          const prevLayers = prevScenario.layers
-            .map((l) => {
-              return instances.map.layers.find((ml) => {
-                return ml.id === l.info.layerId;
-              });
-            })
-            .filter((r) => r !== undefined);
+        if (currSnapshot.extent !== undefined || currSnapshot !== null) {
+          const ext = Extent.fromJSON(currSnapshot.extent);
 
-          if (prevLayers.length > 0) {
-            instances.map.removeMany(prevLayers);
-          }
+          this._view.goTo(ext);
+        } else if (currSnapshot.mapCenter !== undefined || currSnapshot.zoom !== undefined) {
+          this._view.goTo({
+            center: currSnapshot.mapCenter.split(',').map((c) => parseFloat(c)),
+            zoom: currSnapshot.zoom
+          });
+        }
+
+        if (prevSnapshot) {
+          this._removeTimelineEventLayers(prevSnapshot);
         }
 
         // Queue the new layers on the next event loop, otherwise any layers that need removed
         // will not have been removed until then and will not appear in the legend.
         setTimeout(() => {
-          // Parse coordinates form scenario string definition
-          const split = currScenario.mapCenter.split(',').map((coordinate) => parseFloat(coordinate));
-
-          // Navigate to the parsed coordinates
-          instances.view.goTo({
-            target: [split[0], split[1]],
-            zoom: currScenario.zoom
-          });
-
-          // Create a map of layers from the current scenario to add to the map.
-          const layers = currScenario.layers
-            .map((l) => {
-              return new FeatureLayer({
-                url: l.url,
-                title: l.info.name,
-                id: l.info.layerId,
-                opacity: 1 - parseInt((l.info.drawingInfo.transparency as unknown) as string, 10) / 100,
-                listMode: 'show'
+          if (currSnapshot.type === 'scenario') {
+            this.getLayerForScenarioGuid(currSnapshot.guid)
+              .then((layer) => {
+                const groupLayer = this._generateGroupLayers(layer.layers, currSnapshot.title);
+                instances.map.add(groupLayer);
+              })
+              .catch((err) => {
+                throw new Error(err);
               });
-            })
-            .reverse();
-
-          instances.map.addMany(layers);
+          } else if (currSnapshot.type === 'snapshot') {
+            // Create a map of layers from the current snapshot to add to the map.
+            const groupLayer = this._generateGroupLayers(currSnapshot.layers, currSnapshot.title);
+            instances.map.add(groupLayer);
+          }
         }, 0);
       }
     );
@@ -259,27 +279,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this._$destroy.complete();
   }
 
-  public async handleDrawSelection(e: esri.Graphic) {
-    if (e.geometry) {
+  public getLayerForScenarioGuid(scenarioGuid: string) {
+    return this.sc.getLayerForScenario(scenarioGuid).toPromise();
+  }
+
+  public async handleDrawSelection(e: Array<esri.Graphic>) {
+    // Test if all drawn features have geometry
+    const allHaveGeometry = e.every((g) => g.geometry !== undefined);
+
+    if (e.length > 0 && allHaveGeometry) {
       this.form.controls.drawn.setValue(e);
-
-      const layer = this.mapService.findLayerById('highwater-claims-layer') as esri.FeatureLayer;
-
-      if (layer) {
-        let query;
-
-        try {
-          query = await layer.queryFeatures({
-            spatialRelationship: 'intersects',
-            geometry: e.geometry,
-            outFields: ['*']
-          });
-
-          this.selected.next(query.features);
-        } catch (err) {
-          console.error(err);
-        }
-      }
     } else {
       this.selected.next([]);
       this.form.controls.drawn.setValue(undefined);
@@ -307,7 +316,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         // If the current guid has an entry index that is less than the total participant entries -1,
         // meaning "there are no more non-placeholder participant entries in the array", create a new
         // placeholder submission
-        if (index >= 0 && index + 1 <= responses.length - 2) {
+        if (index >= 0 && index + 1 <= responses.length - 1) {
           this.responseIndex.next(index + 1);
         } else if (index <= responses.length - 1 && this.form.valid) {
           // Create a new participant placeholder
@@ -332,38 +341,39 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         this.drawComponent.reset();
       }
       this.form.reset();
-      this.initializeParticipant();
+      this._initializeParticipant();
       this.responseIndex.next(-1);
     } else {
-      this.drawComponent.reset();
-      // Create an auto-castable graphic.
-      // The cloned graphic does not have a geometry type so without it, the arcgis api will
-      // error out.
-      const autoCastable = {
-        geometry: {
-          ...submission.shapes.geometry,
-          type: getGeometryType(submission.shapes.geometry)
-        }
-      } as esri.Graphic;
+      this.mp.require(['Graphic', 'Symbol', 'Geometry']).then(([Graphic]: [esri.GraphicConstructor]) => {
+        this.drawComponent.reset();
+        // Create an auto-castable graphic.
+        const graphics = submission.shapes.map((s) => {
+          return Graphic.fromJSON(s);
+        });
 
-      // Draws submission graphics to the draw component target layer.
-      this.drawComponent.draw([autoCastable]);
+        // Set/Overwrite form values
+        this.form.patchValue({
+          name: submission.name,
+          notes: submission.notes
+        });
 
-      // Set/Overwrite form values
-      this.form.controls.name.setValue(submission.name);
-      this.form.controls.notes.setValue(submission.notes);
+        // Draws submission graphics to the draw component target layer.
+        this.drawComponent.draw(graphics);
 
-      // Set the component participant state.
-      this.initializeParticipant(submission.guid);
+        // Set the component participant state.
+        this._initializeParticipant(submission.guid);
+      });
     }
   }
 
   /**
    * Updates the entry value of the current participant guid with the provided geometry.
    */
-  private updateOrCreateSubmission() {
-    forkJoin([this.scenario.pipe(take(1)), this.responses.pipe(take(1))]).subscribe(([scenario, responses]) => {
-      const parsed = (this.form.controls.drawn.value as esri.Graphic).toJSON();
+  private _updateOrCreateSubmission() {
+    forkJoin([this.snapshot.pipe(take(1)), this.responses.pipe(take(1))]).subscribe(([snapshot, responses]) => {
+      const parsed = (this.form.controls.drawn.value as Array<esri.Graphic>).map((graphic) => {
+        return graphic.toJSON();
+      });
 
       const submission: IResponseRequestPayload = {
         guid: this.participantGuid,
@@ -383,51 +393,105 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       } else {
         // If there is no existing submission for the current participant guid, add a dictionary index for the current
         // participant guid.
-        submission.scenarioGuid = scenario.guid;
-        submission.workshopGuid = this.route.snapshot.params['guid'];
-
-        this.rs.createResponse(submission).subscribe((submissionStatus) => {
-          this.responseSave.emit();
-          console.log('Created response');
+        this.snapshot.pipe(take(1)).subscribe((snapShotOrScenario) => {
+          if (snapShotOrScenario.type === 'scenario') {
+            submission.scenarioGuid = snapshot.guid;
+          } else {
+            submission.snapshotGuid = snapshot.guid;
+          }
+          submission.workshopGuid = this.route.snapshot.params['guid'];
+          this.rs.createResponse(submission).subscribe((submissionStatus) => {
+            this.responseSave.emit();
+            console.log('Created response');
+          });
         });
       }
     });
   }
 
-  private initializeParticipant(id?: string) {
-    if (guid) {
-      this.participantGuid = guid;
+  private _generateGroupLayers(definitions: Array<CPALayer>, snapOrScenTitle: string): esri.Layer {
+    const idHash = this._generateGroupLayerId(definitions);
+
+    const groupLayer = new this._modules.groupLayer({
+      id: idHash,
+      title: snapOrScenTitle,
+      visibilityMode: 'independent',
+      layers: definitions
+        .map((l) => {
+          if (l.info.type === 'feature') {
+            return new this._modules.featureLayer({
+              id: l.info.layerId,
+              url: l.url,
+              title: l.info.name,
+              opacity: l.info.drawingInfo.opacity
+            });
+          } else if (l.info.type === 'group') {
+            return this._generateGroupLayers(l.layers, l.info.name);
+          } else if (l.info.type === 'graphics') {
+            const g = l.graphics.map((g) => {
+              return this._modules.graphic.fromJSON(g);
+            });
+            return new this._modules.graphicsLayer({
+              title: l.info.name,
+              id: l.info.layerId,
+              graphics: g,
+              listMode: 'show'
+            });
+          } else {
+            console.warn(`Layer with object structure could not be generated:`, l);
+            return undefined;
+          }
+        })
+        .filter((l) => l !== undefined)
+    });
+
+    return groupLayer;
+  }
+
+  /**
+   * Accepts a timeline event object and extracts the layer ID's from its definition,
+   * used to remove all of the resolved layers from the map if they exist.
+   */
+  private _removeTimelineEventLayers(event: TypedSnapshotOrScenario): void {
+    const idHash = this._generateGroupLayerId(event.layers);
+
+    const prevLayers = event.layers
+      .map((l) => {
+        return this._map.layers.find((ml) => {
+          // Find layer ID from either a snapshot guid array, or the actual layer object id
+
+          return ml.id === idHash;
+        });
+      })
+      .filter((r) => r !== undefined);
+
+    if (prevLayers.length > 0) {
+      this._map.removeMany(prevLayers);
+    }
+  }
+
+  /**
+   * Sets the participant ID to be a provided one or generates one if not provided.
+   */
+  private _initializeParticipant(id?: string) {
+    if (id) {
+      this.participantGuid = id;
     } else {
       this.participantGuid = guid();
     }
   }
 
-  /**
-   * Manages the history of the ScenarioHistory behavior subject, to only keep a maximum of 2 entires (curr and prev).
-   *
-   * This history is used to add/remove layers for scenarios.
-   */
-  private addToScenarioHistory(scenario: IScenariosResponse) {
-    const prevValue = this.scenarioHistory.getValue();
-
-    const newValue = [...prevValue, scenario].slice(-2);
-
-    this.scenarioHistory.next(newValue);
-  }
-
-  public scanScenario(direction: 'prev' | 'next') {
-    forkJoin([this.scenarioIndex.pipe(take(1)), this.workshop]).subscribe(([scenarioIndex, workshop]) => {
-      if (direction) {
-        if (direction === 'prev') {
-          if (scenarioIndex > 0) this.scenarioIndex.next(scenarioIndex - 1);
-        } else if (direction === 'next') {
-          this.scenarioIndex.next(scenarioIndex + 1);
-        }
-      }
-    });
+  private _generateGroupLayerId(layers: CPALayer[]) {
+    // Join all sub layer ids into a string, then hash it
+    const totalSubLayerIds = layers
+      .map((l) => {
+        return l.info.layerId;
+      })
+      .join();
+    return md5(totalSubLayerIds);
   }
 }
 
 interface IParticipantSubmission extends Omit<IResponseRequestPayload, 'shapes'> {
-  shapes: esri.Graphic;
+  shapes: esri.Graphic[];
 }

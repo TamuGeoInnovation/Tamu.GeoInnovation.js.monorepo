@@ -10,6 +10,7 @@ import { ResponsiveService, ResponsiveSnapshot } from '@tamu-gisc/dev-tools/resp
 import { LegendService } from '../../services/legend.service';
 
 import esri = __esri;
+import { LegendItem } from '@tamu-gisc/common/types';
 
 @Component({
   selector: 'tamu-gisc-legend',
@@ -18,6 +19,7 @@ import esri = __esri;
 })
 export class LegendComponent implements OnInit, OnDestroy {
   public legend: Observable<Array<esri.ActiveLayerInfo>>;
+  public staticLegend: Array<LegendItem>;
 
   public responsive: ResponsiveSnapshot;
 
@@ -33,6 +35,7 @@ export class LegendComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.legend = this.legendService.legend();
+    this.staticLegend = this.legendService.staticLegendItems;
 
     this.responsive = this.responsiveService.snapshot;
   }

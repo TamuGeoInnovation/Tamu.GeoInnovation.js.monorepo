@@ -42,12 +42,12 @@ describe('WorkshopsService', () => {
   describe('addNewScenario', () => {
     it('should throw error, and should accept IResponseRequestPayload type as mock parameters ', async () => {
       const mockparameter = {
-        scenarioGuid: '',
+        snapshotGuid: '',
         workshopGuid: ''
       };
       jest.spyOn(workshopsRepository, 'findOne').mockResolvedValue(undefined);
       try {
-        await workshopsService.addNewScenario(mockparameter);
+        await workshopsService.addNewSnapshot(mockparameter);
       } catch (error) {
         expect(error.status).toBe(HttpStatus.NOT_FOUND);
       }
@@ -57,12 +57,12 @@ describe('WorkshopsService', () => {
   describe('deleteScenario', () => {
     it('should throw error, and should accept IResponseRequestPayload type as mock parameters ', async () => {
       const mockparameter = {
-        scenarioGuid: '',
+        snapshotGuid: '',
         workshopGuid: ''
       };
       jest.spyOn(workshopsRepository, 'findOne').mockResolvedValue(undefined);
       try {
-        await workshopsService.deleteScenario(mockparameter);
+        await workshopsService.removeWorkshopSnapshot(mockparameter);
       } catch (error) {
         expect(error.status).toBe(HttpStatus.NOT_FOUND);
       }
@@ -72,7 +72,7 @@ describe('WorkshopsService', () => {
   describe('getOne', () => {
     it('should throw error ', async () => {
       const mockparameter = {
-        scenarioGuid: '',
+        snapshotGuid: '',
         workshopGuid: ''
       };
       jest.spyOn(workshopsRepository, 'findOne').mockResolvedValue(undefined);

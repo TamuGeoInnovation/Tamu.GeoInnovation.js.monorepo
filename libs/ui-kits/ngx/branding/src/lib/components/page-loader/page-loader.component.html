@@ -1,0 +1,7 @@
+<div class="loader flex flex-column justify-center align-center">
+  <div class="content">
+    <ng-content select=".logo"></ng-content>
+    <div class="progress-bar" [ngClass]="{anim: toggle === true}"></div>
+    <p class="phrase">{{phrase}}</p>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+@import 'libs/sass/mixins';
+
+input {
+  width: 100%;
+}
+
+label,
+.labels {
+  font-size: 0.9rem;
+  color: #757575;
+}
+
+.labels {
+  @include flexbox();
+  @include justify-content(space-between);
+}
+
+label {
+  display: block;
+  margin-left: 1rem;
+  margin-bottom: 0.25rem;
+}

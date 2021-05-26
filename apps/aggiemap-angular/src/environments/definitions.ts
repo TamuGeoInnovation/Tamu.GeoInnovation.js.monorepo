@@ -127,6 +127,7 @@ export const LayerSources: LayerSource[] = [
     layerIndex: 1,
     native: {
       ...commonLayerProps,
+      legendEnabled: false,
       renderer: {
         type: 'simple',
         symbol: {
@@ -149,14 +150,6 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     visible: true,
     layerIndex: 2,
-    legendItems: [
-      {
-        id: 'construction-legend',
-        title: 'Construction Area',
-        src:
-          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAENJREFUOI1jYaAyYKGZgf9DGf5TahjjagZGFnQBcg2DOYgFmyAlgLYupAYYYgaORsogNHA0Uig3kJIwhAUXC7oApQAAQ8kZ9+L+/N4AAAAASUVORK5CYII='
-      }
-    ],
     native: {
       ...commonLayerProps
     }
@@ -169,14 +162,6 @@ export const LayerSources: LayerSource[] = [
     popupComponent: Definitions.POINTS_OF_INTEREST.popupComponent,
     listMode: 'show',
     visible: false,
-    legendItems: [
-      {
-        id: 'points-of-interest-legend',
-        title: 'Points of Interest',
-        src:
-          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAlNJREFUOI291FFIU1EYB/D/XXO36a4xJuhoLFheTCKmrAmZjkAvDEwkDCfYGIP7sIFOhg+CIEKEkQMvDUkW1hR8CNdLDBaxknCIjCkJobBYLqc2rFEJZQ3p2kNM3HZVDOn/dPi+c37nnIdzxDjhiP8raAeoc21trXKV6hohEhXzPL+yHok8uRMKzR8XFD3o7HR9nJvrSk1NFaSyez33WTZBUpTZxnEzR4IOQKJh2fDKyEhVplbn8UCp0cDHMACAtbExdUF5+euxvr5ednDQdShY4XA8i7vdVftrlxkGZWo1AvX1+BEKAQB2YjHindc7NOp0frBznE8QHOroqIu73cbcTR7b7aBUqj0sEz6ZxJdY7JEF8E8Av/LAM0ql61MOJm9qgq69HbqGBrgCAfDJZFb/q99PXbJYrJiYGM0DU9GoNvd0GoMBdS0tKKKo3NZeZArFTQD54LfZ2dO5kxd6e3G1tfVQELu7pZlhFiilaX47HD518ErhiKXSn4JgqV7/OR4Olx0XlMpkb4RBmvbFga7jYJKKCmxtbt4TBBe6u3vOWq3shtcrzdTKzGYUFhUBAC7abHg7MJAFam22Vyan870geBfYCRqNN7ZWV59/n54mAEBWUoKXk5MAALKwEARJYjed/rtBf39KDDTtN/JeCmMyvZjx+1sWafppwuORxDgu75oESeLK8HD0fHV1jba2Nn0oCACG5mZ/JBiUXzAYHq4tL1/fmJ8vTq+vEwq9/rdap0uoKytv1zQ2jgutPfD70jPMNoBbWcWlJWBc0Dka/NecOPgHyxW6W4CVlHsAAAAASUVORK5CYII='
-      }
-    ],
     native: {
       ...commonLayerProps
     }
@@ -189,14 +174,6 @@ export const LayerSources: LayerSource[] = [
     popupComponent: Definitions.RESTROOMS.popupComponent,
     listMode: 'show',
     visible: false,
-    legendItems: [
-      {
-        id: 'unisex-restroom-legend',
-        title: 'Unisex Restrooms',
-        src:
-          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAkRJREFUOI29lF1IU2EYx3/bjhOn23T4gTPPURD8yJH2BWV4IYoURgTpReFFXVggdNVF5FUQZBFBRQlhtxZBCKGRQYFEF0p4YUZapqlhbalznp25ze2cbmS2dipx0v/qeZ/n//54ngfeVwB4MzT+2OtVGtAwsFUZDGputrVHAJj/5jvRfHV467B1Pb9S2yoAaMl09os0VJOgV+hud3G43sW1Oy+5/coNwNuuI4yMztLWNQZA3+UaKssLaL/0jP5Jf+yuLtBV7sSZ76CyNAfWgY6sdKwZqTFPRakTScylosT2d2CdmIbnh8y79zOkmgVSTQZCUS3Oc+t0GTNzi/jkVWr2iYxOLDMwHdAH3uioo3pXMQCVFSKCycipmyOxesfRQs6frY+dq1xFSIXZDLT1JQKldBOSmM2SV8aRZWXu6yJ7q4uADeCOfCtu9zJ5eZkAuN3L2G1p+iOfa5Lw+4OIhTkA2O0WLBYzOx0pcVMEQ2HdOAG4f7eIpm3sy26zMDProbVR+n0zf1QcsPPeEPevN8UZPn/x0N0/TcuxagDGJhYoFueRxFyUQJAVf5Dxj9/1gdPeMGZzCuG1CABr4Qi2jDQmV6Ixz91BD5GISmN9FR6PD0UJ0dI5rA+cXIlScLyHqUfNGI0GPk25abg4uOlxE4Dbof8DVAIholEVRQnFcqqqoq6/GM9SCFleZWFRxucL/BvoOvM0IVdy8kks7v0g09vwYPMdJiFVAHDm2V8/vLDnQDL/osGIlmm3vBAADh0sq92uFn8CQJrKeuGe9RUAAAAASUVORK5CYII='
-      }
-    ],
     native: {
       ...commonLayerProps
     }
@@ -209,14 +186,6 @@ export const LayerSources: LayerSource[] = [
     popupComponent: Definitions.LACTATION_ROOMS.popupComponent,
     listMode: 'show',
     visible: false,
-    legendItems: [
-      {
-        id: 'lactation-rooms-legend',
-        title: 'Lactation Rooms',
-        src:
-          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAfJJREFUOI211L9rE2EYwPGvEifvIKS0zRVSNRpE01RMLiASpYiCk3QQLyR/gAEzZikBwcFm0NKhHdqhi9JwNwj+gCLUwSFLiXEwjZTEIGS4HjfclCVTHS45ERpyyeEzPcf7vh8ennvfx8d/Ct8gyQaiCazunBfsBKFWpqE7cDYQTZy1ep/gnOStzt5xhqhcpqHbFVvdOe8oANIZuglA943c2o+0VqL945Dqy11X+13BL5p7XIpE4MljzHyOgnTHOzyfTtloP2aCQebTKTpqxRvcUSuY6wYzwSAApmGMRF3BANrmFpcXFwiFw3x9/9HNkdHww80CF69GEP1+AJaWH5FYusvWg6eTw8lilsyz0wGxqvEqqUwGK/ncP9+mYfDr8CdXFq4Tk+Mki9mh128onNZKzg+rf/tOTI7z5d0HPudfA/DmpIWSz40PX7t5w8nrB1XqB1X801OA3SIAQRCGHR8Oz0r2C//dauGfnkJVVkgWs+T2t7l9/x4A7aPm+HD7qElMjnNeFAmFw+T2t9nbeYu4bN8O0zDQ1jbGh7W1DWbX7T4Pei1dCLHzfJV66pbT67HhjlqhoNozIa2VAFCVFWdtVLh6eQNwnPCBPfmhdwx4nck1AoKO1YfLNPQMUbk/pCePgKDvWo2aU/EAB3RPsPU3/QN/+Jj7cGHLggAAAABJRU5ErkJggg=='
-      }
-    ],
     native: {
       ...commonLayerProps
     }
@@ -232,6 +201,7 @@ export const LayerSources: LayerSource[] = [
     layerIndex: 1,
     native: {
       ...commonLayerProps,
+      legendEnabled: false,
       opacity: 0.0,
       labelingInfo: [
         {
@@ -251,14 +221,6 @@ export const LayerSources: LayerSource[] = [
     popupComponent: Definitions.VISITOR_PARKING.popupComponent,
     listMode: 'show',
     visible: false,
-    legendItems: [
-      {
-        id: 'visitor-parking-legend',
-        title: 'Visitor Parking',
-        src:
-          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAXlJREFUOI1jYaAyYIExzp2/t+Dth6/2DAz/GUk1hJGR8Z+oEO8MfT2FLriBN26/iIvqPUuyYTBwoMc5k4GBAWHgv/+oLnOQ4WRgZUbVdOXVT4bn3/9hNfDf/3/MDAxIXkYHG+ZFMvDzcaGI/f37j+HWnWcMLf0HGJZd+IBVH04DsQFmZiYGTXUZhqmdgQwvUlcw7Hv0nXQD5y85xJA05RIDAwMDQ76zBENjuSeDAD83Q1GSIcO+hmOUuXDi3hcMbva3GLzcDBlkZYSxqiHJQAYGBgY5qEFfvv0kz0AHG3WGU5pSDAyMjAwSYvwMsjIiDP///2fYsfcGeQYqKogzKCqIw/n//v1jWL/5DEPzxkfkGXjtxmOGZy8gSeTLl58MW/fcYZhz4g1O9QQNPHnmPjyWiQEkR8rgMXD63AMMHBysDMfPvSDPQPRipnLlPZIMYvzP8B/FQBkZwUtzc/S0//8nvTxkYmT8z83NfgjFQHtrLX1SDcIGqB4pABDucZbUZNfrAAAAAElFTkSuQmCC'
-      }
-    ],
     native: {
       ...commonLayerProps
     }
@@ -271,20 +233,6 @@ export const LayerSources: LayerSource[] = [
     popupComponent: Definitions.ACESSIBLE_ENTRANCES.popupComponent,
     listMode: 'show',
     visible: false,
-    legendItems: [
-      {
-        id: 'assisted-open-entrance-legend',
-        title: 'Assisted Open Entrance',
-        src:
-          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAA3pJREFUSInNlVFoW2UUx3+9ye29TToVLzJat+EYCHsocyQPsVCCYbGrtAwELVuQjKHZw7RPfdiTSR722Je8LSK0SgZhDCmxhtA2oNW+zMIeBq0IDm23NNTbh7VNenNvbnxIe5fb29SKCJ63e7/v+//OOd93znHzH5v7fwEYuqb2ap34XNBDg16AXYPcQkZZ+leAgYjqEwUSmsAwDai3rIlu4qGoCpCWdJL5e8qzfwQIR9VEHeLnTwuE+0UCfolur4DXI7BTMVkvGzzfNhmfqMQ0kVg4qiZnp5TEsQChj9RcHYbHRiUuBbvwegTbutcjcO5sJwDzkzLT+R1SWS0eiqo9xSnl5pGAPc+HP491Eezvahegza4MeTlzysX4RCUWjqql1khsgIGI6qtDfGxUcogXF6ps7ZgABN+WeeVll239Yp9MZFAnU9DjAxHVegA2gCiQOH9a4FLQLv7nZp07X1atb1nqYPAdjyOSG1dPkClsIovcBfw2wNA1tVcTGA73i46cLz3SAFC6O1C3G0zP1wgHuxCEDgdkbFQildV8jhRpnfhoQMAv2Q6YZoNv5msAfBaRufNFlV/WTJ78oXPujU4HIOCXSGU1QtfVkeKkkrMALuipA91eu/dPftf59amJqwN8FyTeDejMLBosPqwdCjj5mtvSs0WwX6EH07P4sOl931mB8kad10821x/M1fhgxESW7fsP6jme6U7FtCDVXZMHe+l59JvJx/Eta9+WBo9Xavjfkh3nW80C7BrkRDfx9bJhFdHj5Rpbzfvl1ocSkti81O9+qLGyajL3oxOwXjYsPRtgIaMshaIqz7dfeDD/U9N7/5sC77/ntf67XLDy1S6zPxt8sllHefVFTayVmh2ru0HpsBSlxycqsfnJple3P32J2zjtcsjD5ZCzDsobBvfzGkB6v/nZAJJOUhOJTed3uDLkdQj8nc3MVVleNdEN0vv/bID8PeVZOKomU1ktfuaUi4t9slOljX2/WCVT0HFBstgyJxyvaHZKSYSias/4RCUWGdS5cfXEkcLlDYOZuaY4Jt/Ofm1v2Ye26+KUcjMcVUuZgh7PFDYZG5UI+CWriPbnwVqpzv28xvKqiQuSB8XbAvYjGYioOVnkbiqr+VJZrd3WtG6QLrYZn0eOzL2W6wcIXVdHDs7k7galdqPyWIBWK04quePubbW/AF6HYoeZu0A/AAAAAElFTkSuQmCC'
-      },
-      {
-        id: 'Manual Open Entrance',
-        title: 'Manual Open Entrance',
-        src:
-          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAA05JREFUSInNlU+IE3cUxz+/38ykY1JRlFKyENYl0LqLkWazFSzYg8XDQmRP4rWnCKV4qB48SJP04Gn3sjcDglCkrCchLXQRyxaL0JYllJRdKt1WumqoLdLDbjZ/Zn6vhyRjZpPIllLoO8289+b7+b03j9+z+Y/N/l8A2u32mGVZGaVUXETGAJRSZaXU6r8CiEgGKADZnk8p1XvMiwgiUvJ9v+g4ztN/BDDGFID8dt3wcKPF8kqLx88M65uGyYRmesri8EHN3GwsZ9t2zhhT1FoX9gQQkTKQrVQb3LjdYH3ThOLrmybwLS41mb8UJZ1y88aYuNb6wksB3ZNnv36wwyelnVEFhuzyQp2L533mZmM5Y0ytv5IQoNvzfKXa4LMvmsx/FA1i33zf4s59jwMuXP0gSu9P/LDW5tMv2ywuNTl21CE5EcmLSDAAuysobNcNN243eO2AIn3cDQKWrbhz3+P0CZvpPv/WtgBtAHLFLe7dPARwHZgJAdrt9hiQfbjRYn3T8M6UFYh4nnAk4QBwfNIJfLYdTFRglWqDdMrNDLTIsqwMwPJKa+CjJzWP8YTDiTc1ySMOIi98u215pUU65WKMOau1LgcApVQc4PEzM/DRxqOO2LtvR4i/bvHnc5/6zmAewN1Vjyt9egFARMaUUgMjCVBZa3P61D5OnXTRWvHroxb79+uhgH69EKBnkwk9APm26tNoGF6NdUR//Mnj5ExkqPBkIgzub1EZyE9PWQMAzwi/PfF4IxnBGPjqu9GA6e5wdPVCgFUR4fDB4aX//EsH8PsfHrW/ZGgOQHK8I+l5Xi0EABCR0txsLLe41OTBms977z8PYgu3GizcagTvH17bBrZD4mcyNjNvvYKIlHqXXwjg+37Rtu3c/KUolxfqI085ys5lXWJRDVDq+UIAx3GeGmOK6ZSbv3jeZ3GpuWfxj3P7SE5EEJGi1jrYEwNTpLUuGGPic7Ox3LGjDrni1kuFz2RszmVdkhMRgM93X9lDr2ut9QVjTC05Ecnfu3mISrXB8kqLu6seQLAPkuOdnseiunfywm6tkQtHa13o7oXr6ZSbSadcrgzJE5ESUOpvy54A0BldureiMebs7p3seV5t1KrcE6DftNblveb2299DrV3F9KlErwAAAABJRU5ErkJggg=='
-      }
-    ],
     native: {
       ...commonLayerProps
     }
@@ -296,14 +244,6 @@ export const LayerSources: LayerSource[] = [
     url: Definitions.EMERGENCY_PHONES.url,
     listMode: 'show',
     visible: false,
-    legendItems: [
-      {
-        id: 'emergency-phones-legend',
-        title: 'Emergency Phone',
-        src:
-          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAXCAYAAADgKtSgAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAnxJREFUSIm11U+IVVUcwPHPKeNIq3jQS40xUhTExWwibSBwYzHEGDljjTI5EANugja6kVrMn1xFREKMEtRAihsZdGiR1m4ahBbNRuGBKzcztnjhIvRQclrcnvPe9c3cp9APDpd7z+9+v+ccfpzfJv9jbKpOyTW8FWPek5J6jB6kFFZjtJiSG4SHTwHPr5KnMYpnUwogJe3Pu+TPMUv4u0d4HsEc4fmKbb2ErzFGfpewWgHPH+FbhNFRLl2qwBfxOm6Q97cLOuAx5oGUzE5NCePj9PUxM8P8PKdOVQpewTz5TcI/JXgOKflm61bPHTvG9u3F1507OXmS48e5do3JSW7fXlewHxOYLa98CP0rK4yMcPkyO3asTdbrjI2xbx9DQzQa6wo+JZ8j5PaVv0dREcvLDA8XgnqduTmOHqVWY9cuFhY2FLxcq3mt2fTbI3iMYaBVZu2CvXu5cIGlJc6eXRNcvcqhQ90FzaYB2uAp2VJOWl4uBly8WDxbgt27C8GBA6ysdP4XY96SUueZx66bbItugulpJiYeS91MJ/wP9D2pYHDw8ZyUwt0y/FYv8JZgcLConm3bOHOG06c7Um6V4T/i7V7gJ05w5Mja++HDHfCEX8rwHzCFF6rgi4vcuVNUDcXZHzzI9euQv+eZv0rw8Cd5Bl9UwW/eLOp8YaEQNBotsHuEyVZe+eL6Em9guErQaBSCK1c4fx48jNEHKYVHhVmCh0z+EBkjvQj6+0nJfYynFH5qn+9y5Yb75PfxCT5DbSNBSpZqNR83m+H38tw6zSJkfEX+TtGJ3sEevIgHWCX/GmOYTyn83Gx2p1T00HAP5/4b3Va9YfTQoJ8+/gVFFNSWfmq/aAAAAABJRU5ErkJggg=='
-      }
-    ],
     native: {
       ...commonLayerProps
     }
@@ -316,20 +256,12 @@ export const LayerSources: LayerSource[] = [
     listMode: 'show',
     visible: true,
     popupComponent: Popups.TentZonePopupComponent,
-    legendItems: [
-      {
-        id: `${Definitions.DISTANCED_STUDY_AREAS.id}-legend`,
-        title: Definitions.DISTANCED_STUDY_AREAS.name,
-        src:
-          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAA9pJREFUSInNlU1IXFcUx38zeTNXRa3RRW2tECG46dCSkOlAA2oXlYoBK1EKbroxWQgKDUkXxZBFxQQL+dgEYiJiaGhREmjLMBJj/AidEp2YRSSQ1oQu+kFCOtbW4Jw3nXldTK++efNmaiCUHhi4b+5993fP//zveQb/cRj/W6BlUQRqXzotNWtrvFZWxs+GoX4CiXk8JF4Y8NkztX95WT67coV9iYT4DANKS2F9HVIpYccO/rp1i7uBgPp4506ZfW5ga2traTgcXrcsKubn1eTFixJqaICDB8HrVfj9AoBpZsamifHgAcHLl2VmepqlUIj32tvflampqT+2BQyHw+uPH/P6yIiK1tdLeW8veL1bAAARhVKZsc8HgUDmt7TE3kuX1I/Dw1Pv1NWx0NLSUhaJRP4sCHz4kFfGxtRiZ6cU79pFDsA+Bkgmtw4SCChqaqRkbIz527d5MxSK/PCvGUYiKtbRsT2YztrjyTxbllBdDV1dSk1MyLfDw7x8+HAB4Pi4+rSqSl6tqysMs6zszOxhmoraWqGpiap797gAdOcDeldWpK+9PRvm8UAikQ0DsuoJ2UYC2LMHrl9XXSC9wEYO8PRpukIhyg0j86IGaJjHA+l0Zq2W0CmxUrJ5INNUHDggxYahPjp2TAZzgCJ0BwL53QgZt+osnXNOWZUS6uvh6lXpBNyAqrq8XDblcdbMHpkMM9mY5pakTllB4fNJuf3dTWBRkRTZ4HlhOjTMmaVTnZISFOAF0lnAVIqUXQ4d2o1OGS0LfD53Se3riotJAC8Bq1nAREJtgGRZ3a2e2jD5wlnbp09VCmRNP28CnzzZ+tN5z9wMsrCwpYDPJwSDmdo6G8M/+6ZzgLGYWlhdlb0VFRRBbi30BtogwWBuY9Bz+sCplKRiMb63H3QTuLzMxI0b7O/oIOh2z7LdV7gL6QPPzHA3GuWaK1BEomfPstbWxobfT3EhGJC3vwK6SSQHBpQJ8o0rEODOHTVw7px80tenmgvB3LLUmWl1RkfV9M2bMgok8wJFZO7Uqcr2UCieamigxQ5zulNffrdYXFRT3d3yKzDunMv5PMXj8SONjXw+OcmXzc3yAeCB7Aae7zMFWPPzleONjfESoAfbhc8LBNJNTU09bW3f9ff0yBeDg+z2etVbdondYMkkiydOVN4/eTKeBD7EIWUhILOzs78DR8+fV41nzsjR48flwqFD+GtrecPvlxqgCvgN+CUel6WRETb6+9kN8WvA1257FgTqEJE5YG5oSL09NMT7IvIIWLEt8QAbSqmvQGZwyPfcQBs4CkQLzG9nm+0DX2T8DXOPFlEg/aI+AAAAAElFTkSuQmCC'
-      }
-    ],
     native: {
       ...commonLayerProps
     }
   },
   {
-    type: 'graphic',
+    type: 'graphics',
     id: 'selection-layer',
     title: 'Selected Buildings',
     listMode: 'hide',
@@ -340,7 +272,7 @@ export const LayerSources: LayerSource[] = [
     }
   },
   {
-    type: 'graphic',
+    type: 'graphics',
     id: 'bus-route-layer',
     title: 'Bus Routes',
     listMode: 'hide',
@@ -409,7 +341,7 @@ export const LegendSources: LegendItem[] = [
     id: 'restricted-legend',
     title: 'Restricted 6am to 6pm',
     src:
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABHNCSVQICAgIfAhkiAAAAFtJREFUOI1jYKAyYIQxHB0dGygxaP/+/Q0MDAwMLDDDQkMC6+OfviDLsFmiwnBDmWCC5BrGwMDAkPb6LZzNhEcdWWDUwFEDRw0cZgbCiiBywEJpCTib6gUs1QEATW0WjAt6JIYAAAAASUVORK5CYII='
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAFBJREFUOI1jYaAyYIExzq5Mb6DEIOPwmQ1wA8+uTG9gZPhfT4mBZ1emMxiHz2xgIayUNDBq4KiBowaOGkhHA43DZzacXZlOkUEoBSyyAKUAAGgHEnMWcHNYAAAAAElFTkSuQmCC'
   },
   {
     id: 'paved-surface-legend',

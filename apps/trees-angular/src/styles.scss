@@ -11,11 +11,12 @@
 //  ==========================================================================
 
 @import 'libs/sass/mixins';
+@import 'libs/sass/variables';
 
 html {
   height: 100%;
   width: 100%;
-  font-family: 'Moriston';
+  font-family: $open-sans-fStack;
   font-size: 16px;
 }
 

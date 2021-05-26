@@ -10,30 +10,33 @@
   },
   "projects": {
     "aggiemap-angular": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["assets", "sass"]
     },
     "aggiemap-angular-e2e": {
       "tags": [],
       "implicitDependencies": ["aggiemap-angular"]
     },
     "trees-angular": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["assets", "sass"]
     },
     "trees-angular-e2e": {
       "tags": [],
       "implicitDependencies": ["trees-angular"]
     },
     "assets": {
-      "tags": []
+      "tags": ["scope:shared", "type:assets"]
     },
-    "charts": {
-      "tags": []
+    "bikeshare": {
+      "tags": [],
+      "implicitDependencies": ["assets", "sass"]
     },
     "bikeshare-e2e": {
       "tags": [],
       "implicitDependencies": ["bikeshare"]
     },
-    "bikeshare": {
+    "charts": {
       "tags": []
     },
     "common-ngx-environment": {
@@ -103,7 +106,8 @@
       "tags": []
     },
     "gisday-competitions-angular": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["assets", "sass"]
     },
     "gisday-competitions-angular-e2e": {
       "tags": [],
@@ -128,7 +132,7 @@
       "tags": []
     },
     "sass": {
-      "tags": []
+      "tags": ["scope:shared", "type:styles"]
     },
     "search": {
       "tags": []
@@ -145,12 +149,13 @@
     "ui-kits-ngx-navigation-mobile-tab": {
       "tags": []
     },
+    "signage-angular": {
+      "tags": [],
+      "implicitDependencies": ["assets", "sass"]
+    },
     "signage-angular-e2e": {
       "tags": [],
       "implicitDependencies": ["signage-angular"]
-    },
-    "signage-angular": {
-      "tags": []
     },
     "maps-feature-popup": {
       "tags": []
@@ -187,12 +192,17 @@
       "implicitDependencies": ["cpa-angular"]
     },
     "cpa-angular": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["assets", "sass", "cpa-sass"]
     },
     "cpa-nest": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["assets"]
     },
     "cpa-data-api": {
+      "tags": []
+    },
+    "cpa-common-ngx": {
       "tags": []
     },
     "maps-feature-forms": {
@@ -201,18 +211,16 @@
     "cpa-common-entities": {
       "tags": []
     },
-    "cpa-common-ngx": {
-      "tags": []
-    },
     "ui-kits-ngx-navigation-breadcrumb": {
       "tags": []
+    },
+    "geoservices-angular": {
+      "tags": [],
+      "implicitDependencies": ["assets", "sass"]
     },
     "geoservices-angular-e2e": {
       "tags": [],
       "implicitDependencies": ["geoservices-angular"]
-    },
-    "geoservices-angular": {
-      "tags": []
     },
     "geoservices-api": {
       "tags": []
@@ -248,7 +256,7 @@
       "tags": []
     },
     "covid-data-api-nest": {
-      "tags": []
+      "tags": ["assets"]
     },
     "covid-common-entities": {
       "tags": []
@@ -262,28 +270,16 @@
     "oidc-client-test": {
       "tags": []
     },
-    "oidc-provider-angular-e2e": {
-      "tags": [],
-      "implicitDependencies": ["oidc-provider-angular"]
-    },
-    "oidc-provider-angular": {
-      "tags": []
-    },
-    "oidc-provider-express": {
-      "tags": []
-    },
-    "oidc-provider": {
-      "tags": []
-    },
     "oidc-client": {
       "tags": []
+    },
+    "ues-angular": {
+      "tags": [],
+      "implicitDependencies": ["assets", "sass", "ues-sass"]
     },
     "ues-angular-e2e": {
       "tags": [],
       "implicitDependencies": ["ues-angular"]
-    },
-    "ues-angular": {
-      "tags": []
     },
     "ues-common-ngx": {
       "tags": []
@@ -291,12 +287,13 @@
     "common-utils-device-guards": {
       "tags": []
     },
+    "ues-effluent-angular": {
+      "tags": [],
+      "implicitDependencies": ["assets", "sass", "ues-sass"]
+    },
     "ues-effluent-angular-e2e": {
       "tags": [],
       "implicitDependencies": ["ues-effluent-angular"]
-    },
-    "ues-effluent-angular": {
-      "tags": []
     },
     "ues-effluent-ngx": {
       "tags": []
@@ -311,28 +308,29 @@
       "tags": []
     },
     "ues-effluent-data-api-nest": {
-      "tags": []
+      "tags": ["assets"]
     },
     "oidc-provider-nest": {
-      "tags": []
+      "tags": ["assets"]
     },
     "oidc-provider-nestjs": {
       "tags": []
     },
     "oidc-admin-angular": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["assets", "sass"]
     },
     "oidc-admin-angular-e2e": {
       "tags": [],
       "implicitDependencies": ["oidc-admin-angular"]
     },
     "oidc-admin-nest": {
+      "tags": ["assets"]
+    },
+    "oidc-admin": {
       "tags": []
     },
     "oidc-admin-nest-lib": {
-      "tags": []
-    },
-    "oidc-admin": {
       "tags": []
     },
     "oidc-admin-data-access": {
@@ -342,7 +340,8 @@
       "tags": []
     },
     "two-angular": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["assets", "sass"]
     },
     "two-angular-e2e": {
       "tags": [],
@@ -355,32 +354,111 @@
       "tags": []
     },
     "two-data-api-nest": {
-      "tags": []
+      "tags": ["assets"]
     },
     "two-directory-nest": {
-      "tags": []
+      "tags": ["assets"]
     },
     "two-directory": {
       "tags": []
     },
     "two-valup-nest": {
-      "tags": []
+      "tags": ["assets"]
     },
     "two-valup": {
       "tags": []
     },
+    "two-dashboard-angular": {
+      "tags": [],
+      "implicitDependencies": ["assets", "sass"]
+    },
     "two-dashboard-angular-e2e": {
       "tags": [],
       "implicitDependencies": ["two-dashboard-angular"]
-    },
-    "two-dashboard-angular": {
-      "tags": []
     },
     "two-dashboard": {
       "tags": []
     },
     "two-data-access": {
       "tags": []
+    },
+    "gisday-angular": {
+      "tags": [],
+      "implicitDependencies": ["assets", "sass", "gisday-sass"]
+    },
+    "gisday-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["gisday-angular"]
+    },
+    "gisday-ngx": {
+      "tags": []
+    },
+    "gisday-data-access": {
+      "tags": []
+    },
+    "gisday-nest": {
+      "tags": ["assets"]
+    },
+    "gisday-data-api": {
+      "tags": []
+    },
+    "gisday-sass": {
+      "tags": ["type:styles"]
+    },
+    "gisday-common": {
+      "tags": []
+    },
+    "common-ngx-auth": {
+      "tags": []
+    },
+    "ues-operations-nest": {
+      "tags": ["assets"]
+    },
+    "ues-recycling-angular": {
+      "tags": [],
+      "implicitDependencies": ["assets", "sass", "ues-sass"]
+    },
+    "ues-recycling-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["ues-recycling-angular"]
+    },
+    "ues-recycling-data-api-nest": {
+      "tags": ["assets"]
+    },
+    "ues-recycling-common-entities": {
+      "tags": []
+    },
+    "ues-recycling-data-api": {
+      "tags": []
+    },
+    "ues-recycling-ngx": {
+      "tags": []
+    },
+    "ues-valves-angular": {
+      "tags": [],
+      "implicitDependencies": ["assets", "sass", "ues-sass"]
+    },
+    "ues-valves-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["ues-valves-angular"]
+    },
+    "ues-cold-water-ngx": {
+      "tags": []
+    },
+    "ues-valves-nest": {
+      "tags": ["assets"]
+    },
+    "ues-sass": {
+      "tags": ["type:styles", "scope:ues"]
+    },
+    "cpa-data-access": {
+      "tags": []
+    },
+    "cpa-admin": {
+      "tags": []
+    },
+    "cpa-sass": {
+      "tags": ["type:styles", "scope:cpa"]
     }
   },
   "tasksRunnerOptions": {
@@ -392,6 +470,6 @@
     }
   },
   "affected": {
-    "defaultBase": "master"
+    "defaultBase": "development"
   }
 }

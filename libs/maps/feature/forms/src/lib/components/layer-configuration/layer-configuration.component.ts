@@ -1,19 +1,22 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Optional, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, filter } from 'rxjs/operators';
+import { BehaviorSubject, from } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, filter, withLatestFrom, pluck, take } from 'rxjs/operators';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
+import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 import { v4 as guid } from 'uuid';
+
+import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-layer-configuration',
   templateUrl: './layer-configuration.component.html',
   styleUrls: ['./layer-configuration.component.scss']
 })
-export class LayerConfigurationComponent implements OnInit {
+export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges {
   /**
    * Internal value. The input is piped through here so that the http query
    * rate can be throttled as the user types in a URL address.
@@ -53,9 +56,27 @@ export class LayerConfigurationComponent implements OnInit {
     this.config = new LayerConfiguration(this.fb, options);
   }
 
+  /**
+   * Describes whether the layer will be loaded/unloaded from the map upon configuration resolution (load)
+   * and component destruction (unload).
+   */
+  @Input()
+  public link: boolean;
+
+  /**
+   * The layer positioning index. This is the index that will be used to create the layer.
+   *
+   * This property is also watched for changes to apply a new index to the layer if it has been
+   * re-ordered.
+   */
+  @Input()
+  public index = 0;
+
   public get configOptions() {
     return this.config.form.getRawValue();
   }
+
+  private layer: esri.FeatureLayer;
 
   /**
    * Component model. Initializes a form group that is used to attach it to the parent
@@ -63,7 +84,12 @@ export class LayerConfigurationComponent implements OnInit {
    */
   public config: LayerConfiguration;
 
-  constructor(private http: HttpClient, private fb: FormBuilder) {}
+  constructor(
+    private http: HttpClient,
+    private fb: FormBuilder,
+    @Optional() private ms: EsriMapService,
+    private mp: EsriModuleProviderService
+  ) {}
 
   public ngOnInit() {
     if (this._url.getValue() !== undefined) {
@@ -81,13 +107,58 @@ export class LayerConfigurationComponent implements OnInit {
             return test.test(url);
           }),
           switchMap((url: string) => {
-            return this.http.get<ILayerConfiguration>(`${this.url}?f=json`);
-          })
+            return from(this.mp.require(['Layer'])).pipe(
+              switchMap(([Layer]: [esri.LayerConstructor]) => {
+                return Layer.fromArcGISServerUrl({
+                  url
+                });
+              })
+            );
+          }),
+          withLatestFrom(this.ms.store)
         )
-        .subscribe((response) => {
+        .subscribe(([response, instances]: [esri.FeatureLayer, MapServiceInstance]) => {
           // Update form values
+          this.layer = response as esri.FeatureLayer;
+
+          if (this.config) {
+            this.config.applyConfigValuesToLayer(this.layer);
+          }
+
+          //
+          // If there is no config, apply default values from the layer instance.
           this.config.updateFormValues(LayerConfiguration.normalizeOptions(response));
+
+          if (this.link && this.ms !== null) {
+            instances.map.add(this.layer, this.index);
+          }
         });
+    }
+
+    // Configure listeners for property edits to the form (opacity, etc)
+    this.config.form.valueChanges
+      .pipe(
+        pluck('info'),
+        filter((config) => config !== undefined)
+      )
+      .subscribe((res: ILayerConfiguration) => {
+        if (this.layer) {
+          this.layer.opacity = res.drawingInfo.opacity;
+        }
+      });
+  }
+
+  public ngOnChanges(changes: SimpleChanges) {
+    if (changes.index.previousValue !== changes.index.currentValue && this.layer !== undefined) {
+      this.ms.store.pipe(take(1)).subscribe((instances) => {
+        instances.map.reorder(this.layer, this.index);
+      });
+    }
+  }
+
+  public ngOnDestroy(): void {
+    if (this.link && this.ms !== null && this.layer && this.layer.id) {
+      this.ms.removeLayerById(this.layer.id);
     }
   }
 }
@@ -129,49 +200,78 @@ export class LayerConfiguration {
     }
   }
 
+  public static getLayerType(type: string): 'feature' | 'graphics' | 'group' {
+    if (type === 'Feature Layer') {
+      return 'feature';
+    } else if (type === 'Graphics Layer') {
+      return 'graphics';
+    } else if (type === 'Group Layer') {
+      return 'group';
+    } else {
+      return type as ILayerConfiguration['type'];
+    }
+  }
+
   /**
    * Accepts an object and creates a LayerConfiguration object from
    * matching keys.
    */
-  public static normalizeOptions(obj: object): ILayerConfiguration {
+  public static normalizeOptions(obj: object | esri.FeatureLayer): ILayerConfiguration {
     if (obj instanceof Object) {
-      // Using this as schema since form builder groups cannot be stringified
-      // without running into a recursive overflow.
-      const lookup = {
-        name: '',
-        layerId: '',
-        type: '',
-        description: '',
-        drawingInfo: {
-          transparency: ''
-        }
-      };
+      // If the provided object is a plain jane object, assume it's a configuration object, otherwise a feature layer.
+      if (obj.constructor.name === 'Object') {
+        // Using this as schema since form builder groups cannot be stringified
+        // without running into a recursive overflow.
+        const lookup = {
+          name: '',
+          layerId: '',
+          type: '',
+          description: '',
+          drawingInfo: {
+            opacity: ''
+          }
+        };
 
-      const getMatching = (o, ref) => {
-        const matching = Object.keys(o).reduce((acc, curr) => {
-          const shouldKeep = getPropertyValue(ref, curr);
+        const getMatching = (o, ref) => {
+          const matching = Object.keys(o).reduce((acc, curr) => {
+            const shouldKeep = getPropertyValue(ref, curr);
 
-          if (shouldKeep !== undefined) {
-            let value;
+            if (shouldKeep !== undefined) {
+              let value;
 
-            if (shouldKeep instanceof Object) {
-              value = getMatching(o[curr], shouldKeep);
-            } else {
-              value = o[curr];
+              if (shouldKeep instanceof Object) {
+                value = getMatching(o[curr], shouldKeep);
+              } else {
+                if (curr === 'type') {
+                  value = this.getLayerType(o[curr]);
+                } else {
+                  value = o[curr];
+                }
+              }
+
+              acc[curr] = value;
             }
 
-            acc[curr] = value;
+            return acc;
+          }, {});
+
+          return matching;
+        };
+
+        const config = getMatching(obj, lookup);
+
+        return config as ILayerConfiguration;
+      } else {
+        const layer = obj as esri.FeatureLayer;
+        return {
+          name: layer.title,
+          layerId: layer.id,
+          type: layer.type,
+          drawingInfo: {
+            opacity: layer.opacity
           }
-
-          return acc;
-        }, {});
-
-        return matching;
-      };
-
-      const config = getMatching(obj, lookup);
-
-      return config as ILayerConfiguration;
+        } as ILayerConfiguration;
+      }
     }
   }
 
@@ -204,6 +304,22 @@ export class LayerConfiguration {
     }
   }
 
+  public applyConfigValuesToLayer(layer: esri.FeatureLayer) {
+    const formValues = this.form.getRawValue().info as ILayerConfiguration;
+
+    if (formValues.name) {
+      layer.title = formValues.name;
+    }
+
+    if (formValues.layerId) {
+      layer.id = formValues.layerId;
+    }
+
+    if (formValues.drawingInfo) {
+      layer.opacity = formValues.drawingInfo.opacity;
+    }
+  }
+
   private get _groupProperties() {
     return {
       name: [''],
@@ -211,7 +327,7 @@ export class LayerConfiguration {
       type: [''],
       description: [''],
       drawingInfo: this.fb.group({
-        transparency: [0]
+        opacity: [1]
       })
     };
   }
@@ -222,11 +338,11 @@ export interface ILayerConfiguration {
 
   layerId?: string;
 
-  type?: 'Feature Layer' | 'Graphic Layer';
+  type?: 'feature' | 'graphics' | 'group';
 
   description?: string;
 
   drawingInfo?: {
-    transparency?: number;
+    opacity?: number;
   };
 }

@@ -1,17 +1,14 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { from, Subject, combineLatest } from 'rxjs';
-import { takeUntil, pluck, filter, switchMap } from 'rxjs/operators';
+import { takeUntil, filter, switchMap } from 'rxjs/operators';
 
-import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { EsriModuleProviderService, EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
 
 import esri = __esri;
 
 @Component({
-  selector: 'tamu-gisc-map-draw',
-  templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss'],
+  template: '',
   providers: [FeatureSelectorService]
 })
 export class BaseDrawComponent implements OnInit, OnDestroy {
@@ -30,10 +27,11 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
    * will emit individual graphics for each feature.
    *
    * If `true` is provided, the component is limited to exporting only a single type of geometry,
-   * due to the single-geometry type limitation per graphic.
+   * due to the single-geometry type limitation per graphic. Use when the desired output is a SINGLE
+   * graphic with multiple polygons/lines/points.
    */
   @Input()
-  public collapseGraphics: false;
+  public collapseGraphics = false;
 
   // Update group/tools default rendering states
 
@@ -85,9 +83,8 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
   private _activeToolWatchHandle: esri.WatchHandle;
 
   constructor(
-    private moduleProvider: EsriModuleProviderService,
     private mapService: EsriMapService,
-    private layerListService: LayerListService,
+    public moduleProvider: EsriModuleProviderService,
     private selector: FeatureSelectorService
   ) {}
 
@@ -95,58 +92,53 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
     this.activeUpdateTool = this.defaultUpdateTool;
 
     if (this.reference !== undefined) {
-      combineLatest([
-        from(this.moduleProvider.require(['SketchViewModel'])),
-        this.mapService.store,
-        // Only interested in the first emission that has a valid layer instance.
-        // Once $loaded emits, this observable will unsubscribe so that the combineLatest
-        // stream does not emit and create additional view model instances.
-        this.layerListService.layers({ layers: this.reference }).pipe(takeUntil(this._$loaded), pluck('0', 'layer'))
-      ])
+      combineLatest([from(this.moduleProvider.require(['SketchViewModel'])), this.mapService.store])
         .pipe(takeUntil(this._$destroy))
-        .subscribe(
-          ([[SketchViewModel], mapInstance, layer]: [[esri.SketchViewModelConstructor], MapServiceInstance, esri.Layer]) => {
-            // Emit $loaded which functions as a scheduler on the layer list service to prevent
-            // the layer reference stream from emitting again, which would in turn force the
-            // combineLatest stream to emit and create additional view models.
-            this._$loaded.next();
+        .subscribe(([[SketchViewModel], mapInstance]: [[esri.SketchViewModelConstructor], MapServiceInstance]) => {
+          // Emit $loaded which functions as a scheduler on the layer list service to prevent
+          // the layer reference stream from emitting again, which would in turn force the
+          // combineLatest stream to emit and create additional view models.
+          this._$loaded.next();
 
-            this.model = new SketchViewModel({ view: mapInstance.view, layer, updateOnGraphicClick: !this.updateTools });
+          const l = mapInstance.map.findLayerById(this.reference);
 
-            this.model.on('create', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) => {
-              if (event.state === 'complete') {
-                this.emitDrawn(event.target.layer.graphics);
-              }
-            });
+          this.model = new SketchViewModel({ view: mapInstance.view, layer: l, updateOnGraphicClick: !this.updateTools });
 
-            // Handle component graphic emissions on any valid update event type:
-            //
-            // - Shape update complete
-            // - Shape move stop
-            // - Shape reshape stop
-            this.model.on('update', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelUpdateEvent>) => {
-              if (
-                event.state === 'complete' ||
-                (event.toolEventInfo && event.toolEventInfo.type === 'move-stop') ||
-                (event.toolEventInfo && event.toolEventInfo.type === 'reshape-stop')
-              ) {
-                this.emitDrawn(event.target.layer.graphics);
-              }
-            });
+          this.model.on('create', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) => {
+            if (event.state === 'complete') {
+              this.onCreate(event);
+            }
+          });
 
-            this.model.on('delete', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelDeleteEvent>) => {
-              this.emitDrawn(event.target.layer.graphics);
-            });
+          // Handle component graphic emissions on any valid update event type:
+          //
+          // - Shape update complete
+          // - Shape move stop
+          // - Shape reshape stop
+          this.model.on('update', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelUpdateEvent>) => {
+            if (
+              event.state === 'complete' ||
+              (event.toolEventInfo && event.toolEventInfo.type === 'move-stop') ||
+              (event.toolEventInfo && event.toolEventInfo.type === 'reshape-stop') ||
+              (event.toolEventInfo && event.toolEventInfo.type === 'rotate-stop') ||
+              (event.toolEventInfo && event.toolEventInfo.type === 'scale-stop')
+            ) {
+              this.onUpdate(event);
+            }
+          });
 
-            this._activeToolWatchHandle = this.model.watch('activeTool', (tool) => {
-              if (tool === null) {
-                this.activeUpdateTool = this.defaultUpdateTool;
-              } else {
-                this.activeUpdateTool = tool;
-              }
-            });
-          }
-        );
+          this.model.on('delete', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelDeleteEvent>) => {
+            this.onDelete(event);
+          });
+
+          this._activeToolWatchHandle = this.model.watch('activeTool', (tool) => {
+            if (tool === null) {
+              this.activeUpdateTool = this.defaultUpdateTool;
+            } else {
+              this.activeUpdateTool = tool;
+            }
+          });
+        });
 
       // If our update tools are disabled, default to the default model updating implementation.
       if (this.updateTools) {
@@ -178,6 +170,18 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
     if (Boolean(this._activeToolWatchHandle)) {
       this._activeToolWatchHandle.remove();
     }
+  }
+
+  public onCreate(event?: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) {
+    this.emitDrawn(this.model.layer.graphics);
+  }
+
+  public onUpdate(event?: Partial<ISketchViewModelEvent & esri.SketchViewModelUpdateEvent>) {
+    this.emitDrawn(this.model.layer.graphics);
+  }
+
+  public onDelete(event?: Partial<ISketchViewModelEvent & esri.SketchViewModelDeleteEvent>) {
+    this.emitDrawn(this.model.layer.graphics);
   }
 
   /**
@@ -267,7 +271,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
           this.export.emit(cloned);
         } else {
           console.warn(
-            `Drawn feature condensation is set to ${this.collapseGraphics}. Multiple geometry types were identified. Will not emit geometry.`
+            `Drawn feature collapsing is set to ${this.collapseGraphics}. Multiple geometry types were identified. Will not emit geometry.`
           );
         }
       } else {
@@ -284,7 +288,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
    * Emits a 'create' event.
    */
   public draw(graphics: esri.Graphic[]) {
-    this.model.layer.addMany(this.applySymbol(graphics));
+    this.model.layer.addMany(graphics);
     this.model.emit('create', {
       type: 'create',
       state: 'complete',
@@ -304,49 +308,14 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
       type: 'delete'
     });
   }
-
-  /**
-   * For graphics added through the `draw` methods, their symbols will typically
-   * not match the correct symbols used by the SketchView model and so on first render
-   * they will display incorrectly. This method applies the correct symbol for the graphics
-   * before adding them to the target layer.
-   */
-  private applySymbol(graphics: esri.Graphic[]): esri.Graphic[] {
-    const symbol = (type: string | 'point' | 'polygon' | 'polyline'): esri.Symbol => {
-      if (type === 'point') {
-        return this.model.pointSymbol;
-      } else if (type === 'polyline') {
-        return this.model.polylineSymbol;
-      } else if (type === 'polygon') {
-        return this.model.polygonSymbol;
-      }
-    };
-
-    const symbolized = graphics.map((g) => {
-      // Handle graphic instances as well as auto-castable objects.
-      if (g.toJSON === undefined) {
-        const copy = JSON.parse(JSON.stringify(g));
-
-        copy.symbol = symbol(copy.geometry.type);
-
-        return copy;
-      } else {
-        const copy = g.toJSON();
-
-        copy.symbol = symbol(g.geometry.type);
-
-        return copy;
-      }
-    });
-
-    return symbolized;
-  }
 }
 
-interface ISketchViewModel extends esri.SketchViewModel {
+export interface ISketchViewModel extends esri.SketchViewModel {
   toggleUpdateTool?: () => {};
+  canUndo?: () => {};
+  canRedo?: () => {};
 }
 
-interface ISketchViewModelEvent {
+export interface ISketchViewModelEvent {
   target: ISketchViewModel;
 }

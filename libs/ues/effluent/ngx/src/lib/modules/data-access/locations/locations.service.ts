@@ -11,7 +11,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 export class LocationsService {
   private apiUrl: string;
   constructor(private http: HttpClient, private env: EnvironmentService) {
-    this.apiUrl = this.env.value('apiUrl') + 'locations';
+    this.apiUrl = this.env.value('apiUrl') + '/locations';
   }
 
   public getLocations(): Observable<Array<Location>> {

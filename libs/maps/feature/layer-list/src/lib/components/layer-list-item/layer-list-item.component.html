@@ -1,5 +1,5 @@
-<div class="layer-item" [ngClass]="{ 'visible': listItem?.visible, 'outside-extent': listItem.visibleAtCurrentScale === false, 'error': listItem?.error }" (click)="toggleLayer()">
-  <div [ngSwitch]="listItem.updating">
+<div class="layer-item" [ngClass]="{ 'visible': listItem?.visible, 'outside-extent': listItem.visibleAtCurrentScale === false, 'error': listItem?.error, 'has-children': listItem?.children?.length > 0}">
+  <div [ngSwitch]="listItem.updating" (click)="toggleLayer()">
     <div *ngSwitchCase="false" class="layer-visibility-dot"></div>
 
     <div *ngSwitchDefault>
@@ -8,5 +8,17 @@
       </div>
     </div>
   </div>
-  <p>{{ listItem.title }}</p>
+
+  <span class="expand-toggle material-icons" *ngIf="listItem?.children?.length > 0" (click)="toggleExpanded()">
+    <div [ngSwitch]="expanded">
+      <ng-container *ngSwitchCase="true">arrow_drop_down</ng-container>
+      <ng-container *ngSwitchDefault>arrow_right</ng-container>
+    </div>
+  </span>
+
+  <p (click)="toggleLayer()">{{ listItem.title }}</p>
+</div>
+
+<div class="list-item-children" *ngIf="listItem?.children?.length && this.expanded">
+  <tamu-gisc-layer-list-item *ngFor="let child of listItem.children.toArray()" [listItem]="child"></tamu-gisc-layer-list-item>
 </div>

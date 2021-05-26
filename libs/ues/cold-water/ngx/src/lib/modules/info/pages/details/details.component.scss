@@ -1,0 +1,60 @@
+@import 'libs/sass/mixins';
+
+.pill {
+  cursor: pointer;
+
+  &.missing_fields,
+  &.busy {
+    cursor: not-allowed;
+    filter: grayscale(50%);
+  }
+}
+
+.status-container {
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+
+  p {
+    padding-bottom: 0;
+    margin-right: 0.5rem;
+  }
+
+  .pill {
+    margin-right: 0.5rem;
+  }
+
+  .spinning-loader {
+    margin: 0;
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.29em;
+  }
+}
+
+.action-bar {
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+
+  .back p {
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+    color: #a5a5a5;
+    padding-bottom: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    @include transition(color 0.3s);
+
+    &:hover {
+      color: #1976d2;
+    }
+
+    .material-icons {
+      margin-right: 0.3rem;
+      font-size: 1.3rem;
+    }
+  }
+}

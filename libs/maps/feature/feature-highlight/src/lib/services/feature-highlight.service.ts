@@ -26,6 +26,11 @@ export class FeatureHighlightService implements OnDestroy {
       // Do stuff here if only features are provided
       const feature = props.features instanceof Array ? props.features[0] : (props.features as esri.Graphic);
 
+      if (feature === undefined) {
+        console.warn('No highlight features in provided props.');
+        return;
+      }
+
       // Clear all highlights on all layers or only clear for the layer being provided.
       if (props.options && props.options.clearAllOthers) {
         this.clearAll();

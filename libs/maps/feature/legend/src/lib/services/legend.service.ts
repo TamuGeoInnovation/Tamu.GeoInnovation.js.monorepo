@@ -3,15 +3,28 @@ import { forkJoin, fromEventPattern, Observable, ReplaySubject } from 'rxjs';
 import { map, startWith, switchMap, take } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
+import { LegendItem } from '@tamu-gisc/common/types';
 
 @Injectable()
 export class LegendService {
   private _legendItems: ReplaySubject<Array<esri.ActiveLayerInfo>> = new ReplaySubject(1);
   public legendItems: Observable<Array<esri.ActiveLayerInfo>> = this._legendItems.asObservable();
 
-  constructor(private moduleProvider: EsriModuleProviderService, private mapService: EsriMapService) {}
+  /**
+   * Static legend items derived form the application environments
+   */
+  public staticLegendItems: Array<LegendItem>;
+
+  constructor(
+    private moduleProvider: EsriModuleProviderService,
+    private mapService: EsriMapService,
+    private env: EnvironmentService
+  ) {
+    this.staticLegendItems = this.env.value('LegendSources', true);
+  }
 
   public legend() {
     return forkJoin([this.moduleProvider.require(['LegendViewModel']), this.mapService.store.pipe(take(1))]).pipe(

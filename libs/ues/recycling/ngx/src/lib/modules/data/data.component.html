@@ -1,0 +1,16 @@
+<section class="internal container12">
+  <h1 class="section-header">Recycling Data</h1>
+
+  <div class="section-content">
+    <div class="tab-container row">
+      <div class="tabs">
+        <div class="tab" [routerLink]="['latest']" routerLinkActive="active">Latest</div>
+        <div class="tab" [routerLink]="['upload']" routerLinkActive="active">Upload</div>
+      </div>
+
+      <div class="tab-content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</section>

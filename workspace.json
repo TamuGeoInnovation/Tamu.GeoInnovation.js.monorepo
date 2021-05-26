@@ -32,6 +32,29 @@
               "optimization": true,
               "sourceMap": false,
               "vendorChunk": false
+            },
+            "development": {
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "maximumError": "5mb",
+                  "maximumWarning": "2mb",
+                  "type": "initial"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/aggiemap-angular/src/environments/environment.ts",
+                  "with": "apps/aggiemap-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "aot": true,
+              "buildOptimizer": true,
+              "extractLicenses": true,
+              "namedChunks": false,
+              "optimization": true,
+              "sourceMap": false,
+              "vendorChunk": false
             }
           },
           "options": {
@@ -73,6 +96,9 @@
           "configurations": {
             "production": {
               "browserTarget": "aggiemap-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "aggiemap-angular:build:development"
             }
           },
           "options": {
@@ -147,6 +173,29 @@
               "optimization": true,
               "sourceMap": false,
               "vendorChunk": false
+            },
+            "development": {
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "maximumError": "5mb",
+                  "maximumWarning": "2mb",
+                  "type": "initial"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/trees-angular/src/environments/environment.ts",
+                  "with": "apps/trees-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "aot": true,
+              "buildOptimizer": true,
+              "extractLicenses": true,
+              "namedChunks": false,
+              "optimization": true,
+              "sourceMap": false,
+              "vendorChunk": false
             }
           },
           "options": {
@@ -188,6 +237,9 @@
           "configurations": {
             "production": {
               "browserTarget": "trees-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "trees-angular:build:development"
             }
           },
           "options": {
@@ -285,6 +337,29 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/bikeshare/src/environments/environment.ts",
+                  "with": "apps/bikeshare/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -297,6 +372,9 @@
           "configurations": {
             "production": {
               "browserTarget": "bikeshare:build:production"
+            },
+            "development": {
+              "browserTarget": "bikeshare:build:development"
             }
           }
         },
@@ -939,6 +1017,31 @@
               "serviceWorker": true,
               "sourceMap": false,
               "vendorChunk": false
+            },
+            "development": {
+              "ngswConfigPath": "apps/gisday-competitions-angular/ngsw-config.json",
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "maximumError": "5mb",
+                  "maximumWarning": "2mb",
+                  "type": "initial"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/gisday-competitions-angular/src/environments/environment.ts",
+                  "with": "apps/gisday-competitions-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "aot": true,
+              "buildOptimizer": true,
+              "extractLicenses": true,
+              "namedChunks": false,
+              "optimization": true,
+              "serviceWorker": true,
+              "sourceMap": false,
+              "vendorChunk": false
             }
           },
           "options": {
@@ -984,6 +1087,9 @@
           "configurations": {
             "production": {
               "browserTarget": "gisday-competitions-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "gisday-competitions-angular:build:development"
             }
           },
           "options": {
@@ -1348,6 +1454,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/signage-angular/src/environments/environment.ts",
+                  "with": "apps/signage-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -1360,6 +1494,9 @@
           "configurations": {
             "production": {
               "browserTarget": "signage-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "signage-angular:build:development"
             }
           }
         },
@@ -1718,6 +1855,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/cpa-angular/src/environments/environment.ts",
+                  "with": "apps/cpa-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -1730,6 +1895,9 @@
           "configurations": {
             "production": {
               "browserTarget": "cpa-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "cpa-angular:build:development"
             }
           }
         },
@@ -1795,8 +1963,7 @@
             "outputPath": "dist/apps/cpa-nest",
             "main": "apps/cpa-nest/src/main.ts",
             "tsConfig": "apps/cpa-nest/tsconfig.app.json",
-            "assets": ["apps/cpa-nest/src/assets"],
-            "buildLibsFromSource": true
+            "assets": ["apps/cpa-nest/src/assets", "apps/cpa-nest/src/package.json"]
           },
           "configurations": {
             "production": {
@@ -1809,6 +1976,17 @@
                   "with": "apps/cpa-nest/src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/cpa-nest/src/environments/environment.ts",
+                  "with": "apps/cpa-nest/src/environments/environment.dev.ts"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -1816,7 +1994,8 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "cpa-nest:build"
+            "buildTarget": "cpa-nest:build",
+            "port": 7777
           }
         },
         "lint": {
@@ -2004,6 +2183,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/geoservices-angular/src/environments/environment.ts",
+                  "with": "apps/geoservices-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -2016,6 +2223,9 @@
           "configurations": {
             "production": {
               "browserTarget": "geoservices-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "geoservices-angular:build:development"
             }
           }
         },
@@ -2347,8 +2557,7 @@
             "outputPath": "dist/apps/covid-data-api-nest",
             "main": "apps/covid-data-api-nest/src/main.ts",
             "tsConfig": "apps/covid-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/covid-data-api-nest/src/assets", "apps/covid-data-api-nest/src/package.json"],
-            "buildLibsFromSource": true
+            "assets": ["apps/covid-data-api-nest/src/assets", "apps/covid-data-api-nest/src/package.json"]
           },
           "configurations": {
             "production": {
@@ -2380,6 +2589,14 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "covid-data-api-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "covid-data-api-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "covid-data-api-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -2475,8 +2692,7 @@
             "outputPath": "dist/apps/oidc-client-test",
             "main": "apps/oidc-client-test/src/main.ts",
             "tsConfig": "apps/oidc-client-test/tsconfig.app.json",
-            "assets": ["apps/oidc-client-test/src/assets"],
-            "buildLibsFromSource": true
+            "assets": ["apps/oidc-client-test/src/assets"]
           },
           "configurations": {
             "production": {
@@ -2513,214 +2729,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/apps/oidc-client-test"]
-        }
-      }
-    },
-    "oidc-provider-angular": {
-      "projectType": "application",
-      "root": "apps/oidc-provider-angular",
-      "sourceRoot": "apps/oidc-provider-angular/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist/apps/oidc-provider-angular/browser",
-            "index": "apps/oidc-provider-angular/src/index.html",
-            "main": "apps/oidc-provider-angular/src/main.ts",
-            "polyfills": "apps/oidc-provider-angular/src/polyfills.ts",
-            "tsConfig": "apps/oidc-provider-angular/tsconfig.app.json",
-            "aot": true,
-            "assets": ["apps/oidc-provider-angular/src/favicon.ico", "apps/oidc-provider-angular/src/assets"],
-            "styles": ["apps/oidc-provider-angular/src/styles.scss"],
-            "scripts": []
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/oidc-provider-angular/src/environments/environment.ts",
-                  "with": "apps/oidc-provider-angular/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ]
-            }
-          },
-          "outputs": ["{options.outputPath}"]
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "oidc-provider-angular:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "oidc-provider-angular:build:production"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "oidc-provider-angular:build"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["apps/oidc-provider-angular/tsconfig.app.json", "apps/oidc-provider-angular/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-provider-angular/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "apps/oidc-provider-angular/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/apps/oidc-provider-angular"]
-        },
-        "server": {
-          "builder": "@angular-devkit/build-angular:server",
-          "options": {
-            "outputPath": "dist/apps/oidc-provider-angular/server",
-            "main": "apps/oidc-provider-angular/src/main.server.ts",
-            "tsConfig": "apps/oidc-provider-angular/tsconfig.server.json"
-          },
-          "configurations": {
-            "production": {
-              "outputHashing": "media",
-              "fileReplacements": [
-                {
-                  "replace": "apps/oidc-provider-angular/src/environments/environment.ts",
-                  "with": "apps/oidc-provider-angular/src/environments/environment.prod.ts"
-                }
-              ],
-              "sourceMap": false,
-              "optimization": true
-            }
-          }
-        }
-      }
-    },
-    "oidc-provider-angular-e2e": {
-      "root": "apps/oidc-provider-angular-e2e",
-      "sourceRoot": "apps/oidc-provider-angular-e2e/src",
-      "projectType": "application",
-      "architect": {
-        "e2e": {
-          "builder": "@nrwl/cypress:cypress",
-          "options": {
-            "cypressConfig": "apps/oidc-provider-angular-e2e/cypress.json",
-            "tsConfig": "apps/oidc-provider-angular-e2e/tsconfig.e2e.json",
-            "devServerTarget": "oidc-provider-angular:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "oidc-provider-angular:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["apps/oidc-provider-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-provider-angular-e2e/**/*"]
-          }
-        }
-      }
-    },
-    "oidc-provider-express": {
-      "root": "apps/oidc-provider-express",
-      "sourceRoot": "apps/oidc-provider-express/src",
-      "projectType": "application",
-      "prefix": "oidc-provider-express",
-      "architect": {
-        "build": {
-          "builder": "@nrwl/node:build",
-          "options": {
-            "outputPath": "dist/apps/oidc-provider-express",
-            "main": "apps/oidc-provider-express/src/main.ts",
-            "tsConfig": "apps/oidc-provider-express/tsconfig.app.json",
-            "assets": ["apps/oidc-provider-express/src/assets"],
-            "buildLibsFromSource": true
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "extractLicenses": false,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/oidc-provider-express/src/environments/environment.ts",
-                  "with": "apps/oidc-provider-express/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          },
-          "outputs": ["{options.outputPath}"]
-        },
-        "serve": {
-          "builder": "@nrwl/node:execute",
-          "options": {
-            "buildTarget": "oidc-provider-express:build",
-            "port": 7778
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["apps/oidc-provider-express/tsconfig.app.json", "apps/oidc-provider-express/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-provider-express/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "apps/oidc-provider-express/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/apps/oidc-provider-express"]
-        }
-      }
-    },
-    "oidc-provider": {
-      "root": "libs/oidc/provider",
-      "sourceRoot": "libs/oidc/provider/src",
-      "projectType": "library",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/oidc/provider/tsconfig.lib.json", "libs/oidc/provider/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/provider/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/oidc/provider/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/libs/oidc/provider"]
         }
       }
     },
@@ -2786,6 +2794,35 @@
                   "with": "apps/ues-angular/src/environments/environment.prod.ts"
                 }
               ],
+              "baseHref": "/operations/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-angular/src/environments/environment.ts",
+                  "with": "apps/ues-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "baseHref": "/operations/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -2817,6 +2854,9 @@
           "configurations": {
             "production": {
               "browserTarget": "ues-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "ues-angular:build:development"
             }
           }
         },
@@ -2959,6 +2999,35 @@
                   "with": "apps/ues-effluent-angular/src/environments/environment.prod.ts"
                 }
               ],
+              "baseHref": "/effluent/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-effluent-angular/src/environments/environment.ts",
+                  "with": "apps/ues-effluent-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "baseHref": "/effluent/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -2990,6 +3059,9 @@
           "configurations": {
             "production": {
               "browserTarget": "ues-effluent-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "ues-effluent-angular:build:development"
             }
           }
         },
@@ -3146,8 +3218,15 @@
             "outputPath": "dist/apps/ues-effluent-data-api-nest",
             "main": "apps/ues-effluent-data-api-nest/src/main.ts",
             "tsConfig": "apps/ues-effluent-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/ues-effluent-data-api-nest/src/assets", "apps/ues-effluent-data-api-nest/src/package.json"],
-            "buildLibsFromSource": true
+            "assets": [
+              "apps/ues-effluent-data-api-nest/src/assets",
+              "apps/ues-effluent-data-api-nest/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
           },
           "configurations": {
             "production": {
@@ -3160,6 +3239,17 @@
                   "with": "apps/ues-effluent-data-api-nest/src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": false,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-effluent-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/ues-effluent-data-api-nest/src/environments/environment.dev.ts"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -3167,7 +3257,16 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "ues-effluent-data-api-nest:build"
+            "buildTarget": "ues-effluent-data-api-nest:build",
+            "port": 7777
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "ues-effluent-data-api-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "ues-effluent-data-api-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -3198,8 +3297,7 @@
             "main": "apps/oidc-provider-nest/src/main.ts",
             "outputPath": "dist/apps/oidc-provider-nest",
             "tsConfig": "apps/oidc-provider-nest/tsconfig.app.json",
-            "assets": ["apps/oidc-provider-nest/src/assets", "apps/oidc-provider-nest/src/package.json"],
-            "buildLibsFromSource": true
+            "assets": ["apps/oidc-provider-nest/src/assets", "apps/oidc-provider-nest/src/package.json"]
           },
           "configurations": {
             "production": {
@@ -3207,6 +3305,17 @@
                 {
                   "replace": "apps/oidc-provider-nest/src/environments/environment.ts",
                   "with": "apps/oidc-provider-nest/src/environments/environment.prod.ts"
+                }
+              ],
+              "extractLicenses": false,
+              "inspect": false,
+              "optimization": true
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-provider-nest/src/environments/environment.ts",
+                  "with": "apps/oidc-provider-nest/src/environments/environment.dev.ts"
                 }
               ],
               "extractLicenses": false,
@@ -3221,6 +3330,14 @@
           "options": {
             "buildTarget": "oidc-provider-nest:build",
             "port": 7777
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "oidc-provider-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "oidc-provider-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -3307,6 +3424,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-admin-angular/src/environments/environment.ts",
+                  "with": "apps/oidc-admin-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -3319,6 +3464,9 @@
           "configurations": {
             "production": {
               "browserTarget": "oidc-admin-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "oidc-admin-angular:build:development"
             }
           }
         },
@@ -3391,14 +3539,24 @@
               "extractLicenses": false,
               "inspect": false,
               "optimization": true
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/oidc-admin-nest/src/environments/environment.ts",
+                  "with": "apps/oidc-admin-nest/src/environments/environment.dev.ts"
+                }
+              ],
+              "extractLicenses": false,
+              "inspect": false,
+              "optimization": true
             }
           },
           "options": {
             "main": "apps/oidc-admin-nest/src/main.ts",
             "outputPath": "dist/apps/oidc-admin-nest",
             "tsConfig": "apps/oidc-admin-nest/tsconfig.app.json",
-            "assets": ["apps/oidc-admin-nest/src/assets", "apps/oidc-admin-nest/src/package.json"],
-            "buildLibsFromSource": true
+            "assets": ["apps/oidc-admin-nest/src/assets", "apps/oidc-admin-nest/src/package.json"]
           },
           "outputs": ["{options.outputPath}"]
         },
@@ -3407,6 +3565,14 @@
           "options": {
             "buildTarget": "oidc-admin-nest:build",
             "port": 7771
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "oidc-admin-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "oidc-admin-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -3548,6 +3714,34 @@
               "optimization": true,
               "sourceMap": false,
               "vendorChunk": false
+            },
+            "development": {
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "maximumError": "5mb",
+                  "maximumWarning": "2mb",
+                  "type": "initial"
+                },
+                {
+                  "maximumError": "10kb",
+                  "maximumWarning": "6kb",
+                  "type": "anyComponentStyle"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-angular/src/environments/environment.ts",
+                  "with": "apps/two-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "aot": true,
+              "buildOptimizer": true,
+              "extractLicenses": true,
+              "namedChunks": false,
+              "optimization": true,
+              "sourceMap": false,
+              "vendorChunk": false
             }
           },
           "options": {
@@ -3589,6 +3783,9 @@
           "configurations": {
             "production": {
               "browserTarget": "two-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "two-angular:build:development"
             }
           },
           "options": {
@@ -3693,14 +3890,24 @@
               "extractLicenses": false,
               "inspect": false,
               "optimization": true
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/two-data-api-nest/src/environments/environment.dev.ts"
+                }
+              ],
+              "extractLicenses": false,
+              "inspect": false,
+              "optimization": true
             }
           },
           "options": {
             "main": "apps/two-data-api-nest/src/main.ts",
             "outputPath": "dist/apps/two-data-api-nest",
             "tsConfig": "apps/two-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/two-data-api-nest/src/assets", "apps/two-data-api-nest/src/package.json"],
-            "buildLibsFromSource": true
+            "assets": ["apps/two-data-api-nest/src/assets", "apps/two-data-api-nest/src/package.json"]
           },
           "outputs": ["{options.outputPath}"]
         },
@@ -3714,6 +3921,14 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "two-data-api-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "two-data-api-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "two-data-api-nest:build:development"
+            }
           }
         },
         "test": {
@@ -3738,8 +3953,7 @@
             "outputPath": "dist/apps/two-directory-nest",
             "main": "apps/two-directory-nest/src/main.ts",
             "tsConfig": "apps/two-directory-nest/tsconfig.app.json",
-            "assets": ["apps/two-directory-nest/src/assets"],
-            "buildLibsFromSource": true
+            "assets": ["apps/two-directory-nest/src/assets"]
           },
           "configurations": {
             "production": {
@@ -3752,6 +3966,17 @@
                   "with": "apps/two-directory-nest/src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": false,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-directory-nest/src/environments/environment.ts",
+                  "with": "apps/two-directory-nest/src/environments/environment.dev.ts"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -3760,6 +3985,14 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "two-directory-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "two-directory-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "two-directory-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -3811,8 +4044,7 @@
             "outputPath": "dist/apps/two-valup-nest",
             "main": "apps/two-valup-nest/src/main.ts",
             "tsConfig": "apps/two-valup-nest/tsconfig.app.json",
-            "assets": ["apps/two-valup-nest/src/assets", "apps/two-valup-nest/src/package.json"],
-            "buildLibsFromSource": true
+            "assets": ["apps/two-valup-nest/src/assets", "apps/two-valup-nest/src/package.json"]
           },
           "configurations": {
             "production": {
@@ -3825,6 +4057,17 @@
                   "with": "apps/two-valup-nest/src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": false,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-valup-nest/src/environments/environment.ts",
+                  "with": "apps/two-valup-nest/src/environments/environment.dev.ts"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -3833,6 +4076,14 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "two-valup-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "two-valup-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "two-valup-nest:build:development"
+            }
           }
         },
         "lint": {
@@ -3919,6 +4170,34 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/two-dashboard-angular/src/environments/environment.ts",
+                  "with": "apps/two-dashboard-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
             }
           },
           "outputs": ["{options.outputPath}"]
@@ -3932,6 +4211,9 @@
           "configurations": {
             "production": {
               "browserTarget": "two-dashboard-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "two-dashboard-angular:build:development"
             }
           }
         },
@@ -4028,6 +4310,1049 @@
           "outputs": ["coverage/libs/two/data-access"]
         }
       }
+    },
+    "gisday-angular": {
+      "projectType": "application",
+      "root": "apps/gisday-angular",
+      "sourceRoot": "apps/gisday-angular/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "crossOrigin": "anonymous",
+            "outputPath": "dist/apps/gisday-angular",
+            "index": "apps/gisday-angular/src/index.html",
+            "main": "apps/gisday-angular/src/main.ts",
+            "polyfills": "apps/gisday-angular/src/polyfills.ts",
+            "tsConfig": "apps/gisday-angular/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/gisday-angular/src/favicon.ico",
+              "apps/gisday-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
+            "styles": ["apps/gisday-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/gisday-angular/src/environments/environment.ts",
+                  "with": "apps/gisday-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/gisday-angular/src/environments/environment.ts",
+                  "with": "apps/gisday-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "gisday-angular:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "gisday-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "gisday-angular:build:development"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "gisday-angular:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/gisday-angular/tsconfig.app.json",
+              "apps/gisday-angular/tsconfig.spec.json",
+              "apps/gisday-angular/tsconfig.editor.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/gisday-angular/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/gisday-angular/jest.config.js",
+            "passWithNoTests": true
+          },
+          "outputs": ["coverage/apps/gisday-angular"]
+        }
+      }
+    },
+    "gisday-angular-e2e": {
+      "root": "apps/gisday-angular-e2e",
+      "sourceRoot": "apps/gisday-angular-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/gisday-angular-e2e/cypress.json",
+            "tsConfig": "apps/gisday-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "gisday-angular:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "gisday-angular:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/gisday-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/gisday-angular-e2e/**/*"]
+          }
+        }
+      }
+    },
+    "gisday-ngx": {
+      "projectType": "library",
+      "root": "libs/gisday/ngx",
+      "sourceRoot": "libs/gisday/ngx/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/gisday/ngx/tsconfig.lib.json", "libs/gisday/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/gisday/ngx/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/ngx"],
+          "options": {
+            "jestConfig": "libs/gisday/ngx/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-data-access": {
+      "projectType": "library",
+      "root": "libs/gisday/data-access",
+      "sourceRoot": "libs/gisday/data-access/src",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/gisday/data-access/tsconfig.lib.json", "libs/gisday/data-access/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/gisday/data-access/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/data-access"],
+          "options": {
+            "jestConfig": "libs/gisday/data-access/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-nest": {
+      "root": "apps/gisday-nest",
+      "sourceRoot": "apps/gisday-nest/src",
+      "projectType": "application",
+      "prefix": "gisday-nest",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/gisday-nest",
+            "main": "apps/gisday-nest/src/main.ts",
+            "tsConfig": "apps/gisday-nest/tsconfig.app.json",
+            "assets": ["apps/gisday-nest/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/gisday-nest/src/environments/environment.ts",
+                  "with": "apps/gisday-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/gisday-nest/src/environments/environment.ts",
+                  "with": "apps/gisday-nest/src/environments/environment.dev.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "gisday-nest:build",
+            "port": 7777
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "gisday-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "gisday-nest:build:development"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/gisday-nest/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/gisday-nest"],
+          "options": {
+            "jestConfig": "apps/gisday-nest/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-data-api": {
+      "root": "libs/gisday/data-api",
+      "sourceRoot": "libs/gisday/data-api/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/gisday/data-api/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/data-api"],
+          "options": {
+            "jestConfig": "libs/gisday/data-api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-sass": {
+      "projectType": "library",
+      "root": "gisday/sass"
+    },
+    "gisday-common": {
+      "projectType": "library",
+      "root": "libs/gisday/common",
+      "sourceRoot": "libs/gisday/common/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/gisday/common/tsconfig.lib.json", "libs/gisday/common/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/gisday/common/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/common"],
+          "options": {
+            "jestConfig": "libs/gisday/common/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "common-ngx-auth": {
+      "projectType": "library",
+      "root": "libs/common/ngx/auth",
+      "sourceRoot": "libs/common/ngx/auth/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/common/ngx/auth/tsconfig.lib.json", "libs/common/ngx/auth/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/common/ngx/auth/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/common/ngx/auth"],
+          "options": {
+            "jestConfig": "libs/common/ngx/auth/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ues-operations-nest": {
+      "root": "apps/ues-operations-nest",
+      "sourceRoot": "apps/ues-operations-nest/src",
+      "projectType": "application",
+      "prefix": "ues-operations-nest",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/ues-operations-nest",
+            "main": "apps/ues-operations-nest/src/main.ts",
+            "tsConfig": "apps/ues-operations-nest/tsconfig.app.json",
+            "assets": [
+              "apps/ues-operations-nest/src/assets",
+              "apps/ues-operations-nest/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-operations-nest/src/environments/environment.ts",
+                  "with": "apps/ues-operations-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-operations-nest/src/environments/environment.ts",
+                  "with": "apps/ues-operations-nest/src/environments/environment.dev.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "ues-operations-nest:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "ues-operations-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "ues-operations-nest:build:development"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/ues-operations-nest/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/ues-operations-nest"],
+          "options": {
+            "jestConfig": "apps/ues-operations-nest/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ues-recycling-angular": {
+      "projectType": "application",
+      "root": "apps/ues-recycling-angular",
+      "sourceRoot": "apps/ues-recycling-angular/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/ues-recycling-angular",
+            "index": "apps/ues-recycling-angular/src/index.html",
+            "main": "apps/ues-recycling-angular/src/main.ts",
+            "polyfills": "apps/ues-recycling-angular/src/polyfills.ts",
+            "tsConfig": "apps/ues-recycling-angular/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/ues-recycling-angular/src/favicon.ico",
+              "apps/ues-recycling-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/ues/assets/",
+                "output": "./assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
+            "styles": ["apps/ues-recycling-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-recycling-angular/src/environments/environment.ts",
+                  "with": "apps/ues-recycling-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "baseHref": "/recycling/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-recycling-angular/src/environments/environment.ts",
+                  "with": "apps/ues-recycling-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "baseHref": "/recycling/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ues-recycling-angular:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ues-recycling-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "ues-recycling-angular:build:development"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ues-recycling-angular:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/ues-recycling-angular/tsconfig.app.json",
+              "apps/ues-recycling-angular/tsconfig.spec.json",
+              "apps/ues-recycling-angular/tsconfig.editor.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/ues-recycling-angular/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/ues-recycling-angular"],
+          "options": {
+            "jestConfig": "apps/ues-recycling-angular/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ues-recycling-angular-e2e": {
+      "root": "apps/ues-recycling-angular-e2e",
+      "sourceRoot": "apps/ues-recycling-angular-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/ues-recycling-angular-e2e/cypress.json",
+            "tsConfig": "apps/ues-recycling-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "ues-recycling-angular:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ues-recycling-angular:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/ues-recycling-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/ues-recycling-angular-e2e/**/*"]
+          }
+        }
+      }
+    },
+    "ues-recycling-data-api-nest": {
+      "root": "apps/ues-recycling-data-api-nest",
+      "sourceRoot": "apps/ues-recycling-data-api-nest/src",
+      "projectType": "application",
+      "prefix": "ues-recycling-data-api-nest",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/ues-recycling-data-api-nest",
+            "main": "apps/ues-recycling-data-api-nest/src/main.ts",
+            "tsConfig": "apps/ues-recycling-data-api-nest/tsconfig.app.json",
+            "assets": [
+              "apps/ues-recycling-data-api-nest/src/assets",
+              "apps/ues-recycling-data-api-nest/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-recycling-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/ues-recycling-data-api-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-recycling-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/ues-recycling-data-api-nest/src/environments/environment.dev.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "ues-recycling-data-api-nest:build",
+            "port": 7777
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "ues-recycling-data-api-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "ues-recycling-data-api-nest:build:development"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/ues-recycling-data-api-nest/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/ues-recycling-data-api-nest"],
+          "options": {
+            "jestConfig": "apps/ues-recycling-data-api-nest/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ues-recycling-common-entities": {
+      "root": "libs/ues/recycling/common/entities",
+      "sourceRoot": "libs/ues/recycling/common/entities/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ues/recycling/common/entities/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ues/recycling/common/entities"],
+          "options": {
+            "jestConfig": "libs/ues/recycling/common/entities/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ues-recycling-data-api": {
+      "root": "libs/ues/recycling/data-api",
+      "sourceRoot": "libs/ues/recycling/data-api/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ues/recycling/data-api/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ues/recycling/data-api"],
+          "options": {
+            "jestConfig": "libs/ues/recycling/data-api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ues-recycling-ngx": {
+      "projectType": "library",
+      "root": "libs/ues/recycling/ngx",
+      "sourceRoot": "libs/ues/recycling/ngx/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ues/recycling/ngx/tsconfig.lib.json", "libs/ues/recycling/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ues/recycling/ngx/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ues/recycling/ngx"],
+          "options": {
+            "jestConfig": "libs/ues/recycling/ngx/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ues-valves-angular": {
+      "projectType": "application",
+      "root": "apps/ues-valves-angular",
+      "sourceRoot": "apps/ues-valves-angular/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/ues-valves-angular",
+            "index": "apps/ues-valves-angular/src/index.html",
+            "main": "apps/ues-valves-angular/src/main.ts",
+            "polyfills": "apps/ues-valves-angular/src/polyfills.ts",
+            "tsConfig": "apps/ues-valves-angular/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/ues-valves-angular/src/favicon.ico",
+              "apps/ues-valves-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/",
+                "output": "./assets"
+              }
+            ],
+            "styles": ["apps/ues-valves-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-valves-angular/src/environments/environment.ts",
+                  "with": "apps/ues-valves-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "baseHref": "/dispatch/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-valves-angular/src/environments/environment.ts",
+                  "with": "apps/ues-valves-angular/src/environments/environment.dev.ts"
+                }
+              ],
+              "baseHref": "/dispatch/",
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ues-valves-angular:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ues-valves-angular:build:production"
+            },
+            "development": {
+              "browserTarget": "ues-valves-angular:build:development"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ues-valves-angular:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/ues-valves-angular/tsconfig.app.json",
+              "apps/ues-valves-angular/tsconfig.spec.json",
+              "apps/ues-valves-angular/tsconfig.editor.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/ues-valves-angular/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/ues-valves-angular"],
+          "options": {
+            "jestConfig": "apps/ues-valves-angular/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ues-valves-angular-e2e": {
+      "root": "apps/ues-valves-angular-e2e",
+      "sourceRoot": "apps/ues-valves-angular-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/ues-valves-angular-e2e/cypress.json",
+            "tsConfig": "apps/ues-valves-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "ues-valves-angular:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ues-valves-angular:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/ues-valves-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/ues-valves-angular-e2e/**/*"]
+          }
+        }
+      }
+    },
+    "ues-cold-water-ngx": {
+      "projectType": "library",
+      "root": "libs/ues/cold-water/ngx",
+      "sourceRoot": "libs/ues/cold-water/ngx/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ues/cold-water/ngx/tsconfig.lib.json", "libs/ues/cold-water/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ues/cold-water/ngx/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ues/cold-water/ngx"],
+          "options": {
+            "jestConfig": "libs/ues/cold-water/ngx/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ues-valves-nest": {
+      "root": "apps/ues-valves-nest",
+      "sourceRoot": "apps/ues-valves-nest/src",
+      "projectType": "application",
+      "prefix": "ues-valves-nest",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/ues-valves-nest",
+            "main": "apps/ues-valves-nest/src/main.ts",
+            "tsConfig": "apps/ues-valves-nest/tsconfig.app.json",
+            "assets": [
+              "apps/ues-valves-nest/src/assets",
+              "apps/ues-valves-nest/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-valves-nest/src/environments/environment.ts",
+                  "with": "apps/ues-valves-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/ues-valves-nest/src/environments/environment.ts",
+                  "with": "apps/ues-valves-nest/src/environments/environment.dev.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "ues-valves-nest:build",
+            "port": 7777
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "ues-valves-nest:build:production"
+            },
+            "development": {
+              "buildTarget": "ues-valves-nest:build:development"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/ues-valves-nest/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/ues-valves-nest"],
+          "options": {
+            "jestConfig": "apps/ues-valves-nest/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ues-sass": {
+      "projectType": "library",
+      "root": "libs/ues/sass"
+    },
+    "cpa-data-access": {
+      "projectType": "library",
+      "root": "libs/cpa/data-access",
+      "sourceRoot": "libs/cpa/data-access/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/cpa/data-access/tsconfig.lib.json", "libs/cpa/data-access/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/cpa/data-access/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/cpa/data-access/jest.config.js",
+            "tsConfig": "libs/cpa/data-access/tsconfig.spec.json",
+            "setupFile": "libs/cpa/data-access/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "cpa-admin": {
+      "projectType": "library",
+      "root": "libs/cpa/admin",
+      "sourceRoot": "libs/cpa/admin/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/cpa/admin/tsconfig.lib.json", "libs/cpa/admin/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/cpa/admin/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/cpa/admin/jest.config.js",
+            "tsConfig": "libs/cpa/admin/tsconfig.spec.json",
+            "setupFile": "libs/cpa/admin/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    },
+    "cpa-sass": {
+      "projectType": "library",
+      "root": "libs/cpa/sass"
     }
   },
   "cli": {

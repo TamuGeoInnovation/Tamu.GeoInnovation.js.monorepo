@@ -1,0 +1,110 @@
+<form [formGroup]="builderForm" (ngSubmit)="createSnapshot()">
+  <div class="form-section">
+    <div class="form-section-toolbar">
+      <div class="form-section-name">
+        <p>General</p>
+      </div>
+    </div>
+
+    <div class="form-section-body">
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="title" placeholder="Title" type="text" floatLabel="true"> </tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" floatLabel="true" rows="8"></tamu-gisc-textbox>
+      </div>
+
+      <div class="form-collection row">
+        <tamu-gisc-checkbox formControlName="isContextual" [label]="'Should this Snapshot be used for context?'"></tamu-gisc-checkbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="map-configuration-container">
+    <div class="map-configuration">
+      <div class="form-section">
+        <div class="form-section-toolbar">
+          <div class="form-section-name">
+            <p>Map Properties</p>
+          </div>
+        </div>
+
+        <div class="form-section-body">
+          <div class="form-collection column">
+            <p>Adjust the map view using the map preview to the desired area/region and press the button below to record the extent. The recorded bounds will be the same for participants loading the snapshot.</p>
+            <tamu-gisc-button [value]="'Record Map Extent'" (go)="recordExtent()"></tamu-gisc-button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section" formGroupName="layers">
+        <div class="form-section-toolbar">
+          <div class="form-section-name">
+            <p>Layers</p>
+          </div>
+
+          <div class="form-section-actions material-icons-container">
+            <span class="material-icons action alt" (click)="addLayer()" title="Add Layer">add_circle_outline</span>
+          </div>
+        </div>
+
+        <div class="form-section-body" id="configurator-container" dragula="LAYERS" [(dragulaModel)]="builderForm['controls'].layers['controls']">
+          <div class="form-collection column layer-configuration" *ngFor="let controlGroup of builderForm['controls'].layers['controls']; let i = index;" [ngClass]="{ valid: controlGroup?.controls?.url?.value?.length > 0 }">
+            <div class="handle"><span class="material-icons">drag_handle</span></div>
+
+            <div [formGroup]="controlGroup">
+              <tamu-gisc-textbox formControlName="url" placeholder="Service Layer URL" type="text" floatLabel="true">
+                <div class="textbox-actions material-icons-container">
+                  <span class="material-icons action error" title="Remove Layer" (click)="removeLayer(i)">close</span>
+                </div>
+              </tamu-gisc-textbox>
+
+              <tamu-gisc-accordion>
+                <tamu-gisc-accordion-header>
+                  <div>
+                    <div [ngSwitch]="controlGroup?.controls?.info?.controls?.name?.value !== ''">
+                      <div *ngSwitchCase="true">{{controlGroup?.controls?.info?.controls?.name?.value}}</div>
+                      <div *ngSwitchDefault>Edit Layer Details</div>
+                    </div>
+                  </div>
+                </tamu-gisc-accordion-header>
+                <tamu-gisc-accordion-content>
+                  <tamu-gisc-layer-configuration [url]="controlGroup.controls.url.value" [configOptions]="controlGroup" [link]="true" [index]="i"></tamu-gisc-layer-configuration>
+                </tamu-gisc-accordion-content>
+              </tamu-gisc-accordion>
+            </div>
+          </div>
+        </div>
+
+        <p *ngIf="builderForm['controls'].layers['controls'].length === 0">There are no layers on this snapshot. Click the "+" to add a layer.</p>
+      </div>
+    </div>
+
+    <div class="map-preview">
+      <div class="form-section">
+        <div class="form-section-toolbar">
+          <div class="form-section-name">
+            <p>Preview</p>
+          </div>
+        </div>
+
+        <div class="form-section-body">
+          <div class="form-collection row">
+            <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-collection row">
+    <ng-container *ngIf="(isExisting | async) === false">
+      <tamu-gisc-button type="submit" value="Publish" [disabled]="!builderForm.valid"></tamu-gisc-button>
+    </ng-container>
+
+    <ng-container *ngIf="isExisting | async">
+      <tamu-gisc-button type="submit" value="Update" [disabled]="!builderForm.valid"></tamu-gisc-button>
+    </ng-container>
+  </div>
+</form>

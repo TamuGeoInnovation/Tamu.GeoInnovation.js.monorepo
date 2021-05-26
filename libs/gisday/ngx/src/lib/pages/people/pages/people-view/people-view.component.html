@@ -1,0 +1,15 @@
+<div>
+  <div class="loader" *ngIf="$people === undefined"></div>
+  <div class="container12 leader-1 flex flex-row justify-center">
+    <div class="profile" *ngFor="let people of ($people | async)">
+      <div class="class-banner" [ngStyle]=" { 'background': '#'+people.speakerInfo.university.hexTriplet+'' }" *ngIf="people.speakerInfo.university">{{people.speakerInfo.university.acronym}} '{{ people.speakerInfo.graduationYear.substr(2,2) }}</div>
+      <div *ngIf="people.speakerInfo.guid">
+        <div class="image" [routerLink]="['/people/details', people.guid]" [ngStyle]=" { 'background-image': 'url('+unwrapPhoto(people.speakerInfo.base64representation)+')'  } "></div>
+      </div>
+      <div class="image-description">
+        <div class="name">{{people.firstName}} {{people.lastName}}</div>
+        <div class="title">{{people.speakerInfo.affiliation}}</div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="card leader-3">
+  <h2>Submit a paper or poster</h2>
+  <form [formGroup]="form">
+    <div class="form-section">
+      <div class="form-section-body">
+        <div class="form-collection row pad-top">
+          <p></p>
+          <tamu-gisc-textbox formControlName="title" placeholder="Title" type="text" floatLabel="true"> </tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="author" placeholder="Author(s)" type="text" floatLabel="true"> </tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="abstract" placeholder="Abstract" type="text" floatLabel="true"> </tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="link" placeholder="Link" type="text" floatLabel="true"> </tamu-gisc-textbox>
+          <tamu-gisc-select formControlName="submissionType" [data]="$submissionTypes | async" displayTemplate="type" valueTemplate="guid"></tamu-gisc-select>
+          <p></p>
+          <tamu-gisc-button (click)="submit()" [value]="'Submit'" type="submit"></tamu-gisc-button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

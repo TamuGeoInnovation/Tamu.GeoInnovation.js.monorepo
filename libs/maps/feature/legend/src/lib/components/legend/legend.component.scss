@@ -1,1 +1,15 @@
 @import 'libs/sass/components/sidebar';
+@import 'libs/sass/mixins';
+
+// This is a style duplicate from styles for the legend collection component.
+// Consider simplifying in the future
+.legend-info {
+  @include flexbox();
+  @include flex-direction(row);
+  align-items: center;
+  margin-bottom: 0.5rem;
+
+  .image-container {
+    margin-right: 0.5rem;
+  }
+}
