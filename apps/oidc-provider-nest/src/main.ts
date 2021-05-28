@@ -127,27 +127,34 @@ async function bootstrap() {
   await app.listen(environment.port, () => {
     console.log('Listening at http://localhost:' + environment.port + '/' + environment.globalPrefix);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       if (argv.setup) {
         const clientMetadataService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });
         const roleService = app.select(RoleModule).get(RoleService, { strict: true });
         const userService = app.select(UserModule).get(UserService, { strict: true });
 
-        // Insert default Grant Types
-        clientMetadataService.insertDefaultGrantTypes();
-        // Insert default Responses Types
-        clientMetadataService.insertDefaultResponseTypes();
-        // Insert default Token Auth Methods
-        clientMetadataService.insertDefaultTokenEndpointAuthMethods();
-        // Create ClientMetadata for oidc-idp-admin (angular site)
-        clientMetadataService.insertClientMetadataForAdminSite(argv.n, argv.t, argv.r);
-        // Insert default Roles
-        roleService.insertDefaultUserRoles();
-        // Create Admin user with known password
-        userService.insertDefaultAdmin(argv.e, argv.p);
-        // Insert the secret questions for others to register
-        userService.insertDefaultSecretQuestions();
-        // TODO: Add field to User that will prompt a user to change their password on next login
+        try {
+          // Insert default Grant Types
+          await clientMetadataService.insertDefaultGrantTypes();
+          // Insert default Responses Types
+          await clientMetadataService.insertDefaultResponseTypes();
+          // Insert default Token Auth Methods
+          await clientMetadataService.insertDefaultTokenEndpointAuthMethods();
+          // Create ClientMetadata for oidc-idp-admin (angular site)
+          await clientMetadataService.insertClientMetadataForAdminSite(argv.n, argv.t, argv.r);
+          // Insert default Roles
+          await roleService.insertDefaultUserRoles();
+          // Create Admin user with known password
+          await userService.insertDefaultAdmin(argv.e, argv.p);
+          // Insert the secret questions for others to register
+          await userService.insertDefaultSecretQuestions();
+          // TODO: Add field to User that will prompt a user to change their password on next login
+
+          console.log('Defaults setup complete');
+        } catch (err) {
+          console.log(err);
+          throw new Error('Error setting up defaults.');
+        }
       }
     }, 3000);
   });
