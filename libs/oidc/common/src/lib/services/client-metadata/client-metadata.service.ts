@@ -85,7 +85,9 @@ export class ClientMetadataService {
   }
 
   public async loadClientMetadaForOidcSetup() {
-    const clients = await this.clientMetadataRepo.findAllDeep();
+    const clients = await this.clientMetadataRepo.find({
+      relations: ['grantTypes', 'redirectUris', 'responseTypes', 'tokenEndpointAuthMethod']
+    });
     const flattenedClients: IClientMetadata[] = this.flattenClientMetadataForReturn(clients);
 
     return flattenedClients;
@@ -199,17 +201,18 @@ export class ClientMetadataService {
     // https://stackoverflow.com/questions/51403066/grant-type-vs-response-type-in-oauth2-0-oidc
     // 'refresh_token', 'authorization_code'
 
-    this.insertGrantType({
-      type: 'refresh_token',
-      name: 'Refresh',
-      details: 'Allows you to get a Refresh Token back'
-    });
-
-    this.insertGrantType({
-      type: 'authorization_code',
-      name: 'Authorization',
-      details: 'Authorization'
-    });
+    return Promise.all([
+      this.insertGrantType({
+        type: 'refresh_token',
+        name: 'Refresh',
+        details: 'Allows you to get a Refresh Token back'
+      }),
+      this.insertGrantType({
+        type: 'authorization_code',
+        name: 'Authorization',
+        details: 'Authorization'
+      })
+    ]);
   }
 
   public async insertGrantType(_grant: Partial<GrantType>) {
@@ -243,15 +246,16 @@ export class ClientMetadataService {
   public async insertDefaultResponseTypes() {
     // https://tools.ietf.org/html/rfc6749#section-3.1.1
 
-    this.insertResponseType({
-      details: 'Authorization Code',
-      type: 'code'
-    });
-
-    this.insertResponseType({
-      details: 'Authorization Token',
-      type: 'token'
-    });
+    return Promise.all([
+      this.insertResponseType({
+        details: 'Authorization Code',
+        type: 'code'
+      }),
+      this.insertResponseType({
+        details: 'Authorization Token',
+        type: 'token'
+      })
+    ]);
   }
 
   public async insertResponseType(_responseType: Partial<ResponseType>) {
@@ -307,15 +311,16 @@ export class ClientMetadataService {
 
   public async insertDefaultTokenEndpointAuthMethods() {
     // client_secret_basic, client_secret_jwt
-    this.insertTokenEndpointAuthMethod({
-      type: 'client_secret_basic',
-      details: 'Allows usage of the bearer token header'
-    });
-
-    this.insertTokenEndpointAuthMethod({
-      type: 'client_secret_jwt',
-      details: 'Allows usage of JWTs'
-    });
+    return Promise.all([
+      this.insertTokenEndpointAuthMethod({
+        type: 'client_secret_basic',
+        details: 'Allows usage of the bearer token header'
+      }),
+      this.insertTokenEndpointAuthMethod({
+        type: 'client_secret_jwt',
+        details: 'Allows usage of JWTs'
+      })
+    ]);
   }
 
   public async insertTokenEndpointAuthMethod(_tokenEndpointMethod: Partial<TokenEndpointAuthMethod>) {
