@@ -8,6 +8,6 @@ export * from './definitions';
 
 export const apiUrl = 'https://ues.geoservices.tamu.edu/api/ues/recycling/';
 export const auth_options: AuthOptions = {
-  url: `https://ues.geoservices.tamu.edu/api/ues/recycling`,
+  url: `https://ues.geoservices.tamu.edu/api/recycling`,
   attach_href: true
 };

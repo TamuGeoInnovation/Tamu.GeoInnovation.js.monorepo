@@ -7,7 +7,7 @@ export const environment = {
 export * from './definitions';
 
 // App API URL
-export const apiUrl = 'https://ues.geoservices.tamu.edu/api/ues/dispatch';
+export const apiUrl = 'https://ues.geoservices.tamu.edu/api/dispatch';
 
 // IDP client auth options
 export const auth_options: AuthOptions = {
