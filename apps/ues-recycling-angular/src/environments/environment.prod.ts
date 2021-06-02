@@ -6,7 +6,7 @@ export const environment = {
 
 export * from './definitions';
 
-export const apiUrl = 'https://ues.geoservices.tamu.edu/api/ues/recycling/';
+export const apiUrl = 'https://ues.geoservices.tamu.edu/api/recycling/';
 export const auth_options: AuthOptions = {
   url: `https://ues.geoservices.tamu.edu/api/recycling`,
   attach_href: true
