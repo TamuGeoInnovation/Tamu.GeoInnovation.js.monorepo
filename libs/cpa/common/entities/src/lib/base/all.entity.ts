@@ -121,7 +121,7 @@ export class Scenario extends CPABaseEntity implements IScenario {
   @Column({ nullable: true })
   public mapCenter: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   public zoom: number;
 
   @Column({ type: 'simple-json', nullable: true })

@@ -92,7 +92,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
       title: ['', Validators.required],
       description: ['', Validators.required],
       mapCenter: [''],
-      zoom: [''],
+      zoom: [null],
       extent: [undefined],
       layers: [[]],
       snapshots: [[]],
@@ -182,7 +182,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
                       // Change default zoom and center to values in snapshot response.
                       if (s.extent !== null) {
                         this.view.extent = s.extent as esri.Extent;
-                      } else if (s.mapCenter !== null || s.zoom !== null) {
+                      } else if (s.mapCenter !== null && s.zoom !== null) {
                         this.view.goTo({
                           center: s.mapCenter.split(',').map((c) => parseFloat(c)),
                           zoom: s.zoom
