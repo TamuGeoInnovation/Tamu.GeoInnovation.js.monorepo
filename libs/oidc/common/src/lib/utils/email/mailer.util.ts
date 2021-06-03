@@ -10,7 +10,16 @@ export class Mailer {
 
   // https://dev.to/chandrapantachhetri/sending-emails-securely-using-node-js-nodemailer-smtp-gmail-and-oauth2-g3a
   // 2LO https://nodemailer.com/smtp/oauth2/#oauth-2lo
-  public static build(service: NodeMailerServices, config?: {}) {
+  public static build(
+    service: NodeMailerServices,
+    config?: {
+      user: string;
+      accessToken: string;
+      clientId: string;
+      clientSecret: string;
+      refreshToken: string;
+    }
+  ) {
     Mailer.service = service;
 
     switch (service) {
@@ -51,11 +60,7 @@ export class Mailer {
         `<p>Your two-step verification code is: <b>${token}</b></p>` + `<p>Use this code to complete loggin in with GISC</p>`
     };
 
-    Mailer.transporter.sendMail(mailOptions).then((response) => {
-      if (Mailer.service == 'ethereal') {
-        console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
-      }
-    });
+    Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
   }
 
   public static sendPasswordResetRequestEmail(recipient: User, resetRequest: UserPasswordReset, location: string) {
@@ -72,11 +77,7 @@ export class Mailer {
         `<a href="">Report fraudulent reset request</a>`
     };
 
-    Mailer.transporter.sendMail(mailOptions).then((response) => {
-      if (Mailer.service == 'ethereal') {
-        console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
-      }
-    });
+    Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
   }
 
   public static sendPasswordResetConfirmationEmail(toEmail: string) {
@@ -88,11 +89,7 @@ export class Mailer {
       html: 'Your password to GeoInnovation Service Center has been reset.'
     };
 
-    Mailer.transporter.sendMail(mailOptions).then((response) => {
-      if (Mailer.service == 'ethereal') {
-        console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
-      }
-    });
+    Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
   }
 
   public static sendAccountConfirmationEmail(toEmail: string, sub: string) {
@@ -104,10 +101,12 @@ export class Mailer {
       html: `An account for GeoInnovation Service Center has been created with this email address. </br><a href="http://localhost:4001/user/register/${sub}">Verify email</a>`
     };
 
-    Mailer.transporter.sendMail(mailOptions).then((response) => {
-      if (Mailer.service == 'ethereal') {
-        console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
-      }
-    });
+    Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
+  }
+
+  public static emailToConsole(response) {
+    if (Mailer.service == 'ethereal') {
+      console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
+    }
   }
 }
