@@ -130,7 +130,7 @@ export class Scenario extends CPABaseEntity implements IScenario {
   @Column({ type: 'simple-json', nullable: true })
   public layers: Array<LayerReference>;
 
-  @OneToOne((type) => WorkshopScenario, (w) => w.scenario, { onDelete: 'CASCADE' })
+  @OneToOne((type) => WorkshopScenario, (w) => w.scenario)
   public workshopScenario: IWorkshopScenario;
 
   @OneToMany((type) => Response, (r) => r.scenario)
@@ -151,7 +151,7 @@ export class WorkshopScenario extends CPABaseEntity implements IWorkshopScenario
 
 @Entity({ name: 'workshop_contexts' })
 export class WorkshopContext extends CPABaseEntity {
-  @ManyToOne((type) => Workshop, (w) => w.contexts)
+  @ManyToOne((type) => Workshop, (w) => w.contexts, { onDelete: 'CASCADE' })
   public workshop: IWorkshop;
 
   @ManyToOne((type) => Snapshot, (s) => s.workshops, {
