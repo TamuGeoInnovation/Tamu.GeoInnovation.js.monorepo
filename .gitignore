@@ -41,6 +41,9 @@ libs/coverage
 .DS_Store
 Thumbs.db
 
+# NodeMailer Configurations
+mailerconfig.*
+
 # TypeORM Configurations
 ormconfig.*
 

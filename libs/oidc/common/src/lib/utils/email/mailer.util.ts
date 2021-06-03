@@ -3,18 +3,43 @@ import Mail from 'nodemailer/lib/mailer';
 
 import { User, UserPasswordReset } from '@tamu-gisc/oidc/common';
 
+export type NodeMailerServices = 'ethereal' | 'gmail';
 export class Mailer {
-  private static user = 'kaitlyn.schimmel@ethereal.email';
-  private static password = 'Pe6D9DhkgUDyqyBMeg';
-  private static transporter: Mail = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false,
-    auth: {
-      user: Mailer.user,
-      pass: Mailer.password
+  private static transporter: Mail;
+  private static service: NodeMailerServices;
+
+  // https://dev.to/chandrapantachhetri/sending-emails-securely-using-node-js-nodemailer-smtp-gmail-and-oauth2-g3a
+  // 2LO https://nodemailer.com/smtp/oauth2/#oauth-2lo
+  public static build(service: NodeMailerServices, config?: {}) {
+    Mailer.service = service;
+
+    switch (service) {
+      case 'ethereal':
+        // use ethereal email and print out links to console (debugging / dev)
+        Mailer.transporter = nodemailer.createTransport({
+          host: 'smtp.ethereal.email',
+          port: 587,
+          secure: false,
+          auth: {
+            user: 'kaitlyn.schimmel@ethereal.email',
+            pass: 'Pe6D9DhkgUDyqyBMeg'
+          }
+        });
+        break;
+      case 'gmail':
+        // use gmail instead
+        Mailer.transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 465,
+          secure: true,
+          auth: {
+            type: 'OAuth2',
+            ...config
+          }
+        });
+        break;
     }
-  });
+  }
 
   public static sendTokenByEmail(recipient: User, token: string) {
     const mailOptions = {
@@ -27,7 +52,9 @@ export class Mailer {
     };
 
     Mailer.transporter.sendMail(mailOptions).then((response) => {
-      console.log('2FA: ', Mailer.getTestMessageUrl(response));
+      if (Mailer.service == 'ethereal') {
+        console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
+      }
     });
   }
 
@@ -46,7 +73,9 @@ export class Mailer {
     };
 
     Mailer.transporter.sendMail(mailOptions).then((response) => {
-      console.log('Verification email: ', Mailer.getTestMessageUrl(response));
+      if (Mailer.service == 'ethereal') {
+        console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
+      }
     });
   }
 
@@ -60,7 +89,9 @@ export class Mailer {
     };
 
     Mailer.transporter.sendMail(mailOptions).then((response) => {
-      console.log('Verification email: ', Mailer.getTestMessageUrl(response));
+      if (Mailer.service == 'ethereal') {
+        console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
+      }
     });
   }
 
@@ -74,14 +105,9 @@ export class Mailer {
     };
 
     Mailer.transporter.sendMail(mailOptions).then((response) => {
-      console.log('Verification email: ', Mailer.getTestMessageUrl(response));
+      if (Mailer.service == 'ethereal') {
+        console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
+      }
     });
-  }
-
-  public static getTestMessageUrl(response: string | {}) {
-    const testUrl = nodemailer.getTestMessageUrl(response);
-    console.log('TestURL: ', testUrl);
-
-    return testUrl;
   }
 }
