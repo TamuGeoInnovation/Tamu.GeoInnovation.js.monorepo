@@ -3,7 +3,7 @@ import Mail from 'nodemailer/lib/mailer';
 
 import { User, UserPasswordReset } from '@tamu-gisc/oidc/common';
 
-export type NodeMailerServices = 'ethereal' | 'gmail';
+export type NodeMailerServices = 'ethereal' | 'gmail' | 'tamu-relay';
 export class Mailer {
   private static transporter: Mail;
   private static service: NodeMailerServices;
@@ -33,6 +33,13 @@ export class Mailer {
             user: 'kaitlyn.schimmel@ethereal.email',
             pass: 'Pe6D9DhkgUDyqyBMeg'
           }
+        });
+        break;
+      case 'tamu-relay':
+        Mailer.transporter = nodemailer.createTransport({
+          host: 'relay.tamu.edu',
+          port: 25,
+          secure: false
         });
         break;
       case 'gmail':

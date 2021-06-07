@@ -77,6 +77,13 @@ async function bootstrap() {
       type: 'string',
       nargs: 1
     })
+    .option('m', {
+      alias: 'email-provider',
+      description: 'The email provider (ethereal / tamu / gmail)',
+      type: 'string',
+      demandOption: true,
+      choices: ['ethereal', 'tamu', 'google']
+    })
     .help()
     .alias('help', 'h');
 
@@ -106,7 +113,9 @@ async function bootstrap() {
   const dir = join(__dirname, 'assets/views');
 
   // This will setup the Mailer (gmail or ethereal)
-  Mailer.build('gmail', mailerConfig);
+  // Mailer.build('gmail', mailerConfig);
+  Mailer.build('ethereal');
+  Mailer.sendPasswordResetConfirmationEmail('atharmon@tamu.edu');
 
   // This will set the default time step for otplib to 5 minutes
   TwoFactorAuthUtils.build();
