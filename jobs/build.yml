@@ -1,8 +1,10 @@
 parameters:
   buildtype: ''
+  DependsOn: []
 
 jobs:
   - job: build_${{ parameters.buildtype }}
+    dependsOn: ${{ parameters.DependsOn }}
     steps:
       - task: NodeTool@0
         inputs:
