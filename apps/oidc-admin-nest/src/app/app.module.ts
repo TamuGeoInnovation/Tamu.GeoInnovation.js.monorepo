@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc/client';
+import { OidcClientModule, OidcClientController, TokenExchangeMiddleware } from '@tamu-gisc/oidc/client';
 import {
   AccessToken,
   Account,
@@ -63,7 +63,7 @@ import { OIDC_IDP_ISSUER_URL } from '../environments/oidcconfig';
 export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(ClaimsMiddleware)
+      .apply(TokenExchangeMiddleware)
       .exclude(
         { path: 'oidc/login', method: RequestMethod.GET },
         { path: 'oidc/logout', method: RequestMethod.GET },
