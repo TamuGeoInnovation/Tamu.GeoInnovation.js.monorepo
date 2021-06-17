@@ -2,6 +2,8 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `workspace.json`.
 
+import { AuthOptions } from '@tamu-gisc/oidc/client';
+
 export const environment = {
   production: false,
   api_url: 'http://localhost:27000'
@@ -16,3 +18,9 @@ export const environment = {
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
 export const api_url = `http://localhost:27000`;
+
+// IDP client URL
+export const auth_options: AuthOptions = {
+  url: api_url,
+  attach_href: true
+};
