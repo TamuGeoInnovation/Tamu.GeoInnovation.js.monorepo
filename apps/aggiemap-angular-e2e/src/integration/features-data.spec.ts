@@ -1,6 +1,7 @@
 /// <reference path="../support/index.d.ts" />
 import {desktopSizes} from "./resolutions";
 
+// runs the same tests on different resolutions
 desktopSizes.forEach((size) => {
   describe(`Test Elements, Features Page: ${size} Resolution`, () => {
     beforeEach(() => {
@@ -14,29 +15,26 @@ desktopSizes.forEach((size) => {
     it('Check Location', () => {
       cy.location('protocol').should('eq', 'https:')
     })
-    it(`Displays Title`, () => {
-      cy.title().should('eq', 'Aggie Map - Texas A&M University')
-    })
-    it(`Displays Title Logo`, () => {
-      cy.checkTitleLogo()
-    })
-    it(`Displays Sidebar`, () => {
-      cy.getSideBar('be.visible')
-    })
-    it(`Displays Toggles`, () => {
-      cy.getDirectionsToggle()
-      cy.getFeatureToggle()
-    })
+    
     it(`Sidebar Movement - Feature Toggle`, () => {
       cy.getFeatureToggle().click({force: true}).click({force: true})
       cy.getSideBar('not.be.visible')
       cy.getFeatureToggle().click({force: true})
       cy.getSideBar('be.visible')
     })
-    it(`Displays Headings`, () => {
-      cy.contains('tamu-gisc-layer-list > .sidebar-component-name', 'Layers')
-      cy.contains('tamu-gisc-legend > .sidebar-component-name', 'Legend')
+
+    // checks if icons appear on map after being clicked
+    it.only('Display Physical Distance Study Area Locations', () => {
+      // intercept server request when clicked
+      cy.intercept('GET','https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A102100%7D%2C%22xmin%22%3A-10725643.808976118%2C%22ymin%22%3A3580921.901105987%2C%22xmax%22%3A-10724420.816523556%2C%22ymax%22%3A3582144.8935585488%7D&maxRecordCountFactor=3&outFields=*&outSR=102100&quantizationParameters=%7B%22extent%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A102100%7D%2C%22xmin%22%3A-10725643.808976118%2C%22ymin%22%3A3580921.901105987%2C%22xmax%22%3A-10724420.816523556%2C%22ymax%22%3A3582144.8935585488%7D%2C%22mode%22%3A%22view%22%2C%22originPosition%22%3A%22upperLeft%22%2C%22tolerance%22%3A2.388657133911135%7D&resultType=tile&returnExceededLimitFeatures=false&spatialRel=esriSpatialRelIntersects&where=1%3D1&geometryType=esriGeometryEnvelope&inSR=102100').as('studyArea')
+      // confirms status code of request is 200
+      cy.wait('@studyArea')
+      // // cy.request('@studyArea').then((response) => {
+      // //   expect(response.status).to.equal(200)
+      // // })
     })
+
+    // test help options and check if the destination is correct
     it(`Displays Help Options`, () => {
       cy.getHelpButton().click()
       cy.get('.topics').should('be.visible')
