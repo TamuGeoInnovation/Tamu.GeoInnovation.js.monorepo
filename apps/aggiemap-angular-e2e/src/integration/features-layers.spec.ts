@@ -125,26 +125,51 @@ desktopSizes.forEach((size) => {
     it('Accessible Entrances', function() {
       cy.intercept('GET', '*')
         .as("accessible")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(6)')
-        .click({force: true})
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(3)')
+        .trigger('mouseover').click().should('be.visible')
       cy.wait("@accessible")
       cy.checkLayer('3', 'Accessible Entrances')
       cy.checkLegend('3', 'Accessible Entrances')
+      // click location of a known accessible entrance locations by pixels for multiple resolutions
+      if (size[0] == 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(980, 575) 
+      }
+      else if (size[0] == 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(700, 435)
+      }
+      else if (size[0] == 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(740, 500)
+      }
     })
     it('Emergency Phones', function() {
       cy.intercept('GET', '*')
         .as("emergency")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container >:nth-child(2)')
-        .click({force: true})
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(2)')
+        .trigger('mouseover').click().should('be.visible')
       cy.wait("@emergency")
       cy.checkLayer('2', 'Emergency Phone')
       cy.checkLegend('2', 'Emergency Phone')
-      
     })
     it('Physical Distance Study Area', function() {
       cy.wait('@tents')    
       cy.checkLayer('1', 'Physical Distance Study Area')
       cy.checkLegend('1', 'Physical Distance Study Area')
+      // click location of a known study area locations by pixels for multiple resolutions
+      if (size[0] == 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1160, 530)
+      }
+      else if (size[0] == 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(880, 390)
+      }
+      else if (size[0] == 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(920, 460)
+      }
     })
   })
 })
