@@ -20,6 +20,8 @@ desktopSizes.forEach((size) => {
       cy.wait('@construction')
       cy.checkLayer('8', 'Construction Zone')
       cy.checkLegend('8', 'Construction Zone')
+      // click location of a known study area for multiple resolutions
+      cy.get('canvas').click(size[0]*0.408, (size[1]*0.653), {force: true}) 
     })
     it('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
@@ -65,14 +67,15 @@ desktopSizes.forEach((size) => {
       cy.checkLayer('3', 'Accessible Entrances')
       cy.checkLegend('3', 'Accessible Entrances')
     })
-    it('Emergency Phones', function() {
+    it.only('Emergency Phones', function() {
       cy.intercept('GET', '*')
         .as("emergency")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(7)')
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container >:nth-child(2)')
         .click({force: true})
-      cy.wait("@emergency")    
+      cy.wait("@emergency")
       cy.checkLayer('2', 'Emergency Phone')
       cy.checkLegend('2', 'Emergency Phone')
+      
     })
     it('Physical Distance Study Area', function() {
       cy.wait('@tents')    
