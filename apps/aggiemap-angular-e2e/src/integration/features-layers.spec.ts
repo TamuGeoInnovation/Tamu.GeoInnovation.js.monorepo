@@ -20,41 +20,107 @@ desktopSizes.forEach((size) => {
       cy.wait('@construction')
       cy.checkLayer('8', 'Construction Zone')
       cy.checkLegend('8', 'Construction Zone')
+      // click location of a known construction zone for multiple resolutions
+      if (size[0] == 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(900, 650)
+      }
+      else if (size[0] == 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(625, 500)
+      }
+      else if (size[0] == 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(670, 555)
+      }
+      
     })
     it('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
         .as("POI")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(2)')
-        .click({force: true})
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(7)')
+        .trigger('mouseover').click().should('be.visible')
       cy.checkLayer('7','Points of Interest')
       cy.checkLegend('7', 'Points of Interest')
+      // click location of a known point of interest for multiple resolutions
+      if (size[0] == 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1125, 650)
+      }
+      else if (size[0] == 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(845, 505)
+      }
+      else if (size[0] == 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(880, 575)
+      }
     })
     it('Restrooms', function() {
       cy.intercept('GET', '*')
         .as("restrooms")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(3)')
-        .click({force: true})
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(6)')
+        .trigger('mouseover').click().should('be.visible')
       cy.wait("@restrooms")    
       cy.checkLayer('6','Restrooms')
       cy.checkLegend('6', 'Restrooms')
+      // click location of a known restroom locations by pixels for multiple resolutions
+      if (size[0] == 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1105, 580)
+      }
+      else if (size[0] == 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(830, 440)
+      }
+      else if (size[0] == 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(865, 505)
+      }
     })
     it('Lactation Rooms', function() {
       cy.intercept('GET', '*')
         .as("lactation")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(4)')
-        .click({force: true})
+        cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(5)')
+        .trigger('mouseover').click().should('be.visible')
       cy.wait("@lactation")      
       cy.checkLayer('5', 'Lactation Rooms')
       cy.checkLegend('5', 'Lactation Rooms')
+      // click location of a known lactation room locations by pixels for multiple resolutions
+      if (size[0] == 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1100, 595)
+      }
+      else if (size[0] == 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(820, 455)
+      }
+      else if (size[0] == 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(860, 520)
+      }
     })
     it('Visitor Parking', function() {
       cy.intercept('GET', '*')
         .as("visitor")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(5)')
-        .click({force: true})
+        cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(4)')
+        .trigger('mouseover').click().should('be.visible')
       cy.wait("@visitor")     
       cy.checkLayer('4', 'Visitor Parking')
       cy.checkLegend('4', 'Visitor Parking')
+      // click location of a known visitor parking locations by pixels for multiple resolutions
+      if (size[0] == 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1050, 600)
+      }
+      else if (size[0] == 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(770, 460)
+      }
+      else if (size[0] == 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(810, 520)
+      }
     })
     it('Accessible Entrances', function() {
       cy.intercept('GET', '*')
@@ -68,11 +134,12 @@ desktopSizes.forEach((size) => {
     it('Emergency Phones', function() {
       cy.intercept('GET', '*')
         .as("emergency")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(7)')
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container >:nth-child(2)')
         .click({force: true})
-      cy.wait("@emergency")    
+      cy.wait("@emergency")
       cy.checkLayer('2', 'Emergency Phone')
       cy.checkLegend('2', 'Emergency Phone')
+      
     })
     it('Physical Distance Study Area', function() {
       cy.wait('@tents')    
