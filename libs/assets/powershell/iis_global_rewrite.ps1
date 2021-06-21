@@ -6,7 +6,11 @@
     [parameter(Position=2, Mandatory=$true, HelpMessage="Rewrite type, 'url' or 'farm'")]
     [string]$RewriteType,
     [parameter(Position=3, Mandatory=$true, HelpMessage="URL or farm to redirect matching requests.")]
-    [string]$RedirectUrl
+    [string]$RedirectUrl,
+    [parameter(Position=4, Mandatory=$false, HelpMessage="Setting farm conditional IDP first.")]
+    [switch]$ConditionalFirst,
+    [parameter(Position=5, Mandatory=$false, HelpMessage="Setting farm conditional IDP Second.")]
+    [switch]$ConditionalSecond
 )
 
 if($RewriteType -eq 'farm') {
@@ -35,8 +39,9 @@ if(($ExistingRule).length -eq 0)  {
     Add-WebConfigurationProperty –pspath $path –Filter $baseRulesFilter –Name "." -Force –Value @{name=$RuleName;patternSyntax='Wildcard';stopProcessing='False';};
     Write-Host "$RuleName has been created for the site host. Applying match rule, conditions, and action..." –BackgroundColor DarkGreen –ForegroundColor Gray;
 } else {
-    Write-Host "$RuleName rule already exists. Removing rule conditions to avoid duplicates.";
+    Write-Host "$RuleName rule already exists. Removing rule conditions and server variables to avoid duplicates.";
     Remove-WebConfigurationProperty –pspath $path –Filter $filter -Name "conditions";
+    Remove-WebConfigurationProperty –pspath $path –Filter $filter -Name "serverVariables";
 }
 
 Set-WebConfigurationProperty -pspath $path -Filter "$filter/match" -Name "url" -Value $UrlPattern;
@@ -46,6 +51,18 @@ if($RewriteType -eq "url"){
     Set-WebConfigurationProperty –pspath $path –Filter "$filter/action" –Name "url" –Value $RedirectUrl;
 } elseif ($RewriteType -eq "farm"){
     Set-WebConfigurationProperty –pspath $path –Filter "$filter/action" –Name "url" –Value "http://$RedirectUrl/{R:1}";
+    if($ConditionalFirst -eq $true){
+        Set-WebConfigurationProperty –pspath $path –Filter "$filter/conditions" -Name "logicalGrouping" -Value "MatchAll";
+        Add-WebConfigurationProperty –pspath $path –Filter "$filter/conditions" –Name "." –Value @{input="{HTTP_HOST}";matchType="Pattern";pattern ='idp.geoservices.tamu.edu';negate="false";};
+    }
+    if($ConditionalSecond -eq $true){
+        Set-WebConfigurationProperty –pspath $path –Filter "$filter/conditions" -Name "logicalGrouping" -Value "MatchAll";
+        Add-WebConfigurationProperty –pspath $path –Filter "$filter/conditions" –Name "." –Value @{input="{REQUEST_URI}";matchType="Pattern";pattern ='*/api/*';negate="true";};
+        Add-WebConfigurationProperty –pspath $path –Filter "$filter/conditions" –Name "." –Value @{input="{REQUEST_URI}";matchType="Pattern";pattern ='*/admin/*';negate="true";};
+        Add-WebConfigurationProperty –pspath $path –Filter "$filter/serverVariables" –Name "." –Value @{name='HTTP_X_FORWARDED_HOST';value='{HTTP_HOST}';replace='true';};
+        Add-WebConfigurationProperty –pspath $path –Filter "$filter/serverVariables" –Name "." –Value @{name='HTTP_X_FORWARDED_SCHEMA';value='https';replace='true';};
+        Add-WebConfigurationProperty –pspath $path –Filter "$filter/serverVariables" –Name "." –Value @{name='HTTP_X_FORWARDED_PROTO';value='https';replace='true';};
+    }
 }
 
 Set-WebConfigurationProperty –pspath $path –Filter "$filter/action" –Name "appendQueryString" –Value "true";
