@@ -4,4 +4,4 @@ export const environment = {
   globalPrefix: ''
 };
 
-export { productionDbConfig as dbConfig } from './ormconfig';
+export { devDbConfig as dbConfig } from './ormconfig';
