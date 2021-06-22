@@ -16,7 +16,7 @@ desktopSizes.forEach((size) => {
       })
     })
 
-    it.only('Construction Zone', function() {
+    it('Construction Zone', function() {
       cy.wait('@construction')
       cy.checkLayer('8', 'Construction Zone')
       cy.checkLegend('8', 'Construction Zone')
@@ -35,13 +35,26 @@ desktopSizes.forEach((size) => {
       }
       
     })
-    it('Points of Interest', function() {
+    it.only('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
         .as("POI")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(2)')
-        .click({force: true})
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(7)')
+        .trigger('mouseover').click().should('be.visible')
       cy.checkLayer('7','Points of Interest')
       cy.checkLegend('7', 'Points of Interest')
+      // click location of a known point of interest for multiple resolutions
+      if (size[0] == 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1125, 650)
+      }
+      else if (size[0] == 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(845, 505)
+      }
+      else if (size[0] == 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(880, 575)
+      }
     })
     it('Restrooms', function() {
       cy.intercept('GET', '*')
