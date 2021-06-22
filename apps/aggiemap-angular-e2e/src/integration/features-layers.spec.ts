@@ -78,7 +78,7 @@ desktopSizes.forEach((size) => {
         cy.get('canvas').trigger('mouseover').click(865, 505)
       }
     })
-    it.only('Lactation Rooms', function() {
+    it('Lactation Rooms', function() {
       cy.intercept('GET', '*')
         .as("lactation")
         cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(5)')
@@ -103,11 +103,24 @@ desktopSizes.forEach((size) => {
     it('Visitor Parking', function() {
       cy.intercept('GET', '*')
         .as("visitor")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(5)')
-        .click({force: true})
+        cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(4)')
+        .trigger('mouseover').click().should('be.visible')
       cy.wait("@visitor")     
       cy.checkLayer('4', 'Visitor Parking')
       cy.checkLegend('4', 'Visitor Parking')
+      // click location of a known visitor parking locations by pixels for multiple resolutions
+      if (size[0] == 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1050, 600)
+      }
+      else if (size[0] == 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(770, 460)
+      }
+      else if (size[0] == 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(810, 520)
+      }
     })
     it('Accessible Entrances', function() {
       cy.intercept('GET', '*')
