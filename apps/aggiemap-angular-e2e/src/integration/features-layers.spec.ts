@@ -16,12 +16,24 @@ desktopSizes.forEach((size) => {
       })
     })
 
-    it('Construction Zone', function() {
+    it.only('Construction Zone', function() {
       cy.wait('@construction')
       cy.checkLayer('8', 'Construction Zone')
       cy.checkLegend('8', 'Construction Zone')
-      // click location of a known study area for multiple resolutions
-      cy.get('canvas').click(size[0]*0.408, (size[1]*0.653), {force: true}) 
+      // click location of a known construction zone for multiple resolutions
+      if (size[0] == 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(900, 650)
+      }
+      else if (size[0] == 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(625, 500)
+      }
+      else if (size[0] == 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(670, 555)
+      }
+      
     })
     it('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
@@ -67,7 +79,7 @@ desktopSizes.forEach((size) => {
       cy.checkLayer('3', 'Accessible Entrances')
       cy.checkLegend('3', 'Accessible Entrances')
     })
-    it.only('Emergency Phones', function() {
+    it('Emergency Phones', function() {
       cy.intercept('GET', '*')
         .as("emergency")
       cy.get('tamu-gisc-layer-list > .sidebar-component-content-container >:nth-child(2)')
