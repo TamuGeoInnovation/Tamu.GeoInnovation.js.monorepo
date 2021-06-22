@@ -35,7 +35,7 @@ desktopSizes.forEach((size) => {
       }
       
     })
-    it.only('Points of Interest', function() {
+    it('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
         .as("POI")
       cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(7)')
@@ -56,14 +56,27 @@ desktopSizes.forEach((size) => {
         cy.get('canvas').trigger('mouseover').click(880, 575)
       }
     })
-    it('Restrooms', function() {
+    it.only('Restrooms', function() {
       cy.intercept('GET', '*')
         .as("restrooms")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(3)')
-        .click({force: true})
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(6)')
+        .trigger('mouseover').click().should('be.visible')
       cy.wait("@restrooms")    
       cy.checkLayer('6','Restrooms')
       cy.checkLegend('6', 'Restrooms')
+      // click location of a known restroom locations by pixels for multiple resolutions
+      if (size[0] == 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1105, 580)
+      }
+      else if (size[0] == 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(830, 440)
+      }
+      else if (size[0] == 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(865, 505)
+      }
     })
     it('Lactation Rooms', function() {
       cy.intercept('GET', '*')
