@@ -36,7 +36,7 @@ desktopSizes.forEach((size) => {
       // confirm pop-up appears by intercepting server request
       cy.confirmPopUp()
     })
-    it('Points of Interest', function() {
+    it.only('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
         .as("POI")
       cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(7)')
@@ -58,6 +58,10 @@ desktopSizes.forEach((size) => {
       }
       // confirm pop-up appears by intercepting server request
       cy.confirmPopUp()
+      // click "Directions To Here"
+      cy.get('tamu-gisc-poi-popup-component > .popup-section > .button').click()
+      // confirm navigation window pop-up by verifying URL
+      cy.confirmNavPanel()
     })
     it('Restrooms', function() {
       cy.intercept('GET', '*')
@@ -84,7 +88,7 @@ desktopSizes.forEach((size) => {
       cy.confirmPopUp()
     })
     
-    it('Lactation Rooms', function() {
+    it.only('Lactation Rooms', function() {
       cy.intercept('GET', '*')
         .as("lactation")
         cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(5)')
@@ -107,6 +111,8 @@ desktopSizes.forEach((size) => {
       }
       // confirm pop-up appears by intercepting server request
       cy.confirmPopUp()
+      // check "Additional Information" link
+      // cy.checkLink('Additional Information', 'https://studentlife.tamu.edu//wrc/resources/breastfeeding/')
     })
     it('Visitor Parking', function() {
       cy.intercept('GET', '*')
