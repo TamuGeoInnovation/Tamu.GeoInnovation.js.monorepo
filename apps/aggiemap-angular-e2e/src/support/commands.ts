@@ -110,5 +110,8 @@ Cypress.Commands.add('confirmPopUp', () => {
   cy.intercept('GET','https://gis.tamu.edu/arcgis/rest/services/Routing?f=pjson').as('popUp')
       cy.wait('@popUp')
 })
-
+// confirm navigation panel appears by verifying URL
+Cypress.Commands.add('confirmNavPanel', () => {
+  cy.url().should('include','/trip')
+})
 export{}
