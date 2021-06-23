@@ -34,8 +34,7 @@ desktopSizes.forEach((size) => {
         cy.get('canvas').trigger('mouseover').click(670, 555)
       }
       // confirm pop-up appears by intercepting server request
-      cy.intercept('GET','https://gis.tamu.edu/arcgis/rest/services/Routing?f=pjson').as('popUp')
-      cy.wait('@popUp')
+      cy.confirmPopUp()
     })
     it('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
@@ -58,8 +57,7 @@ desktopSizes.forEach((size) => {
         cy.get('canvas').trigger('mouseover').click(880, 575)
       }
       // confirm pop-up appears by intercepting server request
-      cy.intercept('GET','https://gis.tamu.edu/arcgis/rest/services/Routing?f=pjson').as('popUp')
-      cy.wait('@popUp')
+      cy.confirmPopUp()
     })
     it('Restrooms', function() {
       cy.intercept('GET', '*')
@@ -83,8 +81,7 @@ desktopSizes.forEach((size) => {
         cy.get('canvas').trigger('mouseover').click(865, 505)
       }
       // confirm pop-up appears by intercepting server request
-      cy.intercept('GET','https://gis.tamu.edu/arcgis/rest/services/Routing?f=pjson').as('popUp')
-      cy.wait('@popUp')
+      cy.confirmPopUp()
     })
     
     it('Lactation Rooms', function() {
@@ -109,8 +106,7 @@ desktopSizes.forEach((size) => {
         cy.get('canvas').trigger('mouseover').click(860, 520)
       }
       // confirm pop-up appears by intercepting server request
-      cy.intercept('GET','https://gis.tamu.edu/arcgis/rest/services/Routing?f=pjson').as('popUp')
-      cy.wait('@popUp')
+      cy.confirmPopUp()
     })
     it('Visitor Parking', function() {
       cy.intercept('GET', '*')
@@ -134,8 +130,7 @@ desktopSizes.forEach((size) => {
         cy.get('canvas').trigger('mouseover').click(810, 520)
       }
       // confirm pop-up appears by intercepting server request
-      cy.intercept('GET','https://gis.tamu.edu/arcgis/rest/services/Routing?f=pjson').as('popUp')
-      cy.wait('@popUp')
+      cy.confirmPopUp()
     })
     it('Accessible Entrances', function() {
       cy.intercept('GET', '*')
@@ -159,8 +154,7 @@ desktopSizes.forEach((size) => {
         cy.get('canvas').trigger('mouseover').click(740, 500)
       }
       // confirm pop-up appears by intercepting server request
-      cy.intercept('GET','https://gis.tamu.edu/arcgis/rest/services/Routing?f=pjson').as('popUp')
-      cy.wait('@popUp')
+      cy.confirmPopUp()
     })
     it('Emergency Phones', function() {
       cy.intercept('GET', '*')
@@ -189,8 +183,7 @@ desktopSizes.forEach((size) => {
         cy.get('canvas').trigger('mouseover').click(920, 460)
       }
       // confirm pop-up appears by intercepting server request
-      cy.intercept('GET','https://gis.tamu.edu/arcgis/rest/services/Routing?f=pjson').as('popUp')
-      cy.wait('@popUp')
+      cy.confirmPopUp()
     })
   })
 })
