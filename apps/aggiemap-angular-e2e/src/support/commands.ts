@@ -8,6 +8,8 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
+import * as cypress from "cypress";
+
 declare namespace Cypress {
   interface Chainable<Subject> {
     login(email: string, password: string): void;
@@ -102,6 +104,11 @@ Cypress.Commands.add('containsAnyText', (element) => {
 Cypress.Commands.add('checkMenuItem', (num, name) => {
   cy.get(`.list-container > :nth-child(${num})`)
     .should('contain', `${name}`)
+})
+// confirm pop-up appears by intercepting server request
+Cypress.Commands.add('confirmPopUp', () => {
+  cy.intercept('GET','https://gis.tamu.edu/arcgis/rest/services/Routing?f=pjson').as('popUp')
+      cy.wait('@popUp')
 })
 
 export{}
