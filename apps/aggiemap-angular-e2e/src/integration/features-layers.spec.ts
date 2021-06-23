@@ -112,7 +112,8 @@ desktopSizes.forEach((size) => {
       // confirm pop-up appears by intercepting server request
       cy.confirmPopUp()
       // check "Additional Information" link
-      // cy.checkLink('Additional Information', 'https://studentlife.tamu.edu//wrc/resources/breastfeeding/')
+      cy.get('tamu-gisc-lactation-popup-component > .popup-section').should('be.visible')
+      cy.checkLink('Additional Information', 'https://studentlife.tamu.edu/wrc.bfwh.lactationspace')
     })
     it('Visitor Parking', function() {
       cy.intercept('GET', '*')
