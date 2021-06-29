@@ -14,7 +14,9 @@ import {
   ResponseType,
   ResponseTypeRepo,
   TokenEndpointAuthMethod,
-  TokenEndpointAuthMethodRepo
+  TokenEndpointAuthMethodRepo,
+  BackchannelLogoutUri,
+  BackchannelLogoutUriRepo
 } from '../../entities/all.entity';
 
 @Injectable()
@@ -24,7 +26,8 @@ export class ClientMetadataService {
     private readonly grantTypeRepo: GrantTypeRepo,
     private readonly redirectUriRepo: RedirectUriRepo,
     private readonly responseTypeRepo: ResponseTypeRepo,
-    private readonly tokenEndpointRepo: TokenEndpointAuthMethodRepo
+    private readonly tokenEndpointRepo: TokenEndpointAuthMethodRepo,
+    private readonly backchannelUriRepo: BackchannelLogoutUriRepo
   ) {}
 
   // ClientMetadata functions
@@ -48,19 +51,26 @@ export class ClientMetadataService {
     return this.clientMetadataRepo.findAllDeep();
   }
 
-  public async insertClientMetadataForAdminSite(clientName: string, clientSecret: string, redirectUri: string) {
+  public async insertClientMetadataForAdminSite(
+    clientName: string,
+    clientSecret: string,
+    redirectUri: string,
+    backchannelLogoutUri: string
+  ) {
     const adminMetadata = {
       clientName: clientName,
       clientSecret: clientSecret,
       grants: ['refresh_token', 'authorization_code'],
       redirectUris: [redirectUri],
       responseTypes: ['code'],
-      token_endpoint_auth_method: 'client_secret_basic'
+      token_endpoint_auth_method: 'client_secret_basic',
+      backchannelLogoutUris: [backchannelLogoutUri]
     };
     const grants = await this.findGrantTypeEntities(adminMetadata.grants);
     const redirectUris = await this.createRedirectUriEntities(adminMetadata.redirectUris);
     const responseTypes = await this.findResponseTypeEntities(adminMetadata.responseTypes);
     const token_endpoint_auth_method = await this.findTokenEndpointAuthMethod(adminMetadata.token_endpoint_auth_method);
+    const backchannelUris = await this.createBackchannelLogoutUri(adminMetadata.backchannelLogoutUris);
 
     const _clientMetadata: Partial<ClientMetadata> = {
       clientName: adminMetadata.clientName,
@@ -68,7 +78,8 @@ export class ClientMetadataService {
       grantTypes: grants,
       redirectUris: redirectUris,
       responseTypes: responseTypes,
-      tokenEndpointAuthMethod: token_endpoint_auth_method
+      tokenEndpointAuthMethod: token_endpoint_auth_method,
+      backchannelLogoutUris: backchannelUris
     };
 
     return this.insertClientMetadata(_clientMetadata);
@@ -81,12 +92,16 @@ export class ClientMetadataService {
       redirectUri.save();
     });
 
+    clientMetadata.backchannelLogoutUris.map((backchannelUri) => {
+      backchannelUri.save();
+    });
+
     return this.clientMetadataRepo.save(clientMetadata);
   }
 
   public async loadClientMetadaForOidcSetup() {
     const clients = await this.clientMetadataRepo.find({
-      relations: ['grantTypes', 'redirectUris', 'responseTypes', 'tokenEndpointAuthMethod']
+      relations: ['grantTypes', 'redirectUris', 'responseTypes', 'tokenEndpointAuthMethod', 'backchannelLogoutUris']
     });
     const flattenedClients: IClientMetadata[] = this.flattenClientMetadataForReturn(clients);
 
@@ -104,7 +119,8 @@ export class ClientMetadataService {
           grant_types: [],
           redirect_uris: [],
           response_types: [],
-          token_endpoint_auth_method: null
+          token_endpoint_auth_method: null,
+          post_logout_redirect_uris: []
         };
 
         flattened.client_id = curr.clientName;
@@ -116,6 +132,10 @@ export class ClientMetadataService {
 
         flattened.redirect_uris = curr.redirectUris.map((redirectUri) => {
           return redirectUri.url;
+        });
+
+        flattened.post_logout_redirect_uris = curr.backchannelLogoutUris.map((logoutUri) => {
+          return logoutUri.url;
         });
 
         flattened.response_types = curr.responseTypes.map((responseType) => {
@@ -234,6 +254,21 @@ export class ClientMetadataService {
     });
 
     return redirectUris;
+  }
+
+  // BackchannelLogoutUri functions
+  public async createBackchannelLogoutUri(_backchannelLogoutUris: string[]) {
+    const backchannelLogoutUris: BackchannelLogoutUri[] = [];
+
+    _backchannelLogoutUris.map((value, i) => {
+      const backchannelLogoutUri: Partial<BackchannelLogoutUri> = {
+        url: value
+      };
+      const logoutUri = this.backchannelUriRepo.create(backchannelLogoutUri);
+      backchannelLogoutUris.push(logoutUri);
+    });
+
+    return backchannelLogoutUris;
   }
 
   // ResponseType functions

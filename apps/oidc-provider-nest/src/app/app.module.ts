@@ -31,7 +31,8 @@ import {
   ClientMetadataModule,
   UserModule,
   RoleModule,
-  SecretQuestionController
+  SecretQuestionController,
+  BackchannelLogoutUri
 } from '@tamu-gisc/oidc/common';
 import { AccessTokenModule, InteractionModule, UserLoginModule } from '@tamu-gisc/oidc/provider-nestjs';
 
@@ -48,6 +49,7 @@ import { dbConfig } from '../environments/environment';
         Account,
         AccessToken,
         AuthorizationCode,
+        BackchannelLogoutUri,
         Client,
         ClientCredential,
         ClientMetadata,
