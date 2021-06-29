@@ -22,8 +22,14 @@ export class OidcClientController {
   @Get('/logout')
   public async logout(@Request() req, @Response() res) {
     const endSessionUrl = await OpenIdClient.client.endSessionUrl();
+
     req.logout();
-    res.redirect(endSessionUrl);
+    res.redirect(`${endSessionUrl}&id_token_hint=${req.user.id_token}`);
+  }
+
+  @Get('/auth/logout')
+  public async backchannelLogout(@Request() req, @Response() res) {
+    console.log('Backchannel logout called');
   }
 
   @UseGuards(LoginGuard)
