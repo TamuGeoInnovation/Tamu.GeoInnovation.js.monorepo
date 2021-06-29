@@ -5,8 +5,7 @@ export const OIDC_CLIENT_METADATA_BASIC: ClientMetadata = {
   client_secret: 'pppssssssttttheykidwantsomekandy',
   redirect_uris: ['http://localhost:3001/oidc/auth/callback'],
   response_types: ['code'],
-  token_endpoint_auth_method: 'client_secret_basic',
-  post_logout_redirect_uris: ['http://localhost:3001/oidc/auth/logout']
+  token_endpoint_auth_method: 'client_secret_basic'
 };
 
 export const OIDC_CLIENT_METADATA_JWT: ClientMetadata = {
