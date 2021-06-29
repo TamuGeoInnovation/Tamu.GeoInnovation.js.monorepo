@@ -40,7 +40,7 @@ async function bootstrap() {
       alias: 'setup',
       description: 'Create default admin user and oidc-angular client metadata',
       type: 'boolean',
-      implies: ['n', 't', 'r', 'e', 'p']
+      implies: ['n', 't', 'r', 'b', 'e', 'p']
     })
     .option('x', {
       alias: 'dropSchema',
@@ -62,6 +62,12 @@ async function bootstrap() {
     .option('r', {
       alias: 'redirectUri',
       description: 'With -s, determines what to set the default client redirect_uri as',
+      type: 'string',
+      nargs: 1
+    })
+    .option('b', {
+      alias: 'backchannelLogoutUri',
+      description: 'With -s, determines what to set the default client post_logout_redirect_uris as',
       type: 'string',
       nargs: 1
     })
@@ -154,7 +160,7 @@ async function bootstrap() {
           // Insert default Token Auth Methods
           await clientMetadataService.insertDefaultTokenEndpointAuthMethods();
           // Create ClientMetadata for oidc-idp-admin (angular site)
-          await clientMetadataService.insertClientMetadataForAdminSite(argv.n, argv.t, argv.r);
+          await clientMetadataService.insertClientMetadataForAdminSite(argv.n, argv.t, argv.r, argv.b);
           // Insert default Roles
           await roleService.insertDefaultUserRoles();
           // Create Admin user with known password
