@@ -21,7 +21,7 @@ declare namespace Cypress {
      checkLink(elementText: string, link: string): Chainable<Element>
      containsAnyText(element: string): Chainable<Element>
      checkMenuItem(num: string, name:string): Chainable<Element>
-     confirmPopUp(): Chainable<Element>
-     confirmNavPanel(): Chainable<Element>
+     checkPopUp(): Chainable<Element>
+     checkNavPanel(): Chainable<Element>
     }
   }
