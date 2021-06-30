@@ -33,8 +33,8 @@ desktopSizes.forEach((size) => {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(670, 555)
       }
-      // confirm pop-up appears by intercepting server request
-      cy.confirmPopUp()
+      // checks if popup is visible
+      cy.checkPopUp()
     })
     it.only('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
@@ -56,12 +56,15 @@ desktopSizes.forEach((size) => {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(880, 575)
       }
-      // confirm pop-up appears by intercepting server request
-      cy.confirmPopUp()
-      // click "Directions To Here"
+      // checks if popup is visible
+      cy.checkPopUp()
+      // click "Directions To Here for poi"
       cy.get('tamu-gisc-poi-popup-component > .popup-section > .button').click()
       // confirm navigation window pop-up by verifying URL
-      cy.confirmNavPanel()
+      cy.checkNavPanel()
+      // click random location on map to begin route
+      cy.get('canvas').click((size[0]/4), (size[1]/2))
+      
     })
     it('Restrooms', function() {
       cy.intercept('GET', '*')
@@ -84,11 +87,11 @@ desktopSizes.forEach((size) => {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(865, 505)
       }
-      // confirm pop-up appears by intercepting server request
-      cy.confirmPopUp()
+      // checks if popup is visible
+      cy.checkPopUp()
     })
     
-    it.only('Lactation Rooms', function() {
+    it('Lactation Rooms', function() {
       cy.intercept('GET', '*')
         .as("lactation")
         cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(5)')
@@ -109,8 +112,8 @@ desktopSizes.forEach((size) => {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(860, 520)
       }
-      // confirm pop-up appears by intercepting server request
-      cy.confirmPopUp()
+      // checks if popup is visible
+      cy.checkPopUp()
       // check "Additional Information" link
       cy.get('tamu-gisc-lactation-popup-component > .popup-section').should('be.visible')
       cy.checkLink('Additional Information', 'https://studentlife.tamu.edu/wrc.bfwh.lactationspace')
@@ -136,8 +139,8 @@ desktopSizes.forEach((size) => {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(810, 520)
       }
-      // confirm pop-up appears by intercepting server request
-      cy.confirmPopUp()
+      // checks if popup is visible
+      cy.checkPopUp()
     })
     it('Accessible Entrances', function() {
       cy.intercept('GET', '*')
@@ -160,8 +163,8 @@ desktopSizes.forEach((size) => {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(740, 500)
       }
-      // confirm pop-up appears by intercepting server request
-      cy.confirmPopUp()
+      // checks if popup is visible
+      cy.checkPopUp()
     })
     it('Emergency Phones', function() {
       cy.intercept('GET', '*')
@@ -189,8 +192,12 @@ desktopSizes.forEach((size) => {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(920, 460)
       }
-      // confirm pop-up appears by intercepting server request
-      cy.confirmPopUp()
+      // checks if popup is visible
+      cy.checkPopUp()
+      // click "Directions To Here for study areas"
+      cy.get('tamu-gisc-tent-zone > .popup-section > .button').click()
+      // confirm navigation window pop-up by verifying URL
+      cy.checkNavPanel()
     })
   })
 })
