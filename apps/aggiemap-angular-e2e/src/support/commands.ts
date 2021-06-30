@@ -106,12 +106,11 @@ Cypress.Commands.add('checkMenuItem', (num, name) => {
     .should('contain', `${name}`)
 })
 // confirm pop-up appears by intercepting server request
-Cypress.Commands.add('confirmPopUp', () => {
-  cy.intercept('GET','https://gis.tamu.edu/arcgis/rest/services/Routing?f=pjson').as('popUp')
-      cy.wait('@popUp')
+Cypress.Commands.add('checkPopUp', () => {
+  cy.get('tamu-gisc-feature-popup > .popup').should('be.visible')
 })
 // confirm navigation panel appears by verifying URL
-Cypress.Commands.add('confirmNavPanel', () => {
+Cypress.Commands.add('checkNavPanel', () => {
   cy.url().should('include','/trip')
 })
 export{}
