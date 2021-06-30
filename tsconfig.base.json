@@ -108,7 +108,8 @@
       "@tamu-gisc/ues/recycling/ngx": ["libs/ues/recycling/ngx/src/index.ts"],
       "@tamu-gisc/ues/cold-water/ngx": ["libs/ues/cold-water/ngx/src/index.ts"],
       "@tamu-gisc/cpa/data-access": ["libs/cpa/data-access/src/index.ts"],
-      "@tamu-gisc/cpa/admin": ["libs/cpa/admin/src/index.ts"]
+      "@tamu-gisc/cpa/admin": ["libs/cpa/admin/src/index.ts"],
+      "@tamu-gisc/ues/common/types": ["libs/ues/common/types/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

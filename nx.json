@@ -459,6 +459,9 @@
     },
     "cpa-sass": {
       "tags": ["type:styles", "scope:cpa"]
+    },
+    "ues-common-types": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {
