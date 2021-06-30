@@ -1,3 +1,5 @@
+import { ClientMetadata } from 'openid-client';
+
 export interface AuthOptions {
   /**
    * Authentication API url
@@ -14,3 +16,13 @@ export interface AuthOptions {
  * Authentication API url. For additional authentication options, use `AuthOptions` instead
  */
 export type AuthUrl = string;
+
+export interface ClientRoles {
+  [roleId: string]: string;
+}
+export interface ClientConfiguration {
+  metadata: ClientMetadata;
+  parameters: object;
+  issuer_url: string;
+  roles?: ClientRoles;
+}
