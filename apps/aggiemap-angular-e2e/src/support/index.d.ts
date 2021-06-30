@@ -23,5 +23,6 @@ declare namespace Cypress {
      checkMenuItem(num: string, name:string): Chainable<Element>
      checkPopUp(): Chainable<Element>
      checkNavPanel(): Chainable<Element>
+     checkMapIcon(): Chainable<Element>
     }
   }

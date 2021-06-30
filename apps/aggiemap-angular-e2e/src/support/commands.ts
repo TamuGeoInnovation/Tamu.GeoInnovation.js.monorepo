@@ -113,4 +113,8 @@ Cypress.Commands.add('checkPopUp', () => {
 Cypress.Commands.add('checkNavPanel', () => {
   cy.url().should('include','/trip')
 })
+// checks if icons are visible on the map
+Cypress.Commands.add('checkMapIcon', () => {
+  cy.get('tamu-gisc-layer-list-item > .layer-item').should('be.visible')
+})
 export{}
