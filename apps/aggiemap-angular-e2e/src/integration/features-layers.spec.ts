@@ -21,15 +21,15 @@ desktopSizes.forEach((size) => {
       cy.checkLayer('8', 'Construction Zone')
       cy.checkLegend('8', 'Construction Zone')
       // click location of a known construction zone for multiple resolutions
-      if (size[0] == 1920) {
+      if (size[0] === 1920) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(900, 650)
       }
-      else if (size[0] == 1366) {
+      else if (size[0] === 1366) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(625, 500)
       }
-      else if (size[0] == 1440) {
+      else if (size[0] === 1440) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(670, 555)
       }
@@ -44,15 +44,15 @@ desktopSizes.forEach((size) => {
       cy.checkLayer('7','Points of Interest')
       cy.checkLegend('7', 'Points of Interest')
       // click location of a known point of interest for multiple resolutions
-      if (size[0] == 1920) {
+      if (size[0] === 1920) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(1125, 650)
       }
-      else if (size[0] == 1366) {
+      else if (size[0] === 1366) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(845, 505)
       }
-      else if (size[0] == 1440) {
+      else if (size[0] === 1440) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(880, 575)
       }
@@ -63,8 +63,9 @@ desktopSizes.forEach((size) => {
       // confirm navigation window pop-up by verifying URL
       cy.checkNavPanel()
       // click random location on map to begin route
-      cy.get('canvas').click((size[0]/4), (size[1]/2))
-      
+      cy.get('canvas').click((size[0]/2), (size[1]/2))
+      // checks if directions are displayed
+      cy.get('tamu-gisc-trip-planner-mode-switch').should('be.visible')
     })
     it('Restrooms', function() {
       cy.intercept('GET', '*')
@@ -75,15 +76,15 @@ desktopSizes.forEach((size) => {
       cy.checkLayer('6','Restrooms')
       cy.checkLegend('6', 'Restrooms')
       // click location of a known restroom locations by pixels for multiple resolutions
-      if (size[0] == 1920) {
+      if (size[0] === 1920) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(1105, 580)
       }
-      else if (size[0] == 1366) {
+      else if (size[0] === 1366) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(830, 440)
       }
-      else if (size[0] == 1440) {
+      else if (size[0] === 1440) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(865, 505)
       }
@@ -100,15 +101,15 @@ desktopSizes.forEach((size) => {
       cy.checkLayer('5', 'Lactation Rooms')
       cy.checkLegend('5', 'Lactation Rooms')
       // click location of a known lactation room locations by pixels for multiple resolutions
-      if (size[0] == 1920) {
+      if (size[0] === 1920) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(1100, 595)
       }
-      else if (size[0] == 1366) {
+      else if (size[0] === 1366) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(820, 455)
       }
-      else if (size[0] == 1440) {
+      else if (size[0] === 1440) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(860, 520)
       }
@@ -127,15 +128,15 @@ desktopSizes.forEach((size) => {
       cy.checkLayer('4', 'Visitor Parking')
       cy.checkLegend('4', 'Visitor Parking')
       // click location of a known visitor parking locations by pixels for multiple resolutions
-      if (size[0] == 1920) {
+      if (size[0] === 1920) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(1050, 600)
       }
-      else if (size[0] == 1366) {
+      else if (size[0] === 1366) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(770, 460)
       }
-      else if (size[0] == 1440) {
+      else if (size[0] === 1440) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(810, 520)
       }
@@ -151,15 +152,15 @@ desktopSizes.forEach((size) => {
       cy.checkLayer('3', 'Accessible Entrances')
       cy.checkLegend('3', 'Accessible Entrances')
       // click location of a known accessible entrance locations by pixels for multiple resolutions
-      if (size[0] == 1920) {
+      if (size[0] === 1920) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(980, 575) 
       }
-      else if (size[0] == 1366) {
+      else if (size[0] === 1366) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(700, 435)
       }
-      else if (size[0] == 1440) {
+      else if (size[0] === 1440) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(740, 500)
       }
@@ -175,20 +176,20 @@ desktopSizes.forEach((size) => {
       cy.checkLayer('2', 'Emergency Phone')
       cy.checkLegend('2', 'Emergency Phone')
     })
-    it('Physical Distance Study Area', function() {
+    it.only('Physical Distance Study Area', function() {
       cy.wait('@tents')    
       cy.checkLayer('1', 'Physical Distance Study Area')
       cy.checkLegend('1', 'Physical Distance Study Area')
       // click location of a known study area locations by pixels for multiple resolutions
-      if (size[0] == 1920) {
+      if (size[0] === 1920) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(1160, 530)
       }
-      else if (size[0] == 1366) {
+      else if (size[0] === 1366) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(880, 390)
       }
-      else if (size[0] == 1440) {
+      else if (size[0] === 1440) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(920, 460)
       }
@@ -198,6 +199,10 @@ desktopSizes.forEach((size) => {
       cy.get('tamu-gisc-tent-zone > .popup-section > .button').click()
       // confirm navigation window pop-up by verifying URL
       cy.checkNavPanel()
+      // click random location on map to begin route
+      cy.get('canvas').click((size[0]/2), (size[1]/2))
+      // checks if directions are displayed
+      cy.get('tamu-gisc-trip-planner-mode-switch').should('be.visible')
     })
   })
 })
