@@ -72,13 +72,23 @@ export class OidcClientController {
 
       // Overwrite the groups with the processed list of roles.
       req.user.claims.groups = roles;
-
-      return req.user;
     } else {
       // Remove roles claim, if any, to avoid leaking them (?)
       delete req.user.claims.roles;
     }
 
-    return req.user;
+    const user = JSON.parse(JSON.stringify(req.user));
+
+    delete user.access_token;
+    delete user.id_token;
+    delete user.token_type;
+    delete user.expires_at;
+    delete user.ext_expires_in;
+    delete user.scope;
+    delete user.session_state;
+    delete user.sub;
+    delete user.claims.sub;
+
+    return user;
   }
 }
