@@ -1,5 +1,5 @@
 {
-  "name": "two-data-api-nest-deploy",
+  "name": "ues-operations-nest-deploy",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
@@ -11,6 +11,7 @@
     "@nestjs/typeorm": "^6.2.0",
     "class-validator": "^0.11.0",
     "express-session": "^1.17.0",
+    "jwt-decode": "^3.1.2",
     "mssql": "^6.0.1",
     "openid-client": "^3.15.3",
     "papaparse": "^5.3.0",
