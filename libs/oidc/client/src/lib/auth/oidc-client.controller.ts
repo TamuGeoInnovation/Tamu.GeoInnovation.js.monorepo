@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Request, Response, UseGuards } from '@nestjs/common';
+import { Controller, Get, Inject, Optional, Request, Response, UseGuards } from '@nestjs/common';
 
 import { AdminRoleGuard, AzureIdpGuard, ManagerRoleGuard, UserRoleGuard } from '../guards/roles.guard';
 import { LoginGuard } from '../guards/login.guard';
@@ -7,7 +7,11 @@ import { ClientRoles } from '../types/auth-types';
 
 @Controller('oidc')
 export class OidcClientController {
-  constructor(@Inject('ROLES') public roles: ClientRoles) {}
+  constructor(@Optional() @Inject('ROLES') public roles: ClientRoles) {
+    if (this.roles === undefined) {
+      console.warn('Roles have not been setup for this application.');
+    }
+  }
 
   @UseGuards(LoginGuard)
   @Get('/login')
