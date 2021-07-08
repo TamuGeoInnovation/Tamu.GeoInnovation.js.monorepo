@@ -36,7 +36,7 @@ desktopSizes.forEach((size) => {
       // checks if popup is visible
       cy.checkPopUp()
     })
-    it.only('Points of Interest', function() {
+    it('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
         .as("POI")
       cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(7)')
@@ -65,7 +65,21 @@ desktopSizes.forEach((size) => {
       // click random location on map to begin route
       cy.get('canvas').click((size[0]/2), (size[1]/2))
       // checks if directions are displayed
-      cy.get('tamu-gisc-trip-planner-mode-switch').should('be.visible')
+      cy.get('.directions-container').should('be.visible')
+      // check if route duration is displayed
+      cy.get('.quantity').should('be.visible')
+      // check if route length is displayed
+      cy.get('.unit').should('be.visible')
+      // test car route option
+      cy.get('.travel-modes > :nth-child(3) > div')
+          .click()
+          .should('have.class', 'active')
+      cy.get('.directions-container').should('be.visible')
+      // test bus route option
+      cy.get('.travel-modes > :nth-child(4) > div')
+          .click()
+          .should('have.class', 'active')
+      cy.get('.directions-container').should('be.visible')
     })
     it('Restrooms', function() {
       cy.intercept('GET', '*')
@@ -176,7 +190,7 @@ desktopSizes.forEach((size) => {
       cy.checkLayer('2', 'Emergency Phone')
       cy.checkLegend('2', 'Emergency Phone')
     })
-    it.only('Physical Distance Study Area', function() {
+    it('Physical Distance Study Area', function() {
       cy.wait('@tents')    
       cy.checkLayer('1', 'Physical Distance Study Area')
       cy.checkLegend('1', 'Physical Distance Study Area')
@@ -202,7 +216,21 @@ desktopSizes.forEach((size) => {
       // click random location on map to begin route
       cy.get('canvas').click((size[0]/2), (size[1]/2))
       // checks if directions are displayed
-      cy.get('tamu-gisc-trip-planner-mode-switch').should('be.visible')
+      cy.get('.directions-container').should('be.visible')
+      // check if route duration is displayed
+      cy.get('.quantity').should('be.visible')
+      // check if route length is displayed
+      cy.get('.unit').should('be.visible')
+      // test car route option
+      cy.get('.travel-modes > :nth-child(3) > div')
+          .click()
+          .should('have.class', 'active')
+      cy.get('.directions-container').should('be.visible')
+      // test bus route option
+      cy.get('.travel-modes > :nth-child(4) > div')
+          .click()
+          .should('have.class', 'active')
+      cy.get('.directions-container').should('be.visible')
     })
   })
 })
