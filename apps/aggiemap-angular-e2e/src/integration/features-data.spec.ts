@@ -74,6 +74,22 @@ desktopSizes.forEach((size) => {
       cy.checkMapIcon()
     })
 
+    it('Check Latitude and Longitude', () => {
+      cy.get('canvas').click((size[0]/2), (size[1]/2))
+      // check if coordinates are visible on the map
+      cy.get('tamu-gisc-click-coordinates > .point-coords')
+        .should('be.visible')
+        .and('contain', 'Latitude: 30.61306')
+        .and('contain', 'Longitude: -96.34467') //check if coordinates are correct
+      // checks if coordinates change after clicking new location
+      cy.get('canvas').click((size[0]/4), (size[1]/4))
+      // cy.get('tamu-gisc-click-coordinates > .point-coords')
+         .should('not.contain', 'Latitude: 30.61306')
+         .and('not.contain', 'Longitude: -96.34467')
+      // check if coordinates are copied after clicking
+    })
+
+
     // test help options and check if the destination is correct
     it(`Displays Help Options`, () => {
       cy.getHelpButton().click()
