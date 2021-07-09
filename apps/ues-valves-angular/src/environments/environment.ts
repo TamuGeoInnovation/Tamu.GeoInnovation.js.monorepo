@@ -18,6 +18,9 @@ import 'zone.js/dist/zone-error'; // Included with Angular CLI.
 
 export * from './definitions';
 
+// This contains the intervention api url
+export * from './secrets';
+
 // App API URL
 export const apiUrl = 'http://localhost:3333/api';
 
