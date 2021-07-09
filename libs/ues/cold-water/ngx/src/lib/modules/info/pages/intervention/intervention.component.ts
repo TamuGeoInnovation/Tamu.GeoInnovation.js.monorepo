@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { pluck, shareReplay, switchMap } from 'rxjs/operators';
+import { combineLatest, NEVER, Observable, of } from 'rxjs';
+import { map, pluck, share, shareReplay, switchMap } from 'rxjs/operators';
 
 import { UserService } from '@tamu-gisc/ues/common/ngx';
 
@@ -67,8 +67,11 @@ export class InterventionComponent implements OnInit {
     ]
   };
 
-  public intervention: Observable<ValveIntervention>;
   public valveId: Observable<number>;
+  public interventionId: Observable<number>;
+
+  public intervention: Observable<Partial<ValveIntervention>>;
+
   public user = this.usr.user;
 
   constructor(
@@ -85,6 +88,8 @@ export class InterventionComponent implements OnInit {
       Date: [Date.now()],
       OperatorName: [''],
       LocationDescription: [''],
+      Reason: [''],
+      AffectedBuildings: [''],
       EstimatedRestoration: [Date.now()],
       YellowLidPlaced: [''],
       LockoutTagePlaced: [''],
@@ -92,19 +97,42 @@ export class InterventionComponent implements OnInit {
       WorkOrder: ['']
     });
 
+    this.interventionId = this.route.params.pipe(pluck('id'), shareReplay(1));
     this.valveId = this.route.params.pipe(pluck('valveId'), shareReplay(1));
 
-    this.intervention = this.valveId.pipe(
+    this.intervention = this.interventionId.pipe(
       switchMap((id) => {
+        // If this is a "view intervention" route, get the intervention details.
+        // Otherwise, it's a "create intervention" view and we need to get
+        // partial information to pre-populate the form.
         if (id) {
           return this.is.getIntervention(id);
         } else {
-          return of(undefined);
+          return combineLatest([this.user, this.valveId]).pipe(
+            map(([user, valveId]) => {
+              return {
+                SubmittedBy: user.name,
+                ValveNumber: valveId
+              };
+            })
+          );
         }
       })
     );
 
+    // Internal subscription so we can patch in the form values.
+    // The value will either be a pre-existing intervention record
+    // or partial information to populate the form with basic information
+    // for a new intervention entry.
     this.intervention.subscribe((res) => {
+      this.form.patchValue(res);
+    });
+  }
+
+  public submitIntervention() {
+    const formValue = this.form.getRawValue();
+
+    this.is.addIntervention(formValue).subscribe((res) => {
       debugger;
     });
   }
