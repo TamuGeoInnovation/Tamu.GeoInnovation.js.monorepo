@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { pluck } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { pluck } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +13,48 @@ export class InterventionService {
     this.url = this.env.value('interventionApiUrl');
   }
 
+  /**
+   * Gets a specific intervention record by intervention id.
+   */
   public getIntervention(id: number | string) {
-    return this.http.get<ValveIntervention[]>(this.url).pipe(pluck(0));
+    return this.http
+      .get<ValveIntervention[]>(`${this.url}/query`, {
+        params: {
+          where: `OBJECTID = ${id}`,
+          outFields: '*',
+          f: 'pjson'
+        },
+        withCredentials: true
+      })
+      .pipe(pluck('features'));
   }
 
+  /**
+   * Gets all of the intervention records for a given valve number.
+   */
+  public getInterventionsForValve(valveId: string | number) {
+    return this.http.get<Array<ValveIntervention>>(`${this.url}/query`, {
+      params: {
+        where: `ValveNumber = ${valveId}`,
+        outFields: '*',
+        f: 'pjson'
+      }
+    });
+  }
+
+  /**
+   * Submits an intervention record with the provided intervention details.
+   */
   public addIntervention(intervention: ValveIntervention) {
-    return this.http.post(this.url, { params: intervention });
+    return this.http.post(`${this.url}/applyEdits`, {
+      params: {
+        adds: [
+          {
+            attributes: intervention
+          }
+        ]
+      }
+    });
   }
 }
 
@@ -28,6 +64,8 @@ export interface ValveIntervention {
   Date: Date;
   OperatorName: string;
   LocationDescription: string;
+  Reason: string;
+  AffectedBuildings: string;
   EstimatedRestoration: Date;
   YellowLidPlaced: string;
   LockoutTagePlaced: string;

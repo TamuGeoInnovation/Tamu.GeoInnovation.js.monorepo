@@ -17,7 +17,7 @@
 <div class="card">
   <div class="card-title">New Intervention</div>
 
-  <form [formGroup]="form">
+  <form [formGroup]="form" (ngSubmit)="submitIntervention()">
     <div class="form-section">
       <div class="form-section-toolbar">
         <div class="form-section-name">
@@ -27,11 +27,11 @@
 
       <div class="form-section-body" id="configurator-container">
         <div class="form-collection row">
-          <tamu-gisc-textbox formControlName="ValveNumber" placeholder="Valve Number" type="number" floatLabel="true"> </tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="ValveNumber" placeholder="Valve Number" type="number" floatLabel="true" disabled> </tamu-gisc-textbox>
         </div>
 
         <div class="form-collection row">
-          <tamu-gisc-textbox formControlName="SubmittedBy" placeholder="Submitted By" type="text" floatLabel="true"> </tamu-gisc-textbox>
+          <tamu-gisc-textbox formControlName="SubmittedBy" placeholder="Submitted By" type="text" floatLabel="true" disabled> </tamu-gisc-textbox>
         </div>
 
         <div class="form-collection column">
@@ -59,7 +59,7 @@
 
         <div class="form-collection column">
           <p>Reason for intervention</p>
-          <tamu-gisc-radio-group [options]="optionValues.Reason" displayPath="label" valuePath="code"></tamu-gisc-radio-group>
+          <tamu-gisc-radio-group formControlName="Reason" [options]="optionValues.Reason" displayPath="label" valuePath="code"></tamu-gisc-radio-group>
         </div>
 
         <div class="form-collection row">
@@ -89,9 +89,11 @@
         <div class="form-collection row">
           <tamu-gisc-textbox formControlName="WorkOrder" placeholder="Work Order" type="text" floatLabel="true"> </tamu-gisc-textbox>
         </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-button type="submit" value="Submit"></tamu-gisc-button>
+        </div>
       </div>
     </div>
   </form>
 </div>
-
-<pre>{{form.getRawValue() | json}}</pre>
