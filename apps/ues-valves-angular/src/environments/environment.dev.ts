@@ -6,6 +6,9 @@ export const environment = {
 
 export * from './definitions';
 
+// This contains the intervention api url
+export * from './secrets';
+
 // App API URL
 export const apiUrl = 'https://ues-dev.geoservices.tamu.edu/api/dispatch/';
 
