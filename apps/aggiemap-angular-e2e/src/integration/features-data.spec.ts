@@ -1,4 +1,5 @@
 /// <reference path="../support/index.d.ts" />
+import * as Zoom from "esri/widgets/Zoom";
 import {desktopSizes} from "./resolutions";
 
 // runs the same tests on different resolutions
@@ -15,7 +16,7 @@ desktopSizes.forEach((size) => {
     it('Check Location', () => {
       cy.location('protocol').should('eq', 'https:')
     })
-    
+
     it(`Sidebar Movement - Feature Toggle`, () => {
       cy.getFeatureToggle().click({force: true}).click({force: true})
       cy.getSideBar('not.be.visible')
@@ -74,21 +75,48 @@ desktopSizes.forEach((size) => {
       cy.checkMapIcon()
     })
 
-    it('Check Latitude and Longitude', () => {
+    it('Display Latitude and Longitude', () => {
       cy.get('canvas').click((size[0]/2), (size[1]/2))
-      // check if coordinates are visible on the map
+      // check if coordinates are visible on the map and if they are correct
       cy.get('tamu-gisc-click-coordinates > .point-coords')
-        .should('be.visible')
-        .and('contain', 'Latitude: 30.61306')
-        .and('contain', 'Longitude: -96.34467') //check if coordinates are correct
+        .should('contain', 'Latitude: 30.61306')
+        .and('contain', 'Longitude: -96.34467')
+        .and('be.visible')
       // checks if coordinates change after clicking new location
       cy.get('canvas').click((size[0]/4), (size[1]/4))
-      // cy.get('tamu-gisc-click-coordinates > .point-coords')
+      cy.get('tamu-gisc-click-coordinates > .point-coords')
          .should('not.contain', 'Latitude: 30.61306')
          .and('not.contain', 'Longitude: -96.34467')
-      // check if coordinates are copied after clicking
+
+      //  TODO: check if coordinates are copied after clicking
     })
 
+    it('Check Zoom Functionality', () => {
+      /**
+       * When fully zoomed in or out the tab index changes to '-1'
+       * and that is the check if the map is zooming at all
+       */
+      // zoom in by clicking 5 times (max zoom in)
+      for(let n = 0; n <= 5; n++){
+        cy.get('.esri-zoom > .esri-widget--button > .esri-icon-plus').click()
+      }
+      cy.get('.esri-widget--button').should('have.attr', 'tabindex', '-1')
+      // zoom out by clicking 10 times (max zoom out from max zoom in)
+      for(let n = 0; n <= 11; n++){
+        cy.get('.esri-zoom > .esri-widget--button > .esri-icon-minus').click()
+      }
+       cy.get('.esri-widget--button:last-child').should('have.attr', 'tabindex', '-1')
+    })
+
+    //TODO: Test compass
+    it.only('Rotate Map Orientation by Compass', () => {
+      cy.get('canvas')
+      .trigger('mouseover', (size[0]/2), (size[1]/2)).rightclick()
+      .trigger('mousemove', (size[0]/4), (size[1]/4))
+      .trigger('mouseup').rightclick()
+    })
+
+    //TODO: Test location tracking
 
     // test help options and check if the destination is correct
     it(`Displays Help Options`, () => {
