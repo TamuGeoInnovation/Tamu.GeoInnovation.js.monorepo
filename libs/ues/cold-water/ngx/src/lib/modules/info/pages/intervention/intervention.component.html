@@ -1,0 +1,97 @@
+<div class="action-bar">
+  <div class="breadcrumb trailer-2">
+    <div class="crumb" routerLink="../../">Valves</div>
+    <span class="material-icons">keyboard_arrow_right</span>
+    <div class="crumb">Details</div>
+    <span class="material-icons">keyboard_arrow_right</span>
+    <div class="crumb">{{(valveId | async)}}</div>
+    <span class="material-icons">keyboard_arrow_right</span>
+    <div class="crumb">New Intervention</div>
+  </div>
+
+  <div class="back">
+    <p [routerLink]="['/details', (valveId | async)]"><span class="material-icons">arrow_back</span> Cancel and return to details</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">New Intervention</div>
+
+  <form [formGroup]="form">
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>General</p>
+        </div>
+      </div>
+
+      <div class="form-section-body" id="configurator-container">
+        <div class="form-collection row">
+          <tamu-gisc-textbox formControlName="ValveNumber" placeholder="Valve Number" type="number" floatLabel="true"> </tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox formControlName="SubmittedBy" placeholder="Submitted By" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection column">
+          <p>Today's Date</p>
+          <tamu-gisc-date-time-picker formControlName="Date"></tamu-gisc-date-time-picker>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox formControlName="OperatorName" placeholder="Operator Name" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-toolbar">
+        <div class="form-section-name">
+          <p>Intervention Details</p>
+        </div>
+      </div>
+
+      <div class="form-section-body" id="configurator-container">
+        <div class="form-collection row">
+          <tamu-gisc-textbox formControlName="LocationDescription" placeholder="Location Description" type="textarea" floatLabel="true"> </tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection column">
+          <p>Reason for intervention</p>
+          <tamu-gisc-radio-group [options]="optionValues.Reason" displayPath="label" valuePath="code"></tamu-gisc-radio-group>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox formControlName="AffectedBuildings" placeholder="Affected Buildings" type="textarea" floatLabel="true"> </tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection column">
+          <p>Estimated date of restoration?</p>
+          <tamu-gisc-date-time-picker formControlName="EstimatedRestoration"></tamu-gisc-date-time-picker>
+        </div>
+
+        <div class="form-collection column">
+          <p>Was a yellow lid placed?</p>
+          <tamu-gisc-radio-group formControlName="YellowLidPlaced" [options]="optionValues.YellowLidPlaced" displayPath="label" valuePath="code"> </tamu-gisc-radio-group>
+        </div>
+
+        <div class="form-collection column">
+          <p>Was a lockout tag placed?</p>
+          <tamu-gisc-radio-group formControlName="LockoutTagePlaced" [options]="optionValues.LockoutTagePlaced" displayPath="label" valuePath="code"> </tamu-gisc-radio-group>
+        </div>
+
+        <div class="form-collection column">
+          <p>Does the map need to be updated?</p>
+          <tamu-gisc-radio-group formControlName="DoesMapNeedUpdate" [options]="optionValues.DoesMapNeedUpdate" displayPath="label" valuePath="code"> </tamu-gisc-radio-group>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox formControlName="WorkOrder" placeholder="Work Order" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<pre>{{form.getRawValue() | json}}</pre>

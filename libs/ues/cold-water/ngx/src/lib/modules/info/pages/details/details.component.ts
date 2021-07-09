@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { Observable, Subject } from 'rxjs';
@@ -25,6 +25,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   constructor(
     private vs: ColdWaterValvesService,
     private route: ActivatedRoute,
+    private router: Router,
     private ms: EsriMapService,
     public user: UserService
   ) {}
@@ -59,38 +60,40 @@ export class DetailsComponent implements OnInit, OnDestroy {
         return;
       }
 
-      if (valve && valve.attributes && valve.attributes.CurrentPosition_1 !== null) {
-        const layer = valve.layer as esri.FeatureLayer;
+      this.router.navigate(['intervention/new', valve.attributes.OBJECTID]);
 
-        const cloned = valve.clone() as MappedValve;
-        let updatedState: MappedValve['attributes']['CurrentPosition_1'];
+      // if (valve && valve.attributes && valve.attributes.CurrentPosition_1 !== null) {
+      //   const layer = valve.layer as esri.FeatureLayer;
 
-        if (cloned.attributes.CurrentPosition_1 === 'Open') {
-          updatedState = 'Closed';
-          cloned.attributes.CurrentPosition_1 = updatedState;
-        } else if (cloned.attributes.CurrentPosition_1 === 'Closed') {
-          updatedState = 'Open';
-          cloned.attributes.CurrentPosition_1 = updatedState;
-        }
+      //   const cloned = valve.clone() as MappedValve;
+      //   let updatedState: MappedValve['attributes']['CurrentPosition_1'];
 
-        this.updating = true;
+      //   if (cloned.attributes.CurrentPosition_1 === 'Open') {
+      //     updatedState = 'Closed';
+      //     cloned.attributes.CurrentPosition_1 = updatedState;
+      //   } else if (cloned.attributes.CurrentPosition_1 === 'Closed') {
+      //     updatedState = 'Open';
+      //     cloned.attributes.CurrentPosition_1 = updatedState;
+      //   }
 
-        layer
-          .applyEdits({
-            updateFeatures: [cloned]
-          })
-          .then((res) => {
-            layer.refresh();
-            valve.attributes.CurrentPosition_1 = updatedState;
-            this.updating = false;
-          })
-          .catch((err) => {
-            this.updating = false;
-            console.error(err);
-          });
-      } else {
-        console.warn('Valve does not have a valid position.', valve);
-      }
+      //   this.updating = true;
+
+      //   layer
+      //     .applyEdits({
+      //       updateFeatures: [cloned]
+      //     })
+      //     .then((res) => {
+      //       layer.refresh();
+      //       valve.attributes.CurrentPosition_1 = updatedState;
+      //       this.updating = false;
+      //     })
+      //     .catch((err) => {
+      //       this.updating = false;
+      //       console.error(err);
+      //     });
+      // } else {
+      //   console.warn('Valve does not have a valid position.', valve);
+      // }
     });
   }
 }
