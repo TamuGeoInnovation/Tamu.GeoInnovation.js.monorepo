@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, NEVER, Observable, of } from 'rxjs';
-import { map, pluck, share, shareReplay, switchMap } from 'rxjs/operators';
+import { combineLatest, Observable} from 'rxjs';
+import { map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
 import { UserService } from '@tamu-gisc/ues/common/ngx';
+import { ValveIntervention } from '@tamu-gisc/ues/cold-water/data-api';
 
-import { InterventionService, ValveIntervention } from '../../../core/services/intervention/intervention.service';
+import { InterventionService } from '../../../core/services/intervention/intervention.service';
 
 @Component({
   selector: 'tamu-gisc-intervention',
@@ -133,7 +134,8 @@ export class InterventionComponent implements OnInit {
     const formValue = this.form.getRawValue();
 
     this.is.addIntervention(formValue).subscribe((res) => {
-      debugger;
+      // TODO: Add feedback
+      console.log(res);
     });
   }
 }
