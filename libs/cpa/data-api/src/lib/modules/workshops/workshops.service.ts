@@ -71,16 +71,14 @@ export class WorkshopsService extends BaseService<Workshop> {
 
       await workshop.save();
 
-      const promised = body.snapshotGuids.map((guid) => {
-        return getRepository(WorkshopSnapshot)
-          .create({
-            workshop: workshop,
-            snapshot: snapshots.find((r) => r.guid === guid)
-          })
-          .save();
+      workshop.snapshots = body.snapshotGuids.map((guid) => {
+        return getRepository(WorkshopSnapshot).create({
+          workshop: workshop,
+          snapshot: snapshots.find((s) => s.guid === guid)
+        });
       });
 
-      await Promise.all(promised);
+      await workshop.save();
 
       try {
         return await this.getWorkshop(body.workshopGuid, true, false, false, false);

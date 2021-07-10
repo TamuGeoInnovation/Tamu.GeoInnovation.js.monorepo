@@ -56,7 +56,7 @@ export class Workshop extends CPABaseEntity implements IWorkshop {
   @Column({ nullable: true })
   public date: Date;
 
-  @OneToMany((type) => WorkshopSnapshot, (s) => s.workshop)
+  @OneToMany((type) => WorkshopSnapshot, (s) => s.workshop, { cascade: true })
   public snapshots: WorkshopSnapshot[];
 
   @OneToMany((type) => WorkshopScenario, (s) => s.workshop)
