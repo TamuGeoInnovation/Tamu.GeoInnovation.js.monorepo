@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { pluck } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { ValveIntervention, ValveInterventionAttributes } from '@tamu-gisc/ues/cold-water/data-api';``
 
 @Injectable({
   providedIn: 'root'
@@ -10,65 +11,27 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 export class InterventionService {
   private url: string;
   constructor(private http: HttpClient, private env: EnvironmentService) {
-    this.url = this.env.value('interventionApiUrl');
+    this.url = this.env.value('apiUrl');
   }
 
   /**
    * Gets a specific intervention record by intervention id.
    */
   public getIntervention(id: number | string) {
-    return this.http
-      .get<ValveIntervention[]>(`${this.url}/query`, {
-        params: {
-          where: `OBJECTID = ${id}`,
-          outFields: '*',
-          f: 'pjson'
-        },
-        withCredentials: true
-      })
-      .pipe(pluck('features'));
+    return this.http.get<Array<ValveInterventionAttributes>>(`${this.url}/interventions/${id}`).pipe(pluck('attributes'));
   }
 
   /**
    * Gets all of the intervention records for a given valve number.
    */
   public getInterventionsForValve(valveId: string | number) {
-    return this.http.get<Array<ValveIntervention>>(`${this.url}/query`, {
-      params: {
-        where: `ValveNumber = ${valveId}`,
-        outFields: '*',
-        f: 'pjson'
-      }
-    });
+    return this.http.get<Array<ValveIntervention>>(`${this.url}/interventions/valve/${valveId}`);
   }
 
   /**
    * Submits an intervention record with the provided intervention details.
    */
-  public addIntervention(intervention: ValveIntervention) {
-    return this.http.post(`${this.url}/applyEdits`, {
-      params: {
-        adds: [
-          {
-            attributes: intervention
-          }
-        ]
-      }
-    });
+  public addIntervention(attributes: ValveInterventionAttributes) {
+    return this.http.post(`${this.url}/interventions/`, { intervention: attributes });
   }
-}
-
-export interface ValveIntervention {
-  ValveNumber: number;
-  SubmittedBy: string;
-  Date: Date;
-  OperatorName: string;
-  LocationDescription: string;
-  Reason: string;
-  AffectedBuildings: string;
-  EstimatedRestoration: Date;
-  YellowLidPlaced: string;
-  LockoutTagePlaced: string;
-  DoesMapNeedUpdate: string;
-  WorkOrder: string;
 }
