@@ -1,0 +1,78 @@
+parameters:
+  buildtype: ''
+  DependsOn: []
+
+jobs:
+  - job: build_${{ parameters.buildtype }}
+    dependsOn: ${{ parameters.DependsOn }}
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '12.18'
+        displayName: 'Install Node.js'
+
+      - script: npm install
+        displayName: 'npm install'
+
+      - task: DownloadSecureFile@1
+        inputs:
+          secureFile: 'app_configs.zip'
+        displayName: 'Download application configuration files'
+
+      - task: ExtractFiles@1
+        inputs:
+          archiveFilePatterns: $(Agent.TempDirectory)/app_configs.zip
+          cleanDestinationFolder: false
+          destinationFolder: $(Agent.TempDirectory)
+        displayName: 'Extracting'
+
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)/app_configs/ues-effluent-data-api-nest
+          Contents: '*'
+          TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-effluent-data-api-nest/src/environments
+        displayName: 'Copying environment files to ues-effluent-data-api-nest'
+
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)/app_configs/ues-valves-nest
+          Contents: '*'
+          TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-valves-nest/src/environments
+        displayName: 'Copying environment files to ues-valves-nest'
+
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)/app_configs/ues-recycling-data-api-nest
+          Contents: '*'
+          TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-recycling-data-api-nest/src/environments
+        displayName: 'Copying environment files to ues-recycling-data-api-nest'
+
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)/app_configs/ues-operations-nest
+          Contents: '*'
+          TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-operations-nest/src/environments
+        displayName: 'Copying environment files to ues-operations-nest'
+
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)/app_configs/cpa-nest
+          Contents: '*'
+          TargetFolder: $(System.DefaultWorkingDirectory)/apps/cpa-nest/src/environments
+        displayName: 'Copying environment files to cpa-nest'
+
+      - bash: |
+          npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildtype }} --exclude="aggiemap-angular,signage-angular,trees-angular,bikeshare,gisday-competitions-angular,oidc-admin-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-provider-express,oidc-provider-nest,oidc-admin-nest,oidc-client-test,oidc-provider-angular,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes"
+        displayName: 'Running build'
+
+      - task: CopyFiles@2
+        inputs:
+          Contents: 'dist/**'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        displayName: 'Copy Distribution Files'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish: $(Build.ArtifactStagingDirectory) # dist or build files
+          ArtifactName: 'js-monorepo-${{ parameters.buildtype }}'
+        displayName: 'Publish Artifacts'
