@@ -18,7 +18,7 @@
   <div class="status-container">
     <p>Valve State:</p>
     <div class="status">
-      <div class="pill" *ngIf="(valve | async) as v" [ngClass]="{closed: v?.attributes?.NormalPosition_1 !== v?.attributes?.CurrentPosition_1, missing_fields: v?.attributes?.CurrentPosition_1 === null || v?.attributes?.NormalPosition_1 === null, busy: updating === true}" (click)="toggleValveState(v)">{{v?.attributes?.CurrentPosition_1 ? v.attributes.CurrentPosition_1 : 'null'}}</div>
+      <div class="pill" *ngIf="(valve | async) as v" [ngClass]="{closed: v?.attributes?.NormalPosition_1 !== v?.attributes?.CurrentPosition_1, missing_fields: v?.attributes?.CurrentPosition_1 === null || v?.attributes?.NormalPosition_1 === null, busy: updating === true, disabled: (user?.permissions?.isAdmin | async) === false}" (click)="toggleValveState(v)">{{v?.attributes?.CurrentPosition_1 ? v.attributes.CurrentPosition_1 : 'null'}}</div>
     </div>
     <div class="spinning-loader" *ngIf="updating"></div>
   </div>

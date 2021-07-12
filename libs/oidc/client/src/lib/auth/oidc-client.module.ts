@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthStrategy } from './open-id-client';
 import { SessionSerializer } from './session-serializer';
 import { OidcClientController } from './oidc-client.controller';
+import { ClientRoles } from '../types/auth-types';
 
 @Module({
   imports: [
@@ -23,6 +24,10 @@ export class OidcClientModule {
         {
           provide: 'HOST',
           useValue: params.host
+        },
+        {
+          provide: 'ROLES',
+          useValue: params.roles
         }
       ]
     };
@@ -35,4 +40,11 @@ export interface OidcClientModuleParameters {
    * the request is being sent by the idp or the host application.
    */
   host?: string;
+
+  /**
+   * Dictionary of role id's and role names.
+   *
+   * These are used to return the roles a signed in user has to a given application.
+   */
+  roles?: ClientRoles;
 }

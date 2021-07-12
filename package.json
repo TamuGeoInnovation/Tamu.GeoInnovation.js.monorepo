@@ -79,6 +79,7 @@
     "interactjs": "^1.9.19",
     "jsonwebtoken": "^8.5.0",
     "jszip": "^3.6.0",
+    "jwt-decode": "^3.1.2",
     "mapbox-gl": "^1.10.0",
     "md5": "^2.3.0",
     "mssql": "^6.0.1",

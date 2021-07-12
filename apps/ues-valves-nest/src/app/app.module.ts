@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 
-import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc/client';
+import { OidcClientModule, OidcClientController, GroupClaimsMiddleware } from '@tamu-gisc/oidc/client';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,7 +10,8 @@ import { idpConfig } from '../environments/environment';
 @Module({
   imports: [
     OidcClientModule.forRoot({
-      host: idpConfig.issuer_url
+      host: idpConfig.issuer_url,
+      roles: idpConfig.roles
     })
   ],
   controllers: [AppController],
@@ -19,7 +20,7 @@ import { idpConfig } from '../environments/environment';
 export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(ClaimsMiddleware)
+      .apply(GroupClaimsMiddleware)
       .exclude(
         { path: 'oidc/login', method: RequestMethod.GET },
         { path: 'oidc/logout', method: RequestMethod.GET },

@@ -119,6 +119,7 @@ module.exports = {
     '<rootDir>/libs/ues/cold-water/ngx',
     '<rootDir>/apps/ues-valves-nest',
     '<rootDir>/libs/cpa/data-access',
-    '<rootDir>/libs/cpa/admin'
+    '<rootDir>/libs/cpa/admin',
+    '<rootDir>/libs/ues/common/types'
   ]
 };
