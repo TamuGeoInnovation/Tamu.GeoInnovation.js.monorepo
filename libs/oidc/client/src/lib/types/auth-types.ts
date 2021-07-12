@@ -20,7 +20,6 @@ export type AuthUrl = string;
 export interface ClientRoles {
   [roleId: string]: string;
 }
-
 export interface ClientConfiguration {
   metadata: ClientMetadata;
   parameters: object;
