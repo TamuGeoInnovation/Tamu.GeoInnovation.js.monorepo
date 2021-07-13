@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
-import { filter, map, take } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject, from } from 'rxjs';
+import { filter, map, switchMap, take } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
@@ -57,6 +57,31 @@ export class ColdWaterValvesService {
     });
   }
 
+  public getValve(valveId: string | number): Observable<MappedValve> {
+    return this.getLayerInstance().pipe(
+      filter((l) => {
+        return l !== undefined;
+      }),
+      switchMap((l) => {
+        const q = l.queryFeatures({
+          where: `OBJECTID = ${valveId}`,
+          outFields: ['*'],
+          returnGeometry: true,
+          outSpatialReference: {
+            wkid: 102100
+          }
+        });
+
+        return from(q);
+      }),
+      map((results) => {
+        const valve = results.features[0];
+
+        return valve as MappedValve;
+      })
+    );
+  }
+
   public updateValveState(valve: MappedValve): void {
     this._valves.pipe(take(1)).subscribe((stateValves) => {
       const valves = stateValves.map((v) => v.clone());
@@ -108,6 +133,19 @@ export class ColdWaterValvesService {
     if (layer) {
       layer.visible = !layer.visible;
     }
+  }
+
+  private getLayerInstance() {
+    return this.mapService.store.pipe(
+      switchMap((instance) => {
+        return from(instance.view.when() as Promise<esri.View>).pipe(switchMap((view) => this.mapService.store));
+      }),
+      map((instance) => {
+        const l = instance.map.findLayerById('cold-water-valves-layer') as esri.FeatureLayer;
+
+        return l;
+      })
+    );
   }
 }
 
