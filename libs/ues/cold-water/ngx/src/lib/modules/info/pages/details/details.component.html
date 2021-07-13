@@ -50,7 +50,7 @@
     </thead>
 
     <tbody>
-      <tr *ngFor="let intervention of interventions | async; trackBy: intervention?.attributes?.OBJECTID" [routerLink]="['/intervention', intervention?.attributes?.OBJECTID]">
+      <tr *ngFor="let intervention of interventions | async" [routerLink]="['/intervention', intervention?.attributes?.OBJECTID]">
         <td>{{intervention?.attributes?.OBJECTID}}</td>
         <td>{{intervention?.attributes?.Date | date : 'shortDate'}}</td>
         <td>{{intervention?.attributes?.EstimatedRestoration | date : 'shortDate'}}</td>

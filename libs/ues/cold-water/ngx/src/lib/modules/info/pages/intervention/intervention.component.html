@@ -57,7 +57,8 @@
           <tamu-gisc-textbox formControlName="LocationDescription" placeholder="Location Description" type="textarea" floatLabel="true"> </tamu-gisc-textbox>
         </div>
 
-        <div class="form-collection row">
+        <div class="form-collection column">
+          <p>Updated valve position</p>
           <tamu-gisc-select formControlName="ValveState" [data]="optionValues.ValveState" [displayTemplate]="'label'" [valueTemplate]="'code'"> </tamu-gisc-select>
         </div>
 
@@ -95,7 +96,7 @@
         </div>
 
         <div class="form-collection row">
-          <tamu-gisc-button type="submit" value="Submit"></tamu-gisc-button>
+          <tamu-gisc-button type="submit" [value]="formSubmitText" [disabled]="formSubmitting"></tamu-gisc-button>
         </div>
       </div>
     </div>

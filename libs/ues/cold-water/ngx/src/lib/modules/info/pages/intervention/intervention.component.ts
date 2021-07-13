@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { map, pluck, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { combineLatest, forkJoin, Observable, Subject } from 'rxjs';
+import { finalize, map, pluck, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { UserService } from '@tamu-gisc/ues/common/ngx';
 import { ValveIntervention } from '@tamu-gisc/ues/cold-water/data-api';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { InterventionService } from '../../../core/services/intervention/intervention.service';
 import { ColdWaterValvesService, MappedValve } from '../../../core/services/cold-water-valves/cold-water-valves.service';
@@ -87,6 +88,9 @@ export class InterventionComponent implements OnInit, OnDestroy {
 
   public user = this.usr.user;
 
+  public formSubmitText = 'Submit';
+  public formSubmitting = false;
+
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
@@ -94,7 +98,8 @@ export class InterventionComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private usr: UserService,
     private is: InterventionService,
-    private vs: ColdWaterValvesService
+    private vs: ColdWaterValvesService,
+    private ns: NotificationService
   ) {}
 
   public ngOnInit(): void {
@@ -165,10 +170,41 @@ export class InterventionComponent implements OnInit, OnDestroy {
 
   public submitIntervention() {
     const formValue = this.form.getRawValue();
+    const valveState = this.optionValues.ValveState.find((state) => (state.code = formValue.ValveState));
 
-    this.is.addIntervention(formValue).subscribe((res) => {
-      // TODO: Add feedback
-      console.log(res);
-    });
+    this.formSubmitting = true;
+    this.formSubmitText = 'Submitting...';
+
+    forkJoin([
+      this.is.addIntervention(formValue),
+      this.valve.pipe(
+        take(1),
+        switchMap((valve) => {
+          return this.vs.updateValveState(valve, valveState.code);
+        })
+      )
+    ])
+      .pipe(
+        finalize(() => {
+          this.formSubmitting = false;
+          this.formSubmitText = 'Submit';
+        })
+      )
+      .subscribe(
+        (res) => {
+          this.ns.toast({
+            id: 'intervention-submit-success',
+            message: 'Intervention event was created.',
+            title: 'Created intervention event'
+          });
+        },
+        (err) => {
+          this.ns.toast({
+            id: 'intervention-submit-error',
+            message: 'Error creating intervention event.',
+            title: 'An error occurred creating an intervention event.'
+          });
+        }
+      );
   }
 }

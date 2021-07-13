@@ -26,3 +26,5 @@ export const auth_options: AuthOptions = {
   url: apiUrl,
   attach_href: true
 };
+
+export const NotificationEvents = [];

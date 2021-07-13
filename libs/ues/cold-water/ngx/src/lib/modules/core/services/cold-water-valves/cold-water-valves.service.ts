@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject, from } from 'rxjs';
-import { filter, map, switchMap, take } from 'rxjs/operators';
+import { Observable, ReplaySubject, from } from 'rxjs';
+import { filter, map, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
+import { UserService } from '@tamu-gisc/ues/common/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -13,20 +14,17 @@ export class ColdWaterValvesService {
   private _valves: ReplaySubject<Array<MappedValve>> = new ReplaySubject();
   public valves = this._valves.asObservable();
 
-  private _selectedValveId: BehaviorSubject<number> = new BehaviorSubject(undefined);
+  private _selectedValveId: ReplaySubject<number> = new ReplaySubject(1);
   private _extent: esri.Extent;
 
   public selectedValve: Observable<MappedValve>;
 
-  constructor(private mapService: EsriMapService) {
+  constructor(private mapService: EsriMapService, private usr: UserService) {
     this.getDefaultValves();
 
-    this.selectedValve = combineLatest([this.valves, this._selectedValveId]).pipe(
-      filter(([valves, value]) => {
-        return valves !== undefined;
-      }),
-      map(([valves, id]) => {
-        return valves.find((v) => v.attributes.OBJECTID === id);
+    this.selectedValve = this._selectedValveId.pipe(
+      switchMap((id) => {
+        return this.getValve(id);
       })
     );
   }
@@ -57,6 +55,9 @@ export class ColdWaterValvesService {
     });
   }
 
+  /**
+   * Returns a mapped valve object from a valve id.
+   */
   public getValve(valveId: string | number): Observable<MappedValve> {
     return this.getLayerInstance().pipe(
       filter((l) => {
@@ -82,20 +83,42 @@ export class ColdWaterValvesService {
     );
   }
 
-  public updateValveState(valve: MappedValve): void {
-    this._valves.pipe(take(1)).subscribe((stateValves) => {
-      const valves = stateValves.map((v) => v.clone());
+  public updateValveState(valve: MappedValve, state: string | IValvePositionState): Observable<IFeatureLayerEditResults> {
+    return this.getLayerInstance().pipe(
+      withLatestFrom(this.usr.user),
+      switchMap(([layer, user]) => {
+        const cloned = valve.clone() as MappedValve;
 
-      const updating = valves.find((v) => v.attributes.OBJECTID === valve.attributes.OBJECTID) as MappedValve;
+        cloned.attributes.last_edited_user = user.name;
 
-      if (updating.attributes.CurrentPosition_1 === 'Closed') {
-        updating.setAttribute('CurrentPosition_1', 'Open');
-      } else {
-        updating.setAttribute('CurrentPosition_1', 'Closed');
-      }
+        cloned.attributes.CurrentPosition_1 = state as IValvePositionState;
 
-      this._valves.next(valves);
-    });
+        return from(
+          layer.applyEdits({
+            updateFeatures: [cloned]
+          }) as Promise<IFeatureLayerEditResults>
+        ).pipe(
+          tap((results) => {
+            layer.refresh();
+          })
+        );
+      }),
+      withLatestFrom(this._valves),
+      tap(([results, valves]) => {
+        const clonedValves = valves.map((v) => v.clone());
+
+        const valveBeingUpdated = clonedValves.find(
+          (v) => v.attributes.OBJECTID === valve.attributes.OBJECTID
+        ) as MappedValve;
+
+        valveBeingUpdated.setAttribute('CurrentPosition_1', state);
+
+        this._valves.next(clonedValves);
+      }),
+      map(([results, valves]) => {
+        return results;
+      })
+    );
   }
 
   public setSelectedValve(valveId: number | string): void {
@@ -137,6 +160,7 @@ export class ColdWaterValvesService {
 
   private getLayerInstance() {
     return this.mapService.store.pipe(
+      take(1),
       switchMap((instance) => {
         return from(instance.view.when() as Promise<esri.View>).pipe(switchMap((view) => this.mapService.store));
       }),
@@ -230,4 +254,13 @@ export interface IValve extends esri.Graphic {
 
 export interface MappedValve extends IValve {
   attributes: IValve['attributes'];
+}
+
+export interface IFeatureLayerEditResults {
+  addAttachmentResults: Array<esri.FeatureEditResult>;
+  addFeatureResults: Array<esri.FeatureEditResult>;
+  deleteAttachmentResults: Array<esri.FeatureEditResult>;
+  deleteFeatureResults: Array<esri.FeatureEditResult>;
+  updateAttachmentResults: Array<esri.FeatureEditResult>;
+  updateFeatureResults: Array<esri.FeatureEditResult>;
 }
