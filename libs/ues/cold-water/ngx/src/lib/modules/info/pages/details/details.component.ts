@@ -40,14 +40,17 @@ export class DetailsComponent implements OnInit, OnDestroy {
     this.valve = this.vs.selectedValve;
     this.routeValveId = this.route.params.pipe(pluck('id'));
     this.interventions = this.routeValveId.pipe(
-      switchMap(v => {
-        return this.is.getInterventionsForValve(v);
-      }),
-      catchError(err => {
-        return of([]);
+      switchMap((v) => {
+        return this.is.getInterventionsForValve(v).pipe(
+          // If the request returns with a not found, default to an empty array as a value for each
+          // emission of routeValveId
+          catchError((err, caught) => {
+            return of([]);
+          })
+        );
       }),
       shareReplay(1)
-    )
+    );
 
     this.route.params.pipe(takeUntil(this._$destroy)).subscribe((params) => {
       this.vs.setSelectedValve(params.id);
@@ -77,39 +80,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
       }
 
       this.router.navigate(['intervention/new', valve.attributes.OBJECTID]);
-
-      // if (valve && valve.attributes && valve.attributes.CurrentPosition_1 !== null) {
-      //   const layer = valve.layer as esri.FeatureLayer;
-
-      //   const cloned = valve.clone() as MappedValve;
-      //   let updatedState: MappedValve['attributes']['CurrentPosition_1'];
-
-      //   if (cloned.attributes.CurrentPosition_1 === 'Open') {
-      //     updatedState = 'Closed';
-      //     cloned.attributes.CurrentPosition_1 = updatedState;
-      //   } else if (cloned.attributes.CurrentPosition_1 === 'Closed') {
-      //     updatedState = 'Open';
-      //     cloned.attributes.CurrentPosition_1 = updatedState;
-      //   }
-
-      //   this.updating = true;
-
-      //   layer
-      //     .applyEdits({
-      //       updateFeatures: [cloned]
-      //     })
-      //     .then((res) => {
-      //       layer.refresh();
-      //       valve.attributes.CurrentPosition_1 = updatedState;
-      //       this.updating = false;
-      //     })
-      //     .catch((err) => {
-      //       this.updating = false;
-      //       console.error(err);
-      //     });
-      // } else {
-      //   console.warn('Valve does not have a valid position.', valve);
-      // }
     });
   }
 }
