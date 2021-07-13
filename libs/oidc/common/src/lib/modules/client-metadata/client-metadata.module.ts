@@ -8,7 +8,8 @@ import {
   GrantTypeRepo,
   RedirectUriRepo,
   ResponseTypeRepo,
-  TokenEndpointAuthMethodRepo
+  TokenEndpointAuthMethodRepo,
+  BackchannelLogoutUriRepo
 } from '../../entities/all.entity';
 
 @Module({
@@ -18,7 +19,8 @@ import {
       GrantTypeRepo,
       RedirectUriRepo,
       ResponseTypeRepo,
-      TokenEndpointAuthMethodRepo
+      TokenEndpointAuthMethodRepo,
+      BackchannelLogoutUriRepo
     ])
   ],
   providers: [ClientMetadataService],
