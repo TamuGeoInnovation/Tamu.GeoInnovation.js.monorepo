@@ -71,7 +71,7 @@ jobs:
       - task: CopyFiles@2
         inputs:
           SourceFolder: $(Agent.TempDirectory)/app_configs/oidc-provider-nest
-          Contents: '*'
+          Contents: 'ormconfig.ts'
           TargetFolder: $(System.DefaultWorkingDirectory)/apps/oidc-provider-nest/src/environments
         displayName: 'Copying environment files to oidc-provider-nest'
 
