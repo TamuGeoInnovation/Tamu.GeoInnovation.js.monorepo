@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
@@ -6,6 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import * as WebFont from 'webfontloader';
 import { env, EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { AuthGuard, AuthProvider } from '@tamu-gisc/common/ngx/auth';
+import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
 
 import * as environment from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -26,14 +28,24 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, RouterModule.forRoot(routes, { initialNavigation: 'enabled' }), HttpClientModule],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
+    HttpClientModule,
+    NotificationModule
+  ],
   providers: [
     EnvironmentService,
     {
       provide: env,
       useValue: environment
     },
-    AuthProvider
+    AuthProvider,
+    {
+      provide: notificationStorage,
+      useValue: 'aggiemap-notifications'
+    }
   ],
   bootstrap: [AppComponent]
 })

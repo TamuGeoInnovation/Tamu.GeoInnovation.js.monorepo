@@ -9,4 +9,6 @@ export const environment = {
   ]
 };
 
+export * from './secrets';
+
 export { devClientConfig as idpConfig } from './oidc-client-config';

@@ -55,6 +55,7 @@ label {
 
 .textbox-control {
   @include flex(1);
+  z-index: 0;
 }
 
 .textbox-actions {

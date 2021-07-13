@@ -5382,6 +5382,27 @@
           }
         }
       }
+    },
+    "ues-cold-water-data-api": {
+      "root": "libs/ues/cold-water/data-api",
+      "sourceRoot": "libs/ues/cold-water/data-api/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ues/cold-water/data-api/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ues/cold-water/data-api"],
+          "options": {
+            "jestConfig": "libs/ues/cold-water/data-api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {
