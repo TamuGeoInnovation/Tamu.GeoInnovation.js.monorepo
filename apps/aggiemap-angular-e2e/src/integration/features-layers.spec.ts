@@ -63,7 +63,8 @@ desktopSizes.forEach((size) => {
       // confirm navigation window pop-up by verifying URL
       cy.checkNavPanel()
       // click random location on map to begin route
-      cy.get('canvas').click((size[0]/2), (size[1]/2))
+      cy.wait(5000)
+      cy.get('canvas').trigger('mouseover').click((size[0]/2), (size[1]/2))
       // checks if directions are displayed
       cy.get('.directions-container').should('be.visible')
       // check if route duration is displayed
@@ -214,7 +215,7 @@ desktopSizes.forEach((size) => {
       // confirm navigation window pop-up by verifying URL
       cy.checkNavPanel()
       // click random location on map to begin route
-      cy.get('canvas').click((size[0]/2), (size[1]/2))
+      cy.get('canvas').trigger('mouseover').click((size[0]/2), (size[1]/2))
       // checks if directions are displayed
       cy.get('.directions-container').should('be.visible')
       // check if route duration is displayed
