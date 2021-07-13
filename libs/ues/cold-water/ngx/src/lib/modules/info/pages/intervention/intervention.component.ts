@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { combineLatest, forkJoin, Observable, Subject } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { combineLatest, forkJoin, iif, Observable, of, Subject } from 'rxjs';
 import { finalize, map, pluck, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { UserService } from '@tamu-gisc/ues/common/ngx';
-import { ValveIntervention } from '@tamu-gisc/ues/cold-water/data-api';
+import { ValveInterventionAttributes } from '@tamu-gisc/ues/cold-water/data-api';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { InterventionService } from '../../../core/services/intervention/intervention.service';
@@ -84,7 +84,7 @@ export class InterventionComponent implements OnInit, OnDestroy {
   public valve: Observable<MappedValve>;
 
   public interventionId: Observable<number>;
-  public intervention: Observable<Partial<ValveIntervention>>;
+  public intervention: Observable<Partial<ValveInterventionAttributes>>;
 
   public user = this.usr.user;
 
@@ -95,6 +95,7 @@ export class InterventionComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
+    private router: Router,
     private route: ActivatedRoute,
     private usr: UserService,
     private is: InterventionService,
@@ -128,11 +129,10 @@ export class InterventionComponent implements OnInit, OnDestroy {
         if (id) {
           return this.is.getIntervention(id);
         } else {
-          return combineLatest([this.user, this.valveId]).pipe(
-            map(([user, valveId]) => {
+          return combineLatest([this.user]).pipe(
+            map(([user]) => {
               return {
-                SubmittedBy: user.name,
-                ValveNumber: valveId
+                SubmittedBy: user.name
               };
             })
           );
@@ -141,7 +141,26 @@ export class InterventionComponent implements OnInit, OnDestroy {
       shareReplay(1)
     );
 
-    this.valveId = this.route.params.pipe(pluck('valveId'), shareReplay(1));
+    // Get the valve ID from either the resolved intervention event or
+    // url parameters as a fallback
+    this.valveId = this.route.params.pipe(
+      pluck('valveId'),
+      switchMap((vid) => {
+        return iif(
+          () => vid === undefined,
+          this.intervention.pipe(
+            map((intv) => {
+              return intv.ValveNumber;
+            })
+          ),
+          of(vid)
+        );
+      }),
+      shareReplay(1)
+    );
+
+    // Fetch the valve entry from server. Needed to have access to the current
+    // position.
     this.valve = this.valveId.pipe(
       switchMap((v) => {
         return this.vs.getValve(v);
@@ -152,13 +171,17 @@ export class InterventionComponent implements OnInit, OnDestroy {
     // or partial information to populate the form with basic information
     // for a new intervention entry.
     combineLatest([this.intervention, this.valve]).subscribe(([intervention, valve]) => {
-      this.form.patchValue({ ...intervention, ValveState: valve.attributes.CurrentPosition_1 });
+      this.form.patchValue({
+        ...intervention,
+        ValveState: valve.attributes.CurrentPosition_1,
+        ValveNumber: intervention.ValveNumber ? intervention.ValveNumber : valve.attributes.OBJECTID
+      });
     });
 
     // Take the valve id from the URL and assign the selected valve so we can pull the current valve state.
     // Typically the flow into this component is from the details view where the valve would already be set,
     // but this will also support the case where users enter this view with a url route.
-    this.route.params.pipe(pluck('valveId'), takeUntil(this._$destroy)).subscribe((valveId) => {
+    this.valveId.pipe(takeUntil(this._$destroy)).subscribe((valveId) => {
       this.vs.setSelectedValve(valveId);
     });
   }
@@ -191,12 +214,14 @@ export class InterventionComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(
-        (res) => {
+        ([interventionResults, valveStateResults]) => {
           this.ns.toast({
             id: 'intervention-submit-success',
             message: 'Intervention event was created.',
             title: 'Created intervention event'
           });
+
+          this.router.navigate(['details', formValue.ValveNumber]);
         },
         (err) => {
           this.ns.toast({

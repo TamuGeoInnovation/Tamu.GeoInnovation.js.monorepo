@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { pluck } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { ValveIntervention, ValveInterventionAttributes } from '@tamu-gisc/ues/cold-water/data-api';``
+import { ValveIntervention, ValveInterventionAttributes } from '@tamu-gisc/ues/cold-water/data-api';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,11 @@ export class InterventionService {
    * Gets a specific intervention record by intervention id.
    */
   public getIntervention(id: number | string) {
-    return this.http.get<Array<ValveInterventionAttributes>>(`${this.url}/interventions/${id}`).pipe(pluck('attributes'));
+    return this.http.get<ValveIntervention>(`${this.url}/interventions/${id}`).pipe(
+      map((intervention) => {
+        return intervention.attributes;
+      })
+    );
   }
 
   /**
