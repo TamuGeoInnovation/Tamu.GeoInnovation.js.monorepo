@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, forkJoin, iif, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, iif, Observable, of, Subject } from 'rxjs';
 import { finalize, map, pluck, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { UserService } from '@tamu-gisc/ues/common/ngx';
@@ -88,8 +88,18 @@ export class InterventionComponent implements OnInit, OnDestroy {
 
   public user = this.usr.user;
 
-  public formSubmitText = 'Submit';
-  public formSubmitting = false;
+  public formSubmitTextOptions = {
+    INITIAL: {
+      CLEAN: 'Submit',
+      DIRTY: 'Save'
+    },
+    UPDATING: {
+      CLEAN: 'Submitting...',
+      DIRTY: 'Saving...'
+    }
+  };
+  public formSubmitting: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public formSubmitText: Observable<string>;
 
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -97,7 +107,7 @@ export class InterventionComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private usr: UserService,
+    public usr: UserService,
     private is: InterventionService,
     private vs: ColdWaterValvesService,
     private ns: NotificationService
@@ -184,6 +194,24 @@ export class InterventionComponent implements OnInit, OnDestroy {
     this.valveId.pipe(takeUntil(this._$destroy)).subscribe((valveId) => {
       this.vs.setSelectedValve(valveId);
     });
+
+    this.formSubmitText = combineLatest([of(this.formSubmitTextOptions), this.intervention, this.formSubmitting]).pipe(
+      map(([text, intervention, submitting]) => {
+        if (submitting) {
+          if (intervention.OBJECTID) {
+            return text.UPDATING.DIRTY;
+          } else {
+            return text.UPDATING.CLEAN;
+          }
+        } else {
+          if (intervention.OBJECTID) {
+            return text.INITIAL.DIRTY;
+          } else {
+            return text.INITIAL.CLEAN;
+          }
+        }
+      })
+    );
   }
 
   public ngOnDestroy() {
@@ -195,8 +223,7 @@ export class InterventionComponent implements OnInit, OnDestroy {
     const formValue = this.form.getRawValue();
     const valveState = this.optionValues.ValveState.find((state) => (state.code = formValue.ValveState));
 
-    this.formSubmitting = true;
-    this.formSubmitText = 'Submitting...';
+    this.formSubmitting.next(true);
 
     forkJoin([
       this.is.addIntervention(formValue),
@@ -209,8 +236,7 @@ export class InterventionComponent implements OnInit, OnDestroy {
     ])
       .pipe(
         finalize(() => {
-          this.formSubmitting = false;
-          this.formSubmitText = 'Submit';
+          this.formSubmitting.next(false);
         })
       )
       .subscribe(
