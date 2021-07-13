@@ -85,6 +85,7 @@ export interface ValveIntervention {
 }
 
 export interface ValveInterventionAttributes {
+  OBJECTID: number;
   ValveNumber: number;
   SubmittedBy: string;
   Date: Date;

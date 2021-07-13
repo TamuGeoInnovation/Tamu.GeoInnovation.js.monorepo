@@ -2,22 +2,27 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
-import { Observable, Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, pluck, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { UserService } from '@tamu-gisc/ues/common/ngx';
+import { ValveIntervention } from '@tamu-gisc/ues/cold-water/data-api';
 
 import { ColdWaterValvesService, MappedValve } from '../../../core/services/cold-water-valves/cold-water-valves.service';
+import { InterventionService } from '../../../core/services/intervention/intervention.service';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-details',
   templateUrl: './details.component.html',
-  styleUrls: ['./details.component.scss']
+  styleUrls: ['./details.component.scss'],
+  providers: [InterventionService]
 })
 export class DetailsComponent implements OnInit, OnDestroy {
   public valve: Observable<MappedValve>;
+  public routeValveId: Observable<number>;
+  public interventions: Observable<Array<ValveIntervention>>;
   public updating = false;
 
   private _$destroy: Subject<boolean> = new Subject();
@@ -27,11 +32,22 @@ export class DetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private ms: EsriMapService,
+    private is: InterventionService,
     public user: UserService
   ) {}
 
   public ngOnInit(): void {
     this.valve = this.vs.selectedValve;
+    this.routeValveId = this.route.params.pipe(pluck('id'));
+    this.interventions = this.routeValveId.pipe(
+      switchMap(v => {
+        return this.is.getInterventionsForValve(v);
+      }),
+      catchError(err => {
+        return of([]);
+      }),
+      shareReplay(1)
+    )
 
     this.route.params.pipe(takeUntil(this._$destroy)).subscribe((params) => {
       this.vs.setSelectedValve(params.id);

@@ -34,3 +34,34 @@
     </div>
   </div>
 </tamu-gisc-expandable-card>
+
+<div class="card">
+  <div class="card-title">Intervention History</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Expiration Date</th>
+        <th>Reason</th>
+        <th>Created By</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let intervention of interventions | async; trackBy: intervention?.attributes?.OBJECTID" [routerLink]="['/intervention', intervention?.attributes?.OBJECTID]">
+        <td>{{intervention?.attributes?.OBJECTID}}</td>
+        <td>{{intervention?.attributes?.Date | date : 'shortDate'}}</td>
+        <td>{{intervention?.attributes?.EstimatedRestoration | date : 'shortDate'}}</td>
+        <td>{{intervention?.attributes?.Reason}}</td>
+        <td>{{intervention?.attributes?.SubmittedBy}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="content-status">
+    <div class="spinning-loader" *ngIf="!(interventions | async)"></div>
+    <p *ngIf="(interventions | async)?.length === 0">There are no intervention events for this valve.</p>
+  </div>
+</div>

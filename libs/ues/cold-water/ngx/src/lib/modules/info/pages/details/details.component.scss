@@ -31,3 +31,14 @@
     border-width: 0.29em;
   }
 }
+
+.content-status{
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(center);
+  @include align-items(center);
+}
+
+table tr{
+  cursor: pointer;
+}
