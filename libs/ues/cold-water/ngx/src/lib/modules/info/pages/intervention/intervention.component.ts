@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, Observable} from 'rxjs';
-import { map, pluck, shareReplay, switchMap } from 'rxjs/operators';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { map, pluck, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 
 import { UserService } from '@tamu-gisc/ues/common/ngx';
 import { ValveIntervention } from '@tamu-gisc/ues/cold-water/data-api';
 
 import { InterventionService } from '../../../core/services/intervention/intervention.service';
+import { ColdWaterValvesService, MappedValve } from '../../../core/services/cold-water-valves/cold-water-valves.service';
 
 @Component({
   selector: 'tamu-gisc-intervention',
@@ -15,7 +16,7 @@ import { InterventionService } from '../../../core/services/intervention/interve
   styleUrls: ['./intervention.component.scss'],
   providers: [InterventionService]
 })
-export class InterventionComponent implements OnInit {
+export class InterventionComponent implements OnInit, OnDestroy {
   public form: FormGroup;
   public optionValues = {
     Reason: [
@@ -65,21 +66,35 @@ export class InterventionComponent implements OnInit {
         label: 'No',
         code: 'No'
       }
+    ],
+    ValveState: [
+      {
+        label: 'Open',
+        code: 'Open'
+      },
+      {
+        label: 'Closed',
+        code: 'Closed'
+      }
     ]
   };
 
   public valveId: Observable<number>;
-  public interventionId: Observable<number>;
+  public valve: Observable<MappedValve>;
 
+  public interventionId: Observable<number>;
   public intervention: Observable<Partial<ValveIntervention>>;
 
   public user = this.usr.user;
+
+  private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private usr: UserService,
-    private is: InterventionService
+    private is: InterventionService,
+    private vs: ColdWaterValvesService
   ) {}
 
   public ngOnInit(): void {
@@ -88,6 +103,7 @@ export class InterventionComponent implements OnInit {
       SubmittedBy: ['', Validators.required],
       Date: [Date.now()],
       OperatorName: [''],
+      ValveState: [''],
       LocationDescription: [''],
       Reason: [''],
       AffectedBuildings: [''],
@@ -99,8 +115,6 @@ export class InterventionComponent implements OnInit {
     });
 
     this.interventionId = this.route.params.pipe(pluck('id'), shareReplay(1));
-    this.valveId = this.route.params.pipe(pluck('valveId'), shareReplay(1));
-
     this.intervention = this.interventionId.pipe(
       switchMap((id) => {
         // If this is a "view intervention" route, get the intervention details.
@@ -118,16 +132,35 @@ export class InterventionComponent implements OnInit {
             })
           );
         }
-      })
+      }),
+      shareReplay(1)
     );
 
+    this.valveId = this.route.params.pipe(pluck('valveId'), shareReplay(1));
+    this.valve = this.valveId.pipe(
+      switchMap((v) => {
+        return this.vs.getValve(v);
+      })
+    );
     // Internal subscription so we can patch in the form values.
     // The value will either be a pre-existing intervention record
     // or partial information to populate the form with basic information
     // for a new intervention entry.
-    this.intervention.subscribe((res) => {
-      this.form.patchValue(res);
+    combineLatest([this.intervention, this.valve]).subscribe(([intervention, valve]) => {
+      this.form.patchValue({ ...intervention, ValveState: valve.attributes.CurrentPosition_1 });
     });
+
+    // Take the valve id from the URL and assign the selected valve so we can pull the current valve state.
+    // Typically the flow into this component is from the details view where the valve would already be set,
+    // but this will also support the case where users enter this view with a url route.
+    this.route.params.pipe(pluck('valveId'), takeUntil(this._$destroy)).subscribe((valveId) => {
+      this.vs.setSelectedValve(valveId);
+    });
+  }
+
+  public ngOnDestroy() {
+    this._$destroy.next();
+    this._$destroy.complete();
   }
 
   public submitIntervention() {
