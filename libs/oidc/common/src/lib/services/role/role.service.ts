@@ -11,8 +11,15 @@ export class RoleService {
       level: '99',
       name: 'Admin'
     };
+    const managerRole: Partial<Role> = {
+      level: '80',
+      name: 'Manager'
+    };
+
     const _adminRole = this.roleRepo.create(adminRole);
-    return this.roleRepo.save(_adminRole);
+    const _managerRole = this.roleRepo.create(managerRole);
+
+    return Promise.all([this.roleRepo.save(_adminRole), this.roleRepo.save(_managerRole)]);
   }
 
   public async insertRole(level: string, name: string) {

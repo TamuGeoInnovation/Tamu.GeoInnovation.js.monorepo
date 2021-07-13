@@ -8,5 +8,6 @@ export * from './lib/guards/login.guard';
 export * from './lib/guards/roles.guard';
 
 export * from './lib/middleware/claims.middleware';
+export * from './lib/middleware/token-exchange.middleware';
 
 export * from './lib/types/auth-types';
