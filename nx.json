@@ -459,6 +459,16 @@
     },
     "cpa-sass": {
       "tags": ["type:styles", "scope:cpa"]
+    },
+    "kissingbugs-angular": {
+      "tags": []
+    },
+    "kissingbugs-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["kissingbugs-angular"]
+    },
+    "kissingbugs-ngx": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

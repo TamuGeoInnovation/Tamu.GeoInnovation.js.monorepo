@@ -119,6 +119,8 @@ module.exports = {
     '<rootDir>/libs/ues/cold-water/ngx',
     '<rootDir>/apps/ues-valves-nest',
     '<rootDir>/libs/cpa/data-access',
-    '<rootDir>/libs/cpa/admin'
+    '<rootDir>/libs/cpa/admin',
+    '<rootDir>/apps/kissingbugs-angular',
+    '<rootDir>/libs/kissingbugs/ngx'
   ]
 };
