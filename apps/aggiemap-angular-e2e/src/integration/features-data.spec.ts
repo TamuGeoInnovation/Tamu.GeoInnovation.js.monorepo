@@ -1,6 +1,8 @@
 /// <reference path="../support/index.d.ts" />
+import * as Zoom from "esri/widgets/Zoom";
 import {desktopSizes} from "./resolutions";
 
+// runs the same tests on different resolutions
 desktopSizes.forEach((size) => {
   describe(`Test Elements, Features Page: ${size} Resolution`, () => {
     beforeEach(() => {
@@ -14,29 +16,121 @@ desktopSizes.forEach((size) => {
     it('Check Location', () => {
       cy.location('protocol').should('eq', 'https:')
     })
-    it(`Displays Title`, () => {
-      cy.title().should('eq', 'Aggie Map - Texas A&M University')
-    })
-    it(`Displays Title Logo`, () => {
-      cy.checkTitleLogo()
-    })
-    it(`Displays Sidebar`, () => {
-      cy.getSideBar('be.visible')
-    })
-    it(`Displays Toggles`, () => {
-      cy.getDirectionsToggle()
-      cy.getFeatureToggle()
-    })
+
     it(`Sidebar Movement - Feature Toggle`, () => {
       cy.getFeatureToggle().click({force: true}).click({force: true})
       cy.getSideBar('not.be.visible')
       cy.getFeatureToggle().click({force: true})
       cy.getSideBar('be.visible')
     })
-    it(`Displays Headings`, () => {
-      cy.contains('tamu-gisc-layer-list > .sidebar-component-name', 'Layers')
-      cy.contains('tamu-gisc-legend > .sidebar-component-name', 'Legend')
+
+    // checks if icons appear on map after being clicked
+    it('Display Physical Distance Study Area Locations', () => {
+     cy.checkMapIcon()
     })
+
+    it('Display Emergency Phone Locations', () => {
+      // click emergency phones
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(2)')
+        .trigger('mouseover').click().should('be.visible')
+      cy.checkMapIcon()
+    })
+
+    it('Display Accessible Entrance Locations', () => {
+      // click Accessible Entrance
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(3)')
+        .trigger('mouseover').click().should('be.visible')
+      cy.checkMapIcon()
+    })
+
+    it('Display Visitor Parking Locations', () => {
+      // click Visitor Parking
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(4)')
+        .trigger('mouseover').click().should('be.visible')
+      cy.checkMapIcon()
+    })
+
+    it('Display Lactation Room Locations', () => {
+      // click Lactation Rooms
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(5)')
+        .trigger('mouseover').click().should('be.visible')
+      cy.checkMapIcon()
+    })
+
+    it('Display Restroom Locations', () => {
+      // click Restrooms
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(6)')
+        .trigger('mouseover').click().should('be.visible')
+      cy.checkMapIcon()
+    })
+
+    it('Display Points of Interest Locations', () => {
+      // click Points of Interest
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(7)')
+        .trigger('mouseover').click().should('be.visible')
+      cy.checkMapIcon()
+    })
+
+    it('Display Construction Zone Locations', () => {
+      cy.checkMapIcon()
+    })
+
+    it('Display Latitude and Longitude', () => {
+      cy.get('canvas').click((size[0]/2), (size[1]/2))
+      // check if coordinates are visible on the map and if they are correct
+      cy.get('tamu-gisc-click-coordinates > .point-coords')
+        .should('contain', 'Latitude: 30.61306')
+        .and('contain', 'Longitude: -96.34467')
+        .and('be.visible')
+      // checks if coordinates change after clicking new location
+      cy.get('canvas').click((size[0]/4), (size[1]/4))
+      cy.get('tamu-gisc-click-coordinates > .point-coords')
+         .should('not.contain', 'Latitude: 30.61306')
+         .and('not.contain', 'Longitude: -96.34467')
+
+      //  TODO: check if coordinates are copied after clicking
+    })
+
+    it('Check Zoom Functionality', () => {
+      /**
+       * When fully zoomed in or out the tab index changes to '-1'
+       * and that is the check if the map is zooming at all
+       */
+      // zoom in by clicking 5 times (max zoom in)
+      for(let n = 0; n <= 5; n++){
+        cy.get('.esri-zoom > .esri-widget--button > .esri-icon-plus').click()
+      }
+      cy.get('.esri-widget--button').should('have.attr', 'tabindex', '-1')
+      // zoom out by clicking 10 times (max zoom out from max zoom in)
+      for(let n = 0; n <= 11; n++){
+        cy.get('.esri-zoom > .esri-widget--button > .esri-icon-minus').click()
+      }
+       cy.get('.esri-widget--button:last-child').should('have.attr', 'tabindex', '-1')
+    })
+
+    //TODO: Test compass
+    it.only('Rotate Map Orientation by Compass', () => {
+      // rotate map via right click
+      cy.get('canvas')
+      //.trigger('mouseover', (size[0]/2), (size[1]/2))
+      // .trigger('mousedown', { button: 2})               // mimics holding right mouse button down
+      // .trigger('mousemove', (size[0]/4), (size[1]/4))
+      // .trigger('mouseup')
+
+      // rotate map using 'a' and 'd'
+      // rotate map counter-clockwise for 2 seconds by using keyCode for the letter 'a'
+      cy.get('canvas').trigger('keydown', { keyCode: 65 })
+      cy.wait(2000)
+      cy.get('canvas').trigger('keyup', { keyCode: 65 })
+      // rotate map clockwise for 2 seconds by using keyCode for the letter 'd'
+      cy.get('canvas').trigger('keydown', { keyCode: 68 })
+      cy.wait(2000)
+      cy.get('canvas').trigger('keyup', { keyCode: 68 })
+    })
+
+    //TODO: Test location tracking
+
+    // test help options and check if the destination is correct
     it(`Displays Help Options`, () => {
       cy.getHelpButton().click()
       cy.get('.topics').should('be.visible')

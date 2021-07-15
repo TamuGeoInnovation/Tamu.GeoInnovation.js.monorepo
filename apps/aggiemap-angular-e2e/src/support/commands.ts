@@ -8,6 +8,8 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
+import * as cypress from "cypress";
+
 declare namespace Cypress {
   interface Chainable<Subject> {
     login(email: string, password: string): void;
@@ -66,17 +68,14 @@ Cypress.Commands.add('getSideBar', (visibility) => {
 })
 
 Cypress.Commands.add('checkLayer', (num, layerName) => {
-  cy.get(`tamu-gisc-layer-list > .sidebar-component-content-container >:nth-child(${num})`)
-    .should('have.class', 'layer-item ng-star-inserted', {timeout: 2000})
+  cy.get(`tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(${num})`)
+    .should('have.class', 'ng-star-inserted', {timeout: 2000})
     .and('contain', `${layerName}`, {timeout: 2000})
-    .scrollIntoView()
-    .and('be.visible')
 })
 
 Cypress.Commands.add('checkLegend', (num, legendName) => {
   cy.get(`.sidebar-component-content-container > :nth-child(${num})`)
     .should('contain', `${legendName}`)
-    .scrollIntoView()
     .and('be.visible')
 })
 
@@ -106,5 +105,16 @@ Cypress.Commands.add('checkMenuItem', (num, name) => {
   cy.get(`.list-container > :nth-child(${num})`)
     .should('contain', `${name}`)
 })
-
+// confirm pop-up appears by intercepting server request
+Cypress.Commands.add('checkPopUp', () => {
+  cy.get('tamu-gisc-feature-popup > .popup').should('be.visible')
+})
+// confirm navigation panel appears by verifying URL
+Cypress.Commands.add('checkNavPanel', () => {
+  cy.url().should('include','/trip')
+})
+// checks if icons are visible on the map
+Cypress.Commands.add('checkMapIcon', () => {
+  cy.get('tamu-gisc-layer-list-item > .layer-item').should('be.visible')
+})
 export{}

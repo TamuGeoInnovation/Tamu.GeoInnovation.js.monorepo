@@ -18,75 +18,220 @@ desktopSizes.forEach((size) => {
 
     it('Construction Zone', function() {
       cy.wait('@construction')
-      cy.checkLayer('1', 'Construction Zone')
-      cy.checkLegend('9', 'Construction Area')
-      cy.checkIcon('9',this.data.construction, 'Construction Area')
+      cy.checkLayer('8', 'Construction Zone')
+      cy.checkLegend('8', 'Construction Zone')
+      // click location of a known construction zone for multiple resolutions
+      if (size[0] === 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(900, 650)
+      }
+      else if (size[0] === 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(625, 500)
+      }
+      else if (size[0] === 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(670, 555)
+      }
+      // checks if popup is visible
+      cy.checkPopUp()
     })
     it('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
         .as("POI")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(2)')
-        .click({force: true})
-      cy.wait("@POI")
-      cy.checkLayer('2','Points of Interest')
-      cy.checkLegend('10', 'Points of Interest')
-      cy.checkIcon('10',this.data.pointsOfInterest, 'Points of Interest')
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(7)')
+        .trigger('mouseover').click().should('be.visible')
+      cy.checkLayer('7','Points of Interest')
+      cy.checkLegend('7', 'Points of Interest')
+      // click location of a known point of interest for multiple resolutions
+      if (size[0] === 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1125, 650)
+      }
+      else if (size[0] === 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(845, 505)
+      }
+      else if (size[0] === 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(880, 575)
+      }
+      // checks if popup is visible
+      cy.checkPopUp()
+      // click "Directions To Here for poi"
+      cy.get('tamu-gisc-poi-popup-component > .popup-section > .button').click()
+      // confirm navigation window pop-up by verifying URL
+      cy.checkNavPanel()
+      // click random location on map to begin route
+      cy.wait(5000)
+      cy.get('canvas').trigger('mouseover').click((size[0]/2), (size[1]/2))
+      // checks if directions are displayed
+      cy.get('.directions-container').should('be.visible')
+      // check if route duration is displayed
+      cy.get('.quantity').should('be.visible')
+      // check if route length is displayed
+      cy.get('.unit').should('be.visible')
+      // test car route option
+      cy.get('.travel-modes > :nth-child(3) > div')
+          .click()
+          .should('have.class', 'active')
+      cy.get('.directions-container').should('be.visible')
+      // test bus route option
+      cy.get('.travel-modes > :nth-child(4) > div')
+          .click()
+          .should('have.class', 'active')
+      cy.get('.directions-container').should('be.visible')
     })
     it('Restrooms', function() {
       cy.intercept('GET', '*')
         .as("restrooms")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(3)')
-        .click({force: true})
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(6)')
+        .trigger('mouseover').click().should('be.visible')
       cy.wait("@restrooms")    
-      cy.checkLayer('3','Restrooms')
-      cy.checkLegend('10', 'Unisex Restrooms')
-      cy.checkIcon('10',this.data.restrooms, 'Unisex Restrooms')
+      cy.checkLayer('6','Restrooms')
+      cy.checkLegend('6', 'Restrooms')
+      // click location of a known restroom locations by pixels for multiple resolutions
+      if (size[0] === 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1105, 580)
+      }
+      else if (size[0] === 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(830, 440)
+      }
+      else if (size[0] === 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(865, 505)
+      }
+      // checks if popup is visible
+      cy.checkPopUp()
     })
+    
     it('Lactation Rooms', function() {
       cy.intercept('GET', '*')
         .as("lactation")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(4)')
-        .click({force: true})
+        cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(5)')
+        .trigger('mouseover').click().should('be.visible')
       cy.wait("@lactation")      
-      cy.checkLayer('4', 'Lactation Rooms')
-      cy.checkLegend('10', 'Lactation Rooms')
-      cy.checkIcon('10',this.data.lactationRooms, 'Lactation Rooms')
+      cy.checkLayer('5', 'Lactation Rooms')
+      cy.checkLegend('5', 'Lactation Rooms')
+      // click location of a known lactation room locations by pixels for multiple resolutions
+      if (size[0] === 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1100, 595)
+      }
+      else if (size[0] === 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(820, 455)
+      }
+      else if (size[0] === 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(860, 520)
+      }
+      // checks if popup is visible
+      cy.checkPopUp()
+      // check "Additional Information" link
+      cy.get('tamu-gisc-lactation-popup-component > .popup-section').should('be.visible')
+      cy.checkLink('Additional Information', 'https://studentlife.tamu.edu/wrc.bfwh.lactationspace')
     })
     it('Visitor Parking', function() {
       cy.intercept('GET', '*')
         .as("visitor")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(5)')
-        .click({force: true})
+        cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(4)')
+        .trigger('mouseover').click().should('be.visible')
       cy.wait("@visitor")     
-      cy.checkLayer('5', 'Visitor Parking')
-      cy.checkLegend('10', 'Visitor Parking')
-      cy.checkIcon('10',this.data.visitorParking, 'Visitor Parking')
+      cy.checkLayer('4', 'Visitor Parking')
+      cy.checkLegend('4', 'Visitor Parking')
+      // click location of a known visitor parking locations by pixels for multiple resolutions
+      if (size[0] === 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1050, 600)
+      }
+      else if (size[0] === 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(770, 460)
+      }
+      else if (size[0] === 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(810, 520)
+      }
+      // checks if popup is visible
+      cy.checkPopUp()
     })
     it('Accessible Entrances', function() {
       cy.intercept('GET', '*')
         .as("accessible")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(6)')
-        .click({force: true})
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(3)')
+        .trigger('mouseover').click().should('be.visible')
       cy.wait("@accessible")
-      cy.checkLayer('6', 'Accessible Entrances')
-      cy.checkLegend('10', 'Assisted Open Entrance')
-      cy.checkIcon('10',this.data.accessibleEntrances, 'Assisted Open Entrance')
+      cy.checkLayer('3', 'Accessible Entrances')
+      cy.checkLegend('3', 'Accessible Entrances')
+      // click location of a known accessible entrance locations by pixels for multiple resolutions
+      if (size[0] === 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(980, 575) 
+      }
+      else if (size[0] === 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(700, 435)
+      }
+      else if (size[0] === 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(740, 500)
+      }
+      // checks if popup is visible
+      cy.checkPopUp()
     })
     it('Emergency Phones', function() {
       cy.intercept('GET', '*')
         .as("emergency")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(7)')
-        .click({force: true})
-      cy.wait("@emergency")    
-      cy.checkLayer('7', 'Emergency Phone')
-      cy.checkLegend('10', 'Emergency Phone')
-      cy.checkIcon('10',this.data.emergencyPhones, 'Emergency Phone')
+      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(2)')
+        .trigger('mouseover').click().should('be.visible')
+      cy.wait("@emergency")
+      cy.checkLayer('2', 'Emergency Phone')
+      cy.checkLegend('2', 'Emergency Phone')
     })
     it('Physical Distance Study Area', function() {
       cy.wait('@tents')    
-      cy.checkLayer('8', 'Physical Distance Study Area')
-      cy.checkLegend('10', 'Physical Distance Study Area')
-      cy.checkIcon('10',this.data.physicalDistanceStudyArea, 'Physical Distance Study Area')
+      cy.checkLayer('1', 'Physical Distance Study Area')
+      cy.checkLegend('1', 'Physical Distance Study Area')
+      // click location of a known study area locations by pixels for multiple resolutions
+      if (size[0] === 1920) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1160, 530)
+      }
+      else if (size[0] === 1366) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(880, 390)
+      }
+      else if (size[0] === 1440) {
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(920, 460)
+      }
+      // checks if popup is visible
+      cy.checkPopUp()
+      // click "Directions To Here for study areas"
+      cy.get('tamu-gisc-tent-zone > .popup-section > .button').click()
+      // confirm navigation window pop-up by verifying URL
+      cy.checkNavPanel()
+      // click random location on map to begin route
+      cy.get('canvas').trigger('mouseover').click((size[0]/2), (size[1]/2))
+      // checks if directions are displayed
+      cy.get('.directions-container').should('be.visible')
+      // check if route duration is displayed
+      cy.get('.quantity').should('be.visible')
+      // check if route length is displayed
+      cy.get('.unit').should('be.visible')
+      // test car route option
+      cy.get('.travel-modes > :nth-child(3) > div')
+          .click()
+          .should('have.class', 'active')
+      cy.get('.directions-container').should('be.visible')
+      // test bus route option
+      cy.get('.travel-modes > :nth-child(4) > div')
+          .click()
+          .should('have.class', 'active')
+      cy.get('.directions-container').should('be.visible')
     })
   })
 })
