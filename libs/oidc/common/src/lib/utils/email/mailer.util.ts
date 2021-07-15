@@ -3,18 +3,59 @@ import Mail from 'nodemailer/lib/mailer';
 
 import { User, UserPasswordReset } from '@tamu-gisc/oidc/common';
 
+export type NodeMailerServices = 'ethereal' | 'gmail' | 'tamu-relay';
 export class Mailer {
-  private static user = 'kaitlyn.schimmel@ethereal.email';
-  private static password = 'Pe6D9DhkgUDyqyBMeg';
-  private static transporter: Mail = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false,
-    auth: {
-      user: Mailer.user,
-      pass: Mailer.password
+  private static transporter: Mail;
+  private static service: NodeMailerServices;
+
+  // https://dev.to/chandrapantachhetri/sending-emails-securely-using-node-js-nodemailer-smtp-gmail-and-oauth2-g3a
+  // 2LO https://nodemailer.com/smtp/oauth2/#oauth-2lo
+  public static build(
+    service: NodeMailerServices,
+    config?: {
+      user: string;
+      accessToken: string;
+      clientId: string;
+      clientSecret: string;
+      refreshToken: string;
     }
-  });
+  ) {
+    Mailer.service = service;
+
+    switch (service) {
+      case 'ethereal':
+        // use ethereal email and print out links to console (debugging / dev)
+        Mailer.transporter = nodemailer.createTransport({
+          host: 'smtp.ethereal.email',
+          port: 587,
+          secure: false,
+          auth: {
+            user: 'kaitlyn.schimmel@ethereal.email',
+            pass: 'Pe6D9DhkgUDyqyBMeg'
+          }
+        });
+        break;
+      case 'tamu-relay':
+        Mailer.transporter = nodemailer.createTransport({
+          host: 'relay.tamu.edu',
+          port: 25,
+          secure: false
+        });
+        break;
+      case 'gmail':
+        // use gmail instead
+        Mailer.transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 465,
+          secure: true,
+          auth: {
+            type: 'OAuth2',
+            ...config
+          }
+        });
+        break;
+    }
+  }
 
   public static sendTokenByEmail(recipient: User, token: string) {
     const mailOptions = {
@@ -26,9 +67,7 @@ export class Mailer {
         `<p>Your two-step verification code is: <b>${token}</b></p>` + `<p>Use this code to complete loggin in with GISC</p>`
     };
 
-    Mailer.transporter.sendMail(mailOptions).then((response) => {
-      console.log('2FA: ', Mailer.getTestMessageUrl(response));
-    });
+    Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
   }
 
   public static sendPasswordResetRequestEmail(recipient: User, resetRequest: UserPasswordReset, location: string) {
@@ -45,9 +84,7 @@ export class Mailer {
         `<a href="">Report fraudulent reset request</a>`
     };
 
-    Mailer.transporter.sendMail(mailOptions).then((response) => {
-      console.log('Verification email: ', Mailer.getTestMessageUrl(response));
-    });
+    Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
   }
 
   public static sendPasswordResetConfirmationEmail(toEmail: string) {
@@ -59,9 +96,7 @@ export class Mailer {
       html: 'Your password to GeoInnovation Service Center has been reset.'
     };
 
-    Mailer.transporter.sendMail(mailOptions).then((response) => {
-      console.log('Verification email: ', Mailer.getTestMessageUrl(response));
-    });
+    Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
   }
 
   public static sendAccountConfirmationEmail(toEmail: string, sub: string) {
@@ -73,15 +108,12 @@ export class Mailer {
       html: `An account for GeoInnovation Service Center has been created with this email address. </br><a href="http://localhost:4001/user/register/${sub}">Verify email</a>`
     };
 
-    Mailer.transporter.sendMail(mailOptions).then((response) => {
-      console.log('Verification email: ', Mailer.getTestMessageUrl(response));
-    });
+    Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
   }
 
-  public static getTestMessageUrl(response: string | {}) {
-    const testUrl = nodemailer.getTestMessageUrl(response);
-    console.log('TestURL: ', testUrl);
-
-    return testUrl;
+  public static emailToConsole(response) {
+    if (Mailer.service == 'ethereal') {
+      console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
+    }
   }
 }
