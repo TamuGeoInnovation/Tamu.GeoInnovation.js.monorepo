@@ -1,5 +1,5 @@
 <p>{{ (pageContents | async)?.id }}</p>
 
-<ul *ngFor="let item of (pageBody | async)">
-  <li *ngIf="item.__component != 'page.bug-image'">{{ item.text }}</li>
-</ul>
+<div *ngFor="let item of (pageBody | async)">
+  <p *ngIf="item.__component != 'page.bug-image'">{{ item.text }}</p>
+</div>

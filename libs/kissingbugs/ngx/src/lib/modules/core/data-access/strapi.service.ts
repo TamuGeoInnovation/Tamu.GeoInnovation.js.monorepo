@@ -15,7 +15,7 @@ export class StrapiService {
     this.resource = this.environment.value(`api_url`);
   }
 
-  public getPage(page: StrapiPages, locale: StrapiLocales = 'en') {
+  public getPage(page: StrapiPages, locale: string = 'en') {
     return this.http.get<IStrapiPageResponse>(`${this.resource}/${page}?_locale=${locale}`);
   }
 }
