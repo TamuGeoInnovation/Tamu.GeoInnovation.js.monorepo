@@ -1,3 +1,7 @@
+export type StrapiPages = 'home' | 'found-a-bug';
+
+export type StrapiLocales = 'en' | 'es';
+
 export interface IStrapiMediaFormat {
   name: string;
   hash: string;
