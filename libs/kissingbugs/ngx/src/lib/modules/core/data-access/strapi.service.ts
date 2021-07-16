@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { StrapiLocales, StrapiPages } from '../types/types';
+import { IStrapiPageResponse, StrapiLocales, StrapiPages } from '../types/types';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,6 @@ export class StrapiService {
   }
 
   public getPage(page: StrapiPages, locale: StrapiLocales = 'en') {
-    return this.http.get(`${this.resource}/${page}?_locale=${locale}`);
+    return this.http.get<IStrapiPageResponse>(`${this.resource}/${page}?_locale=${locale}`);
   }
 }
