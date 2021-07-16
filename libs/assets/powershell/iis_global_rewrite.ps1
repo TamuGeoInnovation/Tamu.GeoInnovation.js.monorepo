@@ -7,9 +7,11 @@
     [string]$RewriteType,
     [parameter(Position=3, Mandatory=$true, HelpMessage="URL or farm to redirect matching requests.")]
     [string]$RedirectUrl,
-    [parameter(Position=4, Mandatory=$false, HelpMessage="Setting farm conditional IDP first.")]
+    [parameter(Position=4, Mandatory=$false, HelpMessage="Conditional Pattern.")]
+    [string]$ConditionalPattern,
+    [parameter(Position=5, Mandatory=$false, HelpMessage="Setting farm conditional IDP first.")]
     [switch]$ConditionalFirst,
-    [parameter(Position=5, Mandatory=$false, HelpMessage="Setting farm conditional IDP Second.")]
+    [parameter(Position=6, Mandatory=$false, HelpMessage="Setting farm conditional IDP Second.")]
     [switch]$ConditionalSecond
 )
 
@@ -53,7 +55,7 @@ if($RewriteType -eq "url"){
     Set-WebConfigurationProperty –pspath $path –Filter "$filter/action" –Name "url" –Value "http://$RedirectUrl/{R:1}";
     if($ConditionalFirst -eq $true){
         Set-WebConfigurationProperty –pspath $path –Filter "$filter/conditions" -Name "logicalGrouping" -Value "MatchAll";
-        Add-WebConfigurationProperty –pspath $path –Filter "$filter/conditions" –Name "." –Value @{input="{HTTP_HOST}";matchType="Pattern";pattern ='idp.geoservices.tamu.edu';negate="false";};
+        Add-WebConfigurationProperty –pspath $path –Filter "$filter/conditions" –Name "." –Value @{input="{HTTP_HOST}";matchType="Pattern";pattern=$ConditionalPattern;negate="false";};
     }
     if($ConditionalSecond -eq $true){
         Set-WebConfigurationProperty –pspath $path –Filter "$filter/conditions" -Name "logicalGrouping" -Value "MatchAll";
