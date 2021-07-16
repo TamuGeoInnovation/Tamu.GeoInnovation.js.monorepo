@@ -2,6 +2,13 @@ export type StrapiPages = 'home' | 'found-a-bug';
 
 export type StrapiLocales = 'en' | 'es';
 
+export type StrapiComponents =
+  | IStrapiMedia
+  | IStrapiPageSection
+  | IStrapiPageInfoAlert
+  | IStrapiPageBugImage
+  | IStrapiPageParagraph;
+
 export interface IStrapiMediaFormat {
   name: string;
   hash: string;
@@ -57,4 +64,30 @@ export interface IStrapiPageParagraph {
   __component: string;
   id: number;
   text: string;
+}
+
+export interface IStrapiLocale {
+  id: number;
+  locale: string;
+  published_at: string;
+}
+export interface IStrapiPageResponse {
+  id: number;
+  locale: StrapiLocales;
+  published_at: string;
+  created_at: string;
+  updated_at: string;
+  header: {
+    id: number;
+    title: string;
+    icon: IStrapiMedia;
+    background: IStrapiMedia;
+  };
+  body: StrapiComponents[];
+  footer: {
+    id: number;
+    text: string;
+    image: IStrapiMedia;
+  };
+  localizations: IStrapiLocale[];
 }
