@@ -1,8 +1,8 @@
 export type StrapiPages = 'home' | 'found-a-bug';
 
-export type StrapiLocales = 'en' | 'es';
+export type IStrapiLocales = 'en' | 'es';
 
-export type StrapiComponents =
+export type IStrapiComponent =
   | IStrapiMedia
   | IStrapiPageSection
   | IStrapiPageInfoAlert
@@ -36,6 +36,7 @@ export interface IStrapiMedia extends IStrapiMediaFormat {
     medium: IStrapiMediaFormat;
     small: IStrapiMediaFormat;
   };
+  render();
 }
 
 export interface IStrapiPageSection {
@@ -43,6 +44,7 @@ export interface IStrapiPageSection {
   id: number;
   title: string;
   text: string;
+  render();
 }
 
 export interface IStrapiPageInfoAlert {
@@ -50,6 +52,7 @@ export interface IStrapiPageInfoAlert {
   id: number;
   text: string;
   image: IStrapiMedia;
+  render();
 }
 
 export interface IStrapiPageBugImage {
@@ -58,12 +61,14 @@ export interface IStrapiPageBugImage {
   credit: string;
   caption: string;
   image: IStrapiMedia;
+  render();
 }
 
 export interface IStrapiPageParagraph {
   __component: string;
   id: number;
   text: string;
+  render();
 }
 
 export interface IStrapiLocale {
@@ -73,7 +78,7 @@ export interface IStrapiLocale {
 }
 export interface IStrapiPageResponse {
   id: number;
-  locale: StrapiLocales;
+  locale: IStrapiLocales;
   published_at: string;
   created_at: string;
   updated_at: string;
@@ -83,7 +88,7 @@ export interface IStrapiPageResponse {
     icon: IStrapiMedia;
     background: IStrapiMedia;
   };
-  body: StrapiComponents[];
+  body: IStrapiComponent[];
   footer: {
     id: number;
     text: string;

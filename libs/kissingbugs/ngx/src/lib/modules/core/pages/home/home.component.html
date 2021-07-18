@@ -1,5 +1,12 @@
 <p>{{ (pageContents | async)?.id }}</p>
 
 <div *ngFor="let item of (pageBody | async)">
-  <p *ngIf="item.__component != 'page.bug-image'">{{ item.text }}</p>
+  <div [ngSwitch]="item.__component">
+    <tamu-gisc-kissingbugs-section *ngSwitchCase="'page.section'" [dataSource]="item"></tamu-gisc-kissingbugs-section>
+    <p *ngSwitchCase="'page.info-block'">INFO-BLOCK</p>
+    <p *ngSwitchCase="'page.bug-image'">BUG-IMAGE</p>
+    <p *ngSwitchCase="'page.paragraph'">PARAGRAPH</p>
+    <p *ngSwitchCase="'page.info-alert'">INFO-ALERT</p>
+    <p *ngSwitchDefault>Default</p>
+  </div>
 </div>

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { IStrapiPageResponse, StrapiLocales, StrapiPages } from '../types/types';
+import { IStrapiPageResponse, IStrapiLocales, StrapiPages } from '../types/types';
 
 @Injectable({
   providedIn: 'root'
