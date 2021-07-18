@@ -45,6 +45,14 @@ export interface IStrapiPageSection {
   text: string;
 }
 
+export interface IStrapiPageInfoBlock {
+  __component: string;
+  id: number;
+  title: string;
+  subtitle: string;
+  text: string;
+}
+
 export interface IStrapiPageInfoAlert {
   __component: string;
   id: number;
