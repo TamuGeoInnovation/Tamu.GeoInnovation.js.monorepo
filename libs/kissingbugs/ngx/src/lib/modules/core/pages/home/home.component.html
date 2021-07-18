@@ -1,12 +1,12 @@
-<p>{{ (pageContents | async)?.id }}</p>
+<p>{{ (pageContents | async)?.locale }}</p>
 
 <div *ngFor="let item of (pageBody | async)">
   <div [ngSwitch]="item.__component">
     <tamu-gisc-kissingbugs-section *ngSwitchCase="'page.section'" [dataSource]="item"></tamu-gisc-kissingbugs-section>
-    <p *ngSwitchCase="'page.info-block'">INFO-BLOCK</p>
-    <p *ngSwitchCase="'page.bug-image'">BUG-IMAGE</p>
-    <p *ngSwitchCase="'page.paragraph'">PARAGRAPH</p>
-    <p *ngSwitchCase="'page.info-alert'">INFO-ALERT</p>
+    <tamu-gisc-kissingbugs-section *ngSwitchCase="'page.info-block'" [dataSource]="item"></tamu-gisc-kissingbugs-section>
+    <tamu-gisc-kissingbugs-bug-image *ngSwitchCase="'page.bug-image'" [dataSource]="item"></tamu-gisc-kissingbugs-bug-image>
+    <p *ngSwitchCase="'page.paragraph'">{{ item.text }}</p>
+    <tamu-gisc-kissingbugs-info-alert *ngSwitchCase="'page.info-alert'" [dataSource]="item"></tamu-gisc-kissingbugs-info-alert>
     <p *ngSwitchDefault>Default</p>
   </div>
 </div>

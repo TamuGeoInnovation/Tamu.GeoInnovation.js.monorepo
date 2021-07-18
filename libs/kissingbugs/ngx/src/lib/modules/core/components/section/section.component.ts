@@ -13,7 +13,7 @@ export class SectionComponent implements OnInit, OnDestroy {
 
   constructor() {}
 
-  ngOnInit() {}
+  public ngOnInit() {}
 
-  ngOnDestroy() {}
+  public ngOnDestroy() {}
 }
