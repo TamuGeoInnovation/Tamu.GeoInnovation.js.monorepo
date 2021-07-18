@@ -36,7 +36,6 @@ export interface IStrapiMedia extends IStrapiMediaFormat {
     medium: IStrapiMediaFormat;
     small: IStrapiMediaFormat;
   };
-  render();
 }
 
 export interface IStrapiPageSection {
@@ -44,7 +43,6 @@ export interface IStrapiPageSection {
   id: number;
   title: string;
   text: string;
-  render();
 }
 
 export interface IStrapiPageInfoAlert {
@@ -52,7 +50,6 @@ export interface IStrapiPageInfoAlert {
   id: number;
   text: string;
   image: IStrapiMedia;
-  render();
 }
 
 export interface IStrapiPageBugImage {
@@ -61,14 +58,12 @@ export interface IStrapiPageBugImage {
   credit: string;
   caption: string;
   image: IStrapiMedia;
-  render();
 }
 
 export interface IStrapiPageParagraph {
   __component: string;
   id: number;
   text: string;
-  render();
 }
 
 export interface IStrapiLocale {

@@ -13,9 +13,7 @@ export class SectionComponent implements OnInit, OnDestroy {
 
   constructor() {}
 
-  ngOnInit() {
-    console.log(this.dataSource);
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {}
 }
