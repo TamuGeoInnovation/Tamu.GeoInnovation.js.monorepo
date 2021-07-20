@@ -1,3 +1,5 @@
+<tamu-gisc-kissingbugs-header [dataSource]="(pageHeader | async)"></tamu-gisc-kissingbugs-header>
+
 <p>{{ (pageContents | async)?.locale }}</p>
 
 <div *ngFor="let item of (pageBody | async)">

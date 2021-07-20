@@ -79,23 +79,27 @@ export interface IStrapiLocale {
   locale: string;
   published_at: string;
 }
+
+export interface IStrapiPageHeader {
+  id: number;
+  title: string;
+  icon: IStrapiMedia;
+  background: IStrapiMedia;
+}
+
+export interface IStrapiPageFooter {
+  id: number;
+  text: string;
+  image: IStrapiMedia;
+}
 export interface IStrapiPageResponse {
   id: number;
   locale: IStrapiLocales;
   published_at: string;
   created_at: string;
   updated_at: string;
-  header: {
-    id: number;
-    title: string;
-    icon: IStrapiMedia;
-    background: IStrapiMedia;
-  };
+  header: IStrapiPageHeader;
   body: IStrapiComponent[];
-  footer: {
-    id: number;
-    text: string;
-    image: IStrapiMedia;
-  };
+  footer: IStrapiPageFooter;
   localizations: IStrapiLocale[];
 }

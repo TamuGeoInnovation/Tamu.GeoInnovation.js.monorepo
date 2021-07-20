@@ -6,6 +6,7 @@ import { InfoAlertComponent } from './info-alert/info-alert.component';
 import { BugImageComponent } from './bug-image/bug-image.component';
 import { StrapiComponent } from './strapi/strapi.component';
 import { InfoBlockComponent } from './info-block/info-block.component';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
@@ -14,9 +15,18 @@ import { InfoBlockComponent } from './info-block/info-block.component';
     InfoAlertComponent,
     BugImageComponent,
     StrapiComponent,
-    InfoBlockComponent
+    InfoBlockComponent,
+    HeaderComponent
   ],
   imports: [CommonModule],
-  exports: [SectionComponent, MediaComponent, InfoAlertComponent, BugImageComponent, StrapiComponent, InfoBlockComponent]
+  exports: [
+    SectionComponent,
+    MediaComponent,
+    InfoAlertComponent,
+    BugImageComponent,
+    StrapiComponent,
+    InfoBlockComponent,
+    HeaderComponent
+  ]
 })
 export class ComponentsModule {}

@@ -5,7 +5,7 @@ import { pluck } from 'rxjs/operators';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { StrapiService } from '../../data-access/strapi.service';
-import { IStrapiPageResponse, IStrapiComponent } from '../../types/types';
+import { IStrapiPageResponse, IStrapiComponent, IStrapiPageHeader } from '../../types/types';
 
 @Component({
   selector: 'tamu-gisc-kissingbug-home',
@@ -16,17 +16,20 @@ import { IStrapiPageResponse, IStrapiComponent } from '../../types/types';
 export class HomeComponent implements OnInit, OnDestroy {
   public pageContents: Observable<IStrapiPageResponse>;
   public pageBody: Observable<Array<IStrapiComponent>>;
+  public pageHeader: Observable<IStrapiPageHeader>;
 
   constructor(private ss: StrapiService, private environment: EnvironmentService) {}
 
   public ngOnInit() {
     const language: string = navigator.language.substr(0, 2);
 
-    // TOOD: remove this? Why is it here again?
+    // TODO: remove this? Why is it here again?
+    // It's for using the api_url for getting images to load from Strapi
     const url = this.environment.value('api_url');
 
     this.pageContents = this.ss.getPage('home', language);
     this.pageBody = this.pageContents.pipe(pluck('body'));
+    this.pageHeader = this.pageContents.pipe(pluck('header'));
 
     this.pageBody.subscribe((body: Array<IStrapiComponent>) => {
       body.forEach((component: IStrapiComponent) => {
