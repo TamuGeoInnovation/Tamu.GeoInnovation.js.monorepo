@@ -1,4 +1,4 @@
-<tamu-gisc-kissingbugs-header *ngIf="!(pageContents | async)" [dataSource]="(pageContents | async)?.header"></tamu-gisc-kissingbugs-header>
+<tamu-gisc-kissingbugs-header [dataSource]="pageContents | async"></tamu-gisc-kissingbugs-header>
 
 <div *ngFor="let item of (pageContents | async)?.body">
   <div [ngSwitch]="item.__component">
