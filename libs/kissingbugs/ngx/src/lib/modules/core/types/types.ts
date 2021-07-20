@@ -83,7 +83,8 @@ export interface IStrapiLocale {
 export interface IStrapiPageHeader {
   id: number;
   title: string;
-  icon: IStrapiMedia;
+  left_icon: IStrapiMedia;
+  right_icon: IStrapiMedia;
   background: IStrapiMedia;
 }
 

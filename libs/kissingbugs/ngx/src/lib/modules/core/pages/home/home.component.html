@@ -1,8 +1,6 @@
-<tamu-gisc-kissingbugs-header [dataSource]="(pageHeader | async)"></tamu-gisc-kissingbugs-header>
+<tamu-gisc-kissingbugs-header *ngIf="!(pageContents | async)" [dataSource]="(pageContents | async)?.header"></tamu-gisc-kissingbugs-header>
 
-<p>{{ (pageContents | async)?.locale }}</p>
-
-<div *ngFor="let item of (pageBody | async)">
+<div *ngFor="let item of (pageContents | async)?.body">
   <div [ngSwitch]="item.__component">
     <tamu-gisc-kissingbugs-section *ngSwitchCase="'page.section'" [dataSource]="item"></tamu-gisc-kissingbugs-section>
     <tamu-gisc-kissingbugs-info-block *ngSwitchCase="'page.info-block'" [dataSource]="item"></tamu-gisc-kissingbugs-info-block>

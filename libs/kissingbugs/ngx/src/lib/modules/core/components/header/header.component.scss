@@ -1,0 +1,60 @@
+@import 'libs/sass/mixins';
+
+header .header-container {
+  @include flexbox();
+  @include justify-content(center);
+}
+
+header.home {
+  background-image: url(/assets/images/TxLandscape.jpg);
+}
+
+header.found-bug {
+  background-image: url(/assets/images/four-people-sunny-texas-resized-compressor.jpg);
+}
+
+header.map {
+  background-image: url(/assets/images/two-people-scene-texas-resized-compressor.jpg);
+}
+
+header.team {
+  background-image: url(/assets/images/two-people-hill-resized-compressor.jpg);
+}
+
+header.faq {
+  background-image: url(/assets/images/two-people-study-resized-compressor.jpg);
+}
+
+header.publications {
+  background-image: url(/assets/images/gerst-in-tray.jpg);
+}
+
+header.contact {
+  background-image: url(/assets/images/man-overlooking-landscape-compressor.jpg);
+}
+
+header i {
+  position: fixed;
+  top: 62%;
+  font-size: 7em;
+  text-align: center;
+  -moz-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  &.fa-bug-hd {
+    background-image: url(/assets/images/genericbug-hero.svg);
+    height: 6rem;
+    width: 6rem;
+  }
+}
+
+header i::before {
+  color: #fc0;
+}
+
+header .fb_iframe_widget {
+  position: absolute;
+  bottom: 1rem;
+  right: 50%;
+  z-index: 101;
+  @include transform(translateX(50%));
+}

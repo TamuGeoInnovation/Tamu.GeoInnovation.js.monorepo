@@ -1,5 +1,5 @@
 //compress:true
-@import "libs/sass/mixins";
+@import 'libs/sass/mixins';
 //  ==========================================================================
 //   Spacing Classes
 //  ==========================================================================
@@ -280,64 +280,64 @@ em {
   font-style: italic;
 }
 
-header .header-container {
-  @include flexbox();
-  @include justify-content(center);
-}
+// header .header-container {
+//   @include flexbox();
+//   @include justify-content(center);
+// }
 
-header.home {
-  background-image: url(../images/TxLandscape.jpg);
-}
+// header.home {
+//   background-image: url(/assets/images/TxLandscape.jpg);
+// }
 
-header.found-bug {
-  background-image: url(../images/four-people-sunny-texas-resized-compressor.jpg);
-}
+// header.found-bug {
+//   background-image: url(/assets/images/four-people-sunny-texas-resized-compressor.jpg);
+// }
 
-header.map {
-  background-image: url(../images/two-people-scene-texas-resized-compressor.jpg);
-}
+// header.map {
+//   background-image: url(/assets/images/two-people-scene-texas-resized-compressor.jpg);
+// }
 
-header.team {
-  background-image: url(../images/two-people-hill-resized-compressor.jpg);
-}
+// header.team {
+//   background-image: url(/assets/images/two-people-hill-resized-compressor.jpg);
+// }
 
-header.faq {
-  background-image: url(../images/two-people-study-resized-compressor.jpg);
-}
+// header.faq {
+//   background-image: url(/assets/images/two-people-study-resized-compressor.jpg);
+// }
 
-header.publications {
-  background-image: url(../images/gerst-in-tray.jpg);
-}
+// header.publications {
+//   background-image: url(/assets/images/gerst-in-tray.jpg);
+// }
 
-header.contact {
-  background-image: url(../images/man-overlooking-landscape-compressor.jpg);
-}
+// header.contact {
+//   background-image: url(/assets/images/man-overlooking-landscape-compressor.jpg);
+// }
 
-header i {
-  position: fixed;
-  top: 62%;
-  font-size: 7em;
-  text-align: center;
-  -moz-transform: translateX(-50%);
-  -ms-transform: translateX(-50%);
-  &.fa-bug-hd {
-    background-image: url(../images/genericbug-hero.svg);
-    height: 6rem;
-    width: 6rem;
-  }
-}
+// header i {
+//   position: fixed;
+//   top: 62%;
+//   font-size: 7em;
+//   text-align: center;
+//   -moz-transform: translateX(-50%);
+//   -ms-transform: translateX(-50%);
+//   &.fa-bug-hd {
+//     background-image: url(/assets/images/genericbug-hero.svg);
+//     height: 6rem;
+//     width: 6rem;
+//   }
+// }
 
-header i::before {
-  color: #fc0;
-}
+// header i::before {
+//   color: #fc0;
+// }
 
-header .fb_iframe_widget {
-  position: absolute;
-  bottom: 1rem;
-  right: 50%;
-  z-index: 101;
-  @include transform(translateX(50%));
-}
+// header .fb_iframe_widget {
+//   position: absolute;
+//   bottom: 1rem;
+//   right: 50%;
+//   z-index: 101;
+//   @include transform(translateX(50%));
+// }
 
 #tamuLogo1 {
   position: absolute;
@@ -1436,7 +1436,7 @@ input[type='checkbox'] + i {
     content: '';
     display: block;
     position: relative;
-    background-image: url(../images/icons/ic_check_black_48px.svg);
+    background-image: url(/assets/images/icons/ic_check_black_48px.svg);
     background-size: 110%;
     background-repeat: no-repeat;
     -webkit-transform-origin: center;
@@ -1782,11 +1782,11 @@ nav #language-bubble {
 }
 
 .flag.en {
-  background-image: url(../images/flags/english.png);
+  background-image: url(/assets/images/flags/english.png);
 }
 
 .flag.es {
-  background-image: url(../images/flags/spanish.png);
+  background-image: url(/assets/images/flags/spanish.png);
 }
 
 .dropdown-menu li {
@@ -1804,7 +1804,7 @@ nav #language-bubble {
 }
 
 .logo {
-  background-image: url(../images/genericbug-compressor-footer.svg);
+  background-image: url(/assets/images/genericbug-compressor-footer.svg);
   background-repeat: no-repeat;
   background-position-x: center;
   background-size: contain;
@@ -1812,7 +1812,7 @@ nav #language-bubble {
 }
 
 #menu-logo {
-  background-image: url(../images/genericbug-compressor-footer.svg);
+  background-image: url(/assets/images/genericbug-compressor-footer.svg);
   height: 1.5em;
   width: 1em;
   position: relative; // float: left;
@@ -1895,7 +1895,7 @@ tr:not(th):focus {
   margin-right: 1rem;
 
   &.pdf {
-    background-image: url(../images/kissingbug_pub_pdf.png);
+    background-image: url(/assets/images/kissingbug_pub_pdf.png);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;

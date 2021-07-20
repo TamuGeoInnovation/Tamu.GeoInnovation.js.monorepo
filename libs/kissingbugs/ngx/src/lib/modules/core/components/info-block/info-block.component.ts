@@ -13,8 +13,6 @@ export class InfoBlockComponent implements OnInit, OnDestroy {
 
   constructor() {}
 
-  public ngOnInit() {
-    console.log(this.dataSource.title, this.dataSource.text);
-  }
+  public ngOnInit() {}
   public ngOnDestroy() {}
 }
