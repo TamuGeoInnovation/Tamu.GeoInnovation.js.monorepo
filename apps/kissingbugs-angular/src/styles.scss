@@ -153,8 +153,16 @@
 //  ==========================================================================
 //   Global
 //  ==========================================================================
-html,
-body,
+// html,
+// body,
+// .styleForm {
+//   font-family: $opensans;
+//   font-size: 1em;
+//   height: 100%;
+//   color: $secondcolor;
+//   -webkit-font-smoothing: antialiased;
+// }
+
 .styleForm {
   font-family: $opensans;
   font-size: 1em;
@@ -276,34 +284,6 @@ em {
 header .header-container {
   @include flexbox();
   @include justify-content(center);
-}
-
-header.home {
-  background-image: url(/assets/images/TxLandscape.jpg);
-}
-
-header.found-bug {
-  background-image: url(/assets/images/four-people-sunny-texas-resized-compressor.jpg);
-}
-
-header.map {
-  background-image: url(/assets/images/two-people-scene-texas-resized-compressor.jpg);
-}
-
-header.team {
-  background-image: url(/assets/images/two-people-hill-resized-compressor.jpg);
-}
-
-header.faq {
-  background-image: url(/assets/images/two-people-study-resized-compressor.jpg);
-}
-
-header.resources {
-  background-image: url(/assets/images/gerst-in-tray.jpg);
-}
-
-header.contact {
-  background-image: url(/assets/images/man-overlooking-landscape-compressor.jpg);
 }
 
 header i {

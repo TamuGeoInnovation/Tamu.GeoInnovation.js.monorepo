@@ -86,7 +86,7 @@ export interface IStrapiLocale {
   published_at: string;
 }
 
-export interface IStrapiPageHeader {
+export interface IStrapiPageHero {
   id: number;
   titles: IStrapiPageHeroTitle[];
   statement: string;
@@ -106,7 +106,7 @@ export interface IStrapiPageResponse {
   published_at: string;
   created_at: string;
   updated_at: string;
-  header: IStrapiPageHeader;
+  header: IStrapiPageHero;
   body: IStrapiComponent[];
   footer: IStrapiPageFooter;
   localizations: IStrapiLocale[];

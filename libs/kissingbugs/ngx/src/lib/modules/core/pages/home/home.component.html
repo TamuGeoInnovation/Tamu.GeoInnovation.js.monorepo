@@ -1,12 +1,14 @@
-<tamu-gisc-kissingbugs-header [dataSource]="(pageContents | async)?.header"></tamu-gisc-kissingbugs-header>
+<div class="styleForm">
+  <tamu-gisc-kissingbugs-hero [dataSource]="(pageContents | async)?.header"></tamu-gisc-kissingbugs-hero>
 
-<!-- <div *ngFor="let item of (pageContents | async)?.body">
-  <div [ngSwitch]="item.__component">
-    <tamu-gisc-kissingbugs-section *ngSwitchCase="'page.section'" [dataSource]="item"></tamu-gisc-kissingbugs-section>
-    <tamu-gisc-kissingbugs-info-block *ngSwitchCase="'page.info-block'" [dataSource]="item"></tamu-gisc-kissingbugs-info-block>
-    <tamu-gisc-kissingbugs-bug-image *ngSwitchCase="'page.bug-image'" [dataSource]="item"></tamu-gisc-kissingbugs-bug-image>
-    <p *ngSwitchCase="'page.paragraph'">{{ item.text }}</p>
-    <tamu-gisc-kissingbugs-info-alert *ngSwitchCase="'page.info-alert'" [dataSource]="item"></tamu-gisc-kissingbugs-info-alert>
-    <p *ngSwitchDefault>Default</p>
+  <div *ngFor="let item of (pageContents | async)?.body">
+    <div [ngSwitch]="item.__component">
+      <tamu-gisc-kissingbugs-section *ngSwitchCase="'page.section'" [dataSource]="item"></tamu-gisc-kissingbugs-section>
+      <tamu-gisc-kissingbugs-info-block *ngSwitchCase="'page.info-block'" [dataSource]="item"></tamu-gisc-kissingbugs-info-block>
+      <tamu-gisc-kissingbugs-bug-image *ngSwitchCase="'page.bug-image'" [dataSource]="item"></tamu-gisc-kissingbugs-bug-image>
+      <p *ngSwitchCase="'page.paragraph'">{{ item.text }}</p>
+      <tamu-gisc-kissingbugs-info-alert *ngSwitchCase="'page.info-alert'" [dataSource]="item"></tamu-gisc-kissingbugs-info-alert>
+      <p *ngSwitchDefault>Default</p>
+    </div>
   </div>
-</div> -->
+</div>
