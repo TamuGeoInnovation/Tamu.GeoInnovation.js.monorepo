@@ -115,7 +115,6 @@ async function bootstrap() {
   // This will setup the Mailer (gmail or ethereal)
   // Mailer.build('gmail', mailerConfig);
   Mailer.build('ethereal');
-  Mailer.sendPasswordResetConfirmationEmail('atharmon@tamu.edu');
 
   // This will set the default time step for otplib to 5 minutes
   TwoFactorAuthUtils.build();
