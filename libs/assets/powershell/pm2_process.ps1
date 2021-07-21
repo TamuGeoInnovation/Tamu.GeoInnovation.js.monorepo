@@ -7,26 +7,32 @@
     [string]$Action
 )
 
+$service = Get-Service -Name "pm2" -ErrorAction SilentlyContinue
 
-if((pm2 pid $ProcessName).length -eq 0){
-    if($Action -eq 'stop'){
-        write-host "Service does not exist. Doing nuffin'...";
-        #No-op
-    } elseif($Action -eq 'start') {
-        write-host "Service does no exist. Creating...";
-        pm2 start $EntryPoint --name $ProcessName --exp-backoff-restart-delay=100;
-
-        write-host "Service has been created. Saving..."
-        pm2 save;
-
-        write-host('Process list has been saved.')
-    }
+if($service -eq $null)
+{
+    throw "PM2 as a service is not running"
 } else {
-    if($Action -eq 'stop'){
-        write-host "Stopping Serivce...";
-        pm2 stop $ProcessName;
-    } elseif($Action -eq 'start') {
-        write-host "Stopping Serivce...";
-        pm2 start $ProcessName;
+    if((pm2 pid $ProcessName).length -eq 0){
+        if($Action -eq 'stop'){
+            write-host "Service does not exist. Doing nuffin'...";
+            #No-op
+        } elseif($Action -eq 'start') {
+            write-host "Service does no exist. Creating...";
+            pm2 start $EntryPoint --name $ProcessName --exp-backoff-restart-delay=100;
+
+            write-host "Service has been created. Saving..."
+            pm2 save;
+
+            write-host('Process list has been saved.')
+        }
+    } else {
+        if($Action -eq 'stop'){
+            write-host "Stopping Serivce...";
+            pm2 stop $ProcessName;
+        } elseif($Action -eq 'start') {
+            write-host "Stopping Serivce...";
+            pm2 start $ProcessName;
+        }
     }
 }
