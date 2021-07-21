@@ -1,6 +1,6 @@
-<tamu-gisc-kissingbugs-header [dataSource]="pageContents | async"></tamu-gisc-kissingbugs-header>
+<tamu-gisc-kissingbugs-header [dataSource]="(pageContents | async)?.header"></tamu-gisc-kissingbugs-header>
 
-<div *ngFor="let item of (pageContents | async)?.body">
+<!-- <div *ngFor="let item of (pageContents | async)?.body">
   <div [ngSwitch]="item.__component">
     <tamu-gisc-kissingbugs-section *ngSwitchCase="'page.section'" [dataSource]="item"></tamu-gisc-kissingbugs-section>
     <tamu-gisc-kissingbugs-info-block *ngSwitchCase="'page.info-block'" [dataSource]="item"></tamu-gisc-kissingbugs-info-block>
@@ -9,4 +9,4 @@
     <tamu-gisc-kissingbugs-info-alert *ngSwitchCase="'page.info-alert'" [dataSource]="item"></tamu-gisc-kissingbugs-info-alert>
     <p *ngSwitchDefault>Default</p>
   </div>
-</div>
+</div> -->
