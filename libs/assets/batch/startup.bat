@@ -1,8 +1,14 @@
-pm2 status | find /i "Current process list running is not in sync with saved list."
+:loop
+pm2 status | find /i "Current process list"
 
 if not errorlevel 1 (
     pm2 kill
-    pm2 resurect 
+    timeout /t 5 /nobreak 
+    pm2 resurrect
+    EVENTCREATE /T ERROR /L APPLICATION /so nssmCheck /ID 100 /D "Pm2 resurected."  
+    timeout /t 300 /nobreak > NUL 
+    goto loop
 ) else (
-    echo Already Running
+    timeout /t 300 /nobreak > NUL
+    goto loop
 )
