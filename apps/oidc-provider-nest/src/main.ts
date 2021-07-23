@@ -18,11 +18,13 @@ import {
   RoleService,
   UserModule,
   UserService,
-  TwoFactorAuthUtils
+  TwoFactorAuthUtils,
+  Mailer
 } from '@tamu-gisc/oidc/common';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+import { mailerConfig } from './environments/mailerconfig';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -75,6 +77,13 @@ async function bootstrap() {
       type: 'string',
       nargs: 1
     })
+    .option('m', {
+      alias: 'email-provider',
+      description: 'The email provider (ethereal / tamu / gmail)',
+      type: 'string',
+      demandOption: true,
+      choices: ['ethereal', 'tamu', 'google']
+    })
     .help()
     .alias('help', 'h');
 
@@ -102,6 +111,10 @@ async function bootstrap() {
   OpenIdProvider.provider.proxy = true;
 
   const dir = join(__dirname, 'assets/views');
+
+  // This will setup the Mailer (gmail or ethereal)
+  // Mailer.build('gmail', mailerConfig);
+  Mailer.build('ethereal');
 
   // This will set the default time step for otplib to 5 minutes
   TwoFactorAuthUtils.build();
