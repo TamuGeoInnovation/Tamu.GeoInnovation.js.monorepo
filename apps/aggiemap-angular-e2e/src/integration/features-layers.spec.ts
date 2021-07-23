@@ -191,7 +191,7 @@ desktopSizes.forEach((size) => {
       cy.checkLayer('2', 'Emergency Phone')
       cy.checkLegend('2', 'Emergency Phone')
     })
-    it('Physical Distance Study Area', function() {
+    it.only('Physical Distance Study Area', function() {
       cy.wait('@tents')    
       cy.checkLayer('1', 'Physical Distance Study Area')
       cy.checkLegend('1', 'Physical Distance Study Area')
