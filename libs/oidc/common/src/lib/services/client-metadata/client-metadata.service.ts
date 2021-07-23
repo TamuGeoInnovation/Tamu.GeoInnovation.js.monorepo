@@ -67,10 +67,10 @@ export class ClientMetadataService {
       backchannelLogoutUris: [backchannelLogoutUri]
     };
     const grants = await this.findGrantTypeEntities(adminMetadata.grants);
-    const redirectUris = await this.createRedirectUriEntities(adminMetadata.redirectUris);
+    const redirectUris = this.createRedirectUriEntities(adminMetadata.redirectUris);
     const responseTypes = await this.findResponseTypeEntities(adminMetadata.responseTypes);
     const token_endpoint_auth_method = await this.findTokenEndpointAuthMethod(adminMetadata.token_endpoint_auth_method);
-    const backchannelUris = await this.createBackchannelLogoutUri(adminMetadata.backchannelLogoutUris);
+    const backchannelUris = this.createBackchannelLogoutUri(adminMetadata.backchannelLogoutUris);
 
     const _clientMetadata: Partial<ClientMetadata> = {
       clientName: adminMetadata.clientName,
@@ -88,13 +88,14 @@ export class ClientMetadataService {
   public async insertClientMetadata(_clientMetadata: Partial<ClientMetadata>) {
     const clientMetadata = this.clientMetadataRepo.create(_clientMetadata);
 
-    clientMetadata.redirectUris.map((redirectUri) => {
-      redirectUri.save();
-    });
-
-    clientMetadata.backchannelLogoutUris.map((backchannelUri) => {
-      backchannelUri.save();
-    });
+    await Promise.all([
+      clientMetadata.redirectUris.map((redirectUri) => {
+        redirectUri.save();
+      }),
+      clientMetadata.backchannelLogoutUris.map((backchannelUri) => {
+        backchannelUri.save();
+      })
+    ]);
 
     return this.clientMetadataRepo.save(clientMetadata);
   }
@@ -242,10 +243,10 @@ export class ClientMetadataService {
   }
 
   // RedirectUri functions
-  public async createRedirectUriEntities(_redirectUris: string[]) {
+  public createRedirectUriEntities(_redirectUris: string[]) {
     const redirectUris: RedirectUri[] = [];
 
-    _redirectUris.map((value, i) => {
+    _redirectUris.forEach((value, i) => {
       const redirectUriPartial: Partial<RedirectUri> = {
         url: value
       };
@@ -257,10 +258,10 @@ export class ClientMetadataService {
   }
 
   // BackchannelLogoutUri functions
-  public async createBackchannelLogoutUri(_backchannelLogoutUris: string[]) {
+  public createBackchannelLogoutUri(_backchannelLogoutUris: string[]) {
     const backchannelLogoutUris: BackchannelLogoutUri[] = [];
 
-    _backchannelLogoutUris.map((value, i) => {
+    _backchannelLogoutUris.forEach((value, i) => {
       const backchannelLogoutUri: Partial<BackchannelLogoutUri> = {
         url: value
       };
