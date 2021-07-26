@@ -6,8 +6,9 @@ export type IStrapiComponent =
   | IStrapiMedia
   | IStrapiPageSection
   | IStrapiPageInfoAlert
-  | IStrapiPageBugImage
-  | IStrapiPageParagraph;
+  | IStrapiPageFeature
+  | IStrapiPageParagraph
+  | IStrapiPageList;
 
 export interface IStrapiMediaFormat {
   name: string;
@@ -61,15 +62,6 @@ export interface IStrapiPageInfoAlert {
   image: IStrapiMedia;
 }
 
-// TODO: Remove IStrapiPageBugImage
-export interface IStrapiPageBugImage {
-  __component: string;
-  id: number;
-  credit: string;
-  caption: string;
-  image: IStrapiMedia;
-}
-
 export interface IStrapiPageFeature {
   __component: string;
   id: number;
@@ -82,6 +74,12 @@ export interface IStrapiPageParagraph {
   __component: string;
   id: number;
   text: string;
+}
+
+export interface IStrapiPageList {
+  __component: string;
+  id: number;
+  list_items: IStrapiPageParagraph[];
 }
 
 export interface IStrapiPageHeroTitle {
