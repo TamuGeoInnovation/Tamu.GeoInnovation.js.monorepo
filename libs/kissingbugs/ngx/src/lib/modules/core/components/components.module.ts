@@ -9,6 +9,7 @@ import { InfoBlockComponent } from './info-block/info-block.component';
 import { HeaderComponent } from './header/header.component';
 import { HeroComponent } from './hero/hero.component';
 import { NavComponent } from './nav/nav.component';
+import { FigureComponent } from './figure/figure.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { NavComponent } from './nav/nav.component';
     InfoBlockComponent,
     HeaderComponent,
     HeroComponent,
-    NavComponent
+    NavComponent,
+    FigureComponent
   ],
   imports: [CommonModule],
   exports: [
@@ -31,7 +33,8 @@ import { NavComponent } from './nav/nav.component';
     StrapiComponent,
     InfoBlockComponent,
     HeaderComponent,
-    HeroComponent
+    HeroComponent,
+    FigureComponent
   ]
 })
 export class ComponentsModule {}

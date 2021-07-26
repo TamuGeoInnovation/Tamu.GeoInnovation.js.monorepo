@@ -1,4 +1,4 @@
-export type StrapiPages = 'home' | 'found-a-bug';
+export type StrapiPages = 'home' | 'home-new' | 'found-a-bug';
 
 export type IStrapiLocales = 'en' | 'es';
 
@@ -51,6 +51,7 @@ export interface IStrapiPageInfoBlock {
   title: string;
   subtitle: string;
   text: string;
+  type: 'h1' | 'h2' | 'h3';
 }
 
 export interface IStrapiPageInfoAlert {
@@ -60,12 +61,21 @@ export interface IStrapiPageInfoAlert {
   image: IStrapiMedia;
 }
 
+// TODO: Remove IStrapiPageBugImage
 export interface IStrapiPageBugImage {
   __component: string;
   id: number;
   credit: string;
   caption: string;
   image: IStrapiMedia;
+}
+
+export interface IStrapiPageFeature {
+  __component: string;
+  id: number;
+  credit: string;
+  caption: string;
+  media: IStrapiMedia;
 }
 
 export interface IStrapiPageParagraph {
