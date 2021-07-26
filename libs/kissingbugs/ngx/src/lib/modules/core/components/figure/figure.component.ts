@@ -17,9 +17,7 @@ export class FigureComponent implements OnInit, OnDestroy {
 
   constructor(private environment: EnvironmentService) {}
 
-  public ngOnInit() {
-    console.log('Figure', this.dataSource);
-  }
+  public ngOnInit() {}
 
   public ngOnDestroy() {}
 }

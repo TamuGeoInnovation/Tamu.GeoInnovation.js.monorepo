@@ -1,7 +1,7 @@
+<tamu-gisc-kissingbugs-hero [dataSource]="(pageContents | async)?.hero"></tamu-gisc-kissingbugs-hero>
+
 <article class="container12 container">
   <div class="styleForm">
-    <!-- <tamu-gisc-kissingbugs-hero [dataSource]="(pageContents | async)?.header"></tamu-gisc-kissingbugs-hero> -->
-
     <div *ngFor="let item of (pageContents | async)?.section">
       <div [ngSwitch]="item.__component">
         <tamu-gisc-kissingbugs-section *ngSwitchCase="'page-new.section'" [dataSource]="item"></tamu-gisc-kissingbugs-section>

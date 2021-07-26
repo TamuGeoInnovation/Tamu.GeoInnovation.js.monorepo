@@ -6,13 +6,13 @@
     <div class="header-content">
       <div class="title" id="title">
         <div class="brand">
-          <div class="brand-row" *ngFor="let title of dataSource?.titles">
-            <span id="part{{title?.id  + 1}}">{{ title?.title }}</span>
+          <div class="brand-row" *ngFor="let title of dataSource?.titles; index as i">
+            <span id="part{{i + 1}}">{{ title?.text }}</span>
           </div>
         </div>
       </div>
 
-      <p class="cta-statement">{{ dataSource.statement }}</p>
+      <p class="cta-statement">{{ dataSource?.statement }}</p>
 
       <i class="fa fa-fw"></i>
 

@@ -82,12 +82,6 @@ export interface IStrapiPageList {
   list_items: IStrapiPageParagraph[];
 }
 
-export interface IStrapiPageHeroTitle {
-  __component: string;
-  id: number;
-  title: string;
-}
-
 export interface IStrapiLocale {
   id: number;
   locale: string;
@@ -96,7 +90,7 @@ export interface IStrapiLocale {
 
 export interface IStrapiPageHero {
   id: number;
-  titles: IStrapiPageHeroTitle[];
+  titles: IStrapiPageParagraph[];
   statement: string;
   left_icon: IStrapiMedia;
   right_icon: IStrapiMedia;
