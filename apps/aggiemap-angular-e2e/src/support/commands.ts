@@ -9,6 +9,7 @@
 // ***********************************************
 
 import * as cypress from "cypress";
+import "@4tw/cypress-drag-drop";
 
 declare namespace Cypress {
   interface Chainable<Subject> {
