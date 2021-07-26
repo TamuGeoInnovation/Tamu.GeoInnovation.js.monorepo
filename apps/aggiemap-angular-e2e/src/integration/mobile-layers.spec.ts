@@ -268,6 +268,9 @@ mobileSizes.forEach((size) => {
       cy.get('tamu-gisc-feature-mobile-popup').should('be.visible')
       cy.get('.feature-style-1').should('be.visible')
         .and('contain.text', 'Fermier/Thompson Hall Physical Distance Study Area')
+
+      // drag up on pop-up
+      cy.get('.popup').move({ x: 0, y: -400, position: 'center', force: true })
     })
 
 
