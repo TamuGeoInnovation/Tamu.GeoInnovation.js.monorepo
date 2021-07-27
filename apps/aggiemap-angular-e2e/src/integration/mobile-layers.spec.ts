@@ -356,9 +356,7 @@ mobileSizes.forEach((size) => {
       cy.get('tamu-gisc-trip-planner-directions-mobile').move({ x: 0, y: -600, position: 'center', force: true })
       cy.get('.directions-container').should('be.visible')
     })
-
-
-
+    
   })
 })
 
