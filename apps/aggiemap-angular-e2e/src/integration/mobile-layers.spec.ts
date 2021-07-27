@@ -47,7 +47,7 @@ mobileSizes.forEach((size) => {
       cy.get('tamu-gisc-feature-mobile-popup').should('be.visible')
     })
 
-    it.only('Points of Interest', function() {
+    it('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
         .as("POI")
         cy.checkLayer('7','Points of Interest')
@@ -159,7 +159,7 @@ mobileSizes.forEach((size) => {
         .and('contain.text', 'Unisex Restroom')
     })
 
-    it('Lactation Rooms', function() {
+    it.only('Lactation Rooms', function() {
       cy.intercept('GET', '*')
         .as("lactation")
       cy.checkLayer('5', 'Lactation Rooms')
@@ -192,6 +192,8 @@ mobileSizes.forEach((size) => {
       cy.wait(2000)
       cy.get('tamu-gisc-feature-mobile-popup').should('be.visible')
       .and('contain.text', 'Lactation Room')
+      cy.get('.popup').move({ x: 0, y: -415, position: 'center', force: true })
+      cy.checkLink('Additional Information', 'https://studentlife.tamu.edu/wrc.bfwh.lactationspace')
     })
     
     it('Visitor Parking', function() {
@@ -279,7 +281,7 @@ mobileSizes.forEach((size) => {
       cy.get('tamu-gisc-backdrop').click('right', {force: true})
     })
 
-    it.only('Physical Distance Study Area', function() {
+    it('Physical Distance Study Area', function() {
       cy.wait("@tents")
         cy.checkLayer('1', 'Physical Distance Study Area')
         cy.checkLegend('1', 'Physical Distance Study Area')
