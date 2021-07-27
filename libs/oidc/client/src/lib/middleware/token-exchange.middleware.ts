@@ -2,7 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
 
 import { OpenIdClient } from '../auth/open-id-client';
-import { AuthUtils, UserRequest } from '../../../../common/src/lib/utils/auth/auth.util';
+import { AuthUtils, UserRequest } from '../utils/auth.util';
 
 @Injectable()
 export class TokenExchangeMiddleware implements NestMiddleware {

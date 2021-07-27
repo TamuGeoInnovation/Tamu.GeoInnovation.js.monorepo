@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 
-import { AuthUtils } from '../../../../common/src/lib/utils/auth/auth.util';
+import { AuthUtils } from '../utils/auth.util';
 import { ROLE_LEVELS, OpenIdClient } from '../auth/open-id-client';
 
 @Injectable()
