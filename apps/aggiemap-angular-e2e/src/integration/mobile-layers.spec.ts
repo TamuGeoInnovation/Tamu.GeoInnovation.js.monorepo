@@ -47,7 +47,7 @@ mobileSizes.forEach((size) => {
       cy.get('tamu-gisc-feature-mobile-popup').should('be.visible')
     })
 
-    it('Points of Interest', function() {
+    it.only('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
         .as("POI")
         cy.checkLayer('7','Points of Interest')
@@ -91,6 +91,37 @@ mobileSizes.forEach((size) => {
       cy.get('.directions-container').should('be.visible')
       // check if route duration and length is displayed
       cy.get('.directions-overview').should('be.visible')
+      // slide directions back down to access other route options
+      cy.get('tamu-gisc-trip-planner-directions-mobile').move({ x: 0, y: 600, position: 'center', force: true })
+
+      // test bike route option
+      cy.wait(2000)
+      cy.get('.travel-modes > :nth-child(2) > div')
+          .click()
+          .should('have.class', 'active')
+      // slide directions back up to display directions
+      cy.get('tamu-gisc-trip-planner-directions-mobile').move({ x: 0, y: -600, position: 'center', force: true })
+      cy.get('.directions-container').should('be.visible')
+      // slide directions back down to access other route options
+      cy.get('tamu-gisc-trip-planner-directions-mobile').move({ x: 0, y: 600, position: 'center', force: true })
+
+      // test car route option
+      cy.get('.travel-modes > :nth-child(3) > div')
+          .click()
+          .should('have.class', 'active')
+      // slide directions back up to display directions
+      cy.get('tamu-gisc-trip-planner-directions-mobile').move({ x: 0, y: -600, position: 'center', force: true })
+      cy.get('.directions-container').should('be.visible')
+      // slide directions back down to access other route options
+      cy.get('tamu-gisc-trip-planner-directions-mobile').move({ x: 0, y: 600, position: 'center', force: true })
+
+      // test bus route option
+      cy.get('.travel-modes > :nth-child(4) > div')
+          .click()
+          .should('have.class', 'active')
+      // slide directions back up to display directions
+      cy.get('tamu-gisc-trip-planner-directions-mobile').move({ x: 0, y: -600, position: 'center', force: true })
+      cy.get('.directions-container').should('be.visible')
     })
 
     it('Restrooms', function() {
@@ -292,7 +323,20 @@ mobileSizes.forEach((size) => {
       cy.get('.directions-overview').should('be.visible')
       // slide directions back down to access other route options
       cy.get('tamu-gisc-trip-planner-directions-mobile').move({ x: 0, y: 600, position: 'center', force: true })
+      
+      // test bike route option
+      cy.wait(2000)
+      cy.get('.travel-modes > :nth-child(2) > div')
+          .click()
+          .should('have.class', 'active')
+      // slide directions back up to display directions
+      cy.get('tamu-gisc-trip-planner-directions-mobile').move({ x: 0, y: -600, position: 'center', force: true })
+      cy.get('.directions-container').should('be.visible')
+      // slide directions back down to access other route options
+      cy.get('tamu-gisc-trip-planner-directions-mobile').move({ x: 0, y: 600, position: 'center', force: true })
+      
       // test car route option
+      cy.wait(2000)
       cy.get('.travel-modes > :nth-child(3) > div')
           .click()
           .should('have.class', 'active')
@@ -301,6 +345,7 @@ mobileSizes.forEach((size) => {
       cy.get('.directions-container').should('be.visible')
       // slide directions back down to access other route options
       cy.get('tamu-gisc-trip-planner-directions-mobile').move({ x: 0, y: 600, position: 'center', force: true })
+      
       // test bus route option
       cy.get('.travel-modes > :nth-child(4) > div')
           .click()
