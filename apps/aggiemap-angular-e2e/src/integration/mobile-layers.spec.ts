@@ -159,7 +159,7 @@ mobileSizes.forEach((size) => {
         .and('contain.text', 'Unisex Restroom')
     })
 
-    it.only('Lactation Rooms', function() {
+    it('Lactation Rooms', function() {
       cy.intercept('GET', '*')
         .as("lactation")
       cy.checkLayer('5', 'Lactation Rooms')
