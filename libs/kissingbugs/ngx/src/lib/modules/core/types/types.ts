@@ -1,4 +1,4 @@
-export type StrapiPages = 'home' | 'home-new' | 'found-a-bug';
+export type StrapiSingleTypes = 'home' | 'home-new' | 'found-a-bug' | 'navigation' | 'hero' | 'footer';
 
 export type IStrapiLocales = 'en' | 'es';
 
@@ -88,7 +88,7 @@ export interface IStrapiLocale {
   published_at: string;
 }
 
-export interface IStrapiPageHero {
+export interface IStrapiStapleHero {
   id: number;
   titles: IStrapiPageParagraph[];
   statement: string;
@@ -97,19 +97,21 @@ export interface IStrapiPageHero {
   background: IStrapiMedia;
 }
 
-export interface IStrapiPageFooter {
+export interface IStrapiStapleFooter {
   id: number;
   text: string;
   image: IStrapiMedia;
 }
+
+export interface IStrapiStapleNavigation {}
 export interface IStrapiPageResponse {
   id: number;
   locale: IStrapiLocales;
   published_at: string;
   created_at: string;
   updated_at: string;
-  header: IStrapiPageHero;
+  header: IStrapiStapleHero;
   body: IStrapiComponent[];
-  footer: IStrapiPageFooter;
+  footer: IStrapiStapleFooter;
   localizations: IStrapiLocale[];
 }

@@ -3,7 +3,13 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { IStrapiPageResponse, IStrapiLocales, StrapiPages } from '../types/types';
+import {
+  IStrapiPageResponse,
+  StrapiSingleTypes,
+  IStrapiStapleHero,
+  IStrapiStapleFooter,
+  IStrapiStapleNavigation
+} from '../types/types';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +21,19 @@ export class StrapiService {
     this.resource = this.environment.value(`api_url`);
   }
 
-  public getPage(page: StrapiPages, locale: string = 'en') {
-    return this.http.get<IStrapiPageResponse>(`${this.resource}/${page}?_locale=${locale}`);
+  public getPage(type: StrapiSingleTypes, locale: string = 'en') {
+    return this.http.get<IStrapiPageResponse>(`${this.resource}/${type}?_locale=${locale}`);
+  }
+
+  public getNavigation(type: StrapiSingleTypes = 'navigation', locale: string = 'en') {
+    return this.http.get<IStrapiStapleNavigation>(`${this.resource}/${type}?_locale=${locale}`);
+  }
+
+  public getHero(type: StrapiSingleTypes = 'hero', locale: string = 'en') {
+    return this.http.get<IStrapiStapleHero>(`${this.resource}/${type}?_locale=${locale}`);
+  }
+
+  public getFooter(type: StrapiSingleTypes = 'footer', locale: string = 'en') {
+    return this.http.get<IStrapiStapleFooter>(`${this.resource}/${type}?_locale=${locale}`);
   }
 }

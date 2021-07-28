@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { IStrapiPageHero } from '../../types/types';
+import { IStrapiStapleHero } from '../../types/types';
 
 @Component({
   selector: 'tamu-gisc-kissingbugs-hero',
@@ -11,7 +11,7 @@ import { IStrapiPageHero } from '../../types/types';
 })
 export class HeroComponent implements OnInit, OnDestroy {
   @Input()
-  public dataSource: IStrapiPageHero;
+  public dataSource: IStrapiStapleHero;
 
   public api_url = this.environment.value('api_url');
 

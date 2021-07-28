@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 import { SectionComponent } from './section/section.component';
 import { InfoAlertComponent } from './info-alert/info-alert.component';
@@ -12,7 +13,7 @@ import { FigureComponent } from './figure/figure.component';
 import { ListComponent } from './list/list.component';
 
 @NgModule({
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   declarations: [
     SectionComponent,
     InfoAlertComponent,
@@ -31,6 +32,7 @@ import { ListComponent } from './list/list.component';
     InfoBlockComponent,
     HeaderComponent,
     HeroComponent,
+    NavComponent,
     FigureComponent,
     ListComponent
   ]
