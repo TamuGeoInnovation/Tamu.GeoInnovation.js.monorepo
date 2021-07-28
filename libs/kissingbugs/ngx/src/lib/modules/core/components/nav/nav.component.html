@@ -50,7 +50,7 @@
   </nav>
 </div> -->
 
-<nav class="side-menu">
+<!-- <nav class="side-menu">
   <a [routerLink]="['/']" class="img-link bg-img" id="menu-logo" title="Back to homepage">
     <span>Go back to homepage</span>
   </a>
@@ -89,6 +89,30 @@
     <li id="contact">
       <a [routerLink]="['/contact']"><i class="mobile fa fa-envelope fa-lg fa-fw"></i>Contact</a>
     </li>
+    <li id="language">
+      <a href="https://es.kissingbug.tamu.edu"><i class="mobile fa"></i>Espa&#241;ol</a>
+    </li>
+    <li id="donate"><a href="https://www.txamfoundation.com/give.aspx?c_id=-2&acct=Sarah%20Hamer-Chagas%20Disease%20Project">Donate</a></li>
+  </ul>
+</nav> -->
+
+<nav class="side-menu">
+  <a [routerLink]="['/']" class="img-link bg-img" id="menu-logo" title="Back to homepage">
+    <span>Go back to homepage</span>
+  </a>
+  <ul>
+    <li *ngFor="let page of (contents | async)?.items">
+      <a *ngIf="!page.items; else dropdown" [routerLink]="['/', page?.page]"><i class="mobile fa fa-{{page?.page}}-marker fa-lg fa-fw"></i>{{ page?.title }}</a>
+      <ng-template #dropdown>
+        <li id="{{page.items[0].page}}" tabindex="0">
+          <a tabindex="-1" [routerLink]="['/', page?.items[0]?.page]" class="with-dropdown-icon"><i class="mobile fa fa-search fa-lg fa-fw"></i>{{ page?.items[0]?.title }}<i class="menu fa fa-angle-down"></i></a>
+          <ul class="dropdown-menu">
+            <li *ngFor="let item of (page?.items | slice:1)"><a [routerLink]="['/', item?.page]">{{ item?.title}}</a></li>
+          </ul>
+        </li>
+      </ng-template>
+    </li>
+
     <li id="language">
       <a href="https://es.kissingbug.tamu.edu"><i class="mobile fa"></i>Espa&#241;ol</a>
     </li>

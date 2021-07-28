@@ -103,7 +103,23 @@ export interface IStrapiStapleFooter {
   image: IStrapiMedia;
 }
 
-export interface IStrapiStapleNavigation {}
+export interface IStrapiNavigationItem {
+  id: number;
+  page: string;
+  title: string;
+}
+
+export interface IStrapiNavigationPage {
+  id: number;
+  items: IStrapiNavigationItem[];
+}
+export interface IStrapiStapleNavigation {
+  id: number;
+  published_at: string;
+  created_at: string;
+  updated_at: string;
+  items: (IStrapiNavigationItem | IStrapiNavigationPage)[];
+}
 export interface IStrapiPageResponse {
   id: number;
   locale: IStrapiLocales;

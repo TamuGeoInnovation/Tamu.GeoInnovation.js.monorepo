@@ -1,4 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
+import { StrapiService } from '../../data-access/strapi.service';
+import { IStrapiStapleNavigation } from '../../types/types';
 
 @Component({
   selector: 'tamu-gisc-kissingbugs-nav',
@@ -6,10 +10,19 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
   styleUrls: ['./nav.component.scss']
 })
 export class NavComponent implements OnInit, OnDestroy {
+  public contents: Observable<IStrapiStapleNavigation>;
   // TODO: Fix the template as right now the nav will disappear when you go mobile
-  constructor() {}
+  constructor(private ss: StrapiService) {}
 
-  public ngOnInit(): void {}
+  public ngOnInit() {
+    const language: string = navigator.language.substr(0, 2);
 
-  public ngOnDestroy(): void {}
+    this.contents = this.ss.getNavigation('navigation', language).pipe(shareReplay(1));
+
+    this.contents.subscribe((result) => {
+      console.log(result);
+    });
+  }
+
+  public ngOnDestroy() {}
 }

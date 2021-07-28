@@ -26,7 +26,7 @@ export class StrapiService {
   }
 
   public getNavigation(type: StrapiSingleTypes = 'navigation', locale: string = 'en') {
-    return this.http.get<IStrapiStapleNavigation>(`${this.resource}/${type}?_locale=${locale}`);
+    return this.http.get<IStrapiStapleNavigation>(`${this.resource}/${type}`);
   }
 
   public getHero(type: StrapiSingleTypes = 'hero', locale: string = 'en') {
