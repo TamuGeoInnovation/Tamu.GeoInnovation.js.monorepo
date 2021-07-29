@@ -280,11 +280,12 @@ mobileSizes.forEach((size) => {
       // close menu
       cy.get('tamu-gisc-backdrop').click('right', {force: true})
     })
-
+    
     it('Physical Distance Study Area', function() {
-      cy.wait("@tents")
-        cy.checkLayer('1', 'Physical Distance Study Area')
-        cy.checkLegend('1', 'Physical Distance Study Area')
+      
+        cy.wait("@tents")
+      cy.checkLayer('1', 'Physical Distance Study Area')
+      cy.checkLegend('1', 'Physical Distance Study Area')
       cy.get('tamu-gisc-layer-list').should('be.visible')
       // close layer options
       cy.contains('arrow_back').click()
@@ -356,7 +357,7 @@ mobileSizes.forEach((size) => {
       cy.get('tamu-gisc-trip-planner-directions-mobile').move({ x: 0, y: -600, position: 'center', force: true })
       cy.get('.directions-container').should('be.visible')
     })
-    
+  
   })
 })
 
