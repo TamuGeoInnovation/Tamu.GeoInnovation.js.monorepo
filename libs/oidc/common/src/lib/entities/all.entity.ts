@@ -41,6 +41,7 @@ export interface IClientMetadata {
   redirect_uris: string[];
   response_types: string[];
   token_endpoint_auth_method: string;
+  post_logout_redirect_uris: string[];
 }
 
 export interface INewRole {
@@ -768,6 +769,9 @@ export class ClientMetadata extends GuidIdentity {
   @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata)
   public redirectUris: RedirectUri[];
 
+  @OneToMany((type) => BackchannelLogoutUri, (backchannelLogoutUri) => backchannelLogoutUri.clientMetadata)
+  public backchannelLogoutUris: BackchannelLogoutUri[];
+
   @ManyToMany((type) => ResponseType, {
     cascade: true,
     onDelete: 'CASCADE',
@@ -811,6 +815,24 @@ export class GrantType extends GuidIdentity {
 })
 export class RedirectUri extends GuidIdentity {
   @ManyToOne((type) => ClientMetadata, (client) => client.redirectUris, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  public clientMetadata: ClientMetadata;
+
+  @Column({
+    type: 'varchar',
+    nullable: false
+  })
+  public url: string;
+}
+
+@Entity({
+  name: 'back_channel_logout_uris'
+})
+export class BackchannelLogoutUri extends GuidIdentity {
+  @ManyToOne((type) => ClientMetadata, (client) => client.backchannelLogoutUris, {
     cascade: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
@@ -1102,6 +1124,9 @@ export class GrantTypeRepo extends CommonRepo<GrantType> {}
 
 @EntityRepository(RedirectUri)
 export class RedirectUriRepo extends CommonRepo<RedirectUri> {}
+
+@EntityRepository(BackchannelLogoutUri)
+export class BackchannelLogoutUriRepo extends CommonRepo<BackchannelLogoutUri> {}
 
 @EntityRepository(ResponseType)
 export class ResponseTypeRepo extends CommonRepo<ResponseType> {}

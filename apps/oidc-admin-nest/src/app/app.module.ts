@@ -19,7 +19,8 @@ import {
   UserPasswordHistory,
   ClientMetadataModule,
   RoleModule,
-  UserModule
+  UserModule,
+  BackchannelLogoutUri
 } from '@tamu-gisc/oidc/common';
 import { AccessTokenModule, StatsModule } from '@tamu-gisc/oidc/admin-nest';
 
@@ -36,6 +37,7 @@ import { OIDC_IDP_ISSUER_URL } from '../environments/oidcconfig';
       entities: [
         AccessToken,
         Account,
+        BackchannelLogoutUri,
         ClientMetadata,
         GrantType,
         ResponseType,
