@@ -9,10 +9,11 @@ export class AzureIdpGuard implements CanActivate {
     let canProceed = false;
     const request = context.switchToHttp().getRequest();
     const isAuthed = request.isAuthenticated();
-    const expired = Date.now() > request.user.expires_at * 1000;
 
-    if (isAuthed && !expired) {
-      if (request.user) {
+    if (isAuthed) {
+      const expired = Date.now() > request.user.expires_at * 1000;
+
+      if (request.user && !expired) {
         canProceed = true;
       }
     }
