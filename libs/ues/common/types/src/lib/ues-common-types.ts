@@ -21,3 +21,7 @@ export interface IUser {
     groups?: Array<Roles>;
   };
 }
+
+export interface ClientRoles {
+  [roleId: string]: string;
+}

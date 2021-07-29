@@ -5403,6 +5403,27 @@
           }
         }
       }
+    },
+    "ues-common-nest": {
+      "root": "libs/ues/common/nest",
+      "sourceRoot": "libs/ues/common/nest/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ues/common/nest/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ues/common/nest"],
+          "options": {
+            "jestConfig": "libs/ues/common/nest/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

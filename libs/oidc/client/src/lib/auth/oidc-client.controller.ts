@@ -3,16 +3,9 @@ import { Controller, Get, Inject, Optional, Request, Response, UseGuards } from 
 import { AdminRoleGuard, AzureIdpGuard, ManagerRoleGuard, UserRoleGuard } from '../guards/roles.guard';
 import { LoginGuard } from '../guards/login.guard';
 import { OpenIdClient } from './open-id-client';
-import { ClientRoles } from '../types/auth-types';
 
 @Controller('oidc')
 export class OidcClientController {
-  constructor(@Optional() @Inject('ROLES') public roles: ClientRoles) {
-    if (this.roles === undefined) {
-      console.warn('Roles have not been setup for this application.');
-    }
-  }
-
   @UseGuards(LoginGuard)
   @Get('/login')
   public login() {
@@ -62,26 +55,6 @@ export class OidcClientController {
   @UseGuards(AzureIdpGuard)
   @Get('/userinfo')
   public getUserInfo(@Request() req) {
-    if (this.roles && req.user.claims.groups) {
-      // Match, map, and filter each of the provided roles with the user groups, to return only the key of the role,
-      // and not the id.
-      const roles = Object.entries(this.roles)
-        .filter(([name, id]) => {
-          if (req.user.claims.groups.includes(id)) {
-            return name;
-          }
-        })
-        .map(([name, id]) => {
-          return name;
-        });
-
-      // Overwrite the groups with the processed list of roles.
-      req.user.claims.groups = roles;
-    } else {
-      // Remove roles claim, if any, to avoid leaking them (?)
-      delete req.user.claims.roles;
-    }
-
     const user = JSON.parse(JSON.stringify(req.user));
 
     delete user.access_token;

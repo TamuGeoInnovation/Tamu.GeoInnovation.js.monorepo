@@ -121,6 +121,7 @@ module.exports = {
     '<rootDir>/libs/cpa/data-access',
     '<rootDir>/libs/cpa/admin',
     '<rootDir>/libs/ues/common/types',
-    '<rootDir>/libs/ues/cold-water/data-api'
+    '<rootDir>/libs/ues/cold-water/data-api',
+    '<rootDir>/libs/ues/common/nest'
   ]
 };
