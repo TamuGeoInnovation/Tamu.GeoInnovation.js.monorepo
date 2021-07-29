@@ -33,11 +33,44 @@ mobileSizes.forEach((size) => {
 
     it('Drag Pop-up Into User View', () => {
       cy.get('tamu-gisc-feature-mobile-popup').should('be.visible')
-      cy.get('.popup').move({ x: 0, y: -600, position: 'center', force: true })
-      // check if correct URL is present
+      cy.get('.popup.draggable').move({ x: 0, y: -40, force: true})
+    })
+
+    it('Check Popup Results', () => {
+      // check is correct building information is displayed
+      cy.get('.feature-style-1')
+        .should('contain.text', 'Rudder Tower')
+        .and('be.visible')
+      cy.get('.feature-style-2')
+        .should('contain.text', 'Building 0446')
+        .and('be.visible')
+      cy.get('.feature-style-2 > :nth-child(1)')
+         .scrollIntoView()
+         .should('contain.text', '401 Joe Routt Bl')
+         .and('be.visible')
+      cy.get('.feature-style-2 > :nth-child(2)')
+         .scrollIntoView()
+         .should('contain.text', 'College Station')
+         .and('be.visible')
+      cy.get('.feature-style-2 > :nth-child(3)')
+         .scrollIntoView()
+         .should('contain.text', '77843')
+         .and('be.visible')
+
+      // check if correct copy URL is displayed
       cy.get('tamu-gisc-copy-field')
         .should('be.visible')
         .and('contain.text', 'https://aggiemap.tamu.edu/?bldg=0446')
+    })
+
+    it('Check Navigation', () => {
+      cy.get('.button')
+        .should('have.attr', 'building-number', '0446')
+      cy.contains('Directions To Here')
+        .should('be.visible')
+        .click()
+      // zoom out and click random location
+      cy.scrollTo('bottom', {duration: 1000})
     })
 
   })
