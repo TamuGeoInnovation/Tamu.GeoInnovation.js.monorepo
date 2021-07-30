@@ -29,11 +29,12 @@ mobileSizes.forEach((size) => {
     it('Click Search Result', () => {
       cy.contains('Rudder Tower (0446)').click()
       cy.get('.feature-style-1').should('contain.text', 'Rudder Tower')
+      cy.wait(1000)
     })
 
     it('Drag Pop-up Into User View', () => {
       cy.get('tamu-gisc-feature-mobile-popup').should('be.visible')
-      cy.get('.popup.draggable').move({ x: 0, y: -40, force: true})
+      cy.get('.handle').move({ x: 0, y: -60, force: true})
     })
 
     it('Check Popup Results', () => {
@@ -58,7 +59,7 @@ mobileSizes.forEach((size) => {
       cy.get('tamu-gisc-copy-field')
         .should('be.visible')
         .and('contain.text', 'https://aggiemap.tamu.edu/?bldg=0446')
-        cy.wait(2000)
+      cy.wait(2000)
     })
 
     it('Check Navigation', () => {
@@ -67,12 +68,22 @@ mobileSizes.forEach((size) => {
       cy.contains('Directions To Here')
         .should('be.visible')
         .click()
+        .wait(2000)
       /* 
         potentially add zoom out feature that 
         would allow me to click location further away 
         from target location 
       */
-      cy.get('canvas').click('bottomRight')  // click random location
+      //cy.get('canvas').move({ x: 500, y: 200, force: true})
+      cy.get('canvas')
+        .click('bottomLeft')  // click random location
+        .wait(2000)
+
+      // drag popup up and check if route features are displayed
+      cy.get('.handle')
+        .move({ x: 0, y: -60, force: true})
+      cy.get('.directions-overview')
+        .should('be.visible')
 
     })
 
