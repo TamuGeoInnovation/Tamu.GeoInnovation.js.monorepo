@@ -153,16 +153,8 @@
 //  ==========================================================================
 //   Global
 //  ==========================================================================
-// html,
-// body,
-// .styleForm {
-//   font-family: $opensans;
-//   font-size: 1em;
-//   height: 100%;
-//   color: $secondcolor;
-//   -webkit-font-smoothing: antialiased;
-// }
-
+html,
+body,
 .styleForm {
   font-family: $opensans;
   font-size: 1em;
@@ -170,6 +162,14 @@
   color: $secondcolor;
   -webkit-font-smoothing: antialiased;
 }
+
+// .styleForm {
+//   font-family: $opensans;
+//   font-size: 1em;
+//   height: 100%;
+//   color: $secondcolor;
+//   -webkit-font-smoothing: antialiased;
+// }
 
 header {
   height: 80%;
