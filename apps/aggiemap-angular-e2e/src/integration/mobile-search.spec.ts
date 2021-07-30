@@ -45,15 +45,12 @@ mobileSizes.forEach((size) => {
         .should('contain.text', 'Building 0446')
         .and('be.visible')
       cy.get('.feature-style-2 > :nth-child(1)')
-         .scrollIntoView()
          .should('contain.text', '401 Joe Routt Bl')
          .and('be.visible')
       cy.get('.feature-style-2 > :nth-child(2)')
-         .scrollIntoView()
          .should('contain.text', 'College Station')
          .and('be.visible')
       cy.get('.feature-style-2 > :nth-child(3)')
-         .scrollIntoView()
          .should('contain.text', '77843')
          .and('be.visible')
 
@@ -61,6 +58,7 @@ mobileSizes.forEach((size) => {
       cy.get('tamu-gisc-copy-field')
         .should('be.visible')
         .and('contain.text', 'https://aggiemap.tamu.edu/?bldg=0446')
+        cy.wait(2000)
     })
 
     it('Check Navigation', () => {
@@ -69,8 +67,13 @@ mobileSizes.forEach((size) => {
       cy.contains('Directions To Here')
         .should('be.visible')
         .click()
-      // zoom out and click random location
-      cy.scrollTo('bottom', {duration: 1000})
+      /* 
+        potentially add zoom out feature that 
+        would allow me to click location further away 
+        from target location 
+      */
+      cy.get('canvas').click('bottomRight')  // click random location
+
     })
 
   })
