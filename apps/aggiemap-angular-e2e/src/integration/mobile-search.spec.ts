@@ -69,11 +69,10 @@ mobileSizes.forEach((size) => {
       cy.contains('Directions To Here')
         .should('be.visible')
         .click()
-        .wait(2000)
       /* 
         potentially add zoom out feature that 
         would allow me to click location further away 
-        from target location 
+        from search location 
       */
       // cy.get('canvas')
       //   .move({ x: 50, y: 0, force: true})
@@ -81,7 +80,7 @@ mobileSizes.forEach((size) => {
 
       cy.get('canvas')
         .click('bottomRight')  // click random location
-        .wait(2000)
+        .wait(5000)
 
       // drag popup up and check if route features are displayed
       cy.get('.handle')
@@ -91,9 +90,18 @@ mobileSizes.forEach((size) => {
       cy.get('.directions-container')
         .should('be.visible')
 
-      // bike route option
+      // click bike route option and check directions
       cy.get('.handle').move({ x: 0, y: 400, force: true }) // drag popup back down to access route options again
-      
+      cy.get('tamu-gisc-trip-planner-mode-picker-mobile').should('be.visible')
+      cy.get('.travel-modes > :nth-child(2) > div')
+          .click()
+          .should('have.class', 'active')
+      cy.get('.handle')
+        .move({ x: 0, y: -400, force: true})
+      cy.get('.directions-overview')
+        .should('be.visible')
+      cy.get('.directions-container')
+        .should('be.visible')
       
 
     })
