@@ -17,8 +17,25 @@ WebFont.load({
 });
 
 const routes: Routes = [
+  { path: 'home', redirectTo: '', pathMatch: 'full' },
   {
     path: '',
+    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.HomeModule)
+  },
+  {
+    path: 'found-a-bug',
+    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.HomeModule)
+  },
+  {
+    path: 'map',
+    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.HomeModule)
+  },
+  {
+    path: 'team',
+    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.HomeModule)
+  },
+  {
+    path: 'faq',
     loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.HomeModule)
   }
 ];
