@@ -78,16 +78,19 @@ mobileSizes.forEach((size) => {
       // cy.get('canvas')
       //   .move({ x: 50, y: 0, force: true})
       //cy.get('canvas').move({ x: 500, y: 200, force: true})
-      
+
       cy.get('canvas')
         .click('bottomRight')  // click random location
         .wait(2000)
 
       // drag popup up and check if route features are displayed
       cy.get('.handle')
-        .move({ x: 0, y: -60, force: true})
+        .move({ x: 0, y: -400, force: true})
       cy.get('.directions-overview')
         .should('be.visible')
+      cy.get('.directions-container')
+        .should('be.visible')
+      
 
     })
 
