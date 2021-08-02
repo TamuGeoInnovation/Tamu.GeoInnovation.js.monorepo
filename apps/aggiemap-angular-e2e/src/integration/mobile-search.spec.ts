@@ -90,6 +90,10 @@ mobileSizes.forEach((size) => {
         .should('be.visible')
       cy.get('.directions-container')
         .should('be.visible')
+
+      // bike route option
+      cy.get('.handle').move({ x: 0, y: 400, force: true }) // drag popup back down to access route options again
+      
       
 
     })
