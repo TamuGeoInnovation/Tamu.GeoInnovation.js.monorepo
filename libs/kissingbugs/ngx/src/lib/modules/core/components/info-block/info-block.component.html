@@ -1,11 +1,12 @@
 <div [ngSwitch]="dataSource.type">
   <div *ngSwitchCase="'h1'">
-    <!-- <span class="anchorFool"></span> -->
-    <h1 class="sectionTitle">{{dataSource.title}}</h1>
+    <h1 *ngIf="dataSource.subtitle; else noSubtitle" class="sectionTitle">{{dataSource.title}} <span> {{'&mdash; ' + dataSource.subtitle}}</span></h1>
+    <ng-template #noSubtitle>
+      <h1 class="sectionTitle">{{dataSource.title}}</h1>
+    </ng-template>
     <p>{{dataSource.text}}</p>
   </div>
   <div class="section-content-block" *ngSwitchCase="'h2'">
-    <!-- <span class="anchorFool"></span> -->
     <h2>{{dataSource.title}} <span> {{'&mdash; ' + dataSource.subtitle}}</span></h2>
     <p>{{dataSource.text }}</p>
   </div>

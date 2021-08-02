@@ -24,7 +24,7 @@ const routes: Routes = [
   },
   {
     path: 'found-a-bug',
-    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.HomeModule)
+    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.FoundABugModule)
   },
   {
     path: 'map',
