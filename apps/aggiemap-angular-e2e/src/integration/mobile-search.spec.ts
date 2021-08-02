@@ -16,13 +16,14 @@ mobileSizes.forEach((size) => {
     })
 
     it('Input Building Search', () => {
-      cy.get('tamu-gisc-search-mobile').click()
+      cy.get('tamu-gisc-search-mobile')
+        .should('be.visible')
+        .click()
       cy.get('.margin-left').type('Rudder Tower')
     })
 
     it('Search Results Displayed', () => {
       cy.get('.search-results-container').should('be.visible')
-      //TODO: Change to expect
       cy.get('.focusable').should('contain.text', 'Rudder Tower (0446)')
     })
       
@@ -74,9 +75,12 @@ mobileSizes.forEach((size) => {
         would allow me to click location further away 
         from target location 
       */
+      // cy.get('canvas')
+      //   .move({ x: 50, y: 0, force: true})
       //cy.get('canvas').move({ x: 500, y: 200, force: true})
+      
       cy.get('canvas')
-        .click('bottomLeft')  // click random location
+        .click('bottomRight')  // click random location
         .wait(2000)
 
       // drag popup up and check if route features are displayed
