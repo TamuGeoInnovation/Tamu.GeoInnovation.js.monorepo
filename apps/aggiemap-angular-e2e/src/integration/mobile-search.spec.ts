@@ -64,6 +64,7 @@ mobileSizes.forEach((size) => {
     })
 
     it('Check Navigation', () => {
+      // add if statements if needed
       cy.get('.button')
         .should('have.attr', 'building-number', '0446')
       cy.contains('Directions To Here')
@@ -74,9 +75,6 @@ mobileSizes.forEach((size) => {
         would allow me to click location further away 
         from search location 
       */
-      // cy.get('canvas')
-      //   .move({ x: 50, y: 0, force: true})
-      //cy.get('canvas').move({ x: 500, y: 200, force: true})
 
       cy.get('canvas')
         .click('bottomRight')  // click random location
@@ -96,13 +94,35 @@ mobileSizes.forEach((size) => {
       cy.get('.travel-modes > :nth-child(2) > div')
           .click()
           .should('have.class', 'active')
-      cy.get('.handle')
-        .move({ x: 0, y: -400, force: true})
+      cy.get('.handle').move({ x: 0, y: -400, force: true}) // drag popup back into view
       cy.get('.directions-overview')
         .should('be.visible')
       cy.get('.directions-container')
         .should('be.visible')
       
+      // click car route option and check directions
+      cy.get('.handle').move({ x: 0, y: 400, force: true }) // drag popup back down to access route options again
+      cy.get('tamu-gisc-trip-planner-mode-picker-mobile').should('be.visible')
+      cy.get('.travel-modes > :nth-child(3) > div')
+          .click()
+          .should('have.class', 'active')
+      cy.get('.handle').move({ x: 0, y: -400, force: true}) // drag popup back into view
+      cy.get('.directions-overview')
+        .should('be.visible')
+      cy.get('.directions-container')
+        .should('be.visible')
+
+      // click bus route option and check directions
+      cy.get('.handle').move({ x: 0, y: 400, force: true }) // drag popup back down to access route options again
+      cy.get('tamu-gisc-trip-planner-mode-picker-mobile').should('be.visible')
+      cy.get('.travel-modes > :nth-child(4) > div')
+          .click()
+          .should('have.class', 'active')
+      cy.get('.handle').move({ x: 0, y: -400, force: true}) // drag popup back into view
+      cy.get('.directions-overview')
+        .should('be.visible')
+      cy.get('.directions-container')
+        .should('be.visible')
 
     })
 
