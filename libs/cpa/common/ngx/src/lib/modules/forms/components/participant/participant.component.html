@@ -1,30 +1,3 @@
-<div class="actions">
-  <div class="left-actions">
-    <!-- Test only if the current index is equal to zero. Even though a value lf "-1" is not possible in an array,
-    in this case a value of "-1" represents a non-yet-existing, or possible, item at the end of the array -->
-    <!-- -->
-    <!-- Call `scanNextParticipant` only if the the current index is greater than zero OR if it is equal to "-1".
-      An index greater than zero is straight forward, means we can walk to the previous index.
-      An index equal to "-1" means that the current participant has not submitted any geometry and thus has no scan index. This case is assumed to be at the tail-end of the array, meaning we can start scanning
-      from the last index of the array. -->
-    <div class="action" title="Previous Participant" [ngClass]="{ unavailable: (responseIndex | async) === 0 || (responses | async)?.length === 0 }" (click)="scan('prev')">
-      <span class="material-icons">keyboard_arrow_left</span>
-      <p>Previous Participant</p>
-    </div>
-  </div>
-
-  <div class="right-actions">
-    <!-- Make action available if the current index is a valid array index (not "-1") -->
-    <!--  -->
-    <!-- Call `scanNextParticipant` only if the currentIndex is not -1. An index equal to the upper array limit would mean we can create a new participant, which is acceptable. -->
-
-    <div class="action" title="Next Participant" [ngClass]="{ unavailable: !form.valid }" (click)="scan('next')">
-      <p>Next Participant</p>
-      <span class="material-icons">keyboard_arrow_right</span>
-    </div>
-  </div>
-</div>
-
 <!-- Snapshot Title -->
 <h2>{{ (snapshot | async)?.title }}</h2>
 <h3>{{ (workshop | async)?.title }}</h3>
@@ -51,3 +24,30 @@
     </div>
   </div>
 </form>
+
+<div class="actions">
+  <div class="left-actions">
+    <!-- Test only if the current index is equal to zero. Even though a value lf "-1" is not possible in an array,
+    in this case a value of "-1" represents a non-yet-existing, or possible, item at the end of the array -->
+    <!-- -->
+    <!-- Call `scanNextParticipant` only if the the current index is greater than zero OR if it is equal to "-1".
+      An index greater than zero is straight forward, means we can walk to the previous index.
+      An index equal to "-1" means that the current participant has not submitted any geometry and thus has no scan index. This case is assumed to be at the tail-end of the array, meaning we can start scanning
+      from the last index of the array. -->
+    <div class="action" title="Previous Participant" [ngClass]="{ unavailable: (responseIndex | async) === 0 || (responses | async)?.length === 0 }" (click)="scan('prev')">
+      <span class="material-icons">keyboard_arrow_left</span>
+      <p>Previous submission</p>
+    </div>
+  </div>
+
+  <div class="right-actions">
+    <!-- Make action available if the current index is a valid array index (not "-1") -->
+    <!--  -->
+    <!-- Call `scanNextParticipant` only if the currentIndex is not -1. An index equal to the upper array limit would mean we can create a new participant, which is acceptable. -->
+
+    <div class="action" title="Next Participant" [ngClass]="{ unavailable: !form.valid }" (click)="scan('next')">
+      <p>Next submission</p>
+      <span class="material-icons">keyboard_arrow_right</span>
+    </div>
+  </div>
+</div>
