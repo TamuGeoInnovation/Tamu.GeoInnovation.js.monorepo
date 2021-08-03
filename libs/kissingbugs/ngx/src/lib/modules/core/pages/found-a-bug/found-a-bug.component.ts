@@ -6,7 +6,7 @@ import { StrapiService } from '../../data-access/strapi.service';
 import { IStrapiPageResponse } from '../../types/types';
 
 @Component({
-  selector: 'tamu-gisc-kissing-bugs-found-a-bug',
+  selector: 'tamu-gisc-kissingbugs-found-a-bug',
   templateUrl: './found-a-bug.component.html',
   styleUrls: ['./found-a-bug.component.scss'],
   providers: [StrapiService]

@@ -70,6 +70,14 @@ export interface IStrapiPageFeature {
   media: IStrapiMedia;
 }
 
+export interface IStrapiPageGallery {
+  __component: string;
+  id: number;
+  credit: string;
+  caption: string;
+  items: IStrapiPageFeature[];
+}
+
 export interface IStrapiPageParagraph {
   __component: string;
   id: number;

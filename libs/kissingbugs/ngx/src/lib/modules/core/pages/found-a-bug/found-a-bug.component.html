@@ -13,6 +13,7 @@
           <tamu-gisc-kissingbugs-list *ngSwitchCase="'page-new.list'" [dataSource]="item"></tamu-gisc-kissingbugs-list>
         </ul>
         <tamu-gisc-kissingbugs-info-alert *ngSwitchCase="'page-new.info-alert'" [dataSource]="item"></tamu-gisc-kissingbugs-info-alert>
+        <tamu-gisc-kissingbugs-gallery *ngSwitchCase="'page-new.gallery'" [dataSource]="item"></tamu-gisc-kissingbugs-gallery>
         <p *ngSwitchDefault>Unsupported component detected: {{ item.__component }}</p>
       </div>
     </div>

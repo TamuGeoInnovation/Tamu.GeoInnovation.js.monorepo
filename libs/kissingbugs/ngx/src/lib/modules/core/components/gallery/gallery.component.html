@@ -1,1 +1,13 @@
-<p>gallery works!</p>
+<div class="popup-gallery" id="non-kissing-bugs">
+  <div *ngFor="let row of rowItems; index as i" class="row">
+    <div *ngFor="let item of row" class="column3">
+      <a href="{{api_url}}{{item?.media?.url}}" target="_blank" title="{{item?.caption}}">
+        <div class="bug-info">
+          <p>{{ item?.caption}}</p>
+          <span>{{ item?.credit }}</span>
+        </div>
+        <img src="{{api_url}}{{item?.media?.url}}" alt="{{item?.caption}}" title="Click to enlarge" />
+      </a>
+    </div>
+  </div>
+</div>
