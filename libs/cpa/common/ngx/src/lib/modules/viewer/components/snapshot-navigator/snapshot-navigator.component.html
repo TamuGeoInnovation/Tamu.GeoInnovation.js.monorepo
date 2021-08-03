@@ -9,3 +9,5 @@
     </ng-template>
   </div>
 </ng-container>
+
+<div class="timeline" [style.width.px]="timelineWidth | async" [style.left.px]="(timelineLeftOffset | async)"></div>
