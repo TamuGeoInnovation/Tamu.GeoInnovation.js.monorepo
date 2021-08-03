@@ -1,4 +1,5 @@
 /// <reference path="../support/index.d.ts" />
+import { inRange } from "cypress/types/lodash";
 import {mobileSizes} from "./resolutions";
 
 mobileSizes.forEach((size) => {
@@ -63,7 +64,7 @@ mobileSizes.forEach((size) => {
       cy.wait(2000)
     })
 
-    it('Check Navigation', () => {
+    it('Check Walk Route Directions', () => {
       // add if statements if needed
       cy.get('.button')
         .should('have.attr', 'building-number', '0446')
@@ -78,7 +79,7 @@ mobileSizes.forEach((size) => {
 
       cy.get('canvas')
         .click('bottomRight')  // click random location
-        .wait(5000)
+        .wait(1000)
 
       // drag popup up and check if route features are displayed
       cy.get('.handle')
@@ -87,9 +88,11 @@ mobileSizes.forEach((size) => {
         .should('be.visible')
       cy.get('.directions-container')
         .should('be.visible')
-
-      // click bike route option and check directions
       cy.get('.handle').move({ x: 0, y: 400, force: true }) // drag popup back down to access route options again
+    })
+
+    it('Check Bike Route Directions', () => {
+      // click bike route option and check directions
       cy.get('tamu-gisc-trip-planner-mode-picker-mobile').should('be.visible')
       cy.get('.travel-modes > :nth-child(2) > div')
           .click()
@@ -99,9 +102,11 @@ mobileSizes.forEach((size) => {
         .should('be.visible')
       cy.get('.directions-container')
         .should('be.visible')
-      
-      // click car route option and check directions
       cy.get('.handle').move({ x: 0, y: 400, force: true }) // drag popup back down to access route options again
+    })
+
+    it('Check Car Route Directions', () => {
+      // click car route option and check directions
       cy.get('tamu-gisc-trip-planner-mode-picker-mobile').should('be.visible')
       cy.get('.travel-modes > :nth-child(3) > div')
           .click()
@@ -111,9 +116,11 @@ mobileSizes.forEach((size) => {
         .should('be.visible')
       cy.get('.directions-container')
         .should('be.visible')
-
-      // click bus route option and check directions
       cy.get('.handle').move({ x: 0, y: 400, force: true }) // drag popup back down to access route options again
+    })
+
+    it('Check Bus Route Directions', () => {
+      // click bus route option and check directions
       cy.get('tamu-gisc-trip-planner-mode-picker-mobile').should('be.visible')
       cy.get('.travel-modes > :nth-child(4) > div')
           .click()
@@ -123,7 +130,7 @@ mobileSizes.forEach((size) => {
         .should('be.visible')
       cy.get('.directions-container')
         .should('be.visible')
-
+      cy.get('.handle').move({ x: 0, y: 400, force: true }) // drag popup back down to access route options again
     })
 
   })
