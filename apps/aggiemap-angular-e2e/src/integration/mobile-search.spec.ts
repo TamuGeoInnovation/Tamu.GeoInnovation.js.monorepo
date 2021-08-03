@@ -31,7 +31,7 @@ mobileSizes.forEach((size) => {
     it('Click Search Result', () => {
       cy.contains('Rudder Tower (0446)').click()
       cy.get('.feature-style-1').should('contain.text', 'Rudder Tower')
-      cy.wait(1000)
+      cy.wait(2000)
     })
 
     it('Drag Pop-up Into User View', () => {
@@ -65,7 +65,6 @@ mobileSizes.forEach((size) => {
     })
 
     it('Check Walk Route Directions', () => {
-      // add if statements if needed
       cy.get('.button')
         .should('have.attr', 'building-number', '0446')
       cy.contains('Directions To Here')
@@ -131,6 +130,34 @@ mobileSizes.forEach((size) => {
       cy.get('.directions-container')
         .should('be.visible')
       cy.get('.handle').move({ x: 0, y: 400, force: true }) // drag popup back down to access route options again
+    })
+
+    it('Change Start Location After Previous Route', () => {
+      // click search bar
+
+      // type rudder tower
+
+      // click Rudder tower
+
+      // drag popup up
+
+      // click directions to here
+
+      // click random location
+
+      // click search bar for new starting location
+      cy.get('.points > :nth-child(1) > .ng-tns-c90-1')
+        .should('be.visible')
+        .click()
+
+      // click current location
+      cy.get('.focusable')
+        .should('be.visible')
+        .click()
+        
+      // click random location (no new circle should appear)
+
+
     })
 
   })
