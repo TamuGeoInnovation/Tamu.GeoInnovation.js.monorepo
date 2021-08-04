@@ -18,24 +18,26 @@ export class InterventionService {
    * Gets a specific intervention record by intervention id.
    */
   public getIntervention(id: number | string) {
-    return this.http.get<ValveIntervention>(`${this.url}/interventions/${id}`).pipe(
-      map((intervention) => {
-        return intervention.attributes;
-      })
-    );
+    return this.http
+      .get<ValveIntervention>(`${this.url}/interventions/${id}`, { withCredentials: true })
+      .pipe(
+        map((intervention) => {
+          return intervention.attributes;
+        })
+      );
   }
 
   /**
    * Gets all of the intervention records for a given valve number.
    */
   public getInterventionsForValve(valveId: string | number) {
-    return this.http.get<Array<ValveIntervention>>(`${this.url}/interventions/valve/${valveId}`);
+    return this.http.get<Array<ValveIntervention>>(`${this.url}/interventions/valve/${valveId}`, { withCredentials: true });
   }
 
   /**
    * Submits an intervention record with the provided intervention details.
    */
   public addIntervention(attributes: ValveInterventionAttributes) {
-    return this.http.post(`${this.url}/interventions/`, { intervention: attributes });
+    return this.http.post(`${this.url}/interventions/`, { intervention: attributes }, { withCredentials: true });
   }
 }
