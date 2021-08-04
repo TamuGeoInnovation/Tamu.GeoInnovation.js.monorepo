@@ -1,4 +1,8 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+
+import { AzureIdpGuard } from '@tamu-gisc/oidc/client';
+import { RequiredGroups, GroupsGuard } from '@tamu-gisc/ues/common/nest';
+import { ROLES } from '@tamu-gisc/ues/common/types';
 
 import { InterventionsService, ValveInterventionAttributes } from './interventions.service';
 
@@ -22,7 +26,9 @@ export class InterventionsController {
   }
 
   @Post()
-  public insertIntervention(@Body() body: {intervention: ValveInterventionAttributes}){
+  @RequiredGroups([ROLES.ADMIN, ROLES.PUBLISHER])
+  @UseGuards(AzureIdpGuard, GroupsGuard)
+  public insertIntervention(@Body() body: { intervention: ValveInterventionAttributes }) {
     return this.is.insertIntervention(body.intervention);
   }
 }
