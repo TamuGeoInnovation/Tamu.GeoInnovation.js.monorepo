@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject, from } from 'rxjs';
-import { filter, map, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { UserService } from '@tamu-gisc/ues/common/ngx';
 
 import esri = __esri;
-import { UserService } from '@tamu-gisc/ues/common/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,8 @@ export class ColdWaterValvesService {
     this.selectedValve = this._selectedValveId.pipe(
       switchMap((id) => {
         return this.getValve(id);
-      })
+      }),
+      shareReplay()
     );
   }
 
@@ -76,9 +77,9 @@ export class ColdWaterValvesService {
         return from(q);
       }),
       map((results) => {
-        const valve = results.features[0];
+        const valve = results.features[0] as MappedValve;
 
-        return valve as MappedValve;
+        return valve;
       })
     );
   }

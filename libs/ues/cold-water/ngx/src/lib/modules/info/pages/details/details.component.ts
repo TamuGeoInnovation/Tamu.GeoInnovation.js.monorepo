@@ -3,15 +3,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import { Observable, of, Subject } from 'rxjs';
-import { catchError, pluck, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
+import { catchError, map, pluck, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { UserService } from '@tamu-gisc/ues/common/ngx';
 import { ValveIntervention } from '@tamu-gisc/ues/cold-water/data-api';
 
-import { ColdWaterValvesService, MappedValve } from '../../../core/services/cold-water-valves/cold-water-valves.service';
+import {
+  ColdWaterValvesService,
+  IValve,
+  MappedValve
+} from '../../../core/services/cold-water-valves/cold-water-valves.service';
 import { InterventionService } from '../../../core/services/intervention/intervention.service';
-
-import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-details',
@@ -21,6 +23,10 @@ import esri = __esri;
 })
 export class DetailsComponent implements OnInit, OnDestroy {
   public valve: Observable<MappedValve>;
+  /**
+   * Ordered valve properties in a Map.
+   */
+  public valveAttributes: Observable<IValve['attributes']>;
   public routeValveId: Observable<number>;
   public interventions: Observable<Array<ValveIntervention>>;
   public updating = false;
@@ -61,6 +67,32 @@ export class DetailsComponent implements OnInit, OnDestroy {
         graphics: [valve]
       });
     });
+
+    this.valveAttributes = this.valve.pipe(
+      map((valve) => {
+        const priorityValveAttributes: Array<keyof IValve['attributes']> = ['OBJECTID', 'CurrentPosition_1'];
+
+        const orderedAttributes = Object.entries(valve.attributes).reduce((sorted, [currentKey, currentValue]) => {
+          const keyPriorityIndex = priorityValveAttributes.indexOf(currentKey as keyof IValve['attributes']);
+
+          if (keyPriorityIndex !== -1) {
+            sorted.splice(keyPriorityIndex, 0, [currentKey, currentValue]);
+          } else {
+            sorted.push([currentKey, currentValue]);
+          }
+
+          return sorted;
+        }, []);
+
+        const mapped = orderedAttributes.reduce((acc, [key, value]) => {
+          acc.set(key, value);
+
+          return acc;
+        }, new Map());
+
+        return mapped;
+      })
+    );
   }
 
   public ngOnDestroy(): void {
@@ -82,4 +114,9 @@ export class DetailsComponent implements OnInit, OnDestroy {
       this.router.navigate(['intervention/new', valve.attributes.OBJECTID]);
     });
   }
+
+  // Sorting function passed into the keyvalue angular pipe to preserve property order when iterating.
+  public tableSortOrigOrder = (a, b): number => {
+    return 0;
+  };
 }

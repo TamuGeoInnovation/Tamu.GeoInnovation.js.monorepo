@@ -20,6 +20,7 @@
     <div class="status">
       <div class="pill" *ngIf="(valve | async) as v" [ngClass]="{closed: v?.attributes?.NormalPosition_1 !== v?.attributes?.CurrentPosition_1, missing_fields: v?.attributes?.CurrentPosition_1 === null || v?.attributes?.NormalPosition_1 === null, busy: updating === true, disabled: (user?.permissions?.isAdmin | async) === false}" (click)="toggleValveState(v)">{{v?.attributes?.CurrentPosition_1 ? v.attributes.CurrentPosition_1 : 'null'}}</div>
     </div>
+
     <div class="spinning-loader" *ngIf="updating"></div>
   </div>
 </div>
@@ -27,7 +28,7 @@
 <tamu-gisc-expandable-card>
   <div>
     <h2 class="card-title">Properties</h2>
-    <p *ngFor="let v of ((valve | async)?.attributes | keyvalue)"><strong>{{v.key}}</strong>: {{v.value | json}}</p>
+    <p *ngFor="let v of (valveAttributes | async | keyvalue : tableSortOrigOrder)"><strong>{{v.key}}</strong>: {{v.value | json}}</p>
 
     <div class="trailer-1 leader-1" *ngIf="(valve | async) === null">
       <div class="spinning-loader"></div>
