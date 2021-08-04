@@ -28,15 +28,23 @@ const routes: Routes = [
   },
   {
     path: 'map',
-    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.HomeModule)
+    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.MapModule)
   },
   {
     path: 'team',
-    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.HomeModule)
+    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.TeamModule)
   },
   {
     path: 'faq',
-    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.HomeModule)
+    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.FaqModule)
+  },
+  {
+    path: 'resources',
+    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.ResourcesModule)
+  },
+  {
+    path: 'contact',
+    loadChildren: () => import('@tamu-gisc/kissingbugs/ngx').then((m) => m.ContactModule)
   }
 ];
 

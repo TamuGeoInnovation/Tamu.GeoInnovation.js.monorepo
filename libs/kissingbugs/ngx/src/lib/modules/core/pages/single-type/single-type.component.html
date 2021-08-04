@@ -5,14 +5,15 @@
   <div class="styleForm">
     <div *ngFor="let item of (pageContents | async)?.section">
       <div [ngSwitch]="item.__component">
-        <tamu-gisc-kissingbugs-section *ngSwitchCase="'page-new.section'" [dataSource]="item"></tamu-gisc-kissingbugs-section>
-        <tamu-gisc-kissingbugs-info-block *ngSwitchCase="'page-new.section-block'" [dataSource]="item"></tamu-gisc-kissingbugs-info-block>
-        <tamu-gisc-kissingbugs-figure *ngSwitchCase="'page-new.figure'" [dataSource]="item"></tamu-gisc-kissingbugs-figure>
-        <p *ngSwitchCase="'page-new.paragraph'">{{ item.text }}</p>
+        <tamu-gisc-kissingbugs-section *ngSwitchCase="'page.section'" [dataSource]="item"></tamu-gisc-kissingbugs-section>
+        <tamu-gisc-kissingbugs-info-block *ngSwitchCase="'page.section-block'" [dataSource]="item"></tamu-gisc-kissingbugs-info-block>
+        <tamu-gisc-kissingbugs-figure *ngSwitchCase="'page.figure'" [dataSource]="item"></tamu-gisc-kissingbugs-figure>
+        <p *ngSwitchCase="'page.paragraph'">{{ item.text }}</p>
         <ul>
-          <tamu-gisc-kissingbugs-list *ngSwitchCase="'page-new.list'" [dataSource]="item"></tamu-gisc-kissingbugs-list>
+          <tamu-gisc-kissingbugs-list *ngSwitchCase="'page.list'" [dataSource]="item"></tamu-gisc-kissingbugs-list>
         </ul>
-        <tamu-gisc-kissingbugs-info-alert *ngSwitchCase="'page-new.info-alert'" [dataSource]="item"></tamu-gisc-kissingbugs-info-alert>
+        <tamu-gisc-kissingbugs-info-alert *ngSwitchCase="'page.info-alert'" [dataSource]="item"></tamu-gisc-kissingbugs-info-alert>
+        <tamu-gisc-kissingbugs-gallery *ngSwitchCase="'page.gallery'" [dataSource]="item"></tamu-gisc-kissingbugs-gallery>
         <p *ngSwitchDefault>Unsupported component detected: {{ item.__component }}</p>
       </div>
     </div>

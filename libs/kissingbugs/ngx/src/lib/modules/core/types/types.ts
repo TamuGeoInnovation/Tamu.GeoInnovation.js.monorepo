@@ -1,4 +1,13 @@
-export type StrapiSingleTypes = 'home' | 'home-new' | 'found-a-bug' | 'navigation' | 'hero' | 'footer';
+export type StrapiSingleTypes =
+  | 'home'
+  | 'found-a-bug'
+  | 'map'
+  | 'team'
+  | 'faq'
+  | 'resources'
+  | 'contact'
+  | 'navigation'
+  | 'footer';
 
 export type IStrapiLocales = 'en' | 'es';
 
@@ -59,7 +68,7 @@ export interface IStrapiPageInfoAlert {
   __component: string;
   id: number;
   text: string;
-  image: IStrapiMedia;
+  file: IStrapiMedia;
 }
 
 export interface IStrapiPageFeature {

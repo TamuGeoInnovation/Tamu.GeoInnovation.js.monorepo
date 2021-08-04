@@ -3,13 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import {
-  IStrapiPageResponse,
-  StrapiSingleTypes,
-  IStrapiStapleHero,
-  IStrapiStapleFooter,
-  IStrapiStapleNavigation
-} from '../types/types';
+import { IStrapiPageResponse, StrapiSingleTypes, IStrapiStapleFooter, IStrapiStapleNavigation } from '../types/types';
 
 @Injectable({
   providedIn: 'root'
@@ -27,10 +21,6 @@ export class StrapiService {
 
   public getNavigation(type: StrapiSingleTypes = 'navigation', locale: string = 'en') {
     return this.http.get<IStrapiStapleNavigation>(`${this.resource}/${type}`);
-  }
-
-  public getHero(type: StrapiSingleTypes = 'hero', locale: string = 'en') {
-    return this.http.get<IStrapiStapleHero>(`${this.resource}/${type}?_locale=${locale}`);
   }
 
   public getFooter(type: StrapiSingleTypes = 'footer', locale: string = 'en') {

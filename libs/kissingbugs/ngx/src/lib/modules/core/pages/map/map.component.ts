@@ -1,15 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
+
+import { StrapiService } from '../../data-access/strapi.service';
+import { IStrapiPageResponse } from '../../types/types';
 
 @Component({
-  selector: 'tamu-gisc-map',
+  selector: 'tamu-gisc-kissingbugs-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
+  providers: [StrapiService]
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, OnDestroy {
+  public pageContents: Observable<IStrapiPageResponse>;
 
-  constructor() { }
+  constructor(private ss: StrapiService) {}
 
-  ngOnInit(): void {
+  public ngOnInit() {
+    const language: string = navigator.language.substr(0, 2);
+
+    this.pageContents = this.ss.getPage('map', language).pipe(shareReplay(1));
   }
 
+  public ngOnDestroy() {}
 }

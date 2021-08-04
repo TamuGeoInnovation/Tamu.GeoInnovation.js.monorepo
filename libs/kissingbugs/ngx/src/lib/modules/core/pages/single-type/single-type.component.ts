@@ -22,7 +22,7 @@ export class SingleTypeComponent implements OnInit, OnDestroy {
     }
     const language: string = navigator.language.substr(0, 2);
 
-    this.pageContents = this.ss.getPage('home-new', language).pipe(shareReplay(1));
+    this.pageContents = this.ss.getPage('home', language).pipe(shareReplay(1));
   }
 
   public ngOnDestroy() {}
