@@ -127,7 +127,8 @@ export class InterventionComponent implements OnInit, OnDestroy {
       YellowLidPlaced: [''],
       LockoutTagePlaced: [''],
       DoesMapNeedUpdate: [''],
-      WorkOrder: ['']
+      WorkOrder: [''],
+      OBJECTID: ['']
     });
 
     this.interventionId = this.route.params.pipe(pluck('id'), shareReplay(1));
@@ -226,7 +227,17 @@ export class InterventionComponent implements OnInit, OnDestroy {
     this.formSubmitting.next(true);
 
     forkJoin([
-      this.is.addIntervention(formValue),
+      of(formValue).pipe(
+        switchMap((fv) => {
+          // If the current form has a patched valid OBJECTID value, then it means the intervention exists
+          // and instead we should send an update request
+          if (fv.OBJECTID !== '') {
+            return this.is.updateIntervention(formValue);
+          } else {
+            return this.is.addIntervention(formValue);
+          }
+        })
+      ),
       this.valve.pipe(
         take(1),
         switchMap((valve) => {

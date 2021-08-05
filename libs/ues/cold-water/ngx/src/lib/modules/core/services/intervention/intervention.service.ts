@@ -40,4 +40,11 @@ export class InterventionService {
   public addIntervention(attributes: ValveInterventionAttributes) {
     return this.http.post(`${this.url}/interventions/`, { intervention: attributes }, { withCredentials: true });
   }
+
+  /**
+   * Submits an intervention record update with the provided updated intervention details.
+   */
+  public updateIntervention(attributes: ValveInterventionAttributes) {
+    return this.http.put(`${this.url}/interventions/`, { intervention: attributes }, { withCredentials: true });
+  }
 }

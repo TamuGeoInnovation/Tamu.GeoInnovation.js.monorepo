@@ -1,4 +1,4 @@
-import { Injectable, HttpService, Inject, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpService, Inject, HttpException, HttpStatus, UnprocessableEntityException } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { catchError, map, pluck } from 'rxjs/operators';
 
@@ -63,9 +63,26 @@ export class InterventionsService {
   }
 
   public insertIntervention(attributes: ValveInterventionAttributes) {
+    return this.applyInterventionEdits('add', attributes);
+  }
+
+  public updateIntervention(attributes: ValveInterventionAttributes) {
+    return this.applyInterventionEdits('update', attributes);
+  }
+
+  private applyInterventionEdits(type: 'add' | 'update' | 'delete', attributes: ValveInterventionAttributes) {
     const form = new FormData();
     form.append('f', 'pjson');
-    form.append('adds', JSON.stringify([{attributes: attributes}]));
+
+    if (type === 'add') {
+      form.append('adds', JSON.stringify([{ attributes: attributes }]));
+    } else if (type === 'update') {
+      form.append('updates', JSON.stringify([{ attributes: attributes }]));
+    } else if (type === 'delete') {
+      form.append('updates', JSON.stringify([attributes.OBJECTID]));
+    } else {
+      throw new UnprocessableEntityException();
+    }
 
     return this.http
       .post(`${this.url}/applyEdits`, form, {
