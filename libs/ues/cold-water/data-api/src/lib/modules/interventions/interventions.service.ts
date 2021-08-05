@@ -70,7 +70,11 @@ export class InterventionsService {
     return this.applyInterventionEdits('update', attributes);
   }
 
-  private applyInterventionEdits(type: 'add' | 'update' | 'delete', attributes: ValveInterventionAttributes) {
+  public deleteIntervention(attributes: Partial<ValveInterventionAttributes>) {
+    return this.applyInterventionEdits('delete', attributes);
+  }
+
+  private applyInterventionEdits(type: 'add' | 'update' | 'delete', attributes: Partial<ValveInterventionAttributes>) {
     const form = new FormData();
     form.append('f', 'pjson');
 
@@ -79,7 +83,7 @@ export class InterventionsService {
     } else if (type === 'update') {
       form.append('updates', JSON.stringify([{ attributes: attributes }]));
     } else if (type === 'delete') {
-      form.append('updates', JSON.stringify([attributes.OBJECTID]));
+      form.append('deletes', JSON.stringify([attributes.OBJECTID]));
     } else {
       throw new UnprocessableEntityException();
     }

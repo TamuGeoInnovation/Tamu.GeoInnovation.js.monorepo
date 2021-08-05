@@ -47,4 +47,13 @@ export class InterventionService {
   public updateIntervention(attributes: ValveInterventionAttributes) {
     return this.http.put(`${this.url}/interventions/`, { intervention: attributes }, { withCredentials: true });
   }
+
+  /**
+   * Submits an intervention record for deletion.
+   */
+  public deleteIntervention(attributes: ValveInterventionAttributes) {
+    return this.http.delete(`${this.url}/interventions/${attributes.OBJECTID}`, {
+      withCredentials: true
+    });
+  }
 }

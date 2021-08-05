@@ -27,7 +27,7 @@
     <div class="card-title">Intervention Details</div>
   </ng-container>
 
-  <form [formGroup]="form" (ngSubmit)="submitIntervention()">
+  <form [formGroup]="form">
     <div class="form-section">
       <div class="form-section-toolbar">
         <div class="form-section-name">
@@ -42,6 +42,10 @@
 
         <div class="form-collection row">
           <tamu-gisc-textbox formControlName="SubmittedBy" placeholder="Submitted By" type="text" floatLabel="true" disabled> </tamu-gisc-textbox>
+        </div>
+
+        <div class="form-collection row">
+          <tamu-gisc-textbox formControlName="WorkOrder" placeholder="Work Order" type="text" floatLabel="true"> </tamu-gisc-textbox>
         </div>
 
         <div class="form-collection column">
@@ -101,29 +105,27 @@
           <tamu-gisc-radio-group formControlName="DoesMapNeedUpdate" [options]="optionValues.DoesMapNeedUpdate" displayPath="label" valuePath="code"> </tamu-gisc-radio-group>
         </div>
 
-        <div class="form-collection row">
-          <tamu-gisc-textbox formControlName="WorkOrder" placeholder="Work Order" type="text" floatLabel="true"> </tamu-gisc-textbox>
-        </div>
-
         <!-- Button text and state if intervention does not exist and user is either admin or publisher -->
         <ng-container *ngIf="((intervention | async)?.OBJECTID === undefined) && ((usr.permissions.isAdmin | async) || (usr.permissions.isPublisher | async))">
           <div class="form-collection row">
-            <tamu-gisc-button type="submit" [value]="formSubmitText | async" [disabled]="formSubmitting | async"></tamu-gisc-button>
+            <tamu-gisc-button type="submit" [value]="(formSubmitText | async)?.create" [disabled]="formSubmitting | async" (click)="submitIntervention('create')"></tamu-gisc-button>
           </div>
         </ng-container>
 
         <!-- Button text and state if intervention does exist and user is either admin or publisher -->
         <ng-container *ngIf="((intervention | async)?.OBJECTID) && ((usr.permissions.isAdmin | async) || (usr.permissions.isPublisher | async))">
           <div class="form-collection row">
+            <tamu-gisc-button type="submit" [value]="(formSubmitText | async)?.delete" [disabled]="(formSubmitting | async)" class="danger" (click)="submitIntervention('delete')"></tamu-gisc-button>
+
             <!-- Disable the input if the intervention publisher is not the same as the current user and current user is not an admin -->
-            <tamu-gisc-button type="submit" [value]="formSubmitText | async" [disabled]="(formSubmitting | async) || ((user | async)?.name !== (intervention | async)?.SubmittedBy && (usr.permissions.isAdmin | async) === false)"></tamu-gisc-button>
+            <tamu-gisc-button type="submit" [value]="(formSubmitText | async)?.create" [disabled]="(formSubmitting | async)" (click)="submitIntervention('create')"></tamu-gisc-button>
           </div>
         </ng-container>
 
         <!-- Button text and state if intervention exists and user is not privileged -->
         <ng-container *ngIf="((intervention | async)?.OBJECTID) &&  (usr.permissions.isUser | async) && (((usr.permissions.isPublisher | async) === false)  && (usr.permissions.isAdmin | async) === false)">
           <div class="form-collection row">
-            <tamu-gisc-button type="submit" [value]="formSubmitText | async" [disabled]="true"></tamu-gisc-button>
+            <tamu-gisc-button type="submit" [value]="(formSubmitText | async)?.create | json" [disabled]="true" (click)="submitIntervention('create')"></tamu-gisc-button>
           </div>
         </ng-container>
       </div>

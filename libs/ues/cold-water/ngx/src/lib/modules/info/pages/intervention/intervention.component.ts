@@ -89,17 +89,23 @@ export class InterventionComponent implements OnInit, OnDestroy {
   public user = this.usr.user;
 
   public formSubmitTextOptions = {
-    INITIAL: {
-      CLEAN: 'Submit',
-      DIRTY: 'Save'
+    CREATE: {
+      INITIAL: 'Submit',
+      ACTION: 'Submitting...'
     },
-    UPDATING: {
-      CLEAN: 'Submitting...',
-      DIRTY: 'Saving...'
+    UPDATE: {
+      INITIAL: 'Update',
+      ACTION: 'Updating...'
+    },
+    DELETE: {
+      INITIAL: 'Delete',
+      ACTION: 'Deleting...'
     }
   };
+
   public formSubmitting: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public formSubmitText: Observable<string>;
+  public formSubmittingType: BehaviorSubject<'create' | 'delete'> = new BehaviorSubject('create');
+  public formSubmitText: Observable<{ create: string; delete: string }>;
 
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -196,21 +202,50 @@ export class InterventionComponent implements OnInit, OnDestroy {
       this.vs.setSelectedValve(valveId);
     });
 
-    this.formSubmitText = combineLatest([of(this.formSubmitTextOptions), this.intervention, this.formSubmitting]).pipe(
-      map(([text, intervention, submitting]) => {
-        if (submitting) {
-          if (intervention.OBJECTID) {
-            return text.UPDATING.DIRTY;
+    this.formSubmitText = combineLatest([
+      of(this.formSubmitTextOptions),
+      this.intervention,
+      this.formSubmitting,
+      this.formSubmittingType
+    ]).pipe(
+      map(([text, intervention, isSubmitting, submitType]) => {
+        const buttonText = {
+          create: text.CREATE.INITIAL,
+          delete: text.DELETE.INITIAL
+        };
+        const isExisting = intervention.OBJECTID;
+
+        if (isExisting) {
+          if (isSubmitting) {
+            if (submitType === 'create') {
+              buttonText.create = text.UPDATE.ACTION;
+            } else if (submitType === 'delete') {
+              buttonText.delete = text.DELETE.ACTION;
+            }
           } else {
-            return text.UPDATING.CLEAN;
+            if (submitType === 'create') {
+              buttonText.create = text.UPDATE.INITIAL;
+            } else if (submitType === 'delete') {
+              buttonText.delete = text.DELETE.INITIAL;
+            }
           }
         } else {
-          if (intervention.OBJECTID) {
-            return text.INITIAL.DIRTY;
+          if (isSubmitting) {
+            if (submitType === 'create') {
+              buttonText.create = text.CREATE.ACTION;
+            } else if (submitType === 'delete') {
+              buttonText.delete = text.DELETE.ACTION;
+            }
           } else {
-            return text.INITIAL.CLEAN;
+            if (submitType === 'create') {
+              buttonText.create = text.CREATE.INITIAL;
+            } else if (submitType === 'delete') {
+              buttonText.delete = text.DELETE.INITIAL;
+            }
           }
         }
+
+        return buttonText;
       })
     );
   }
@@ -220,21 +255,26 @@ export class InterventionComponent implements OnInit, OnDestroy {
     this._$destroy.complete();
   }
 
-  public submitIntervention() {
+  public submitIntervention(type: 'create' | 'delete') {
     const formValue = this.form.getRawValue();
     const valveState = this.optionValues.ValveState.find((state) => (state.code = formValue.ValveState));
 
     this.formSubmitting.next(true);
+    this.formSubmittingType.next(type);
 
     forkJoin([
       of(formValue).pipe(
         switchMap((fv) => {
           // If the current form has a patched valid OBJECTID value, then it means the intervention exists
           // and instead we should send an update request
-          if (fv.OBJECTID !== '') {
-            return this.is.updateIntervention(formValue);
-          } else {
-            return this.is.addIntervention(formValue);
+          if (type === 'create') {
+            if (fv.OBJECTID !== '') {
+              return this.is.updateIntervention(formValue);
+            } else {
+              return this.is.addIntervention(formValue);
+            }
+          } else if (type === 'delete') {
+            return this.is.deleteIntervention(formValue);
           }
         })
       ),
@@ -248,24 +288,57 @@ export class InterventionComponent implements OnInit, OnDestroy {
       .pipe(
         finalize(() => {
           this.formSubmitting.next(false);
+          this.formSubmittingType.next('create');
         })
       )
       .subscribe(
         ([interventionResults, valveStateResults]) => {
-          this.ns.toast({
-            id: 'intervention-submit-success',
-            message: 'Intervention event was created.',
-            title: 'Created intervention event'
-          });
+          if (type === 'create') {
+            if (formValue.OBJECTID === '') {
+              this.ns.toast({
+                id: 'intervention-create-success',
+                message: 'Intervention event was created.',
+                title: 'Created intervention event'
+              });
+            } else {
+              this.ns.toast({
+                id: 'intervention-update-success',
+                message: 'Intervention event was updated.',
+                title: 'Updated intervention event'
+              });
+            }
+          } else if (type === 'delete') {
+            this.ns.toast({
+              id: 'intervention-delete-success',
+              message: 'Intervention event was deleted.',
+              title: 'Deleted intervention event'
+            });
+          }
 
           this.router.navigate(['details', formValue.ValveNumber]);
         },
         (err) => {
-          this.ns.toast({
-            id: 'intervention-submit-error',
-            message: 'Error creating intervention event.',
-            title: 'An error occurred creating an intervention event.'
-          });
+          if (type === 'create') {
+            if (formValue.OBJECTID === '') {
+              this.ns.toast({
+                id: 'intervention-create-error',
+                message: 'An error ocurred creating intervention event.',
+                title: 'Error creating intervention event'
+              });
+            } else {
+              this.ns.toast({
+                id: 'intervention-update-error',
+                message: 'An error ocurred updating intervention event.',
+                title: 'Error updating intervention event'
+              });
+            }
+          } else if (type === 'delete') {
+            this.ns.toast({
+              id: 'intervention-delete-error',
+              message: 'An error ocurred deleting intervention event.',
+              title: 'Error deleting intervention event'
+            });
+          }
         }
       );
   }
