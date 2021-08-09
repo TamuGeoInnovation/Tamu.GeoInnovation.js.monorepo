@@ -12,6 +12,7 @@ import { NavComponent } from './nav/nav.component';
 import { FigureComponent } from './figure/figure.component';
 import { ListComponent } from './list/list.component';
 import { GalleryComponent } from './gallery/gallery.component';
+import { PortraitComponent } from './portrait/portrait.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule],
@@ -25,7 +26,8 @@ import { GalleryComponent } from './gallery/gallery.component';
     NavComponent,
     FigureComponent,
     ListComponent,
-    GalleryComponent
+    GalleryComponent,
+    PortraitComponent
   ],
   exports: [
     SectionComponent,
@@ -37,7 +39,8 @@ import { GalleryComponent } from './gallery/gallery.component';
     NavComponent,
     FigureComponent,
     ListComponent,
-    GalleryComponent
+    GalleryComponent,
+    PortraitComponent
   ]
 })
 export class ComponentsModule {}

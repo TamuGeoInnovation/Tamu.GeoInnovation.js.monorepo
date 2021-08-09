@@ -79,6 +79,16 @@ export interface IStrapiPageFeature {
   media: IStrapiMedia;
 }
 
+export interface IStrapiPagePortrait {
+  __component: string;
+  id: number;
+  site: string;
+  name: string;
+  bio: string;
+  education: string;
+  media: IStrapiMedia;
+}
+
 export interface IStrapiPageGallery {
   __component: string;
   id: number;

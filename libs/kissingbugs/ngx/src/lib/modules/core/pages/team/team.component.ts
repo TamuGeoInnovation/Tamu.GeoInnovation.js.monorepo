@@ -1,15 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map, reduce, shareReplay, switchMap } from 'rxjs/operators';
+
+import { StrapiService } from '../../data-access/strapi.service';
+import { IStrapiPageResponse } from '../../types/types';
 
 @Component({
-  selector: 'tamu-gisc-team',
+  selector: 'tamu-gisc-kissingbugs-team',
   templateUrl: './team.component.html',
-  styleUrls: ['./team.component.scss']
+  styleUrls: ['./team.component.scss'],
+  providers: [StrapiService]
 })
-export class TeamComponent implements OnInit {
+export class TeamComponent implements OnInit, OnDestroy {
+  public pageContents: Observable<IStrapiPageResponse>;
 
-  constructor() { }
+  constructor(private ss: StrapiService) {}
 
-  ngOnInit(): void {
+  public ngOnInit() {
+    const language: string = navigator.language.substr(0, 2);
+
+    this.pageContents = this.ss.getPage('team', language).pipe(shareReplay(1));
+
+    // this.pageContents
+    //   .pipe(
+    //     map((response) => {
+    //       const sections = Object.keys(response).filter((value) => value.includes('section'));
+    //       return sections.map((key) => {
+    //         return response[key];
+    //       });
+    //     })
+    //   )
+    //   .subscribe((response) => {
+    //     console.log(response);
+    //   });
   }
 
+  public ngOnDestroy() {}
 }
