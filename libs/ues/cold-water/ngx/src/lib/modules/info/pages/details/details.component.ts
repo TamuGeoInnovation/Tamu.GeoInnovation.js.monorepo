@@ -15,6 +15,8 @@ import {
 } from '../../../core/services/cold-water-valves/cold-water-valves.service';
 import { InterventionService } from '../../../core/services/intervention/intervention.service';
 
+import esri = __esri;
+
 @Component({
   selector: 'tamu-gisc-details',
   templateUrl: './details.component.html',
@@ -27,6 +29,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
    * Ordered valve properties in a Map.
    */
   public valveAttributes: Observable<IValve['attributes']>;
+  public valveLayerFields: Observable<Array<esri.Field>>;
   public routeValveId: Observable<number>;
   public interventions: Observable<Array<ValveIntervention>>;
   public updating = false;
@@ -91,6 +94,12 @@ export class DetailsComponent implements OnInit, OnDestroy {
         }, new Map());
 
         return mapped;
+      })
+    );
+
+    this.valveLayerFields = this.valve.pipe(
+      map((valve) => {
+        return (valve.layer as esri.FeatureLayer).fields;
       })
     );
   }

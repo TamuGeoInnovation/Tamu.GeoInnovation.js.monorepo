@@ -1,0 +1,31 @@
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngIf="sortFn !== undefined; else noInitialSort ">
+      <ng-container *ngFor="let row of data | keyvalue : sortFn">
+        <ng-container *ngTemplateOutlet="rowContent;context: {row: row}"></ng-container>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #noInitialSort>
+      <tr *ngFor="let row of data | keyvalue">
+        <ng-container *ngTemplateOutlet="rowContent;context: {row: row}"></ng-container>
+      </tr>
+    </ng-template>
+  </tbody>
+</table>
+
+<ng-template #rowContent let-row="row">
+  <tr>
+    <!-- Run the key through a pipe to find the corresponding field object and print out the alias -->
+    <td>{{(row.key | attributeField: fields)?.alias}}</td>
+
+    <!-- Run the key through a pipe to return the corresponding field which is later used to pass in the coded value to return the named value -->
+    <td>{{row.key | attributeField: fields | fieldCodedValue : row.value }}</td>
+  </tr>
+</ng-template>

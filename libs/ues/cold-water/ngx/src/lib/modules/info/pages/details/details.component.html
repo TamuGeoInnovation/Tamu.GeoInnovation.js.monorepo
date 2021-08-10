@@ -28,7 +28,7 @@
 <tamu-gisc-expandable-card>
   <div>
     <h2 class="card-title">Properties</h2>
-    <tamu-gisc-attribute-table [data]="valveAttributes | async" [sortFn]="tableSortOrigOrder"></tamu-gisc-attribute-table>
+    <tamu-gisc-alias-attribute-table [data]="valveAttributes | async" [fields]="valveLayerFields | async" [sortFn]="tableSortOrigOrder"></tamu-gisc-alias-attribute-table>
 
     <div class="trailer-1 leader-1" *ngIf="(valve | async) === null">
       <div class="spinning-loader"></div>
