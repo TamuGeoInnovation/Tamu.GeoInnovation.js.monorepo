@@ -1,15 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+
+import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 @Component({
   selector: 'tamu-gisc-attribute-table',
   templateUrl: './attribute-table.component.html',
   styleUrls: ['./attribute-table.component.scss']
 })
-export class AttributeTableComponent implements OnInit {
+export class AttributeTableComponent {
+  @Input()
+  public data: IGraphic['attributes'];
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  /**
+   * Function used to initially sort data. Passed in directly to the ngFor directive
+   * responsible for iterating through all the properties.
+   */
+  @Input()
+  public sortFn: () => boolean;
 }

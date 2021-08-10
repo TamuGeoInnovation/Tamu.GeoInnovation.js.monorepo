@@ -116,7 +116,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   }
 
   // Sorting function passed into the keyvalue angular pipe to preserve property order when iterating.
-  public tableSortOrigOrder = (a, b): number => {
+  public readonly tableSortOrigOrder = (a, b): number => {
     return 0;
   };
 }

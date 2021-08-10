@@ -270,6 +270,9 @@ export interface IGraphic {
     };
     style: string;
   };
-  attributes: {};
+  attributes: {
+    // tslint:disable-next-line: no-any
+    [property: string]: any;
+  };
   popupTemplate: {};
 }
