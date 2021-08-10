@@ -2,7 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 
-import { ColdWaterValvesService, MappedValve } from '../../../core/services/cold-water-valves/cold-water-valves.service';
+import {
+  ColdWaterValvesService,
+  IValveStats,
+  MappedValve
+} from '../../../core/services/cold-water-valves/cold-water-valves.service';
 
 @Component({
   selector: 'tamu-gisc-list',
@@ -11,6 +15,7 @@ import { ColdWaterValvesService, MappedValve } from '../../../core/services/cold
 })
 export class ListComponent implements OnInit, OnDestroy {
   public valves: Observable<Array<MappedValve>>;
+  public valvesStats: Observable<IValveStats>;
 
   public categorized: Observable<ValvesCategorized>;
   public ratio: Observable<ValveStateRatio>;
@@ -67,11 +72,13 @@ export class ListComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.ratio = this.categorized.pipe(
-      map((categorized) => {
+    this.valvesStats = this.valveService.getValveStats().pipe(shareReplay());
+
+    this.ratio = this.valvesStats.pipe(
+      map((stats) => {
         return {
-          open: (categorized.normal.length / (categorized.abnormal.length + categorized.normal.length)) * 100,
-          closed: (categorized.abnormal.length / (categorized.abnormal.length + categorized.normal.length)) * 100
+          normal: (stats.normal_valves / stats.total_valves) * 100,
+          abnormal: (stats.abnormal_valves / stats.total_valves) * 100
         };
       })
     );
@@ -96,8 +103,8 @@ export class ListComponent implements OnInit, OnDestroy {
 }
 
 interface ValveStateRatio {
-  open: number;
-  closed: number;
+  normal: number;
+  abnormal: number;
 }
 
 interface ValvesCategorized {
