@@ -1,10 +1,10 @@
 <div class="action-bar">
   <div class="breadcrumb trailer-2">
-    <div class="crumb" routerLink="../../">Valves</div>
+    <div class="crumb" routerLink="/">Valves</div>
     <span class="material-icons">keyboard_arrow_right</span>
-    <div class="crumb">Details</div>
+    <div class="crumb" [routerLink]="['/details', valveId | async]">Details</div>
     <span class="material-icons">keyboard_arrow_right</span>
-    <div class="crumb">{{(valveId | async)}}</div>
+    <div class="crumb" [routerLink]="['/details', valveId | async]">{{(valveId | async)}}</div>
     <span class="material-icons">keyboard_arrow_right</span>
     <div class="crumb">New Intervention</div>
   </div>

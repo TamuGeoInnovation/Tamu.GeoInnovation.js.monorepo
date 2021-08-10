@@ -552,7 +552,7 @@ tamu-gisc-info {
   color: lighten($font-color, 45%);
 
   .crumb {
-    &[routerLink] {
+    &[ng-reflect-router-link] {
       &:hover {
         color: $font-color;
         cursor: pointer;
