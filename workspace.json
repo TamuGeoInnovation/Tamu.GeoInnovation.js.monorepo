@@ -5424,6 +5424,29 @@
           }
         }
       }
+    },
+    "maps-feature-data": {
+      "projectType": "library",
+      "root": "libs/maps/feature/data",
+      "sourceRoot": "libs/maps/feature/data/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/maps/feature/data/tsconfig.lib.json", "libs/maps/feature/data/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/maps/feature/data/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/maps/feature/data"],
+          "options": {
+            "jestConfig": "libs/maps/feature/data/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

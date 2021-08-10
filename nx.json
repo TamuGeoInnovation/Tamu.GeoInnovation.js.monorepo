@@ -468,6 +468,9 @@
     },
     "ues-common-nest": {
       "tags": []
+    },
+    "maps-feature-data": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {
