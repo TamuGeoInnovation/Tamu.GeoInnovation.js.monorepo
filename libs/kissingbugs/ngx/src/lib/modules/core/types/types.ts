@@ -16,6 +16,7 @@ export type IStrapiComponent =
   | IStrapiPageSection
   | IStrapiPageInfoAlert
   | IStrapiPageFeature
+  | IStrapiPageGallery
   | IStrapiPageParagraph
   | IStrapiPageList;
 
@@ -147,14 +148,33 @@ export interface IStrapiStapleNavigation {
   updated_at: string;
   items: (IStrapiNavigationItem | IStrapiNavigationPage)[];
 }
+
+export interface IStrapiFAQItem {
+  id: number;
+  text: string;
+  section: number;
+}
+
+export interface IStrapiFAQItemsWithComponents {
+  questions: IStrapiFAQItem[];
+  sections: IStrapiPageSection[];
+}
+
+export interface IStrapiPageFAQComponent {
+  sectionId: number;
+  text: string;
+  components: IStrapiComponent[];
+}
+
 export interface IStrapiPageResponse {
   id: number;
   locale: IStrapiLocales;
   published_at: string;
   created_at: string;
   updated_at: string;
-  header: IStrapiStapleHero;
-  body: IStrapiComponent[];
+  hero: IStrapiStapleHero;
+  section: IStrapiComponent[];
+  questions: IStrapiFAQItem[];
   footer: IStrapiStapleFooter;
   localizations: IStrapiLocale[];
 }
