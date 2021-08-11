@@ -1,9 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, pluck, shareReplay, startWith, switchMap } from 'rxjs/operators';
+
+import { makeWhere } from '@tamu-gisc/common/utils/database';
 
 import {
   ColdWaterValvesService,
+  IValve,
   IValveStats,
   MappedValve
 } from '../../../core/services/cold-water-valves/cold-water-valves.service';
@@ -17,6 +21,9 @@ export class ListComponent implements OnInit, OnDestroy {
   public valves: Observable<Array<MappedValve>>;
   public valvesStats: Observable<IValveStats>;
 
+  public form: FormGroup;
+  public where: Observable<string>;
+
   public categorized: Observable<ValvesCategorized>;
   public ratio: Observable<ValveStateRatio>;
   public filtered: Observable<Array<MappedValve>>;
@@ -25,12 +32,43 @@ export class ListComponent implements OnInit, OnDestroy {
   public filterClosed: BehaviorSubject<boolean> = new BehaviorSubject(true);
   public dcwToggled: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(private valveService: ColdWaterValvesService) {}
+  constructor(private valveService: ColdWaterValvesService, private fb: FormBuilder) {}
 
   public ngOnInit(): void {
     this.valveService.restoreMapExtent();
 
-    this.valves = this.valveService.valves.pipe(shareReplay(1));
+    this.form = this.fb.group({
+      term: ['']
+    });
+
+    this.where = combineLatest([
+      this.form.valueChanges.pipe(
+        debounceTime(750),
+        pluck('term'),
+        distinctUntilChanged(),
+        map((term) => {
+          if (term === '') {
+            return undefined;
+          }
+        }),
+        // The below use case is NOT actually deprecated. IDE is wrong.
+        // tslint:disable-next-line: deprecation
+        startWith(undefined)
+      ),
+      this.filterOpen,
+      this.filterClosed
+    ]).pipe(
+      map(([term, filterOpen, filterClosed]) => {
+        return this.generateWhere(term, filterOpen, filterClosed);
+      })
+    );
+
+    this.valves = this.where.pipe(
+      switchMap((wStatement) => {
+        return this.valveService.getValves(50, 0, wStatement, true);
+      }),
+      shareReplay(1)
+    );
 
     this.categorized = this.valves.pipe(
       map((valves) => {
@@ -99,6 +137,55 @@ export class ListComponent implements OnInit, OnDestroy {
   public toggleDcw() {
     this.valveService.toggleColdWaterLines();
     this.dcwToggled.next(!this.dcwToggled.getValue());
+  }
+
+  private generateWhere(searchTerm: string, filterNormal?: boolean, filterAbnormal?: boolean) {
+    let where = '';
+
+    if (searchTerm !== undefined) {
+      const searchAttributes: Array<keyof IValve['attributes']> = [
+        'Type',
+        'Number',
+        'OBJECTID',
+        'VALVE_ID',
+        'InspectName',
+        'SystemType',
+        'ValveLocation',
+        'LocationDescription',
+        'Condition',
+        'ValveSize_1'
+      ];
+      const searchValues = new Array(searchAttributes.length).fill(searchTerm);
+      const operators = new Array(searchAttributes.length).fill('LIKE');
+      const wildcards = new Array(searchAttributes.length).fill('includes');
+      const transformations = new Array(searchAttributes.length).fill('UPPER');
+
+      where = makeWhere(searchAttributes, searchValues, operators, wildcards, transformations);
+    }
+
+    if (filterNormal || filterAbnormal) {
+      let filters = '';
+
+      if (filterNormal) {
+        filters += 'NormalPosition_1 = CurrentPosition_1';
+
+        if (filterAbnormal) {
+          filters += ' OR ';
+        }
+      }
+
+      if (filterAbnormal) {
+        filters += '(NOT NormalPosition_1 = CurrentPosition_1) OR (NormalPosition_1 IS NULL OR CurrentPosition_1 IS NULL)';
+      }
+
+      if (where.length > 0) {
+        where = `(${filters}) AND (${where})`;
+      } else {
+        where = filters;
+      }
+    }
+
+    return where;
   }
 }
 

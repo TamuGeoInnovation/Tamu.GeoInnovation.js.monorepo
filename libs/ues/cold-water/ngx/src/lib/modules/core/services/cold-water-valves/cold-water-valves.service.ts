@@ -11,7 +11,6 @@ import esri = __esri;
   providedIn: 'root'
 })
 export class ColdWaterValvesService {
-  public valves: Observable<Array<MappedValve>>;
   public stats: Observable<Array<esri.StatisticDefinition>>;
 
   private _selectedValveId: ReplaySubject<number> = new ReplaySubject(1);
@@ -20,8 +19,6 @@ export class ColdWaterValvesService {
   public selectedValve: Observable<MappedValve>;
 
   constructor(private mapService: EsriMapService, private usr: UserService) {
-    this.valves = this.getValves();
-
     this.selectedValve = this._selectedValveId.pipe(
       switchMap((id) => {
         return this.getValve(id);
@@ -33,7 +30,7 @@ export class ColdWaterValvesService {
   public getValves(limit?: number, offset?: number, where?: string, returnGeometry?: boolean) {
     return this.getLayerInstance().pipe(
       switchMap((layer) => {
-        const q = layer.queryFeatures({
+        const qParams = {
           where: where || '1 = 1',
           outFields: ['*'],
           returnGeometry: returnGeometry || true,
@@ -42,9 +39,11 @@ export class ColdWaterValvesService {
           outSpatialReference: {
             wkid: 102100
           }
-        });
+        };
 
-        return from(q);
+        const query = layer.queryFeatures(qParams);
+
+        return from(query);
       }),
       pluck('features')
     );
