@@ -25,9 +25,7 @@ export class ListComponent implements OnInit, OnDestroy {
   public searchTerm: Observable<string>;
   public where: Observable<string>;
 
-  public categorized: Observable<ValvesCategorized>;
   public ratio: Observable<ValveStateRatio>;
-  public filtered: Observable<Array<MappedValve>>;
 
   public filterOpen: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public filterClosed: BehaviorSubject<boolean> = new BehaviorSubject(true);
@@ -71,46 +69,6 @@ export class ListComponent implements OnInit, OnDestroy {
       shareReplay(1)
     );
 
-    this.categorized = this.valves.pipe(
-      map((valves) => {
-        return valves.reduce(
-          (acc, valve) => {
-            if (valve.attributes.NormalPosition_1 === valve.attributes.CurrentPosition_1) {
-              acc.normal.push(valve);
-            } else if (valve.attributes.NormalPosition_1 !== valve.attributes.CurrentPosition_1) {
-              acc.abnormal.push(valve);
-            }
-
-            return acc;
-          },
-          {
-            abnormal: [],
-            normal: []
-          }
-        );
-      }),
-      shareReplay(1)
-    );
-
-    this.filtered = combineLatest([this.filterOpen, this.filterClosed]).pipe(
-      switchMap(([shouldFilterOpen, shouldFilterClosed]) => {
-        return this.categorized.pipe(
-          map((categorized) => {
-            const filteredIn = [];
-            if (shouldFilterClosed) {
-              filteredIn.push(...categorized.abnormal);
-            }
-
-            if (shouldFilterOpen) {
-              filteredIn.push(...categorized.normal);
-            }
-
-            return filteredIn;
-          })
-        );
-      })
-    );
-
     this.valvesStats = this.valveService.getValveStats().pipe(shareReplay());
 
     this.ratio = this.valvesStats.pipe(
@@ -149,6 +107,11 @@ export class ListComponent implements OnInit, OnDestroy {
   private generateWhere(searchTerm: string, filterNormal?: boolean, filterAbnormal?: boolean) {
     let where = '';
 
+    // If both filters are disabled, then the where clause should be an explicit
+    // falsy where clause
+    if(filterNormal === false && filterAbnormal === false){ 
+      return `0 = 1`;
+    }
     if (searchTerm !== undefined) {
       const searchAttributes: Array<keyof IValve['attributes']> = [
         'Type',
