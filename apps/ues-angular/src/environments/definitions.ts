@@ -1,6 +1,6 @@
 import { Popups } from '@tamu-gisc/aggiemap';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/search';
-import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
+import { LayerSource } from '@tamu-gisc/common/types';
 
 import esri = __esri;
 
@@ -21,246 +21,211 @@ export const Definitions = {
     id: 'buildings',
     layerId: 'buildings-layer',
     name: 'Buildings',
-    url: `${Connections.basemapUrl}/1`,
-    category: 'Uncategorized'
+    url: `${Connections.basemapUrl}/1`
   },
   DOMESTIC_COLD_WATER: {
     id: 'domestic-cold-water',
     layerId: 'domestic-cold-water-layer',
     name: 'Domestic Cold Water',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/0',
-    category: 'Water'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/1'
   },
   DOMESTIC_WATER_VALVE: {
     id: 'domestic-water-valve',
     layerId: 'domestic-water-valve-layer',
     name: 'Domestic Water Valve',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/1',
-    category: 'Water'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/2'
   },
   DOMESTIC_COLD_WATER_METER: {
     id: 'domestic-cold-water-meter',
     layerId: 'domestic-cold-water-meter-layer',
     name: 'Domestic Cold Water Meter',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/2',
-    category: 'Water'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/3'
   },
   DOMESTIC_WATER_TRANSMISSION: {
     id: 'domestic-water-transmission',
     layerId: 'domestic-water-transmission-layer',
     name: 'Domestic Water Transmission',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/3',
-    category: 'Water'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/4'
   },
   WELL_SITES: {
     id: 'well-sites',
     layerId: 'well-sites-layer',
     name: 'Well Sites',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/4',
-    category: 'Water'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/5'
   },
   FIRE_HYDRANTS: {
     id: 'fire-hydrants',
     layerId: 'fire-hydrants-layer',
     name: 'Fire Hydrants',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/5',
-    category: 'Water'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/6'
   },
   DOMESTIC_HOT_WATER: {
     id: 'domestic-hot-water',
     layerId: 'domestic-hot-water-layer',
     name: 'Domestic Hot Water',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/6',
-    category: 'Water'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/8'
   },
   DOMESTIC_HOT_WATER_VALVE: {
     id: 'domestic-hot-water-valve',
     layerId: 'domestic-hot-water-valve-layer',
     name: 'Domestic Hot Water Valve',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/7',
-    category: 'Water'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/9'
   },
   CHILLED_WATER: {
     id: 'chillded-water',
     layerId: 'chillded-water-layer',
     name: 'Chilled Water',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/8',
-    category: 'Water'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/11'
   },
   CHILLED_WATER_VALVE: {
     id: 'chillded-water-valve',
     layerId: 'chillded-water-valve-layer',
     name: 'Chilled Water Valve',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/9',
-    category: 'Water'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/12'
   },
   HEATING_HOT_WATER: {
     id: 'heating-hot-water',
     layerId: 'heating-hot-water-layer',
     name: 'Heating Hot Water',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/10',
-    category: 'Water'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/13'
   },
   HEATING_HOT_WATER_VALVE: {
     id: 'heating-hot-water-valve',
     layerId: 'heating-hot-water-valve-layer',
     name: 'Heating Hot Water Valve',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/11',
-    category: 'Water'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/14'
   },
   SANITARY_SEWER: {
     id: 'sanitary-sewer',
     layerId: 'sanitary-sewer-layer',
     name: 'Sanitary Sewer',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/12',
-    category: 'Sanitary'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/16'
   },
   SANITARY_MANHOLES: {
     id: 'sanitary-manholes',
     layerId: 'sanitary-manholes-layer',
     name: 'Sanitary Manholes',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/13',
-    category: 'Sanitary'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/17'
   },
   SANITARY_CLEANOUTS: {
     id: 'sanitary-cleanouts',
     layerId: 'sanitary-cleanouts-layer',
     name: 'Sanitary Cleanouts',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/14',
-    category: 'Sanitary'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/18'
   },
   SANITARY_LIFT_STATION: {
     id: 'sanitary-lift-station',
     layerId: 'sanitary-lift-station-layer',
     name: 'Sanitary Lift Station',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/15',
-    category: 'Sanitary'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/19'
   },
   STOMRMWATER: {
     id: 'stormwater',
     layerId: 'stormwater-layer',
     name: 'Stormwater',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/16',
-    category: 'Stormwater'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/21'
   },
   STOMRMWATER_MANHOLE: {
     id: 'stormwater_manhole',
     layerId: 'stormwater_manhole-layer',
     name: 'Stormwater Manhole',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/17',
-    category: 'Stormwater'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/22'
   },
   STORMWATER_CATCH_BASINS: {
     id: 'stormwater-catch-basins',
     layerId: 'stormwater-catch-basins-layer',
     name: 'Stormwater Catch Basins',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/18',
-    category: 'Stormwater'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/23'
   },
   STORMWATER_OUTFALL_LOCATIONS: {
     id: 'stormwater-outfall-locations',
     layerId: 'stormwater-outfall-locations-layer',
     name: 'Stormwater Outfall Locations',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/19',
-    category: 'Stormwater'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/24'
   },
   STORMWATER_DETENTION_BASIN: {
     id: 'stormwater-detention-basin',
     layerId: 'stormwater-detention-basin-layer',
     name: 'Stormwater Detention Basin',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/20',
-    category: 'Stormwater'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/25'
   },
   STEAM: {
     id: 'steam',
     layerId: 'steam-layer',
     name: 'Steam',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/21',
-    category: 'Steam'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/26'
   },
   UES_NATURAL_GAS: {
     id: 'ues-natural-gas',
     layerId: 'ues-natural-gas-layer',
     name: 'UES Natural Gas',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/22',
-    category: 'Natural Gas'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/28'
   },
   UES_NATURAL_GAS_METERS: {
     id: 'ues-natural-gas-meters',
     layerId: 'ues-natural-gas-meters-layer',
     name: 'UES Natural Gas Meters',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/23',
-    category: 'Natural Gas'
-  },
-  ELECTRICAL_SERVICE: {
-    id: 'electrical-service',
-    layerId: 'electrical-service-layer',
-    name: 'Electrical Service',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/24',
-    category: 'Electrical'
-  },
-  ELECTRICAL_MANHOLES: {
-    id: 'electrical-manholes',
-    layerId: 'electrical-manholes-layer',
-    name: 'Electrical Manholes',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/25',
-    category: 'Electrical'
-  },
-  ELECTRICAL_POLE: {
-    id: 'electrical-pole',
-    layerId: 'electrical-pole-layer',
-    name: 'Electrical Pole',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/26',
-    category: 'Electrical'
-  },
-  TRANSFORMER: {
-    id: 'transformer',
-    layerId: 'transformer-layer',
-    name: 'Transformers',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/27',
-    category: 'Electrical'
-  },
-  GENERATORS: {
-    id: 'generator',
-    layerId: 'generator-layer',
-    name: 'Generators',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/28',
-    category: 'Electrical'
-  },
-  PAD_MOUNTED_SWITCHES: {
-    id: 'pad-mounted-switches',
-    layerId: 'pad-mounted-switches-layer',
-    name: 'Pad Mounted Switches',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/29',
-    category: 'Electrical'
-  },
-  FEEDERS: {
-    id: 'feeders',
-    layerId: 'feeders-layer',
-    name: 'Feeders',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/30',
-    category: 'Electrical'
-  },
-  FEEDER_BUILDINGS: {
-    id: 'feeder-buildings',
-    layerId: 'feeder-buildings-layer',
-    name: 'Feeder Buildings',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/31',
-    category: 'Electrical'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/29'
   },
   ONE_THIRTY_EIGHT_KILOVOLT: {
     id: 'one-thirty-eight-kilovolt',
     layerId: 'one-thirty-eight-kilovolt-layer',
     name: '138kV',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/32',
-    category: 'Electrical'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/31'
   },
   LIGHT_POLES: {
     id: 'light-poles',
     layerId: 'light-poles-layer',
     name: 'Light Poles',
-    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/Utilities_Distn_YOHO_WebMap/MapServer/33',
-    category: 'Electrical'
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/33'
+  },
+  FEEDER_BUILDINGS: {
+    id: 'feeder-buildings',
+    layerId: 'feeder-buildings-layer',
+    name: 'Feeder Buildings',
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/34'
+  },
+  ELECTRICAL_SERVICE: {
+    id: 'electrical-service',
+    layerId: 'electrical-service-layer',
+    name: 'Electrical Service',
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/35'
+  },
+  FEEDERS: {
+    id: 'feeders',
+    layerId: 'feeders-layer',
+    name: 'Feeders',
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/36'
+  },
+  PAD_MOUNTED_SWITCHES: {
+    id: 'pad-mounted-switches',
+    layerId: 'pad-mounted-switches-layer',
+    name: 'Pad Mounted Switches',
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/37'
+  },
+  GENERATORS: {
+    id: 'generator',
+    layerId: 'generator-layer',
+    name: 'Generators',
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/38'
+  },
+  TRANSFORMER: {
+    id: 'transformer',
+    layerId: 'transformer-layer',
+    name: 'Transformers',
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/39'
+  },
+  ELECTRICAL_POLE: {
+    id: 'electrical-pole',
+    layerId: 'electrical-pole-layer',
+    name: 'Electrical Pole',
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/40'
+  },
+  ELECTRICAL_MANHOLES: {
+    id: 'electrical-manholes',
+    layerId: 'electrical-manholes-layer',
+    name: 'Electrical Manholes',
+    url: 'https://ues-arc.apogee.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/41'
   },
   POINTS_OF_INTEREST: {
     id: 'poi',
