@@ -9,7 +9,11 @@ mobileSizes.forEach((size) => {
       cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
       cy.intercept("GET", "**/Construction_2018/**").as("construction")
       cy.intercept("GET", "**/Physical_Distancing_Tents/**").as("tents")
+      cy.intercept("GET", '**/services/Routing/**').as('routeData')
+      
     })
+
+    const building = 'Rudder Tower'
 
     it('Open Aggie Map', () => {
       cy.visit('https://aggiemap.tamu.edu/map/m')
@@ -20,12 +24,12 @@ mobileSizes.forEach((size) => {
       cy.get('tamu-gisc-search-mobile')
         .should('be.visible')
         .click()
-      cy.get('.margin-left').type('Rudder Tower')
+      cy.get('.margin-left').type(building)
     })
 
     it('Search Results Displayed', () => {
       cy.get('.search-results-container').should('be.visible')
-      cy.get('.focusable').should('contain.text', 'Rudder Tower (0446)')
+      cy.get('.focusable').should('contain.text', building)
     })
       
     it('Click Search Result', () => {
@@ -76,9 +80,14 @@ mobileSizes.forEach((size) => {
         from search location 
       */
 
+      //TODO: Mock server response so that all routes are available
+      
+      
       cy.get('canvas')
         .click('bottomRight')  // click random location
         .wait(1000)
+
+      cy.wait('@routeData', {responseTimeout: 2000, requestTimeout: 2000 })
 
       // drag popup up and check if route features are displayed
       cy.get('.handle')
@@ -129,24 +138,14 @@ mobileSizes.forEach((size) => {
         .should('be.visible')
       cy.get('.directions-container')
         .should('be.visible')
-      cy.get('.handle').move({ x: 0, y: 400, force: true }) // drag popup back down to access route options again
+      cy.get('.handle').move({ x: 0, y: 500, force: true }) // drag popup back down to access route options again
     })
 
-    it('Change Start Location After Previous Route', () => {
-      // click search bar
-
-      // type rudder tower
-
-      // click Rudder tower
-
-      // drag popup up
-
-      // click directions to here
-
-      // click random location
+    it.skip('Change Start Location After Previous Route', () => {
 
       // click search bar for new starting location
-      cy.get('.points > :nth-child(1) > .ng-tns-c90-1')
+      cy.get('.points > :nth-child(1) > .ng-tns-c91-1')
+        .scrollIntoView()
         .should('be.visible')
         .click()
 
@@ -154,7 +153,10 @@ mobileSizes.forEach((size) => {
       cy.get('.focusable')
         .should('be.visible')
         .click()
-        
+
+      // mock geolocation
+      cy.mockGeolocation()
+
       // click random location (no new circle should appear)
 
 

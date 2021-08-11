@@ -24,5 +24,6 @@ declare namespace Cypress {
      checkPopUp(): Chainable<Element>
      checkNavPanel(): Chainable<Element>
      checkMapIcon(): Chainable<Element>
+     mockGeolocation(): Chainable<Element>
     }
   }

@@ -118,4 +118,12 @@ Cypress.Commands.add('checkNavPanel', () => {
 Cypress.Commands.add('checkMapIcon', () => {
   cy.get('tamu-gisc-layer-list-item > .layer-item').should('be.visible')
 })
+// mock geolocation
+Cypress.Commands.add('mockGeolocation', (latitude = 30, longitude = -98) => {
+	cy.window().then(($window) =>  {
+		cy.stub($window.navigator.geolocation, 'getCurrentPosition', (callback) => {
+	   		return callback({ coords: { latitude, longitude } })
+		})
+	})
+})
 export{}
