@@ -5,6 +5,8 @@ import { map, pluck, reduce, shareReplay, switchMap, take, tap, withLatestFrom }
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 import { UserService } from '@tamu-gisc/ues/common/ngx';
 
+import { IWhere } from '../../../info/pages/list/list.component';
+
 import esri = __esri;
 
 @Injectable({
@@ -27,11 +29,13 @@ export class ColdWaterValvesService {
     );
   }
 
-  public getValves(limit?: number, offset?: number, where?: string, returnGeometry?: boolean) {
+  public getValves(limit?: number, offset?: number, where?: IWhere, returnGeometry?: boolean) {
     return this.getLayerInstance().pipe(
       switchMap((layer) => {
+        const w =
+          where.where.length > 0 && where.filter.length > 0 ? `(${where.where}) AND (${where.filter})` : where.filter;
         const qParams = {
-          where: where || '1 = 1',
+          where: w || '1 = 1',
           outFields: ['*'],
           returnGeometry: returnGeometry || true,
           num: limit || 2000,
@@ -49,35 +53,69 @@ export class ColdWaterValvesService {
     );
   }
 
-  public getValveStats(): Observable<IValveStats> {
+  public getValveStats(where: IWhere): Observable<IValveStats> {
     return this.getLayerInstance().pipe(
       switchMap((layer) => {
-        // Query total number of valves
-        const ct = layer.queryFeatures({
-          where: '1=1',
-          outStatistics: [
-            {
-              statisticType: 'count',
-              onStatisticField: 'OBJECTID',
-              outStatisticFieldName: 'total_valves'
-            }
-          ]
-        });
+        if (where === undefined) {
+          // Query total number of valves
+          const ct = layer.queryFeatures({
+            where: '1=1',
+            outStatistics: [
+              {
+                statisticType: 'count',
+                onStatisticField: 'OBJECTID',
+                outStatisticFieldName: 'total_valves'
+              }
+            ]
+          });
 
-        // Query number of valves that are not in normal state
-        const nr = layer.queryFeatures({
-          where: 'NormalPosition_1 = CurrentPosition_1',
-          outStatistics: [
-            {
-              statisticType: 'count',
-              onStatisticField: 'OBJECTID',
-              outStatisticFieldName: 'normal_valves'
-            }
-          ]
-        });
+          // Query number of valves that are not in normal state
+          const nr = layer.queryFeatures({
+            where: 'NormalPosition_1 = CurrentPosition_1',
+            outStatistics: [
+              {
+                statisticType: 'count',
+                onStatisticField: 'OBJECTID',
+                outStatisticFieldName: 'normal_valves'
+              }
+            ]
+          });
 
-        return forkJoin([ct, nr]);
+          return forkJoin([ct, nr]);
+        } else {
+          // Make query with where clause represents total valves
+          const ct = layer.queryFeatures({
+            where: where.where,
+            outStatistics: [
+              {
+                statisticType: 'count',
+                onStatisticField: 'OBJECTID',
+                outStatisticFieldName: 'total_valves'
+              }
+            ]
+          });
+
+          // Query number of valves that are not in normal state
+          const nr = layer.queryFeatures({
+            where: `(NormalPosition_1 = CurrentPosition_1) AND (${where.where})`,
+            outStatistics: [
+              {
+                statisticType: 'count',
+                onStatisticField: 'OBJECTID',
+                outStatisticFieldName: 'normal_valves'
+              }
+            ]
+          });
+
+          return forkJoin([ct, nr]);
+        }
       }),
+      this.processStats
+    );
+  }
+
+  private processStats(featureSets: Observable<Array<esri.FeatureSet>>): Observable<IValveStats> {
+    return featureSets.pipe(
       // Break up the results into individual featuresets
       switchMap((results) => from(results)),
       // Pluck the inner attributes property from each featureset
@@ -98,7 +136,7 @@ export class ColdWaterValvesService {
    * Returns a mapped valve object from a valve id.
    */
   public getValve(valveId: string | number): Observable<MappedValve> {
-    return this.getValves(1, 0, `OBJECTID = ${valveId}`).pipe(
+    return this.getValves(1, 0, { where: `OBJECTID = ${valveId}`, filter: '' }).pipe(
       map((results) => {
         const valve = results[0] as MappedValve;
 

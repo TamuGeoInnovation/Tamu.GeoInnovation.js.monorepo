@@ -73,7 +73,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
     this.valveAttributes = this.valve.pipe(
       map((valve) => {
-        const priorityValveAttributes: Array<keyof IValve['attributes']> = ['OBJECTID', 'CurrentPosition_1'];
+        const priorityValveAttributes: Array<keyof IValve['attributes']> = ['OBJECTID', 'CurrentPosition_1', 'NormalPosition_1'];
 
         const orderedAttributes = Object.entries(valve.attributes).reduce((sorted, [currentKey, currentValue]) => {
           const keyPriorityIndex = priorityValveAttributes.indexOf(currentKey as keyof IValve['attributes']);

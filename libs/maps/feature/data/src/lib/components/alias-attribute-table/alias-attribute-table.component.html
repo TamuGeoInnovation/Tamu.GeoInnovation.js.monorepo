@@ -23,7 +23,7 @@
 <ng-template #rowContent let-row="row">
   <tr>
     <!-- Run the key through a pipe to find the corresponding field object and print out the alias -->
-    <td>{{(row.key | attributeField: fields)?.alias}}</td>
+    <td [title]="row.key">{{(row.key | attributeField: fields)?.alias}}</td>
 
     <!-- Run the key through a pipe to return the corresponding field which is later used to pass in the coded value to return the named value -->
     <td>{{row.key | attributeField: fields | fieldCodedValue : row.value }}</td>
