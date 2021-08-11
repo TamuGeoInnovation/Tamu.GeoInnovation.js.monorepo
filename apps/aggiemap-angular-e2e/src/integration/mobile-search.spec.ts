@@ -34,7 +34,7 @@ mobileSizes.forEach((size) => {
       
     it('Click Search Result', () => {
       cy.contains('Rudder Tower (0446)').click()
-      cy.get('.feature-style-1').should('contain.text', 'Rudder Tower')
+      cy.get('.feature-style-1').should('contain.text', building)
       cy.wait(2000)
     })
 
@@ -44,6 +44,8 @@ mobileSizes.forEach((size) => {
     })
 
     it('Check Popup Results', () => {
+      cy.intercept('GET', 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer/1//**')
+        .as('buildingData')
       // check is correct building information is displayed
       cy.get('.feature-style-1')
         .should('contain.text', 'Rudder Tower')
