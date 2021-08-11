@@ -32,8 +32,11 @@ export class ColdWaterValvesService {
   public getValves(limit?: number, offset?: number, where?: IWhere, returnGeometry?: boolean) {
     return this.getLayerInstance().pipe(
       switchMap((layer) => {
-        const w =
-          where.where.length > 0 && where.filter.length > 0 ? `(${where.where}) AND (${where.filter})` : where.filter;
+        // Construct the where clause depending on the where and filter clause availability
+        const w = `${where.where.length > 0 ? '(' + where.where + ')' : ''} ${
+          where.where.length > 0 && where.filter.length > 0 ? 'AND' : ''
+        } ${where.filter.length > 0 ? '(' + where.filter + ')' : ''}`;
+
         const qParams = {
           where: w || '1 = 1',
           outFields: ['*'],
