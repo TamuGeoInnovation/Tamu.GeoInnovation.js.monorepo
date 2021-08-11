@@ -87,7 +87,7 @@ export class ListComponent implements OnInit, OnDestroy {
         //
         // With an empty string as a term, the valve stats will return stats for the
         // whole dataset.
-        // 
+        //
         // With a non-empty string as a term, the value stats will return stats for the
         // results of the where clause.
         const isTermFalsy = term === undefined || term === '';
@@ -99,8 +99,8 @@ export class ListComponent implements OnInit, OnDestroy {
     this.ratio = this.valvesStats.pipe(
       map((stats) => {
         return {
-          normal: (stats.normal_valves / stats.total_valves) * 100,
-          abnormal: (stats.abnormal_valves / stats.total_valves) * 100
+          normal: stats.normal_valves > 0 ? (stats.normal_valves / stats.total_valves) * 100 : 0,
+          abnormal: stats.abnormal_valves > 0 ? (stats.abnormal_valves / stats.total_valves) * 100 : 0
         };
       })
     );
@@ -165,7 +165,6 @@ export class ListComponent implements OnInit, OnDestroy {
     }
 
     if (filterNormal || filterAbnormal) {
-
       if (filterNormal) {
         ret.filter += 'NormalPosition_1 = CurrentPosition_1';
 
@@ -175,7 +174,8 @@ export class ListComponent implements OnInit, OnDestroy {
       }
 
       if (filterAbnormal) {
-        ret.filter += '(NOT NormalPosition_1 = CurrentPosition_1) OR (NormalPosition_1 IS NULL OR CurrentPosition_1 IS NULL)';
+        ret.filter +=
+          '(NOT NormalPosition_1 = CurrentPosition_1) OR (NormalPosition_1 IS NULL OR CurrentPosition_1 IS NULL)';
       }
     }
 
@@ -183,7 +183,7 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 }
 
-export interface IWhere{
+export interface IWhere {
   /**
    * The actual generated where clause. Can be empty if no search term
    * is provided, in which case the generated filter can take the place
