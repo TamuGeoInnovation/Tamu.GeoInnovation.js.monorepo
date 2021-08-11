@@ -22,6 +22,7 @@ export class ListComponent implements OnInit, OnDestroy {
   public valvesStats: Observable<IValveStats>;
 
   public form: FormGroup;
+  public searchTerm: Observable<string>;
   public where: Observable<string>;
 
   public categorized: Observable<ValvesCategorized>;
@@ -41,23 +42,23 @@ export class ListComponent implements OnInit, OnDestroy {
       term: ['']
     });
 
-    this.where = combineLatest([
-      this.form.valueChanges.pipe(
-        debounceTime(750),
-        pluck('term'),
-        distinctUntilChanged(),
-        map((term) => {
-          if (term === '') {
-            return undefined;
-          }
-        }),
-        // The below use case is NOT actually deprecated. IDE is wrong.
-        // tslint:disable-next-line: deprecation
-        startWith(undefined)
-      ),
-      this.filterOpen,
-      this.filterClosed
-    ]).pipe(
+    this.searchTerm = this.form.valueChanges.pipe(
+      debounceTime(750),
+      pluck('term'),
+      distinctUntilChanged(),
+      map((term) => {
+        if (term === '') {
+          return undefined;
+        }
+
+        return term;
+      }),
+      // The below use case is NOT actually deprecated. IDE is wrong.
+      // tslint:disable-next-line: deprecation
+      startWith(undefined)
+    );
+
+    this.where = combineLatest([this.searchTerm, this.filterOpen, this.filterClosed]).pipe(
       map(([term, filterOpen, filterClosed]) => {
         return this.generateWhere(term, filterOpen, filterClosed);
       })
@@ -137,6 +138,12 @@ export class ListComponent implements OnInit, OnDestroy {
   public toggleDcw() {
     this.valveService.toggleColdWaterLines();
     this.dcwToggled.next(!this.dcwToggled.getValue());
+  }
+
+  public clearSearch() {
+    this.form.patchValue({
+      term: ''
+    });
   }
 
   private generateWhere(searchTerm: string, filterNormal?: boolean, filterAbnormal?: boolean) {

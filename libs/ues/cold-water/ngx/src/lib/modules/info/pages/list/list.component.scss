@@ -125,6 +125,21 @@ table {
   }
 }
 
-.search-container{
+.search-container {
+  position: relative;
   margin-bottom: 1.5rem;
+
+  .material-icons {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    color: #bdbdbd;
+    cursor: pointer;
+    @include transition(color 0.3s);
+    @include transform(translateY(-50%));
+
+    &:hover {
+      color: initial;
+    }
+  }
 }

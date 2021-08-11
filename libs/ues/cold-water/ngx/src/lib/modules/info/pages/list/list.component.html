@@ -5,12 +5,13 @@
 </div>
 
 <div class="ratio-bar">
-  <div class="open-valves" [style.width.%]="(ratio | async)?.normal" [title]="'Normal valves: ' + (ratio | async)?.normal + '%'"></div>
-  <div class="closed-valves" [style.width.%]="(ratio | async)?.abnormal" [style.left.%]="(ratio | async)?.normal" [title]="'Abnormal valves: ' + (ratio | async)?.abnormal + '%'"></div>
+  <div class="open-valves" [style.width.%]="(ratio | async)?.normal" [title]="'Normal valves: ' + ((ratio | async)?.normal | number : '1.1-1') + '%'"></div>
+  <div class="closed-valves" [style.width.%]="(ratio | async)?.abnormal" [style.left.%]="(ratio | async)?.normal" [title]="'Abnormal valves: ' + ((ratio | async)?.abnormal | number : '1.1-1') + '%'"></div>
 </div>
 
 <div class="search-container" [formGroup]="form">
   <tamu-gisc-textbox type="text" placeholder="Search for valves" [floatLabel]="true" formControlName="term"></tamu-gisc-textbox>
+  <span class="material-icons" tabindex="0" alt="Clear search" title="Clear search" *ngIf="form.controls['term'].value !== ''" (click)="clearSearch()">close</span>
 </div>
 
 <div class="pill-layer-list">
