@@ -10,6 +10,6 @@ export * from './notification-events';
 export const apiUrl = `https://ues-dev.geoservices.tamu.edu/api/operations/`;
 
 export const auth_options: AuthOptions = {
-  url: `https://ues-dev.geoservices.tamu.edu/api/operations`,
+  url: apiUrl,
   attach_href: true
 };

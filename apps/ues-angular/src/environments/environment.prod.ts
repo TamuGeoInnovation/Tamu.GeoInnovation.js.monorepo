@@ -13,7 +13,9 @@ export * from './definitions';
 export * from './notification-events';
 export * from './polygons';
 
+export const apiUrl = `https://ues.geoservices.tamu.edu/api/operations`;
+
 export const auth_options: AuthOptions = {
-  url: 'https://ues.geoservices.tamu.edu/api/operations',
+  url: apiUrl,
   attach_href: true
 };
