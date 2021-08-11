@@ -56,62 +56,36 @@ export class ColdWaterValvesService {
     );
   }
 
-  public getValveStats(where: IWhere): Observable<IValveStats> {
+  public getValveStats(whereProps: IWhere): Observable<IValveStats> {
     return this.getLayerInstance().pipe(
       switchMap((layer) => {
-        if (where === undefined) {
-          // Query total number of valves
-          const ct = layer.queryFeatures({
-            where: '1=1',
-            outStatistics: [
-              {
-                statisticType: 'count',
-                onStatisticField: 'OBJECTID',
-                outStatisticFieldName: 'total_valves'
-              }
-            ]
-          });
+        // Query total number of valves
+        const ct = layer.queryFeatures({
+          where: whereProps === undefined ? '1=1' : whereProps.where,
+          outStatistics: [
+            {
+              statisticType: 'count',
+              onStatisticField: 'OBJECTID',
+              outStatisticFieldName: 'total_valves'
+            }
+          ]
+        });
 
-          // Query number of valves that are not in normal state
-          const nr = layer.queryFeatures({
-            where: 'NormalPosition_1 = CurrentPosition_1',
-            outStatistics: [
-              {
-                statisticType: 'count',
-                onStatisticField: 'OBJECTID',
-                outStatisticFieldName: 'normal_valves'
-              }
-            ]
-          });
+        // Query number of valves that are not in normal state
+        const nr = layer.queryFeatures({
+          where: `(NormalPosition_1 = CurrentPosition_1) ${
+            whereProps === undefined ? '' : 'AND (' + whereProps.where + ')'
+          }`,
+          outStatistics: [
+            {
+              statisticType: 'count',
+              onStatisticField: 'OBJECTID',
+              outStatisticFieldName: 'normal_valves'
+            }
+          ]
+        });
 
-          return forkJoin([ct, nr]);
-        } else {
-          // Make query with where clause represents total valves
-          const ct = layer.queryFeatures({
-            where: where.where,
-            outStatistics: [
-              {
-                statisticType: 'count',
-                onStatisticField: 'OBJECTID',
-                outStatisticFieldName: 'total_valves'
-              }
-            ]
-          });
-
-          // Query number of valves that are not in normal state
-          const nr = layer.queryFeatures({
-            where: `(NormalPosition_1 = CurrentPosition_1) AND (${where.where})`,
-            outStatistics: [
-              {
-                statisticType: 'count',
-                onStatisticField: 'OBJECTID',
-                outStatisticFieldName: 'normal_valves'
-              }
-            ]
-          });
-
-          return forkJoin([ct, nr]);
-        }
+        return forkJoin([ct, nr]);
       }),
       this.processStats
     );
