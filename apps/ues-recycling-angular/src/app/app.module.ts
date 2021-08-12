@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
 import { env, EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { AuthGuard, AuthProvider } from '@tamu-gisc/common/ngx/auth';
+import { AuthGuard, AuthInterceptorProvider } from '@tamu-gisc/common/ngx/auth';
 
 import * as environment from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -42,7 +42,7 @@ WebFont.load({
       provide: env,
       useValue: environment
     },
-    AuthProvider
+    AuthInterceptorProvider
   ],
   bootstrap: [AppComponent]
 })

@@ -11,7 +11,7 @@ import { StorageServiceModule } from 'ngx-webstorage-service';
 import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
-import { AuthGuard, AuthProvider } from '@tamu-gisc/common/ngx/auth';
+import { AuthGuard, AuthInterceptorProvider } from '@tamu-gisc/common/ngx/auth';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -48,7 +48,7 @@ const routes: Routes = [
   ],
   declarations: [AppComponent],
   providers: [
-    AuthProvider,
+    AuthInterceptorProvider,
     { provide: env, useValue: environment },
     { provide: notificationStorage, useValue: 'ues-effluent-notifications' }
   ],
