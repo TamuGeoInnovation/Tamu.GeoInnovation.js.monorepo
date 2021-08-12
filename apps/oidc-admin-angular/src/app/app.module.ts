@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { AuthGuard, AuthProvider } from '@tamu-gisc/common/ngx/auth';
+import { AuthGuard, AuthInterceptorProvider } from '@tamu-gisc/common/ngx/auth';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
@@ -87,7 +87,7 @@ export function getHighlightLanguages() {
       provide: env,
       useValue: environment
     },
-    AuthProvider
+    AuthInterceptorProvider
   ],
   bootstrap: [AppComponent]
 })

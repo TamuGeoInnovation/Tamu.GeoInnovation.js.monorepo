@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { AuthOptions } from '@tamu-gisc/oidc/client';
@@ -34,13 +34,19 @@ export class AuthService {
    *
    * This method works best with HTTP interceptors to redirect to login if a 401/403 is returned.
    */
-  public isAuthenticated() {
+  public isAuthenticated(): Observable<IIsAuthenticatedResults> {
     return this.http.get(this.cleanUrl(this.authOptions.url) + '/oidc/userinfo', { withCredentials: true }).pipe(
       map((result) => {
-        return true;
+        return {
+          status: true,
+          code: 200
+        };
       }),
-      catchError((err) => {
-        return of(false);
+      catchError((err: HttpErrorResponse) => {
+        return of({
+          status: false,
+          code: err.status
+        });
       })
     );
   }
@@ -65,4 +71,18 @@ export class AuthService {
       }`;
     }
   }
+}
+
+export interface IIsAuthenticatedResults {
+  /**
+   * Whether or not the user is authenticated
+   */
+  status: boolean;
+
+  /**
+   * The code returned by the authentication request.
+   *
+   * Will be 401 or 403 if not authenticated or authorized, respectively.
+   */
+  code: number;
 }

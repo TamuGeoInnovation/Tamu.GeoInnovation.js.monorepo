@@ -22,7 +22,8 @@ const hybridRoutes: Routes = [
   {
     path: 'map',
     loadChildren: () => import('../map/map.module').then((m) => m.MapModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: { redirectTo: '/soemthing#thing' }
   }
 ];
 

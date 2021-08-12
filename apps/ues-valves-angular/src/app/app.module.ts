@@ -6,7 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
 import { env, EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { AuthGuard, AuthProvider } from '@tamu-gisc/common/ngx/auth';
+import { AuthGuard, AuthInterceptorProvider } from '@tamu-gisc/common/ngx/auth';
 import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
 
 import * as environment from '../environments/environment';
@@ -41,7 +41,7 @@ const routes: Routes = [
       provide: env,
       useValue: environment
     },
-    AuthProvider,
+    AuthInterceptorProvider,
     {
       provide: notificationStorage,
       useValue: 'aggiemap-notifications'
