@@ -13,6 +13,8 @@ import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
 
+import { AuthModule } from '../auth/auth.module';
+
 const hybridRoutes: Routes = [
   {
     path: '',
@@ -23,7 +25,7 @@ const hybridRoutes: Routes = [
     path: 'map',
     loadChildren: () => import('../map/map.module').then((m) => m.MapModule),
     canActivate: [AuthGuard],
-    data: { redirectTo: '/soemthing#thing' }
+    data: { redirectTo: '/session/expired' }
   }
 ];
 
@@ -37,7 +39,8 @@ const hybridRoutes: Routes = [
     ResponsiveModule,
     CommonNgxRouterModule,
     TestingModule,
-    UITamuBrandingModule
+    UITamuBrandingModule,
+    AuthModule
   ],
   declarations: [],
   providers: [],
