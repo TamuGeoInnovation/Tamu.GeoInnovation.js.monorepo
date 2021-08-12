@@ -118,9 +118,20 @@ async function bootstrap() {
 
   const dir = join(__dirname, 'assets/views');
 
-  // This will setup the Mailer (gmail or ethereal)
-  // Mailer.build('gmail', mailerConfig);
-  Mailer.build('ethereal');
+  // This will setup the Mailer (gmail, ethereal, or tamu-relay)
+  if (argv.m) {
+    switch (argv.m) {
+      case 'gmail':
+        Mailer.build('gmail');
+        break;
+      case 'ethereal':
+        Mailer.build('ethereal');
+        break;
+      case 'tamu':
+        Mailer.build('tamu-relay');
+        break;
+    }
+  }
 
   // This will set the default time step for otplib to 5 minutes
   TwoFactorAuthUtils.build();

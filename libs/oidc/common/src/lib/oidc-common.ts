@@ -15,7 +15,6 @@ export * from './services/role/role.service';
 export * from './services/user/user.service';
 
 // utils
-export * from './utils/auth/auth.util';
 export * from './utils/web/url-utils';
 export * from './utils/web/jwt.util';
 export * from './utils/security/sha1hash.util';

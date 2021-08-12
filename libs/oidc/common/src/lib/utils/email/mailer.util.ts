@@ -37,9 +37,10 @@ export class Mailer {
         break;
       case 'tamu-relay':
         Mailer.transporter = nodemailer.createTransport({
-          host: 'relay.tamu.edu',
+          host: 'smtp-relay.tamu.edu',
           port: 25,
-          secure: false
+          secure: false,
+          ignoreTLS: true
         });
         break;
       case 'gmail':
