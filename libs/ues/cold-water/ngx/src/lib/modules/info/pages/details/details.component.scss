@@ -32,29 +32,13 @@
   }
 }
 
-.action-bar {
+.content-status{
   @include flexbox();
   @include flex-direction(row);
-  @include justify-content(space-between);
+  @include justify-content(center);
+  @include align-items(center);
+}
 
-  .back p {
-    @include flexbox();
-    @include flex-direction(row);
-    @include align-items(center);
-    color: #a5a5a5;
-    padding-bottom: 0;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    @include transition(color 0.3s);
-
-    &:hover {
-      color: #1976d2;
-    }
-
-    .material-icons {
-      margin-right: 0.3rem;
-      font-size: 1.3rem;
-    }
-  }
+table tbody tr{
+  cursor: pointer;
 }

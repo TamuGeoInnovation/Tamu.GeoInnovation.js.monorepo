@@ -6,12 +6,14 @@ import { ROLE_LEVELS, OpenIdClient } from '../auth/open-id-client';
 @Injectable()
 export class AzureIdpGuard implements CanActivate {
   public canActivate(context: ExecutionContext): boolean | Promise<boolean> {
+    let canProceed = false;
     const request = context.switchToHttp().getRequest();
     const isAuthed = request.isAuthenticated();
-    let canProceed = false;
+
     if (isAuthed) {
-      if (request.user) {
-        // Will probably need additional logic here to check for group ID's
+      const expired = Date.now() > request.user.expires_at * 1000;
+
+      if (request.user && !expired) {
         canProceed = true;
       }
     }
@@ -174,7 +176,6 @@ export class ManagerRoleGuard implements CanActivate {
  * NestJS guard.
  * May not be necessary as it pretty much functions exactly like the login guard at this level
  */
-// TODO: Remove this? Does this not just mean the user is authenticated?
 @Injectable()
 export class UserRoleGuard implements CanActivate {
   public canActivate(context: ExecutionContext): boolean | Promise<boolean> {

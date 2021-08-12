@@ -52,3 +52,6 @@ oidcconfig.*
 oidc-client-config.*
 oidc-provider-config.*
 oidc.db
+
+#Angular private configs
+secrets.ts

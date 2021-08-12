@@ -20,6 +20,7 @@
     <div class="status">
       <div class="pill" *ngIf="(valve | async) as v" [ngClass]="{closed: v?.attributes?.NormalPosition_1 !== v?.attributes?.CurrentPosition_1, missing_fields: v?.attributes?.CurrentPosition_1 === null || v?.attributes?.NormalPosition_1 === null, busy: updating === true, disabled: (user?.permissions?.isAdmin | async) === false}" (click)="toggleValveState(v)">{{v?.attributes?.CurrentPosition_1 ? v.attributes.CurrentPosition_1 : 'null'}}</div>
     </div>
+
     <div class="spinning-loader" *ngIf="updating"></div>
   </div>
 </div>
@@ -27,10 +28,41 @@
 <tamu-gisc-expandable-card>
   <div>
     <h2 class="card-title">Properties</h2>
-    <p *ngFor="let v of ((valve | async)?.attributes | keyvalue)"><strong>{{v.key}}</strong>: {{v.value | json}}</p>
+    <tamu-gisc-alias-attribute-table [data]="valveAttributes | async" [fields]="valveLayerFields | async" [sortFn]="tableSortOrigOrder"></tamu-gisc-alias-attribute-table>
 
     <div class="trailer-1 leader-1" *ngIf="(valve | async) === null">
       <div class="spinning-loader"></div>
     </div>
   </div>
 </tamu-gisc-expandable-card>
+
+<div class="card">
+  <div class="card-title">Intervention History</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Expiration Date</th>
+        <th>Reason</th>
+        <th>Created By</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let intervention of interventions | async" [routerLink]="['/intervention', intervention?.attributes?.OBJECTID]">
+        <td>{{intervention?.attributes?.OBJECTID}}</td>
+        <td>{{intervention?.attributes?.Date | date : 'shortDate'}}</td>
+        <td>{{intervention?.attributes?.EstimatedRestoration | date : 'shortDate'}}</td>
+        <td>{{intervention?.attributes?.Reason}}</td>
+        <td>{{intervention?.attributes?.SubmittedBy}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="content-status">
+    <div class="spinning-loader" *ngIf="!(interventions | async)"></div>
+    <p *ngIf="(interventions | async)?.length === 0">There are no intervention events for this valve.</p>
+  </div>
+</div>

@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
-import { filter, map, take } from 'rxjs/operators';
+import { Observable, ReplaySubject, from, NEVER, of, forkJoin } from 'rxjs';
+import { map, pluck, reduce, shareReplay, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { UserService } from '@tamu-gisc/ues/common/ngx';
+
+import { IWhere } from '../../../info/pages/list/list.component';
 
 import esri = __esri;
 
@@ -10,67 +13,139 @@ import esri = __esri;
   providedIn: 'root'
 })
 export class ColdWaterValvesService {
-  private _valves: ReplaySubject<Array<MappedValve>> = new ReplaySubject();
-  public valves = this._valves.asObservable();
+  public stats: Observable<Array<esri.StatisticDefinition>>;
 
-  private _selectedValveId: BehaviorSubject<number> = new BehaviorSubject(undefined);
+  private _selectedValveId: ReplaySubject<number> = new ReplaySubject(1);
   private _extent: esri.Extent;
 
   public selectedValve: Observable<MappedValve>;
 
-  constructor(private mapService: EsriMapService) {
-    this.getDefaultValves();
-
-    this.selectedValve = combineLatest([this.valves, this._selectedValveId]).pipe(
-      filter(([valves, value]) => {
-        return valves !== undefined;
+  constructor(private mapService: EsriMapService, private usr: UserService) {
+    this.selectedValve = this._selectedValveId.pipe(
+      switchMap((id) => {
+        return this.getValve(id);
       }),
-      map(([valves, id]) => {
-        return valves.find((v) => v.attributes.OBJECTID === id);
+      shareReplay()
+    );
+  }
+
+  public getValves(limit?: number, offset?: number, where?: IWhere, returnGeometry?: boolean) {
+    return this.getLayerInstance().pipe(
+      switchMap((layer) => {
+        // Construct the where clause depending on the where and filter clause availability
+        const w = `${where.where.length > 0 ? '(' + where.where + ')' : ''} ${
+          where.where.length > 0 && where.filter.length > 0 ? 'AND' : ''
+        } ${where.filter.length > 0 ? '(' + where.filter + ')' : ''}`;
+
+        const qParams = {
+          where: w || '1 = 1',
+          outFields: ['*'],
+          returnGeometry: returnGeometry || true,
+          num: limit || 2000,
+          start: offset || 0,
+          outSpatialReference: {
+            wkid: 102100
+          }
+        };
+
+        const query = layer.queryFeatures(qParams);
+
+        return from(query);
+      }),
+      pluck('features')
+    );
+  }
+
+  public getValveStats(whereProps: IWhere): Observable<IValveStats> {
+    return this.getLayerInstance().pipe(
+      switchMap((layer) => {
+        // Query total number of valves
+        const ct = layer.queryFeatures({
+          where: whereProps === undefined ? '1=1' : whereProps.where,
+          outStatistics: [
+            {
+              statisticType: 'count',
+              onStatisticField: 'OBJECTID',
+              outStatisticFieldName: 'total_valves'
+            }
+          ]
+        });
+
+        // Query number of valves that are not in normal state
+        const nr = layer.queryFeatures({
+          where: `(NormalPosition_1 = CurrentPosition_1) ${
+            whereProps === undefined ? '' : 'AND (' + whereProps.where + ')'
+          }`,
+          outStatistics: [
+            {
+              statisticType: 'count',
+              onStatisticField: 'OBJECTID',
+              outStatisticFieldName: 'normal_valves'
+            }
+          ]
+        });
+
+        return forkJoin([ct, nr]);
+      }),
+      this.processStats
+    );
+  }
+
+  private processStats(featureSets: Observable<Array<esri.FeatureSet>>): Observable<IValveStats> {
+    return featureSets.pipe(
+      // Break up the results into individual featuresets
+      switchMap((results) => from(results)),
+      // Pluck the inner attributes property from each featureset
+      pluck('features', '0', 'attributes'),
+      // // Merge both attribute objects
+      reduce((acc, curr: { [property: string]: string | number }) => {
+        return { ...acc, ...curr };
+      }, {}),
+      map((stats: { total_valves: number; normal_valves: number }) => {
+        const updated = { ...stats, abnormal_valves: stats.total_valves - stats.normal_valves };
+
+        return updated;
       })
     );
   }
 
-  private getDefaultValves() {
-    this.mapService.store.subscribe((instance) => {
-      instance.view.when(() => {
-        const l = instance.map.findLayerById('cold-water-valves-layer') as esri.FeatureLayer;
+  /**
+   * Returns a mapped valve object from a valve id.
+   */
+  public getValve(valveId: string | number): Observable<MappedValve> {
+    return this.getValves(1, 0, { where: `OBJECTID = ${valveId}`, filter: '' }).pipe(
+      map((results) => {
+        const valve = results[0] as MappedValve;
 
-        if (l) {
-          const q = l.queryFeatures({
-            where: '1 = 1',
-            outFields: ['*'],
-            returnGeometry: true,
-            maxRecordCountFactor: 5,
-            outSpatialReference: {
-              wkid: 102100
-            }
-          });
-
-          q.then((valves) => {
-            this._valves.next(valves.features as Array<MappedValve>);
-          });
-        } else {
-          console.warn('Unable to load requested layer.');
-        }
-      });
-    });
+        return valve;
+      })
+    );
   }
 
-  public updateValveState(valve: MappedValve): void {
-    this._valves.pipe(take(1)).subscribe((stateValves) => {
-      const valves = stateValves.map((v) => v.clone());
+  public updateValveState(valve: MappedValve, state: string | IValvePositionState): Observable<IFeatureLayerEditResults> {
+    return this.getLayerInstance().pipe(
+      withLatestFrom(this.usr.user),
+      switchMap(([layer, user]) => {
+        const cloned = valve.clone() as MappedValve;
 
-      const updating = valves.find((v) => v.attributes.OBJECTID === valve.attributes.OBJECTID) as MappedValve;
+        cloned.attributes.last_edited_user = user.name;
 
-      if (updating.attributes.CurrentPosition_1 === 'Closed') {
-        updating.setAttribute('CurrentPosition_1', 'Open');
-      } else {
-        updating.setAttribute('CurrentPosition_1', 'Closed');
-      }
+        cloned.attributes.CurrentPosition_1 = state as IValvePositionState;
 
-      this._valves.next(valves);
-    });
+        return from(
+          layer.applyEdits({
+            updateFeatures: [cloned]
+          }) as Promise<IFeatureLayerEditResults>
+        ).pipe(
+          tap((results) => {
+            layer.refresh();
+          })
+        );
+      }),
+      map((results) => {
+        return results;
+      })
+    );
   }
 
   public setSelectedValve(valveId: number | string): void {
@@ -108,6 +183,25 @@ export class ColdWaterValvesService {
     if (layer) {
       layer.visible = !layer.visible;
     }
+  }
+
+  private getLayerInstance() {
+    return this.mapService.store.pipe(
+      take(1),
+      switchMap((instance) => {
+        return from(instance.view.when() as Promise<esri.View>).pipe(switchMap((view) => this.mapService.store));
+      }),
+      switchMap((instance) => {
+        const l = instance.map.findLayerById('cold-water-valves-layer') as esri.FeatureLayer;
+
+        if (!l) {
+          console.warn('Could not find feature layer');
+          return NEVER;
+        }
+
+        return of(l);
+      })
+    );
   }
 }
 
@@ -190,6 +284,21 @@ export interface IValve extends esri.Graphic {
   };
 }
 
+export interface IValveStats {
+  total_valves: number;
+  normal_valves: number;
+  abnormal_valves: number;
+}
+
 export interface MappedValve extends IValve {
   attributes: IValve['attributes'];
+}
+
+export interface IFeatureLayerEditResults {
+  addAttachmentResults: Array<esri.FeatureEditResult>;
+  addFeatureResults: Array<esri.FeatureEditResult>;
+  deleteAttachmentResults: Array<esri.FeatureEditResult>;
+  deleteFeatureResults: Array<esri.FeatureEditResult>;
+  updateAttachmentResults: Array<esri.FeatureEditResult>;
+  updateFeatureResults: Array<esri.FeatureEditResult>;
 }

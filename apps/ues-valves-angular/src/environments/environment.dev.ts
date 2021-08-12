@@ -14,3 +14,5 @@ export const auth_options: AuthOptions = {
   url: 'https://ues-dev.geoservices.tamu.edu/api/dispatch',
   attach_href: true
 };
+
+export const NotificationEvents = [];

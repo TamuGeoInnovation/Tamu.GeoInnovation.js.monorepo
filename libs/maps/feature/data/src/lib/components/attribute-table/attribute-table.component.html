@@ -1,0 +1,23 @@
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngIf="sortFn !== undefined; else noInitialSort ">
+      <tr *ngFor="let row of data | keyvalue : sortFn">
+        <td>{{row.key}}</td>
+        <td>{{row.value | json}}</td>
+      </tr>
+    </ng-container>
+
+    <ng-template #noInitialSort>
+      <tr *ngFor="let row of data | keyvalue">
+        <td>{{row.key}}</td>
+        <td>{{row.value | json}}</td>
+      </tr>
+    </ng-template>
+  </tbody>
+</table>

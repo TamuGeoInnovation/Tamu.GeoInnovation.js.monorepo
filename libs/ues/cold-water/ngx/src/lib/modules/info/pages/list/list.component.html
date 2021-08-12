@@ -5,13 +5,18 @@
 </div>
 
 <div class="ratio-bar">
-  <div class="open-valves" [style.width.%]="(ratio | async)?.open" [title]="'Normal valves: ' + (ratio | async)?.open + '%'"></div>
-  <div class="closed-valves" [style.width.%]="(ratio | async)?.closed" [style.left.%]="(ratio | async)?.open" [title]="'Abnormal valves: ' + (ratio | async)?.closed + '%'"></div>
+  <div class="open-valves" [style.width.%]="(ratio | async)?.normal" [title]="'Normal valves: ' + ((ratio | async)?.normal | number : '1.1-1') + '%'"></div>
+  <div class="closed-valves" [style.width.%]="(ratio | async)?.abnormal" [style.left.%]="(ratio | async)?.normal" [title]="'Abnormal valves: ' + ((ratio | async)?.abnormal | number : '1.1-1') + '%'"></div>
+</div>
+
+<div class="search-container" [formGroup]="form">
+  <tamu-gisc-textbox type="text" placeholder="Search for valves" [floatLabel]="true" formControlName="term"></tamu-gisc-textbox>
+  <span class="material-icons" tabindex="0" alt="Clear search" title="Clear search" *ngIf="form.controls['term'].value !== ''" (click)="clearSearch()">close</span>
 </div>
 
 <div class="pill-layer-list">
-  <div class="pill-layer" [ngClass]="{open: (filterOpen | async)}" (click)="tableFilter('open')"><span class="material-icons">circle</span> Normal Valves <ng-container *ngIf="categorized | async">({{(categorized | async)?.normal?.length | number}})</ng-container></div>
-  <div class="pill-layer" [ngClass]="{closed: (filterClosed | async)}" (click)="tableFilter('closed')"><span class="material-icons">circle</span> Abnormal Valves <ng-container *ngIf="categorized | async">({{(categorized | async)?.abnormal?.length | number}})</ng-container></div>
+  <div class="pill-layer" [ngClass]="{open: (filterOpen | async)}" (click)="tableFilter('open')"><span class="material-icons">circle</span> Normal Valves <ng-container *ngIf="valvesStats | async">({{(valvesStats | async)?.normal_valves | number}})</ng-container></div>
+  <div class="pill-layer" [ngClass]="{closed: (filterClosed | async)}" (click)="tableFilter('closed')"><span class="material-icons">circle</span> Abnormal Valves <ng-container *ngIf="valvesStats | async">({{(valvesStats | async)?.abnormal_valves | number}})</ng-container></div>
   <div class="pill-layer cwl" [ngClass]="{active: (dcwToggled | async)}" (click)="toggleDcw()"><span class="material-icons">water_drop</span> Cold Water Linework</div>
 </div>
 
@@ -21,15 +26,15 @@
       <tr>
         <th>ID</th>
         <th>State</th>
-        <th>Reason Code</th>
+        <th>Type</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let valve of (filtered | async)">
+      <tr *ngFor="let valve of (valves | async)">
         <td>{{valve?.attributes?.OBJECTID}}</td>
         <td class="status"><span class="pill" [ngClass]="{closed: valve?.attributes?.CurrentPosition_1 !== valve?.attributes?.NormalPosition_1, missing_fields: valve?.attributes?.CurrentPosition_1 === null || valve?.attributes?.NormalPosition_1 === null }">{{valve?.attributes?.CurrentPosition_1 ? valve?.attributes?.CurrentPosition_1 : 'NULL'}}</span></td>
-        <td></td>
+        <td>{{valve?.attributes?.Type}}</td>
         <td class="actions"><span class="material-icons" [routerLink]="['../../details', valve?.attributes?.OBJECTID]">keyboard_arrow_right</span></td>
       </tr>
     </tbody>

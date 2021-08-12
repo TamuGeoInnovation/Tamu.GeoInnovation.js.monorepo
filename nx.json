@@ -462,6 +462,15 @@
     },
     "ues-common-types": {
       "tags": []
+    },
+    "ues-cold-water-data-api": {
+      "tags": []
+    },
+    "ues-common-nest": {
+      "tags": []
+    },
+    "maps-feature-data": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {
