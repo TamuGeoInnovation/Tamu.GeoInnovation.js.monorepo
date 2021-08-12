@@ -13,7 +13,9 @@ export * from './definitions';
 export * from './notification-events';
 export * from './polygons';
 
+export const apiUrl = 'http://localhost:3333/api';
+
 export const auth_options: AuthOptions = {
-  url: 'http://localhost:3333',
+  url: apiUrl,
   attach_href: true
 };
