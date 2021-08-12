@@ -3,7 +3,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import esri = __esri;
 
 /**
- * Matches an attribute key (name) to a field object and returns the matched value.
+ * Matches an attribute key (feature attribute) to a field objet and returns it.
  */
 @Pipe({
   name: 'attributeField'
