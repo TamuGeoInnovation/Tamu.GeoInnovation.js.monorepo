@@ -1,26 +1,11 @@
 <tamu-gisc-kissingbugs-nav></tamu-gisc-kissingbugs-nav>
 <tamu-gisc-kissingbugs-hero [dataSource]="(pageContents | async)?.hero"></tamu-gisc-kissingbugs-hero>
 
-<!-- <article class="container12 container">
-  <div class="styleForm">
-    <div *ngFor="let item of (pageContents | async)?.section">
-      <div [ngSwitch]="item.__component">
-        <tamu-gisc-kissingbugs-info-block *ngSwitchCase="'page.section-block'" [dataSource]="item"></tamu-gisc-kissingbugs-info-block>
-        <tamu-gisc-kissingbugs-figure *ngSwitchCase="'page.figure'" [dataSource]="item"></tamu-gisc-kissingbugs-figure>
-        <tamu-gisc-kissingbugs-portrait *ngSwitchCase="'page.portrait'" [dataSource]="item"></tamu-gisc-kissingbugs-portrait>
-        <p *ngSwitchCase="'page.paragraph'">{{ item.text }}</p>
-        <ul>
-          <tamu-gisc-kissingbugs-list *ngSwitchCase="'page.list'" [dataSource]="item"></tamu-gisc-kissingbugs-list>
-        </ul>
-        <tamu-gisc-kissingbugs-info-alert *ngSwitchCase="'page.downloadable'" [dataSource]="item"></tamu-gisc-kissingbugs-info-alert>
-        <p *ngSwitchDefault>Unsupported component detected: {{ item.__component }}</p>
-      </div>
-    </div>
-  </div>
-</article> -->
-
 <article class="container12 container">
   <div class="styleForm">
+    <div *ngIf="(pageContents | async)?.body">
+      <p>Body go here</p>
+    </div>
     <div *ngFor="let question of (pageComponents | async)" class="qacontainer expanded">
       <div class="question" tabindex="0" aria-role="button">
         <p>{{ question.text }}</p>

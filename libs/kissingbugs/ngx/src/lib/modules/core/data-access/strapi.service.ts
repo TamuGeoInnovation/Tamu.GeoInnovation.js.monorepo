@@ -20,7 +20,7 @@ export class StrapiService {
   }
 
   public getNavigation(type: StrapiSingleTypes = 'navigation', locale: string = 'en') {
-    return this.http.get<IStrapiStapleNavigation>(`${this.resource}/${type}`);
+    return this.http.get<IStrapiStapleNavigation>(`${this.resource}/${type}?_locale=${locale}`);
   }
 
   public getFooter(type: StrapiSingleTypes = 'footer', locale: string = 'en') {
