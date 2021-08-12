@@ -1,0 +1,30 @@
+@import 'libs/sass/mixins';
+
+:host {
+  height: 100%;
+  width: 100%;
+  background: radial-gradient(#500000, #410000);
+  @include flexbox();
+  @include flex-direction(column);
+  @include justify-content(center);
+  @include align-items(center);
+}
+
+h1,
+p {
+  color: #eeeeee;
+  text-align: center;
+}
+
+tamu-gisc-ues-tamu-block {
+  width: 20rem;
+}
+
+#manual-redirect {
+  font-size: 0.8rem;
+  font-style: italic;
+  span {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}

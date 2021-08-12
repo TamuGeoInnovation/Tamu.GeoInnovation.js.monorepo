@@ -62,13 +62,24 @@ export class AuthService {
     }
   }
 
-  public redirect() {
+  /**
+   * Redirects to the auth url
+   *
+   * If auth options allow attaching a return URL, window location will be used by default
+   *
+   * @param {string} [returnUrl] Overwrite the default window location return url
+   */
+  public redirect(returnUrl?: string) {
     if (typeof this.authOptions === 'string') {
       this.document.location.href = `${this.authOptions}/oidc/login`;
     } else if (typeof this.authOptions === 'object') {
+      const ret = returnUrl ? returnUrl : window.location.href;
+
       this.document.location.href = `${this.cleanUrl(this.authOptions.url)}/oidc/login${
-        this.authOptions.attach_href === true ? '?ret=' + window.location.href : ''
+        this.authOptions.attach_href === true ? `?ret=${ret}` : ''
       }`;
+    } else {
+      console.warn('No auth url provided. Cannot redirect.');
     }
   }
 }

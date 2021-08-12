@@ -32,7 +32,7 @@ export class AuthGuard implements CanActivate {
         }
 
         // If auth failed and a redirect route was provided, redirect to it.
-        const urlTree = this.router.parseUrl(params.redirectTo);
+        const urlTree = this.router.parseUrl(params.redirectTo + `?ret=${window.location.href}`);
 
         return urlTree;
       })
