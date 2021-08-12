@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -16,7 +17,7 @@ export class AuthService {
     attach_href: undefined
   };
 
-  constructor(private http: HttpClient, private env: EnvironmentService) {
+  constructor(@Inject(DOCUMENT) private document: Document, private http: HttpClient, private env: EnvironmentService) {
     if (this.env.value('auth_url', true)) {
       this.authOptions.url = this.env.value('auth_url', true);
     } else if (this.env.value('auth_options', true)) {
@@ -52,6 +53,16 @@ export class AuthService {
       return url.slice(0, url.length - 1);
     } else {
       return url;
+    }
+  }
+
+  public redirect() {
+    if (typeof this.authOptions === 'string') {
+      this.document.location.href = `${this.authOptions}/oidc/login`;
+    } else if (typeof this.authOptions === 'object') {
+      this.document.location.href = `${this.cleanUrl(this.authOptions.url)}/oidc/login${
+        this.authOptions.attach_href === true ? '?ret=' + window.location.href : ''
+      }`;
     }
   }
 }

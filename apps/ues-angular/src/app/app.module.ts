@@ -7,7 +7,6 @@ import { StorageServiceModule } from 'ngx-webstorage-service';
 import { AppRoutingModule } from '@tamu-gisc/ues/common/ngx';
 import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
-import { AuthProvider } from '@tamu-gisc/common/ngx/auth';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -23,8 +22,7 @@ WebFont.load({
   declarations: [AppComponent],
   providers: [
     { provide: env, useValue: environment },
-    { provide: notificationStorage, useValue: 'ues-notifications' },
-    AuthProvider
+    { provide: notificationStorage, useValue: 'ues-notifications' }
   ],
   bootstrap: [AppComponent]
 })
