@@ -102,7 +102,13 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
 
           const l = mapInstance.map.findLayerById(this.reference);
 
-          this.model = new SketchViewModel({ view: mapInstance.view, layer: l, updateOnGraphicClick: !this.updateTools });
+          this.model = new SketchViewModel({
+            view: mapInstance.view,
+            layer: l,
+            defaultUpdateOptions: {
+              toggleToolOnClick: this.reshapeTool
+            }
+          });
 
           this.model.on('create', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) => {
             if (event.state === 'complete') {
