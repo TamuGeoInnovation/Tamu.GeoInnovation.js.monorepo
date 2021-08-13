@@ -12,7 +12,7 @@
 </div>
 
 <div class="tool-set version" *ngIf="colorTools">
-  <tamu-gisc-tooltip [position]="'bottom center'" [width]="'20rem'">
+  <tamu-gisc-tooltip [width]="'20rem'" [positioningStrategy]="'fixed'">
     <tamu-gisc-tooltip-trigger>
       <p class="selected-color" title="Fill" [ngStyle]="{background: selectedColor}"></p>
     </tamu-gisc-tooltip-trigger>
