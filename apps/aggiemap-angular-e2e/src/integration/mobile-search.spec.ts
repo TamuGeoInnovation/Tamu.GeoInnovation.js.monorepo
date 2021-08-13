@@ -1,5 +1,5 @@
 /// <reference path="../support/index.d.ts" />
-import { inRange } from "cypress/types/lodash";
+import { inRange, isTypedArray } from "cypress/types/lodash";
 import {mobileSizes} from "./resolutions";
 
 mobileSizes.forEach((size) => {
@@ -10,7 +10,8 @@ mobileSizes.forEach((size) => {
       cy.intercept("GET", "**/Construction_2018/**").as("construction")
       cy.intercept("GET", "**/Physical_Distancing_Tents/**").as("tents")
       cy.intercept("GET", '**/services/Routing/**').as('routeData')
-      cy.intercept('GET', 'https://gis.tamu.edu/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A102100%7D%2C%22xmin%22%3A-10724573.690580126%2C%22ymin%22%3A3582603.5157282613%2C%22xmax%22%3A-10724420.816523556%2C%22ymax%22%3A3582756.3897848316%7D&orderByFields=OBJECTID%20ASC&outFields=*&outSR=102100&quantizationParameters=%7B%22extent%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A102100%7D%2C%22xmin%22%3A-10724573.690580126%2C%22ymin%22%3A3582603.5157282613%2C%22xmax%22%3A-10724420.816523556%2C%22ymax%22%3A3582756.3897848316%7D%2C%22mode%22%3A%22view%22%2C%22originPosition%22%3A%22upperLeft%22%2C%22tolerance%22%3A0.29858214173889186%7D&resultType=tile&returnExceededLimitFeatures=false&spatialRel=esriSpatialRelIntersects&where=1%3D1&geometryType=esriGeometryEnvelope&inSR=102100')
+      cy.intercept('GET', '**/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A102100%7D%2C%22xmin%22%3A-10724573.690580126%2C%22ymin%22%3A3582603.5157282613%2C%22xmax%22%3A-10724420.816523556%2C%22ymax%22%3A3582756.3897848316%7D&orderByFields=OBJECTID%20ASC&outFields=*&outSR=102100&quantizationParameters=%7B%22extent%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A102100%7D%2C%22xmin%22%3A-10724573.690580126%2C%22ymin%22%3A3582603.5157282613%2C%22xmax%22%3A-10724420.816523556%2C%22ymax%22%3A3582756.3897848316%7D%2C%22mode%22%3A%22view%22%2C%22originPosition%22%3A%22upperLeft%22%2C%22tolerance%22%3A0.29858214173889186%7D&resultType=tile&returnExceededLimitFeatures=false&spatialRel=esriSpatialRelIntersects&where=1%3D1&geometryType=esriGeometryEnvelope&inSR=102100', 
+        { fixture: 'building-data'} )
         .as('buildingData')
     })
 
@@ -37,7 +38,7 @@ mobileSizes.forEach((size) => {
       cy.contains('Rudder Tower (0446)').click()
       cy.get('.feature-style-1').should('contain.text', building)
       cy.wait(2000)
-      cy.wait('@buildingData')
+      cy.wait('@buildingData').then(console.log).should('have.property', 'state', 'Complete') // verify that server request is fulfilled
     })
 
     it('Drag Pop-up Into User View', () => {
@@ -46,6 +47,7 @@ mobileSizes.forEach((size) => {
     })
 
     it('Check Popup Results', () => {
+      // redo test using fixture data by stubbing server response
       // check is correct building information is displayed
       cy.get('.feature-style-1')
         .should('contain.text', 'Rudder Tower')
@@ -89,7 +91,7 @@ mobileSizes.forEach((size) => {
         .click('bottomRight')  // click random location
         .wait(1000)
 
-      cy.wait('@routeData', {responseTimeout: 2000, requestTimeout: 2000 })
+      cy.wait('@routeData', {responseTimeout: 2000, requestTimeout: 2000 }).then(console.log)
 
       // drag popup up and check if route features are displayed
       cy.get('.handle')
