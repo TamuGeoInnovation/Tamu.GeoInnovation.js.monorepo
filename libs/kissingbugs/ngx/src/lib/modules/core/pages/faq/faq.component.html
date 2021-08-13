@@ -6,7 +6,7 @@
     <div *ngIf="(pageContents | async)?.body">
       <p>Body go here</p>
     </div>
-    <div *ngFor="let question of (pageComponents | async)" class="qacontainer expanded">
+    <div *ngFor="let question of (pageComponents | async)" class="qacontainer" [ngClass]="question.expanded ? 'qacontainer expanded' : 'qacontainer'" (click)="expandContainer(question)">
       <div class="question" tabindex="0" aria-role="button">
         <p>{{ question.text }}</p>
       </div>

@@ -1,25 +1,21 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, reduce, shareReplay, switchMap } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
 
 import { StrapiService } from '../../data-access/strapi.service';
-import {
-  IStrapiFAQItemsWithComponents,
-  IStrapiPageFAQComponent,
-  IStrapiPageResponse,
-  IStrapiPageSection
-} from '../../types/types';
+import { IStrapiFAQItemsWithComponents, IStrapiPageResponse, IStrapiPageSection } from '../../types/types';
 
 @Component({
   selector: 'tamu-gisc-kissingbugs-faq',
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.scss'],
-
   providers: [StrapiService]
 })
 export class FaqComponent implements OnInit, OnDestroy {
   public pageContents: Observable<IStrapiPageResponse>;
-  public pageComponents: Observable<{ sectionId: number; text: string; components: IStrapiPageSection }[]>;
+  public pageComponents: Observable<
+    { sectionId: number; text: string; components: IStrapiPageSection; expanded: boolean }[]
+  >;
 
   constructor(private ss: StrapiService) {}
 
@@ -45,7 +41,8 @@ export class FaqComponent implements OnInit, OnDestroy {
           return {
             sectionId: faqItem.section,
             text: faqItem.text,
-            components: faqItems.sections[faqItem.section - 1]
+            components: faqItems.sections[faqItem.section - 1],
+            expanded: false
           };
         });
         return faqComponents;
@@ -54,4 +51,8 @@ export class FaqComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {}
+
+  public expandContainer(question) {
+    question.expanded = !question.expanded;
+  }
 }
