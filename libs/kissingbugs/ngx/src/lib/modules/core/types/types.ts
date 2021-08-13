@@ -17,6 +17,7 @@ export type IStrapiComponent =
   | IStrapiPageInfoAlert
   | IStrapiPageFeature
   | IStrapiPageGallery
+  | IStrapiPagePrintResource
   | IStrapiPageParagraph
   | IStrapiPageList;
 
@@ -147,6 +148,13 @@ export interface IStrapiStapleNavigation {
   created_at: string;
   updated_at: string;
   items: (IStrapiNavigationItem | IStrapiNavigationPage)[];
+}
+
+export interface IStrapiPagePrintResource {
+  __component: string;
+  id: number;
+  fileName: string;
+  file: IStrapiMedia;
 }
 
 export interface IStrapiFAQItem {

@@ -13,6 +13,8 @@ import { FigureComponent } from './figure/figure.component';
 import { ListComponent } from './list/list.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { PortraitComponent } from './portrait/portrait.component';
+import { PrintResourceComponent } from './print-resource/print-resource.component';
+import { PublicationGalleryComponent } from './publication-gallery/publication-gallery.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule],
@@ -27,7 +29,9 @@ import { PortraitComponent } from './portrait/portrait.component';
     FigureComponent,
     ListComponent,
     GalleryComponent,
-    PortraitComponent
+    PortraitComponent,
+    PrintResourceComponent,
+    PublicationGalleryComponent
   ],
   exports: [
     SectionComponent,
@@ -40,7 +44,9 @@ import { PortraitComponent } from './portrait/portrait.component';
     FigureComponent,
     ListComponent,
     GalleryComponent,
-    PortraitComponent
+    PortraitComponent,
+    PrintResourceComponent,
+    PublicationGalleryComponent
   ]
 })
 export class ComponentsModule {}
