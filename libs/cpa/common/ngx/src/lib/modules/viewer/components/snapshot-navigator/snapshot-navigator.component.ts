@@ -1,7 +1,7 @@
-import { Component, ElementRef, HostBinding, OnInit } from '@angular/core';
+import { Component, ElementRef, HostBinding, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, interval, Observable, of } from 'rxjs';
-import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { combineLatest, fromEvent, interval, Observable, of } from 'rxjs';
+import { distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
 
 import { TypedSnapshotOrScenario, ViewerService } from '../../services/viewer.service';
 
@@ -15,21 +15,43 @@ export class SnapshotNavigatorComponent implements OnInit {
   public index: Observable<number> = this.vs.selectionIndex;
 
   /**
-   * Represents the inner width of the navigator component
+   * Represents the inner width of the navigator component (including scrolling width)
    */
   public innerWidth: Observable<number>;
 
   /**
+   * Represents the outer width of the navigator component (physical foot print, excluding scrolling width)
+   */
+  public outerWidth: Observable<number>;
+
+  /**
    * Represents the width of the time line (the actual line going through snapshot and scenario icons).
-   * 
+   *
    * This width is never larger than the innerWidth
    */
   public timelineWidth: Observable<number>;
 
   /**
    * Represents a left offset for the time line (actual line) so that it displays centered
+   * relative to the scroll width.
    */
   public timelineLeftOffset: Observable<number>;
+
+  /**
+   * Represents the left scrolling position of the timeline
+   */
+  public timelineScrollPosition: Observable<number>;
+
+  /**
+   * Visibility status for both left and right secondary scrolling mechanisms.
+   */
+  public scrollerVisibility: {
+    left: Observable<boolean>;
+    right: Observable<boolean>;
+  };
+
+  @ViewChild('innerContainer', { static: true })
+  public innerContainer: ElementRef;
 
   constructor(public router: ActivatedRoute, private vs: ViewerService, private el: ElementRef) {}
 
@@ -39,9 +61,18 @@ export class SnapshotNavigatorComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.innerWidth = interval(500).pipe(
+    const timer = interval(1000);
+
+    this.innerWidth = timer.pipe(
       switchMap(() => {
-        return of(Math.floor((this.el.nativeElement as HTMLElement).scrollWidth));
+        return of(Math.floor((this.innerContainer.nativeElement as HTMLElement).scrollWidth));
+      }),
+      distinctUntilChanged()
+    );
+
+    this.outerWidth = timer.pipe(
+      switchMap(() => {
+        return of((this.innerContainer.nativeElement as HTMLElement).clientWidth);
       }),
       distinctUntilChanged()
     );
@@ -57,9 +88,39 @@ export class SnapshotNavigatorComponent implements OnInit {
         return (inner - timeline) / 2;
       })
     );
+
+    this.timelineScrollPosition = fromEvent(this.innerContainer.nativeElement, 'scroll').pipe(
+      map((event: Event) => {
+        return (event.currentTarget as HTMLElement).scrollLeft;
+      }),
+      startWith(0)
+    );
+
+    this.scrollerVisibility = {
+      left: this.timelineScrollPosition.pipe(
+        map((position) => {
+          return position - 50 > 0;
+        })
+      ),
+      right: combineLatest([this.timelineScrollPosition, this.outerWidth, this.innerWidth]).pipe(
+        map(([position, outer, inner]) => {
+          return position < inner - outer - 50;
+        })
+      )
+    };
   }
 
-  public navigate(index: number) {
+  public navigate(index: number): void {
     this.vs.updateSelectionIndex(index);
+  }
+
+  public scroll(direction: 'left' | 'right'): void {
+    const element: HTMLElement = this.innerContainer.nativeElement;
+    const sign = direction === 'left' ? -1 : 1;
+    const scrollAmount = 350;
+
+    // Scroll smoothly in a negative or positive horizontal direction by adding or subtracting from current
+    // left scroll position
+    element.scrollTo({ left: element.scrollLeft + sign * scrollAmount, behavior: 'smooth' });
   }
 }
