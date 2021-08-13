@@ -3,10 +3,10 @@
     <div class="snapshot" [ngClass]="{active: (index | async) === i}" (click)="navigate(i)">
       <p>{{snapshot.title}}</p>
       <ng-container *ngIf="snapshot.type === 'snapshot'; else scenarioBadge">
-        <span class="snapshot-badge">T</span>
+        <span class="snapshot-badge material-icons">circle</span>
       </ng-container>
       <ng-template #scenarioBadge>
-        <span class="scenario-badge">S</span>
+        <span class="scenario-badge material-icons">star</span>
       </ng-template>
     </div>
   </ng-container>
