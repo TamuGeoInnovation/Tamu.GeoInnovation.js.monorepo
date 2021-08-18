@@ -18,24 +18,24 @@ mobileSizes.forEach((size) => {
 
     const building = 'Rudder Tower'
 
-    it.only('Open Aggie Map', () => {
+    it('Open Aggie Map', () => {
       cy.visit('https://aggiemap.tamu.edu/map/m')
       cy.get('canvas').should('be.visible', {timeout: 5000})
     })
 
-    it.only('Input Building Search', () => {
+    it('Input Building Search', () => {
       cy.get('tamu-gisc-search-mobile')
         .should('be.visible')
         .click()
       cy.get('.margin-left').type(building)
     })
 
-    it.only('Search Results Displayed', () => {
+    it('Search Results Displayed', () => {
       cy.get('.search-results-container').should('be.visible')
       cy.get('.focusable').should('contain.text', building)
     })
       
-    it.only('Click Search Result', () => {
+    it('Click Search Result', () => {
       cy.contains('Rudder Tower (0446)').click()
       cy.get('.feature-style-1').should('contain.text', building)
       cy.wait(2000)
@@ -45,12 +45,12 @@ mobileSizes.forEach((size) => {
       }) 
     })
 
-    it.only('Drag Pop-up Into User View', () => {
+    it('Drag Pop-up Into User View', () => {
       cy.get('tamu-gisc-feature-mobile-popup').should('be.visible')
       cy.get('.handle').move({ x: 0, y: -60, force: true})
     })
 
-    it.only('Check Popup Results', () => {
+    it('Check Popup Results', () => {
       // redo test using fixture data by stubbing server response
       // check is correct building information is displayed
       cy.get('.feature-style-1')
@@ -78,7 +78,7 @@ mobileSizes.forEach((size) => {
 
     it('Check Walk Route Directions', () => {
       cy.get('.button')
-        .should('have.attr', 'building-number', '0446')
+        .should('have.attr', 'building-number')
       cy.contains('Directions To Here')
         .should('be.visible')
         .click()
