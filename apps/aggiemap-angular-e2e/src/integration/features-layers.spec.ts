@@ -36,17 +36,17 @@ desktopSizes.forEach((size) => {
       // checks if popup is visible
       cy.checkPopUp()
     })
-    it('Points of Interest', function() {
+    it.only('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
         .as("POI")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(7)')
+      cy.get(':nth-child(7) > .layer-item > :nth-child(1)')
         .trigger('mouseover').click().should('be.visible')
+      cy.wait('@POI')
       cy.checkLayer('7','Points of Interest')
       cy.checkLegend('7', 'Points of Interest')
       // click location of a known point of interest for multiple resolutions
       if (size[0] === 1920) {
-        cy.wait(2000)
-        cy.get('canvas').trigger('mouseover').click(1125, 650)
+        cy.get('canvas').trigger('mouseover').click(1125, 733)
       }
       else if (size[0] === 1366) {
         cy.wait(2000)
@@ -59,7 +59,7 @@ desktopSizes.forEach((size) => {
       // checks if popup is visible
       cy.checkPopUp()
       // click "Directions To Here for poi"
-      cy.get('tamu-gisc-poi-popup-component > .popup-section > .button').click()
+      cy.get('[building-number="0367"]').click()
       // confirm navigation window pop-up by verifying URL
       cy.checkNavPanel()
       // click random location on map to begin route
@@ -191,7 +191,7 @@ desktopSizes.forEach((size) => {
       cy.checkLayer('2', 'Emergency Phone')
       cy.checkLegend('2', 'Emergency Phone')
     })
-    it.only('Physical Distance Study Area', function() {
+    it('Physical Distance Study Area', function() {
       cy.wait('@tents')    
       cy.checkLayer('1', 'Physical Distance Study Area')
       cy.checkLegend('1', 'Physical Distance Study Area')
