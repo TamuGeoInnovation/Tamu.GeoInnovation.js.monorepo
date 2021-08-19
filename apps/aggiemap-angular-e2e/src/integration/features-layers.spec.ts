@@ -36,7 +36,7 @@ desktopSizes.forEach((size) => {
       // checks if popup is visible
       cy.checkPopUp()
     })
-    it.only('Points of Interest', function() {
+    it('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
         .as("POI")
       cy.get(':nth-child(7) > .layer-item > :nth-child(1)')
@@ -63,7 +63,7 @@ desktopSizes.forEach((size) => {
       // confirm navigation window pop-up by verifying URL
       cy.checkNavPanel()
       // click random location on map to begin route
-      cy.wait(5000)
+      cy.wait(2000)
       cy.get('canvas').trigger('mouseover').click((size[0]/2), (size[1]/2))
       // checks if directions are displayed
       cy.get('.directions-container').should('be.visible')
@@ -85,7 +85,7 @@ desktopSizes.forEach((size) => {
     it('Restrooms', function() {
       cy.intercept('GET', '*')
         .as("restrooms")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(6)')
+      cy.get(':nth-child(6) > .layer-item > :nth-child(1)')
         .trigger('mouseover').click().should('be.visible')
       cy.wait("@restrooms")    
       cy.checkLayer('6','Restrooms')
@@ -107,10 +107,10 @@ desktopSizes.forEach((size) => {
       cy.checkPopUp()
     })
     
-    it('Lactation Rooms', function() {
+    it.only('Lactation Rooms', function() {
       cy.intercept('GET', '*')
         .as("lactation")
-        cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(5)')
+        cy.get(':nth-child(5) > .layer-item > :nth-child(1)')
         .trigger('mouseover').click().should('be.visible')
       cy.wait("@lactation")      
       cy.checkLayer('5', 'Lactation Rooms')
@@ -118,7 +118,7 @@ desktopSizes.forEach((size) => {
       // click location of a known lactation room locations by pixels for multiple resolutions
       if (size[0] === 1920) {
         cy.wait(2000)
-        cy.get('canvas').trigger('mouseover').click(1100, 595)
+        cy.get('canvas').trigger('mouseover').click(1100, 678)
       }
       else if (size[0] === 1366) {
         cy.wait(2000)
@@ -137,7 +137,7 @@ desktopSizes.forEach((size) => {
     it('Visitor Parking', function() {
       cy.intercept('GET', '*')
         .as("visitor")
-        cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(4)')
+        cy.get(':nth-child(4) > .layer-item > :nth-child(1)')
         .trigger('mouseover').click().should('be.visible')
       cy.wait("@visitor")     
       cy.checkLayer('4', 'Visitor Parking')
@@ -161,7 +161,7 @@ desktopSizes.forEach((size) => {
     it('Accessible Entrances', function() {
       cy.intercept('GET', '*')
         .as("accessible")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(3)')
+      cy.get(':nth-child(3) > .layer-item > :nth-child(1)')
         .trigger('mouseover').click().should('be.visible')
       cy.wait("@accessible")
       cy.checkLayer('3', 'Accessible Entrances')
@@ -185,7 +185,7 @@ desktopSizes.forEach((size) => {
     it('Emergency Phones', function() {
       cy.intercept('GET', '*')
         .as("emergency")
-      cy.get('tamu-gisc-layer-list > .sidebar-component-content-container > :nth-child(2)')
+      cy.get(':nth-child(2) > .layer-item > :nth-child(1)')
         .trigger('mouseover').click().should('be.visible')
       cy.wait("@emergency")
       cy.checkLayer('2', 'Emergency Phone')
