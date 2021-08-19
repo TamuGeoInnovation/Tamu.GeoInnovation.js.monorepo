@@ -36,7 +36,7 @@ desktopSizes.forEach((size) => {
       // checks if popup is visible
       cy.checkPopUp()
     })
-    it.only('Points of Interest', function() {
+    it('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
         .as("POI")
       cy.get(':nth-child(7) > .layer-item > :nth-child(1)')
@@ -198,7 +198,8 @@ desktopSizes.forEach((size) => {
       // click location of a known study area locations by pixels for multiple resolutions
       if (size[0] === 1920) {
         cy.wait(2000)
-        cy.get('canvas').trigger('mouseover').click(1160, 530)
+        cy.get('canvas').trigger('mouseover').click(1160, 540)
+        cy.wait(5000)
       }
       else if (size[0] === 1366) {
         cy.wait(2000)
