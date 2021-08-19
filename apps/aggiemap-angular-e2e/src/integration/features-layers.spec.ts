@@ -36,7 +36,7 @@ desktopSizes.forEach((size) => {
       // checks if popup is visible
       cy.checkPopUp()
     })
-    it('Points of Interest', function() {
+    it.only('Points of Interest', function() {
       cy.intercept('GET', '**/MapInfo_20190529/**')
         .as("POI")
       cy.get(':nth-child(7) > .layer-item > :nth-child(1)')
@@ -46,7 +46,7 @@ desktopSizes.forEach((size) => {
       cy.checkLegend('7', 'Points of Interest')
       // click location of a known point of interest for multiple resolutions
       if (size[0] === 1920) {
-        cy.get('canvas').trigger('mouseover').click(1125, 733)
+        cy.get('canvas').trigger('mouseover').click(1125, 650)
       }
       else if (size[0] === 1366) {
         cy.wait(2000)
@@ -59,7 +59,7 @@ desktopSizes.forEach((size) => {
       // checks if popup is visible
       cy.checkPopUp()
       // click "Directions To Here for poi"
-      cy.get('[building-number="0367"]').click()
+      cy.get('.button').click()
       // confirm navigation window pop-up by verifying URL
       cy.checkNavPanel()
       // click random location on map to begin route
@@ -107,7 +107,7 @@ desktopSizes.forEach((size) => {
       cy.checkPopUp()
     })
     
-    it.only('Lactation Rooms', function() {
+    it('Lactation Rooms', function() {
       cy.intercept('GET', '*')
         .as("lactation")
         cy.get(':nth-child(5) > .layer-item > :nth-child(1)')
