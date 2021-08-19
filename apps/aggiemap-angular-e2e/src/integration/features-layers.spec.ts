@@ -118,7 +118,7 @@ desktopSizes.forEach((size) => {
       // click location of a known lactation room locations by pixels for multiple resolutions
       if (size[0] === 1920) {
         cy.wait(2000)
-        cy.get('canvas').trigger('mouseover').click(1100, 678)
+        cy.get('canvas').trigger('mouseover').click(1100, 600)
       }
       else if (size[0] === 1366) {
         cy.wait(2000)
