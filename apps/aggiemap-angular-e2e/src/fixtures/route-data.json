@@ -8,7 +8,7 @@
             "FirstStopID": "FirstStopID",
             "LastStopID": "LastStopID",
             "StopCount": "StopCount",
-            "Total_Time": "Total_Time",
+            "Total_Time": "5",
             "Total_Length": "Total_Length",
             "Shape_Length": "Shape_Length"
         },
