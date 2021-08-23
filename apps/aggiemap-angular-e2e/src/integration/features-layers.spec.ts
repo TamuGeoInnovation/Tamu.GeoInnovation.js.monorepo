@@ -46,7 +46,8 @@ desktopSizes.forEach((size) => {
       cy.checkLegend('7', 'Points of Interest')
       // click location of a known point of interest for multiple resolutions
       if (size[0] === 1920) {
-        cy.get('canvas').trigger('mouseover').click(1125, 650)
+        cy.wait(2000)
+        cy.get('canvas').trigger('mouseover').click(1125, 655)
       }
       else if (size[0] === 1366) {
         cy.wait(2000)
