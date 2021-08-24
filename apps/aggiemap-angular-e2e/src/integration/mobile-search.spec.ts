@@ -9,12 +9,8 @@ mobileSizes.forEach((size) => {
       cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
       cy.intercept("GET", "**/Construction_2018/**").as("construction")
       cy.intercept("GET", "**/Physical_Distancing_Tents/**").as("tents")
-      let routeData;
-      cy.fixture('route-data').then(function(data) {
-        routeData=data
-      })
-      cy.intercept("GET", 'https://gis.tamu.edu/arcgis/rest/services/Routing/20210407/NAServer/Route/solve?doNotLocateOnRestrictedElements=true&outputLines=esriNAOutputLineTrueShape&outSR=4326&returnBarriers=false&returnDirections=true&returnPolygonBarriers=false&returnPolylineBarriers=false&returnRoutes=true&returnStops=false&returnZ=false&startTimeIsUTC=true&stops=%7B%22features%22%3A%5B%7B%22geometry%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A-96.34159368595117%2C%22y%22%3A30.61113177551135%7D%2C%22symbol%22%3Anull%2C%22attributes%22%3A%7B%22routeName%22%3A1%2C%22stopName%22%3A%2230.6111%2C%20-96.3416%22%7D%2C%22popupTemplate%22%3Anull%7D%2C%7B%22geometry%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A-96.34036255938763%2C%22y%22%3A30.612954210633955%7D%2C%22symbol%22%3Anull%2C%22attributes%22%3A%7B%22routeName%22%3A1%2C%22stopName%22%3A%22Rudder%20Tower%22%7D%2C%22popupTemplate%22%3Anull%7D%5D%7D&travelMode=1&f=json',
-        { fixture: 'route-data' }).as('walkRouteData')
+      cy.intercept("GET", 'https://gis.tamu.edu/arcgis/rest/services/Routing/20210407/NAServer/Route/*',
+        { fixture: 'walk-route-data.json' }).as('walkRouteData')
       cy.intercept('GET', '**/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A102100%7D%2C%22xmin%22%3A-10724573.690580126%2C%22ymin%22%3A3582603.5157282613%2C%22xmax%22%3A-10724420.816523556%2C%22ymax%22%3A3582756.3897848316%7D&orderByFields=OBJECTID%20ASC&outFields=*&outSR=102100&quantizationParameters=%7B%22extent%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A102100%7D%2C%22xmin%22%3A-10724573.690580126%2C%22ymin%22%3A3582603.5157282613%2C%22xmax%22%3A-10724420.816523556%2C%22ymax%22%3A3582756.3897848316%7D%2C%22mode%22%3A%22view%22%2C%22originPosition%22%3A%22upperLeft%22%2C%22tolerance%22%3A0.29858214173889186%7D&resultType=tile&returnExceededLimitFeatures=false&spatialRel=esriSpatialRelIntersects&where=1%3D1&geometryType=esriGeometryEnvelope&inSR=102100', 
         { fixture: 'building-data'} )
         .as('buildingData')
@@ -93,24 +89,30 @@ mobileSizes.forEach((size) => {
         .wait(1000)
 
       //Stub server response so that all routes are always available
-      // cy.intercept('@walkRouteData',  { fixture: 'route-data' }).then((response) => {
+      // cy.intercept('@walkRouteData',  { fixture: 'route-data.json' }).then((response) => {
       //   console.log()
       // })
-      cy.intercept({
-        method: 'GET',
-        url: 'https://gis.tamu.edu/arcgis/rest/services/Routing/20210407/NAServer/Route/solve?doNotLocateOnRestrictedElements=true&outputLines=esriNAOutputLineTrueShape&outSR=4326&returnBarriers=false&returnDirections=true&returnPolygonBarriers=false&returnPolylineBarriers=false&returnRoutes=true&returnStops=false&returnZ=false&startTimeIsUTC=true&stops=%7B%22features%22%3A%5B%7B%22geometry%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A-96.34007759157538%2C%22y%22%3A30.612527917309713%7D%2C%22symbol%22%3Anull%2C%22attributes%22%3A%7B%22routeName%22%3A1%2C%22stopName%22%3A%2230.6125%2C%20-96.3401%22%7D%2C%22popupTemplate%22%3Anull%7D%2C%7B%22geometry%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A-96.34007988218595%2C%22y%22%3A30.612909929753148%7D%2C%22symbol%22%3Anull%2C%22attributes%22%3A%7B%22routeName%22%3A1%2C%22stopName%22%3A%22Rudder%20Tower%22%7D%2C%22popupTemplate%22%3Anull%7D%5D%7D&travelMode=1&f=json'
-        },
-        {
-          statusCode: 200,
-          body: [
-            {
-              "Total_time" : 500
-            }
-          ]
-        }
-      ).as('route')
-      cy.wait('@route')
-      console.log()
+
+      cy.wait('@walkRouteData')
+      cy.get('@walkRouteData').then((response) => {
+         console.log(response)})
+        
+
+      // cy.intercept({
+      //   method: 'GET',
+      //   url: 'https://gis.tamu.edu/arcgis/rest/services/Routing/20210407/NAServer/Route/solve?doNotLocateOnRestrictedElements=true&outputLines=esriNAOutputLineTrueShape&outSR=4326&returnBarriers=false&returnDirections=true&returnPolygonBarriers=false&returnPolylineBarriers=false&returnRoutes=true&returnStops=false&returnZ=false&startTimeIsUTC=true&stops=%7B%22features%22%3A%5B%7B%22geometry%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A-96.34007759157538%2C%22y%22%3A30.612527917309713%7D%2C%22symbol%22%3Anull%2C%22attributes%22%3A%7B%22routeName%22%3A1%2C%22stopName%22%3A%2230.6125%2C%20-96.3401%22%7D%2C%22popupTemplate%22%3Anull%7D%2C%7B%22geometry%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A-96.34007988218595%2C%22y%22%3A30.612909929753148%7D%2C%22symbol%22%3Anull%2C%22attributes%22%3A%7B%22routeName%22%3A1%2C%22stopName%22%3A%22Rudder%20Tower%22%7D%2C%22popupTemplate%22%3Anull%7D%5D%7D&travelMode=1&f=json'
+      //   },
+      //   {
+      //     statusCode: 200,
+      //     body: [
+      //       {
+      //         {fixture: 'route-data'}
+      //       }
+      //     ]
+      //   }
+      // ).as('route')
+      // cy.wait('@route')
+      // console.log()
 
       // drag popup up and check if route features are displayed
       cy.get('.handle')
