@@ -104,8 +104,8 @@
             "features": [
                 {
                     "attributes": {
-                        "length": 0,
-                        "time": 0,
+                        "length": 60,
+                        "time": 50,
                         "text": "Start at Location 1",
                         "ETA": -2209161600000,
                         "arriveTimeUTC": -2209161600000,
@@ -117,7 +117,7 @@
                     "attributes": {
                         "length": 0.005044494154724103,
                         "time": 0.10091057523955425,
-                        "text": "Go south on Cross Parking Lot toward Sidewalk",
+                        "text": "Go north on Cross Parking Lot toward Sidewalk",
                         "ETA": -2209161600000,
                         "arriveTimeUTC": -2209161600000,
                         "maneuverType": "esriDMTStraight"
