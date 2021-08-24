@@ -24,7 +24,6 @@ import {
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-import { mailerConfig } from './environments/mailerconfig';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
