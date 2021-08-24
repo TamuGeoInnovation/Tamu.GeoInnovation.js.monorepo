@@ -9,7 +9,7 @@ mobileSizes.forEach((size) => {
       cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
       cy.intercept("GET", "**/Construction_2018/**").as("construction")
       cy.intercept("GET", "**/Physical_Distancing_Tents/**").as("tents")
-      cy.intercept("GET", 'https://gis.tamu.edu/arcgis/rest/services/Routing/20210407/NAServer/Route/*',
+      cy.intercept("GET", 'https://gis.tamu.edu/arcgis/rest/services/Routing/2021*',
         { fixture: 'walk-route-data.json' }).as('walkRouteData')
       cy.intercept("GET", 'https://gis.tamu.edu/arcgis/rest/services/Routing/20210407/NAServer/Route*',
         { fixture: 'bike-route-data.json' }).as('bikeRouteData')
@@ -80,15 +80,14 @@ mobileSizes.forEach((size) => {
     })
 
     it('Check Walk Route Directions', () => {
-      cy.get('.button')
-        .should('be.visible')
+      // cy.get('.button')
+      //   .should('be.visible')
       cy.contains('Directions To Here')
         .should('be.visible')
         .click()
       
       cy.get('canvas')
         .click('bottomRight')  // click random location
-        .wait(1000)
 
       cy.wait('@walkRouteData')
       cy.get('@walkRouteData').then((response) => {
