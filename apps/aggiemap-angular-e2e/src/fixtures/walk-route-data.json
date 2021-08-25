@@ -87,8 +87,8 @@
             "routeId": 1,
             "routeName": "1",
             "summary": {
-                "totalLength": 9999,
-                "totalTime": 50,
+                "totalLength": 999,
+                "totalTime": 999,
                 "totalDriveTime": 50,
                 "envelope": {
                     "xmin": -96.34020329569006,
