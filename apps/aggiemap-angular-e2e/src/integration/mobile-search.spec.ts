@@ -1,5 +1,7 @@
 /// <reference path="../support/index.d.ts" />
+import { exception } from "console";
 import { inRange, isTypedArray } from "cypress/types/lodash";
+import { Runnable } from "mocha";
 import {mobileSizes} from "./resolutions";
 
 mobileSizes.forEach((size) => {
@@ -96,6 +98,11 @@ mobileSizes.forEach((size) => {
       cy.get('@walkRouteData').then((response) => {
         expect(response).to.have.property('state', 'Complete')
         console.log(response)})
+      
+      // removes error that is caught due to stubbed route data
+      cy.on('uncaught:exception', () => {
+        return false
+      })
 
       cy.wait('@bikeRouteData')
       cy.get('@bikeRouteData').then((response) => {
