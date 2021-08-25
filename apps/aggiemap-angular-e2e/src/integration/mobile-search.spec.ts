@@ -15,6 +15,8 @@ mobileSizes.forEach((size) => {
         { fixture: 'bike-route-data.json' }).as('bikeRouteData')
       cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements*travelMode=8&f=json*',
         { fixture: 'car-route-data.json' }).as('carRouteData')
+      cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements*travelMode=5&f=json*',
+        { fixture: 'bus-route-data.json' }).as('busRouteData')
       cy.intercept('GET', '**/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A102100%7D%2C%22xmin%22%3A-10724573.690580126%2C%22ymin%22%3A3582603.5157282613%2C%22xmax%22%3A-10724420.816523556%2C%22ymax%22%3A3582756.3897848316%7D&orderByFields=OBJECTID%20ASC&outFields=*&outSR=102100&quantizationParameters=%7B%22extent%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A102100%7D%2C%22xmin%22%3A-10724573.690580126%2C%22ymin%22%3A3582603.5157282613%2C%22xmax%22%3A-10724420.816523556%2C%22ymax%22%3A3582756.3897848316%7D%2C%22mode%22%3A%22view%22%2C%22originPosition%22%3A%22upperLeft%22%2C%22tolerance%22%3A0.29858214173889186%7D&resultType=tile&returnExceededLimitFeatures=false&spatialRel=esriSpatialRelIntersects&where=1%3D1&geometryType=esriGeometryEnvelope&inSR=102100', 
         { fixture: 'building-data'} )
         .as('buildingData')
@@ -35,6 +37,7 @@ mobileSizes.forEach((size) => {
     })
 
     it('Search Results Displayed', () => {
+      cy.wait(1000)
       cy.get('.search-results-container').should('be.visible')
       cy.get('.focusable').should('contain.text', building)
     })
@@ -56,7 +59,7 @@ mobileSizes.forEach((size) => {
     })
 
     it('Check Popup Results', () => {
-      // redo test using fixture data by stubbing server response
+  
       // check is correct building information is displayed
       cy.get('.feature-style-1')
           .should('not.be.empty')
@@ -82,10 +85,8 @@ mobileSizes.forEach((size) => {
     })
 
     it('Check Walk Route Directions', () => {
-      // cy.get('.button')
-      //   .should('be.visible')
+    
       cy.contains('Directions To Here')
-        .should('be.visible')
         .click()
       
       cy.get('canvas')
@@ -93,14 +94,22 @@ mobileSizes.forEach((size) => {
 
       cy.wait('@walkRouteData')
       cy.get('@walkRouteData').then((response) => {
+        expect(response).to.have.property('state', 'Complete')
         console.log(response)})
 
       cy.wait('@bikeRouteData')
       cy.get('@bikeRouteData').then((response) => {
+        expect(response).to.have.property('state', 'Complete')
         console.log(response)})
 
       cy.wait('@carRouteData')
       cy.get('@carRouteData').then((response) => {
+        expect(response).to.have.property('state', 'Complete')
+        console.log(response)})
+
+      cy.wait('@busRouteData')
+      cy.get('@busRouteData').then((response) => {
+        expect(response).to.have.property('state', 'Complete')
         console.log(response)})
 
       // drag popup up and check if route features are displayed
