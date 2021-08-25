@@ -9,13 +9,12 @@ mobileSizes.forEach((size) => {
       cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
       cy.intercept("GET", "**/Construction_2018/**").as("construction")
       cy.intercept("GET", "**/Physical_Distancing_Tents/**").as("tents")
-      // *solve?doNotLocateOnRestrictedElements=true&outputLines=esriNAOutputLineTrueShape&outSR=4326&returnBarriers=false&returnDirections=true&returnPolygonBarriers=false&returnPolylineBarriers=false&returnRoutes=true&returnStops=false&returnZ=false&startTimeIsUTC=true&stops=%7B%22features%22%3A%5B%7B%22geometry%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A-96.33942571822399%2C%22y%22%3A30.612532439090106%7D%2C%22symbol%22%3Anull%2C%22attributes%22%3A%7B%22routeName%22%3A1%2C%22stopName%22%3A%22Koldus%20Building%22%7D%2C%22popupTemplate%22%3Anull%7D%2C%7B%22geometry%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A-96.33952039813089%2C%22y%22%3A30.613095806457288%7D%2C%22symbol%22%3Anull%2C%22attributes%22%3A%7B%22routeName%22%3A1%2C%22stopName%22%3A%22Rudder%20Tower%22%7D%2C%22popupTemplate%22%3Anull%7D%5D%7D&travelMode=1&f=json*
       cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements*travelMode=1&f=json*',
         { fixture: 'walk-route-data.json' }).as('walkRouteData')
-      cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements=true&outputLines=esriNAOutputLineTrueShape&outSR=4326&returnBarriers=false&returnDirections=true&returnPolygonBarriers=false&returnPolylineBarriers=false&returnRoutes=true&returnStops=false&returnZ=false&startTimeIsUTC=true&stops=%7B%22features%22%3A%5B%7B%22geometry%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A-96.33942571822399%2C%22y%22%3A30.612532439090106%7D%2C%22symbol%22%3Anull%2C%22attributes%22%3A%7B%22routeName%22%3A7%2C%22stopName%22%3A%22Koldus%20Building%22%7D%2C%22popupTemplate%22%3Anull%7D%2C%7B%22geometry%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A-96.33952039813089%2C%22y%22%3A30.613095806457288%7D%2C%22symbol%22%3Anull%2C%22attributes%22%3A%7B%22routeName%22%3A7%2C%22stopName%22%3A%22Rudder%20Tower%22%7D%2C%22popupTemplate%22%3Anull%7D%5D%7D&travelMode=7&f=json*',
+      cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements*travelMode=7&f=json*',
         { fixture: 'bike-route-data.json' }).as('bikeRouteData')
-      // cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements=true&outputLines=esriNAOutputLineTrueShape&outSR=4326&returnBarriers=false&returnDirections=true&returnPolygonBarriers=false&returnPolylineBarriers=false&returnRoutes=true&returnStops=false&returnZ=false&startTimeIsUTC=true&stops=%7B%22features%22%3A%5B%7B%22geometry%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A-96.33942571822399%2C%22y%22%3A30.612532439090106%7D%2C%22symbol%22%3Anull%2C%22attributes%22%3A%7B%22routeName%22%3A7%2C%22stopName%22%3A%22Koldus%20Building%22%7D%2C%22popupTemplate%22%3Anull%7D%2C%7B%22geometry%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%2C%22x%22%3A-96.33952039813089%2C%22y%22%3A30.613095806457288%7D%2C%22symbol%22%3Anull%2C%22attributes%22%3A%7B%22routeName%22%3A7%2C%22stopName%22%3A%22Rudder%20Tower%22%7D%2C%22popupTemplate%22%3Anull%7D%5D%7D&travelMode=7&f=json*',
-      //   { fixture: 'bike-route-data.json' }).as('bikeRouteData')
+      cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements*travelMode=8&f=json*',
+        { fixture: 'car-route-data.json' }).as('carRouteData')
       cy.intercept('GET', '**/arcgis/rest/services/FCOR/TAMU_BaseMap/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A102100%7D%2C%22xmin%22%3A-10724573.690580126%2C%22ymin%22%3A3582603.5157282613%2C%22xmax%22%3A-10724420.816523556%2C%22ymax%22%3A3582756.3897848316%7D&orderByFields=OBJECTID%20ASC&outFields=*&outSR=102100&quantizationParameters=%7B%22extent%22%3A%7B%22spatialReference%22%3A%7B%22wkid%22%3A102100%7D%2C%22xmin%22%3A-10724573.690580126%2C%22ymin%22%3A3582603.5157282613%2C%22xmax%22%3A-10724420.816523556%2C%22ymax%22%3A3582756.3897848316%7D%2C%22mode%22%3A%22view%22%2C%22originPosition%22%3A%22upperLeft%22%2C%22tolerance%22%3A0.29858214173889186%7D&resultType=tile&returnExceededLimitFeatures=false&spatialRel=esriSpatialRelIntersects&where=1%3D1&geometryType=esriGeometryEnvelope&inSR=102100', 
         { fixture: 'building-data'} )
         .as('buildingData')
@@ -94,11 +93,15 @@ mobileSizes.forEach((size) => {
 
       cy.wait('@walkRouteData')
       cy.get('@walkRouteData').then((response) => {
-         console.log(response)})
+        console.log(response)})
 
       cy.wait('@bikeRouteData')
       cy.get('@bikeRouteData').then((response) => {
-         console.log(response)})
+        console.log(response)})
+
+      cy.wait('@carRouteData')
+      cy.get('@carRouteData').then((response) => {
+        console.log(response)})
 
       // drag popup up and check if route features are displayed
       cy.get('.handle')

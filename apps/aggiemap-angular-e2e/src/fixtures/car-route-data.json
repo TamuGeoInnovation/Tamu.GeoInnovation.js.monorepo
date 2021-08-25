@@ -1,0 +1,186 @@
+{
+    "messages": [],
+    "checksum": "stQBAHLdAAA.",
+    "routes": {
+        "fieldAliases": {
+            "ObjectID": "ObjectID",
+            "Name": "Name",
+            "FirstStopID": "FirstStopID",
+            "LastStopID": "LastStopID",
+            "StopCount": "StopCount",
+            "Total_Time": "777",
+            "Total_Length": "Total_Length",
+            "Shape_Length": "Shape_Length"
+        },
+        "geometryType": "esriGeometryPolyline",
+        "spatialReference": {
+            "wkid": 4326,
+            "latestWkid": 4326
+        },
+        "features": [
+            {
+                "attributes": {
+                    "ObjectID": 8,
+                    "Name": "8",
+                    "FirstStopID": 1,
+                    "LastStopID": 2,
+                    "StopCount": 2,
+                    "Total_Time": 777,
+                    "Total_Length": 117.85924978919849,
+                    "Shape_Length": 0.0011295357151472744
+                },
+                "geometry": {
+                    "paths": [
+                        [
+                            [
+                                -96.34012421199998,
+                                30.614434757000026
+                            ],
+                            [
+                                -96.34011948699998,
+                                30.61436163600007
+                            ],
+                            [
+                                -96.34011994799994,
+                                30.61433637400006
+                            ],
+                            [
+                                -96.34001187399997,
+                                30.614217317000055
+                            ],
+                            [
+                                -96.33995713799999,
+                                30.614150522000045
+                            ],
+                            [
+                                -96.33994772299997,
+                                30.614097180000044
+                            ],
+                            [
+                                -96.33981283699995,
+                                30.61394314000006
+                            ],
+                            [
+                                -96.33991373599997,
+                                30.613872026000024
+                            ],
+                            [
+                                -96.33982887299999,
+                                30.613770696000074
+                            ],
+                            [
+                                -96.34001735699997,
+                                30.613640985000075
+                            ],
+                            [
+                                -96.33999078499994,
+                                30.613610406000078
+                            ]
+                        ]
+                    ]
+                }
+            }
+        ]
+    },
+    "directions": [
+        {
+            "routeId": 8,
+            "routeName": "8",
+            "summary": {
+                "totalLength": 777,
+                "totalTime": 777,
+                "totalDriveTime": 50,
+                "envelope": {
+                    "xmin": -96.34020329569006,
+                    "ymin": 30.61360531460478,
+                    "xmax": -96.33979285004436,
+                    "ymax": 30.614436157174296,
+                    "spatialReference": {
+                        "wkid": 4326,
+                        "latestWkid": 4326
+                    }
+                }
+            },
+            "features": [
+                {
+                    "attributes": {
+                        "length": 60,
+                        "time": 50,
+                        "text": "Start at Building",
+                        "ETA": -2209161600000,
+                        "arriveTimeUTC": -2209161600000,
+                        "maneuverType": "esriDMTDepart"
+                    },
+                    "compressedGeometry": "+l886m-1vvvvuj+kapld8+0+0"
+                },
+                {
+                    "attributes": {
+                        "length": 0.005044494154724103,
+                        "time": 0.10091057523955425,
+                        "text": "Go north on Cross Parking Lot toward Sidewalk",
+                        "ETA": -2209161600000,
+                        "arriveTimeUTC": -2209161600000,
+                        "maneuverType": "esriDMTStraight"
+                    },
+                    "compressedGeometry": "+l886m-1vvvvuj+kapld8+39-1iu"
+                },
+                {
+                    "attributes": {
+                        "length": 0.0017403303976505904,
+                        "time": 0.03481374666067151,
+                        "text": "Continue on Curb Cut",
+                        "ETA": -2209161600000,
+                        "arriveTimeUTC": -2209161600000,
+                        "maneuverType": "esriDMTStraight"
+                    },
+                    "compressedGeometry": "+l886n-1vvvvua+kapjr8-b-hj"
+                },
+                {
+                    "attributes": {
+                        "length": 0.03309257958814618,
+                        "time": 0.6619873350974679,
+                        "text": "Bear left on Sidewalk",
+                        "ETA": -2209161600000,
+                        "arriveTimeUTC": -2209161600000,
+                        "maneuverType": "esriDMTBearLeft"
+                    },
+                    "compressedGeometry": "+l886n-1vvvvul+kapj9l+2b9-2iu+164-1eh+6i-155+2tv-3b9"
+                },
+                {
+                    "attributes": {
+                        "length": 0.01637268764085028,
+                        "time": 0.32752091238097675,
+                        "text": "Turn right on Sidewalk and immediately turn left on Sidewalk",
+                        "ETA": -2209161600000,
+                        "arriveTimeUTC": -2209161600000,
+                        "maneuverType": "esriDMTTurnRightLeft"
+                    },
+                    "compressedGeometry": "+l8887-1vvvtp7+kapc5l-269-1hh+1r3-26j"
+                },
+                {
+                    "attributes": {
+                        "length": 0.016984887861833463,
+                        "time": 0.33976742800104986,
+                        "text": "Turn right on Sidewalk and immediately turn left on Sidewalk",
+                        "ETA": -2209161600000,
+                        "arriveTimeUTC": -2209161600000,
+                        "maneuverType": "esriDMTTurnRightLeft"
+                    },
+                    "compressedGeometry": "+l887f-1vvvrs5+kap7mj-439-2qc+ig-l9"
+                },
+                {
+                    "attributes": {
+                        "length": 0,
+                        "time": 0,
+                        "text": "Finish at Location 2, on the right",
+                        "ETA": -2209161600000,
+                        "arriveTimeUTC": -2209161600000,
+                        "maneuverType": "esriDMTStop"
+                    },
+                    "compressedGeometry": "+l887l-1vvvvv0+kap4cl+0+0"
+                }
+            ]
+            
+        }
+    ]
+}
