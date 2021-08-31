@@ -106,7 +106,7 @@
                     "attributes": {
                         "length": 60,
                         "time": 50,
-                        "text": "Start at Building",
+                        "text": "Test Direction 1",
                         "ETA": -2209161600000,
                         "arriveTimeUTC": -2209161600000,
                         "maneuverType": "esriDMTDepart"
@@ -117,7 +117,7 @@
                     "attributes": {
                         "length": 0.005044494154724103,
                         "time": 0.10091057523955425,
-                        "text": "Go north on Cross Parking Lot toward Sidewalk",
+                        "text": "Test Direction 2",
                         "ETA": -2209161600000,
                         "arriveTimeUTC": -2209161600000,
                         "maneuverType": "esriDMTStraight"
@@ -128,7 +128,7 @@
                     "attributes": {
                         "length": 0.0017403303976505904,
                         "time": 0.03481374666067151,
-                        "text": "Continue on Curb Cut",
+                        "text": "Test Direction 3",
                         "ETA": -2209161600000,
                         "arriveTimeUTC": -2209161600000,
                         "maneuverType": "esriDMTStraight"
@@ -139,7 +139,7 @@
                     "attributes": {
                         "length": 0.03309257958814618,
                         "time": 0.6619873350974679,
-                        "text": "Bear left on Sidewalk",
+                        "text": "Test Direction 4",
                         "ETA": -2209161600000,
                         "arriveTimeUTC": -2209161600000,
                         "maneuverType": "esriDMTBearLeft"
@@ -150,7 +150,7 @@
                     "attributes": {
                         "length": 0.01637268764085028,
                         "time": 0.32752091238097675,
-                        "text": "Turn right on Sidewalk and immediately turn left on Sidewalk",
+                        "text": "Test Direction 5",
                         "ETA": -2209161600000,
                         "arriveTimeUTC": -2209161600000,
                         "maneuverType": "esriDMTTurnRightLeft"
@@ -161,7 +161,7 @@
                     "attributes": {
                         "length": 0.016984887861833463,
                         "time": 0.33976742800104986,
-                        "text": "Turn right on Sidewalk and immediately turn left on Sidewalk",
+                        "text": "Test Direction 6",
                         "ETA": -2209161600000,
                         "arriveTimeUTC": -2209161600000,
                         "maneuverType": "esriDMTTurnRightLeft"
@@ -172,7 +172,7 @@
                     "attributes": {
                         "length": 0,
                         "time": 0,
-                        "text": "Finish at Location 2, on the right",
+                        "text": "Test Direction 7",
                         "ETA": -2209161600000,
                         "arriveTimeUTC": -2209161600000,
                         "maneuverType": "esriDMTStop"
