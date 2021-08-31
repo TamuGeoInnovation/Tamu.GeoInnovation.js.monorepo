@@ -134,6 +134,9 @@ mobileSizes.forEach((size) => {
       cy.get(':nth-child(1) > .quantity')
         .should('contain.text', '51')
         .should('be.visible')
+      cy.get(':nth-child(3) > .quantity')
+        .should('contain.text', '999')
+        .should('be.visible')
       cy.get('.handle').move({ x: 0, y: 400, force: true }) // drag popup back down to access route options again
 
     })
