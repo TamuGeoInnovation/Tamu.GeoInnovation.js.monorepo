@@ -99,7 +99,6 @@ mobileSizes.forEach((size) => {
       cy.get('@walkRouteData').then((response) => {
         expect(response).to.have.property('state', 'Complete')
         console.log(response)
-        expect(response).to.have.property('Total_Time')
       })
       
       // ignore error that is caught due to stubbed route data
@@ -131,6 +130,9 @@ mobileSizes.forEach((size) => {
       cy.get('.directions-overview')
         .should('be.visible')
       cy.get('.directions-container')
+        .should('be.visible')
+      cy.get(':nth-child(1) > .quantity')
+        .should('contain.text', '51')
         .should('be.visible')
       cy.get('.handle').move({ x: 0, y: 400, force: true }) // drag popup back down to access route options again
 
