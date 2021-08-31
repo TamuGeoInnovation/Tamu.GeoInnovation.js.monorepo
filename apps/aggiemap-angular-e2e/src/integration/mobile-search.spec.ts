@@ -39,7 +39,7 @@ mobileSizes.forEach((size) => {
     })
 
     it('Search Results Displayed', () => {
-      cy.wait(1000)
+      cy.wait(2000)
       cy.get('.search-results-container').should('be.visible')
       cy.get('.focusable').should('contain.text', building)
     })
@@ -56,8 +56,9 @@ mobileSizes.forEach((size) => {
     })
 
     it('Drag Pop-up Into User View', () => {
+      cy.wait(2000)
       cy.get('tamu-gisc-feature-mobile-popup').should('be.visible')
-      cy.get('.handle').move({ x: 0, y: -60, force: true})
+      cy.get('.handle').move({ x: 0, y: -400, force: true})
     })
 
     it('Check Popup Results', () => {
@@ -87,7 +88,7 @@ mobileSizes.forEach((size) => {
     })
 
     it('Check Walk Route Directions', () => {
-    
+      cy.wait(2000)
       cy.contains('Directions To Here')
         .click()
       
@@ -97,9 +98,11 @@ mobileSizes.forEach((size) => {
       cy.wait('@walkRouteData')
       cy.get('@walkRouteData').then((response) => {
         expect(response).to.have.property('state', 'Complete')
-        console.log(response)})
+        console.log(response)
+        expect(response).to.have.property('Total_Time')
+      })
       
-      // removes error that is caught due to stubbed route data
+      // ignore error that is caught due to stubbed route data
       cy.on('uncaught:exception', () => {
         return false
       })
@@ -107,17 +110,20 @@ mobileSizes.forEach((size) => {
       cy.wait('@bikeRouteData')
       cy.get('@bikeRouteData').then((response) => {
         expect(response).to.have.property('state', 'Complete')
-        console.log(response)})
+        console.log(response)
+      })
 
       cy.wait('@carRouteData')
       cy.get('@carRouteData').then((response) => {
         expect(response).to.have.property('state', 'Complete')
-        console.log(response)})
+        console.log(response)
+      })
 
       cy.wait('@busRouteData')
       cy.get('@busRouteData').then((response) => {
         expect(response).to.have.property('state', 'Complete')
-        console.log(response)})
+        console.log(response)
+      })
 
       // drag popup up and check if route features are displayed
       cy.get('.handle')
@@ -127,6 +133,7 @@ mobileSizes.forEach((size) => {
       cy.get('.directions-container')
         .should('be.visible')
       cy.get('.handle').move({ x: 0, y: 400, force: true }) // drag popup back down to access route options again
+
     })
 
     it('Check Bike Route Directions', () => {
