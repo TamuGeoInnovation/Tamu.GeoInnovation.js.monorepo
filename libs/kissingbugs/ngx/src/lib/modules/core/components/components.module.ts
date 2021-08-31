@@ -15,6 +15,9 @@ import { GalleryComponent } from './gallery/gallery.component';
 import { PortraitComponent } from './portrait/portrait.component';
 import { PrintResourceComponent } from './print-resource/print-resource.component';
 import { PublicationGalleryComponent } from './publication-gallery/publication-gallery.component';
+import { FooterComponent } from './footer/footer.component';
+import { FunderComponent } from './funder/funder.component';
+import { DynamicZoneComponent } from './dynamic-zone/dynamic-zone.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule],
@@ -31,7 +34,10 @@ import { PublicationGalleryComponent } from './publication-gallery/publication-g
     GalleryComponent,
     PortraitComponent,
     PrintResourceComponent,
-    PublicationGalleryComponent
+    PublicationGalleryComponent,
+    FooterComponent,
+    FunderComponent,
+    DynamicZoneComponent
   ],
   exports: [
     SectionComponent,
@@ -46,7 +52,10 @@ import { PublicationGalleryComponent } from './publication-gallery/publication-g
     GalleryComponent,
     PortraitComponent,
     PrintResourceComponent,
-    PublicationGalleryComponent
+    PublicationGalleryComponent,
+    FooterComponent,
+    FunderComponent,
+    DynamicZoneComponent
   ]
 })
 export class ComponentsModule {}

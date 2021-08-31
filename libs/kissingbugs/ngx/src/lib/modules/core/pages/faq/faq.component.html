@@ -4,7 +4,7 @@
 <article class="container12 container">
   <div class="styleForm">
     <div *ngIf="(pageContents | async)?.body">
-      <p>Body go here</p>
+      <tamu-gisc-kissingbugs-dynamic-zone *ngFor="let item of (pageContents | async)?.body" [dataSource]="item"> </tamu-gisc-kissingbugs-dynamic-zone>
     </div>
     <div *ngFor="let question of (pageComponents | async)" class="qacontainer" [ngClass]="question.expanded ? 'qacontainer expanded' : 'qacontainer'" (click)="expandContainer(question)">
       <div class="question" tabindex="0" aria-role="button">

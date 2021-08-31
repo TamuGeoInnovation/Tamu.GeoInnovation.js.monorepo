@@ -34,6 +34,7 @@ export interface IStrapiMediaFormat {
 }
 
 export interface IStrapiMedia extends IStrapiMediaFormat {
+  __component?: string;
   id: number;
   alternativeText: string;
   caption: string;
@@ -158,17 +159,20 @@ export interface IStrapiPagePrintResource {
 }
 
 export interface IStrapiFAQItem {
+  __component?: string;
   id: number;
   text: string;
   section: number;
 }
 
 export interface IStrapiFAQItemsWithComponents {
+  __component?: string;
   questions: IStrapiFAQItem[];
   sections: IStrapiPageSection[];
 }
 
 export interface IStrapiPageFAQComponent {
+  __component?: string;
   sectionId: number;
   text: string;
   components: IStrapiComponent[];
