@@ -178,7 +178,7 @@ desktopSizes.forEach((size) => {
       // click location of a known accessible entrance locations by pixels for multiple resolutions
       if (size[0] === 1920) {
         cy.wait(2000)
-        cy.get('canvas').trigger('mouseover').click(980, 575) 
+        cy.get('canvas').trigger('mouseover').click(980, 585) 
       }
       else if (size[0] === 1366) {
         cy.wait(2000)
