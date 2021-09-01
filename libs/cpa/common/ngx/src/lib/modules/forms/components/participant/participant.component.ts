@@ -428,8 +428,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               url: l.url,
               title: l.info.name,
               opacity: l.info.drawingInfo.opacity,
-              visible: l.info.loadOnInit !== undefined ? l.info.loadOnInit : true
-            });
+              visible: l.info.loadOnInit !== undefined ? l.info.loadOnInit : true,
+              description: l.info.description
+            } as esri.FeatureLayerProperties);
           } else if (l.info.type === 'group') {
             // If l.layers is undefined, it means this layer needs to be loaded from the remote service.
             // instead of making a recursive call.
@@ -442,6 +443,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               layer.opacity = l.info.drawingInfo.opacity;
               layer.title = l.info.name;
               layer.visible = l.info.loadOnInit !== undefined ? l.info.loadOnInit : true;
+
+              // Use bracket notation here because description is not a native prop
+              // and Typescript will nag about it.
+              layer['description'] = l.info.description;
 
               return layer;
             } else {
@@ -462,8 +467,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
                   id: id,
                   listMode: 'hide'
                 }
-              ]
-            });
+              ],
+              description: l.info.description
+            } as esri.MapImageLayerProperties);
           } else if (l.info.type === 'graphics') {
             const g = l.graphics.map((g) => {
               return this._modules.graphic.fromJSON(g);
@@ -474,8 +480,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               id: l.info.layerId,
               graphics: g,
               listMode: 'show',
-              visible: l.info.loadOnInit !== undefined ? l.info.loadOnInit : true
-            });
+              visible: l.info.loadOnInit !== undefined ? l.info.loadOnInit : true,
+              description: l.info.description
+            } as esri.GraphicsLayerProperties);
           } else {
             console.warn(`Layer with object structure could not be generated:`, l);
             return undefined;

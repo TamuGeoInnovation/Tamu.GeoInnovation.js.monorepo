@@ -73,6 +73,19 @@
       margin-right: 0.27rem;
     }
   }
+
+  tamu-gisc-tooltip-trigger {
+    margin: 0 0.5rem;
+
+    .material-icons {
+      font-size: 1.25rem;
+    }
+  }
+
+  .layer-description-content {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+  }
 }
 
 .expand-toggle {

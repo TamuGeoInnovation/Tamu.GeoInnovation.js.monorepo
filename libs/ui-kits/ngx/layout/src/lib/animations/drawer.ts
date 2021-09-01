@@ -4,7 +4,7 @@ export const slide = trigger('slide', [
   state(
     'true',
     style({
-      transform: 'translateX(0)'
+      transform: 'none'
     })
   ),
   state(
