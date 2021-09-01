@@ -8,6 +8,14 @@ mobileSizes.forEach((size) => {
       cy.intercept("GET", "**/TAMU_BaseMap/**").as("basemap")
       cy.intercept("GET", "**/Construction_2018/**").as("construction")
       cy.intercept("GET", "**/Physical_Distancing_Tents/**").as("tents")
+      cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements*travelMode=1&f=json*',
+        { fixture: 'walk-route-data.json' }).as('walkRouteData')
+      cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements*travelMode=7&f=json*',
+        { fixture: 'bike-route-data.json' }).as('bikeRouteData')
+      cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements*travelMode=8&f=json*',
+        { fixture: 'car-route-data.json' }).as('carRouteData')
+      cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements*travelMode=5&f=json*',
+        { fixture: 'bus-route-data.json' }).as('busRouteData')
       cy.visit('https://aggiemap.tamu.edu/map/m')
       cy.get('canvas').should('be.visible', {timeout: 5000})
       // open menu
@@ -62,11 +70,11 @@ mobileSizes.forEach((size) => {
       // click location of a known POI
       if (size[0] === 375) {
         cy.wait(2000)
-        cy.get('canvas').click(245, 210)
+        cy.get('canvas').click(248, 215)
       }
       else if (size[0] === 768) {
         cy.wait(2000)
-        cy.get('canvas').click(440, 300)
+        cy.get('canvas').click(440, 320)
       }
       else if (size[0] === 411) {
         cy.wait(2000)
