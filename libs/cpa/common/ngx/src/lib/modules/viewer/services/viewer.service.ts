@@ -78,33 +78,7 @@ export class ViewerService {
       })
     );
 
-    this.snapshotsAndScenarios = combineLatest([
-      this.workshopSnapshots,
-      interval(7500).pipe(
-        startWith(0),
-        switchMap(() => {
-          return iif(() => this.document.hidden === false, this.workshopScenarios, NEVER);
-        }),
-        // Limit emissions only whenever the scenario response is different between intervals
-        distinctUntilChanged((prev, curr) => {
-          // Simple compare function. If ANYTHING (order, title, description, etc), except layer definitions,
-          // about the response is different,this will evaluate to true.
-          //
-          // This is to prevent the viewer from resetting the view whenever an admin makes a change during a workshop.
-          const layerlessPrevious = prev.map((p) => {
-            delete p.layers;
-            return p;
-          });
-
-          const layerlessCurr = prev.map((c) => {
-            delete c.layers;
-            return c;
-          });
-
-          return JSON.stringify(layerlessPrevious) === JSON.stringify(layerlessCurr);
-        })
-      )
-    ]).pipe(
+    this.snapshotsAndScenarios = combineLatest([this.workshopSnapshots, this.workshopScenarios]).pipe(
       map(([snapshots, scenarios]) => {
         const typedSnapshots: Array<TypedSnapshotOrScenario> = snapshots.map((s) => {
           return { ...s, type: 'snapshot' };

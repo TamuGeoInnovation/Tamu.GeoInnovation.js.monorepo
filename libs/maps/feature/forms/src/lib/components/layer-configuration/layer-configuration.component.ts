@@ -261,6 +261,7 @@ export class LayerConfiguration {
           layerId: '',
           type: '',
           description: '',
+          loadOnInit: '',
           drawingInfo: {
             opacity: ''
           }
@@ -301,6 +302,7 @@ export class LayerConfiguration {
           name: layer.title,
           layerId: layer.id,
           type: layer.type,
+          loadOnInit: layer.visible,
           drawingInfo: {
             opacity: layer.opacity
           }
@@ -352,6 +354,12 @@ export class LayerConfiguration {
     if (formValues.drawingInfo) {
       layer.opacity = formValues.drawingInfo.opacity;
     }
+
+    // If the config explicitly has a config property to prevent layers from being visible on init, set
+    // the visibility value. Otherwise, stick with the default (true)
+    if (formValues.loadOnInit === false) {
+      layer.visible = false;
+    }
   }
 
   private get _groupProperties() {
@@ -360,6 +368,7 @@ export class LayerConfiguration {
       layerId: [guid().split('-').pop()],
       type: [''],
       description: [''],
+      loadOnInit: [true],
       drawingInfo: this.fb.group({
         opacity: [1]
       })
@@ -375,6 +384,8 @@ export interface ILayerConfiguration {
   type?: 'feature' | 'graphics' | 'group' | 'map-image';
 
   description?: string;
+
+  loadOnInit?: boolean;
 
   drawingInfo?: {
     opacity?: number;

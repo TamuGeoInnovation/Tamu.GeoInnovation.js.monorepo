@@ -427,7 +427,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               id: l.info.layerId,
               url: l.url,
               title: l.info.name,
-              opacity: l.info.drawingInfo.opacity
+              opacity: l.info.drawingInfo.opacity,
+              visible: l.info.loadOnInit !== undefined ? l.info.loadOnInit : true
             });
           } else if (l.info.type === 'group') {
             // If l.layers is undefined, it means this layer needs to be loaded from the remote service.
@@ -440,6 +441,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               layer.id = l.info.layerId;
               layer.opacity = l.info.drawingInfo.opacity;
               layer.title = l.info.name;
+              layer.visible = l.info.loadOnInit !== undefined ? l.info.loadOnInit : true;
 
               return layer;
             } else {
@@ -454,6 +456,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               url: url.join('/'),
               title: l.info.name,
               opacity: l.info.drawingInfo.opacity,
+              visible: l.info.loadOnInit !== undefined ? l.info.loadOnInit : true,
               sublayers: [
                 {
                   id: id,
@@ -470,7 +473,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
               title: l.info.name,
               id: l.info.layerId,
               graphics: g,
-              listMode: 'show'
+              listMode: 'show',
+              visible: l.info.loadOnInit !== undefined ? l.info.loadOnInit : true
             });
           } else {
             console.warn(`Layer with object structure could not be generated:`, l);
