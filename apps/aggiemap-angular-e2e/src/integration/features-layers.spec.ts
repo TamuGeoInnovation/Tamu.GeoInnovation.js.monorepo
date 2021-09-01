@@ -154,7 +154,7 @@ desktopSizes.forEach((size) => {
       // click location of a known visitor parking locations by pixels for multiple resolutions
       if (size[0] === 1920) {
         cy.wait(2000)
-        cy.get('canvas').trigger('mouseover').click(1050, 600)
+        cy.get('canvas').trigger('mouseover').click(1050, 620)
       }
       else if (size[0] === 1366) {
         cy.wait(2000)
