@@ -4,19 +4,7 @@
 <article class="container12 container">
   <div class="styleForm">
     <div *ngFor="let item of (pageContents | async)?.section">
-      <div [ngSwitch]="item.__component">
-        <tamu-gisc-kissingbugs-info-block *ngSwitchCase="'page.section-block'" [dataSource]="item"></tamu-gisc-kissingbugs-info-block>
-        <tamu-gisc-kissingbugs-figure *ngSwitchCase="'page.figure'" [dataSource]="item"></tamu-gisc-kissingbugs-figure>
-        <tamu-gisc-kissingbugs-portrait *ngSwitchCase="'page.portrait'" [dataSource]="item"></tamu-gisc-kissingbugs-portrait>
-        <p *ngSwitchCase="'page.paragraph'">{{ item.text }}</p>
-        <ul>
-          <tamu-gisc-kissingbugs-list *ngSwitchCase="'page.list'" [dataSource]="item"></tamu-gisc-kissingbugs-list>
-        </ul>
-        <tamu-gisc-kissingbugs-info-alert *ngSwitchCase="'page.downloadable'" [dataSource]="item"></tamu-gisc-kissingbugs-info-alert>
-        <tamu-gisc-kissingbugs-print-resource *ngSwitchCase="'page.print-resource'" [dataSource]="item"></tamu-gisc-kissingbugs-print-resource>
-        <tamu-gisc-kissingbugs-publication-gallery *ngSwitchCase="'page.print-resource'" [dataSource]="item"></tamu-gisc-kissingbugs-publication-gallery>
-        <p *ngSwitchDefault>Unsupported component detected: {{ item.__component }}</p>
-      </div>
+      <tamu-gisc-kissingbugs-dynamic-zone [dataSource]="item"> </tamu-gisc-kissingbugs-dynamic-zone>
     </div>
   </div>
 </article>

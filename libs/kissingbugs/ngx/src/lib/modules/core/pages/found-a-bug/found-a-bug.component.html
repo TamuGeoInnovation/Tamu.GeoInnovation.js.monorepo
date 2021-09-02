@@ -1,24 +1,6 @@
 <tamu-gisc-kissingbugs-nav></tamu-gisc-kissingbugs-nav>
 <tamu-gisc-kissingbugs-hero [dataSource]="(pageContents | async)?.hero"></tamu-gisc-kissingbugs-hero>
 
-<!-- <article class="container12 container">
-  <div class="styleForm">
-    <div *ngFor="let item of (pageContents | async)?.section">
-      <div [ngSwitch]="item.__component">
-        <tamu-gisc-kissingbugs-info-block *ngSwitchCase="'page.section-block'" [dataSource]="item"></tamu-gisc-kissingbugs-info-block>
-        <tamu-gisc-kissingbugs-figure *ngSwitchCase="'page.figure'" [dataSource]="item"></tamu-gisc-kissingbugs-figure>
-        <p *ngSwitchCase="'page.paragraph'">{{ item.text }}</p>
-        <ul>
-          <tamu-gisc-kissingbugs-list *ngSwitchCase="'page.list'" [dataSource]="item"></tamu-gisc-kissingbugs-list>
-        </ul>
-        <tamu-gisc-kissingbugs-info-alert *ngSwitchCase="'page.downloadable'" [dataSource]="item"></tamu-gisc-kissingbugs-info-alert>
-        <tamu-gisc-kissingbugs-gallery *ngSwitchCase="'page.gallery'" [dataSource]="item"></tamu-gisc-kissingbugs-gallery>
-        <p *ngSwitchDefault>Unsupported component detected: {{ item.__component }}</p>
-      </div>
-    </div>
-  </div>
-</article> -->
-
 <article class="container12 container">
   <div class="styleForm">
     <div *ngFor="let item of (pageContents | async)?.section">
