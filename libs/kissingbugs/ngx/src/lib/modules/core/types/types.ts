@@ -134,6 +134,13 @@ export interface IStrapiPrintResource {
   id: number;
   file: IStrapiMedia;
   fileName: string;
+  preview: IStrapiMedia;
+}
+
+export interface IStrapiPrintGallery {
+  __component: string;
+  id: number;
+  resources: IStrapiPrintResource[];
 }
 
 export interface IStrapiPublication {

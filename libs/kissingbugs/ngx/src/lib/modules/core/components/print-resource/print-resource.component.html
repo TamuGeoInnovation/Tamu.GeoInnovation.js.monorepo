@@ -1,1 +1,11 @@
-<p>print-resource works!</p>
+<div class="pdf-thumbnail-gallery">
+  <div *ngFor="let item of dataSource.resources" class="pdf-thumbnail">
+    <div class="image-container">
+      <img src="{{api_url}}{{item?.preview?.url}}" alt="Kissing bugs pamphlet pdf thumbnail" />
+    </div>
+
+    <p>
+      <a href="{{api_url}}{{item?.file?.url}}" target="_blank"><span class="fa fa-file-pdf-o"></span>{{ item.fileName }}</a>
+    </p>
+  </div>
+</div>

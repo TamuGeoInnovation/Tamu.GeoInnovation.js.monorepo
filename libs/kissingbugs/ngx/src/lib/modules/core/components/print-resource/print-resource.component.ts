@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { IStrapiPagePrintResource } from '../../types/types';
+import { IStrapiPrintGallery } from '../../types/types';
 
 @Component({
   selector: 'tamu-gisc-kissingbugs-print-resource',
@@ -11,7 +11,7 @@ import { IStrapiPagePrintResource } from '../../types/types';
 })
 export class PrintResourceComponent implements OnInit, OnDestroy {
   @Input()
-  public dataSource: IStrapiPagePrintResource;
+  public dataSource: IStrapiPrintGallery;
 
   public api_url = this.environment.value('api_url');
 
