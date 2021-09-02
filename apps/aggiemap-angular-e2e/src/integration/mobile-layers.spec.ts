@@ -132,7 +132,7 @@ mobileSizes.forEach((size) => {
       cy.get('.directions-container').should('be.visible')
     })
 
-    it.only('Restrooms', function() {
+    it('Restrooms', function() {
       cy.intercept('GET', '*')
         .as("restrooms")
       cy.checkLayer('6','Restrooms')
@@ -167,7 +167,7 @@ mobileSizes.forEach((size) => {
         .and('contain.text', 'Unisex Restroom')
     })
 
-    it('Lactation Rooms', function() {
+    it.only('Lactation Rooms', function() {
       cy.intercept('GET', '*')
         .as("lactation")
       cy.checkLayer('5', 'Lactation Rooms')
@@ -186,7 +186,7 @@ mobileSizes.forEach((size) => {
       }
       else if (size[0] === 768) {
         cy.wait(2000)
-        cy.get('canvas').click(430, 445)
+        cy.get('canvas').click(410, 450)
       }
       else if (size[0] === 411) {
         cy.wait(2000)
