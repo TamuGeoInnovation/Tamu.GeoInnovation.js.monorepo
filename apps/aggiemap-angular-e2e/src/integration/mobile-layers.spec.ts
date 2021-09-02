@@ -35,23 +35,23 @@ mobileSizes.forEach((size) => {
       cy.get('tamu-gisc-backdrop').click('right', {force: true})
       // click location of a known construction zone
       if (size[0] === 375) {
-        cy.wait(2000)
+        cy.wait(1000)
         cy.get('canvas').click(340, 200)
       }
       else if (size[0] === 768) {
-        cy.wait(2000)
+        cy.wait(1000)
         cy.get('canvas').click(540, 300)
       }
       else if (size[0] === 411) {
-        cy.wait(2000)
+        cy.wait(1000)
         cy.get('canvas').click(350, 150)
       }
       else if (size[0] === 360) {
-        cy.wait(2000)
+        cy.wait(1000)
         cy.get('canvas').click(325, 115)
       }
       // checks if popup is visible
-      cy.wait(2000)
+      cy.wait(1000)
       cy.get('tamu-gisc-feature-mobile-popup').should('be.visible')
     })
 
@@ -132,7 +132,7 @@ mobileSizes.forEach((size) => {
       cy.get('.directions-container').should('be.visible')
     })
 
-    it('Restrooms', function() {
+    it.only('Restrooms', function() {
       cy.intercept('GET', '*')
         .as("restrooms")
       cy.checkLayer('6','Restrooms')
@@ -151,7 +151,7 @@ mobileSizes.forEach((size) => {
       }
       else if (size[0] === 768) {
         cy.wait(2000)
-        cy.get('canvas').click(450, 450)
+        cy.get('canvas').click(445, 430)
       }
       else if (size[0] === 411) {
         cy.wait(2000)
