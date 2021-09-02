@@ -155,7 +155,7 @@ mobileSizes.forEach((size) => {
       }
       else if (size[0] === 411) {
         cy.wait(2000)
-        cy.get('canvas').click(250, 275)
+        cy.get('canvas').click(260, 280)
       }
       else if (size[0] === 360) {
         cy.wait(2000)
