@@ -82,7 +82,7 @@ mobileSizes.forEach((size) => {
       }
       else if (size[0] === 360) {
         cy.wait(2000)
-        cy.get('canvas').click(245, 125)
+        cy.get('canvas').click(230, 125)
       }
       // checks if popup is visible
       cy.wait(2000)
@@ -204,7 +204,7 @@ mobileSizes.forEach((size) => {
       cy.checkLink('Additional Information', 'https://studentlife.tamu.edu/wrc.bfwh.lactationspace')
     })
     
-    it.only('Visitor Parking', function() {
+    it('Visitor Parking', function() {
       cy.intercept('GET', '*')
         .as("visitor")
         cy.checkLayer('4', 'Visitor Parking')
@@ -291,7 +291,7 @@ mobileSizes.forEach((size) => {
     
     it('Physical Distance Study Area', function() {
       
-        cy.wait("@tents")
+      cy.wait("@tents")
       cy.checkLayer('1', 'Physical Distance Study Area')
       cy.checkLegend('1', 'Physical Distance Study Area')
       cy.get('tamu-gisc-layer-list').should('be.visible')
@@ -310,7 +310,7 @@ mobileSizes.forEach((size) => {
       }
       else if (size[0] === 411) {
         cy.wait(2000)
-        cy.get('canvas').click(350, 150)
+        cy.get('canvas').click(350, 160)
       }
       else if (size[0] === 360) {
         cy.wait(2000)
