@@ -1,7 +1,7 @@
 <tamu-gisc-kissingbugs-nav></tamu-gisc-kissingbugs-nav>
 <tamu-gisc-kissingbugs-hero [dataSource]="(pageContents | async)?.hero"></tamu-gisc-kissingbugs-hero>
 
-<article class="container12 container">
+<!-- <article class="container12 container">
   <div class="styleForm">
     <div *ngFor="let item of (pageContents | async)?.section">
       <div [ngSwitch]="item.__component">
@@ -17,4 +17,15 @@
       </div>
     </div>
   </div>
+</article> -->
+
+<article class="container12 container">
+  <div class="styleForm">
+    <div *ngFor="let item of (pageContents | async)?.section">
+      <tamu-gisc-kissingbugs-dynamic-zone [dataSource]="item"> </tamu-gisc-kissingbugs-dynamic-zone>
+    </div>
+  </div>
 </article>
+
+<tamu-gisc-kissingbugs-funder></tamu-gisc-kissingbugs-funder>
+<tamu-gisc-kissingbugs-footer></tamu-gisc-kissingbugs-footer>

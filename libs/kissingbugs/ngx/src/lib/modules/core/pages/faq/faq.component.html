@@ -11,7 +11,8 @@
         <p>{{ question.text }}</p>
       </div>
       <div class="answer">
-        <div *ngFor="let item of question?.components">
+        <tamu-gisc-kissingbugs-dynamic-zone *ngFor="let item of question?.components" [dataSource]="item"> </tamu-gisc-kissingbugs-dynamic-zone>
+        <!-- <div *ngFor="let item of question?.components">
           <div [ngSwitch]="item.__component">
             <tamu-gisc-kissingbugs-info-block *ngSwitchCase="'page.section-block'" [dataSource]="item"></tamu-gisc-kissingbugs-info-block>
             <tamu-gisc-kissingbugs-figure *ngSwitchCase="'page.figure'" [dataSource]="item"></tamu-gisc-kissingbugs-figure>
@@ -23,8 +24,11 @@
             <tamu-gisc-kissingbugs-info-alert *ngSwitchCase="'page.downloadable'" [dataSource]="item"></tamu-gisc-kissingbugs-info-alert>
             <p *ngSwitchDefault>Unsupported component detected: {{ item.__component }}</p>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 </article>
+
+<tamu-gisc-kissingbugs-funder></tamu-gisc-kissingbugs-funder>
+<tamu-gisc-kissingbugs-footer></tamu-gisc-kissingbugs-footer>

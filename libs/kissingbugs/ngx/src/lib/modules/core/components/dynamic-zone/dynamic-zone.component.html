@@ -2,10 +2,11 @@
   <tamu-gisc-kissingbugs-info-block *ngSwitchCase="'page.section-block'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-info-block>
   <tamu-gisc-kissingbugs-figure *ngSwitchCase="'page.figure'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-figure>
   <tamu-gisc-kissingbugs-portrait *ngSwitchCase="'page.portrait'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-portrait>
-  <p *ngSwitchCase="'page.paragraph'">{{ dataSource.text }}</p>
+  <p *ngSwitchCase="'page.paragraph'" [innerHTML]="dataSource.text | safeHtml"></p>
   <ul>
     <tamu-gisc-kissingbugs-list *ngSwitchCase="'page.list'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-list>
   </ul>
+  <tamu-gisc-kissingbugs-gallery *ngSwitchCase="'page.gallery'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-gallery>
   <tamu-gisc-kissingbugs-info-alert *ngSwitchCase="'page.downloadable'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-info-alert>
   <tamu-gisc-kissingbugs-print-resource *ngSwitchCase="'page.print-resource'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-print-resource>
   <tamu-gisc-kissingbugs-publication-gallery *ngSwitchCase="'page.print-resource'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-publication-gallery>

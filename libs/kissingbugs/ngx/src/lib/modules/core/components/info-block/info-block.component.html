@@ -4,10 +4,10 @@
     <ng-template #noSubtitle>
       <h1 class="sectionTitle">{{dataSource.title}}</h1>
     </ng-template>
-    <p>{{dataSource.text}}</p>
+    <p [innerHTML]="dataSource.text | safeHtml"></p>
   </div>
   <div class="section-content-block" *ngSwitchCase="'h2'">
     <h2>{{dataSource.title}} <span> {{'&mdash; ' + dataSource.subtitle}}</span></h2>
-    <p>{{dataSource.text }}</p>
+    <p [innerHTML]="dataSource.text | safeHtml"></p>
   </div>
 </div>

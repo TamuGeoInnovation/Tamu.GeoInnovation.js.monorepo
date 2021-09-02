@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+
 import { SectionComponent } from './section/section.component';
 import { InfoAlertComponent } from './info-alert/info-alert.component';
 import { StrapiComponent } from './strapi/strapi.component';
@@ -20,7 +22,7 @@ import { FunderComponent } from './funder/funder.component';
 import { DynamicZoneComponent } from './dynamic-zone/dynamic-zone.component';
 
 @NgModule({
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, PipesModule],
   declarations: [
     SectionComponent,
     InfoAlertComponent,

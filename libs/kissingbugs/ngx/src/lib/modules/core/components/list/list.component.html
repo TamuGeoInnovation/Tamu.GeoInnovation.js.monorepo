@@ -1,1 +1,1 @@
-<li *ngFor="let listItem of dataSource.list_items">{{ listItem.text }}</li>
+<li *ngFor="let listItem of dataSource.list_items" [innerHTML]="listItem.text | safeHtml"></li>
