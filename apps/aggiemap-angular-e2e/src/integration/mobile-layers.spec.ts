@@ -167,7 +167,7 @@ mobileSizes.forEach((size) => {
         .and('contain.text', 'Unisex Restroom')
     })
 
-    it.only('Lactation Rooms', function() {
+    it('Lactation Rooms', function() {
       cy.intercept('GET', '*')
         .as("lactation")
       cy.checkLayer('5', 'Lactation Rooms')
@@ -204,7 +204,7 @@ mobileSizes.forEach((size) => {
       cy.checkLink('Additional Information', 'https://studentlife.tamu.edu/wrc.bfwh.lactationspace')
     })
     
-    it('Visitor Parking', function() {
+    it.only('Visitor Parking', function() {
       cy.intercept('GET', '*')
         .as("visitor")
         cy.checkLayer('4', 'Visitor Parking')
@@ -227,7 +227,7 @@ mobileSizes.forEach((size) => {
       }
       else if (size[0] === 411) {
         cy.wait(2000)
-        cy.get('canvas').click(300, 430)
+        cy.get('canvas').click(130, 255)
       }
       else if (size[0] === 360) {
         cy.wait(2000)
