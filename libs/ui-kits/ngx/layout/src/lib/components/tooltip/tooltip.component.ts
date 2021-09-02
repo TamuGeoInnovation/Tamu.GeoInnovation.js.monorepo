@@ -81,7 +81,7 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
    *
    * Calculated when using the fixed positioning strategy
    */
-  public containerPosition: Observable<{ x: string; y: string }>;
+  public containerPosition: Observable<IOffsetCoordinates>;
 
   /**
    * Controls when the tooltip content becomes visible. Is a delayed-emitting observable
@@ -116,10 +116,7 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
         return [containerRects, triggerRects];
       }),
       map(([cr, tr]) => {
-        const padding = 10;
-        const leftOffset = tr.left - cr.width / 2;
-        const topOffset = tr.top - cr.height - padding;
-        return { x: `${leftOffset}px`, y: `${topOffset}px` };
+        return this.calculateOffset(tr, cr, { left: 0, top: 0, height: window.innerHeight, width: window.innerWidth }, 10);
       }),
       shareReplay()
     );
@@ -141,8 +138,129 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
+  /**
+   * Performs a search in a clockwise manner around a `reference` to place an `element` relative to it without
+   * exceeding the `boundary`.
+   *
+   * When `referenceBuffer` is provided, the offset will consider a minimum distance from the `reference` block,
+   * because the buffer itself might be just enough to push an offset past the containing boundary.
+   */
+  private calculateOffset(
+    reference: PartialDomRect,
+    element: PartialDomRect,
+    boundary: PartialDomRect,
+    referenceBuffer?: number
+  ): IOffsetCoordinates {
+    let x, y;
+
+    // Dictionary of 4 locations, in a clockwise direction
+    const possibleLocations: Array<[YPosition, XPosition]> = [
+      ['top', 'center'],
+      ['center', 'right'],
+      ['bottom', 'center'],
+      ['center', 'left']
+    ];
+
+    // pyl = possible y location
+    // pxl = possible x location
+    for (const [pyl, pxl] of possibleLocations) {
+      y = this.calculateY(reference, element, pyl, 10);
+      x = this.calculateX(reference, element, pxl, 10);
+
+      // Check if determined coordinates within the boundary extent
+      //
+      // Check if initial offsets (top left of element) are inside the boundary.
+      if (y > 0 && y < boundary.height && x > 0 && x < boundary.width) {
+        // Check if the entire container at those offsets is within the boundary.
+        if (y + element.height < boundary.height && x + element.width < boundary.width) {
+          break;
+        }
+      }
+    }
+
+    return {
+      x,
+      y
+    };
+  }
+
+  /**
+   * Calculates the vertical offset for an `element` block relative to a `reference` block
+   * that isn't outside a containing `boundary` block.
+   */
+  private calculateY(reference: PartialDomRect, element: PartialDomRect, pole: YPosition, buffer?: number) {
+    let yInitial: number;
+    let yOffset: number;
+    let direction: 1 | -1 = 1;
+
+    if (pole === 'top') {
+      direction = -1;
+
+      // If the element is going to be positioned above the reference box, then the yInitial
+      // is the top edge of the reference box.
+      yInitial = reference.top;
+      yOffset = yInitial + direction * element.height;
+    } else if (pole === 'bottom') {
+      // If the element is going to be positioned below the reference, then then yInitial
+      // is the bottom edge of the reference box.
+      yInitial = reference.top + reference.height;
+      yOffset = yInitial;
+    } else if (pole === 'center') {
+      direction = -1;
+      yInitial = reference.top - reference.height / 2;
+      yOffset = yInitial + (direction * element.height) / 2;
+    }
+
+    if (buffer !== undefined) {
+      yOffset += direction * buffer;
+    }
+
+    return yOffset;
+  }
+
+  private calculateX(reference: PartialDomRect, element: PartialDomRect, hemisphere: XPosition, buffer?: number) {
+    let xInitial: number;
+    let xOffset: number;
+    let direction: 1 | -1 = 1;
+
+    if (hemisphere === 'left') {
+      direction = -1;
+
+      // If the element is going to be positioned above the reference box, then the yInitial
+      // is the top edge of the reference box.
+      xInitial = reference.left;
+    } else if (hemisphere === 'right') {
+      // If the element is going to be positioned below the reference, then then yInitial
+      // is the bottom edge of the reference box.
+      xInitial = reference.left + reference.width;
+    } else if (hemisphere === 'center') {
+      direction = -1;
+      xInitial = reference.left + reference.width / 2;
+    }
+
+    if (buffer !== undefined) {
+      xOffset += direction * buffer;
+    }
+
+    if (hemisphere === 'center') {
+      xOffset = xInitial + direction * (element.width / 2);
+    } else {
+      xOffset = xInitial + direction * element.width;
+    }
+
+    return xOffset;
+  }
+
   public ngOnDestroy() {
     this._$destroy.next();
     this._$destroy.complete();
   }
+}
+
+type PartialDomRect = Partial<DOMRect>;
+type YPosition = 'top' | 'bottom' | 'center';
+type XPosition = 'left' | 'right' | 'center';
+interface IOffsetCoordinates {
+  x: number;
+  y: number;
 }

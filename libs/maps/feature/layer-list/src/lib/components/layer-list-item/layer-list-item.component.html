@@ -18,7 +18,7 @@
 
   <p (click)="toggleLayer()">{{ listItem.title }}</p>
 
-  <tamu-gisc-tooltip *ngIf="listItem.layer['description']" width="20rem" [positioningStrategy]="'fixed'">
+  <tamu-gisc-tooltip *ngIf="listItem.layer['description']" width="20rem" height="25rem" [positioningStrategy]="'fixed'">
     <tamu-gisc-tooltip-trigger><span class="material-icons">info_outlined</span></tamu-gisc-tooltip-trigger>
 
     <div class="layer-description-content"><p>{{listItem.layer['description']}}</p></div>
