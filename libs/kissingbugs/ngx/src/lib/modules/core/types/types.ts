@@ -112,6 +112,43 @@ export interface IStrapiPageList {
   list_items: IStrapiPageParagraph[];
 }
 
+export interface IStrapiTableRow {
+  __component: string;
+  id: number;
+  species: string;
+  location: string;
+  numTested: number;
+  numInfected: number;
+  percent: number;
+}
+
+export interface IStrapiTable {
+  __component: string;
+  id: number;
+  data: IStrapiTableRow[];
+  header: string[];
+}
+
+export interface IStrapiPrintResource {
+  __component: string;
+  id: number;
+  file: IStrapiMedia;
+  fileName: string;
+}
+
+export interface IStrapiPublication {
+  __component: string;
+  id: number;
+  citation: string;
+  quote: string;
+}
+
+export interface IStrapiPublicationGallery {
+  __component: string;
+  id: number;
+  publications: IStrapiPublication[];
+}
+
 export interface IStrapiLocale {
   id: number;
   locale: string;

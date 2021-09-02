@@ -20,6 +20,7 @@ import { PublicationGalleryComponent } from './publication-gallery/publication-g
 import { FooterComponent } from './footer/footer.component';
 import { FunderComponent } from './funder/funder.component';
 import { DynamicZoneComponent } from './dynamic-zone/dynamic-zone.component';
+import { TableComponent } from './table/table.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule, PipesModule],
@@ -39,7 +40,8 @@ import { DynamicZoneComponent } from './dynamic-zone/dynamic-zone.component';
     PublicationGalleryComponent,
     FooterComponent,
     FunderComponent,
-    DynamicZoneComponent
+    DynamicZoneComponent,
+    TableComponent
   ],
   exports: [
     SectionComponent,

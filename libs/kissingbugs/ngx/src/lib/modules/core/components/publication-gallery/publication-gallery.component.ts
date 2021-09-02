@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { IStrapiPagePrintResource } from '../../types/types';
+import { IStrapiPagePrintResource, IStrapiPublicationGallery } from '../../types/types';
 
 @Component({
   selector: 'tamu-gisc-kissingbugs-publication-gallery',
@@ -11,13 +11,15 @@ import { IStrapiPagePrintResource } from '../../types/types';
 })
 export class PublicationGalleryComponent implements OnInit, OnDestroy {
   @Input()
-  public dataSource: IStrapiPagePrintResource;
+  public dataSource: IStrapiPublicationGallery;
 
   public api_url = this.environment.value('api_url');
 
   constructor(private environment: EnvironmentService) {}
 
-  public ngOnInit() {}
+  public ngOnInit() {
+    console.log('publication-gallery', this.dataSource);
+  }
 
   public ngOnDestroy() {}
 }
