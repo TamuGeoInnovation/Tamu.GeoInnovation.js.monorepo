@@ -194,7 +194,7 @@ mobileSizes.forEach((size) => {
       }
       else if (size[0] === 360) {
         cy.wait(2000)
-        cy.get('canvas').click(225, 260)
+        cy.get('canvas').click(205, 255)
       }
       // checks if popup is visible
       cy.wait(2000)
