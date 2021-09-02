@@ -8,19 +8,27 @@ desktopSizes.forEach((size) => {
       cy.intercept("GET", "**/Routing/**").as("routing")
       cy.intercept("GET", "/geometryEngine.js").as("geo")
       cy.intercept("GET", "**/maneurvers/**").as("images")
+      cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements*travelMode=1&f=json*',
+        { fixture: 'walk-route-data.json' }).as('walkRouteData')
+      cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements*travelMode=7&f=json*',
+        { fixture: 'bike-route-data.json' }).as('bikeRouteData')
+      cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements*travelMode=8&f=json*',
+        { fixture: 'car-route-data.json' }).as('carRouteData')
+      cy.intercept("GET", '*solve?doNotLocateOnRestrictedElements*travelMode=5&f=json*',
+        { fixture: 'bus-route-data.json' }).as('busRouteData')
     })
     it('Open Page', () => {
       cy.visit('https://aggiemap.tamu.edu/map/d/trip')
       cy.get('canvas').should('be.visible', {timeout: 10000})
       cy.wait('@basemap')
     })
-    // TODO: Check input matches lat long
+  
     it('Start Route', () => {
       cy.get('canvas').click(size[0] / 2, size[1] / 4)
       cy.get(':nth-child(1) > :nth-child(1) > .input-action-container > .margin-right', {timeout: 20000})
         .should('not.have.value', '')
     })
-    // TODO: Check input matches lat long
+  
     it('End Route', () => {
       cy.get('canvas').click(size[0] / 2, (size[1] / 4) * 3)
       cy.get(':nth-child(2) > :nth-child(1) > .input-action-container > .margin-right', {timeout: 20000})
@@ -65,11 +73,17 @@ desktopSizes.forEach((size) => {
         cy.get('tamu-gisc-trip-planner-directions-actions.ng-star-inserted > :nth-child(1) > :nth-child(5) > p')
           .should('contain', 'Feedback')
       })
-      // TODO: Check start point matches lat long
-      // TODO: Check end point matches lat long
+   
       it('Directions', () => {
-        cy.get('.directions-container')
-          .should('contain', 'Sidewalk')
+        cy.get(':nth-child(2) > tamu-gisc-trip-planner-mode-switch > :nth-child(2) > :nth-child(1) > .directions-container > :nth-child(1) > p')
+          .should('include.text', 'Test Direction 2')
+          .should('be.visible')
+        cy.get(':nth-child(2) > p')
+          .should('include.text', 'Test Direction 4')
+          .should('be.visible')
+        cy.get('.directions-container > :nth-child(3) > p')
+          .should('include.text', 'Test Direction 5')
+          .should('be.visible')
         cy.get(':nth-child(1) > tamu-gisc-trip-planner-mode-switch > .mode-icon')
           .should('contain', 'directions_walk')
       })
@@ -96,13 +110,18 @@ desktopSizes.forEach((size) => {
         cy.get(':nth-child(3) > .unit')
           .should('contain', 'Miles')
       })
-      // TODO: Check start point matches lat long
-      // TODO: Check end point matches lat long
+  
       it('Directions', () => {
-        cy.get('.directions-container')
-          .should('contain', 'Sidewalk')
-        cy.get(':nth-child(2) > tamu-gisc-trip-planner-mode-switch > .mode-icon')
-          .should('contain', 'directions_bike')
+        cy.get(':nth-child(2) > p')
+        .should('include.text', 'Test Direction 2')
+        .should('be.visible')
+        cy.get('.directions-container > :nth-child(3) > p')
+          .should('include.text', 'Test Direction 4')
+          .should('be.visible')
+        cy.get(':nth-child(4) > p')
+          .should('include.text', 'Test Direction 5')
+          .should('be.visible')
+ 
       })
     })
     describe('Car Route Data', () => {
@@ -127,12 +146,18 @@ desktopSizes.forEach((size) => {
         cy.get(':nth-child(3) > .unit')
           .should('contain', 'Miles')
       })
-      // TODO: Check start point matches lat long
-      // TODO: Check end point matches lat long
+      
       it('Directions', () => {
-        cy.get('.directions-container')
-        cy.get(':nth-child(2) > tamu-gisc-trip-planner-mode-switch > .mode-icon')
-          .should('contain', 'directions_car')
+        cy.get(':nth-child(2) > tamu-gisc-trip-planner-mode-switch > :nth-child(2) > :nth-child(1) > .directions-container > :nth-child(1) > p')
+          .should('include.text', 'Test Direction 2')
+          .should('be.visible')
+        cy.get(':nth-child(2) > p')
+          .should('include.text', 'Test Direction 4')
+          .should('be.visible')
+        cy.get('.directions-container > :nth-child(3) > p')
+          .should('include.text', 'Test Direction 5')
+        .should('be.visible')
+    
       })
     })
     describe('Bus Route Data', () => {
@@ -157,12 +182,17 @@ desktopSizes.forEach((size) => {
         cy.get(':nth-child(3) > .unit')
           .should('contain', 'Miles')
       })
-      // TODO: Check start point matches lat long
-      // TODO: Check end point matches lat long
+
       it('Directions', () => {
-        cy.get('.directions-container')
-        cy.get(':nth-child(2) > tamu-gisc-trip-planner-mode-switch > .mode-icon')
-          .should('contain', 'directions_bus')
+        cy.get(':nth-child(2) > p')
+          .should('include.text', 'Test Direction 2')
+          .should('be.visible')
+        cy.get('.directions-container > :nth-child(3) > p')
+          .should('include.text', 'Test Direction 4')
+          .should('be.visible')
+        cy.get(':nth-child(4) > p')
+          .should('include.text', 'Test Direction 5')
+          .should('be.visible')
       })
     })
   })
