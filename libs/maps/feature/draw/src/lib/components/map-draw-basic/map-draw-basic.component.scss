@@ -10,7 +10,7 @@
 
 .tool-set {
   padding: 0 0.5rem;
-  border-right: 1px solid #bdbdbd;
+  border-right: 1px solid #e0e0e0;
   @include flexbox();
   @include flex-direction(row);
   @include justify-content(center);
@@ -37,12 +37,26 @@
     }
   }
 
+  &.color {
+    p {
+      margin: 0.3rem 0;
+    }
+  }
+
   &.version {
     p {
       color: #bdbdbd;
     }
     p.available {
       color: #212121;
+    }
+  }
+
+  &.help {
+    p.material-icons {
+      &:hover {
+        background: none;
+      }
     }
   }
 }
