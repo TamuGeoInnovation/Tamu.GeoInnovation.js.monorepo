@@ -354,12 +354,6 @@ export class LayerConfiguration {
     if (formValues.drawingInfo) {
       layer.opacity = formValues.drawingInfo.opacity;
     }
-
-    // If the config explicitly has a config property to prevent layers from being visible on init, set
-    // the visibility value. Otherwise, stick with the default (true)
-    if (formValues.loadOnInit === false) {
-      layer.visible = false;
-    }
   }
 
   private get _groupProperties() {
