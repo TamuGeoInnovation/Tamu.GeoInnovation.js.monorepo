@@ -226,26 +226,19 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
     if (hemisphere === 'left') {
       direction = -1;
 
-      // If the element is going to be positioned above the reference box, then the yInitial
-      // is the top edge of the reference box.
       xInitial = reference.left;
+      xOffset = xInitial + direction * element.width;
     } else if (hemisphere === 'right') {
-      // If the element is going to be positioned below the reference, then then yInitial
-      // is the bottom edge of the reference box.
       xInitial = reference.left + reference.width;
+      xOffset = xInitial + direction;
     } else if (hemisphere === 'center') {
       direction = -1;
       xInitial = reference.left + reference.width / 2;
+      xOffset = xInitial + direction * (element.width / 2);
     }
 
     if (buffer !== undefined) {
       xOffset += direction * buffer;
-    }
-
-    if (hemisphere === 'center') {
-      xOffset = xInitial + direction * (element.width / 2);
-    } else {
-      xOffset = xInitial + direction * element.width;
     }
 
     return xOffset;
