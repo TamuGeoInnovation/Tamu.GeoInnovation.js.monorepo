@@ -1,15 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+
+import { IStrapiTable } from '../../types/types';
 
 @Component({
-  selector: 'tamu-gisc-table',
+  selector: 'tamu-gisc-kissingbugs-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss']
 })
-export class TableComponent implements OnInit {
+export class TableComponent implements OnInit, OnDestroy {
+  @Input()
+  public dataSource: IStrapiTable;
 
-  constructor() { }
+  public api_url = this.environment.value('api_url');
 
-  ngOnInit(): void {
-  }
+  constructor(private environment: EnvironmentService) {}
 
+  public ngOnInit() {}
+
+  public ngOnDestroy() {}
 }

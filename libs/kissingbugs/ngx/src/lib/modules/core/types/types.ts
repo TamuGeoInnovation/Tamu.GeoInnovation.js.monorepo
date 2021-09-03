@@ -72,6 +72,7 @@ export interface IStrapiPageInfoAlert {
   id: number;
   text: string;
   file: IStrapiMedia;
+  preview: IStrapiMedia;
 }
 
 export interface IStrapiPageFeature {

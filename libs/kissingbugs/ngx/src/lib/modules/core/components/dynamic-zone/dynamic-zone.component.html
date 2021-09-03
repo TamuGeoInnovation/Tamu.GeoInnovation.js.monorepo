@@ -10,5 +10,6 @@
   <tamu-gisc-kissingbugs-info-alert *ngSwitchCase="'page.downloadable'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-info-alert>
   <tamu-gisc-kissingbugs-print-resource *ngSwitchCase="'page.print-gallery'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-print-resource>
   <tamu-gisc-kissingbugs-publication-gallery *ngSwitchCase="'page.publication-gallery'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-publication-gallery>
+  <tamu-gisc-kissingbugs-table *ngSwitchCase="'page.table'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-table>
   <p *ngSwitchDefault>Unsupported component detected: {{ dataSource.__component }}</p>
 </div>

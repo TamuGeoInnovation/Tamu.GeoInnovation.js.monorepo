@@ -7,69 +7,68 @@
       <tamu-gisc-kissingbugs-dynamic-zone [dataSource]="item"> </tamu-gisc-kissingbugs-dynamic-zone>
     </div>
   </div>
-</article>
+  <div id="contact-form" class="column6">
+    <div class="form-item">
+      <input runat="server" class="input-item" type="text" id="input1" placeholder="First Name" name="first-name" required />
+    </div>
 
-<div id="contact-form" class="column6">
-  <div class="form-item">
-    <input runat="server" class="input-item" type="text" id="input1" placeholder="First Name" name="first-name" required />
-  </div>
+    <div class="form-item">
+      <input runat="server" class="input-item" type="text" id="input2" placeholder="Last Name" name="last-name" required />
+    </div>
 
-  <div class="form-item">
-    <input runat="server" class="input-item" type="text" id="input2" placeholder="Last Name" name="last-name" required />
-  </div>
+    <div class="form-item">
+      <input runat="server" class="input-item" type="text" id="input3" placeholder="Email" name="email" required />
 
-  <div class="form-item">
-    <input runat="server" class="input-item" type="text" id="input3" placeholder="Email" name="email" required />
+      <p class="validation-error hidden">Emails must match</p>
+    </div>
 
-    <p class="validation-error hidden">Emails must match</p>
-  </div>
+    <div class="form-item">
+      <input id="emailVerify" class="input-item" type="text" id="input3Verify" placeholder="Verify Email" required />
+      <label for="emailVerify" class="input-label">Verify Email</label>
+      <p class="validation-error hidden">Emails must match</p>
+    </div>
 
-  <div class="form-item">
-    <input id="emailVerify" class="input-item" type="text" id="input3Verify" placeholder="Verify Email" required />
-    <label for="emailVerify" class="input-label">Verify Email</label>
-    <p class="validation-error hidden">Emails must match</p>
-  </div>
+    <div class="form-item">
+      <textarea runat="server" class="input-item" id="input5" name="message" placeholder="Message" required></textarea>
+    </div>
 
-  <div class="form-item">
-    <textarea runat="server" class="input-item" id="input5" name="message" placeholder="Message" required></textarea>
-  </div>
+    <div class="form-item" style="display: none">
+      <input class="input-item" type="text" id="control" placeholder="Do not fill this line if you are a human" name="control" />
+      <label class="input-label" for="control">Do not fill this line if you are a human</label>
+    </div>
 
-  <div class="form-item" style="display: none">
-    <input class="input-item" type="text" id="control" placeholder="Do not fill this line if you are a human" name="control" />
-    <label class="input-label" for="control">Do not fill this line if you are a human</label>
-  </div>
+    <div id="bug-form-container">
+      <input type="checkbox" id="bug-form-toggle" clicked="false" title="Expand/hide optional bug details for submission" />
+      <div id="bug-form-toggle-area"></div>
+      <div class="bug-form">
+        <p>
+          In order to better provide you with assistance, please fill out the following information as accurately as possible.<em>If submitting a bug image, please review these <a class="fancyLink" href="http://texashighplainsinsects.net/insect-of-the-week/2013/5/8/how-to-take-effective-photos-for-insect-identification" target="_blank">tips for taking good bug photos</a>.</em>
+        </p>
 
-  <div id="bug-form-container">
-    <input type="checkbox" id="bug-form-toggle" clicked="false" title="Expand/hide optional bug details for submission" />
-    <div id="bug-form-toggle-area"></div>
-    <div class="bug-form">
-      <p>
-        In order to better provide you with assistance, please fill out the following information as accurately as possible.<em>If submitting a bug image, please review these <a class="fancyLink" href="http://texashighplainsinsects.net/insect-of-the-week/2013/5/8/how-to-take-effective-photos-for-insect-identification" target="_blank">tips for taking good bug photos</a>.</em>
-      </p>
+        <div class="form-item">
+          <input runat="server" type="text" class="input-item" placeholder="Date of Bug Encounter (MM/DD/YYYY)" id="input6" />
+        </div>
 
-      <div class="form-item">
-        <input runat="server" type="text" class="input-item" placeholder="Date of Bug Encounter (MM/DD/YYYY)" id="input6" />
+        <div class="form-item">
+          <input runat="server" class="input-item with-date-picker" type="text" placeholder="Time of Encounter (HH:MM AM/PM)" id="input7" />
+        </div>
+
+        <div class="form-item">
+          <input runat="server" class="input-item" type="text" id="input8" placeholder="Location of Bug (Home, Porch, Garage, Deck, Dog Kennel, etc.)" name="location-bug" />
+        </div>
+
+        <div class="form-item">
+          <input runat="server" class="input-item" type="text" id="input9" placeholder="County and State of Encounter" name="address-encounter" />
+        </div>
+
+        <div class="form-item"></div>
+
+        <div class="form-item">
+          <input runat="server" class="input-item" type="text" id="input12" placeholder="Behaviour of Bug (Crawling, Dead, Feeding, etc.)" name="behaviour" />
+        </div>
+
+        <div class="form-item"></div>
       </div>
-
-      <div class="form-item">
-        <input runat="server" class="input-item with-date-picker" type="text" placeholder="Time of Encounter (HH:MM AM/PM)" id="input7" />
-      </div>
-
-      <div class="form-item">
-        <input runat="server" class="input-item" type="text" id="input8" placeholder="Location of Bug (Home, Porch, Garage, Deck, Dog Kennel, etc.)" name="location-bug" />
-      </div>
-
-      <div class="form-item">
-        <input runat="server" class="input-item" type="text" id="input9" placeholder="County and State of Encounter" name="address-encounter" />
-      </div>
-
-      <div class="form-item"></div>
-
-      <div class="form-item">
-        <input runat="server" class="input-item" type="text" id="input12" placeholder="Behaviour of Bug (Crawling, Dead, Feeding, etc.)" name="behaviour" />
-      </div>
-
-      <div class="form-item"></div>
     </div>
   </div>
-</div>
+</article>

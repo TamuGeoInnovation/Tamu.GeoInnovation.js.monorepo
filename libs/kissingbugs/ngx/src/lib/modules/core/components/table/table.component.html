@@ -1,1 +1,18 @@
-<p>table works!</p>
+<div class="table-container trailer-2">
+  <table id="infection-table">
+    <thead>
+      <tr>
+        <th *ngFor="let headerItem of dataSource.header">{{ headerItem.text }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let rowItem of dataSource.data">
+        <td><em>{{ rowItem.species }}</em></td>
+        <td>{{ rowItem.location }}</td>
+        <td>{{ rowItem.numTested }}</td>
+        <td>{{ rowItem.numInfected }}</td>
+        <td>{{ rowItem.percent }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
