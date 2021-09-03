@@ -48,3 +48,17 @@ h3 {
 .snapshot-description {
   white-space: pre-line;
 }
+
+.snap-scen-header {
+  @include flexbox();
+  @include flex-direction(row);
+
+  #headings {
+    @include flex(1);
+  }
+}
+
+#snap-scen-help-text {
+  padding: 0.75rem;
+  font-size: 0.95rem;
+}

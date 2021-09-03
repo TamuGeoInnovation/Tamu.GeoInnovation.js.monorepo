@@ -1,6 +1,27 @@
-<!-- Snapshot Title -->
-<h2>{{ (snapshot | async)?.title }}</h2>
-<h3>{{ (workshop | async)?.title }}</h3>
+<div class="snap-scen-header">
+  <div id="headings">
+    <h2>{{ (snapshot | async)?.title }}</h2>
+    <h3>{{ (workshop | async)?.title }}</h3>
+  </div>
+
+  <div id="tooltips">
+    <ng-container></ng-container>
+    <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
+      <tamu-gisc-tooltip-trigger><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
+      <div id="snap-scen-help-text">
+        <ng-container *ngIf="(snapshot | async)?.type === 'snapshot'; else scenarioTooltip">
+          <h3>What's a snapshot?</h3>
+          <p><strong>Snapshots</strong> show basic overviews of the existing conditions with layers for hazard exposures, physical vulnerabilities, and social vulnerabilities that reveal hotspots of concern. Participants will “ground- truth” by providing missing or additional points and polygons, which could reveal hotspots of concern.</p>
+        </ng-container>
+
+        <ng-template #scenarioTooltip>
+          <h3>What's a scenario?</h3>
+          <p><strong>Scenarios</strong> are created by using Snapshots of existing community conditions to generate new layers. These are layers created by your community while using the tool, to show potential areas for future growth, development, and construction - based on the existing built and natural environments, as well as the areas of concern discovered during the snapshot phase.</p>
+        </ng-template>
+      </div>
+    </tamu-gisc-tooltip>
+  </div>
+</div>
 
 <p class="snapshot-description">{{ (snapshot | async)?.description }}</p>
 

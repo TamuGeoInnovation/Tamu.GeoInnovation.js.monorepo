@@ -7,6 +7,7 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
 import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { ParticipantComponent } from './components/participant/participant.component';
 
@@ -18,7 +19,8 @@ import { ParticipantComponent } from './components/participant/participant.compo
     ReactiveFormsModule,
     UIFormsModule,
     MapDrawingModule,
-    FeatureSelectorModule
+    FeatureSelectorModule,
+    UILayoutModule
   ],
   declarations: [ParticipantComponent],
   exports: [ParticipantComponent]
