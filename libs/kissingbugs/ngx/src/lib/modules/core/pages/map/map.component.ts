@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
-import { MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
+import { MapConfig, EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
 import { StrapiService } from '../../data-access/strapi.service';
 import { IStrapiPageResponse } from '../../types/types';
@@ -18,7 +18,7 @@ import esri = __esri;
 export class MapComponent implements OnInit {
   public config: MapConfig = {
     basemap: {
-      basemap: 'streets-navigation-vector'
+      basemap: 'dark-gray-vector'
     },
     view: {
       mode: '2d',
@@ -34,7 +34,7 @@ export class MapComponent implements OnInit {
 
   public pageContents: Observable<IStrapiPageResponse>;
 
-  constructor(private ss: StrapiService, private mapService: EsriMapService) {}
+  constructor(private ss: StrapiService, private mapService: EsriMapService, private mp: EsriModuleProviderService) {}
 
   public ngOnInit() {
     const language: string = navigator.language.substr(0, 2);
@@ -44,6 +44,30 @@ export class MapComponent implements OnInit {
     this.mapService.store.subscribe((instances) => {
       this.map = instances.map;
       this.view = instances.view as esri.MapView;
+
+      // return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [esri.GeoJSONLayerConstructor]) => {
+      //   // Delete the type property as it cannot be set on layer creation.
+      //   delete props.type;
+
+      //   // Create and return new geojson layer
+      //   return new GeoJSONLayer(props as esri.GeoJSONLayerProperties);
     });
+
+    this.mp
+      .require(['FeatureLayer', 'GeoJSONLayer', 'GraphicsLayer', 'Graphic', 'Symbol', 'Geometry'])
+      .then(
+        ([FeatureLayer, GeoJSONLayer, GraphicsLayer, Graphic]: [
+          esri.FeatureLayerConstructor,
+          esri.GeoJSONLayerConstructor,
+          esri.GraphicsLayerConstructor,
+          esri.GraphicConstructor
+        ]) => {
+          const geojsonLayer = new GeoJSONLayer({
+            url: 'http://localhost:1337/uploads/counties20m_696b17e926.json',
+            copyright: 'Blah'
+          });
+          this.map.add(geojsonLayer);
+        }
+      );
   }
 }
