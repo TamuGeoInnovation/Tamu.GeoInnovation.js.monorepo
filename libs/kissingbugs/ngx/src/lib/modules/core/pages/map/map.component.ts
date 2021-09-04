@@ -55,9 +55,45 @@ export class MapComponent implements OnInit {
           esri.GraphicsLayerConstructor,
           esri.GraphicConstructor
         ]) => {
+          const renderer = ({
+            type: 'class-breaks',
+            field: 'CENSUSAREA',
+            defaultSymbol: { type: 'simple-fill' },
+            classBreakInfos: [
+              {
+                minValue: 0,
+                maxValue: 500,
+                symbol: {
+                  type: 'simple-fill',
+                  color: '#e3e3e3'
+                }, // will be assigned sym1
+                label: '0 to 500'
+              },
+              {
+                minValue: 501,
+                maxValue: 600,
+                symbol: {
+                  type: 'simple-fill',
+                  color: '#d4d4d4'
+                }, // will be assigned sym2
+                label: '501 to 600'
+              },
+              {
+                minValue: 6001,
+                // maxValue: 500,
+                symbol: {
+                  type: 'simple-fill',
+                  color: '#c5c5c5'
+                }, // will be assigned sym2
+                label: '600+'
+              }
+            ]
+          } as unknown) as esri.ClassBreaksRenderer;
+
           const geojsonLayer = new GeoJSONLayer({
             url: 'http://localhost:1337/uploads/counties20m_696b17e926.json',
-            legendEnabled: true
+            legendEnabled: true,
+            renderer: renderer
           });
           this.map.add(geojsonLayer);
         }
