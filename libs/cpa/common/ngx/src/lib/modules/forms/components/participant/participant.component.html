@@ -72,3 +72,14 @@
     </div>
   </div>
 </div>
+
+<div class="save-status" [ngClass]="{unsaved: (saveStatus | async) === 0, 'saving': (saveStatus | async) === 1, 'saved': (saveStatus | async) === 2, 'error': (saveStatus | async) === 3}">
+  <div class="save-status-indicator" *ngIf="(saveStatus | async) !== null"></div>
+  <div class="save-status-text" [ngSwitch]="saveStatus | async">
+    <div *ngSwitchCase="0">Unsaved changes</div>
+    <div *ngSwitchCase="1">Saving...</div>
+    <div *ngSwitchCase="2">All changes saved!</div>
+    <div *ngSwitchCase="3">Error saving</div>
+    <div *ngSwitchDefault></div>
+  </div>
+</div>

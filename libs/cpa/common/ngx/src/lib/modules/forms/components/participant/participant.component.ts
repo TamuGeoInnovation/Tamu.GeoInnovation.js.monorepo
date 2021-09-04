@@ -1,7 +1,18 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject, forkJoin, interval, of, combineLatest, from, merge, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  forkJoin,
+  interval,
+  of,
+  combineLatest,
+  from,
+  merge,
+  Observable,
+  ReplaySubject
+} from 'rxjs';
 import {
   takeUntil,
   debounceTime,
@@ -12,7 +23,8 @@ import {
   withLatestFrom,
   filter,
   skip,
-  shareReplay
+  shareReplay,
+  tap
 } from 'rxjs/operators';
 
 import { v4 as guid } from 'uuid';
@@ -56,6 +68,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    * Consumed by summary and charts component.
    */
   public selected = new BehaviorSubject([]);
+
+  public saveStatus: ReplaySubject<SAVE_STATUS> = new ReplaySubject(1);
 
   /**
    * Map draw component reference.
@@ -174,14 +188,28 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         // the update method when not necessary.
         this.form.statusChanges
           .pipe(
-            throttle(() => interval(700)),
-            debounceTime(750),
+            // Ignore the form value patch event. 500ms should always be a long
+            // enough interval to ignore, after which we want to capture and debounce
+            // all form value changes.
+            throttle(() => interval(500)),
+            tap((s) => {
+              // If the form is invalid the it is due to the a form value patch
+              // from a submission change.
+              if (s === 'VALID') {
+                this.saveStatus.next(SAVE_STATUS.Pending);
+              }
+            }),
+            debounceTime(3000),
+            filter((status) => {
+              return status === 'VALID';
+            }),
+            tap((s) => {
+              this.saveStatus.next(SAVE_STATUS.Saving);
+            }),
             takeUntil(this._$formReset)
           )
           .subscribe((status) => {
-            if (status === 'VALID') {
-              this._updateOrCreateSubmission();
-            }
+            this._updateOrCreateSubmission();
           });
       });
     }
@@ -392,10 +420,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
       if (existing) {
         // If there is an existing submission for the current participant guid, replace its value with the new geometry.
-        this.rs.updateResponse(submission.guid, submission).subscribe((updateStatus) => {
-          this.responseSave.emit();
-          console.log('Updated response');
-        });
+        this.rs.updateResponse(submission.guid, submission).subscribe(
+          (updateStatus) => {
+            this.responseSave.emit();
+            this.saveStatus.next(SAVE_STATUS.Complete);
+            console.log('Updated response');
+          },
+          (err) => {
+            this.saveStatus.next(SAVE_STATUS.Error);
+          }
+        );
       } else {
         // If there is no existing submission for the current participant guid, add a dictionary index for the current
         // participant guid.
@@ -406,10 +440,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             submission.snapshotGuid = snapshot.guid;
           }
           submission.workshopGuid = this.route.snapshot.params['guid'];
-          this.rs.createResponse(submission).subscribe((submissionStatus) => {
-            this.responseSave.emit();
-            console.log('Created response');
-          });
+          this.rs.createResponse(submission).subscribe(
+            (submissionStatus) => {
+              this.responseSave.emit();
+              this.saveStatus.next(SAVE_STATUS.Complete);
+              console.log('Created response');
+            },
+            (err) => {
+              this.saveStatus.next(SAVE_STATUS.Error);
+            }
+          );
         });
       }
     });
@@ -548,4 +588,11 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
 interface IParticipantSubmission extends Omit<IResponseRequestPayload, 'shapes'> {
   shapes: esri.Graphic[];
+}
+
+enum SAVE_STATUS {
+  Pending = 0,
+  Saving = 1,
+  Complete = 2,
+  Error = 3
 }

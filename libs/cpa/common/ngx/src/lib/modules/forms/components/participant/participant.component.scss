@@ -62,3 +62,66 @@ h3 {
   padding: 0.75rem;
   font-size: 0.95rem;
 }
+
+.save-status {
+  position: absolute;
+  bottom: 1rem;
+  right: 1.5rem;
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+
+  .save-status-indicator {
+    height: 0.55rem;
+    width: 0.55rem;
+    border-radius: 99rem;
+    background: #e0e0e0;
+    filter: drop-shadow(0 0 5px #e0e0e0);
+    margin: 0 0.5rem;
+    @include transform(background 0.3s, filter 0.3s);
+  }
+
+  &.unsaved {
+    .save-status-indicator {
+      background: #f57c00;
+      filter: drop-shadow(0 0 5px #f57c00);
+    }
+  }
+
+  &.saving {
+    .save-status-indicator {
+      background: #1e88e5;
+      filter: drop-shadow(0 0 5px #1e88e5);
+    }
+  }
+
+  &.saved {
+    .save-status-indicator {
+      background: #4caf50;
+      filter: drop-shadow(0 0 5px #4caf50);
+    }
+
+    @include animation(fade-out 1s ease 5s 1 normal forwards);
+    @include keyframes(fade-out) {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+  }
+
+  &.error {
+    .save-status-indicator {
+      background: #e53935;
+      filter: drop-shadow(0 0 5px #e53935);
+    }
+  }
+
+  .save-status-text {
+    font-size: 0.85rem;
+    color: #616161;
+  }
+}
