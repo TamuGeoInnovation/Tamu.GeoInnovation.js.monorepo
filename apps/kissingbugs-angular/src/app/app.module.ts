@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
 import * as WebFont from 'webfontloader';
+import { Angulartics2Module } from 'angulartics2';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
@@ -53,7 +54,8 @@ const routes: Routes = [
     BrowserModule,
     HttpClientModule,
     RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
-    EnvironmentModule
+    EnvironmentModule,
+    Angulartics2Module.forRoot()
   ],
   declarations: [AppComponent],
   providers: [

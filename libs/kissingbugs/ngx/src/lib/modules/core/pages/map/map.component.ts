@@ -44,13 +44,6 @@ export class MapComponent implements OnInit {
     this.mapService.store.subscribe((instances) => {
       this.map = instances.map;
       this.view = instances.view as esri.MapView;
-
-      // return this.moduleProvider.require(['GeoJSONLayer']).then(([GeoJSONLayer]: [esri.GeoJSONLayerConstructor]) => {
-      //   // Delete the type property as it cannot be set on layer creation.
-      //   delete props.type;
-
-      //   // Create and return new geojson layer
-      //   return new GeoJSONLayer(props as esri.GeoJSONLayerProperties);
     });
 
     this.mp
@@ -64,7 +57,7 @@ export class MapComponent implements OnInit {
         ]) => {
           const geojsonLayer = new GeoJSONLayer({
             url: 'http://localhost:1337/uploads/counties20m_696b17e926.json',
-            copyright: 'Blah'
+            legendEnabled: true
           });
           this.map.add(geojsonLayer);
         }
