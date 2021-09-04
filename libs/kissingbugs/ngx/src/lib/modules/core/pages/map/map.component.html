@@ -1,10 +1,84 @@
 <tamu-gisc-kissingbugs-nav></tamu-gisc-kissingbugs-nav>
 <tamu-gisc-kissingbugs-hero [dataSource]="(pageContents | async)?.hero"></tamu-gisc-kissingbugs-hero>
 
-<article class="container12 container">
-  <div class="styleForm">
-    <p>map works!</p>
-  </div>
+<article class="container12 container map-container">
+  <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
+
+  <!-- <div class="styleForm"> -->
+  <!-- <div id="kissingbugmap-container">
+      <div id="map-loader">
+        <div id="loader-container">
+          <div class="lds-roller">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <p id="loader-text-loading">Loading</p>
+          <p id="loader-text-error">There was an error loading the map.</p>
+        </div>
+      </div>
+      <div id="kissingbugmap"></div>
+      <div class="layerToggle" title="Bug Species Filters"><i class="fa fa-filter" aria-hidden="true"></i></div>
+      <div id="kissingbugmap-bug-selection">
+        <div class="layerButton active" id="a">
+          <p>
+            <img src="../images/sanguisuga-compressor.png" alt="Sanguisusga" />
+            <i>All Species</i>
+          </p>
+        </div>
+
+        <div class="layerButton" id="g">
+          <p>
+            <img src="../images/gerstaeckeri-compressor.png" alt="Gerstaeckeri" />
+            <i>T. gerstaeckeri</i>
+          </p>
+        </div>
+
+        <div class="layerButton" id="i">
+          <p>
+            <img src="../images/indictiva-compressor.png" alt="Indictiva" />
+            <i>T. indictiva</i>
+          </p>
+        </div>
+
+        <div class="layerButton" id="l">
+          <p>
+            <img src="../images/lenticularia-compressor.png" alt="Lenticularia" />
+            <i>T. lecticularia</i>
+          </p>
+        </div>
+
+        <div class="layerButton" id="s">
+          <p>
+            <img src="../images/sanguisuga-compressor.png" alt="Sanguisusga" />
+            <i>T. sanguisuga</i>
+          </p>
+        </div>
+
+        <div class="layerButton" id="o">
+          <p>
+            <img src="../images/other.png" alt="Other Species" />
+            <i>Other Species</i>
+          </p>
+        </div>
+      </div>
+      <div class="mapToggles">
+        <div>
+          <div id="slider"><span id="timeLabel">Jan</span></div>
+          <div class="form-input" title="Toggle kissing bug activity across the entire year">
+            <div class="custom-input-control"><input id="all-time" type="checkbox" name="all-time" checked alt="Toggle kissing bug activity across the entire year" /><i></i></div>
+            <label for="all-time">Entire Year</label>
+          </div>
+        </div>
+      </div>
+    </div> -->
+  <!-- <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map> -->
+  <!-- </div> -->
 </article>
 
 <tamu-gisc-kissingbugs-funder></tamu-gisc-kissingbugs-funder>

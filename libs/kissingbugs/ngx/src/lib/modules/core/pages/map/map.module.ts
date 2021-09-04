@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { EsriMapModule } from '@tamu-gisc/maps/esri';
+import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
 
 import { MapComponent } from './map.component';
-import { SingleTypeComponent } from '../single-type/single-type.component';
 import { ComponentsModule } from '../../components/components.module';
 
 const routes: Routes = [
@@ -22,7 +23,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule, ComponentsModule],
+  imports: [CommonModule, RouterModule.forChild(routes), EsriMapModule, MapPopupModule, UILayoutModule, ComponentsModule],
   declarations: [MapComponent]
 })
 export class MapModule {}

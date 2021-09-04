@@ -163,6 +163,11 @@ body,
   -webkit-font-smoothing: antialiased;
 }
 
+.map-container {
+  @include flexbox();
+  @include flex-direction(column);
+}
+
 header {
   height: 80%;
   border-bottom: 0.5em solid #ffcc00;
