@@ -22,6 +22,7 @@ import { FunderComponent } from './funder/funder.component';
 import { DynamicZoneComponent } from './dynamic-zone/dynamic-zone.component';
 import { TableComponent } from './table/table.component';
 import { BugSelectionComponent } from './bug-selection/bug-selection.component';
+import { TimeSliderComponent } from './time-slider/time-slider.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule, PipesModule],
@@ -43,7 +44,8 @@ import { BugSelectionComponent } from './bug-selection/bug-selection.component';
     FunderComponent,
     DynamicZoneComponent,
     TableComponent,
-    BugSelectionComponent
+    BugSelectionComponent,
+    TimeSliderComponent
   ],
   exports: [
     SectionComponent,
@@ -62,7 +64,8 @@ import { BugSelectionComponent } from './bug-selection/bug-selection.component';
     FooterComponent,
     FunderComponent,
     DynamicZoneComponent,
-    BugSelectionComponent
+    BugSelectionComponent,
+    TimeSliderComponent
   ]
 })
 export class ComponentsModule {}

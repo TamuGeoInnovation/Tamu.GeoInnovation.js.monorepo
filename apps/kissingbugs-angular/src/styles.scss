@@ -167,7 +167,7 @@ body,
   @include flexbox();
   @include flex-direction(column);
 
-  position: relative;
+  // position: relative;
 }
 
 header {
@@ -742,10 +742,10 @@ header .fb_iframe_widget {
 }
 
 #kissingbugmap-bug-selection {
-  position: absolute;
-  top: 0;
-  flex-direction: column;
-  height: 100%;
+  // position: absolute;
+  // top: 0;
+  // flex-direction: column;
+  // height: 100%;
   justify-content: space-between;
   background-color: rgba(255, 255, 255, 0.75);
   transform: translateX(-100%);
@@ -949,8 +949,8 @@ header .fb_iframe_widget {
   width: 30px;
   position: absolute;
   background: #fff;
-  left: 11px;
-  top: 80px;
+  left: 14px;
+  top: 6rem;
   border-radius: 4px;
   z-index: 999999;
   border: 2px solid rgba(0, 0, 0, 0.2);

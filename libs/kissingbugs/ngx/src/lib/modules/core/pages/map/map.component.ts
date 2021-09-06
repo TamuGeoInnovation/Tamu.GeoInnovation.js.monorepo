@@ -32,6 +32,8 @@ export class MapComponent implements OnInit {
   public map: esri.Map;
   public view: esri.MapView;
 
+  public activeBug: string;
+
   public pageContents: Observable<IStrapiPageResponse>;
 
   constructor(private ss: StrapiService, private mapService: EsriMapService, private mp: EsriModuleProviderService) {}
@@ -44,13 +46,32 @@ export class MapComponent implements OnInit {
     this.mapService.store.subscribe((instances) => {
       this.map = instances.map;
       this.view = instances.view as esri.MapView;
+
+      this.view.on('mouse-wheel', (evt) => {
+        // prevents zooming with the mouse-wheel event
+        evt.stopPropagation();
+      });
+
+      this.view.on('pointer-move', (event) => {
+        // Search for graphics on layers at the hovered location
+        this.view.hitTest(event).then((response) => {
+          // if graphics are returned, do something with results
+          if (response.results.length) {
+            // do something
+            // console.log('This was found: ', response);
+          }
+        });
+      });
+
+      // this.view.ui.add('div', 'bottom-left');
     });
 
     this.mp
-      .require(['FeatureLayer', 'GeoJSONLayer', 'GraphicsLayer', 'Graphic', 'Symbol', 'Geometry'])
+      .require(['Slider', 'Expand', 'GeoJSONLayer', 'GraphicsLayer', 'Graphic', 'Symbol', 'Geometry'])
       .then(
-        ([FeatureLayer, GeoJSONLayer, GraphicsLayer, Graphic]: [
-          esri.FeatureLayerConstructor,
+        ([Slider, Expand, GeoJSONLayer, GraphicsLayer, Graphic]: [
+          esri.SliderConstructor,
+          esri.ExpandConstructor,
           esri.GeoJSONLayerConstructor,
           esri.GraphicsLayerConstructor,
           esri.GraphicConstructor
@@ -96,7 +117,44 @@ export class MapComponent implements OnInit {
             renderer: renderer
           });
           this.map.add(geojsonLayer);
+
+          const bugSelector = document.getElementById('bug-selector');
+
+          const bugSelectorExpand = new Expand({
+            collapseIconClass: 'esri-icon-close-circled',
+            expandIconClass: 'esri-icon-filter',
+            expandTooltip: 'Bug selection',
+            view: this.view,
+            expanded: false,
+            content: bugSelector
+          });
+
+          this.view.ui.add(bugSelectorExpand, 'top-left');
+
+          const slider = new Slider({
+            container: 'timeSlider',
+            min: 1,
+            max: 12,
+            values: [0],
+            steps: 1,
+            visibleElements: {
+              labels: true,
+              rangeLabels: true
+            }
+          });
+
+          slider.on('thumb-drag', this.newMonthSelected);
+
+          this.view.ui.add(slider, 'bottom-left');
         }
       );
+  }
+
+  public setBug(bug) {
+    this.activeBug = bug;
+  }
+
+  public newMonthSelected(month) {
+    console.log('month', month.value);
   }
 }
