@@ -32,7 +32,8 @@ export class MapComponent implements OnInit {
   public map: esri.Map;
   public view: esri.MapView;
 
-  public activeBug: string;
+  public activeBug: string = 'a';
+  public bins = [200, 200, 150, 100, 50, 0];
 
   public pageContents: Observable<IStrapiPageResponse>;
 
@@ -62,12 +63,10 @@ export class MapComponent implements OnInit {
           // if graphics are returned, do something with results
           if (response.results.length) {
             // do something
-            console.log('This was found: ', response);
+            // console.log('This was found: ', response);
           }
         });
       });
-
-      // this.view.ui.add('div', 'bottom-left');
     });
 
     this.mp
@@ -122,8 +121,9 @@ export class MapComponent implements OnInit {
 
           const geojsonLayer = new GeoJSONLayer({
             url: 'http://localhost:1337/uploads/counties20m_696b17e926.json',
+            title: 'Confirmed kissing bugs',
             legendEnabled: true,
-            renderer: renderer,
+            renderer: this.getRenderer(),
             popupTemplate: template
           });
           this.map.add(geojsonLayer);
@@ -166,9 +166,84 @@ export class MapComponent implements OnInit {
 
   public setBug(bug) {
     this.activeBug = bug;
+
+    this.setBins();
+    this.updateLegend();
   }
 
-  public newMonthSelected(month) {
-    console.log('month', month.value);
+  public updateLegend() {
+    this.view.layerViews.map((layerView) => {
+      console.log(layerView);
+      if (layerView.layer.type == 'geojson') {
+        layerView.layer.set('renderer', this.getRenderer());
+      }
+    });
+  }
+
+  public getRenderer() {
+    const colors = ['#993404', '#d95f0e', '#fe9929', '#fed98e', '#ffffd4'];
+
+    const bins = this.bins.map((value, index) => {
+      if (value == this.bins[index + 1]) {
+        return {
+          minValue: value,
+          symbol: {
+            type: 'simple-fill',
+            color: colors[index]
+          },
+          label: `${value}+`
+        };
+      } else {
+        return {
+          maxValue: value,
+          minValue: this.bins[index + 1],
+          symbol: {
+            type: 'simple-fill',
+            color: colors[index]
+          },
+          label: `${this.bins[index + 1]} - ${value}`
+        };
+      }
+    });
+
+    // Removes the dumb undefined - 0 bin that gets created
+    bins.pop();
+
+    const renderer = ({
+      type: 'class-breaks',
+      field: 'CENSUSAREA',
+      defaultSymbol: { type: 'simple-fill' },
+      classBreakInfos: bins
+    } as unknown) as esri.ClassBreaksRenderer;
+
+    return renderer;
+  }
+
+  public setBins() {
+    switch (this.activeBug) {
+      case 'a':
+        this.bins = [200, 200, 150, 100, 50, 0];
+        break;
+
+      case 'g':
+        this.bins = [200, 200, 150, 100, 50, 0];
+        break;
+
+      case 'i':
+        this.bins = [8, 8, 6, 4, 2, 0];
+        break;
+
+      case 'l':
+        this.bins = [4, 4, 3, 2, 1, 0];
+        break;
+
+      case 's':
+        this.bins = [20, 20, 15, 10, 5, 0];
+        break;
+
+      default:
+        this.bins = [5, 4, 3, 2, 1];
+        break;
+    }
   }
 }

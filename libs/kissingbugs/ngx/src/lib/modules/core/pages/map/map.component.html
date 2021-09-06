@@ -1,6 +1,12 @@
 <tamu-gisc-kissingbugs-nav></tamu-gisc-kissingbugs-nav>
 <tamu-gisc-kissingbugs-hero [dataSource]="(pageContents | async)?.hero"></tamu-gisc-kissingbugs-hero>
 
+<article class="container12 container">
+  <div class="styleForm">
+    <tamu-gisc-kissingbugs-dynamic-zone *ngFor="let item of (pageContents | async)?.section" [dataSource]="item"></tamu-gisc-kissingbugs-dynamic-zone>
+  </div>
+</article>
+
 <div class="kissingbugmap-container map-container">
   <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
   <!-- <div class="info detailBox"></div> -->

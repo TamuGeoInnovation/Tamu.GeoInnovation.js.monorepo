@@ -3,7 +3,14 @@ import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { IStrapiPageResponse, StrapiSingleTypes, IStrapiStapleFooter, IStrapiStapleNavigation } from '../types/types';
+import {
+  IStrapiPageResponse,
+  StrapiSingleTypes,
+  IStrapiStapleFooter,
+  IStrapiStapleNavigation,
+  IStrapiBugRecord
+} from '../types/types';
+import { groupBy, mergeMap, toArray } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +37,9 @@ export class StrapiService {
   public getData() {
     // https://kissingbug.tamu.edu/REST/GET/SpeciesByMonth/?speciesGuid=&month=0&_=1630915441326
     // ${this.resource}/bug-submissions?_countyFips=48061&_month=July
-    return this.http.get(`${this.resource}/bug-submissions`);
+    return this.http.get<IStrapiBugRecord>(`${this.resource}/bug-submissions`).pipe(
+      groupBy((record) => record.countyFips),
+      mergeMap((group) => group.pipe(toArray()))
+    );
   }
 }

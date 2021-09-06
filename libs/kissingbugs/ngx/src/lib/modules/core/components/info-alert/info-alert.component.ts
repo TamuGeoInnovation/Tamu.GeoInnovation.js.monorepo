@@ -17,9 +17,7 @@ export class InfoAlertComponent implements OnInit, OnDestroy {
 
   constructor(private environment: EnvironmentService) {}
 
-  public ngOnInit() {
-    console.log(this.api_url);
-  }
+  public ngOnInit() {}
 
   public ngOnDestroy() {}
 }

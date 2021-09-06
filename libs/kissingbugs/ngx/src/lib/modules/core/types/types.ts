@@ -235,3 +235,12 @@ export interface IStrapiPageResponse {
   footer: IStrapiStapleFooter;
   localizations: IStrapiLocale[];
 }
+
+export interface IStrapiBugRecord {
+  id: number;
+  month: string;
+  countyFips: string;
+  species: string;
+  created_at: string;
+  updated_at: string;
+}
