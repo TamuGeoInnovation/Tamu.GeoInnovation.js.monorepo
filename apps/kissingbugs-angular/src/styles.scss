@@ -166,6 +166,8 @@ body,
 .map-container {
   @include flexbox();
   @include flex-direction(column);
+
+  position: relative;
 }
 
 header {

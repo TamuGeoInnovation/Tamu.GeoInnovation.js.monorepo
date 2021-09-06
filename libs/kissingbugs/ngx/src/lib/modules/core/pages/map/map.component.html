@@ -1,53 +1,13 @@
 <tamu-gisc-kissingbugs-nav></tamu-gisc-kissingbugs-nav>
 <tamu-gisc-kissingbugs-hero [dataSource]="(pageContents | async)?.hero"></tamu-gisc-kissingbugs-hero>
 
-<article class="container12 container map-container">
+<div class="kissingbugmap-container map-container">
   <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
 
-  <tamu-gisc-legend></tamu-gisc-legend>
-  <!-- <div id="kissingbugmap-bug-selection">
-    <div class="layerButton active" id="a">
-      <p>
-        <img src="../images/sanguisuga-compressor.png" alt="Sanguisusga" />
-        <i>All Species</i>
-      </p>
-    </div>
+  <div class="layerToggle" title="Bug Species Filters"><i class="fa fa-filter" aria-hidden="true"></i></div>
 
-    <div class="layerButton" id="g">
-      <p>
-        <img src="../images/gerstaeckeri-compressor.png" alt="Gerstaeckeri" />
-        <i>T. gerstaeckeri</i>
-      </p>
-    </div>
+  <!-- <tamu-gisc-legend></tamu-gisc-legend> -->
 
-    <div class="layerButton" id="i">
-      <p>
-        <img src="../images/indictiva-compressor.png" alt="Indictiva" />
-        <i>T. indictiva</i>
-      </p>
-    </div>
-
-    <div class="layerButton" id="l">
-      <p>
-        <img src="../images/lenticularia-compressor.png" alt="Lenticularia" />
-        <i>T. lecticularia</i>
-      </p>
-    </div>
-
-    <div class="layerButton" id="s">
-      <p>
-        <img src="../images/sanguisuga-compressor.png" alt="Sanguisusga" />
-        <i>T. sanguisuga</i>
-      </p>
-    </div>
-
-    <div class="layerButton" id="o">
-      <p>
-        <img src="../images/other.png" alt="Other Species" />
-        <i>Other Species</i>
-      </p>
-    </div>
-  </div> -->
   <div class="mapToggles">
     <div>
       <div id="slider"><span id="timeLabel">Jan</span></div>
@@ -57,7 +17,9 @@
       </div>
     </div>
   </div>
-</article>
+
+  <tamu-gisc-kissingbugs-bug-selection></tamu-gisc-kissingbugs-bug-selection>
+</div>
 
 <tamu-gisc-kissingbugs-funder></tamu-gisc-kissingbugs-funder>
 <tamu-gisc-kissingbugs-footer></tamu-gisc-kissingbugs-footer>
