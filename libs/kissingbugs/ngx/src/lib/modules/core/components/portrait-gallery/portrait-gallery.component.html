@@ -1,0 +1,17 @@
+<div id="teamProfiles">
+  <div *ngFor="let row of rowItems; index as i" class="row">
+    <div *ngFor="let item of row" class="column6 profileContainer">
+      <div class="profilePicture">
+        <img src="{{api_url}}{{item?.media?.url}}" alt="Photo of {{item?.name}}" />
+      </div>
+      <div class="profileDescription">
+        <p>{{item?.name}}</p>
+        <p>{{item?.education}}</p>
+        <div *ngIf="item?.site != null">
+          <a href="{{item?.site}}" target="_blank" title="Website"><i class="fa fa-external-link fa-fw"></i>Website</a>
+        </div>
+        <p>{{item?.bio}}</p>
+      </div>
+    </div>
+  </div>
+</div>

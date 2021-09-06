@@ -101,6 +101,14 @@ export interface IStrapiPageGallery {
   items: IStrapiPageFeature[];
 }
 
+export interface IStrapiPagePortraitGallery {
+  __component: string;
+  id: number;
+  credit: string;
+  caption: string;
+  portraits: IStrapiPagePortrait[];
+}
+
 export interface IStrapiPageParagraph {
   __component: string;
   id: number;

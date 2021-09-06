@@ -23,6 +23,7 @@ import { DynamicZoneComponent } from './dynamic-zone/dynamic-zone.component';
 import { TableComponent } from './table/table.component';
 import { BugSelectionComponent } from './bug-selection/bug-selection.component';
 import { TimeSliderComponent } from './time-slider/time-slider.component';
+import { PortraitGalleryComponent } from './portrait-gallery/portrait-gallery.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule, PipesModule],
@@ -45,7 +46,8 @@ import { TimeSliderComponent } from './time-slider/time-slider.component';
     DynamicZoneComponent,
     TableComponent,
     BugSelectionComponent,
-    TimeSliderComponent
+    TimeSliderComponent,
+    PortraitGalleryComponent
   ],
   exports: [
     SectionComponent,
@@ -65,7 +67,8 @@ import { TimeSliderComponent } from './time-slider/time-slider.component';
     FunderComponent,
     DynamicZoneComponent,
     BugSelectionComponent,
-    TimeSliderComponent
+    TimeSliderComponent,
+    PortraitGalleryComponent
   ]
 })
 export class ComponentsModule {}
