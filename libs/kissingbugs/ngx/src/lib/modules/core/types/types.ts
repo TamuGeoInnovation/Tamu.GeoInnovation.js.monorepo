@@ -157,6 +157,7 @@ export interface IStrapiPublication {
   id: number;
   citation: string;
   quote: string;
+  link: string;
 }
 
 export interface IStrapiPublicationGallery {

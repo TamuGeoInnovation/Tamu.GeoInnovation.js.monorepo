@@ -2,5 +2,7 @@
   <div *ngFor="let item of dataSource.publications" class="publication-item">
     <p class="publication-content">{{ item.citation }}</p>
     <p class="publication-summary">{{ item.quote }}</p>
+
+    <a href="{{ item.link }}"><i class="fa fa-link">Source</i></a>
   </div>
 </div>
