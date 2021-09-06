@@ -26,4 +26,10 @@ export class StrapiService {
   public getFooter(type: StrapiSingleTypes = 'footer', locale: string = 'en') {
     return this.http.get<IStrapiStapleFooter>(`${this.resource}/${type}?_locale=${locale}`);
   }
+
+  public getData() {
+    // https://kissingbug.tamu.edu/REST/GET/SpeciesByMonth/?speciesGuid=&month=0&_=1630915441326
+    // ${this.resource}/bug-submissions?_countyFips=48061&_month=July
+    return this.http.get(`${this.resource}/bug-submissions`);
+  }
 }

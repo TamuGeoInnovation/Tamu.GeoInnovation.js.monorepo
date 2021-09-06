@@ -43,6 +43,10 @@ export class MapComponent implements OnInit {
 
     this.pageContents = this.ss.getPage('map', language).pipe(shareReplay(1));
 
+    this.ss.getData().subscribe((json) => {
+      console.log(json);
+    });
+
     this.mapService.store.subscribe((instances) => {
       this.map = instances.map;
       this.view = instances.view as esri.MapView;
@@ -58,7 +62,7 @@ export class MapComponent implements OnInit {
           // if graphics are returned, do something with results
           if (response.results.length) {
             // do something
-            // console.log('This was found: ', response);
+            console.log('This was found: ', response);
           }
         });
       });
@@ -111,10 +115,16 @@ export class MapComponent implements OnInit {
             ]
           } as unknown) as esri.ClassBreaksRenderer;
 
+          const template = {
+            title: 'Bug Report',
+            content: 'Area {CENSUSAREA}'
+          };
+
           const geojsonLayer = new GeoJSONLayer({
             url: 'http://localhost:1337/uploads/counties20m_696b17e926.json',
             legendEnabled: true,
-            renderer: renderer
+            renderer: renderer,
+            popupTemplate: template
           });
           this.map.add(geojsonLayer);
 
@@ -131,21 +141,25 @@ export class MapComponent implements OnInit {
 
           this.view.ui.add(bugSelectorExpand, 'top-left');
 
-          const slider = new Slider({
-            container: 'timeSlider',
-            min: 1,
-            max: 12,
-            values: [0],
-            steps: 1,
-            visibleElements: {
-              labels: true,
-              rangeLabels: true
-            }
-          });
+          const legend = document.getElementById('legend');
 
-          slider.on('thumb-drag', this.newMonthSelected);
+          this.view.ui.add(legend, 'top-right');
 
-          this.view.ui.add(slider, 'bottom-left');
+          // const slider = new Slider({
+          //   container: 'timeSlider',
+          //   min: 1,
+          //   max: 12,
+          //   values: [1],
+          //   steps: 1,
+          //   visibleElements: {
+          //     labels: true,
+          //     rangeLabels: true
+          //   }
+          // });
+
+          // slider.on('thumb-drag', this.newMonthSelected);
+
+          // this.view.ui.add(slider, 'bottom-left');
         }
       );
   }
