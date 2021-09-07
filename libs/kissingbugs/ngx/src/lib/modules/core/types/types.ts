@@ -245,6 +245,22 @@ export interface IStrapiPageResponse {
   localizations: IStrapiLocale[];
 }
 
+export interface IContactBugSubmission {
+  firstName: string;
+  lastName: string;
+  email: string;
+  verifyEmail: string;
+  message: string;
+  dateOfEncounter: string;
+  timeOfEncounter: string;
+  locationOfEncounter: string;
+  stateOfEncounter: string;
+  associatedWithBite: string;
+  behaviour: string;
+  file1: string;
+  file2: string;
+}
+
 export interface IStrapiBugRecord {
   id: number;
   month: string;

@@ -7,68 +7,88 @@
       <tamu-gisc-kissingbugs-dynamic-zone [dataSource]="item"> </tamu-gisc-kissingbugs-dynamic-zone>
     </div>
   </div>
-  <div id="contact-form" class="column6">
-    <div class="form-item">
-      <input runat="server" class="input-item" type="text" id="input1" placeholder="First Name" name="first-name" required />
-    </div>
-
-    <div class="form-item">
-      <input runat="server" class="input-item" type="text" id="input2" placeholder="Last Name" name="last-name" required />
-    </div>
-
-    <div class="form-item">
-      <input runat="server" class="input-item" type="text" id="input3" placeholder="Email" name="email" required />
-
-      <p class="validation-error hidden">Emails must match</p>
-    </div>
-
-    <div class="form-item">
-      <input id="emailVerify" class="input-item" type="text" id="input3Verify" placeholder="Verify Email" required />
-      <label for="emailVerify" class="input-label">Verify Email</label>
-      <p class="validation-error hidden">Emails must match</p>
-    </div>
-
-    <div class="form-item">
-      <textarea runat="server" class="input-item" id="input5" name="message" placeholder="Message" required></textarea>
-    </div>
-
-    <div class="form-item" style="display: none">
-      <input class="input-item" type="text" id="control" placeholder="Do not fill this line if you are a human" name="control" />
-      <label class="input-label" for="control">Do not fill this line if you are a human</label>
-    </div>
-
-    <div id="bug-form-container">
-      <input type="checkbox" id="bug-form-toggle" clicked="false" title="Expand/hide optional bug details for submission" />
-      <div id="bug-form-toggle-area"></div>
-      <div class="bug-form">
-        <p>
-          In order to better provide you with assistance, please fill out the following information as accurately as possible.<em>If submitting a bug image, please review these <a class="fancyLink" href="http://texashighplainsinsects.net/insect-of-the-week/2013/5/8/how-to-take-effective-photos-for-insect-identification" target="_blank">tips for taking good bug photos</a>.</em>
-        </p>
-
-        <div class="form-item">
-          <input runat="server" type="text" class="input-item" placeholder="Date of Bug Encounter (MM/DD/YYYY)" id="input6" />
-        </div>
-
-        <div class="form-item">
-          <input runat="server" class="input-item with-date-picker" type="text" placeholder="Time of Encounter (HH:MM AM/PM)" id="input7" />
-        </div>
-
-        <div class="form-item">
-          <input runat="server" class="input-item" type="text" id="input8" placeholder="Location of Bug (Home, Porch, Garage, Deck, Dog Kennel, etc.)" name="location-bug" />
-        </div>
-
-        <div class="form-item">
-          <input runat="server" class="input-item" type="text" id="input9" placeholder="County and State of Encounter" name="address-encounter" />
-        </div>
-
-        <div class="form-item"></div>
-
-        <div class="form-item">
-          <input runat="server" class="input-item" type="text" id="input12" placeholder="Behaviour of Bug (Crawling, Dead, Feeding, etc.)" name="behaviour" />
-        </div>
-
-        <div class="form-item"></div>
+  <form [formGroup]="contactForm">
+    <div id="contactForm" class="column6">
+      <div class="form-item">
+        <input formControlName="firstName" class="input-item" type="text" id="input1" placeholder="First Name" name="first-name" />
       </div>
+      <div class="form-item">
+        <input formControlName="lastName" class="input-item" type="text" id="input1" placeholder="Last Name" name="last-name" />
+      </div>
+      <div class="form-item">
+        <input formControlName="email" class="input-item" type="text" id="input1" placeholder="Email" name="email" />
+      </div>
+      <div class="form-item">
+        <input formControlName="verifyEmail" class="input-item" type="text" id="input1" placeholder="Verify Email" name="verifyEmail" />
+      </div>
+      <div class="form-item">
+        <input formControlName="message" class="input-item" type="text" id="input1" placeholder="Message" name="message" />
+      </div>
+
+      <div class="form-item" style="display: none">
+        <input class="input-item" type="text" id="control" placeholder="Do not fill this line if you are a human" name="control" />
+        <label class="input-label" for="control">Do not fill this line if you are a human</label>
+      </div>
+
+      <div id="bug-form-container">
+        <input type="checkbox" id="bug-form-toggle" clicked="true" title="Expand/hide optional bug details for submission" />
+        <div id="bug-form-toggle-area"></div>
+        <div class="bug-form">
+          <p>
+            In order to better provide you with assistance, please fill out the following information as accurately as possible.<em>If submitting a bug image, please review these <a class="fancyLink" href="http://texashighplainsinsects.net/insect-of-the-week/2013/5/8/how-to-take-effective-photos-for-insect-identification" target="_blank">tips for taking good bug photos</a>.</em>
+          </p>
+
+          <div class="form-item">
+            <label for="input6">Start date: </label>
+
+            <input formControlName="dateOfEncounter" type="date" id="input6" placeholder="Date of Bug Encounter (MM/DD/YYYY)" name="dateEncounter" min="2021-01-01" max="2021-12-31" />
+          </div>
+
+          <div class="form-item">
+            <label for="input7">Time of encounter: </label>
+
+            <input formControlName="timeOfEncounter" type="time" class="input-item with-date-picker" placeholder="Time of Encounter (HH:MM AM/PM)" id="input7" />
+          </div>
+
+          <div class="form-item">
+            <input formControlName="locationOfEncounter" class="input-item" type="text" id="input8" placeholder="Location of Bug (Home, Porch, Garage, Deck, Dog Kennel, etc.)" name="location-bug" />
+          </div>
+
+          <div class="form-item">
+            <input formControlName="stateOfEncounter" class="input-item" type="text" id="input9" placeholder="County and State of Encounter" name="address-encounter" />
+          </div>
+
+          <div class="form-item">
+            <label class="input-label no-float no-text-input" for="input10">Was this bug found in a bedroom or is known to be associated with a human bite?</label>
+
+            <div id="input10">
+              <label for="huey">Yes</label>
+              <input formControlName="associatedWithBite" id="input10-yes" type="radio" name="associatedWithBite" value="yes" />
+
+              <label id="input10-no">No</label>
+              <input formControlName="associatedWithBite" type="radio" name="associatedWithBite" value="no" />
+            </div>
+
+            <div id="input12" class="form-item">
+              <input formControlName="behaviour" class="input-item" type="text" id="input12" placeholder="Behaviour of Bug (Crawling, Dead, Feeding, etc.)" name="behaviour" />
+            </div>
+
+            <div class="form-item">
+              <label class="input-label no-float no-text-input" for="file1-control">Optional Photograph 1</label>
+              <input formControlName="file1" type="file" id="file1-control" name="file1" />
+
+              <label class="input-label no-float no-text-input" for="file2-control">Optional Photograph 2</label>
+              <input formControlName="file2" type="file" id="file2-control" name="file2" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="form-input" id="check-container">
+        <p>You must have JavaScript enabled to send a message.</p>
+      </div> -->
+
+      <button class="button unavailable validate-button" id="btn_send2" (click)="validate();" tabindex="0" aria-role="Button" aria-roledescription="Submits the form.">Submit</button>
     </div>
-  </div>
+  </form>
 </article>

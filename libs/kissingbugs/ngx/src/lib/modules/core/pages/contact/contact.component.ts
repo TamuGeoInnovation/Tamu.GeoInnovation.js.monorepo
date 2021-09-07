@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
@@ -13,8 +14,25 @@ import { IStrapiPageResponse } from '../../types/types';
 })
 export class ContactComponent implements OnInit, OnDestroy {
   public pageContents: Observable<IStrapiPageResponse>;
+  public contactForm: FormGroup;
 
-  constructor(private ss: StrapiService) {}
+  constructor(private ss: StrapiService, private fb: FormBuilder) {
+    this.contactForm = this.fb.group({
+      firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
+      lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      verifyEmail: new FormControl('', [Validators.required, Validators.email]),
+      message: new FormControl('', [Validators.required, Validators.minLength(4)]),
+      dateOfEncounter: new FormControl(''),
+      timeOfEncounter: new FormControl(''),
+      locationOfEncounter: new FormControl(''),
+      stateOfEncounter: new FormControl(''),
+      associatedWithBite: new FormControl(''),
+      behaviour: new FormControl(''),
+      file1: new FormControl(''),
+      file2: new FormControl('')
+    });
+  }
 
   public ngOnInit() {
     const language: string = navigator.language.substr(0, 2);
@@ -23,4 +41,9 @@ export class ContactComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {}
+
+  public validate() {
+    console.log(this.contactForm.value);
+    this.ss.sendEmail(this.contactForm.value);
+  }
 }

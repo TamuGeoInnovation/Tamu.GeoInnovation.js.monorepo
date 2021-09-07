@@ -8,7 +8,8 @@ import {
   StrapiSingleTypes,
   IStrapiStapleFooter,
   IStrapiStapleNavigation,
-  IStrapiBugRecord
+  IStrapiBugRecord,
+  IContactBugSubmission
 } from '../types/types';
 import { groupBy, mergeMap, toArray } from 'rxjs/operators';
 
@@ -41,5 +42,9 @@ export class StrapiService {
       groupBy((record) => record.countyFips),
       mergeMap((group) => group.pipe(toArray()))
     );
+  }
+
+  public sendEmail(body: IContactBugSubmission) {
+    return this.http.post(`${this.environment.value('email_server_url')}/`, body);
   }
 }
