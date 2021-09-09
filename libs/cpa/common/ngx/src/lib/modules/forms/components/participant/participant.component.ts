@@ -24,7 +24,8 @@ import {
   filter,
   skip,
   shareReplay,
-  tap
+  tap,
+  pluck
 } from 'rxjs/operators';
 
 import { v4 as guid } from 'uuid';
@@ -55,7 +56,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   public snapshot = this.vs.snapshotOrScenario;
   public responses: Observable<IResponseResponse[]>;
   public snapshotHistory = this.vs.snapshotHistory;
-  public selectionIndex = this.vs.selectionIndex;
 
   // Values specific to the participant component.
   public responseIndex: BehaviorSubject<number> = new BehaviorSubject(-1);
@@ -111,13 +111,26 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       drawn: [undefined, Validators.required]
     });
 
-    if (this.route.snapshot.params['guid']) {
-      this.vs.updateWorkshopGuid(this.route.snapshot.params.guid);
+    if (this.route.snapshot.params['workshopGuid']) {
+      this.vs.updateWorkshopGuid(this.route.snapshot.params.workshopGuid);
 
       // On snapshot change, reset the workspace
       this.snapshot.pipe(skip(1), takeUntil(this._$destroy)).subscribe((res) => {
         this.resetWorkspace();
       });
+
+      // Setup a route params listener to change the snapshot as a result of a the navigator component
+      // emitting a selection event and also automatically select an snapshot or scenario when the application
+      // loads and there is an eventGuid in the route params
+      this.route.params
+        .pipe(
+          pluck('eventGuid'),
+          filter((eg) => eg !== null || eg !== undefined),
+          takeUntil(this._$destroy)
+        )
+        .subscribe((res) => {
+          this.vs.updateSelectionIndex(res);
+        });
 
       // Fetch new responses from server whenever snapshot, response index, or response save signal emits.
       this.responses = merge(this.snapshot, this.responseIndex, this.responseSave).pipe(
@@ -439,7 +452,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           } else {
             submission.snapshotGuid = snapshot.guid;
           }
-          submission.workshopGuid = this.route.snapshot.params['guid'];
+          submission.workshopGuid = this.route.snapshot.params['workshopGuid'];
           this.rs.createResponse(submission).subscribe(
             (submissionStatus) => {
               this.responseSave.emit();

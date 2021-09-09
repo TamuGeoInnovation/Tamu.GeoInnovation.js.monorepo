@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostBinding, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { combineLatest, fromEvent, interval, Observable, of } from 'rxjs';
-import { distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith, switchMap, take } from 'rxjs/operators';
 
 import { TypedSnapshotOrScenario, ViewerService } from '../../services/viewer.service';
 
@@ -12,7 +12,7 @@ import { TypedSnapshotOrScenario, ViewerService } from '../../services/viewer.se
 })
 export class SnapshotNavigatorComponent implements OnInit {
   public snapshots: Observable<Array<TypedSnapshotOrScenario>> = this.vs.snapshotsAndScenarios;
-  public index: Observable<number> = this.vs.selectionIndex;
+  public selection: Observable<TypedSnapshotOrScenario> = this.vs.snapshotOrScenario;
 
   /**
    * Represents the inner width of the navigator component (including scrolling width)
@@ -53,7 +53,7 @@ export class SnapshotNavigatorComponent implements OnInit {
   @ViewChild('innerContainer', { static: true })
   public innerContainer: ElementRef;
 
-  constructor(public router: ActivatedRoute, private vs: ViewerService, private el: ElementRef) {}
+  constructor(private vs: ViewerService, private router: Router, private el: ElementRef) {}
 
   @HostBinding('style.maxWidth')
   public get maxContainerWidth() {
@@ -110,8 +110,10 @@ export class SnapshotNavigatorComponent implements OnInit {
     };
   }
 
-  public navigate(index: number): void {
-    this.vs.updateSelectionIndex(index);
+  public navigate(guid: string): void {
+    this.vs.workshop.pipe(take(1)).subscribe((ws) => {
+      this.router.navigate(['/viewer/workshop', ws.guid, guid]);
+    });
   }
 
   public scroll(direction: 'left' | 'right'): void {

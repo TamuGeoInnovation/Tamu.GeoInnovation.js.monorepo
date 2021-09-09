@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { BehaviorSubject, combineLatest, forkJoin, iif, interval, NEVER, Observable } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 
 import { IScenariosResponseResolved, ISnapshotsResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 import { ResponseService, WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/data-access';
@@ -30,7 +30,7 @@ export class ViewerService {
   public snapshotOrScenario: Observable<TypedSnapshotOrScenario>;
 
   public snapshotHistory: BehaviorSubject<TypedSnapshotOrScenario[]> = new BehaviorSubject([]);
-  public selectionIndex: BehaviorSubject<number> = new BehaviorSubject(0);
+  private selectionGuid: BehaviorSubject<string> = new BehaviorSubject(null);
 
   constructor(
     private ws: WorkshopService,
@@ -46,8 +46,8 @@ export class ViewerService {
     this._workshopGuid.next(guid);
   }
 
-  public updateSelectionIndex(index: number) {
-    this.selectionIndex.next(index);
+  public updateSelectionIndex(guid: string) {
+    this.selectionGuid.next(guid);
   }
 
   public init(): void {
@@ -95,10 +95,21 @@ export class ViewerService {
 
     this.snapshotOrScenario = combineLatest([
       this.snapshotsAndScenarios,
-      this.selectionIndex.pipe(distinctUntilChanged())
+      this.selectionGuid.pipe(distinctUntilChanged())
     ]).pipe(
-      map(([snapshots, index]: [Array<TypedSnapshotOrScenario>, number]) => {
-        return snapshots[index];
+      map(([snapshots, guid]) => {
+        if (guid === null) {
+          return snapshots[0];
+        } else {
+          const found = snapshots.find((s) => s.guid === guid);
+
+          // In the event of a not found event, redirection fallback to the first snapshot.
+          if (found === undefined) {
+            return snapshots[0];
+          } else {
+            return found;
+          }
+        }
       }),
       tap((snapshot) => {
         this.addToSnapshotHistory(snapshot);
@@ -118,18 +129,6 @@ export class ViewerService {
     const newValue = [...prevValue, snapshot].slice(-2);
 
     this.snapshotHistory.next(newValue);
-  }
-
-  public scanSnapshot(direction: 'prev' | 'next') {
-    forkJoin([this.selectionIndex.pipe(take(1)), this.workshop]).subscribe(([index, workshop]) => {
-      if (direction) {
-        if (direction === 'prev') {
-          if (index > 0) this.selectionIndex.next(index - 1);
-        } else if (direction === 'next') {
-          this.selectionIndex.next(index + 1);
-        }
-      }
-    });
   }
 }
 

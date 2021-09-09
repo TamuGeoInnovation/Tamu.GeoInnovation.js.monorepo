@@ -1,6 +1,6 @@
 <div class="navigator-rel-container" #innerContainer>
-  <ng-container *ngFor="let snapshot of (snapshots | async); let i = index;">
-    <div class="snapshot" [ngClass]="{active: (index | async) === i}" (click)="navigate(i)">
+  <ng-container *ngFor="let snapshot of (snapshots | async)">
+    <div class="snapshot" [ngClass]="{active: (selection | async)?.guid === snapshot.guid}" (click)="navigate(snapshot.guid)">
       <p>{{snapshot.title}}</p>
       <ng-container *ngIf="snapshot.type === 'snapshot'; else scenarioBadge">
         <span class="snapshot-badge material-icons">circle</span>
