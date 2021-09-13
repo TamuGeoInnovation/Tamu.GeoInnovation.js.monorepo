@@ -86,7 +86,6 @@ async function bootstrap() {
       alias: 'email-provider',
       description: 'The email provider (ethereal / tamu / gmail)',
       type: 'string',
-      demandOption: true,
       choices: ['ethereal', 'tamu', 'google']
     })
     .help()
