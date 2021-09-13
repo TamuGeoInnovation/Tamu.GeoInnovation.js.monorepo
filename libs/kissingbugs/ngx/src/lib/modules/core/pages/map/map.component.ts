@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 import { MapConfig, EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
@@ -32,7 +32,7 @@ export class MapComponent implements OnInit {
   public map: esri.Map;
   public view: esri.MapView;
 
-  public activeBug: string = 'a';
+  public activeBug = 'a';
   public bins = [200, 200, 150, 100, 50, 0];
 
   public pageContents: Observable<IStrapiPageResponse>;
@@ -43,10 +43,6 @@ export class MapComponent implements OnInit {
     const language: string = navigator.language.substr(0, 2);
 
     this.pageContents = this.ss.getPage('map', language).pipe(shareReplay(1));
-
-    this.ss.getData().subscribe((json) => {
-      console.log(json);
-    });
 
     this.mapService.store.subscribe((instances) => {
       this.map = instances.map;
@@ -70,63 +66,117 @@ export class MapComponent implements OnInit {
     });
 
     this.mp
-      .require(['Slider', 'Expand', 'GeoJSONLayer', 'GraphicsLayer', 'Graphic', 'Symbol', 'Geometry'])
+      .require(['Slider', 'Expand', 'GeoJSONLayer', 'FeatureLayer', 'Graphic', 'Symbol', 'Geometry', 'Polygon'])
       .then(
-        ([Slider, Expand, GeoJSONLayer, GraphicsLayer, Graphic]: [
+        ([Slider, Expand, GeoJSONLayer, FeatureLayer, Graphic, Symbol, Geometry, Polygon]: [
           esri.SliderConstructor,
           esri.ExpandConstructor,
           esri.GeoJSONLayerConstructor,
-          esri.GraphicsLayerConstructor,
-          esri.GraphicConstructor
+          esri.FeatureLayerConstructor,
+          esri.GraphicConstructor,
+          esri.SymbolConstructor,
+          esri.GeometryConstructor,
+          esri.PolygonConstructor
         ]) => {
-          const renderer = ({
-            type: 'class-breaks',
-            field: 'CENSUSAREA',
-            defaultSymbol: { type: 'simple-fill' },
-            classBreakInfos: [
-              {
-                minValue: 0,
-                maxValue: 500,
-                symbol: {
-                  type: 'simple-fill',
-                  color: '#e3e3e3'
-                }, // will be assigned sym1
-                label: '0 to 500'
-              },
-              {
-                minValue: 501,
-                maxValue: 600,
-                symbol: {
-                  type: 'simple-fill',
-                  color: '#d4d4d4'
-                }, // will be assigned sym2
-                label: '501 to 600'
-              },
-              {
-                minValue: 6001,
-                // maxValue: 500,
-                symbol: {
-                  type: 'simple-fill',
-                  color: '#c5c5c5'
-                }, // will be assigned sym2
-                label: '600+'
-              }
-            ]
-          } as unknown) as esri.ClassBreaksRenderer;
-
           const template = {
-            title: 'Bug Report',
+            title: '{NAME} - {FIPS}',
             content: 'Area {CENSUSAREA}'
           };
 
-          const geojsonLayer = new GeoJSONLayer({
-            url: 'http://localhost:1337/uploads/counties20m_696b17e926.json',
-            title: 'Confirmed kissing bugs',
-            legendEnabled: true,
-            renderer: this.getRenderer(),
-            popupTemplate: template
+          const countyData = this.ss.getCountyLayer();
+          const bugData = this.ss.getBugData();
+
+          forkJoin([countyData, bugData]).subscribe((observer) => {
+            // console.log('forkJoin', observer);
+            const countyLayer = observer[0];
+            const bugCounts = observer[1];
+
+            const featureData = countyLayer.features.map((feature) => {
+              const found = bugCounts.find((element) => {
+                return element.FIPS === feature.properties['FIPS'];
+              });
+
+              if (found) {
+                feature.properties['Count'] = found.Count;
+              }
+
+              return feature;
+            });
+
+            const graphics = featureData.map((feature) => {
+              return {
+                geometry: new Polygon({
+                  rings: feature.geometry.coordinates
+                }),
+                attributes: feature.properties
+              };
+            });
+
+            const layer = new FeatureLayer({
+              title: 'Confirmed kissing bugs',
+              source: graphics,
+              objectIdField: 'FIPS',
+              fields: [
+                {
+                  name: 'NAME',
+                  alias: 'Name',
+                  type: 'string'
+                },
+                {
+                  name: 'CENSUSAREA',
+                  alias: 'Area',
+                  type: 'double'
+                },
+                {
+                  name: 'FIPS',
+                  alias: 'FIPS',
+                  type: 'string'
+                },
+                {
+                  name: 'Count',
+                  alias: 'Count',
+                  type: 'integer'
+                }
+              ],
+              renderer: this.getRenderer(),
+              popupTemplate: template
+            });
+
+            this.map.add(layer);
           });
-          this.map.add(geojsonLayer);
+
+          // const geojsonLayer = new GeoJSONLayer({
+          //   url: 'http://localhost:1337/uploads/counties20m_696b17e926.json',
+          //   title: 'Confirmed kissing bugs',
+          //   legendEnabled: true,
+          //   renderer: this.getRenderer(),
+          //   fields: [
+          //     {
+          //       name: 'NAME',
+          //       alias: 'Name',
+          //       type: 'string'
+          //     },
+          //     {
+          //       name: 'CENSUSAREA',
+          //       alias: 'Area',
+          //       type: 'double'
+          //     },
+          //     {
+          //       name: 'FIPS',
+          //       alias: 'FIPS',
+          //       type: 'string'
+          //     },
+          //     {
+          //       name: 'Count',
+          //       alias: 'Count',
+          //       type: 'integer'
+          //     }
+          //   ],
+          //   popupTemplate: template
+          // });
+          // this.map.add(geojsonLayer);
+
+          // console.log(this.map.layers);
 
           const bugSelector = document.getElementById('bug-selector');
 
@@ -174,7 +224,7 @@ export class MapComponent implements OnInit {
   public updateLegend() {
     this.view.layerViews.map((layerView) => {
       console.log(layerView);
-      if (layerView.layer.type == 'geojson') {
+      if (layerView.layer.type === 'geojson') {
         layerView.layer.set('renderer', this.getRenderer());
       }
     });
@@ -184,7 +234,7 @@ export class MapComponent implements OnInit {
     const colors = ['#993404', '#d95f0e', '#fe9929', '#fed98e', '#ffffd4'];
 
     const bins = this.bins.map((value, index) => {
-      if (value == this.bins[index + 1]) {
+      if (value === this.bins[index + 1]) {
         return {
           minValue: value,
           symbol: {
@@ -211,7 +261,7 @@ export class MapComponent implements OnInit {
 
     const renderer = ({
       type: 'class-breaks',
-      field: 'CENSUSAREA',
+      field: 'Count',
       defaultSymbol: { type: 'simple-fill' },
       classBreakInfos: bins
     } as unknown) as esri.ClassBreaksRenderer;

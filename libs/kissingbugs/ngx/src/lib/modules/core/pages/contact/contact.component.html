@@ -10,10 +10,16 @@
   <form [formGroup]="contactForm">
     <div id="contactForm" class="column6">
       <div class="form-item">
-        <input formControlName="firstName" class="input-item" type="text" id="input1" placeholder="First Name" name="first-name" />
+        <input formControlName="firstName" class="input-item" type="text" id="input1" placeholder="First Name" name="first-name" required/>
+        <div *ngIf="this.contactForm.controls.firstName.errors?.minlength">
+          Name must be at least 2 characters long.
+        </div>
       </div>
       <div class="form-item">
-        <input formControlName="lastName" class="input-item" type="text" id="input1" placeholder="Last Name" name="last-name" />
+        <input formControlName="lastName" class="input-item" type="text" id="input1" placeholder="Last Name" name="last-name" required/>
+        <div *ngIf="this.contactForm.controls.lastName.errors?.minlength">
+          Name must be at least 2 characters long.
+        </div>
       </div>
       <div class="form-item">
         <input formControlName="email" class="input-item" type="text" id="input1" placeholder="Email" name="email" />

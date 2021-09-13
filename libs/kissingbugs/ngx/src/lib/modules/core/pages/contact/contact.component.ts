@@ -48,10 +48,10 @@ export class ContactComponent implements OnInit, OnDestroy {
       recipientEmail: this.contactForm.controls.email.value,
       subjectLine: 'Kissing bug submission',
       emailBodyText: this.contactForm.controls.message.value
-    }
-    // console.log("Email", contact);
+    };
+
     this.ss.sendEmail(contact).subscribe((result) => {
       console.log(result);
-    })
+    });
   }
 }

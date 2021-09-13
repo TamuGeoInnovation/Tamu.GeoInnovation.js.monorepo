@@ -14,9 +14,7 @@ export class DynamicZoneComponent implements OnInit, OnDestroy {
 
   constructor() {}
 
-  public ngOnInit() {
-    console.log(this.dataSource);
-  }
+  public ngOnInit() { }
 
   public ngOnDestroy() {}
 }

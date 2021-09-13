@@ -269,3 +269,22 @@ export interface IStrapiBugRecord {
   created_at: string;
   updated_at: string;
 }
+
+export interface GeoJSONFeatureCollection {
+  type: string;
+  features: GeoJSONFeature[];
+}
+
+export interface GeoJSONFeature {
+  type: string;
+  properties: Object;
+  geometry: {
+    coordinates: number[][][];
+    type: string;
+  };
+}
+
+export interface IStrapiBugCount {
+  FIPS: string;
+  Count: number;
+}

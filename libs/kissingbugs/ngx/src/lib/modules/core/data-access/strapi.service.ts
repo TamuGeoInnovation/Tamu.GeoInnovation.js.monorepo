@@ -9,7 +9,9 @@ import {
   IStrapiStapleFooter,
   IStrapiStapleNavigation,
   IStrapiBugRecord,
-  IContactBugSubmission
+  IContactBugSubmission,
+  IStrapiBugCount,
+  GeoJSONFeatureCollection
 } from '../types/types';
 import { groupBy, mergeMap, toArray } from 'rxjs/operators';
 
@@ -35,13 +37,12 @@ export class StrapiService {
     return this.http.get<IStrapiStapleFooter>(`${this.resource}/${type}?_locale=${locale}`);
   }
 
-  public getData() {
-    // https://kissingbug.tamu.edu/REST/GET/SpeciesByMonth/?speciesGuid=&month=0&_=1630915441326
-    // ${this.resource}/bug-submissions?_countyFips=48061&_month=July
-    return this.http.get<IStrapiBugRecord>(`${this.resource}/bug-submissions`).pipe(
-      groupBy((record) => record.countyFips),
-      mergeMap((group) => group.pipe(toArray()))
-    );
+  public getCountyLayer() {
+    return this.http.get<GeoJSONFeatureCollection>('http://localhost:1337/uploads/counties20m_696b17e926.json');
+  }
+
+  public getBugData() {
+    return this.http.get<IStrapiBugCount[]>(`${this.resource}/bug-submissions/speciesByMonth`);
   }
 
   public sendEmail(body: any) {
