@@ -5524,6 +5524,27 @@
           }
         }
       }
+    },
+    "veoride-common-entities": {
+      "root": "libs/veoride/common/entities",
+      "sourceRoot": "libs/veoride/common/entities/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/veoride/common/entities/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/veoride/common/entities"],
+          "options": {
+            "jestConfig": "libs/veoride/common/entities/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

@@ -475,6 +475,9 @@
     },
     "veoride-node": {
       "tags": []
+    },
+    "veoride-common-entities": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

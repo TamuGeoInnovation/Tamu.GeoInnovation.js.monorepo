@@ -124,6 +124,7 @@ module.exports = {
     '<rootDir>/libs/ues/cold-water/data-api',
     '<rootDir>/libs/ues/common/nest',
     '<rootDir>/libs/maps/feature/data',
-    '<rootDir>/apps/veoride-node'
+    '<rootDir>/apps/veoride-node',
+    '<rootDir>/libs/veoride/common/entities'
   ]
 };
