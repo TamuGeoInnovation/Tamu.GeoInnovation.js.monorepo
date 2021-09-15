@@ -66,9 +66,19 @@ export class MapComponent implements OnInit {
     });
 
     this.mp
-      .require(['Slider', 'Expand', 'GeoJSONLayer', 'FeatureLayer', 'Graphic', 'Symbol', 'Geometry', 'Polygon'])
+      .require([
+        'Slider',
+        'Expand',
+        'GeoJSONLayer',
+        'FeatureLayer',
+        'Graphic',
+        'Symbol',
+        'Geometry',
+        'Polygon',
+        'GraphicsLayer'
+      ])
       .then(
-        ([Slider, Expand, GeoJSONLayer, FeatureLayer, Graphic, Symbol, Geometry, Polygon]: [
+        ([Slider, Expand, GeoJSONLayer, FeatureLayer, Graphic, Symbol, Geometry, Polygon, GraphicsLayer]: [
           esri.SliderConstructor,
           esri.ExpandConstructor,
           esri.GeoJSONLayerConstructor,
@@ -76,20 +86,28 @@ export class MapComponent implements OnInit {
           esri.GraphicConstructor,
           esri.SymbolConstructor,
           esri.GeometryConstructor,
-          esri.PolygonConstructor
+          esri.PolygonConstructor,
+          esri.GraphicsLayerConstructor
         ]) => {
           const template = {
             title: '{NAME} - {FIPS}',
-            content: 'Area {CENSUSAREA}'
+            content: 'Cases: {Count}'
           };
 
           const countyData = this.ss.getCountyLayer();
           const bugData = this.ss.getBugData();
 
           forkJoin([countyData, bugData]).subscribe((observer) => {
-            // console.log('forkJoin', observer);
             const countyLayer = observer[0];
             const bugCounts = observer[1];
+
+            const multiPolygons = countyLayer.features
+              .map((feature) => {
+                if (feature.geometry.type === 'MultiPolygon') {
+                  return feature;
+                }
+              })
+              .filter((feature) => feature !== undefined);
 
             const featureData = countyLayer.features.map((feature) => {
               const found = bugCounts.find((element) => {
@@ -103,20 +121,60 @@ export class MapComponent implements OnInit {
               return feature;
             });
 
+            console.log('MultiPolygons', multiPolygons);
+            console.log('Polygons', featureData);
+
             const graphics = featureData.map((feature) => {
+              // if (feature.geometry['type'] === 'MultiPolygon') {
+              //   const sections = feature.geometry.coordinates.map((ring, i) => {
+              //     return {
+              //       type: 'polygon',
+              //       geometry: new Polygon({
+              //         rings: [ring]
+              //       }),
+              //       attributes: {
+              //         ...feature.properties,
+              //         GEO_ID: `${feature.properties['GEO_ID']}${i}`
+              //       }
+              //     };
+              //   });
+
+              //   return sections;
+              // }
+              // else {
+              const geom = new Polygon();
+              feature.geometry.coordinates.forEach((coord) => {
+                // console.log(`Feature ring ${feature.properties['FIPS']} - ${coord}`);
+                if (geom.isClockwise(coord)) {
+                  geom.addRing(coord);
+                } else {
+                  console.warn('Ring is not clockwise');
+                }
+              });
               return {
-                geometry: new Polygon({
-                  rings: feature.geometry.coordinates
-                }),
+                geometry: geom,
                 attributes: feature.properties
               };
+              // }
             });
+
+            // console.log(graphics); // 3221
+            // console.log([].concat(...graphics)); //3429
+
+            // const gLayer = new GraphicsLayer({
+            //   graphics: graphics
+            // });
 
             const layer = new FeatureLayer({
               title: 'Confirmed kissing bugs',
               source: graphics,
-              objectIdField: 'FIPS',
+              objectIdField: 'GEO_ID',
               fields: [
+                {
+                  name: 'GEO_ID',
+                  alias: 'geo_id',
+                  type: 'oid'
+                },
                 {
                   name: 'NAME',
                   alias: 'Name',
@@ -195,21 +253,21 @@ export class MapComponent implements OnInit {
 
           this.view.ui.add(legend, 'top-right');
 
-          // const slider = new Slider({
-          //   container: 'timeSlider',
-          //   min: 1,
-          //   max: 12,
-          //   values: [1],
-          //   steps: 1,
-          //   visibleElements: {
-          //     labels: true,
-          //     rangeLabels: true
-          //   }
-          // });
+          const slider = new Slider({
+            container: 'timeSlider',
+            min: 1,
+            max: 12,
+            values: [1],
+            steps: 1,
+            visibleElements: {
+              labels: true,
+              rangeLabels: true
+            }
+          });
 
           // slider.on('thumb-drag', this.newMonthSelected);
 
-          // this.view.ui.add(slider, 'bottom-left');
+          this.view.ui.add(slider, 'bottom-left');
         }
       );
   }
@@ -237,6 +295,7 @@ export class MapComponent implements OnInit {
       if (value === this.bins[index + 1]) {
         return {
           minValue: value,
+          maxValue: 1000,
           symbol: {
             type: 'simple-fill',
             color: colors[index]
@@ -256,13 +315,47 @@ export class MapComponent implements OnInit {
       }
     });
 
+    const renderer_hardcodded = [
+      {
+        minValue: 1,
+        maxValue: 50,
+        symbol: {
+          type: 'simple-fill',
+          color: '#ffffd4'
+        },
+        label: '1 - 50'
+      },
+      {
+        minValue: 51,
+        maxValue: 100,
+        symbol: {
+          type: 'simple-fill',
+          color: '#fed98e'
+        },
+        label: '51 - 100'
+      },
+      {
+        minValue: 101,
+        maxValue: 1000,
+        symbol: {
+          type: 'simple-fill',
+          color: '#993404'
+        },
+        label: '101+'
+      }
+    ];
+
     // Removes the dumb undefined - 0 bin that gets created
     bins.pop();
 
     const renderer = ({
       type: 'class-breaks',
       field: 'Count',
-      defaultSymbol: { type: 'simple-fill' },
+      // defaultSymbol: { type: 'simple-fill' },
+      defaultSymbol: {
+        type: 'simple-fill',
+        color: '#4d4dff'
+      },
       classBreakInfos: bins
     } as unknown) as esri.ClassBreaksRenderer;
 
@@ -272,7 +365,7 @@ export class MapComponent implements OnInit {
   public setBins() {
     switch (this.activeBug) {
       case 'a':
-        this.bins = [200, 200, 150, 100, 50, 0];
+        this.bins = [200, 200, 150, 100, 50, 1];
         break;
 
       case 'g':
