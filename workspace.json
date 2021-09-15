@@ -5490,6 +5490,17 @@
             "assets": ["apps/veoride-node/src/assets"]
           },
           "configurations": {
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/veoride-node/src/environments/environment.ts",
+                  "with": "apps/veoride-node/src/environments/environment.dev.ts"
+                }
+              ]
+            },
             "production": {
               "optimization": true,
               "extractLicenses": true,
