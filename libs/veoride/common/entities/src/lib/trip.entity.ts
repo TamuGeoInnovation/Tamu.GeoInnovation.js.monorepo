@@ -13,7 +13,7 @@ export class Trip extends ProviderBase {
   @Column()
   public trip_distance: number;
 
-  @Column({ type: 'json' })
+  @Column({ type: 'simple-json' })
   public route: string;
 
   @Column()

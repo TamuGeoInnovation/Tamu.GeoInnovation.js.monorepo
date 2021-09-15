@@ -1,4 +1,4 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 import { ProviderBase } from './provider-base.entity';
 
@@ -10,13 +10,13 @@ export class StatusChange extends ProviderBase {
   @Column()
   public event_types: string;
 
-  @Column()
+  @PrimaryColumn()
   public event_time: number;
 
-  @Column({ type: 'json' })
+  @Column({ type: 'simple-json' })
   public event_location: string;
 
-  @Column({ type: 'json' })
+  @Column()
   public battery_pct: number;
 
   @Column({ nullable: true })
