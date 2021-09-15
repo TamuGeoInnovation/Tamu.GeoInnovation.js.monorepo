@@ -278,10 +278,17 @@ export interface GeoJSONFeatureCollection {
 export interface GeoJSONFeature {
   type: string;
   properties: Object;
-  geometry: {
-    coordinates: number[][][];
-    type: string;
-  };
+  geometry: GeoJSONPolygonFeature | GeoJSONMultiPolygonFeature;
+}
+
+export interface GeoJSONMultiPolygonFeature {
+  coordinates: number[][][][];
+  type: 'MultiPolygon';
+}
+
+export interface GeoJSONPolygonFeature {
+  coordinates: number[][];
+  type: 'Polygon';
 }
 
 export interface IStrapiBugCount {

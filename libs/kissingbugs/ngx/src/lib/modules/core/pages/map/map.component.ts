@@ -144,13 +144,13 @@ export class MapComponent implements OnInit {
               // else {
               const geom = new Polygon();
               feature.geometry.coordinates.forEach((coord) => {
-                // console.log(`Feature ring ${feature.properties['FIPS']} - ${coord}`);
-                if (geom.isClockwise(coord)) {
+                if (feature.geometry.type === 'MultiPolygon') {
+                  geom.addRing(coord[0]);
+                } else if (feature.geometry.type === 'Polygon') {
                   geom.addRing(coord);
-                } else {
-                  console.warn('Ring is not clockwise');
                 }
               });
+
               return {
                 geometry: geom,
                 attributes: feature.properties
