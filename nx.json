@@ -472,6 +472,9 @@
     },
     "maps-feature-data": {
       "tags": []
+    },
+    "veoride-node": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

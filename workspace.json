@@ -5473,6 +5473,57 @@
           }
         }
       }
+    },
+    "veoride-node": {
+      "root": "apps/veoride-node",
+      "sourceRoot": "apps/veoride-node/src",
+      "projectType": "application",
+      "prefix": "veoride-node",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/veoride-node",
+            "main": "apps/veoride-node/src/main.ts",
+            "tsConfig": "apps/veoride-node/tsconfig.app.json",
+            "assets": ["apps/veoride-node/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/veoride-node/src/environments/environment.ts",
+                  "with": "apps/veoride-node/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "veoride-node:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/veoride-node/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/veoride-node"],
+          "options": {
+            "jestConfig": "apps/veoride-node/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {
