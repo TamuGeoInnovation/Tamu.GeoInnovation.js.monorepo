@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { forkJoin, Observable } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
+import { count, shareReplay } from 'rxjs/operators';
 
 import { MapConfig, EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
@@ -33,7 +33,17 @@ export class MapComponent implements OnInit {
   public view: esri.MapView;
 
   public activeBug = 'a';
+  public activeMonth = 0;
+  public currentCounty: {
+    name: string;
+    count: number;
+  } = {
+    name: 'Kissing bugs by county',
+    count: 0
+  };
   public bins = [200, 200, 150, 100, 50, 0];
+
+  private bugLayerId = 'bugs';
 
   public pageContents: Observable<IStrapiPageResponse>;
 
@@ -59,7 +69,56 @@ export class MapComponent implements OnInit {
           // if graphics are returned, do something with results
           if (response.results.length) {
             // do something
-            // console.log('This was found: ', response);
+
+            // const graphic = response.results.filter((result) => {
+            //   // check if the graphic belongs to the layer of interest
+            //   return result.graphic.layer.title === 'Confirmed kissing bugs';
+            // })[0].graphic as esri.Graphic;
+
+            const countyHits = response.results.filter((result) => result.graphic.layer.id === this.bugLayerId);
+
+            if (countyHits.length > 0) {
+              // moused over a feature in the bug count layer
+              const graphic = countyHits[0].graphic;
+
+              this.currentCounty = {
+                name: graphic.attributes['NAME'],
+                count: graphic.attributes['Count']
+              };
+
+              const graphicLayer = this.map.findLayerById('highlight') as esri.GraphicsLayer;
+
+              graphicLayer.removeAll();
+              graphicLayer.graphics.push(graphic);
+            } else {
+              (this.map.findLayerById('highlight') as esri.GraphicsLayer).removeAll();
+              this.currentCounty = {
+                name: 'Kissing bugs by county',
+                count: 0
+              };
+            }
+
+            // graphic.symbol = {
+            //   type: 'simple-fill',
+            //   color: ''
+            // }
+            // graphic.symbol.color = '#33cc33';
+            // graphic.symbol = {
+            //   type: "simple-fill",
+            //   color: "rgba(255, 255, 255, 1)",
+            //   outline: {
+            //     width: 0.5,
+            //     color: "darkblue"
+            //   }
+            // }
+
+            // graphic.set('symbol', {
+            //   type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+            //   color: "blue",
+            // })
+            // const graphicLayer = this.map.findLayerById('highlight') as esri.GraphicsLayer;
+            // graphicLayer.removeAll();
+            // graphicLayer.graphics.push(graphic);
           }
         });
       });
@@ -75,10 +134,11 @@ export class MapComponent implements OnInit {
         'Symbol',
         'Geometry',
         'Polygon',
-        'GraphicsLayer'
+        'GraphicsLayer',
+        'Field'
       ])
       .then(
-        ([Slider, Expand, GeoJSONLayer, FeatureLayer, Graphic, Symbol, Geometry, Polygon, GraphicsLayer]: [
+        ([Slider, Expand, GeoJSONLayer, FeatureLayer, Graphic, Symbol, Geometry, Polygon, GraphicsLayer, Field]: [
           esri.SliderConstructor,
           esri.ExpandConstructor,
           esri.GeoJSONLayerConstructor,
@@ -87,7 +147,8 @@ export class MapComponent implements OnInit {
           esri.SymbolConstructor,
           esri.GeometryConstructor,
           esri.PolygonConstructor,
-          esri.GraphicsLayerConstructor
+          esri.GraphicsLayerConstructor,
+          esri.FieldConstructor
         ]) => {
           const template = {
             title: '{NAME} - {FIPS}',
@@ -101,14 +162,6 @@ export class MapComponent implements OnInit {
             const countyLayer = observer[0];
             const bugCounts = observer[1];
 
-            const multiPolygons = countyLayer.features
-              .map((feature) => {
-                if (feature.geometry.type === 'MultiPolygon') {
-                  return feature;
-                }
-              })
-              .filter((feature) => feature !== undefined);
-
             const featureData = countyLayer.features.map((feature) => {
               const found = bugCounts.find((element) => {
                 return element.FIPS === feature.properties['FIPS'];
@@ -121,27 +174,7 @@ export class MapComponent implements OnInit {
               return feature;
             });
 
-            console.log('MultiPolygons', multiPolygons);
-            console.log('Polygons', featureData);
-
             const graphics = featureData.map((feature) => {
-              // if (feature.geometry['type'] === 'MultiPolygon') {
-              //   const sections = feature.geometry.coordinates.map((ring, i) => {
-              //     return {
-              //       type: 'polygon',
-              //       geometry: new Polygon({
-              //         rings: [ring]
-              //       }),
-              //       attributes: {
-              //         ...feature.properties,
-              //         GEO_ID: `${feature.properties['GEO_ID']}${i}`
-              //       }
-              //     };
-              //   });
-
-              //   return sections;
-              // }
-              // else {
               const geom = new Polygon();
               feature.geometry.coordinates.forEach((coord) => {
                 if (feature.geometry.type === 'MultiPolygon') {
@@ -155,86 +188,56 @@ export class MapComponent implements OnInit {
                 geometry: geom,
                 attributes: feature.properties
               };
-              // }
             });
 
-            // console.log(graphics); // 3221
-            // console.log([].concat(...graphics)); //3429
-
-            // const gLayer = new GraphicsLayer({
-            //   graphics: graphics
-            // });
-
             const layer = new FeatureLayer({
-              title: 'Confirmed kissing bugs',
+              id: this.bugLayerId,
+              title: 'Confirmed kissing bug encounters',
+
               source: graphics,
               objectIdField: 'GEO_ID',
               fields: [
-                {
+                new Field({
                   name: 'GEO_ID',
                   alias: 'geo_id',
-                  type: 'oid'
-                },
-                {
+                  type: 'string'
+                }),
+                new Field({
                   name: 'NAME',
                   alias: 'Name',
                   type: 'string'
-                },
-                {
+                }),
+                new Field({
                   name: 'CENSUSAREA',
                   alias: 'Area',
                   type: 'double'
-                },
-                {
+                }),
+                new Field({
                   name: 'FIPS',
                   alias: 'FIPS',
                   type: 'string'
-                },
-                {
+                }),
+                new Field({
                   name: 'Count',
                   alias: 'Count',
                   type: 'integer'
-                }
+                })
               ],
+              outFields: ['*'],
               renderer: this.getRenderer(),
               popupTemplate: template
             });
 
             this.map.add(layer);
+
+            const graphicsLayer = new GraphicsLayer({
+              id: 'highlight',
+              title: 'graphicLayer',
+              listMode: 'hide'
+            });
+
+            this.map.add(graphicsLayer);
           });
-
-          // const geojsonLayer = new GeoJSONLayer({
-          //   url: 'http://localhost:1337/uploads/counties20m_696b17e926.json',
-          //   title: 'Confirmed kissing bugs',
-          //   legendEnabled: true,
-          //   renderer: this.getRenderer(),
-          //   fields: [
-          //     {
-          //       name: 'NAME',
-          //       alias: 'Name',
-          //       type: 'string'
-          //     },
-          //     {
-          //       name: 'CENSUSAREA',
-          //       alias: 'Area',
-          //       type: 'double'
-          //     },
-          //     {
-          //       name: 'FIPS',
-          //       alias: 'FIPS',
-          //       type: 'string'
-          //     },
-          //     {
-          //       name: 'Count',
-          //       alias: 'Count',
-          //       type: 'integer'
-          //     }
-          //   ],
-          //   popupTemplate: template
-          // });
-          // this.map.add(geojsonLayer);
-
-          // console.log(this.map.layers);
 
           const bugSelector = document.getElementById('bug-selector');
 
@@ -249,25 +252,41 @@ export class MapComponent implements OnInit {
 
           this.view.ui.add(bugSelectorExpand, 'top-left');
 
+          const monthSelector = document.getElementById('month-selector');
+
+          const monthSelectorExpand = new Expand({
+            collapseIconClass: 'esri-icon-close-circled',
+            expandIconClass: 'esri-icon-time-clock',
+            expandTooltip: 'Month selection',
+            view: this.view,
+            expanded: false,
+            content: monthSelector
+          });
+
+          this.view.ui.add(monthSelectorExpand, 'top-left');
+
+          const currentCounty = document.getElementById('currentCounty');
+          this.view.ui.add(currentCounty, 'top-right');
+
           const legend = document.getElementById('legend');
 
-          this.view.ui.add(legend, 'top-right');
+          this.view.ui.add(legend, 'bottom-right');
 
-          const slider = new Slider({
-            container: 'timeSlider',
-            min: 1,
-            max: 12,
-            values: [1],
-            steps: 1,
-            visibleElements: {
-              labels: true,
-              rangeLabels: true
-            }
-          });
+          // const slider = new Slider({
+          //   container: 'timeSlider',
+          //   min: 1,
+          //   max: 12,
+          //   values: [1],
+          //   steps: 1,
+          //   visibleElements: {
+          //     labels: true,
+          //     rangeLabels: true
+          //   }
+          // });
 
           // slider.on('thumb-drag', this.newMonthSelected);
 
-          this.view.ui.add(slider, 'bottom-left');
+          // this.view.ui.add(slider, 'bottom-left');
         }
       );
   }
@@ -277,6 +296,12 @@ export class MapComponent implements OnInit {
 
     this.setBins();
     this.updateLegend();
+  }
+
+  public setMonth(month: number) {
+    this.activeMonth = month;
+
+    // Update dataset
   }
 
   public updateLegend() {
@@ -315,47 +340,13 @@ export class MapComponent implements OnInit {
       }
     });
 
-    const renderer_hardcodded = [
-      {
-        minValue: 1,
-        maxValue: 50,
-        symbol: {
-          type: 'simple-fill',
-          color: '#ffffd4'
-        },
-        label: '1 - 50'
-      },
-      {
-        minValue: 51,
-        maxValue: 100,
-        symbol: {
-          type: 'simple-fill',
-          color: '#fed98e'
-        },
-        label: '51 - 100'
-      },
-      {
-        minValue: 101,
-        maxValue: 1000,
-        symbol: {
-          type: 'simple-fill',
-          color: '#993404'
-        },
-        label: '101+'
-      }
-    ];
-
     // Removes the dumb undefined - 0 bin that gets created
     bins.pop();
 
     const renderer = ({
       type: 'class-breaks',
       field: 'Count',
-      // defaultSymbol: { type: 'simple-fill' },
-      defaultSymbol: {
-        type: 'simple-fill',
-        color: '#4d4dff'
-      },
+      defaultSymbol: { type: 'simple-fill' },
       classBreakInfos: bins
     } as unknown) as esri.ClassBreaksRenderer;
 
@@ -369,19 +360,19 @@ export class MapComponent implements OnInit {
         break;
 
       case 'g':
-        this.bins = [200, 200, 150, 100, 50, 0];
+        this.bins = [200, 200, 150, 100, 50, 1];
         break;
 
       case 'i':
-        this.bins = [8, 8, 6, 4, 2, 0];
+        this.bins = [8, 8, 6, 4, 2, 1];
         break;
 
       case 'l':
-        this.bins = [4, 4, 3, 2, 1, 0];
+        this.bins = [4, 4, 3, 2, 1, 1];
         break;
 
       case 's':
-        this.bins = [20, 20, 15, 10, 5, 0];
+        this.bins = [20, 20, 15, 10, 5, 1];
         break;
 
       default:

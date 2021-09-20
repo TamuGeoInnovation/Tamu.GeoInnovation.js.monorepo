@@ -17,7 +17,7 @@
 
   <!-- <tamu-gisc-kissingbugs-bug-selection></tamu-gisc-kissingbugs-bug-selection> -->
 
-  <div id="bug-selector">
+  <div id="bug-selector" class="selector">
     <ul>
       <li id="a" [ngClass]="activeBug === 'a' ? 'active' : ''" (click)="setBug('a')">All species</li>
       <li id="g" [ngClass]="activeBug === 'g' ? 'active' : ''" (click)="setBug('g')">T. gerstaeckeri</li>
@@ -28,7 +28,28 @@
     </ul>
   </div>
 
-  <div id="timeSlider"></div>
+  <div id="month-selector" class="selector">
+    <ul>
+      <li [ngClass]="activeMonth === 0 ? 'active' : ''" (click)="setMonth(0)">Entire year</li>
+      <li [ngClass]="activeMonth === 1 ? 'active' : ''" (click)="setMonth(1)">January</li>
+      <li [ngClass]="activeMonth === 2 ? 'active' : ''" (click)="setMonth(2)">February</li>
+      <li [ngClass]="activeMonth === 3 ? 'active' : ''" (click)="setMonth(3)">March</li>
+      <li [ngClass]="activeMonth === 4 ? 'active' : ''" (click)="setMonth(4)">April</li>
+      <li [ngClass]="activeMonth === 5 ? 'active' : ''" (click)="setMonth(5)">May</li>
+      <li [ngClass]="activeMonth === 6 ? 'active' : ''" (click)="setMonth(6)">June</li>
+      <li [ngClass]="activeMonth === 7 ? 'active' : ''" (click)="setMonth(7)">July</li>
+      <li [ngClass]="activeMonth === 8 ? 'active' : ''" (click)="setMonth(8)">August</li>
+      <li [ngClass]="activeMonth === 9 ? 'active' : ''" (click)="setMonth(9)">September</li>
+      <li [ngClass]="activeMonth === 10 ? 'active' : ''" (click)="setMonth(10)">October</li>
+      <li [ngClass]="activeMonth === 11 ? 'active' : ''" (click)="setMonth(11)">November</li>
+      <li [ngClass]="activeMonth === 12 ? 'active' : ''" (click)="setMonth(12)">December</li>
+    </ul>
+  </div>
+
+  <div id="currentCounty">
+    <p>{{currentCounty.name}}</p>
+    <p *ngIf="currentCounty.count > 0">Bugs: {{ currentCounty.count }}</p>
+  </div>
   <tamu-gisc-legend id="legend"></tamu-gisc-legend>
 </div>
 

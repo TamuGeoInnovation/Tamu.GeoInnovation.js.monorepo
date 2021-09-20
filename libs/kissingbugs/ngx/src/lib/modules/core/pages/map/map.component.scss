@@ -2,9 +2,9 @@ tamu-gisc-esri-map {
   height: 40rem;
 }
 
-#bug-selector {
+.selector {
   justify-content: space-between;
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 0.95);
 
   ul {
     list-style-type: none;
@@ -31,4 +31,12 @@ tamu-gisc-esri-map {
   background-color: white;
   border-color: #666666;
   padding: 0.8rem;
+}
+
+#currentCounty {
+  background-color: white;
+  padding-top: 0.8rem;
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+  padding-bottom: 0.4rem;
 }

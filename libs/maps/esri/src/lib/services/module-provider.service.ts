@@ -227,6 +227,10 @@ export class EsriModuleProviderService {
     {
       class: 'esri/widgets/Expand',
       name: 'Expand'
+    },
+    {
+      class: 'esri/layers/support/Field',
+      name: 'Field'
     }
   ];
 
