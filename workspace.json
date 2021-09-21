@@ -5556,6 +5556,27 @@
           }
         }
       }
+    },
+    "veoride-scraper": {
+      "root": "libs/veoride/scraper",
+      "sourceRoot": "libs/veoride/scraper/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/veoride/scraper/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/veoride/scraper"],
+          "options": {
+            "jestConfig": "libs/veoride/scraper/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

@@ -478,6 +478,9 @@
     },
     "veoride-common-entities": {
       "tags": []
+    },
+    "veoride-scraper": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {
