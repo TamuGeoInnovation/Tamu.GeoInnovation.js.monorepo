@@ -19,12 +19,12 @@
 
   <div id="bug-selector" class="selector">
     <ul>
-      <li id="a" [ngClass]="activeBug === 'a' ? 'active' : ''" (click)="setBug('a')">All species</li>
-      <li id="g" [ngClass]="activeBug === 'g' ? 'active' : ''" (click)="setBug('g')">T. gerstaeckeri</li>
-      <li id="i" [ngClass]="activeBug === 'i' ? 'active' : ''" (click)="setBug('i')">T. indictiva</li>
-      <li id="l" [ngClass]="activeBug === 'l' ? 'active' : ''" (click)="setBug('l')">T. lecticularia</li>
-      <li id="s" [ngClass]="activeBug === 's' ? 'active' : ''" (click)="setBug('s')">T. sanguisuga</li>
-      <li id="o" [ngClass]="activeBug === 'o' ? 'active' : ''" (click)="setBug('o')">Others species</li>
+      <li id="a" [ngClass]="activeBug === '0' ? 'active' : ''" (click)="setBug('0')">All species</li>
+      <li id="g" [ngClass]="activeBug === '860C8B67-E983-41EE-AE8C-AC6AD01F2984' ? 'active' : ''" (click)="setBug('860C8B67-E983-41EE-AE8C-AC6AD01F2984')">T. gerstaeckeri</li>
+      <li id="i" [ngClass]="activeBug === 'E8A9022C-07F5-4A50-95AE-A519C7AF7B80' ? 'active' : ''" (click)="setBug('E8A9022C-07F5-4A50-95AE-A519C7AF7B80')">T. indictiva</li>
+      <li id="l" [ngClass]="activeBug === '7FCCA707-1E80-457C-9B5A-D5A1BBA88D4B' ? 'active' : ''" (click)="setBug('7FCCA707-1E80-457C-9B5A-D5A1BBA88D4B')">T. lecticularia</li>
+      <li id="s" [ngClass]="activeBug === 'A0D1F66B-F894-4232-B0C4-A9FE922D888F' ? 'active' : ''" (click)="setBug('A0D1F66B-F894-4232-B0C4-A9FE922D888F')">T. sanguisuga</li>
+      <li id="o" [ngClass]="activeBug === 'Other' ? 'active' : ''" (click)="setBug('Other')">Others species</li>
     </ul>
   </div>
 

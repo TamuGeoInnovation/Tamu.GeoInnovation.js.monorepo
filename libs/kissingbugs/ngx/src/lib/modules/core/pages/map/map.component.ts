@@ -24,7 +24,12 @@ export class MapComponent implements OnInit {
       mode: '2d',
       properties: {
         center: [-99.20987760767717, 31.225356084754477],
-        zoom: 6
+        zoom: 6,
+        highlightOptions: {
+          haloColor: '#500000',
+          color: 'gray',
+          fillOpacity: 0.5
+        }
       }
     }
   };
@@ -32,7 +37,7 @@ export class MapComponent implements OnInit {
   public map: esri.Map;
   public view: esri.MapView;
 
-  public activeBug = 'a';
+  public activeBug = '0';
   public activeMonth = 0;
   public currentCounty: {
     name: string;
@@ -63,85 +68,50 @@ export class MapComponent implements OnInit {
         evt.stopPropagation();
       });
 
-      this.view.on('pointer-move', (event) => {
-        // Search for graphics on layers at the hovered location
-        this.view.hitTest(event).then((response) => {
-          // if graphics are returned, do something with results
-          if (response.results.length) {
-            // do something
-
-            // const graphic = response.results.filter((result) => {
-            //   // check if the graphic belongs to the layer of interest
-            //   return result.graphic.layer.title === 'Confirmed kissing bugs';
-            // })[0].graphic as esri.Graphic;
-
-            const countyHits = response.results.filter((result) => result.graphic.layer.id === this.bugLayerId);
-
-            if (countyHits.length > 0) {
-              // moused over a feature in the bug count layer
-              const graphic = countyHits[0].graphic;
-
-              this.currentCounty = {
-                name: graphic.attributes['NAME'],
-                count: graphic.attributes['Count']
-              };
-
-              const graphicLayer = this.map.findLayerById('highlight') as esri.GraphicsLayer;
-
-              graphicLayer.removeAll();
-              graphicLayer.graphics.push(graphic);
-            } else {
-              (this.map.findLayerById('highlight') as esri.GraphicsLayer).removeAll();
-              this.currentCounty = {
-                name: 'Kissing bugs by county',
-                count: 0
-              };
-            }
-
-            // graphic.symbol = {
-            //   type: 'simple-fill',
-            //   color: ''
-            // }
-            // graphic.symbol.color = '#33cc33';
-            // graphic.symbol = {
-            //   type: "simple-fill",
-            //   color: "rgba(255, 255, 255, 1)",
-            //   outline: {
-            //     width: 0.5,
-            //     color: "darkblue"
-            //   }
-            // }
-
-            // graphic.set('symbol', {
-            //   type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
-            //   color: "blue",
-            // })
-            // const graphicLayer = this.map.findLayerById('highlight') as esri.GraphicsLayer;
-            // graphicLayer.removeAll();
-            // graphicLayer.graphics.push(graphic);
-          }
-        });
-      });
+      this.getNewDataset();
     });
 
+    this.mp.require(['Expand']).then(([Expand]: [esri.ExpandConstructor]) => {
+      const bugSelector = document.getElementById('bug-selector');
+
+      const bugSelectorExpand = new Expand({
+        collapseIconClass: 'esri-icon-close-circled',
+        expandIconClass: 'esri-icon-filter',
+        expandTooltip: 'Bug selection',
+        view: this.view,
+        expanded: false,
+        content: bugSelector
+      });
+
+      this.view.ui.add(bugSelectorExpand, 'top-left');
+
+      const monthSelector = document.getElementById('month-selector');
+
+      const monthSelectorExpand = new Expand({
+        collapseIconClass: 'esri-icon-close-circled',
+        expandIconClass: 'esri-icon-time-clock',
+        expandTooltip: 'Month selection',
+        view: this.view,
+        expanded: false,
+        content: monthSelector
+      });
+
+      this.view.ui.add(monthSelectorExpand, 'top-left');
+
+      const currentCounty = document.getElementById('currentCounty');
+      this.view.ui.add(currentCounty, 'top-right');
+
+      const legend = document.getElementById('legend');
+
+      this.view.ui.add(legend, 'bottom-right');
+    });
+  }
+
+  public getNewDataset() {
     this.mp
-      .require([
-        'Slider',
-        'Expand',
-        'GeoJSONLayer',
-        'FeatureLayer',
-        'Graphic',
-        'Symbol',
-        'Geometry',
-        'Polygon',
-        'GraphicsLayer',
-        'Field'
-      ])
+      .require(['FeatureLayer', 'Graphic', 'Symbol', 'Geometry', 'Polygon', 'GraphicsLayer', 'Field'])
       .then(
-        ([Slider, Expand, GeoJSONLayer, FeatureLayer, Graphic, Symbol, Geometry, Polygon, GraphicsLayer, Field]: [
-          esri.SliderConstructor,
-          esri.ExpandConstructor,
-          esri.GeoJSONLayerConstructor,
+        ([FeatureLayer, Graphic, Symbol, Geometry, Polygon, GraphicsLayer, Field]: [
           esri.FeatureLayerConstructor,
           esri.GraphicConstructor,
           esri.SymbolConstructor,
@@ -156,7 +126,14 @@ export class MapComponent implements OnInit {
           };
 
           const countyData = this.ss.getCountyLayer();
-          const bugData = this.ss.getBugData();
+          const bugData = this.ss.getBugData2(this.activeBug, this.activeMonth);
+          // const bugData = this.ss.getBugData();
+          console.log(`?speciesGuid=${this.activeBug}&month=${this.activeMonth}`);
+
+          const featureLayer = this.map.findLayerById(this.bugLayerId) as esri.FeatureLayer;
+          if (featureLayer) {
+            this.map.remove(featureLayer);
+          }
 
           forkJoin([countyData, bugData]).subscribe((observer) => {
             const countyLayer = observer[0];
@@ -174,7 +151,7 @@ export class MapComponent implements OnInit {
               return feature;
             });
 
-            const graphics = featureData.map((feature) => {
+            const clientsideGraphics = featureData.map((feature) => {
               const geom = new Polygon();
               feature.geometry.coordinates.forEach((coord) => {
                 if (feature.geometry.type === 'MultiPolygon') {
@@ -194,7 +171,7 @@ export class MapComponent implements OnInit {
               id: this.bugLayerId,
               title: 'Confirmed kissing bug encounters',
 
-              source: graphics,
+              source: clientsideGraphics,
               objectIdField: 'GEO_ID',
               fields: [
                 new Field({
@@ -230,63 +207,35 @@ export class MapComponent implements OnInit {
 
             this.map.add(layer);
 
-            const graphicsLayer = new GraphicsLayer({
-              id: 'highlight',
-              title: 'graphicLayer',
-              listMode: 'hide'
+            this.view.whenLayerView(layer).then((layerView) => {
+              let highlight;
+
+              this.view.on('pointer-move', (event) => {
+                this.view.hitTest(event).then((response) => {
+                  if (response.results.length) {
+                    const graphics = response.results.filter((result) => {
+                      return result.graphic.layer.id === this.bugLayerId;
+                    });
+
+                    if (graphics.length > 0) {
+                      const graphic = graphics[0].graphic as esri.Graphic;
+
+                      if (highlight) {
+                        highlight.remove();
+                      }
+
+                      highlight = layerView.highlight(graphic);
+
+                      this.currentCounty = {
+                        name: graphic.attributes['NAME'],
+                        count: graphic.attributes['Count']
+                      };
+                    }
+                  }
+                });
+              });
             });
-
-            this.map.add(graphicsLayer);
           });
-
-          const bugSelector = document.getElementById('bug-selector');
-
-          const bugSelectorExpand = new Expand({
-            collapseIconClass: 'esri-icon-close-circled',
-            expandIconClass: 'esri-icon-filter',
-            expandTooltip: 'Bug selection',
-            view: this.view,
-            expanded: false,
-            content: bugSelector
-          });
-
-          this.view.ui.add(bugSelectorExpand, 'top-left');
-
-          const monthSelector = document.getElementById('month-selector');
-
-          const monthSelectorExpand = new Expand({
-            collapseIconClass: 'esri-icon-close-circled',
-            expandIconClass: 'esri-icon-time-clock',
-            expandTooltip: 'Month selection',
-            view: this.view,
-            expanded: false,
-            content: monthSelector
-          });
-
-          this.view.ui.add(monthSelectorExpand, 'top-left');
-
-          const currentCounty = document.getElementById('currentCounty');
-          this.view.ui.add(currentCounty, 'top-right');
-
-          const legend = document.getElementById('legend');
-
-          this.view.ui.add(legend, 'bottom-right');
-
-          // const slider = new Slider({
-          //   container: 'timeSlider',
-          //   min: 1,
-          //   max: 12,
-          //   values: [1],
-          //   steps: 1,
-          //   visibleElements: {
-          //     labels: true,
-          //     rangeLabels: true
-          //   }
-          // });
-
-          // slider.on('thumb-drag', this.newMonthSelected);
-
-          // this.view.ui.add(slider, 'bottom-left');
         }
       );
   }
@@ -296,11 +245,14 @@ export class MapComponent implements OnInit {
 
     this.setBins();
     this.updateLegend();
+
+    this.getNewDataset();
   }
 
   public setMonth(month: number) {
     this.activeMonth = month;
 
+    this.getNewDataset();
     // Update dataset
   }
 

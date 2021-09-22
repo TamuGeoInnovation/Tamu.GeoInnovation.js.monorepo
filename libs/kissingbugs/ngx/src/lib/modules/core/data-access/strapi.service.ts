@@ -42,7 +42,11 @@ export class StrapiService {
   }
 
   public getBugData() {
-    return this.http.get<IStrapiBugCount[]>(`${this.resource}/bug-submissions/speciesByMonth`);
+    return this.http.get<IStrapiBugCount[]>(`${this.resource}/bug-submissions/all`);
+  }
+
+  public getBugData2(speciesGuid: string, month: number) {
+    return this.http.get<IStrapiBugCount[]>(`${this.resource}/bug-submissions/speciesByMonth/${speciesGuid}/${month}`);
   }
 
   public sendEmail(body: any) {
