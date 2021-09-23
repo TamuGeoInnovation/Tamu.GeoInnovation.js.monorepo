@@ -21,8 +21,6 @@ export class TripCollector extends BaseCollector<TripCollectorConstructorPropert
       const lastCollected = await (await this.getLastCollected(this.params.startDate)).value;
       const currentCollectionDate = mdsTimeHourIncrement(lastCollected);
 
-      console.log(`Scraping trips for ${currentCollectionDate}`);
-
       let resource: MDSResponse<MDSTripsPayloadDto>;
       let trips: Array<MDSTripDto>;
 
@@ -39,7 +37,7 @@ export class TripCollector extends BaseCollector<TripCollectorConstructorPropert
 
       if (newRecords.length === 0) {
         await this.updateLastCollected(currentCollectionDate);
-        console.log('Completed scraping. No new trips.');
+        console.log(`Completed scraping. No new ${this.params.resourceName}s.`);
         this.processing = false;
         return;
       }
@@ -47,7 +45,7 @@ export class TripCollector extends BaseCollector<TripCollectorConstructorPropert
       const savedTrips = await this.saveEntities<Trip>(Trip, newRecords);
 
       await this.updateLastCollected(currentCollectionDate);
-      console.log(`Completed scraping. Saved ${savedTrips.length} trips.`);
+      console.log(`Completed scraping. Saved ${savedTrips.length} ${this.params.resourceName}s.`);
       this.processing = false;
 
       // After trips have been recorded, check to see if the time offset between "now" and the collection date time.
@@ -57,7 +55,7 @@ export class TripCollector extends BaseCollector<TripCollectorConstructorPropert
         this.scrape();
       }
     } catch (err) {
-      console.log(`Error scraping trips`, err);
+      console.log(`Error scraping ${this.params.resourceName}s`, err);
     }
   }
 

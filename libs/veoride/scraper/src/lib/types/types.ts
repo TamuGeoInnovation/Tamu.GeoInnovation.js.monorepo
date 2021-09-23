@@ -12,6 +12,8 @@ export interface BaseCollectorConstructorProperties {
    * Interval to check for new resource objects in minutes.
    */
   interval: number;
+
+  resourceName: string;
 }
 
 // tslint:disable-next-line: no-empty-interface

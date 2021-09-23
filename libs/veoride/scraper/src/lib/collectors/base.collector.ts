@@ -24,6 +24,8 @@ export class BaseCollector<
   }
 
   public async resource<TR>(parameters: T): Promise<MDSResponse<TR>> {
+    console.log(`Scraping ${this.params.resourceName}s with ${JSON.stringify(parameters)}`);
+
     try {
       const res = (await got
         .get(this.params.url, {
@@ -48,8 +50,6 @@ export class BaseCollector<
   }
 
   public init() {
-    console.log('Initializing trip collector....');
-
     setTimeout(async () => {
       this.scrape();
     }, 3000);
@@ -69,15 +69,28 @@ export class BaseCollector<
     dtoProperty: keyof D,
     entity: EntityAlias
   ): Promise<Array<E>> {
-    // Filter out the id's to check against database for existing rows.
-    const apiRecordIds = dtoRecords.map((t) => t[dtoProperty]);
     const entityProperty = dtoProperty as string;
 
-    const existingDbEntity = (await entity.find({
-      where: {
-        trip_id: In(apiRecordIds)
-      }
-    })) as Array<E>;
+    // Filter out the id's to check against database for existing rows.
+    const apiRecordIds: Array<E> = dtoRecords
+      .map((t) => {
+        return this.dtoToEntity(t);
+      })
+      .map((e) => e[dtoProperty]);
+
+    const batched = this.batchParameters(apiRecordIds, 2000);
+
+    const existingDbEntity = await (
+      await Promise.all(
+        batched.map((batch) => {
+          return entity.find({
+            [dtoProperty]: In(batch)
+          }) as Promise<Array<E>>;
+        })
+      )
+    ).reduce((merged, batch) => {
+      return [...merged, ...batch];
+    }, []);
 
     // Filter out existing db records. Only the resulting dto's will be inserted.
     const newRecords = dtoRecords
@@ -122,10 +135,25 @@ export class BaseCollector<
 
   public async saveEntities<C extends BaseEntity>(entity: EntityAlias, entities: Array<C>): Promise<Array<C>> {
     // Parameter limit per query is ~2000. Batch the entry submissions to not exceed that parameter limit.
-    const chunk = Object.entries(entities[0]).length / 2000;
+    const chunk = 2000 / Object.entries(entities[0]).length;
     const savedTrips = await entity.save(entities, { chunk });
 
     return (savedTrips as unknown) as Array<C>;
+  }
+
+  private batchParameters<C>(entityLikeCollection: Array<C>, maxBatchSize: number) {
+    const batchRatio = maxBatchSize / entityLikeCollection.length;
+    const batchSize = Math.floor(entityLikeCollection.length * batchRatio);
+
+    const batches = entityLikeCollection.reduce((acc, curr, index, arr) => {
+      if (index % batchSize === 0) {
+        return [...acc, arr.slice(index, index + batchSize)];
+      } else {
+        return acc;
+      }
+    }, []);
+
+    return batches;
   }
 }
 
