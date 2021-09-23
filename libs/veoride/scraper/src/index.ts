@@ -1,1 +1,1 @@
-export * from './lib/veoride-scraper';
+export * from './lib/collectors/trips.collector';

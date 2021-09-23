@@ -19,9 +19,9 @@ export class Trip extends ProviderBase {
   @Column()
   public accuracy: number;
 
-  @Column()
+  @Column({ type: 'bigint' })
   public start_time: number;
 
-  @Column()
+  @Column({ type: 'bigint' })
   public end_time: number;
 }

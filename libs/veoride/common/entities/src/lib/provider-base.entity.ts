@@ -18,5 +18,5 @@ export class ProviderBase extends BaseEntity {
   public vehicle_type: string;
 
   @Column()
-  public propulsionTypes: string;
+  public propulsion_types: string;
 }
