@@ -22,3 +22,7 @@ export class StatusChange extends ProviderBase {
   @Column({ nullable: true })
   public trip_id: string;
 }
+
+export interface MDSStatusChangeDto extends Omit<StatusChange, 'propulsion_types'> {
+  propulsion_types: Array<string>;
+}

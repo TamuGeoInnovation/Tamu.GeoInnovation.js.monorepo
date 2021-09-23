@@ -1,7 +1,6 @@
 import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 import { ProviderBase } from './provider-base.entity';
-import { MDSTripDto } from '@tamu-gisc/veoride/scraper';
 
 @Entity()
 export class Trip extends ProviderBase {
@@ -45,4 +44,8 @@ export class Trip extends ProviderBase {
 
     return trip;
   }
+}
+
+export interface MDSTripDto extends Omit<Trip, 'propulsion_types'> {
+  propulsion_types: Array<string>;
 }

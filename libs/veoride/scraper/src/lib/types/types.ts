@@ -1,4 +1,4 @@
-import { StatusChange, Trip } from '@tamu-gisc/veoride/common/entities';
+import { MDSStatusChangeDto, MDSTripDto } from '@tamu-gisc/veoride/common/entities';
 
 export interface BaseCollectorConstructorProperties {
   /**
@@ -54,12 +54,4 @@ export interface MDSTripsPayloadDto {
 
 export interface MDSStatusChangesPayloadDto {
   status_changes: Array<MDSStatusChangeDto>;
-}
-
-export interface MDSTripDto extends Omit<Trip, 'propulsion_types'> {
-  propulsion_types: Array<string>;
-}
-
-export interface MDSStatusChangeDto extends Omit<StatusChange, 'propulsion_types'> {
-  propulsion_types: Array<string>;
 }
