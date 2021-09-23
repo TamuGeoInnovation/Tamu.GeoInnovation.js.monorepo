@@ -12,7 +12,7 @@ createConnection({
 })
   .then((connection) => {
     console.log('Database connection successful!');
-    // const t = new TripCollector(mdsProviderTripsOptions).init();
+    const t = new TripCollector(mdsProviderTripsOptions).init();
     const sc = new StatusChangeCollector(mdsStatusChangesOptions).init();
   })
   .catch((error) => {

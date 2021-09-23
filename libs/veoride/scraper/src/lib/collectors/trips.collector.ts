@@ -11,7 +11,7 @@ export class TripCollector extends BaseCollector<TripCollectorConstructorPropert
 
   public async scrape() {
     if (this.processing === true) {
-      console.log('Scrape in progress. Skipping cycle.');
+      console.log(`${this.headingResourceName}: Scrape in progress. Skipping job.`);
       return;
     }
 
@@ -33,11 +33,11 @@ export class TripCollector extends BaseCollector<TripCollectorConstructorPropert
         return;
       }
 
-      const newRecords = await this.processRecords<Trip, MDSTripDto>(trips, 'trip_id', Trip);
+      const newRecords = await this.processRecords<Trip, MDSTripDto>(trips, ['trip_id'], Trip);
 
       if (newRecords.length === 0) {
         await this.updateLastCollected(currentCollectionDate);
-        console.log(`Completed scraping. No new ${this.params.resourceName}s.`);
+        console.log(`${this.headingResourceName}: Completed scraping. No new ${this.params.resourceName}s.`);
         this.processing = false;
         return;
       }
@@ -45,7 +45,7 @@ export class TripCollector extends BaseCollector<TripCollectorConstructorPropert
       const savedTrips = await this.saveEntities<Trip>(Trip, newRecords);
 
       await this.updateLastCollected(currentCollectionDate);
-      console.log(`Completed scraping. Saved ${savedTrips.length} ${this.params.resourceName}s.`);
+      console.log(`${this.headingResourceName}: Completed scraping. Saved ${savedTrips.length} rows.`);
       this.processing = false;
 
       // After trips have been recorded, check to see if the time offset between "now" and the collection date time.
@@ -55,7 +55,7 @@ export class TripCollector extends BaseCollector<TripCollectorConstructorPropert
         this.scrape();
       }
     } catch (err) {
-      console.log(`Error scraping ${this.params.resourceName}s`, err);
+      console.log(`${this.headingResourceName}: Error scraping resource`, err);
     }
   }
 

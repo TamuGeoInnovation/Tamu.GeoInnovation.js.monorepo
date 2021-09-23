@@ -10,7 +10,7 @@ export class StatusChange extends ProviderBase {
   @Column()
   public vehicle_state: string;
 
-  @Column()
+  @PrimaryColumn()
   public event_types: string;
 
   @PrimaryColumn('bigint')

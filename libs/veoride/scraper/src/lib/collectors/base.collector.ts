@@ -1,5 +1,5 @@
 import { URLSearchParams } from 'url';
-import { BaseEntity, In } from 'typeorm';
+import { BaseEntity } from 'typeorm';
 
 import got from 'got';
 
@@ -17,14 +17,19 @@ export class BaseCollector<
   public params: S;
 
   public processing = false;
+  /**
+   * Formatted plural resource name used in the log entries.
+   */
+  public headingResourceName: string;
 
   constructor(params: S) {
     super();
     this.params = params;
+    this.headingResourceName = `${(params.resourceName + 'S').toUpperCase()}`;
   }
 
   public async resource<TR>(parameters: T): Promise<MDSResponse<TR>> {
-    console.log(`Scraping ${this.params.resourceName}s with ${JSON.stringify(parameters)}`);
+    console.log(`${this.headingResourceName}: Scraping with ${JSON.stringify(parameters)}`);
 
     try {
       const res = (await got
@@ -40,11 +45,15 @@ export class BaseCollector<
       return res;
     } catch (err) {
       if (err.response.statusCode === 404) {
-        throw new Error(`Requested date time ${JSON.stringify(parameters)} does not yet exist. Aborting scraping cycle.`);
+        throw new Error(
+          `${this.headingResourceName}: Requested parameters ${JSON.stringify(
+            parameters
+          )} do not yet exist. Aborting scraping job.`
+        );
       } else if (err.response.statusCode === 401) {
-        throw new Error(`Authentication token invalid.`);
+        throw new Error(`${this.headingResourceName}: Authentication token invalid.`);
       } else {
-        throw new Error('Error requesting trips resource');
+        throw new Error(`${this.headingResourceName}: Error requesting resource`);
       }
     }
   }
@@ -66,25 +75,34 @@ export class BaseCollector<
 
   public async processRecords<E extends BaseEntity, D>(
     dtoRecords: Array<D>,
-    dtoProperty: keyof D,
+    dtoPrimaryKeys: Array<keyof D>,
     entity: EntityAlias
   ): Promise<Array<E>> {
-    const entityProperty = dtoProperty as string;
+    const entityProperty = dtoPrimaryKeys as Array<string>;
 
-    // Filter out the id's to check against database for existing rows.
-    const apiRecordIds: Array<E> = dtoRecords
-      .map((t) => {
-        return this.dtoToEntity(t);
-      })
-      .map((e) => e[dtoProperty]);
+    // First convert all dto records into entities. This will normalize the data types for
+    // comparison below.
+    const dtoEntities: Array<E> = dtoRecords.map((t) => {
+      return this.dtoToEntity(t);
+    });
 
-    const batched = this.batchParameters(apiRecordIds, 2000);
+    // Since an entity can have a compound primary key we need to provide all the keys that make up that key.
+    const dtoIds: Array<Partial<E>> = dtoEntities.map((dto) => {
+      return dtoPrimaryKeys.reduce((obj, key) => {
+        // This constructed object will be used as the where parameters in the query.
+        obj[`${key}`] = dto[`${key}`];
 
-    const existingDbEntity = await (
+        return obj;
+      }, {});
+    });
+
+    const batched = this.batchParameters(dtoIds, 2000 / dtoPrimaryKeys.length);
+
+    const existingDbEntities = await (
       await Promise.all(
         batched.map((batch) => {
           return entity.find({
-            [dtoProperty]: In(batch)
+            where: [...batch]
           }) as Promise<Array<E>>;
         })
       )
@@ -92,23 +110,56 @@ export class BaseCollector<
       return [...merged, ...batch];
     }, []);
 
+    const categorizedDtoEntities = dtoEntities.reduce(
+      (acc, curr) => {
+        const duplicateExists = acc.uniques.find((au) => {
+          return dtoPrimaryKeys.every((prop) => {
+            return au[`${prop}`] === curr[`${prop}`];
+          });
+        });
+
+        if (duplicateExists) {
+          acc.duplicates = [...acc.duplicates, curr];
+        } else {
+          acc.uniques = [...acc.uniques, curr];
+        }
+
+        return acc;
+      },
+      {
+        duplicates: [],
+        uniques: []
+      } as { duplicates: Array<E>; uniques: Array<E> }
+    );
+
     // Filter out existing db records. Only the resulting dto's will be inserted.
-    const newRecords = dtoRecords
-      .filter((t) => {
-        return existingDbEntity.findIndex((dbet) => dbet[entityProperty] === t[dtoProperty]) === -1;
-      })
-      .map((t) => this.dtoToEntity<E, D>(t));
+    const newRecords = categorizedDtoEntities.uniques.filter((dtoEntity) => {
+      const matchingDbEntity = existingDbEntities.find((existing) => {
+        return dtoPrimaryKeys.every((prop) => {
+          return existing[`${prop}`] === dtoEntity[`${prop}`];
+        });
+      });
+
+      return matchingDbEntity === undefined;
+    });
+
+    if (categorizedDtoEntities.duplicates.length > 0) {
+      console.log(
+        `${this.headingResourceName}: Found ${categorizedDtoEntities.duplicates.length} entity duplicates in scrape job`,
+        categorizedDtoEntities.duplicates
+      );
+    }
 
     return newRecords;
   }
 
   // tslint:disable-next-line: no-any
   public dtoToEntity<E extends BaseEntity, D>(dto: D): any {
-    throw new Error('Method not implemented.');
+    throw new Error(`${this.headingResourceName}: Method not implemented.`);
   }
 
   /**
-   * Updates the persistent value for the trips resource, recording the last scraped time.
+   * Updates the persistent value for the provided resource, recording the last scraped time.
    */
   public async updateLastCollected(collectedDateTime: string) {
     const last = mdsTimeHourToDate(collectedDateTime, true);
@@ -118,7 +169,7 @@ export class BaseCollector<
     // the next scraping cycle checks for the next interval.
     //
     // If the difference is not greater than an hour, do not update the last checked date time so that date time can be checked
-    // again for recent trips.
+    // again for recent resource.
     if (dateDifferenceGreaterThan(new Date(), last, 1, 'hours')) {
       return PersistanceRecord.update(this.params.persistanceKey, { value: collectedDateTime });
     } else {
@@ -127,7 +178,7 @@ export class BaseCollector<
   }
 
   /**
-   * Return the persistance record for trips. Used to resume scraping on application start or on timed scrape cycle.
+   * Return the persistance record for resource. Used to resume scraping on application start or on timed scrape cycle.
    */
   public getLastCollected(value: string) {
     return PersistanceRecord.findOrCreate(this.params.persistanceKey, value);
@@ -136,9 +187,9 @@ export class BaseCollector<
   public async saveEntities<C extends BaseEntity>(entity: EntityAlias, entities: Array<C>): Promise<Array<C>> {
     // Parameter limit per query is ~2000. Batch the entry submissions to not exceed that parameter limit.
     const chunk = 2000 / Object.entries(entities[0]).length;
-    const savedTrips = await entity.save(entities, { chunk });
+    const savedRecords = await entity.save(entities, { chunk });
 
-    return (savedTrips as unknown) as Array<C>;
+    return (savedRecords as unknown) as Array<C>;
   }
 
   private batchParameters<C>(entityLikeCollection: Array<C>, maxBatchSize: number) {
