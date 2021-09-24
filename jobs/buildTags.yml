@@ -10,5 +10,5 @@ jobs:
         displayName: 'npm install'
 
       - bash: |
-          npm run nx affected:apps -- --base=$(affectedBase) --head=HEAD --exclude="signage-angular,trees-angular,bikeshare,gisday-competitions-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-client-test,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes" | grep -E '( - )(\w|-|\d|_)+' | sed -E 's/ - /##vso[build.addbuildtag]/g'
+          npm run nx affected:apps -- --base=$(affectedBase) --head=HEAD --exclude="signage-angular,trees-angular,bikeshare,gisday-competitions-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-client-test,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes,veoride-node,veoride-data-api-nest" | grep -E '( - )(\w|-|\d|_)+' | sed -E 's/ - /##vso[build.addbuildtag]/g'
         displayName: 'add affected apps as buildtags'
