@@ -5628,6 +5628,27 @@
           }
         }
       }
+    },
+    "veoride-data-api": {
+      "root": "libs/veoride/data-api",
+      "sourceRoot": "libs/veoride/data-api/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/veoride/data-api/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/veoride/data-api"],
+          "options": {
+            "jestConfig": "libs/veoride/data-api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

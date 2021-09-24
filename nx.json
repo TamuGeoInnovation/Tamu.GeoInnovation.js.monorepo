@@ -484,6 +484,9 @@
     },
     "veoride-data-api-nest": {
       "tags": []
+    },
+    "veoride-data-api": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

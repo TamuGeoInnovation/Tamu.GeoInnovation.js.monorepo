@@ -114,7 +114,8 @@
       "@tamu-gisc/ues/common/nest": ["libs/ues/common/nest/src/index.ts"],
       "@tamu-gisc/maps/feature/data": ["libs/maps/feature/data/src/index.ts"],
       "@tamu-gisc/veoride/common/entities": ["libs/veoride/common/entities/src/index.ts"],
-      "@tamu-gisc/veoride/scraper": ["libs/veoride/scraper/src/index.ts"]
+      "@tamu-gisc/veoride/scraper": ["libs/veoride/scraper/src/index.ts"],
+      "@tamu-gisc/veoride/data-api": ["libs/veoride/data-api/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
