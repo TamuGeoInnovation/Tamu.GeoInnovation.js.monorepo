@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { forkJoin, Observable } from 'rxjs';
-import { count, shareReplay } from 'rxjs/operators';
+import { max, shareReplay } from 'rxjs/operators';
 
 import { MapConfig, EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
@@ -26,7 +26,7 @@ export class MapComponent implements OnInit {
         center: [-99.20987760767717, 31.225356084754477],
         zoom: 6,
         highlightOptions: {
-          haloColor: '#500000',
+          // haloColor: '#500000',
           color: 'gray',
           fillOpacity: 0.5
         }
@@ -46,7 +46,8 @@ export class MapComponent implements OnInit {
     name: 'Kissing bugs by county',
     count: 0
   };
-  public bins = [200, 200, 150, 100, 50, 0];
+  // public bins = [200, 200, 150, 100, 50, 0];
+  public newBins: EsriMinMax[] = this.setBinsNew();
 
   private bugLayerId = 'bugs';
 
@@ -109,33 +110,24 @@ export class MapComponent implements OnInit {
 
   public getNewDataset() {
     this.mp
-      .require(['FeatureLayer', 'Graphic', 'Symbol', 'Geometry', 'Polygon', 'GraphicsLayer', 'Field'])
+      .require(['FeatureLayer', 'Polygon', 'Field'])
       .then(
-        ([FeatureLayer, Graphic, Symbol, Geometry, Polygon, GraphicsLayer, Field]: [
-          esri.FeatureLayerConstructor,
-          esri.GraphicConstructor,
-          esri.SymbolConstructor,
-          esri.GeometryConstructor,
-          esri.PolygonConstructor,
-          esri.GraphicsLayerConstructor,
-          esri.FieldConstructor
-        ]) => {
+        ([FeatureLayer, Polygon, Field]: [esri.FeatureLayerConstructor, esri.PolygonConstructor, esri.FieldConstructor]) => {
           const template = {
             title: '{NAME} - {FIPS}',
             content: 'Cases: {Count}'
           };
 
-          const countyData = this.ss.getCountyLayer();
-          const bugData = this.ss.getBugData2(this.activeBug, this.activeMonth);
-          // const bugData = this.ss.getBugData();
-          console.log(`?speciesGuid=${this.activeBug}&month=${this.activeMonth}`);
-
-          const featureLayer = this.map.findLayerById(this.bugLayerId) as esri.FeatureLayer;
-          if (featureLayer) {
-            this.map.remove(featureLayer);
-          }
+          const countyData = this.ss.getCountyLayer().pipe(shareReplay(1));
+          const bugData = this.ss.getBugData(this.activeBug, this.activeMonth);
 
           forkJoin([countyData, bugData]).subscribe((observer) => {
+            // Remove the bug layer so we can update it. Without this section we end up adding multiple layers and it becomes a mess
+            const featureLayer = this.map.findLayerById(this.bugLayerId) as esri.FeatureLayer;
+            if (featureLayer) {
+              this.map.remove(featureLayer);
+            }
+
             const countyLayer = observer[0];
             const bugCounts = observer[1];
 
@@ -201,7 +193,7 @@ export class MapComponent implements OnInit {
                 })
               ],
               outFields: ['*'],
-              renderer: this.getRenderer(),
+              renderer: this.getRendererNew(),
               popupTemplate: template
             });
 
@@ -243,8 +235,8 @@ export class MapComponent implements OnInit {
   public setBug(bug) {
     this.activeBug = bug;
 
-    this.setBins();
-    this.updateLegend();
+    // this.setBins();
+    // this.setBinsNew();
 
     this.getNewDataset();
   }
@@ -253,47 +245,27 @@ export class MapComponent implements OnInit {
     this.activeMonth = month;
 
     this.getNewDataset();
-    // Update dataset
   }
 
-  public updateLegend() {
-    this.view.layerViews.map((layerView) => {
-      console.log(layerView);
-      if (layerView.layer.type === 'geojson') {
-        layerView.layer.set('renderer', this.getRenderer());
-      }
-    });
-  }
-
-  public getRenderer() {
+  public getRendererNew() {
     const colors = ['#993404', '#d95f0e', '#fe9929', '#fed98e', '#ffffd4'];
 
-    const bins = this.bins.map((value, index) => {
-      if (value === this.bins[index + 1]) {
-        return {
-          minValue: value,
-          maxValue: 1000,
-          symbol: {
-            type: 'simple-fill',
-            color: colors[index]
-          },
-          label: `${value}+`
-        };
-      } else {
-        return {
-          maxValue: value,
-          minValue: this.bins[index + 1],
-          symbol: {
-            type: 'simple-fill',
-            color: colors[index]
-          },
-          label: `${this.bins[index + 1]} - ${value}`
-        };
-      }
+    this.newBins = this.setBinsNew();
+
+    const bins = this.newBins.map((value, index) => {
+      return {
+        minValue: value.min,
+        maxValue: value.max,
+        symbol: {
+          type: 'simple-fill',
+          color: colors[index]
+        },
+        label: `${value.min} - ${value.max}`
+      };
     });
 
     // Removes the dumb undefined - 0 bin that gets created
-    bins.pop();
+    // bins.pop();
 
     const renderer = ({
       type: 'class-breaks',
@@ -305,31 +277,164 @@ export class MapComponent implements OnInit {
     return renderer;
   }
 
-  public setBins() {
+  public setBinsNew() {
+    const bins: EsriMinMax[] = [];
     switch (this.activeBug) {
-      case 'a':
-        this.bins = [200, 200, 150, 100, 50, 1];
+      case '0':
+        bins.push(
+          {
+            min: 201,
+            max: 1000
+          },
+          {
+            min: 151,
+            max: 200
+          },
+          {
+            min: 101,
+            max: 150
+          },
+          {
+            min: 51,
+            max: 100
+          },
+          {
+            min: 1,
+            max: 50
+          }
+        );
         break;
 
-      case 'g':
-        this.bins = [200, 200, 150, 100, 50, 1];
+      case '30b7c552-8ac1-41ed-822f-88c559804fad':
+        bins.push(
+          {
+            min: 201,
+            max: 1000
+          },
+          {
+            min: 151,
+            max: 200
+          },
+          {
+            min: 101,
+            max: 150
+          },
+          {
+            min: 51,
+            max: 100
+          },
+          {
+            min: 1,
+            max: 50
+          }
+        );
         break;
 
-      case 'i':
-        this.bins = [8, 8, 6, 4, 2, 1];
+      case 'b5d25229-ddcf-46d0-90c1-b0c9439f6b0c':
+        bins.push(
+          {
+            min: 9,
+            max: 100
+          },
+          {
+            min: 7,
+            max: 8
+          },
+          {
+            min: 5,
+            max: 6
+          },
+          {
+            min: 3,
+            max: 4
+          },
+          {
+            min: 1,
+            max: 2
+          }
+        );
         break;
 
-      case 'l':
-        this.bins = [4, 4, 3, 2, 1, 1];
+      case 'ede7973b-a752-4397-b0a9-eede855711c7':
+        bins.push(
+          {
+            min: 9,
+            max: 50
+          },
+          {
+            min: 7,
+            max: 8
+          },
+          {
+            min: 5,
+            max: 6
+          },
+          {
+            min: 3,
+            max: 4
+          },
+          {
+            min: 1,
+            max: 2
+          }
+        );
         break;
 
-      case 's':
-        this.bins = [20, 20, 15, 10, 5, 1];
+      case '1ff5893f-d681-4136-9102-8416971f2f63':
+        bins.push(
+          {
+            min: 20,
+            max: 100
+          },
+          {
+            min: 15,
+            max: 20
+          },
+          {
+            min: 11,
+            max: 15
+          },
+          {
+            min: 6,
+            max: 10
+          },
+          {
+            min: 1,
+            max: 5
+          }
+        );
         break;
 
       default:
-        this.bins = [5, 4, 3, 2, 1];
+        bins.push(
+          {
+            min: 20,
+            max: 1000
+          },
+          {
+            min: 15,
+            max: 20
+          },
+          {
+            min: 11,
+            max: 15
+          },
+          {
+            min: 6,
+            max: 10
+          },
+          {
+            min: 1,
+            max: 5
+          }
+        );
         break;
     }
+    return bins;
   }
+}
+
+export interface EsriMinMax {
+  min: number;
+  max: number;
 }

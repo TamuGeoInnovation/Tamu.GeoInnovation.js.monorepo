@@ -41,11 +41,11 @@ export class StrapiService {
     return this.http.get<GeoJSONFeatureCollection>('http://localhost:1337/uploads/counties20m_696b17e926.json');
   }
 
-  public getBugData() {
+  public getAllBugData() {
     return this.http.get<IStrapiBugCount[]>(`${this.resource}/bug-submissions/all`);
   }
 
-  public getBugData2(speciesGuid: string, month: number) {
+  public getBugData(speciesGuid: string, month: number) {
     return this.http.get<IStrapiBugCount[]>(`${this.resource}/bug-submissions/speciesByMonth/${speciesGuid}/${month}`);
   }
 
