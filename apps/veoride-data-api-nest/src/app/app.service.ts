@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getData(): { message: string } {
-    return { message: 'Welcome to veoride-data-api-nest!' };
+  public getData(): { message: string } {
+    return {
+      message: 'View API documentation @ https://github.com/TamuGeoInnovation/TAMU.GeoInnovation.VeoRide.Documentation/wiki'
+    };
   }
 }
