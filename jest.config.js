@@ -126,6 +126,7 @@ module.exports = {
     '<rootDir>/libs/maps/feature/data',
     '<rootDir>/apps/veoride-node',
     '<rootDir>/libs/veoride/common/entities',
-    '<rootDir>/libs/veoride/scraper'
+    '<rootDir>/libs/veoride/scraper',
+    '<rootDir>/apps/veoride-data-api-nest'
   ]
 };

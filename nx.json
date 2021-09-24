@@ -481,6 +481,9 @@
     },
     "veoride-scraper": {
       "tags": []
+    },
+    "veoride-data-api-nest": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {
