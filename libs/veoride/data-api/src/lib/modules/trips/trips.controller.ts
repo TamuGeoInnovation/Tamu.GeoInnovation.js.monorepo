@@ -1,10 +1,10 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, UnauthorizedException } from '@nestjs/common';
 
-import { TokenGuard } from '../../auth/token/token.guard';
+import { RequiredQueryParams } from '@tamu-gisc/common/nest/guards';
 
 @Controller('trips')
 export class TripsController {
-  @UseGuards(TokenGuard)
+  @RequiredQueryParams(['token'], UnauthorizedException)
   @Get('')
   public getTrips() {
     return 'These are trips';
