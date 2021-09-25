@@ -128,6 +128,7 @@ module.exports = {
     '<rootDir>/libs/veoride/common/entities',
     '<rootDir>/libs/veoride/scraper',
     '<rootDir>/apps/veoride-data-api-nest',
-    '<rootDir>/libs/veoride/data-api'
+    '<rootDir>/libs/veoride/data-api',
+    '<rootDir>/libs/common/nest/guards'
   ]
 };
