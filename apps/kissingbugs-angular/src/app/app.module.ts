@@ -53,7 +53,11 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     HttpClientModule,
-    RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
+    RouterModule.forRoot(routes, {
+      initialNavigation: 'enabled',
+      anchorScrolling: 'enabled',
+      scrollOffset: [0, 64]
+    }),
     EnvironmentModule,
     Angulartics2Module.forRoot()
   ],
