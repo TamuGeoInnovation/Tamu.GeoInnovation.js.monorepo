@@ -3,7 +3,12 @@ import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
 import { StrapiService } from '../../data-access/strapi.service';
-import { IStrapiFAQItemsWithComponents, IStrapiPageResponse, IStrapiPageSection } from '../../types/types';
+import {
+  IStrapiFAQItemsWithComponents,
+  IStrapiPageResponse,
+  IStrapiPageSection,
+  StrapiSingleTypes
+} from '../../types/types';
 
 @Component({
   selector: 'tamu-gisc-kissingbugs-faq',
@@ -12,6 +17,7 @@ import { IStrapiFAQItemsWithComponents, IStrapiPageResponse, IStrapiPageSection 
   providers: [StrapiService]
 })
 export class FaqComponent implements OnInit, OnDestroy {
+  public page: StrapiSingleTypes = 'faq';
   public pageContents: Observable<IStrapiPageResponse>;
   public pageComponents: Observable<
     { sectionId: number; text: string; components: IStrapiPageSection; expanded: boolean }[]

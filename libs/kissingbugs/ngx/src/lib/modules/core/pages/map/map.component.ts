@@ -6,7 +6,7 @@ import { max, shareReplay } from 'rxjs/operators';
 import { MapConfig, EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
 import { StrapiService } from '../../data-access/strapi.service';
-import { IStrapiPageResponse } from '../../types/types';
+import { IStrapiPageResponse, StrapiSingleTypes } from '../../types/types';
 
 import esri = __esri;
 
@@ -16,6 +16,8 @@ import esri = __esri;
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
+  public page: StrapiSingleTypes = 'map';
+
   public config: MapConfig = {
     basemap: {
       basemap: 'dark-gray-vector'
@@ -26,7 +28,6 @@ export class MapComponent implements OnInit {
         center: [-99.20987760767717, 31.225356084754477],
         zoom: 6,
         highlightOptions: {
-          // haloColor: '#500000',
           color: 'gray',
           fillOpacity: 0.5
         }

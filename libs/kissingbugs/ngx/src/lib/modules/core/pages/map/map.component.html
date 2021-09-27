@@ -1,4 +1,4 @@
-<tamu-gisc-kissingbugs-nav></tamu-gisc-kissingbugs-nav>
+<tamu-gisc-kissingbugs-nav activePage="{{this.page}}"></tamu-gisc-kissingbugs-nav>
 <tamu-gisc-kissingbugs-hero [dataSource]="(pageContents | async)?.hero"></tamu-gisc-kissingbugs-hero>
 
 <article class="container12 container">
@@ -9,13 +9,6 @@
 
 <div class="kissingbugmap-container map-container">
   <tamu-gisc-esri-map [config]="config"></tamu-gisc-esri-map>
-  <!-- <div class="info detailBox"></div> -->
-
-  <!-- <div class="layerToggle" title="Bug Species Filters"><i class="fa fa-filter" aria-hidden="true"></i></div> -->
-
-  <!-- <tamu-gisc-kissingbugs-time-slider></tamu-gisc-kissingbugs-time-slider> -->
-
-  <!-- <tamu-gisc-kissingbugs-bug-selection></tamu-gisc-kissingbugs-bug-selection> -->
 
   <div id="bug-selector" class="selector">
     <ul>

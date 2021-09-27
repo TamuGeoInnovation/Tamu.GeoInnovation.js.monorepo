@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 import { StrapiService } from '../../data-access/strapi.service';
-import { IStrapiPageResponse } from '../../types/types';
+import { IStrapiPageResponse, StrapiSingleTypes } from '../../types/types';
 
 @Component({
   selector: 'tamu-gisc-kissingbugs-found-a-bug',
@@ -12,6 +12,7 @@ import { IStrapiPageResponse } from '../../types/types';
   providers: [StrapiService]
 })
 export class FoundABugComponent implements OnInit, OnDestroy {
+  public page: StrapiSingleTypes = 'found-a-bug';
   public pageContents: Observable<IStrapiPageResponse>;
 
   constructor(private ss: StrapiService) {}
@@ -19,7 +20,7 @@ export class FoundABugComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     const language: string = navigator.language.substr(0, 2);
 
-    this.pageContents = this.ss.getPage('found-a-bug', language).pipe(shareReplay(1));
+    this.pageContents = this.ss.getPage(this.page, language).pipe(shareReplay(1));
   }
 
   public ngOnDestroy() {}
