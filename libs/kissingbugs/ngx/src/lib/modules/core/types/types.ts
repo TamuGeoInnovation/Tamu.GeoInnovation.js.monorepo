@@ -181,6 +181,7 @@ export interface IStrapiStapleHero {
   left_icon: IStrapiMedia;
   right_icon: IStrapiMedia;
   background: IStrapiMedia;
+  fa_icon: string;
 }
 
 export interface IStrapiStapleFooter {
