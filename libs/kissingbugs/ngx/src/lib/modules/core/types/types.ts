@@ -67,6 +67,7 @@ export interface IStrapiPageInfoBlock {
   subtitle: string;
   text: string;
   type: 'h1' | 'h2' | 'h3';
+  anchor?: string;
 }
 
 export interface IStrapiPageInfoAlert {
