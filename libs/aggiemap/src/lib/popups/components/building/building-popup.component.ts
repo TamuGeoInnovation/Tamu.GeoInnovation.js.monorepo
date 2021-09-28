@@ -32,7 +32,7 @@ export class BuildingPopupComponent extends BaseDirectionsComponent implements O
 
     const buildingNumber = this.data.attributes.Number.split('.')[0];
 
-    this.proctorURL = `https://proctorlist.tamu.edu/MainProctorBuildings/Details/${buildingNumber}?utm_source=aggiemap`;
+    this.proctorURL = `https://proctorlist.tamu.edu/?utm_source=aggiemap`;
   }
 
   public startDirections() {
