@@ -9,7 +9,7 @@ import { AbstractCollector, AnyPromise } from './abstract.collector';
 import { dateDifferenceGreaterThan, mdsTimeHourToDate } from '../utilities/time.utils';
 import { BaseCollectorConstructorProperties, BaseRequestParams, MDSResponse } from '../types/types';
 
-export class BaseCollector<
+export abstract class BaseCollector<
   S extends BaseCollectorConstructorProperties,
   T extends BaseRequestParams
 > extends AbstractCollector {
@@ -68,10 +68,7 @@ export class BaseCollector<
     }, this.params.interval * 60 * 1000);
   }
 
-  // tslint:disable-next-line: no-any
-  public scrape(): AnyPromise {
-    throw new Error('Method not implemented.');
-  }
+  public abstract scrape(): AnyPromise;
 
   public async processRecords<E extends BaseEntity, D>(
     dtoRecords: Array<D>,
