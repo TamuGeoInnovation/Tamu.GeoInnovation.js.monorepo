@@ -1,5 +1,4 @@
 <a class="file-container card leader-3 trailer-1" href="{{api_url}}{{dataSource.file.url}}" target="_blank" role="button">
   <span class="file"></span>
-  <!-- <img class="info-alert-file" src="{{api_url}}{{dataSource.preview.url}}" /> -->
-  <p class="bold">{{dataSource.text}}</p>
+  <p class="bold" [innerHTML]="dataSource.text | safeHtml"></p>
 </a>
