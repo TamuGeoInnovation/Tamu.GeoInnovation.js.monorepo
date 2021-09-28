@@ -23,9 +23,9 @@ import esri = __esri;
 })
 export class OmnisearchComponent implements OnInit, OnDestroy {
   /**
-   * Determines when the backdrop component will be visible
+   * Determines the backdrop visibility
    */
-  public backdropVisible: boolean;
+  public backdropVisible = false;
 
   /**
    * Determines when the search bar will slide out of view.
