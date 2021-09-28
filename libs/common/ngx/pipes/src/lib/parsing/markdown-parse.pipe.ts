@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import * as snarkdown from 'snarkdown';
+import { default as snarkdown } from 'snarkdown';
 
 @Pipe({
   name: 'markdownParse'
