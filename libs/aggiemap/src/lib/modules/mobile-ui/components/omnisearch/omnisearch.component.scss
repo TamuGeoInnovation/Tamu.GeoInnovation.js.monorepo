@@ -21,5 +21,4 @@ tamu-gisc-search-mobile {
 tamu-gisc-backdrop {
   z-index: -1;
   top: 100% !important;
-  @include transform(translateY(100%));
 }
