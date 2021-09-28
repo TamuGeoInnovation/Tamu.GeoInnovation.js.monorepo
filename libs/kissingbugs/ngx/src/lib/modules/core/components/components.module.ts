@@ -24,6 +24,7 @@ import { TableComponent } from './table/table.component';
 import { BugSelectionComponent } from './bug-selection/bug-selection.component';
 import { TimeSliderComponent } from './time-slider/time-slider.component';
 import { PortraitGalleryComponent } from './portrait-gallery/portrait-gallery.component';
+import { FacebookComponent } from './facebook/facebook.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule, PipesModule],
@@ -47,7 +48,8 @@ import { PortraitGalleryComponent } from './portrait-gallery/portrait-gallery.co
     TableComponent,
     BugSelectionComponent,
     TimeSliderComponent,
-    PortraitGalleryComponent
+    PortraitGalleryComponent,
+    FacebookComponent
   ],
   exports: [
     SectionComponent,
@@ -68,7 +70,8 @@ import { PortraitGalleryComponent } from './portrait-gallery/portrait-gallery.co
     DynamicZoneComponent,
     BugSelectionComponent,
     TimeSliderComponent,
-    PortraitGalleryComponent
+    PortraitGalleryComponent,
+    FacebookComponent
   ]
 })
 export class ComponentsModule {}
