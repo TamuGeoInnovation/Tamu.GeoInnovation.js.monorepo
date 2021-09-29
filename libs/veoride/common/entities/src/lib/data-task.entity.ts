@@ -16,17 +16,23 @@ export class DataTask extends BaseEntity {
   @PrimaryColumn()
   public id: string;
 
+  @Column({ default: 'queued' })
+  public status: DataTaskStatus;
+
+  @Column()
+  public resource: string;
+
+  @Column({ length: 'MAX' })
+  public parameters: string;
+
+  @Column()
+  public requester: string;
+
   @UpdateDateColumn()
   public updated: Date;
 
   @CreateDateColumn()
   public created: Date;
-
-  @Column()
-  public status: number;
-
-  @Column({ length: 'max' })
-  public parameters: string;
 
   @BeforeUpdate()
   @BeforeInsert()
@@ -35,4 +41,11 @@ export class DataTask extends BaseEntity {
       this.id = guid();
     }
   }
+}
+
+export enum DataTaskStatus {
+  QUEUED = 'queued',
+  PROCESSING = 'processing',
+  COMPLETE = 'complete',
+  FAILED = 'failed'
 }
