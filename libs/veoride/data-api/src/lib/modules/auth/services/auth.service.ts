@@ -1,18 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 import { Token } from '@tamu-gisc/veoride/common/entities';
 
+import { TokensService } from '../../tokens/tokens.service';
+
 @Injectable()
 export class AuthService {
-  constructor(@InjectRepository(Token) public repo: Repository<Token>) {}
+  constructor(private readonly tokensService: TokensService) {}
 
-  public validateToken(tokenId: string): Promise<Token> {
-    return this.repo.findOne({
-      where: {
-        token: tokenId
-      }
-    });
+  public async validateToken(token: string): Promise<Token> {
+    return this.tokensService.validateToken(token);
   }
 }

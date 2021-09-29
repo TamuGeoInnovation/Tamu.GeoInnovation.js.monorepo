@@ -9,10 +9,13 @@ import { QueryParamGuard } from '@tamu-gisc/common/nest/guards';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { dbConfig } from '../environments/environment';
+import { dbConfig, jwtSecret } from '../environments/environment';
 
 @Module({
-  imports: [TypeOrmModule.forRoot({ ...dbConfig, entities: [DataTask, Token] }), VeorideDataApiModule],
+  imports: [
+    TypeOrmModule.forRoot({ ...dbConfig, entities: [DataTask, Token] }),
+    VeorideDataApiModule.register({ jwt: { secret: jwtSecret } })
+  ],
   controllers: [AppController],
   providers: [
     AppService,

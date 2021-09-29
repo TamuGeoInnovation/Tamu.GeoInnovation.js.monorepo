@@ -1,28 +1,31 @@
-import { Entity, PrimaryColumn, UpdateDateColumn, CreateDateColumn, BeforeInsert, BaseEntity, Column } from 'typeorm';
+import { Entity, PrimaryColumn, UpdateDateColumn, BeforeInsert, BaseEntity, Column } from 'typeorm';
 
 import { v4 as guid } from 'uuid';
 
 @Entity()
 export class Token extends BaseEntity {
   @PrimaryColumn()
-  public token: string;
+  public guid: string;
 
   @UpdateDateColumn()
   public updated: Date;
 
-  @CreateDateColumn()
-  public created: Date;
+  @Column({ nullable: false })
+  public issued: Date;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   public expires: Date;
 
-  @Column()
+  @Column({ nullable: false })
   public identity: string;
+
+  @Column({ default: false })
+  public revoked: boolean;
 
   @BeforeInsert()
   private generateGuid(): void {
-    if (this.token === undefined) {
-      this.token = guid();
+    if (this.guid === undefined) {
+      this.guid = guid();
     }
   }
 }

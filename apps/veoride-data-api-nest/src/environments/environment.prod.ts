@@ -3,3 +3,4 @@ export const environment = {
 };
 
 export { prodConfig as dbConfig } from './ormconfig';
+export { jwtSecretProd as jwtSecret } from './secrets';
