@@ -493,6 +493,9 @@
     },
     "veoride-data-compiler-node": {
       "tags": []
+    },
+    "veoride-data-compiler": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

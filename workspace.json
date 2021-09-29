@@ -5721,6 +5721,27 @@
           }
         }
       }
+    },
+    "veoride-data-compiler": {
+      "root": "libs/veoride/data-compiler",
+      "sourceRoot": "libs/veoride/data-compiler/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/veoride/data-compiler/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/veoride/data-compiler"],
+          "options": {
+            "jestConfig": "libs/veoride/data-compiler/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

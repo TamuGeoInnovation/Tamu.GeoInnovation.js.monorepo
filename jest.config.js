@@ -130,6 +130,7 @@ module.exports = {
     '<rootDir>/apps/veoride-data-api-nest',
     '<rootDir>/libs/veoride/data-api',
     '<rootDir>/libs/common/nest/guards',
-    '<rootDir>/apps/veoride-data-compiler-node'
+    '<rootDir>/apps/veoride-data-compiler-node',
+    '<rootDir>/libs/veoride/data-compiler'
   ]
 };
