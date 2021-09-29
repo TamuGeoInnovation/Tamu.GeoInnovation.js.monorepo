@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'veoride-node',
+  displayName: 'veoride-scraper-node',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -10,5 +10,5 @@ module.exports = {
     '^.+\\.[tj]s$': 'ts-jest'
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/apps/veoride-node'
+  coverageDirectory: '../../coverage/apps/veoride-scraper-node'
 };

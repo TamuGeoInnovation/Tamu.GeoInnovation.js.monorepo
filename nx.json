@@ -473,9 +473,6 @@
     "maps-feature-data": {
       "tags": []
     },
-    "veoride-node": {
-      "tags": []
-    },
     "veoride-common-entities": {
       "tags": []
     },
@@ -489,6 +486,9 @@
       "tags": []
     },
     "common-nest-guards": {
+      "tags": []
+    },
+    "veoride-scraper-node": {
       "tags": []
     }
   },

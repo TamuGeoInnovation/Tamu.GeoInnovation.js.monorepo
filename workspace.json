@@ -5474,68 +5474,6 @@
         }
       }
     },
-    "veoride-node": {
-      "root": "apps/veoride-node",
-      "sourceRoot": "apps/veoride-node/src",
-      "projectType": "application",
-      "prefix": "veoride-node",
-      "architect": {
-        "build": {
-          "builder": "@nrwl/node:build",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/apps/veoride-node",
-            "main": "apps/veoride-node/src/main.ts",
-            "tsConfig": "apps/veoride-node/tsconfig.app.json",
-            "assets": ["apps/veoride-node/src/assets"]
-          },
-          "configurations": {
-            "development": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/veoride-node/src/environments/environment.ts",
-                  "with": "apps/veoride-node/src/environments/environment.dev.ts"
-                }
-              ]
-            },
-            "production": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/veoride-node/src/environments/environment.ts",
-                  "with": "apps/veoride-node/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "builder": "@nrwl/node:execute",
-          "options": {
-            "buildTarget": "veoride-node:build"
-          }
-        },
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["apps/veoride-node/**/*.ts"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/veoride-node"],
-          "options": {
-            "jestConfig": "apps/veoride-node/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "veoride-common-entities": {
       "root": "libs/veoride/common/entities",
       "sourceRoot": "libs/veoride/common/entities/src",
@@ -5666,6 +5604,68 @@
           "outputs": ["coverage/libs/common/nest/guards"],
           "options": {
             "jestConfig": "libs/common/nest/guards/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "veoride-scraper-node": {
+      "root": "apps/veoride-scraper-node",
+      "sourceRoot": "apps/veoride-scraper-node/src",
+      "projectType": "application",
+      "prefix": "veoride-scraper-node",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/veoride-scraper-node",
+            "main": "apps/veoride-scraper-node/src/main.ts",
+            "tsConfig": "apps/veoride-scraper-node/tsconfig.app.json",
+            "assets": ["apps/veoride-scraper-node/src/assets"]
+          },
+          "configurations": {
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/veoride-scraper-node/src/environments/environment.ts",
+                  "with": "apps/veoride-scraper-node/src/environments/environment.dev.ts"
+                }
+              ]
+            },
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/veoride-scraper-node/src/environments/environment.ts",
+                  "with": "apps/veoride-scraper-node/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "veoride-scraper-node:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/veoride-scraper-node/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/veoride-scraper-node"],
+          "options": {
+            "jestConfig": "apps/veoride-scraper-node/jest.config.js",
             "passWithNoTests": true
           }
         }
