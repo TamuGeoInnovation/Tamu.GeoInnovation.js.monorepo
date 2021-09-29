@@ -19,7 +19,7 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
   public album: IAlbum[] = [];
 
-  public rowLength = 5;
+  public rowLength = 4;
 
   public api_url = this.environment.value('api_url');
 
