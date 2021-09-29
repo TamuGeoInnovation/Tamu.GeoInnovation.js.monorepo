@@ -5670,6 +5670,57 @@
           }
         }
       }
+    },
+    "veoride-data-compiler-node": {
+      "root": "apps/veoride-data-compiler-node",
+      "sourceRoot": "apps/veoride-data-compiler-node/src",
+      "projectType": "application",
+      "prefix": "veoride-data-compiler-node",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/veoride-data-compiler-node",
+            "main": "apps/veoride-data-compiler-node/src/main.ts",
+            "tsConfig": "apps/veoride-data-compiler-node/tsconfig.app.json",
+            "assets": ["apps/veoride-data-compiler-node/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/veoride-data-compiler-node/src/environments/environment.ts",
+                  "with": "apps/veoride-data-compiler-node/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "veoride-data-compiler-node:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/veoride-data-compiler-node/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/veoride-data-compiler-node"],
+          "options": {
+            "jestConfig": "apps/veoride-data-compiler-node/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

@@ -490,6 +490,9 @@
     },
     "veoride-scraper-node": {
       "tags": []
+    },
+    "veoride-data-compiler-node": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {
