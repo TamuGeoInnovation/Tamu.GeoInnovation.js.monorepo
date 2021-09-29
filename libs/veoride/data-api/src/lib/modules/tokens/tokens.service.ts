@@ -11,7 +11,7 @@ import { VeorideModuleRegistrationOptions } from '../../interfaces/module-regist
 @Injectable()
 export class TokensService {
   constructor(
-    @Inject(JWT_OPTIONS) private jwtOptions: VeorideModuleRegistrationOptions['jwt'],
+    @Inject(JWT_OPTIONS) private readonly jwtOptions: VeorideModuleRegistrationOptions['jwt'],
     @InjectRepository(Token) public readonly repo: Repository<Token>
   ) {}
 

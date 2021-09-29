@@ -7,7 +7,7 @@ import { AuthService } from '../../services/auth.service';
 
 @Injectable()
 export class BearerTokenStrategy extends PassportStrategy(Strategy) {
-  constructor(private auth: AuthService) {
+  constructor(private readonly auth: AuthService) {
     super();
   }
 
