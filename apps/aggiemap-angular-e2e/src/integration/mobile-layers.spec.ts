@@ -159,7 +159,7 @@ mobileSizes.forEach((size) => {
       }
       else if (size[0] === 360) {
         cy.wait(2000)
-        cy.get('canvas').click(230, 240)
+        cy.get('canvas').click(235, 245)
       }
       // checks if popup is visible
       cy.wait(2000)
@@ -201,7 +201,7 @@ mobileSizes.forEach((size) => {
       cy.get('tamu-gisc-feature-mobile-popup').should('be.visible')
       .and('contain.text', 'Lactation Room')
       cy.get('.popup').move({ x: 0, y: -415, position: 'center', force: true })
-      cy.checkLink('Additional Information', 'https://studentlife.tamu.edu/wrc.bfwh.lactationspace')
+      cy.checkLink('Additional Information', 'https://studentlife.tamu.edu/wrc/resources/breastfeeding/lactationspace/')
     })
     
     it('Visitor Parking', function() {
@@ -223,7 +223,7 @@ mobileSizes.forEach((size) => {
       }
       else if (size[0] === 768) {
         cy.wait(2000)
-        cy.get('canvas').click(460, 580)
+        cy.get('canvas').click(305, 405)
       }
       else if (size[0] === 411) {
         cy.wait(2000)
@@ -258,7 +258,7 @@ mobileSizes.forEach((size) => {
       }
       else if (size[0] === 768) {
         cy.wait(2000)
-        cy.get('canvas').click(450, 420)
+        cy.get('canvas').click(450, 425)
       }
       else if (size[0] === 411) {
         cy.wait(2000)
