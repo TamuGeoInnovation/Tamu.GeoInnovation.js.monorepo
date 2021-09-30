@@ -141,7 +141,7 @@ desktopSizes.forEach((size) => {
       cy.checkPopUp()
       // check "Additional Information" link
       cy.get('tamu-gisc-lactation-popup-component > .popup-section').should('be.visible')
-      cy.checkLink('Additional Information', 'https://studentlife.tamu.edu/wrc.bfwh.lactationspace')
+      cy.checkLink('Additional Information', 'https://studentlife.tamu.edu/wrc/resources/breastfeeding/lactationspace/')
     })
     it('Visitor Parking', function() {
       cy.intercept('GET', '*')
@@ -208,7 +208,6 @@ desktopSizes.forEach((size) => {
       if (size[0] === 1920) {
         cy.wait(2000)
         cy.get('canvas').trigger('mouseover').click(1160, 540)
-        cy.wait(5000)
       }
       else if (size[0] === 1366) {
         cy.wait(2000)
