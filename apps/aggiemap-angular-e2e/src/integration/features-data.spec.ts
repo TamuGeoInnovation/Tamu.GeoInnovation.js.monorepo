@@ -109,14 +109,7 @@ desktopSizes.forEach((size) => {
     })
 
     //TODO: Test compass
-    it.only('Rotate Map Orientation by Compass', () => {
-      // rotate map via right click
-      cy.get('canvas')
-      //.trigger('mouseover', (size[0]/2), (size[1]/2))
-      // .trigger('mousedown', { button: 2})               // mimics holding right mouse button down
-      // .trigger('mousemove', (size[0]/4), (size[1]/4))
-      // .trigger('mouseup')
-
+    it('Rotate Map Orientation by Compass', () => {
       // rotate map using 'a' and 'd'
       // rotate map counter-clockwise for 2 seconds by using keyCode for the letter 'a'
       cy.get('canvas').trigger('keydown', { keyCode: 65 })
