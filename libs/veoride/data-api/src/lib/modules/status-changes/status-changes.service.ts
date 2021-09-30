@@ -29,7 +29,7 @@ export class StatusChangesService {
     const dto = TasksService.taskToDto(request);
 
     if (request.status === DataTaskStatus.COMPLETE) {
-      dto.url = `${req.protocol}://${req.get('host')}${req.path}${request.id}`;
+      dto.url = `${req.protocol}://${req.get('host')}${req.path}/${request.id}`;
     } else {
       dto.url = null;
     }
