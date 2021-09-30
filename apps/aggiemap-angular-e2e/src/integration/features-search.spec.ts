@@ -26,7 +26,7 @@ desktopSizes.forEach((size) => {
         cy.wait(['@basemap', '@construction', '@tents'])
       }
       */
-      cy.wait(10000)
+      cy.wait(1000)
       cy.get('.focusable', {timeout: 5000})
         .click({force: true})
     })
@@ -54,7 +54,7 @@ desktopSizes.forEach((size) => {
       cy.contains('#building-proctors', 'Building Proctors')
         .should('have.attr', 'building', '0517')
       cy.get('.no-decor')
-        .should('have.attr', 'href', 'https://proctorlist.tamu.edu/MainProctorBuildings/Details/0517?utm_source=aggiemap')
+        .should('have.attr', 'href', 'https://proctorlist.tamu.edu/?utm_source=aggiemap')
     })
     it('Info Header', () => {
       cy.contains(':nth-child(3) > .feature-style-1', 'Departments & Offices')
