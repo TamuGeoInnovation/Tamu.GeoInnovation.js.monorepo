@@ -83,7 +83,7 @@ jobs:
         displayName: 'Copying oidc-provider-config file to oidc-provider-nest lib'
 
       - bash: |
-          npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildtype }} --exclude="signage-angular,trees-angular,bikeshare,gisday-competitions-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-client-test,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes,veoride-scraper-node,veoride-data-api-nest"
+          npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildtype }} --exclude="signage-angular,trees-angular,bikeshare,gisday-competitions-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-client-test,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes,veoride-scraper-node,veoride-data-api-nest,veoride-data-compiler-node"
         displayName: 'Running build'
 
       - task: CopyFiles@2
