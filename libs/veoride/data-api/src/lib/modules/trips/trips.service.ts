@@ -1,13 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DataTaskStatus } from '@tamu-gisc/veoride/common/entities';
 
+import { DATASETS_STORE } from '../../interfaces/module-registration.interface';
 import { DataTaskPayloadDto, TasksService } from '../tasks/tasks.service';
 
 @Injectable()
 export class TripsService {
   public resource_name = 'trips';
 
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(
+    @Inject(DATASETS_STORE) private readonly datasetsLocation: string,
+    private readonly tasksService: TasksService
+  ) {}
 
   public async requestStatusChangeData(params: GetTripsDto): Promise<DataTaskPayloadDto> {
     const request = await this.tasksService.findOrCreate({

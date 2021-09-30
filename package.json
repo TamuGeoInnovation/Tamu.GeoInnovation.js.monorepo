@@ -130,6 +130,7 @@
     "@types/arcgis-js-api": "~4.19.0",
     "@types/chart.js": "^2.9.3",
     "@types/clipboard": "2.0.1",
+    "@types/express": "^4.17.13",
     "@types/jest": "26.0.8",
     "@types/mapbox-gl": "^1.9.1",
     "@types/node": "12.12.38",

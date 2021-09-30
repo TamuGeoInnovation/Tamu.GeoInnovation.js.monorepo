@@ -1,4 +1,5 @@
-import { BadRequestException, Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Param, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 
 import { RequiredQueryParams } from '@tamu-gisc/common/nest/guards';
 
@@ -13,6 +14,12 @@ export class StatusChangesController {
   @UseGuards(BearerGuard)
   @RequiredQueryParams(['event_time'], BadRequestException)
   public getStatusChanges(@Query() query, @Req() req) {
-    return this.service.requestStatusChangeData({ queryParams: JSON.stringify(query), userId: req.user.guid });
+    return this.service.requestStatusChangeData({ queryParams: query, userId: req.user.guid }, req);
+  }
+
+  @Get(':id')
+  public getCompiledStusChangesDataset(@Param('id') id: string, @Res() res: Response) {
+    const diskPath = this.service.fetchDatasetDiskPath(id);
+    res.download(diskPath);
   }
 }

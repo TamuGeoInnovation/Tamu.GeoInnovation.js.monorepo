@@ -1,6 +1,8 @@
 export const environment = {
-  production: true
+  production: true,
+  prefix: '',
+  port: 3333
 };
 
 export { prodConfig as dbConfig } from './ormconfig';
-export { jwtSecretProd as jwtSecret } from './secrets';
+export { prodConfig as appConfig } from './secrets';
