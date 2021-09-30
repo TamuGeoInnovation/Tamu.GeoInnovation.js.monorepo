@@ -1,7 +1,7 @@
 <div class="publications-container">
   <div *ngFor="let item of dataSource.publications" class="publication-item">
-    <p class="publication-content">{{ item.citation }}</p>
-    <p class="publication-summary">{{ item.quote }}</p>
+    <p class="publication-content" [innerHTML]="item.citation | markdownParse"></p>
+    <p class="publication-summary" [innerHTML]="item.quote | markdownParse"></p>
 
     <a href="{{ item.link }}"><i class="fa fa-link">Source</i></a>
   </div>

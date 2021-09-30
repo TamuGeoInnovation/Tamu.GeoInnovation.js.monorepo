@@ -2,7 +2,7 @@
   <tamu-gisc-kissingbugs-info-block *ngSwitchCase="'page.section-block'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-info-block>
   <tamu-gisc-kissingbugs-figure *ngSwitchCase="'page.figure'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-figure>
   <tamu-gisc-kissingbugs-portrait *ngSwitchCase="'page.portrait'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-portrait>
-  <p *ngSwitchCase="'page.paragraph'" [innerHTML]="dataSource.text | safeHtml"></p>
+  <p *ngSwitchCase="'page.paragraph'" [innerHTML]="dataSource.text | markdownParse"></p>
   <ul>
     <tamu-gisc-kissingbugs-list *ngSwitchCase="'page.list'" [dataSource]="dataSource"></tamu-gisc-kissingbugs-list>
   </ul>
