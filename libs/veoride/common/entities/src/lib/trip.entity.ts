@@ -19,7 +19,7 @@ export class Trip extends ProviderBase {
   @Column({ type: 'simple-json' })
   public route: string;
 
-  @Column()
+  @Column({ type: 'float' })
   public accuracy: number;
 
   @Column({ type: 'bigint' })
@@ -47,8 +47,44 @@ export class Trip extends ProviderBase {
 
     return trip;
   }
+
+  public static rawToDto(rawTrip: RawTrip): Partial<MDSTripDto> {
+    const trip = {
+      trip_id: rawTrip.trip_trip_id,
+      provider_id: rawTrip.trip_provider_id,
+      provider_name: rawTrip.trip_provider_name,
+      start_time: parseInt(rawTrip.trip_start_time, 10),
+      end_time: parseInt(rawTrip.trip_end_time, 10),
+      propulsion_types: rawTrip.trip_propulsion_types.split(','),
+      trip_distance: rawTrip.trip_trip_distance,
+      trip_duration: rawTrip.trip_trip_duration,
+      vehicle_id: rawTrip.trip_vehicle_id,
+      vehicle_type: rawTrip.trip_vehicle_type,
+      route: JSON.parse(rawTrip.trip_route),
+      device_id: rawTrip.trip_device_id,
+      accuracy: rawTrip.trip_accuracy
+    };
+
+    return trip;
+  }
 }
 
 export interface MDSTripDto extends Omit<Trip, 'propulsion_types'> {
   propulsion_types: Array<string>;
+}
+
+export interface RawTrip {
+  trip_accuracy: number;
+  trip_device_id: string;
+  trip_end_time: string;
+  trip_propulsion_types: string;
+  trip_provider_id: string;
+  trip_provider_name: string;
+  trip_route: string;
+  trip_start_time: string;
+  trip_trip_distance: number;
+  trip_trip_duration: number;
+  trip_trip_id: string;
+  trip_vehicle_id: string;
+  trip_vehicle_type: string;
 }
