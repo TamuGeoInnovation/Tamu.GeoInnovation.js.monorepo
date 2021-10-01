@@ -2,18 +2,18 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_GUARD } from '@nestjs/core';
 
-import { DataTask, StatusChange, Token, Trip } from '@tamu-gisc/veoride/common/entities';
+import { DataTask, StatusChange, Token, Trip, Vehicle } from '@tamu-gisc/veoride/common/entities';
 import { VeorideDataApiModule } from '@tamu-gisc/veoride/data-api';
 import { QueryParamGuard } from '@tamu-gisc/common/nest/guards';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { dbConfig, appConfig, environment } from '../environments/environment';
+import { dbConfig, appConfig } from '../environments/environment';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({ ...dbConfig, entities: [DataTask, Token, Trip, StatusChange] }),
+    TypeOrmModule.forRoot({ ...dbConfig, entities: [DataTask, Token, Trip, StatusChange, Vehicle] }),
     VeorideDataApiModule.register(appConfig)
   ],
   controllers: [AppController],

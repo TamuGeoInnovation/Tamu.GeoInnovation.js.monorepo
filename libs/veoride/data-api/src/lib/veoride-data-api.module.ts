@@ -6,8 +6,11 @@ import { TokensModule } from './modules/tokens/tokens.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { VeorideModuleRegistrationOptions } from './interfaces/module-registration.interface';
 import { TasksModule } from './modules/tasks/tasks.module';
+import { VehiclesModule } from './modules/vehicles/vehicles.module';
 
-@Module({})
+@Module({
+  imports: [VehiclesModule]
+})
 export class VeorideDataApiModule {
   public static register(options: VeorideModuleRegistrationOptions): DynamicModule {
     return {
@@ -17,7 +20,8 @@ export class VeorideDataApiModule {
         StatusChangesModule.register(options.storage.datasets),
         TokensModule.register(options.jwt),
         AuthModule.register(options.jwt),
-        TasksModule
+        TasksModule,
+        VehiclesModule
       ],
       controllers: [],
       providers: [],
