@@ -8,44 +8,27 @@ import { DataTask } from '@tamu-gisc/veoride/common/entities';
 export class TasksService {
   constructor(@InjectRepository(DataTask) public readonly repo: Repository<DataTask>) {}
 
-  public static taskToDto(task: DataTask): DataTaskPayloadDto {
-    delete task.updated;
-    delete task.created;
-    delete task.requester;
-    delete task.parameters;
+  public static toDto(task: DataTask): DataTaskRequestPayloadDto {
+    const copy = { ...task };
 
-    return task;
-  }
+    delete copy.updated;
+    delete copy.created;
+    delete copy.requester;
 
-  public async findOrCreate(options: CreateTaskDto): Promise<DataTask> {
-    const existing = await this.repo.findOne({
-      where: {
-        parameters: options.resourceParams,
-        resource: options.resourceName,
-        requester: options.userGuid
-      }
-    });
+    copy.parameters = JSON.parse(task.parameters);
 
-    if (existing) {
-      return existing;
-    }
-
-    const t = new DataTask();
-
-    t.resource = options.resourceName;
-    t.parameters = options.resourceParams;
-    t.requester = options.userGuid;
-
-    return t.save();
+    return (copy as unknown) as DataTaskRequestPayloadDto;
   }
 }
 
-interface CreateTaskDto {
-  resourceName: string;
-  resourceParams: string;
-  userGuid: string;
+export interface DataTaskRequestPayloadDto
+  extends Partial<Omit<DataTask, 'updated' | 'created' | 'requester' | 'parameters'>> {
+  statusUrl?: string;
+  parameters: object;
 }
 
-export interface DataTaskPayloadDto extends Omit<DataTask, 'updated' | 'created' | 'requester' | 'parameters'> {
-  url?: string;
+export interface DataTaskStatusPayloadDto
+  extends Partial<Omit<DataTask, 'updated' | 'created' | 'requester' | 'parameters'>> {
+  downloadUrl?: string;
+  parameters: object;
 }

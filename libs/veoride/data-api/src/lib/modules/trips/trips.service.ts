@@ -1,10 +1,12 @@
+import { constants, promises } from 'fs';
 import { Request } from 'express';
-
 import { Inject, Injectable } from '@nestjs/common';
+
 import { DataTaskStatus } from '@tamu-gisc/veoride/common/entities';
 
 import { DATASETS_STORE } from '../../interfaces/module-registration.interface';
-import { DataTaskPayloadDto, TasksService } from '../tasks/tasks.service';
+import { DataTaskRequestPayloadDto, DataTaskStatusPayloadDto, TasksService } from '../tasks/tasks.service';
+import { getResourceBaseUrl } from '../../utils/url.utils';
 
 @Injectable()
 export class TripsService {
@@ -15,30 +17,58 @@ export class TripsService {
     private readonly tasksService: TasksService
   ) {}
 
-  public async requestStatusChangeData(params: GetTripsDto, req: Request): Promise<DataTaskPayloadDto> {
+  public async requestStatusChangeData(params: GetTripsDto, req: Request): Promise<DataTaskRequestPayloadDto> {
     // Remove access_token if it's that auth strategy is used
     const shallow_params = { ...params.queryParams };
     delete shallow_params['access_token'];
 
-    const request = await this.tasksService.findOrCreate({
-      resourceName: this.resource_name,
-      resourceParams: JSON.stringify(params.queryParams),
-      userGuid: params.userId
+    const request = await this.tasksService.repo
+      .create({
+        resource: this.resource_name,
+        parameters: JSON.stringify(params.queryParams),
+        requester: params.userId
+      })
+      .save();
+
+    const dto = TasksService.toDto(request);
+
+    const baseUrl = getResourceBaseUrl(req);
+
+    dto.statusUrl = baseUrl + `/${request.id}`;
+
+    return dto;
+  }
+
+  public async retrieveDataRequestDetails(id: string, req: Request) {
+    const task = await this.tasksService.repo.findOne({
+      where: {
+        id: id
+      }
     });
 
-    const dto = TasksService.taskToDto(request);
+    const dto: DataTaskStatusPayloadDto = TasksService.toDto(task);
 
-    if (request.status === DataTaskStatus.COMPLETE) {
-      dto.url = dto.url = `${req.protocol}://${req.get('host')}${req.path}/${request.id}`;
+    const baseUrl = getResourceBaseUrl(req, true);
+
+    dto.downloadUrl = `${baseUrl}/${dto.id}/download`;
+    if (dto.status === DataTaskStatus.COMPLETE) {
     } else {
-      dto.url = null;
+      dto.downloadUrl = null;
     }
 
     return dto;
   }
 
-  public fetchDatasetDiskPath(id: string): string {
-    return `${this.datasetsLocation}/${id}.json`;
+  public async fetchDatasetDiskPath(id: string): Promise<string | undefined> {
+    const location = `${this.datasetsLocation}/${id}.json`;
+
+    try {
+      const test = await promises.access(location, constants.R_OK);
+
+      return location;
+    } catch (err) {
+      return undefined;
+    }
   }
 }
 

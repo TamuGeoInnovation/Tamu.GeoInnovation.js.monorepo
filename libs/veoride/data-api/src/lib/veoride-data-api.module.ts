@@ -8,9 +8,7 @@ import { VeorideModuleRegistrationOptions } from './interfaces/module-registrati
 import { TasksModule } from './modules/tasks/tasks.module';
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
 
-@Module({
-  imports: [VehiclesModule]
-})
+@Module({})
 export class VeorideDataApiModule {
   public static register(options: VeorideModuleRegistrationOptions): DynamicModule {
     return {
