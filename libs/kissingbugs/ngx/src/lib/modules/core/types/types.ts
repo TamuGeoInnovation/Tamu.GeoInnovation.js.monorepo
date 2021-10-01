@@ -9,6 +9,7 @@ export type StrapiSingleTypes =
   | 'resources'
   | 'contact'
   | 'navigation'
+  | 'funder'
   | 'footer';
 
 export type IStrapiLocales = 'en' | 'es';
@@ -186,6 +187,12 @@ export interface IStrapiStapleHero {
 }
 
 export interface IStrapiStapleFooter {
+  id: number;
+  text: string;
+  image: IStrapiMedia;
+}
+
+export interface IStrapiStapleFunder {
   id: number;
   text: string;
   image: IStrapiMedia;

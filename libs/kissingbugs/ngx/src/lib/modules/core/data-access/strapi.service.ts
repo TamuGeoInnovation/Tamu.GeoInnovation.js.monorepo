@@ -8,12 +8,10 @@ import {
   StrapiSingleTypes,
   IStrapiStapleFooter,
   IStrapiStapleNavigation,
-  IStrapiBugRecord,
-  IContactBugSubmission,
   IStrapiBugCount,
-  GeoJSONFeatureCollection
+  GeoJSONFeatureCollection,
+  IStrapiStapleFunder
 } from '../types/types';
-import { groupBy, mergeMap, toArray } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +33,10 @@ export class StrapiService {
 
   public getFooter(type: StrapiSingleTypes = 'footer', locale: string = 'en') {
     return this.http.get<IStrapiStapleFooter>(`${this.resource}/${type}?_locale=${locale}`);
+  }
+
+  public getFunder(type: StrapiSingleTypes = 'funder', locale: string = 'en') {
+    return this.http.get<IStrapiStapleFunder>(`${this.resource}/${type}?_locale=${locale}`);
   }
 
   public getCountyLayer() {

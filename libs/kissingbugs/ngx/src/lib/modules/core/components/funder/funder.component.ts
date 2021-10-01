@@ -1,8 +1,12 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import { Observable } from 'rxjs';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { IStrapiStapleFooter } from '../../types/types';
+import { StrapiService } from '../../data-access/strapi.service';
+import { IStrapiStapleFunder } from '../../types/types';
+import { shareReplay } from 'rxjs/operators';
 
 @Component({
   selector: 'tamu-gisc-kissingbugs-funder',
@@ -10,14 +14,16 @@ import { IStrapiStapleFooter } from '../../types/types';
   styleUrls: ['./funder.component.scss']
 })
 export class FunderComponent implements OnInit, OnDestroy {
-  // @Input()
-  // public dataSource: IStrapiStapleFooter;
-
   public api_url = this.environment.value('api_url');
+  public dataSource: Observable<IStrapiStapleFunder>;
 
-  constructor(private environment: EnvironmentService) {}
+  constructor(private environment: EnvironmentService, private ss: StrapiService) {}
 
-  public ngOnInit() {}
+  public ngOnInit() {
+    const language: string = navigator.language.substr(0, 2);
+
+    this.dataSource = this.ss.getFunder('funder', language).pipe(shareReplay(1));
+  }
 
   public ngOnDestroy() {}
 }

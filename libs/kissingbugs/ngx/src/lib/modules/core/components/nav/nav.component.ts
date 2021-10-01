@@ -21,8 +21,6 @@ export class NavComponent implements OnInit, OnDestroy {
     const language: string = navigator.language.substr(0, 2);
 
     this.contents = this.ss.getNavigation('navigation', language).pipe(shareReplay(1));
-
-    console.log(this.activePage);
   }
 
   public ngOnDestroy() {}
