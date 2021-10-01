@@ -1,4 +1,4 @@
-import { MDSVehicleDto, Vehicle } from '@tamu-gisc/veoride/common/entities';
+import { Log, LogType, MDSVehicleDto, Vehicle } from '@tamu-gisc/veoride/common/entities';
 
 import { AbstractCollectorConstructorProperties, MDSResponse, MDSVehiclesPayloadDto } from '../types/types';
 import { AbstractMdsCollector } from './abstract-mds.collector';
@@ -40,8 +40,15 @@ export class VehicleCollector extends AbstractMdsCollector<VehicleCollectorConst
           vehicles.map((v) => this.dtoToEntity(v))
         );
 
-        console.log(`${this.headingResourceName}: Completed scraping. Saved/updated ${vehicles.length} rows.`);
+        console.log(`${this.headingResourceName}: Completed scraping. Saved/updated ${savedVehicles.length} rows.`);
         this.processing = false;
+        Log.record({
+          resource: this.params.resourceName,
+          type: LogType.INFO,
+          category: 'scrape-complete',
+          collectedTime: Date.now(),
+          count: savedVehicles.length
+        });
       } catch (err) {
         console.log(err.message);
         this.processing = false;
@@ -49,6 +56,13 @@ export class VehicleCollector extends AbstractMdsCollector<VehicleCollectorConst
       }
     } catch (err) {
       console.log(`${this.headingResourceName}: Error scraping resource`, err);
+      this.processing = false;
+      Log.record({
+        resource: this.params.resourceName,
+        type: LogType.ERROR,
+        category: 'scrape-abort',
+        message: err.message
+      });
     }
   }
 

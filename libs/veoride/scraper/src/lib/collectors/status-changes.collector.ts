@@ -1,7 +1,14 @@
-import { StatusChange, MDSStatusChangeDto } from '@tamu-gisc/veoride/common/entities';
+import {
+  StatusChange,
+  MDSStatusChangeDto,
+  Log,
+  LogType,
+  dateDifferenceGreaterThan,
+  mdsTimeHourIncrement,
+  mdsTimeHourToDate
+} from '@tamu-gisc/veoride/common/entities';
 
 import { BaseMdsCollector } from './base-mds.collector';
-import { dateDifferenceGreaterThan, mdsTimeHourIncrement, mdsTimeHourToDate } from '../utilities/time.utils';
 import {
   BaseMdsCollectorConstructorProperties,
   MDSResponse,
@@ -57,6 +64,13 @@ export class StatusChangeCollector extends BaseMdsCollector<
         await this.updateLastCollected(currentCollectionDate);
         console.log(`${this.headingResourceName}: Completed scraping. Saved ${savedStatusChanges.length} rows`);
         this.processing = false;
+        Log.record({
+          resource: this.params.resourceName,
+          type: LogType.INFO,
+          category: 'scrape-complete',
+          collectedTime: currentCollectionDate,
+          count: savedStatusChanges.length
+        });
       }
 
       // After status changes have been recorded, check to see if the time offset between "now" and the collection date time.
@@ -69,6 +83,13 @@ export class StatusChangeCollector extends BaseMdsCollector<
       }
     } catch (err) {
       console.log(`${this.headingResourceName}: Error scraping resource`, err);
+      this.processing = false;
+      Log.record({
+        resource: this.params.resourceName,
+        type: LogType.ERROR,
+        category: 'scrape-abort',
+        message: err.message
+      });
     }
   }
 

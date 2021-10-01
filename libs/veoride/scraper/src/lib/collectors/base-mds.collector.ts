@@ -1,9 +1,14 @@
 import { BaseEntity } from 'typeorm';
 
-import { PersistanceRecord } from '@tamu-gisc/veoride/common/entities';
+import {
+  Log,
+  LogType,
+  PersistanceRecord,
+  dateDifferenceGreaterThan,
+  mdsTimeHourToDate
+} from '@tamu-gisc/veoride/common/entities';
 
 import { AbstractMdsCollector, AnyPromise, EntityAlias } from './abstract-mds.collector';
-import { dateDifferenceGreaterThan, mdsTimeHourToDate } from '../utilities/time.utils';
 import { BaseMdsCollectorConstructorProperties, BaseRequestParams } from '../types/types';
 
 export abstract class BaseMdsCollector<
@@ -101,6 +106,13 @@ export abstract class BaseMdsCollector<
         `${this.headingResourceName}: Found ${categorizedDtoEntities.duplicates.length} entity duplicates in scrape job`,
         categorizedDtoEntities.duplicates
       );
+      Log.record({
+        resource: this.params.resourceName,
+        type: LogType.WARNING,
+        category: 'scrape-duplicate',
+        count: categorizedDtoEntities.duplicates.length,
+        details: categorizedDtoEntities.duplicates
+      });
     }
 
     return newRecords;

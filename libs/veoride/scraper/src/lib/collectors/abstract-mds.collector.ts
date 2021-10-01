@@ -1,8 +1,9 @@
 import { URLSearchParams } from 'url';
+import { BaseEntity } from 'typeorm';
+
 import got from 'got';
 
 import { AbstractCollectorConstructorProperties, BaseRequestParams, MDSResponse } from '../types/types';
-import { BaseEntity } from 'typeorm';
 
 export abstract class AbstractMdsCollector<S extends AbstractCollectorConstructorProperties, T extends BaseRequestParams> {
   public acceptHeader = 'application/vnd.mds+json;version=1.1';

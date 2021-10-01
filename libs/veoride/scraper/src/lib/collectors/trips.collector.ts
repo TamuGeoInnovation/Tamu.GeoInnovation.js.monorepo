@@ -1,7 +1,14 @@
-import { Trip, MDSTripDto } from '@tamu-gisc/veoride/common/entities';
+import {
+  Trip,
+  MDSTripDto,
+  Log,
+  LogType,
+  dateDifferenceGreaterThan,
+  mdsTimeHourIncrement,
+  mdsTimeHourToDate
+} from '@tamu-gisc/veoride/common/entities';
 
 import { BaseMdsCollector } from './base-mds.collector';
-import { dateDifferenceGreaterThan, mdsTimeHourIncrement, mdsTimeHourToDate } from '../utilities/time.utils';
 import { BaseMdsCollectorConstructorProperties, MDSResponse, MDSTripsPayloadDto, TripRequestParams } from '../types/types';
 
 export class TripCollector extends BaseMdsCollector<TripCollectorConstructorProperties, TripRequestParams> {
@@ -46,6 +53,13 @@ export class TripCollector extends BaseMdsCollector<TripCollectorConstructorProp
 
       await this.updateLastCollected(currentCollectionDate);
       console.log(`${this.headingResourceName}: Completed scraping. Saved ${savedTrips.length} rows.`);
+      Log.record({
+        resource: this.params.resourceName,
+        type: LogType.INFO,
+        category: 'scrape-complete',
+        collectedTime: currentCollectionDate,
+        count: savedTrips.length
+      });
       this.processing = false;
 
       // After trips have been recorded, check to see if the time offset between "now" and the collection date time.
@@ -56,6 +70,13 @@ export class TripCollector extends BaseMdsCollector<TripCollectorConstructorProp
       }
     } catch (err) {
       console.log(`${this.headingResourceName}: Error scraping resource`, err);
+      this.processing = false;
+      Log.record({
+        resource: this.params.resourceName,
+        type: LogType.ERROR,
+        category: 'scrape-abort',
+        message: err.message
+      });
     }
   }
 
