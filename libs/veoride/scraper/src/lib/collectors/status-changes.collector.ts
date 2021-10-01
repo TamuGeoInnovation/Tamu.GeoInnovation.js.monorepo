@@ -1,15 +1,15 @@
 import { StatusChange, MDSStatusChangeDto } from '@tamu-gisc/veoride/common/entities';
 
-import { BaseCollector } from './base.collector';
+import { BaseMdsCollector } from './base-mds.collector';
 import { dateDifferenceGreaterThan, mdsTimeHourIncrement, mdsTimeHourToDate } from '../utilities/time.utils';
 import {
-  BaseCollectorConstructorProperties,
+  BaseMdsCollectorConstructorProperties,
   MDSResponse,
   MDSStatusChangesPayloadDto,
   StatusChangesRequestParams
 } from '../types/types';
 
-export class StatusChangeCollector extends BaseCollector<
+export class StatusChangeCollector extends BaseMdsCollector<
   StatusChangeCollectorConstructorProperties,
   StatusChangesRequestParams
 > {
@@ -79,6 +79,6 @@ export class StatusChangeCollector extends BaseCollector<
   }
 }
 
-export interface StatusChangeCollectorConstructorProperties extends BaseCollectorConstructorProperties {
+export interface StatusChangeCollectorConstructorProperties extends BaseMdsCollectorConstructorProperties {
   eventDate: string;
 }

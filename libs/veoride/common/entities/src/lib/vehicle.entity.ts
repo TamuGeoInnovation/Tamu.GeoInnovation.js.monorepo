@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 import { ProviderBase } from './provider-base.entity';
 
@@ -25,22 +25,29 @@ export class Vehicle extends ProviderBase {
   @Column({ type: 'float' })
   public battery_pct: number;
 
+  @CreateDateColumn()
+  public created: Date;
+
+  @UpdateDateColumn()
+  public updated: Date;
+
   public static fromDto(dto: MDSVehicleDto): Vehicle {
-    const sc = new Vehicle();
+    const v = new Vehicle();
 
-    sc.provider_id = dto.provider_id;
-    sc.provider_name = dto.provider_name;
-    sc.device_id = dto.device_id;
-    sc.vehicle_id = dto.vehicle_id;
-    sc.vehicle_type = dto.vehicle_type;
-    sc.propulsion_types = dto.propulsion_types.toString();
-    sc.last_vehicle_state = dto.last_vehicle_state;
-    sc.last_event_types = dto.last_event_types.toString();
-    sc.last_event_time = dto.last_event_time.toString();
-    sc.last_event_location = dto.last_event_location;
-    sc.battery_pct = dto.battery_pct;
+    v.provider_id = dto.provider_id;
+    v.provider_name = dto.provider_name;
+    v.device_id = dto.device_id;
+    v.vehicle_id = dto.vehicle_id;
+    v.vehicle_type = dto.vehicle_type;
+    v.propulsion_types = dto.propulsion_types.toString();
+    v.last_vehicle_state = dto.last_vehicle_state;
+    v.last_event_types = dto.last_event_types.toString();
+    v.last_event_time = dto.last_event_time.toString();
+    v.last_event_location = dto.last_event_location;
+    v.current_location = dto.current_location;
+    v.battery_pct = dto.battery_pct;
 
-    return sc;
+    return v;
   }
 
   public static toDto(vehicle: Vehicle): Partial<MDSVehicleDto> {

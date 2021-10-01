@@ -1,61 +1,17 @@
-import { URLSearchParams } from 'url';
 import { BaseEntity } from 'typeorm';
-
-import got from 'got';
 
 import { PersistanceRecord } from '@tamu-gisc/veoride/common/entities';
 
-import { AbstractCollector, AnyPromise } from './abstract.collector';
+import { AbstractMdsCollector, AnyPromise, EntityAlias } from './abstract-mds.collector';
 import { dateDifferenceGreaterThan, mdsTimeHourToDate } from '../utilities/time.utils';
-import { BaseCollectorConstructorProperties, BaseRequestParams, MDSResponse } from '../types/types';
+import { BaseMdsCollectorConstructorProperties, BaseRequestParams } from '../types/types';
 
-export abstract class BaseCollector<
-  S extends BaseCollectorConstructorProperties,
+export abstract class BaseMdsCollector<
+  S extends BaseMdsCollectorConstructorProperties,
   T extends BaseRequestParams
-> extends AbstractCollector {
-  public acceptHeader = 'application/vnd.mds+json;version=1.1';
-  public params: S;
-
-  public processing = false;
-  /**
-   * Formatted plural resource name used in the log entries.
-   */
-  public headingResourceName: string;
-
+> extends AbstractMdsCollector<S, T> {
   constructor(params: S) {
-    super();
-    this.params = params;
-    this.headingResourceName = `${(params.resourceName + 'S').toUpperCase()}`;
-  }
-
-  public async resource<TR>(parameters: T): Promise<MDSResponse<TR>> {
-    console.log(`${this.headingResourceName}: Scraping with ${JSON.stringify(parameters)}`);
-
-    try {
-      const res = (await got
-        .get(this.params.url, {
-          headers: {
-            Accept: this.acceptHeader,
-            Authorization: `Bearer ${this.params.token}`
-          },
-          searchParams: new URLSearchParams(parameters)
-        })
-        .json()) as MDSResponse<TR>;
-
-      return res;
-    } catch (err) {
-      if (err.response.statusCode === 404) {
-        throw new Error(
-          `${this.headingResourceName}: Requested parameters ${JSON.stringify(
-            parameters
-          )} do not yet exist. Aborting scraping job.`
-        );
-      } else if (err.response.statusCode === 401) {
-        throw new Error(`${this.headingResourceName}: Authentication token invalid.`);
-      } else {
-        throw new Error(`${this.headingResourceName}: Error requesting resource`);
-      }
-    }
+    super(params);
   }
 
   public init() {
@@ -181,14 +137,6 @@ export abstract class BaseCollector<
     return PersistanceRecord.findOrCreate(this.params.persistanceKey, value);
   }
 
-  public async saveEntities<C extends BaseEntity>(entity: EntityAlias, entities: Array<C>): Promise<Array<C>> {
-    // Parameter limit per query is ~2000. Batch the entry submissions to not exceed that parameter limit.
-    const chunk = 2000 / Object.entries(entities[0]).length;
-    const savedRecords = await entity.save(entities, { chunk });
-
-    return (savedRecords as unknown) as Array<C>;
-  }
-
   private batchParameters<C>(entityLikeCollection: Array<C>, maxBatchSize: number) {
     const batchRatio = maxBatchSize / entityLikeCollection.length;
     const batchSize = Math.floor(entityLikeCollection.length * batchRatio);
@@ -204,5 +152,3 @@ export abstract class BaseCollector<
     return batches;
   }
 }
-
-type EntityAlias = typeof BaseEntity;

@@ -1,12 +1,11 @@
-import { MDSStatusChangeDto, MDSTripDto } from '@tamu-gisc/veoride/common/entities';
+import { MDSStatusChangeDto, MDSTripDto, MDSVehicleDto } from '@tamu-gisc/veoride/common/entities';
 
-export interface BaseCollectorConstructorProperties {
+export interface AbstractCollectorConstructorProperties {
   /**
    * Bearer token authorization key to be used in all resource requests.
    */
   token: string;
   url: string;
-  persistanceKey: string;
 
   /**
    * Interval to check for new resource objects in minutes.
@@ -14,6 +13,10 @@ export interface BaseCollectorConstructorProperties {
   interval: number;
 
   resourceName: string;
+}
+
+export interface BaseMdsCollectorConstructorProperties extends AbstractCollectorConstructorProperties {
+  persistanceKey: string;
 }
 
 // tslint:disable-next-line: no-empty-interface
@@ -56,4 +59,8 @@ export interface MDSTripsPayloadDto {
 
 export interface MDSStatusChangesPayloadDto {
   status_changes: Array<MDSStatusChangeDto>;
+}
+
+export interface MDSVehiclesPayloadDto {
+  vehicles: Array<MDSVehicleDto>;
 }

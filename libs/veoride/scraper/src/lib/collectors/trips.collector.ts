@@ -1,10 +1,10 @@
 import { Trip, MDSTripDto } from '@tamu-gisc/veoride/common/entities';
 
-import { BaseCollector } from './base.collector';
+import { BaseMdsCollector } from './base-mds.collector';
 import { dateDifferenceGreaterThan, mdsTimeHourIncrement, mdsTimeHourToDate } from '../utilities/time.utils';
-import { BaseCollectorConstructorProperties, MDSResponse, MDSTripsPayloadDto, TripRequestParams } from '../types/types';
+import { BaseMdsCollectorConstructorProperties, MDSResponse, MDSTripsPayloadDto, TripRequestParams } from '../types/types';
 
-export class TripCollector extends BaseCollector<TripCollectorConstructorProperties, TripRequestParams> {
+export class TripCollector extends BaseMdsCollector<TripCollectorConstructorProperties, TripRequestParams> {
   constructor(params: TripCollectorConstructorProperties) {
     super(params);
   }
@@ -66,6 +66,6 @@ export class TripCollector extends BaseCollector<TripCollectorConstructorPropert
   }
 }
 
-export interface TripCollectorConstructorProperties extends BaseCollectorConstructorProperties {
+export interface TripCollectorConstructorProperties extends BaseMdsCollectorConstructorProperties {
   startDate: string;
 }
