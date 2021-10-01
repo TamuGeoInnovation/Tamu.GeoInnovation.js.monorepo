@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, Get, NotFoundException, Param, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 
-import { RequiredQueryParams } from '@tamu-gisc/common/nest/guards';
+import { QueryParamGuard, RequiredQueryParams } from '@tamu-gisc/common/nest/guards';
 
 import { BearerGuard } from '../auth/guards/bearer-guard/bearer-guard.guard';
 import { TripsService } from './trips.service';
@@ -28,7 +28,7 @@ export class TripsController {
     return this.service.retrieveDataRequestDetails(id, req);
   }
 
-  @UseGuards(BearerGuard)
+  @UseGuards(BearerGuard, QueryParamGuard)
   @RequiredQueryParams(['end_time'], BadRequestException)
   @Get('')
   public getTrips(@Query() query, @Req() req) {

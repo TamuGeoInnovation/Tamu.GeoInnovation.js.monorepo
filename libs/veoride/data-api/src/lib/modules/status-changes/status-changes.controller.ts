@@ -1,7 +1,7 @@
-import { BadRequestException, Controller, Get, NotFoundException, Param, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
+import { BadRequestException, Controller, Get, NotFoundException, Param, Query, Req, Res, UseGuards } from '@nestjs/common';
 
-import { RequiredQueryParams } from '@tamu-gisc/common/nest/guards';
+import { QueryParamGuard, RequiredQueryParams } from '@tamu-gisc/common/nest/guards';
 
 import { BearerGuard } from '../auth/guards/bearer-guard/bearer-guard.guard';
 import { StatusChangesService } from './status-changes.service';
@@ -29,7 +29,7 @@ export class StatusChangesController {
   }
 
   @Get('')
-  @UseGuards(BearerGuard)
+  @UseGuards(BearerGuard, QueryParamGuard)
   @RequiredQueryParams(['event_time'], BadRequestException)
   public getStatusChanges(@Query() query, @Req() req) {
     return this.service.requestStatusChangeData({ queryParams: query, userId: req.user.guid }, req);
