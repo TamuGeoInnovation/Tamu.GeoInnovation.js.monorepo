@@ -1,5 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
@@ -18,21 +26,27 @@ export class ContactComponent implements OnInit, OnDestroy {
   public contactForm: FormGroup;
 
   constructor(private ss: StrapiService, private fb: FormBuilder) {
-    this.contactForm = this.fb.group({
-      firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-      lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      verifyEmail: new FormControl('', [Validators.required, Validators.email]),
-      message: new FormControl('', [Validators.required, Validators.minLength(4)]),
-      dateOfEncounter: new FormControl(''),
-      timeOfEncounter: new FormControl(''),
-      locationOfEncounter: new FormControl(''),
-      stateOfEncounter: new FormControl(''),
-      associatedWithBite: new FormControl(''),
-      behaviour: new FormControl(''),
-      file1: new FormControl(''),
-      file2: new FormControl('')
-    });
+    this.contactForm = this.fb.group(
+      {
+        firstName: new FormControl('', [Validators.minLength(2)]),
+        lastName: new FormControl('', [Validators.minLength(2)]),
+        email: new FormControl('', [Validators.required, Validators.email]),
+        verifyEmail: new FormControl('', [Validators.email]),
+        message: new FormControl(''),
+        dateOfEncounter: new FormControl(''),
+        timeOfEncounter: new FormControl(''),
+        locationOfEncounter: new FormControl(''),
+        stateOfEncounter: new FormControl(''),
+        associatedWithBite: new FormControl(''),
+        behaviour: new FormControl(''),
+        file1: new FormControl(''),
+        file2: new FormControl(''),
+        isHuman: new FormControl(false)
+      },
+      {
+        validators: [confirmedEmailValidator, isTrue]
+      }
+    );
   }
 
   public ngOnInit() {
@@ -44,15 +58,43 @@ export class ContactComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {}
 
   public validate() {
-    const contact: any = {
-      // ...this.contactForm.value,
-      recipientEmail: this.contactForm.controls.email.value,
-      subjectLine: 'Kissing bug submission',
-      emailBodyText: this.contactForm.controls.message.value
-    };
+    const formData = new FormData();
+    const fileControls = [this.contactForm.controls.file1, this.contactForm.controls.file2];
 
-    this.ss.sendEmail(contact).subscribe((result) => {
-      console.log(result);
+    const controls = Object.keys(this.contactForm.value);
+    controls.forEach((controlName) => {
+      if (!controlName.includes('file')) {
+        formData.append(controlName, this.contactForm.get(controlName).value);
+      }
     });
+
+    fileControls.forEach((fileControl, i) => {
+      if (fileControl.value && fileControl.value !== '') {
+        formData.append(`file${i}`, fileControl.value, fileControl.value.name);
+      }
+    });
+
+    formData.append('recipientEmail', this.contactForm.controls.email.value);
+    formData.append('subjectLine', 'Kissing bug submission');
+    formData.append('emailBodyText', this.contactForm.controls.message.value);
+
+    this.ss.sendEmail(formData).subscribe((result) => {});
+  }
+
+  public onFileChanged(file: string, event) {
+    this.contactForm.get(file).setValue(event.target.files[0]);
   }
 }
+
+export const isTrue: ValidatorFn = (control: AbstractControl) => {
+  const isHuman = control.get('isHuman');
+
+  return isHuman && isHuman.value ? null : { isRobot: true };
+};
+
+export const confirmedEmailValidator: ValidatorFn = (control: AbstractControl) => {
+  const email = control.get('email');
+  const verifyEmail = control.get('verifyEmail');
+
+  return email && verifyEmail && email.value === verifyEmail.value ? null : { confirmedEmail: true };
+};

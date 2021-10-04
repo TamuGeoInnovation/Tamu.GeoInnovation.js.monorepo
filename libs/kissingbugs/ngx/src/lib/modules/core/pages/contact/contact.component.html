@@ -11,21 +11,45 @@
     <div id="contactForm" class="column6">
       <div class="form-item">
         <input formControlName="firstName" class="input-item" type="text" id="input1" placeholder="First Name" name="first-name" required/>
-        <div *ngIf="this.contactForm.controls.firstName.errors?.minlength">
+        <div *ngIf="this.contactForm.controls.firstName.errors?.required" class="errorMessage">
+          You must provide your name.
+        </div>
+        <div *ngIf="this.contactForm.controls.firstName.errors?.minlength" class="errorMessage">
           Name must be at least 2 characters long.
         </div>
       </div>
       <div class="form-item">
         <input formControlName="lastName" class="input-item" type="text" id="input1" placeholder="Last Name" name="last-name" required/>
-        <div *ngIf="this.contactForm.controls.lastName.errors?.minlength">
+        <div *ngIf="this.contactForm.controls.lastName.errors?.required" class="errorMessage">
+          You must provide your name.
+        </div>
+        <div *ngIf="this.contactForm.controls.lastName.errors?.minlength" class="errorMessage">
           Name must be at least 2 characters long.
         </div>
       </div>
       <div class="form-item">
         <input formControlName="email" class="input-item" type="text" id="input1" placeholder="Email" name="email" />
+        <div *ngIf="this.contactForm.controls.email.errors?.required" class="errorMessage">
+          You must provide your email.
+        </div>
+        <div *ngIf="this.contactForm.controls.email.errors?.email" class="errorMessage">
+          Must use a valid email address.
+        </div>
+        <div *ngIf="this.contactForm.errors?.confirmedEmail" class="errorMessage">
+          Emails must match.
+        </div>
       </div>
       <div class="form-item">
         <input formControlName="verifyEmail" class="input-item" type="text" id="input1" placeholder="Verify Email" name="verifyEmail" />
+        <div *ngIf="this.contactForm.controls.verifyEmail.errors?.required" class="errorMessage">
+          You must provide your email.
+        </div>
+        <div *ngIf="this.contactForm.controls.verifyEmail.errors?.email" class="errorMessage">
+          Must use a valid email address.
+        </div>
+        <div *ngIf="this.contactForm.errors?.confirmedEmail" class="errorMessage">
+          Emails must match.
+        </div>
       </div>
       <div class="form-item">
         <input formControlName="message" class="input-item" type="text" id="input1" placeholder="Message" name="message" />
@@ -68,33 +92,65 @@
             <label class="input-label no-float no-text-input" for="input10">Was this bug found in a bedroom or is known to be associated with a human bite?</label>
 
             <div id="input10">
-              <label for="huey">Yes</label>
-              <input formControlName="associatedWithBite" id="input10-yes" type="radio" name="associatedWithBite" value="yes" />
+              
 
-              <label id="input10-no">No</label>
-              <input formControlName="associatedWithBite" type="radio" name="associatedWithBite" value="no" />
+              
+              <tbody>
+                <tr>
+                  <td>
+                    <input formControlName="associatedWithBite" id="input10-yes" type="radio" name="associatedWithBite" value="yes" />
+                    <label for="input10-yes">Yes</label>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input formControlName="associatedWithBite" id="input10-no" type="radio" name="associatedWithBite" value="no" />
+                    <label for="input10-no">No</label>
+                  </td>
+                </tr>
+              </tbody>
             </div>
+          </div>
 
+          <div class="form-item">
             <div id="input12" class="form-item">
               <input formControlName="behaviour" class="input-item" type="text" id="input12" placeholder="Behaviour of Bug (Crawling, Dead, Feeding, etc.)" name="behaviour" />
             </div>
+          </div>
 
+          <div class="form-item">
             <div class="form-item">
               <label class="input-label no-float no-text-input" for="file1-control">Optional Photograph 1</label>
-              <input formControlName="file1" type="file" id="file1-control" name="file1" />
+              <input type="file" id="file1-control" name="file1" (change)="onFileChanged('file1', $event)" />
 
               <label class="input-label no-float no-text-input" for="file2-control">Optional Photograph 2</label>
-              <input formControlName="file2" type="file" id="file2-control" name="file2" />
+              <input type="file" id="file2-control" name="file2" (change)="onFileChanged('file2', $event)" />
             </div>
           </div>
+
+            
+
+            
+          
         </div>
       </div>
 
-      <!-- <div class="form-input" id="check-container">
-        <p>You must have JavaScript enabled to send a message.</p>
-      </div> -->
+      <div class="form-input" id="check-container">
+        <div>
+          <div id="validate-message"></div>
+          <div class="custom-input-control">
+            <input formControlName="isHuman" id="checkConfirmation" type="checkbox" name="check">
+            <i></i>
+          </div>
+          <label for="checkConfirmation">I am not a robot</label>
+        </div>
+        <div *ngIf="this.contactForm.controls.isHuman.errors?.isRobot" class="errorMessage">
+          Please verify that you are not a robot.
+        </div>
+      </div>
 
-      <button class="button unavailable validate-button" id="btn_send2" (click)="validate();" tabindex="0" aria-role="Button" aria-roledescription="Submits the form.">Submit</button>
+
+      <button class="button validate-button" [ngClass]="this.contactForm.errors ? 'unavailable': 'available'" id="btn_send2" (click)="validate();" tabindex="0" aria-role="Button" aria-roledescription="Submits the form.">Submit</button>
     </div>
   </form>
 </article>

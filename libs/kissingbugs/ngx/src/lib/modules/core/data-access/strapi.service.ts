@@ -51,7 +51,7 @@ export class StrapiService {
     return this.http.get<IStrapiBugCount[]>(`${this.resource}/bug-submissions/speciesByMonth/${speciesGuid}/${month}`);
   }
 
-  public sendEmail(body: any) {
+  public sendEmail(body: FormData) {
     return this.http.post(`${this.environment.value('email_server_url')}/`, body);
   }
 }
