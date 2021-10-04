@@ -1,7 +1,11 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import { Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
+import { StrapiService } from '../../data-access/strapi.service';
 import { IStrapiStapleFooter } from '../../types/types';
 
 @Component({
@@ -10,14 +14,16 @@ import { IStrapiStapleFooter } from '../../types/types';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent implements OnInit, OnDestroy {
-  @Input()
-  public dataSource: IStrapiStapleFooter;
-
   public api_url = this.environment.value('api_url');
+  public dataSource: Observable<IStrapiStapleFooter>;
 
-  constructor(private environment: EnvironmentService) {}
+  constructor(private environment: EnvironmentService, private ss: StrapiService) {}
 
-  public ngOnInit() {}
+  public ngOnInit() {
+    const language: string = navigator.language.substr(0, 2);
+
+    this.dataSource = this.ss.getFooter('footer', language).pipe(shareReplay(1));
+  }
 
   public ngOnDestroy() {}
 }

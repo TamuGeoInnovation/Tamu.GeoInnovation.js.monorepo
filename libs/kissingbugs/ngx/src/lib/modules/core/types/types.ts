@@ -186,10 +186,16 @@ export interface IStrapiStapleHero {
   fa_icon: string;
 }
 
+export interface IStrapiFooterItem {
+  id: number;
+  title: string;
+  value: string;
+}
 export interface IStrapiStapleFooter {
   id: number;
-  text: string;
-  image: IStrapiMedia;
+  year: IStrapiFooterItem;
+  contact: IStrapiFooterItem;
+  disclaimer: IStrapiFooterItem;
 }
 
 export interface IStrapiStapleFunder {

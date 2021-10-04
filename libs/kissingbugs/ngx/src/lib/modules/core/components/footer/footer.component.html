@@ -6,14 +6,16 @@
 
     <div class="row">
       <div class="column4">
-        <p class="footerTitle">[ KISSING BUGS ]</p>
-        <p id="year">2021</p>
+        <p class="footerTitle">[ {{(dataSource | async)?.year.title }} ]</p>
+        <li>
+          <p id="year">{{(dataSource | async)?.year.value }}</p>
+        </li>
       </div>
 
       <div class="column4">
-        <p class="footerTitle">Contact</p>
+        <p class="footerTitle">{{(dataSource | async)?.contact.title }}</p>
         <li>
-          <p><i class="fa fa-envelope"></i><a href="mailto:kissingbug@cvm.tamu.edu" target="_top">kissingbug@cvm.tamu.edu</a></p>
+          <p><i class="fa fa-envelope"></i><a href="mailto:{{(dataSource | async)?.contact.value }}" target="_top">{{(dataSource | async)?.contact.value }}</a></p>
         </li>
       </div>
 
@@ -25,7 +27,7 @@
       </div>
     </div>
     <div class="row">
-      <p class="disclaimer">All rights reserved. All images are copyrighted by their respective copyright owners.</p>
+      <p class="disclaimer">{{(dataSource | async)?.disclaimer.value }}</p>
     </div>
   </div>
 </footer>
