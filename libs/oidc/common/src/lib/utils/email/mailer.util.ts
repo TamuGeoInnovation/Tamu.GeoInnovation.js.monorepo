@@ -5,6 +5,8 @@ import { User, UserPasswordReset } from '@tamu-gisc/oidc/common';
 import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 
 export type NodeMailerServices = 'ethereal' | 'gmail' | 'tamu-relay';
+
+const fs = require('fs');
 export class Mailer {
   private static transporter: Mail;
   private static service: NodeMailerServices;
@@ -59,17 +61,46 @@ export class Mailer {
     }
   }
 
-  public static sendEmail(info: IMailroomEmailOutbound) {
+  public static sendEmail(info: IMailroomEmailOutbound, toConsole?: boolean) {
     const mailOptions = {
       to: info.recipientEmail,
       subject: info.subjectLine,
       text: info.emailBodyText,
       html: `<p>${info.emailBodyText}</p>`,
       from: '"GISC Mailroom" <giscaccounts@tamu.edu>'
-    }
+    };
 
-    // return Mailer.transporter.sendMail(mailOptions).then((response) =>  Mailer.emailToResponse(response));
-    Mailer.transporter.sendMail(mailOptions).then((response) =>  Mailer.emailToConsole(response));
+    if (toConsole) {
+      Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
+    } else {
+      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response));
+    }
+  }
+
+  public static sendEmailWithAttachments(info: IMailroomEmailOutbound, attachments: any[], toConsole?: boolean) {
+    const embeddedImages = attachments.map((file) => {
+      return {
+        filename: file.fieldname,
+        content: file.buffer.toString('base64'),
+        encoding: 'base64',
+        cid: 'unique@nodemailer.com'
+      };
+    });
+
+    const mailOptions = {
+      to: info.recipientEmail,
+      subject: info.subjectLine,
+      text: info.emailBodyText,
+      html: `Embedded image: <img src="cid:unique@nodemailer.com"/></br><p>${info.emailBodyText}</p>`,
+      from: '"GISC Mailroom" <giscaccounts@tamu.edu>',
+      attachments: embeddedImages
+    };
+
+    if (toConsole) {
+      Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
+    } else {
+      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response));
+    }
   }
 
   public static sendTokenByEmail(recipient: User, token: string) {
