@@ -13,7 +13,7 @@ import * as environment from '../environments/environment';
 
 WebFont.load({
   google: {
-    families: ['Material Icons', 'Lato:400,700,400italic', 'Open+Sans:600italic,600,400,400italic,300,300italic']
+    families: ['Material Icons', 'Lato:400,400italic', 'Open+Sans:600italic,600,400,400italic']
   }
 });
 
