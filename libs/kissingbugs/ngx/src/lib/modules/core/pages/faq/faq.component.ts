@@ -1,4 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
@@ -17,15 +19,18 @@ import {
   providers: [StrapiService]
 })
 export class FaqComponent implements OnInit, OnDestroy {
+  private title = 'FAQ | Kissing Bugs and Chagas Disease in the U.S. | Texas A&M';
   public page: StrapiSingleTypes = 'faq';
   public pageContents: Observable<IStrapiPageResponse>;
   public pageComponents: Observable<
     { sectionId: number; text: string; components: IStrapiPageSection; expanded: boolean }[]
   >;
 
-  constructor(private ss: StrapiService) {}
+  constructor(private titleService: Title, private ss: StrapiService) {}
 
   public ngOnInit() {
+    this.titleService.setTitle(this.title);
+
     const language: string = navigator.language.substr(0, 2);
 
     this.pageContents = this.ss.getPage('faq', language).pipe(shareReplay(1));

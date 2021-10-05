@@ -8,6 +8,8 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
+
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
@@ -21,11 +23,12 @@ import { IStrapiPageResponse, StrapiSingleTypes } from '../../types/types';
   providers: [StrapiService]
 })
 export class ContactComponent implements OnInit, OnDestroy {
+  private title = 'Contact | Kissing Bugs and Chagas Disease in the U.S. | Texas A&M';
   public page: StrapiSingleTypes = 'contact';
   public pageContents: Observable<IStrapiPageResponse>;
   public contactForm: FormGroup;
 
-  constructor(private ss: StrapiService, private fb: FormBuilder) {
+  constructor(private titleService: Title, private ss: StrapiService, private fb: FormBuilder) {
     this.contactForm = this.fb.group(
       {
         firstName: new FormControl('', [Validators.minLength(2)]),
@@ -50,6 +53,8 @@ export class ContactComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
+    this.titleService.setTitle(this.title);
+
     const language: string = navigator.language.substr(0, 2);
 
     this.pageContents = this.ss.getPage('contact', language).pipe(shareReplay(1));

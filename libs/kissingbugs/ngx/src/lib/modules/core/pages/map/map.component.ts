@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 import { forkJoin, Observable } from 'rxjs';
-import { max, shareReplay } from 'rxjs/operators';
+import { shareReplay } from 'rxjs/operators';
 
 import { MapConfig, EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 
@@ -16,6 +17,8 @@ import esri = __esri;
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
+  private title = 'Interactive Map | Kissing Bugs and Chagas Disease in the U.S. | Texas A&M';
+
   public page: StrapiSingleTypes = 'map';
 
   public config: MapConfig = {
@@ -54,9 +57,16 @@ export class MapComponent implements OnInit {
 
   public pageContents: Observable<IStrapiPageResponse>;
 
-  constructor(private ss: StrapiService, private mapService: EsriMapService, private mp: EsriModuleProviderService) {}
+  constructor(
+    private titleService: Title,
+    private ss: StrapiService,
+    private mapService: EsriMapService,
+    private mp: EsriModuleProviderService
+  ) {}
 
   public ngOnInit() {
+    this.titleService.setTitle(this.title);
+
     const language: string = navigator.language.substr(0, 2);
 
     this.pageContents = this.ss.getPage('map', language).pipe(shareReplay(1));
