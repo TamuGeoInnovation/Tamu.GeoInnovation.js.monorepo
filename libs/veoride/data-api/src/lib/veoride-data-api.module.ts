@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { VeorideModuleRegistrationOptions } from './interfaces/module-registration.interface';
 import { TasksModule } from './modules/tasks/tasks.module';
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
+import { LogsModule } from './modules/logs/logs.module';
 
 @Module({})
 export class VeorideDataApiModule {
@@ -19,7 +20,8 @@ export class VeorideDataApiModule {
         TokensModule.register(options.jwt),
         AuthModule.register(options.jwt),
         TasksModule,
-        VehiclesModule
+        VehiclesModule,
+        LogsModule
       ],
       controllers: [],
       providers: [],
