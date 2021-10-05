@@ -10,53 +10,33 @@
   <form [formGroup]="contactForm">
     <div id="contactForm" class="column6">
       <div class="form-item">
-        <input formControlName="firstName" class="input-item" type="text" id="input1" placeholder="First Name" name="first-name" required/>
-        <div *ngIf="this.contactForm.controls.firstName.errors?.required" class="errorMessage">
-          You must provide your name.
-        </div>
-        <div *ngIf="this.contactForm.controls.firstName.errors?.minlength" class="errorMessage">
-          Name must be at least 2 characters long.
-        </div>
+        <input formControlName="firstName" class="input-item" type="text" id="input1" placeholder="First Name" name="first-name" required />
+        <div *ngIf="this.contactForm.controls.firstName.errors?.required && (this.contactForm.controls.firstName.dirty || this.contactForm.controls.firstName.touched)" class="errorMessage">You must provide your name.</div>
+        <div *ngIf="this.contactForm.controls.firstName.errors?.minlength  && (this.contactForm.controls.firstName.dirty || this.contactForm.controls.firstName.touched)" class="errorMessage">Name must be at least 2 characters long.</div>
       </div>
       <div class="form-item">
-        <input formControlName="lastName" class="input-item" type="text" id="input1" placeholder="Last Name" name="last-name" required/>
-        <div *ngIf="this.contactForm.controls.lastName.errors?.required" class="errorMessage">
-          You must provide your name.
-        </div>
-        <div *ngIf="this.contactForm.controls.lastName.errors?.minlength" class="errorMessage">
-          Name must be at least 2 characters long.
-        </div>
+        <input formControlName="lastName" class="input-item" type="text" id="input1" placeholder="Last Name" name="last-name" required />
+        <div *ngIf="this.contactForm.controls.lastName.errors?.required && (this.contactForm.controls.lastName.dirty || this.contactForm.controls.lastName.touched)" class="errorMessage">You must provide your name.</div>
+        <div *ngIf="this.contactForm.controls.lastName.errors?.minlength && (this.contactForm.controls.lastName.dirty || this.contactForm.controls.lastName.touched)" class="errorMessage">Name must be at least 2 characters long.</div>
       </div>
       <div class="form-item">
         <input formControlName="email" class="input-item" type="text" id="input1" placeholder="Email" name="email" />
-        <div *ngIf="this.contactForm.controls.email.errors?.required" class="errorMessage">
-          You must provide your email.
-        </div>
-        <div *ngIf="this.contactForm.controls.email.errors?.email" class="errorMessage">
-          Must use a valid email address.
-        </div>
-        <div *ngIf="this.contactForm.errors?.confirmedEmail" class="errorMessage">
-          Emails must match.
-        </div>
+        <div *ngIf="this.contactForm.controls.email.errors?.required && (this.contactForm.controls.email.dirty || this.contactForm.controls.email.touched)" class="errorMessage">You must provide your email.</div>
+        <div *ngIf="this.contactForm.controls.email.errors?.emai && (this.contactForm.controls.email.dirty || this.contactForm.controls.email.touched)l" class="errorMessage">Must use a valid email address.</div>
+        <div *ngIf="this.contactForm.errors?.confirmedEmail && (this.contactForm.controls.email.dirty || this.contactForm.controls.email.touched)" class="errorMessage">Emails must match.</div>
       </div>
       <div class="form-item">
         <input formControlName="verifyEmail" class="input-item" type="text" id="input1" placeholder="Verify Email" name="verifyEmail" />
-        <div *ngIf="this.contactForm.controls.verifyEmail.errors?.required" class="errorMessage">
-          You must provide your email.
-        </div>
-        <div *ngIf="this.contactForm.controls.verifyEmail.errors?.email" class="errorMessage">
-          Must use a valid email address.
-        </div>
-        <div *ngIf="this.contactForm.errors?.confirmedEmail" class="errorMessage">
-          Emails must match.
-        </div>
+        <div *ngIf="this.contactForm.controls.verifyEmail.errors?.required && (this.contactForm.controls.verifyEmail.dirty || this.contactForm.controls.verifyEmail.touched)" class="errorMessage">You must provide your email.</div>
+        <div *ngIf="this.contactForm.controls.verifyEmail.errors?.email && (this.contactForm.controls.verifyEmail.dirty || this.contactForm.controls.verifyEmail.touched)" class="errorMessage">Must use a valid email address.</div>
+        <div *ngIf="this.contactForm.errors?.confirmedEmail && (this.contactForm.controls.verifyEmail.dirty || this.contactForm.controls.verifyEmail.touched)" class="errorMessage">Emails must match.</div>
       </div>
       <div class="form-item">
         <input formControlName="message" class="input-item" type="text" id="input1" placeholder="Message" name="message" />
       </div>
 
       <div class="form-item" style="display: none">
-        <input class="input-item" type="text" id="control" placeholder="Do not fill this line if you are a human" name="control" />
+        <input formControlName="hiddenInput" class="input-item" type="text" id="control" placeholder="Do not fill this line if you are a human" name="control" />
         <label class="input-label" for="control">Do not fill this line if you are a human</label>
       </div>
 
@@ -92,9 +72,6 @@
             <label class="input-label no-float no-text-input" for="input10">Was this bug found in a bedroom or is known to be associated with a human bite?</label>
 
             <div id="input10">
-              
-
-              
               <tbody>
                 <tr>
                   <td>
@@ -127,11 +104,6 @@
               <input type="file" id="file2-control" name="file2" (change)="onFileChanged('file2', $event)" />
             </div>
           </div>
-
-            
-
-            
-          
         </div>
       </div>
 
@@ -139,22 +111,18 @@
         <div>
           <div id="validate-message"></div>
           <div class="custom-input-control">
-            <input formControlName="isHuman" id="checkConfirmation" type="checkbox" name="check">
+            <input formControlName="isHuman" id="checkConfirmation" type="checkbox" name="check" />
             <i></i>
           </div>
           <label for="checkConfirmation">I am not a robot</label>
         </div>
-        <div *ngIf="this.contactForm.controls.isHuman.errors?.isRobot" class="errorMessage">
-          Please verify that you are not a robot.
-        </div>
+        <div *ngIf="this.contactForm.controls.isHuman.errors?.isRobot" class="errorMessage">Please verify that you are not a robot.</div>
       </div>
 
-
-      <button class="button validate-button" [ngClass]="this.contactForm.errors ? 'unavailable': 'available'" id="btn_send2" (click)="validate();" tabindex="0" aria-role="Button" aria-roledescription="Submits the form.">Submit</button>
+      <button class="button validate-button" [ngClass]="this.contactForm.status === 'VALID' ? 'available': 'unavailable'" id="btn_send2" (click)="validate();" tabindex="0" aria-role="Button" aria-roledescription="Submits the form.">Submit</button>
     </div>
   </form>
 </article>
-
 
 <tamu-gisc-kissingbugs-funder></tamu-gisc-kissingbugs-funder>
 <tamu-gisc-kissingbugs-footer></tamu-gisc-kissingbugs-footer>

@@ -44,6 +44,7 @@ export class ContactComponent implements OnInit, OnDestroy {
         behaviour: new FormControl(''),
         file1: new FormControl(''),
         file2: new FormControl(''),
+        hiddenInput: new FormControl(false),
         isHuman: new FormControl(false)
       },
       {
@@ -63,27 +64,31 @@ export class ContactComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {}
 
   public validate() {
-    const formData = new FormData();
-    const fileControls = [this.contactForm.controls.file1, this.contactForm.controls.file2];
+    if (this.contactForm.status === 'VALID') {
+      const formData = new FormData();
+      const fileControls = [this.contactForm.controls.file1, this.contactForm.controls.file2];
 
-    const controls = Object.keys(this.contactForm.value);
-    controls.forEach((controlName) => {
-      if (!controlName.includes('file')) {
-        formData.append(controlName, this.contactForm.get(controlName).value);
-      }
-    });
+      const controls = Object.keys(this.contactForm.value);
+      controls.forEach((controlName) => {
+        if (!controlName.includes('file')) {
+          formData.append(controlName, this.contactForm.get(controlName).value);
+        }
+      });
 
-    fileControls.forEach((fileControl, i) => {
-      if (fileControl.value && fileControl.value !== '') {
-        formData.append(`file${i}`, fileControl.value, fileControl.value.name);
-      }
-    });
+      fileControls.forEach((fileControl, i) => {
+        if (fileControl.value && fileControl.value !== '') {
+          formData.append(`file${i}`, fileControl.value, fileControl.value.name);
+        }
+      });
 
-    formData.append('recipientEmail', this.contactForm.controls.email.value);
-    formData.append('subjectLine', 'Kissing bug submission');
-    formData.append('emailBodyText', this.contactForm.controls.message.value);
+      formData.append('recipientEmail', this.contactForm.controls.email.value);
+      formData.append('subjectLine', 'Kissing bug submission');
+      formData.append('emailBodyText', this.contactForm.controls.message.value);
 
-    this.ss.sendEmail(formData).subscribe((result) => {});
+      // this.ss.sendEmail(formData).subscribe((result) => {});
+    } else {
+      console.log(this.contactForm.status);
+    }
   }
 
   public onFileChanged(file: string, event) {
