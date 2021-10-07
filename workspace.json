@@ -5529,9 +5529,28 @@
             "outputPath": "dist/apps/veoride-data-api-nest",
             "main": "apps/veoride-data-api-nest/src/main.ts",
             "tsConfig": "apps/veoride-data-api-nest/tsconfig.app.json",
-            "assets": ["apps/veoride-data-api-nest/src/assets"]
+            "assets": [
+              "apps/veoride-data-api-nest/src/assets",
+              "apps/veoride-data-api-nest/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
           },
           "configurations": {
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/veoride-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/veoride-data-api-nest/src/environments/environment.dev.ts"
+                }
+              ]
+            },
             "production": {
               "optimization": true,
               "extractLicenses": true,

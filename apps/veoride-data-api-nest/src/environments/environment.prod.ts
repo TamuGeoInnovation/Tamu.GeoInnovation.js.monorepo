@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   prefix: '',
-  port: 3333
+  port: 27000
 };
 
 export { prodConfig as dbConfig } from './ormconfig';
