@@ -5641,7 +5641,15 @@
             "outputPath": "dist/apps/veoride-scraper-node",
             "main": "apps/veoride-scraper-node/src/main.ts",
             "tsConfig": "apps/veoride-scraper-node/tsconfig.app.json",
-            "assets": ["apps/veoride-scraper-node/src/assets"]
+            "assets": [
+              "apps/veoride-scraper-node/src/assets",
+              "apps/veoride-scraper-node/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
           },
           "configurations": {
             "development": {

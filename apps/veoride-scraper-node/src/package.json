@@ -1,14 +1,13 @@
 {
-  "name": "veoride-data-compiler-node-deploy",
+  "name": "veoride-scraper-node-deploy",
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
   "dependencies": {
     "date-and-time": "^0.14.2",
+    "got": "^11.3.0",
     "mssql": "^6.0.1",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.20",
-    "papaparse": "^5.3.0",
-    "uuid": "^8.1.0"
+    "typeorm": "^0.2.20"
   }
 }

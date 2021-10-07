@@ -96,8 +96,16 @@ jobs:
           TargetFolder: $(System.DefaultWorkingDirectory)/apps/veoride-data-compiler-node/src/environments
         displayName: 'Copying environment files to veoride-data-compiler-node'
 
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)/app_configs/veoride-scraper-node
+          Contents: '*'
+          TargetFolder: $(System.DefaultWorkingDirectory)/apps/veoride-scraper-node/src/environments
+        displayName: 'Copying environment files to veoride-scraper-node'
+
       - bash: |
-          npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildtype }} --exclude="signage-angular,trees-angular,bikeshare,gisday-competitions-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-client-test,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes,veoride-scraper-node"
+          npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildtype }} --exclude="signage-angular,trees-angular,bikeshare,gisday-competitions-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-client-test,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes"
+
         displayName: 'Running build'
 
       - task: CopyFiles@2
