@@ -5703,9 +5703,28 @@
             "outputPath": "dist/apps/veoride-data-compiler-node",
             "main": "apps/veoride-data-compiler-node/src/main.ts",
             "tsConfig": "apps/veoride-data-compiler-node/tsconfig.app.json",
-            "assets": ["apps/veoride-data-compiler-node/src/assets"]
+            "assets": [
+              "apps/veoride-data-compiler-node/src/assets",
+              "apps/veoride-data-compiler-node/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
           },
           "configurations": {
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/veoride-data-compiler-node/src/environments/environment.ts",
+                  "with": "apps/veoride-data-compiler-node/src/environments/environment.dev.ts"
+                }
+              ]
+            },
             "production": {
               "optimization": true,
               "extractLicenses": true,
