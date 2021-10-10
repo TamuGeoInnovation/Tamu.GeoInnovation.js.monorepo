@@ -6,10 +6,7 @@ import { StatusChangeCollector, TripCollector, VehicleCollector } from '@tamu-gi
 
 import { dbConfig, mdsProviderTripsOptions, mdsStatusChangesOptions, mdsVehiclesOptions } from './environments/environment';
 
-createConnection({
-  ...dbConfig,
-  entities: [Trip, StatusChange, DataTask, PersistanceRecord, Vehicle, Log]
-})
+connect()
   .then((connection) => {
     console.log('Database connection successful!');
     const t = new TripCollector(mdsProviderTripsOptions).init();
@@ -17,5 +14,13 @@ createConnection({
     const v = new VehicleCollector(mdsVehiclesOptions).init();
   })
   .catch((error) => {
+    connect();
     console.error('Database connection error', error);
   });
+
+function connect() {
+  return createConnection({
+    ...dbConfig,
+    entities: [Trip, StatusChange, DataTask, PersistanceRecord, Vehicle, Log]
+  });
+}
