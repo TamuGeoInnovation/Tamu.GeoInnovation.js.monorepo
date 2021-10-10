@@ -15,8 +15,8 @@ export class VeorideDataApiModule {
     return {
       module: VeorideDataApiModule,
       imports: [
-        TripsModule.register(options.storage.datasets),
-        StatusChangesModule.register(options.storage.datasets),
+        TripsModule.register(options.storage.datasets, options.baseUrl),
+        StatusChangesModule.register(options.storage.datasets, options.baseUrl),
         TokensModule.register(options.jwt),
         AuthModule.register(options.jwt),
         TasksModule,

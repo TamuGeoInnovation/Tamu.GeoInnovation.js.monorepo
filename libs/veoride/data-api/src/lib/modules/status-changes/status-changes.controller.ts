@@ -25,13 +25,13 @@ export class StatusChangesController {
 
   @Get(':id')
   public getCompiledStusChangesDataset(@Param('id') id: string, @Req() req) {
-    return this.service.retrieveDataRequestDetails(id, req);
+    return this.service.retrieveDataRequestDetails(id);
   }
 
   @Get('')
   @UseGuards(BearerGuard, QueryParamGuard)
   @RequiredQueryParams(['event_time'], BadRequestException)
   public getStatusChanges(@Query() query, @Req() req) {
-    return this.service.requestStatusChangeData({ queryParams: query, userId: req.user.guid }, req);
+    return this.service.requestStatusChangeData({ queryParams: query, userId: req.user.guid });
   }
 }

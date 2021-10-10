@@ -1,12 +1,10 @@
 import { constants, promises } from 'fs';
-import { Request } from 'express';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { DataTaskStatus } from '@tamu-gisc/veoride/common/entities';
 
-import { DATASETS_STORE } from '../../interfaces/module-registration.interface';
+import { BASE_URL, DATASETS_STORE } from '../../interfaces/module-registration.interface';
 import { DataTaskRequestPayloadDto, DataTaskStatusPayloadDto, TasksService } from '../tasks/tasks.service';
-import { getResourceBaseUrl } from '../../utils/url.utils';
 
 @Injectable()
 export class TripsService {
@@ -14,10 +12,11 @@ export class TripsService {
 
   constructor(
     @Inject(DATASETS_STORE) private readonly datasetsLocation: string,
+    @Inject(BASE_URL) private readonly baseUrl: string,
     private readonly tasksService: TasksService
   ) {}
 
-  public async requestStatusChangeData(params: GetTripsDto, req: Request): Promise<DataTaskRequestPayloadDto> {
+  public async requestStatusChangeData(params: GetTripsDto): Promise<DataTaskRequestPayloadDto> {
     // Remove access_token if it's that auth strategy is used
     const shallow_params = { ...params.queryParams };
     delete shallow_params['access_token'];
@@ -32,14 +31,12 @@ export class TripsService {
 
     const dto = TasksService.toDto(request);
 
-    const baseUrl = getResourceBaseUrl(req);
-
-    dto.statusUrl = baseUrl + `/${request.id}`;
+    dto.statusUrl = this.baseUrl + `/${this.resource_name}/${request.id}`;
 
     return dto;
   }
 
-  public async retrieveDataRequestDetails(id: string, req: Request) {
+  public async retrieveDataRequestDetails(id: string) {
     const task = await this.tasksService.repo.findOne({
       where: {
         id: id
@@ -48,10 +45,8 @@ export class TripsService {
 
     const dto: DataTaskStatusPayloadDto = TasksService.toDto(task);
 
-    const baseUrl = getResourceBaseUrl(req, true);
-
-    dto.downloadUrl = `${baseUrl}/${dto.id}/download`;
     if (dto.status === DataTaskStatus.COMPLETE) {
+      dto.downloadUrl = `${this.baseUrl}/${this.resource_name}/${dto.id}/download`;
     } else {
       dto.downloadUrl = null;
     }
@@ -63,7 +58,7 @@ export class TripsService {
     const location = `${this.datasetsLocation}/${id}.json`;
 
     try {
-      const test = await promises.access(location, constants.R_OK);
+      await promises.access(location, constants.R_OK);
 
       return location;
     } catch (err) {

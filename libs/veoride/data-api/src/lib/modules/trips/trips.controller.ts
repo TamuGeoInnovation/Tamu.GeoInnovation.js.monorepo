@@ -24,14 +24,14 @@ export class TripsController {
   }
 
   @Get(':id')
-  public getCompiledStusChangesDataset(@Param('id') id: string, @Req() req) {
-    return this.service.retrieveDataRequestDetails(id, req);
+  public getCompiledStusChangesDataset(@Param('id') id: string) {
+    return this.service.retrieveDataRequestDetails(id);
   }
 
   @UseGuards(BearerGuard, QueryParamGuard)
   @RequiredQueryParams(['end_time'], BadRequestException)
   @Get('')
   public getTrips(@Query() query, @Req() req) {
-    return this.service.requestStatusChangeData({ queryParams: query, userId: req.user.guid }, req);
+    return this.service.requestStatusChangeData({ queryParams: query, userId: req.user.guid });
   }
 }
