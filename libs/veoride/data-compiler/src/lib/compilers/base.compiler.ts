@@ -43,7 +43,7 @@ export class VeorideDataCompilerManager {
 
     try {
       const nowTime = Date.now();
-      console.log(`Found queued data requeust. Processing ${queued.id}`);
+      console.log(`Found queued data request. Processing ${queued.id}`);
       await this.processTask(queued);
       const finishTime = Date.now();
       const seconds = (finishTime - nowTime) / 1000;

@@ -1,4 +1,4 @@
-import { createWriteStream } from 'fs';
+import { createWriteStream, promises, constants } from 'fs';
 import { BaseEntity, getRepository, ObjectType, SelectQueryBuilder } from 'typeorm';
 import { ReadStream } from 'typeorm/platform/PlatformTools';
 
@@ -40,6 +40,14 @@ export abstract class AbstractVeorideDataCompiler<T extends BaseEntity> {
   public writeTo(path: string) {
     return new Promise(async (r, rj) => {
       try {
+        // Remove the file name and extension from the provided path.
+        const directoryParts = path.split('/');
+        directoryParts.pop();
+        directoryParts.join('/');
+        const directory = directoryParts.join('/');
+
+        await this.verifyWritePath(directory);
+
         const readStream = await await this.getStream();
         const writeStream = createWriteStream(path, { encoding: 'utf8' });
         const stringify = new Stringify('json');
@@ -62,5 +70,23 @@ export abstract class AbstractVeorideDataCompiler<T extends BaseEntity> {
 
   public serializeParameters() {
     return JSON.parse(this.task.parameters);
+  }
+
+  /**
+   * Ensures that the write path exists
+   */
+  private async verifyWritePath(path: string) {
+    try {
+      await promises.access(path, constants.R_OK);
+
+      // Directory exists
+      return;
+    } catch (err) {
+      // If error, the directory does not exist.
+
+      await promises.mkdir(path);
+
+      return;
+    }
   }
 }
