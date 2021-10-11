@@ -145,8 +145,8 @@ export abstract class BaseMdsCollector<
   /**
    * Return the persistance record for resource. Used to resume scraping on application start or on timed scrape cycle.
    */
-  public getLastCollected(value: string) {
-    return PersistanceRecord.findOrCreate(this.params.persistanceKey, value);
+  public getLastCollected(resourcePersistanceKey: string) {
+    return PersistanceRecord.findOrCreate(this.params.persistanceKey, resourcePersistanceKey);
   }
 
   private batchParameters<C>(entityLikeCollection: Array<C>, maxBatchSize: number) {

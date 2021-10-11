@@ -1,16 +1,22 @@
-import date from 'date-and-time';
+import { DateTime } from 'luxon';
+
+const timestampFormat = "yyyy-LL-dd'T'HH";
 
 /**
  * Converts an extended ISO 8601 timestamp, used as an MDS request parameter, to a standard Date object.
  *
  * @param {string} timestamp ISO 8601 YYYY-MM-DDTHH extended timestamp
  */
-export function mdsTimeHourToDate(timestamp: string, utc?: boolean): Date {
-  const [d, h] = timestamp.split('T');
+export function mdsTimeHourToDate(timestamp: string, isUtc?: boolean): Date {
+  let parsed;
 
-  const parsed = date.parse(`${d} ${h}`, 'YYYY-MM-DD HH', utc !== undefined ? utc : false);
+  if (isUtc) {
+    parsed = DateTime.fromFormat(`${timestamp}+0`, `${timestampFormat}Z`);
+  } else {
+    parsed = DateTime.fromFormat(timestamp, timestampFormat);
+  }
 
-  return parsed;
+  return parsed.toJSDate();
 }
 
 /**
@@ -19,11 +25,11 @@ export function mdsTimeHourToDate(timestamp: string, utc?: boolean): Date {
  * @param {Date} datetime Standard date object
  */
 export function dateToMdsTimeHour(datetime: Date): string {
-  const formatted = date.format(datetime, 'YYYY-MM-DD HH');
+  const parsed = DateTime.fromJSDate(datetime);
 
-  const joined = formatted.split(' ').join('T');
+  const formatted = parsed.toFormat(timestampFormat);
 
-  return joined;
+  return formatted;
 }
 
 /**
@@ -32,11 +38,17 @@ export function dateToMdsTimeHour(datetime: Date): string {
  * @param {*} timestamp ISO 8601 YYYY-MM-DDTHH extended timestamp
  */
 export function mdsTimeHourIncrement(timestamp: string) {
-  const parsed = mdsTimeHourToDate(timestamp);
+  const d = mdsTimeHourToDate(timestamp);
+  const parsed = DateTime.fromJSDate(d);
 
-  const incremented = date.addHours(parsed, 1);
+  let incremented = parsed.plus({ hours: 1 });
 
-  const formatted = dateToMdsTimeHour(incremented);
+  // Account for DST ending
+  if (parsed.hour === incremented.hour) {
+    incremented = incremented.plus({ hours: 1 });
+  }
+
+  const formatted = dateToMdsTimeHour(incremented.toJSDate());
 
   return formatted;
 }

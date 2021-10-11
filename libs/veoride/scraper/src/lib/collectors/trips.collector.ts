@@ -25,7 +25,7 @@ export class TripCollector extends BaseMdsCollector<TripCollectorConstructorProp
     this.processing = true;
     try {
       // Get last collected date and hour. Scraping will resume from there.
-      const lastCollected = await (await this.getLastCollected(this.params.startDate)).value;
+      const lastCollected = await (await this.getLastCollected(this.params.persistanceKey)).value;
       const currentCollectionDate = mdsTimeHourIncrement(lastCollected);
 
       let resource: MDSResponse<MDSTripsPayloadDto>;
@@ -46,6 +46,11 @@ export class TripCollector extends BaseMdsCollector<TripCollectorConstructorProp
         await this.updateLastCollected(currentCollectionDate);
         console.log(`${this.headingResourceName}: Completed scraping. No new ${this.params.resourceName}s.`);
         this.processing = false;
+
+        if (dateDifferenceGreaterThan(new Date(), mdsTimeHourToDate(currentCollectionDate, true), 1, 'hours')) {
+          this.scrape();
+        }
+
         return;
       }
 

@@ -33,7 +33,7 @@ export class StatusChangeCollector extends BaseMdsCollector<
     this.processing = true;
     try {
       // Get last collected date and hour. Scraping will resume from there.
-      const lastCollected = await (await this.getLastCollected(this.params.eventDate)).value;
+      const lastCollected = await (await this.getLastCollected(this.params.persistanceKey)).value;
       const currentCollectionDate = mdsTimeHourIncrement(lastCollected);
 
       let resource: MDSResponse<MDSStatusChangesPayloadDto>;
