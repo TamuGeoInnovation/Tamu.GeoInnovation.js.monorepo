@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { forkJoin, Observable } from 'rxjs';
@@ -16,7 +16,7 @@ import esri = __esri;
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, AfterViewInit {
   private title = 'Interactive Map | Kissing Bugs and Chagas Disease in the U.S. | Texas A&M';
 
   public page: StrapiSingleTypes = 'map';
@@ -82,7 +82,9 @@ export class MapComponent implements OnInit {
 
       this.getNewDataset();
     });
+  }
 
+  public ngAfterViewInit() {
     this.mp.require(['Expand']).then(([Expand]: [esri.ExpandConstructor]) => {
       const bugSelector = document.getElementById('bug-selector');
 
