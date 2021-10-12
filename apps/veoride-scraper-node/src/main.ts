@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 
-import { Trip, StatusChange, DataTask, PersistanceRecord, Vehicle, Log } from '@tamu-gisc/veoride/common/entities';
+import { Trip, StatusChange, DataTask, Vehicle, Log } from '@tamu-gisc/veoride/common/entities';
 import { StatusChangeCollector, TripCollector, VehicleCollector } from '@tamu-gisc/veoride/scraper';
 
 import { dbConfig, mdsProviderTripsOptions, mdsStatusChangesOptions, mdsVehiclesOptions } from './environments/environment';
@@ -21,6 +21,6 @@ connect()
 function connect() {
   return createConnection({
     ...dbConfig,
-    entities: [Trip, StatusChange, DataTask, PersistanceRecord, Vehicle, Log]
+    entities: [Trip, StatusChange, DataTask, Vehicle, Log]
   });
 }

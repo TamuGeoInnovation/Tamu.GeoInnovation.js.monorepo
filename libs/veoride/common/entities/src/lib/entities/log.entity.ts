@@ -10,7 +10,7 @@ export class Log extends BaseEntity {
   public guid: string;
 
   @Column()
-  public resource: string;
+  public resource: ResourceType;
 
   @Column()
   public type: LogType;
@@ -36,7 +36,7 @@ export class Log extends BaseEntity {
   @UpdateDateColumn()
   public updated: Date;
 
-  public static record(options: CreateLogEntryDto): void {
+  public static record(options: CreateLogEntryDto) {
     const l = Log.create();
 
     l.resource = options.resource;
@@ -55,7 +55,7 @@ export class Log extends BaseEntity {
     l.message = options.message;
     l.details = (options.details as unknown) as string;
 
-    l.save();
+    return l.save();
   }
 
   @BeforeInsert()
@@ -72,6 +72,11 @@ export enum LogType {
   ERROR = 'error'
 }
 
+export enum ResourceType {
+  TRIP = 'trip',
+  STATUS_CHANGE = 'status change',
+  VEHICLE = 'vehicle'
+}
 interface CreateLogEntryDto extends Partial<Omit<Log, 'collectedTime' | 'details'>> {
   collectedTime?: number | string;
   details?: object;

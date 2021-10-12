@@ -1,13 +1,10 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
 
 import { ProviderBase } from './provider-base.entity';
 
 @Entity()
 export class Trip extends ProviderBase {
   @Column()
-  public device_id: string;
-
-  @PrimaryColumn()
   public trip_id: string;
 
   @Column()

@@ -1,4 +1,4 @@
-import { MDSStatusChangeDto, MDSTripDto, MDSVehicleDto } from '@tamu-gisc/veoride/common/entities';
+import { MDSStatusChangeDto, MDSTripDto, MDSVehicleDto, ResourceType } from '@tamu-gisc/veoride/common/entities';
 
 export interface AbstractCollectorConstructorProperties {
   /**
@@ -12,7 +12,7 @@ export interface AbstractCollectorConstructorProperties {
    */
   interval: number;
 
-  resourceName: string;
+  resourceName: ResourceType;
 }
 
 export interface BaseMdsCollectorConstructorProperties extends AbstractCollectorConstructorProperties {

@@ -63,7 +63,7 @@ export abstract class AbstractMdsCollector<S extends AbstractCollectorConstructo
 
   public async saveEntities<C extends BaseEntity>(entity: EntityAlias, entities: Array<C>): Promise<Array<C>> {
     // Parameter limit per query is ~2000. Batch the entry submissions to not exceed that parameter limit.
-    const chunk = 2000 / Object.entries(entities[0]).length;
+    const chunk = 1500 / Object.entries(entities[0]).length;
     const savedRecords = await entity.save(entities, { chunk });
 
     return (savedRecords as unknown) as Array<C>;

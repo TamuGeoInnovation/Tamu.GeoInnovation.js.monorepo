@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon';
+
 import {
   Trip,
   MDSTripDto,
@@ -5,7 +7,9 @@ import {
   LogType,
   dateDifferenceGreaterThan,
   mdsTimeHourIncrement,
-  mdsTimeHourToDate
+  mdsTimeHourToDate,
+  ResourceType,
+  dateToMdsTimeHour
 } from '@tamu-gisc/veoride/common/entities';
 
 import { BaseMdsCollector } from './base-mds.collector';
@@ -25,7 +29,14 @@ export class TripCollector extends BaseMdsCollector<TripCollectorConstructorProp
     this.processing = true;
     try {
       // Get last collected date and hour. Scraping will resume from there.
-      const lastCollected = await (await this.getLastCollected(this.params.persistanceKey)).value;
+      let lastCollected = await (await this.getLastCollected(ResourceType.TRIP))?.collectedTime;
+
+      if (!lastCollected) {
+        lastCollected = this.params.startDate;
+      } else {
+        lastCollected = dateToMdsTimeHour(DateTime.fromMillis(parseInt(lastCollected, 10)).toJSDate(), true);
+      }
+
       const currentCollectionDate = mdsTimeHourIncrement(lastCollected);
 
       let resource: MDSResponse<MDSTripsPayloadDto>;
@@ -43,7 +54,7 @@ export class TripCollector extends BaseMdsCollector<TripCollectorConstructorProp
       const newRecords = await this.processRecords<Trip, MDSTripDto>(trips, ['trip_id'], Trip);
 
       if (newRecords.length === 0) {
-        await this.updateLastCollected(currentCollectionDate);
+        await this.updateLastCollected(currentCollectionDate, newRecords.length);
         console.log(`${this.headingResourceName}: Completed scraping. No new ${this.params.resourceName}s.`);
         this.processing = false;
 
@@ -56,15 +67,9 @@ export class TripCollector extends BaseMdsCollector<TripCollectorConstructorProp
 
       const savedTrips = await this.saveEntities<Trip>(Trip, newRecords);
 
-      await this.updateLastCollected(currentCollectionDate);
+      await this.updateLastCollected(currentCollectionDate, savedTrips.length);
+
       console.log(`${this.headingResourceName}: Completed scraping. Saved ${savedTrips.length} rows.`);
-      Log.record({
-        resource: this.params.resourceName,
-        type: LogType.INFO,
-        category: 'scrape-complete',
-        collectedTime: currentCollectionDate,
-        count: savedTrips.length
-      });
       this.processing = false;
 
       // After trips have been recorded, check to see if the time offset between "now" and the collection date time.

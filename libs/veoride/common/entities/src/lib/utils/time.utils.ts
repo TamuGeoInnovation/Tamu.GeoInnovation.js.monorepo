@@ -24,8 +24,12 @@ export function mdsTimeHourToDate(timestamp: string, isUtc?: boolean): Date {
  *
  * @param {Date} datetime Standard date object
  */
-export function dateToMdsTimeHour(datetime: Date): string {
-  const parsed = DateTime.fromJSDate(datetime);
+export function dateToMdsTimeHour(datetime: Date, isUtc?: boolean): string {
+  let parsed = DateTime.fromJSDate(datetime);
+
+  if (isUtc) {
+    parsed = parsed.setZone('utc');
+  }
 
   const formatted = parsed.toFormat(timestampFormat);
 

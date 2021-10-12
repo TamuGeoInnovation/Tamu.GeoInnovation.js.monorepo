@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon';
+
 import {
   StatusChange,
   MDSStatusChangeDto,
@@ -5,7 +7,9 @@ import {
   LogType,
   dateDifferenceGreaterThan,
   mdsTimeHourIncrement,
-  mdsTimeHourToDate
+  mdsTimeHourToDate,
+  ResourceType,
+  dateToMdsTimeHour
 } from '@tamu-gisc/veoride/common/entities';
 
 import { BaseMdsCollector } from './base-mds.collector';
@@ -33,7 +37,14 @@ export class StatusChangeCollector extends BaseMdsCollector<
     this.processing = true;
     try {
       // Get last collected date and hour. Scraping will resume from there.
-      const lastCollected = await (await this.getLastCollected(this.params.persistanceKey)).value;
+      let lastCollected = await (await this.getLastCollected(ResourceType.STATUS_CHANGE))?.collectedTime;
+
+      if (!lastCollected) {
+        lastCollected = this.params.eventDate;
+      } else {
+        lastCollected = dateToMdsTimeHour(DateTime.fromMillis(parseInt(lastCollected, 10)).toJSDate(), true);
+      }
+
       const currentCollectionDate = mdsTimeHourIncrement(lastCollected);
 
       let resource: MDSResponse<MDSStatusChangesPayloadDto>;
@@ -55,22 +66,17 @@ export class StatusChangeCollector extends BaseMdsCollector<
       );
 
       if (newRecords.length === 0) {
-        await this.updateLastCollected(currentCollectionDate);
+        await this.updateLastCollected(currentCollectionDate, newRecords.length);
+
         console.log(`${this.headingResourceName}: Completed scraping. No new ${this.params.resourceName}s.`);
         this.processing = false;
       } else {
         const savedStatusChanges = await this.saveEntities<StatusChange>(StatusChange, newRecords);
 
-        await this.updateLastCollected(currentCollectionDate);
+        await this.updateLastCollected(currentCollectionDate, savedStatusChanges.length);
+
         console.log(`${this.headingResourceName}: Completed scraping. Saved ${savedStatusChanges.length} rows`);
         this.processing = false;
-        Log.record({
-          resource: this.params.resourceName,
-          type: LogType.INFO,
-          category: 'scrape-complete',
-          collectedTime: currentCollectionDate,
-          count: savedStatusChanges.length
-        });
       }
 
       // After status changes have been recorded, check to see if the time offset between "now" and the collection date time.

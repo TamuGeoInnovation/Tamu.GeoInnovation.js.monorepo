@@ -1,19 +1,16 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
 
 import { ProviderBase } from './provider-base.entity';
 
 @Entity()
 export class StatusChange extends ProviderBase {
-  @PrimaryColumn()
-  public device_id: string;
-
   @Column()
   public vehicle_state: string;
 
-  @PrimaryColumn()
+  @Column()
   public event_types: string;
 
-  @PrimaryColumn('bigint')
+  @Column('bigint')
   public event_time: string;
 
   @Column({ type: 'simple-json' })
