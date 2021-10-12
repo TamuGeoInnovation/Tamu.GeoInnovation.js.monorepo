@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "date-and-time": "^0.14.2",
+    "luxon": "^2.0.2",
     "jsonwebtoken": "^8.5.1",
     "@nestjs/common": "7.0.0",
     "@nestjs/core": "7.0.0",
