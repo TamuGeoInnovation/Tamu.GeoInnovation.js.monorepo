@@ -6,7 +6,9 @@
     [parameter(Position=2, Mandatory=$true, HelpMessage="URL pattern to match.")]
     [string]$UrlPattern,
     [parameter(Position=3, Mandatory=$true, HelpMessage="URL to redirect matching requests.")]
-    [string]$RedirectUrl
+    [string]$RedirectUrl,
+    [parameter(Position=4, Mandatory=$false, HelpMessage="Stop processing of subsequent rules.")]
+    [switch]$StopProcessRules
 )
 
 $path = "MACHINE/WEBROOT/APPHOST/$SiteBinding";
@@ -26,8 +28,13 @@ $ExistingRule = Get-WebConfigurationProperty –pspath $path –Filter $filter -
 
 # Check if rule  exists
 if(($ExistingRule).length -eq 0)  {
-    Add-WebConfigurationProperty –pspath $path –Filter $baseRulesFilter –Name "." -Force –Value @{name=$RuleName;patternSyntax='Wildcard';stopProcessing='False';};
-    Write-Host "$RuleName has been created for $SiteBinding. Applying match rule, conditions, and action..." –BackgroundColor DarkGreen –ForegroundColor Gray;
+    if($StopProcessRules -eq $false){
+        Add-WebConfigurationProperty –pspath $path –Filter $baseRulesFilter –Name "." -Force –Value @{name=$RuleName;patternSyntax='Wildcard';stopProcessing='False';};
+        Write-Host "$RuleName has been created for $SiteBinding. Applying match rule, conditions, and action..." –BackgroundColor DarkGreen –ForegroundColor Gray;
+    } else {
+        Add-WebConfigurationProperty –pspath $path –Filter $baseRulesFilter –Name "." -Force –Value @{name=$RuleName;patternSyntax='Wildcard';stopProcessing='True';};
+        Write-Host "$RuleName has been created for $SiteBinding. Applying match rule, conditions, and action..." –BackgroundColor DarkGreen –ForegroundColor Gray;  
+    }
 } else {
     Write-Host "$RuleName rule already exists. Removing rule conditions to avoid duplicates.";
     Remove-WebConfigurationProperty –pspath $path –Filter $filter -Name "conditions";
@@ -40,5 +47,6 @@ Add-WebConfigurationProperty –pspath $path –Filter "$filter/conditions" –N
 Set-WebConfigurationProperty –pspath $path –Filter "$filter/action" –Name "type" –Value "Rewrite";
 Set-WebConfigurationProperty –pspath $path –Filter "$filter/action" –Name "url" –Value $RedirectUrl;
 Set-WebConfigurationProperty –pspath $path –Filter "$filter/action" –Name "appendQueryString" –Value "true";
+Set-WebConfigurationProperty –pspath $path –Filter "$filter/action" –Name "logRewrittenURL" –Value "true";
 
 Write-Host "$RuleName for $SiteBinding has been updated successfully." –BackgroundColor DarkGreen –ForegroundColor Gray;
