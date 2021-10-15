@@ -3305,7 +3305,15 @@
             "main": "apps/oidc-provider-nest/src/main.ts",
             "outputPath": "dist/apps/oidc-provider-nest",
             "tsConfig": "apps/oidc-provider-nest/tsconfig.app.json",
-            "assets": ["apps/oidc-provider-nest/src/assets", "apps/oidc-provider-nest/src/package.json"]
+            "assets": [
+              "apps/oidc-provider-nest/src/assets",
+              "apps/oidc-provider-nest/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
           },
           "configurations": {
             "production": {
@@ -3400,7 +3408,15 @@
             "polyfills": "apps/oidc-admin-angular/src/polyfills.ts",
             "tsConfig": "apps/oidc-admin-angular/tsconfig.app.json",
             "aot": false,
-            "assets": ["apps/oidc-admin-angular/src/favicon.ico", "apps/oidc-admin-angular/src/assets"],
+            "assets": [
+              "apps/oidc-admin-angular/src/favicon.ico",
+              "apps/oidc-admin-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ],
             "styles": ["apps/oidc-admin-angular/src/styles.scss"],
             "scripts": []
           },
@@ -3417,6 +3433,7 @@
               "sourceMap": false,
               "namedChunks": false,
               "aot": true,
+              "baseHref": "/admin/",
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -3445,6 +3462,7 @@
               "sourceMap": false,
               "namedChunks": false,
               "aot": true,
+              "baseHref": "/admin/",
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -3564,7 +3582,15 @@
             "main": "apps/oidc-admin-nest/src/main.ts",
             "outputPath": "dist/apps/oidc-admin-nest",
             "tsConfig": "apps/oidc-admin-nest/tsconfig.app.json",
-            "assets": ["apps/oidc-admin-nest/src/assets", "apps/oidc-admin-nest/src/package.json"]
+            "assets": [
+              "apps/oidc-admin-nest/src/assets",
+              "apps/oidc-admin-nest/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
           },
           "outputs": ["{options.outputPath}"]
         },

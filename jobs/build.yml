@@ -61,8 +61,29 @@ jobs:
           TargetFolder: $(System.DefaultWorkingDirectory)/apps/cpa-nest/src/environments
         displayName: 'Copying environment files to cpa-nest'
 
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)/app_configs/oidc-admin-nest
+          Contents: '*'
+          TargetFolder: $(System.DefaultWorkingDirectory)/apps/oidc-admin-nest/src/environments
+        displayName: 'Copying environment files to oidc-admin-nest'
+
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)/app_configs/oidc-provider-nest
+          Contents: 'ormconfig.ts'
+          TargetFolder: $(System.DefaultWorkingDirectory)/apps/oidc-provider-nest/src/environments
+        displayName: 'Copying environment files to oidc-provider-nest'
+
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)/app_configs/oidc-provider-nest
+          Contents: 'oidc-provider-config.ts'
+          TargetFolder: $(System.DefaultWorkingDirectory)/libs/oidc/provider-nestjs/src/lib/configs
+        displayName: 'Copying oidc-provider-config file to oidc-provider-nest lib'
+
       - bash: |
-          npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildtype }} --exclude="aggiemap-angular,signage-angular,trees-angular,bikeshare,gisday-competitions-angular,oidc-admin-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-provider-express,oidc-provider-nest,oidc-admin-nest,oidc-client-test,oidc-provider-angular,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes"
+          npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildtype }} --exclude="signage-angular,trees-angular,bikeshare,gisday-competitions-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-client-test,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes"
         displayName: 'Running build'
 
       - task: CopyFiles@2
