@@ -21,11 +21,6 @@ desktopSizes.forEach((size) => {
         .clear()
         .type('Computing Services Annex')
         .type('{enter}')
-        /*
-      for (let i = 0; i < 3; i++) {
-        cy.wait(['@basemap', '@construction', '@tents'])
-      }
-      */
       cy.wait(1000)
       cy.get('.focusable', {timeout: 5000})
         .click({force: true})

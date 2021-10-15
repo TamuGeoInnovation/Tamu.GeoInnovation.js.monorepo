@@ -1,5 +1,6 @@
 /// <reference path="../support/index.d.ts" />
 import {desktopSizes} from "../support/resolutions";
+
 desktopSizes.forEach((size) => {
   describe(`Test Route: ${size} Resolution`, () => {
     beforeEach(() => {

@@ -110,10 +110,12 @@ desktopSizes.forEach((size) => {
     //TODO: Test compass
     it('Rotate Map Orientation by Compass', () => {
       // rotate map using 'a' and 'd'
+      
       // rotate map counter-clockwise for 2 seconds by using keyCode for the letter 'a'
       cy.get('canvas').trigger('keydown', { keyCode: 65 })
       cy.wait(2000)
       cy.get('canvas').trigger('keyup', { keyCode: 65 })
+
       // rotate map clockwise for 2 seconds by using keyCode for the letter 'd'
       cy.get('canvas').trigger('keydown', { keyCode: 68 })
       cy.wait(2000)

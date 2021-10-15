@@ -248,27 +248,5 @@ mobileSizes.forEach((size) => {
         .should('be.visible')
       cy.get('.handle').move({ x: 0, y: 500, force: true }) // drag popup back down to access route options again
     })
-
-    it.skip('Change Start Location After Previous Route', () => {
-
-      // click search bar for new starting location
-      cy.get('.points > :nth-child(1) > .ng-tns-c91-1')
-        .scrollIntoView()
-        .should('be.visible')
-        .click()
-
-      // click current location
-      cy.get('.focusable')
-        .should('be.visible')
-        .click()
-
-      // mock geolocation
-      cy.mockGeolocation()
-
-      // click random location (no new circle should appear)
-
-
-    })
-
   })
 })
