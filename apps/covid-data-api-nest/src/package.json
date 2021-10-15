@@ -9,7 +9,6 @@
     "@nestjs/passport": "^6.1.1",
     "@nestjs/platform-express": "^6.8.3",
     "@nestjs/typeorm": "^6.2.0",
-    "class-validator": "^0.11.0",
     "connect-sqlite3": "^0.9.11",
     "express-session": "^1.17.0",
     "mssql": "^6.0.1",
