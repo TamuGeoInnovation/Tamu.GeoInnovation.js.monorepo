@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 
 import { User, UserPasswordReset } from '@tamu-gisc/oidc/common';
-import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
+import { IMailroomEmailOutbound, INodeMailerSendMailResponse } from '@tamu-gisc/mailroom/common';
 
 export type NodeMailerServices = 'ethereal' | 'gmail' | 'tamu-relay';
 
@@ -66,24 +66,23 @@ export class Mailer {
       to: info.recipientEmail,
       subject: info.subjectLine,
       text: info.emailBodyText,
-      html: `<p>${info.emailBodyText}</p>`,
+      html: info.emailBodyHtml,
       from: '"GISC Mailroom" <giscaccounts@tamu.edu>'
     };
 
     if (toConsole) {
-      Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
+      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
     } else {
       return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response));
     }
   }
 
   public static sendEmailWithAttachments(info: IMailroomEmailOutbound, attachments: any[], toConsole?: boolean) {
-    const embeddedImages = attachments.map((file) => {
+    const embeddedImages = attachments.map((file, i) => {
       return {
-        filename: file.fieldname,
-        content: file.buffer.toString('base64'),
-        encoding: 'base64',
-        cid: 'unique@nodemailer.com'
+        filename: file.originalname,
+        content: file.buffer
+        // cid: 'unique@nodemailer.com'
       };
     });
 
@@ -91,13 +90,20 @@ export class Mailer {
       to: info.recipientEmail,
       subject: info.subjectLine,
       text: info.emailBodyText,
-      html: `Embedded image: <img src="cid:unique@nodemailer.com"/></br><p>${info.emailBodyText}</p>`,
+      // html: `Embedded image: <img src="cid:unique@nodemailer.com"/></br><p>${info.emailBodyText}</p>`,
       from: '"GISC Mailroom" <giscaccounts@tamu.edu>',
       attachments: embeddedImages
     };
 
     if (toConsole) {
-      Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
+      Mailer.transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+          console.error(err.message);
+        } else {
+          console.log(info);
+        }
+      });
+      // .then((response) => Mailer.emailToConsole(response));
     } else {
       return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response));
     }
