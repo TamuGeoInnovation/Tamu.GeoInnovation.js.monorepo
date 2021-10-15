@@ -1,10 +1,9 @@
 import { CallHandler, ExecutionContext, HttpException, Injectable, NestInterceptor } from '@nestjs/common';
 
-import { Observable } from 'rxjs';
-
 @Injectable()
 export class HasRecipientInterceptor implements NestInterceptor {
-  public intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  public intercept(context: ExecutionContext, next: CallHandler<boolean>) {
+    console.log('HasRecipientInterceptor');
     const request = context.switchToHttp().getRequest();
 
     if (request && Object.keys(request.body).length > 0) {
@@ -28,12 +27,14 @@ export class HasRecipientInterceptor implements NestInterceptor {
         return next.handle();
       } else {
         // No recipient emails found; throw error
-        throw new HttpException('No recipient email provided', 701);
+        throw new Error('No recipient email provided');
+        // return { error: 'No recipient email provided' };
       }
     } else {
       // No request or request body; throw error
       // TODO: should we check query params here or something?
-      throw new HttpException('No request body; request probably not multipart/form-data', 702);
+      throw new Error('No request body; request probably not multipart/form-data');
+      // return { error: 'No recipient email provided' };
     }
   }
 }
