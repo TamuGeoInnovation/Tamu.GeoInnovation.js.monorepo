@@ -2,7 +2,7 @@
 //import { exception } from "console";
 import { inRange, isTypedArray } from "cypress/types/lodash";
 import { Runnable } from "mocha";
-import {mobileSizes} from "./resolutions";
+import {mobileSizes} from "../support/resolutions";
 
 mobileSizes.forEach((size) => {
   describe(`Test Different Route Options on Mobile Layers Page: ${size} resolution`, function() {

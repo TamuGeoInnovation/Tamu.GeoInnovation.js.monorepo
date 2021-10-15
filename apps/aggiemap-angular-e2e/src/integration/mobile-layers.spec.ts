@@ -1,5 +1,5 @@
 /// <reference path="../support/index.d.ts" />
-import {mobileSizes} from "./resolutions";
+import {mobileSizes} from "../support/resolutions";
 
 mobileSizes.forEach((size) => {
   describe(`Test Elements on Mobile Layers Page: ${size} resolution`, function() {

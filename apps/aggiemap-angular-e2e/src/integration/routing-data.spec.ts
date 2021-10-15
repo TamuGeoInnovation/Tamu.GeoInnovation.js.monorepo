@@ -1,5 +1,5 @@
 /// <reference path="../support/index.d.ts" />
-import {desktopSizes} from "./resolutions";
+import {desktopSizes} from "../support/resolutions";
 
 desktopSizes.forEach((size) => {
   describe(`Test Elements, Routing Page: ${size} Resolution`, () => {
