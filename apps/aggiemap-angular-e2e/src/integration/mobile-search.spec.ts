@@ -1,5 +1,4 @@
 /// <reference path="../support/index.d.ts" />
-//import { exception } from "console";
 import { inRange, isTypedArray } from "cypress/types/lodash";
 import { Runnable } from "mocha";
 import {mobileSizes} from "../support/resolutions";

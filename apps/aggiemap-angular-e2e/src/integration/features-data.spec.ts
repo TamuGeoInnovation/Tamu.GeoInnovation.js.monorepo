@@ -1,5 +1,4 @@
 /// <reference path="../support/index.d.ts" />
-import * as Zoom from "esri/widgets/Zoom";
 import {desktopSizes} from "../support/resolutions";
 
 // runs the same tests on different resolutions
