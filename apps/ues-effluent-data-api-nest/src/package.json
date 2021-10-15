@@ -18,6 +18,6 @@
     "reflect-metadata": "^0.1.13",
     "connect-sqlite3": "^0.9.11",
     "rxjs": "6.5.5",
-    "typeorm": "^0.2.20"
+    "typeorm": "^0.2.38"
   }
 }

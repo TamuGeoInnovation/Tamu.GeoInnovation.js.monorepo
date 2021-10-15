@@ -35,7 +35,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "6.5.5",
     "tslib": "^2.0.3",
-    "typeorm": "^0.2.20",
+    "typeorm": "^0.2.38",,
     "uuid": "^8.1.0"
   },
   "devDependencies": {

@@ -102,7 +102,7 @@
     "snarkdown": "^1.2.2",
     "sqlite3": "^4.2.0",
     "tslib": "^2.0.3",
-    "typeorm": "^0.2.20",
+    "typeorm": "^0.2.38",
     "uuid": "^8.1.0",
     "webfontloader": "^1.6.28",
     "yargs": "^16.2.0",
