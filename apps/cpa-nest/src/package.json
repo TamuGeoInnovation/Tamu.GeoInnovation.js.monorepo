@@ -8,11 +8,10 @@
     "@nestjs/core": "^6.8.3",
     "@nestjs/platform-express": "^6.8.3",
     "@nestjs/typeorm": "^6.2.0",
-    "class-validator": "^0.11.0",
     "jwt-decode": "^3.1.2",
     "mssql": "^6.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "~6.5.3",
-    "typeorm": "^0.2.20"
+    "typeorm": "^0.2.38"
   }
 }
