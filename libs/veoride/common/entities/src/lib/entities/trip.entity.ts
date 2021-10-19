@@ -1,9 +1,17 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, PrimaryColumn, BeforeInsert } from 'typeorm';
+
+import { v4 as guid } from 'uuid';
 
 import { ProviderBase } from './provider-base.entity';
 
 @Entity()
 export class Trip extends ProviderBase {
+  @PrimaryColumn()
+  public guid: string;
+
+  @Column()
+  public device_id: string;
+
   @Column()
   public trip_id: string;
 
@@ -63,6 +71,13 @@ export class Trip extends ProviderBase {
     };
 
     return trip;
+  }
+
+  @BeforeInsert()
+  private generateGuid(): void {
+    if (this.guid === undefined) {
+      this.guid = guid();
+    }
   }
 }
 

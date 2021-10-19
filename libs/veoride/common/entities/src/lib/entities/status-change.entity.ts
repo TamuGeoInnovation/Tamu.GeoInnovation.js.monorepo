@@ -1,9 +1,17 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, PrimaryColumn, BeforeInsert } from 'typeorm';
+
+import { v4 as guid } from 'uuid';
 
 import { ProviderBase } from './provider-base.entity';
 
 @Entity()
 export class StatusChange extends ProviderBase {
+  @PrimaryColumn()
+  public guid: string;
+
+  @Column()
+  public device_id: string;
+
   @Column()
   public vehicle_state: string;
 
@@ -58,6 +66,13 @@ export class StatusChange extends ProviderBase {
     };
 
     return dto;
+  }
+
+  @BeforeInsert()
+  private generateGuid(): void {
+    if (this.guid === undefined) {
+      this.guid = guid();
+    }
   }
 }
 
