@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'tamu-gisc-landing',
@@ -6,9 +7,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./landing.component.scss']
 })
 export class LandingComponent implements OnInit {
-  constructor() {}
+  private title = 'TxGIS Day 2021';
 
-  public ngOnInit(): void {
+  constructor(private titleService: Title) {}
+
+  public ngOnInit() {
+    this.titleService.setTitle(this.title);
+
     this.loadCountdown();
   }
 
