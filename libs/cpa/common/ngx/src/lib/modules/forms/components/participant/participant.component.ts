@@ -1,18 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {
-  BehaviorSubject,
-  Subject,
-  forkJoin,
-  interval,
-  of,
-  combineLatest,
-  from,
-  merge,
-  Observable,
-  ReplaySubject
-} from 'rxjs';
+import { BehaviorSubject, Subject, forkJoin, interval, of, merge, Observable, ReplaySubject } from 'rxjs';
 import {
   takeUntil,
   debounceTime,
@@ -29,23 +18,20 @@ import {
 } from 'rxjs/operators';
 
 import { v4 as guid } from 'uuid';
-import * as md5 from 'md5';
 
-import { CPALayer } from '@tamu-gisc/cpa/common/entities';
 import { IResponseRequestPayload, IResponseResponse } from '@tamu-gisc/cpa/data-api';
-import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { MapDrawAdvancedComponent } from '@tamu-gisc/maps/feature/draw';
-import { WorkshopService, ResponseService, ScenarioService } from '@tamu-gisc/cpa/data-access';
+import { ResponseService } from '@tamu-gisc/cpa/data-access';
 
-import { TypedSnapshotOrScenario, ViewerService } from '../../../viewer/services/viewer.service';
+import { ViewerService } from '../../../viewer/services/viewer.service';
 
 import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-participant',
   templateUrl: './participant.component.html',
-  styleUrls: ['./participant.component.scss'],
-  providers: [ResponseService, WorkshopService]
+  styleUrls: ['./participant.component.scss']
 })
 export class ParticipantComponent implements OnInit, OnDestroy {
   @Output()
@@ -81,25 +67,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   private _$formReset: Subject<boolean> = new Subject();
   private _$destroy: Subject<boolean> = new Subject();
-  private _modules: {
-    layer: esri.LayerConstructor;
-    featureLayer: esri.FeatureLayerConstructor;
-    graphicsLayer: esri.GraphicsLayerConstructor;
-    groupLayer: esri.GroupLayerConstructor;
-    graphic: esri.GraphicConstructor;
-    mapImageLayer: esri.MapImageLayerConstructor;
-  };
-  private _map: esri.Map;
-  private _view: esri.MapView;
 
   constructor(
     private fb: FormBuilder,
     private rs: ResponseService,
     private route: ActivatedRoute,
-    private ms: EsriMapService,
     private mp: EsriModuleProviderService,
-    private vs: ViewerService,
-    private sc: ScenarioService
+    private vs: ViewerService
   ) {}
 
   public ngOnInit() {
@@ -226,97 +200,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           });
       });
     }
-
-    // Create a new subscription to the map service, load up the contexts, and add to map
-    combineLatest([this.ms.store, from(this.mp.require(['Extent']))]).subscribe(
-      ([instances, [Extent]]: [MapServiceInstance, [esri.ExtentConstructor]]) => {
-        // Get workshop contexts
-        this.vs.workshopContexts.subscribe((contexts) => {
-          contexts.forEach(async (val) => {
-            const contextLayer = await this._generateGroupLayers(val.layers, 'Context');
-            instances.map.add(contextLayer);
-            const extent = Extent.fromJSON(val.extent);
-            this._view.goTo(extent);
-          });
-        });
-      }
-    );
-
-    // Use SnapshotHistory observable to determine a snapshot change which requires the addition of new layers
-    // and/or removal of old snapshot layers
-    combineLatest([
-      this.snapshotHistory,
-      this.ms.store,
-      from(this.mp.require(['Layer', 'FeatureLayer', 'GraphicsLayer', 'GroupLayer', 'Graphic', 'Extent', 'MapImageLayer']))
-    ]).subscribe(
-      ([snapshotHistory, instances, [Layer, FeatureLayer, GraphicsLayer, GroupLayer, Graphic, Extent, MapImageLayer]]: [
-        TypedSnapshotOrScenario[],
-        MapServiceInstance,
-        [
-          esri.LayerConstructor,
-          esri.FeatureLayerConstructor,
-          esri.GraphicsLayerConstructor,
-          esri.GroupLayerConstructor,
-          esri.GraphicConstructor,
-          esri.ExtentConstructor,
-          esri.MapImageLayerConstructor
-        ]
-      ]) => {
-        this._modules = {
-          layer: Layer,
-          featureLayer: FeatureLayer,
-          graphic: Graphic,
-          graphicsLayer: GraphicsLayer,
-          groupLayer: GroupLayer,
-          mapImageLayer: MapImageLayer
-        };
-
-        this._map = instances.map;
-        this._view = instances.view as esri.MapView;
-
-        // Find any layers associated with the current snapshot and clear them to prepare to add layers from the next snapshot
-        const prevSnapshot = snapshotHistory.length > 1 ? snapshotHistory[0] : undefined;
-        const currSnapshot = snapshotHistory.length > 1 ? snapshotHistory[1] : snapshotHistory[0];
-
-        if (!currSnapshot) {
-          return;
-        }
-
-        if (currSnapshot.extent !== undefined || currSnapshot !== null) {
-          const ext = Extent.fromJSON(currSnapshot.extent);
-
-          this._view.goTo(ext);
-        } else if (currSnapshot.mapCenter !== undefined || currSnapshot.zoom !== undefined) {
-          this._view.goTo({
-            center: currSnapshot.mapCenter.split(',').map((c) => parseFloat(c)),
-            zoom: currSnapshot.zoom
-          });
-        }
-
-        if (prevSnapshot) {
-          this._removeTimelineEventLayers(prevSnapshot);
-        }
-
-        // Queue the new layers on the next event loop, otherwise any layers that need removed
-        // will not have been removed until then and will not appear in the legend.
-        setTimeout(async () => {
-          if (currSnapshot.type === 'scenario') {
-            this.getLayerForScenarioGuid(currSnapshot.guid)
-              .then(async (layer) => {
-                const groupLayer = await this._generateGroupLayers(layer.layers, currSnapshot.title);
-                instances.map.add(groupLayer);
-              })
-              .catch((err) => {
-                throw new Error(err);
-              });
-          } else if (currSnapshot.type === 'snapshot') {
-            // Create a map of layers from the current snapshot to add to the map.
-            const groupLayer = await this._generateGroupLayers(currSnapshot.layers, currSnapshot.title);
-            instances.map.add(groupLayer);
-          }
-        }, 0);
-      }
-    );
   }
 
   public ngOnDestroy() {
@@ -324,10 +207,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     this._$formReset.complete();
     this._$destroy.next();
     this._$destroy.complete();
-  }
-
-  public getLayerForScenarioGuid(scenarioGuid: string) {
-    return this.sc.getLayerForScenario(scenarioGuid).toPromise();
   }
 
   public async handleDrawSelection(e: Array<esri.Graphic>) {
@@ -340,37 +219,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       this.selected.next([]);
       this.form.controls.drawn.setValue(undefined);
     }
-  }
-
-  public scan(direction: 'next' | 'prev') {
-    // Need to take a single emission, otherwise the response index value push will cause a
-    forkJoin([this.responseIndex.pipe(take(1)), this.responses.pipe(take(1))]).subscribe(([index, responses]) => {
-      if (direction === 'prev' && (index > 0 || index === -1)) {
-        // Cannot walk to an index less than 0
-        if (index > 0) {
-          // Reset to the previous non-placeholder entry.
-          this.responseIndex.next(index - 1);
-        } else {
-          // Reset to the last valid entry in the participants array. This block is hit whenever a new participant
-          // is created but no value added to local store.
-          this.responseIndex.next(responses.length - 1);
-        }
-      } else if (direction === 'next' && (index === -1 || this.form.valid)) {
-        // If the current guid has an entry index that is less than the total participant entries - 2,
-        // meaning "there is at least one more non-placeholder participant entries in the array",
-        // scan to that one.
-        //
-        // If the current guid has an entry index that is less than the total participant entries -1,
-        // meaning "there are no more non-placeholder participant entries in the array", create a new
-        // placeholder submission
-        if (index >= 0 && index + 1 <= responses.length - 1) {
-          this.responseIndex.next(index + 1);
-        } else if (index <= responses.length - 1 && this.form.valid) {
-          // Create a new participant placeholder
-          this.resetWorkspace();
-        }
-      }
-    });
   }
 
   /**
@@ -468,115 +316,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     });
   }
 
-  private async _generateGroupLayers(definitions: Array<CPALayer>, snapOrScenTitle: string): Promise<esri.Layer> {
-    const reversedLayers = [...definitions].reverse();
-    const idHash = this._generateGroupLayerId(reversedLayers);
-
-    const layers = await Promise.all(
-      reversedLayers
-        .map(async (l) => {
-          if (l.info.type === 'feature') {
-            return await new this._modules.featureLayer({
-              id: l.info.layerId,
-              url: l.url,
-              title: l.info.name,
-              opacity: l.info.drawingInfo.opacity,
-              visible: l.info.loadOnInit !== undefined ? l.info.loadOnInit : true,
-              description: l.info.description
-            } as esri.FeatureLayerProperties);
-          } else if (l.info.type === 'group') {
-            // If l.layers is undefined, it means this layer needs to be loaded from the remote service.
-            // instead of making a recursive call.
-            if (l.layers === undefined) {
-              const layer = await this._modules.layer.fromArcGISServerUrl({
-                url: l.url
-              });
-
-              layer.id = l.info.layerId;
-              layer.opacity = l.info.drawingInfo.opacity;
-              layer.title = l.info.name;
-              layer.visible = l.info.loadOnInit !== undefined ? l.info.loadOnInit : true;
-
-              // Use bracket notation here because description is not a native prop
-              // and Typescript will nag about it.
-              layer['description'] = l.info.description;
-
-              return layer;
-            } else {
-              return await this._generateGroupLayers(l.layers, l.info.name);
-            }
-          } else if (l.info.type === 'map-image') {
-            const url = l.url.split('/');
-            const id = parseInt(url.pop(), 10);
-
-            return await new this._modules.mapImageLayer({
-              id: l.info.layerId,
-              url: url.join('/'),
-              title: l.info.name,
-              opacity: l.info.drawingInfo.opacity,
-              visible: l.info.loadOnInit !== undefined ? l.info.loadOnInit : true,
-              sublayers: [
-                {
-                  id: id,
-                  listMode: 'hide'
-                }
-              ],
-              description: l.info.description
-            } as esri.MapImageLayerProperties);
-          } else if (l.info.type === 'graphics') {
-            const g = l.graphics.map((g) => {
-              return this._modules.graphic.fromJSON(g);
-            });
-
-            return await new this._modules.graphicsLayer({
-              title: l.info.name,
-              id: l.info.layerId,
-              graphics: g,
-              listMode: 'show',
-              visible: l.info.loadOnInit !== undefined ? l.info.loadOnInit : true,
-              description: l.info.description
-            } as esri.GraphicsLayerProperties);
-          } else {
-            console.warn(`Layer with object structure could not be generated:`, l);
-            return undefined;
-          }
-        })
-        .filter((l) => l !== undefined)
-    );
-
-    const groupLayer = new this._modules.groupLayer({
-      id: idHash,
-      title: snapOrScenTitle,
-      visibilityMode: 'independent',
-      layers: layers
-    });
-
-    return groupLayer;
-  }
-
-  /**
-   * Accepts a timeline event object and extracts the layer ID's from its definition,
-   * used to remove all of the resolved layers from the map if they exist.
-   */
-  private _removeTimelineEventLayers(event: TypedSnapshotOrScenario): void {
-    const reversedLayers = [...event.layers].reverse();
-    const idHash = this._generateGroupLayerId(reversedLayers);
-
-    const prevLayers = event.layers
-      .map((l) => {
-        return this._map.layers.find((ml) => {
-          // Find layer ID from either a snapshot guid array, or the actual layer object id
-
-          return ml.id === idHash;
-        });
-      })
-      .filter((r) => r !== undefined);
-
-    if (prevLayers.length > 0) {
-      this._map.removeMany(prevLayers);
-    }
-  }
-
   /**
    * Sets the participant ID to be a provided one or generates one if not provided.
    */
@@ -586,16 +325,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     } else {
       this.participantGuid = guid();
     }
-  }
-
-  private _generateGroupLayerId(layers: CPALayer[]) {
-    // Join all sub layer ids into a string, then hash it
-    const totalSubLayerIds = layers
-      .map((l) => {
-        return l.info.layerId;
-      })
-      .join();
-    return md5(totalSubLayerIds);
   }
 }
 
