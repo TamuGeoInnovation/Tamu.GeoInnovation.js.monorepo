@@ -111,8 +111,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       drawn: [undefined, Validators.required]
     });
 
-    if (this.route.snapshot.params['workshopGuid']) {
-      this.vs.updateWorkshopGuid(this.route.snapshot.params.workshopGuid);
+    if (this.route.snapshot.queryParams['workshop']) {
+      this.vs.updateWorkshopGuid(this.route.snapshot.queryParams.workshop);
 
       // On snapshot change, reset the workspace
       this.snapshot.pipe(skip(1), takeUntil(this._$destroy)).subscribe((res) => {
@@ -122,9 +122,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       // Setup a route params listener to change the snapshot as a result of a the navigator component
       // emitting a selection event and also automatically select an snapshot or scenario when the application
       // loads and there is an eventGuid in the route params
-      this.route.params
+      this.route.queryParams
         .pipe(
-          pluck('eventGuid'),
+          pluck('event'),
           filter((eg) => eg !== null || eg !== undefined),
           takeUntil(this._$destroy)
         )
@@ -452,7 +452,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           } else {
             submission.snapshotGuid = snapshot.guid;
           }
-          submission.workshopGuid = this.route.snapshot.params['workshopGuid'];
+          submission.workshopGuid = this.route.snapshot.queryParams['workshop'];
           this.rs.createResponse(submission).subscribe(
             (submissionStatus) => {
               this.responseSave.emit();
