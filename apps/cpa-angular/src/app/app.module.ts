@@ -17,7 +17,7 @@ import { AppComponent } from './app.component';
 
 WebFont.load({
   google: {
-    families: ['Material Icons', 'Public Sans:300,400,500,600']
+    families: ['Material Icons', 'Material Icons Outlined', 'Public Sans:300,400,500,600']
   }
 });
 

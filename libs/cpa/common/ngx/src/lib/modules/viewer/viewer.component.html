@@ -1,4 +1,20 @@
-<tamu-gisc-drawer [width]="'25rem'" [position]="'left'">
+<tamu-gisc-drawer [width]="'28rem'" [position]="'left'">
+  <div class="drawer-menu">
+    <div class="drawer-menu__items">
+      <div class="drawer-menu__item" title="Home">
+        <a [routerLink]="['/viewer/workshop']" [queryParamsHandling]="'merge'" routerLinkActive="active"><span class="material-icons-outlined">home</span></a>
+      </div>
+      <div class="drawer-menu__item" title="Layers">
+        <a [routerLink]="['/viewer/layers']" [queryParamsHandling]="'merge'" routerLinkActive="active"><span class="material-icons-outlined">layers</span></a>
+      </div>
+      <div class="drawer-menu__item" title="Legend">
+        <a [routerLink]="['/viewer/legend']" [queryParamsHandling]="'merge'" routerLinkActive="active"><span class="material-icons-outlined">legend_toggle</span></a>
+      </div>
+      <div class="drawer-menu__item" title="Admin Controls">
+        <a [routerLink]="['/viewer/admin-controls']" [queryParamsHandling]="'merge'" routerLinkActive="active"><span class="material-icons-outlined">admin_panel_settings</span></a>
+      </div>
+    </div>
+  </div>
   <div class="content">
     <router-outlet></router-outlet>
   </div>
