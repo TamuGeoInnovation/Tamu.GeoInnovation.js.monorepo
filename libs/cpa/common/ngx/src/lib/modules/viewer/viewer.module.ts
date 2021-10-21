@@ -14,6 +14,7 @@ import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector'
 import { ParticipantComponent } from './components/participant/participant.component';
 import { ViewerComponent } from './viewer.component';
 import { SnapshotNavigatorComponent } from './components/snapshot-navigator/snapshot-navigator.component';
+import { AdminControlsComponent } from './components/admin-controls/admin-controls.component';
 
 const routes: Routes = [
   {
@@ -32,6 +33,10 @@ const routes: Routes = [
       {
         path: 'legend',
         component: LegendComponent
+      },
+      {
+        path: 'controls',
+        component: AdminControlsComponent
       }
     ]
   }
@@ -51,7 +56,7 @@ const routes: Routes = [
     LayerListModule,
     LegendModule
   ],
-  declarations: [ViewerComponent, SnapshotNavigatorComponent, ParticipantComponent],
+  declarations: [ViewerComponent, SnapshotNavigatorComponent, ParticipantComponent, AdminControlsComponent],
   exports: [RouterModule]
 })
 export class CpaViewerModule {}
