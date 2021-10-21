@@ -13,19 +13,19 @@
         <div class="landing-container">
           <div class="countdown">
             <div class="days">
-              <div class="value">--</div>
+              <div class="value">{{timeTill.getDate() < 10 ? '0' + timeTill.getDate() : timeTill.getDate()}}</div>
               <div class="label">Days</div>
             </div>
             <div class="hours">
-              <div class="value">--</div>
+              <div class="value">{{timeTill.getHours() < 10 ? '0' + timeTill.getHours() : timeTill.getHours()}}</div>
               <div class="label">Hours</div>
             </div>
             <div class="minutes">
-              <div class="value">--</div>
+              <div class="value">{{timeTill.getMinutes() < 10 ? '0' + timeTill.getMinutes() : timeTill.getMinutes()}}</div>
               <div class="label">Minutes</div>
             </div>
             <div class="seconds">
-              <div class="value">--</div>
+              <div class="value">{{timeTill.getSeconds()}}</div>
               <div class="label">Seconds</div>
             </div>
           </div>
