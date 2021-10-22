@@ -1,4 +1,56 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { IsNotEmpty } from 'class-validator';
+
+import { Participant } from '@tamu-gisc/cpa/common/entities';
+
+import { WorkshopsService } from '../workshops/workshops.service';
 
 @Injectable()
-export class ParticipantsService {}
+export class ParticipantsService {
+  constructor(
+    @InjectRepository(Participant) private readonly repo: Repository<Participant>,
+    private readonly ws: WorkshopsService
+  ) {}
+
+  public async getParticipantsForWorkshop(dto: GetParticipantsForWorkshopDto) {
+    const workshop = await this.ws.getWorkshop(dto.workshopGuid, false, false, false, true);
+
+    const qb = this.repo
+      .createQueryBuilder('participant')
+      .leftJoin('participant.workshops', 'workshop')
+      .where('workshop.guid = :workshopGuid')
+      .orWhere('workshop.alias = :workshopAlias')
+      .setParameters({ workshopGuid: dto.workshopGuid, workshopAlias: workshop.alias })
+      .getMany();
+
+    return qb;
+  }
+
+  public async createParticipantForWorkshop(dto: CreateParticipantForWorkshopDto) {
+    const workshop = await this.ws.getWorkshop(dto.workshopGuid, false, false, false, true);
+
+    const created = this.repo.create({
+      name: dto.name,
+      workshops: [workshop]
+    });
+
+    return created.save();
+  }
+}
+
+export class GetParticipantsForWorkshopDto {
+  @IsNotEmpty()
+  public workshopGuid: string;
+}
+
+type WorkshopLessParticipant = Omit<Participant, 'workshops'>;
+
+export class CreateParticipantForWorkshopDto {
+  @IsNotEmpty()
+  public name: string;
+
+  @IsNotEmpty()
+  public workshopGuid: string;
+}

@@ -73,7 +73,7 @@ $border-radius: 1.5rem;
 
 ::ng-deep {
   .drawer-menu {
-    border-right: 1pt solid #eeeeee;
+    border-right: 1.5pt solid lighten($color: $inactive-color, $amount: 35%);
     height: 100%;
 
     .drawer-menu__items {

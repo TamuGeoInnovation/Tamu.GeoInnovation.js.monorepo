@@ -1,1 +1,11 @@
-<p>admin-controls works!</p>
+<h2>Workshop Controls</h2>
+
+<h3>Participants</h3>
+
+<p>Register and manage workshop participants (individual or group) to enable sketch/drawing collection for workshop snapshots and scenarios. Each registered participant receives a unique id and link that can be shared with them to enable the map drawing feature on their device.</p>
+
+<p *ngIf="(workshopParticipants | async)?.length === 0; else participantsList">There are no registered participants for this workshop.</p>
+
+<ng-template #participantsList>
+  <p *ngFor="let participant of workshopParticipants | async">{{participant?.name}}</p>
+</ng-template>
