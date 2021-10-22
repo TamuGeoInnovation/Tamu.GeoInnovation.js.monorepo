@@ -9,12 +9,13 @@ import {
   Scenario,
   WorkshopSnapshot,
   WorkshopScenario,
-  WorkshopContext
+  WorkshopContext,
+  Participant
 } from '@tamu-gisc/cpa/common/entities';
 
 import { config } from '../environments/environment';
 
-const entities = [Workshop, Snapshot, WorkshopSnapshot, Response, WorkshopScenario, Scenario, WorkshopContext];
+const entities = [Workshop, Snapshot, WorkshopSnapshot, Response, WorkshopScenario, Scenario, WorkshopContext, Participant];
 
 @Module({
   imports: [

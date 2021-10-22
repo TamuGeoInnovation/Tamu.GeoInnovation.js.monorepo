@@ -11,7 +11,9 @@ import {
   OneToMany,
   ManyToOne,
   OneToOne,
-  JoinColumn
+  JoinColumn,
+  ManyToMany,
+  JoinTable
 } from 'typeorm';
 
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
@@ -67,6 +69,9 @@ export class Workshop extends CPABaseEntity implements IWorkshop {
 
   @OneToMany((type) => Response, (r) => r.workshop)
   public responses: Response[];
+
+  @ManyToMany((type) => Participant)
+  public participants: Participant[];
 }
 
 @Entity()
@@ -162,9 +167,22 @@ export class WorkshopContext extends CPABaseEntity {
 }
 
 @Entity()
+export class Participant extends CPABaseEntity {
+  @Column()
+  public name: string;
+
+  @ManyToMany((type) => Workshop)
+  @JoinTable()
+  public workshops: Workshop[];
+}
+
+@Entity()
 export class Response extends CPABaseEntity {
   @Column({ nullable: true })
   public name: string;
+
+  @ManyToOne((type) => Participant)
+  public participant: Participant;
 
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public notes: string;
