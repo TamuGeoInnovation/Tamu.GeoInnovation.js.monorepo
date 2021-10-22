@@ -18,9 +18,9 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
   public reference: string;
 
   @Input()
-  public defaultUpdateTool: 'transform' | 'move' | 'reshape' = 'transform';
+  public defaultUpdateTool = 'transform';
 
-  public activeUpdateTool: 'transform' | 'move' | 'reshape';
+  public activeUpdateTool: string;
 
   /**
    * Describes the emission format for the drawn features. By default (`false`) the component
@@ -187,7 +187,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
   /**
    * Calls the model graphic create method with the provided tool name.
    */
-  public create(tool) {
+  public create(tool: string) {
     this.activeUpdateTool = undefined;
 
     this.model.create(tool);
@@ -207,7 +207,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
    * Additionally, if the model is active from another tool that is not an update tool (point, polygon, etc),
    * cancel that action.
    */
-  public setUpdateTool(tool) {
+  public setUpdateTool(tool: string) {
     if (this.model.activeTool === 'reshape' || this.model.activeTool === 'transform') {
       this.model.toggleUpdateTool();
     } else {

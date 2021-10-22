@@ -127,7 +127,7 @@
     "@nrwl/web": "11.0.16",
     "@nrwl/workspace": "11.0.16",
     "@schematics/angular": "10.1.7",
-    "@types/arcgis-js-api": "~4.19.0",
+    "@types/arcgis-js-api": "^4.12.0",
     "@types/chart.js": "^2.9.3",
     "@types/clipboard": "2.0.1",
     "@types/jest": "26.0.8",

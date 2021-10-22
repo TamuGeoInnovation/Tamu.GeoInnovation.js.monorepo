@@ -3,7 +3,6 @@
   "implicitDependencies": {
     "workspace.json": "*",
     "package.json": "*",
-    "package-lock.json": "*",
     "tslint.json": "*",
     "nx.json": "*",
     "tsconfig.base.json": "*",
