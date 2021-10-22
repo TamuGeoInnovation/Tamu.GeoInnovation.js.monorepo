@@ -21,4 +21,8 @@ export class ParticipantService {
   public updateParticipant(participantGuid: string, participantName: string) {
     return this.http.patch<IParticipant>(`${this.resource}`, { participantGuid, name: participantName });
   }
+
+  public createParticipantForWorkshop(workshopGuid: string, name: string) {
+    return this.http.post<IParticipant>(`${this.resource}/workshop`, { workshopGuid, name });
+  }
 }

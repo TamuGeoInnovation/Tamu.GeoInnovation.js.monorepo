@@ -8,8 +8,8 @@
 
 <ng-template #participantsList>
   <div id="participants-list" class="leader-1 trailer-1">
-    <tamu-gisc-participant-list-item *ngFor="let participant of workshopParticipants | async" [participant]="participant" (nameUpdated)="updateParticipantName(participant, $event)"></tamu-gisc-participant-list-item>
+    <tamu-gisc-participant-list-item *ngFor="let participant of (workshopParticipants | async); trackBy:participant?.guid" [participant]="participant" (nameUpdated)="updateParticipantName(participant, $event)"></tamu-gisc-participant-list-item>
   </div>
 </ng-template>
 
-<tamu-gisc-button [value]="'Add Participant'"></tamu-gisc-button>
+<tamu-gisc-button [value]="'Add Participant'" (click)="addParticipant()"></tamu-gisc-button>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { filter, pluck, shareReplay, switchMap } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { filter, pluck, shareReplay, startWith, switchMap, take, withLatestFrom } from 'rxjs/operators';
 
 import { IParticipant, Participant } from '@tamu-gisc/cpa/common/entities';
 import { ParticipantService } from '@tamu-gisc/cpa/data-access';
@@ -16,6 +16,8 @@ export class AdminControlsComponent implements OnInit {
   public workshopParticipants: Observable<Array<Participant>>;
   public workshopGuidOrAlias: Observable<string>;
 
+  private _$refresh: Subject<boolean> = new Subject();
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly ps: ParticipantService,
@@ -28,7 +30,11 @@ export class AdminControlsComponent implements OnInit {
       filter((value) => value !== undefined)
     );
 
-    this.workshopParticipants = this.workshopGuidOrAlias.pipe(
+    this.workshopParticipants = this._$refresh.pipe(
+      startWith(true),
+      switchMap(() => {
+        return this.workshopGuidOrAlias.pipe(take(1));
+      }),
       switchMap((guidOrAlias) => {
         return this.ps.getParticipantsForWorkshop(guidOrAlias);
       }),
@@ -41,7 +47,6 @@ export class AdminControlsComponent implements OnInit {
       this.ps.updateParticipant(participant.guid, updatedParticipantName).subscribe(
         (res) => {
           // Change was successful. Show notification
-
           this.ns.toast({
             id: 'participant-update-success',
             message: 'Successfully updated participant.',
@@ -49,6 +54,10 @@ export class AdminControlsComponent implements OnInit {
           });
         },
         (err) => {
+          // On participant update, refresh the existing participant list to effectively reset changes
+          // done to the participant
+          this._$refresh.next();
+
           this.ns.toast({
             id: 'participant-update-error',
             message: 'There was an error updating participant.',
@@ -57,5 +66,18 @@ export class AdminControlsComponent implements OnInit {
         }
       );
     }
+  }
+
+  public addParticipant() {
+    this.workshopGuidOrAlias
+      .pipe(
+        take(1),
+        switchMap((guidOrAlias) => {
+          return this.ps.createParticipantForWorkshop(guidOrAlias, 'New participant');
+        })
+      )
+      .subscribe((createStatus) => {
+        this._$refresh.next();
+      });
   }
 }
