@@ -1,6 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 
-import { CreateParticipantForWorkshopDto, GetParticipantsForWorkshopDto, ParticipantsService } from './participants.service';
+import {
+  CreateParticipantForWorkshopDto,
+  GetParticipantsForWorkshopDto,
+  ParticipantsService,
+  UpdateParticipantDto
+} from './participants.service';
 
 @Controller('participants')
 export class ParticipantsController {
@@ -13,5 +18,10 @@ export class ParticipantsController {
   @Post('workshop')
   public createParticipantForWorkshop(@Body() dto: CreateParticipantForWorkshopDto) {
     return this.service.createParticipantForWorkshop(dto);
+  }
+
+  @Patch()
+  public updateParticipantName(@Body() dto: UpdateParticipantDto) {
+    return this.service.updateParticipant(dto);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IsNotEmpty } from 'class-validator';
@@ -38,6 +38,20 @@ export class ParticipantsService {
 
     return created.save();
   }
+
+  public async updateParticipant(dto: UpdateParticipantDto) {
+    const existingParticipant = await this.repo.findOne({
+      guid: dto.participantGuid
+    });
+
+    if (!existingParticipant) {
+      throw new NotFoundException();
+    }
+
+    existingParticipant.name = dto.name;
+
+    return existingParticipant.save();
+  }
 }
 
 export class GetParticipantsForWorkshopDto {
@@ -45,12 +59,18 @@ export class GetParticipantsForWorkshopDto {
   public workshopGuid: string;
 }
 
-type WorkshopLessParticipant = Omit<Participant, 'workshops'>;
-
 export class CreateParticipantForWorkshopDto {
   @IsNotEmpty()
   public name: string;
 
   @IsNotEmpty()
   public workshopGuid: string;
+}
+
+export class UpdateParticipantDto {
+  @IsNotEmpty()
+  public participantGuid: string;
+
+  @IsNotEmpty()
+  public name: string;
 }
