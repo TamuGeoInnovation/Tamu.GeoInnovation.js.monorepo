@@ -10,7 +10,7 @@
       <div class="drawer-menu__item" title="Legend">
         <a [routerLink]="['/viewer/legend']" [queryParamsHandling]="'preserve'" routerLinkActive="active"><span class="material-icons-outlined">legend_toggle</span></a>
       </div>
-      <div class="drawer-menu__item" title="Admin Controls" *ngIf="showAdminControls | async">
+      <div class="drawer-menu__item" title="Workshop Controls" *ngIf="showAdminControls | async">
         <a [routerLink]="['/viewer/controls']" [queryParamsHandling]="'preserve'" routerLinkActive="active"><span class="material-icons-outlined">admin_panel_settings</span></a>
       </div>
     </div>
