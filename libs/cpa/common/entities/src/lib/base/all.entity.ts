@@ -277,3 +277,8 @@ export interface LayerReference {
 }
 
 export type ScenarioLayers = CPALayer | LayerReference;
+
+export interface IParticipant extends CPABaseEntity {
+  name: string;
+  workshops: Workshop[];
+}

@@ -10,11 +10,13 @@ import { LegendComponent, LegendModule } from '@tamu-gisc/maps/feature/legend';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
 import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
+import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 
 import { ParticipantComponent } from './components/participant/participant.component';
 import { ViewerComponent } from './viewer.component';
 import { SnapshotNavigatorComponent } from './components/snapshot-navigator/snapshot-navigator.component';
 import { AdminControlsComponent } from './components/admin-controls/admin-controls.component';
+import { ParticipantListItemComponent } from './components/admin-controls/components/participant-list-item/participant-list-item.component';
 
 const routes: Routes = [
   {
@@ -54,9 +56,16 @@ const routes: Routes = [
     UILayoutModule,
     SidebarModule,
     LayerListModule,
-    LegendModule
+    LegendModule,
+    UIClipboardModule
   ],
-  declarations: [ViewerComponent, SnapshotNavigatorComponent, ParticipantComponent, AdminControlsComponent],
+  declarations: [
+    ViewerComponent,
+    SnapshotNavigatorComponent,
+    ParticipantComponent,
+    AdminControlsComponent,
+    ParticipantListItemComponent
+  ],
   exports: [RouterModule]
 })
 export class CpaViewerModule {}

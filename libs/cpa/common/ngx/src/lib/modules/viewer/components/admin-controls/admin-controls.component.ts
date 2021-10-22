@@ -3,8 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
-import { Participant } from '@tamu-gisc/cpa/common/entities';
+import { IParticipant, Participant } from '@tamu-gisc/cpa/common/entities';
 import { ParticipantService } from '@tamu-gisc/cpa/data-access';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
   selector: 'tamu-gisc-admin-controls',
@@ -15,7 +16,11 @@ export class AdminControlsComponent implements OnInit {
   public workshopParticipants: Observable<Array<Participant>>;
   public workshopGuidOrAlias: Observable<string>;
 
-  constructor(private readonly route: ActivatedRoute, private readonly ps: ParticipantService) {}
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly ps: ParticipantService,
+    private readonly ns: NotificationService
+  ) {}
 
   public ngOnInit(): void {
     this.workshopGuidOrAlias = this.route.queryParams.pipe(
@@ -29,5 +34,28 @@ export class AdminControlsComponent implements OnInit {
       }),
       shareReplay()
     );
+  }
+
+  public updateParticipantName(participant: IParticipant, updatedParticipantName: string) {
+    if (participant.name !== updatedParticipantName) {
+      this.ps.updateParticipant(participant.guid, updatedParticipantName).subscribe(
+        (res) => {
+          // Change was successful. Show notification
+
+          this.ns.toast({
+            id: 'participant-update-success',
+            message: 'Successfully updated participant.',
+            title: 'Updated participant'
+          });
+        },
+        (err) => {
+          this.ns.toast({
+            id: 'participant-update-error',
+            message: 'There was an error updating participant.',
+            title: 'Failed to update participant'
+          });
+        }
+      );
+    }
   }
 }

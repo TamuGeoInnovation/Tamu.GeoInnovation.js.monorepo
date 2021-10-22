@@ -1,0 +1,36 @@
+@import 'libs/sass/mixins';
+@import 'libs/cpa/sass/variables';
+
+:host {
+  @include flexbox();
+  @include justify-content(space-between);
+  @include align-items(center);
+
+  #participant-name {
+    @include flex(1);
+    padding: 0.25rem;
+  }
+
+  .actions {
+    display: inherit;
+    margin-left: 1rem;
+
+    .participant-action {
+      color: lighten($color: $inactive-color, $amount: 20%);
+      cursor: pointer;
+      @include transition(color 0.3s);
+
+      .material-icons,
+      .material-icons-outlined {
+        display: block;
+        font-size: 1.1rem;
+        padding: 0.25rem;
+        color: inherit;
+      }
+
+      &:hover {
+        color: $active-color;
+      }
+    }
+  }
+}

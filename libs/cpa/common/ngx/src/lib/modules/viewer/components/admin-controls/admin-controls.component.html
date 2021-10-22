@@ -7,5 +7,9 @@
 <p *ngIf="(workshopParticipants | async)?.length === 0; else participantsList">There are no registered participants for this workshop.</p>
 
 <ng-template #participantsList>
-  <p *ngFor="let participant of workshopParticipants | async">{{participant?.name}}</p>
+  <div id="participants-list" class="leader-1 trailer-1">
+    <tamu-gisc-participant-list-item *ngFor="let participant of workshopParticipants | async" [participant]="participant" (nameUpdated)="updateParticipantName(participant, $event)"></tamu-gisc-participant-list-item>
+  </div>
 </ng-template>
+
+<tamu-gisc-button [value]="'Add Participant'"></tamu-gisc-button>
