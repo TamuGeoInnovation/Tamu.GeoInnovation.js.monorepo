@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Subject, forkJoin, interval, merge, Observable, ReplaySubject, from } from 'rxjs';
 import {
@@ -13,7 +12,6 @@ import {
   skip,
   shareReplay,
   tap,
-  pluck,
   withLatestFrom
 } from 'rxjs/operators';
 
@@ -61,13 +59,11 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   @ViewChild(MapDrawAdvancedComponent, { static: false })
   private drawComponent: MapDrawAdvancedComponent;
 
-  private _$formReset: Subject<boolean> = new Subject();
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
     private fb: FormBuilder,
     private rs: ResponseService,
-    private route: ActivatedRoute,
     private mp: EsriModuleProviderService,
     private vs: ViewerService
   ) {}
@@ -83,7 +79,8 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     });
 
     // Fetch new responses from server whenever snapshot, or response save signal emits.
-    this.responses = merge(this.event, this.responseSave).pipe(
+    this.responses = merge(this.event).pipe(
+      // this.responses = merge(this.event, this.responseSave).pipe(
       switchMap((event) => {
         return forkJoin([this.workshop.pipe(take(1)), this.event.pipe(take(1))]);
       }),
@@ -120,13 +117,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         switchMap((response) => {
           return from(response);
         }),
-        withLatestFrom(this.vs.participantGuid),
-        filter(([response, participantGuid]) => {
-          return response.participant && response.participant.guid === participantGuid;
-        }),
         takeUntil(this._$destroy)
       )
-      .subscribe(([res, pguid]) => {
+      .subscribe((res) => {
         if (res) {
           this.resetWorkspace(res as IParticipantSubmission);
         }
@@ -148,23 +141,27 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             this.saveStatus.next(SAVE_STATUS.Pending);
           }
         }),
-        debounceTime(3000),
+        debounceTime(1000),
         filter((status) => {
           return status === 'VALID';
         }),
         tap((s) => {
           this.saveStatus.next(SAVE_STATUS.Saving);
         }),
-        takeUntil(this._$formReset)
+        takeUntil(this._$destroy)
       )
       .subscribe((status) => {
         this._updateOrCreateSubmission();
       });
+
+    // This is the path of least resistance to save graphic notes. The popup communicates with the service
+    // and this component listens for those events which triggers a response submission save.
+    this.vs.save.pipe(takeUntil(this._$destroy)).subscribe(() => {
+      this._updateOrCreateSubmission();
+    });
   }
 
   public ngOnDestroy() {
-    this._$formReset.next();
-    this._$formReset.complete();
     this._$destroy.next();
     this._$destroy.complete();
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable, ReplaySubject, Subject } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 
 import * as md5 from 'md5';
@@ -39,6 +39,8 @@ export class ViewerService {
 
   public snapshotHistory: BehaviorSubject<TypedSnapshotOrScenario[]> = new BehaviorSubject([]);
   private selectionGuid: BehaviorSubject<string> = new BehaviorSubject(null);
+
+  public save: Subject<boolean> = new Subject();
 
   private _map: esri.Map;
   private _view: esri.MapView;
@@ -234,6 +236,12 @@ export class ViewerService {
     );
   }
 
+  /**
+   * Used to remotely trigger a response submission
+   */
+  public forceSave() {
+    this.save.next();
+  }
   /**
    * Manages the history of the SnapshotHistory behavior subject, to only keep a maximum of 2 entires (curr and prev).
    *
