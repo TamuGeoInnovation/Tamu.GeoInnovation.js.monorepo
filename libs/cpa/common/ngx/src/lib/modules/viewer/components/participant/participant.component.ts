@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject, forkJoin, interval, of, merge, Observable, ReplaySubject, from } from 'rxjs';
+import { BehaviorSubject, Subject, forkJoin, interval, merge, Observable, ReplaySubject, from } from 'rxjs';
 import {
   takeUntil,
   debounceTime,
@@ -223,12 +223,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           return Graphic.fromJSON(s);
         });
 
-        // Set/Overwrite form values
-        this.form.patchValue({
-          name: submission.name,
-          notes: submission.notes
-        });
-
         // Draws submission graphics to the draw component target layer.
         this.drawComponent.draw(graphics);
       });
@@ -249,7 +243,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       if (responses.length > 0) {
         // If there is an existing response, replace its value with the new geometry.
 
-        // TODO: Remove notes and name property from response entity
         const submission: IResponseRequestDto = {
           guid: responses[0].guid,
           shapes: parsed

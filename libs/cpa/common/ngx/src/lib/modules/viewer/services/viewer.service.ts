@@ -299,8 +299,8 @@ export class ViewerService {
               description: l.info.description
             } as esri.MapImageLayerProperties);
           } else if (l.info.type === 'graphics') {
-            const g = l.graphics.map((g) => {
-              return this._modules.graphic.fromJSON(g);
+            const g = l.graphics.map((gs) => {
+              return this._modules.graphic.fromJSON(gs);
             });
 
             return await new this._modules.graphicsLayer({

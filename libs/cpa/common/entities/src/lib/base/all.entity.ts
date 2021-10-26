@@ -178,12 +178,18 @@ export class Participant extends CPABaseEntity {
 
 @Entity()
 export class Response extends CPABaseEntity {
-  @Column({ nullable: true })
-  public name: string;
-
   @ManyToOne((type) => Participant)
   public participant: Participant;
 
+  /**
+   * @deprecated Since the addition of the participant relationship
+   */
+  @Column({ nullable: true })
+  public name: string;
+
+  /**
+   * @deprecated Since the addition of the participant relationship
+   */
   @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
   public notes: string;
 
