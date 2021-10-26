@@ -31,7 +31,7 @@ export class ResponsesController extends BaseController<Response> {
    * Retrieves a specific existing snapshot user response.
    */
   @Get(':guid')
-  public async getOne(@Param() params: IResponseRequestPayload) {
+  public async getOne(@Param() params: IResponseRequestDto) {
     const existing = await this.service.getSpecific(params);
     if (existing) {
       return existing;
@@ -68,20 +68,21 @@ export class ResponsesController extends BaseController<Response> {
    * Inserts a snapshot user response.
    */
   @Post('')
-  public async insert(@Body() body: IResponseRequestPayload) {
+  public async insert(@Body() body: IResponseRequestDto) {
     return this.service.insertNew(body);
   }
 }
 
-export interface IResponseResponse extends DeepPartial<Response> {}
+export interface IResponseDto extends DeepPartial<Response> {}
 
-export interface IResponseResolved extends Omit<IResponseResponse, 'shapes'> {
+export interface IResponseResolved extends Omit<IResponseDto, 'shapes'> {
   shapes: Array<IGraphic>;
 }
 
-export interface IResponseRequestPayload extends Omit<IResponseResponse, 'shapes'> {
+export interface IResponseRequestDto extends Omit<IResponseDto, 'shapes'> {
   snapshotGuid?: string;
   workshopGuid?: string;
   scenarioGuid?: string;
+  participantGuid?: string;
   shapes: object;
 }

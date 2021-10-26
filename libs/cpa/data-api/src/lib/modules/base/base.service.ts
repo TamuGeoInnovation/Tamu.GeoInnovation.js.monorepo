@@ -9,7 +9,7 @@ export class BaseService<T extends BaseEntity> {
     return await this.repository.find();
   }
 
-  public async getOne(options: FindOneOptions) {
+  public async getOne(options: FindOneOptions<T>) {
     return await this.repository.findOne(options);
   }
 

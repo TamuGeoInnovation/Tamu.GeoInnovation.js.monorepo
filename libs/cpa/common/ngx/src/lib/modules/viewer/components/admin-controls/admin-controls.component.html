@@ -4,7 +4,7 @@
 
 <p>Register and manage workshop participants (individual or group) to enable sketch/drawing collection for workshop snapshots and scenarios. Each registered participant receives a unique id and link that can be shared with them to enable the map drawing feature on their device.</p>
 
-<p *ngIf="(workshopParticipants | async)?.length === 0; else participantsList">There are no registered participants for this workshop.</p>
+<p *ngIf="(workshopParticipants | async)?.length === 0; else participantsList"><em>There are no registered participants for this workshop.</em></p>
 
 <ng-template #participantsList>
   <div id="participants-list" class="leader-1 trailer-1">

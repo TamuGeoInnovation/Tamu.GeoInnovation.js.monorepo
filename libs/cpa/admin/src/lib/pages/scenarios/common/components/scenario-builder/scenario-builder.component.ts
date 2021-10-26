@@ -9,7 +9,7 @@ import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc
 import { ResponseService, ScenarioService, SnapshotService, WorkshopService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
-  IResponseResponse,
+  IResponseDto,
   IResponseResolved,
   IScenariosResponseDetails,
   ISnapshotsResponse,
@@ -279,7 +279,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     this.graphicPreview.removeAll();
   }
 
-  public getTitleFromResponseSource(response: IResponseResponse) {
+  public getTitleFromResponseSource(response: IResponseDto) {
     if (response.scenario) {
       return response.scenario.title;
     }
@@ -449,7 +449,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
    * From a collection of responses, extracts and accumulates all of the graphics from each
    * to return a one-dimensional array of esri graphics.
    */
-  private flattenResponsesGraphics(responses: Array<IResponseResponse>) {
+  private flattenResponsesGraphics(responses: Array<IResponseDto>) {
     const flattenedShapesCollection = responses.reduce((accumulated, current) => {
       const shapes = (current.shapes as Array<IGraphic>).map((g) => {
         return this._modules.graphic.fromJSON(g);

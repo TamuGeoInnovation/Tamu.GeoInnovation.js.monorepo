@@ -7,7 +7,7 @@ import { pluck, shareReplay } from 'rxjs/operators';
 import * as JSZip from 'jszip';
 
 import { ResponseService, WorkshopService } from '@tamu-gisc/cpa/data-access';
-import { IResponseResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IResponseDto, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 import { Snapshot } from '@tamu-gisc/cpa/common/entities';
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 
@@ -230,7 +230,7 @@ export class ExportComponent implements OnInit {
     this.zip.file(fileName, JSON.stringify(featureSet));
   }
 
-  private flattenResponsesGraphics(responses: Array<IResponseResponse>) {
+  private flattenResponsesGraphics(responses: Array<IResponseDto>) {
     const flattenedShapesCollection = responses.reduce((accumulated, current) => {
       const shapes = (current.shapes as Array<esri.Graphic>).map((g) => {
         return this._modules.graphic.fromJSON(g);

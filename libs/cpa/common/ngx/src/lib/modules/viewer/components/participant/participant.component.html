@@ -1,6 +1,6 @@
 <div class="snap-scen-header">
   <div id="headings">
-    <h2>{{ (snapshot | async)?.title }}</h2>
+    <h2>{{ (event | async)?.title }}</h2>
     <h3>{{ (workshop | async)?.title }}</h3>
   </div>
 
@@ -9,7 +9,7 @@
     <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
       <tamu-gisc-tooltip-trigger><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
       <div id="snap-scen-help-text">
-        <ng-container *ngIf="(snapshot | async)?.type === 'snapshot'; else scenarioTooltip">
+        <ng-container *ngIf="(event | async)?.type === 'snapshot'; else scenarioTooltip">
           <h3>What's a snapshot?</h3>
           <p><strong>Snapshots</strong> show basic overviews of the existing conditions with layers for hazard exposures, physical vulnerabilities, and social vulnerabilities that reveal hotspots of concern. Participants will “ground- truth” by providing missing or additional points and polygons, which could reveal hotspots of concern.</p>
         </ng-container>
@@ -23,28 +23,17 @@
   </div>
 </div>
 
-<p class="snapshot-description">{{ (snapshot | async)?.description }}</p>
+<p class="snapshot-description">{{ (event | async)?.description }}</p>
 
-<form [formGroup]="form">
-  <div class="form-section">
-    <div class="form-section-body">
-      <div class="form-collection row">
-        <tamu-gisc-textbox type="text" placeholder="Name (Optional)" floatLabel="true" formControlName="name"></tamu-gisc-textbox>
-      </div>
+<ng-container *ngIf="participantGuid === undefined; else showDrawingTools">
+  <p>
+    <strong><em>You are currently not registered as a participant and as a result drawing tools have been disabled.</em></strong>
+  </p>
+</ng-container>
 
-      <div class="form-collection row">
-        <tamu-gisc-textbox type="textarea" placeholder="Notes (Optional)" floatLabel="true" formControlName="notes"></tamu-gisc-textbox>
-      </div>
-
-      <div class="sidebar-component-content-container">
-        <div class="sidebar-component-name">
-          <p>Drawing Tools</p>
-        </div>
-        <tamu-gisc-map-draw-advanced [reference]="'drawing-layer'" (export)="handleDrawSelection($event)" [colorTools]="true" [reshapeTool]="false" [helpTools]="true"></tamu-gisc-map-draw-advanced>
-      </div>
-    </div>
-  </div>
-</form>
+<ng-template #showDrawingTools>
+  <tamu-gisc-map-draw-advanced [reference]="'drawing-layer'" (export)="handleDrawSelection($event)" [colorTools]="true" [reshapeTool]="false" [helpTools]="true"></tamu-gisc-map-draw-advanced>
+</ng-template>
 
 <div class="save-status" [ngClass]="{unsaved: (saveStatus | async) === 0, 'saving': (saveStatus | async) === 1, 'saved': (saveStatus | async) === 2, 'error': (saveStatus | async) === 3}">
   <div class="save-status-indicator" *ngIf="(saveStatus | async) !== null"></div>

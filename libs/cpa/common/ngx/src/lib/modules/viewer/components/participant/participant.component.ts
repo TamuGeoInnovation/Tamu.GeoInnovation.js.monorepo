@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject, forkJoin, interval, of, merge, Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, Subject, forkJoin, interval, of, merge, Observable, ReplaySubject, from } from 'rxjs';
 import {
   takeUntil,
   debounceTime,
@@ -9,17 +9,15 @@ import {
   map,
   take,
   throttle,
-  withLatestFrom,
   filter,
   skip,
   shareReplay,
   tap,
-  pluck
+  pluck,
+  withLatestFrom
 } from 'rxjs/operators';
 
-import { v4 as guid } from 'uuid';
-
-import { IResponseRequestPayload, IResponseResponse } from '@tamu-gisc/cpa/data-api';
+import { IResponseRequestDto, IResponseDto } from '@tamu-gisc/cpa/data-api';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { MapDrawAdvancedComponent } from '@tamu-gisc/maps/feature/draw';
 import { ResponseService } from '@tamu-gisc/cpa/data-access';
@@ -39,12 +37,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
   // Values managed by service
   public workshop = this.vs.workshop;
-  public snapshot = this.vs.snapshotOrScenario;
-  public responses: Observable<IResponseResponse[]>;
+  public event = this.vs.snapshotOrScenario;
+  public responses: Observable<IResponseDto[]>;
   public snapshotHistory = this.vs.snapshotHistory;
 
-  // Values specific to the participant component.
-  public responseIndex: BehaviorSubject<number> = new BehaviorSubject(-1);
   public participantGuid: string;
   public form: FormGroup;
 
@@ -62,7 +58,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    *
    * Needed to call its public `draw` and `reset` methods.
    */
-  @ViewChild(MapDrawAdvancedComponent, { static: true })
+  @ViewChild(MapDrawAdvancedComponent, { static: false })
   private drawComponent: MapDrawAdvancedComponent;
 
   private _$formReset: Subject<boolean> = new Subject();
@@ -77,19 +73,19 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
-    this._initializeParticipant();
-
     this.form = this.fb.group({
-      name: [''],
-      notes: [''],
       drawn: [undefined, Validators.required]
     });
+
+    if (this.route.snapshot.queryParams['participant']) {
+      this.participantGuid = this.route.snapshot.queryParams['participant'];
+    }
 
     if (this.route.snapshot.queryParams['workshop']) {
       this.vs.updateWorkshopGuid(this.route.snapshot.queryParams.workshop);
 
       // On snapshot change, reset the workspace
-      this.snapshot.pipe(skip(1), takeUntil(this._$destroy)).subscribe((res) => {
+      this.event.pipe(skip(1), takeUntil(this._$destroy)).subscribe((res) => {
         this.resetWorkspace();
       });
 
@@ -106,10 +102,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           this.vs.updateSelectionIndex(res);
         });
 
-      // Fetch new responses from server whenever snapshot, response index, or response save signal emits.
-      this.responses = merge(this.snapshot, this.responseIndex, this.responseSave).pipe(
+      // Fetch new responses from server whenever snapshot, or response save signal emits.
+      this.responses = merge(this.event, this.responseSave).pipe(
         switchMap((event) => {
-          return forkJoin([this.workshop.pipe(take(1)), this.snapshot.pipe(take(1))]);
+          return forkJoin([this.workshop.pipe(take(1)), this.event.pipe(take(1))]);
         }),
         switchMap(([workshop, snapshotOrScenario]) => {
           if (snapshotOrScenario?.type === 'snapshot') {
@@ -130,23 +126,21 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             throw Error(message);
           }
         }),
+        map((responses) => {
+          return responses.filter((r) => r.participant && r.participant.guid === this.participantGuid);
+        }),
         shareReplay(1)
       );
 
-      // Reset workspace whenever there is a new set of responses from the server,
-      // and the current participant guid is different than the response at the
-      // responseIndex.
-      //
-      // This will ensure that the workspace does not reset every time the form
-      // publishes a VALID status change.
+      // Reset workspace whenever there is a new set of responses from the server
+      // or when there is a workshop event change (snapshot or scenario).
       this.responses
         .pipe(
-          withLatestFrom(this.responseIndex),
-          filter(([response, index]) => {
-            return response[index] && response[index].guid !== this.participantGuid;
+          switchMap((response) => {
+            return from(response);
           }),
-          switchMap(([responses, index]) => {
-            return of(responses[index]);
+          filter((response) => {
+            return response.participant && response.participant.guid === this.participantGuid;
           }),
           takeUntil(this._$destroy)
         )
@@ -156,49 +150,34 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           }
         });
 
-      // Whenever the responseIndex changes, re-initiate the form statusChanges
-      // subscription. Because a change in the response index also means the
-      // workspace is going to be reset and new form values applied, the form
-      // will trigger a submission form operation on a validity status change.
-      //
-      // This behavior will cause an unnecessary participant submission update
-      // on every responseIndex change. To prevent this, clear the old subscription
-      // and re-initialize a new one on form statusChanges observable.
-      this.responseIndex.pipe(takeUntil(this._$destroy)).subscribe(() => {
-        // Need to resubscribe to the form status change stream.
-        // Need to first terminate the existing stream to avoid multi-casting on the same
-        // subscription.
-        this._$formReset.next();
-
-        // Create a subscription to the form and ignore the first emission, which will almost always be
-        // the form population by value patching from existing submissions. Want to avoid calling
-        // the update method when not necessary.
-        this.form.statusChanges
-          .pipe(
-            // Ignore the form value patch event. 500ms should always be a long
-            // enough interval to ignore, after which we want to capture and debounce
-            // all form value changes.
-            throttle(() => interval(500)),
-            tap((s) => {
-              // If the form is invalid the it is due to the a form value patch
-              // from a submission change.
-              if (s === 'VALID') {
-                this.saveStatus.next(SAVE_STATUS.Pending);
-              }
-            }),
-            debounceTime(3000),
-            filter((status) => {
-              return status === 'VALID';
-            }),
-            tap((s) => {
-              this.saveStatus.next(SAVE_STATUS.Saving);
-            }),
-            takeUntil(this._$formReset)
-          )
-          .subscribe((status) => {
-            this._updateOrCreateSubmission();
-          });
-      });
+      // Create a subscription to the form and ignore the first emission, which will almost always be
+      // the form population by value patching from existing submissions. Want to avoid calling
+      // the update method when not necessary.
+      this.form.statusChanges
+        .pipe(
+          // Ignore the form value patch event. 500ms should always be a long
+          // enough interval to ignore, after which we want to capture and debounce
+          // all form value changes.
+          throttle(() => interval(500)),
+          tap((s) => {
+            // If the form is invalid the it is due to the a form value patch
+            // from a submission change.
+            if (s === 'VALID') {
+              this.saveStatus.next(SAVE_STATUS.Pending);
+            }
+          }),
+          debounceTime(3000),
+          filter((status) => {
+            return status === 'VALID';
+          }),
+          tap((s) => {
+            this.saveStatus.next(SAVE_STATUS.Saving);
+          }),
+          takeUntil(this._$formReset)
+        )
+        .subscribe((status) => {
+          this._updateOrCreateSubmission();
+        });
     }
   }
 
@@ -236,8 +215,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
         this.drawComponent.reset();
       }
       this.form.reset();
-      this._initializeParticipant();
-      this.responseIndex.next(-1);
     } else {
       this.mp.require(['Graphic', 'Symbol', 'Geometry']).then(([Graphic]: [esri.GraphicConstructor]) => {
         this.drawComponent.reset();
@@ -254,9 +231,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
 
         // Draws submission graphics to the draw component target layer.
         this.drawComponent.draw(graphics);
-
-        // Set the component participant state.
-        this._initializeParticipant(submission.guid);
       });
     }
   }
@@ -265,22 +239,22 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    * Updates the entry value of the current participant guid with the provided geometry.
    */
   private _updateOrCreateSubmission() {
-    forkJoin([this.snapshot.pipe(take(1)), this.responses.pipe(take(1))]).subscribe(([snapshot, responses]) => {
+    forkJoin([this.event.pipe(take(1)), this.responses.pipe(take(1))]).subscribe(([snapshot, responses]) => {
       const parsed = (this.form.controls.drawn.value as Array<esri.Graphic>).map((graphic) => {
         return graphic.toJSON();
       });
 
-      const submission: IResponseRequestPayload = {
-        guid: this.participantGuid,
-        name: this.form.controls.name.value,
-        notes: this.form.controls.notes.value,
-        shapes: parsed
-      };
+      // TODO: This is currently an array but needs to be reformatted to treat as a single response
+      // This is because there will be a single participant response the current workshop and snapshot/scenario event
+      if (responses.length > 0) {
+        // If there is an existing response, replace its value with the new geometry.
 
-      const existing = responses.find((r) => r.guid === this.participantGuid);
+        // TODO: Remove notes and name property from response entity
+        const submission: IResponseRequestDto = {
+          guid: responses[0].guid,
+          shapes: parsed
+        };
 
-      if (existing) {
-        // If there is an existing submission for the current participant guid, replace its value with the new geometry.
         this.rs.updateResponse(submission.guid, submission).subscribe(
           (updateStatus) => {
             this.responseSave.emit();
@@ -292,15 +266,21 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           }
         );
       } else {
-        // If there is no existing submission for the current participant guid, add a dictionary index for the current
-        // participant guid.
-        this.snapshot.pipe(take(1)).subscribe((snapShotOrScenario) => {
+        // TODO: Remove notes and name property from response entity
+        const submission: IResponseRequestDto = {
+          participantGuid: this.participantGuid,
+          shapes: parsed
+        };
+
+        this.event.pipe(take(1), withLatestFrom(this.workshop)).subscribe(([snapShotOrScenario, workshop]) => {
           if (snapShotOrScenario.type === 'scenario') {
             submission.scenarioGuid = snapshot.guid;
           } else {
             submission.snapshotGuid = snapshot.guid;
           }
-          submission.workshopGuid = this.route.snapshot.queryParams['workshop'];
+
+          submission.workshopGuid = workshop.guid;
+
           this.rs.createResponse(submission).subscribe(
             (submissionStatus) => {
               this.responseSave.emit();
@@ -315,20 +295,9 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  /**
-   * Sets the participant ID to be a provided one or generates one if not provided.
-   */
-  private _initializeParticipant(id?: string) {
-    if (id) {
-      this.participantGuid = id;
-    } else {
-      this.participantGuid = guid();
-    }
-  }
 }
 
-interface IParticipantSubmission extends Omit<IResponseRequestPayload, 'shapes'> {
+interface IParticipantSubmission extends Omit<IResponseRequestDto, 'shapes'> {
   shapes: esri.Graphic[];
 }
 
