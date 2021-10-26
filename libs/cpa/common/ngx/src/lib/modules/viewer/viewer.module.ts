@@ -19,6 +19,7 @@ import { SnapshotNavigatorComponent } from './components/snapshot-navigator/snap
 import { AdminControlsComponent } from './components/admin-controls/admin-controls.component';
 import { ParticipantListItemComponent } from './components/admin-controls/components/participant-list-item/participant-list-item.component';
 import { ParticipantResponsePopupComponent } from './components/participant-response-popup/participant-response-popup.component';
+import { ViewerBasePopupComponent } from './components/viewer-base-popup/viewer-base-popup.component';
 
 const routes: Routes = [
   {
@@ -68,7 +69,8 @@ const routes: Routes = [
     ParticipantComponent,
     AdminControlsComponent,
     ParticipantListItemComponent,
-    ParticipantResponsePopupComponent
+    ParticipantResponsePopupComponent,
+    ViewerBasePopupComponent
   ],
   exports: [RouterModule]
 })

@@ -1,0 +1,8 @@
+<div class="popup-section">
+  <p class="feature-style-1">Feature Properties</p>
+</div>
+
+<div *ngFor="let pair of data.attributes | keyvalue">
+  <p><strong>{{pair.key}}</strong></p>
+  <p>{{pair.value}}</p>
+</div>

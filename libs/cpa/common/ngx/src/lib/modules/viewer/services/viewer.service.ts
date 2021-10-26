@@ -9,6 +9,8 @@ import { IScenariosResponseResolved, ISnapshotsResponse, IWorkshopRequestPayload
 import { WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/data-access';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
+import { ViewerBasePopupComponent } from '../components/viewer-base-popup/viewer-base-popup.component';
+
 import esri = __esri;
 
 @Injectable({
@@ -321,7 +323,8 @@ export class ViewerService {
               graphics: g,
               listMode: 'show',
               visible: l.info.loadOnInit !== undefined ? l.info.loadOnInit : true,
-              description: l.info.description
+              description: l.info.description,
+              popupComponent: ViewerBasePopupComponent
             } as esri.GraphicsLayerProperties);
           } else {
             console.warn(`Layer with object structure could not be generated:`, l);
