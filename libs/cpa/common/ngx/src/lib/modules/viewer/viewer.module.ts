@@ -11,6 +11,7 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
 import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
 
 import { ParticipantComponent } from './components/participant/participant.component';
 import { ViewerComponent } from './viewer.component';
@@ -57,7 +58,8 @@ const routes: Routes = [
     SidebarModule,
     LayerListModule,
     LegendModule,
-    UIClipboardModule
+    UIClipboardModule,
+    MapPopupModule
   ],
   declarations: [
     ViewerComponent,

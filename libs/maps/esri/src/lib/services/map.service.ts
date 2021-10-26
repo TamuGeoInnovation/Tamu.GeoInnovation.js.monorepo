@@ -644,12 +644,16 @@ export class EsriMapService {
    *
    */
   public clearSelectedFeatures() {
-    // Source object
-    const source = Object.assign(this.environment.value('LayerSources').find((src) => src.id === 'selection-layer'));
+    const source = this.environment.value('LayerSources').find((src) => src.id === 'selection-layer');
 
-    this.findLayerOrCreateFromSource(source).then((layer: esri.GraphicsLayer) => {
-      layer.removeAll();
-    });
+    if (source) {
+      // Source object
+      const layer = Object.assign(source);
+
+      this.findLayerOrCreateFromSource(layer).then((l: esri.GraphicsLayer) => {
+        l.removeAll();
+      });
+    }
   }
 
   /**

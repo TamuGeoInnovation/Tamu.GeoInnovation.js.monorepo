@@ -93,9 +93,9 @@ export class PopupComponent implements OnInit, OnDestroy {
    */
   public render() {
     if (this.snapshot && this.snapshot.graphics && this.snapshot.graphics.length > 0) {
-      const component = this.popupService.getComponent({ ...this.snapshot });
+      const resolved = this.popupService.getComponent({ ...this.snapshot });
 
-      if (component === undefined) {
+      if (resolved === undefined) {
         console.warn(`Popup component could not be resolved.`);
         this.popupService.hidePopup();
         return;
@@ -104,7 +104,7 @@ export class PopupComponent implements OnInit, OnDestroy {
       this.popupService.showPopup();
 
       // Resolve component
-      const factory = this.componentResolver.resolveComponentFactory(component);
+      const factory = this.componentResolver.resolveComponentFactory(resolved.component);
 
       // Get reference to the view container (host)
       const container = this.viewHost.viewContainerRef;
@@ -117,7 +117,7 @@ export class PopupComponent implements OnInit, OnDestroy {
 
       // Pass in feature data to the created component
       // Will only handle a single feature for now.
-      resolvedComponent.instance.data = this.snapshot.graphics[0];
+      resolvedComponent.instance.data = resolved.data ? resolved.data : this.snapshot.graphics[0];
     }
   }
 

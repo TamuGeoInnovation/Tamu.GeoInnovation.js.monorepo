@@ -1,4 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
+import { BasePopupComponent } from '@tamu-gisc/maps/feature/popup';
 
 const commonLayerProps = {
   minScale: 10000000,
@@ -12,6 +13,7 @@ export const LayerSources: LayerSource[] = [
     type: 'graphics',
     id: 'drawing-layer',
     title: 'Drawn Features',
+    popupComponent: BasePopupComponent,
     native: {
       ...commonLayerProps
     }
