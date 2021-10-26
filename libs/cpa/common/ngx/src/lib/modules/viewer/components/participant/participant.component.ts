@@ -41,7 +41,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   public responses: Observable<IResponseDto[]>;
   public snapshotHistory = this.vs.snapshotHistory;
 
-  public participantGuid: string;
+  public participantGuid = this.vs.updateParticipantGuid;
   public form: FormGroup;
 
   /**
@@ -77,108 +77,89 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       drawn: [undefined, Validators.required]
     });
 
-    if (this.route.snapshot.queryParams['participant']) {
-      this.participantGuid = this.route.snapshot.queryParams['participant'];
-    }
+    // On snapshot change, reset the workspace
+    this.event.pipe(skip(1), takeUntil(this._$destroy)).subscribe((res) => {
+      this.resetWorkspace();
+    });
 
-    if (this.route.snapshot.queryParams['workshop']) {
-      this.vs.updateWorkshopGuid(this.route.snapshot.queryParams.workshop);
+    // Fetch new responses from server whenever snapshot, or response save signal emits.
+    this.responses = merge(this.event, this.responseSave).pipe(
+      switchMap((event) => {
+        return forkJoin([this.workshop.pipe(take(1)), this.event.pipe(take(1))]);
+      }),
+      switchMap(([workshop, snapshotOrScenario]) => {
+        if (snapshotOrScenario?.type === 'snapshot') {
+          return this.rs.getResponsesForWorkshopAndSnapshot(workshop.guid, snapshotOrScenario.guid);
+        } else if (snapshotOrScenario.type === 'scenario') {
+          return this.rs.getResponsesForWorkshop(workshop.guid).pipe(
+            map((responses) => {
+              return responses.filter((response) => {
+                if (response.scenario) {
+                  return response;
+                }
+              });
+            })
+          );
+        } else {
+          const message = 'snapshotOrScenario without type';
+          console.warn(message);
+          throw Error(message);
+        }
+      }),
+      withLatestFrom(this.vs.participantGuid),
+      map(([responses, participantGuid]) => {
+        return responses.filter((r) => r.participant && r.participant.guid === participantGuid);
+      }),
+      shareReplay(1)
+    );
 
-      // On snapshot change, reset the workspace
-      this.event.pipe(skip(1), takeUntil(this._$destroy)).subscribe((res) => {
-        this.resetWorkspace();
+    // Reset workspace whenever there is a new set of responses from the server
+    // or when there is a workshop event change (snapshot or scenario).
+    this.responses
+      .pipe(
+        switchMap((response) => {
+          return from(response);
+        }),
+        withLatestFrom(this.vs.participantGuid),
+        filter(([response, participantGuid]) => {
+          return response.participant && response.participant.guid === participantGuid;
+        }),
+        takeUntil(this._$destroy)
+      )
+      .subscribe(([res, pguid]) => {
+        if (res) {
+          this.resetWorkspace(res as IParticipantSubmission);
+        }
       });
 
-      // Setup a route params listener to change the snapshot as a result of a the navigator component
-      // emitting a selection event and also automatically select an snapshot or scenario when the application
-      // loads and there is an eventGuid in the route params
-      this.route.queryParams
-        .pipe(
-          pluck('event'),
-          filter((eg) => eg !== null || eg !== undefined),
-          takeUntil(this._$destroy)
-        )
-        .subscribe((res) => {
-          this.vs.updateSelectionIndex(res);
-        });
-
-      // Fetch new responses from server whenever snapshot, or response save signal emits.
-      this.responses = merge(this.event, this.responseSave).pipe(
-        switchMap((event) => {
-          return forkJoin([this.workshop.pipe(take(1)), this.event.pipe(take(1))]);
-        }),
-        switchMap(([workshop, snapshotOrScenario]) => {
-          if (snapshotOrScenario?.type === 'snapshot') {
-            return this.rs.getResponsesForWorkshopAndSnapshot(workshop.guid, snapshotOrScenario.guid);
-          } else if (snapshotOrScenario.type === 'scenario') {
-            return this.rs.getResponsesForWorkshop(workshop.guid).pipe(
-              map((responses) => {
-                return responses.filter((response) => {
-                  if (response.scenario) {
-                    return response;
-                  }
-                });
-              })
-            );
-          } else {
-            const message = 'snapshotOrScenario without type';
-            console.warn(message);
-            throw Error(message);
+    // Create a subscription to the form and ignore the first emission, which will almost always be
+    // the form population by value patching from existing submissions. Want to avoid calling
+    // the update method when not necessary.
+    this.form.statusChanges
+      .pipe(
+        // Ignore the form value patch event. 500ms should always be a long
+        // enough interval to ignore, after which we want to capture and debounce
+        // all form value changes.
+        throttle(() => interval(500)),
+        tap((s) => {
+          // If the form is invalid the it is due to the a form value patch
+          // from a submission change.
+          if (s === 'VALID') {
+            this.saveStatus.next(SAVE_STATUS.Pending);
           }
         }),
-        map((responses) => {
-          return responses.filter((r) => r.participant && r.participant.guid === this.participantGuid);
+        debounceTime(3000),
+        filter((status) => {
+          return status === 'VALID';
         }),
-        shareReplay(1)
-      );
-
-      // Reset workspace whenever there is a new set of responses from the server
-      // or when there is a workshop event change (snapshot or scenario).
-      this.responses
-        .pipe(
-          switchMap((response) => {
-            return from(response);
-          }),
-          filter((response) => {
-            return response.participant && response.participant.guid === this.participantGuid;
-          }),
-          takeUntil(this._$destroy)
-        )
-        .subscribe((res) => {
-          if (res) {
-            this.resetWorkspace(res as IParticipantSubmission);
-          }
-        });
-
-      // Create a subscription to the form and ignore the first emission, which will almost always be
-      // the form population by value patching from existing submissions. Want to avoid calling
-      // the update method when not necessary.
-      this.form.statusChanges
-        .pipe(
-          // Ignore the form value patch event. 500ms should always be a long
-          // enough interval to ignore, after which we want to capture and debounce
-          // all form value changes.
-          throttle(() => interval(500)),
-          tap((s) => {
-            // If the form is invalid the it is due to the a form value patch
-            // from a submission change.
-            if (s === 'VALID') {
-              this.saveStatus.next(SAVE_STATUS.Pending);
-            }
-          }),
-          debounceTime(3000),
-          filter((status) => {
-            return status === 'VALID';
-          }),
-          tap((s) => {
-            this.saveStatus.next(SAVE_STATUS.Saving);
-          }),
-          takeUntil(this._$formReset)
-        )
-        .subscribe((status) => {
-          this._updateOrCreateSubmission();
-        });
-    }
+        tap((s) => {
+          this.saveStatus.next(SAVE_STATUS.Saving);
+        }),
+        takeUntil(this._$formReset)
+      )
+      .subscribe((status) => {
+        this._updateOrCreateSubmission();
+      });
   }
 
   public ngOnDestroy() {
@@ -233,60 +214,62 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    * Updates the entry value of the current participant guid with the provided geometry.
    */
   private _updateOrCreateSubmission() {
-    forkJoin([this.event.pipe(take(1)), this.responses.pipe(take(1))]).subscribe(([snapshot, responses]) => {
-      const parsed = (this.form.controls.drawn.value as Array<esri.Graphic>).map((graphic) => {
-        return graphic.toJSON();
-      });
+    forkJoin([this.event.pipe(take(1)), this.responses.pipe(take(1)), this.vs.participantGuid.pipe(take(1))]).subscribe(
+      ([snapshot, responses, participantGuid]) => {
+        const parsed = (this.form.controls.drawn.value as Array<esri.Graphic>).map((graphic) => {
+          return graphic.toJSON();
+        });
 
-      // TODO: This is currently an array but needs to be reformatted to treat as a single response
-      // This is because there will be a single participant response the current workshop and snapshot/scenario event
-      if (responses.length > 0) {
-        // If there is an existing response, replace its value with the new geometry.
+        // TODO: This is currently an array but needs to be reformatted to treat as a single response
+        // This is because there will be a single participant response the current workshop and snapshot/scenario event
+        if (responses.length > 0) {
+          // If there is an existing response, replace its value with the new geometry.
 
-        const submission: IResponseRequestDto = {
-          guid: responses[0].guid,
-          shapes: parsed
-        };
+          const submission: IResponseRequestDto = {
+            guid: responses[0].guid,
+            shapes: parsed
+          };
 
-        this.rs.updateResponse(submission.guid, submission).subscribe(
-          (updateStatus) => {
-            this.responseSave.emit();
-            this.saveStatus.next(SAVE_STATUS.Complete);
-            console.log('Updated response');
-          },
-          (err) => {
-            this.saveStatus.next(SAVE_STATUS.Error);
-          }
-        );
-      } else {
-        // TODO: Remove notes and name property from response entity
-        const submission: IResponseRequestDto = {
-          participantGuid: this.participantGuid,
-          shapes: parsed
-        };
-
-        this.event.pipe(take(1), withLatestFrom(this.workshop)).subscribe(([snapShotOrScenario, workshop]) => {
-          if (snapShotOrScenario.type === 'scenario') {
-            submission.scenarioGuid = snapshot.guid;
-          } else {
-            submission.snapshotGuid = snapshot.guid;
-          }
-
-          submission.workshopGuid = workshop.guid;
-
-          this.rs.createResponse(submission).subscribe(
-            (submissionStatus) => {
+          this.rs.updateResponse(submission.guid, submission).subscribe(
+            (updateStatus) => {
               this.responseSave.emit();
               this.saveStatus.next(SAVE_STATUS.Complete);
-              console.log('Created response');
+              console.log('Updated response');
             },
             (err) => {
               this.saveStatus.next(SAVE_STATUS.Error);
             }
           );
-        });
+        } else {
+          // TODO: Remove notes and name property from response entity
+          const submission: IResponseRequestDto = {
+            participantGuid: participantGuid,
+            shapes: parsed
+          };
+
+          this.event.pipe(take(1), withLatestFrom(this.workshop)).subscribe(([snapShotOrScenario, workshop]) => {
+            if (snapShotOrScenario.type === 'scenario') {
+              submission.scenarioGuid = snapshot.guid;
+            } else {
+              submission.snapshotGuid = snapshot.guid;
+            }
+
+            submission.workshopGuid = workshop.guid;
+
+            this.rs.createResponse(submission).subscribe(
+              (submissionStatus) => {
+                this.responseSave.emit();
+                this.saveStatus.next(SAVE_STATUS.Complete);
+                console.log('Created response');
+              },
+              (err) => {
+                this.saveStatus.next(SAVE_STATUS.Error);
+              }
+            );
+          });
+        }
       }
-    });
+    );
   }
 }
 

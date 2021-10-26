@@ -1,13 +1,12 @@
-import { Inject, Injectable } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
-import { BehaviorSubject, combineLatest, from, Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, combineLatest, from, Observable, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 
 import * as md5 from 'md5';
 
 import { CPALayer } from '@tamu-gisc/cpa/common/entities';
 import { IScenariosResponseResolved, ISnapshotsResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
-import { ResponseService, WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/data-access';
+import { WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/data-access';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
@@ -16,8 +15,11 @@ import esri = __esri;
   providedIn: 'root'
 })
 export class ViewerService {
-  private _workshopGuid: BehaviorSubject<string> = new BehaviorSubject(undefined);
+  private _workshopGuid: ReplaySubject<string> = new ReplaySubject(undefined);
   public workshopGuid: Observable<string> = this._workshopGuid.asObservable();
+
+  private _participantGuid: ReplaySubject<string> = new ReplaySubject(undefined);
+  public participantGuid: Observable<string> = this._participantGuid.asObservable();
 
   public workshop: Observable<IWorkshopRequestPayload>;
 
@@ -53,11 +55,9 @@ export class ViewerService {
     private ws: WorkshopService,
     private sss: SnapshotService,
     private sns: ScenarioService,
-    private rs: ResponseService,
     private ms: EsriMapService,
     private mp: EsriModuleProviderService,
-    private sc: ScenarioService,
-    @Inject(DOCUMENT) private document: Document
+    private sc: ScenarioService
   ) {
     this.init();
   }
@@ -66,8 +66,12 @@ export class ViewerService {
     this._workshopGuid.next(guid);
   }
 
-  public updateSelectionIndex(guid: string) {
+  public updateSelectionGuid(guid: string) {
     this.selectionGuid.next(guid);
+  }
+
+  public updateParticipantGuid(guid: string) {
+    this._participantGuid.next(guid);
   }
 
   public init(): void {
