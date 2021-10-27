@@ -7,7 +7,8 @@
    ========================================================================== */
 
 /* =========== Contents ===========*/
-//    1. Mixins
+
+//    1. Mixin imports
 //    2. Application Colors
 //    3. Typography
 //    4. Global
@@ -19,13 +20,12 @@
 /* =========== END Contents ===========*/
 
 //  ==========================================================================
-//   Mixins
+//   Mixin Imports
 //  ==========================================================================
 @import 'libs/sass/mixins';
 @import 'libs/sass/1140';
-@import 'libs/gisday/sass/variables';
-@import 'libs/gisday/sass/colors';
 
+@import 'libs/sass/colors'; // Imports complete material design colors for use as classes in markup
 //  ==========================================================================
 //   Application colors
 //  ==========================================================================
@@ -39,7 +39,15 @@ $aggie-support-grey: #707373;
 $aggie-accent-red: #e4002b;
 $aggie-accent-yellow: #fce300;
 $link-blue: #1e88e5;
-@import 'libs/gisday/sass/colors'; // Imports complete material design colors for use as classes in markup
+
+$gisday-black: #333333;
+$gisday-font-primary: #424242;
+// @gisday-blue: #0526f3;
+$gisday-blue: #003366;
+$gisday-blue-secondary: lighten($gisday-blue, 15%);
+$gisday-blue-support: #333640;
+$gisday-blue-support-lightened: lighten($gisday-blue-support, 40%);
+$gisday-gray-primary: #fafafa;
 
 .success {
   color: #4caf50;
@@ -56,25 +64,19 @@ $link-blue: #1e88e5;
 //  ==========================================================================
 //   Typography
 //  ==========================================================================
-//::selection {
-//    background: #F5F5F5;
-//}
-//
-//::-moz-selection {
-//    background: #F5F5F5;
-//}
-$opensans: 'Open Sans', sans-serif;
-$oswald: 'Oswald', sans-serif;
+// @title-font: "Oswald", sans-serif;
+$title-font: 'Source Sans Pro', sans-serif;
+$body-font: 'Open Sans', sans-serif;
 
 html {
-  color: $aggie-support-black;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
   line-height: 1.55;
   letter-spacing: 0.3px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  font-family: $opensans;
+  font-family: $body-font;
+  color: $gisday-font-primary;
 }
 
 body {
@@ -83,7 +85,7 @@ body {
 }
 
 p {
-  letter-spacing: 0.5px; //    padding-top: .75rem;
+  letter-spacing: 0.5px;
   padding-bottom: 0.5rem;
   color: inherit;
   position: inherit;
@@ -131,24 +133,25 @@ a {
 }
 
 #site-title {
-  font-size: 4rem;
+  font-size: 5rem;
+  text-transform: initial;
 }
 
 h1 {
-  font-size: 2rem;
-  font-weight: 300;
+  font-size: 2.5rem;
+  font-weight: 600;
 }
 
 h2 {
-  font-size: 1.5rem;
-  font-weight: 400;
+  font-size: 1.65rem;
+  font-weight: 600;
   margin-top: 0.4rem;
   margin-bottom: 0.2rem;
 }
 
 h3 {
   font-size: 1.5rem;
-  font-weight: 300;
+  font-weight: 600;
   margin-top: 0.4rem;
   margin-bottom: 0.2rem;
 }
@@ -166,9 +169,9 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: $oswald;
+  font-family: $title-font;
   line-height: 1.2;
-  text-transform: uppercase;
+  color: $gisday-blue-support;
 
   span.lowercase {
     text-transform: lowercase;
@@ -203,12 +206,12 @@ ul {
         height: 1.5rem;
         width: 1.5rem;
         position: absolute;
-        color: #500000;
+        color: $gisday-blue-support;
         font-weight: 400;
-        border: 1.5px solid #500000;
+        border: 1.5px solid $gisday-blue-support;
         border-radius: 99rem;
         left: -1.5rem;
-        @include flexbox(flex);
+        @include flexbox();
         @include justify-content(center);
         @include align-items(center);
       }
@@ -223,10 +226,11 @@ ul {
 }
 
 a {
-  color: $link-blue;
+  color: $gisday-blue-secondary;
   position: relative;
   text-decoration: none;
   padding-bottom: 0.75rem;
+  font-weight: 600;
 
   &.blend {
     color: inherit;
@@ -241,12 +245,13 @@ a {
       width: 100%;
       position: absolute;
       bottom: 0;
-      background: #fff;
+      background: $gisday-gray-primary;
     }
   }
 
-  &:focus {
-    outline: none;
+  &.disabled {
+    color: #bdbdbd !important;
+    pointer-events: none;
   }
 
   &:hover {
@@ -307,13 +312,17 @@ body > header {
   top: 0;
   width: 100%;
   z-index: 110;
+
+  &.seamless {
+    position: absolute;
+  }
 }
 
 body > footer {
   padding-top: 2rem;
   padding-bottom: 3rem;
   font-weight: 300;
-  background: #ffffff;
+  background: $gisday-gray-primary;
   position: relative;
   border-top: 1px solid #e0e0e0;
 
@@ -325,7 +334,6 @@ body > footer {
       color: inherit;
       text-decoration: none;
       font-size: 0.75rem;
-      color: #bdbdbd;
 
       &::after {
         content: '';
@@ -338,14 +346,6 @@ body > footer {
         background: transparent;
         @include transition($background 0.3s, height 0.3s);
       }
-
-      // &:hover {
-      //     color: #757575;
-      //     &::after {
-      //         height: 2px;
-      //         background: #757575;
-      //     }
-      // }
     }
 
     ul {
@@ -379,8 +379,8 @@ body > footer {
     }
 
     .branding-detail {
-      font-size: 0.9rem !important; // color: #757575;
-      @include flexbox(flex);
+      font-size: 0.9rem !important;
+      @include flexbox();
       @include flex-direction(row);
 
       .branding-detail-icon {
@@ -436,7 +436,7 @@ body > footer {
 
 section {
   @include align-items(center);
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-direction(column);
   position: relative;
   width: 100%;
@@ -460,11 +460,9 @@ body section:first-child {
 
 section > .container16,
 section > .container12 {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-direction(row);
-  @include justify-content(center); //    & > * {
-  //        width: 100%;
-  //    }
+  @include justify-content(center);
 }
 
 figure {
@@ -491,7 +489,7 @@ form#aspnetForm {
 //   Flex Classes
 //  ==========================================================================
 .flex {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-wrap(wrap);
 
   &.flex-column {
@@ -542,47 +540,74 @@ form#aspnetForm {
 //  ==========================================================================
 //   Branding
 //  ==========================================================================
-header #site-logo div {
-  background-image: url(../assets/images/logos/2019/logo/tamu-block-logo-svg.svg);
-  height: 3.8rem;
-  width: 17rem;
-  background-size: contain;
+
+header .logo-container {
+  font-size: 3.5rem;
+  display: none !important;
+
+  &.opaque {
+    display: initial !important;
+  }
+
+  a {
+    display: block;
+    padding-bottom: 0;
+  }
 }
 
-header #main-logo-container::after,
-header #main-logo-container::before {
+header .logo-container::after,
+header .logo-container::before {
   content: none;
 }
 
-footer .logo div {
-  background-image: url(../assets/images/logos/2020/logo/tamu-block-grey-logo-svg.svg);
-  height: 2rem;
-  margin-bottom: 0.5rem;
-  background-position: left;
-  background-size: contain;
-  background-repeat: no-repeat;
+footer .logo-container {
+  font-size: 1.5rem !important;
 }
 
-.landing-logo {
-  background-image: url(../assets/images/logos/2020/logo/tamu-block-logo-svg.svg);
-  height: 7rem;
-  width: 90%;
-  background-position: center;
-  background-size: contain;
-  background-repeat: no-repeat;
-  position: relative;
+// .landing-logo {
+//   background-image: url(../img/logos/2020/logo/tamu-block-logo-svg.svg);
+//   height: 7rem;
+//   width: 90%;
+//   background-position: center;
+//   background-size: contain;
+//   background-repeat: no-repeat;
+//   position: relative;
 
-  &::before {
-    content: '';
-    height: 2.5rem;
-    width: 2.5rem;
-    position: absolute;
-    left: 0rem;
-    top: -5rem;
-    background-image: url(../assets/images/graphics/graphic-satellite.svg);
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+//   &::before {
+//     content: "";
+//     height: 2.5rem;
+//     width: 2.5rem;
+//     position: absolute;
+//     left: 0rem;
+//     top: -5rem;
+//     background-image: url(../img/graphics/graphic-satellite.svg);
+//     background-size: contain;
+//     background-position: center;
+//     background-repeat: no-repeat;
+//   }
+// }
+
+.site-logo {
+  font-size: 1em;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: $gisday-blue-support;
+
+  span {
+    color: $gisday-blue-secondary;
+    -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
+    -webkit-text-stroke-width: 0.04em;
+    -webkit-text-stroke-color: $gisday-blue-secondary;
+  }
+
+  &.greyscale {
+    color: lighten($gisday-blue-support, 50%);
+
+    span {
+      -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
+      -webkit-text-stroke-width: 0.05em;
+      -webkit-text-stroke-color: lighten($gisday-blue-support, 40%);
+    }
   }
 }
 
@@ -590,14 +615,9 @@ footer .logo div {
 //   Navigation
 //  ==========================================================================
 nav #menu-button-container {
-  position: absolute;
-  right: 0;
-  top: 0;
   display: none;
   visibility: hidden;
-  padding: 1rem 1rem 2rem 1rem;
-  top: 50%;
-  @include transform(translateY(-50%));
+  padding: 1rem 0 2rem 0;
 }
 
 nav #menu-button,
@@ -777,182 +797,185 @@ nav #menu-button.deactivate::after {
   }
 }
 
-nav#main-menu #site-logo {
-  position: absolute;
-  display: inline-block;
-  top: 50%;
-  @include transform(translateY(-50%));
-}
+nav {
+  &#main-menu {
+    position: relative;
+    padding: 0 7.5rem;
+    @include flex(auto);
+    @include flex-direction(row);
+    @include justify-content(space-between);
+    @include align-items(center);
 
-nav#main-menu #site-logo a {
-  display: block;
-  padding-bottom: 0;
-}
+    a,
+    li {
+      @include flex(auto);
+      position: relative;
+      margin: 0;
 
-nav#main-menu {
-  position: relative;
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  -o-user-select: none;
-}
+      span {
+        @include transition(transform 0.3s);
+      }
+    }
 
-nav#main-menu a,
-nav#main-menu li {
-  display: inline-block;
-  position: relative;
-  margin: 0;
-}
+    a:not(.logo-container),
+    li,
+    .desktop-menu > ul.dropdown > li:first-child {
+      color: inherit;
+      font-weight: 700;
+      text-decoration: none;
+      text-align: left;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+      position: relative;
+    }
 
-nav#main-menu a:not(#main-logo-container),
-nav#main-menu li,
-nav#main-menu .desktop-menu > ul.dropdown > li:first-child {
-  color: $dark-grey;
-  font-weight: 600;
-  text-decoration: none;
-  text-align: left;
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-  position: relative;
+    .dropdown li:hover > a::before,
+    .dropdown li:hover::before {
+      display: none !important;
+    }
 
-  &:hover,
-  &.active {
-    &::before {
-      content: '';
-      display: block;
-      position: absolute;
-      width: 100%;
-      height: 2px;
-      background: $aggie-maroon;
-      bottom: 0;
-      left: 0;
+    // Overwrite some group rules for header links
+    li {
+      padding-right: 0;
+      padding-left: 0;
+      padding-bottom: 0;
+      padding-top: 0;
     }
   }
 }
 
-nav#main-menu .dropdown li:hover > a::before,
-nav#main-menu .dropdown li:hover::before {
-  display: none !important;
-}
-
-nav#main-menu li {
-  padding-right: 0;
-  padding-left: 0;
-  padding-bottom: 0;
-  padding-top: 0;
-}
-
-nav#main-menu #links {
-  @include flexbox(flex);
-  position: relative;
-  float: right;
-}
-
 nav .desktop-menu {
-  display: inline-block;
+  @include flex(auto);
+  @include flex-direction(column);
 
   a {
     font-weight: 400;
   }
 
-  & > ul {
-    display: inline-block;
-    position: relative;
-    color: #424242;
-    padding-left: 0;
-    margin-bottom: 0;
+  .aux,
+  .primary {
+    @include flex(auto);
+    @include flex-direction(row);
+    @include justify-content(flex-end);
 
-    & > li {
-      padding-top: 0;
-      padding-bottom: 0;
-
-      a {
-        padding: 1.5rem 1.25rem;
-        display: inline-block;
-        @include transition($background 0.2s, color 0.05s);
-        color: inherit;
-
-        &:hover {
-          color: #bdbdbd;
-        }
-      }
-    }
-
-    &.dropdown {
+    & > ul {
+      @include flex(auto);
       position: relative;
+      padding-left: 0;
+      margin-bottom: 0;
 
-      & > li:first-child {
-        padding: 1rem;
-        font-weight: 400;
-        @include transition(color 0.05s);
+      & > li {
+        padding-top: 0;
+        padding-bottom: 0;
 
-        &:hover {
-          color: #bdbdbd;
-          cursor: pointer;
+        a {
+          padding: 1.5rem 1.25rem;
+          display: inline-block;
+          @include transition($background 0.2s, color 0.05s);
+          color: inherit;
+
+          &:hover {
+            color: #bdbdbd;
+          }
         }
       }
 
-      & > ul {
-        opacity: 0;
-        display: block;
-        position: absolute;
-        color: inherit;
-        background: #ffffff;
-        pointer-events: none;
-        padding: 0.6rem 0.5rem;
-        border-radius: 7px;
-        left: 50%;
-        top: 96%;
-        z-index: 100;
-        will-change: transform, opacity;
-        @include transform-origin(center top);
-        @include transition(opacity 0.2s cubic-bezier(0.25, 0, 0.25, 1.2), transform 0.2s cubic-bezier(0.25, 0, 0.25, 1.2));
-        @include transform(rotateX(-60deg));
-        -webkit-filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.15));
-        filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.15));
-        -ms-filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
-        filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
+      &.dropdown {
+        position: relative;
 
-        li {
-          display: block;
-          padding: 0;
+        & > li:first-child {
+          padding: 1rem;
+          font-weight: 400;
+          @include transition(color 0.05s);
 
-          a {
-            color: inherit;
-            display: block !important;
-            padding: 0.75rem 1.5rem !important;
-            color: #757575 !important;
-            white-space: nowrap;
-            @include transition(color 0.05s);
-
-            &:hover {
-              color: #212121 !important;
-            }
+          &:hover {
+            color: #bdbdbd;
+            cursor: pointer;
           }
         }
 
-        &::before {
-          content: '';
-          height: 1.5rem;
-          width: 1.5rem;
-          border-top-left-radius: 3px;
-          background: inherit;
+        & > ul {
+          opacity: 0;
+          display: block;
           position: absolute;
-          top: -0.5rem;
+          color: inherit;
+          background: #ffffff;
+          pointer-events: none;
+          padding: 0.6rem 0.5rem;
+          border-radius: 7px;
           left: 50%;
-          @include transform(translateX(-50%) rotate(45deg));
-        }
-      }
+          top: 125%;
+          z-index: 100;
+          will-change: transform, opacity;
+          @include transform-origin(center top);
+          @include transition(
+            opacity 0.2s cubic-bezier(0.25, 0, 0.25, 1.2),
+            transform 0.2s cubic-bezier(0.25, 0, 0.25, 1.2)
+          );
+          @include transform(translate3d(-50%, 0, 0));
+          -webkit-filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.15));
+          filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.15));
+          -ms-filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
+          filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=2, OffY=2, Color='#444')";
 
-      &:hover {
-        ul {
-          pointer-events: auto;
-          opacity: 1;
-          @include transform(rotateX(0) translateX(-50%));
+          li {
+            display: block;
+            padding: 0;
+
+            a {
+              color: inherit;
+              display: block !important;
+              padding: 0.75rem 1.5rem !important;
+              color: #757575 !important;
+              white-space: nowrap;
+              @include transition(color 0.05s);
+
+              &:hover {
+                color: #212121 !important;
+              }
+            }
+          }
+
+          &::before {
+            content: '';
+            height: 1.5rem;
+            width: 1.5rem;
+            border-top-left-radius: 3px;
+            background: inherit;
+            position: absolute;
+            top: -0.5rem;
+            left: 50%;
+            @include transform(translateX(-50%) rotate(45deg));
+          }
+        }
+
+        &:hover {
+          & > a {
+            span {
+              @include transform(rotateX(180deg));
+            }
+          }
+          ul {
+            pointer-events: auto;
+            opacity: 1;
+            @include transform(translate3d(-50%, -8%, 0));
+          }
         }
       }
+    }
+  }
+
+  .primary {
+    color: $gisday-black;
+  }
+
+  .aux {
+    color: $gisday-blue-secondary;
+
+    ul > a {
+      padding-bottom: 0.5rem !important;
     }
   }
 }
@@ -1054,6 +1077,8 @@ nav#off-canvas-menu .nav-divider:hover {
   color: initial;
 }
 
+// TODO: Remove if not needed.
+// I don't know what this block does. Perhaps user master page menu?
 nav a.dropdown,
 nav li.dropdown {
   margin: 0.5rem 0;
@@ -1132,6 +1157,17 @@ div#links-container {
   margin-bottom: 0.5rem;
 }
 
+.session-description {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+}
+
 #timeAndPlace {
   p {
     padding-bottom: 0;
@@ -1172,7 +1208,7 @@ div#links-container {
 }
 
 .presenter-list-item {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-direction(row);
   @include align-items(center);
   padding: 0.5rem 0;
@@ -1206,17 +1242,15 @@ div#links-container {
 }
 
 .presenter-details-item {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-direction(row);
   @include justify-content(center);
   @include flex-wrap(wrap);
 
   .name {
     font-size: 1.7rem;
-    font-family: $oswald;
-    font-weight: 400;
+    font-family: $title-font;
     line-height: 1;
-    text-transform: uppercase;
   }
 
   .title {
@@ -1224,19 +1258,57 @@ div#links-container {
     font-weight: 100;
   }
 
-  .image {
-    width: 100%;
-    height: 23rem;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: top center;
-    border-radius: 3px;
+  .image-container {
+    overflow: hidden;
+    display: block;
+    position: relative;
+
+    .image {
+      width: 100%;
+      height: 23rem;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: top center;
+      border-radius: 3px;
+    }
+
+    .class-banner {
+      text-transform: uppercase;
+      font-family: $title-font;
+      font-weight: 400;
+      font-size: 1.25rem;
+      position: absolute;
+      display: block;
+      background: $aggie-maroon;
+      top: 1.75rem;
+      left: -8.7rem;
+      width: 100%;
+      z-index: 1;
+      color: #ffffff;
+      @include transform(rotate(-45deg));
+      text-align: center;
+      padding: 0.5rem 0;
+
+      .text-container {
+        width: 40%;
+        margin: 0 auto;
+      }
+
+      span {
+        display: block;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .description {
+    margin-bottom: 1rem;
   }
 }
 
 .presenter-item,
 .session-item {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-direction(row);
   @include align-items(center);
   padding: 0.5rem;
@@ -1251,15 +1323,15 @@ div#links-container {
     background-size: cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
-    background: #500000;
-    @include flexbox(flex);
+    background: $gisday-blue-support-lightened;
+    @include flexbox();
     @include justify-content(center);
     @include align-items(center);
     @include flex-shrink(0);
 
     span {
       font-size: 2rem;
-      font-family: $oswald;
+      font-family: $title-font;
       color: #ffffff;
       margin-top: -5%;
     }
@@ -1316,7 +1388,7 @@ div#links-container {
 }
 
 .sponsor-description-blocks-container {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-direction(row);
   width: inherit;
 
@@ -1332,7 +1404,7 @@ div#links-container {
     }
 
     .category-container {
-      @include flexbox(flex);
+      @include flexbox();
       @include flex-direction(row);
       @include justify-content(flex-start);
       @include flex-wrap(wrap);
@@ -1374,7 +1446,7 @@ div#links-container {
             height: 1rem;
             width: 1rem;
             margin: 0 0.25rem;
-            background-image: url(../assets/images/icons/check.svg);
+            background-image: url(./assets/images/icons/check.svg);
           }
         }
       }
@@ -1387,11 +1459,10 @@ div#links-container {
 }
 
 .sponsor-list {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-direction(column);
   @include justify-content(flex-start);
-  @include align-items(flex-start);
-  width: 60%;
+  @include align-items(center);
 
   img {
     max-height: 4rem;
@@ -1399,8 +1470,8 @@ div#links-container {
     margin-bottom: 1rem;
     object-fit: contain;
     -o-object-fit: contain;
-    object-position: center left;
-    -o-object-position: center left;
+    object-position: center center;
+    -o-object-position: center center;
 
     &:first-child {
       margin-top: 0;
@@ -1409,6 +1480,22 @@ div#links-container {
     &:last-child {
       margin-bottom: 0;
     }
+  }
+
+  a {
+    max-height: 4rem;
+    width: 100%;
+  }
+}
+
+.sponsor-details-item {
+  .image {
+    width: 100%;
+    height: 23rem;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: top center;
+    border-radius: 3px;
   }
 }
 
@@ -1456,18 +1543,19 @@ div#links-container {
           display: block;
           height: 2rem;
           width: 2rem;
-          border: 1.5px solid #500000;
+          border: 1.5px solid;
+          border-color: $gisday-blue-support-lightened;
           border-radius: 99rem;
           position: relative;
           font-weight: 500;
           font-size: 0.8rem;
           cursor: pointer;
-          @include transition(background 0.2s);
+          @include transition($background 0.2s);
 
           &:hover,
           &.active,
           &.filled {
-            background-color: #500000;
+            background-color: $gisday-blue-support-lightened;
             color: #ffffff;
           }
         }
@@ -1498,28 +1586,9 @@ div#links-container {
   }
 }
 
-#modal-bg {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  background: #0b0b0b;
-  opacity: 0;
-  z-index: 100;
-  top: 0;
-  left: 0;
-  @include transition(all 0.25s);
-}
-
-#modal-bg.active {
-  opacity: 0.3;
-}
-
-.modal-bg-open {
-  overflow: hidden;
-}
-
 .faq-item {
-  border: 1px solid #500000;
+  border: 1px solid;
+  border-color: $gisday-blue-support-lightened;
   border-radius: 5px;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -1561,7 +1630,7 @@ div#links-container {
   font-size: 0.8rem;
 
   h2 {
-    font-family: $opensans;
+    font-family: $body-font;
     text-transform: initial;
     font-size: 0.9rem;
     font-weight: 600;
@@ -1606,7 +1675,7 @@ div#links-container {
 }
 
 // .double-pane {
-//   @include flexbox(flex) !important;
+//   @include flexbox() !important;
 //   @include justify-content(center) !important;
 //   @include flex-direction(row) !important;
 //   @include align-items(flex-start) !important;
@@ -1717,30 +1786,29 @@ div#links-container {
 //  ==========================================================================
 //   Landing Page Specific
 //  ==========================================================================
-#landing,
-#activities {
-  width: 100%;
-  position: relative;
 
-  .bg-img {
-    background-repeat: repeat;
-    background-image: url(../assets/images/textures/texture-2.png);
-    // background-repeat: no-repeat;
-    // background-image: url(../img/photos/tamu-aerial.jpg);
-    background-size: auto;
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    opacity: 0.5;
-    top: 0;
+#landing {
+  width: 100%;
+  background: linear-gradient(fade($gisday-blue-secondary, 8%), $gisday-gray-primary);
+
+  .logo-container {
+    font-size: 7rem;
+
+    img {
+      margin-top: 3rem;
+      max-width: 60%;
+    }
+  }
+
+  .slogan {
+    max-width: 75%;
   }
 }
 
 .landing-container {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-direction(column);
   @include align-items(center);
-  // background: rgba(255, 255, 255, .9);
   border-radius: 1rem;
   display: flex;
 }
@@ -1756,7 +1824,7 @@ div#links-container {
     left: 0;
 
     .bg-img {
-      background-image: url(../assets/images/photos/14210_345.jpg);
+      background-image: url(./assets/images/photos/14210_345.jpg);
       opacity: 0.05;
     }
   }
@@ -1770,7 +1838,7 @@ div#links-container {
     height: 100%;
   }
 
-  @include flex();
+  @include flex(auto);
 
   div {
     height: 100%;
@@ -1801,7 +1869,7 @@ div#links-container {
 .no-pad-partition {
   width: 100%;
   position: relative;
-  text-align: center; //    font-weight: 300;
+  text-align: center;
   box-sizing: border-box;
 
   .content-block {
@@ -1991,7 +2059,7 @@ img.jumbo {
 
 .line-divider {
   height: 1px;
-  width: 30%; //    background: #e0e0e0;
+  width: 30%;
   margin: 3rem auto;
 }
 
@@ -2047,7 +2115,8 @@ img.jumbo {
   position: relative;
   z-index: 0;
   border-radius: 3px;
-  border: 1px solid #500000;
+  border: 1px solid;
+  border-color: $gisday-blue-support-lightened;
   overflow: hidden;
 
   &.no-pad {
@@ -2121,11 +2190,14 @@ img.jumbo {
   text-align: inherit;
 }
 
-.card[id^='day'] {
+.card[id^='day'],
+.card[id^='filters'] {
   h2 {
     padding-bottom: 1rem;
-    border-bottom: 1px solid #500000;
+    border-bottom: 1px solid;
+    border-color: $gisday-blue-support-lightened;
     margin-bottom: 0.5rem;
+    font-weight: 500;
   }
 }
 
@@ -2136,7 +2208,8 @@ img.jumbo {
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
-  border: 1px solid #500000;
+  border: 1px solid;
+  border-color: $gisday-blue-support-lightened;
   border-radius: 3px;
 
   .image {
@@ -2175,19 +2248,30 @@ img.jumbo {
 
   .class-banner {
     text-transform: uppercase;
-    font-family: $oswald;
+    font-family: $title-font;
     font-weight: 400;
     font-size: 1.25rem;
     position: absolute;
+    display: block;
     background: $aggie-maroon;
     top: 1.75rem;
-    left: -7.5rem;
+    left: -7.7rem;
     width: 100%;
     z-index: 1;
     color: #ffffff;
     @include transform(rotate(-45deg));
     text-align: center;
     padding: 0.5rem 0;
+
+    .text-container {
+      width: 40%;
+      margin: 0 auto;
+    }
+
+    span {
+      display: block;
+      white-space: nowrap;
+    }
   }
 
   &:hover {
@@ -2197,11 +2281,9 @@ img.jumbo {
   .name {
     font-size: 1.5rem;
     line-height: 1;
-    font-weight: 400;
     font-family: inherit;
     margin-bottom: 0.3rem;
-    text-transform: uppercase;
-    font-family: $oswald;
+    font-family: $title-font;
   }
 
   .title {
@@ -2217,7 +2299,7 @@ img.jumbo {
     font-family: inherit;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
-    font-family: $oswald;
+    font-family: $title-font;
   }
 
   .description p {
@@ -2359,7 +2441,7 @@ table.css-count tbody tr > td:first-child::before {
 }
 
 td > span.delete {
-  background: url(../assets/images/icons/ic_close_48px.svg);
+  background: url(./assets/images/icons/ic_close_48px.svg);
   background-size: contain;
   background-repeat: no-repeat;
   height: 1em;
@@ -2378,7 +2460,7 @@ tr:hover td > span.delete {
 
 #element-placeholder {
   width: 100%;
-  color: #fafafa;
+  color: $gisday-gray-primary;
 }
 
 [ng\:cloak],
@@ -2468,7 +2550,7 @@ tr:hover td > span.delete {
 }
 
 #milestone-container {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-direction(row);
   @include flex-wrap(wrap);
   @include justify-content(space-between);
@@ -2506,7 +2588,7 @@ tr:hover td > span.delete {
     background: #f5f5f5;
     padding: 0.75rem 1rem;
     cursor: pointer;
-    @include flexbox(flex);
+    @include flexbox();
     @include flex-direction(row);
     @include justify-content(space-between);
     @include align-items(center);
@@ -2651,7 +2733,7 @@ article .row {
 }
 
 #bubble-portrait-container {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-wrap(wrap);
   @include justify-content(center);
   margin: 1.25rem 0;
@@ -2668,7 +2750,7 @@ article .row {
 }
 
 .icon-grid {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-wrap(wrap);
   @include justify-content(center);
   margin: 1.25rem 0;
@@ -2679,13 +2761,16 @@ article .row {
     margin: 1.5rem;
     width: 14.125rem;
 
-    & > div:first-child {
+    & > div:first-child,
+    a:first-child {
+      display: block;
       height: 75px;
       width: 175px;
       margin: 0 auto;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center center;
+      padding-bottom: 0;
     }
 
     & > p {
@@ -2693,11 +2778,20 @@ article .row {
       font-size: 1rem;
       margin-top: 0.5rem;
       color: $aggie-support-grey;
-      font-family: $oswald;
+      font-family: $title-font;
     }
 
     & > p:last-child {
       font-weight: 400;
+    }
+
+    &.large {
+      width: 20rem;
+
+      & > div:first-child,
+      a:first-child {
+        width: 250px;
+      }
     }
   }
 
@@ -2707,7 +2801,7 @@ article .row {
 }
 
 .people-grid {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-wrap(wrap);
   @include justify-content(center);
   margin: 1.25rem 0;
@@ -2746,10 +2840,10 @@ article .row {
 }
 
 .countdown {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-direction(row);
   @include justify-content(center);
-  // background: #fafafa;
+  // background: @gisday-gray-primary;
   padding: 1rem;
   border-radius: 10px;
 
@@ -2762,7 +2856,7 @@ article .row {
   }
 
   .count {
-    font-family: $oswald;
+    font-family: $title-font;
     font-size: 4rem;
     font-weight: 500;
     line-height: 1;
@@ -2776,57 +2870,17 @@ article .row {
   }
 }
 
-.flipclock.flip-clock-wrapper {
-  @include flexbox(flex);
-  @include justify-content(center);
-  margin-bottom: 2.5rem;
-
-  ul {
-    background: #3d0000;
-  }
-
-  .inn {
-    color: #ffffff;
-    background-color: #500000;
-  }
-
-  .days {
-    width: 0 !important;
-  }
-
-  .days .flip-clock-label {
-    right: -118px;
-  }
-
-  .hours .flip-clock-label {
-    right: -87px;
-  }
-
-  .minutes .flip-clock-label {
-    right: -88px;
-  }
-
-  .seconds .flip-clock-label {
-    right: -90px;
-  }
-}
-
-.flip-clock-active a,
-.flip-clock-before a {
-  line-height: 1.3;
-}
-
 .lookback {
   position: absolute;
-  font-family: $oswald;
+  font-family: $title-font;
   right: 0;
-  top: 3rem;
+  top: 7rem;
   width: 6rem;
   text-align: center;
   z-index: 1;
 
   a {
-    color: #fafafa;
+    color: $gisday-gray-primary;
     text-decoration: none;
     line-height: 1.4;
     padding: 1rem 0.5rem;
@@ -2836,11 +2890,11 @@ article .row {
 
   &:hover {
     &:before {
-      transform: skew(0, -10deg);
+      transform: skew(0, -15deg);
     }
 
     &:after {
-      transform: skew(0, 10deg);
+      transform: skew(0, 15deg);
     }
   }
 
@@ -2849,13 +2903,12 @@ article .row {
     position: absolute;
     height: 100%;
     width: 100%;
-    background: #5e1d1d;
+    background: $gisday-blue-secondary;
     border-bottom-left-radius: 10px;
     z-index: -1;
     right: 0;
     bottom: 0;
-    // transform: skew(0, -15deg);
-    @include transform(skew(0, -15deg));
+    @include transform(skew(0, -10deg));
     @include transition(all 0.3s);
   }
 
@@ -2864,13 +2917,12 @@ article .row {
     position: absolute;
     height: 100%;
     width: 100%;
-    background: #332c2c;
+    background: $gisday-blue-support;
     border-top-left-radius: 10px;
     z-index: -1;
     right: 0;
     top: 0;
-    // transform: skew(0, 15deg);
-    @include transform(skew(0, 15deg));
+    @include transform(skew(0, 10deg));
     @include transition(all 0.3s);
   }
 }
@@ -2925,7 +2977,7 @@ nav#section-nav a:hover {
   height: 3.5rem;
   width: 3.5rem;
   position: absolute;
-  background-image: url(../img/icons/ic_more_vert_48px.svg);
+  background-image: url(./assets/images/icons/ic_more_vert_48px.svg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 55%;
@@ -2955,186 +3007,6 @@ nav#section-nav a:hover {
 }
 
 //  ==========================================================================
-//   Browser Wireframe
-//  ==========================================================================
-$browser-frame-color: #9a8b7f;
-
-.browser-wireframe-container {
-  width: 100%;
-  height: auto;
-  position: relative;
-  display: block;
-  margin: 3rem auto;
-  box-sizing: border-box;
-  overflow: hidden;
-  border: 2px solid $browser-frame-color;
-  border-top: none;
-}
-
-.browser-wireframe-buttons-url-container {
-  width: 100%;
-}
-
-.browser-wireframe-buttons {
-  width: 100%;
-  height: 3.25rem;
-  position: relative;
-  background: $browser-frame-color;
-  @include flexbox(flex);
-  @include align-items(center);
-}
-
-.browser-wireframe-buttons span {
-  display: inline-block;
-  position: relative;
-  height: 0.85rem;
-  width: 0.85rem;
-  background: $background;
-  border-radius: 50%;
-  margin: 0 0.2em;
-
-  &:first-child {
-    margin-left: 0.75rem;
-  }
-}
-
-.browser-wireframe-url {
-  width: 95%;
-  position: relative;
-  border: 1px solid #bdbdbd;
-  height: 2em;
-  margin: 0 auto;
-  border-radius: 3px;
-  top: 2em;
-  box-sizing: border-box;
-  text-align: left;
-  background: #f0f2f3;
-}
-
-.browser-wireframe-url a {
-  position: relative;
-  color: #333;
-  width: 100%;
-  display: block;
-  padding-left: 0.5em;
-  padding-top: 0.2em;
-  box-sizing: border-box;
-}
-
-.browser-wireframe-content {
-  position: relative;
-}
-
-.browser-wireframe-content video {
-  width: 100%;
-}
-
-.three-column-img {
-  width: 5em;
-  height: 4.5em;
-}
-
-#mobile-wireframe {
-  position: relative;
-  display: none;
-  margin: 0 auto;
-  background: #fcfcfc;
-  padding: 3.5em 0.75em;
-  border-radius: 35px;
-  width: 80%;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 0 0 5px #e0e0e0;
-  z-index: 50;
-}
-
-#mobile-display {
-  display: block;
-
-  img {
-    border: 2px solid #333333;
-  }
-}
-
-#mobile-speaker {
-  position: absolute;
-  height: 0.4em;
-  width: 5em;
-  border-radius: 20px;
-  top: 0;
-  left: 50%;
-  @include transform(translateX(-50%));
-  top: 1.5em;
-}
-
-#mobile-camera {
-  position: absolute;
-  height: 0.5em;
-  width: 0.5em;
-  border-radius: 50%;
-  top: 0;
-  left: 30%;
-  @include transform(translateX(-50%));
-  top: 1.5em;
-}
-
-#mobile-volume-up {
-  position: absolute;
-  height: 3.5em;
-  width: 0.2em;
-  background: inherit;
-  left: -0.6em;
-  top: 3.5em;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-
-#mobile-volume-down {
-  position: absolute;
-  height: 3.5em;
-  width: 0.2em;
-  background: inherit;
-  left: -0.6em;
-  top: 7.5em;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-
-#mobile-power {
-  position: absolute;
-  height: 3.5em;
-  width: 0.2em;
-  background: inherit;
-  right: -0.6em;
-  top: 3.5em;
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
-}
-
-#mobile-home {
-  position: absolute;
-  height: 1.75em;
-  width: 1.75em;
-  background: inherit;
-  left: 50%;
-  bottom: 1.5em;
-  background: none;
-  border: 3px solid #bdbdbd;
-  border-radius: 9px;
-  @include transform(translateX(-50%) translateY(25%));
-}
-
-#mobile-volume-up,
-#mobile-volume-down,
-#mobile-power {
-  border: 1px solid #e0e0e0;
-}
-
-#mobile-speaker,
-#mobile-camera {
-  background: #bdbdbd;
-}
-
-//  ==========================================================================
 //   Default Input, Button, and Form Styles
 //  ==========================================================================
 input[type='submit'],
@@ -3143,24 +3015,24 @@ input[type='submit'],
   display: inline-block;
   position: relative;
   z-index: 20;
-  padding: 0.5rem 2.3rem;
+  padding: 0.75rem 2.5rem;
   margin-left: 0.75rem;
   margin-right: 0.75rem;
-  border: 2px solid $aggie-maroon;
-  border-radius: 3px;
-  color: $aggie-maroon;
-  font-family: $oswald;
+  border: 2px solid;
+  border-color: $gisday-blue-secondary;
+  border-radius: 2.5rem;
+  color: $gisday-blue-secondary;
+  font-family: $title-font;
   letter-spacing: 1.25px;
   font-size: 1.1rem;
   box-sizing: border-box;
-  @include transition(0.25s all);
   overflow: hidden;
-  font-weight: 400;
   text-transform: uppercase;
+  @include transition($background 0.25s, color 0.25s, border-color 0.25s);
 
   &.secondary {
-    background: $aggie-maroon;
-    color: #ffffff;
+    background: $gisday-blue-secondary;
+    color: $gisday-gray-primary;
   }
 }
 
@@ -3193,10 +3065,9 @@ input[type='number'],
 input[type='date'],
 select,
 textarea {
-  //    font-size: 1.1rem;
-  font-family: $opensans;
+  font-family: $body-font;
   box-sizing: border-box;
-  border-bottom: 1px solid $light-grey;
+  border-bottom: 1px solid $gisday-blue-support-lightened;
   border-top: none;
   border-left: none;
   border-right: none;
@@ -3209,7 +3080,8 @@ textarea {
   -webkit-appearance: none;
 
   &:focus {
-    border-bottom: 2px solid $aggie-maroon; //LESS var change
+    border-bottom: 2px solid; //LESS var change
+    border-color: $gisday-blue-support-lightened;
   }
 }
 
@@ -3222,7 +3094,7 @@ textarea {
 
   &:focus {
     border-bottom: none;
-    outline-color: #500000;
+    outline-color: $gisday-blue-support-lightened;
   }
 
   &.sm-height {
@@ -3261,12 +3133,10 @@ input[type='radio'] + i {
     content: '';
     display: block;
     position: relative;
-    background-image: url(../assets/images/icons/ic_lens_48px.svg);
+    background-image: url(./assets/images/icons/ic_lens_48px.svg);
     background-repeat: no-repeat;
     background-size: 110%;
-    -webkit-transform-origin: center;
-    -ms-transform-origin: center;
-    transform-origin: center;
+    @include transform-origin(center);
     opacity: 1;
     opacity: 1;
     top: 1px;
@@ -3282,7 +3152,7 @@ input[type='radio'] ~ label {
 }
 
 input[type='radio']:checked + i {
-  border: 2px solid #500000;
+  border: 2px solid $gisday-blue;
 
   &::after {
     @include animation(bloom 0.3s);
@@ -3298,15 +3168,22 @@ input[type='radio']:checked + i {
 input[type='submit'] {
   &.primary {
     &:hover {
-      background: $aggie-maroon;
-      color: white;
+      background: $gisday-blue-secondary;
+      color: $gisday-gray-primary;
       text-decoration: none;
+    }
+  }
+
+  &.secondary {
+    &:hover {
+      background: darken($gisday-blue-secondary, 5%);
+      border-color: darken($gisday-blue-secondary, 5%);
     }
   }
 
   &.terciary {
     &:hover {
-      background: $aggie-maroon;
+      background: $gisday-blue;
       color: white;
       text-decoration: none;
     }
@@ -3367,7 +3244,7 @@ input[type='checkbox'] + i {
     content: '';
     display: block;
     position: relative;
-    background-image: url(../assets/images/icons/ic_check_48px.svg);
+    background-image: url(./assets/images/icons/ic_check_48px.svg);
     background-size: 110%;
     background-repeat: no-repeat;
     -webkit-transform-origin: center;
@@ -3386,8 +3263,9 @@ input[type='checkbox'] + i {
 }
 
 input[type='checkbox']:checked + i {
-  border: 2px solid $aggie-maroon;
-  background: $aggie-maroon;
+  border: 2px solid;
+  border-color: $gisday-blue-secondary;
+  background: $gisday-blue-secondary;
 
   &::after {
     @include animation(bloom 0.3s);
@@ -3528,7 +3406,7 @@ label {
 
   &.action {
     padding-right: 0;
-    @include flexbox(flex);
+    @include flexbox();
     @include flex-direction(row);
     @include align-items(center);
     @include justify-content(space-between);
@@ -3649,7 +3527,7 @@ label {
 //   Flex Gallery
 //  ==========================================================================
 .flex-gallery {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-direction(column);
   width: 100%;
   box-sizing: border-box;
@@ -3657,7 +3535,7 @@ label {
 
   .flex-gallery-row {
     width: 100%;
-    @include flexbox(flex);
+    @include flexbox();
     @include flex-direction(row);
     height: 27rem; //        border-bottom: 2px solid #ffffff;
 
@@ -3746,7 +3624,7 @@ label {
 }
 
 .example-gallery {
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-direction(row);
   @include flex-wrap(wrap);
   @include justify-content(space-around);
@@ -3779,17 +3657,17 @@ label {
 //  ==========================================================================
 //   Pricing Plaques
 //  ==========================================================================
-.plaque {
-  @include flexbox(flex);
+.swap-content-toggle {
+  @include flexbox();
   @include justify-content(center);
   @include flex-direction(column);
   @include align-items(center);
+  min-width: 23%;
+  border-right: 1px solid #e0e0e0;
 
   &:last-child {
     border-right: none;
   }
-
-  border-right: 1px solid #e0e0e0;
 
   h1,
   h2,
@@ -3819,30 +3697,19 @@ label {
   }
 
   .cta {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     text-align: center !important;
-    color: $link-blue;
+    color: $gisday-blue-secondary;
+    font-weight: 600;
+    margin-top: 1rem;
 
     &:hover {
       text-decoration: underline;
     }
   }
 
-  min-width: 23%;
-
-  & > p:nth-child(5) {
-    text-align: center !important;
-    padding: 1rem;
-    font-size: 1.5rem;
-    font-weight: 200;
-    box-sizing: border-box;
-    max-height: 70px;
-    @include transition(all 0.075s);
-  }
-
   &.active {
     padding-bottom: 0;
-    // border-bottom: 3px solid @aggie-accent-red;
 
     img {
       &.active {
@@ -3852,26 +3719,6 @@ label {
 
       &.default {
         display: none;
-      }
-    }
-
-    & > p:nth-child(2) {
-      font-weight: 300;
-
-      &.platinum {
-        background-color: #fafafa;
-      }
-
-      &.gold {
-        background-color: #e3d0ba;
-      }
-
-      &.silver {
-        background-color: #eeeeee;
-      }
-
-      &.bronze {
-        background-color: #bcaaa4;
       }
     }
 
@@ -3900,7 +3747,7 @@ label {
 
   .stat {
     font-size: 3.5rem;
-    font-family: $oswald;
+    font-family: $title-font;
     line-height: 1;
     color: #500000;
 
@@ -3941,6 +3788,52 @@ label {
 
   .title {
     font-style: italic;
+  }
+}
+
+//  ==========================================================================
+//   Countdown
+//  ==========================================================================
+
+.countdown {
+  @include flex(auto);
+  @include flex-direction(row);
+  @include align-items(center);
+  margin: 2rem 0;
+
+  .days,
+  .hours,
+  .minutes,
+  .seconds {
+    @include flex(auto);
+    @include flex-direction(column);
+    @include justify-content(center);
+    @include align-items(center);
+
+    margin: 0 2rem;
+
+    .value {
+      font-size: 5rem;
+      font-weight: 900;
+      color: $gisday-blue-support;
+    }
+
+    .label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: $gisday-blue-support-lightened;
+    }
+  }
+
+  // Generically target the days, hours, minutes, and second containers.
+  & > div {
+    &:not(:last-child) {
+      .value::after {
+        content: ':';
+        position: absolute;
+        margin-left: 1.5rem;
+      }
+    }
   }
 }
 
@@ -4094,7 +3987,9 @@ label {
 .red-line {
   height: 2px;
   margin: 2rem auto;
-  background: $aggie-accent-red;
+  // background: @aggie-accent-red;
+  background: transparent;
+  margin: 1rem auto;
 
   &.small {
     width: 5rem;
@@ -4153,7 +4048,7 @@ img.mfp-img {
   color: #f5f5f5;
   padding: 0 1rem;
   box-sizing: border-box;
-  @include flexbox(flex);
+  @include flexbox();
   @include flex-direction(row);
   @include justify-content(center);
 
@@ -4161,6 +4056,430 @@ img.mfp-img {
     padding: 0.5rem 0;
     font-size: 0.9rem;
     font-weight: 400;
+  }
+}
+
+session-time-table {
+  display: block;
+  width: 100%;
+
+  .main-agenda-container,
+  .agenda-fake-scroll-container {
+    overflow-y: hidden;
+    padding: 0 2rem 0 5rem;
+    box-sizing: border-box;
+  }
+
+  .agenda-fake-scroll-container {
+    margin-bottom: 1rem;
+
+    & > div {
+      display: block;
+      height: 1px;
+    }
+  }
+
+  .day-times {
+    @include flexbox();
+    @include flex-direction(row);
+
+    .day-times_time {
+      font-size: 0.9rem;
+      padding: 1rem 0;
+      position: relative;
+      border-bottom: 1pt solid;
+      border-color: lighten($gisday-blue-support-lightened, 30%);
+      display: inline-block;
+      position: relative;
+
+      span {
+        position: absolute;
+        top: 0;
+        font-weight: 600;
+        @include transform(translateX(-50%));
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        width: 1pt;
+        background: lighten($gisday-blue-support-lightened, 32%);
+        height: 1000vh;
+        right: 100%;
+        top: 1.5rem;
+        z-index: -1;
+      }
+    }
+  }
+
+  .event-days {
+    padding: 0.5rem 0;
+  }
+
+  .event-day-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin: 2rem 0 1rem 0;
+    padding-bottom: 0.5rem;
+    @include transform(translateX(calc((-1 * 100%) - 0.75rem)));
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    span.border {
+      display: block;
+      height: 1px;
+      position: absolute;
+      background: lighten($gisday-blue-support-lightened, 25%);
+      bottom: 0;
+      left: -0.25rem;
+    }
+  }
+
+  .event-row {
+    position: relative;
+    display: block;
+    height: 3rem;
+  }
+
+  .event {
+    position: absolute;
+    top: 50%;
+    padding: 0.4rem 0.5rem;
+    border: 1pt solid $gisday-blue-support-lightened;
+    background: #ffffff;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    box-sizing: border-box;
+    font-weight: 600;
+    cursor: pointer;
+    @include transition($background 0.3s, color 0.3s);
+
+    &:hover {
+      background: $gisday-blue-support-lightened;
+      color: #ffffff;
+    }
+
+    &.expired {
+      border-color: lighten($gisday-blue-support-lightened, 15%);
+      color: lighten($gisday-blue-support-lightened, 15%);
+    }
+
+    &.live {
+      .material-icons {
+        display: block;
+      }
+    }
+  }
+
+  .event-title-container {
+    overflow: hidden;
+    white-space: nowrap;
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+
+    .material-icons {
+      color: #f44336;
+      margin-right: 0.35rem;
+      font-size: 0.75rem;
+      display: none;
+    }
+  }
+}
+//  ==========================================================================
+//   Tabs
+//  ==========================================================================
+.event-plank {
+  border-radius: 3px;
+  border: 1.5pt solid;
+  border-color: lighten($gisday-blue-support-lightened, 15%);
+  margin: 0.75rem auto;
+  @include flexbox();
+  @include flex-direction(row);
+
+  .event-time,
+  .event-name-label {
+    padding: 0.5rem 1rem;
+  }
+
+  .event-time {
+    @include flexbox();
+    @include flex-direction(column);
+    border-right: 1.5pt solid lighten($gisday-blue-support-lightened, 15%);
+    text-align: center;
+    min-width: 5rem;
+
+    .event-time_date {
+      font-weight: 600;
+    }
+
+    .event-time_time {
+      font-size: 0.9rem;
+      color: $gisday-font-primary;
+    }
+  }
+
+  .event-label {
+    text-transform: capitalize;
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+    font-size: 0.85rem;
+    color: $gisday-blue-support-lightened;
+    font-weight: 600;
+
+    span {
+      margin-right: 0.3rem;
+      font-size: 0.8rem;
+    }
+  }
+}
+//  ==========================================================================
+//   Tabs
+//  ==========================================================================
+
+.tabs {
+  @include flexbox();
+  @include flex-direction(row);
+
+  .tab {
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-bottom: 2pt solid;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-color: lighten($aggie-support-grey, 25%);
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+
+    h2,
+    h3,
+    h4 {
+      font-size: inherit;
+      padding: 0;
+    }
+
+    &.active {
+      border-color: $gisday-blue-secondary;
+      color: $gisday-blue-secondary;
+
+      h3 {
+        color: inherit;
+      }
+    }
+  }
+}
+
+.tab-content-blocks {
+  margin: 1rem 0;
+  .content-block {
+    display: none;
+
+    &.visible {
+      display: block;
+    }
+  }
+}
+
+//  ==========================================================================
+//   Modal
+//  ==========================================================================
+
+#modal-bg,
+.modal-backdrop {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background: #0b0b0b;
+  opacity: 0;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  @include transition(all 0.25s);
+}
+
+#modal-bg.active {
+  opacity: 0.3;
+}
+
+.modal-backdrop {
+  opacity: 0.3;
+}
+
+.modal-bg-open,
+.modal-open {
+  overflow: hidden;
+}
+
+.modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  background: $gisday-gray-primary;
+  z-index: 101;
+  padding: 1.5rem;
+  border-radius: 3px;
+  min-width: 300px;
+  max-width: 500px;
+  @include transform(translateX(-50%) translateY(-50%));
+
+  .modal-header {
+    @include flexbox();
+    @include flex-direction(row);
+    @include justify-content(space-between);
+    @include align-items(flex-start);
+    margin-bottom: 1rem;
+
+    .modal-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-right: 1rem;
+    }
+  }
+
+  .modal-close {
+    cursor: pointer;
+  }
+}
+
+//  ==========================================================================
+//   Poster Gallery
+//  ==========================================================================
+
+.poster-submission {
+  &.flex-row {
+    // Target the text half
+    .column6 {
+      text-align: left;
+
+      .button {
+        margin-right: 0;
+      }
+    }
+
+    // Target the poster image container
+    .column5 {
+      perspective: 300px;
+      perspective-origin: center left;
+      img {
+        @include transform(rotateY(5deg));
+      }
+    }
+  }
+
+  &.flex-row-reverse {
+    // Target the text half
+    .column6 {
+      text-align: left;
+    }
+
+    .button {
+      margin-left: 0;
+    }
+
+    // Target the poster image container
+    .column5 {
+      perspective: 300px;
+      perspective-origin: center right;
+      img {
+        @include transform(rotateY(-5deg));
+      }
+    }
+  }
+
+  img {
+    box-shadow: 0 30px 60px -12px rgba(50, 50, 93, 0.25), 0 18px 36px -18px rgba(0, 0, 0, 0.3);
+    border-radius: 5pt;
+    max-height: 25rem;
+  }
+}
+
+// Certificates
+
+.certificate-container {
+  color: #063c59;
+  border: 3rem solid #063c59;
+  font-size: 16px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  @include flexbox();
+  @include flex-direction(column);
+  @include align-items(center);
+  @include justify-content(center);
+
+  p {
+    padding-bottom: 0;
+    line-height: 1.6;
+  }
+
+  .geom-background {
+    position: absolute;
+    opacity: 0.35;
+    width: 150%;
+    height: 150%;
+    left: 0;
+    top: -50%;
+    z-index: -1;
+  }
+}
+
+.script-thanks {
+  font-family: 'Yellowtail', cursive;
+  font-size: 4em;
+  @include flexbox();
+  @include flex-direction(row);
+
+  img {
+    width: 4em;
+  }
+}
+
+.cert-font-1,
+.cert-font-2,
+.cert-font-3 {
+  font-weight: 600;
+}
+
+.cert-font-1 {
+  font-size: 3.25em;
+  font-family: Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+}
+
+.cert-font-2,
+.cert-font-3 {
+  font-size: 2.25em;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.cert-font-3 {
+  text-transform: uppercase;
+}
+
+.cert-description {
+  max-width: 80%;
+  text-align: center;
+}
+
+.cert-recipient {
+  border-bottom: 2pt solid #063c59;
+  width: 90%;
+  text-align: center;
+}
+
+.sponsor-icon-list {
+  width: 95%;
+  @include flexbox();
+  @include flex-direction(row);
+  @include justify-content(space-between);
+
+  img {
+    height: 4em;
   }
 }
 
