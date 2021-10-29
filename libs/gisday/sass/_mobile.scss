@@ -364,7 +364,7 @@ $accent-yellow: #f6bf33;
   }
 
   #sessions-container {
-    @include flex-display(flex);
+    @include flexbox(flex);
     @include flex-direction(column-reverse);
   }
 
@@ -577,7 +577,7 @@ $accent-yellow: #f6bf33;
 @media only screen and (max-width: 487px) {
   .medium-partition {
     .image-mosaic {
-      @include flex-display(flex);
+      @include flexbox();
     }
   }
 }
