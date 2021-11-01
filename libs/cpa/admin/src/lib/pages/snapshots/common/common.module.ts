@@ -12,6 +12,7 @@ import { EsriMapModule } from '@tamu-gisc/maps/esri';
 
 import { SnapshotBuilderComponent } from './components/snapshot-builder/snapshot-builder.component';
 import { SnapshotsListComponent } from './components/snapshots-list/snapshots-list.component';
+import { SnapshotListItemComponent } from './components/snapshot-list-item/snapshot-list-item.component';
 
 @NgModule({
   imports: [
@@ -24,7 +25,7 @@ import { SnapshotsListComponent } from './components/snapshots-list/snapshots-li
     EsriMapModule,
     DragulaModule.forRoot()
   ],
-  declarations: [SnapshotBuilderComponent, SnapshotsListComponent],
+  declarations: [SnapshotBuilderComponent, SnapshotsListComponent, SnapshotListItemComponent],
   exports: [SnapshotBuilderComponent, SnapshotsListComponent]
 })
 export class SnapshotsCommonModule {}
