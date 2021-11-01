@@ -60,7 +60,7 @@
         <tamu-gisc-tabs>
           <tamu-gisc-tab label="Snapshot Layers">
             <div class="leader-1 trailer-1">
-              <p class="trailer-1">The following list represents pre-configured <a [routerLink]="['/admin/snapshots']">snapshots</a>. Each added snapshot to a scenario will add ALL of its constituent snapshot layers. The more snapshots are added to a scenario, the more layers a scenario needs to load and draw, and the less performant scenario becomes.</p>
+              <p class="trailer-1">The following list represents pre-configured <a [routerLink]="['/admin/snapshots']">snapshots</a>. Each added snapshot to a scenario will add <strong>ALL</strong> of its constituent snapshot layers. The more snapshots are added to a scenario, the more layers a scenario needs to load and draw, and the less performant scenario becomes.</p>
 
               <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="snapshots" [referenceId]="'guid'">
                 <tamu-gisc-checkbox *ngFor="let snapshot of (allSnapshots | async)" [label]="snapshot.title" [data]="snapshot"></tamu-gisc-checkbox>

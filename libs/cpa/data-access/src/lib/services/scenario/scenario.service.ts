@@ -14,7 +14,7 @@ export class ScenarioService {
     this.resource = this.environment.value(`api_url`) + 'scenarios';
   }
 
-  public create(scenario: IScenarioSimplified) {
+  public create(scenario: IScenarioPartial) {
     return this.http.post<IScenarioSimplified>(this.resource, scenario);
   }
 
@@ -34,7 +34,7 @@ export class ScenarioService {
     return this.http.get<Array<IScenariosResponseResolved>>(`${this.resource}/workshop/${workshopGuid}`);
   }
 
-  public update(guid: string, scenario: IScenarioSimplified) {
+  public update(guid: string, scenario: IScenarioPartial) {
     return this.http.patch(`${this.resource}/${guid}`, scenario);
   }
 

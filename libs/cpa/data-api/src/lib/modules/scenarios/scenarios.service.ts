@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, In, Repository } from 'typeorm';
 
@@ -15,7 +15,7 @@ import {
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseService } from '../base/base.service';
-import { IScenarioSimplified, IScenariosResponseResolved } from './scenarios.controller';
+import { IScenarioPartial, IScenarioSimplified, IScenariosResponseResolved } from './scenarios.controller';
 
 @Injectable()
 export class ScenariosService extends BaseService<Scenario> {
@@ -52,64 +52,13 @@ export class ScenariosService extends BaseService<Scenario> {
     return resolvedScenarios;
   }
 
-  public async updateScenario(scenarioGuid: string, scenarioDetails: IScenarioSimplified) {
+  public async updateScenario(scenarioGuid: string, scenarioDetails: IScenarioPartial) {
     const existingScenario = await this.scenarioRepo.findOne({ where: { guid: scenarioGuid } });
 
-    // Scenario details layer guid's are mapped into objects with a type attribute describing whether they are of type
-    // snapshot or response. If scenario detail layers array is empty, default to this array as a default update value,
-    // otherwise, it will be re-assigned with the mapped array.
-    let categorizedLayers: Array<LayerReference> = [];
-
     if (existingScenario) {
-      if (scenarioDetails.layers.length > 0) {
-        // Resolve if the provided layer guid's are of type response or snapshot.
-        // The input layer guids will be mapped to an object with a "type" property describing them as such
-        const snapLayers = this.snapshotRepo.find({
-          where: {
-            guid: In(scenarioDetails.layers)
-          }
-        });
-
-        const respLayers = this.responseRepo.find({
-          where: {
-            guid: In(scenarioDetails.layers)
-          }
-        });
-
-        const scenLayers = this.scenarioRepo.find({
-          where: {
-            guid: In(scenarioDetails.layers)
-          }
-        });
-
-        const [resolvedSnapLayers, resolvedRespLayers, resolvedScenLayers] = await Promise.all([
-          snapLayers,
-          respLayers,
-          scenLayers
-        ]);
-
-        categorizedLayers = scenarioDetails.layers.map((polyGuid) => {
-          let type = '';
-          if (resolvedSnapLayers.find((l) => l.guid === polyGuid)) {
-            type = 'snapshot';
-          } else if (resolvedRespLayers.find((l) => l.guid === polyGuid)) {
-            type = 'response';
-          } else if (resolvedScenLayers.find((l) => l.guid === polyGuid)) {
-            type = 'scenario';
-          }
-
-          return {
-            guid: polyGuid,
-            type
-          } as LayerReference;
-        });
-      }
-
-      // Assert categorized as a string, otherwise `update` method will throw an error due to
-      // incompatible types.
-      const detailed = { ...scenarioDetails, layers: categorizedLayers };
-
-      return this.scenarioRepo.update({ guid: scenarioGuid }, detailed);
+      return this.scenarioRepo.update({ guid: scenarioGuid }, scenarioDetails);
+    } else {
+      throw new NotFoundException();
     }
   }
 

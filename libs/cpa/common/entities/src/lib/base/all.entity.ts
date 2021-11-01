@@ -279,7 +279,7 @@ export interface CPALayer {
 
 export interface LayerReference {
   guid: string;
-  type: 'snapshot' | 'response' | 'scenario';
+  type: 'snapshot' | 'response' | 'scenario' | 'snapshot-responses';
 }
 
 export type ScenarioLayers = CPALayer | LayerReference;

@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { from, Observable, Subject } from 'rxjs';
 import { delay, filter, map, pluck, reduce, shareReplay, skip, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 
+import { LayerReference } from '@tamu-gisc/cpa/common/entities';
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponseService, ScenarioService, SnapshotService, WorkshopService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -14,8 +15,7 @@ import {
   IScenarioPartial,
   ISnapshotsResponse,
   IWorkshopRequestPayload,
-  IScenariosResponseResolved,
-  IScenarioSimplified
+  IScenariosResponseResolved
 } from '@tamu-gisc/cpa/data-api';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
@@ -112,6 +112,8 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
       mapCenter: [''],
       zoom: [null],
       extent: [undefined],
+      // This control is a placeholder so we don't have to manually create it on scenario create/update.
+      layers: [[]],
       snapshots: [[]],
       scenarioResponses: [[]],
       snapshotResponses: [[]]
@@ -144,9 +146,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
             this.scenario.getOne(scenarioGuid).subscribe((s) => {
               const snapshotsGuids = s.layers.filter((l) => l.type === 'snapshot').map((l) => l.guid);
               const scenarioGuids = s.layers.filter((l) => l.type === 'scenario').map((l) => l.guid);
-
-              // TODO: Differentiate between snapshot and snapshot response layers
-              const snapshotResponseGuids = [];
+              const snapshotResponseGuids = s.layers.filter((l) => l.type === 'snapshot-responses').map((l) => l.guid);
 
               // Check to see we have workshops
               if (s.workshopScenario && s.workshopScenario.workshop !== undefined) {
@@ -168,13 +168,13 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
                   });
 
                 this.builderForm.controls.scenarioResponses.valueChanges
-                  .pipe(skip(1), withLatestFrom(this.workshopResponses))
+                  .pipe(withLatestFrom(this.workshopResponses))
                   .subscribe(([scenGuids, responses]) => {
                     this.setScenarioResponseGraphics(scenGuids, responses);
                   });
 
                 this.builderForm.controls.snapshotResponses.valueChanges
-                  .pipe(skip(1), withLatestFrom(this.workshopResponses))
+                  .pipe(withLatestFrom(this.workshopResponses))
                   .subscribe(([snapGuids, responses]) => {
                     this.setSnapshotResponseGraphics(snapGuids, responses);
                   });
@@ -432,18 +432,20 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.params.guid) {
       // Combine the snapshots and responses. Snapshots are typically used as contextual base layers for responses, so they
       // they are at the bottom of the stack.
-      const combinedLayers = [...value.snapshots, ...value.snapshotResponses, ...value.scenarioResponses];
+      const combinedLayers = [
+        ...this.composeReferenceLayers(value.snapshots, 'snapshot'),
+        ...this.composeReferenceLayers(value.snapshotResponses, 'snapshot-responses'),
+        ...this.composeReferenceLayers(value.scenarioResponses, 'scenario')
+      ];
 
       // Remove the snapshots object from the form value, as the backend calls an update function and fails if provided.
       delete value.snapshots;
       delete value.scenarioResponses;
       delete value.snapshotResponses;
 
-      const scenario: IScenarioSimplified = JSON.parse(JSON.stringify(value));
+      const scenario: IScenarioPartial = JSON.parse(JSON.stringify(value));
 
       scenario.layers = combinedLayers;
-
-      debugger;
 
       this.scenario
         .update(this.route.snapshot.params.guid, scenario)
@@ -477,8 +479,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
       delete value.scenarioResponses;
       delete value.snapshotResponses;
 
-      const scenario: IScenarioSimplified = JSON.parse(JSON.stringify(value));
-      scenario.layers = [];
+      const scenario: IScenarioPartial = JSON.parse(JSON.stringify(value));
 
       this.scenario.create(scenario).subscribe((res) => {
         this.workshop.addScenario(this.selectedWorkshop, res.guid).subscribe(
@@ -526,6 +527,15 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   private instantiateGraphicsFromJSON(graphics: Array<IGraphic>) {
     return graphics.map((graphic) => {
       return this._modules.graphic.fromJSON(graphic);
+    });
+  }
+
+  private composeReferenceLayers(guids: Array<string>, type: LayerReference['type']): Array<LayerReference> {
+    return guids.map((guid) => {
+      return {
+        guid,
+        type
+      };
     });
   }
 
