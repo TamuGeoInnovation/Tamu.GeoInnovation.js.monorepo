@@ -21,6 +21,7 @@ import { ParticipantListItemComponent } from './components/admin-controls/compon
 import { ParticipantResponsePopupComponent } from './components/participant-response-popup/participant-response-popup.component';
 import { ViewerBasePopupComponent } from './components/viewer-base-popup/viewer-base-popup.component';
 import { ParticipantWorkshopsListComponent } from './components/participant-workshops-list/participant-workshops-list.component';
+import { ParticipantGroupListComponent } from './components/participant-group-list/participant-group-list.component';
 
 const routes: Routes = [
   {
@@ -72,7 +73,8 @@ const routes: Routes = [
     ParticipantListItemComponent,
     ParticipantResponsePopupComponent,
     ViewerBasePopupComponent,
-    ParticipantWorkshopsListComponent
+    ParticipantWorkshopsListComponent,
+    ParticipantGroupListComponent
   ],
   exports: [RouterModule]
 })

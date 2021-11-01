@@ -168,3 +168,8 @@ tamu-gisc-notification-item {
     background: $active-color !important;
   }
 }
+
+.attention {
+  border-left: 3pt solid #f44336;
+  padding: 0.5rem 0 0.5rem 0.5rem;
+}

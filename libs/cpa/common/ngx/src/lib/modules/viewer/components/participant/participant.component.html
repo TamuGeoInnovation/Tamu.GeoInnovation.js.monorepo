@@ -1,35 +1,40 @@
 <ng-container *ngIf="(workshop | async) !== null; else workshopsList">
-  <div class="snap-scen-header">
-    <div id="headings">
-      <h2>{{ (event | async)?.title }}</h2>
-      <h3>{{ (workshop | async)?.title }}</h3>
+  <div class="participant-event-section">
+    <div class="snap-scen-header">
+      <div id="headings">
+        <h2>{{ (event | async)?.title }}</h2>
+        <h3>{{ (workshop | async)?.title }}</h3>
+      </div>
+
+      <div id="tooltips">
+        <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
+          <tamu-gisc-tooltip-trigger><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
+          <div id="snap-scen-help-text">
+            <ng-container *ngIf="(event | async)?.type === 'snapshot'; else scenarioTooltip">
+              <h3>What's a snapshot?</h3>
+              <p><strong>Snapshots</strong> show basic overviews of the existing conditions with layers for hazard exposures, physical vulnerabilities, and social vulnerabilities that reveal hotspots of concern. Participants will “ground- truth” by providing missing or additional points and polygons, which could reveal hotspots of concern.</p>
+            </ng-container>
+
+            <ng-template #scenarioTooltip>
+              <h3>What's a scenario?</h3>
+              <p><strong>Scenarios</strong> are created by using Snapshots of existing community conditions to generate new layers. These are layers created by your community while using the tool, to show potential areas for future growth, development, and construction - based on the existing built and natural environments, as well as the areas of concern discovered during the snapshot phase.</p>
+            </ng-template>
+          </div>
+        </tamu-gisc-tooltip>
+      </div>
     </div>
 
-    <div id="tooltips">
-      <ng-container></ng-container>
-      <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
-        <tamu-gisc-tooltip-trigger><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
-        <div id="snap-scen-help-text">
-          <ng-container *ngIf="(event | async)?.type === 'snapshot'; else scenarioTooltip">
-            <h3>What's a snapshot?</h3>
-            <p><strong>Snapshots</strong> show basic overviews of the existing conditions with layers for hazard exposures, physical vulnerabilities, and social vulnerabilities that reveal hotspots of concern. Participants will “ground- truth” by providing missing or additional points and polygons, which could reveal hotspots of concern.</p>
-          </ng-container>
-
-          <ng-template #scenarioTooltip>
-            <h3>What's a scenario?</h3>
-            <p><strong>Scenarios</strong> are created by using Snapshots of existing community conditions to generate new layers. These are layers created by your community while using the tool, to show potential areas for future growth, development, and construction - based on the existing built and natural environments, as well as the areas of concern discovered during the snapshot phase.</p>
-          </ng-template>
-        </div>
-      </tamu-gisc-tooltip>
-    </div>
+    <p class="snapshot-description">{{ (event | async)?.description }}</p>
   </div>
 
-  <p class="snapshot-description">{{ (event | async)?.description }}</p>
-
   <ng-container *ngIf="(participantGuid | async) === null; else showDrawingTools">
-    <p>
-      <strong><em>You are currently not registered as a participant and as a result drawing tools have been disabled.</em></strong>
+    <p class="attention trailer-1">
+      <strong><em>Map drawing tools are unavailable because you are not a registered participant.</em></strong>
     </p>
+
+    <p>Available groups will be displayed as they become available and will be able to join an assigned group.</p>
+
+    <tamu-gisc-participant-group-list></tamu-gisc-participant-group-list>
   </ng-container>
 
   <ng-template #showDrawingTools>
