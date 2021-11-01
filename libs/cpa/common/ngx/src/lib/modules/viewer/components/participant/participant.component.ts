@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject, forkJoin, interval, merge, Observable, ReplaySubject, from } from 'rxjs';
+import { BehaviorSubject, Subject, forkJoin, interval, merge, Observable, ReplaySubject, from, combineLatest } from 'rxjs';
 import {
   takeUntil,
   debounceTime,
@@ -78,10 +78,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       this.resetWorkspace();
     });
 
-    // Fetch new responses from server whenever snapshot, or response save signal emits.
-    this.responses = merge(this.event).pipe(
-      // this.responses = merge(this.event, this.responseSave).pipe(
-      switchMap((event) => {
+    // Fetch new responses from server whenever snapshot/scenario event or participantGuid emit
+    // but only after both have emitted at least once
+    this.responses = combineLatest([this.event, this.participantGuid]).pipe(
+      switchMap(() => {
         return forkJoin([this.workshop.pipe(take(1)), this.event.pipe(take(1))]);
       }),
       switchMap(([workshop, snapshotOrScenario]) => {
