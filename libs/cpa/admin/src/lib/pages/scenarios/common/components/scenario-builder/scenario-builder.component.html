@@ -28,7 +28,7 @@
       </div>
 
       <div class="form-collection row">
-        <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" floatLabel="true" rows="8"></tamu-gisc-textbox>
+        <tamu-gisc-textbox formControlName="description" placeholder="Description" type="textarea" floatLabel="true" rows="15"></tamu-gisc-textbox>
       </div>
     </div>
   </div>
@@ -58,8 +58,10 @@
         </div>
 
         <tamu-gisc-tabs>
-          <tamu-gisc-tab label="Snapshots">
+          <tamu-gisc-tab label="Snapshot Layers">
             <div class="leader-1 trailer-1">
+              <p class="trailer-1">The following list represents pre-configured <a [routerLink]="['/admin/snapshots']">snapshots</a>. Each added snapshot to a scenario will add ALL of its constituent snapshot layers. The more snapshots are added to a scenario, the more layers a scenario needs to load and draw, and the less performant scenario becomes.</p>
+
               <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="snapshots" [referenceId]="'guid'">
                 <tamu-gisc-checkbox *ngFor="let snapshot of (snapshots | async)" [label]="snapshot.title" [data]="snapshot"></tamu-gisc-checkbox>
               </tamu-gisc-checkbox-group>
@@ -68,8 +70,10 @@
             </div>
           </tamu-gisc-tab>
 
-          <tamu-gisc-tab label="Scenarios">
+          <tamu-gisc-tab label="Scenario Responses">
             <div class="leader-1 trailer-1">
+              <p class="trailer-1">The following list represents scenarios <em>with</em> participant submissions. Selecting a scenario will select <strong>ALL</strong> of the selected scenario responses and add it to this scenario as a separate layer. Hover over a scenario in the list to preview the responses associated to that scenario.</p>
+
               <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="scenarios" [referenceId]="'guid'">
                 <tamu-gisc-checkbox *ngFor="let scenario of (scenarios | async)" [label]="scenario.title" [data]="scenario" (mouseover)="loadPreviewScenario(scenario)" (mouseleave)="this.clearGraphicPreview()"></tamu-gisc-checkbox>
               </tamu-gisc-checkbox-group>
