@@ -13,7 +13,7 @@ import {
   IResponseDto,
   IResponseResolved,
   IScenarioPartial,
-  ISnapshotsResponse,
+  ISnapshotResolved,
   IWorkshopRequestPayload,
   IScenariosResponseResolved
 } from '@tamu-gisc/cpa/data-api';
@@ -35,7 +35,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public graphicPreview: esri.GraphicsLayer;
   public snapshotResponsePreview: esri.GraphicsLayer;
   public scenarioResponsePreview: esri.GraphicsLayer;
-  public scenarioSnapshots: { [key: string]: ISnapshotsResponse } = {};
+  public scenarioSnapshots: { [key: string]: ISnapshotResolved } = {};
 
   public selectedWorkshop: string;
   public isExisting: Observable<boolean>;
@@ -49,7 +49,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   /**
    * List of ALL snapshots belonging to the scenario's referenced workshop and not.
    */
-  public allSnapshots: Observable<ISnapshotsResponse[]>;
+  public allSnapshots: Observable<ISnapshotResolved[]>;
   /**
    * List of scenarios scoped to the scenario's referenced workshop.
    *
@@ -60,7 +60,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   /**
    * List of snapshots scoped to the scenario's referenced workshop
    */
-  public workshopSnapshots: Observable<ISnapshotsResponse[]>;
+  public workshopSnapshots: Observable<ISnapshotResolved[]>;
 
   private _modules: {
     graphic: esri.GraphicConstructor;
@@ -293,7 +293,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   /**
    * Filters out the responses that belong to the provided snapshot guid, and adds them to the map for preview.
    */
-  public loadSnapshotResponsesPreview(snapshot: ISnapshotsResponse) {
+  public loadSnapshotResponsesPreview(snapshot: ISnapshotResolved) {
     this.workshopResponses
       .pipe(
         switchMap((s) => from(s)),
@@ -330,7 +330,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public addOrRemoveSnapshots(snapshots: ISnapshotsResponse[], selectedSnapshots: string[]) {
+  public addOrRemoveSnapshots(snapshots: ISnapshotResolved[], selectedSnapshots: string[]) {
     const removedSnapshots = Object.keys(this.scenarioSnapshots).filter((key) => {
       return (
         selectedSnapshots.find((ss) => {

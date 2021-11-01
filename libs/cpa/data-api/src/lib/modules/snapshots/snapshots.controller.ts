@@ -47,7 +47,7 @@ export class SnapshotsController extends BaseController<Snapshot> {
    * Updates an existing snapshot
    */
   @Patch(':guid')
-  public async update(@Param() params: ISnapshotsRequestPayload, @Body() body: ISnapshotsRequestPayload) {
+  public async update(@Param() params: ISnapshotPartial, @Body() body: ISnapshotPartial) {
     return await this.service.updateSnapshot(params, body);
   }
 
@@ -55,13 +55,13 @@ export class SnapshotsController extends BaseController<Snapshot> {
    * Deletes an existing snapshot
    */
   @Delete(':guid')
-  public async delete(@Param() params: ISnapshotsRequestPayload) {
+  public async delete(@Param() params: ISnapshotPartial) {
     return await this.service.deleteSnapshot(params);
   }
 }
 
-export interface ISnapshotsRequestPayload extends DeepPartial<Snapshot> {}
+export interface ISnapshotPartial extends DeepPartial<Snapshot> {}
 
-export interface ISnapshotsResponse extends Omit<DeepPartial<Snapshot>, 'layers'> {
+export interface ISnapshotResolved extends Omit<DeepPartial<Snapshot>, 'layers'> {
   layers: Array<CPALayer>;
 }

@@ -6,7 +6,7 @@ import { getRepository, Repository } from 'typeorm';
 import { Snapshot, Workshop } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseService } from '../base/base.service';
-import { ISnapshotsRequestPayload } from './snapshots.controller';
+import { ISnapshotPartial } from './snapshots.controller';
 
 @Injectable()
 export class SnapshotsService extends BaseService<Snapshot> {
@@ -14,11 +14,11 @@ export class SnapshotsService extends BaseService<Snapshot> {
     super(repo);
   }
 
-  public async updateSnapshot(params: ISnapshotsRequestPayload, body: ISnapshotsRequestPayload) {
+  public async updateSnapshot(params: ISnapshotPartial, body: ISnapshotPartial) {
     return await this.repo.update({ guid: params.guid }, { ...body });
   }
 
-  public async deleteSnapshot(params: ISnapshotsRequestPayload) {
+  public async deleteSnapshot(params: ISnapshotPartial) {
     return await this.repo.delete({ guid: params.guid });
   }
 

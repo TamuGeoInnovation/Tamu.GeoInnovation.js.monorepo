@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
 import { pluck, shareReplay, map } from 'rxjs/operators';
 
-import { IScenariosResponseResolved, ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
+import { IScenariosResponseResolved, ISnapshotResolved } from '@tamu-gisc/cpa/data-api';
 import { Scenario, Snapshot } from '@tamu-gisc/cpa/common/entities';
 import { WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -20,7 +20,7 @@ export class WorkshopBuilderComponent implements OnInit {
 
   public isExisting: Observable<boolean>;
 
-  public snapshotList: Observable<ISnapshotsResponse[]>;
+  public snapshotList: Observable<ISnapshotResolved[]>;
   public contextualSnapshotList: Observable<IScenariosResponseResolved[]>;
   public scenarioList: Observable<IScenariosResponseResolved[]>;
 

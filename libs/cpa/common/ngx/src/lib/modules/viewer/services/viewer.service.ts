@@ -5,7 +5,7 @@ import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/ope
 import * as md5 from 'md5';
 
 import { CPALayer } from '@tamu-gisc/cpa/common/entities';
-import { IScenariosResponseResolved, ISnapshotsResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IScenariosResponseResolved, ISnapshotResolved, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 import { WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/data-access';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
@@ -25,8 +25,8 @@ export class ViewerService {
 
   public workshop: Observable<IWorkshopRequestPayload>;
 
-  public workshopSnapshots: Observable<Array<ISnapshotsResponse>>;
-  public workshopContexts: Observable<Array<ISnapshotsResponse>>;
+  public workshopSnapshots: Observable<Array<ISnapshotResolved>>;
+  public workshopContexts: Observable<Array<ISnapshotResolved>>;
   public workshopScenarios: Observable<Array<IScenariosResponseResolved>>;
 
   /**
@@ -382,6 +382,6 @@ export class ViewerService {
   }
 }
 
-type ISnapshotOrScenario = ISnapshotsResponse | IScenariosResponseResolved;
+type ISnapshotOrScenario = ISnapshotResolved | IScenariosResponseResolved;
 
 export type TypedSnapshotOrScenario = ISnapshotOrScenario & { type: 'scenario' | 'snapshot' };
