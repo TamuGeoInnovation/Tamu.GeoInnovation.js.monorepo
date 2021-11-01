@@ -49,5 +49,9 @@ export class ViewerComponent implements OnInit, OnDestroy {
 }
 
 function filterFalsy() {
-  return pipe(filter((eg: string) => eg !== null || eg !== undefined || eg === ''));
+  return pipe(
+    filter((eg: string) => {
+      return eg !== null && eg !== undefined && eg !== '';
+    })
+  );
 }

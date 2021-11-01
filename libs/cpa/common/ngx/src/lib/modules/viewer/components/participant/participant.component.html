@@ -1,47 +1,53 @@
-<div class="snap-scen-header">
-  <div id="headings">
-    <h2>{{ (event | async)?.title }}</h2>
-    <h3>{{ (workshop | async)?.title }}</h3>
+<ng-container *ngIf="(workshop | async) !== null; else workshopsList">
+  <div class="snap-scen-header">
+    <div id="headings">
+      <h2>{{ (event | async)?.title }}</h2>
+      <h3>{{ (workshop | async)?.title }}</h3>
+    </div>
+
+    <div id="tooltips">
+      <ng-container></ng-container>
+      <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
+        <tamu-gisc-tooltip-trigger><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
+        <div id="snap-scen-help-text">
+          <ng-container *ngIf="(event | async)?.type === 'snapshot'; else scenarioTooltip">
+            <h3>What's a snapshot?</h3>
+            <p><strong>Snapshots</strong> show basic overviews of the existing conditions with layers for hazard exposures, physical vulnerabilities, and social vulnerabilities that reveal hotspots of concern. Participants will “ground- truth” by providing missing or additional points and polygons, which could reveal hotspots of concern.</p>
+          </ng-container>
+
+          <ng-template #scenarioTooltip>
+            <h3>What's a scenario?</h3>
+            <p><strong>Scenarios</strong> are created by using Snapshots of existing community conditions to generate new layers. These are layers created by your community while using the tool, to show potential areas for future growth, development, and construction - based on the existing built and natural environments, as well as the areas of concern discovered during the snapshot phase.</p>
+          </ng-template>
+        </div>
+      </tamu-gisc-tooltip>
+    </div>
   </div>
 
-  <div id="tooltips">
-    <ng-container></ng-container>
-    <tamu-gisc-tooltip positioningStrategy="fixed" width="20rem">
-      <tamu-gisc-tooltip-trigger><span class="material-icons">help_outline</span></tamu-gisc-tooltip-trigger>
-      <div id="snap-scen-help-text">
-        <ng-container *ngIf="(event | async)?.type === 'snapshot'; else scenarioTooltip">
-          <h3>What's a snapshot?</h3>
-          <p><strong>Snapshots</strong> show basic overviews of the existing conditions with layers for hazard exposures, physical vulnerabilities, and social vulnerabilities that reveal hotspots of concern. Participants will “ground- truth” by providing missing or additional points and polygons, which could reveal hotspots of concern.</p>
-        </ng-container>
+  <p class="snapshot-description">{{ (event | async)?.description }}</p>
 
-        <ng-template #scenarioTooltip>
-          <h3>What's a scenario?</h3>
-          <p><strong>Scenarios</strong> are created by using Snapshots of existing community conditions to generate new layers. These are layers created by your community while using the tool, to show potential areas for future growth, development, and construction - based on the existing built and natural environments, as well as the areas of concern discovered during the snapshot phase.</p>
-        </ng-template>
-      </div>
-    </tamu-gisc-tooltip>
+  <ng-container *ngIf="(participantGuid | async) === null; else showDrawingTools">
+    <p>
+      <strong><em>You are currently not registered as a participant and as a result drawing tools have been disabled.</em></strong>
+    </p>
+  </ng-container>
+
+  <ng-template #showDrawingTools>
+    <tamu-gisc-map-draw-advanced [reference]="'drawing-layer'" (export)="handleDrawSelection($event)" [colorTools]="true" [reshapeTool]="false" [helpTools]="true"></tamu-gisc-map-draw-advanced>
+  </ng-template>
+
+  <div class="save-status" [ngClass]="{unsaved: (saveStatus | async) === 0, 'saving': (saveStatus | async) === 1, 'saved': (saveStatus | async) === 2, 'error': (saveStatus | async) === 3}">
+    <div class="save-status-indicator" *ngIf="(saveStatus | async) !== null"></div>
+    <div class="save-status-text" [ngSwitch]="saveStatus | async">
+      <div *ngSwitchCase="0">Unsaved changes</div>
+      <div *ngSwitchCase="1">Saving...</div>
+      <div *ngSwitchCase="2">All changes saved!</div>
+      <div *ngSwitchCase="3">Error saving</div>
+      <div *ngSwitchDefault></div>
+    </div>
   </div>
-</div>
-
-<p class="snapshot-description">{{ (event | async)?.description }}</p>
-
-<ng-container *ngIf="participantGuid === undefined; else showDrawingTools">
-  <p>
-    <strong><em>You are currently not registered as a participant and as a result drawing tools have been disabled.</em></strong>
-  </p>
 </ng-container>
 
-<ng-template #showDrawingTools>
-  <tamu-gisc-map-draw-advanced [reference]="'drawing-layer'" (export)="handleDrawSelection($event)" [colorTools]="true" [reshapeTool]="false" [helpTools]="true"></tamu-gisc-map-draw-advanced>
+<ng-template #workshopsList>
+  <tamu-gisc-participant-workshops-list></tamu-gisc-participant-workshops-list>
 </ng-template>
-
-<div class="save-status" [ngClass]="{unsaved: (saveStatus | async) === 0, 'saving': (saveStatus | async) === 1, 'saved': (saveStatus | async) === 2, 'error': (saveStatus | async) === 3}">
-  <div class="save-status-indicator" *ngIf="(saveStatus | async) !== null"></div>
-  <div class="save-status-text" [ngSwitch]="saveStatus | async">
-    <div *ngSwitchCase="0">Unsaved changes</div>
-    <div *ngSwitchCase="1">Saving...</div>
-    <div *ngSwitchCase="2">All changes saved!</div>
-    <div *ngSwitchCase="3">Error saving</div>
-    <div *ngSwitchDefault></div>
-  </div>
-</div>

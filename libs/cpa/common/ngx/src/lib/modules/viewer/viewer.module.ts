@@ -20,6 +20,7 @@ import { AdminControlsComponent } from './components/admin-controls/admin-contro
 import { ParticipantListItemComponent } from './components/admin-controls/components/participant-list-item/participant-list-item.component';
 import { ParticipantResponsePopupComponent } from './components/participant-response-popup/participant-response-popup.component';
 import { ViewerBasePopupComponent } from './components/viewer-base-popup/viewer-base-popup.component';
+import { ParticipantWorkshopsListComponent } from './components/participant-workshops-list/participant-workshops-list.component';
 
 const routes: Routes = [
   {
@@ -70,7 +71,8 @@ const routes: Routes = [
     AdminControlsComponent,
     ParticipantListItemComponent,
     ParticipantResponsePopupComponent,
-    ViewerBasePopupComponent
+    ViewerBasePopupComponent,
+    ParticipantWorkshopsListComponent
   ],
   exports: [RouterModule]
 })

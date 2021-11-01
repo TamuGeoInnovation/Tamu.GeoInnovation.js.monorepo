@@ -39,7 +39,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   public responses: Observable<IResponseDto[]>;
   public snapshotHistory = this.vs.snapshotHistory;
 
-  public participantGuid = this.vs.updateParticipantGuid;
+  public participantGuid = this.vs.participantGuid;
   public form: FormGroup;
 
   /**
