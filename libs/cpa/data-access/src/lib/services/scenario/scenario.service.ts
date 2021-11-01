@@ -26,8 +26,8 @@ export class ScenarioService {
     return this.http.get<IScenarioPartial>(`${this.resource}/${guid}`);
   }
 
-  public getLayerForScenario(relationshipGuid: string) {
-    return this.http.get<IScenariosResponseResolved>(`${this.resource}/${relationshipGuid}/layer`);
+  public getLayerForScenario(scenarioGuid: string) {
+    return this.http.get<IScenariosResponseResolved>(`${this.resource}/${scenarioGuid}/layer`);
   }
 
   public getForWorkshop(workshopGuid: string) {
