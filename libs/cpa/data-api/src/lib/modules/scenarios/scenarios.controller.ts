@@ -81,6 +81,6 @@ export interface IScenarioPartial extends DeepPartial<Scenario> {}
 /**
  * A scenario where layers from references have been resolved.
  */
-export interface IScenariosResponseResolved extends Omit<DeepPartial<Scenario>, 'layers'> {
-  layers: Array<CPALayer>;
+export interface IScenarioResolved extends Omit<DeepPartial<Scenario>, 'layers'> {
+  layers?: DeepPartial<CPALayer>[];
 }

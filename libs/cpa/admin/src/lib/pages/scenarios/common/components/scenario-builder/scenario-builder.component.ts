@@ -13,9 +13,9 @@ import {
   IResponseDto,
   IResponseResolved,
   IScenarioPartial,
-  ISnapshotResolved,
+  ISnapshotPartial,
   IWorkshopRequestPayload,
-  IScenariosResponseResolved
+  IScenarioResolved
 } from '@tamu-gisc/cpa/data-api';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
@@ -35,7 +35,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public graphicPreview: esri.GraphicsLayer;
   public snapshotResponsePreview: esri.GraphicsLayer;
   public scenarioResponsePreview: esri.GraphicsLayer;
-  public scenarioSnapshots: { [key: string]: ISnapshotResolved } = {};
+  public scenarioSnapshots: { [key: string]: ISnapshotPartial } = {};
 
   public selectedWorkshop: string;
   public isExisting: Observable<boolean>;
@@ -49,18 +49,18 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   /**
    * List of ALL snapshots belonging to the scenario's referenced workshop and not.
    */
-  public allSnapshots: Observable<ISnapshotResolved[]>;
+  public allSnapshots: Observable<ISnapshotPartial[]>;
   /**
    * List of scenarios scoped to the scenario's referenced workshop.
    *
    * This list does not include the current scenario.
    */
-  public workshopScenarios: Observable<IScenariosResponseResolved[]>;
+  public workshopScenarios: Observable<IScenarioResolved[]>;
 
   /**
    * List of snapshots scoped to the scenario's referenced workshop
    */
-  public workshopSnapshots: Observable<ISnapshotResolved[]>;
+  public workshopSnapshots: Observable<ISnapshotPartial[]>;
 
   private _modules: {
     graphic: esri.GraphicConstructor;
@@ -293,7 +293,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   /**
    * Filters out the responses that belong to the provided snapshot guid, and adds them to the map for preview.
    */
-  public loadSnapshotResponsesPreview(snapshot: ISnapshotResolved) {
+  public loadSnapshotResponsesPreview(snapshot: ISnapshotPartial) {
     this.workshopResponses
       .pipe(
         switchMap((s) => from(s)),
@@ -330,7 +330,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public addOrRemoveSnapshots(snapshots: ISnapshotResolved[], selectedSnapshots: string[]) {
+  public addOrRemoveSnapshots(snapshots: ISnapshotPartial[], selectedSnapshots: string[]) {
     const removedSnapshots = Object.keys(this.scenarioSnapshots).filter((key) => {
       return (
         selectedSnapshots.find((ss) => {

@@ -15,7 +15,7 @@ import {
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseService } from '../base/base.service';
-import { IScenarioPartial, IScenarioSimplified, IScenariosResponseResolved } from './scenarios.controller';
+import { IScenarioPartial, IScenarioSimplified, IScenarioResolved } from './scenarios.controller';
 
 @Injectable()
 export class ScenariosService extends BaseService<Scenario> {
@@ -64,7 +64,7 @@ export class ScenariosService extends BaseService<Scenario> {
 
   public async getGeometryLayersForScenarioRelationship(
     workshopScenarioRelationshipGuid: string
-  ): Promise<IScenariosResponseResolved> {
+  ): Promise<IScenarioResolved> {
     const relation = await getRepository(WorkshopScenario).findOne({
       where: {
         guid: workshopScenarioRelationshipGuid
@@ -82,7 +82,7 @@ export class ScenariosService extends BaseService<Scenario> {
    * run to get the actual scenario entity.
    * @return {*}  {Promise<IScenariosResponseResolved>}
    */
-  public async getGeometryLayersForScenario(scenario: string | IScenario): Promise<IScenariosResponseResolved> {
+  public async getGeometryLayersForScenario(scenario: string | IScenario): Promise<IScenarioResolved> {
     let scen: IScenario;
 
     if (typeof scenario === 'string') {
@@ -93,7 +93,7 @@ export class ScenariosService extends BaseService<Scenario> {
 
     if (scen.layers.length === 0) {
       const mappedScenario = { ...scen, layers: [] };
-      return mappedScenario as IScenariosResponseResolved;
+      return mappedScenario as IScenarioResolved;
     } else {
       // Separate the scenario layers into types and map out the guid to query for all of them.
       const responseLayersGuids = scen.layers.filter((l) => l.type === 'response').map((r) => r.guid);
@@ -286,7 +286,7 @@ export class ScenariosService extends BaseService<Scenario> {
 
       // Shallow copy the properties from the original scenario and overwrite the layers with the resolved,
       // ordered, and mapped array.
-      const detailedScenario: IScenariosResponseResolved = {
+      const detailedScenario: IScenarioResolved = {
         ...scen,
         layers: [
           ...constructedSnapshotLayers,

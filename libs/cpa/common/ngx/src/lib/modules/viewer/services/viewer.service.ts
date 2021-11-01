@@ -5,13 +5,14 @@ import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/ope
 import * as md5 from 'md5';
 
 import { CPALayer } from '@tamu-gisc/cpa/common/entities';
-import { IScenariosResponseResolved, ISnapshotResolved, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IScenarioResolved, ISnapshotPartial, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 import { WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/data-access';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 import { ViewerBasePopupComponent } from '../components/viewer-base-popup/viewer-base-popup.component';
 
 import esri = __esri;
+import { DeepPartial } from 'typeorm';
 
 @Injectable({
   providedIn: 'root'
@@ -25,9 +26,9 @@ export class ViewerService {
 
   public workshop: Observable<IWorkshopRequestPayload>;
 
-  public workshopSnapshots: Observable<Array<ISnapshotResolved>>;
-  public workshopContexts: Observable<Array<ISnapshotResolved>>;
-  public workshopScenarios: Observable<Array<IScenariosResponseResolved>>;
+  public workshopSnapshots: Observable<Array<ISnapshotPartial>>;
+  public workshopContexts: Observable<Array<ISnapshotPartial>>;
+  public workshopScenarios: Observable<Array<IScenarioResolved>>;
 
   /**
    * Flattened collection of both snapshots and scenarios for a workshop
@@ -257,7 +258,10 @@ export class ViewerService {
     this.snapshotHistory.next(newValue);
   }
 
-  private async _generateGroupLayers(definitions: Array<CPALayer>, snapOrScenTitle: string): Promise<esri.Layer> {
+  private async _generateGroupLayers(
+    definitions: Array<DeepPartial<CPALayer>>,
+    snapOrScenTitle: string
+  ): Promise<esri.Layer> {
     const reversedLayers = [...definitions].reverse();
     const idHash = this._generateGroupLayerId(reversedLayers);
 
@@ -367,13 +371,14 @@ export class ViewerService {
     }
   }
 
-  private _generateGroupLayerId(layers: CPALayer[]) {
+  private _generateGroupLayerId(layers: DeepPartial<CPALayer>[]) {
     // Join all sub layer ids into a string, then hash it
     const totalSubLayerIds = layers
       .map((l) => {
         return l.info.layerId;
       })
       .join();
+
     return md5(totalSubLayerIds);
   }
 
@@ -382,6 +387,6 @@ export class ViewerService {
   }
 }
 
-type ISnapshotOrScenario = ISnapshotResolved | IScenariosResponseResolved;
+type ISnapshotOrScenario = ISnapshotPartial | IScenarioResolved;
 
 export type TypedSnapshotOrScenario = ISnapshotOrScenario & { type: 'scenario' | 'snapshot' };

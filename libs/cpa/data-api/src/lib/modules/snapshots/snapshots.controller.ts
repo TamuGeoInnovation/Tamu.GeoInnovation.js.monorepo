@@ -61,7 +61,3 @@ export class SnapshotsController extends BaseController<Snapshot> {
 }
 
 export interface ISnapshotPartial extends DeepPartial<Snapshot> {}
-
-export interface ISnapshotResolved extends Omit<DeepPartial<Snapshot>, 'layers'> {
-  layers: Array<CPALayer>;
-}

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { IScenarioSimplified, IScenarioPartial, IScenariosResponseResolved } from '@tamu-gisc/cpa/data-api';
+import { IScenarioSimplified, IScenarioPartial, IScenarioResolved } from '@tamu-gisc/cpa/data-api';
 
 @Injectable({
   providedIn: 'root'
@@ -27,11 +27,11 @@ export class ScenarioService {
   }
 
   public getLayerForScenario(scenarioGuid: string) {
-    return this.http.get<IScenariosResponseResolved>(`${this.resource}/${scenarioGuid}/layer`);
+    return this.http.get<IScenarioResolved>(`${this.resource}/${scenarioGuid}/layer`);
   }
 
   public getForWorkshop(workshopGuid: string) {
-    return this.http.get<Array<IScenariosResponseResolved>>(`${this.resource}/workshop/${workshopGuid}`);
+    return this.http.get<Array<IScenarioResolved>>(`${this.resource}/workshop/${workshopGuid}`);
   }
 
   public update(guid: string, scenario: IScenarioPartial) {
