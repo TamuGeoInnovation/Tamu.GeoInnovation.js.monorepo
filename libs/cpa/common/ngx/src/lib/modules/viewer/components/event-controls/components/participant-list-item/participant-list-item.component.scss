@@ -1,7 +1,7 @@
 @import 'libs/sass/mixins';
 @import 'libs/cpa/sass/variables';
 
-:host {
+.participant-details {
   @include flexbox();
   @include justify-content(space-between);
   @include align-items(center);
@@ -31,6 +31,21 @@
       &:hover {
         color: $active-color;
       }
+    }
+  }
+}
+
+.confirmation-prompt {
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+
+  .confirmation-actions {
+    @include flexbox();
+    margin-top: 0.5rem;
+
+    tamu-gisc-button {
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
     }
   }
 }

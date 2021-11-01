@@ -1,7 +1,7 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
-import { debounceTime, skip } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { debounceTime, skip, takeUntil } from 'rxjs/operators';
 
 import { IParticipant } from '@tamu-gisc/cpa/common/entities';
 
@@ -10,7 +10,7 @@ import { IParticipant } from '@tamu-gisc/cpa/common/entities';
   templateUrl: './participant-list-item.component.html',
   styleUrls: ['./participant-list-item.component.scss']
 })
-export class ParticipantListItemComponent implements OnInit {
+export class ParticipantListItemComponent implements OnInit, OnDestroy {
   @Input()
   public participant: IParticipant;
 
@@ -24,13 +24,16 @@ export class ParticipantListItemComponent implements OnInit {
   public label: ElementRef;
 
   public editable: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public confirmationVisible: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   public url: string;
+
+  private _$destroy: Subject<boolean> = new Subject();
 
   constructor(private router: Router, private route: ActivatedRoute) {}
 
   public ngOnInit(): void {
-    this.editable.pipe(skip(1), debounceTime(0)).subscribe((value) => {
+    this.editable.pipe(skip(1), debounceTime(0), takeUntil(this._$destroy)).subscribe((value) => {
       if (value) {
         this.label.nativeElement.focus();
       } else {
@@ -39,6 +42,11 @@ export class ParticipantListItemComponent implements OnInit {
     });
 
     this.createCopyUrl();
+  }
+
+  public ngOnDestroy() {
+    this._$destroy.next();
+    this._$destroy.complete();
   }
 
   public makeEditable() {
@@ -66,5 +74,13 @@ export class ParticipantListItemComponent implements OnInit {
 
   public deleteParticipant() {
     this.deleted.emit(this.participant);
+  }
+
+  public promptConfirmation() {
+    this.confirmationVisible.next(true);
+  }
+
+  public hideConfirmation() {
+    this.confirmationVisible.next(false);
   }
 }
