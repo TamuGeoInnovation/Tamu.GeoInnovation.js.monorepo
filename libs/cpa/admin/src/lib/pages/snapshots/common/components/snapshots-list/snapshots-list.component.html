@@ -11,6 +11,7 @@
         <div class="floating-table-header">
           <div class="floating-row">
             <div class="column">Name</div>
+            <div class="column">Used In</div>
             <div class="column"></div>
           </div>
         </div>
@@ -18,6 +19,22 @@
         <div class="floating-table-body">
           <div class="floating-row" *ngFor="let snapshot of snapshots | async">
             <div class="column">{{snapshot.title}}</div>
+
+            <!-- All of these array accessors are not ideal. Hard to debug. Should refactor in future. -->
+            <div class="column" *ngIf="snapshot.workshops.length > 1">
+              <a [routerLink]="['/admin/workshops/edit/', snapshot.workshops[0].workshop.guid]">{{snapshot.workshops[0].workshop.title}}</a> &nbsp; and &nbsp;
+
+              <tamu-gisc-tooltip positioningStrategy="fixed" width="15rem">
+                <tamu-gisc-tooltip-trigger><div class="linked-text">{{snapshot.workshops.length -1}} other(s)</div></tamu-gisc-tooltip-trigger>
+
+                <div class="remaining-workshops-list">
+                  <a [routerLink]="['/admin/workshops/edit/', ws.workshop.guid]" *ngFor="let ws of snapshot.workshops.slice(1)">{{ws.workshop.title}}</a>
+                </div>
+              </tamu-gisc-tooltip>
+            </div>
+            <div class="column" *ngIf="snapshot.workshops.length === 1"><a [routerLink]="['/admin/workshops/edit/', snapshot.workshops[0].workshop.guid]">{{snapshot.workshops[0].workshop.title}}</a></div>
+            <div class="column" *ngIf="snapshot.workshops.length === 0"></div>
+
             <div class="column table-actions">
               <a [routerLink]="['./edit', snapshot.guid]">Edit</a>
               <a (click)="createCopy(snapshot.guid)">Copy</a>

@@ -27,6 +27,10 @@ export class SnapshotService {
     return this.http.get<ISnapshotPartial[]>(this.resource);
   }
 
+  public getSimplifiedWithWorkshops() {
+    return this.http.get<ISnapshotPartial[]>(`${this.resource}/simplified`);
+  }
+
   public getOne(guid: string) {
     return this.http.get<ISnapshotPartial>(`${this.resource}/${guid}`);
   }

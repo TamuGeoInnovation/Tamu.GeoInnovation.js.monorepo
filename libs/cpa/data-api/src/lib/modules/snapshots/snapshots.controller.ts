@@ -1,7 +1,7 @@
 import { Controller, Patch, Param, Body, Delete, Get, Post } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
-import { Snapshot, CPALayer } from '@tamu-gisc/cpa/common/entities';
+import { Snapshot } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseController } from '../base/base.controller';
 import { SnapshotsService } from './snapshots.service';
@@ -26,6 +26,11 @@ export class SnapshotsController extends BaseController<Snapshot> {
   @Get('context/workshop/:guid')
   public async getContextsForWorkshop(@Param() params: { guid: string }) {
     return this.service.getContextsForWorkshop(params.guid);
+  }
+
+  @Get('simplified')
+  public async getSimplifiedWithWorkshops() {
+    return this.service.getSimplifiedWithWorkshops();
   }
 
   @Post('many')

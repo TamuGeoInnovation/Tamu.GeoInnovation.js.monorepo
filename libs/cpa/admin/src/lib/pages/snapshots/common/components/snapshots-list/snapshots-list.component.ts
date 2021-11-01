@@ -14,6 +14,7 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 })
 export class SnapshotsListComponent implements OnInit {
   public snapshots: Observable<ISnapshotPartial[]>;
+
   constructor(
     private service: SnapshotService,
     private router: Router,
@@ -22,7 +23,7 @@ export class SnapshotsListComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this.snapshots = this.service.getAll().pipe(shareReplay(1));
+    this.snapshots = this.service.getSimplifiedWithWorkshops().pipe(shareReplay(1));
   }
 
   public createCopy(donorGuid: string) {

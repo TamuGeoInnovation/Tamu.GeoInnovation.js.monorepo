@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { getRepository, Repository } from 'typeorm';
 
-import { Snapshot, Workshop } from '@tamu-gisc/cpa/common/entities';
+import { Snapshot, Workshop, WorkshopSnapshot } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseService } from '../base/base.service';
 import { ISnapshotPartial } from './snapshots.controller';
@@ -72,5 +72,13 @@ export class SnapshotsService extends BaseService<Snapshot> {
     });
 
     return workshop.contexts.map((c) => c.snapshot);
+  }
+
+  public getSimplifiedWithWorkshops() {
+    return this.repo
+      .createQueryBuilder('snapshot')
+      .leftJoinAndSelect('snapshot.workshops', 'workshops', 'workshops.workshop IS NOT NULL')
+      .leftJoinAndSelect('workshops.workshop', 'workshop')
+      .getMany();
   }
 }
