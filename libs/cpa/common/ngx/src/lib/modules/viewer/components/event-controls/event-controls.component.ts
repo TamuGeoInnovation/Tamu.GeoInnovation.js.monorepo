@@ -8,11 +8,11 @@ import { ParticipantService } from '@tamu-gisc/cpa/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
-  selector: 'tamu-gisc-admin-controls',
-  templateUrl: './admin-controls.component.html',
-  styleUrls: ['./admin-controls.component.scss']
+  selector: 'tamu-gisc-event-controls',
+  templateUrl: './event-controls.component.html',
+  styleUrls: ['./event-controls.component.scss']
 })
-export class AdminControlsComponent implements OnInit {
+export class EventControlsComponent implements OnInit {
   public workshopParticipants: Observable<Array<Participant>>;
   public workshopGuidOrAlias: Observable<string>;
 

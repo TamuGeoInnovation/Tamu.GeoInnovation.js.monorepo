@@ -16,8 +16,8 @@ import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
 import { ParticipantComponent } from './components/participant/participant.component';
 import { ViewerComponent } from './viewer.component';
 import { SnapshotNavigatorComponent } from './components/snapshot-navigator/snapshot-navigator.component';
-import { AdminControlsComponent } from './components/admin-controls/admin-controls.component';
-import { ParticipantListItemComponent } from './components/admin-controls/components/participant-list-item/participant-list-item.component';
+import { EventControlsComponent } from './components/event-controls/event-controls.component';
+import { ParticipantListItemComponent } from './components/event-controls/components/participant-list-item/participant-list-item.component';
 import { ParticipantResponsePopupComponent } from './components/participant-response-popup/participant-response-popup.component';
 import { ViewerBasePopupComponent } from './components/viewer-base-popup/viewer-base-popup.component';
 import { ParticipantWorkshopsListComponent } from './components/participant-workshops-list/participant-workshops-list.component';
@@ -43,7 +43,7 @@ const routes: Routes = [
       },
       {
         path: 'controls',
-        component: AdminControlsComponent
+        component: EventControlsComponent
       }
     ]
   }
@@ -69,7 +69,7 @@ const routes: Routes = [
     ViewerComponent,
     SnapshotNavigatorComponent,
     ParticipantComponent,
-    AdminControlsComponent,
+    EventControlsComponent,
     ParticipantListItemComponent,
     ParticipantResponsePopupComponent,
     ViewerBasePopupComponent,
