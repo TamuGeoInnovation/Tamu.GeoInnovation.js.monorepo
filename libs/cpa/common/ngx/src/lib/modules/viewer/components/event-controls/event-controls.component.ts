@@ -42,7 +42,7 @@ export class EventControlsComponent implements OnInit {
     );
   }
 
-  public updateParticipantName(participant: IParticipant, updatedParticipantName: string) {
+  public updateParticipantName(participant: IParticipant, updatedParticipantName: string): void {
     if (participant.name !== updatedParticipantName) {
       this.ps.updateParticipant(participant.guid, updatedParticipantName).subscribe(
         (res) => {
@@ -66,6 +66,27 @@ export class EventControlsComponent implements OnInit {
         }
       );
     }
+  }
+
+  public deleteParticipant(participant: IParticipant): void {
+    this.ps.deleteParticipant(participant.guid).subscribe(
+      (res) => {
+        this.ns.toast({
+          id: 'participant-delete-success',
+          message: `Successfully deleted ${res.name}`,
+          title: 'Deleted participant'
+        });
+
+        this._$refresh.next();
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'participant-delete-error',
+          message: 'There was an error deleting participant.',
+          title: 'Failed to delete participant'
+        });
+      }
+    );
   }
 
   public addParticipant() {

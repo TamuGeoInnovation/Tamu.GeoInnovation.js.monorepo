@@ -25,4 +25,8 @@ export class ParticipantService {
   public createParticipantForWorkshop(workshopGuid: string, name: string) {
     return this.http.post<IParticipant>(`${this.resource}/workshop`, { workshopGuid, name });
   }
+
+  public deleteParticipant(participantGuid: string) {
+    return this.http.delete<IParticipant>(`${this.resource}/${participantGuid}`);
+  }
 }

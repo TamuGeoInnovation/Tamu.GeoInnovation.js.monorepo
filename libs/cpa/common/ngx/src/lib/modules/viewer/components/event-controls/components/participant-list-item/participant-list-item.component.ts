@@ -17,6 +17,9 @@ export class ParticipantListItemComponent implements OnInit {
   @Output()
   public nameUpdated: EventEmitter<string> = new EventEmitter();
 
+  @Output()
+  public deleted: EventEmitter<IParticipant> = new EventEmitter();
+
   @ViewChild('participantName')
   public label: ElementRef;
 
@@ -59,5 +62,9 @@ export class ParticipantListItemComponent implements OnInit {
     const tree = this.router.createUrlTree(['/viewer'], { queryParams: params });
 
     this.url = `${window.location.origin}/${tree.toString()}`;
+  }
+
+  public deleteParticipant() {
+    this.deleted.emit(this.participant);
   }
 }

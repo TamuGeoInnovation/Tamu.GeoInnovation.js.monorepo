@@ -1,6 +1,7 @@
-<p id="participant-name" [attr.contentEditable]="editable | async" #participantName (blur)="makeUneditable()" (keydown.enter)="makeUneditable()">{{participant.name}}</p>
+<p id="participant-name" [attr.contentEditable]="editable | async" #participantName (blur)="makeUneditable()" (keydown.enter)="makeUneditable()" (dblclick)="makeEditable()">{{participant.name}}</p>
 
 <div class="actions">
-  <div class="participant-action" title="Edit participant name" (click)="makeEditable()"><span class="material-icons-outlined">edit</span></div>
   <div class="participant-action" title="Copy participant link to clipboard" clipboard-copy [text]="url"><span class="material-icons-outlined">link</span></div>
+  <div class="participant-action" title="Edit participant name" (click)="makeEditable()"><span class="material-icons-outlined">edit</span></div>
+  <div class="participant-action" title="Delete participant" (click)="deleteParticipant()"><span class="material-icons-outlined">delete</span></div>
 </div>

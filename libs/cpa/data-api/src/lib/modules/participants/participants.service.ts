@@ -52,6 +52,20 @@ export class ParticipantsService {
 
     return existingParticipant.save();
   }
+
+  public async deleteParticipant(dto: DeleteParticipantDto) {
+    const existingParticipant = await this.repo.findOne({
+      where: {
+        guid: dto.participantGuid
+      }
+    });
+
+    if (!existingParticipant) {
+      throw new NotFoundException();
+    }
+
+    return existingParticipant.remove();
+  }
 }
 
 export class GetParticipantsForWorkshopDto {
@@ -73,4 +87,9 @@ export class UpdateParticipantDto {
 
   @IsNotEmpty()
   public name: string;
+}
+
+export class DeleteParticipantDto {
+  @IsNotEmpty()
+  public participantGuid: string;
 }

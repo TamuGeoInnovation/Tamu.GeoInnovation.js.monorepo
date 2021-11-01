@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 
 import {
   CreateParticipantForWorkshopDto,
+  DeleteParticipantDto,
   GetParticipantsForWorkshopDto,
   ParticipantsService,
   UpdateParticipantDto
@@ -23,5 +24,10 @@ export class ParticipantsController {
   @Patch()
   public updateParticipantName(@Body() dto: UpdateParticipantDto) {
     return this.service.updateParticipant(dto);
+  }
+
+  @Delete(':participantGuid')
+  public deleteParticipant(@Param() dto: DeleteParticipantDto) {
+    return this.service.deleteParticipant(dto);
   }
 }
