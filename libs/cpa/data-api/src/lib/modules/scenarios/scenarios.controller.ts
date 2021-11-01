@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
-import { Scenario, CPALayer } from '@tamu-gisc/cpa/common/entities';
+import { Scenario, CPALayer, IScenario } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseController } from '../base/base.controller';
 import { ScenariosService } from './scenarios.service';
@@ -69,9 +69,7 @@ export interface IScenariosResponse extends Omit<DeepPartial<Scenario>, 'layers'
   layers: string[];
 }
 
-export interface IScenariosResponseDetails extends Omit<DeepPartial<Scenario>, 'layers'> {
-  layers: Array<{ guid: string; type: 'snapshot' | 'response' | 'scenario' }>;
-}
+export interface IScenarioPartial extends DeepPartial<Scenario> {}
 
 export interface IScenariosResponseResolved extends Omit<DeepPartial<Scenario>, 'layers'> {
   layers: Array<CPALayer>;

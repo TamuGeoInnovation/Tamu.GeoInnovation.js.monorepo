@@ -11,10 +11,11 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
   IResponseDto,
   IResponseResolved,
-  IScenariosResponseDetails,
+  IScenarioPartial,
   ISnapshotsResponse,
   IWorkshopRequestPayload,
-  IScenariosResponseResolved
+  IScenariosResponseResolved,
+  IScenariosResponse
 } from '@tamu-gisc/cpa/data-api';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
@@ -32,17 +33,34 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   public view: esri.MapView;
   public map: esri.Map;
   public graphicPreview: esri.GraphicsLayer;
-  public responsePreview: esri.GraphicsLayer;
-  public scenarioPreview: esri.GraphicsLayer;
+  public snapshotResponsePreview: esri.GraphicsLayer;
+  public scenarioResponsePreview: esri.GraphicsLayer;
   public scenarioSnapshots: { [key: string]: ISnapshotsResponse } = {};
 
   public selectedWorkshop: string;
   public isExisting: Observable<boolean>;
 
-  public responses: Observable<IResponseResolved[]>;
+  public workshopResponses: Observable<IResponseResolved[]>;
+  /**
+   * List of workshops used to scope a new scenario.
+   */
   public workshops: Observable<IWorkshopRequestPayload[]>;
-  public snapshots: Observable<ISnapshotsResponse[]>;
-  public scenarios: Observable<IScenariosResponseResolved[]>;
+
+  /**
+   * List of ALL snapshots belonging to the scenario's referenced workshop and not.
+   */
+  public allSnapshots: Observable<ISnapshotsResponse[]>;
+  /**
+   * List of scenarios scoped to the scenario's referenced workshop.
+   *
+   * This list does not include the current scenario.
+   */
+  public workshopScenarios: Observable<IScenariosResponseResolved[]>;
+
+  /**
+   * List of snapshots scoped to the scenario's referenced workshop
+   */
+  public workshopSnapshots: Observable<ISnapshotsResponse[]>;
 
   private _modules: {
     graphic: esri.GraphicConstructor;
@@ -94,15 +112,15 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
       mapCenter: [''],
       zoom: [null],
       extent: [undefined],
-      layers: [[]],
       snapshots: [[]],
-      scenarios: [[]]
+      scenarioResponses: [[]],
+      snapshotResponses: [[]]
     });
 
     // Fetch all Workshops
     this.workshops = this.workshop.getWorkshops().pipe(shareReplay(1));
 
-    this.snapshots = this.snapshot.getAll().pipe(shareReplay(1));
+    this.allSnapshots = this.snapshot.getAll().pipe(shareReplay(1));
 
     // Get esri modules first. We'll need these for basically anything else in the builder, so
     // it makes sense to ensure they are available before we continue any additional setup
@@ -124,39 +142,41 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
         this.route.params.pipe(pluck('guid')).subscribe((scenarioGuid) => {
           if (scenarioGuid) {
             this.scenario.getOne(scenarioGuid).subscribe((s) => {
-              const responsesGuids = s.layers.filter((l) => l.type === 'response').map((l) => l.guid);
               const snapshotsGuids = s.layers.filter((l) => l.type === 'snapshot').map((l) => l.guid);
               const scenarioGuids = s.layers.filter((l) => l.type === 'scenario').map((l) => l.guid);
+
+              // TODO: Differentiate between snapshot and snapshot response layers
+              const snapshotResponseGuids = [];
 
               // Check to see we have workshops
               if (s.workshopScenario && s.workshopScenario.workshop !== undefined) {
                 this.selectedWorkshop = s.workshopScenario?.workshop?.guid;
-                this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay(1));
 
-                this.scenarios = this.scenario.getForWorkshop(this.selectedWorkshop).pipe(
+                this.workshopSnapshots = this.snapshot.getForWorkshop(this.selectedWorkshop);
+                this.workshopScenarios = this.scenario.getForWorkshop(this.selectedWorkshop).pipe(
                   map((scenarios) => {
                     return scenarios.filter((scenario) => scenario.guid !== scenarioGuid);
                   })
                 );
+                this.workshopResponses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay(1));
 
                 // Setup event handler for form snapshot selection
                 this.builderForm.controls.snapshots.valueChanges
-                  .pipe(skip(1), withLatestFrom(this.snapshots))
+                  .pipe(skip(1), withLatestFrom(this.allSnapshots))
                   .subscribe(([guids, snapshots]) => {
                     this.addOrRemoveSnapshots(snapshots, guids);
                   });
 
-                // Setup event handler for form individual response selection
-                this.builderForm.controls.layers.valueChanges
-                  .pipe(skip(1), withLatestFrom(this.responses))
-                  .subscribe(([guids, responses]: [string[], IResponseResolved[]]) => {
-                    this.addResponseGraphics(guids, responses);
-                  });
-
-                this.builderForm.controls.scenarios.valueChanges
-                  .pipe(skip(1), withLatestFrom(this.responses))
+                this.builderForm.controls.scenarioResponses.valueChanges
+                  .pipe(skip(1), withLatestFrom(this.workshopResponses))
                   .subscribe(([scenGuids, responses]) => {
                     this.setScenarioResponseGraphics(scenGuids, responses);
+                  });
+
+                this.builderForm.controls.snapshotResponses.valueChanges
+                  .pipe(skip(1), withLatestFrom(this.workshopResponses))
+                  .subscribe(([snapGuids, responses]) => {
+                    this.setSnapshotResponseGraphics(snapGuids, responses);
                   });
 
                 // Instantiate the preview layers
@@ -164,17 +184,17 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
                   this.view = instance.view as esri.MapView;
                   this.map = instance.map;
                   this.graphicPreview = new this._modules.graphicsLayer();
-                  this.responsePreview = new this._modules.graphicsLayer();
-                  this.scenarioPreview = new this._modules.graphicsLayer();
+                  this.snapshotResponsePreview = new this._modules.graphicsLayer();
+                  this.scenarioResponsePreview = new this._modules.graphicsLayer();
 
-                  this.map.addMany([this.graphicPreview, this.responsePreview, this.scenarioPreview]);
+                  this.map.addMany([this.graphicPreview, this.snapshotResponsePreview, this.scenarioResponsePreview]);
 
                   if (s.layers) {
                     this.builderForm.patchValue({
                       ...s,
-                      layers: responsesGuids,
                       snapshots: snapshotsGuids,
-                      scenarios: scenarioGuids
+                      scenarioResponses: scenarioGuids,
+                      snapshotResponses: snapshotResponseGuids
                     });
 
                     // Change default zoom and center to values in scenario response.
@@ -207,10 +227,9 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   }
 
   public setWorkshopScenario(workshop: string) {
-    // Workshop can be undefined
     if (workshop) {
       this.selectedWorkshop = workshop;
-      this.responses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
+      this.workshopResponses = this.response.getResponsesForWorkshop(this.selectedWorkshop).pipe(shareReplay());
     }
   }
 
@@ -251,12 +270,35 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
   /**
    * Filters out the responses that belong to the provided scenario guid, and adds them to the map for preview.
    */
-  public loadPreviewScenario(scenario: IScenariosResponseDetails) {
-    this.responses
+  public loadScenarioResponsesPreview(scenario: IScenarioPartial) {
+    this.workshopResponses
       .pipe(
         switchMap((s) => from(s)),
         filter((response) => {
           return response.scenario !== null && response.scenario.guid === scenario.guid;
+        }),
+        reduce((acc, response) => {
+          return [...acc, ...response.shapes];
+        }, [] as Array<IGraphic>)
+      )
+      .subscribe((wsResponses) => {
+        this.clearGraphicPreview();
+
+        const graphics = this.instantiateGraphicsFromJSON(wsResponses);
+
+        this.graphicPreview.addMany(graphics);
+      });
+  }
+
+  /**
+   * Filters out the responses that belong to the provided snapshot guid, and adds them to the map for preview.
+   */
+  public loadSnapshotResponsesPreview(snapshot: ISnapshotsResponse) {
+    this.workshopResponses
+      .pipe(
+        switchMap((s) => from(s)),
+        filter((response) => {
+          return response.snapshot !== null && response.snapshot.guid === snapshot.guid;
         }),
         reduce((acc, response) => {
           return [...acc, ...response.shapes];
@@ -354,21 +396,11 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     }
   }
 
-  public addResponseGraphics(guids: string[], responses: IResponseResolved[]) {
-    this.responsePreview.removeAll();
-    // Find those responses that intersect with the currently selected guids (checkboxes)
-    const selectedResponses = responses.filter((currentResponse) => guids.includes(currentResponse.guid));
-
-    const flattened = this.flattenResponsesGraphics(selectedResponses);
-
-    this.responsePreview.addMany(flattened);
-  }
-
   /**
-   *
+   * Permanently adds scenario response graphics to the map preview
    */
   public setScenarioResponseGraphics(selectedScenarioGuids: string[], responses: IResponseResolved[]) {
-    this.scenarioPreview.removeAll();
+    this.scenarioResponsePreview.removeAll();
 
     const selectedScenariosResponses = responses.filter((response) => {
       return response.scenario !== null && selectedScenarioGuids.includes(response.scenario.guid);
@@ -376,25 +408,45 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
 
     const flattened = this.flattenResponsesGraphics(selectedScenariosResponses);
 
-    this.scenarioPreview.addMany(flattened);
+    this.scenarioResponsePreview.addMany(flattened);
+  }
+
+  /**
+   * Permanently adds snapshot response graphics to the map preview
+   */
+  public setSnapshotResponseGraphics(selectedSnapshotGuids: string[], responses: IResponseResolved[]) {
+    this.snapshotResponsePreview.removeAll();
+
+    const selectedSnapshotResponses = responses.filter((response) => {
+      return response.snapshot !== null && selectedSnapshotGuids.includes(response.snapshot.guid);
+    });
+
+    const flattened = this.flattenResponsesGraphics(selectedSnapshotResponses);
+
+    this.snapshotResponsePreview.addMany(flattened);
   }
 
   public createScenario() {
-    const value = this.builderForm.getRawValue();
+    const value = this.builderForm.getRawValue() as ScenarioFormValue;
 
     if (this.route.snapshot.params.guid) {
       // Combine the snapshots and responses. Snapshots are typically used as contextual base layers for responses, so they
       // they are at the bottom of the stack.
-      const combinedLayers = [...value.snapshots, ...value.layers, ...value.scenarios];
+      const combinedLayers = [...value.snapshots, ...value.snapshotResponses, ...value.scenarioResponses];
 
       // Remove the snapshots object from the form value, as the backend calls an update function and fails if provided.
       delete value.snapshots;
-      delete value.scenarios;
+      delete value.scenarioResponses;
+      delete value.snapshotResponses;
 
-      value.layers = combinedLayers;
+      const scenario: IScenariosResponse = JSON.parse(JSON.stringify(value));
+
+      scenario.layers = combinedLayers;
+
+      debugger;
 
       this.scenario
-        .update(this.route.snapshot.params.guid, value)
+        .update(this.route.snapshot.params.guid, scenario)
         .pipe(
           tap(() => {
             // Disable the form while the async operation is executed.
@@ -421,7 +473,14 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
           }
         );
     } else {
-      this.scenario.create(value).subscribe((res) => {
+      delete value.snapshots;
+      delete value.scenarioResponses;
+      delete value.snapshotResponses;
+
+      const scenario: IScenariosResponse = JSON.parse(JSON.stringify(value));
+      scenario.layers = [];
+
+      this.scenario.create(scenario).subscribe((res) => {
         this.workshop.addScenario(this.selectedWorkshop, res.guid).subscribe(
           (addScenarioStatus) => {
             this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
@@ -475,4 +534,15 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
 
     this.builderForm.patchValue({ extent });
   }
+}
+
+interface ScenarioFormValue {
+  title: string;
+  description: string;
+  mapCenter: string;
+  zoom: number;
+  extent: number;
+  snapshots: Array<string>;
+  scenarioResponses: Array<string>;
+  snapshotResponses: Array<string>;
 }

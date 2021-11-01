@@ -33,7 +33,7 @@
     </div>
   </div>
 
-  <div class="map-configuration-container" *ngIf="responses && (isExisting | async)">
+  <div class="map-configuration-container" *ngIf="(isExisting | async)">
     <div class="map-configuration">
       <div class="form-section">
         <div class="form-section-toolbar">
@@ -63,32 +63,34 @@
               <p class="trailer-1">The following list represents pre-configured <a [routerLink]="['/admin/snapshots']">snapshots</a>. Each added snapshot to a scenario will add ALL of its constituent snapshot layers. The more snapshots are added to a scenario, the more layers a scenario needs to load and draw, and the less performant scenario becomes.</p>
 
               <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="snapshots" [referenceId]="'guid'">
-                <tamu-gisc-checkbox *ngFor="let snapshot of (snapshots | async)" [label]="snapshot.title" [data]="snapshot"></tamu-gisc-checkbox>
+                <tamu-gisc-checkbox *ngFor="let snapshot of (allSnapshots | async)" [label]="snapshot.title" [data]="snapshot"></tamu-gisc-checkbox>
               </tamu-gisc-checkbox-group>
 
-              <p *ngIf="(snapshots | async)?.length === 0">There are no snapshots created yet.</p>
+              <p *ngIf="(allSnapshots | async)?.length === 0">There are no snapshots created yet.</p>
+            </div>
+          </tamu-gisc-tab>
+
+          <tamu-gisc-tab label="Snapshot Responses">
+            <div class="leader-1 trailer-1">
+              <p class="trailer-1">The following list represents workshop snapshots, with and without, participant submissions. Selecting a snapshot will add <strong>ALL</strong> of the snapshot's current (if any) and future responses and add them to this scenario as a separate layer. Hover over a snapshot in the list to preview the responses associated to that snapshot.</p>
+
+              <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="snapshotResponses" [referenceId]="'guid'">
+                <tamu-gisc-checkbox *ngFor="let snapshot of (workshopSnapshots | async)" [label]="snapshot.title" [data]="snapshot" (mouseover)="loadSnapshotResponsesPreview(snapshot)" (mouseleave)="this.clearGraphicPreview()"></tamu-gisc-checkbox>
+              </tamu-gisc-checkbox-group>
+
+              <p *ngIf="(workshopSnapshots | async)?.length === 0">There are no snapshots for the associated workshop.</p>
             </div>
           </tamu-gisc-tab>
 
           <tamu-gisc-tab label="Scenario Responses">
             <div class="leader-1 trailer-1">
-              <p class="trailer-1">The following list represents scenarios <em>with</em> participant submissions. Selecting a scenario will select <strong>ALL</strong> of the selected scenario responses and add it to this scenario as a separate layer. Hover over a scenario in the list to preview the responses associated to that scenario.</p>
+              <p class="trailer-1">The following list represents workshop scenarios, with and without, participant submissions. Selecting a scenario will add <strong>ALL</strong> of the scenario's current (if any) and future responses and add them to this scenario as a separate layer. Hover over a scenario in the list to preview the responses associated to that scenario.</p>
 
-              <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="scenarios" [referenceId]="'guid'">
-                <tamu-gisc-checkbox *ngFor="let scenario of (scenarios | async)" [label]="scenario.title" [data]="scenario" (mouseover)="loadPreviewScenario(scenario)" (mouseleave)="this.clearGraphicPreview()"></tamu-gisc-checkbox>
+              <tamu-gisc-checkbox-group id="snapshot-list" class="form-section-body" formControlName="scenarioResponses" [referenceId]="'guid'">
+                <tamu-gisc-checkbox *ngFor="let scenario of (workshopScenarios | async)" [label]="scenario.title" [data]="scenario" (mouseover)="loadScenarioResponsesPreview(scenario)" (mouseleave)="this.clearGraphicPreview()"></tamu-gisc-checkbox>
               </tamu-gisc-checkbox-group>
 
-              <p *ngIf="(scenarios | async)?.length === 0">There are no scenarios created yet.</p>
-            </div>
-          </tamu-gisc-tab>
-
-          <tamu-gisc-tab label="Responses">
-            <div class="leader-1 trailer-1">
-              <tamu-gisc-checkbox-group id="response-list" class="form-section-body" formControlName="layers" [referenceId]="'guid'">
-                <tamu-gisc-checkbox *ngFor="let response of (responses | async)" (mouseover)="loadPreviewResponse(response)" (mouseleave)="this.clearGraphicPreview()" [label]="(response.name !== null ? response.name : 'Anonymous') + ' ' +'(' + getTitleFromResponseSource(response) + ')'" [data]="response"></tamu-gisc-checkbox>
-              </tamu-gisc-checkbox-group>
-
-              <p *ngIf="(responses | async)?.length === 0">There are no responses for this workshop.</p>
+              <p *ngIf="(workshopSnapshots | async)?.length === 0">There are no scenarios for the associated workshop.</p>
             </div>
           </tamu-gisc-tab>
         </tamu-gisc-tabs>
