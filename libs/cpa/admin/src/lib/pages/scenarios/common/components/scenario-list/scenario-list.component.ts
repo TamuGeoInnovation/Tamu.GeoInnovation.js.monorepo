@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 import { ScenarioService } from '@tamu-gisc/cpa/data-access';
-import { IScenariosResponse } from '@tamu-gisc/cpa/data-api';
+import { IScenarioSimplified } from '@tamu-gisc/cpa/data-api';
 
 @Component({
   selector: 'tamu-gisc-scenario-list',
@@ -12,7 +12,7 @@ import { IScenariosResponse } from '@tamu-gisc/cpa/data-api';
   styleUrls: ['./scenario-list.component.scss']
 })
 export class ScenarioListComponent implements OnInit {
-  public scenarios: Observable<IScenariosResponse[]>;
+  public scenarios: Observable<IScenarioSimplified[]>;
   constructor(private service: ScenarioService) {}
 
   public ngOnInit() {

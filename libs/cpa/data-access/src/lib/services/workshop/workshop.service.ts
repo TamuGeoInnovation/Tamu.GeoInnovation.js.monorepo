@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { IScenariosResponse, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
+import { IScenarioSimplified, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 
 @Injectable({
   providedIn: 'root'
@@ -47,11 +47,11 @@ export class WorkshopService {
   }
 
   public setScenarios(wGuid: string, guids: Array<string>) {
-    return this.http.post<IScenariosResponse>(`${this.resource}/scenarios`, { workshopGuid: wGuid, scenarioGuids: guids });
+    return this.http.post<IScenarioSimplified>(`${this.resource}/scenarios`, { workshopGuid: wGuid, scenarioGuids: guids });
   }
 
   public addScenario(wGuid: string, sGuid: string) {
-    return this.http.post<IScenariosResponse>(`${this.resource}/scenario`, { workshopGuid: wGuid, scenarioGuid: sGuid });
+    return this.http.post<IScenarioSimplified>(`${this.resource}/scenario`, { workshopGuid: wGuid, scenarioGuid: sGuid });
   }
 
   public deleteScenario(wGuid: string, sGuid: string) {

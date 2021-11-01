@@ -15,7 +15,7 @@ import {
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseService } from '../base/base.service';
-import { IScenariosResponse, IScenariosResponseResolved } from './scenarios.controller';
+import { IScenarioSimplified, IScenariosResponseResolved } from './scenarios.controller';
 
 @Injectable()
 export class ScenariosService extends BaseService<Scenario> {
@@ -52,7 +52,7 @@ export class ScenariosService extends BaseService<Scenario> {
     return resolvedScenarios;
   }
 
-  public async updateScenario(scenarioGuid: string, scenarioDetails: IScenariosResponse) {
+  public async updateScenario(scenarioGuid: string, scenarioDetails: IScenarioSimplified) {
     const existingScenario = await this.scenarioRepo.findOne({ where: { guid: scenarioGuid } });
 
     // Scenario details layer guid's are mapped into objects with a type attribute describing whether they are of type

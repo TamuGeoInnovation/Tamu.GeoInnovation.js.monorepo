@@ -15,7 +15,7 @@ import {
   ISnapshotsResponse,
   IWorkshopRequestPayload,
   IScenariosResponseResolved,
-  IScenariosResponse
+  IScenarioSimplified
 } from '@tamu-gisc/cpa/data-api';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
@@ -439,7 +439,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
       delete value.scenarioResponses;
       delete value.snapshotResponses;
 
-      const scenario: IScenariosResponse = JSON.parse(JSON.stringify(value));
+      const scenario: IScenarioSimplified = JSON.parse(JSON.stringify(value));
 
       scenario.layers = combinedLayers;
 
@@ -477,7 +477,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
       delete value.scenarioResponses;
       delete value.snapshotResponses;
 
-      const scenario: IScenariosResponse = JSON.parse(JSON.stringify(value));
+      const scenario: IScenarioSimplified = JSON.parse(JSON.stringify(value));
       scenario.layers = [];
 
       this.scenario.create(scenario).subscribe((res) => {

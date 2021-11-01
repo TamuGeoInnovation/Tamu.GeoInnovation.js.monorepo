@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
-import { Scenario, CPALayer, IScenario } from '@tamu-gisc/cpa/common/entities';
+import { Scenario, CPALayer } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseController } from '../base/base.controller';
 import { ScenariosService } from './scenarios.service';
@@ -50,7 +50,7 @@ export class ScenariosController extends BaseController<Scenario> {
    * Updates an existing scenario
    */
   @Patch(':guid')
-  public async update(@Param() params: Scenario, @Body() body: IScenariosResponse) {
+  public async update(@Param() params: Scenario, @Body() body: IScenarioSimplified) {
     const result = await this.service.updateScenario(params.guid, body);
 
     return result;
@@ -65,7 +65,7 @@ export class ScenariosController extends BaseController<Scenario> {
   }
 }
 
-export interface IScenariosResponse extends Omit<DeepPartial<Scenario>, 'layers'> {
+export interface IScenarioSimplified extends Omit<DeepPartial<Scenario>, 'layers'> {
   layers: string[];
 }
 
