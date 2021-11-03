@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, Observable, ReplaySubject, Subject } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { DeepPartial } from 'typeorm';
 
 import * as md5 from 'md5';
 
@@ -12,7 +13,6 @@ import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@
 import { ViewerBasePopupComponent } from '../components/viewer-base-popup/viewer-base-popup.component';
 
 import esri = __esri;
-import { DeepPartial } from 'typeorm';
 
 @Injectable({
   providedIn: 'root'

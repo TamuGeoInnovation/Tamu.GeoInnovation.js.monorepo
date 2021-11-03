@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { getRepository, Repository } from 'typeorm';
 
-import { Snapshot, Workshop, WorkshopSnapshot } from '@tamu-gisc/cpa/common/entities';
+import { Snapshot, Workshop } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseService } from '../base/base.service';
 import { ISnapshotPartial } from './snapshots.controller';

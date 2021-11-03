@@ -1,5 +1,4 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-// tslint:disable-next-line: nx-enforce-module-boundaries
 import { ParticipantResponsePopupComponent } from '@tamu-gisc/cpa/common/ngx';
 
 const commonLayerProps = {

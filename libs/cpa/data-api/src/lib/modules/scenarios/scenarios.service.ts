@@ -9,13 +9,12 @@ import {
   Snapshot,
   WorkshopScenario,
   CPALayer,
-  IScenario,
-  LayerReference
+  IScenario
 } from '@tamu-gisc/cpa/common/entities';
 import { IGraphic } from '@tamu-gisc/common/utils/geometry/esri';
 
 import { BaseService } from '../base/base.service';
-import { IScenarioPartial, IScenarioSimplified, IScenarioResolved } from './scenarios.controller';
+import { IScenarioPartial, IScenarioResolved } from './scenarios.controller';
 
 @Injectable()
 export class ScenariosService extends BaseService<Scenario> {

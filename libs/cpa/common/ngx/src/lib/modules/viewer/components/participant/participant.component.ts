@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject, forkJoin, interval, merge, Observable, ReplaySubject, from, combineLatest } from 'rxjs';
+import { BehaviorSubject, Subject, forkJoin, interval, Observable, ReplaySubject, from, combineLatest } from 'rxjs';
 import {
   takeUntil,
   debounceTime,
@@ -238,7 +238,6 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             }
           );
         } else {
-          // TODO: Remove notes and name property from response entity
           const submission: IResponseRequestDto = {
             participantGuid: participantGuid,
             shapes: parsed

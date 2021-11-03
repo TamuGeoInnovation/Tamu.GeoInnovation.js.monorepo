@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { interval, Observable } from 'rxjs';
-import { startWith, switchMap, withLatestFrom } from 'rxjs/operators';
+import { shareReplay, startWith, switchMap, withLatestFrom } from 'rxjs/operators';
 
 import { IParticipant } from '@tamu-gisc/cpa/common/entities';
 import { ParticipantService } from '@tamu-gisc/cpa/data-access';
@@ -23,7 +23,8 @@ export class ParticipantGroupListComponent implements OnInit {
       withLatestFrom(this.vs.workshopGuid),
       switchMap(([i, wsGuid]) => {
         return this.ps.getParticipantsForWorkshop(wsGuid);
-      })
+      }),
+      shareReplay()
     );
   }
 }

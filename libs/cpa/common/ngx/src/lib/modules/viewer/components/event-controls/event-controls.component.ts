@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { filter, pluck, shareReplay, startWith, switchMap, take, withLatestFrom } from 'rxjs/operators';
+import { filter, pluck, shareReplay, startWith, switchMap, take } from 'rxjs/operators';
 
 import { IParticipant, Participant } from '@tamu-gisc/cpa/common/entities';
 import { ParticipantService } from '@tamu-gisc/cpa/data-access';
