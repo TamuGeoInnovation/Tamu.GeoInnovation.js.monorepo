@@ -5,6 +5,7 @@ export interface AbstractCollectorConstructorProperties {
    * Bearer token authorization key to be used in all resource requests.
    */
   token: string;
+
   url: string;
 
   /**
@@ -13,10 +14,6 @@ export interface AbstractCollectorConstructorProperties {
   interval: number;
 
   resourceName: ResourceType;
-}
-
-export interface BaseMdsCollectorConstructorProperties extends AbstractCollectorConstructorProperties {
-  persistanceKey: string;
 }
 
 // tslint:disable-next-line: no-empty-interface

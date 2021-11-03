@@ -14,7 +14,7 @@ import {
 
 import { BaseMdsCollector } from './base-mds.collector';
 import {
-  BaseMdsCollectorConstructorProperties,
+  AbstractCollectorConstructorProperties,
   MDSResponse,
   MDSStatusChangesPayloadDto,
   StatusChangesRequestParams
@@ -59,11 +59,7 @@ export class StatusChangeCollector extends BaseMdsCollector<
         return;
       }
 
-      const newRecords = await this.processRecords<StatusChange, MDSStatusChangeDto>(
-        changes,
-        ['event_time', 'device_id', 'event_types'],
-        StatusChange
-      );
+      const newRecords = await this.processRecords<StatusChange, MDSStatusChangeDto>(changes);
 
       if (newRecords.length === 0) {
         await this.updateLastCollected(currentCollectionDate, newRecords.length);
@@ -106,6 +102,6 @@ export class StatusChangeCollector extends BaseMdsCollector<
   }
 }
 
-export interface StatusChangeCollectorConstructorProperties extends BaseMdsCollectorConstructorProperties {
+export interface StatusChangeCollectorConstructorProperties extends AbstractCollectorConstructorProperties {
   eventDate: string;
 }

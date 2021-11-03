@@ -13,7 +13,7 @@ import {
 } from '@tamu-gisc/veoride/common/entities';
 
 import { BaseMdsCollector } from './base-mds.collector';
-import { BaseMdsCollectorConstructorProperties, MDSResponse, MDSTripsPayloadDto, TripRequestParams } from '../types/types';
+import { AbstractCollectorConstructorProperties, MDSResponse, MDSTripsPayloadDto, TripRequestParams } from '../types/types';
 
 export class TripCollector extends BaseMdsCollector<TripCollectorConstructorProperties, TripRequestParams> {
   constructor(params: TripCollectorConstructorProperties) {
@@ -51,7 +51,7 @@ export class TripCollector extends BaseMdsCollector<TripCollectorConstructorProp
         return;
       }
 
-      const newRecords = await this.processRecords<Trip, MDSTripDto>(trips, ['trip_id'], Trip);
+      const newRecords = await this.processRecords<Trip, MDSTripDto>(trips);
 
       if (newRecords.length === 0) {
         await this.updateLastCollected(currentCollectionDate, newRecords.length);
@@ -97,6 +97,6 @@ export class TripCollector extends BaseMdsCollector<TripCollectorConstructorProp
   }
 }
 
-export interface TripCollectorConstructorProperties extends BaseMdsCollectorConstructorProperties {
+export interface TripCollectorConstructorProperties extends AbstractCollectorConstructorProperties {
   startDate: string;
 }

@@ -2,11 +2,11 @@ import { BaseEntity } from 'typeorm';
 
 import { Log, LogType, dateDifferenceGreaterThan, mdsTimeHourToDate } from '@tamu-gisc/veoride/common/entities';
 
-import { AbstractMdsCollector, AnyPromise, EntityAlias } from './abstract-mds.collector';
-import { BaseMdsCollectorConstructorProperties, BaseRequestParams } from '../types/types';
+import { AbstractMdsCollector, AnyPromise } from './abstract-mds.collector';
+import { AbstractCollectorConstructorProperties, BaseRequestParams } from '../types/types';
 
 export abstract class BaseMdsCollector<
-  S extends BaseMdsCollectorConstructorProperties,
+  S extends AbstractCollectorConstructorProperties,
   T extends BaseRequestParams
 > extends AbstractMdsCollector<S, T> {
   constructor(params: S) {
@@ -25,11 +25,7 @@ export abstract class BaseMdsCollector<
 
   public abstract scrape(): AnyPromise;
 
-  public async processRecords<E extends BaseEntity, D>(
-    dtoRecords: Array<D>,
-    dtoPrimaryKeys: Array<keyof D>,
-    entity: EntityAlias
-  ): Promise<Array<E>> {
+  public async processRecords<E extends BaseEntity, D>(dtoRecords: Array<D>): Promise<Array<E>> {
     // First convert all dto records into entities. This will normalize the data types for
     // comparison below.
     const dtoEntities: Array<E> = dtoRecords.map((t) => {
@@ -39,8 +35,15 @@ export abstract class BaseMdsCollector<
     return dtoEntities;
   }
 
+  /**
+   * Wrapper around the resource fromDto static method.
+   *
+   * @param {D} dto Resource data transfer object
+   * @return {*}  Resource entity
+   * @memberof BaseMdsCollector
+   */
   // tslint:disable-next-line: no-any
-  public dtoToEntity<E extends BaseEntity, D>(dto: D): any {
+  public dtoToEntity<D>(dto: D): any {
     throw new Error(`${this.headingResourceName}: Method not implemented.`);
   }
 
@@ -57,7 +60,6 @@ export abstract class BaseMdsCollector<
     // If the difference is not greater than an hour, do not update the last checked date time so that date time can be checked
     // again for recent resource.
     if (dateDifferenceGreaterThan(new Date(), last, 1, 'hours')) {
-      // return PersistanceRecord.update(this.params.persistanceKey, { value: collectedDateTime });
       return Log.record({
         resource: this.params.resourceName,
         type: LogType.INFO,

@@ -22,6 +22,7 @@ export abstract class AbstractMdsCollector<S extends AbstractCollectorConstructo
     this.params = params;
     this.headingResourceName = `${(params.resourceName + 'S').toUpperCase()}`;
   }
+
   public abstract init(): void;
 
   public async resource<TR>(parameters?: T): Promise<MDSResponse<TR>> {
