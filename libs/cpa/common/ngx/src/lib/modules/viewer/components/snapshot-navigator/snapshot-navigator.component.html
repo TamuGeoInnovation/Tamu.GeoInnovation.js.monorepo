@@ -1,11 +1,18 @@
-<ng-container *ngFor="let snapshot of (snapshots | async); let i = index;">
-  <div class="snapshot" [ngClass]="{active: (index | async) === i}" (click)="navigate(i)">
-    <p>{{snapshot.title}}</p>
-    <ng-container *ngIf="snapshot.type === 'snapshot'; else scenarioBadge">
-      <span class="snapshot-badge">T</span>
-    </ng-container>
-    <ng-template #scenarioBadge>
-      <span class="scenario-badge">S</span>
-    </ng-template>
-  </div>
-</ng-container>
+<div class="navigator-rel-container" #innerContainer>
+  <ng-container *ngFor="let snapshot of (snapshots | async)">
+    <div class="snapshot" [ngClass]="{active: (selection | async)?.guid === snapshot.guid}" (click)="navigate(snapshot.guid)">
+      <p>{{snapshot.title}}</p>
+      <ng-container *ngIf="snapshot.type === 'snapshot'; else scenarioBadge">
+        <span class="snapshot-badge material-icons">circle</span>
+      </ng-container>
+      <ng-template #scenarioBadge>
+        <span class="scenario-badge material-icons">star</span>
+      </ng-template>
+    </div>
+  </ng-container>
+
+  <div class="timeline" [style.width.px]="timelineWidth | async" [style.left.px]="(timelineLeftOffset | async)"></div>
+</div>
+
+<div class="scroll-zone left" title="Scroll left" [ngClass]="{visible: scrollerVisibility.left | async}" (click)="scroll('left')"><span class="material-icons">chevron_left</span></div>
+<div class="scroll-zone right" title="Scroll right" [ngClass]="{visible: scrollerVisibility.right | async}" (click)="scroll('right')"><span class="material-icons">chevron_right</span></div>

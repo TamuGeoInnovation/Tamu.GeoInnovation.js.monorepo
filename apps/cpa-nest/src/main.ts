@@ -3,6 +3,7 @@
  * This is only a minimal backend to get started.
  **/
 
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
@@ -13,6 +14,7 @@ async function bootstrap() {
   const globalPrefix = environment.prefix;
   app.setGlobalPrefix(globalPrefix);
   app.enableCors();
+  app.useGlobalPipes(new ValidationPipe());
   const port = process.env.port ? process.env.port : environment.port;
   await app.listen(port, () => {
     console.log('Listening at http://localhost:' + port + '/' + globalPrefix);

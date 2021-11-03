@@ -11,10 +11,10 @@
   <p class="material-icons" title="Draw a Circle" *ngIf="circleTool" [ngClass]="{ active: model?.activeTool === 'circle' }" (click)="create('circle')">radio_button_unchecked</p>
 </div>
 
-<div class="tool-set version" *ngIf="colorTools">
-  <tamu-gisc-tooltip [position]="'bottom center'" [width]="'20rem'">
+<div class="tool-set color" *ngIf="colorTools">
+  <tamu-gisc-tooltip [width]="'20rem'" [positioningStrategy]="'fixed'">
     <tamu-gisc-tooltip-trigger>
-      <p class="selected-color" title="Fill" [ngStyle]="{background: selectedColor}"></p>
+      <p class="material-icons" title="Fill" [ngStyle]="{color: selectedColor}">format_color_fill</p>
     </tamu-gisc-tooltip-trigger>
 
     <div class="color-drawer">
@@ -26,4 +26,28 @@
 <div class="tool-set version" *ngIf="versionTools">
   <p class="material-icons" title="Undo" *ngIf="undoTool" [ngClass]="{ available: model?.canUndo() }" (click)="versionAction('undo')">undo</p>
   <p class="material-icons" title="Redo" *ngIf="redoTool" [ngClass]="{ available: model?.canRedo() }" (click)="versionAction('redo')">redo</p>
+</div>
+
+<div class="tool-set help" *ngIf="helpTools">
+  <div title="Help" *ngIf="redoTool" class="available">
+    <tamu-gisc-tooltip [positioningStrategy]="'fixed'" width="25rem" height="30rem">
+      <tamu-gisc-tooltip-trigger>
+        <p class="material-icons">help_outline</p>
+      </tamu-gisc-tooltip-trigger>
+
+      <div class="help-info">
+        <h3>Drawing tools help guide</h3>
+        <p *ngIf="transformTool"><i class="material-icons">open_with</i> <strong>Transform tool</strong>: When a graphic is selected, this tool allows the shape to be re-positioned, rotated, and warped by the handles around the bounding box. This is the default tool. A shape can be de-selected by clicking on an empty area on the map or by pressing the ESC keyboard key.</p>
+        <p *ngIf="reshapeTool"><span class="material-icons">format_shapes</span> <strong>Reshape tool</strong>: Enables editing (move and delete) of individual shape vertices. Vertices can be moved by dragging them around and deleted by selecting and using the DELETE keyboard key.</p>
+        <p *ngIf="pointTool"><span class="material-icons">room</span> <strong>Point tool</strong>: Creates a simple point marker/graphic.</p>
+        <p *ngIf="polylineTool"><span class="material-icons">timeline</span> <strong>Polyline tool</strong>: Creates a line made up of many points. Double click to complete line.</p>
+        <p *ngIf="polygonTool"><span class="material-icons">star_border</span> <strong>Polygon tool</strong>: Creates a completely enclosed freeform polygon. Double click to complete shape.</p>
+        <p *ngIf="rectangleTool"><span class="material-icons">check_box_outline_blank</span> <strong>Rectangle tool</strong>: Creates a rectangle/square. Hold CTRL keyboard key while drawing/resizing to lock aspect ratio.</p>
+        <p *ngIf="circleTool"><span class="material-icons">radio_button_unchecked</span> <strong>Circle tool</strong>: Creates a circle/oval. Hold CTRL keyboard key while drawing/resizing to lock aspect ratio.</p>
+        <p *ngIf="colorTools"><span class="material-icons">format_color_fill</span> <strong>Color tool</strong>: Sets the color for the selected shape or next drawn shape.</p>
+        <p *ngIf="undoTool"><span class="material-icons">undo</span> <strong>Undo tool</strong>: When available, undos the last drawing operation.</p>
+        <p *ngIf="redoTool"><span class="material-icons">redo</span> <strong>Redo tool</strong>: When available, redos the last undone drawing operation.</p>
+      </div>
+    </tamu-gisc-tooltip>
+  </div>
 </div>

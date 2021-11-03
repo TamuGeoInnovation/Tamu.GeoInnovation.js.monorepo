@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, EventEmitter } from '@angular/core';
+import { Component, HostListener, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-tooltip-trigger',

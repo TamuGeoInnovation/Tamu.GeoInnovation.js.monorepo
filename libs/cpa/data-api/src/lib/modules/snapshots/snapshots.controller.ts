@@ -1,7 +1,7 @@
 import { Controller, Patch, Param, Body, Delete, Get, Post } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
-import { Snapshot, CPALayer } from '@tamu-gisc/cpa/common/entities';
+import { Snapshot } from '@tamu-gisc/cpa/common/entities';
 
 import { BaseController } from '../base/base.controller';
 import { SnapshotsService } from './snapshots.service';
@@ -28,6 +28,11 @@ export class SnapshotsController extends BaseController<Snapshot> {
     return this.service.getContextsForWorkshop(params.guid);
   }
 
+  @Get('simplified')
+  public async getSimplifiedWithWorkshops() {
+    return this.service.getSimplifiedWithWorkshops();
+  }
+
   @Post('many')
   public async getManySnapshotsWhere(@Body() body) {
     const where = {
@@ -47,7 +52,7 @@ export class SnapshotsController extends BaseController<Snapshot> {
    * Updates an existing snapshot
    */
   @Patch(':guid')
-  public async update(@Param() params: ISnapshotsRequestPayload, @Body() body: ISnapshotsRequestPayload) {
+  public async update(@Param() params: ISnapshotPartial, @Body() body: ISnapshotPartial) {
     return await this.service.updateSnapshot(params, body);
   }
 
@@ -55,13 +60,9 @@ export class SnapshotsController extends BaseController<Snapshot> {
    * Deletes an existing snapshot
    */
   @Delete(':guid')
-  public async delete(@Param() params: ISnapshotsRequestPayload) {
+  public async delete(@Param() params: ISnapshotPartial) {
     return await this.service.deleteSnapshot(params);
   }
 }
 
-export interface ISnapshotsRequestPayload extends DeepPartial<Snapshot> {}
-
-export interface ISnapshotsResponse extends Omit<DeepPartial<Snapshot>, 'layers'> {
-  layers: Array<CPALayer>;
-}
+export interface ISnapshotPartial extends DeepPartial<Snapshot> {}

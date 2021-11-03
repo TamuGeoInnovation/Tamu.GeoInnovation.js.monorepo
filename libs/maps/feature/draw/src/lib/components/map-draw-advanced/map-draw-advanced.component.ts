@@ -19,6 +19,12 @@ export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnIni
   public colorTools = false;
 
   /**
+   * Defines whether or not the drawing help tools will be visible.
+   */
+  @Input()
+  public helpTools = false;
+
+  /**
    * Represents a list of pre-defined colors.
    */
   @Input()

@@ -1,5 +1,5 @@
 <div class="popup-section">
-  <div class="feature-style-1" tabindex="0">{{ data.layer.id }}</div>
+  <div class="feature-style-1" tabindex="0">{{ data?.layer?.id }}</div>
 </div>
 
 <div class="popup-section">
@@ -12,9 +12,9 @@
     </thead>
 
     <tbody>
-      <tr *ngFor="let prop of data.attributes | keyvalue">
-        <td>{{ prop.key }}</td>
-        <td>{{ prop.value }}</td>
+      <tr *ngFor="let prop of data?.attributes | keyvalue">
+        <td>{{ prop?.key }}</td>
+        <td>{{ prop?.value }}</td>
       </tr>
     </tbody>
   </table>

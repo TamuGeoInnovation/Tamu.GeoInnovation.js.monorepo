@@ -1,0 +1,15 @@
+<h2>Workshop Controls</h2>
+
+<h3>Participants</h3>
+
+<p>Register and manage workshop participants (individual or group) to enable sketch/drawing collection for workshop snapshots and scenarios. Each registered participant receives a unique id and link that can be shared with them to enable the map drawing feature on their device.</p>
+
+<p *ngIf="(workshopParticipants | async)?.length === 0; else participantsList"><em>There are no registered participants for this workshop.</em></p>
+
+<ng-template #participantsList>
+  <div id="participants-list" class="leader-1 trailer-1">
+    <tamu-gisc-participant-list-item *ngFor="let participant of (workshopParticipants | async); trackBy:participant?.guid" [participant]="participant" (nameUpdated)="updateParticipantName(participant, $event)" (deleted)="deleteParticipant($event)"></tamu-gisc-participant-list-item>
+  </div>
+</ng-template>
+
+<tamu-gisc-button [value]="'Add Participant'" (click)="addParticipant()"></tamu-gisc-button>

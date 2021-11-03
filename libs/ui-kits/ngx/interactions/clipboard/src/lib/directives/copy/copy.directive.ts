@@ -56,7 +56,9 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
    * On component destroy, release the clipboard evenT handlers.
    */
   public ngOnDestroy() {
-    this._clipboard.destroy();
+    if (this._clipboard) {
+      this._clipboard.destroy();
+    }
   }
 
   private _initializeHandler() {
@@ -67,12 +69,7 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
     })
       .on('success', (e) => {
         // On clipboard copy success, emit timer stream that can be used to display UI effects.
-        this.copying.emit(
-          timer(750).pipe(
-            mapTo(false),
-            startWith(true)
-          )
-        );
+        this.copying.emit(timer(750).pipe(mapTo(false), startWith(true)));
       })
       .on('error', (e) => {
         this.error.emit(true);

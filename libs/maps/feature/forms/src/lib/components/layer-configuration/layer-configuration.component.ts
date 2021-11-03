@@ -261,6 +261,7 @@ export class LayerConfiguration {
           layerId: '',
           type: '',
           description: '',
+          loadOnInit: '',
           drawingInfo: {
             opacity: ''
           }
@@ -301,6 +302,7 @@ export class LayerConfiguration {
           name: layer.title,
           layerId: layer.id,
           type: layer.type,
+          loadOnInit: layer.visible,
           drawingInfo: {
             opacity: layer.opacity
           }
@@ -360,6 +362,7 @@ export class LayerConfiguration {
       layerId: [guid().split('-').pop()],
       type: [''],
       description: [''],
+      loadOnInit: [true],
       drawingInfo: this.fb.group({
         opacity: [1]
       })
@@ -375,6 +378,8 @@ export interface ILayerConfiguration {
   type?: 'feature' | 'graphics' | 'group' | 'map-image';
 
   description?: string;
+
+  loadOnInit?: boolean;
 
   drawingInfo?: {
     opacity?: number;

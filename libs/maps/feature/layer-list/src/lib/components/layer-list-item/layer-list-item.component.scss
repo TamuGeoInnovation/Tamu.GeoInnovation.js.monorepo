@@ -49,6 +49,11 @@
         background: #bdbdbd;
       }
     }
+
+    tamu-gisc-tooltip,
+    tamu-gisc-tooltip-trigger {
+      color: initial;
+    }
   }
 
   &.error {
@@ -71,6 +76,22 @@
 
     .loader-container {
       margin-right: 0.27rem;
+    }
+  }
+
+  tamu-gisc-tooltip-trigger {
+    margin: 0 0.5rem;
+
+    .material-icons {
+      font-size: 1.25rem;
+    }
+  }
+
+  .layer-description-content {
+    padding: 0.75rem;
+
+    p {
+      white-space: pre-wrap;
     }
   }
 }

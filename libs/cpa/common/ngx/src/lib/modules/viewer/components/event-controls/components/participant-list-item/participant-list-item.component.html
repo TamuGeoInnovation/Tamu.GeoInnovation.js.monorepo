@@ -1,0 +1,21 @@
+<div class="participant-details">
+  <p id="participant-name" [attr.contentEditable]="editable | async" #participantName (blur)="makeUneditable()" (keydown.enter)="makeUneditable()" (dblclick)="makeEditable()">{{participant.name}}</p>
+
+  <div class="actions">
+    <div class="participant-action" title="Copy participant link to clipboard" clipboard-copy [text]="url"><span class="material-icons-outlined">link</span></div>
+    <div class="participant-action" title="Edit participant name" (click)="makeEditable()"><span class="material-icons-outlined">edit</span></div>
+    <div class="participant-action" title="Delete participant" (click)="promptConfirmation()"><span class="material-icons-outlined">delete</span></div>
+  </div>
+</div>
+
+<div class="confirmation-prompt attention" *ngIf="confirmationVisible | async">
+  <p>
+    Deleting this participant will also remove any associated submissions. This process is irreversible. Are you sure you want to remove <strong><em>{{participant.name}}</em></strong
+    >?
+  </p>
+
+  <div class="confirmation-actions">
+    <tamu-gisc-button value="Never mind" look="secondary" (click)="hideConfirmation()"></tamu-gisc-button>
+    <tamu-gisc-button value="Yes, I'm sure" look="danger" (click)="deleteParticipant()"></tamu-gisc-button>
+  </div>
+</div>

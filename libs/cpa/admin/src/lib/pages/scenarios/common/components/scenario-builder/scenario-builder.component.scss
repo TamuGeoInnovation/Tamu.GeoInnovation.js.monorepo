@@ -18,7 +18,10 @@ tamu-gisc-esri-map {
   box-sizing: border-box;
 }
 
-#response-list {
-  overflow: auto;
-  max-height: 13rem;
+#response-list,
+#snapshot-list,
+#scenario-list {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 35rem;
 }

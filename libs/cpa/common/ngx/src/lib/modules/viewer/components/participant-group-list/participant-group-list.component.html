@@ -1,0 +1,17 @@
+<ng-container *ngIf="(participants | async)?.length > 0">
+  <div class="floating-table">
+    <div class="floating-table-header">
+      <div class="floating-row">
+        <div class="column">Group</div>
+        <div class="column">Actions</div>
+      </div>
+    </div>
+
+    <div class="floating-table-body">
+      <div class="floating-row" *ngFor="let participant of participants | async">
+        <div class="colum">{{participant.name}}</div>
+        <div class="colum"><a [routerLink]="['/viewer']" [queryParams]="{participant: participant.guid}" [queryParamsHandling]="'merge'">Join</a></div>
+      </div>
+    </div>
+  </div>
+</ng-container>

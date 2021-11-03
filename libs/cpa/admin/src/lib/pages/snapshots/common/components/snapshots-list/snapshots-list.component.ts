@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 import { SnapshotService } from '@tamu-gisc/cpa/data-access';
-import { ISnapshotsResponse } from '@tamu-gisc/cpa/data-api';
+import { ISnapshotPartial } from '@tamu-gisc/cpa/data-api';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({
@@ -13,7 +13,8 @@ import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
   styleUrls: ['./snapshots-list.component.scss']
 })
 export class SnapshotsListComponent implements OnInit {
-  public snapshots: Observable<ISnapshotsResponse[]>;
+  public snapshots: Observable<ISnapshotPartial[]>;
+
   constructor(
     private service: SnapshotService,
     private router: Router,
@@ -22,7 +23,7 @@ export class SnapshotsListComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this.snapshots = this.service.getAll().pipe(shareReplay(1));
+    this.snapshots = this.service.getSimplifiedWithWorkshops().pipe(shareReplay(1));
   }
 
   public createCopy(donorGuid: string) {

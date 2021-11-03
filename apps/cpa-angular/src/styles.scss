@@ -42,7 +42,8 @@ p {
   padding-bottom: 0.75rem;
 }
 
-a {
+a,
+.linked-text {
   color: $active-color;
   text-decoration: none;
   font-weight: 600;
@@ -167,4 +168,9 @@ tamu-gisc-notification-item {
   .status {
     background: $active-color !important;
   }
+}
+
+.attention {
+  border-left: 3pt solid #f44336;
+  padding: 0.5rem 0 0.5rem 0.5rem;
 }

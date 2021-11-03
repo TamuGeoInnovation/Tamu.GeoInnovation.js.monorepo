@@ -1,0 +1,19 @@
+<h2>Coastal Community Planning Atlas Workshops</h2>
+
+<p>The following is a list of available workshops. When instructed to do so by a workshop facilitator</p>
+
+<div class="floating-table">
+  <div class="floating-table-header">
+    <div class="floating-row">
+      <div class="column">Name</div>
+      <div class="column">Actions</div>
+    </div>
+  </div>
+
+  <div class="floating-table-body">
+    <div class="floating-row" *ngFor="let workshop of workshops | async">
+      <div class="colum">{{workshop.title}}</div>
+      <div class="colum"><a [routerLink]="['/viewer']" [queryParams]="{workshop: workshop.guid}">Launch</a></div>
+    </div>
+  </div>
+</div>

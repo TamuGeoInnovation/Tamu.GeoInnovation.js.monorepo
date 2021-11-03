@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { from, Subject, combineLatest } from 'rxjs';
-import { takeUntil, filter, switchMap } from 'rxjs/operators';
+import { from, Subject, combineLatest, ReplaySubject } from 'rxjs';
+import { takeUntil, filter, switchMap, take } from 'rxjs/operators';
 
 import { EsriModuleProviderService, EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
@@ -79,7 +79,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
   public export: EventEmitter<esri.Graphic[] | esri.Graphic> = new EventEmitter();
 
   private _$destroy: Subject<boolean> = new Subject();
-  private _$loaded: Subject<boolean> = new Subject();
+  private _$loaded: ReplaySubject<boolean> = new ReplaySubject();
   private _activeToolWatchHandle: esri.WatchHandle;
 
   constructor(
@@ -95,14 +95,15 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
       combineLatest([from(this.moduleProvider.require(['SketchViewModel'])), this.mapService.store])
         .pipe(takeUntil(this._$destroy))
         .subscribe(([[SketchViewModel], mapInstance]: [[esri.SketchViewModelConstructor], MapServiceInstance]) => {
-          // Emit $loaded which functions as a scheduler on the layer list service to prevent
-          // the layer reference stream from emitting again, which would in turn force the
-          // combineLatest stream to emit and create additional view models.
-          this._$loaded.next();
-
           const l = mapInstance.map.findLayerById(this.reference);
 
-          this.model = new SketchViewModel({ view: mapInstance.view, layer: l, updateOnGraphicClick: !this.updateTools });
+          this.model = new SketchViewModel({
+            view: mapInstance.view,
+            layer: l,
+            defaultUpdateOptions: {
+              toggleToolOnClick: this.reshapeTool
+            }
+          });
 
           this.model.on('create', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) => {
             if (event.state === 'complete') {
@@ -138,6 +139,8 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
               this.activeUpdateTool = tool;
             }
           });
+
+          this._$loaded.next(true);
         });
 
       // If our update tools are disabled, default to the default model updating implementation.
@@ -288,11 +291,13 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
    * Emits a 'create' event.
    */
   public draw(graphics: esri.Graphic[]) {
-    this.model.layer.addMany(graphics);
-    this.model.emit('create', {
-      type: 'create',
-      state: 'complete',
-      graphics: this.model.layer.graphics
+    this._$loaded.pipe(take(1)).subscribe(() => {
+      this.model.layer.addMany(graphics);
+      this.model.emit('create', {
+        type: 'create',
+        state: 'complete',
+        graphics: this.model.layer.graphics
+      });
     });
   }
 
@@ -302,10 +307,12 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
    * Emits a 'delete' event.
    */
   public reset() {
-    this.model.layer.removeAll();
-    this.model.emit('delete', {
-      graphics: this.model.layer.graphics,
-      type: 'delete'
+    this._$loaded.pipe(take(1)).subscribe((res) => {
+      this.model.layer.removeAll();
+      this.model.emit('delete', {
+        graphics: this.model.layer.graphics,
+        type: 'delete'
+      });
     });
   }
 }

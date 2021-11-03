@@ -20,7 +20,7 @@
             <div class="column">{{workshop.title}}</div>
             <div class="column table-actions">
               <a [routerLink]="['./edit', workshop.guid]">Edit</a>
-              <a [routerLink]="['../../viewer/workshop', workshop.alias ? workshop.alias : workshop.guid]" target="_blank">Launch</a>
+              <a [routerLink]="['../../viewer']" [queryParams]="{workshop: workshop.alias ? workshop.alias : workshop.guid, controls: true}" target="_blank">Launch</a>
             </div>
           </div>
         </div>

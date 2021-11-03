@@ -1,4 +1,20 @@
-<tamu-gisc-drawer [width]="'25rem'" [position]="'left'">
+<tamu-gisc-drawer [width]="'28rem'" [position]="'left'">
+  <div class="drawer-menu">
+    <div class="drawer-menu__items">
+      <div class="drawer-menu__item" title="Home">
+        <a [routerLink]="['/viewer']" [queryParamsHandling]="'preserve'" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><span class="material-icons-outlined">home</span></a>
+      </div>
+      <div class="drawer-menu__item" title="Layers">
+        <a [routerLink]="['/viewer/layers']" [queryParamsHandling]="'preserve'" routerLinkActive="active"><span class="material-icons-outlined">layers</span></a>
+      </div>
+      <div class="drawer-menu__item" title="Legend">
+        <a [routerLink]="['/viewer/legend']" [queryParamsHandling]="'preserve'" routerLinkActive="active"><span class="material-icons-outlined">legend_toggle</span></a>
+      </div>
+      <div class="drawer-menu__item" title="Workshop Controls" *ngIf="showAdminControls | async">
+        <a [routerLink]="['/viewer/controls']" [queryParamsHandling]="'preserve'" routerLinkActive="active"><span class="material-icons-outlined">admin_panel_settings</span></a>
+      </div>
+    </div>
+  </div>
   <div class="content">
     <router-outlet></router-outlet>
   </div>
@@ -6,13 +22,4 @@
 
 <tamu-gisc-snapshot-navigator></tamu-gisc-snapshot-navigator>
 
-<tamu-gisc-sidebar width="22.5rem" position="right" visible="false">
-  <div class="tabs left">
-    <tamu-gisc-sidebar-tab [title]="'Features'" [description]="'Toggle Features (Search, Layers, Legend)'" [material_icon]="'menu'"></tamu-gisc-sidebar-tab>
-  </div>
-
-  <div class="content">
-    <tamu-gisc-layer-list></tamu-gisc-layer-list>
-    <tamu-gisc-legend></tamu-gisc-legend>
-  </div>
-</tamu-gisc-sidebar>
+<tamu-gisc-feature-popup></tamu-gisc-feature-popup>

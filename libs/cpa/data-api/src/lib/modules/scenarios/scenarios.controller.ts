@@ -50,7 +50,7 @@ export class ScenariosController extends BaseController<Scenario> {
    * Updates an existing scenario
    */
   @Patch(':guid')
-  public async update(@Param() params: Scenario, @Body() body: IScenariosResponse) {
+  public async update(@Param() params: Scenario, @Body() body: IScenarioPartial) {
     const result = await this.service.updateScenario(params.guid, body);
 
     return result;
@@ -65,14 +65,22 @@ export class ScenariosController extends BaseController<Scenario> {
   }
 }
 
-export interface IScenariosResponse extends Omit<DeepPartial<Scenario>, 'layers'> {
+/**
+ * A scenario where layers are instead an array of string guid's, each representing
+ * a layer reference.
+ */
+export interface IScenarioSimplified extends Omit<DeepPartial<Scenario>, 'layers'> {
   layers: string[];
 }
 
-export interface IScenariosResponseDetails extends Omit<DeepPartial<Scenario>, 'layers'> {
-  layers: Array<{ guid: string; type: 'snapshot' | 'response' | 'scenario' }>;
-}
+/**
+ * A scenario with every property as optional.
+ */
+export interface IScenarioPartial extends DeepPartial<Scenario> {}
 
-export interface IScenariosResponseResolved extends Omit<DeepPartial<Scenario>, 'layers'> {
-  layers: Array<CPALayer>;
+/**
+ * A scenario where layers from references have been resolved.
+ */
+export interface IScenarioResolved extends Omit<DeepPartial<Scenario>, 'layers'> {
+  layers?: DeepPartial<CPALayer>[];
 }

@@ -10,19 +10,14 @@
       <div class="floating-table">
         <div class="floating-table-header">
           <div class="floating-row">
+            <div class="column">Workshop</div>
             <div class="column">Name</div>
             <div class="column"></div>
           </div>
         </div>
 
         <div class="floating-table-body">
-          <div class="floating-row" *ngFor="let snapshot of snapshots | async">
-            <div class="column">{{snapshot.title}}</div>
-            <div class="column table-actions">
-              <a [routerLink]="['./edit', snapshot.guid]">Edit</a>
-              <a (click)="createCopy(snapshot.guid)">Copy</a>
-            </div>
-          </div>
+          <tamu-gisc-snapshot-list-item *ngFor="let snapshot of snapshots | async" [snapshot]="snapshot"></tamu-gisc-snapshot-list-item>
         </div>
       </div>
     </div>

@@ -58,11 +58,19 @@ export class WorkshopsService extends BaseService<Workshop> {
   }
 
   public async setSnapshots(body: IWorkshopSnapshotsPayload) {
-    if (!body.snapshotGuids || body.snapshotGuids.length === 0) {
+    if (!body.snapshotGuids) {
       // No-op but still need to return something
       return await this.getWorkshop(body.workshopGuid, true, false, false, false);
     }
+
     const workshop = await this.getWorkshop(body.workshopGuid, true, false, false, true);
+
+    // If snapshots array is remove all snapshot relationships to the workshop.
+    if (body.snapshotGuids.length === 0) {
+      workshop.snapshots = [];
+
+      return workshop.save();
+    }
 
     if (workshop) {
       const snapshots = await getRepository(Snapshot).find({ guid: In(body.snapshotGuids) });
