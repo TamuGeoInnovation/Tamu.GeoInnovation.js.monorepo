@@ -4,7 +4,7 @@ export const environment = {
   production: true
 };
 
-export const api_url = 'http://localhost:1337';
+export const api_url = 'https://dev.kissingbug.geoservices.tamu.edu/api';
 
 export const email_server_url = 'http://localhost:4005';
 
