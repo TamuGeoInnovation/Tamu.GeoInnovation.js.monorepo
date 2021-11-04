@@ -1,0 +1,13 @@
+{
+  "name": "veoride-scraper-node-deploy",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "luxon": "^2.0.2",
+    "got": "^11.3.0",
+    "mssql": "^6.0.1",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.20"
+  }
+}

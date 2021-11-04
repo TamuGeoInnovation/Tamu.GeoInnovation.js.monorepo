@@ -5473,6 +5473,321 @@
           }
         }
       }
+    },
+    "veoride-common-entities": {
+      "root": "libs/veoride/common/entities",
+      "sourceRoot": "libs/veoride/common/entities/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/veoride/common/entities/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/veoride/common/entities"],
+          "options": {
+            "jestConfig": "libs/veoride/common/entities/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "veoride-scraper": {
+      "root": "libs/veoride/scraper",
+      "sourceRoot": "libs/veoride/scraper/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/veoride/scraper/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/veoride/scraper"],
+          "options": {
+            "jestConfig": "libs/veoride/scraper/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "veoride-data-api-nest": {
+      "root": "apps/veoride-data-api-nest",
+      "sourceRoot": "apps/veoride-data-api-nest/src",
+      "projectType": "application",
+      "prefix": "veoride-data-api-nest",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/veoride-data-api-nest",
+            "main": "apps/veoride-data-api-nest/src/main.ts",
+            "tsConfig": "apps/veoride-data-api-nest/tsconfig.app.json",
+            "assets": [
+              "apps/veoride-data-api-nest/src/assets",
+              "apps/veoride-data-api-nest/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
+          },
+          "configurations": {
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/veoride-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/veoride-data-api-nest/src/environments/environment.dev.ts"
+                }
+              ]
+            },
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/veoride-data-api-nest/src/environments/environment.ts",
+                  "with": "apps/veoride-data-api-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "veoride-data-api-nest:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/veoride-data-api-nest/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/veoride-data-api-nest"],
+          "options": {
+            "jestConfig": "apps/veoride-data-api-nest/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "veoride-data-api": {
+      "root": "libs/veoride/data-api",
+      "sourceRoot": "libs/veoride/data-api/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/veoride/data-api/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/veoride/data-api"],
+          "options": {
+            "jestConfig": "libs/veoride/data-api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "common-nest-guards": {
+      "root": "libs/common/nest/guards",
+      "sourceRoot": "libs/common/nest/guards/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/common/nest/guards/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/common/nest/guards"],
+          "options": {
+            "jestConfig": "libs/common/nest/guards/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "veoride-scraper-node": {
+      "root": "apps/veoride-scraper-node",
+      "sourceRoot": "apps/veoride-scraper-node/src",
+      "projectType": "application",
+      "prefix": "veoride-scraper-node",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/veoride-scraper-node",
+            "main": "apps/veoride-scraper-node/src/main.ts",
+            "tsConfig": "apps/veoride-scraper-node/tsconfig.app.json",
+            "assets": [
+              "apps/veoride-scraper-node/src/assets",
+              "apps/veoride-scraper-node/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
+          },
+          "configurations": {
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/veoride-scraper-node/src/environments/environment.ts",
+                  "with": "apps/veoride-scraper-node/src/environments/environment.dev.ts"
+                }
+              ]
+            },
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/veoride-scraper-node/src/environments/environment.ts",
+                  "with": "apps/veoride-scraper-node/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "veoride-scraper-node:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/veoride-scraper-node/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/veoride-scraper-node"],
+          "options": {
+            "jestConfig": "apps/veoride-scraper-node/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "veoride-data-compiler-node": {
+      "root": "apps/veoride-data-compiler-node",
+      "sourceRoot": "apps/veoride-data-compiler-node/src",
+      "projectType": "application",
+      "prefix": "veoride-data-compiler-node",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/veoride-data-compiler-node",
+            "main": "apps/veoride-data-compiler-node/src/main.ts",
+            "tsConfig": "apps/veoride-data-compiler-node/tsconfig.app.json",
+            "assets": [
+              "apps/veoride-data-compiler-node/src/assets",
+              "apps/veoride-data-compiler-node/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
+          },
+          "configurations": {
+            "development": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/veoride-data-compiler-node/src/environments/environment.ts",
+                  "with": "apps/veoride-data-compiler-node/src/environments/environment.dev.ts"
+                }
+              ]
+            },
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/veoride-data-compiler-node/src/environments/environment.ts",
+                  "with": "apps/veoride-data-compiler-node/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "veoride-data-compiler-node:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/veoride-data-compiler-node/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/veoride-data-compiler-node"],
+          "options": {
+            "jestConfig": "apps/veoride-data-compiler-node/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "veoride-data-compiler": {
+      "root": "libs/veoride/data-compiler",
+      "sourceRoot": "libs/veoride/data-compiler/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/veoride/data-compiler/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/veoride/data-compiler"],
+          "options": {
+            "jestConfig": "libs/veoride/data-compiler/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

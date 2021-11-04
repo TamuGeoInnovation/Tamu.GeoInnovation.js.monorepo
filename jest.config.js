@@ -123,6 +123,14 @@ module.exports = {
     '<rootDir>/libs/ues/common/types',
     '<rootDir>/libs/ues/cold-water/data-api',
     '<rootDir>/libs/ues/common/nest',
-    '<rootDir>/libs/maps/feature/data'
+    '<rootDir>/libs/maps/feature/data',
+    '<rootDir>/apps/veoride-scraper-node',
+    '<rootDir>/libs/veoride/common/entities',
+    '<rootDir>/libs/veoride/scraper',
+    '<rootDir>/apps/veoride-data-api-nest',
+    '<rootDir>/libs/veoride/data-api',
+    '<rootDir>/libs/common/nest/guards',
+    '<rootDir>/apps/veoride-data-compiler-node',
+    '<rootDir>/libs/veoride/data-compiler'
   ]
 };

@@ -472,6 +472,30 @@
     },
     "maps-feature-data": {
       "tags": []
+    },
+    "veoride-common-entities": {
+      "tags": []
+    },
+    "veoride-scraper": {
+      "tags": []
+    },
+    "veoride-data-api-nest": {
+      "tags": []
+    },
+    "veoride-data-api": {
+      "tags": []
+    },
+    "common-nest-guards": {
+      "tags": []
+    },
+    "veoride-scraper-node": {
+      "tags": []
+    },
+    "veoride-data-compiler-node": {
+      "tags": []
+    },
+    "veoride-data-compiler": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {
