@@ -117,7 +117,8 @@
       "@tamu-gisc/veoride/scraper": ["libs/veoride/scraper/src/index.ts"],
       "@tamu-gisc/veoride/data-api": ["libs/veoride/data-api/src/index.ts"],
       "@tamu-gisc/common/nest/guards": ["libs/common/nest/guards/src/index.ts"],
-      "@tamu-gisc/veoride/data-compiler": ["libs/veoride/data-compiler/src/index.ts"]
+      "@tamu-gisc/veoride/data-compiler": ["libs/veoride/data-compiler/src/index.ts"],
+      "@tamu-gisc/gisday/competitions": ["libs/gisday/competitions/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

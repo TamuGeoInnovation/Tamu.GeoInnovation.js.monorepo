@@ -496,6 +496,12 @@
     },
     "veoride-data-compiler": {
       "tags": []
+    },
+    "gisday-competitions-nest": {
+      "tags": []
+    },
+    "gisday-competitions": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

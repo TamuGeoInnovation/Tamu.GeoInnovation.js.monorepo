@@ -5788,6 +5788,78 @@
           }
         }
       }
+    },
+    "gisday-competitions-nest": {
+      "root": "apps/gisday-competitions-nest",
+      "sourceRoot": "apps/gisday-competitions-nest/src",
+      "projectType": "application",
+      "prefix": "gisday-competitions-nest",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/gisday-competitions-nest",
+            "main": "apps/gisday-competitions-nest/src/main.ts",
+            "tsConfig": "apps/gisday-competitions-nest/tsconfig.app.json",
+            "assets": ["apps/gisday-competitions-nest/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/gisday-competitions-nest/src/environments/environment.ts",
+                  "with": "apps/gisday-competitions-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "gisday-competitions-nest:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/gisday-competitions-nest/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/gisday-competitions-nest"],
+          "options": {
+            "jestConfig": "apps/gisday-competitions-nest/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-competitions": {
+      "root": "libs/gisday/competitions",
+      "sourceRoot": "libs/gisday/competitions/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/gisday/competitions/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/competitions"],
+          "options": {
+            "jestConfig": "libs/gisday/competitions/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

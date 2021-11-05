@@ -131,6 +131,8 @@ module.exports = {
     '<rootDir>/libs/veoride/data-api',
     '<rootDir>/libs/common/nest/guards',
     '<rootDir>/apps/veoride-data-compiler-node',
-    '<rootDir>/libs/veoride/data-compiler'
+    '<rootDir>/libs/veoride/data-compiler',
+    '<rootDir>/apps/gisday-competitions-nest',
+    '<rootDir>/libs/gisday/competitions'
   ]
 };
