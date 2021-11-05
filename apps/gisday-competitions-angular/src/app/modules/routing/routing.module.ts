@@ -81,7 +81,7 @@ WebFont.load({
     CommonNgxRouterModule,
     SettingsModule
   ],
-  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }, AuthService],
+  providers: [AuthService],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

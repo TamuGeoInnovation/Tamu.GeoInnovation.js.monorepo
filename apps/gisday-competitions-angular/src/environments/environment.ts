@@ -6,7 +6,7 @@ export const environment = {
   production: false
 };
 
-import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
+import { LayerSource } from '@tamu-gisc/common/types';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/search';
 
 import { Connections, Definitions as d, Protocol, HostName } from './definitions';
@@ -14,11 +14,11 @@ import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
 export * from './definitions';
 
-export const LeaderboardUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Rest/Leaderboard/Get`;
-export const SubmissionsUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Rest/Signage/Get/Submissions/?&geoJSON=true`;
-export const SubmissionsPostUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Rest/Signage/Push/Submissions/`;
+export const LeaderboardUrl = `${Protocol}/${HostName}/wap.gisday.tamu.edu/Rest/Leaderboard/Get`;
+export const SubmissionsUrl = `${Protocol}/${HostName}/wap.gisday.tamu.edu/Rest/Signage/Get/Submissions/?&geoJSON=true`;
+export const SubmissionsPostUrl = `${Protocol}/${HostName}/wap.gisday.tamu.edu/Rest/Signage/Push/Submissions/`;
 
-export const AuthLoginUrl = `${Protocol}/${HostName}/gisday.tamu.edu/Login?ret=${Protocol}/${HostName}/gisday.tamu.edu/Login`;
+export const AuthLoginUrl = `${Protocol}/${HostName}/wap.gisday.tamu.edu/Login?ret=${Protocol}/${HostName}/wap.gisday.tamu.edu/Login`;
 
 export const LocalStoreSettings = {
   subKey: 'gisday-app'
