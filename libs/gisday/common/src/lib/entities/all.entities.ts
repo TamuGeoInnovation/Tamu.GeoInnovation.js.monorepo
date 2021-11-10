@@ -94,7 +94,10 @@ export class SubmissionMedia extends GISDayCompetitionBaseEntity {
   public blob: File;
 
   @Column({ type: 'nvarchar', length: 32, nullable: true })
-  public mimeType: string;
+  public mimeType?: string;
+
+  @Column({ type: 'nvarchar', nullable: true })
+  public fieldName?: string;
 }
 
 export interface ICompetitionSubmission {
@@ -105,7 +108,8 @@ export interface ICompetitionSubmission {
 export interface ISubmissionMedia {
   submission?: CompetitionSubmission;
   blob: File;
-  mimeType: string;
+  mimeType?: string;
+  fieldName?: string;
 }
 export interface ICompetitionSubmissionLocation {
   latitude: number;

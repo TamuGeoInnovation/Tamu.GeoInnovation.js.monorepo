@@ -25,7 +25,8 @@ export class SubmissionController extends BaseController<CompetitionSubmission> 
       const entityFiles = files.map((file) => {
         const _file: DeepPartial<SubmissionMedia> = {
           blob: Buffer.from(file.buffer),
-          mimeType: file.mimetype
+          mimeType: file.mimetype,
+          fieldName: file.fieldname
         };
 
         return _file;
