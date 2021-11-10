@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { pluck, shareReplay } from 'rxjs/operators';
 
-import { LeaderboardService, ILeaderboardItem } from '../providers/leaderboard.service';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { pluck, shareReplay } from 'rxjs/operators';
+
+import { LeaderboardService, ILeaderboardItem } from '../providers/leaderboard.service';
 
 @Component({
   selector: 'tamu-gisc-leaderboard',
@@ -23,9 +24,8 @@ export class LeaderboardComponent implements OnInit {
 
   public ngOnInit() {
     this.leaders$ = this.leaderboardService.getScores();
-    this.me$ = this.settings.getSimpleSettingsBranch(this.environment.value('LocalStoreSettings').subKey).pipe(
-      pluck<object, string>('guid'),
-      shareReplay(1)
-    );
+    this.me$ = this.settings
+      .getSimpleSettingsBranch(this.environment.value('LocalStoreSettings').subKey)
+      .pipe(pluck<object, string>('guid'), shareReplay(1));
   }
 }

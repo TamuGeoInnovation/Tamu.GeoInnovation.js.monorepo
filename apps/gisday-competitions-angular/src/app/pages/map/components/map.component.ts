@@ -23,43 +23,7 @@ export class MapComponent implements OnInit {
             esri.PointConstructor,
             esri.TrackConstructor,
             esri.CompassConstructor
-          ]) => {
-            // })
-            // var simpleMarkerSymbol = {
-            //   type: "simple-marker",
-            //   color: [226, 119, 40],  // orange
-            //   outline: {
-            //     color: [255, 255, 255], // white
-            //     width: 1
-            //   }
-            // };
-            // points.map((val, i) => {
-            //   var point = new Point({
-            //     latitude: val.latitude,
-            //     longitude: val.longitude,
-            //   });
-            //   var graphic = new Graphic({
-            //     geometry: point,
-            //     symbol: simpleMarkerSymbol,
-            //   })
-            //   this._view.graphics.add(graphic);
-            // });
-            // const track: esri.Track = new Track({
-            //   view: this._view,
-            //   useHeadingEnabled: true,
-            //   goToLocationEnabled: false
-            // });
-            // const compass = new Compass({
-            //   view: this._view
-            // });
-            // this._view.ui.add(track, 'bottom-right');
-            // if (this.isMobile) {
-            //   this._view.ui.add(track, 'bottom-right');
-            // } else {
-            //   this._view.ui.add(track, 'top-left');
-            //   this._view.ui.add(compass, 'top-left');
-            // }
-          }
+          ]) => {}
         )
         .catch((err) => {
           console.error(err);

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/submission', pathMatch: 'full' },
   {
     path: 'map',
-    loadChildren: () => import('../map/map.module').then((m) => m.MapModule),
+    loadChildren: () => import('../../pages/map/map.module').then((m) => m.MapModule),
     canActivate: [DeviceGuard, AuthGuard],
     data: {
       deviceModes: ['standalone'],
@@ -27,7 +27,7 @@ const routes: Routes = [
   },
   {
     path: 'submission',
-    loadChildren: () => import('../submission/submission.module').then((m) => m.SubmissionModule),
+    loadChildren: () => import('../../pages/submission/submission.module').then((m) => m.SubmissionModule),
     canActivate: [DeviceGuard, AuthGuard],
     data: {
       deviceModes: ['standalone'],
@@ -36,7 +36,7 @@ const routes: Routes = [
   },
   {
     path: 'leaderboard',
-    loadChildren: () => import('../leaderboard/leaderboard.module').then((m) => m.LeaderboardModule),
+    loadChildren: () => import('../../pages/leaderboard/leaderboard.module').then((m) => m.LeaderboardModule),
     canActivate: [DeviceGuard, AuthGuard],
     data: {
       deviceModes: ['standalone'],
@@ -45,7 +45,7 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () => import('../login/login.module').then((m) => m.LoginModule),
+    loadChildren: () => import('../../pages/login/login.module').then((m) => m.LoginModule),
     canActivate: [DeviceGuard],
     data: {
       deviceModes: ['standalone'],
@@ -54,7 +54,7 @@ const routes: Routes = [
   },
   {
     path: 'install',
-    loadChildren: () => import('../install/install.module').then((m) => m.InstallModule),
+    loadChildren: () => import('../../pages/install/install.module').then((m) => m.InstallModule),
     canActivate: [DeviceGuard],
     data: {
       deviceModes: ['standalone'],

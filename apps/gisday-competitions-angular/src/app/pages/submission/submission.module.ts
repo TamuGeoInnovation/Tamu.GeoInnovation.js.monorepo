@@ -5,8 +5,7 @@ import { CommonModule } from '@angular/common';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 
-import { SubmissionService } from './providers/submission.service';
-
+import { SubmissionService } from './services/submission.service';
 import { SubmissionComponent } from './components/submission.component';
 import { SubmissionCompleteComponent } from './components/complete/complete.component';
 

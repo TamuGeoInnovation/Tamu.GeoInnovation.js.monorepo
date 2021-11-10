@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { combineLatest, Observable, BehaviorSubject, of, throwError, EMPTY, timer, Subject } from 'rxjs';
-import { switchMap, shareReplay, debounceTime, take, catchError, mergeMap, takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable, BehaviorSubject, of, throwError, EMPTY, Subject } from 'rxjs';
+import { switchMap, shareReplay, debounceTime, take, catchError, takeUntil } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 
-import { SubmissionService } from '../providers/submission.service';
+import { SubmissionService } from '../services/submission.service';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { HttpEventType } from '@angular/common/http';
