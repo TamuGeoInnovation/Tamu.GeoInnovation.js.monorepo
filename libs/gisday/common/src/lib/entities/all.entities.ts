@@ -1,7 +1,6 @@
 import {
   Entity,
   BaseEntity,
-  PrimaryGeneratedColumn,
   PrimaryColumn,
   UpdateDateColumn,
   CreateDateColumn,
@@ -21,9 +20,6 @@ import { v4 as guid } from 'uuid';
 
 @Entity()
 export class GISDayCompetitionBaseEntity extends BaseEntity {
-  @PrimaryGeneratedColumn('increment')
-  public id: number;
-
   @PrimaryColumn()
   public guid: string;
 
@@ -66,9 +62,6 @@ export class SubmissionLocation extends GISDayCompetitionBaseEntity implements I
 
   @Column({ type: 'decimal', precision: 2, nullable: true })
   public speed?: number;
-
-  @Column({ nullable: true })
-  public timestamp?: Date;
 }
 
 @Entity({
@@ -82,7 +75,7 @@ export class CompetitionSubmission extends GISDayCompetitionBaseEntity {
   @Column({ type: 'simple-json', nullable: false })
   public value: string;
 
-  @OneToOne(() => SubmissionLocation)
+  @OneToOne(() => SubmissionLocation, { cascade: true })
   @JoinColumn()
   public location: SubmissionLocation;
 

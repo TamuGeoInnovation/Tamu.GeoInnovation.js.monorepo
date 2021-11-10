@@ -1,12 +1,21 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { CompetitionSubmission } from '@tamu-gisc/gisday/common';
 
+import { BaseController } from '../_base/base.controller';
+import { SubmissionService } from './submission.service';
 @Controller('submission')
-export class SubmissionController {
-  constructor() {}
+export class SubmissionController extends BaseController<CompetitionSubmission> {
+  constructor(private service: SubmissionService) {
+    super(service);
+  }
 
-  @Get()
-  public getServiceDetails() {
-    console.log('getServiceDetails');
-    return;
+  @Post()
+  public insert(@Body() body) {
+    const sub = {
+      value: JSON.stringify(body),
+      userGuid: body.userGuid,
+      location: body.location
+    };
+    return this.service.createOne(sub);
   }
 }
