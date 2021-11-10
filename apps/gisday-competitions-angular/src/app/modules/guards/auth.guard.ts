@@ -13,7 +13,7 @@ import {
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { AuthService } from '../../auth/services/auth.service';
+import { AuthService } from '../auth/services/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {

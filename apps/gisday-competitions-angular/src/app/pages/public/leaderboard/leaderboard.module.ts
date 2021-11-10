@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { LeaderboardComponent } from './components/leaderboard.component';
-import { LeaderboardService } from './providers/leaderboard.service';
+import { LeaderboardService } from './services/leaderboard.service';
 
 const routes: Routes = [
   {

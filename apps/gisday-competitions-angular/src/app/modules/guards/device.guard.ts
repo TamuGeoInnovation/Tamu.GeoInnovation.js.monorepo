@@ -64,7 +64,7 @@ export class DeviceGuard implements CanActivate, CanActivateChild {
 
       // For every mode provided, execute its tests
       const passAllTests: boolean = options.deviceModes.every((mode) => {
-        return this.deviceTests[mode].some(function(fn) {
+        return this.deviceTests[mode].some(function (fn) {
           return fn();
         });
       });
