@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 
 import { CompetitionSubmission, SubmissionLocation, SubmissionMedia } from '@tamu-gisc/gisday/common';
 
@@ -15,5 +15,23 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     @InjectRepository(SubmissionMedia) private mediaRepo: Repository<SubmissionMedia>
   ) {
     super(submissionRepo);
+  }
+
+  public async createCompetitionSubmission(
+    entity: DeepPartial<CompetitionSubmission>,
+    blobs: Array<DeepPartial<SubmissionMedia>>
+  ) {
+    const sub = await this.submissionRepo.create(entity).save();
+
+    blobs.forEach((blob) => {
+      blob.submission = sub;
+      this.mediaRepo.create(blob).save();
+    });
+
+    return sub;
+  }
+
+  public createSubmissionMedia(entity: DeepPartial<SubmissionMedia>) {
+    return this.mediaRepo.create(entity);
   }
 }

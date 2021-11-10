@@ -90,8 +90,8 @@ export class SubmissionMedia extends GISDayCompetitionBaseEntity {
   @ManyToOne(() => CompetitionSubmission, (s) => s.blobs)
   public submission: CompetitionSubmission;
 
-  @Column({ type: 'varbinary', nullable: false })
-  public blob: File; //Express.Multer.File
+  @Column({ type: 'image', nullable: false })
+  public blob: File;
 
   @Column({ type: 'nvarchar', length: 32, nullable: true })
   public mimeType: string;
@@ -104,7 +104,7 @@ export interface ICompetitionSubmission {
 
 export interface ISubmissionMedia {
   submission?: CompetitionSubmission;
-  blob: File; // Express.Multer.File
+  blob: File;
   mimeType: string;
 }
 export interface ICompetitionSubmissionLocation {
