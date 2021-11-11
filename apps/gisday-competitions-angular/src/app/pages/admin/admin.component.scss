@@ -1,0 +1,9 @@
+@import 'libs/sass/mixins';
+
+.container {
+  #designer,
+  #preview {
+    @include flex(1);
+    padding: 0.5rem;
+  }
+}

@@ -11,6 +11,7 @@
 //  ==========================================================================
 
 @import 'libs/sass/1140';
+@import 'libs/sass/spacing';
 
 html {
   height: 100%;
@@ -130,3 +131,16 @@ router-outlet {
     @include transition(width 0.3s);
   }
 }
+
+// The following styles are for the competitions form designer
+.container,
+.row {
+  @include flexbox();
+  @include flex-direction(row);
+}
+
+.row {
+  margin-top: 1.75rem;
+}
+
+//////////////////////////////////////////////////////////////////

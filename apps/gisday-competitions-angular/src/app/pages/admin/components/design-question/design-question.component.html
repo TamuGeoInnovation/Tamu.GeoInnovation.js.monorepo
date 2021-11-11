@@ -1,0 +1,72 @@
+<tamu-gisc-accordion>
+  <tamu-gisc-accordion-header>
+    <p>{{control.get('title').value}}</p>
+  </tamu-gisc-accordion-header>
+
+  <tamu-gisc-accordion-content>
+    <form [formGroup]="control">
+      <div class="question-control">
+        <p class="question-control-header">Attribute</p>
+        <p>This question and participant submission are associated to the following listed attribute from the provided service endpoint.</p>
+        <p><em>{{control.get('attribute').value}}</em></p>
+      </div>
+
+      <div class="question-control">
+        <p class="question-control-header">Question title</p>
+        <p>A short and descriptive question title for that the user is presented with.</p>
+
+        <tamu-gisc-textbox formControlName="title"></tamu-gisc-textbox>
+      </div>
+
+      <div class="question-control">
+        <p class="question-control-header">Question instructions</p>
+        <p>Any contextual information that may be helpful for a participant to know in order to answer the question accurately.</p>
+
+        <tamu-gisc-textbox type="textarea" formControlName="instructions"></tamu-gisc-textbox>
+      </div>
+
+      <div class="question-control">
+        <p class="question-control-header">Question Availability</p>
+        <p>Describes if the question should be visible on the participant form submission. Enable this value to require the participant to answer this question to submit the form.</p>
+
+        <tamu-gisc-radio-group formControlName="enabled" [options]="availabilityOptions" displayPath="label" valuePath="value"></tamu-gisc-radio-group>
+      </div>
+
+      <div class="question-control">
+        <p class="question-control-header">Question Input Type</p>
+        <p>The type of input the participant is presented with. For attributes with domain coded values, the recommended type is <strong>"Dropdown"</strong>.</p>
+
+        <tamu-gisc-select formControlName="type" [data]="inputTypes" [valueTemplate]="'type'" [displayTemplate]="'name'" [placeholder]="'Select question type'"> </tamu-gisc-select>
+      </div>
+
+      <div class="question-control" *ngIf="control.get('type').value === 'select'">
+        <p class="question-control-header">Dropdown Options</p>
+
+        <div [ngSwitch]="control.get('options').value.length > 0">
+          <div *ngSwitchCase="true">
+            <p>The following are the options displayed for the user in the "dropdown" list. Add or remove as necessary.</p>
+
+            <div class="floating-table">
+              <div class="floating-table-header">
+                <div class="floating-row">
+                  <div class="column">Label</div>
+                  <div class="column">Value</div>
+                </div>
+              </div>
+
+              <div class="floating-table-body">
+                <div class="floating-row" *ngFor="let opt of control.get('options').value">
+                  <div>{{opt.name}}</div>
+                  <div>{{opt.value}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngSwitchDefault>
+            <p>There are no options for this question.</p>
+          </div>
+        </div>
+      </div>
+    </form>
+  </tamu-gisc-accordion-content>
+</tamu-gisc-accordion>

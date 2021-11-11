@@ -59,7 +59,8 @@ const routes: Routes = [
           devicePassRedirect: '/',
           deviceIgnoreFailRedirect: true
         }
-      }
+      },
+      { path: '**', redirectTo: '/submission' }
     ]
   }
 ];

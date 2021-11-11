@@ -1,0 +1,26 @@
+@import 'libs/sass/mixins';
+@import 'libs/gisday/sass/variables';
+@import 'libs/sass/modules/tables';
+
+:host {
+  display: block;
+  margin: 1rem 0;
+}
+
+::ng-deep {
+  .content-container {
+    border: 2pt solid #f5f5f5;
+    border-top: none;
+  }
+}
+
+.question-control {
+  margin-bottom: 1.5rem;
+
+  .question-control-header {
+    border-bottom: 1pt solid #eee;
+    padding-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    font-weight: 600;
+  }
+}

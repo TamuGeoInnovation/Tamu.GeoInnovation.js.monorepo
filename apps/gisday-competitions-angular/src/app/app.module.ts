@@ -28,6 +28,10 @@ WebFont.load({
 
 const routes: Routes = [
   {
+    path: 'designer',
+    loadChildren: () => import('./pages/admin/admin.module').then((m) => m.AdminModule)
+  },
+  {
     path: '',
     loadChildren: () => import('./pages/public/public.module').then((m) => m.PublicModule)
   }
