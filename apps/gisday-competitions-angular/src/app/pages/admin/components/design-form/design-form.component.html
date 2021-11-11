@@ -9,9 +9,9 @@
 <div *ngIf="(urlFields | async) !== null && formModel !== undefined">
   <h2>Questions</h2>
 
-  <form [formGroup]="formModel">
+  <form [formGroup]="formModel" (submit)="saveForm()">
     <tamu-gisc-design-question *ngFor="let c of formModel.controls" [control]="c"></tamu-gisc-design-question>
 
-    <tamu-gisc-button type="Save" [value]="'Save'"></tamu-gisc-button>
+    <tamu-gisc-button type="submit" [value]="'Save'"></tamu-gisc-button>
   </form>
 </div>

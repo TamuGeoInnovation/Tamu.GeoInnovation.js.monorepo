@@ -64,6 +64,13 @@ export class DesignFormComponent implements OnInit {
         this.formModel = res;
       });
   }
+
+  public saveForm() {
+    const sourceForm = this.loadSchemaForm.getRawValue();
+    const fieldsForm = this.formModel.getRawValue();
+
+    console.log({ source: sourceForm.source, model: [...fieldsForm] });
+  }
 }
 
 interface IEsriRestLayerSchema {
