@@ -16,7 +16,7 @@ export class SubmissionController extends BaseController<CompetitionSubmission> 
   @UseInterceptors(AnyFilesInterceptor())
   public insert(@Body() body, @UploadedFiles() files?: Array<Express.Multer.File>) {
     const sub: DeepPartial<CompetitionSubmission> = {
-      value: JSON.stringify(body.value),
+      value: JSON.parse(body.value),
       userGuid: body.userGuid,
       location: JSON.parse(body.location)
     };
