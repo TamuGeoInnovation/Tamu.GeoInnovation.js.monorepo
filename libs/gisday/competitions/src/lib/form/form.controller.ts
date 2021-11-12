@@ -27,7 +27,7 @@ export class FormController extends BaseController<CompetitionForm> {
 
     season.form = form;
 
-    season.save();
+    await season.save();
 
     return season;
   }

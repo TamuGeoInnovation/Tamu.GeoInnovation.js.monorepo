@@ -38,11 +38,11 @@ export class DesignFormComponent implements OnInit {
     const year = new Date().getFullYear().toString();
 
     this.fs.getFormForSeason(year).subscribe((res) => {
-      if (res.source) {
+      if (res && res.source) {
         this.loadSchemaForm.patchValue({ source: res.source });
       }
 
-      if (res.model) {
+      if (res && res.model) {
         this.formModel = this.fb.array(
           res.model.map((q) => {
             return this.fb.group({ ...q, options: q.options.length > 0 ? this.fb.array(q.options) : this.fb.array([]) });

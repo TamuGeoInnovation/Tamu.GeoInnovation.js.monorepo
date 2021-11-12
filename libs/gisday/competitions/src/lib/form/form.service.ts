@@ -17,9 +17,14 @@ export class FormService extends BaseService<CompetitionForm> {
 
   public getSeason(year: string) {
     return this.seasonRepo.findOne({
-      where: {
-        year: year
-      }
+      where: [
+        {
+          year: year
+        },
+        {
+          guid: year
+        }
+      ]
     });
   }
 }

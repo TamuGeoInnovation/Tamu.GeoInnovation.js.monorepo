@@ -92,13 +92,13 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
             });
           })
       );
-    }
 
-    this.formValid = combineLatest([this.form.statusChanges, this.file.pipe(filter((e) => e !== undefined))]).pipe(
-      map(([formValid, fileValid]) => {
-        return formValid === 'VALID' && fileValid !== undefined;
-      })
-    );
+      this.formValid = combineLatest([this.form.statusChanges, this.file.pipe(filter((e) => e !== undefined))]).pipe(
+        map(([formValid, fileValid]) => {
+          return formValid === 'VALID' && fileValid !== undefined;
+        })
+      );
+    }
   }
 
   public ngOnDestroy() {
