@@ -65,42 +65,6 @@ export class SubmissionLocation extends GISDayCompetitionBaseEntity implements I
 }
 
 @Entity({
-  name: 'submissions'
-})
-export class CompetitionSubmission extends GISDayCompetitionBaseEntity {
-  @Column()
-  public userGuid: string;
-
-  // JSON.stringify()'d values stored in a single field
-  @Column({ type: 'simple-json', nullable: false })
-  public value: string;
-
-  @OneToOne(() => SubmissionLocation, { cascade: true })
-  @JoinColumn()
-  public location: SubmissionLocation;
-
-  @OneToMany(() => SubmissionMedia, (s) => s.blob, { cascade: true })
-  public blobs?: SubmissionMedia[];
-}
-
-@Entity({
-  name: 'submissions_media'
-})
-export class SubmissionMedia extends GISDayCompetitionBaseEntity {
-  @ManyToOne(() => CompetitionSubmission, (s) => s.blobs)
-  public submission: CompetitionSubmission;
-
-  @Column({ type: 'image', nullable: false })
-  public blob: File;
-
-  @Column({ type: 'nvarchar', length: 32, nullable: true })
-  public mimeType?: string;
-
-  @Column({ type: 'nvarchar', nullable: true })
-  public fieldName?: string;
-}
-
-@Entity({
   name: 'forms'
 })
 export class CompetitionForm extends GISDayCompetitionBaseEntity implements ICompetitionSeasonForm {
@@ -123,9 +87,49 @@ export class CompetitionSeason extends GISDayCompetitionBaseEntity implements IC
   public form?: CompetitionForm;
 }
 
+@Entity({
+  name: 'submissions'
+})
+export class CompetitionSubmission extends GISDayCompetitionBaseEntity implements ICompetitionSubmission {
+  @Column()
+  public userGuid: string;
+
+  // JSON.stringify()'d values stored in a single field
+  @Column({ type: 'simple-json', nullable: false })
+  public value: string;
+
+  @OneToOne(() => SubmissionLocation, { cascade: true })
+  @JoinColumn()
+  public location: SubmissionLocation;
+
+  @ManyToOne(() => CompetitionSeason, { cascade: true })
+  public season: CompetitionSeason;
+
+  @OneToMany(() => SubmissionMedia, (s) => s.blob, { cascade: true })
+  public blobs?: SubmissionMedia[];
+}
+
+@Entity({
+  name: 'submissions_media'
+})
+export class SubmissionMedia extends GISDayCompetitionBaseEntity implements ISubmissionMedia {
+  @ManyToOne(() => CompetitionSubmission, (s) => s.blobs)
+  public submission: CompetitionSubmission;
+
+  @Column({ type: 'image', nullable: false })
+  public blob: File;
+
+  @Column({ type: 'nvarchar', length: 32, nullable: true })
+  public mimeType?: string;
+
+  @Column({ type: 'nvarchar', nullable: true })
+  public fieldName?: string;
+}
+
 export interface ICompetitionSubmission {
   userGuid: string;
   value: string;
+  season: ICompetitionSeason;
   blobs?: ISubmissionMedia[];
 }
 

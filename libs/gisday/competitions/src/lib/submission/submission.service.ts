@@ -17,10 +17,6 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     super(submissionRepo);
   }
 
-  public getAllWithRelations() {
-    return this.submissionRepo.find({ relations: ['submissions_locations', 'submissions_media'] });
-  }
-
   public async createCompetitionSubmission(
     entity: DeepPartial<CompetitionSubmission>,
     blobs: Array<DeepPartial<SubmissionMedia>>
