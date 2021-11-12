@@ -3,9 +3,11 @@
 
   <div class="container">
     <div id="designer">
-      <tamu-gisc-design-form></tamu-gisc-design-form>
+      <tamu-gisc-design-form (updated)="formModel = $event"></tamu-gisc-design-form>
     </div>
 
-    <div id="preview"></div>
+    <div id="preview">
+      <tamu-gisc-submission [formModel]="formModel"></tamu-gisc-submission>
+    </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { combineLatest, Observable, BehaviorSubject, of, throwError, EMPTY, Subject } from 'rxjs';
-import { switchMap, shareReplay, debounceTime, take, catchError, takeUntil } from 'rxjs/operators';
+import { switchMap, shareReplay, debounceTime, take, catchError, takeUntil, pluck } from 'rxjs/operators';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -13,8 +13,10 @@ import { HttpEventType } from '@angular/common/http';
 import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
+import { FormService, SeasonForm } from '../../../../modules/data-access/form/form.service';
+
 @Component({
-  selector: 'tamu-gisc-submission',
+  selector: 'tamu-gisc-submission-copmon',
   templateUrl: './submission.component.html',
   styleUrls: ['./submission.component.scss']
 })
@@ -51,6 +53,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
   public signDetails: BehaviorSubject<string> = new BehaviorSubject(undefined);
   public location: Position;
 
+  public model: Observable<SeasonForm['model']>;
+
   public fileUrl: Observable<string> = this.file.pipe(
     switchMap((f) => {
       if (Boolean(f)) {
@@ -78,7 +82,8 @@ export class SubmissionComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private analytics: Angulartics2,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private readonly fs: FormService
   ) {
     this._trackLocation = new TrackLocation({ enableHighAccuracy: true, maximumAge: 10000, timeout: 2500 });
 
@@ -112,6 +117,9 @@ export class SubmissionComponent implements OnInit, OnDestroy {
       }),
       shareReplay(1)
     );
+
+    const year = new Date().getFullYear().toString();
+    this.model = this.fs.getFormForSeason(year).pipe(pluck('model'));
   }
 
   public ngOnDestroy() {

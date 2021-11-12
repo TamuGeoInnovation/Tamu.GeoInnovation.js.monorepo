@@ -6,7 +6,7 @@
   </div>
 </form>
 
-<div *ngIf="(urlFields | async) !== null && formModel !== undefined">
+<div *ngIf="formModel !== undefined">
   <h2>Questions</h2>
 
   <form [formGroup]="formModel" (submit)="saveForm()">

@@ -1,8 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map, pluck, shareReplay } from 'rxjs/operators';
+import { map, pluck, shareReplay, startWith } from 'rxjs/operators';
+
+import { FormService, SeasonForm } from '../../../../modules/data-access/form/form.service';
 
 import esri = __esri;
 
@@ -12,15 +15,42 @@ import esri = __esri;
   styleUrls: ['./design-form.component.scss']
 })
 export class DesignFormComponent implements OnInit {
+  @Output()
+  public updated: EventEmitter<SeasonForm['model']> = new EventEmitter();
+
   public loadSchemaForm: FormGroup;
   public urlFields: Observable<Array<Field>>;
   public formModel: FormArray;
 
-  constructor(private readonly fb: FormBuilder, private readonly http: HttpClient) {}
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly http: HttpClient,
+    private readonly fs: FormService,
+    private route: ActivatedRoute
+  ) {}
 
   public ngOnInit(): void {
     this.loadSchemaForm = this.fb.group({
       source: ''
+    });
+
+    // TODO: Get season by name. Presumably the name will be the season year.
+    const year = new Date().getFullYear().toString();
+
+    this.fs.getFormForSeason(year).subscribe((res) => {
+      if (res.source) {
+        this.loadSchemaForm.patchValue({ source: res.source });
+      }
+
+      if (res.model) {
+        this.formModel = this.fb.array(
+          res.model.map((q) => {
+            return this.fb.group({ ...q, options: q.options.length > 0 ? this.fb.array(q.options) : this.fb.array([]) });
+          })
+        );
+
+        this.updated.next(res.model);
+      }
     });
   }
 
@@ -62,6 +92,10 @@ export class DesignFormComponent implements OnInit {
       )
       .subscribe((res) => {
         this.formModel = res;
+
+        this.formModel.valueChanges.pipe(startWith(this.formModel.getRawValue())).subscribe((changes) => {
+          this.updated.next(changes);
+        });
       });
   }
 
@@ -69,7 +103,12 @@ export class DesignFormComponent implements OnInit {
     const sourceForm = this.loadSchemaForm.getRawValue();
     const fieldsForm = this.formModel.getRawValue();
 
-    console.log({ source: sourceForm.source, model: [...fieldsForm] });
+    const guid = this.route.snapshot.params.season;
+    const payload = { source: sourceForm.source, model: [...fieldsForm] };
+
+    console.log(payload);
+
+    this.fs.saveFormModelForSeason(guid, payload);
   }
 }
 

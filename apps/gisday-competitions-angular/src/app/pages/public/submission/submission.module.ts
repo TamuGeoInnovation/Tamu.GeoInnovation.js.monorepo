@@ -8,6 +8,7 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { SubmissionService } from './services/submission.service';
 import { SubmissionComponent } from './components/submission.component';
 import { SubmissionCompleteComponent } from './components/complete/complete.component';
+import { FormsModule as GISDayCompetitionsFormsModule } from '../../../modules/forms/forms.module';
 
 const routes: Routes = [
   {
@@ -21,9 +22,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
+  imports: [RouterModule.forChild(routes), CommonModule, FormsModule, UIFormsModule, GISDayCompetitionsFormsModule],
   declarations: [SubmissionComponent, SubmissionCompleteComponent],
   exports: [SubmissionComponent],
-  imports: [RouterModule.forChild(routes), CommonModule, FormsModule, UIFormsModule],
   providers: [SubmissionService]
 })
 export class SubmissionModule {}

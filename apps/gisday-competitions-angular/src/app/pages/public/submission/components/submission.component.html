@@ -1,4 +1,4 @@
-<h1 class="bordered">New Submission</h1>
+<!-- <h1 class="bordered">New Submission</h1>
 
 <div class="block-input">
   <div class="block-input-presentation" *ngIf="(file | async) === undefined">
@@ -34,4 +34,6 @@
     <div *ngSwitchCase="-1">Error!</div>
     <div *ngSwitchDefault>Submit</div>
   </div>
-</div>
+</div> -->
+
+<tamu-gisc-submission [formModel]="model | async"></tamu-gisc-submission>

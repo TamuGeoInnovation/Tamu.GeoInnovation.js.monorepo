@@ -9,6 +9,7 @@ import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { AdminComponent } from './admin.component';
 import { DesignQuestionComponent } from './components/design-question/design-question.component';
 import { DesignFormComponent } from './components/design-form/design-form.component';
+import { FormsModule } from '../../modules/forms/forms.module';
 
 const routes: Routes = [
   {
@@ -17,7 +18,7 @@ const routes: Routes = [
   }
 ];
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), ReactiveFormsModule, UIFormsModule, UILayoutModule],
+  imports: [CommonModule, RouterModule.forChild(routes), ReactiveFormsModule, UIFormsModule, UILayoutModule, FormsModule],
   declarations: [AdminComponent, DesignQuestionComponent, DesignFormComponent]
 })
 export class AdminModule {}

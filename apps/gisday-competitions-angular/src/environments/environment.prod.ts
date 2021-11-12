@@ -10,6 +10,7 @@ import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
 export * from './definitions';
 
+export const api_url = 'http://localhost:3333/api';
 export const LeaderboardUrl = `${Protocol}/${HostName}/Rest/Leaderboard/Get`;
 export const SubmissionsUrl = `${Protocol}/${HostName}/Rest/Signage/Get/Submissions/?&geoJSON=true`;
 export const SubmissionsPostUrl = `${Protocol}/${HostName}/Rest/Signage/Push/Submissions/`;
