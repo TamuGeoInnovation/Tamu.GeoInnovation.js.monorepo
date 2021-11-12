@@ -99,16 +99,18 @@ export class DesignFormComponent implements OnInit {
       });
   }
 
-  public saveForm() {
+  public saveForm(): void {
     const sourceForm = this.loadSchemaForm.getRawValue();
     const fieldsForm = this.formModel.getRawValue();
 
-    const guid = this.route.snapshot.params.season;
+    const guid = this.route.snapshot.queryParams.season;
     const payload = { source: sourceForm.source, model: [...fieldsForm] };
 
     console.log(payload);
 
-    this.fs.saveFormModelForSeason(guid, payload);
+    this.fs.saveFormModelForSeason(guid, payload).subscribe((res) => {
+      console.log(res);
+    });
   }
 }
 
