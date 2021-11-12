@@ -19,7 +19,7 @@ export class SubmissionController extends BaseController<CompetitionSubmission> 
     // Fails if you're calling a relation that doesn't exist for a single entry
     // i.e. if there is no media and you include 'blobs' relation it's gonna break
     return this.service.getMany({
-      relations: ['location'] // ['location', 'blobs', 'season']
+      relations: ['location', 'season', 'season.form'] // ['location', 'blobs', 'season']
     });
   }
 
