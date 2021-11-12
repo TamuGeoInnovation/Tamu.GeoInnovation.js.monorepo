@@ -100,7 +100,34 @@ export class SubmissionMedia extends GISDayCompetitionBaseEntity {
   public fieldName?: string;
 }
 
+@Entity({
+  name: 'forms'
+})
+export class CompetitionForm extends GISDayCompetitionBaseEntity implements ICompetitionSeasonForm {
+  @Column()
+  public source: string;
+
+  @Column({ type: 'simple-json', nullable: false })
+  public model: string;
+}
+
+@Entity({
+  name: 'seasons'
+})
+export class CompetitionSeason extends GISDayCompetitionBaseEntity implements ICompetitionSeason {
+  @Column()
+  public guid: string;
+
+  @Column()
+  public year: string;
+
+  @OneToOne(() => CompetitionForm, { cascade: true })
+  @JoinColumn()
+  public form: CompetitionForm;
+}
+
 export interface ICompetitionSubmission {
+  userGuid: string;
   value: string;
   blobs?: ISubmissionMedia[];
 }
@@ -120,4 +147,15 @@ export interface ICompetitionSubmissionLocation {
   heading?: number;
   speed?: number;
   timestamp?: Date;
+}
+
+export interface ICompetitionSeason {
+  guid: string;
+  year: string;
+  form: CompetitionForm;
+}
+
+export interface ICompetitionSeasonForm {
+  source: string;
+  model: string;
 }
