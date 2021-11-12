@@ -1,25 +1,45 @@
-import { Body, Controller, Get, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
-import { AnyFilesInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { Body, Controller, Get, Param, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { DeepPartial } from 'typeorm';
+import { Duplex } from 'stream';
 
 import { CompetitionSubmission, SubmissionMedia } from '@tamu-gisc/gisday/common';
-import { DeepPartial } from 'typeorm';
-import { FormService } from '../form/form.service';
 
+import { FormService } from '../form/form.service';
 import { BaseController } from '../_base/base.controller';
 import { SubmissionService } from './submission.service';
+
 @Controller('submission')
 export class SubmissionController extends BaseController<CompetitionSubmission> {
   constructor(private service: SubmissionService, private formService: FormService) {
     super(service);
   }
 
+  @Get(':guid/image')
+  public async getSubmission(@Param() param, @Res() res) {
+    const submission = await this.service.getOne({
+      where: {
+        guid: param.guid
+      },
+      relations: ['location', 'season', 'blobs']
+    });
+
+    function bufferToStream(myBuuffer) {
+      const tmp = new Duplex();
+      tmp.push(myBuuffer);
+      tmp.push(null);
+      return tmp;
+    }
+
+    const myReadableStream = bufferToStream(submission.blobs[0].blob);
+
+    myReadableStream.pipe(res);
+  }
+
   @Get()
   public getAll() {
-    // TODO: Aaron H
-    // Fails if you're calling a relation that doesn't exist for a single entry
-    // i.e. if there is no media and you include 'blobs' relation it's gonna break
     return this.service.getMany({
-      relations: ['location', 'season', 'season.form'] // ['location', 'blobs', 'season']
+      relations: ['location', 'season', 'season.form']
     });
   }
 
