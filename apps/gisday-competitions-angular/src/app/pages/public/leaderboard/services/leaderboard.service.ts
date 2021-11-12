@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { pluck } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -9,10 +8,14 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   providedIn: 'root'
 })
 export class LeaderboardService {
-  constructor(private http: HttpClient, private environment: EnvironmentService) {}
+  public resource: string;
+
+  constructor(private http: HttpClient, private environment: EnvironmentService) {
+    this.resource = `${this.environment.value('api_url')}/leaderboard`;
+  }
 
   public getScores(): Observable<ILeaderboardItem[]> {
-    return this.http.get(this.environment.value('LeaderboardUrl')).pipe(pluck('items'));
+    return this.http.get<Array<ILeaderboardItem>>(this.resource);
   }
 }
 

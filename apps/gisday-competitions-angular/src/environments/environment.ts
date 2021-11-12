@@ -15,9 +15,6 @@ import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 export * from './definitions';
 
 export const api_url = 'http://localhost:3333/api';
-export const LeaderboardUrl = `${Protocol}/${HostName}/wap.gisday.tamu.edu/Rest/Leaderboard/Get`;
-export const SubmissionsUrl = `${Protocol}/${HostName}/wap.gisday.tamu.edu/Rest/Signage/Get/Submissions/?&geoJSON=true`;
-export const SubmissionsPostUrl = `${Protocol}/${HostName}/wap.gisday.tamu.edu/Rest/Signage/Push/Submissions/`;
 
 export const AuthLoginUrl = `${Protocol}/${HostName}/wap.gisday.tamu.edu/Login?ret=${Protocol}/${HostName}/wap.gisday.tamu.edu/Login`;
 
@@ -50,7 +47,8 @@ export const LayerSources: LayerSource[] = [
     type: 'geojson',
     id: d.SUBMISSIONS.layerId,
     title: d.SUBMISSIONS.name,
-    url: SubmissionsUrl,
+    // TODO: Update url
+    url: '',
     listMode: 'show',
     loadOnInit: true,
     visible: true,
