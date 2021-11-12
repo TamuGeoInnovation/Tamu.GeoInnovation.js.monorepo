@@ -19,6 +19,7 @@ import * as environment from '../environments/environment';
 import { AppComponent } from './app.component';
 import { AuthService } from './modules/auth/services/auth.service';
 import { HttpClientModule } from '@angular/common/http';
+import { AuthGuard } from './modules/guards/auth.guard';
 
 WebFont.load({
   google: {
@@ -30,6 +31,7 @@ const routes: Routes = [
   {
     path: 'designer',
     loadChildren: () => import('./pages/admin/admin.module').then((m) => m.AdminModule)
+    // canActivate: [AuthGuard]
   },
   {
     path: '',

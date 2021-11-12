@@ -120,7 +120,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   public submitResponse() {
     return combineLatest([
       this.file.pipe(take(1)),
-      this.settings.getSimpleSettingsBranch(this.env.value('LocalStoreSettings').subKey).pipe(take(1))
+      this.settings.getSimpleSettingsBranch(this.env.value('LocalStoreSettings').subKey)
     ])
       .pipe(
         switchMap(([file, settings]) => {
@@ -147,6 +147,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
             data.append('userGuid', `${settings.guid}`);
             data.append('location', JSON.stringify(location));
             data.append('value', JSON.stringify(value));
+            data.append('season', `${new Date().getFullYear()}`);
             data.append('head1', file);
 
             return this.ss.postSubmission(data).pipe(

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../modules/auth/services/auth.service';
 
 @Component({
   selector: 'tamu-gisc-public',
@@ -6,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./public.component.scss']
 })
 export class PublicComponent implements OnInit {
-  constructor() {}
+  constructor(private readonly auth: AuthService) {}
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 }
