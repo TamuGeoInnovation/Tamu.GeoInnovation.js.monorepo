@@ -17,6 +17,7 @@ export class FormService extends BaseService<CompetitionForm> {
 
   public getSeason(year: string) {
     return this.seasonRepo.findOne({
+      relations: ['form'],
       where: [
         {
           year: year

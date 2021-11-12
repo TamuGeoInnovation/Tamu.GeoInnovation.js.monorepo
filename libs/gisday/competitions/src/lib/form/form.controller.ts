@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { AnyFilesInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 import { DeepPartial } from 'typeorm';
@@ -12,6 +12,11 @@ import { FormService } from './form.service';
 export class FormController extends BaseController<CompetitionForm> {
   constructor(private service: FormService) {
     super(service);
+  }
+
+  @Get(':year')
+  public getForm(@Param() params) {
+    return this.service.getSeason(params.year);
   }
 
   @Post(':year')
