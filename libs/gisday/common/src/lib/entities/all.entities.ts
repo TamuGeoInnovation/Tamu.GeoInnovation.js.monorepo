@@ -105,7 +105,7 @@ export class CompetitionSubmission extends GISDayCompetitionBaseEntity implement
   @ManyToOne(() => CompetitionSeason, { cascade: true })
   public season: CompetitionSeason;
 
-  @OneToMany(() => SubmissionMedia, (s) => s.blob, { cascade: true })
+  @OneToMany(() => SubmissionMedia, (s) => s.submission, { cascade: true })
   public blobs?: SubmissionMedia[];
 }
 
