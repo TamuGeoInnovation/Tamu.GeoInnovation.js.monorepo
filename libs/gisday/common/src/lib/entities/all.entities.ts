@@ -116,14 +116,11 @@ export class CompetitionForm extends GISDayCompetitionBaseEntity implements ICom
 })
 export class CompetitionSeason extends GISDayCompetitionBaseEntity implements ICompetitionSeason {
   @Column()
-  public guid: string;
-
-  @Column()
   public year: string;
 
-  @OneToOne(() => CompetitionForm, { cascade: true })
+  @OneToOne(() => CompetitionForm, { cascade: true, nullable: true })
   @JoinColumn()
-  public form: CompetitionForm;
+  public form?: CompetitionForm;
 }
 
 export interface ICompetitionSubmission {
@@ -150,9 +147,8 @@ export interface ICompetitionSubmissionLocation {
 }
 
 export interface ICompetitionSeason {
-  guid: string;
   year: string;
-  form: CompetitionForm;
+  form?: CompetitionForm;
 }
 
 export interface ICompetitionSeasonForm {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CompetitionForm } from '@tamu-gisc/gisday/common';
+import { CompetitionForm, CompetitionSeason } from '@tamu-gisc/gisday/common';
 
 import { DeepPartial, Repository } from 'typeorm';
 
@@ -8,7 +8,18 @@ import { BaseService } from '../_base/base.service';
 
 @Injectable()
 export class FormService extends BaseService<CompetitionForm> {
-  constructor(@InjectRepository(CompetitionForm) private formRepo: Repository<CompetitionForm>) {
+  constructor(
+    @InjectRepository(CompetitionForm) private formRepo: Repository<CompetitionForm>,
+    @InjectRepository(CompetitionSeason) private seasonRepo: Repository<CompetitionSeason>
+  ) {
     super(formRepo);
+  }
+
+  public getSeason(year: string) {
+    return this.seasonRepo.findOne({
+      where: {
+        year: year
+      }
+    });
   }
 }
