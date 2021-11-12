@@ -124,7 +124,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
     ])
       .pipe(
         switchMap(([file, settings]) => {
-          if (file !== undefined && this.form.valid) {
+          if (file !== undefined && this.form.valid && this.submissionStatus.status !== 1) {
             // FormData gets sent as multi-part form in request.
             const data: FormData = new FormData();
 
@@ -153,6 +153,10 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
             return this.ss.postSubmission(data).pipe(
               switchMap((event) => {
                 if (event.type === HttpEventType.UploadProgress) {
+                  if (this.submissionStatus.status !== 1) {
+                    this.submissionStatus.status = 1;
+                  }
+
                   this.submissionStatus.progress = event.loaded / event.total;
                   return EMPTY;
                 } else if (event.type === HttpEventType.Response) {
@@ -167,6 +171,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           }
         }),
         catchError((err) => {
+          this.submissionStatus.status = -1;
           this.analytics.eventTrack.next({
             action: 'Submission Fail',
             properties: {

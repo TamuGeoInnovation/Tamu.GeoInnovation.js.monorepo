@@ -26,9 +26,9 @@
 
     <p class="rules-text">By submitting, you agree that you have read and understand the competition <a href="https://txgisday.org/competitions/vgi/" target="_blank" rel="noopener noreferrer">rules and guidelines.</a></p>
 
-    <div class="button" role="button" (click)="submitResponse()" [class.disabled]="(formValid | async) !== true">
+    <div class="button" role="button" (click)="submitResponse()" [class.disabled]="(formValid | async) !== true || submissionStatus.status === 1">
       <div class="progress" *ngIf="submissionStatus.status !== -1" [style.width.%]="submissionStatus.progress * 100"></div>
-      <div class="status-text" [ngSwitch]="form.status">
+      <div class="status-text" [ngSwitch]="submissionStatus.status">
         <div *ngSwitchCase="1">Submitting...</div>
         <div *ngSwitchCase="-1">Error!</div>
         <div *ngSwitchDefault>Submit</div>

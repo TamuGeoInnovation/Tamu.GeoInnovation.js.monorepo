@@ -23,10 +23,12 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
   ) {
     const sub = await this.submissionRepo.create(entity).save();
 
-    blobs.forEach((blob) => {
-      blob.submission = sub;
-      this.mediaRepo.create(blob).save();
-    });
+    await Promise.all(
+      blobs.map((b) => {
+        b.submission = sub;
+        return this.mediaRepo.create(b).save();
+      })
+    );
 
     return sub;
   }
