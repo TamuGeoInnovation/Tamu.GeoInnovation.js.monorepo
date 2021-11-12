@@ -1,8 +1,18 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { FormArray, FormBuilder } from '@angular/forms';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { FormArray, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, combineLatest, EMPTY, NEVER, Observable, of, Subject } from 'rxjs';
+import { catchError, filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { HttpEventType } from '@angular/common/http';
 
+import { Angulartics2 } from 'angulartics2';
+
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { SettingsService } from '@tamu-gisc/common/ngx/settings';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
+
+import { SubmissionService } from '../../../data-access/submission/submission.service';
 import { SeasonForm } from '../../../data-access/form/form.service';
 
 @Component({
@@ -10,7 +20,7 @@ import { SeasonForm } from '../../../data-access/form/form.service';
   templateUrl: './submission.component.html',
   styleUrls: ['./submission.component.scss']
 })
-export class SubmissionComponent implements OnInit, OnChanges {
+export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   public formModel: SeasonForm['model'];
 
@@ -28,9 +38,44 @@ export class SubmissionComponent implements OnInit, OnChanges {
     })
   );
 
-  constructor(private readonly fb: FormBuilder) {}
+  public location: Position;
 
-  public ngOnInit(): void {}
+  public formValid: Observable<boolean>;
+
+  public submissionStatus = {
+    progress: 0,
+    status: 0
+  };
+
+  private _destroy$: Subject<boolean> = new Subject();
+  private _trackLocation: TrackLocation;
+
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly ns: NotificationService,
+    private readonly env: EnvironmentService,
+    private readonly settings: SettingsService,
+    private readonly analytics: Angulartics2,
+    private readonly ss: SubmissionService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
+  ) {}
+
+  public ngOnInit(): void {
+    this._trackLocation = new TrackLocation({ enableHighAccuracy: true, maximumAge: 10000, timeout: 2500 });
+
+    this._trackLocation
+      .track()
+      .pipe(takeUntil(this._destroy$))
+      .subscribe(
+        (res) => {
+          this.location = res;
+        },
+        (err) => {
+          this.ns.preset('no_gps');
+        }
+      );
+  }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.formModel && changes.formModel.currentValue !== undefined) {
@@ -43,13 +88,23 @@ export class SubmissionComponent implements OnInit, OnChanges {
             return this.fb.group({
               ...control,
               options: control.options.length > 0 ? this.fb.array(control.options) : [],
-              value: []
+              value: [undefined, Validators.required]
             });
           })
       );
-
-      console.log(this.form.getRawValue());
     }
+
+    this.formValid = combineLatest([this.form.statusChanges, this.file.pipe(filter((e) => e !== undefined))]).pipe(
+      map(([formValid, fileValid]) => {
+        return formValid === 'VALID' && fileValid !== undefined;
+      })
+    );
+  }
+
+  public ngOnDestroy() {
+    this._trackLocation.dispose();
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 
   public onPhotoTaken(e) {
@@ -63,85 +118,65 @@ export class SubmissionComponent implements OnInit, OnChanges {
   }
 
   public submitResponse() {
-    const value = this.form.getRawValue();
+    return combineLatest([
+      this.file.pipe(take(1)),
+      this.settings.getSimpleSettingsBranch(this.env.value('LocalStoreSettings').subKey).pipe(take(1))
+    ])
+      .pipe(
+        switchMap(([file, settings]) => {
+          if (file !== undefined && this.form.valid) {
+            // FormData gets sent as multi-part form in request.
+            const data: FormData = new FormData();
 
-    console.log(value);
+            const location = {
+              latitude: this.location.coords.latitude,
+              longitude: this.location.coords.longitude,
+              accuracy: this.location.coords.accuracy,
+              altitude: this.location.coords.altitude,
+              altitudeAccuracy: this.location.coords.altitudeAccuracy,
+              heading: this.location.coords.heading,
+              speed: this.location.coords.speed
+            };
 
-    // this.form.valid
-    //   .pipe(
-    //     take(1),
-    //     switchMap((v) => {
-    //       // If form valid status is true, return the observable values for submission
-    //       if (Boolean(v)) {
-    //         return combineLatest([
-    //           this.file,
-    //           this.signType,
-    //           this.signDetails,
-    //           this.settings.getSimpleSettingsBranch(this.environment.value('LocalStoreSettings').subKey)
-    //         ]);
-    //       } else {
-    //         return of([false, false, false]);
-    //       }
-    //     }),
-    //     switchMap(([file, type, details, settings]) => {
-    //       try {
-    //         if (file !== false && this.form.status !== 1) {
-    //           // FormData gets sent as multi-part form in request.
-    //           const data: FormData = new FormData();
+            const value = this.form.getRawValue().reduce((acc, curr) => {
+              acc[curr.attribute] = curr.value;
 
-    //           data.append('UserGuid', settings.guid);
-    //           data.append('Description', details);
-    //           data.append('SignType', type);
-    //           data.append('Lat', this.location.coords.latitude ? this.location.coords.latitude.toString() : undefined);
-    //           data.append('Lon', this.location.coords.longitude ? this.location.coords.longitude.toString() : undefined);
-    //           data.append('Accuracy', this.location.coords.accuracy ? this.location.coords.accuracy.toString() : undefined);
-    //           data.append('Timestamp', this.location.timestamp ? this.location.timestamp.toString() : undefined);
-    //           data.append('Heading', this.location.coords.heading ? this.location.coords.heading.toString() : undefined);
-    //           data.append('Altitude', this.location.coords.altitude ? this.location.coords.altitude.toString() : undefined);
-    //           data.append('Speed', this.location.coords.speed ? this.location.coords.speed.toString() : undefined);
-    //           data.append('photoA', file);
+              return acc;
+            }, {});
 
-    //           this.form.status = 1;
+            data.append('userGuid', `${settings.guid}`);
+            data.append('location', JSON.stringify(location));
+            data.append('value', JSON.stringify(value));
+            data.append('head1', file);
 
-    //           return this.submissionService.postSubmission(data).pipe(
-    //             switchMap((event) => {
-    //               if (event.type === HttpEventType.UploadProgress) {
-    //                 this.form.progress = event.loaded / event.total;
-    //                 return EMPTY;
-    //               } else if (event.type === HttpEventType.Response) {
-    //                 if (event && event.body.ResultCode && event.body.ResultCode === '400') {
-    //                   this.router.navigate(['complete'], { relativeTo: this.route });
-    //                   return of(true);
-    //                 } else {
-    //                   return throwError(event);
-    //                 }
-    //               } else {
-    //                 return EMPTY;
-    //               }
-    //             })
-    //           );
-    //         } else {
-    //           return of(false);
-    //         }
-    //       } catch (err) {
-    //         return throwError(err);
-    //       }
-    //     }),
-    //     catchError((err) => {
-    //       this.form.status = -1;
-    //       this.form.progress = 0;
+            return this.ss.postSubmission(data).pipe(
+              switchMap((event) => {
+                if (event.type === HttpEventType.UploadProgress) {
+                  this.submissionStatus.progress = event.loaded / event.total;
+                  return EMPTY;
+                } else if (event.type === HttpEventType.Response) {
+                  this.router.navigate(['complete'], { relativeTo: this.route });
+                } else {
+                  return EMPTY;
+                }
+              })
+            );
+          } else {
+            return NEVER;
+          }
+        }),
+        catchError((err) => {
+          this.analytics.eventTrack.next({
+            action: 'Submission Fail',
+            properties: {
+              category: 'Error',
+              label: JSON.stringify(err)
+            }
+          });
 
-    //       this.analytics.eventTrack.next({
-    //         action: 'Submission Fail',
-    //         properties: {
-    //           category: 'Error',
-    //           label: JSON.stringify(err)
-    //         }
-    //       });
-
-    //       return of(err);
-    //     })
-    //   )
-    //   .subscribe((res) => {});
+          return of(err);
+        })
+      )
+      .subscribe((res) => {});
   }
 }
