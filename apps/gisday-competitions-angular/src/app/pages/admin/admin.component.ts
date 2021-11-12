@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { SeasonForm } from '../../modules/data-access/form/form.service';
+import { CompetitionForm } from '@tamu-gisc/gisday/common';
 
 @Component({
   selector: 'tamu-gisc-admin',
@@ -8,5 +8,5 @@ import { SeasonForm } from '../../modules/data-access/form/form.service';
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent {
-  public formModel: SeasonForm;
+  public formModel: CompetitionForm;
 }

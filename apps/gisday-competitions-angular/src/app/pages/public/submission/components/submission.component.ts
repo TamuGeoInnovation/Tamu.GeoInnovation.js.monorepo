@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
 
-import { FormService, SeasonForm } from '../../../../modules/data-access/form/form.service';
+import { CompetitionForm } from '@tamu-gisc/gisday/common';
+
+import { FormService } from '../../../../modules/data-access/form/form.service';
 
 @Component({
   selector: 'tamu-gisc-submission-copmon',
@@ -10,7 +12,7 @@ import { FormService, SeasonForm } from '../../../../modules/data-access/form/fo
   styleUrls: ['./submission.component.scss']
 })
 export class SubmissionComponent implements OnInit {
-  public model: Observable<SeasonForm['model']>;
+  public model: Observable<CompetitionForm['model']>;
 
   constructor(private readonly fs: FormService) {}
 

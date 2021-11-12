@@ -72,7 +72,7 @@ export class CompetitionForm extends GISDayCompetitionBaseEntity implements ICom
   public source: string;
 
   @Column({ type: 'simple-json', nullable: false })
-  public model: string;
+  public model: Array<ICompetitionSeasonFormQuestion>;
 }
 
 @Entity({
@@ -157,5 +157,17 @@ export interface ICompetitionSeason {
 
 export interface ICompetitionSeasonForm {
   source: string;
-  model: string;
+  model: Array<ICompetitionSeasonFormQuestion>;
+}
+
+export interface ICompetitionSeasonFormQuestion {
+  attribute: string;
+  title: string;
+  instructions: string;
+  enabled: boolean;
+  options?: Array<{
+    name: string;
+    value: string | number | boolean;
+  }>;
+  type: string;
 }

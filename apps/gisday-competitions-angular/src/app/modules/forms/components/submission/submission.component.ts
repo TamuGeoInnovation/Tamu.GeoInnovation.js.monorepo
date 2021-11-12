@@ -11,9 +11,9 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
+import { CompetitionForm } from '@tamu-gisc/gisday/common';
 
 import { SubmissionService } from '../../../data-access/submission/submission.service';
-import { SeasonForm } from '../../../data-access/form/form.service';
 
 @Component({
   selector: 'tamu-gisc-submission',
@@ -22,7 +22,7 @@ import { SeasonForm } from '../../../data-access/form/form.service';
 })
 export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
-  public formModel: SeasonForm['model'];
+  public formModel: CompetitionForm['model'];
 
   public form: FormArray;
 
@@ -78,9 +78,9 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.formModel && changes.formModel.currentValue !== undefined) {
+    if (changes.formModel && changes.formModel.currentValue !== undefined && changes.formModel.currentValue !== null) {
       this.form = this.fb.array(
-        this.formModel
+        changes.formModel.currentValue
           .filter((c) => {
             return c.enabled === true;
           })

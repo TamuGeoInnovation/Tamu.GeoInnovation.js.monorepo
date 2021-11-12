@@ -6,6 +6,13 @@
   <tamu-gisc-accordion-content>
     <form [formGroup]="control">
       <div class="question-control">
+        <p class="question-control-header">Question Availability</p>
+        <p>Describes if the question should be visible on the participant form submission. Enable this value to require the participant to answer this question to submit the form.</p>
+
+        <tamu-gisc-radio-group formControlName="enabled" [options]="availabilityOptions" displayPath="label" valuePath="value"></tamu-gisc-radio-group>
+      </div>
+
+      <div class="question-control">
         <p class="question-control-header">Attribute</p>
         <p>This question and participant submission are associated to the following listed attribute from the provided service endpoint.</p>
         <p><em>{{control.get('attribute').value}}</em></p>
@@ -23,13 +30,6 @@
         <p>Any contextual information that may be helpful for a participant to know in order to answer the question accurately.</p>
 
         <tamu-gisc-textbox type="textarea" formControlName="instructions"></tamu-gisc-textbox>
-      </div>
-
-      <div class="question-control">
-        <p class="question-control-header">Question Availability</p>
-        <p>Describes if the question should be visible on the participant form submission. Enable this value to require the participant to answer this question to submit the form.</p>
-
-        <tamu-gisc-radio-group formControlName="enabled" [options]="availabilityOptions" displayPath="label" valuePath="value"></tamu-gisc-radio-group>
       </div>
 
       <div class="question-control">

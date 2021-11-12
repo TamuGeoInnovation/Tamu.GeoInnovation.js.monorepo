@@ -5,7 +5,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, pluck, shareReplay, startWith } from 'rxjs/operators';
 
-import { FormService, SeasonForm } from '../../../../modules/data-access/form/form.service';
+import { CompetitionForm, ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/common';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+
+import { FormService } from '../../../../modules/data-access/form/form.service';
 
 import esri = __esri;
 
@@ -16,7 +19,7 @@ import esri = __esri;
 })
 export class DesignFormComponent implements OnInit {
   @Output()
-  public updated: EventEmitter<SeasonForm['model']> = new EventEmitter();
+  public updated: EventEmitter<Array<ICompetitionSeasonFormQuestion>> = new EventEmitter();
 
   public loadSchemaForm: FormGroup;
   public urlFields: Observable<Array<Field>>;
@@ -26,7 +29,8 @@ export class DesignFormComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly http: HttpClient,
     private readonly fs: FormService,
-    private route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly ns: NotificationService
   ) {}
 
   public ngOnInit(): void {
@@ -34,7 +38,6 @@ export class DesignFormComponent implements OnInit {
       source: ''
     });
 
-    // TODO: Get season by name. Presumably the name will be the season year.
     const year = new Date().getFullYear().toString();
 
     this.fs.getFormForSeason(year).subscribe((res) => {
@@ -104,13 +107,26 @@ export class DesignFormComponent implements OnInit {
     const fieldsForm = this.formModel.getRawValue();
 
     const guid = this.route.snapshot.queryParams.season;
-    const payload = { source: sourceForm.source, model: [...fieldsForm] };
+    const payload = { source: sourceForm.source, model: [...fieldsForm] } as CompetitionForm;
 
     console.log(payload);
 
-    this.fs.saveFormModelForSeason(guid, payload).subscribe((res) => {
-      console.log(res);
-    });
+    this.fs.saveFormModelForSeason(guid, payload).subscribe(
+      (res) => {
+        this.ns.toast({
+          id: 'designer-form-signed',
+          message: 'Form was saved successfully.',
+          title: 'Form Saved'
+        });
+      },
+      (err) => {
+        this.ns.toast({
+          id: 'designer-form-signed-failed',
+          message: 'There was an error saving the form.',
+          title: 'Form Save Error'
+        });
+      }
+    );
   }
 }
 
