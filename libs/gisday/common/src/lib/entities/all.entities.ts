@@ -42,25 +42,25 @@ export class GISDayCompetitionBaseEntity extends BaseEntity {
   name: 'submissions_locations'
 })
 export class SubmissionLocation extends GISDayCompetitionBaseEntity implements ICompetitionSubmissionLocation {
-  @Column({ type: 'decimal', precision: 5 })
+  @Column({ type: 'decimal', precision: 7, scale: 5 })
   public latitude: number;
 
-  @Column({ type: 'decimal', precision: 5 })
+  @Column({ type: 'decimal', precision: 8, scale: 5 })
   public longitude: number;
 
-  @Column({ type: 'decimal', precision: 2 })
+  @Column({ type: 'decimal', precision: 5, scale: 2 })
   public accuracy: number;
 
-  @Column({ type: 'decimal', precision: 2, nullable: true })
+  @Column({ type: 'decimal', precision: 4, scale: 2, nullable: true })
   public altitude?: number;
 
-  @Column({ type: 'decimal', precision: 2, nullable: true })
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
   public altitudeAccuracy?: number;
 
-  @Column({ type: 'decimal', precision: 2, nullable: true })
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
   public heading?: number;
 
-  @Column({ type: 'decimal', precision: 2, nullable: true })
+  @Column({ type: 'decimal', precision: 6, scale: 3, nullable: true })
   public speed?: number;
 }
 
