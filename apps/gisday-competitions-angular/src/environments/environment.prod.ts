@@ -10,7 +10,7 @@ import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
 export * from './definitions';
 
-export const api_url = 'http://localhost:3333/api';
+export const api_url = 'http://nodes.geoservices.tamu.edu/api/gisday';
 
 export const AuthLoginUrl = `${Protocol}/${HostName}/Login?ret=${Protocol}/${HostName}/Login`;
 
@@ -43,8 +43,7 @@ export const LayerSources: LayerSource[] = [
     type: 'geojson',
     id: d.SUBMISSIONS.layerId,
     title: d.SUBMISSIONS.name,
-    // TODO: Update url
-    url: '',
+    url: `${api_url}/map/geojson`,
     listMode: 'show',
     loadOnInit: true,
     visible: true,

@@ -120,7 +120,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
   public submitResponse() {
     return combineLatest([
       this.file.pipe(take(1)),
-      this.settings.getSimpleSettingsBranch(this.env.value('LocalStoreSettings').subKey)
+      this.settings.getSimpleSettingsBranch(this.env.value('LocalStoreSettings').subKey).pipe(take(1))
     ])
       .pipe(
         switchMap(([file, settings]) => {

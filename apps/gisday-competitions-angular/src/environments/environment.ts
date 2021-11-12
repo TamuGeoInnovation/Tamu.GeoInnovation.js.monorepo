@@ -47,8 +47,7 @@ export const LayerSources: LayerSource[] = [
     type: 'geojson',
     id: d.SUBMISSIONS.layerId,
     title: d.SUBMISSIONS.name,
-    // TODO: Update url
-    url: '',
+    url: `${api_url}/map/geojson`,
     listMode: 'show',
     loadOnInit: true,
     visible: true,
