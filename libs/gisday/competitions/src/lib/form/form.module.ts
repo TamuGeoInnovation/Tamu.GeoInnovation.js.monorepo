@@ -9,8 +9,8 @@ import {
   SubmissionMedia
 } from '@tamu-gisc/gisday/common';
 
-import { SeasonController } from './season.controller';
-import { SeasonService } from './season.service';
+import { FormController } from './form.controller';
+import { FormService } from './form.service';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { SeasonService } from './season.service';
       CompetitionForm
     ])
   ],
-  controllers: [SeasonController],
-  providers: [SeasonService]
+  controllers: [FormController],
+  providers: [FormService]
 })
-export class SeasonModule {}
+export class FormModule {}
