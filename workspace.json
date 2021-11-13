@@ -5802,7 +5802,14 @@
             "outputPath": "dist/apps/gisday-competitions-nest",
             "main": "apps/gisday-competitions-nest/src/main.ts",
             "tsConfig": "apps/gisday-competitions-nest/tsconfig.app.json",
-            "assets": ["apps/gisday-competitions-nest/src/assets"]
+            "assets": [
+              "apps/gisday-competitions-nest/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
           },
           "configurations": {
             "production": {

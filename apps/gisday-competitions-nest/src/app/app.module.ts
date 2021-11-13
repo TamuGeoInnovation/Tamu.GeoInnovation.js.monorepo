@@ -10,14 +10,14 @@ import {
 } from '@tamu-gisc/gisday/common';
 import { GisdayCompetitionsModule } from '@tamu-gisc/gisday/competitions';
 
-import { config } from '../environments/ormconfig';
+import { dbConfig } from '../environments/environment';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 const entities = [CompetitionSubmission, SubmissionLocation, SubmissionMedia, CompetitionForm, CompetitionSeason];
 
 @Module({
-  imports: [TypeOrmModule.forRoot({ ...config, entities }), GisdayCompetitionsModule],
+  imports: [TypeOrmModule.forRoot({ ...dbConfig, entities }), GisdayCompetitionsModule],
   controllers: [AppController],
   providers: [AppService]
 })
