@@ -3,7 +3,7 @@ import { AnyFilesInterceptor, FilesInterceptor } from '@nestjs/platform-express'
 
 import { DeepPartial } from 'typeorm';
 
-import { CompetitionSeason } from '@tamu-gisc/gisday/common';
+import { CompetitionSeason } from '../entities/all.entities';
 
 import { BaseController } from '../_base/base.controller';
 import { SeasonService } from './season.service';

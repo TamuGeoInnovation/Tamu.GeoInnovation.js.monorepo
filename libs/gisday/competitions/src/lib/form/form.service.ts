@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CompetitionForm, CompetitionSeason } from '@tamu-gisc/gisday/common';
+import { CompetitionForm, CompetitionSeason } from '../entities/all.entities';
 
 import { DeepPartial, Repository } from 'typeorm';
 

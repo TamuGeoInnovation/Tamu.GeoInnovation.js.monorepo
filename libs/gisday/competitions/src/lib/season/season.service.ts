@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { DeepPartial, Repository } from 'typeorm';
 
-import { CompetitionSeason } from '@tamu-gisc/gisday/common';
+import { CompetitionSeason } from '../entities/all.entities';
 
 import { BaseService } from '../_base/base.service';
 @Injectable()

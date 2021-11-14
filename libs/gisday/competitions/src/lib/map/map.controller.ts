@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { SubmissionLocation } from '@tamu-gisc/gisday/common';
+import { SubmissionLocation } from '../entities/all.entities';
 
 import { BaseController } from '../_base/base.controller';
 import { MapService } from './map.service';

@@ -3,7 +3,7 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { DeepPartial } from 'typeorm';
 import { Duplex } from 'stream';
 
-import { CompetitionSubmission, SubmissionMedia } from '@tamu-gisc/gisday/common';
+import { CompetitionSubmission, SubmissionMedia } from '../entities/all.entities';
 
 import { FormService } from '../form/form.service';
 import { BaseController } from '../_base/base.controller';

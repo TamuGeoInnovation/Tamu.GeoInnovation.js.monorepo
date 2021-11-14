@@ -5805,6 +5805,7 @@
             "tsConfig": "apps/gisday-competitions-nest/tsconfig.app.json",
             "assets": [
               "apps/gisday-competitions-nest/src/assets",
+              "apps/gisday-competitions-nest/src/package.json",
               {
                 "glob": "**/*",
                 "input": "./libs/assets/powershell",

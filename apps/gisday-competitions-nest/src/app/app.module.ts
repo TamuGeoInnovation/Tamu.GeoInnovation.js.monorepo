@@ -6,9 +6,9 @@ import {
   SubmissionLocation,
   SubmissionMedia,
   CompetitionForm,
-  CompetitionSeason
-} from '@tamu-gisc/gisday/common';
-import { GisdayCompetitionsModule } from '@tamu-gisc/gisday/competitions';
+  CompetitionSeason,
+  GisdayCompetitionsModule
+} from '@tamu-gisc/gisday/competitions';
 
 import { dbConfig } from '../environments/environment';
 import { AppController } from './app.controller';

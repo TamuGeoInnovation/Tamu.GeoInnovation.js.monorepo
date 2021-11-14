@@ -7,7 +7,7 @@ import {
   CompetitionSubmission,
   SubmissionLocation,
   SubmissionMedia
-} from '@tamu-gisc/gisday/common';
+} from '../entities/all.entities';
 
 import { SeasonController } from './season.controller';
 import { SeasonService } from './season.service';

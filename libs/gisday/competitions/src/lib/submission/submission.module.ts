@@ -7,7 +7,7 @@ import {
   CompetitionSubmission,
   SubmissionLocation,
   SubmissionMedia
-} from '@tamu-gisc/gisday/common';
+} from '../entities/all.entities';
 
 import { FormService } from '../form/form.service';
 import { SubmissionController } from './submission.controller';

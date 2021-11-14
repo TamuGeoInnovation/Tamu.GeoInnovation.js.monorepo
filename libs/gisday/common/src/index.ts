@@ -1,3 +1,3 @@
 export * from './lib/gisday-common.module';
 
-export * from './lib/entities/all.entities';
+// export * from './lib/entities/all.entities';
