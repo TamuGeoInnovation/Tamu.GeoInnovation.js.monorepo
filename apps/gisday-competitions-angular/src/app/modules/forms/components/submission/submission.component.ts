@@ -42,10 +42,8 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   public formValid: Observable<boolean>;
 
-  public submissionStatus = {
-    progress: 0,
-    status: 0
-  };
+  public submissionProgress: BehaviorSubject<number> = new BehaviorSubject(0);
+  public submissionStatus: BehaviorSubject<number> = new BehaviorSubject(0);
 
   private _destroy$: Subject<boolean> = new Subject();
   private _trackLocation: TrackLocation;
@@ -124,7 +122,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
     ])
       .pipe(
         switchMap(([file, settings]) => {
-          if (file !== undefined && this.form.valid && this.submissionStatus.status !== 1) {
+          if (file !== undefined && this.form.valid && this.submissionStatus.getValue() !== 1) {
             // FormData gets sent as multi-part form in request.
             const data: FormData = new FormData();
 
@@ -153,11 +151,11 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
             return this.ss.postSubmission(data).pipe(
               switchMap((event) => {
                 if (event.type === HttpEventType.UploadProgress) {
-                  if (this.submissionStatus.status !== 1) {
-                    this.submissionStatus.status = 1;
+                  if (this.submissionStatus.getValue() !== 1) {
+                    this.submissionStatus.next(1);
                   }
 
-                  this.submissionStatus.progress = event.loaded / event.total;
+                  this.submissionProgress.next(event.loaded / event.total);
                   return EMPTY;
                 } else if (event.type === HttpEventType.Response) {
                   this.router.navigate(['complete'], { relativeTo: this.route });
@@ -171,7 +169,8 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           }
         }),
         catchError((err) => {
-          this.submissionStatus.status = -1;
+          this.submissionStatus.next(-1);
+
           this.analytics.eventTrack.next({
             action: 'Submission Fail',
             properties: {

@@ -4,8 +4,8 @@
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",
-  "scope": "/app/",
-  "start_url": "/app/#/submission",
+  "scope": "/competitions/",
+  "start_url": "/competitions/submission",
   "description": "The Official GIS Day VGA Competitions App.",
   "icons": [
     {
