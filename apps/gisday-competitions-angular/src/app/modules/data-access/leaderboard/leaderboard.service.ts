@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +12,22 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 export class LeaderboardService {
   public resource: string;
 
-  constructor(private http: HttpClient, private environment: EnvironmentService) {
+  constructor(private http: HttpClient, private environment: EnvironmentService, private readonly ns: NotificationService) {
     this.resource = `${this.environment.value('api_url')}/leaderboard`;
   }
 
   public getScores(): Observable<ILeaderboardItem[]> {
-    return this.http.get<Array<ILeaderboardItem>>(this.resource);
+    return this.http.get<Array<ILeaderboardItem>>(this.resource).pipe(
+      catchError((err) => {
+        this.ns.toast({
+          id: 'leaderboard-load-failure',
+          title: 'Failed to Load Leader Board Totals',
+          message: `The server experienced an error loading the leader board totals. Please try again later. (${err.status})`
+        });
+
+        throw new Error('Failed loading leaderboard');
+      })
+    );
   }
 }
 

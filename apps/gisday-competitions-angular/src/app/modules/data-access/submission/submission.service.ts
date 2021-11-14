@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 export class SubmissionService {
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient) {
+  constructor(private env: EnvironmentService, private http: HttpClient, private readonly ns: NotificationService) {
     this.resource = `${this.env.value('api_url')}/submission`;
   }
 
@@ -29,7 +30,13 @@ export class SubmissionService {
       })
       .pipe(
         catchError((err) => {
-          throw new Error(`Could not post submission: ${err.message}`);
+          this.ns.toast({
+            id: 'submission-upload-failure',
+            title: 'Server Error Uploading Submission',
+            message: `The server experienced an error processing your submission. Please try again later. (${err.status})`
+          });
+
+          throw new Error(`Failed uploading submission.`);
         })
       );
   }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { AnyFilesInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 import { DeepPartial } from 'typeorm';
@@ -15,8 +15,13 @@ export class FormController extends BaseController<CompetitionForm> {
   }
 
   @Get(':year')
-  public getForm(@Param() params) {
-    return this.service.getSeason(params.year);
+  public async getForm(@Param() params) {
+    const season = await this.service.getSeason(params.year);
+    if (season) {
+      return season;
+    } else {
+      throw new NotFoundException();
+    }
   }
 
   @Post(':year')
