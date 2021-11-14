@@ -1,7 +1,9 @@
+import { prodDbConfig as config } from './ormconfig';
+
 export const environment = {
   production: true,
   port: 27029,
   prefix: ''
 };
 
-export { prodDbConfig as dbCofig } from './ormconfig';
+export const dbConfig = config;

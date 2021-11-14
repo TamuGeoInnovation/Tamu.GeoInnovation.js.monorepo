@@ -1,7 +1,9 @@
+import { localDbConfig as config } from './ormconfig';
+
 export const environment = {
   production: false,
   port: 3333,
   prefix: 'api'
 };
 
-export { localDbConfig as dbConfig } from './ormconfig';
+export const dbConfig = config;

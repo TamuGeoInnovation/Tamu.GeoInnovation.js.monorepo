@@ -10,7 +10,7 @@ import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
 export * from './definitions';
 
-export const api_url = 'http://nodes.geoservices.tamu.edu/api/gisday';
+export const api_url = 'https://nodes.geoservices.tamu.edu/api/gisday';
 
 export const AuthLoginUrl = `https://txgisday.org/Login?ret=https://txgisday.org/Login`;
 
