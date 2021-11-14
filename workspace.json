@@ -1034,6 +1034,7 @@
                   "with": "apps/gisday-competitions-angular/src/environments/environment.dev.ts"
                 }
               ],
+              "baseHref": "/competitions/",
               "aot": true,
               "buildOptimizer": true,
               "extractLicenses": true,
