@@ -26,4 +26,3 @@ stages:
       - template: jobs/build.yml
         parameters:
           buildtype: production
-          DependsOn: build_development
