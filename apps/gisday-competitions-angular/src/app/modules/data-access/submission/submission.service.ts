@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -15,10 +15,17 @@ export class SubmissionService {
   }
 
   public postSubmission(submission: FormData) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'ngsw-bypass': ''
+      })
+    };
+
     return this.http
       .post(`${this.resource}/upload`, submission, {
         reportProgress: true,
-        observe: 'events'
+        observe: 'events',
+        headers: httpOptions.headers
       })
       .pipe(
         catchError((err) => {
