@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { CompetitionForm } from '@tamu-gisc/gisday/common';
+import { CompetitionForm } from '@tamu-gisc/gisday/competitions';
 
 @Component({
   selector: 'tamu-gisc-admin',

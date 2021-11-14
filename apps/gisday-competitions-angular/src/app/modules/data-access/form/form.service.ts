@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { CompetitionForm, CompetitionSeason } from '@tamu-gisc/gisday/common';
+import { CompetitionForm, CompetitionSeason } from '@tamu-gisc/gisday/competitions';
 
 @Injectable({
   providedIn: 'root'

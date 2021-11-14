@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
 
-import { CompetitionForm } from '@tamu-gisc/gisday/common';
+import { CompetitionForm } from '@tamu-gisc/gisday/competitions';
 
 import { FormService } from '../../../../modules/data-access/form/form.service';
 

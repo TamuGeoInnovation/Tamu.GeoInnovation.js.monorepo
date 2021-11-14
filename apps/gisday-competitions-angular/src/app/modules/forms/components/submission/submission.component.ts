@@ -11,7 +11,7 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
-import { CompetitionForm } from '@tamu-gisc/gisday/common';
+import { CompetitionForm } from '@tamu-gisc/gisday/competitions';
 
 import { SubmissionService } from '../../../data-access/submission/submission.service';
 
