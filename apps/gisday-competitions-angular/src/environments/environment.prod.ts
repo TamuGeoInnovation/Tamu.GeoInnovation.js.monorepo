@@ -5,14 +5,14 @@ export const environment = {
 import { LayerSource } from '@tamu-gisc/common/types';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/search';
 
-import { Connections, Definitions as d, Protocol, HostName } from './definitions';
+import { Connections, Definitions as d } from './definitions';
 import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
 export * from './definitions';
 
 export const api_url = 'http://nodes.geoservices.tamu.edu/api/gisday';
 
-export const AuthLoginUrl = `${Protocol}/${HostName}/Login?ret=${Protocol}/${HostName}/Login`;
+export const AuthLoginUrl = `https://txgisday.org/Login?ret=https://txgisday.org/Login`;
 
 export const LocalStoreSettings = {
   subKey: 'gisday-app'
