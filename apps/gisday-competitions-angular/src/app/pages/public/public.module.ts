@@ -17,7 +17,7 @@ const routes: Routes = [
       {
         path: 'map',
         loadChildren: () => import('./map/map.module').then((m) => m.MapModule),
-        // canActivate: [DeviceGuard, AuthGuard],
+        canActivate: [DeviceGuard, AuthGuard],
         data: {
           deviceModes: ['standalone'],
           deviceFailRedirect: '/install'
@@ -26,7 +26,7 @@ const routes: Routes = [
       {
         path: 'submission',
         loadChildren: () => import('./submission/submission.module').then((m) => m.SubmissionModule),
-        // canActivate: [DeviceGuard, AuthGuard],
+        canActivate: [DeviceGuard, AuthGuard],
         data: {
           deviceModes: ['standalone'],
           deviceFailRedirect: '/install'
@@ -35,7 +35,7 @@ const routes: Routes = [
       {
         path: 'leaderboard',
         loadChildren: () => import('./leaderboard/leaderboard.module').then((m) => m.LeaderboardModule),
-        // canActivate: [DeviceGuard, AuthGuard],
+        canActivate: [DeviceGuard, AuthGuard],
         data: {
           deviceModes: ['standalone'],
           deviceFailRedirect: '/install'
@@ -44,7 +44,7 @@ const routes: Routes = [
       {
         path: 'login',
         loadChildren: () => import('./login/login.module').then((m) => m.LoginModule),
-        // canActivate: [DeviceGuard],
+        canActivate: [DeviceGuard],
         data: {
           deviceModes: ['standalone'],
           deviceFailRedirect: '/install'
@@ -53,7 +53,7 @@ const routes: Routes = [
       {
         path: 'install',
         loadChildren: () => import('./install/install.module').then((m) => m.InstallModule),
-        // canActivate: [DeviceGuard],
+        canActivate: [DeviceGuard],
         data: {
           deviceModes: ['standalone'],
           devicePassRedirect: '/',
