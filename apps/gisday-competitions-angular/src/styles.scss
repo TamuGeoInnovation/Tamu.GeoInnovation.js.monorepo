@@ -12,6 +12,7 @@
 
 @import 'libs/sass/1140';
 @import 'libs/sass/spacing';
+@import 'libs/sass/modules/loaders';
 
 html {
   height: 100%;
@@ -144,3 +145,7 @@ router-outlet {
 }
 
 //////////////////////////////////////////////////////////////////
+
+.loader-container {
+  padding: 4.5rem 0;
+}

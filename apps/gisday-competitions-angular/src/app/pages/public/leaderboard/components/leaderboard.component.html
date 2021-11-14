@@ -2,21 +2,29 @@
   <h1 class="bordered">Leaderboard</h1>
 </div>
 
-<div class="leaderboard-container" *ngIf="(leaders$ | async) as leaders">
-  <div class="leader header">
-    <div class="rank">Rank</div>
-    <div class="identity">Participant</div>
-    <div class="points">Points</div>
-  </div>
-
-  <div class="leader" *ngFor="let leader of leaders; let i = index;" [ngClass]="{me: (me$ | async) == leader.guid}">
-    <div class="rank">{{i+1}}</div>
-    <div class="identity">
-      <div [ngSwitch]="me$ | async">
-        <div *ngSwitchCase="leader.guid">You</div>
-        <div *ngSwitchDefault>{{leader.identity}}</div>
-      </div>
+<ng-container *ngIf="(leaders$ | async) as leaders; else loader">
+  <div class="leaderboard-container">
+    <div class="leader header">
+      <div class="rank">Rank</div>
+      <div class="identity">Participant</div>
+      <div class="points">Points</div>
     </div>
-    <div class="points">{{leader.points}}</div>
+
+    <div class="leader" *ngFor="let leader of leaders; let i = index;" [ngClass]="{me: (me$ | async) == leader.guid}">
+      <div class="rank">{{i+1}}</div>
+      <div class="identity">
+        <div [ngSwitch]="me$ | async">
+          <div *ngSwitchCase="leader.guid">You</div>
+          <div *ngSwitchDefault>{{leader.identity}}</div>
+        </div>
+      </div>
+      <div class="points">{{leader.points}}</div>
+    </div>
   </div>
-</div>
+</ng-container>
+
+<ng-template #loader>
+  <div class="loader-container">
+    <div class="spinning-loader"></div>
+  </div>
+</ng-template>
