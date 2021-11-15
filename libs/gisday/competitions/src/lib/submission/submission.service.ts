@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { DeepPartial, Repository } from 'typeorm';
@@ -21,16 +21,20 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     entity: DeepPartial<CompetitionSubmission>,
     blobs: Array<DeepPartial<SubmissionMedia>>
   ) {
-    const sub = await this.submissionRepo.create(entity).save();
+    if (entity.season && entity.location && entity.userGuid && entity.value && blobs && blobs.length > 0) {
+      const sub = await this.submissionRepo.create(entity).save();
 
-    await Promise.all(
-      blobs.map((b) => {
-        b.submission = sub;
-        return this.mediaRepo.create(b).save();
-      })
-    );
+      await Promise.all(
+        blobs.map((b) => {
+          b.submission = sub;
+          return this.mediaRepo.create(b).save();
+        })
+      );
 
-    return sub;
+      return sub;
+    } else {
+      throw new BadRequestException();
+    }
   }
 
   public createSubmissionMedia(entity: DeepPartial<SubmissionMedia>) {
