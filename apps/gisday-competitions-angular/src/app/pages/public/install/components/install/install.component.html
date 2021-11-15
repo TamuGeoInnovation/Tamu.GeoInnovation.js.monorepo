@@ -97,6 +97,53 @@
           </ul>
         </tamu-gisc-accordion-content>
       </tamu-gisc-accordion>
+
+      <tamu-gisc-accordion>
+        <tamu-gisc-accordion-header>How do I grant this application location access?</tamu-gisc-accordion-header>
+        <tamu-gisc-accordion-content>
+          <p>Are you seeing a location forbidden message when you try to submit a response? This can happen because either the location access was declined or because of system settings. Location <strong>is required</strong> to participate because we are interested in collecting geographic data on the submissions. Below are a few pointers to grant this application location access.</p>
+
+          <p><strong>Trigger location access prompt:</strong> If you never saw the application request location access, this is a good first step. Press the button below to initiate geolocation which should prompt your device to ask you to allow this site access to location while the application is being used.</p>
+
+          <div class="button leader-2 trailer-2" (click)="initiateLocationRequest()" [class.disabled]="locationRequested | async">{{(locationRequested | async) ? 'Location Requested' : 'Request Location'}}</div>
+
+          <p>If the above resulted in an error, continue onto the following steps.</p>
+
+          <p class="leader-2"><strong>Enable System Location Services:</strong> Check that your device location services are enabled in system settings and enabled for Safari sites:</p>
+
+          <p><strong>1.</strong> In your <strong>Settings</strong> app, tap on the <strong>Privacy</strong> link:</p>
+
+          <img src="assets/images/graphics/step-1-privacy.jpg" alt="Privacy settings link screenshot" />
+
+          <p><strong>2.</strong> Tap on <strong>Location Services</strong>:</p>
+
+          <img src="assets/images/graphics/step-2-location-services.jpg" alt="Location services settings link screenshot" />
+
+          <p><strong>3.</strong> Tap on <strong>Safari Websites</strong>:</p>
+
+          <img src="assets/images/graphics/step-3-safari-sites.jpg" alt="Safari sites link screenshot" />
+
+          <p><strong>4.</strong> Ensure that location access is enabled <strong>While Using the App</strong> and enable <strong>Precise Location</strong>:</p>
+
+          <img src="assets/images/graphics/step-4-while-using-app.jpg" alt="Safari location while using the app screenshot" />
+
+          <p class="leader-3"><strong>Enable Location in Safari Settings:</strong> Check that location is not disabled for Safari:</p>
+
+          <p><strong>1.</strong> In your <strong>Settings</strong> app, tap on the <strong>Safari</strong> link:</p>
+
+          <img src="assets/images/graphics/step-1-safari-app-settings.jpg" alt="Safari App Settings link screenshot" />
+
+          <p><strong>2.</strong> Tap on the <strong>Location</strong> link:</p>
+
+          <img src="assets/images/graphics/step-2-safari-location-settings.jpg" alt="Safari App location settings link screenshot" />
+
+          <p><strong>3.</strong> Ensure that location access is not set to <strong>Deny</strong>. Set it to <strong>Ask</strong> for more convenient security:</p>
+
+          <img src="assets/images/graphics/step-3-safari-location-ask.jpg" alt="Safari location ask on all websites screenshot" />
+
+          <p>With all those steps completed, your device should now be able to grant location access to the GIS Day Competitions App. Verify with the <strong>Request Location</strong> button above.</p>
+        </tamu-gisc-accordion-content>
+      </tamu-gisc-accordion>
     </div>
   </div>
 
