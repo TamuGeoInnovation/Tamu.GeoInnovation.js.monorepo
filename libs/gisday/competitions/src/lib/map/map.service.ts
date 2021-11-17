@@ -19,7 +19,8 @@ export class MapService extends BaseService<SubmissionLocation> {
 
   public async getLocations(geoJson: boolean = false) {
     if (geoJson) {
-      const response = await this.locationRepo.find();
+      const response = await this.locationRepo.createQueryBuilder('locations').orderBy('locations.created', 'ASC').getMany();
+
       if (response) {
         const geoJsonPoints = response.map((location) => {
           return {
