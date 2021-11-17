@@ -22,7 +22,40 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     blobs: Array<DeepPartial<SubmissionMedia>>
   ) {
     if (entity.season && entity.location && entity.userGuid && entity.value && blobs && blobs.length > 0) {
-      const sub = await this.submissionRepo.create(entity).save();
+      const truncated: DeepPartial<CompetitionSubmission['location']> = {
+        latitude:
+          entity.location.latitude !== undefined && entity.location.latitude !== null
+            ? parseFloat(entity.location.latitude.toFixed(5))
+            : -1,
+        longitude:
+          entity.location.longitude !== undefined && entity.location.longitude !== null
+            ? parseFloat(entity.location.longitude.toFixed(5))
+            : -1,
+        accuracy:
+          entity.location.accuracy !== undefined && entity.location.accuracy !== null
+            ? parseFloat(entity.location.accuracy.toFixed(2))
+            : -1,
+        altitude:
+          entity.location.altitude !== undefined && entity.location.altitude !== null
+            ? parseFloat(entity.location.altitude.toFixed(2))
+            : -1,
+        altitudeAccuracy:
+          entity.location.altitudeAccuracy !== undefined && entity.location.altitudeAccuracy !== null
+            ? parseFloat(entity.location.altitudeAccuracy.toFixed(2))
+            : -1,
+        heading:
+          entity.location.heading !== undefined && entity.location.heading !== null
+            ? parseFloat(entity.location.heading.toFixed(2))
+            : -1,
+        speed:
+          entity.location.speed !== undefined && entity.location.speed !== null
+            ? parseFloat(entity.location.speed.toFixed(3))
+            : -1
+      };
+
+      const withTrunc = { ...entity, location: truncated };
+
+      const sub = await this.submissionRepo.create(withTrunc).save();
 
       await Promise.all(
         blobs.map((b) => {
