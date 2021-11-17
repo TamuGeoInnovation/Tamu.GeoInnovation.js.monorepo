@@ -17,6 +17,10 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     super(submissionRepo);
   }
 
+  public getAllByCreated() {
+    return this.submissionRepo.createQueryBuilder('submissions').orderBy('created', 'ASC').getMany();
+  }
+
   public async createCompetitionSubmission(
     entity: DeepPartial<CompetitionSubmission>,
     blobs: Array<DeepPartial<SubmissionMedia>>

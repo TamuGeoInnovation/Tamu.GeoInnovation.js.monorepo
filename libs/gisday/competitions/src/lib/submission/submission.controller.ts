@@ -15,6 +15,11 @@ export class SubmissionController extends BaseController<CompetitionSubmission> 
     super(service);
   }
 
+  @Get('timeseries')
+  public getSubmissionsByTime() {
+    return this.service.getAllByCreated();
+  }
+
   @Get(':guid/image')
   public async getSubmission(@Param() param, @Res() res) {
     const submission = await this.service.getOne({
