@@ -8,7 +8,7 @@ import { map, pluck, shareReplay, startWith } from 'rxjs/operators';
 import { CompetitionForm, ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/competitions';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
-import { FormService } from '../../../../modules/data-access/form/form.service';
+import { FormService } from '../../../../../../modules/data-access/form/form.service';
 
 import esri = __esri;
 

@@ -30,7 +30,12 @@ WebFont.load({
 const routes: Routes = [
   {
     path: 'designer',
-    loadChildren: () => import('./pages/admin/admin.module').then((m) => m.AdminModule),
+    loadChildren: () => import('./pages/admin/pages/designer/designer.module').then((m) => m.DesignerModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'viewer',
+    loadChildren: () => import('./pages/admin/pages/designer/designer.module').then((m) => m.DesignerModule),
     canActivate: [AuthGuard]
   },
   {
