@@ -1,17 +1,17 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DeepPartial, getRepository, Repository } from 'typeorm';
 
-import { DeepPartial, Repository } from 'typeorm';
-
-import { CompetitionSubmission, SubmissionLocation, SubmissionMedia } from '../entities/all.entities';
+import { IsEnum, IsNotEmpty } from 'class-validator';
 
 import { BaseService } from '../_base/base.service';
+import { CompetitionSubmission, CompetitionSubmissionValidationStatus, SubmissionMedia } from '../entities/all.entities';
+import { VALIDATION_STATUS } from '../enums/competitions.enums';
 
 @Injectable()
 export class SubmissionService extends BaseService<CompetitionSubmission> {
   constructor(
     @InjectRepository(CompetitionSubmission) private submissionRepo: Repository<CompetitionSubmission>,
-    @InjectRepository(SubmissionLocation) private locationRepo: Repository<SubmissionLocation>,
     @InjectRepository(SubmissionMedia) private mediaRepo: Repository<SubmissionMedia>
   ) {
     super(submissionRepo);
@@ -58,4 +58,49 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
   public createSubmissionMedia(entity: DeepPartial<SubmissionMedia>) {
     return this.mediaRepo.create(entity);
   }
+
+  public async validateSubmission(dto: ValidateSubmissionDto) {
+    const submission = await this.submissionRepo.findOne({
+      where: {
+        guid: dto.guid
+      },
+      relations: ['validationStatus']
+    });
+
+    if (submission) {
+      if (submission.validationStatus) {
+        submission.validationStatus.status = dto.status;
+        submission.validationStatus.verifiedBy = dto.userGuid;
+
+        return submission.save();
+      } else {
+        const validationStatus = getRepository(CompetitionSubmissionValidationStatus).create({
+          status: dto.status,
+          verifiedBy: dto.userGuid
+        });
+
+        try {
+          submission.validationStatus = validationStatus;
+          await submission.save();
+
+          return submission;
+        } catch (err) {
+          throw new InternalServerErrorException();
+        }
+      }
+    } else {
+      throw new NotFoundException();
+    }
+  }
+}
+
+export class ValidateSubmissionDto {
+  @IsNotEmpty()
+  public guid: string;
+
+  @IsNotEmpty()
+  public userGuid: string;
+
+  @IsEnum(VALIDATION_STATUS)
+  public status: VALIDATION_STATUS;
 }

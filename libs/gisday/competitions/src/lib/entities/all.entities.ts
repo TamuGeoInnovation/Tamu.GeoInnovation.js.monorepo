@@ -10,13 +10,11 @@ import {
   OneToMany,
   ManyToOne,
   OneToOne,
-  JoinColumn,
-  ManyToMany,
-  JoinTable
+  JoinColumn
 } from 'typeorm';
 
-import { Multer } from 'multer';
 import { v4 as guid } from 'uuid';
+import { VALIDATION_STATUS } from '../enums/competitions.enums';
 
 @Entity()
 export class GISDayCompetitionBaseEntity extends BaseEntity {
@@ -87,6 +85,15 @@ export class CompetitionSeason extends GISDayCompetitionBaseEntity implements IC
   public form?: CompetitionForm;
 }
 
+@Entity()
+export class CompetitionSubmissionValidationStatus extends GISDayCompetitionBaseEntity {
+  @Column({ default: VALIDATION_STATUS.unverified })
+  public status: string;
+
+  @Column()
+  public verifiedBy: string;
+}
+
 @Entity({
   name: 'submissions'
 })
@@ -107,6 +114,10 @@ export class CompetitionSubmission extends GISDayCompetitionBaseEntity implement
 
   @OneToMany(() => SubmissionMedia, (s) => s.submission, { cascade: true })
   public blobs?: SubmissionMedia[];
+
+  @OneToOne(() => CompetitionSubmissionValidationStatus, { cascade: true })
+  @JoinColumn()
+  public validationStatus: CompetitionSubmissionValidationStatus;
 }
 
 @Entity({
@@ -131,6 +142,11 @@ export interface ICompetitionSubmission {
   value: string;
   season: ICompetitionSeason;
   blobs?: ISubmissionMedia[];
+}
+
+export interface ICompetitionSubmissionValidationStatus extends CompetitionSubmissionValidationStatus {
+  status: VALIDATION_STATUS;
+  validatedBy: string;
 }
 
 export interface ISubmissionMedia {

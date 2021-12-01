@@ -1,11 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
-import { SubmissionLocation } from '../entities/all.entities';
 
 import { BaseController } from '../_base/base.controller';
+import { CompetitionSubmission } from '../entities/all.entities';
 import { MapService } from './map.service';
 
 @Controller('map')
-export class MapController extends BaseController<SubmissionLocation> {
+export class MapController extends BaseController<CompetitionSubmission> {
   constructor(private service: MapService) {
     super(service);
   }

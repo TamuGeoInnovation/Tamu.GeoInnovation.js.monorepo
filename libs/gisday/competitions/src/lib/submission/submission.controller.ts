@@ -7,7 +7,9 @@ import { CompetitionSubmission, SubmissionMedia } from '../entities/all.entities
 
 import { FormService } from '../form/form.service';
 import { BaseController } from '../_base/base.controller';
-import { SubmissionService } from './submission.service';
+import { SubmissionService, ValidateSubmissionDto } from './submission.service';
+
+import { Multer } from 'multer';
 
 @Controller('submission')
 export class SubmissionController extends BaseController<CompetitionSubmission> {
@@ -70,5 +72,10 @@ export class SubmissionController extends BaseController<CompetitionSubmission> 
     } else {
       return this.service.createOne(sub);
     }
+  }
+
+  @Post('validate')
+  public async validateSubmission(@Body() body: ValidateSubmissionDto) {
+    return this.service.validateSubmission(body);
   }
 }

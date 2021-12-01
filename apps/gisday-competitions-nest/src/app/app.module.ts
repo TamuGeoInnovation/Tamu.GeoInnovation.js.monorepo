@@ -7,14 +7,22 @@ import {
   SubmissionMedia,
   CompetitionForm,
   CompetitionSeason,
-  GisdayCompetitionsModule
+  GisdayCompetitionsModule,
+  CompetitionSubmissionValidationStatus
 } from '@tamu-gisc/gisday/competitions';
 
 import { dbConfig } from '../environments/environment';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-const entities = [CompetitionSubmission, SubmissionLocation, SubmissionMedia, CompetitionForm, CompetitionSeason];
+const entities = [
+  CompetitionSubmission,
+  CompetitionSubmissionValidationStatus,
+  SubmissionLocation,
+  SubmissionMedia,
+  CompetitionForm,
+  CompetitionSeason
+];
 
 @Module({
   imports: [TypeOrmModule.forRoot({ ...dbConfig, entities }), GisdayCompetitionsModule],
