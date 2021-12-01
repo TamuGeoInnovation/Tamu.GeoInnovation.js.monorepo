@@ -10,12 +10,9 @@ import {
   OneToMany,
   ManyToOne,
   OneToOne,
-  JoinColumn,
-  ManyToMany,
-  JoinTable
+  JoinColumn
 } from 'typeorm';
 
-import { Multer } from 'multer';
 import { v4 as guid } from 'uuid';
 
 @Entity()

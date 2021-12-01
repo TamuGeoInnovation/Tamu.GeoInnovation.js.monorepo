@@ -10,13 +10,13 @@ import { MapConfig } from '@tamu-gisc/maps/esri';
 export class ViewerComponent implements OnInit {
   public mapConfig: MapConfig = {
     basemap: {
-      basemap: 'dark-gray'
+      basemap: 'dark-gray-vector'
     },
     view: {
       mode: '2d',
       properties: {
         center: [-96.34553, 30.61252],
-        zoom: 16
+        zoom: 15
       }
     }
   };
