@@ -27,7 +27,10 @@ export class MapService extends BaseService<CompetitionSubmission> {
           return {
             type: 'Feature',
             properties: {
-              ...submission.validationStatus
+              ...submission.validationStatus,
+              guid: submission.guid,
+              created: submission.created,
+              updated: submission.updated
             },
             geometry: {
               type: 'Point',

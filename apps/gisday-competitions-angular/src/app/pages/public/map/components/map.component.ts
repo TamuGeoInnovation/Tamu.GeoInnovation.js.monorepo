@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { EsriMapService } from '@tamu-gisc/maps/esri';
+
 import esri = __esri;
 
 @Component({
@@ -11,7 +14,7 @@ import esri = __esri;
 export class MapComponent implements OnInit {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
 
-  constructor() {}
+  constructor(private ms: EsriMapService, private env: EnvironmentService) {}
 
   public config = {
     basemap: {
@@ -41,5 +44,32 @@ export class MapComponent implements OnInit {
     }
   };
 
-  public ngOnInit() {}
+  public ngOnInit() {
+    this.ms.store.subscribe((instance) => {
+      const api_url = this.env.value('api_url');
+
+      this.ms.loadLayers([
+        {
+          type: 'geojson',
+          id: 'submissions-layer',
+          title: 'Submissions',
+          url: `${api_url}/map/geojson`,
+          listMode: 'show',
+          loadOnInit: true,
+          visible: true,
+          native: {
+            renderer: {
+              type: 'simple',
+              symbol: {
+                type: 'simple-marker',
+                style: 'circle',
+                size: 10,
+                color: '#ffc5c5'
+              }
+            }
+          }
+        }
+      ]);
+    });
+  }
 }
