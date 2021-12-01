@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, from } from 'rxjs';
-
-import { EsriMapService, MapServiceInstance, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
+import { BehaviorSubject } from 'rxjs';
 
 import esri = __esri;
 
@@ -13,23 +11,7 @@ import esri = __esri;
 export class MapComponent implements OnInit {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
 
-  constructor(private readonly mapService: EsriMapService, private readonly moduleProvider: EsriModuleProviderService) {
-    from(this.mapService.store).subscribe((mapInstance: MapServiceInstance) => {
-      this.moduleProvider
-        .require(['Graphic', 'Point'])
-        .then(
-          ([Graphic, Point]: [
-            esri.GraphicConstructor,
-            esri.PointConstructor,
-            esri.TrackConstructor,
-            esri.CompassConstructor
-          ]) => {}
-        )
-        .catch((err) => {
-          console.error(err);
-        });
-    });
-  }
+  constructor() {}
 
   public config = {
     basemap: {

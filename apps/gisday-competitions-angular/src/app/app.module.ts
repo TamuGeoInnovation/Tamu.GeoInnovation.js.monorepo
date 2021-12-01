@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { Angulartics2Module } from 'angulartics2';
@@ -12,13 +13,11 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { NotificationModule, NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
-import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 
 import * as environment from '../environments/environment';
 import { AppComponent } from './app.component';
 import { AuthService } from './modules/auth/services/auth.service';
-import { HttpClientModule } from '@angular/common/http';
 import { AuthGuard } from './modules/guards/auth.guard';
 
 WebFont.load({
@@ -35,7 +34,7 @@ const routes: Routes = [
   },
   {
     path: 'viewer',
-    loadChildren: () => import('./pages/admin/pages/designer/designer.module').then((m) => m.DesignerModule),
+    loadChildren: () => import('./pages/admin/pages/viewer/viewer.module').then((m) => m.ViewerModule),
     canActivate: [AuthGuard]
   },
   {
@@ -56,7 +55,6 @@ const routes: Routes = [
     EnvironmentModule,
     NotificationModule,
     ResponsiveModule,
-    CommonNgxRouterModule,
     SettingsModule
   ],
   providers: [NotificationService, { provide: env, useValue: environment }, AuthService],
