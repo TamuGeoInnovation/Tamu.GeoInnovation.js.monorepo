@@ -5,18 +5,25 @@
 </ng-container>
 
 <ng-template #showSubmissionDetails>
-  <div class="submission-image">
-    <div [ngSwitch]="submissionImage  | async" class="image-container">
-      <div *ngSwitchCase="null" class="image-wrapper"><p>Image will preview here.</p></div>
-      <div *ngSwitchCase="false" class="image-wrapper"><p>Downloading image...</p></div>
-      <div *ngSwitchDefault class="image-wrapper"><img [src]="submissionImage | async" /></div>
+  <div class="submission-details">
+    <div class="details-section">Image</div>
+    <div class="submission-image">
+      <div [ngSwitch]="submissionImage  | async" class="image-container">
+        <div *ngSwitchCase="null" class="image-wrapper"><p>Image will preview here.</p></div>
+        <div *ngSwitchCase="false" class="image-wrapper"><p>Downloading image...</p></div>
+        <div *ngSwitchDefault class="image-wrapper"><img [src]="submissionImage | async" /></div>
+      </div>
     </div>
-  </div>
 
-  <div class="submission-responses">
-    <div class="submission-response" *ngFor="let response of mergedSubmission | async">
-      <p class="response-question-title">{{response.question}}</p>
-      <p class="response-question-answer"><span class="material-icons medium">arrow_right</span>{{response.answer}}</p>
+    <div class="details-section">Responses</div>
+    <div class="submission-responses">
+      <div class="submission-response" *ngFor="let response of mergedSubmission | async">
+        <p class="response-question-title">{{response.question}}</p>
+        <p class="response-question-answer"><span class="material-icons medium">arrow_right</span>{{response.answer}}</p>
+      </div>
     </div>
+
+    <!-- <div class="details-section">Status</div>
+    <tamu-gisc-radio-group></tamu-gisc-radio-group> -->
   </div>
 </ng-template>
