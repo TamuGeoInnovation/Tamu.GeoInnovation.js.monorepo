@@ -1,1 +1,21 @@
+<tamu-gisc-drawer [width]="'27rem'">
+  <div class="drawer-menu">
+    <div class="drawer-menu__items">
+      <div class="drawer-menu__item" title="Seasons">
+        <a [routerLink]="['/viewer']" [queryParamsHandling]="'preserve'" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><span class="material-icons-outlined">festival</span></a>
+      </div>
+      <!-- <div class="drawer-menu__item" title="Statistics">
+        <a [routerLink]="['/viewer/statistics']" [queryParamsHandling]="'preserve'" routerLinkActive="active"><span class="material-icons-outlined">analytics</span></a>
+      </div> -->
+      <div class="drawer-menu__item" title="Review Submissions">
+        <a [routerLink]="['/viewer/review']" [queryParamsHandling]="'preserve'" routerLinkActive="active"><span class="material-icons-outlined">check_circle</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</tamu-gisc-drawer>
+
 <tamu-gisc-esri-map [config]="mapConfig"></tamu-gisc-esri-map>

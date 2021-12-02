@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
+import { CompetitionSubmission } from '@tamu-gisc/gisday/competitions';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
@@ -39,5 +40,13 @@ export class SubmissionService {
           throw new Error(`Failed uploading submission.`);
         })
       );
+  }
+
+  public getSubmissionDetails(submissionGuid: string) {
+    return this.http.get<CompetitionSubmission>(`${this.resource}/${submissionGuid}`);
+  }
+
+  public getImage(submissionGuid) {
+    return this.http.get(`${this.resource}/${submissionGuid}/image`, { responseType: 'blob' });
   }
 }

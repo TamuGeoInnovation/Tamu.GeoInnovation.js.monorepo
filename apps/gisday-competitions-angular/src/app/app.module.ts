@@ -22,7 +22,7 @@ import { AuthGuard } from './modules/guards/auth.guard';
 
 WebFont.load({
   google: {
-    families: ['Material Icons', 'Open Sans:300,400,600', 'Oswald:300,400']
+    families: ['Material Icons', 'Material Icons Outlined', 'Open Sans:300,400,600', 'Oswald:300,400']
   }
 });
 

@@ -10,9 +10,11 @@
 //   GRID AND RESETS
 //  ==========================================================================
 
+@import 'libs/gisday/sass/variables';
 @import 'libs/sass/1140';
 @import 'libs/sass/spacing';
 @import 'libs/sass/modules/loaders';
+@import 'libs/sass/modules/tables';
 
 html {
   height: 100%;
@@ -148,4 +150,11 @@ router-outlet {
 
 .loader-container {
   padding: 4.5rem 0;
+}
+
+.material-icons {
+  &.medium {
+    font-size: 1.1rem;
+    padding: 0.25rem;
+  }
 }

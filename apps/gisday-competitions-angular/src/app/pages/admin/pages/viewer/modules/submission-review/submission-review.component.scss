@@ -1,0 +1,38 @@
+@import 'libs/sass/mixins';
+
+.submission-image {
+  width: 100%;
+  background: #f5f5f5;
+  border-radius: 7pt;
+  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+
+  .image-wrapper {
+    height: 25rem;
+    width: 100%;
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-items(center);
+    @include justify-content(center);
+  }
+
+  img {
+    height: inherit;
+    margin: 0;
+  }
+}
+
+.submission-response {
+  margin-bottom: 0.75rem;
+}
+
+.response-question-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  font-size: 1.1rem;
+}
+
+.response-question-answer {
+  @include flexbox();
+  @include align-items(center);
+}
