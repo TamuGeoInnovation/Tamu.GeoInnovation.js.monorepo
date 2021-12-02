@@ -38,28 +38,7 @@ export const NotificationEvents: NotificationProperties[] = [
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
 
-export const LayerSources: LayerSource[] = [
-  {
-    type: 'geojson',
-    id: d.SUBMISSIONS.layerId,
-    title: d.SUBMISSIONS.name,
-    url: `${api_url}/map/geojson`,
-    listMode: 'show',
-    loadOnInit: true,
-    visible: true,
-    native: {
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-marker',
-          style: 'circle',
-          size: 10,
-          color: '#ffc5c5'
-        }
-      }
-    }
-  }
-];
+export const LayerSources: LayerSource[] = [];
 
 const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
   f: 'json',

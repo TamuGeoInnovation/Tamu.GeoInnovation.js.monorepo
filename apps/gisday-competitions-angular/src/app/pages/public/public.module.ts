@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
+import { UINavigationMobileTabModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tab';
+
 import { DeviceGuard } from '../../modules/guards/device.guard';
 import { AuthGuard } from '../../modules/guards/auth.guard';
 import { PublicComponent } from './public.component';
@@ -64,7 +66,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), UINavigationMobileTabModule],
   declarations: [PublicComponent]
 })
 export class PublicModule {}
