@@ -1,5 +1,11 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty } from 'class-validator';
 
+import { VALIDATION_STATUS } from '../enums/competitions.enums';
+
+export class GetSubmissionDto {
+  @IsNotEmpty()
+  public guid: string;
+}
 export class GetSeasonStatisticsDto {
   @IsNotEmpty()
   public guid: string;
@@ -20,4 +26,15 @@ export class SeasonStatisticsDto {
       [count: string]: number;
     };
   };
+}
+
+export class ValidateSubmissionDto {
+  @IsNotEmpty()
+  public guid: string;
+
+  @IsNotEmpty()
+  public userGuid: string;
+
+  @IsEnum(VALIDATION_STATUS)
+  public status: VALIDATION_STATUS;
 }

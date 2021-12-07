@@ -7,7 +7,8 @@ import { CompetitionSubmission, SubmissionMedia } from '../entities/all.entities
 
 import { FormService } from '../form/form.service';
 import { BaseController } from '../_base/base.controller';
-import { SubmissionService, ValidateSubmissionDto } from './submission.service';
+import { SubmissionService } from './submission.service';
+import { GetSubmissionDto, ValidateSubmissionDto } from '../dtos/dtos';
 
 import { Multer } from 'multer';
 
@@ -18,7 +19,7 @@ export class SubmissionController extends BaseController<CompetitionSubmission> 
   }
 
   @Get(':guid/image')
-  public async getSubmission(@Param() param, @Res() res) {
+  public async getSubmissionImage(@Param() param, @Res() res) {
     const submission = await this.service.getOne({
       where: {
         guid: param.guid
@@ -36,6 +37,11 @@ export class SubmissionController extends BaseController<CompetitionSubmission> 
     const myReadableStream = bufferToStream(submission.blobs[0].blob);
 
     myReadableStream.pipe(res);
+  }
+
+  @Get(':guid')
+  public async getSubmission(@Param() params: GetSubmissionDto) {
+    return this.service.getSubmissionByGuid(params.guid);
   }
 
   @Get()

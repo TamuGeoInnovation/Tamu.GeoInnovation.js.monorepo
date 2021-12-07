@@ -23,7 +23,12 @@
       </div>
     </div>
 
-    <!-- <div class="details-section">Status</div>
-    <tamu-gisc-radio-group></tamu-gisc-radio-group> -->
+    <div class="details-section">Status</div>
+    <p>Having reviewed the information above, you can mark this submission as accepted if the submission is accurate or reject it if otherwise.</p>
+
+    <div class="submission-status leader-1">
+      <div class="status-option reject" (click)="updateValidationStatus('discarded')" [ngClass]="{selected: (submissionStatus | async) === 'discarded'}">Reject</div>
+      <div class="status-option accept" (click)="updateValidationStatus('verified')" [ngClass]="{selected: (submissionStatus | async) === 'verified'}">Accept</div>
+    </div>
   </div>
 </ng-template>

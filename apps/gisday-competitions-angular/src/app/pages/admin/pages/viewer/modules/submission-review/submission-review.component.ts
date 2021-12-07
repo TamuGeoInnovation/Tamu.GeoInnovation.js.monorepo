@@ -1,14 +1,21 @@
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { combineLatest, from, Observable, ReplaySubject, Subject } from 'rxjs';
-import { filter, map, pluck, shareReplay, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+import { combineLatest, forkJoin, from, merge, Observable, ReplaySubject, Subject } from 'rxjs';
+import { filter, map, pluck, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
-import { CompetitionForm, CompetitionSubmission, ICompetitionSeasonFormQuestion } from '@tamu-gisc/gisday/competitions';
+import {
+  CompetitionForm,
+  CompetitionSubmission,
+  ICompetitionSeasonFormQuestion,
+  VALIDATION_STATUS
+} from '@tamu-gisc/gisday/competitions';
 import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
+import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 
 import { ViewerService } from '../../services/viewer.service';
 import { SubmissionService } from '../../../../../../modules/data-access/submission/submission.service';
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
   selector: 'tamu-gisc-submission-review',
@@ -21,17 +28,21 @@ export class SubmissionReviewComponent implements OnInit, OnDestroy {
 
   private _$submissionGuid: ReplaySubject<string> = new ReplaySubject();
   public submissionDetails: Observable<CompetitionSubmission>;
+  public submissionStatus: Observable<string>;
   public submissionImage: Observable<SafeUrl>;
 
   public mergedSubmission: Observable<Array<MappedKeyedSubmissionResponse>>;
 
   private _$destroy: Subject<boolean> = new Subject();
+  private $_refresh: Subject<boolean> = new Subject();
 
   constructor(
     private readonly fss: FeatureSelectorService,
     private readonly vs: ViewerService,
     private readonly ss: SubmissionService,
-    private readonly sanitizer: DomSanitizer
+    private readonly sanitizer: DomSanitizer,
+    private readonly settings: SettingsService,
+    private readonly env: EnvironmentService
   ) {}
 
   public ngOnInit(): void {
@@ -53,9 +64,31 @@ export class SubmissionReviewComponent implements OnInit, OnDestroy {
 
     this.submissionDetails = this._$submissionGuid.pipe(
       switchMap((guid) => {
-        return this.ss.getSubmissionDetails(guid);
-      }),
-      shareReplay()
+        return this.ss.getSubmissionDetails(guid).pipe(shareReplay());
+      })
+    );
+
+    this.submissionStatus = merge(
+      this.submissionDetails,
+      this.$_refresh.pipe(
+        switchMap(() =>
+          this._$submissionGuid.pipe(
+            take(1),
+            switchMap((guid) => {
+              return this.ss.getSubmissionDetails(guid);
+            })
+          )
+        )
+      )
+    ).pipe(
+      pluck('validationStatus'),
+      map((status: CompetitionSubmission['validationStatus']) => {
+        if (!status) {
+          return null;
+        }
+
+        return status.status;
+      })
     );
 
     this.submissionImage = this._$submissionGuid.pipe(
@@ -105,6 +138,30 @@ export class SubmissionReviewComponent implements OnInit, OnDestroy {
         );
       })
     );
+  }
+
+  public updateValidationStatus(status: VALIDATION_STATUS) {
+    forkJoin([
+      this.submissionDetails.pipe(take(1)),
+      this.settings.getSimpleSettingsBranch(this.env.value('LocalStoreSettings').subKey).pipe(
+        take(1),
+        pluck('guid'),
+        filter((guid) => {
+          return guid !== undefined;
+        })
+      )
+    ])
+      .pipe(
+        switchMap(([details, userGuid]) => {
+          return this.ss.validateSubmission({ guid: details.guid, status, userGuid: userGuid as string });
+        }),
+        tap((res) => {
+          this.$_refresh.next();
+        })
+      )
+      .subscribe((status) => {
+        console.log(status);
+      });
   }
 
   public ngOnDestroy() {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
-import { CompetitionSubmission } from '@tamu-gisc/gisday/competitions';
+import { CompetitionSubmission, ValidateSubmissionDto } from '@tamu-gisc/gisday/competitions';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
@@ -48,5 +48,9 @@ export class SubmissionService {
 
   public getImage(submissionGuid) {
     return this.http.get(`${this.resource}/${submissionGuid}/image`, { responseType: 'blob' });
+  }
+
+  public validateSubmission(params: ValidateSubmissionDto) {
+    return this.http.post(`${this.resource}/validate`, params);
   }
 }

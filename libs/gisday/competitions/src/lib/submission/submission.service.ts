@@ -2,11 +2,9 @@ import { BadRequestException, Injectable, InternalServerErrorException, NotFound
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, getRepository, Repository } from 'typeorm';
 
-import { IsEnum, IsNotEmpty } from 'class-validator';
-
 import { BaseService } from '../_base/base.service';
 import { CompetitionSubmission, CompetitionSubmissionValidationStatus, SubmissionMedia } from '../entities/all.entities';
-import { VALIDATION_STATUS } from '../enums/competitions.enums';
+import { ValidateSubmissionDto } from '../dtos/dtos';
 
 @Injectable()
 export class SubmissionService extends BaseService<CompetitionSubmission> {
@@ -15,6 +13,15 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
     @InjectRepository(SubmissionMedia) private mediaRepo: Repository<SubmissionMedia>
   ) {
     super(submissionRepo);
+  }
+
+  public async getSubmissionByGuid(guid: string) {
+    return this.submissionRepo.findOne({
+      where: {
+        guid: guid
+      },
+      relations: ['validationStatus']
+    });
   }
 
   public async createCompetitionSubmission(
@@ -92,15 +99,4 @@ export class SubmissionService extends BaseService<CompetitionSubmission> {
       throw new NotFoundException();
     }
   }
-}
-
-export class ValidateSubmissionDto {
-  @IsNotEmpty()
-  public guid: string;
-
-  @IsNotEmpty()
-  public userGuid: string;
-
-  @IsEnum(VALIDATION_STATUS)
-  public status: VALIDATION_STATUS;
 }
