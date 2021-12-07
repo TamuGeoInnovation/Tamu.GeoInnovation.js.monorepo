@@ -158,3 +158,16 @@ router-outlet {
     padding: 0.25rem;
   }
 }
+
+.details-section {
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1pt solid #eeeeee;
+  width: 100%;
+}
+
+tamu-gisc-drawer .content {
+  width: 100%;
+}

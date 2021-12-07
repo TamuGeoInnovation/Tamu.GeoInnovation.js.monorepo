@@ -1,8 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
-
-import { IsNotEmpty } from 'class-validator';
 
 import { CompetitionSeason, CompetitionSubmission } from '../entities/all.entities';
 import { BaseService } from '../_base/base.service';
@@ -13,10 +11,14 @@ export class SeasonService extends BaseService<CompetitionSeason> {
     super(seasonRepo);
   }
 
-  public async getSeasonStatistics(season: string) {
+  public async getSeasonStatistics(guid: string) {
     const existing = await this.seasonRepo.findOne({
-      year: season
+      guid: guid
     });
+
+    if (!existing) {
+      throw new NotFoundException();
+    }
 
     const responses = await getRepository(CompetitionSubmission)
       .createQueryBuilder('response')
@@ -55,26 +57,4 @@ export class SeasonService extends BaseService<CompetitionSeason> {
       breakdown: dictionary
     };
   }
-}
-
-export class GetSeasonStatisticsDto {
-  @IsNotEmpty()
-  public season: string;
-}
-
-export class SeasonStatisticsDto {
-  /**
-   * Total number of responses for a given season.
-   */
-  public total: number;
-
-  /**
-   * A dictionary where the keys represent the question id in a season form. The inner object inside each
-   * represents the count of individual response values for that question.
-   */
-  public breakdown: {
-    [question_id: string]: {
-      [count: string]: number;
-    };
-  };
 }

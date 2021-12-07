@@ -1,8 +1,9 @@
 import { Controller, Get, Param } from '@nestjs/common';
 
 import { CompetitionSeason } from '../entities/all.entities';
+import { GetSeasonStatisticsDto } from '../dtos/dtos';
 import { BaseController } from '../_base/base.controller';
-import { GetSeasonStatisticsDto, SeasonService } from './season.service';
+import { SeasonService } from './season.service';
 
 @Controller('season')
 export class SeasonController extends BaseController<CompetitionSeason> {
@@ -10,8 +11,8 @@ export class SeasonController extends BaseController<CompetitionSeason> {
     super(service);
   }
 
-  @Get(':season/statistics')
+  @Get(':guid/statistics')
   public getStatisticsForSeason(@Param() params: GetSeasonStatisticsDto) {
-    return this.service.getSeasonStatistics(params.season);
+    return this.service.getSeasonStatistics(params.guid);
   }
 }

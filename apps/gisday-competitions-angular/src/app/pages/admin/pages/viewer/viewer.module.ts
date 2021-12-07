@@ -18,6 +18,11 @@ const routes: Routes = [
         loadChildren: () => import('./modules/season-list/season-list.module').then((m) => m.SeasonListModule)
       },
       {
+        path: 'statistics',
+        loadChildren: () =>
+          import('./modules/season-statistics/season-statistics.module').then((m) => m.SeasonStatisticsModule)
+      },
+      {
         path: 'review',
         loadChildren: () =>
           import('./modules/submission-review/submission-review.module').then((m) => m.SubmissionReviewModule)

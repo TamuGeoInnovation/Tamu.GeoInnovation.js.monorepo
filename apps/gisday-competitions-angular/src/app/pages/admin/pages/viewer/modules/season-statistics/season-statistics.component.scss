@@ -1,0 +1,31 @@
+@import 'libs/gisday/sass/variables';
+
+.question {
+  margin-bottom: 1.5rem;
+}
+
+.question-answers {
+  margin-left: 0.5rem;
+
+  .question-answer {
+    position: relative;
+    margin: 0.75rem 0;
+    padding: 0.25rem;
+
+    p {
+      margin-bottom: 0;
+    }
+
+    span.percentage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1rem;
+      height: 100%;
+      background: $gisday-blue;
+      opacity: 0.15;
+      z-index: -1;
+      border-radius: 2pt;
+    }
+  }
+}

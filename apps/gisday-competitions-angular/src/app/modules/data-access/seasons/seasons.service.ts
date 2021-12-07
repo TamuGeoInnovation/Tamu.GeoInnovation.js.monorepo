@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { DeepPartial } from 'typeorm';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { CompetitionSeason } from '@tamu-gisc/gisday/competitions';
+import { CompetitionSeason, SeasonStatisticsDto } from '@tamu-gisc/gisday/competitions';
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +21,9 @@ export class SeasonsService {
 
   public getSeason(guid: string) {
     return this.http.get<DeepPartial<CompetitionSeason>>(`${this.resource}/${guid}`);
+  }
+
+  public getSeasonStatistics(guid: string) {
+    return this.http.get<SeasonStatisticsDto>(`${this.resource}/${guid}/statistics`);
   }
 }

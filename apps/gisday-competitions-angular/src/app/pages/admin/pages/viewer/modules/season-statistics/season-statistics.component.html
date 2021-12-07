@@ -1,0 +1,17 @@
+<h1>Season Statistics</h1>
+
+<p><strong>Total submissions</strong>: {{(stats | async)?.total | number}}</p>
+
+<p class="details-section leader-1">Submission Breakdown</p>
+
+<div class="questions-container leader-1">
+  <div class="question" *ngFor="let question of mergedStats | async">
+    <p><strong>{{question.title}}</strong></p>
+    <div class="question-answers">
+      <div class="question-answer" *ngFor="let answer of question.breakdown" [title]="answer.percentage + '%'">
+        <span class="percentage" [style.width.%]="answer.percentage"></span>
+        <p>{{answer.answer}} ({{answer.count}})</p>
+      </div>
+    </div>
+  </div>
+</div>
