@@ -9,7 +9,7 @@ export class LayersController {
   constructor(private readonly service: LayersService) {}
 
   @Get('')
-  // @UseGuards(AzureIdpGuard)
+  @UseGuards(AzureIdpGuard)
   public getLayers() {
     return this.service.getLayers();
   }
