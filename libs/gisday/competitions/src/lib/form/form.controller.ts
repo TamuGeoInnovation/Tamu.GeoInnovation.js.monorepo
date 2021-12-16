@@ -1,10 +1,7 @@
-import { Body, Controller, Get, NotFoundException, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
-import { AnyFilesInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-
+import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
-import { CompetitionForm, CompetitionSubmission, SubmissionMedia } from '../entities/all.entities';
-
+import { CompetitionForm } from '../entities/all.entities';
 import { BaseController } from '../_base/base.controller';
 import { FormService } from './form.service';
 

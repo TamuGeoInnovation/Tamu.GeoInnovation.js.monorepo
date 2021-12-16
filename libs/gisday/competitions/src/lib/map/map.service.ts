@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm';
 
 import { CompetitionSubmission } from '../entities/all.entities';
-
 import { BaseService } from '../_base/base.service';
 
 @Injectable()
