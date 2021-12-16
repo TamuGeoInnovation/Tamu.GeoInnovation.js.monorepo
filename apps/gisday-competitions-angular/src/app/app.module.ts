@@ -1,31 +1,63 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule, Routes } from '@angular/router';
 
 import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
-import { AppRoutingModule } from './modules/routing/routing.module';
+import * as WebFont from 'webfontloader';
 
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import * as environment from '../environments/environment';
 import { NotificationModule, NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
+import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
+import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 
+import * as environment from '../environments/environment';
 import { AppComponent } from './app.component';
-import { UINavigationMobileTabModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tab';
+import { AuthService } from './modules/auth/services/auth.service';
+import { AuthGuard } from './modules/guards/auth.guard';
+
+WebFont.load({
+  google: {
+    families: ['Material Icons', 'Material Icons Outlined', 'Open Sans:300,400,600', 'Oswald:300,400']
+  }
+});
+
+const routes: Routes = [
+  {
+    path: 'designer',
+    loadChildren: () => import('./pages/admin/pages/designer/designer.module').then((m) => m.DesignerModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'viewer',
+    loadChildren: () => import('./pages/admin/pages/viewer/viewer.module').then((m) => m.ViewerModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: '',
+    loadChildren: () => import('./pages/public/public.module').then((m) => m.PublicModule)
+  }
+];
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    BrowserAnimationsModule,
+    RouterModule.forRoot(routes),
+    HttpClientModule,
     Angulartics2Module.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
     EnvironmentModule,
-    UINavigationMobileTabModule,
-    NotificationModule
+    NotificationModule,
+    ResponsiveModule,
+    SettingsModule
   ],
-  providers: [NotificationService, { provide: env, useValue: environment }],
+  providers: [NotificationService, { provide: env, useValue: environment }, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

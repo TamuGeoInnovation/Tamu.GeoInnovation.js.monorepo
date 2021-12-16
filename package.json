@@ -135,6 +135,7 @@
     "@types/express": "^4.17.13",
     "@types/jest": "26.0.8",
     "@types/mapbox-gl": "^1.9.1",
+    "@types/multer": "^1.4.7",
     "@types/node": "12.12.38",
     "@types/sequelize": "^4.27.33",
     "@types/yargs": "^16.0.1",

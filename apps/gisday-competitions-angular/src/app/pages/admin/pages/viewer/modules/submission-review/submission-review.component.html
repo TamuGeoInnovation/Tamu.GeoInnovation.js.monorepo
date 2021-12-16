@@ -1,0 +1,34 @@
+<h1>Submission Review</h1>
+
+<ng-container *ngIf="(submissionDetails | async) === null; else showSubmissionDetails">
+  <p>Click on a point to show submission details.</p>
+</ng-container>
+
+<ng-template #showSubmissionDetails>
+  <div class="submission-details">
+    <div class="details-section">Image</div>
+    <div class="submission-image">
+      <div [ngSwitch]="submissionImage  | async" class="image-container">
+        <div *ngSwitchCase="null" class="image-wrapper"><p>Image will preview here.</p></div>
+        <div *ngSwitchCase="false" class="image-wrapper"><p>Downloading image...</p></div>
+        <div *ngSwitchDefault class="image-wrapper"><img [src]="submissionImage | async" /></div>
+      </div>
+    </div>
+
+    <div class="details-section">Responses</div>
+    <div class="submission-responses">
+      <div class="submission-response" *ngFor="let response of mergedSubmission | async">
+        <p class="response-question-title">{{response.question}}</p>
+        <p class="response-question-answer"><span class="material-icons medium">arrow_right</span>{{response.answer}}</p>
+      </div>
+    </div>
+
+    <div class="details-section">Status</div>
+    <p>Having reviewed the information above, you can mark this submission as accepted if the submission is accurate or reject it if otherwise.</p>
+
+    <div class="submission-status leader-1">
+      <div class="status-option reject" (click)="updateValidationStatus('discarded')" [ngClass]="{selected: (submissionStatus | async) === 'discarded'}">Reject</div>
+      <div class="status-option accept" (click)="updateValidationStatus('verified')" [ngClass]="{selected: (submissionStatus | async) === 'verified'}">Accept</div>
+    </div>
+  </div>
+</ng-template>

@@ -14,9 +14,7 @@ import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';
 
 export * from './definitions';
 
-export const LeaderboardUrl = `${Protocol}/${HostName}/wap.gisday.tamu.edu/Rest/Leaderboard/Get`;
-export const SubmissionsUrl = `${Protocol}/${HostName}/wap.gisday.tamu.edu/Rest/Signage/Get/Submissions/?&geoJSON=true`;
-export const SubmissionsPostUrl = `${Protocol}/${HostName}/wap.gisday.tamu.edu/Rest/Signage/Push/Submissions/`;
+export const api_url = 'http://localhost:3333/api';
 
 export const AuthLoginUrl = `${Protocol}/${HostName}/wap.gisday.tamu.edu/Login?ret=${Protocol}/${HostName}/wap.gisday.tamu.edu/Login`;
 
@@ -44,28 +42,7 @@ export const NotificationEvents: NotificationProperties[] = [
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
 
-export const LayerSources: LayerSource[] = [
-  {
-    type: 'geojson',
-    id: d.SUBMISSIONS.layerId,
-    title: d.SUBMISSIONS.name,
-    url: SubmissionsUrl,
-    listMode: 'show',
-    loadOnInit: true,
-    visible: true,
-    native: {
-      renderer: {
-        type: 'simple',
-        symbol: {
-          type: 'simple-marker',
-          style: 'circle',
-          size: 10,
-          color: '#ffc5c5'
-        }
-      }
-    }
-  }
-];
+export const LayerSources: LayerSource[] = [];
 
 const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
   f: 'json',

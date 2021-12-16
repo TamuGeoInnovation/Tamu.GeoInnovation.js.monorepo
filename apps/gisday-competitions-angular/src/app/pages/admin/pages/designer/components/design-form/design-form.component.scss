@@ -1,0 +1,23 @@
+@import 'libs/sass/mixins';
+
+.form-element {
+  &:not(:first-child) {
+    margin-left: 0.5rem;
+  }
+
+  &:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+}
+
+.fb-1 {
+  @include flex(1);
+}
+
+.fb-2 {
+  @include flex(2);
+}
+
+.fb-3 {
+  @include flex(2);
+}

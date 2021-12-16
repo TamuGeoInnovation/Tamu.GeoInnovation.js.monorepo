@@ -17,12 +17,5 @@ export const Definitions = {
     name: 'Buildings',
     url: `${Connections.basemapUrl}/1`,
     popupComponent: 'BuildingPopupComponent'
-  },
-  SUBMISSIONS: {
-    id: 'submissions',
-    layerId: 'submissions-layer',
-    name: 'My submissions',
-    url: ``,
-    popupComponent: 'BuildingPopupComponent'
   }
 };

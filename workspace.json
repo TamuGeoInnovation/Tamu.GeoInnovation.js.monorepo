@@ -1009,6 +1009,7 @@
                   "with": "apps/gisday-competitions-angular/src/environments/environment.prod.ts"
                 }
               ],
+              "baseHref": "/competitions/app/",
               "aot": true,
               "buildOptimizer": true,
               "extractLicenses": true,
@@ -1034,6 +1035,7 @@
                   "with": "apps/gisday-competitions-angular/src/environments/environment.dev.ts"
                 }
               ],
+              "baseHref": "/competitions/app/",
               "aot": true,
               "buildOptimizer": true,
               "extractLicenses": true,
@@ -5802,7 +5804,15 @@
             "outputPath": "dist/apps/gisday-competitions-nest",
             "main": "apps/gisday-competitions-nest/src/main.ts",
             "tsConfig": "apps/gisday-competitions-nest/tsconfig.app.json",
-            "assets": ["apps/gisday-competitions-nest/src/assets"]
+            "assets": [
+              "apps/gisday-competitions-nest/src/assets",
+              "apps/gisday-competitions-nest/src/package.json",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ]
           },
           "configurations": {
             "production": {

@@ -10,12 +10,11 @@
 //   GRID AND RESETS
 //  ==========================================================================
 
+@import 'libs/gisday/sass/variables';
 @import 'libs/sass/1140';
-
-//  ==========================================================================
-//   Mobile App Styles
-//  ==========================================================================
-@import 'libs/sass/modules/mobile_app';
+@import 'libs/sass/spacing';
+@import 'libs/sass/modules/loaders';
+@import 'libs/sass/modules/tables';
 
 html {
   height: 100%;
@@ -103,6 +102,11 @@ textarea {
   width: 100%;
 }
 
+router-outlet {
+  display: none;
+  visibility: hidden;
+}
+
 .button {
   width: inherit;
   padding: 0.75rem;
@@ -129,4 +133,41 @@ textarea {
     z-index: 0;
     @include transition(width 0.3s);
   }
+}
+
+// The following styles are for the competitions form designer
+.container,
+.row {
+  @include flexbox();
+  @include flex-direction(row);
+}
+
+.row {
+  margin-top: 1.75rem;
+}
+
+//////////////////////////////////////////////////////////////////
+
+.loader-container {
+  padding: 4.5rem 0;
+}
+
+.material-icons {
+  &.medium {
+    font-size: 1.1rem;
+    padding: 0.25rem;
+  }
+}
+
+.details-section {
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1pt solid #eeeeee;
+  width: 100%;
+}
+
+tamu-gisc-drawer .content {
+  width: 100%;
 }
