@@ -528,6 +528,12 @@ export class Interaction implements IRequiredEntityAttrs {
 
   @Column({
     type: 'varchar',
+    nullable: true
+  })
+  public grantId?: string;
+
+  @Column({
+    type: 'varchar',
     nullable: true,
     length: 'max'
   })

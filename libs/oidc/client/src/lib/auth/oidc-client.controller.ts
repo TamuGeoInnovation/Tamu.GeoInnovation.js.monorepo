@@ -25,6 +25,8 @@ export class OidcClientController {
   public authCallback(@Response() res, @Request() req) {
     if (req && req.session && req.session.returnUrl) {
       res.redirect(req.session.returnUrl);
+    } else {
+      res.redirect('/home');
     }
   }
 
