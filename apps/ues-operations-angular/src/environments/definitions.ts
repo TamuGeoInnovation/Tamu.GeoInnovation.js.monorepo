@@ -143,7 +143,6 @@ export const LayerSources: LayerSource[] = [
         popupComponent: Popups.BuildingPopupComponent,
         listMode: 'hide',
         visible: true,
-        // layerIndex: 1,
         native: {
           ...commonLayerProps,
           legendEnabled: false,
@@ -242,6 +241,291 @@ export const LayerSources: LayerSource[] = [
         native: {
           ...commonLayerProps
         }
+      }
+    ]
+  },
+  {
+    type: 'group',
+    id: 'transportation-layers',
+    title: 'Transportation',
+    native: {},
+    sources: [
+      {
+        type: 'group',
+        id: 'ts-Bus',
+        title: 'Bus',
+        visible: false,
+        sources: [
+          {
+            type: 'feature',
+            id: 'ts-bus-stop-start-points-layer',
+            title: 'Route Stop/Start Points',
+            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer/1`,
+            listMode: 'show',
+            popupComponent: Popups.BasePopupComponent,
+            native: {
+              ...commonLayerProps
+            }
+          },
+          {
+            type: 'feature',
+            id: 'ts-bus-campus-stops-layer',
+            title: 'Campus Stops',
+            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer/2`,
+            listMode: 'show',
+            popupComponent: Popups.BasePopupComponent,
+            native: {
+              ...commonLayerProps
+            }
+          }
+        ]
+      },
+      {
+        type: 'group',
+        id: 'ts-bikes',
+        title: 'Bicycle',
+        visible: false,
+        sources: [
+          {
+            type: 'feature',
+            id: 'ts-bicycle-lanes-layer',
+            title: 'Lanes',
+            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/4`,
+            listMode: 'show',
+            popupComponent: Popups.BasePopupComponent,
+            native: {
+              ...commonLayerProps
+            }
+          },
+          {
+            type: 'feature',
+            id: 'ts-bicycle-racks-layer',
+            title: 'Racks',
+            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
+            listMode: 'show',
+            popupComponent: Popups.BasePopupComponent,
+            native: {
+              ...commonLayerProps
+            }
+          }
+        ]
+      },
+      {
+        type: 'group',
+        id: 'ts-move-in-out',
+        title: 'Move-In & Move-Out',
+        visible: false,
+        sources: [
+          {
+            type: 'feature',
+            id: 'ts-moveing-no-parking-areas-layer',
+            title: 'No Parking Areas',
+            url: `https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer/1`,
+            listMode: 'show',
+
+            popupComponent: Popups.BasePopupComponent,
+            native: {
+              ...commonLayerProps
+            }
+          },
+          {
+            type: 'feature',
+            id: 'ts-movein-pois-layer',
+            title: 'Move-In Points of Interest',
+            url: `https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer/2`,
+            listMode: 'show',
+
+            popupComponent: Popups.BasePopupComponent,
+            native: {
+              ...commonLayerProps
+            }
+          },
+          {
+            type: 'feature',
+            id: 'ts-moveout-street-parking-layer',
+            title: 'Move-Out Allowed Street Parking',
+            url: `https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer/4`,
+            listMode: 'show',
+
+            popupComponent: Popups.BasePopupComponent,
+            native: {
+              ...commonLayerProps
+            }
+          },
+          {
+            type: 'feature',
+            id: 'ts-movein-streets-layer',
+            title: 'Move-In Streets',
+            url: `https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer/5`,
+            listMode: 'show',
+
+            popupComponent: Popups.BasePopupComponent,
+            native: {
+              ...commonLayerProps
+            }
+          },
+          {
+            type: 'feature',
+            id: 'ts-movein-lots-layer',
+            title: 'Move-In Lots',
+            url: `https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer/6`,
+            listMode: 'show',
+
+            popupComponent: Popups.BasePopupComponent,
+            native: {
+              ...commonLayerProps
+            }
+          },
+          {
+            type: 'feature',
+            id: 'ts-moveout-lots-layer',
+            title: 'Move-Out Lots',
+            url: `https://gis.tamu.edu/arcgis/rest/services/TS/MoveInMoveOut/MapServer/7`,
+            listMode: 'show',
+
+            popupComponent: Popups.BasePopupComponent,
+            native: {
+              ...commonLayerProps
+            }
+          }
+        ]
+      },
+      {
+        type: 'group',
+        id: 'ts-gameday',
+        title: 'Game Day Parking',
+        visible: false,
+        sources: [
+          {
+            type: 'group',
+            id: 'ts-gameday-thurs-layer',
+            title: 'Thursday',
+            sources: [
+              {
+                type: 'feature',
+                id: 'ts-gameday-thurs-parking-layer',
+                title: 'Parking Lots',
+                url: `https://gis.tamu.edu/arcgis/rest/services/TS/ThursdayFootball/MapServer/5`,
+                listMode: 'show',
+                popupComponent: Popups.BasePopupComponent,
+                native: {
+                  ...commonLayerProps
+                }
+              },
+              {
+                type: 'feature',
+                id: 'ts-gameday-thurs-grass-areas-layer',
+                title: 'Street/Grass Areas',
+                url: `https://gis.tamu.edu/arcgis/rest/services/TS/ThursdayFootball/MapServer/6`,
+                listMode: 'show',
+                popupComponent: Popups.BasePopupComponent,
+                native: {
+                  ...commonLayerProps
+                }
+              }
+            ]
+          },
+          {
+            type: 'group',
+            id: 'ts-gameday-sat-layer',
+            title: 'Saturday',
+            sources: [
+              {
+                type: 'feature',
+                id: 'ts-gameday-sat-parking-layer',
+                title: 'Parking Lots',
+                url: `https://gis.tamu.edu/arcgis/rest/services/TS/TSFootball/MapServer/5`,
+                listMode: 'show',
+                popupComponent: Popups.BasePopupComponent,
+                native: {
+                  ...commonLayerProps
+                }
+              },
+              {
+                type: 'feature',
+                id: 'ts-gameday-sat-grass-areas-layer',
+                title: 'Street/Grass Areas',
+                url: `https://gis.tamu.edu/arcgis/rest/services/TS/TSFootball/MapServer/6`,
+                listMode: 'show',
+                popupComponent: Popups.BasePopupComponent,
+                native: {
+                  ...commonLayerProps
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        type: 'group',
+        id: 'ts-parking-spaces',
+        title: 'Parking Spaces',
+        visible: false,
+        sources: [
+          {
+            type: 'feature',
+            id: 'ts-parking-spaces-accessible-layer',
+            title: 'Reserved',
+            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer/7`,
+            listMode: 'show',
+            popupComponent: Popups.BasePopupComponent,
+            native: {
+              ...commonLayerProps,
+              definitionExpression: 'HC_Type IS NULL AND DeptSpc_YN = 0',
+              renderer: {
+                type: 'simple',
+                symbol: {
+                  type: 'simple-marker',
+                  style: 'circle',
+                  color: 'black',
+                  size: 5
+                }
+              }
+            }
+          },
+          {
+            type: 'feature',
+            id: 'ts-parking-spaces-dept-space-layer',
+            title: 'Department Space',
+            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer/7`,
+            listMode: 'show',
+            popupComponent: Popups.BasePopupComponent,
+            native: {
+              ...commonLayerProps,
+              definitionExpression: 'DeptSpc_YN = 1',
+              renderer: {
+                type: 'simple',
+                symbol: {
+                  type: 'simple-marker',
+                  style: 'circle',
+                  color: 'red',
+                  size: 5
+                }
+              }
+            }
+          },
+          {
+            type: 'feature',
+            id: 'ts-parking-spaces-accessible-layer',
+            title: 'Accessible',
+            url: `https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer/7`,
+            listMode: 'show',
+            popupComponent: Popups.BasePopupComponent,
+            native: {
+              ...commonLayerProps,
+              definitionExpression: 'HC_Type IS NOT null',
+              renderer: {
+                type: 'simple',
+                symbol: {
+                  type: 'simple-marker',
+                  style: 'circle',
+                  color: 'blue',
+                  size: 5
+                }
+              }
+            }
+          }
+        ]
       }
     ]
   },
