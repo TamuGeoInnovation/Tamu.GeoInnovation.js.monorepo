@@ -40,7 +40,7 @@ export class StrapiService {
   }
 
   public getCountyLayer() {
-    return this.http.get<GeoJSONFeatureCollection>('http://localhost:1337/uploads/counties20m_696b17e926.json');
+    return this.http.get<GeoJSONFeatureCollection>(`${this.resource}/uploads/counties20m_696b17e926.json`);
   }
 
   public getAllBugData() {
