@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-
 import { Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { StrapiService } from '../../data-access/strapi.service';
 import { IStrapiStapleFunder } from '../../types/types';
-import { shareReplay } from 'rxjs/operators';
 
 @Component({
   selector: 'tamu-gisc-kissingbugs-funder',

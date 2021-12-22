@@ -1,12 +1,10 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Observable, pipe } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
 
 import { MailroomEmail } from '../../entities/all.entities';
-import { EmailStatus } from '../../types/mail.types';
 
 @Injectable()
 export class LogToDatabaseInterceptor implements NestInterceptor {

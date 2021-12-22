@@ -4,7 +4,7 @@ import { MailroomOutbound } from '@tamu-gisc/mailroom/common';
 
 @Injectable()
 export class OutboundPipe implements PipeTransform {
-  public transform(value: any, metadata: ArgumentMetadata) {
+  public transform(value, metadata: ArgumentMetadata) {
     const keys = Object.keys(value);
 
     const ret: Partial<MailroomOutbound> = {};

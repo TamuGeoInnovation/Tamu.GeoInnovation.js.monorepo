@@ -41,6 +41,7 @@ export class FaqComponent implements OnInit, OnDestroy {
         const sectionsArrays = sections.map((key) => {
           return response[key];
         });
+
         return {
           questions: response.questions,
           sections: sectionsArrays
@@ -56,6 +57,7 @@ export class FaqComponent implements OnInit, OnDestroy {
             expanded: false
           };
         });
+
         return faqComponents;
       })
     );

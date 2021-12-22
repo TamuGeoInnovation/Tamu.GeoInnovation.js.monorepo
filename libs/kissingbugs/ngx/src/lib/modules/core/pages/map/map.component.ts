@@ -50,7 +50,6 @@ export class MapComponent implements OnInit, AfterViewInit {
     name: 'Kissing bugs by county',
     count: 0
   };
-  // public bins = [200, 200, 150, 100, 50, 0];
   public newBins: EsriMinMax[] = this.setBinsNew();
 
   private bugLayerId = 'bugs';
@@ -86,6 +85,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   public ngAfterViewInit() {
     this.mp.require(['Expand']).then(([Expand]: [esri.ExpandConstructor]) => {
+      // TODO: Should not use document to query for elements
       const bugSelector = document.getElementById('bug-selector');
 
       const bugSelectorExpand = new Expand({
@@ -99,6 +99,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
       this.view.ui.add(bugSelectorExpand, 'top-left');
 
+      // TODO: Should not use document to query for elements
       const monthSelector = document.getElementById('month-selector');
 
       const monthSelectorExpand = new Expand({
@@ -112,9 +113,11 @@ export class MapComponent implements OnInit, AfterViewInit {
 
       this.view.ui.add(monthSelectorExpand, 'top-left');
 
+      // TODO: Should not use document to query for elements
       const currentCounty = document.getElementById('currentCounty');
       this.view.ui.add(currentCounty, 'top-right');
 
+      // TODO: Should not use document to query for elements
       const legend = document.getElementById('legend');
 
       this.view.ui.add(legend, 'bottom-right');
@@ -248,9 +251,6 @@ export class MapComponent implements OnInit, AfterViewInit {
   public setBug(bug) {
     this.activeBug = bug;
 
-    // this.setBins();
-    // this.setBinsNew();
-
     this.getNewDataset();
   }
 
@@ -276,9 +276,6 @@ export class MapComponent implements OnInit, AfterViewInit {
         label: `${value.min} - ${value.max}`
       };
     });
-
-    // Removes the dumb undefined - 0 bin that gets created
-    // bins.pop();
 
     const renderer = ({
       type: 'class-breaks',

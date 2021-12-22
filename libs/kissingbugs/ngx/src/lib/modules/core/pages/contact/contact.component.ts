@@ -1,13 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 
 import { Observable } from 'rxjs';
@@ -81,13 +73,6 @@ export class ContactComponent implements OnInit, OnDestroy {
         }
       });
 
-      // formData.append('recipientEmail', this.contactForm.controls.email.value);
-      // formData.append('subjectLine', 'Kissing bug submission');
-      // formData.append('emailBodyHtml', this.makeBodyHtml());
-      // formData.append('emailBodyText', this.makeBodyText());
-
-      // console.log(this.makeBodyText());
-
       this.ss.sendEmail(formData).subscribe((result) => {
         console.log(result);
       });
@@ -98,38 +83,6 @@ export class ContactComponent implements OnInit, OnDestroy {
 
   public onFileChanged(file: string, event) {
     this.contactForm.get(file).setValue(event.target.files[0]);
-  }
-
-  private makeBodyHtml() {
-    let ret = '<div>';
-    ret += '<ul>';
-    ret += `<li>Name: ${this.contactForm.controls.firstName.value} ${this.contactForm.controls.lastName}</li>`;
-    ret += `<li>Email: ${this.contactForm.controls.email.value}</li>`;
-    if (this.contactForm.controls.message.value) {
-      ret += `<li>Message: ${this.contactForm.controls.message.value}</li>`;
-    }
-    ret += '</ul>';
-    ret += '</div>';
-
-    // dateOfEncounter: new FormControl(''),
-    // timeOfEncounter: new FormControl(''),
-    // locationOfEncounter: new FormControl(''),
-    // stateOfEncounter: new FormControl(''),
-    // associatedWithBite: new FormControl(''),
-    // behaviour: new FormControl(''),
-
-    return ret;
-  }
-
-  private makeBodyText() {
-    const controls = Object.keys(this.contactForm.controls);
-    return controls
-      .map((name) => {
-        const control = this.contactForm.controls[name];
-
-        return `${name}: ${control.value}`;
-      })
-      .toString();
   }
 }
 

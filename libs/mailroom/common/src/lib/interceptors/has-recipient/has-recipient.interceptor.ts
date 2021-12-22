@@ -1,4 +1,4 @@
-import { CallHandler, ExecutionContext, HttpException, Injectable, NestInterceptor } from '@nestjs/common';
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 
 @Injectable()
 export class HasRecipientInterceptor implements NestInterceptor {

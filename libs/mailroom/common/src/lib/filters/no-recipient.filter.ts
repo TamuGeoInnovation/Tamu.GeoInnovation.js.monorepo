@@ -2,6 +2,7 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/co
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request, Response } from 'express';
 import { Repository } from 'typeorm';
+
 import { MailroomReject } from '../entities/all.entities';
 
 @Catch()
@@ -13,7 +14,6 @@ export class NoRecipientFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    // const status = exception.getStatus();
 
     const errorMessage = 'No recipient provided';
 

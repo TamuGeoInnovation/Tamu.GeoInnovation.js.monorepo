@@ -37,11 +37,11 @@ export class GalleryComponent implements OnInit, OnDestroy {
     });
 
     this.dataSource.items.forEach((item: IStrapiPageFeature, i) => {
-      if (i == 0 || i % this.rowLength !== 0) {
+      if (i === 0 || i % this.rowLength !== 0) {
         console.log(i, 'pushing item', item);
         items.push(item);
       }
-      if (i != 0 && i % this.rowLength === 0) {
+      if (i !== 0 && i % this.rowLength === 0) {
         console.log(i, 'reached row limit');
         this.rowItems.push(items);
         items = [];
@@ -50,14 +50,11 @@ export class GalleryComponent implements OnInit, OnDestroy {
     });
 
     this.rowItems.push(items);
-
-    // console.log('rowItems', this.rowItems);
   }
 
   public ngOnDestroy() {}
 
   public open(i: number) {
-    // console.log('open ', i, this.album[i]);
     this._lightbox.open(this.album, i);
   }
 }

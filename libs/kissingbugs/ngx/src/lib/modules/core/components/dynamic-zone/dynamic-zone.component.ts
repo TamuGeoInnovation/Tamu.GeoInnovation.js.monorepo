@@ -1,6 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
-import { StrapiService } from '../../data-access/strapi.service';
 import { IStrapiComponent } from '../../types/types';
 
 @Component({
@@ -14,7 +13,7 @@ export class DynamicZoneComponent implements OnInit, OnDestroy {
 
   constructor() {}
 
-  public ngOnInit() { }
+  public ngOnInit() {}
 
   public ngOnDestroy() {}
 }

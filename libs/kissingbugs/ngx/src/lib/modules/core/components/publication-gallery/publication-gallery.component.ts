@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { IStrapiPagePrintResource, IStrapiPublicationGallery } from '../../types/types';
+import { IStrapiPublicationGallery } from '../../types/types';
 
 @Component({
   selector: 'tamu-gisc-kissingbugs-publication-gallery',

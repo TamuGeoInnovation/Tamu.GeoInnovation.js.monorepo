@@ -1,6 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
+
 import { StrapiService } from '../../data-access/strapi.service';
 import { IStrapiStapleNavigation } from '../../types/types';
 

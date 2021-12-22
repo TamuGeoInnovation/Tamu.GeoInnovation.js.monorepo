@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 
 import { User, UserPasswordReset } from '@tamu-gisc/oidc/common';
-import { IMailroomEmailOutbound, INodeMailerSendMailResponse } from '@tamu-gisc/mailroom/common';
+import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 
 export type NodeMailerServices = 'ethereal' | 'gmail' | 'tamu-relay';
 
@@ -82,7 +82,6 @@ export class Mailer {
       return {
         filename: file.originalname,
         content: file.buffer
-        // cid: 'unique@nodemailer.com'
       };
     });
 
@@ -90,7 +89,6 @@ export class Mailer {
       to: info.recipientEmail,
       subject: info.subjectLine,
       text: info.emailBodyText,
-      // html: `Embedded image: <img src="cid:unique@nodemailer.com"/></br><p>${info.emailBodyText}</p>`,
       from: '"GISC Mailroom" <giscaccounts@tamu.edu>',
       attachments: embeddedImages
     };
@@ -103,7 +101,6 @@ export class Mailer {
           console.log(info);
         }
       });
-      // .then((response) => Mailer.emailToConsole(response));
     } else {
       return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response));
     }
@@ -164,14 +161,13 @@ export class Mailer {
   }
 
   public static emailToConsole(response) {
-    if (Mailer.service == 'ethereal') {
+    if (Mailer.service === 'ethereal') {
       console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
     }
   }
 
   public static emailToResponse(response) {
-    if (Mailer.service == 'ethereal') {
-      // console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
+    if (Mailer.service === 'ethereal') {
       return nodemailer.getTestMessageUrl(response);
     } else {
       return;
