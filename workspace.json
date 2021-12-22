@@ -6007,6 +6007,10 @@
           }
         }
       }
+    },
+    "kissingbugs-sass": {
+      "projectType": "library",
+      "root": "kissingbugs/sass"
     }
   },
   "cli": {

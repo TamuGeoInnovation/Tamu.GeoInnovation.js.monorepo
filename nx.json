@@ -504,7 +504,8 @@
       "tags": []
     },
     "kissingbugs-angular": {
-      "tags": []
+      "tags": [],
+      "implicitDependencies": ["kissingbugs-sass"]
     },
     "kissingbugs-angular-e2e": {
       "tags": [],
@@ -512,6 +513,9 @@
     },
     "kissingbugs-ngx": {
       "tags": []
+    },
+    "kissingbugs-sass": {
+      "tags": ["type:styles"]
     }
   },
   "tasksRunnerOptions": {

@@ -1,5 +1,6 @@
 @import 'libs/sass/mixins';
 @import 'libs/sass/1140';
+@import 'libs/kissingbugs/sass/variables';
 
 //javascriptEnabled:true,compress:true
 //  ==========================================================================
@@ -149,16 +150,6 @@
   margin-right: 9rem;
 }
 
-//  ==========================================================================
-//   Application Variables
-//  ==========================================================================
-$maincolor: #ffcc00;
-$secondcolor: #333;
-$white: #ffffff;
-$border: #dcddde;
-$borderFocus: #d3d3d3;
-$lato: 'Lato', sans-serif;
-$opensans: 'Open Sans', sans-serif;
 //  ==========================================================================
 //   Global
 //  ==========================================================================
