@@ -43,7 +43,7 @@ export class ContactComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {}
 
   public validate() {
-    console.log(this.contactForm.value);
+    // console.log(this.contactForm.value);
     this.ss.sendEmail(this.contactForm.value);
   }
 }

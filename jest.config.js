@@ -135,6 +135,7 @@ module.exports = {
     '<rootDir>/apps/gisday-competitions-nest',
     '<rootDir>/libs/gisday/competitions',
     '<rootDir>/apps/kissingbugs-angular',
-    '<rootDir>/libs/kissingbugs/ngx'
+    '<rootDir>/libs/kissingbugs/ngx',
+    '<rootDir>/apps/mailroom-nest'
   ]
 };
