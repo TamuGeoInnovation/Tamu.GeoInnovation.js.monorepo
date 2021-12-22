@@ -67,9 +67,6 @@
               <li>
                 While the event is underway, click on the Check-in button that is visible on the event details page. This will only work during the time period of the event.
               </li>
-              <li>
-                There will be event volunteers in every session as well as TxGIS Day staff at the check-in tables outside of each session who can assist you with checking in if you need help.
-              </li>
             </ul>
           </div>
         </div>
@@ -98,6 +95,31 @@
             <p>
               If you have previously installed a version of the TxGIS Day app for Android or iOS, you can safely uninstall it.
             </p>
+          </div>
+        </div>
+
+        <div class="trailer-2 faq-item" id="app-checkin">
+          <p (click)="onFaqItemClick($event)">Where do I find the Zoom link for the events?</p>
+          <div>
+            <p>
+              The Zoom information for each session is available on each event's details page. Follow these simple steps:
+            </p>
+            <ul class="numbered">
+              <li><a [routerLink]="['/signup']">Create an account</a> on the TxGIS Day website.</li>
+              <li>Make sure that you are <a [routerLink]="['/login']">logged into your account</a> on the TxGIS Day website.</li>
+              <li><a [routerLink]="['/sessions']">Find the event you want to attend</a> and click on it to open its details page.</li>
+              <li>Click on the Online Zoom Meeting Info drop down menu where you will find the Zoom meeting link and associated meeting details.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="trailer-2 faq-item" id="app-checkin">
+          <p (click)="onFaqItemClick($event)">Will the videos be available after the event?</p>
+          <div>
+            <p>
+              Some videos will be available at the <a href="https://www.youtube.com/channel/UC6YUiZwc91mc7dKss2Lv3zA/featured">TxGIS Day YouTube channel.</a>
+            </p>
+
           </div>
         </div>
 

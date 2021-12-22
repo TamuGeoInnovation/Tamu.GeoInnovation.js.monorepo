@@ -1,40 +1,50 @@
 <section>
-  <div class="lookback"><a [routerLink]="['/wayback/2019']">2019 Recap</a></div>
+  <div class="lookback"><a [routerLink]="['/wayback/2020']">2020 Recap</a></div>
 
   <div id="landing">
     <div class="bg-img"></div>
     <div class="x-large-partition">
       <div class="flex flex-column align-center">
         <div class="logo-container">
-          <h1 class="site-logo">TxGIS Day <span>2020</span></h1>
+          <h1 class="site-logo">TxGIS Day <span>2021</span></h1>
           <img src='assets/images/TXGISDaySolo.svg' />
         </div>
 
         <div class="landing-container">
           <div class="countdown">
             <div class="days">
-              <div class="value">--</div>
+              <div class="value">{{timeTill.getDate() < 10 ? '0' + timeTill.getDate() : timeTill.getDate()}}</div>
               <div class="label">Days</div>
             </div>
             <div class="hours">
-              <div class="value">--</div>
+              <div class="value">{{timeTill.getHours() < 10 ? '0' + timeTill.getHours() : timeTill.getHours()}}</div>
               <div class="label">Hours</div>
             </div>
             <div class="minutes">
-              <div class="value">--</div>
+              <div class="value">{{timeTill.getMinutes() < 10 ? '0' + timeTill.getMinutes() : timeTill.getMinutes()}}</div>
               <div class="label">Minutes</div>
             </div>
             <div class="seconds">
-              <div class="value">--</div>
+              <div class="value">{{timeTill.getSeconds()}}</div>
               <div class="label">Seconds</div>
             </div>
           </div>
 
           <h2 class="trailer-1 column9 slogan">Three days of interactive workshops, demonstrations, and programs celebrating the advancement of geospatial technology.</h2>
 
-          <h3 class="column9 trailer-3">November 16-18, 2020 | Virtual</h3>
+          <h3 class="column9 trailer-3">November 15-17, 2021 | Virtual</h3>
 
+          <a class="button primary" href="https://forms.gle/GWFNJaoLCRMJ15jz8">Submit a presentation</a>
+          <br>
           <a class="button primary" [routerLink]="['/sessions']">View Event Schedule</a>
+          <br>
+          <a class="button primary" href="https://forms.gle/UAD2H6Mnehfj4MdW7">Sign up to volunteer</a>
+          <br>
+          <a class="button primary" href="https://forms.gle/wNH6bdL35Y1XrxnM6">Nominate a TX GIS Hero</a>
+          <br>
+          <a class="button primary" href="https://forms.gle/UAD2H6Mnehfj4MdW7">Sign up for career cupid geomentoring events</a>
+          <br>
+          <a class="button primary" href="https://www.youtube.com/watch?v=eigWXfjN9BU&feature=youtu.be">Watch the how to get started video</a>
         </div>
       </div>
     </div>
@@ -42,7 +52,7 @@
 
   <div id="activities" class="large-partition flex flex-column">
     <div class="bg-img"></div>
-    <h1 class="trailer-3">The TxGIS Day Experience</h1>
+    <h1 class="trailer-3">The GIS Day Experience</h1>
     <div class="container12 flex flex-row align-baseline">
       <div class="column4">
         <img class="medium" src="assets/images/icons/network.png" />
@@ -89,56 +99,39 @@
 
       <div class="icon-grid column12">
         <div class="icon-item">
+          <div style="background-image: url(assets/images/sponsors/AllTerra.jpg);"></div>
+          <p><a [routerLink]="['/sponsor/details/14ffd94d-d727-4348-a2c3-71a82cfd9a37']" target="_blank">AllTerra Central</a></p>
+        </div>
+
+        <div class="icon-item">
           <div style="background-image: url(assets/images/sponsors/conoco.png);"></div>
+          <p><a [routerLink]="['/sponsor/details/b5a3f156-1919-41b5-9086-643197073353']" target="_blank">ConocoPhillips</a></p>
         </div>
 
         <div class="icon-item">
-          <div style="background-image: url(assets/images/sponsors/TAMU_Library_Logo_2018.svg);"></div>
-        </div>
-
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/sponsors/TAMU_Geography_Logo_2018.svg);"></div>
+          <div style="background-image: url(assets/images/sponsors/TAMU_Geos_Logo_2018.svg)"></div>
+          <p><a [routerLink]="['/sponsor/details/6d5ebf3b-a718-40fa-a543-a1bb78af000f']" target="_blank">Texas A&M College of GeoSciences</a></p>
         </div>
 
         <div class="icon-item">
           <div style="background-image: url(assets/images/sponsors/TAMU_GeoInnovation_Service_Center_Logo_2018.svg);"></div>
+          <p><a [routerLink]="['/sponsor/details/47a34438-a620-44f5-a828-79b10176f9aa']" target="_blank">Texas A&M GeoInnovation Service Center</a></p>
         </div>
 
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/sponsors/AllTerra.jpg);"></div>
-        </div>
-
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/sponsors/Blackline.jpg);"></div>
-        </div>
-
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/sponsors/NewEdge.JPG);"></div>
-        </div>
-
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/sponsors/Surdex.jpg);"></div>
-        </div>
-
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/sponsors/Tessellations.jpg);"></div>
-        </div>
-
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/sponsors/Woolpert.jpg);"></div>
-        </div>
       </div>
+
+      
 
       <p class="leader-2"><a [routerLink]="['/sponsors']">Learn more about sponsorship options</a></p>
     </div>
   </div>
 
   <div class="medium-partition">
-    <h1>Event Sponsors</h1>
+    <h1>Participating Organizations</h1>
     <div class="container12 flex flex-column align-center">
       <div class="column9">
         <p>
-          TxGIS Day 2020 would not be possible without the expertise, support, and personnel from the following participating organizations.
+          TxGIS Day 2021 would not be possible without the expertise, support, and personnel from the following participating organizations.
         </p>
       </div>
 
@@ -169,14 +162,16 @@
         </div>
 
         <div class="icon-item">
+          <div style="background-image: url(assets/images/orgs//UT.png);"></div>
+          <p><a href="https://www.utexas.edu/" target="_blank">University of Texas at Austin</a></p>
+        </div>
+
+        <div class="icon-item">
           <div style="background-image: url(assets/images/orgs/URISATexas.png);"></div>
           <p><a href="https://urisatexas.org/" target="_blank">URISA Texas</a></p>
         </div>
 
-        <div class="icon-item">
-          <div style="background-image: url(assets/images/orgs//UT.png);"></div>
-          <p><a href="https://www.utexas.edu/" target="_blank">University of Texas at Austin</a></p>
-        </div>
+
       </div>
     </div>
   </div>

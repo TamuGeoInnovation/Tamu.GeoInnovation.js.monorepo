@@ -7,6 +7,18 @@
   </div>
 
   <div class="container12 flex flex-column">
+    <div class="large-partition bg-md-grey-50 flex flex-row justify-center align-center trailer-1">
+      <div class="column5">
+        <img class="medium" src="/assets/images/graphics/graphic-paper-competition-2.svg" />
+      </div>
+
+      <div class="column6 clr-md-grey-900">
+        <h2 class="trailer-1">High School Essay Contest</h2>
+        <p>Write an essay about why GIS is important, win money, and impress your friends.</p>
+        <a class="button secondary leader-1" [routerLink]="['/competitions/highschool']">See Details</a>
+      </div>
+    </div>
+
     <div class="large-partition bg-md-grey-50 flex flex-row-reverse justify-center align-center trailer-1">
       <div class="column5">
         <img class="medium" src="/assets/images/graphics/chat.svg" />
@@ -16,6 +28,35 @@
         <h2 class="trailer-1">Feedback Lottery</h2>
         <p>TxGIS Day strives to host the best GIS Day event in the State of Texas, and your feedback drives the direction of future events. Submit your thoughts for your chance to win free Esri products.</p>
         <a class="button secondary leader-1" [routerLink]="['/competitions/feedback']">See Details</a>
+      </div>
+    </div>
+
+    <div class="large-partition bg-md-grey-50 flex flex-row justify-center align-center trailer-1">
+      <div class="column5">
+        <img class="medium" src="/assets/images/graphics/graphic-vgi-competition.svg" />
+      </div>
+
+      <div class="column6 clr-md-grey-900">
+        <h2 class="trailer-1">VGI Competitions
+        </h2>
+        <p>Each year, TxGIS Day hosts a Volunteered Geographic Information (VGI) data collection competition to engage students, faculty, staff, and other GIS Day participants to get out there and collect some data that is meaningful to the mission of TxGIS Day. The competition has prizes, and allows participants to have an impact on our campus.</p>
+        <p>Due to historically successful participation by the community, this year we are excited to offer the Campus Signage Challenge!</p>
+        <a class="button secondary leader-1" [routerLink]="['/competitions/vgi']">Explore Competitions</a>
+      </div>
+    </div>
+
+
+
+    <div class="large-partition bg-md-grey-50 flex flex-row-reverse justify-center align-center trailer-1">
+      <div class="column5">
+        <img class="medium" src="/assets/images/graphics/graphic-poster-competition-2.svg" />
+      </div>
+
+      <div class="column6 clr-md-grey-900">
+        <h2 class="trailer-1">Poster Competition</h2>
+        <p>Present your GIS-related work poster at the poster competition gallery. Everyone has the opportunity to win but only three will be selected to receive cool gadgets provided by our sponsors.</p>
+        <a class="button secondary leader-1" [routerLink]="['/competitions/posters']">See Details</a>
+        <a class="button leader-1" [routerLink]="['/competitions/posters/gallery']">View the Gallery</a>
       </div>
     </div>
 
@@ -31,37 +72,8 @@
       </div>
     </div>
 
-    <div class="large-partition bg-md-grey-50 flex flex-row-reverse justify-center align-center trailer-1">
-      <div class="column5">
-        <img class="medium" src="/assets/images/graphics/graphic-poster-competition-2.svg" />
-      </div>
 
-      <div class="column6 clr-md-grey-900">
-        <h2 class="trailer-1">Poster Competition</h2>
-        <p>Present your GIS-related work poster at the poster competition gallery. Everyone has the opportunity to win but only three will be selected to receive cool gadgets provided by our sponsors.</p>
-        <a class="button secondary leader-1" [routerLink]="['/competitions/posters']">See Details</a>
-      </div>
-    </div>
 
-    <div class="large-partition bg-md-grey-50 flex flex-row justify-center align-center trailer-1" id="vgi">
-      <div class="column5">
-        <img class="medium" src="/assets/images/graphics/graphic-vgi-competition.svg" />
-      </div>
 
-      <div class="column6 clr-md-grey-900">
-        <h2 class="trailer-1">VGI Competitions</h2>
-        <p>
-          Each year, TxGIS Day hosts a Volunteered Geographic Information (VGI) data collection competition to engage students, faculty, staff, and other TxGIS Day participants to get out there and collect some data that is meaningful to the mission of Texas A&M. The competition has prizes, and allows participants to have an impact on our campus.
-        </p>
-
-        <p>
-          Due to historically successful participation by the community, this year we are excited to offer the Campus Signage Challenge!
-        </p>
-
-        <div class="flex flex-row justify-center align-center">
-          <a class="button secondary leader-1" [routerLink]="['/competitions/vgi']">Explore Competitions</a>
-        </div>
-      </div>
-    </div>
   </div>
 </section>

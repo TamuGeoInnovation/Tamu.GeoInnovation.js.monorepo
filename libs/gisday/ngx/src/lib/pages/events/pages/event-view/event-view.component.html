@@ -4,7 +4,7 @@
     <p class="sub-section-heading">
       Want to see a special session or topic?
     </p>
-    <p><a class="md-link" [routerLink]="['/contact']">Contact us</a> to find out how to recommend or request a special session.</p>
+    <p><a class="md-link" href='https://forms.gle/GWFNJaoLCRMJ15jz8'>Submit a presentation</a> or <a class="md-link" [routerLink]="['/contact']">contact us</a> to find out how to recommend or request a special session.</p>
     <p><strong>Note:</strong> All times are in Central Standard Time (CST).</p>
     <p><br /></p>
     <div id="links-container">
@@ -25,7 +25,7 @@
   <div class="loader" *ngIf="!$events"></div>
   <div id="default-content" class="column8" *ngIf="$events">
     <div id="day1" class="modal card">
-      <h2>November 16</h2>
+      <h2>November 15</h2>
       <div *ngFor="let event of ($events | async)?.day0">
         <div class="test" *ngIf="filterEventsByFilterTags(event)">
           <div class="row" [routerLink]="['/sessions/details', event.guid]">
@@ -48,7 +48,7 @@
       </div>
     </div>
     <div id="day2" class="modal card">
-      <h2>November 17</h2>
+      <h2>November 16</h2>
       <div *ngFor="let event of ($events | async)[1]?.day1">
         <div class="test" *ngIf="filterEventsByFilterTags(event)">
           <div class="row" [routerLink]="['/sessions/details', event.guid]">
@@ -71,7 +71,7 @@
       </div>
     </div>
     <div id="day3" class="modal card">
-      <h2>November 18</h2>
+      <h2>November 17</h2>
       <div *ngFor="let event of ($events | async)?.day2">
         <div class="test" *ngIf="filterEventsByFilterTags(event)">
           <div class="row" [routerLink]="['/sessions/details', event.guid]">

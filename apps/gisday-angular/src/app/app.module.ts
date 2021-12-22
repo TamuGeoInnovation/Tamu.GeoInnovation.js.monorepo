@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
@@ -104,6 +104,7 @@ const routeOptions: ExtraOptions = {
   ],
   declarations: [AppComponent],
   providers: [
+    Title,
     {
       provide: env,
       useValue: environment
