@@ -15,6 +15,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const port = environment.port || 3333;
+
+  Mailer.build('ethereal');
+
   await app.listen(port, () => {
     Logger.log('Listening at http://localhost:' + port);
   });

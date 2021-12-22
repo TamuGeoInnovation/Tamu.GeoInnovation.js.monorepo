@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { Mailer } from '@tamu-gisc/oidc/common';
 
 import { AppService } from './app.service';
 
@@ -9,5 +10,10 @@ export class AppController {
   @Get()
   getData() {
     return this.appService.getData();
+  }
+
+  @Get('/mail-test')
+  getMail() {
+    return Mailer.sendPasswordResetConfirmationEmail('aplecore@gmail.com');
   }
 }
