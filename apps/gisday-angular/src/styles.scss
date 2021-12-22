@@ -1,32 +1,9 @@
-// compress: true, javascriptEnabled :true
-
-/* ==========================================================================
-    Main.less - Contains all front-end styles for the web application
-    Application: GeoInnovation Services Center
-    Author: Edgar Hernandez - TAMU GeoInnovation Services ©
-   ========================================================================== */
-
-/* =========== Contents ===========*/
-
-//    1. Mixin imports
-//    2. Application Colors
-//    3. Typography
-//    4. Global
-//    5. Branding
-//    6. Navigation
-//    7. Grid Additions
-//    8. Landing Page Specific
-
-/* =========== END Contents ===========*/
-
-//  ==========================================================================
-//   Mixin Imports
-//  ==========================================================================
 @import 'libs/sass/mixins';
 @import 'libs/sass/1140';
+@import 'libs/sass/colors'; // Imports complete material design colors for use as classes in markup
 
 @import 'libs/gisday/sass/mobile';
-@import 'libs/gisday/sass/colors'; // Imports complete material design colors for use as classes in markup
+
 //  ==========================================================================
 //   Application colors
 //  ==========================================================================
@@ -65,7 +42,6 @@ $gisday-gray-primary: #fafafa;
 //  ==========================================================================
 //   Typography
 //  ==========================================================================
-// @title-font: "Oswald", sans-serif;
 $title-font: 'Source Sans Pro', sans-serif;
 $body-font: 'Open Sans', sans-serif;
 
@@ -564,29 +540,6 @@ header .logo-container::before {
 footer .logo-container {
   font-size: 1.5rem !important;
 }
-
-// .landing-logo {
-//   background-image: url(../img/logos/2020/logo/tamu-block-logo-svg.svg);
-//   height: 7rem;
-//   width: 90%;
-//   background-position: center;
-//   background-size: contain;
-//   background-repeat: no-repeat;
-//   position: relative;
-
-//   &::before {
-//     content: "";
-//     height: 2.5rem;
-//     width: 2.5rem;
-//     position: absolute;
-//     left: 0rem;
-//     top: -5rem;
-//     background-image: url(../img/graphics/graphic-satellite.svg);
-//     background-size: contain;
-//     background-position: center;
-//     background-repeat: no-repeat;
-//   }
-// }
 
 .site-logo {
   font-size: 1em;
@@ -1674,106 +1627,6 @@ div#links-container {
 .row {
   position: relative;
 }
-
-// .double-pane {
-//   @include flexbox() !important;
-//   @include justify-content(center) !important;
-//   @include flex-direction(row) !important;
-//   @include align-items(flex-start) !important;
-//   @include flex-wrap(wrap);
-//   margin-top: 2rem;
-//   position: inherit;
-
-//   & > div:first-child {
-//     width: 75%;
-//   }
-
-//   & > div:last-child {
-//     width: 25%;
-//   }
-
-//   &.equal {
-//     @include align-items(center) !important;
-
-//     & > div {
-//       width: 50%;
-//       margin-right: 0 !important;
-//     }
-//   }
-
-//   &.reverse {
-//     @include flex-direction(row-reverse) !important;
-//   }
-
-//   .column1 {
-//     width: 75px;
-//   }
-
-//   .column2 {
-//     width: 170px;
-//   }
-
-//   .column3 {
-//     width: 265px;
-//   }
-
-//   .column4 {
-//     width: 360px;
-//   }
-
-//   .column5 {
-//     width: 455px;
-//   }
-
-//   .column6 {
-//     width: 550px;
-//   }
-
-//   .column7 {
-//     width: 645px;
-//   }
-
-//   .column8 {
-//     width: 740px;
-//   }
-
-//   .column9 {
-//     width: 835px;
-//   }
-
-//   .column10 {
-//     width: 930px;
-//   }
-
-//   .column11 {
-//     width: 1025px;
-//   }
-
-//   .column12 {
-//     width: 1140px;
-//   }
-
-//   .column1,
-//   .column2,
-//   .column3,
-//   .column4,
-//   .column5,
-//   .column6,
-//   .column7,
-//   .column8,
-//   .column9,
-//   .column10,
-//   .column11,
-//   .column12 {
-//     display: inherit;
-//     float: none;
-//     margin: 0 auto;
-//   }
-
-//   & > div:first-child {
-//     margin-right: 3rem;
-//   }
-// }
 
 .half-children {
   & > div {
