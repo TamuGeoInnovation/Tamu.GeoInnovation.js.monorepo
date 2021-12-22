@@ -5886,7 +5886,15 @@
             "polyfills": "apps/kissingbugs-angular/src/polyfills.ts",
             "tsConfig": "apps/kissingbugs-angular/tsconfig.app.json",
             "aot": true,
-            "assets": ["apps/kissingbugs-angular/src/favicon.ico", "apps/kissingbugs-angular/src/assets"],
+            "assets": [
+              "apps/kissingbugs-angular/src/favicon.ico",
+              "apps/kissingbugs-angular/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./libs/assets/powershell",
+                "output": "./assets/powershell"
+              }
+            ],
             "styles": [
               "node_modules/ngx-lightbox/lightbox.css",
               "node_modules/font-awesome/css/font-awesome.css",
