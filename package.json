@@ -91,6 +91,7 @@
     "ng-pick-datetime": "^7.0.0",
     "ng2-dragula": "^2.1.1",
     "ngx-highlightjs": "^4.0.2",
+    "ngx-lightbox": "^2.4.1",
     "ngx-webstorage-service": "^4.1.0",
     "nodemailer": "^6.4.16",
     "oidc-provider": "^6.21.0",

@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
+import { LightboxModule } from 'ngx-lightbox';
+
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 
 import { SectionComponent } from './section/section.component';
@@ -27,7 +29,7 @@ import { PortraitGalleryComponent } from './portrait-gallery/portrait-gallery.co
 import { FacebookComponent } from './facebook/facebook.component';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, PipesModule],
+  imports: [CommonModule, RouterModule, PipesModule, LightboxModule],
   declarations: [
     SectionComponent,
     InfoAlertComponent,
