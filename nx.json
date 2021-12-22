@@ -502,6 +502,16 @@
     },
     "gisday-competitions": {
       "tags": []
+    },
+    "kissingbugs-angular": {
+      "tags": []
+    },
+    "kissingbugs-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["kissingbugs-angular"]
+    },
+    "kissingbugs-ngx": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {
