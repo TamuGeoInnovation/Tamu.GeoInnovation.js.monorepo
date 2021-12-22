@@ -1,12 +1,7 @@
 import { Body, Controller, Get, Post, UploadedFiles, UseFilters, UseInterceptors } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
-import {
-  HasRecipientInterceptor,
-  IMailroomEmailOutbound,
-  LogToDatabaseInterceptor,
-  NoRecipientFilter
-} from '@tamu-gisc/mailroom/common';
+import { HasRecipientInterceptor, LogToDatabaseInterceptor, NoRecipientFilter } from '@tamu-gisc/mailroom/common';
 import { Mailer } from '@tamu-gisc/oidc/common';
 
 import { AppService } from './app.service';

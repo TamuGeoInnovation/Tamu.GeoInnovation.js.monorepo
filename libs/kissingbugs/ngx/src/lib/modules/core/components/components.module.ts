@@ -23,7 +23,6 @@ import { FooterComponent } from './footer/footer.component';
 import { FunderComponent } from './funder/funder.component';
 import { DynamicZoneComponent } from './dynamic-zone/dynamic-zone.component';
 import { TableComponent } from './table/table.component';
-import { BugSelectionComponent } from './bug-selection/bug-selection.component';
 import { TimeSliderComponent } from './time-slider/time-slider.component';
 import { PortraitGalleryComponent } from './portrait-gallery/portrait-gallery.component';
 import { FacebookComponent } from './facebook/facebook.component';
@@ -48,7 +47,6 @@ import { FacebookComponent } from './facebook/facebook.component';
     FunderComponent,
     DynamicZoneComponent,
     TableComponent,
-    BugSelectionComponent,
     TimeSliderComponent,
     PortraitGalleryComponent,
     FacebookComponent
@@ -70,7 +68,6 @@ import { FacebookComponent } from './facebook/facebook.component';
     FooterComponent,
     FunderComponent,
     DynamicZoneComponent,
-    BugSelectionComponent,
     TimeSliderComponent,
     PortraitGalleryComponent,
     FacebookComponent
