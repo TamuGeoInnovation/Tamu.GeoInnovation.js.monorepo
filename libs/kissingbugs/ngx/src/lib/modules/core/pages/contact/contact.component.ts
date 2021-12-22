@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 import { StrapiService } from '../../data-access/strapi.service';
-import { IStrapiPageResponse } from '../../types/types';
+import { IContactBugSubmission, IStrapiPageResponse } from '../../types/types';
 
 @Component({
   selector: 'tamu-gisc-kissingbugs-contact',
@@ -43,7 +43,15 @@ export class ContactComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {}
 
   public validate() {
-    // console.log(this.contactForm.value);
-    this.ss.sendEmail(this.contactForm.value);
+    const contact: any = {
+      // ...this.contactForm.value,
+      recipientEmail: this.contactForm.controls.email.value,
+      subjectLine: 'Kissing bug submission',
+      emailBodyText: this.contactForm.controls.message.value
+    }
+    // console.log("Email", contact);
+    this.ss.sendEmail(contact).subscribe((result) => {
+      console.log(result);
+    })
   }
 }

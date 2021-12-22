@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 
 import { User, UserPasswordReset } from '@tamu-gisc/oidc/common';
+import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 
 export type NodeMailerServices = 'ethereal' | 'gmail' | 'tamu-relay';
 export class Mailer {
@@ -56,6 +57,19 @@ export class Mailer {
         });
         break;
     }
+  }
+
+  public static sendEmail(info: IMailroomEmailOutbound) {
+    const mailOptions = {
+      to: info.recipientEmail,
+      subject: info.subjectLine,
+      text: info.emailBodyText,
+      html: `<p>${info.emailBodyText}</p>`,
+      from: '"GISC Mailroom" <giscaccounts@tamu.edu>'
+    }
+
+    // return Mailer.transporter.sendMail(mailOptions).then((response) =>  Mailer.emailToResponse(response));
+    Mailer.transporter.sendMail(mailOptions).then((response) =>  Mailer.emailToConsole(response));
   }
 
   public static sendTokenByEmail(recipient: User, token: string) {
@@ -115,6 +129,15 @@ export class Mailer {
   public static emailToConsole(response) {
     if (Mailer.service == 'ethereal') {
       console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
+    }
+  }
+
+  public static emailToResponse(response) {
+    if (Mailer.service == 'ethereal') {
+      // console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
+      return nodemailer.getTestMessageUrl(response);
+    } else {
+      return;
     }
   }
 }

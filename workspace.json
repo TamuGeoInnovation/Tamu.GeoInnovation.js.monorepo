@@ -6062,6 +6062,27 @@
           }
         }
       }
+    },
+    "mailroom-common": {
+      "root": "libs/mailroom/common",
+      "sourceRoot": "libs/mailroom/common/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/mailroom/common/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/mailroom/common"],
+          "options": {
+            "jestConfig": "libs/mailroom/common/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

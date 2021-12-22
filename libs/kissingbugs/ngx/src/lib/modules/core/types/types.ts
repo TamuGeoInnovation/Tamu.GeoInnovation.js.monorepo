@@ -1,3 +1,5 @@
+import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
+
 export type StrapiSingleTypes =
   | 'home'
   | 'found-a-bug'
@@ -245,11 +247,9 @@ export interface IStrapiPageResponse {
   localizations: IStrapiLocale[];
 }
 
-export interface IContactBugSubmission {
+export interface IContactBugSubmission extends IMailroomEmailOutbound {
   firstName: string;
   lastName: string;
-  email: string;
-  verifyEmail: string;
   message: string;
   dateOfEncounter: string;
   timeOfEncounter: string;

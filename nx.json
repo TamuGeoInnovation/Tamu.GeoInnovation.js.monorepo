@@ -519,6 +519,9 @@
     },
     "mailroom-nest": {
       "tags": []
+    },
+    "mailroom-common": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

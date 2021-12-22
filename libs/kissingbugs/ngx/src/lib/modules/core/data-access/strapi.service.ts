@@ -44,7 +44,7 @@ export class StrapiService {
     );
   }
 
-  public sendEmail(body: IContactBugSubmission) {
+  public sendEmail(body: any) {
     return this.http.post(`${this.environment.value('email_server_url')}/`, body);
   }
 }
