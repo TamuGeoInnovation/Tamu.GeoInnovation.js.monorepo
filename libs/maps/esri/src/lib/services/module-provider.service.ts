@@ -215,6 +215,22 @@ export class EsriModuleProviderService {
     {
       class: 'esri/layers/MapImageLayer',
       name: 'MapImageLayer'
+    },
+    {
+      class: 'esri/widgets/Slider',
+      name: 'Slider'
+    },
+    {
+      class: 'esri/widgets/TimeSlider',
+      name: 'TimeSlider'
+    },
+    {
+      class: 'esri/widgets/Expand',
+      name: 'Expand'
+    },
+    {
+      class: 'esri/layers/support/Field',
+      name: 'Field'
     }
   ];
 

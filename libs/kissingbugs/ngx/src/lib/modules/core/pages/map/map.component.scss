@@ -1,0 +1,46 @@
+tamu-gisc-esri-map {
+  height: 40rem;
+}
+
+.selector {
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.95);
+
+  ul {
+    list-style-type: none;
+
+    li {
+      text-align: center;
+      position: relative;
+      padding-top: 0.5;
+      width: 130px;
+    }
+
+    li:hover {
+      background-color: #fc0;
+    }
+  }
+}
+
+.active {
+  border-right: 5px solid #fc0;
+}
+
+#timeSlider {
+  width: 100%;
+  height: 60px;
+}
+
+#legend {
+  background-color: white;
+  border-color: #666666;
+  padding: 0.8rem;
+}
+
+#currentCounty {
+  background-color: white;
+  padding-top: 0.8rem;
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+  padding-bottom: 0.4rem;
+}

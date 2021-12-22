@@ -2,8 +2,11 @@ import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 
 import { User, UserPasswordReset } from '@tamu-gisc/oidc/common';
+import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 
 export type NodeMailerServices = 'ethereal' | 'gmail' | 'tamu-relay';
+
+const fs = require('fs');
 export class Mailer {
   private static transporter: Mail;
   private static service: NodeMailerServices;
@@ -55,6 +58,51 @@ export class Mailer {
           }
         });
         break;
+    }
+  }
+
+  public static sendEmail(info: IMailroomEmailOutbound, toConsole?: boolean) {
+    const mailOptions = {
+      to: info.recipientEmail,
+      subject: info.subjectLine,
+      text: info.emailBodyText,
+      html: info.emailBodyHtml,
+      from: '"GISC Mailroom" <giscaccounts@tamu.edu>'
+    };
+
+    if (toConsole) {
+      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
+    } else {
+      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response));
+    }
+  }
+
+  public static sendEmailWithAttachments(info: IMailroomEmailOutbound, attachments: any[], toConsole?: boolean) {
+    const embeddedImages = attachments.map((file, i) => {
+      return {
+        filename: file.originalname,
+        content: file.buffer
+      };
+    });
+
+    const mailOptions = {
+      to: info.recipientEmail,
+      subject: info.subjectLine,
+      text: info.emailBodyText,
+      from: '"GISC Mailroom" <giscaccounts@tamu.edu>',
+      attachments: embeddedImages
+    };
+
+    if (toConsole) {
+      Mailer.transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+          console.error(err.message);
+        } else {
+          console.log(info);
+        }
+      });
+    } else {
+      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response));
     }
   }
 
@@ -113,8 +161,16 @@ export class Mailer {
   }
 
   public static emailToConsole(response) {
-    if (Mailer.service == 'ethereal') {
+    if (Mailer.service === 'ethereal') {
       console.log('Ethereal: ', nodemailer.getTestMessageUrl(response));
+    }
+  }
+
+  public static emailToResponse(response) {
+    if (Mailer.service === 'ethereal') {
+      return nodemailer.getTestMessageUrl(response);
+    } else {
+      return;
     }
   }
 }

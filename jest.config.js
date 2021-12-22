@@ -133,6 +133,10 @@ module.exports = {
     '<rootDir>/apps/veoride-data-compiler-node',
     '<rootDir>/libs/veoride/data-compiler',
     '<rootDir>/apps/gisday-competitions-nest',
-    '<rootDir>/libs/gisday/competitions'
+    '<rootDir>/libs/gisday/competitions',
+    '<rootDir>/apps/kissingbugs-angular',
+    '<rootDir>/libs/kissingbugs/ngx',
+    '<rootDir>/apps/mailroom-nest',
+    '<rootDir>/libs/mailroom/common'
   ]
 };

@@ -1,0 +1,11 @@
+<tamu-gisc-kissingbugs-nav activePage="{{this.page}}"></tamu-gisc-kissingbugs-nav>
+<tamu-gisc-kissingbugs-hero [dataSource]="(pageContents | async)?.hero"></tamu-gisc-kissingbugs-hero>
+
+<article class="container12 container">
+  <div class="styleForm">
+    <tamu-gisc-kissingbugs-dynamic-zone *ngFor="let item of (pageContents | async)?.section" [dataSource]="item"></tamu-gisc-kissingbugs-dynamic-zone>
+  </div>
+</article>
+
+<tamu-gisc-kissingbugs-funder></tamu-gisc-kissingbugs-funder>
+<tamu-gisc-kissingbugs-footer></tamu-gisc-kissingbugs-footer>

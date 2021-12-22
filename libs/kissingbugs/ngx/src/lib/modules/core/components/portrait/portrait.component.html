@@ -1,0 +1,13 @@
+<div class="column6 profileContainer">
+  <div class="profilePicture">
+    <img src="{{api_url}}{{dataSource?.media?.url}}" alt="Photo of {{dataSource?.name}}" />
+  </div>
+  <div class="profileDescription">
+    <p>{{dataSource?.name}}</p>
+    <p>{{dataSource?.education}}</p>
+    <div *ngIf="dataSource?.site != null">
+      <a href="{{dataSource?.site}}" target="_blank"><i class="fa fa-external-link fa-fw"></i></a>
+    </div>
+    <p>{{dataSource?.bio}}</p>
+  </div>
+</div>

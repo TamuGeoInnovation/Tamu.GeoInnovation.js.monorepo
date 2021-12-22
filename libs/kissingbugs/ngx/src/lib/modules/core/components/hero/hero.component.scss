@@ -1,0 +1,62 @@
+@import '/libs/kissingbugs/sass/variables';
+
+header {
+  margin-bottom: 2em;
+}
+
+header > div {
+  height: 100%;
+  position: relative;
+  background: rgba(44, 44, 44, 0.3);
+}
+
+.header-content {
+  max-width: 27rem;
+}
+
+.title {
+  position: relative;
+}
+
+.brand-row {
+  display: block;
+}
+
+#part2 {
+  font-size: 2.8em;
+  font-weight: normal;
+  letter-spacing: 0.15em;
+  color: $white;
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#part3 {
+  font-size: 5.6em;
+  letter-spacing: 0.18em;
+  color: $maincolor;
+  font-weight: normal;
+  position: relative;
+  line-height: 0.8;
+  top: -0.75rem;
+}
+
+#part4 {
+  font-weight: bold;
+  font-size: 2.2em;
+  letter-spacing: 0.075em;
+  font-variant: small-caps;
+  color: $secondcolor;
+  background: $maincolor;
+  white-space: nowrap;
+}
+
+#part5 {
+  font-weight: bold;
+  font-size: 1.5em;
+  letter-spacing: 0.165em;
+  color: #ffffff;
+  white-space: nowrap;
+  font-style: italic;
+}

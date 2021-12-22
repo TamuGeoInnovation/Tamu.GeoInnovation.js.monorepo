@@ -25,4 +25,8 @@ stages:
 
       - template: jobs/build.yml
         parameters:
+          buildtype: staging
+
+      - template: jobs/build.yml
+        parameters:
           buildtype: production

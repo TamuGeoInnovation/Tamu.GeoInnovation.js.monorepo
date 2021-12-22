@@ -502,6 +502,26 @@
     },
     "gisday-competitions": {
       "tags": []
+    },
+    "kissingbugs-angular": {
+      "tags": [],
+      "implicitDependencies": ["kissingbugs-sass"]
+    },
+    "kissingbugs-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["kissingbugs-angular"]
+    },
+    "kissingbugs-ngx": {
+      "tags": []
+    },
+    "kissingbugs-sass": {
+      "tags": ["type:styles"]
+    },
+    "mailroom-nest": {
+      "tags": []
+    },
+    "mailroom-common": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {
