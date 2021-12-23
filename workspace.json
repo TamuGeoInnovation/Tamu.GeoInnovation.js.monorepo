@@ -362,13 +362,6 @@
       "root": "libs/common/ngx/pipes",
       "sourceRoot": "libs/common/ngx/pipes/src",
       "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "libs/common/ngx/pipes/ng-package.json",
-            "tsConfig": "libs/common/ngx/pipes/tsconfig.lib.json"
-          }
-        },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
