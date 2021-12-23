@@ -2,7 +2,6 @@ module.exports = {
   projects: [
     '<rootDir>/apps/aggiemap-angular',
     '<rootDir>/apps/trees-angular',
-    '<rootDir>/apps/bikeshare',
     '<rootDir>/libs/charts',
     '<rootDir>/libs/common/ngx/environment',
     '<rootDir>/libs/common/ngx/local-store',

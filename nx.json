@@ -29,14 +29,6 @@
     "assets": {
       "tags": ["scope:shared", "type:assets"]
     },
-    "bikeshare": {
-      "tags": [],
-      "implicitDependencies": ["assets", "sass"]
-    },
-    "bikeshare-e2e": {
-      "tags": [],
-      "implicitDependencies": ["bikeshare"]
-    },
     "charts": {
       "tags": []
     },
