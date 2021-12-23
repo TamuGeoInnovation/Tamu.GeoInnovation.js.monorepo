@@ -452,13 +452,6 @@
       "root": "libs/common/ngx/ui/notification",
       "sourceRoot": "libs/common/ngx/ui/notification/src",
       "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "libs/common/ngx/ui/notification/ng-package.json",
-            "tsConfig": "libs/common/ngx/ui/notification/tsconfig.lib.json"
-          }
-        },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
