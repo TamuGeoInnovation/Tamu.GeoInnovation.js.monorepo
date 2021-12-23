@@ -260,9 +260,6 @@
     "maps-mapbox": {
       "tags": []
     },
-    "oidc-client-test": {
-      "tags": []
-    },
     "oidc-client": {
       "tags": []
     },

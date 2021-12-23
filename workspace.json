@@ -2549,58 +2549,6 @@
         }
       }
     },
-    "oidc-client-test": {
-      "root": "apps/oidc-client-test",
-      "sourceRoot": "apps/oidc-client-test/src",
-      "projectType": "application",
-      "prefix": "oidc-client-test",
-      "architect": {
-        "build": {
-          "builder": "@nrwl/node:build",
-          "options": {
-            "outputPath": "dist/apps/oidc-client-test",
-            "main": "apps/oidc-client-test/src/main.ts",
-            "tsConfig": "apps/oidc-client-test/tsconfig.app.json",
-            "assets": ["apps/oidc-client-test/src/assets"]
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/oidc-client-test/src/environments/environment.ts",
-                  "with": "apps/oidc-client-test/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          },
-          "outputs": ["{options.outputPath}"]
-        },
-        "serve": {
-          "builder": "@nrwl/node:execute",
-          "options": {
-            "buildTarget": "oidc-client-test:build"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["apps/oidc-client-test/tsconfig.app.json", "apps/oidc-client-test/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/oidc-client-test/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "apps/oidc-client-test/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/apps/oidc-client-test"]
-        }
-      }
-    },
     "oidc-client": {
       "root": "libs/oidc/client",
       "sourceRoot": "libs/oidc/client/src",
