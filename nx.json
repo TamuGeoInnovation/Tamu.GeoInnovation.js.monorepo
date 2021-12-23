@@ -263,13 +263,13 @@
     "oidc-client": {
       "tags": []
     },
-    "ues-angular": {
+    "ues-operations-angular": {
       "tags": [],
       "implicitDependencies": ["assets", "sass", "ues-sass"]
     },
-    "ues-angular-e2e": {
+    "ues-operations-angular-e2e": {
       "tags": [],
-      "implicitDependencies": ["ues-angular"]
+      "implicitDependencies": ["ues-operations-angular"]
     },
     "ues-common-ngx": {
       "tags": []

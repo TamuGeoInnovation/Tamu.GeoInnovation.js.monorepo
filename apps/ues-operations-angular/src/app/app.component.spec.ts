@@ -13,16 +13,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'ues-angular'`, () => {
+  it(`should have as title 'ues-operations-angular'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('ues-angular');
+    expect(app.title).toEqual('ues-operations-angular');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to ues-angular!');
+    expect(compiled.querySelector('h1').textContent).toContain('Welcome to ues-operations-angular!');
   });
 });

@@ -72,7 +72,7 @@ module.exports = {
     '<rootDir>/libs/covid/common/enums',
     '<rootDir>/libs/maps/mapbox',
     '<rootDir>/libs/oidc/client',
-    '<rootDir>/apps/ues-angular',
+    '<rootDir>/apps/ues-operations-angular',
     '<rootDir>/libs/ues/common/ngx',
     '<rootDir>/libs/common/utils/device/guards',
     '<rootDir>/apps/ues-effluent-angular',

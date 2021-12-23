@@ -1,6 +1,6 @@
 module.exports = {
   preset: '../../jest.preset.js',
-  coverageDirectory: '../../coverage/apps/ues-angular',
+  coverageDirectory: '../../coverage/apps/ues-operations-angular',
   snapshotSerializers: [
     'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
     'jest-preset-angular/build/AngularSnapshotSerializer.js',
@@ -16,5 +16,5 @@ module.exports = {
       }
     }
   },
-  displayName: 'ues-angular'
+  displayName: 'ues-operations-angular'
 };

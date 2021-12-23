@@ -2542,25 +2542,25 @@
         }
       }
     },
-    "ues-angular": {
+    "ues-operations-angular": {
       "projectType": "application",
-      "root": "apps/ues-angular",
-      "sourceRoot": "apps/ues-angular/src",
+      "root": "apps/ues-operations-angular",
+      "sourceRoot": "apps/ues-operations-angular/src",
       "prefix": "tamu-gisc",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "crossOrigin": "anonymous",
-            "outputPath": "dist/apps/ues-angular",
-            "index": "apps/ues-angular/src/index.html",
-            "main": "apps/ues-angular/src/main.ts",
-            "polyfills": "apps/ues-angular/src/polyfills.ts",
-            "tsConfig": "apps/ues-angular/tsconfig.app.json",
+            "outputPath": "dist/apps/ues-operations-angular",
+            "index": "apps/ues-operations-angular/src/index.html",
+            "main": "apps/ues-operations-angular/src/main.ts",
+            "polyfills": "apps/ues-operations-angular/src/polyfills.ts",
+            "tsConfig": "apps/ues-operations-angular/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "apps/ues-angular/src/favicon.ico",
-              "apps/ues-angular/src/assets",
+              "apps/ues-operations-angular/src/favicon.ico",
+              "apps/ues-operations-angular/src/assets",
               {
                 "glob": "**/*",
                 "input": "./libs/ues/assets/",
@@ -2572,15 +2572,15 @@
                 "output": "./assets"
               }
             ],
-            "styles": ["apps/ues-angular/src/styles.scss"],
+            "styles": ["apps/ues-operations-angular/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "apps/ues-angular/src/environments/environment.ts",
-                  "with": "apps/ues-angular/src/environments/environment.prod.ts"
+                  "replace": "apps/ues-operations-angular/src/environments/environment.ts",
+                  "with": "apps/ues-operations-angular/src/environments/environment.prod.ts"
                 }
               ],
               "baseHref": "/operations/",
@@ -2607,8 +2607,8 @@
             "development": {
               "fileReplacements": [
                 {
-                  "replace": "apps/ues-angular/src/environments/environment.ts",
-                  "with": "apps/ues-angular/src/environments/environment.dev.ts"
+                  "replace": "apps/ues-operations-angular/src/environments/environment.ts",
+                  "with": "apps/ues-operations-angular/src/environments/environment.dev.ts"
                 }
               ],
               "baseHref": "/operations/",
@@ -2638,63 +2638,63 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ues-angular:build"
+            "browserTarget": "ues-operations-angular:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ues-angular:build:production"
+              "browserTarget": "ues-operations-angular:build:production"
             },
             "development": {
-              "browserTarget": "ues-angular:build:development"
+              "browserTarget": "ues-operations-angular:build:development"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ues-angular:build"
+            "browserTarget": "ues-operations-angular:build"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["apps/ues-angular/tsconfig.app.json", "apps/ues-angular/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/ues-angular/**/*"]
+            "tsConfig": ["apps/ues-operations-angular/tsconfig.app.json", "apps/ues-operations-angular/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/ues-operations-angular/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "apps/ues-angular/jest.config.js",
+            "jestConfig": "apps/ues-operations-angular/jest.config.js",
             "passWithNoTests": true
           },
-          "outputs": ["coverage/apps/ues-angular"]
+          "outputs": ["coverage/apps/ues-operations-angular"]
         }
       }
     },
-    "ues-angular-e2e": {
-      "root": "apps/ues-angular-e2e",
-      "sourceRoot": "apps/ues-angular-e2e/src",
+    "ues-operations-angular-e2e": {
+      "root": "apps/ues-operations-angular-e2e",
+      "sourceRoot": "apps/ues-operations-angular-e2e/src",
       "projectType": "application",
       "architect": {
         "e2e": {
           "builder": "@nrwl/cypress:cypress",
           "options": {
-            "cypressConfig": "apps/ues-angular-e2e/cypress.json",
-            "tsConfig": "apps/ues-angular-e2e/tsconfig.e2e.json",
-            "devServerTarget": "ues-angular:serve"
+            "cypressConfig": "apps/ues-operations-angular-e2e/cypress.json",
+            "tsConfig": "apps/ues-operations-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "ues-operations-angular:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ues-angular:serve:production"
+              "devServerTarget": "ues-operations-angular:serve:production"
             }
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["apps/ues-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/ues-angular-e2e/**/*"]
+            "tsConfig": ["apps/ues-operations-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/ues-operations-angular-e2e/**/*"]
           }
         }
       }
