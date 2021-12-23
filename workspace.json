@@ -408,13 +408,6 @@
       "root": "libs/common/ngx/settings",
       "sourceRoot": "libs/common/ngx/settings/src",
       "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "libs/common/ngx/settings/ng-package.json",
-            "tsConfig": "libs/common/ngx/settings/tsconfig.lib.json"
-          }
-        },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
