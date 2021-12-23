@@ -339,13 +339,6 @@
       "root": "libs/common/ngx/local-store",
       "sourceRoot": "libs/common/ngx/local-store/src",
       "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "libs/common/ngx/local-store/ng-package.json",
-            "tsConfig": "libs/common/ngx/local-store/tsconfig.lib.json"
-          }
-        },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
