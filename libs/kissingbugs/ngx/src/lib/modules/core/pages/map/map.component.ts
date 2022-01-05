@@ -68,7 +68,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     const language: string = navigator.language.substr(0, 2);
 
-    this.pageContents = this.ss.getPage('map', language).pipe(shareReplay(1));
+    this.pageContents = this.ss.getPage(this.page, language).pipe(shareReplay(1));
 
     this.mapService.store.subscribe((instances) => {
       this.map = instances.map;

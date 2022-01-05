@@ -15,7 +15,7 @@ import { IStrapiPageResponse, StrapiSingleTypes } from '../../types/types';
 })
 export class ResourcesComponent implements OnInit, OnDestroy {
   private title = 'Resources | Kissing Bugs and Chagas Disease in the U.S. | Texas A&M';
-  public page: StrapiSingleTypes = 'resources';
+  public page: StrapiSingleTypes = 'knowledge';
   public pageContents: Observable<IStrapiPageResponse>;
 
   constructor(private titleService: Title, private ss: StrapiService) {}
@@ -25,7 +25,7 @@ export class ResourcesComponent implements OnInit, OnDestroy {
 
     const language: string = navigator.language.substr(0, 2);
 
-    this.pageContents = this.ss.getPage('resources', language).pipe(shareReplay(1));
+    this.pageContents = this.ss.getPage(this.page, language).pipe(shareReplay(1));
   }
 
   public ngOnDestroy() {}

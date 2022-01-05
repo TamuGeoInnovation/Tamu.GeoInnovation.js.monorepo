@@ -33,7 +33,7 @@ export class FaqComponent implements OnInit, OnDestroy {
 
     const language: string = navigator.language.substr(0, 2);
 
-    this.pageContents = this.ss.getPage('faq', language).pipe(shareReplay(1));
+    this.pageContents = this.ss.getPage(this.page, language).pipe(shareReplay(1));
 
     this.pageComponents = this.pageContents.pipe(
       map((response) => {

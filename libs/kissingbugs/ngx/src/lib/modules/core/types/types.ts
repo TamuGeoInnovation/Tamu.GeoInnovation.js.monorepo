@@ -7,6 +7,7 @@ export type StrapiSingleTypes =
   | 'team'
   | 'faq'
   | 'resources'
+  | 'knowledge'
   | 'contact'
   | 'navigation'
   | 'funder'
