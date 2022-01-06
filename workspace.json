@@ -1432,32 +1432,6 @@
         }
       }
     },
-    "ui-kits-ngx-layout-structural": {
-      "projectType": "library",
-      "root": "libs/ui-kits/ngx/layout/structural",
-      "sourceRoot": "libs/ui-kits/ngx/layout/structural/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "libs/ui-kits/ngx/layout/structural/tsconfig.lib.json",
-              "libs/ui-kits/ngx/layout/structural/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/layout/structural/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/ui-kits/ngx/layout/structural/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/libs/ui-kits/ngx/layout/structural"]
-        }
-      }
-    },
     "signage": {
       "projectType": "library",
       "root": "libs/signage",

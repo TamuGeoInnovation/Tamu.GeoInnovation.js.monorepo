@@ -25,7 +25,6 @@ import { SearchModule } from '@tamu-gisc/search';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-import { UIStructuralLayoutModule } from '@tamu-gisc/ui-kits/ngx/layout/structural';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { LayerListModule, LayerListCategorizedComponent } from '@tamu-gisc/maps/feature/layer-list';
@@ -124,7 +123,6 @@ const routes: Routes = [
     PopupsModule,
     MapsFeatureAccessibilityModule,
     MapsFeatureCoordinatesModule,
-    UIStructuralLayoutModule,
     UIClipboardModule,
     UIDragModule,
     UILayoutModule,

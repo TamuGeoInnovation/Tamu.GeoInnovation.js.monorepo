@@ -4,7 +4,7 @@ import { Observable, from, of } from 'rxjs';
 import { switchMap, filter, toArray, take, shareReplay, find, pluck } from 'rxjs/operators';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
-import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout/structural';
+import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { TripPlannerOptionsComponentService } from '../../services/trip-planner-options-component.service';
 import { TripPlannerService, TripPlannerRuleMode, TravelOptions } from '../../../../services/trip-planner.service';

@@ -39,7 +39,6 @@ import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-import { UIStructuralLayoutModule } from '@tamu-gisc/ui-kits/ngx/layout/structural';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
@@ -167,7 +166,6 @@ const hybridRoutes: Routes = [
     UIFormsModule,
     UILayoutModule,
     UIDragModule,
-    UIStructuralLayoutModule,
     UIClipboardModule,
     MapsFeatureTripPlannerModule,
     MapPopupModule,

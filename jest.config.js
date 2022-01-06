@@ -40,7 +40,6 @@ module.exports = {
     '<rootDir>/apps/signage-angular',
     '<rootDir>/libs/maps/feature/popup',
     '<rootDir>/libs/ui-kits/ngx/interactions/draggable',
-    '<rootDir>/libs/ui-kits/ngx/layout/structural',
     '<rootDir>/libs/signage',
     '<rootDir>/libs/aggiemap',
     '<rootDir>/libs/maps/feature/trip-planner',
