@@ -56,7 +56,7 @@
           <div class="form-item">
             <label for="input6">Start date: </label>
 
-            <input formControlName="dateOfEncounter" type="date" id="input6" placeholder="Date of Bug Encounter (MM/DD/YYYY)" name="dateEncounter" min="2021-01-01" max="2021-12-31" />
+            <input formControlName="dateOfEncounter" type="date" id="input6" placeholder="Date of Bug Encounter (MM/DD/YYYY)" name="dateEncounter" min="2021-01-01" max="{{this.today.getFullYear}}-{{this.today.getDay}}-{{this.today.getDate}}" />
           </div>
 
           <div class="form-item">

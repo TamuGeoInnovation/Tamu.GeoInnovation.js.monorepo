@@ -19,10 +19,12 @@ export class ContactComponent implements OnInit, OnDestroy {
   public page: StrapiSingleTypes = 'contact';
   public pageContents: Observable<IStrapiPageResponse>;
   public contactForm: FormGroup;
+  public today: Date = new Date(Date.now());
 
   constructor(private titleService: Title, private ss: StrapiService, private fb: FormBuilder) {
     this.contactForm = this.fb.group(
       {
+        application: new FormControl('KissingBug'),
         firstName: new FormControl('', [Validators.minLength(2)]),
         lastName: new FormControl('', [Validators.minLength(2)]),
         email: new FormControl('', [Validators.required, Validators.email]),
@@ -56,7 +58,10 @@ export class ContactComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {}
 
   public validate() {
-    if (this.contactForm.status === 'VALID' && this.contactForm.controls.hiddenInput.value === false) {
+    if (
+      this.contactForm.status === 'VALID' &&
+      (this.contactForm.controls.hiddenInput.value === false || this.contactForm.controls.hiddenInput.value === null)
+    ) {
       const formData = new FormData();
       const fileControls = [this.contactForm.controls.file1, this.contactForm.controls.file2];
 
@@ -73,11 +78,11 @@ export class ContactComponent implements OnInit, OnDestroy {
         }
       });
 
-      this.ss.sendEmail(formData).subscribe((result) => {
-        console.log(result);
+      this.ss.sendEmail(formData).subscribe(() => {
+        this.contactForm.reset();
       });
     } else {
-      console.log(this.contactForm.status);
+      console.log(this.contactForm.status, this.contactForm.controls.hiddenInput.value);
     }
   }
 
