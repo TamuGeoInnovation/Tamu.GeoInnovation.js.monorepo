@@ -1,4 +1,5 @@
 export interface IMailroomEmailOutbound {
+  emailGuid: string;
   recipientEmail: string;
   subjectLine: string;
   emailBodyText: string;
@@ -15,8 +16,9 @@ export interface INodeMailerSendMailResponse {
 }
 
 export enum EmailStatus {
+  Rejected = 2,
   Accepted = 1,
-  Rejected
+  InTransit = 0
 }
 
 export type MailroomOutbound = IMailroomEmailOutbound & Object;

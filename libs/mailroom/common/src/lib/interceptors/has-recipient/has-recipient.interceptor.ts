@@ -20,6 +20,7 @@ export class HasRecipientInterceptor implements NestInterceptor {
         if (recipientEmailAddress && recipientEmailAddress.includes('@')) {
           // Looks like a valid email address, proceed
           hasRecipientEmail = true;
+          request.body.recipientEmail = recipientEmailAddress;
         }
       });
 

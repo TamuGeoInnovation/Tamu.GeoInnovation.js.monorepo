@@ -1,6 +1,6 @@
 import { ArgumentMetadata, HttpException, Injectable, PipeTransform } from '@nestjs/common';
 
-import { MailroomOutbound } from '@tamu-gisc/mailroom/common';
+import { MailroomOutbound } from '../types/mail.types';
 
 @Injectable()
 export class OutboundPipe implements PipeTransform {
@@ -23,18 +23,13 @@ export class OutboundPipe implements PipeTransform {
         ret.emailBodyText = bodyText.join(',\r');
       }
 
-      // [tokens] defines array of words that could represent the email address we're sending this email to
-      const tokens = ['email', 'to', 'recipient', 'recipiant'];
+      if (value.emailGuid) {
+        ret.emailGuid = value.emailGuid;
+      }
 
-      tokens.forEach((token) => {
-        const recipientEmailAddress: string = value[token];
-
-        // Check if there is a value there and if that value includes @
-        if (recipientEmailAddress && recipientEmailAddress.includes('@')) {
-          // Looks like a valid email address, add it to the return value
-          ret.recipientEmail = value[token];
-        }
-      });
+      if (value.recipientEmail) {
+        ret.recipientEmail = value.recipientEmail;
+      }
 
       if (value.subjectLine) {
         ret.subjectLine = value.subjectLine;

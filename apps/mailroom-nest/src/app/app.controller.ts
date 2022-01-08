@@ -32,8 +32,8 @@ export class AppController {
 
   @Post('test')
   @UseFilters(NoRecipientFilter)
-  @UseInterceptors(AnyFilesInterceptor(), HasRecipientInterceptor)
-  public async sendEmailTest(@UploadedFiles() files: Array<Express.Multer.File>, @Body(OutboundPipe) body) {
-    return await this.service.insertMailroomEmail(body);
+  @UseInterceptors(AnyFilesInterceptor(), HasRecipientInterceptor, LogToDatabaseInterceptor)
+  public sendEmailTest(@UploadedFiles() files: Array<Express.Multer.File>, @Body(OutboundPipe) body) {
+    return Mailer.sendEmail(body, true);
   }
 }

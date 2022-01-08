@@ -61,7 +61,7 @@ export class Mailer {
     }
   }
 
-  public static sendEmail(info: IMailroomEmailOutbound, toConsole?: boolean) {
+  public static sendEmail(info: IMailroomEmailOutbound, toConsole: boolean) {
     const mailOptions = {
       to: info.recipientEmail,
       subject: info.subjectLine,
@@ -70,14 +70,16 @@ export class Mailer {
       from: '"GISC Mailroom" <giscaccounts@tamu.edu>'
     };
 
-    if (toConsole) {
-      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
-    } else {
-      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response));
-    }
+    return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response, info.emailGuid));
+
+    // if (toConsole) {
+    //   return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
+    // } else {
+    //   return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response));
+    // }
   }
 
-  public static sendEmailWithAttachments(info: IMailroomEmailOutbound, attachments: any[], toConsole?: boolean) {
+  public static sendEmailWithAttachments(info: IMailroomEmailOutbound, attachments: any[], toConsole: boolean) {
     const embeddedImages = attachments.map((file, i) => {
       return {
         filename: file.originalname,
@@ -94,15 +96,16 @@ export class Mailer {
     };
 
     if (toConsole) {
-      Mailer.transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-          console.error(err.message);
-        } else {
-          console.log(info);
-        }
-      });
+      //   Mailer.transporter.sendMail(mailOptions, (err, info) => {
+      //     if (err) {
+      //       console.error(err.message);
+      //     } else {
+      //       console.log(info);
+      //     }
+      //   });
+      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToConsole(response));
     } else {
-      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response));
+      return Mailer.transporter.sendMail(mailOptions).then((response) => Mailer.emailToResponse(response, info.emailGuid));
     }
   }
 
@@ -166,11 +169,11 @@ export class Mailer {
     }
   }
 
-  public static emailToResponse(response) {
+  public static emailToResponse(response, emailGuid) {
     if (Mailer.service === 'ethereal') {
       return nodemailer.getTestMessageUrl(response);
     } else {
-      return;
+      return { emailServer: response, emailGuid };
     }
   }
 }
