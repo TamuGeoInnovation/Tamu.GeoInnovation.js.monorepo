@@ -404,18 +404,6 @@ export const LayerSources: LayerSource[] = [
         native: {
           ...commonLayerProps
         }
-      },
-      {
-        type: 'feature',
-        id: Definitions.DISTANCED_STUDY_AREAS.layerId,
-        title: Definitions.DISTANCED_STUDY_AREAS.name,
-        url: Definitions.DISTANCED_STUDY_AREAS.url,
-        listMode: 'show',
-        visible: false,
-        popupComponent: Popups.TentZonePopupComponent,
-        native: {
-          ...commonLayerProps
-        }
       }
     ]
   },
