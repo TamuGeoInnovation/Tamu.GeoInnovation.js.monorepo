@@ -4886,34 +4886,6 @@
         }
       }
     },
-    "cpa-admin": {
-      "projectType": "library",
-      "root": "libs/cpa/admin",
-      "sourceRoot": "libs/cpa/admin/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/cpa/admin/tsconfig.lib.json", "libs/cpa/admin/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/cpa/admin/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/cpa/admin/jest.config.js",
-            "tsConfig": "libs/cpa/admin/tsconfig.spec.json",
-            "setupFile": "libs/cpa/admin/src/test-setup.ts"
-          }
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
-      }
-    },
     "cpa-sass": {
       "projectType": "library",
       "root": "libs/cpa/sass"
@@ -5832,6 +5804,29 @@
           "outputs": ["coverage/libs/geoservices/ngx"],
           "options": {
             "jestConfig": "libs/geoservices/ngx/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "cpa-ngx-admin": {
+      "projectType": "library",
+      "root": "libs/cpa/ngx/admin",
+      "sourceRoot": "libs/cpa/ngx/admin/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/cpa/ngx/admin/tsconfig.lib.json", "libs/cpa/ngx/admin/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/cpa/ngx/admin/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/cpa/ngx/admin"],
+          "options": {
+            "jestConfig": "libs/cpa/ngx/admin/jest.config.js",
             "passWithNoTests": true
           }
         }

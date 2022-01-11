@@ -106,7 +106,6 @@ module.exports = {
     '<rootDir>/libs/ues/cold-water/ngx',
     '<rootDir>/apps/ues-valves-nest',
     '<rootDir>/libs/cpa/data-access',
-    '<rootDir>/libs/cpa/admin',
     '<rootDir>/libs/ues/cold-water/data-api',
     '<rootDir>/libs/ues/common/nest',
     '<rootDir>/libs/maps/feature/data',
@@ -131,6 +130,7 @@ module.exports = {
     '<rootDir>/libs/oidc/admin/data-api',
     '<rootDir>/libs/oidc/provider',
     '<rootDir>/libs/covid/ngx',
-    '<rootDir>/libs/geoservices/ngx'
+    '<rootDir>/libs/geoservices/ngx',
+    '<rootDir>/libs/cpa/ngx/admin'
   ]
 };

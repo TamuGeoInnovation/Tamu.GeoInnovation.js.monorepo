@@ -97,7 +97,6 @@
       "@tamu-gisc/ues/recycling/ngx": ["libs/ues/recycling/ngx/src/index.ts"],
       "@tamu-gisc/ues/cold-water/ngx": ["libs/ues/cold-water/ngx/src/index.ts"],
       "@tamu-gisc/cpa/data-access": ["libs/cpa/data-access/src/index.ts"],
-      "@tamu-gisc/cpa/admin": ["libs/cpa/admin/src/index.ts"],
       "@tamu-gisc/ues/cold-water/data-api": ["libs/ues/cold-water/data-api/src/index.ts"],
       "@tamu-gisc/ues/common/nest": ["libs/ues/common/nest/src/index.ts"],
       "@tamu-gisc/maps/feature/data": ["libs/maps/feature/data/src/index.ts"],
@@ -116,7 +115,8 @@
       "@tamu-gisc/oidc/admin/data-api": ["libs/oidc/admin/data-api/src/index.ts"],
       "@tamu-gisc/oidc/provider": ["libs/oidc/provider/src/index.ts"],
       "@tamu-gisc/covid/ngx": ["libs/covid/ngx/src/index.ts"],
-      "@tamu-gisc/geoservices/ngx": ["libs/geoservices/ngx/src/index.ts"]
+      "@tamu-gisc/geoservices/ngx": ["libs/geoservices/ngx/src/index.ts"],
+      "@tamu-gisc/cpa/ngx/admin": ["libs/cpa/ngx/admin/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CpaAdminComponent } from './cpa-admin.component';
+import { CpaAdminComponent } from './cpa-ngx-admin.component';
 
 describe('CpaAdminComponent', () => {
   let component: CpaAdminComponent;

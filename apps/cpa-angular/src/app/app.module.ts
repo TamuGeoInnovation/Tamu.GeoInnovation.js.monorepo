@@ -24,7 +24,7 @@ WebFont.load({
 const routes: Routes = [
   {
     path: 'admin',
-    loadChildren: () => import('@tamu-gisc/cpa/admin').then((m) => m.CpaAdminModule)
+    loadChildren: () => import('@tamu-gisc/cpa/ngx/admin').then((m) => m.CpaNgxAdminModule)
   },
   {
     path: '',

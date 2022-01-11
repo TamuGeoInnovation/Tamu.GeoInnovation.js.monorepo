@@ -411,9 +411,6 @@
     "cpa-data-access": {
       "tags": []
     },
-    "cpa-admin": {
-      "tags": []
-    },
     "cpa-sass": {
       "tags": ["type:styles", "scope:cpa"]
     },
@@ -498,6 +495,9 @@
       "tags": []
     },
     "geoservices-ngx": {
+      "tags": []
+    },
+    "cpa-ngx-admin": {
       "tags": []
     }
   },

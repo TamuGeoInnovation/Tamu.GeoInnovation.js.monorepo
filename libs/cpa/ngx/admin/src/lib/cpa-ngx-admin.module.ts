@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
-import { CpaAdminComponent } from './cpa-admin.component';
+import { CpaAdminComponent } from './cpa-ngx-admin.component';
 
 const routes: Routes = [
   {
@@ -44,4 +44,4 @@ const routes: Routes = [
   imports: [CommonModule, RouterModule.forChild(routes), UILayoutModule],
   declarations: [CpaAdminComponent]
 })
-export class CpaAdminModule {}
+export class CpaNgxAdminModule {}

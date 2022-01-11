@@ -1,6 +1,6 @@
 module.exports = {
-  displayName: 'cpa-admin',
-  preset: '../../../jest.preset.js',
+  displayName: 'cpa-ngx-admin',
+  preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {
@@ -11,7 +11,7 @@ module.exports = {
       }
     }
   },
-  coverageDirectory: '../../../coverage/libs/cpa/admin',
+  coverageDirectory: '../../../../coverage/libs/cpa/ngx/admin',
   snapshotSerializers: [
     'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
     'jest-preset-angular/build/AngularSnapshotSerializer.js',
