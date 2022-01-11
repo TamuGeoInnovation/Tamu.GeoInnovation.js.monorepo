@@ -4,8 +4,9 @@ import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
-import { CountiesService } from '@tamu-gisc/geoservices/data-access';
 import { CountyStats, CountyStat, LockdownStat } from '@tamu-gisc/covid/data-api';
+
+import { CountiesService } from '../../../../data-access/counties/counties.service';
 
 @Component({
   selector: 'tamu-gisc-lockdown-map',

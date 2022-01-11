@@ -3,9 +3,11 @@ import { Observable, from, of } from 'rxjs';
 import { switchMap, pluck, filter, shareReplay, take } from 'rxjs/operators';
 
 import { County, User } from '@tamu-gisc/covid/common/entities';
-import { TestingSitesService, StatesService, FormattedTestingSite } from '@tamu-gisc/geoservices/data-access';
-import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
 import { STATUS } from '@tamu-gisc/covid/common/enums';
+
+import { IdentityService } from '../../../../services/identity.service';
+import { FormattedTestingSite, TestingSitesService } from '../../../../data-access/testing-sites/testing-sites.service';
+import { StatesService } from '../../../../data-access/states/states.service';
 
 @Component({
   selector: 'tamu-gisc-testing-sites',

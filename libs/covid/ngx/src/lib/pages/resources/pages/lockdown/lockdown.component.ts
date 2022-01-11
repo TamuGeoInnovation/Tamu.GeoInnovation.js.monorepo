@@ -5,14 +5,13 @@ import { switchMap, pluck, withLatestFrom, filter, takeUntil, shareReplay } from
 import { DeepPartial } from 'typeorm';
 
 import { County, User } from '@tamu-gisc/covid/common/entities';
-import {
-  WebsiteTypesService,
-  StatesService,
-  LockdownsService,
-  PhoneNumberTypesService,
-  ActiveLockdown
-} from '@tamu-gisc/geoservices/data-access';
-import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
+
+import { IdentityService } from '../../../../services/identity.service';
+import { WebsiteTypesService } from '../../../../data-access/website-types/website-types.service';
+import { StatesService } from '../../../../data-access/states/states.service';
+import { LockdownsService } from '../../../../data-access/lockdowns/lockdowns.service';
+import { PhoneNumberTypesService } from '../../../../data-access/phone-number-types/phone-number-types.service';
+import { ActiveLockdown } from '../../../../data-access/lockdowns/lockdowns.service';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 

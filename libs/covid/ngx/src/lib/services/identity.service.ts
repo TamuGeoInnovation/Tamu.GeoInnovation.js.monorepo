@@ -5,7 +5,9 @@ import { DeepPartial } from 'typeorm';
 
 import { User, CountyClaim } from '@tamu-gisc/covid/common/entities';
 import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-store';
-import { UsersService, CountyClaimsService } from '@tamu-gisc/geoservices/data-access';
+
+import { CountyClaimsService } from '../data-access/county-claims/county-claims.service';
+import { UsersService } from '../data-access/users/users.service';
 
 const storageOptions: Partial<StorageConfig> = { primaryKey: 'tamu-covid-vgi' };
 

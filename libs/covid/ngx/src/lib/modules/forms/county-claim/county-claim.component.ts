@@ -5,7 +5,9 @@ import { shareReplay } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
 import { FieldCategory, EntityValue } from '@tamu-gisc/covid/common/entities';
-import { PhoneNumberTypesService, WebsiteTypesService } from '@tamu-gisc/geoservices/data-access';
+
+import { PhoneNumberTypesService } from '../../../data-access/phone-number-types/phone-number-types.service';
+import { WebsiteTypesService } from '../../../data-access/website-types/website-types.service';
 
 @Component({
   selector: 'tamu-gisc-county-claim',

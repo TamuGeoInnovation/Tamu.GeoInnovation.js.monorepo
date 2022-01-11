@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
 
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-covid-ngx',

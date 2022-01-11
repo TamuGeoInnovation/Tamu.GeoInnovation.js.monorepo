@@ -5,9 +5,12 @@ import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 
 import { STATUS } from '@tamu-gisc/covid/common/enums';
-import { County, CountyClaim, State, User } from '@tamu-gisc/covid/common/entities';
-import { CountiesService, CountyClaimsService, StatesService, UsersService } from '@tamu-gisc/geoservices/data-access';
 
+import { County, CountyClaim, State, User } from '@tamu-gisc/covid/common/entities';
+import { UsersService } from '../../../../data-access/users/users.service';
+import { CountyClaimsService } from '../../../../data-access/county-claims/county-claims.service';
+import { StatesService } from '../../../../data-access/states/states.service';
+import { CountiesService } from '../../../../data-access/counties/counties.service';
 import { UrlFormHandlerComponent } from '../url-form-handler/url-form-handler.component';
 
 @Component({

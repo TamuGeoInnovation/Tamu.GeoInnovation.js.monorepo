@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay, map } from 'rxjs/operators';
 
-import { CountiesService } from '@tamu-gisc/geoservices/data-access';
 import { CountyStats, CountyExtended } from '@tamu-gisc/covid/data-api';
+
+import { CountiesService } from '../../../../data-access/counties/counties.service';
 
 @Component({
   selector: 'tamu-gisc-admin-counties',

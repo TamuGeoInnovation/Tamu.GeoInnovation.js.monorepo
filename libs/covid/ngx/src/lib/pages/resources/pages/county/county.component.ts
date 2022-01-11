@@ -15,16 +15,15 @@ import {
 import { DeepPartial } from 'typeorm';
 
 import { County, State, User, CountyClaim, FieldCategory, EntityValue } from '@tamu-gisc/covid/common/entities';
-import {
-  CountiesService,
-  StatesService,
-  PhoneNumberTypesService,
-  PhoneNumbersService,
-  CountyClaimsService,
-  WebsiteTypesService,
-  WebsitesService
-} from '@tamu-gisc/geoservices/data-access';
-import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
+
+import { IdentityService } from '../../../../services/identity.service';
+import { CountiesService } from '../../../../data-access/counties/counties.service';
+import { StatesService } from '../../../../data-access/states/states.service';
+import { PhoneNumberTypesService } from '../../../../data-access/phone-number-types/phone-number-types.service';
+import { PhoneNumbersService } from '../../../../data-access/phone-numbers/phone-numbers.service';
+import { CountyClaimsService } from '../../../../data-access/county-claims/county-claims.service';
+import { WebsiteTypesService } from '../../../../data-access/website-types/website-types.service';
+import { WebsitesService } from '../../../../data-access/websites/websites.service';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 

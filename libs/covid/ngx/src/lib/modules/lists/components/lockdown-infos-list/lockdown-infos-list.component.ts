@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { shareReplay, map } from 'rxjs/operators';
 
 import { Lockdown } from '@tamu-gisc/covid/common/entities';
-import { LockdownsService } from '@tamu-gisc/geoservices/data-access';
+
+import { LockdownsService } from '../../../../data-access/lockdowns/lockdowns.service';
 
 @Component({
   selector: 'tamu-gisc-lockdown-infos-list',

@@ -3,7 +3,9 @@ import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { DeepPartial } from 'typeorm';
 
 import { EntityValue } from '@tamu-gisc/covid/common/entities';
-import { WebsitesService, PhoneNumbersService } from '@tamu-gisc/geoservices/data-access';
+
+import { WebsitesService } from '../../../../data-access/websites/websites.service';
+import { PhoneNumbersService } from '../../../../data-access/phone-numbers/phone-numbers.service';
 
 @Component({
   selector: 'tamu-gisc-county-claim-info-details',

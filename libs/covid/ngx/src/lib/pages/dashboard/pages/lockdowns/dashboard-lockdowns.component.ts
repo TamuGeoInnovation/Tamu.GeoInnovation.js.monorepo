@@ -4,8 +4,9 @@ import { filter, pluck, switchMap, shareReplay } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
 import { County, User, Lockdown } from '@tamu-gisc/covid/common/entities';
-import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
-import { ActiveLockdown, LockdownsService } from '@tamu-gisc/geoservices/data-access';
+
+import { IdentityService } from '../../../../services/identity.service';
+import { LockdownsService } from '../../../../data-access/lockdowns/lockdowns.service';
 
 @Component({
   selector: 'tamu-gisc-dashboard-lockdowns',

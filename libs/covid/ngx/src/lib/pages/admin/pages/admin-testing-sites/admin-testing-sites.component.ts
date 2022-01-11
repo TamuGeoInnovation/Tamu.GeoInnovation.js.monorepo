@@ -5,13 +5,12 @@ import { Observable } from 'rxjs';
 import { switchMap, shareReplay } from 'rxjs/operators';
 
 import { County, State, User } from '@tamu-gisc/covid/common/entities';
-import {
-  CountiesService,
-  StatesService,
-  TestingSitesService,
-  UsersService,
-  FormattedTestingSite
-} from '@tamu-gisc/geoservices/data-access';
+
+import { CountiesService } from '../../../../data-access/counties/counties.service';
+import { StatesService } from '../../../../data-access/states/states.service';
+import { TestingSitesService } from '../../../../data-access/testing-sites/testing-sites.service';
+import { UsersService } from '../../../../data-access/users/users.service';
+import { FormattedTestingSite } from '../../../../data-access/testing-sites/testing-sites.service';
 
 import { UrlFormHandlerComponent } from '../url-form-handler/url-form-handler.component';
 

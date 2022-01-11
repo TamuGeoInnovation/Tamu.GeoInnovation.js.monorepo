@@ -3,7 +3,10 @@ import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 import { FieldCategory, EntityValue } from '@tamu-gisc/covid/common/entities';
-import { WebsiteTypesService, PhoneNumberTypesService, ActiveLockdown } from '@tamu-gisc/geoservices/data-access';
+
+import { WebsiteTypesService } from '../../../data-access/website-types/website-types.service';
+import { PhoneNumberTypesService } from '../../../data-access//phone-number-types/phone-number-types.service';
+import { ActiveLockdown } from '../../../data-access/lockdowns/lockdowns.service';
 
 @Component({
   selector: 'tamu-gisc-lockdown-details',

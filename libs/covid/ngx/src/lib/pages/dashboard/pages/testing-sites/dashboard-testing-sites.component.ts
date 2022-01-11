@@ -4,8 +4,9 @@ import { filter, pluck, switchMap, shareReplay } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
 import { County, User } from '@tamu-gisc/covid/common/entities';
-import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
-import { TestingSitesService, FormattedTestingSite } from '@tamu-gisc/geoservices/data-access';
+
+import { IdentityService } from '../../../../services/identity.service';
+import { FormattedTestingSite, TestingSitesService } from '../../../../data-access/testing-sites/testing-sites.service';
 
 @Component({
   selector: 'tamu-gisc-dashboard-testing-sites',

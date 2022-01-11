@@ -3,7 +3,11 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { CATEGORY } from '@tamu-gisc/covid/common/enums';
-import { TestingSitesService, FormattedTestingSite } from '@tamu-gisc/geoservices/data-access';
+
+import {
+  FormattedTestingSite,
+  TestingSitesService
+} from '../../../../../../data-access/testing-sites/testing-sites.service';
 
 @Component({
   selector: 'tamu-gisc-testing-sites-list',

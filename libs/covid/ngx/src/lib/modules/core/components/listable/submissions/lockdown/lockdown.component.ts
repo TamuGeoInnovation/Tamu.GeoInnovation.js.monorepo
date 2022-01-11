@@ -4,7 +4,11 @@ import { map } from 'rxjs/operators';
 
 import { CATEGORY } from '@tamu-gisc/covid/common/enums';
 import { County, FieldCategory } from '@tamu-gisc/covid/common/entities';
-import { FormattedTestingSite, TestingSitesService } from '@tamu-gisc/geoservices/data-access';
+
+import {
+  FormattedTestingSite,
+  TestingSitesService
+} from '../../../../../../data-access/testing-sites/testing-sites.service';
 
 @Component({
   selector: 'tamu-gisc-lockdown-list',

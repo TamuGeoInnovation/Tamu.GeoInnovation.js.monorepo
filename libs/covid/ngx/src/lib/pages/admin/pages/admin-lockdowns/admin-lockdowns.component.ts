@@ -5,8 +5,11 @@ import { Observable } from 'rxjs';
 import { switchMap, shareReplay } from 'rxjs/operators';
 
 import { Lockdown } from '@tamu-gisc/covid/common/entities';
-import { CountiesService, LockdownsService, StatesService, UsersService } from '@tamu-gisc/geoservices/data-access';
 
+import { CountiesService } from '../../../../data-access/counties/counties.service';
+import { LockdownsService } from '../../../../data-access/lockdowns/lockdowns.service';
+import { StatesService } from '../../../../data-access/states/states.service';
+import { UsersService } from '../../../../data-access/users/users.service';
 import { UrlFormHandlerComponent } from '../url-form-handler/url-form-handler.component';
 
 @Component({

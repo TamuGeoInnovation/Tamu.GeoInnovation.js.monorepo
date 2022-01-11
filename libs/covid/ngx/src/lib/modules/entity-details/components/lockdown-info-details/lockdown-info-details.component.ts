@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { LockdownsService, ActiveLockdown } from '@tamu-gisc/geoservices/data-access';
+import { ActiveLockdown, LockdownsService } from '../../../../data-access/lockdowns/lockdowns.service';
 
 @Component({
   selector: 'tamu-gisc-lockdown-info-details',

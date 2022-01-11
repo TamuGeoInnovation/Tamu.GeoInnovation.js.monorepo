@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
 import { CountyClaim } from '@tamu-gisc/covid/common/entities';
-import { CountyClaimsService } from '@tamu-gisc/geoservices/data-access';
+
+import { CountyClaimsService } from '../../../../data-access/county-claims/county-claims.service';
 
 @Component({
   selector: 'tamu-gisc-county-claim-infos-list',

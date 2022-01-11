@@ -5,7 +5,10 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { State, County, User } from '@tamu-gisc/covid/common/entities';
-import { StatesService, UsersService, CountiesService } from '@tamu-gisc/geoservices/data-access';
+
+import { StatesService } from '../../../../data-access/states/states.service';
+import { UsersService } from '../../../../data-access/users/users.service';
+import { CountiesService } from '../../../../data-access/counties/counties.service';
 
 @Component({
   selector: 'tamu-gisc-url-form-handler',

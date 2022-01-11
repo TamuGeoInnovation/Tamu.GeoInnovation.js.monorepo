@@ -5,17 +5,16 @@ import { switchMap, pluck, filter, withLatestFrom } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
 import { County, User, TestingSite, FieldCategory, EntityValue } from '@tamu-gisc/covid/common/entities';
-import {
-  StatesService,
-  RestrictionsService,
-  WebsiteTypesService,
-  TestingSitesService,
-  SiteOwnersService,
-  SiteServicesService,
-  SiteStatusesService,
-  PhoneNumberTypesService
-} from '@tamu-gisc/geoservices/data-access';
-import { IdentityService } from '@tamu-gisc/geoservices/core/ngx';
+
+import { IdentityService } from '../../../services/identity.service';
+import { StatesService } from '../../../data-access/states/states.service';
+import { RestrictionsService } from '../../../data-access/restrictions/restrictions.service';
+import { WebsiteTypesService } from '../../../data-access/website-types/website-types.service';
+import { TestingSitesService } from '../../../data-access/testing-sites/testing-sites.service';
+import { SiteOwnersService } from '../../../data-access/site-owners/site-owners.service';
+import { SiteServicesService } from '../../../data-access/site-services/site-services.service';
+import { SiteStatusesService } from '../../../data-access/site-statuses/site-statuses.service';
+import { PhoneNumberTypesService } from '../../../data-access/phone-number-types/phone-number-types.service';
 
 const storageOptions = { primaryKey: 'tamu-covid-vgi' };
 
