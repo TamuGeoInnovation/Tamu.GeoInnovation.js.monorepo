@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "../../../../dist/out-tsc",
     "module": "commonjs",
-    "types": ["jest", "arcgis-js-api"]
+    "types": ["jest", "node", "arcgis-js-api"]
   },
   "files": ["src/test-setup.ts"],
   "include": ["**/*.spec.ts", "**/*.d.ts"]

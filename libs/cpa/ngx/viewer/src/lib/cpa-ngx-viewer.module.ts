@@ -14,7 +14,7 @@ import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard
 import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
 
 import { ParticipantComponent } from './components/participant/participant.component';
-import { ViewerComponent } from './viewer.component';
+import { ViewerComponent } from './cpa-ngx-viewer.component';
 import { SnapshotNavigatorComponent } from './components/snapshot-navigator/snapshot-navigator.component';
 import { EventControlsComponent } from './components/event-controls/event-controls.component';
 import { ParticipantListItemComponent } from './components/event-controls/components/participant-list-item/participant-list-item.component';
@@ -78,4 +78,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class CpaViewerModule {}
+export class CpaNgxViewerModule {}

@@ -1827,29 +1827,6 @@
         }
       }
     },
-    "cpa-common-ngx": {
-      "projectType": "library",
-      "root": "libs/cpa/common/ngx",
-      "sourceRoot": "libs/cpa/common/ngx/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/cpa/common/ngx/tsconfig.lib.json", "libs/cpa/common/ngx/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/cpa/common/ngx/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/cpa/common/ngx/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/libs/cpa/common/ngx"]
-        }
-      }
-    },
     "maps-feature-forms": {
       "projectType": "library",
       "root": "libs/maps/feature/forms",
@@ -5822,6 +5799,29 @@
           "outputs": ["coverage/libs/cpa/ngx/data-access"],
           "options": {
             "jestConfig": "libs/cpa/ngx/data-access/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "cpa-ngx-viewer": {
+      "projectType": "library",
+      "root": "libs/cpa/ngx/viewer",
+      "sourceRoot": "libs/cpa/ngx/viewer/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/cpa/ngx/viewer/tsconfig.lib.json", "libs/cpa/ngx/viewer/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/cpa/ngx/viewer/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/cpa/ngx/viewer"],
+          "options": {
+            "jestConfig": "libs/cpa/ngx/viewer/jest.config.js",
             "passWithNoTests": true
           }
         }

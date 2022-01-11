@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
-import { ViewerComponent } from './viewer.component';
+import { ViewerComponent } from './cpa-ngx-viewer.component';
 
 describe('ViewerComponent', () => {
   let component: ViewerComponent;

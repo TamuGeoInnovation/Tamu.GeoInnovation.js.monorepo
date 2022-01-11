@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'cpa-common-ngx',
+  displayName: 'cpa-ngx-viewer',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
@@ -11,7 +11,7 @@ module.exports = {
       }
     }
   },
-  coverageDirectory: '../../../../coverage/libs/cpa/common/ngx',
+  coverageDirectory: '../../../../coverage/libs/cpa/ngx/viewer',
   snapshotSerializers: [
     'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
     'jest-preset-angular/build/AngularSnapshotSerializer.js',

@@ -22,7 +22,7 @@ const routes: Routes = [
       },
       {
         path: 'viewer',
-        loadChildren: () => import('@tamu-gisc/cpa/common/ngx').then((m) => m.CpaViewerModule)
+        loadChildren: () => import('@tamu-gisc/cpa/ngx/viewer').then((m) => m.CpaNgxViewerModule)
       }
     ]
   }

@@ -20,7 +20,7 @@ import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { MapDrawAdvancedComponent } from '@tamu-gisc/maps/feature/draw';
 import { ResponseService } from '@tamu-gisc/cpa/ngx/data-access';
 
-import { ViewerService } from '../../../viewer/services/viewer.service';
+import { ViewerService } from '../../services/viewer.service';
 
 import esri = __esri;
 

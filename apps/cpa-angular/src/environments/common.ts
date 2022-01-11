@@ -1,5 +1,5 @@
 import { LayerSource } from '@tamu-gisc/common/types';
-import { ParticipantResponsePopupComponent } from '@tamu-gisc/cpa/common/ngx';
+import { ParticipantResponsePopupComponent } from '@tamu-gisc/cpa/ngx/viewer';
 
 const commonLayerProps = {
   minScale: 10000000,

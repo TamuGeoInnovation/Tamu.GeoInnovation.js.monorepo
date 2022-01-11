@@ -189,9 +189,6 @@
     "cpa-data-api": {
       "tags": []
     },
-    "cpa-common-ngx": {
-      "tags": []
-    },
     "maps-feature-forms": {
       "tags": []
     },
@@ -498,6 +495,9 @@
       "tags": []
     },
     "cpa-ngx-data-access": {
+      "tags": []
+    },
+    "cpa-ngx-viewer": {
       "tags": []
     }
   },

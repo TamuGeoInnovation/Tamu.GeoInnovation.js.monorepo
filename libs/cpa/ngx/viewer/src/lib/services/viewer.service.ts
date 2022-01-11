@@ -20,7 +20,6 @@ import esri = __esri;
 export class ViewerService {
   private _workshopGuid: ReplaySubject<string> = new ReplaySubject(undefined);
   public workshopGuid: Observable<string> = this._workshopGuid.asObservable();
-
   private _participantGuid: ReplaySubject<string> = new ReplaySubject(undefined);
   public participantGuid: Observable<string> = this._participantGuid.asObservable();
 

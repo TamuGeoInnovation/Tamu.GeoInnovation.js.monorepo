@@ -7,8 +7,8 @@ import { ViewerService } from './services/viewer.service';
 
 @Component({
   selector: 'tamu-gisc-viewer',
-  templateUrl: './viewer.component.html',
-  styleUrls: ['./viewer.component.scss']
+  templateUrl: './cpa-ngx-viewer.component.html',
+  styleUrls: ['./cpa-ngx-viewer.component.scss']
 })
 export class ViewerComponent implements OnInit, OnDestroy {
   public showAdminControls: Observable<boolean>;

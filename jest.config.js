@@ -49,7 +49,6 @@ module.exports = {
     '<rootDir>/apps/cpa-angular',
     '<rootDir>/apps/cpa-nest',
     '<rootDir>/libs/cpa/data-api',
-    '<rootDir>/libs/cpa/common/ngx',
     '<rootDir>/libs/maps/feature/forms',
     '<rootDir>/libs/cpa/common/entities',
     '<rootDir>/libs/ui-kits/ngx/navigation/breadcrumb',
@@ -131,6 +130,7 @@ module.exports = {
     '<rootDir>/libs/covid/ngx',
     '<rootDir>/libs/geoservices/ngx',
     '<rootDir>/libs/cpa/ngx/admin',
-    '<rootDir>/libs/cpa/ngx/data-access'
+    '<rootDir>/libs/cpa/ngx/data-access',
+    '<rootDir>/libs/cpa/ngx/viewer'
   ]
 };
