@@ -4,7 +4,7 @@ import { Angulartics2Module } from 'angulartics2';
 import * as WebFont from 'webfontloader';
 import { StorageServiceModule } from 'ngx-webstorage-service';
 
-import { AppRoutingModule } from '@tamu-gisc/ues/common/ngx';
+import { AppRoutingModule } from '@tamu-gisc/ues/operations/ngx';
 import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/ui/notification';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 
