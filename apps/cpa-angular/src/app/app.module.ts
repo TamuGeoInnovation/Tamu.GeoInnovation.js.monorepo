@@ -12,7 +12,6 @@ import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 
 import * as environment from '../environments/environment';
-
 import { AppComponent } from './app.component';
 
 WebFont.load({
@@ -27,8 +26,13 @@ const routes: Routes = [
     loadChildren: () => import('@tamu-gisc/cpa/ngx/admin').then((m) => m.CpaNgxAdminModule)
   },
   {
+    path: 'viewer',
+    loadChildren: () => import('@tamu-gisc/cpa/ngx/viewer').then((m) => m.CpaNgxViewerModule)
+  },
+  {
     path: '',
-    loadChildren: () => import('./modules/map/map.module').then((m) => m.MapModule)
+    pathMatch: 'full',
+    redirectTo: 'viewer'
   }
 ];
 

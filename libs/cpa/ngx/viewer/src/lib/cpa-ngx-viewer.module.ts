@@ -12,6 +12,7 @@ import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
 import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
+import { EsriMapModule } from '@tamu-gisc/maps/esri';
 
 import { ParticipantComponent } from './components/participant/participant.component';
 import { ViewerComponent } from './cpa-ngx-viewer.component';
@@ -22,6 +23,7 @@ import { ParticipantResponsePopupComponent } from './components/participant-resp
 import { ViewerBasePopupComponent } from './components/viewer-base-popup/viewer-base-popup.component';
 import { ParticipantWorkshopsListComponent } from './components/participant-workshops-list/participant-workshops-list.component';
 import { ParticipantGroupListComponent } from './components/participant-group-list/participant-group-list.component';
+import { MapComponent } from './components/map/map.component';
 
 const routes: Routes = [
   {
@@ -63,7 +65,8 @@ const routes: Routes = [
     LayerListModule,
     LegendModule,
     UIClipboardModule,
-    MapPopupModule
+    MapPopupModule,
+    EsriMapModule
   ],
   declarations: [
     ViewerComponent,
@@ -74,7 +77,8 @@ const routes: Routes = [
     ParticipantResponsePopupComponent,
     ViewerBasePopupComponent,
     ParticipantWorkshopsListComponent,
-    ParticipantGroupListComponent
+    ParticipantGroupListComponent,
+    MapComponent
   ],
   exports: [RouterModule]
 })
