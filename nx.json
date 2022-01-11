@@ -236,9 +236,6 @@
     "ui-kits-ngx-layout-code": {
       "tags": []
     },
-    "geoservices-covid": {
-      "tags": []
-    },
     "covid-data-api": {
       "tags": []
     },
@@ -507,6 +504,9 @@
       "tags": []
     },
     "oidc-provider": {
+      "tags": []
+    },
+    "covid-ngx": {
       "tags": []
     }
   },

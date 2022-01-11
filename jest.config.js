@@ -63,7 +63,6 @@ module.exports = {
     '<rootDir>/libs/ui-kits/ngx/navigation/mobile-tile',
     '<rootDir>/libs/ui-kits/ngx/navigation/triggers',
     '<rootDir>/libs/ui-kits/ngx/layout/code',
-    '<rootDir>/libs/geoservices/covid',
     '<rootDir>/libs/covid/data-api',
     '<rootDir>/apps/covid-data-api-nest',
     '<rootDir>/libs/covid/common/entities',
@@ -134,6 +133,7 @@ module.exports = {
     '<rootDir>/libs/oidc/admin/ngx',
     '<rootDir>/libs/oidc/admin/data-access',
     '<rootDir>/libs/oidc/admin/data-api',
-    '<rootDir>/libs/oidc/provider'
+    '<rootDir>/libs/oidc/provider',
+    '<rootDir>/libs/covid/ngx'
   ]
 };

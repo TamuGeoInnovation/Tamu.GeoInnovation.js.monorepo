@@ -6,12 +6,12 @@ import { GeoservicesCoreNgxModule, LocalEmailGuard } from '@tamu-gisc/geoservice
 import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
 import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
 
-import { GeoservicesCovidComponent } from './geoservices-covid.component';
+import { CovidNgxComponent } from './covid-ngx.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: GeoservicesCovidComponent,
+    component: CovidNgxComponent,
     children: [
       {
         path: '',
@@ -51,6 +51,6 @@ const routes: Routes = [
     UINavigationTriggersModule,
     UITileNavigationModule
   ],
-  declarations: [GeoservicesCovidComponent]
+  declarations: [CovidNgxComponent]
 })
-export class GeoservicesCovidModule {}
+export class CovidNgxModule {}

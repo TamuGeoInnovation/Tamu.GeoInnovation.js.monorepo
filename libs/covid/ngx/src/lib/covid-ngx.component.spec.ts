@@ -10,11 +10,11 @@ import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile
 import { AppStorage } from '@tamu-gisc/common/ngx/local-store';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
-import { GeoservicesCovidComponent } from './geoservices-covid.component';
+import { CovidNgxComponent } from './covid-ngx.component';
 
 describe('GeoservicesCovidComponent', () => {
-  let component: GeoservicesCovidComponent;
-  let fixture: ComponentFixture<GeoservicesCovidComponent>;
+  let component: CovidNgxComponent;
+  let fixture: ComponentFixture<CovidNgxComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -27,9 +27,9 @@ describe('GeoservicesCovidComponent', () => {
         UINavigationTriggersModule,
         UITileNavigationModule
       ],
-      declarations: [GeoservicesCovidComponent],
+      declarations: [CovidNgxComponent],
       providers: [
-        GeoservicesCovidComponent,
+        CovidNgxComponent,
         {
           provide: AppStorage,
           useExisting: LOCAL_STORAGE
@@ -43,7 +43,7 @@ describe('GeoservicesCovidComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GeoservicesCovidComponent);
+    fixture = TestBed.createComponent(CovidNgxComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
