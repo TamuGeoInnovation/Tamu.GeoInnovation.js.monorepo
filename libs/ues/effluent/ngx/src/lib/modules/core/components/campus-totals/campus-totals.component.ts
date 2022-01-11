@@ -3,8 +3,8 @@ import { Observable, of } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 import { IAverageResponse } from '@tamu-gisc/ues/effluent/data-api';
-import { IEffluentTierMetadata } from '@tamu-gisc/ues/common/ngx';
 
+import { IEffluentTierMetadata } from '../../../types/types';
 import { ResultsService } from '../../../data-access/results/results.service';
 import { EffluentZonesService } from '../../services/effluent-zones.service';
 import { SamplingBuildingsService } from '../../services/sampling-buildings.service';

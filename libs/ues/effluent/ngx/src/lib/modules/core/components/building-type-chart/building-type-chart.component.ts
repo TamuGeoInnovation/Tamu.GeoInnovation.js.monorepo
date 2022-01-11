@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { IEffluentTierMetadata } from '@tamu-gisc/ues/common/ngx';
+import { IEffluentTierMetadata } from '../../../types/types';
 
 @Component({
   selector: 'tamu-gisc-building-type-chart',
