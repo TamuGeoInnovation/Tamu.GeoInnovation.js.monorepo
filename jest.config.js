@@ -134,6 +134,7 @@ module.exports = {
     '<rootDir>/apps/kissingbugs-angular',
     '<rootDir>/libs/kissingbugs/ngx',
     '<rootDir>/apps/mailroom-nest',
-    '<rootDir>/libs/mailroom/common'
+    '<rootDir>/libs/mailroom/common',
+    '<rootDir>/libs/ues/operations/ngx'
   ]
 };

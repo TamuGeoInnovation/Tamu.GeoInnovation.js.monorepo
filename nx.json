@@ -508,6 +508,9 @@
     },
     "mailroom-common": {
       "tags": []
+    },
+    "ues-operations-ngx": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {
