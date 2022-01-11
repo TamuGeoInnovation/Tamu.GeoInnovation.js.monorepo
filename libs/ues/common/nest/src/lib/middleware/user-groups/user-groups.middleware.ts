@@ -3,7 +3,8 @@ import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
 import jwt_decode from 'jwt-decode';
 
 import { OpenIdClient } from '@tamu-gisc/oidc/client';
-import { ClientRoles } from '@tamu-gisc/ues/common/types';
+
+import { ClientRoles } from '../../types/ues-common-types';
 
 /**
  * Middleware that that maps the user claim group id's into an enum value to be used for guarding certain routes.

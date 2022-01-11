@@ -5143,27 +5143,6 @@
       "projectType": "library",
       "root": "libs/cpa/sass"
     },
-    "ues-common-types": {
-      "root": "libs/ues/common/types",
-      "sourceRoot": "libs/ues/common/types/src",
-      "projectType": "library",
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/ues/common/types/**/*.ts"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/ues/common/types"],
-          "options": {
-            "jestConfig": "libs/ues/common/types/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "ues-cold-water-data-api": {
       "root": "libs/ues/cold-water/data-api",
       "sourceRoot": "libs/ues/cold-water/data-api/src",

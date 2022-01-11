@@ -1,4 +1,4 @@
-import { Roles } from '@tamu-gisc/ues/common/types';
+import { Roles } from '@tamu-gisc/ues/common/nest';
 
 /**
  * Checks if the provided user roles include any of the provided accepted roles.

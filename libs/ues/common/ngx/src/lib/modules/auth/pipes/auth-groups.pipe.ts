@@ -1,7 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { Roles } from '@tamu-gisc/ues/common/types';
-
+import { Roles } from '@tamu-gisc/ues/common/nest';
 import { isAuthorized } from '../utils/utils';
 
 @Pipe({
