@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { ResponseTypesService } from '@tamu-gisc/oidc/admin-data-access';
+import { ResponseTypesService } from '@tamu-gisc/oidc/admin/data-access';
 import { ResponseType } from '@tamu-gisc/oidc/common';
 
 @Component({

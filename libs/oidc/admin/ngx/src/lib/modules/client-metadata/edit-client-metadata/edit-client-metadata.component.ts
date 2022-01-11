@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
-import { ClientMetadataService, IClientMetadataResponse } from '@tamu-gisc/oidc/admin-data-access';
+import { ClientMetadataService, IClientMetadataResponse } from '@tamu-gisc/oidc/admin/data-access';
 import { ClientMetadata } from '@tamu-gisc/oidc/common';
 
 @Component({

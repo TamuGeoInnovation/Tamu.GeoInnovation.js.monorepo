@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { debounceTime } from 'rxjs/operators';
 
-import { GrantTypesService } from '@tamu-gisc/oidc/admin-data-access';
+import { GrantTypesService } from '@tamu-gisc/oidc/admin/data-access';
 import { GrantType } from '@tamu-gisc/oidc/common';
 
 @Component({

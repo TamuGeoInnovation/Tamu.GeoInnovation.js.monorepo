@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { debounceTime } from 'rxjs/operators';
 
 import { Role } from '@tamu-gisc/oidc/common';
-import { RolesService } from '@tamu-gisc/oidc/admin-data-access';
+import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
   selector: 'detail-role',

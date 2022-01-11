@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
-import { GrantTypesService } from '@tamu-gisc/oidc/admin-data-access';
+import { GrantTypesService } from '@tamu-gisc/oidc/admin/data-access';
 import { GrantType } from '@tamu-gisc/oidc/common';
 
 @Component({

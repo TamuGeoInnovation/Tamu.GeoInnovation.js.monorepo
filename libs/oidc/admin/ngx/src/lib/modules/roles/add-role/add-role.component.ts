@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
-import { RolesService } from '@tamu-gisc/oidc/admin-data-access';
+import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
   selector: 'add',

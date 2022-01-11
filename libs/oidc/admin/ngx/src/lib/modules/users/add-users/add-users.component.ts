@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 import { SecretQuestion } from '@tamu-gisc/oidc/common';
-import { UsersService } from '@tamu-gisc/oidc/admin-data-access';
+import { UsersService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
   selector: 'add-users',

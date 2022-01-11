@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 import { ResponseType } from '@tamu-gisc/oidc/common';
-import { ResponseTypesService } from '@tamu-gisc/oidc/admin-data-access';
+import { ResponseTypesService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
   selector: 'edit-response-types',

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { AccessTokenService } from '@tamu-gisc/oidc/admin-data-access';
+import { AccessTokenService } from '@tamu-gisc/oidc/admin/data-access';
 import { AccessToken } from '@tamu-gisc/oidc/common';
 
 @Component({

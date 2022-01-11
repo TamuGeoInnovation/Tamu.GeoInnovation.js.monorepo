@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { debounceTime } from 'rxjs/operators';
 
-import { ResponseTypesService } from '@tamu-gisc/oidc/admin-data-access';
+import { ResponseTypesService } from '@tamu-gisc/oidc/admin/data-access';
 import { ResponseType } from '@tamu-gisc/oidc/common';
 
 @Component({

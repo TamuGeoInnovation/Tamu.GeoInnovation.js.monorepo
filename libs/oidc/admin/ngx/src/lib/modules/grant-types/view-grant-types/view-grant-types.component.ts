@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { GrantType } from '@tamu-gisc/oidc/common';
-import { GrantTypesService } from '@tamu-gisc/oidc/admin-data-access';
+import { GrantTypesService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
   selector: 'view-grant-types',

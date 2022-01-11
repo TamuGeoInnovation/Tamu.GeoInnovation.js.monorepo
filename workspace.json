@@ -3378,29 +3378,6 @@
         }
       }
     },
-    "oidc-admin-data-access": {
-      "projectType": "library",
-      "root": "libs/oidc/admin-data-access",
-      "sourceRoot": "libs/oidc/admin-data-access/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/oidc/admin-data-access/tsconfig.lib.json", "libs/oidc/admin-data-access/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/oidc/admin-data-access/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/oidc/admin-data-access/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/libs/oidc/admin-data-access"]
-        }
-      }
-    },
     "oidc-common": {
       "root": "libs/oidc/common",
       "sourceRoot": "libs/oidc/common/src",
@@ -5901,6 +5878,29 @@
           "outputs": ["coverage/libs/oidc/admin/ngx"],
           "options": {
             "jestConfig": "libs/oidc/admin/ngx/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "oidc-admin-data-access": {
+      "projectType": "library",
+      "root": "libs/oidc/admin/data-access",
+      "sourceRoot": "libs/oidc/admin/data-access/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/oidc/admin/data-access/tsconfig.lib.json", "libs/oidc/admin/data-access/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/oidc/admin/data-access/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/oidc/admin/data-access"],
+          "options": {
+            "jestConfig": "libs/oidc/admin/data-access/jest.config.js",
             "passWithNoTests": true
           }
         }

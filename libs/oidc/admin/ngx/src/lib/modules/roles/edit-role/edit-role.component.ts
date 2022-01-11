@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-import { RolesService } from '@tamu-gisc/oidc/admin-data-access';
+import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 import { Role } from '@tamu-gisc/oidc/common';
 
 @Component({

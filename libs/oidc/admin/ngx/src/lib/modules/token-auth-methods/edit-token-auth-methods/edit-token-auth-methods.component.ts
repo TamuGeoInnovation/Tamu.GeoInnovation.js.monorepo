@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
-import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin-data-access';
+import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin/data-access';
 import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/common';
 
 @Component({

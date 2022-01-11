@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin-data-access';
+import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin/data-access';
 import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/common';
 
 @Component({

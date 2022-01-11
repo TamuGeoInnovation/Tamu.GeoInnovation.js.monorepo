@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
-import { ResponseTypesService } from '@tamu-gisc/oidc/admin-data-access';
+import { ResponseTypesService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
   selector: 'add-response-types',

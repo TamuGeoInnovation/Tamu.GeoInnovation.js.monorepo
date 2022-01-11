@@ -10,7 +10,7 @@ import {
   ClientMetadataService,
   RolesService,
   IClientMetadataResponse
-} from '@tamu-gisc/oidc/admin-data-access';
+} from '@tamu-gisc/oidc/admin/data-access';
 import { User, Role, INewRole } from '@tamu-gisc/oidc/common';
 
 @Component({

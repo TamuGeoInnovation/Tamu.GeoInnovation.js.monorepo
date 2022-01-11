@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 import { User } from '@tamu-gisc/oidc/common';
-import { UsersService } from '@tamu-gisc/oidc/admin-data-access';
+import { UsersService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
   selector: 'view-users',

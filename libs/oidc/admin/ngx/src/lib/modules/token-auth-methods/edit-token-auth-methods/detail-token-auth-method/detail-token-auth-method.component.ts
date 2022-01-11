@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { debounceTime } from 'rxjs/operators';
 
 import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/common';
-import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin-data-access';
+import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
   selector: 'detail-token-auth-method',

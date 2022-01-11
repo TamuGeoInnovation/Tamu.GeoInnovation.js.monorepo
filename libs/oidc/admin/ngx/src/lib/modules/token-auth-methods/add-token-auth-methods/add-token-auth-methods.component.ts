@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
-import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin-data-access';
+import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
   selector: 'add-token-auth-methods',

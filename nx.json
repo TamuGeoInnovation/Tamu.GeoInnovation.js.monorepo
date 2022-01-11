@@ -314,9 +314,6 @@
     "oidc-admin-nest-lib": {
       "tags": []
     },
-    "oidc-admin-data-access": {
-      "tags": []
-    },
     "oidc-common": {
       "tags": []
     },
@@ -507,6 +504,9 @@
       "tags": []
     },
     "oidc-admin-ngx": {
+      "tags": []
+    },
+    "oidc-admin-data-access": {
       "tags": []
     }
   },

@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { IChartConfiguration } from '@tamu-gisc/charts';
-import { StatsService } from '@tamu-gisc/oidc/admin-data-access';
+import { StatsService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
   selector: 'stats',

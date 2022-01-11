@@ -10,7 +10,7 @@ import {
   GrantTypesService,
   ClientMetadataService,
   IClientMetadataResponseArrayed
-} from '@tamu-gisc/oidc/admin-data-access';
+} from '@tamu-gisc/oidc/admin/data-access';
 import { GrantType, TokenEndpointAuthMethod, ResponseType } from '@tamu-gisc/oidc/common';
 
 @Component({

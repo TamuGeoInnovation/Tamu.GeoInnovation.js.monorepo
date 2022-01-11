@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { ClientMetadataService, IClientMetadataResponse } from '@tamu-gisc/oidc/admin-data-access';
+import { ClientMetadataService, IClientMetadataResponse } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
   selector: 'view-client-metadata',

@@ -9,7 +9,7 @@ import {
   ResponseTypesService,
   GrantTypesService,
   ClientMetadataService
-} from '@tamu-gisc/oidc/admin-data-access';
+} from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
   selector: 'add-client-metadata',
