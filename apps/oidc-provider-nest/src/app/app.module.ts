@@ -34,7 +34,7 @@ import {
   SecretQuestionController,
   BackchannelLogoutUri
 } from '@tamu-gisc/oidc/common';
-import { AccessTokenModule, InteractionModule, UserLoginModule } from '@tamu-gisc/oidc/provider-nestjs';
+import { AccessTokenModule, InteractionModule, UserLoginModule } from '@tamu-gisc/oidc/provider';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';

@@ -3104,27 +3104,6 @@
         }
       }
     },
-    "oidc-provider-nestjs": {
-      "root": "libs/oidc/provider-nestjs",
-      "sourceRoot": "libs/oidc/provider-nestjs/src",
-      "projectType": "library",
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/oidc/provider-nestjs/**/*.ts"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/oidc/provider-nestjs/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/libs/oidc/provider-nestjs"]
-        }
-      }
-    },
     "oidc-admin-angular": {
       "projectType": "application",
       "root": "apps/oidc-admin-angular",
@@ -5901,6 +5880,27 @@
           "outputs": ["coverage/libs/oidc/admin/data-api"],
           "options": {
             "jestConfig": "libs/oidc/admin/data-api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "oidc-provider": {
+      "root": "libs/oidc/provider",
+      "sourceRoot": "libs/oidc/provider/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/oidc/provider/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/oidc/provider"],
+          "options": {
+            "jestConfig": "libs/oidc/provider/jest.config.js",
             "passWithNoTests": true
           }
         }

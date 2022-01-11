@@ -79,7 +79,7 @@ jobs:
         inputs:
           SourceFolder: $(Agent.TempDirectory)/app_configs/oidc-provider-nest
           Contents: 'oidc-provider-config.ts'
-          TargetFolder: $(System.DefaultWorkingDirectory)/libs/oidc/provider-nestjs/src/lib/configs
+          TargetFolder: $(System.DefaultWorkingDirectory)/libs/oidc/provider/src/lib/configs
         displayName: 'Copying oidc-provider-config file to oidc-provider-nest lib'
 
       - task: CopyFiles@2

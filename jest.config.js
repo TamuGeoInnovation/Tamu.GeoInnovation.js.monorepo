@@ -80,7 +80,6 @@ module.exports = {
     '<rootDir>/libs/ues/effluent/common/entities',
     '<rootDir>/apps/ues-effluent-data-api-nest',
     '<rootDir>/apps/oidc-provider-nest',
-    '<rootDir>/libs/oidc/provider-nestjs',
     '<rootDir>/apps/oidc-admin-angular',
     '<rootDir>/apps/oidc-admin-nest',
     '<rootDir>/libs/oidc/common',
@@ -134,6 +133,7 @@ module.exports = {
     '<rootDir>/libs/ui-kits/ngx/search',
     '<rootDir>/libs/oidc/admin/ngx',
     '<rootDir>/libs/oidc/admin/data-access',
-    '<rootDir>/libs/oidc/admin/data-api'
+    '<rootDir>/libs/oidc/admin/data-api',
+    '<rootDir>/libs/oidc/provider'
   ]
 };

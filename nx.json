@@ -297,9 +297,6 @@
     "oidc-provider-nest": {
       "tags": ["assets"]
     },
-    "oidc-provider-nestjs": {
-      "tags": []
-    },
     "oidc-admin-angular": {
       "tags": [],
       "implicitDependencies": ["assets", "sass"]
@@ -507,6 +504,9 @@
       "tags": []
     },
     "oidc-admin-data-api": {
+      "tags": []
+    },
+    "oidc-provider": {
       "tags": []
     }
   },
