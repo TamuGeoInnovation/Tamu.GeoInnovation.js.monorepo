@@ -311,9 +311,6 @@
     "oidc-admin-nest": {
       "tags": ["assets"]
     },
-    "oidc-admin-nest-lib": {
-      "tags": []
-    },
     "oidc-common": {
       "tags": []
     },
@@ -507,6 +504,9 @@
       "tags": []
     },
     "oidc-admin-data-access": {
+      "tags": []
+    },
+    "oidc-admin-data-api": {
       "tags": []
     }
   },

@@ -1,6 +1,6 @@
 module.exports = {
-  displayName: 'oidc-admin-nest-lib',
-  preset: '../../../jest.preset.js',
+  displayName: 'oidc-admin-data-api',
+  preset: '../../../../jest.preset.js',
   globals: {
     'ts-jest': {
       tsConfig: '<rootDir>/tsconfig.spec.json'
@@ -11,5 +11,5 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../../../coverage/libs/oidc/admin-nest'
+  coverageDirectory: '../../../../coverage/libs/oidc/admin/data-api'
 };

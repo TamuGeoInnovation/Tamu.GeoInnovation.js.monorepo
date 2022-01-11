@@ -83,7 +83,6 @@ module.exports = {
     '<rootDir>/libs/oidc/provider-nestjs',
     '<rootDir>/apps/oidc-admin-angular',
     '<rootDir>/apps/oidc-admin-nest',
-    '<rootDir>/libs/oidc/admin-nest',
     '<rootDir>/libs/oidc/common',
     '<rootDir>/apps/two-angular',
     '<rootDir>/libs/two/common',
@@ -134,6 +133,7 @@ module.exports = {
     '<rootDir>/libs/ues/operations/ngx',
     '<rootDir>/libs/ui-kits/ngx/search',
     '<rootDir>/libs/oidc/admin/ngx',
-    '<rootDir>/libs/oidc/admin/data-access'
+    '<rootDir>/libs/oidc/admin/data-access',
+    '<rootDir>/libs/oidc/admin/data-api'
   ]
 };
