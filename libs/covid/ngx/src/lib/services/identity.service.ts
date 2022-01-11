@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, ReplaySubject, combineLatest } from 'rxjs';
+import { Observable, ReplaySubject, combineLatest } from 'rxjs';
+import { tap, take } from 'rxjs/operators';
+import { DeepPartial } from 'typeorm';
 
 import { User, CountyClaim } from '@tamu-gisc/covid/common/entities';
 import { LocalStoreService, StorageConfig } from '@tamu-gisc/common/ngx/local-store';
 import { UsersService, CountyClaimsService } from '@tamu-gisc/geoservices/data-access';
-import { tap, take } from 'rxjs/operators';
-import { DeepPartial } from 'typeorm';
 
 const storageOptions: Partial<StorageConfig> = { primaryKey: 'tamu-covid-vgi' };
 

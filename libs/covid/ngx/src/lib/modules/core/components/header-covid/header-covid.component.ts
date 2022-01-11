@@ -2,23 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
 
-import { HeaderComponent } from '../header/header.component';
-import { IdentityService } from '../../services/identity.service';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
+import { IdentityService } from '../../../../../../../../covid/ngx/src/lib/services/identity.service';
+
+// This component used to extend geoservices header component, including its styles
 @Component({
   selector: 'tamu-gisc-header-covid',
-  templateUrl: './header-covid.component.html',
-  styleUrls: ['../header/header.component.scss']
+  templateUrl: './header-covid.component.html'
 })
-export class HeaderCovidComponent extends HeaderComponent implements OnInit {
+export class HeaderCovidComponent implements OnInit {
   public hasEmail: Observable<string>;
   public loginUrl: string;
   public logoutUrl: string;
 
   constructor(private is: IdentityService, private environment: EnvironmentService) {
-    super();
-
     this.hasEmail = this.is.identity.pipe(pluck('user', 'email'));
   }
 

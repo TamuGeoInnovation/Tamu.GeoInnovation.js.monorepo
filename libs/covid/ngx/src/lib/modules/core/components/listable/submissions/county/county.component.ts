@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { CATEGORY } from '@tamu-gisc/covid/common/enums';
-
 import { County } from '@tamu-gisc/covid/common/entities';
 import { TestingSitesService, FormattedTestingSite } from '@tamu-gisc/geoservices/data-access';
 
