@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { filter, pluck, shareReplay, startWith, switchMap, take } from 'rxjs/operators';
 
 import { IParticipant, Participant } from '@tamu-gisc/cpa/common/entities';
-import { ParticipantService } from '@tamu-gisc/cpa/data-access';
+import { ParticipantService } from '@tamu-gisc/cpa/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({

@@ -1,6 +1,6 @@
 module.exports = {
-  displayName: 'cpa-data-access',
-  preset: '../../../jest.preset.js',
+  displayName: 'cpa-ngx-data-access',
+  preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {
@@ -11,7 +11,7 @@ module.exports = {
       }
     }
   },
-  coverageDirectory: '../../../coverage/libs/cpa/data-access',
+  coverageDirectory: '../../../../coverage/libs/cpa/ngx/data-access',
   snapshotSerializers: [
     'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
     'jest-preset-angular/build/AngularSnapshotSerializer.js',

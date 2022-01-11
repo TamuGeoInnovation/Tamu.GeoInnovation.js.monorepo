@@ -7,7 +7,7 @@ import * as md5 from 'md5';
 
 import { CPALayer } from '@tamu-gisc/cpa/common/entities';
 import { IScenarioResolved, ISnapshotPartial, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
-import { WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/data-access';
+import { WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/ngx/data-access';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 import { ViewerBasePopupComponent } from '../components/viewer-base-popup/viewer-base-popup.component';

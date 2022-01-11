@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
-import { SnapshotService } from '@tamu-gisc/cpa/data-access';
+import { SnapshotService } from '@tamu-gisc/cpa/ngx/data-access';
 import { ISnapshotPartial } from '@tamu-gisc/cpa/data-api';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 

@@ -18,7 +18,7 @@ import {
 import { IResponseRequestDto, IResponseDto } from '@tamu-gisc/cpa/data-api';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { MapDrawAdvancedComponent } from '@tamu-gisc/maps/feature/draw';
-import { ResponseService } from '@tamu-gisc/cpa/data-access';
+import { ResponseService } from '@tamu-gisc/cpa/ngx/data-access';
 
 import { ViewerService } from '../../../viewer/services/viewer.service';
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { SnapshotService } from '@tamu-gisc/cpa/data-access';
+import { SnapshotService } from '@tamu-gisc/cpa/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-delete',

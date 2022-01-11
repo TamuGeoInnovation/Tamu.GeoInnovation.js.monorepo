@@ -6,7 +6,7 @@ import { pluck, shareReplay } from 'rxjs/operators';
 
 import * as JSZip from 'jszip';
 
-import { ResponseService, WorkshopService } from '@tamu-gisc/cpa/data-access';
+import { ResponseService, WorkshopService } from '@tamu-gisc/cpa/ngx/data-access';
 import { IResponseDto, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 import { Snapshot } from '@tamu-gisc/cpa/common/entities';
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';

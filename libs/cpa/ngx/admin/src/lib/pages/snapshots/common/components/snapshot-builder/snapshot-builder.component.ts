@@ -9,7 +9,7 @@ import { tap, map, shareReplay } from 'rxjs/operators';
 
 import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { SnapshotService } from '@tamu-gisc/cpa/data-access';
+import { SnapshotService } from '@tamu-gisc/cpa/ngx/data-access';
 
 import esri = __esri;
 

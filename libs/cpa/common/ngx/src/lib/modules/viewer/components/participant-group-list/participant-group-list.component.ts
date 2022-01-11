@@ -3,7 +3,7 @@ import { interval, Observable } from 'rxjs';
 import { shareReplay, startWith, switchMap, withLatestFrom } from 'rxjs/operators';
 
 import { IParticipant } from '@tamu-gisc/cpa/common/entities';
-import { ParticipantService } from '@tamu-gisc/cpa/data-access';
+import { ParticipantService } from '@tamu-gisc/cpa/ngx/data-access';
 
 import { ViewerService } from '../../services/viewer.service';
 

@@ -4858,34 +4858,6 @@
       "projectType": "library",
       "root": "libs/ues/sass"
     },
-    "cpa-data-access": {
-      "projectType": "library",
-      "root": "libs/cpa/data-access",
-      "sourceRoot": "libs/cpa/data-access/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/cpa/data-access/tsconfig.lib.json", "libs/cpa/data-access/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/cpa/data-access/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/cpa/data-access/jest.config.js",
-            "tsConfig": "libs/cpa/data-access/tsconfig.spec.json",
-            "setupFile": "libs/cpa/data-access/src/test-setup.ts"
-          }
-        }
-      },
-      "schematics": {
-        "@nrwl/angular:component": {
-          "styleext": "scss"
-        }
-      }
-    },
     "cpa-sass": {
       "projectType": "library",
       "root": "libs/cpa/sass"
@@ -5827,6 +5799,29 @@
           "outputs": ["coverage/libs/cpa/ngx/admin"],
           "options": {
             "jestConfig": "libs/cpa/ngx/admin/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "cpa-ngx-data-access": {
+      "projectType": "library",
+      "root": "libs/cpa/ngx/data-access",
+      "sourceRoot": "libs/cpa/ngx/data-access/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/cpa/ngx/data-access/tsconfig.lib.json", "libs/cpa/ngx/data-access/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/cpa/ngx/data-access/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/cpa/ngx/data-access"],
+          "options": {
+            "jestConfig": "libs/cpa/ngx/data-access/jest.config.js",
             "passWithNoTests": true
           }
         }

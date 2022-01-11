@@ -6,7 +6,7 @@ import { pluck, shareReplay, map } from 'rxjs/operators';
 
 import { IScenarioResolved, ISnapshotPartial } from '@tamu-gisc/cpa/data-api';
 import { Scenario, Snapshot } from '@tamu-gisc/cpa/common/entities';
-import { WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/data-access';
+import { WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Component({

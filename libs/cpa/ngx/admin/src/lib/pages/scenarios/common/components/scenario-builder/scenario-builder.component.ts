@@ -7,7 +7,7 @@ import { delay, filter, map, pluck, reduce, shareReplay, skip, switchMap, take, 
 
 import { LayerReference } from '@tamu-gisc/cpa/common/entities';
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
-import { ResponseService, ScenarioService, SnapshotService, WorkshopService } from '@tamu-gisc/cpa/data-access';
+import { ResponseService, ScenarioService, SnapshotService, WorkshopService } from '@tamu-gisc/cpa/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import {
   IResponseDto,

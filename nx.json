@@ -408,9 +408,6 @@
     "ues-sass": {
       "tags": ["type:styles", "scope:ues"]
     },
-    "cpa-data-access": {
-      "tags": []
-    },
     "cpa-sass": {
       "tags": ["type:styles", "scope:cpa"]
     },
@@ -498,6 +495,9 @@
       "tags": []
     },
     "cpa-ngx-admin": {
+      "tags": []
+    },
+    "cpa-ngx-data-access": {
       "tags": []
     }
   },

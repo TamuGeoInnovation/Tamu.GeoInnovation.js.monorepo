@@ -4,7 +4,7 @@ import { shareReplay } from 'rxjs/operators';
 
 import { IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 
-import { WorkshopService } from '@tamu-gisc/cpa/data-access';
+import { WorkshopService } from '@tamu-gisc/cpa/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-workshops-list',
