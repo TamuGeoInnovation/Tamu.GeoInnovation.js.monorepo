@@ -17,42 +17,42 @@ import * as environment from '../environments/environment';
 const routes: Routes = [
   {
     path: 'stats',
-    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.StatsModule),
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.StatsModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'users',
-    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.UsersModule),
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.UsersModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'roles',
-    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.RolesModule),
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.RolesModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'client-metadata',
-    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.ClientMetadataModule),
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.ClientMetadataModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'grant-types',
-    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.GrantTypesModule),
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.GrantTypesModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'response-types',
-    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.ResponseTypesModule),
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.ResponseTypesModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'token-auth-methods',
-    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.TokenAuthMethodsModule),
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.TokenAuthMethodsModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'access',
-    loadChildren: () => import('@tamu-gisc/oidc/admin').then((m) => m.AccessTokenModule),
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.AccessTokenModule),
     canActivate: [AuthGuard]
   }
 ];

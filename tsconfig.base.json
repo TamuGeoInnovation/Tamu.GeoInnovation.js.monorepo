@@ -85,7 +85,6 @@
       "@tamu-gisc/ues/effluent/data-api": ["libs/ues/effluent/data-api/src/index.ts"],
       "@tamu-gisc/ues/effluent/common/entities": ["libs/ues/effluent/common/entities/src/index.ts"],
       "@tamu-gisc/oidc/provider-nestjs": ["libs/oidc/provider-nestjs/src/index.ts"],
-      "@tamu-gisc/oidc/admin": ["libs/oidc/admin/src/index.ts"],
       "@tamu-gisc/oidc/admin-nest": ["libs/oidc/admin-nest/src/index.ts"],
       "@tamu-gisc/oidc/admin-data-access": ["libs/oidc/admin-data-access/src/index.ts"],
       "@tamu-gisc/oidc/common": ["libs/oidc/common/src/index.ts"],
@@ -119,7 +118,8 @@
       "@tamu-gisc/kissingbugs/ngx": ["libs/kissingbugs/ngx/src/index.ts"],
       "@tamu-gisc/mailroom/common": ["libs/mailroom/common/src/index.ts"],
       "@tamu-gisc/ues/operations/ngx": ["libs/ues/operations/ngx/src/index.ts"],
-      "@tamu-gisc/ui-kits/ngx/search": ["libs/ui-kits/ngx/search/src/index.ts"]
+      "@tamu-gisc/ui-kits/ngx/search": ["libs/ui-kits/ngx/search/src/index.ts"],
+      "@tamu-gisc/oidc/admin/ngx": ["libs/oidc/admin/ngx/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

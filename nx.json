@@ -311,9 +311,6 @@
     "oidc-admin-nest": {
       "tags": ["assets"]
     },
-    "oidc-admin": {
-      "tags": []
-    },
     "oidc-admin-nest-lib": {
       "tags": []
     },
@@ -507,6 +504,9 @@
       "tags": []
     },
     "ui-kits-ngx-search": {
+      "tags": []
+    },
+    "oidc-admin-ngx": {
       "tags": []
     }
   },
