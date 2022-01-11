@@ -32,7 +32,6 @@ module.exports = {
     '<rootDir>/libs/maps/feature/layer-filter',
     '<rootDir>/libs/maps/feature/layer-list',
     '<rootDir>/libs/maps/feature/legend',
-    '<rootDir>/libs/search',
     '<rootDir>/libs/ui-kits/ngx/branding',
     '<rootDir>/libs/ui-kits/ngx/forms',
     '<rootDir>/libs/ui-kits/ngx/layout',
@@ -134,6 +133,7 @@ module.exports = {
     '<rootDir>/libs/kissingbugs/ngx',
     '<rootDir>/apps/mailroom-nest',
     '<rootDir>/libs/mailroom/common',
-    '<rootDir>/libs/ues/operations/ngx'
+    '<rootDir>/libs/ues/operations/ngx',
+    '<rootDir>/libs/ui-kits/ngx/search'
   ]
 };

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { TripPlannerService, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 
-import { SearchSelection, SearchEvent } from '@tamu-gisc/search';
+import { SearchSelection, SearchEvent } from '@tamu-gisc/ui-kits/ngx/search';
 
 import esri = __esri;
 

@@ -7,7 +7,7 @@ import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-planner';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/search';
+import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { BusListComponent } from './bus-list.component';
 

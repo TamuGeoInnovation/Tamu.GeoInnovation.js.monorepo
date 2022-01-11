@@ -1,4 +1,4 @@
-import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/search';
+import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 
 import esri = __esri;

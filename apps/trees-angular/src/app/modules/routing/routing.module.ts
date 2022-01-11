@@ -8,7 +8,7 @@ import * as WebFont from 'webfontloader';
 
 import { HttpClientModule } from '@angular/common/http';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/search';
+import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
 import { ChartsModule } from '@tamu-gisc/charts';

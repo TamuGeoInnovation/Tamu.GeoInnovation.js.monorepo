@@ -1114,29 +1114,6 @@
       "projectType": "library",
       "root": "libs/sass"
     },
-    "search": {
-      "prefix": "tamu-gisc",
-      "projectType": "library",
-      "root": "libs/search",
-      "sourceRoot": "libs/search/src",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "exclude": ["**/node_modules/**", "!libs/search/**/*"],
-            "tsConfig": ["libs/search/tsconfig.lib.json", "libs/search/tsconfig.spec.json"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/search/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/libs/search"]
-        }
-      }
-    },
     "ui-kits-ngx-branding": {
       "prefix": "tamu-gisc",
       "projectType": "library",
@@ -5900,6 +5877,29 @@
           "outputs": ["coverage/libs/ues/operations/ngx"],
           "options": {
             "jestConfig": "libs/ues/operations/ngx/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ui-kits-ngx-search": {
+      "projectType": "library",
+      "root": "libs/ui-kits/ngx/search",
+      "sourceRoot": "libs/ui-kits/ngx/search/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/ui-kits/ngx/search/tsconfig.lib.json", "libs/ui-kits/ngx/search/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/ui-kits/ngx/search/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui-kits/ngx/search"],
+          "options": {
+            "jestConfig": "libs/ui-kits/ngx/search/jest.config.js",
             "passWithNoTests": true
           }
         }

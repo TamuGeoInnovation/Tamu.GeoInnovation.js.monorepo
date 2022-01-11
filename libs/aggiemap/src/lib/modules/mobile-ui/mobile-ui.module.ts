@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 
 import { MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-planner';
 import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-import { SearchModule } from '@tamu-gisc/search';
+import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 
 import { TripPlannerTopComponent } from './components/trip-planner-top/trip-planner-top.component';

@@ -1,9 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
+    "outDir": "../../../../dist/out-tsc",
     "module": "commonjs",
-    "types": ["jest", "node", "arcgis-js-api"]
+    "types": ["jest", "node"]
   },
   "files": ["src/test-setup.ts"],
   "include": ["**/*.spec.ts", "**/*.d.ts"]

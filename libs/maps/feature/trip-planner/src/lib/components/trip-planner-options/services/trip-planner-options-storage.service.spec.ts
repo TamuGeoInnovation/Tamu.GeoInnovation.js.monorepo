@@ -8,7 +8,7 @@ import { LOCAL_STORAGE, StorageServiceModule } from 'ngx-webstorage-service';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { AppStorage } from '@tamu-gisc/common/ngx/local-store';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/search';
+import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { TripPlannerOptionsComponentService } from './trip-planner-options-component.service';
 import { TripPlannerService } from '../../../services/trip-planner.service';

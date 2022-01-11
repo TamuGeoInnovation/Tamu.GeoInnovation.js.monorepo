@@ -8,7 +8,7 @@ import { Angulartics2Module } from 'angulartics2';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { AppStorage } from '@tamu-gisc/common/ngx/local-store';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/search';
+import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { TripPlannerOptionsBaseComponent } from './base.component';
 import { TripPlannerService } from '../../../../services/trip-planner.service';

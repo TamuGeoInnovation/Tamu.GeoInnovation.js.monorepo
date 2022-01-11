@@ -21,7 +21,7 @@ import {
 } from '@tamu-gisc/aggiemap';
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 import { EsriMapModule, EsriModuleProviderService, EsriMapService } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/search';
+import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';

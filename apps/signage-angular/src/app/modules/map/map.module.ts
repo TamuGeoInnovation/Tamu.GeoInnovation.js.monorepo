@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 
 import { MapComponent } from './components/map/map.component';
-import { SearchModule } from '@tamu-gisc/search';
+import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';

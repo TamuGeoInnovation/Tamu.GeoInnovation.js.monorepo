@@ -127,9 +127,6 @@
     "sass": {
       "tags": ["scope:shared", "type:styles"]
     },
-    "search": {
-      "tags": []
-    },
     "ui-kits-ngx-branding": {
       "tags": []
     },
@@ -507,6 +504,9 @@
       "tags": []
     },
     "ues-operations-ngx": {
+      "tags": []
+    },
+    "ui-kits-ngx-search": {
       "tags": []
     }
   },

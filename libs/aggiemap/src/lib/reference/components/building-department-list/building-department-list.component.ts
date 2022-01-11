@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnDestroy, Inject, Optional } from '@angular/
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { SearchService, SearchSource } from '@tamu-gisc/search';
+import { SearchService, SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;

@@ -7,7 +7,7 @@ export const environment = {
 };
 
 import { LayerSource } from '@tamu-gisc/common/types';
-import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/search';
+import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { Connections, Definitions as d, Protocol, HostName } from './definitions';
 import { NotificationProperties } from '@tamu-gisc/common/ngx/ui/notification';

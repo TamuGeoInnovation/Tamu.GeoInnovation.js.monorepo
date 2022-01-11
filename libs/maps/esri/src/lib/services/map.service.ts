@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
-import { SearchService } from '@tamu-gisc/search';
+import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 import {
   AutocastableLayer,
   cleanPortalJSONLayer,

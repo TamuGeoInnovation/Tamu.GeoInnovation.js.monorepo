@@ -3,7 +3,7 @@ import { of, Observable, from, BehaviorSubject } from 'rxjs';
 import { switchMap, take, filter, reduce } from 'rxjs/operators';
 
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
-import { SearchService, SearchResult, SearchSource } from '@tamu-gisc/search';
+import { SearchService, SearchResult, SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -132,21 +132,18 @@ export class ParkingService<T> {
           // Non-valid include null, blank, undefined;
           return Boolean(lot.attributes.FAC_CODE ? lot.attributes.FAC_CODE.trim() : false);
         }),
-        reduce(
-          (acc, curr) => {
-            // Collect the permit features and return only the first occurrence. This effectively removes duplicate features.
-            const existingIndex = acc.findIndex(
-              (feature) => feature && feature.attributes && feature.attributes.FAC_CODE === curr.attributes.FAC_CODE
-            );
+        reduce((acc, curr) => {
+          // Collect the permit features and return only the first occurrence. This effectively removes duplicate features.
+          const existingIndex = acc.findIndex(
+            (feature) => feature && feature.attributes && feature.attributes.FAC_CODE === curr.attributes.FAC_CODE
+          );
 
-            if (existingIndex > -1) {
-              return acc;
-            } else {
-              return [...acc, curr];
-            }
-          },
-          [] as ParkingFeature[]
-        ),
+          if (existingIndex > -1) {
+            return acc;
+          } else {
+            return [...acc, curr];
+          }
+        }, [] as ParkingFeature[]),
         switchMap((filteredPermits) => {
           const grouped = filteredPermits.reduce(
             (acc, curr) => {

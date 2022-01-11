@@ -2,7 +2,7 @@
 
 import esri = __esri;
 
-import { SearchResultBreadcrumbSummary, SearchSelection } from '@tamu-gisc/search';
+import { SearchResultBreadcrumbSummary, SearchSelection } from '@tamu-gisc/ui-kits/ngx/search';
 import { isCoordinatePair, parseCoordinates } from '@tamu-gisc/common/utils/geometry/generic';
 import { getGeometryType, centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
 

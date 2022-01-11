@@ -9,7 +9,7 @@ import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector'
 import { ChartsModule } from '@tamu-gisc/charts';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/search';
+import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 
 import { ParticipantComponent } from './participant.component';

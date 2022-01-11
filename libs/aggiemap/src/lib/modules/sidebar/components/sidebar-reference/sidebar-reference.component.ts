@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
-import { SearchSelection, AltSearchHelper } from '@tamu-gisc/search';
+import { SearchSelection, AltSearchHelper } from '@tamu-gisc/ui-kits/ngx/search';
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;

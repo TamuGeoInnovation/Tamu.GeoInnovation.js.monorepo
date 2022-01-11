@@ -45,7 +45,6 @@
       "@tamu-gisc/maps/feature/layer-filter": ["libs/maps/feature/layer-filter/src/index.ts"],
       "@tamu-gisc/maps/feature/layer-list": ["libs/maps/feature/layer-list/src/index.ts"],
       "@tamu-gisc/maps/feature/legend": ["libs/maps/feature/legend/src/index.ts"],
-      "@tamu-gisc/search": ["libs/search/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/branding": ["libs/ui-kits/ngx/branding/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/forms": ["libs/ui-kits/ngx/forms/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/layout": ["libs/ui-kits/ngx/layout/src/index.ts"],
@@ -119,7 +118,8 @@
       "@tamu-gisc/gisday/competitions": ["libs/gisday/competitions/src/index.ts"],
       "@tamu-gisc/kissingbugs/ngx": ["libs/kissingbugs/ngx/src/index.ts"],
       "@tamu-gisc/mailroom/common": ["libs/mailroom/common/src/index.ts"],
-      "@tamu-gisc/ues/operations/ngx": ["libs/ues/operations/ngx/src/index.ts"]
+      "@tamu-gisc/ues/operations/ngx": ["libs/ues/operations/ngx/src/index.ts"],
+      "@tamu-gisc/ui-kits/ngx/search": ["libs/ui-kits/ngx/search/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

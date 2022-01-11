@@ -40,7 +40,7 @@ import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
-import { SearchService, SearchResult, SearchResultItem } from '@tamu-gisc/search';
+import { SearchService, SearchResult, SearchResultItem } from '@tamu-gisc/ui-kits/ngx/search';
 import { SettingsService, SettingsInitializationConfig } from '@tamu-gisc/common/ngx/settings';
 import { TripPlannerConnection, TripPlannerConnectionService } from './trip-planner-connection.service';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
