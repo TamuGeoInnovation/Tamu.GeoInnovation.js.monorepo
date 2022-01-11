@@ -63,12 +63,8 @@
       "@tamu-gisc/maps/feature/forms": ["libs/maps/feature/forms/src/index.ts"],
       "@tamu-gisc/cpa/common/entities": ["libs/cpa/common/entities/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/breadcrumb": ["libs/ui-kits/ngx/navigation/breadcrumb/src/index.ts"],
-      "@tamu-gisc/geoservices/api": ["libs/geoservices/api/src/index.ts"],
-      "@tamu-gisc/geoservices/internal": ["libs/geoservices/internal/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/scroll-to": ["libs/ui-kits/ngx/interactions/scroll-to/src/index.ts"],
       "@tamu-gisc/geoservices/data-access": ["libs/geoservices/data-access/src/index.ts"],
-      "@tamu-gisc/geoservices/public": ["libs/geoservices/public/src/index.ts"],
-      "@tamu-gisc/geoservices/core/ngx": ["libs/geoservices/core/ngx/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/mobile-tile": ["libs/ui-kits/ngx/navigation/mobile-tile/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/navigation/triggers": ["libs/ui-kits/ngx/navigation/triggers/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/layout/code": ["libs/ui-kits/ngx/layout/code/src/index.ts"],
@@ -119,7 +115,8 @@
       "@tamu-gisc/oidc/admin/data-access": ["libs/oidc/admin/data-access/src/index.ts"],
       "@tamu-gisc/oidc/admin/data-api": ["libs/oidc/admin/data-api/src/index.ts"],
       "@tamu-gisc/oidc/provider": ["libs/oidc/provider/src/index.ts"],
-      "@tamu-gisc/covid/ngx": ["libs/covid/ngx/src/index.ts"]
+      "@tamu-gisc/covid/ngx": ["libs/covid/ngx/src/index.ts"],
+      "@tamu-gisc/geoservices/ngx": ["libs/geoservices/ngx/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

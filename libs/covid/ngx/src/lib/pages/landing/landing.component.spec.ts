@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { MapsMapboxModule } from '@tamu-gisc/maps/mapbox';
-import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
+import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/ngx';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 
 import { LandingComponent } from './landing.component';

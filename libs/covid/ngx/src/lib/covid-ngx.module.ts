@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { GeoservicesCoreNgxModule, LocalEmailGuard } from '@tamu-gisc/geoservices/core/ngx';
+import { GeoservicesCoreNgxModule, LocalEmailGuard } from '@tamu-gisc/geoservices/ngx';
 import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
 import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
 

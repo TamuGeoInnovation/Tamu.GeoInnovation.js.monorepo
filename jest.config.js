@@ -54,12 +54,8 @@ module.exports = {
     '<rootDir>/libs/cpa/common/entities',
     '<rootDir>/libs/ui-kits/ngx/navigation/breadcrumb',
     '<rootDir>/apps/geoservices-angular',
-    '<rootDir>/libs/geoservices/api',
-    '<rootDir>/libs/geoservices/internal',
     '<rootDir>/libs/ui-kits/ngx/interactions/scroll-to',
     '<rootDir>/libs/geoservices/data-access',
-    '<rootDir>/libs/geoservices/public',
-    '<rootDir>/libs/geoservices/core/ngx',
     '<rootDir>/libs/ui-kits/ngx/navigation/mobile-tile',
     '<rootDir>/libs/ui-kits/ngx/navigation/triggers',
     '<rootDir>/libs/ui-kits/ngx/layout/code',
@@ -134,6 +130,7 @@ module.exports = {
     '<rootDir>/libs/oidc/admin/data-access',
     '<rootDir>/libs/oidc/admin/data-api',
     '<rootDir>/libs/oidc/provider',
-    '<rootDir>/libs/covid/ngx'
+    '<rootDir>/libs/covid/ngx',
+    '<rootDir>/libs/geoservices/ngx'
   ]
 };

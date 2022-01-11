@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
+import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/ngx';
 import { ChartsModule } from '@tamu-gisc/charts';
 
 import { SiteComponent } from './site.component';

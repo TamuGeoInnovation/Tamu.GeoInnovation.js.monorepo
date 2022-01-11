@@ -209,22 +209,10 @@
       "tags": [],
       "implicitDependencies": ["geoservices-angular"]
     },
-    "geoservices-api": {
-      "tags": []
-    },
-    "geoservices-internal": {
-      "tags": []
-    },
     "ui-kits-ngx-interactions-scroll-to": {
       "tags": []
     },
     "geoservices-data-access": {
-      "tags": []
-    },
-    "geoservices-public": {
-      "tags": []
-    },
-    "geoservices-core-ngx": {
       "tags": []
     },
     "ui-kits-ngx-navigation-mobile-tile": {
@@ -507,6 +495,9 @@
       "tags": []
     },
     "covid-ngx": {
+      "tags": []
+    },
+    "geoservices-ngx": {
       "tags": []
     }
   },

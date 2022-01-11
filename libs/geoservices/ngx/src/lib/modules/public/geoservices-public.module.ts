@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/core/ngx';
 import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
 import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/triggers';
 
+import { GeoservicesCoreNgxModule } from '../core/geoservices-core-ngx.module';
 import { GeoservicesPublicComponent } from './geoservices-public.component';
 
 const routes: Routes = [

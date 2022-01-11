@@ -2071,52 +2071,6 @@
         }
       }
     },
-    "geoservices-api": {
-      "projectType": "library",
-      "root": "libs/geoservices/api",
-      "sourceRoot": "libs/geoservices/api/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/geoservices/api/tsconfig.lib.json", "libs/geoservices/api/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/api/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/geoservices/api/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/libs/geoservices/api"]
-        }
-      }
-    },
-    "geoservices-internal": {
-      "projectType": "library",
-      "root": "libs/geoservices/internal",
-      "sourceRoot": "libs/geoservices/internal/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/geoservices/internal/tsconfig.lib.json", "libs/geoservices/internal/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/internal/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/geoservices/internal/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/libs/geoservices/internal"]
-        }
-      }
-    },
     "ui-kits-ngx-interactions-scroll-to": {
       "projectType": "library",
       "root": "libs/ui-kits/ngx/interactions/scroll-to",
@@ -2166,52 +2120,6 @@
             "passWithNoTests": true
           },
           "outputs": ["coverage/libs/geoservices/data-access"]
-        }
-      }
-    },
-    "geoservices-public": {
-      "projectType": "library",
-      "root": "libs/geoservices/public",
-      "sourceRoot": "libs/geoservices/public/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/geoservices/public/tsconfig.lib.json", "libs/geoservices/public/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/public/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/geoservices/public/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/libs/geoservices/public"]
-        }
-      }
-    },
-    "geoservices-core-ngx": {
-      "projectType": "library",
-      "root": "libs/geoservices/core/ngx",
-      "sourceRoot": "libs/geoservices/core/ngx/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/geoservices/core/ngx/tsconfig.lib.json", "libs/geoservices/core/ngx/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/geoservices/core/ngx/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/geoservices/core/ngx/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/libs/geoservices/core/ngx"]
         }
       }
     },
@@ -5901,6 +5809,29 @@
           "outputs": ["coverage/libs/covid/ngx"],
           "options": {
             "jestConfig": "libs/covid/ngx/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "geoservices-ngx": {
+      "projectType": "library",
+      "root": "libs/geoservices/ngx",
+      "sourceRoot": "libs/geoservices/ngx/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/geoservices/ngx/tsconfig.lib.json", "libs/geoservices/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/geoservices/ngx/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/geoservices/ngx"],
+          "options": {
+            "jestConfig": "libs/geoservices/ngx/jest.config.js",
             "passWithNoTests": true
           }
         }
