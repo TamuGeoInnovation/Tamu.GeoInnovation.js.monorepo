@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { AuthService } from '../../../../../modules/auth/services/auth.service';
+import { AuthService } from '@tamu-gisc/gisday/competitions/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-login',

@@ -136,6 +136,8 @@ module.exports = {
     '<rootDir>/libs/gisday/platform/ngx/common',
     '<rootDir>/libs/gisday/platform/data-api',
     '<rootDir>/libs/gisday/competitions/data-api',
-    '<rootDir>/libs/gisday/competitions/ngx/data-access'
+    '<rootDir>/libs/gisday/competitions/ngx/data-access',
+    '<rootDir>/libs/gisday/competitions/ngx/core',
+    '<rootDir>/libs/gisday/competitions/ngx/common'
   ]
 };

@@ -514,6 +514,12 @@
     },
     "gisday-competitions-ngx-data-access": {
       "tags": []
+    },
+    "gisday-competitions-ngx-core": {
+      "tags": []
+    },
+    "gisday-competitions-ngx-common": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

@@ -12,8 +12,7 @@ import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { TrackLocation } from '@tamu-gisc/common/utils/geometry/generic';
 import { CompetitionForm } from '@tamu-gisc/gisday/competitions/data-api';
-
-import { SubmissionService } from '../../../data-access/submission/submission.service';
+import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-submission',

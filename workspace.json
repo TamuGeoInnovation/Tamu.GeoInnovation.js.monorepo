@@ -5957,6 +5957,58 @@
           }
         }
       }
+    },
+    "gisday-competitions-ngx-core": {
+      "projectType": "library",
+      "root": "libs/gisday/competitions/ngx/core",
+      "sourceRoot": "libs/gisday/competitions/ngx/core/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/gisday/competitions/ngx/core/tsconfig.lib.json",
+              "libs/gisday/competitions/ngx/core/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/gisday/competitions/ngx/core/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/competitions/ngx/core"],
+          "options": {
+            "jestConfig": "libs/gisday/competitions/ngx/core/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-competitions-ngx-common": {
+      "projectType": "library",
+      "root": "libs/gisday/competitions/ngx/common",
+      "sourceRoot": "libs/gisday/competitions/ngx/common/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/gisday/competitions/ngx/common/tsconfig.lib.json",
+              "libs/gisday/competitions/ngx/common/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/gisday/competitions/ngx/common/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/competitions/ngx/common"],
+          "options": {
+            "jestConfig": "libs/gisday/competitions/ngx/common/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

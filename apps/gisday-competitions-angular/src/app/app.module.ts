@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
@@ -14,11 +14,10 @@ import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { NotificationModule, NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
+import { GisdayCompetitionsNgxCoreModule } from '@tamu-gisc/gisday/competitions/ngx/core';
 
 import * as environment from '../environments/environment';
 import { AppComponent } from './app.component';
-import { AuthService } from './modules/auth/services/auth.service';
-import { AuthGuard } from './modules/guards/auth.guard';
 
 WebFont.load({
   google: {
@@ -26,38 +25,22 @@ WebFont.load({
   }
 });
 
-const routes: Routes = [
-  {
-    path: 'designer',
-    loadChildren: () => import('./pages/admin/pages/designer/designer.module').then((m) => m.DesignerModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'viewer',
-    loadChildren: () => import('./pages/admin/pages/viewer/viewer.module').then((m) => m.ViewerModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: '',
-    loadChildren: () => import('./pages/public/public.module').then((m) => m.PublicModule)
-  }
-];
-
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes),
     HttpClientModule,
+    RouterModule,
     Angulartics2Module.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.environment.production }),
     EnvironmentModule,
     NotificationModule,
     ResponsiveModule,
-    SettingsModule
+    SettingsModule,
+    GisdayCompetitionsNgxCoreModule
   ],
-  providers: [NotificationService, { provide: env, useValue: environment }, AuthService],
+  providers: [NotificationService, { provide: env, useValue: environment }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

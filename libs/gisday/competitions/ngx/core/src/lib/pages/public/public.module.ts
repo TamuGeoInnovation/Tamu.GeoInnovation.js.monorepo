@@ -3,9 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { UINavigationMobileTabModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tab';
+import { DeviceGuard, AuthGuard } from '@tamu-gisc/gisday/competitions/ngx/common';
 
-import { DeviceGuard } from '../../modules/guards/device.guard';
-import { AuthGuard } from '../../modules/guards/auth.guard';
 import { PublicComponent } from './public.component';
 
 const routes: Routes = [
