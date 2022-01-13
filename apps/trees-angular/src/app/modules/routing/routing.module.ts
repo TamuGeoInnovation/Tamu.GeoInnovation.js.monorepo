@@ -11,7 +11,7 @@ import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
-import { ChartsModule } from '@tamu-gisc/charts';
+import { UiKitsNgxChartsModule } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
 
@@ -47,7 +47,7 @@ WebFont.load({
     ResponsiveModule,
     CommonNgxRouterModule,
     FeatureSelectorModule,
-    ChartsModule,
+    UiKitsNgxChartsModule,
     MapDrawingModule
   ],
   exports: [RouterModule]

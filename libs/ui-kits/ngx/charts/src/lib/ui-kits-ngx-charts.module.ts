@@ -21,4 +21,4 @@ import { PieChartComponent } from './components/pie/pie.component';
   ],
   exports: [BaseChartComponent, BarChartComponent, LineChartComponent, DoughnutChartComponent, PieChartComponent]
 })
-export class ChartsModule {}
+export class UiKitsNgxChartsModule {}

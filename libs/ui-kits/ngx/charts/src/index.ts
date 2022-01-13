@@ -1,4 +1,4 @@
-export * from './lib/charts.module';
+export * from './lib/ui-kits-ngx-charts.module';
 
 export * from './lib/components/chart-container/chart-container.component';
 

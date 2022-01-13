@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ChartsModule } from '@tamu-gisc/charts';
+import { UiKitsNgxChartsModule } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { CampusOverviewListComponent } from './components/campus-overview-list/campus-overview-list.component';
 import { CampusTotalsComponent } from './components/campus-totals/campus-totals.component';
@@ -11,7 +11,7 @@ import { SiteHistoryChartComponent } from './components/site-history-chart/site-
 import { ZoneOverviewTileComponent } from './components/zone-overview-tile/zone-overview-tile.component';
 
 @NgModule({
-  imports: [CommonModule, ChartsModule],
+  imports: [CommonModule, UiKitsNgxChartsModule],
   declarations: [
     CampusOverviewListComponent,
     CampusTotalsComponent,

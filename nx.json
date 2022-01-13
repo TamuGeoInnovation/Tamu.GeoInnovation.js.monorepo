@@ -29,9 +29,6 @@
     "assets": {
       "tags": ["scope:shared", "type:assets"]
     },
-    "charts": {
-      "tags": []
-    },
     "common-ngx-environment": {
       "tags": []
     },
@@ -510,6 +507,9 @@
       "tags": []
     },
     "aggiemap-ngx-ui-desktop": {
+      "tags": []
+    },
+    "ui-kits-ngx-charts": {
       "tags": []
     }
   },

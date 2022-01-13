@@ -2,7 +2,6 @@ module.exports = {
   projects: [
     '<rootDir>/apps/aggiemap-angular',
     '<rootDir>/apps/trees-angular',
-    '<rootDir>/libs/charts',
     '<rootDir>/libs/common/ngx/environment',
     '<rootDir>/libs/common/ngx/local-store',
     '<rootDir>/libs/common/ngx/pipes',
@@ -135,6 +134,7 @@ module.exports = {
     '<rootDir>/libs/aggiemap/ngx/popups',
     '<rootDir>/libs/aggiemap/ngx/ui/shared',
     '<rootDir>/libs/aggiemap/ngx/ui/mobile',
-    '<rootDir>/libs/aggiemap/ngx/ui/desktop'
+    '<rootDir>/libs/aggiemap/ngx/ui/desktop',
+    '<rootDir>/libs/ui-kits/ngx/charts'
   ]
 };

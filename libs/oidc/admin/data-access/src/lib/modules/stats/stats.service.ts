@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { IChartConfiguration } from '@tamu-gisc/charts';
+import { IChartConfiguration } from '@tamu-gisc/ui-kits/ngx/charts';
 
 @Injectable({
   providedIn: 'root'

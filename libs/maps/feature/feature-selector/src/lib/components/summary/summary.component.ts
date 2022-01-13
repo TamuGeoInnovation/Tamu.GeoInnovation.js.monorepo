@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { BaseChartComponent } from '@tamu-gisc/charts';
+import { BaseChartComponent } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { FeatureCollectorService } from '../../services/collector.service';
 

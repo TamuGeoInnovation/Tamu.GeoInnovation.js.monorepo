@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-import { ChartsModule } from '@tamu-gisc/charts';
+import { UiKitsNgxChartsModule } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { StatsComponent } from './stats.component';
 
@@ -25,7 +25,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     UIFormsModule,
     UILayoutModule,
-    ChartsModule
+    UiKitsNgxChartsModule
   ],
   declarations: [StatsComponent],
   exports: [RouterModule]

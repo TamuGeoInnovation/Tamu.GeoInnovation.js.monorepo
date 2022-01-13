@@ -8,7 +8,7 @@ import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
 import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
 import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
-import { ChartsModule } from '@tamu-gisc/charts';
+import { UiKitsNgxChartsModule } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { MapComponent } from './map.component';
 import { OmnitoolbarComponent } from './components/omnitoolbar/omnitoolbar.component';
@@ -34,10 +34,17 @@ const routes: Routes = [
     MapsFeatureCoordinatesModule,
     MapsFeatureAccessibilityModule,
     LayerListModule,
-    ChartsModule,
+    UiKitsNgxChartsModule,
     ReactiveFormsModule
   ],
-  declarations: [MapComponent, OmnitoolbarComponent, TotalRecycledCardComponent, RecycledTrendsCardComponent, RecycleLocationDetailsCardComponent, PerspectiveToggleComponent],
+  declarations: [
+    MapComponent,
+    OmnitoolbarComponent,
+    TotalRecycledCardComponent,
+    RecycledTrendsCardComponent,
+    RecycleLocationDetailsCardComponent,
+    PerspectiveToggleComponent
+  ],
   providers: [RecyclingService]
 })
 export class MapModule {}

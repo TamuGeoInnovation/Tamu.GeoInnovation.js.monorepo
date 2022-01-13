@@ -15,7 +15,7 @@ import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
 import { LayerFilterModule } from '@tamu-gisc/maps/feature/layer-filter';
 import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
-import { ChartsModule } from '@tamu-gisc/charts';
+import { UiKitsNgxChartsModule } from '@tamu-gisc/ui-kits/ngx/charts';
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
 import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
 import { SignageModule } from '@tamu-gisc/signage';
@@ -35,7 +35,7 @@ const routes: Routes = [{ path: '', component: MapComponent }];
     CommonNgxRouterModule,
     LayerFilterModule,
     FeatureSelectorModule,
-    ChartsModule,
+    UiKitsNgxChartsModule,
     MapDrawingModule,
     MapPopupModule,
     SignageModule

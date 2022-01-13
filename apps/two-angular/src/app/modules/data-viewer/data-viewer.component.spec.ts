@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { ChartsModule } from '@tamu-gisc/charts';
+import { UiKitsNgxChartsModule } from '@tamu-gisc/ui-kits/ngx/charts';
 import { env, EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { DataViewerComponent } from './data-viewer.component';
@@ -14,7 +14,7 @@ describe('DataViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, UIFormsModule, ChartsModule],
+      imports: [HttpClientTestingModule, FormsModule, ReactiveFormsModule, UIFormsModule, UiKitsNgxChartsModule],
       declarations: [DataViewerComponent],
       providers: [
         EnvironmentService,

@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs';
 
-import { IChartConfiguration } from '@tamu-gisc/charts';
+import { IChartConfiguration } from '@tamu-gisc/ui-kits/ngx/charts';
 import { StatsService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({

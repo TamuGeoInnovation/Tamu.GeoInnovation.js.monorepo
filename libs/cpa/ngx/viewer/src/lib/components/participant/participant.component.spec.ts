@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { MapDrawingModule } from '@tamu-gisc/maps/feature/draw';
 import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
-import { ChartsModule } from '@tamu-gisc/charts';
+import { UiKitsNgxChartsModule } from '@tamu-gisc/ui-kits/ngx/charts';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
@@ -26,7 +26,7 @@ describe('ParticipantComponent', () => {
         UIFormsModule,
         MapDrawingModule,
         FeatureSelectorModule,
-        ChartsModule,
+        UiKitsNgxChartsModule,
         EnvironmentModule,
         EsriMapModule,
         RouterTestingModule,

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, from, of } from 'rxjs';
 import { shareReplay, switchMap, pluck, map } from 'rxjs/operators';
 
-import { IChartConfiguration } from '@tamu-gisc/charts';
+import { IChartConfiguration } from '@tamu-gisc/ui-kits/ngx/charts';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 

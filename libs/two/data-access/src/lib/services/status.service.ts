@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import date from 'date-and-time';
 
-import { IChartConfiguration } from '@tamu-gisc/charts';
+import { IChartConfiguration } from '@tamu-gisc/ui-kits/ngx/charts';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Injectable({
