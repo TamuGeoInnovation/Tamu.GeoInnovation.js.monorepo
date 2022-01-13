@@ -97,7 +97,6 @@
       "@tamu-gisc/veoride/data-api": ["libs/veoride/data-api/src/index.ts"],
       "@tamu-gisc/common/nest/guards": ["libs/common/nest/guards/src/index.ts"],
       "@tamu-gisc/veoride/data-compiler": ["libs/veoride/data-compiler/src/index.ts"],
-      "@tamu-gisc/gisday/competitions": ["libs/gisday/competitions/src/index.ts"],
       "@tamu-gisc/kissingbugs/ngx": ["libs/kissingbugs/ngx/src/index.ts"],
       "@tamu-gisc/mailroom/common": ["libs/mailroom/common/src/index.ts"],
       "@tamu-gisc/ues/operations/ngx": ["libs/ues/operations/ngx/src/index.ts"],
@@ -120,7 +119,8 @@
       "@tamu-gisc/gisday/platform/ngx/core": ["libs/gisday/platform/ngx/core/src/index.ts"],
       "@tamu-gisc/gisday/platform/ngx/data-access": ["libs/gisday/platform/ngx/data-access/src/index.ts"],
       "@tamu-gisc/gisday/platform/ngx/common": ["libs/gisday/platform/ngx/common/src/index.ts"],
-      "@tamu-gisc/gisday/platform/data-api": ["libs/gisday/platform/data-api/src/index.ts"]
+      "@tamu-gisc/gisday/platform/data-api": ["libs/gisday/platform/data-api/src/index.ts"],
+      "@tamu-gisc/gisday/competitions/data-api": ["libs/gisday/competitions/data-api/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -5143,27 +5143,6 @@
         }
       }
     },
-    "gisday-competitions": {
-      "root": "libs/gisday/competitions",
-      "sourceRoot": "libs/gisday/competitions/src",
-      "projectType": "library",
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/gisday/competitions/**/*.ts"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/gisday/competitions"],
-          "options": {
-            "jestConfig": "libs/gisday/competitions/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "kissingbugs-angular": {
       "projectType": "application",
       "root": "apps/kissingbugs-angular",
@@ -5927,6 +5906,27 @@
           "outputs": ["coverage/libs/gisday/platform/data-api"],
           "options": {
             "jestConfig": "libs/gisday/platform/data-api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-competitions-data-api": {
+      "root": "libs/gisday/competitions/data-api",
+      "sourceRoot": "libs/gisday/competitions/data-api/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/gisday/competitions/data-api/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/competitions/data-api"],
+          "options": {
+            "jestConfig": "libs/gisday/competitions/data-api/jest.config.js",
             "passWithNoTests": true
           }
         }

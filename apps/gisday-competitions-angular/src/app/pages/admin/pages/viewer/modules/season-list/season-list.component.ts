@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CompetitionSeason } from '@tamu-gisc/gisday/competitions';
 import { Observable } from 'rxjs';
 import { DeepPartial } from 'typeorm';
+
+import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
 
 import { SeasonsService } from '../../../../../../modules/data-access/seasons/seasons.service';
 

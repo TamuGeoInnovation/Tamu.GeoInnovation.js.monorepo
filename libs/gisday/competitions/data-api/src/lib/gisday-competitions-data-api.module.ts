@@ -11,4 +11,4 @@ import { FormModule } from '../lib/form/form.module';
   providers: [],
   exports: [LeaderboardModule, MapModule, SubmissionModule, SeasonModule, FormModule]
 })
-export class GisdayCompetitionsModule {}
+export class GisdayCompetitionsDataApiModule {}

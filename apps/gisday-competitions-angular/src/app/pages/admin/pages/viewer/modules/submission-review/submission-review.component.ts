@@ -4,18 +4,18 @@ import { combineLatest, forkJoin, from, merge, Observable, ReplaySubject, Subjec
 import { filter, map, pluck, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import {
   CompetitionForm,
   CompetitionSubmission,
   ICompetitionSeasonFormQuestion,
   VALIDATION_STATUS
-} from '@tamu-gisc/gisday/competitions';
+} from '@tamu-gisc/gisday/competitions/data-api';
 import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 
 import { ViewerService } from '../../services/viewer.service';
 import { SubmissionService } from '../../../../../../modules/data-access/submission/submission.service';
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 @Component({
   selector: 'tamu-gisc-submission-review',

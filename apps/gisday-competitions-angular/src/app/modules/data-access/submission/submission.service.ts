@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
-import { CompetitionSubmission, ValidateSubmissionDto } from '@tamu-gisc/gisday/competitions';
+import { CompetitionSubmission, ValidateSubmissionDto } from '@tamu-gisc/gisday/competitions/data-api';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 

@@ -3,7 +3,7 @@ import { Observable, ReplaySubject } from 'rxjs';
 import { shareReplay, switchMap } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
-import { CompetitionForm, CompetitionSeason } from '@tamu-gisc/gisday/competitions';
+import { CompetitionForm, CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
 
 import { SeasonsService } from '../../../../../modules/data-access/seasons/seasons.service';
 import { FormService } from '../../../../../modules/data-access/form/form.service';

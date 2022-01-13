@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { DeepPartial } from 'typeorm';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { CompetitionSeason, SeasonStatisticsDto } from '@tamu-gisc/gisday/competitions';
+import { CompetitionSeason, SeasonStatisticsDto } from '@tamu-gisc/gisday/competitions/data-api';
 
 @Injectable({
   providedIn: 'root'

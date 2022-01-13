@@ -1,4 +1,4 @@
-export * from './lib/gisday-competitions.module';
+export * from './lib/gisday-competitions-data-api.module';
 
 export * from './lib/entities/all.entities';
 export * from './lib/enums/competitions.enums';

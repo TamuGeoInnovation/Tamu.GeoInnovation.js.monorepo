@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { catchError, pluck } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { CompetitionForm, CompetitionSeason } from '@tamu-gisc/gisday/competitions';
+import { CompetitionForm, CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 @Injectable({

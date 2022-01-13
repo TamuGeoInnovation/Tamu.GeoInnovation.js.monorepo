@@ -426,9 +426,6 @@
     "gisday-competitions-nest": {
       "tags": []
     },
-    "gisday-competitions": {
-      "tags": []
-    },
     "kissingbugs-angular": {
       "tags": [],
       "implicitDependencies": ["kissingbugs-sass"]
@@ -510,6 +507,9 @@
       "tags": []
     },
     "gisday-platform-data-api": {
+      "tags": []
+    },
+    "gisday-competitions-data-api": {
       "tags": []
     }
   },
