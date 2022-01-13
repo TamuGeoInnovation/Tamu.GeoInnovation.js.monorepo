@@ -3,7 +3,7 @@ import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
 
 import { tiers } from './tier-dictionary';
 
-import { Popups } from '@tamu-gisc/aggiemap';
+import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 
 import esri = __esri;
 

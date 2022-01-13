@@ -1432,29 +1432,6 @@
         }
       }
     },
-    "aggiemap": {
-      "projectType": "library",
-      "root": "libs/aggiemap",
-      "sourceRoot": "libs/aggiemap/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/aggiemap/tsconfig.lib.json", "libs/aggiemap/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/aggiemap/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/aggiemap/jest.config.js",
-            "passWithNoTests": true
-          },
-          "outputs": ["coverage/libs/aggiemap"]
-        }
-      }
-    },
     "maps-feature-trip-planner": {
       "projectType": "library",
       "root": "libs/maps/feature/trip-planner",
@@ -5822,6 +5799,124 @@
           "outputs": ["coverage/libs/cpa/ngx/viewer"],
           "options": {
             "jestConfig": "libs/cpa/ngx/viewer/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "aggiemap-ngx-core": {
+      "projectType": "library",
+      "root": "libs/aggiemap/ngx/core",
+      "sourceRoot": "libs/aggiemap/ngx/core/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/aggiemap/ngx/core/tsconfig.lib.json", "libs/aggiemap/ngx/core/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/aggiemap/ngx/core/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/aggiemap/ngx/core"],
+          "options": {
+            "jestConfig": "libs/aggiemap/ngx/core/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "aggiemap-ngx-popups": {
+      "projectType": "library",
+      "root": "libs/aggiemap/ngx/popups",
+      "sourceRoot": "libs/aggiemap/ngx/popups/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/aggiemap/ngx/popups/tsconfig.lib.json", "libs/aggiemap/ngx/popups/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/aggiemap/ngx/popups/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/aggiemap/ngx/popups"],
+          "options": {
+            "jestConfig": "libs/aggiemap/ngx/popups/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "aggiemap-ngx-ui-shared": {
+      "projectType": "library",
+      "root": "libs/aggiemap/ngx/ui/shared",
+      "sourceRoot": "libs/aggiemap/ngx/ui/shared/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/aggiemap/ngx/ui/shared/tsconfig.lib.json", "libs/aggiemap/ngx/ui/shared/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/aggiemap/ngx/ui/shared/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/aggiemap/ngx/ui/shared"],
+          "options": {
+            "jestConfig": "libs/aggiemap/ngx/ui/shared/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "aggiemap-ngx-ui-mobile": {
+      "projectType": "library",
+      "root": "libs/aggiemap/ngx/ui/mobile",
+      "sourceRoot": "libs/aggiemap/ngx/ui/mobile/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/aggiemap/ngx/ui/mobile/tsconfig.lib.json", "libs/aggiemap/ngx/ui/mobile/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/aggiemap/ngx/ui/mobile/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/aggiemap/ngx/ui/mobile"],
+          "options": {
+            "jestConfig": "libs/aggiemap/ngx/ui/mobile/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "aggiemap-ngx-ui-desktop": {
+      "projectType": "library",
+      "root": "libs/aggiemap/ngx/ui/desktop",
+      "sourceRoot": "libs/aggiemap/ngx/ui/desktop/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/aggiemap/ngx/ui/desktop/tsconfig.lib.json",
+              "libs/aggiemap/ngx/ui/desktop/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/aggiemap/ngx/ui/desktop/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/aggiemap/ngx/ui/desktop"],
+          "options": {
+            "jestConfig": "libs/aggiemap/ngx/ui/desktop/jest.config.js",
             "passWithNoTests": true
           }
         }

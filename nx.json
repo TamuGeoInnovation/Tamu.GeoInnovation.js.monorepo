@@ -156,9 +156,6 @@
     "signage": {
       "tags": []
     },
-    "aggiemap": {
-      "tags": []
-    },
     "maps-feature-trip-planner": {
       "tags": []
     },
@@ -498,6 +495,21 @@
       "tags": []
     },
     "cpa-ngx-viewer": {
+      "tags": []
+    },
+    "aggiemap-ngx-core": {
+      "tags": []
+    },
+    "aggiemap-ngx-popups": {
+      "tags": []
+    },
+    "aggiemap-ngx-ui-shared": {
+      "tags": []
+    },
+    "aggiemap-ngx-ui-mobile": {
+      "tags": []
+    },
+    "aggiemap-ngx-ui-desktop": {
       "tags": []
     }
   },

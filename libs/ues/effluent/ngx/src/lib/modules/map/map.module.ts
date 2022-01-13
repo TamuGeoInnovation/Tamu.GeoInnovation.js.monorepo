@@ -11,9 +11,9 @@ import {
   AggiemapSidebarModule,
   MainMobileSidebarComponent,
   MobileSidebarComponent,
-  AggiemapFormsModule,
-  PopupsModule
+  AggiemapFormsModule
 } from '@tamu-gisc/aggiemap';
+import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
@@ -105,7 +105,7 @@ const routes: Routes = [
     LegendModule,
     LayerListModule,
     MapPopupModule,
-    PopupsModule,
+    AggiemapNgxPopupsModule,
     MapsFeatureAccessibilityModule,
     MapsFeatureCoordinatesModule,
     UIClipboardModule,

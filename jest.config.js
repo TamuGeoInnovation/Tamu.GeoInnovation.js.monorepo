@@ -40,7 +40,6 @@ module.exports = {
     '<rootDir>/libs/maps/feature/popup',
     '<rootDir>/libs/ui-kits/ngx/interactions/draggable',
     '<rootDir>/libs/signage',
-    '<rootDir>/libs/aggiemap',
     '<rootDir>/libs/maps/feature/trip-planner',
     '<rootDir>/libs/ui-kits/ngx/interactions/clipboard',
     '<rootDir>/libs/maps/feature/accessibility',
@@ -131,6 +130,11 @@ module.exports = {
     '<rootDir>/libs/geoservices/ngx',
     '<rootDir>/libs/cpa/ngx/admin',
     '<rootDir>/libs/cpa/ngx/data-access',
-    '<rootDir>/libs/cpa/ngx/viewer'
+    '<rootDir>/libs/cpa/ngx/viewer',
+    '<rootDir>/libs/aggiemap/ngx/core',
+    '<rootDir>/libs/aggiemap/ngx/popups',
+    '<rootDir>/libs/aggiemap/ngx/ui/shared',
+    '<rootDir>/libs/aggiemap/ngx/ui/mobile',
+    '<rootDir>/libs/aggiemap/ngx/ui/desktop'
   ]
 };

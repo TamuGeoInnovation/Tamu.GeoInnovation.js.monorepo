@@ -1,6 +1,6 @@
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
-import { Popups } from '@tamu-gisc/aggiemap';
+import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 
 import esri = __esri;
 

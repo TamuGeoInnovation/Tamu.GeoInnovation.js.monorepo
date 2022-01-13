@@ -1,4 +1,4 @@
-import { Popups } from '@tamu-gisc/aggiemap';
+import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource } from '@tamu-gisc/common/types';
 

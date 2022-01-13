@@ -1,10 +1,38 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
+import { DlDateTimePickerDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
+
+import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
+
+import { EsriMapModule } from '@tamu-gisc/maps/esri';
+import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
+import { TestingModule } from '@tamu-gisc/dev-tools/application-testing';
+import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
+import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
+import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
+import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
+import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
+import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
+import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
+import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
+import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
+import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
+import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
+import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
+import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu-gisc/maps/feature/trip-planner';
+import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
+import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
+import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
+
+// Modules
 import {
   AggiemapModule,
+  AggiemapSidebarComponent,
+  BusListComponent,
   SidebarTripPlannerComponent,
+  SidebarReferenceComponent,
   AggiemapMobileUIModule,
   MobileUIComponent,
   TripPlannerTopComponent,
@@ -18,34 +46,10 @@ import {
   ReportBadRouteComponent,
   AggiemapFormsModule
 } from '@tamu-gisc/aggiemap';
+
 import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
-import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
-import { EsriMapModule, EsriModuleProviderService, EsriMapService } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
-import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
-import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
-import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
-import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
-import { LayerListModule, LayerListCategorizedComponent } from '@tamu-gisc/maps/feature/layer-list';
-import { MapsFeatureAccessibilityModule } from '@tamu-gisc/maps/feature/accessibility';
-import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
-import { LegendModule, LegendComponent } from '@tamu-gisc/maps/feature/legend';
-import {
-  MapsFeatureTripPlannerModule,
-  TripPlannerOptionsComponent,
-  TripPlannerService,
-  BusService
-} from '@tamu-gisc/maps/feature/trip-planner';
-import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
-import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
-import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
-import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
-import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
 
 import { MapComponent } from './map.component';
-import { SidebarComponent } from '../sidebar/sidebar.component';
-import { SidebarReferenceComponent } from '../sidebar/components/sidebar-reference/sidebar-reference.component';
 
 const routes: Routes = [
   {
@@ -59,10 +63,11 @@ const routes: Routes = [
       },
       {
         path: 'd',
-        component: SidebarComponent,
+        component: AggiemapSidebarComponent,
         canActivateChild: [DesktopGuard],
         children: [
           { path: '', component: SidebarReferenceComponent },
+          { path: 'bus', component: BusListComponent },
           { path: 'trip', component: SidebarTripPlannerComponent },
           { path: 'trip/options', component: TripPlannerOptionsComponent }
         ]
@@ -96,7 +101,7 @@ const routes: Routes = [
             children: [
               { path: '', component: MainMobileSidebarComponent },
               { path: 'legend', component: LegendComponent },
-              { path: 'layers', component: LayerListCategorizedComponent }
+              { path: 'layers', component: LayerListComponent }
             ]
           }
         ]
@@ -114,31 +119,34 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    EsriMapModule,
-    AggiemapModule,
-    MapsFeatureTripPlannerModule,
-    LegendModule,
-    LayerListModule,
-    MapPopupModule,
-    AggiemapNgxPopupsModule,
-    MapsFeatureAccessibilityModule,
-    MapsFeatureCoordinatesModule,
-    UIClipboardModule,
-    UIDragModule,
-    UILayoutModule,
-    UIFormsModule,
-    PipesModule,
-    SearchModule,
-    AggiemapMobileUIModule,
-    AggiemapCoreUIModule,
-    AggiemapSidebarModule,
-    AggiemapFormsModule,
     SettingsModule,
+    CommonNgxRouterModule,
+    PipesModule,
+    EsriMapModule,
+    LayerListModule,
+    LegendModule,
+    MapsFeatureAccessibilityModule,
+    SearchModule,
+    TestingModule,
+    ResponsiveModule,
+    DlDateTimePickerDateModule,
+    DlDateTimePickerModule,
     SidebarModule,
     UITamuBrandingModule,
-    UESCoreUIModule
+    UIFormsModule,
+    UILayoutModule,
+    UIDragModule,
+    UIClipboardModule,
+    MapsFeatureTripPlannerModule,
+    MapPopupModule,
+    AggiemapNgxPopupsModule,
+    AggiemapModule,
+    AggiemapCoreUIModule,
+    AggiemapSidebarModule,
+    AggiemapMobileUIModule,
+    MapsFeatureCoordinatesModule,
+    AggiemapFormsModule
   ],
-  declarations: [MapComponent],
-  providers: [EsriModuleProviderService, EsriMapService, TripPlannerService, BusService]
+  declarations: [MapComponent]
 })
 export class MapModule {}

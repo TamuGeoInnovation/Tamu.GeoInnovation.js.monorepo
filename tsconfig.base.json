@@ -52,7 +52,6 @@
       "@tamu-gisc/maps/feature/popup": ["libs/maps/feature/popup/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/draggable": ["libs/ui-kits/ngx/interactions/draggable/src/index.ts"],
       "@tamu-gisc/signage": ["libs/signage/src/index.ts"],
-      "@tamu-gisc/aggiemap": ["libs/aggiemap/src/index.ts"],
       "@tamu-gisc/maps/feature/trip-planner": ["libs/maps/feature/trip-planner/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/interactions/clipboard": ["libs/ui-kits/ngx/interactions/clipboard/src/index.ts"],
       "@tamu-gisc/maps/feature/accessibility": ["libs/maps/feature/accessibility/src/index.ts"],
@@ -116,7 +115,12 @@
       "@tamu-gisc/geoservices/ngx": ["libs/geoservices/ngx/src/index.ts"],
       "@tamu-gisc/cpa/ngx/admin": ["libs/cpa/ngx/admin/src/index.ts"],
       "@tamu-gisc/cpa/ngx/data-access": ["libs/cpa/ngx/data-access/src/index.ts"],
-      "@tamu-gisc/cpa/ngx/viewer": ["libs/cpa/ngx/viewer/src/index.ts"]
+      "@tamu-gisc/cpa/ngx/viewer": ["libs/cpa/ngx/viewer/src/index.ts"],
+      "@tamu-gisc/aggiemap/ngx/core": ["libs/aggiemap/ngx/core/src/index.ts"],
+      "@tamu-gisc/aggiemap/ngx/popups": ["libs/aggiemap/ngx/popups/src/index.ts"],
+      "@tamu-gisc/aggiemap/ngx/ui/shared": ["libs/aggiemap/ngx/ui/shared/src/index.ts"],
+      "@tamu-gisc/aggiemap/ngx/ui/mobile": ["libs/aggiemap/ngx/ui/mobile/src/index.ts"],
+      "@tamu-gisc/aggiemap/ngx/ui/desktop": ["libs/aggiemap/ngx/ui/desktop/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
