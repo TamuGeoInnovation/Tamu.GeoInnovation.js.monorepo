@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { ClassService } from '@tamu-gisc/gisday/data-access';
+import { ClassService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Class } from '@tamu-gisc/gisday/data-api';
 
 import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.component';

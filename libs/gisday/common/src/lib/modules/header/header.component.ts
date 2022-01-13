@@ -4,10 +4,10 @@ import { Location } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
-import { AuthService } from '@tamu-gisc/gisday/data-access';
+import { AuthService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
-import { IUserInfoResponse } from '@tamu-gisc/gisday/data-access';
+import { IUserInfoResponse } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-app-header',

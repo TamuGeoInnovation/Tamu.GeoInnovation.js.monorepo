@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Popup } from 'mapbox-gl';
 
 import { MapboxMapService } from '@tamu-gisc/maps/mapbox';
-import { SignageService } from '@tamu-gisc/gisday/data-access';
+import { SignageService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-signage',

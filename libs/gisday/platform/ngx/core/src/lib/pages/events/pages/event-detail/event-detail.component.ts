@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { Event } from '@tamu-gisc/gisday/data-api';
-import { CheckinService, EventService } from '@tamu-gisc/gisday/data-access';
+import { CheckinService, EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-event-detail',

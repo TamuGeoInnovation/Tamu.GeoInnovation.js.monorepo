@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { SpeakerService } from '@tamu-gisc/gisday/data-access';
+import { SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Speaker } from '@tamu-gisc/gisday/data-api';
 
 import { BaseAdminEditComponent } from '../../base-admin-edit/base-admin-edit.component';

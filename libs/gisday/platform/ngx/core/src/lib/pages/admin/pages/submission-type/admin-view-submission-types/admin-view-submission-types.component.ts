@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SubmissionTypeService } from '@tamu-gisc/gisday/data-access';
+import { SubmissionTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SubmissionType } from '@tamu-gisc/gisday/data-api';
 
 import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.component';

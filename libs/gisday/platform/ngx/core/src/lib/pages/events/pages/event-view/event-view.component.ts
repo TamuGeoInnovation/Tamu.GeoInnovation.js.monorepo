@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { shareReplay, takeUntil } from 'rxjs/operators';
 
 import { Event, Tag } from '@tamu-gisc/gisday/data-api';
-import { EventResponse, EventService, TagService } from '@tamu-gisc/gisday/data-access';
+import { EventResponse, EventService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-event-view',
@@ -30,17 +30,11 @@ export class EventViewComponent implements OnInit, OnDestroy {
   }
 
   public fetchEvents() {
-    this.$events = this.eventService.getEventsByDay().pipe(
-      takeUntil(this._$destroy),
-      shareReplay(1)
-    );
+    this.$events = this.eventService.getEventsByDay().pipe(takeUntil(this._$destroy), shareReplay(1));
   }
 
   public fetchTags() {
-    this.$tags = this.tagService.getEntities().pipe(
-      takeUntil(this._$destroy),
-      shareReplay(1)
-    );
+    this.$tags = this.tagService.getEntities().pipe(takeUntil(this._$destroy), shareReplay(1));
   }
 
   public applyOrRemoveTag(tag: Tag, checked: boolean) {

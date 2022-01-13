@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { EventService } from '@tamu-gisc/gisday/data-access';
+import { EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Event } from '@tamu-gisc/gisday/data-api';
 
 import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.component';

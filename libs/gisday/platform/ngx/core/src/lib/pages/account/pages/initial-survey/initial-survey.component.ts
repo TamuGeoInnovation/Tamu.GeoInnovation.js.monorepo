@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { InitialSurveyService } from '@tamu-gisc/gisday/data-access';
+import { InitialSurveyService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { InitialSurveyQuestion } from '@tamu-gisc/gisday/data-api';
 
 @Component({

@@ -4,7 +4,7 @@ import { shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { Class } from '@tamu-gisc/gisday/data-api';
-import { ClassService, UserClassesService } from '@tamu-gisc/gisday/data-access';
+import { ClassService, UserClassesService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-my-classes',

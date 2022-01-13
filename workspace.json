@@ -3961,28 +3961,6 @@
         }
       }
     },
-    "gisday-data-access": {
-      "projectType": "library",
-      "root": "libs/gisday/data-access",
-      "sourceRoot": "libs/gisday/data-access/src",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/gisday/data-access/tsconfig.lib.json", "libs/gisday/data-access/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/gisday/data-access/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/gisday/data-access"],
-          "options": {
-            "jestConfig": "libs/gisday/data-access/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "gisday-nest": {
       "root": "apps/gisday-nest",
       "sourceRoot": "apps/gisday-nest/src",
@@ -5920,6 +5898,32 @@
           "outputs": ["coverage/libs/gisday/platform/ngx/core"],
           "options": {
             "jestConfig": "libs/gisday/platform/ngx/core/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-platform-ngx-data-access": {
+      "projectType": "library",
+      "root": "libs/gisday/platform/ngx/data-access",
+      "sourceRoot": "libs/gisday/platform/ngx/data-access/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/gisday/platform/ngx/data-access/tsconfig.lib.json",
+              "libs/gisday/platform/ngx/data-access/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/gisday/platform/ngx/data-access/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/platform/ngx/data-access"],
+          "options": {
+            "jestConfig": "libs/gisday/platform/ngx/data-access/jest.config.js",
             "passWithNoTests": true
           }
         }

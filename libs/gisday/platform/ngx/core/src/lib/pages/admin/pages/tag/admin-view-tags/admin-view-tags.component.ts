@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TagService } from '@tamu-gisc/gisday/data-access';
+import { TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Tag } from '@tamu-gisc/gisday/data-api';
 import { BaseAdminViewComponent } from '../../base-admin-view/base-admin-view.component';
 

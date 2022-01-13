@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { AuthService } from '@tamu-gisc/gisday/data-access';
+import { AuthService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { GisdayCommonModule } from '@tamu-gisc/gisday/common';
 
 import { RouterModule } from '@angular/router';

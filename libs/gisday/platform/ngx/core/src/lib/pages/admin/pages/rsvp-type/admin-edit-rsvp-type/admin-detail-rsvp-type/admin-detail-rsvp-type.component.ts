@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { RsvpTypeService } from '@tamu-gisc/gisday/data-access';
+import { RsvpTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { RsvpType } from '@tamu-gisc/gisday/data-api';
 
 import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-detail.component';
