@@ -8,7 +8,7 @@ import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { LoginGuard, LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { GisdayCommonModule } from '@tamu-gisc/gisday/common';
+import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -98,7 +98,7 @@ const routeOptions: ExtraOptions = {
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, routeOptions),
-    GisdayCommonModule,
+    GisdayPlatformNgxCommonModule,
     EnvironmentModule,
     HttpClientModule
   ],

@@ -347,9 +347,6 @@
     "gisday-sass": {
       "tags": ["type:styles"]
     },
-    "gisday-common": {
-      "tags": []
-    },
     "common-ngx-auth": {
       "tags": []
     },
@@ -510,6 +507,9 @@
       "tags": []
     },
     "gisday-platform-ngx-data-access": {
+      "tags": []
+    },
+    "gisday-platform-ngx-common": {
       "tags": []
     }
   },

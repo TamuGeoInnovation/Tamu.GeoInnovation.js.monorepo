@@ -17,4 +17,4 @@ import { DetailViewComponent } from './modules/detail-view/detail-view.component
   providers: [AuthService],
   exports: [FooterComponent, HeaderComponent, CountDownComponent, DetailViewComponent]
 })
-export class GisdayCommonModule {}
+export class GisdayPlatformNgxCommonModule {}

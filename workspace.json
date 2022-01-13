@@ -4057,29 +4057,6 @@
       "projectType": "library",
       "root": "gisday/sass"
     },
-    "gisday-common": {
-      "projectType": "library",
-      "root": "libs/gisday/common",
-      "sourceRoot": "libs/gisday/common/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/gisday/common/tsconfig.lib.json", "libs/gisday/common/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/gisday/common/**/*"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/gisday/common"],
-          "options": {
-            "jestConfig": "libs/gisday/common/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "common-ngx-auth": {
       "projectType": "library",
       "root": "libs/common/ngx/auth",
@@ -5924,6 +5901,32 @@
           "outputs": ["coverage/libs/gisday/platform/ngx/data-access"],
           "options": {
             "jestConfig": "libs/gisday/platform/ngx/data-access/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-platform-ngx-common": {
+      "projectType": "library",
+      "root": "libs/gisday/platform/ngx/common",
+      "sourceRoot": "libs/gisday/platform/ngx/common/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/gisday/platform/ngx/common/tsconfig.lib.json",
+              "libs/gisday/platform/ngx/common/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/gisday/platform/ngx/common/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/platform/ngx/common"],
+          "options": {
+            "jestConfig": "libs/gisday/platform/ngx/common/jest.config.js",
             "passWithNoTests": true
           }
         }
