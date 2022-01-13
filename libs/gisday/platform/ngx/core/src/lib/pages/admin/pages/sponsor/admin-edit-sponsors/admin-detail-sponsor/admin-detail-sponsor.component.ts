@@ -3,7 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { Sponsor } from '@tamu-gisc/gisday/data-api';
+import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-detail.component';
 import { formConfig } from '../../admin-add-sponsors/admin-add-sponsors.component';

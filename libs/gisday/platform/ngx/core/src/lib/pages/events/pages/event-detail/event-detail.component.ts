@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs';
 
-import { Event } from '@tamu-gisc/gisday/data-api';
+import { Event } from '@tamu-gisc/gisday/platform/data-api';
 import { CheckinService, EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({

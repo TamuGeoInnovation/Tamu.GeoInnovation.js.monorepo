@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { GuidIdentity } from '@tamu-gisc/gisday/data-api';
+import { GuidIdentity } from '@tamu-gisc/gisday/platform/data-api';
 
 @Component({
   selector: 'tamu-gisc-base-admin-edit',

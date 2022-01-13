@@ -3,7 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { SubmissionTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { SubmissionType } from '@tamu-gisc/gisday/data-api';
+import { SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-detail.component';
 import { formConfig } from '../../admin-add-submission-types/admin-add-submission-types.component';

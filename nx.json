@@ -341,9 +341,6 @@
     "gisday-nest": {
       "tags": ["assets"]
     },
-    "gisday-data-api": {
-      "tags": []
-    },
     "gisday-sass": {
       "tags": ["type:styles"]
     },
@@ -510,6 +507,9 @@
       "tags": []
     },
     "gisday-platform-ngx-common": {
+      "tags": []
+    },
+    "gisday-platform-data-api": {
       "tags": []
     }
   },

@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { Speaker } from '@tamu-gisc/gisday/data-api';
+import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 
 @Component({
   selector: 'tamu-gisc-people-details',

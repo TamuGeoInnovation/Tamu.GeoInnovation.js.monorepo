@@ -84,7 +84,6 @@
       "@tamu-gisc/two/dashboard": ["libs/two/dashboard/src/index.ts"],
       "@tamu-gisc/two/data-access": ["libs/two/data-access/src/index.ts"],
       "@tamu-gisc/gisday/nest": ["libs/gisday/nest/src/index.ts"],
-      "@tamu-gisc/gisday/data-api": ["libs/gisday/data-api/src/index.ts"],
       "@tamu-gisc/common/ngx/auth": ["libs/common/ngx/auth/src/index.ts"],
       "@tamu-gisc/ues/recycling/common/entities": ["libs/ues/recycling/common/entities/src/index.ts"],
       "@tamu-gisc/ues/recycling/data-api": ["libs/ues/recycling/data-api/src/index.ts"],
@@ -120,7 +119,8 @@
       "@tamu-gisc/ui-kits/ngx/charts": ["libs/ui-kits/ngx/charts/src/index.ts"],
       "@tamu-gisc/gisday/platform/ngx/core": ["libs/gisday/platform/ngx/core/src/index.ts"],
       "@tamu-gisc/gisday/platform/ngx/data-access": ["libs/gisday/platform/ngx/data-access/src/index.ts"],
-      "@tamu-gisc/gisday/platform/ngx/common": ["libs/gisday/platform/ngx/common/src/index.ts"]
+      "@tamu-gisc/gisday/platform/ngx/common": ["libs/gisday/platform/ngx/common/src/index.ts"],
+      "@tamu-gisc/gisday/platform/data-api": ["libs/gisday/platform/data-api/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

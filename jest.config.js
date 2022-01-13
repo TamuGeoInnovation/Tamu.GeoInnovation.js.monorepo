@@ -88,7 +88,6 @@ module.exports = {
     '<rootDir>/libs/two/data-access',
     '<rootDir>/apps/gisday-angular',
     '<rootDir>/apps/gisday-nest',
-    '<rootDir>/libs/gisday/data-api',
     '<rootDir>/libs/common/ngx/auth',
     '<rootDir>/apps/ues-operations-nest',
     '<rootDir>/apps/ues-recycling-angular',
@@ -135,6 +134,7 @@ module.exports = {
     '<rootDir>/libs/ui-kits/ngx/charts',
     '<rootDir>/libs/gisday/platform/ngx/core',
     '<rootDir>/libs/gisday/platform/ngx/data-access',
-    '<rootDir>/libs/gisday/platform/ngx/common'
+    '<rootDir>/libs/gisday/platform/ngx/common',
+    '<rootDir>/libs/gisday/platform/data-api'
   ]
 };

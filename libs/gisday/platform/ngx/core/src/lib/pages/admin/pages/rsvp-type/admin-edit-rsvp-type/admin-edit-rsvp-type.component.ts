@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { RsvpTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { RsvpType } from '@tamu-gisc/gisday/data-api';
+import { RsvpType } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminEditComponent } from '../../base-admin-edit/base-admin-edit.component';
 

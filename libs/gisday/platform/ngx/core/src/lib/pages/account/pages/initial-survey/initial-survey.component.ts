@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { InitialSurveyService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { InitialSurveyQuestion } from '@tamu-gisc/gisday/data-api';
+import { InitialSurveyQuestion } from '@tamu-gisc/gisday/platform/data-api';
 
 @Component({
   selector: 'tamu-gisc-initial-survey',

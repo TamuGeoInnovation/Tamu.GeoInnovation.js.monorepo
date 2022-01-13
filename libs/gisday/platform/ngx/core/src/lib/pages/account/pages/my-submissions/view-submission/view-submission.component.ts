@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserSubmissionsService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { UserSubmission } from '@tamu-gisc/gisday/data-api';
+import { UserSubmission } from '@tamu-gisc/gisday/platform/data-api';
 import { Observable } from 'rxjs';
 
 @Component({

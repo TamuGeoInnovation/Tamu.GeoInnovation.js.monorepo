@@ -3,7 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { SpeakerService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { Speaker } from '@tamu-gisc/gisday/data-api';
+import { Speaker } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-detail.component';
 

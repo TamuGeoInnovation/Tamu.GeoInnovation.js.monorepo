@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-import { Class } from '@tamu-gisc/gisday/data-api';
+import { Class } from '@tamu-gisc/gisday/platform/data-api';
 import { ClassService, UserClassesService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({

@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { shareReplay, takeUntil } from 'rxjs/operators';
 
-import { Event, Tag } from '@tamu-gisc/gisday/data-api';
+import { Event, Tag } from '@tamu-gisc/gisday/platform/data-api';
 import { EventResponse, EventService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({

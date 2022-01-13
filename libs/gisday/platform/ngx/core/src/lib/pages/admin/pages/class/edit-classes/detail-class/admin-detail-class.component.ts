@@ -3,7 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ClassService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { Class } from '@tamu-gisc/gisday/data-api';
+import { Class } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-detail.component';
 import { formConfig } from '../../add-classes/admin-add-classes.component';

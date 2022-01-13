@@ -1,6 +1,6 @@
 module.exports = {
-  displayName: 'gisday-data-api',
-  preset: '../../../jest.config.js',
+  displayName: 'gisday-platform-data-api',
+  preset: '../../../../jest.preset.js',
   globals: {
     'ts-jest': {
       tsConfig: '<rootDir>/tsconfig.spec.json'
@@ -11,5 +11,5 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../../coverage/libs/gisday/data-api'
+  coverageDirectory: '../../../../coverage/libs/gisday/platform/data-api'
 };
