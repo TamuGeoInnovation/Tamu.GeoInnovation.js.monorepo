@@ -97,7 +97,7 @@
       "@tamu-gisc/veoride/data-api": ["libs/veoride/data-api/src/index.ts"],
       "@tamu-gisc/common/nest/guards": ["libs/common/nest/guards/src/index.ts"],
       "@tamu-gisc/veoride/data-compiler": ["libs/veoride/data-compiler/src/index.ts"],
-      "@tamu-gisc/kissingbugs/ngx": ["libs/kissingbugs/ngx/src/index.ts"],
+      "@tamu-gisc/kissingbug/ngx": ["libs/kissingbug/ngx/src/index.ts"],
       "@tamu-gisc/mailroom/common": ["libs/mailroom/common/src/index.ts"],
       "@tamu-gisc/ues/operations/ngx": ["libs/ues/operations/ngx/src/index.ts"],
       "@tamu-gisc/ui-kits/ngx/search": ["libs/ui-kits/ngx/search/src/index.ts"],

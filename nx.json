@@ -426,18 +426,18 @@
     "gisday-competitions-nest": {
       "tags": []
     },
-    "kissingbugs-angular": {
+    "kissingbug-angular": {
       "tags": [],
-      "implicitDependencies": ["kissingbugs-sass"]
+      "implicitDependencies": ["kissingbug-sass"]
     },
-    "kissingbugs-angular-e2e": {
+    "kissingbug-angular-e2e": {
       "tags": [],
-      "implicitDependencies": ["kissingbugs-angular"]
+      "implicitDependencies": ["kissingbug-angular"]
     },
-    "kissingbugs-ngx": {
+    "kissingbug-ngx": {
       "tags": []
     },
-    "kissingbugs-sass": {
+    "kissingbug-sass": {
       "tags": ["type:styles"]
     },
     "mailroom-nest": {

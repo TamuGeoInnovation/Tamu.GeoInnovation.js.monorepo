@@ -5143,24 +5143,24 @@
         }
       }
     },
-    "kissingbugs-angular": {
+    "kissingbug-angular": {
       "projectType": "application",
-      "root": "apps/kissingbugs-angular",
-      "sourceRoot": "apps/kissingbugs-angular/src",
+      "root": "apps/kissingbug-angular",
+      "sourceRoot": "apps/kissingbug-angular/src",
       "prefix": "tamu-gisc",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/apps/kissingbugs-angular",
-            "index": "apps/kissingbugs-angular/src/index.html",
-            "main": "apps/kissingbugs-angular/src/main.ts",
-            "polyfills": "apps/kissingbugs-angular/src/polyfills.ts",
-            "tsConfig": "apps/kissingbugs-angular/tsconfig.app.json",
+            "outputPath": "dist/apps/kissingbug-angular",
+            "index": "apps/kissingbug-angular/src/index.html",
+            "main": "apps/kissingbug-angular/src/main.ts",
+            "polyfills": "apps/kissingbug-angular/src/polyfills.ts",
+            "tsConfig": "apps/kissingbug-angular/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "apps/kissingbugs-angular/src/favicon.ico",
-              "apps/kissingbugs-angular/src/assets",
+              "apps/kissingbug-angular/src/favicon.ico",
+              "apps/kissingbug-angular/src/assets",
               {
                 "glob": "**/*",
                 "input": "./libs/assets/powershell",
@@ -5170,7 +5170,7 @@
             "styles": [
               "node_modules/ngx-lightbox/lightbox.css",
               "node_modules/font-awesome/css/font-awesome.css",
-              "apps/kissingbugs-angular/src/styles.scss"
+              "apps/kissingbug-angular/src/styles.scss"
             ],
             "scripts": []
           },
@@ -5178,8 +5178,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "apps/kissingbugs-angular/src/environments/environment.ts",
-                  "with": "apps/kissingbugs-angular/src/environments/environment.prod.ts"
+                  "replace": "apps/kissingbug-angular/src/environments/environment.ts",
+                  "with": "apps/kissingbug-angular/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -5205,8 +5205,8 @@
             "development": {
               "fileReplacements": [
                 {
-                  "replace": "apps/kissingbugs-angular/src/environments/environment.ts",
-                  "with": "apps/kissingbugs-angular/src/environments/environment.dev.ts"
+                  "replace": "apps/kissingbug-angular/src/environments/environment.ts",
+                  "with": "apps/kissingbug-angular/src/environments/environment.dev.ts"
                 }
               ],
               "optimization": true,
@@ -5232,8 +5232,8 @@
             "staging": {
               "fileReplacements": [
                 {
-                  "replace": "apps/kissingbugs-angular/src/environments/environment.ts",
-                  "with": "apps/kissingbugs-angular/src/environments/environment.staging.ts"
+                  "replace": "apps/kissingbug-angular/src/environments/environment.ts",
+                  "with": "apps/kissingbug-angular/src/environments/environment.staging.ts"
                 }
               ],
               "optimization": true,
@@ -5261,94 +5261,94 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "kissingbugs-angular:build"
+            "browserTarget": "kissingbug-angular:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "kissingbugs-angular:build:production"
+              "browserTarget": "kissingbug-angular:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "kissingbugs-angular:build"
+            "browserTarget": "kissingbug-angular:build"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "apps/kissingbugs-angular/tsconfig.app.json",
-              "apps/kissingbugs-angular/tsconfig.spec.json",
-              "apps/kissingbugs-angular/tsconfig.editor.json"
+              "apps/kissingbug-angular/tsconfig.app.json",
+              "apps/kissingbug-angular/tsconfig.spec.json",
+              "apps/kissingbug-angular/tsconfig.editor.json"
             ],
-            "exclude": ["**/node_modules/**", "!apps/kissingbugs-angular/**/*"]
+            "exclude": ["**/node_modules/**", "!apps/kissingbug-angular/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/kissingbugs-angular"],
+          "outputs": ["coverage/apps/kissingbug-angular"],
           "options": {
-            "jestConfig": "apps/kissingbugs-angular/jest.config.js",
+            "jestConfig": "apps/kissingbug-angular/jest.config.js",
             "passWithNoTests": true
           }
         }
       }
     },
-    "kissingbugs-angular-e2e": {
-      "root": "apps/kissingbugs-angular-e2e",
-      "sourceRoot": "apps/kissingbugs-angular-e2e/src",
+    "kissingbug-angular-e2e": {
+      "root": "apps/kissingbug-angular-e2e",
+      "sourceRoot": "apps/kissingbug-angular-e2e/src",
       "projectType": "application",
       "architect": {
         "e2e": {
           "builder": "@nrwl/cypress:cypress",
           "options": {
-            "cypressConfig": "apps/kissingbugs-angular-e2e/cypress.json",
-            "tsConfig": "apps/kissingbugs-angular-e2e/tsconfig.e2e.json",
-            "devServerTarget": "kissingbugs-angular:serve"
+            "cypressConfig": "apps/kissingbug-angular-e2e/cypress.json",
+            "tsConfig": "apps/kissingbug-angular-e2e/tsconfig.e2e.json",
+            "devServerTarget": "kissingbug-angular:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "kissingbugs-angular:serve:production"
+              "devServerTarget": "kissingbug-angular:serve:production"
             }
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["apps/kissingbugs-angular-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/kissingbugs-angular-e2e/**/*"]
+            "tsConfig": ["apps/kissingbug-angular-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/kissingbug-angular-e2e/**/*"]
           }
         }
       }
     },
-    "kissingbugs-ngx": {
+    "kissingbug-ngx": {
       "projectType": "library",
-      "root": "libs/kissingbugs/ngx",
-      "sourceRoot": "libs/kissingbugs/ngx/src",
+      "root": "libs/kissingbug/ngx",
+      "sourceRoot": "libs/kissingbug/ngx/src",
       "prefix": "tamu-gisc",
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["libs/kissingbugs/ngx/tsconfig.lib.json", "libs/kissingbugs/ngx/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/kissingbugs/ngx/**/*"]
+            "tsConfig": ["libs/kissingbug/ngx/tsconfig.lib.json", "libs/kissingbug/ngx/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/kissingbug/ngx/**/*"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/kissingbugs/ngx"],
+          "outputs": ["coverage/libs/kissingbug/ngx"],
           "options": {
-            "jestConfig": "libs/kissingbugs/ngx/jest.config.js",
+            "jestConfig": "libs/kissingbug/ngx/jest.config.js",
             "passWithNoTests": true
           }
         }
       }
     },
-    "kissingbugs-sass": {
+    "kissingbug-sass": {
       "projectType": "library",
-      "root": "kissingbugs/sass"
+      "root": "kissingbug/sass"
     },
     "mailroom-nest": {
       "root": "apps/mailroom-nest",
