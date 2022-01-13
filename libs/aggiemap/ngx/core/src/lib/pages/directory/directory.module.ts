@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AggiemapCoreUIModule } from '@tamu-gisc/aggiemap';
+import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import { DirectoryComponent } from './components/directory.component';
 
@@ -14,7 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), AggiemapCoreUIModule],
+  imports: [CommonModule, RouterModule.forChild(routes), AggiemapNgxSharedUiStructuralModule],
   declarations: [DirectoryComponent]
 })
 export class DirectoryModule {}

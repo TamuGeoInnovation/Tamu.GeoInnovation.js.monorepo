@@ -26,26 +26,29 @@ import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/po
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
 
-// Modules
 import {
-  AggiemapModule,
-  AggiemapSidebarComponent,
+  AggiemapNgxSharedUiStructuralModule,
+  TransportationModule,
   BusListComponent,
-  SidebarTripPlannerComponent,
-  SidebarReferenceComponent,
-  AggiemapMobileUIModule,
-  MobileUIComponent,
-  TripPlannerTopComponent,
-  OmnisearchComponent,
-  TripPlannerBottomComponent,
-  AggiemapCoreUIModule,
-  AggiemapSidebarModule,
-  MainMobileSidebarComponent,
-  MobileSidebarComponent,
   ModalComponent,
   ReportBadRouteComponent,
   AggiemapFormsModule
-} from '@tamu-gisc/aggiemap';
+} from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import {
+  AggiemapSidebarModule,
+  AggiemapSidebarComponent,
+  SidebarReferenceComponent,
+  SidebarTripPlannerComponent
+} from '@tamu-gisc/aggiemap/ngx/ui/desktop';
+import {
+  AggiemapNgxUiMobileModule,
+  OmnisearchComponent,
+  TripPlannerBottomComponent,
+  TripPlannerTopComponent,
+  MobileSidebarComponent,
+  MainMobileSidebarComponent,
+  AggiemapNgxUiMobileComponent
+} from '@tamu-gisc/aggiemap/ngx/ui/mobile';
 
 import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
 
@@ -74,7 +77,7 @@ const routes: Routes = [
       },
       {
         path: 'm',
-        component: MobileUIComponent,
+        component: AggiemapNgxUiMobileComponent,
         canActivateChild: [MobileGuard],
         children: [
           {
@@ -140,10 +143,12 @@ const routes: Routes = [
     MapsFeatureTripPlannerModule,
     MapPopupModule,
     AggiemapNgxPopupsModule,
-    AggiemapModule,
-    AggiemapCoreUIModule,
+    // AggiemapModule,
+    // AggiemapCoreUIModule,
+    TransportationModule,
     AggiemapSidebarModule,
-    AggiemapMobileUIModule,
+    AggiemapNgxSharedUiStructuralModule,
+    AggiemapNgxUiMobileModule,
     MapsFeatureCoordinatesModule,
     AggiemapFormsModule
   ],

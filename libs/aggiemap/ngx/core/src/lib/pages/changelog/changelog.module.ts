@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
-import { AggiemapCoreUIModule } from '@tamu-gisc/aggiemap';
+import { AggiemapNgxSharedUiStructuralModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 import { ChangelogComponent } from './components/changelog.component';
 
@@ -16,6 +16,6 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [ChangelogComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), AggiemapCoreUIModule, PipesModule]
+  imports: [CommonModule, RouterModule.forChild(routes), AggiemapNgxSharedUiStructuralModule, PipesModule]
 })
 export class ChangelogModule {}

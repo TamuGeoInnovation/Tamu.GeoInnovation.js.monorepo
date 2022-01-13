@@ -5,7 +5,6 @@ import { Subject } from 'rxjs';
 import { takeUntil, switchMap, pluck } from 'rxjs/operators';
 
 import { TripPlannerService, TripResult } from '@tamu-gisc/maps/feature/trip-planner';
-import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 
 import { Angulartics2 } from 'angulartics2';
@@ -32,7 +31,6 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
     private tripPlanner: TripPlannerService,
     private analytics: Angulartics2,
     private router: Router,
-    private history: RouterHistoryService,
     private location: Location,
     private notificationService: NotificationService
   ) {}
@@ -45,13 +43,6 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
     ).subscribe((result) => {
       this.result = result;
     });
-
-    this.history
-      .last()
-      .pipe(takeUntil(this._destroy$))
-      .subscribe((event: RouterEvent) => {
-        this._lastRoute = event.url;
-      });
   }
 
   public ngOnDestroy() {
@@ -87,11 +78,5 @@ export class ReportBadRouteComponent implements OnInit, OnDestroy {
     this.notificationService.preset('feedback_submit');
 
     this.router.navigate(['map/d/trip']);
-
-    // if (this._lastRoute) {
-    //   this.router.navigate([this._lastRoute]);
-    // } else {
-    //   this.location.back();
-    // }
   }
 }
