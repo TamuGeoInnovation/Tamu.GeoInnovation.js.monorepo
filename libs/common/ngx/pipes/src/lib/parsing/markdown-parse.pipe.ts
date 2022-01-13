@@ -10,8 +10,12 @@ export class MarkdownParsePipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
 
   public transform(value: string): SafeHtml {
-    const content = snarkdown(value);
+    if (value) {
+      const content = snarkdown(value);
 
-    return this.sanitizer.bypassSecurityTrustHtml(snarkdown(content));
+      return this.sanitizer.bypassSecurityTrustHtml(snarkdown(content));
+    } else {
+      return null;
+    }
   }
 }
