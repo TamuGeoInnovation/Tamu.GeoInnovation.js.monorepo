@@ -3,8 +3,7 @@ import { Observable } from 'rxjs';
 import { DeepPartial } from 'typeorm';
 
 import { CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
-
-import { SeasonsService } from '../../../../../../modules/data-access/seasons/seasons.service';
+import { SeasonsService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-season-list',

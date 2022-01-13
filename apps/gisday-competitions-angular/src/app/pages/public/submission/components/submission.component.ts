@@ -3,8 +3,7 @@ import { Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
 
 import { CompetitionForm } from '@tamu-gisc/gisday/competitions/data-api';
-
-import { FormService } from '../../../../modules/data-access/form/form.service';
+import { FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-submission-copmon',

@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
+import { LeaderboardService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
+
 import { LeaderboardComponent } from './components/leaderboard.component';
-import { LeaderboardService } from '../../../modules/data-access/leaderboard/leaderboard.service';
 
 const routes: Routes = [
   {

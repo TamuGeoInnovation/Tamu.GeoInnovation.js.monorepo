@@ -4,8 +4,7 @@ import { pluck, shareReplay } from 'rxjs/operators';
 
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-
-import { ILeaderboardItem, LeaderboardService } from '../../../../modules/data-access/leaderboard/leaderboard.service';
+import { ILeaderboardItem, LeaderboardService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-leaderboard',

@@ -511,6 +511,9 @@
     },
     "gisday-competitions-data-api": {
       "tags": []
+    },
+    "gisday-competitions-ngx-data-access": {
+      "tags": []
     }
   },
   "tasksRunnerOptions": {

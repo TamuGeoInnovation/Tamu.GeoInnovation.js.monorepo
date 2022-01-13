@@ -4,9 +4,9 @@ import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
 import { CompetitionForm, CompetitionSeason, SeasonStatisticsDto } from '@tamu-gisc/gisday/competitions/data-api';
+import { SeasonsService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 import { ViewerService } from '../../services/viewer.service';
-import { SeasonsService } from '../../../../../../modules/data-access/seasons/seasons.service';
 
 @Component({
   selector: 'tamu-gisc-season-statistics',

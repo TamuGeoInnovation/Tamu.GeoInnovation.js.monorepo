@@ -5931,6 +5931,32 @@
           }
         }
       }
+    },
+    "gisday-competitions-ngx-data-access": {
+      "projectType": "library",
+      "root": "libs/gisday/competitions/ngx/data-access",
+      "sourceRoot": "libs/gisday/competitions/ngx/data-access/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/gisday/competitions/ngx/data-access/tsconfig.lib.json",
+              "libs/gisday/competitions/ngx/data-access/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/gisday/competitions/ngx/data-access/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/competitions/ngx/data-access"],
+          "options": {
+            "jestConfig": "libs/gisday/competitions/ngx/data-access/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

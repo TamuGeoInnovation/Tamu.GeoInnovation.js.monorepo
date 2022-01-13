@@ -4,9 +4,7 @@ import { shareReplay, switchMap } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
 import { CompetitionForm, CompetitionSeason } from '@tamu-gisc/gisday/competitions/data-api';
-
-import { SeasonsService } from '../../../../../modules/data-access/seasons/seasons.service';
-import { FormService } from '../../../../../modules/data-access/form/form.service';
+import { SeasonsService, FormService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 @Injectable({
   providedIn: 'root'

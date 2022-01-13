@@ -13,9 +13,9 @@ import {
 } from '@tamu-gisc/gisday/competitions/data-api';
 import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
+import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
 
 import { ViewerService } from '../../services/viewer.service';
-import { SubmissionService } from '../../../../../../modules/data-access/submission/submission.service';
 
 @Component({
   selector: 'tamu-gisc-submission-review',
