@@ -12,4 +12,4 @@ import { RouterModule } from '@angular/router';
   providers: [AuthService],
   exports: []
 })
-export class GisdayNgxModule {}
+export class GisdayPlatformNgxCoreModule {}

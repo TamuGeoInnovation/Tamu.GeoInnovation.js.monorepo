@@ -338,9 +338,6 @@
       "tags": [],
       "implicitDependencies": ["gisday-angular"]
     },
-    "gisday-ngx": {
-      "tags": []
-    },
     "gisday-data-access": {
       "tags": []
     },
@@ -510,6 +507,9 @@
       "tags": []
     },
     "ui-kits-ngx-charts": {
+      "tags": []
+    },
+    "gisday-platform-ngx-core": {
       "tags": []
     }
   },

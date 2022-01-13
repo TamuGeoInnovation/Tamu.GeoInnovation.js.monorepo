@@ -1,6 +1,6 @@
 module.exports = {
-  displayName: 'gisday-ngx',
-  preset: '../../../jest.config.js',
+  displayName: 'gisday-platform-ngx-core',
+  preset: '../../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {
@@ -11,7 +11,7 @@ module.exports = {
       }
     }
   },
-  coverageDirectory: '../../../coverage/libs/gisday/ngx',
+  coverageDirectory: '../../../../../coverage/libs/gisday/platform/ngx/core',
   snapshotSerializers: [
     'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
     'jest-preset-angular/build/AngularSnapshotSerializer.js',

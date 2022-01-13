@@ -3961,29 +3961,6 @@
         }
       }
     },
-    "gisday-ngx": {
-      "projectType": "library",
-      "root": "libs/gisday/ngx",
-      "sourceRoot": "libs/gisday/ngx/src",
-      "prefix": "tamu-gisc",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["libs/gisday/ngx/tsconfig.lib.json", "libs/gisday/ngx/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/gisday/ngx/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/gisday/ngx"],
-          "options": {
-            "jestConfig": "libs/gisday/ngx/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "gisday-data-access": {
       "projectType": "library",
       "root": "libs/gisday/data-access",
@@ -5917,6 +5894,32 @@
           "outputs": ["coverage/libs/ui-kits/ngx/charts"],
           "options": {
             "jestConfig": "libs/ui-kits/ngx/charts/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "gisday-platform-ngx-core": {
+      "projectType": "library",
+      "root": "libs/gisday/platform/ngx/core",
+      "sourceRoot": "libs/gisday/platform/ngx/core/src",
+      "prefix": "tamu-gisc",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/gisday/platform/ngx/core/tsconfig.lib.json",
+              "libs/gisday/platform/ngx/core/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/gisday/platform/ngx/core/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/gisday/platform/ngx/core"],
+          "options": {
+            "jestConfig": "libs/gisday/platform/ngx/core/jest.config.js",
             "passWithNoTests": true
           }
         }

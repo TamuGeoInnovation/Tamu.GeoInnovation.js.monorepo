@@ -1,5 +1,4 @@
-// Modules
-export * from './lib/gisday-ngx.module';
+export * from './lib/gisday-platform-ngx-core.module';
 export * from './lib/pages/landing/landing.module';
 export * from './lib/pages/events/event.module';
 export * from './lib/pages/faq/faq.module';

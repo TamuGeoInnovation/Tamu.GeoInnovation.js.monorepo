@@ -87,7 +87,6 @@ module.exports = {
     '<rootDir>/libs/two/dashboard',
     '<rootDir>/libs/two/data-access',
     '<rootDir>/apps/gisday-angular',
-    '<rootDir>/libs/gisday/ngx',
     '<rootDir>/libs/gisday/data-access',
     '<rootDir>/apps/gisday-nest',
     '<rootDir>/libs/gisday/data-api',
@@ -135,6 +134,7 @@ module.exports = {
     '<rootDir>/libs/aggiemap/ngx/ui/shared',
     '<rootDir>/libs/aggiemap/ngx/ui/mobile',
     '<rootDir>/libs/aggiemap/ngx/ui/desktop',
-    '<rootDir>/libs/ui-kits/ngx/charts'
+    '<rootDir>/libs/ui-kits/ngx/charts',
+    '<rootDir>/libs/gisday/platform/ngx/core'
   ]
 };
