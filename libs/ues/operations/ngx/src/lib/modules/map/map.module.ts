@@ -3,21 +3,22 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import {
-  AggiemapModule,
-  SidebarTripPlannerComponent,
-  AggiemapMobileUIModule,
-  MobileUIComponent,
-  TripPlannerTopComponent,
-  OmnisearchComponent,
-  TripPlannerBottomComponent,
-  AggiemapCoreUIModule,
-  AggiemapSidebarModule,
-  MainMobileSidebarComponent,
-  MobileSidebarComponent,
+  AggiemapNgxSharedUiStructuralModule,
   ModalComponent,
   ReportBadRouteComponent,
   AggiemapFormsModule
-} from '@tamu-gisc/aggiemap';
+} from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { AggiemapSidebarModule, SidebarTripPlannerComponent } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
+import {
+  AggiemapNgxUiMobileModule,
+  OmnisearchComponent,
+  TripPlannerBottomComponent,
+  TripPlannerTopComponent,
+  MobileSidebarComponent,
+  MainMobileSidebarComponent,
+  AggiemapNgxUiMobileComponent
+} from '@tamu-gisc/aggiemap/ngx/ui/mobile';
+
 import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 import { EsriMapModule, EsriModuleProviderService, EsriMapService } from '@tamu-gisc/maps/esri';
@@ -69,7 +70,7 @@ const routes: Routes = [
       },
       {
         path: 'm',
-        component: MobileUIComponent,
+        component: AggiemapNgxUiMobileComponent,
         canActivateChild: [MobileGuard],
         children: [
           {
@@ -115,7 +116,6 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     EsriMapModule,
-    AggiemapModule,
     MapsFeatureTripPlannerModule,
     LegendModule,
     LayerListModule,
@@ -123,14 +123,14 @@ const routes: Routes = [
     AggiemapNgxPopupsModule,
     MapsFeatureAccessibilityModule,
     MapsFeatureCoordinatesModule,
+    AggiemapNgxUiMobileModule,
+    AggiemapNgxSharedUiStructuralModule,
     UIClipboardModule,
     UIDragModule,
     UILayoutModule,
     UIFormsModule,
     PipesModule,
     SearchModule,
-    AggiemapMobileUIModule,
-    AggiemapCoreUIModule,
     AggiemapSidebarModule,
     AggiemapFormsModule,
     SettingsModule,

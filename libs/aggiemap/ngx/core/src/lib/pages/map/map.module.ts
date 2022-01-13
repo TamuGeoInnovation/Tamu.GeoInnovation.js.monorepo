@@ -143,8 +143,6 @@ const routes: Routes = [
     MapsFeatureTripPlannerModule,
     MapPopupModule,
     AggiemapNgxPopupsModule,
-    // AggiemapModule,
-    // AggiemapCoreUIModule,
     TransportationModule,
     AggiemapSidebarModule,
     AggiemapNgxSharedUiStructuralModule,

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { SidebarReferenceComponent as AggiemapSidebarReferenceComponent } from '@tamu-gisc/aggiemap';
+import { SidebarReferenceComponent as AggiemapSidebarReferenceComponent } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 
 import esri = __esri;
 
