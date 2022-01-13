@@ -56,7 +56,7 @@
           <div class="form-item">
             <label for="input6">Start date: </label>
 
-            <input formControlName="dateOfEncounter" type="date" id="input6" placeholder="Date of Bug Encounter (MM/DD/YYYY)" name="dateEncounter" min="2021-01-01" max="2021-12-31" />
+            <input formControlName="dateOfEncounter" type="date" id="input6" placeholder="Date of Bug Encounter (MM/DD/YYYY)" name="dateEncounter" min="2021-01-01" [max]="today | date:'YYYY-MM-dd'" />
           </div>
 
           <div class="form-item">

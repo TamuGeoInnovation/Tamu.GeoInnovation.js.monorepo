@@ -25,7 +25,7 @@ export class TeamComponent implements OnInit, OnDestroy {
 
     const language: string = navigator.language.substr(0, 2);
 
-    this.pageContents = this.ss.getPage('team', language).pipe(shareReplay(1));
+    this.pageContents = this.ss.getPage(this.page, language).pipe(shareReplay(1));
   }
 
   public ngOnDestroy() {}
