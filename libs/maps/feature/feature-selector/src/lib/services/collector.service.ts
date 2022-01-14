@@ -69,7 +69,7 @@ export class FeatureCollectorService extends FeatureSelectorService {
   }
 
   public reset() {
-    this._$resetSignal.next();
+    this._$resetSignal.next(undefined);
   }
 }
 

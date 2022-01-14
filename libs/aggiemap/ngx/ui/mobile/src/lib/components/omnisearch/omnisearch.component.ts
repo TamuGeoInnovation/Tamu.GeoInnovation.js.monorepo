@@ -95,7 +95,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this._destroy$.next();
+    this._destroy$.next(undefined);
     this._destroy$.complete();
   }
 

@@ -138,14 +138,12 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
                   })
                   .then((features) => {
                     // Limit viewfinder results by the first 5 returned.
-                    this.viewFinderFeatures = features.features.slice(0, this.listLimit).map(
-                      (f): IViewfinderResult => {
-                        return {
-                          display: new TemplateRenderer({ template: this.template, lookup: f }).render(),
-                          graphic: f
-                        };
-                      }
-                    );
+                    this.viewFinderFeatures = features.features.slice(0, this.listLimit).map((f): IViewfinderResult => {
+                      return {
+                        display: new TemplateRenderer({ template: this.template, lookup: f }).render(),
+                        graphic: f
+                      };
+                    });
                   });
               });
             });
@@ -177,7 +175,7 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._$destroy.next();
+    this._$destroy.next(undefined);
     this._$destroy.complete();
   }
 }

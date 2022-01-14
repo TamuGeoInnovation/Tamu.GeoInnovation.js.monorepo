@@ -100,7 +100,7 @@ export class OmnitoolbarComponent<T extends esri.Graphic> implements OnInit, OnD
   }
 
   public ngOnDestroy(): void {
-    this.$destroy.next();
+    this.$destroy.next(undefined);
     this.$destroy.complete();
   }
 

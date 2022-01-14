@@ -21,7 +21,7 @@ export abstract class BaseAdminEditComponent<T extends GuidIdentity> implements 
   }
 
   public ngOnDestroy() {
-    this._$destroy.next();
+    this._$destroy.next(undefined);
     this._$destroy.complete();
   }
 

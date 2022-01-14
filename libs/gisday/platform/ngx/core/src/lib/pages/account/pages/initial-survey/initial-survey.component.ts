@@ -27,14 +27,14 @@ export class InitialSurveyComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._$destroy.next();
+    this._$destroy.next(undefined);
     this._$destroy.complete();
   }
 
   public fetchSurveyQuestions() {
-    this.$initalSurveyQuestions = (this.initialSurveyService.getInitialSurveyQuestions() as Observable<
-      Array<Partial<IInitialSurveyQuestionResponse>>
-    >).pipe(
+    this.$initalSurveyQuestions = (
+      this.initialSurveyService.getInitialSurveyQuestions() as Observable<Array<Partial<IInitialSurveyQuestionResponse>>>
+    ).pipe(
       map((questions) => {
         return questions.map((question) => {
           if (question.questionType.type === 'multiple-option' || question.questionType.type === 'scale-normal') {

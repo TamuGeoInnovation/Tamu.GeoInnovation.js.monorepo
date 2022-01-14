@@ -56,7 +56,7 @@ export class EventControlsComponent implements OnInit {
         (err) => {
           // On participant update, refresh the existing participant list to effectively reset changes
           // done to the participant
-          this._$refresh.next();
+          this._$refresh.next(undefined);
 
           this.ns.toast({
             id: 'participant-update-error',
@@ -77,7 +77,7 @@ export class EventControlsComponent implements OnInit {
           title: 'Deleted participant'
         });
 
-        this._$refresh.next();
+        this._$refresh.next(undefined);
       },
       (err) => {
         this.ns.toast({
@@ -98,7 +98,7 @@ export class EventControlsComponent implements OnInit {
         })
       )
       .subscribe((createStatus) => {
-        this._$refresh.next();
+        this._$refresh.next(undefined);
       });
   }
 }

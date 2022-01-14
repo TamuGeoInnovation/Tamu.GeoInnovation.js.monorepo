@@ -33,7 +33,7 @@ export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerC
   }
 
   public ngOnDestroy() {
-    this._destroy$.next();
+    this._destroy$.next(undefined);
     this._destroy$.complete();
   }
 }

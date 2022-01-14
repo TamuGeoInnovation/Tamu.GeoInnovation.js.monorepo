@@ -49,7 +49,7 @@ export class TileNavigationComponent implements OnInit, OnDestroy {
 
   // Clean up any internal manual component subscriptions.
   public ngOnDestroy() {
-    this._$destroy.next();
+    this._$destroy.next(undefined);
     this._$destroy.complete();
   }
 

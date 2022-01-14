@@ -156,7 +156,7 @@ export class SubmissionReviewComponent implements OnInit, OnDestroy {
           return this.ss.validateSubmission({ guid: details.guid, status, userGuid: userGuid as string });
         }),
         tap((res) => {
-          this.$_refresh.next();
+          this.$_refresh.next(undefined);
         })
       )
       .subscribe((status) => {
@@ -165,7 +165,7 @@ export class SubmissionReviewComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._$destroy.next();
+    this._$destroy.next(undefined);
     this._$destroy.complete();
   }
 }

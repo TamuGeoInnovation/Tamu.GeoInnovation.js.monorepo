@@ -41,7 +41,7 @@ export class TripPlannerBottomComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this._destroy$.next();
+    this._destroy$.next(undefined);
     this._destroy$.complete();
     this.dragService.unregister(this.identifier);
   }

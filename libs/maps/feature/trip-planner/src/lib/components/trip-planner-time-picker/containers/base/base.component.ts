@@ -15,10 +15,7 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   /**
    * Trip time mode that determines how the trip results are modified.
    */
-  public timeMode: Observable<TimeModeOption> = this.plannerService.TravelOptions.pipe(
-    pluck('time_mode'),
-    shareReplay(1)
-  );
+  public timeMode: Observable<TimeModeOption> = this.plannerService.TravelOptions.pipe(pluck('time_mode'), shareReplay(1));
 
   /**
    * Date in milliseconds. If a date is set in the trip planner service, it will be converted to milliseconds.
@@ -36,17 +33,14 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   constructor(private plannerService: TripPlannerService) {}
 
   public ngOnInit(): void {
-    this.plannerService.TravelOptions.pipe(
-      pluck('requested_time'),
-      takeUntil(this.destroy$)
-    ).subscribe((date) => {
+    this.plannerService.TravelOptions.pipe(pluck('requested_time'), takeUntil(this.destroy$)).subscribe((date) => {
       this.requestedTime = date ? date : undefined;
       this.oldTime = this.requestedTime ? new Date(this.requestedTime.getTime()) : undefined;
     });
   }
 
   public ngOnDestroy(): void {
-    this.destroy$.next();
+    this.destroy$.next(undefined);
     this.destroy$.complete();
   }
 

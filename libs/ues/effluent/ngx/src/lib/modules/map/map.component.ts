@@ -125,7 +125,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._destroy$.next();
+    this._destroy$.next(undefined);
     this._destroy$.complete();
   }
 
@@ -213,12 +213,12 @@ export class MapComponent implements OnInit, OnDestroy {
           return info;
         });
 
-        const renderer = ({
+        const renderer = {
           type: 'unique-value',
           field: 'SampleNumber',
           defaultSymbol: { type: 'simple-fill' },
           uniqueValueInfos: infos
-        } as unknown) as esri.UniqueValueRenderer;
+        } as unknown as esri.UniqueValueRenderer;
 
         return renderer;
       })

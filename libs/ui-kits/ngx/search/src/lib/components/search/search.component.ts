@@ -294,7 +294,7 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     // Dispose of any subscriptions made
-    this._destroy$.next();
+    this._destroy$.next(undefined);
     this._destroy$.complete();
   }
 

@@ -61,7 +61,7 @@ export class BuildingDepartmentListComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     // Unsubscribe from any open observable streams.
-    this._destroy$.next();
+    this._destroy$.next(undefined);
     this._destroy$.complete();
   }
 }
