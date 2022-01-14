@@ -5,5 +5,5 @@
     "module": "commonjs",
     "types": ["jest", "node", "arcgis-js-api"]
   },
-  "include": ["**/*.spec.ts", "**/*.d.ts"]
+  "include": ["**/*.spec.ts", "**/*.test.ts", "**/*.d.ts"]
 }

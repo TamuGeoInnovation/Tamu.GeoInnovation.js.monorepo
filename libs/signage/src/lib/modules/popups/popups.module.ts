@@ -4,9 +4,8 @@ import { CommonModule } from '@angular/common';
 import { SignPopupComponent } from './sign/sign.component';
 
 @NgModule({
-  declarations: [SignPopupComponent],
-  imports: [CommonModule],
-  entryComponents: [SignPopupComponent]
+    declarations: [SignPopupComponent],
+    imports: [CommonModule]
 })
 export class PopupsModule {}
 
