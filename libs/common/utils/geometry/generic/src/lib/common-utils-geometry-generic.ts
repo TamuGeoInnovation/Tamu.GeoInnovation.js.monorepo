@@ -11,10 +11,12 @@ import * as gju from 'geojson-utils';
 /**
  * Gets user geolocation if user allows.
  */
-export function getGeolocation(asObservable?: false): Promise<Coordinates>;
-export function getGeolocation(asObservable?: true): Observable<Coordinates>;
-export function getGeolocation(asObservable?: boolean): Promise<Coordinates> | Observable<Coordinates> {
-  const promise: Promise<Coordinates> = new Promise((r, rj) => {
+export function getGeolocation(asObservable?: false): Promise<GeolocationCoordinates>;
+export function getGeolocation(asObservable?: true): Observable<GeolocationCoordinates>;
+export function getGeolocation(
+  asObservable?: boolean
+): Promise<GeolocationCoordinates> | Observable<GeolocationCoordinates> {
+  const promise: Promise<GeolocationCoordinates> = new Promise((r, rj) => {
     window.navigator.geolocation.getCurrentPosition(
       (e) => {
         r(e.coords);
@@ -35,7 +37,7 @@ export function getGeolocation(asObservable?: boolean): Promise<Coordinates> | O
 export class TrackLocation {
   private _trackID: number;
   private _options: PositionOptions;
-  private _location: BehaviorSubject<Position>;
+  private _location: BehaviorSubject<GeolocationPosition>;
 
   constructor(options?: PositionOptions) {
     this._options = { ...options };
@@ -46,9 +48,9 @@ export class TrackLocation {
   /**
    *  Returns an observable wrapper around the native geolocation API.
    */
-  public track(): Observable<Position> {
+  public track(): Observable<GeolocationPosition> {
     this._trackID = navigator.geolocation.watchPosition(
-      (position: Position) => {
+      (position: GeolocationPosition) => {
         this._location.next(position);
       },
       (error) => {

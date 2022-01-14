@@ -234,7 +234,7 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
       .subscribe((value) => {
         if (value && value.length > 0) {
           if (isCoordinatePair(value)) {
-            this.setSelected((value as unknown) as T, {
+            this.setSelected(value as unknown as T, {
               name: value,
               breadcrumbs: {
                 source: undefined,
@@ -385,7 +385,7 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
     this.searchElem.nativeElement.value = 'Getting your location...';
 
     getGeolocation()
-      .then((res: Coordinates) => {
+      .then((res: GeolocationCoordinates) => {
         // Set view value
         this.searchElem.nativeElement.value = 'Current Location';
 
