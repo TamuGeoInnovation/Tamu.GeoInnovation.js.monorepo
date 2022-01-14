@@ -1,12 +1,12 @@
 {
   "npmScope": "tamu-gisc",
   "implicitDependencies": {
-    "workspace.json": "*",
-    "package.json": "*",
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
     "package-lock.json": "*",
     "tslint.json": "*",
-    "nx.json": "*",
-    "tsconfig.base.json": "*",
     ".eslintrc.json": "*"
   },
   "tasksRunnerOptions": {
