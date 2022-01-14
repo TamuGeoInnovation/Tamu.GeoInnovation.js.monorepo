@@ -2,7 +2,7 @@ import { async, inject, TestBed } from '@angular/core/testing';
 
 import { Bike, BikeService } from './bike.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { SearchService } from '@tamu-gisc/search';
+import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 
 describe('BikeService', () => {

@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nes
 
 import { AzureIdpGuard } from '@tamu-gisc/oidc/client';
 import { RequiredGroups, GroupsGuard } from '@tamu-gisc/ues/common/nest';
-import { ROLES } from '@tamu-gisc/ues/common/types';
+import { ROLES } from '@tamu-gisc/ues/common/nest';
 
 import { InterventionsService, ValveInterventionAttributes } from './interventions.service';
 

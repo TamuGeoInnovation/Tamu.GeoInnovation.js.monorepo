@@ -1,0 +1,16 @@
+<div [ngSwitch]="dataSource.__component">
+  <tamu-gisc-kissingbug-info-block *ngSwitchCase="'page.section-block'" [dataSource]="dataSource"></tamu-gisc-kissingbug-info-block>
+  <tamu-gisc-kissingbug-figure *ngSwitchCase="'page.figure'" [dataSource]="dataSource"></tamu-gisc-kissingbug-figure>
+  <tamu-gisc-kissingbug-portrait *ngSwitchCase="'page.portrait'" [dataSource]="dataSource"></tamu-gisc-kissingbug-portrait>
+  <p *ngSwitchCase="'page.paragraph'" [innerHTML]="dataSource.text | markdownParse"></p>
+  <ul>
+    <tamu-gisc-kissingbug-list *ngSwitchCase="'page.list'" [dataSource]="dataSource"></tamu-gisc-kissingbug-list>
+  </ul>
+  <tamu-gisc-kissingbug-gallery *ngSwitchCase="'page.gallery'" [dataSource]="dataSource"></tamu-gisc-kissingbug-gallery>
+  <tamu-gisc-kissingbug-info-alert *ngSwitchCase="'page.downloadable'" [dataSource]="dataSource"></tamu-gisc-kissingbug-info-alert>
+  <tamu-gisc-kissingbug-print-resource *ngSwitchCase="'page.print-gallery'" [dataSource]="dataSource"></tamu-gisc-kissingbug-print-resource>
+  <tamu-gisc-kissingbug-portrait-gallery *ngSwitchCase="'page.portrait-gallery'" [dataSource]="dataSource"></tamu-gisc-kissingbug-portrait-gallery>
+  <tamu-gisc-kissingbug-publication-gallery *ngSwitchCase="'page.publication-gallery'" [dataSource]="dataSource"></tamu-gisc-kissingbug-publication-gallery>
+  <tamu-gisc-kissingbug-table *ngSwitchCase="'page.table'" [dataSource]="dataSource"></tamu-gisc-kissingbug-table>
+  <p *ngSwitchDefault>Unsupported component detected: {{ dataSource.__component }}</p>
+</div>

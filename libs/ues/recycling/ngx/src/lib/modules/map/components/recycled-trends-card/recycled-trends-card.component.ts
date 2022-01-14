@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 
-import { IChartConfiguration } from '@tamu-gisc/charts';
+import { IChartConfiguration } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { RecyclingResultsStatistics, RecyclingService } from '../../../core/services/recycling.service';
 

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { IEffluentTierMetadata } from '@tamu-gisc/ues/common/ngx';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+
+import { IEffluentTierMetadata } from '../../types/types';
 
 @Injectable({
   providedIn: 'root'

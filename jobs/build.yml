@@ -79,7 +79,7 @@ jobs:
         inputs:
           SourceFolder: $(Agent.TempDirectory)/app_configs/oidc-provider-nest
           Contents: 'oidc-provider-config.ts'
-          TargetFolder: $(System.DefaultWorkingDirectory)/libs/oidc/provider-nestjs/src/lib/configs
+          TargetFolder: $(System.DefaultWorkingDirectory)/libs/oidc/provider/src/lib/configs
         displayName: 'Copying oidc-provider-config file to oidc-provider-nest lib'
 
       - task: CopyFiles@2
@@ -111,7 +111,7 @@ jobs:
         displayName: 'Copying environment files to gisday-competitions-nest'
 
       - bash: |
-          npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildtype }} --exclude="signage-angular,trees-angular,bikeshare,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,oidc-client-test,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,common-ngx-ui-notification,common-ngx-local-store,common-ngx-settings,common-ngx-pipes,mailroom-nest"
+          npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildtype }} --exclude="signage-angular,trees-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,mailroom-nest"
         displayName: 'Running build'
 
       - task: CopyFiles@2

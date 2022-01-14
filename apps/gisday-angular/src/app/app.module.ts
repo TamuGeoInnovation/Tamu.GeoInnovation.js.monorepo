@@ -7,8 +7,8 @@ import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { LoginGuard, LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/data-access';
-import { GisdayCommonModule } from '@tamu-gisc/gisday/common';
+import { LoginGuard, LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
@@ -22,58 +22,58 @@ WebFont.load({
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.LandingModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LandingModule)
   },
   {
     path: 'sessions',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.EventModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.EventModule)
   },
   {
     path: 'faq',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.FaqModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.FaqModule)
   },
   {
     path: 'sponsors',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.SponsorsModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.SponsorsModule)
   },
   {
     path: 'people',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.PeopleModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.PeopleModule)
   },
   {
     path: 'about',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AboutModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AboutModule)
   },
   {
     path: 'competitions',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.CompetitionsModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.CompetitionsModule)
   },
   {
     path: 'contact',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.ContactModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.ContactModule)
   },
   {
     path: 'highschool',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.HighschoolModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.HighschoolModule)
   },
   {
     path: 'wayback',
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.WaybackModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.WaybackModule)
   },
   {
     path: 'admin',
     canActivate: [AdminGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AdminModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AdminModule)
   },
   {
     path: 'account',
     canActivate: [LoginGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.AccountModule)
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AccountModule)
   },
   {
     path: 'login',
     canActivate: [LoginGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.LoginModule),
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LoginModule),
     data: {
       externalUrl: 'http://localhost:3333/oidc/login'
     }
@@ -81,7 +81,7 @@ const routes: Routes = [
   {
     path: 'logout',
     canActivate: [LogoutGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/ngx').then((m) => m.LogoutModule),
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LogoutModule),
     data: {
       externalUrl: 'http://localhost:3333/oidc/logout'
     }
@@ -98,7 +98,7 @@ const routeOptions: ExtraOptions = {
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, routeOptions),
-    GisdayCommonModule,
+    GisdayPlatformNgxCommonModule,
     EnvironmentModule,
     HttpClientModule
   ],

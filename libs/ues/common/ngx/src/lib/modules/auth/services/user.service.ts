@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
-import { IUser, Roles } from '@tamu-gisc/ues/common/types';
+import { IUser, Roles } from '@tamu-gisc/ues/common/nest';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import { isAuthorized } from '../utils/utils';

@@ -24,6 +24,9 @@ import { StepComponent } from './components/stepper/components/step/step.compone
 import { StepToggleComponent } from './components/stepper/components/step-toggle/step-toggle.component';
 import { StepperToggleDirective } from './components/stepper/directives/stepper-toggle.directive';
 
+import { RenderHostDirective } from './directives/render-host/render-host.directive';
+import { ElementInsertDirective } from './directives/element-insert/element-insert.directive';
+
 @NgModule({
   imports: [CommonModule],
   declarations: [
@@ -44,7 +47,9 @@ import { StepperToggleDirective } from './components/stepper/directives/stepper-
     StepperComponent,
     StepComponent,
     StepToggleComponent,
-    StepperToggleDirective
+    StepperToggleDirective,
+    RenderHostDirective,
+    ElementInsertDirective
   ],
   exports: [
     DrawerComponent,
@@ -61,7 +66,9 @@ import { StepperToggleDirective } from './components/stepper/directives/stepper-
     StepperComponent,
     StepComponent,
     StepToggleComponent,
-    StepperToggleDirective
+    StepperToggleDirective,
+    RenderHostDirective,
+    ElementInsertDirective
   ]
 })
 export class UILayoutModule {}

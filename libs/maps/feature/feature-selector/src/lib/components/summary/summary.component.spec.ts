@@ -4,7 +4,7 @@ import { SelectionSummaryComponent } from './summary.component';
 import { FeatureSelectorModule } from '@tamu-gisc/maps/feature/feature-selector';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SearchModule } from '@tamu-gisc/search';
+import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 

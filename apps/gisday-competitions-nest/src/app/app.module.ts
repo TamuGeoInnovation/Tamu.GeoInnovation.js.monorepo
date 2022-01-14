@@ -2,14 +2,14 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
+  GisdayCompetitionsDataApiModule,
   CompetitionSubmission,
   SubmissionLocation,
   SubmissionMedia,
   CompetitionForm,
   CompetitionSeason,
-  GisdayCompetitionsModule,
   CompetitionSubmissionValidationStatus
-} from '@tamu-gisc/gisday/competitions';
+} from '@tamu-gisc/gisday/competitions/data-api';
 
 import { dbConfig } from '../environments/environment';
 import { AppController } from './app.controller';
@@ -25,7 +25,7 @@ const entities = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forRoot({ ...dbConfig, entities }), GisdayCompetitionsModule],
+  imports: [TypeOrmModule.forRoot({ ...dbConfig, entities }), GisdayCompetitionsDataApiModule],
   controllers: [AppController],
   providers: [AppService]
 })

@@ -1,4 +1,4 @@
-import { SearchSource } from '@tamu-gisc/search';
+import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import { Popups } from '@tamu-gisc/signage';

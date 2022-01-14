@@ -12,7 +12,6 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { ResultsService } from '../data-access/results/results.service';
 
 import esri = __esri;
-import { Popups } from '@tamu-gisc/aggiemap';
 
 @Component({
   selector: 'tamu-gisc-map',

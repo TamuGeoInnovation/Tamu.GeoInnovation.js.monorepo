@@ -40,7 +40,7 @@ import {
   UniversityModule,
   SpeakerRole,
   SpeakerRoleModule
-} from '@tamu-gisc/gisday/data-api';
+} from '@tamu-gisc/gisday/platform/data-api';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';

@@ -2,8 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 
-import { ROLES } from '@tamu-gisc/ues/common/types';
-
+import { ROLES } from '../../types/ues-common-types';
 import { GROUPS_KEY } from '../../decorators/groups/groups.decorator';
 
 @Injectable()

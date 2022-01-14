@@ -1,0 +1,30 @@
+<header class="container12">
+  <nav class="column12">
+    <img class="logo" src="assets/img/logos/logo.svg" alt="Geoservices Logo" [routerLink]="['/']" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="router-link-active" />
+
+    <div class="menu">
+      <ul>
+        <li class="dropdown">
+          <a [routerLink]="['/resources/profile']" routerLinkActive="router-link-active">Data Submissions</a>
+        </li>
+        <li class="dropdown">
+          <a [routerLink]="['/api']" routerLinkActive="router-link-active">Resources</a>
+        </li>
+        <li class="dropdown">
+          <a [routerLink]="['/api']" routerLinkActive="router-link-active">Maps</a>
+        </li>
+      </ul>
+
+      <ul>
+        <li *ngIf="hasEmail | async; else showLoginPrompt">
+          <a [routerLink]="['/dashboard']">Dashboard</a>
+        </li>
+        <ng-template #showLoginPrompt>
+          <li>
+            <a [href]="loginUrl">Login</a>
+          </li>
+        </ng-template>
+      </ul>
+    </div>
+  </nav>
+</header>

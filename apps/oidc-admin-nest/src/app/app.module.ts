@@ -22,7 +22,7 @@ import {
   UserModule,
   BackchannelLogoutUri
 } from '@tamu-gisc/oidc/common';
-import { AccessTokenModule, StatsModule } from '@tamu-gisc/oidc/admin-nest';
+import { AccessTokenModule, StatsModule } from '@tamu-gisc/oidc/admin/data-api';
 
 import { dbConfig } from '../environments/environment';
 import { OIDC_IDP_ISSUER_URL } from '../environments/oidcconfig';

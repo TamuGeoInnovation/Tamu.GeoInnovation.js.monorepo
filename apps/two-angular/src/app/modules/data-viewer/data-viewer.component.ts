@@ -6,7 +6,7 @@ import { switchMap, filter, toArray, shareReplay, startWith, mergeMap, reduce, t
 import * as deepMerge from 'deepmerge';
 
 import { Sites, NodeGroups, DataGroups, DataGroupFlds, WeatherfluxExpanded } from '@tamu-gisc/two/common';
-import { IChartConfiguration } from '@tamu-gisc/charts';
+import { IChartConfiguration } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { SitesService } from './services/sites/sites.service';
 import { NodeTypesService } from './services/node-types/node-types.service';

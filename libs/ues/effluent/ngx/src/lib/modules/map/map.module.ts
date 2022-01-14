@@ -2,25 +2,23 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
+import { AggiemapFormsModule } from '@tamu-gisc/aggiemap/ngx/ui/shared';
+import { AggiemapSidebarModule } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
 import {
-  AggiemapModule,
-  AggiemapMobileUIModule,
-  MobileUIComponent,
+  AggiemapNgxUiMobileModule,
   OmnisearchComponent,
-  AggiemapCoreUIModule,
-  AggiemapSidebarModule,
-  MainMobileSidebarComponent,
   MobileSidebarComponent,
-  AggiemapFormsModule,
-  PopupsModule
-} from '@tamu-gisc/aggiemap';
+  MainMobileSidebarComponent,
+  AggiemapNgxUiMobileComponent
+} from '@tamu-gisc/aggiemap/ngx/ui/mobile';
+
+import { AggiemapNgxPopupsModule } from '@tamu-gisc/aggiemap/ngx/popups';
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
-import { SearchModule } from '@tamu-gisc/search';
+import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { UIDragModule } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
-import { UIStructuralLayoutModule } from '@tamu-gisc/ui-kits/ngx/layout/structural';
 import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { LayerListModule, LayerListComponent } from '@tamu-gisc/maps/feature/layer-list';
@@ -67,7 +65,7 @@ const routes: Routes = [
       },
       {
         path: 'm',
-        component: MobileUIComponent,
+        component: AggiemapNgxUiMobileComponent,
         canActivateChild: [MobileGuard],
         children: [
           {
@@ -101,23 +99,20 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     EsriMapModule,
-    AggiemapModule,
     MapsFeatureTripPlannerModule,
     LegendModule,
     LayerListModule,
     MapPopupModule,
-    PopupsModule,
+    AggiemapNgxPopupsModule,
     MapsFeatureAccessibilityModule,
     MapsFeatureCoordinatesModule,
-    UIStructuralLayoutModule,
     UIClipboardModule,
     UIDragModule,
     UILayoutModule,
     UIFormsModule,
     PipesModule,
     SearchModule,
-    AggiemapMobileUIModule,
-    AggiemapCoreUIModule,
+    AggiemapNgxUiMobileModule,
     AggiemapSidebarModule,
     AggiemapFormsModule,
     SettingsModule,

@@ -1,0 +1,35 @@
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { filter, pluck, switchMap, shareReplay } from 'rxjs/operators';
+import { DeepPartial } from 'typeorm';
+
+import { County, User, Lockdown } from '@tamu-gisc/covid/common/entities';
+
+import { IdentityService } from '../../../../services/identity.service';
+import { LockdownsService } from '../../../../data-access/lockdowns/lockdowns.service';
+
+@Component({
+  selector: 'tamu-gisc-dashboard-lockdowns',
+  templateUrl: './dashboard-lockdowns.component.html',
+  styleUrls: ['./dashboard-lockdowns.component.scss']
+})
+export class DashboardLockdownsComponent implements OnInit {
+  public localCounty: Observable<DeepPartial<County>>;
+  public localEmail: Observable<Partial<User['email']>>;
+  public lockdowns: Observable<Array<Lockdown>>;
+
+  constructor(private ls: LockdownsService, private is: IdentityService) {}
+
+  public ngOnInit() {
+    this.lockdowns = this.is.identity.pipe(
+      pluck('user', 'email'),
+      filter((email) => {
+        return email !== undefined;
+      }),
+      switchMap((email) => {
+        return this.ls.getAllLockdownsForUser(email);
+      }),
+      shareReplay(1)
+    );
+  }
+}

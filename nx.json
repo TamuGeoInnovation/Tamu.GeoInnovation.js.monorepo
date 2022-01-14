@@ -29,17 +29,6 @@
     "assets": {
       "tags": ["scope:shared", "type:assets"]
     },
-    "bikeshare": {
-      "tags": [],
-      "implicitDependencies": ["assets", "sass"]
-    },
-    "bikeshare-e2e": {
-      "tags": [],
-      "implicitDependencies": ["bikeshare"]
-    },
-    "charts": {
-      "tags": []
-    },
     "common-ngx-environment": {
       "tags": []
     },
@@ -135,9 +124,6 @@
     "sass": {
       "tags": ["scope:shared", "type:styles"]
     },
-    "search": {
-      "tags": []
-    },
     "ui-kits-ngx-branding": {
       "tags": []
     },
@@ -164,13 +150,7 @@
     "ui-kits-ngx-interactions-draggable": {
       "tags": []
     },
-    "ui-kits-ngx-layout-structural": {
-      "tags": []
-    },
     "signage": {
-      "tags": []
-    },
-    "aggiemap": {
       "tags": []
     },
     "maps-feature-trip-planner": {
@@ -203,9 +183,6 @@
     "cpa-data-api": {
       "tags": []
     },
-    "cpa-common-ngx": {
-      "tags": []
-    },
     "maps-feature-forms": {
       "tags": []
     },
@@ -223,22 +200,10 @@
       "tags": [],
       "implicitDependencies": ["geoservices-angular"]
     },
-    "geoservices-api": {
-      "tags": []
-    },
-    "geoservices-internal": {
-      "tags": []
-    },
     "ui-kits-ngx-interactions-scroll-to": {
       "tags": []
     },
     "geoservices-data-access": {
-      "tags": []
-    },
-    "geoservices-public": {
-      "tags": []
-    },
-    "geoservices-core-ngx": {
       "tags": []
     },
     "ui-kits-ngx-navigation-mobile-tile": {
@@ -248,9 +213,6 @@
       "tags": []
     },
     "ui-kits-ngx-layout-code": {
-      "tags": []
-    },
-    "geoservices-covid": {
       "tags": []
     },
     "covid-data-api": {
@@ -268,19 +230,16 @@
     "maps-mapbox": {
       "tags": []
     },
-    "oidc-client-test": {
-      "tags": []
-    },
     "oidc-client": {
       "tags": []
     },
-    "ues-angular": {
+    "ues-operations-angular": {
       "tags": [],
       "implicitDependencies": ["assets", "sass", "ues-sass"]
     },
-    "ues-angular-e2e": {
+    "ues-operations-angular-e2e": {
       "tags": [],
-      "implicitDependencies": ["ues-angular"]
+      "implicitDependencies": ["ues-operations-angular"]
     },
     "ues-common-ngx": {
       "tags": []
@@ -314,9 +273,6 @@
     "oidc-provider-nest": {
       "tags": ["assets"]
     },
-    "oidc-provider-nestjs": {
-      "tags": []
-    },
     "oidc-admin-angular": {
       "tags": [],
       "implicitDependencies": ["assets", "sass"]
@@ -327,15 +283,6 @@
     },
     "oidc-admin-nest": {
       "tags": ["assets"]
-    },
-    "oidc-admin": {
-      "tags": []
-    },
-    "oidc-admin-nest-lib": {
-      "tags": []
-    },
-    "oidc-admin-data-access": {
-      "tags": []
     },
     "oidc-common": {
       "tags": []
@@ -391,23 +338,11 @@
       "tags": [],
       "implicitDependencies": ["gisday-angular"]
     },
-    "gisday-ngx": {
-      "tags": []
-    },
-    "gisday-data-access": {
-      "tags": []
-    },
     "gisday-nest": {
       "tags": ["assets"]
     },
-    "gisday-data-api": {
-      "tags": []
-    },
     "gisday-sass": {
       "tags": ["type:styles"]
-    },
-    "gisday-common": {
-      "tags": []
     },
     "common-ngx-auth": {
       "tags": []
@@ -452,17 +387,8 @@
     "ues-sass": {
       "tags": ["type:styles", "scope:ues"]
     },
-    "cpa-data-access": {
-      "tags": []
-    },
-    "cpa-admin": {
-      "tags": []
-    },
     "cpa-sass": {
       "tags": ["type:styles", "scope:cpa"]
-    },
-    "ues-common-types": {
-      "tags": []
     },
     "ues-cold-water-data-api": {
       "tags": []
@@ -500,27 +426,99 @@
     "gisday-competitions-nest": {
       "tags": []
     },
-    "gisday-competitions": {
+    "kissingbug-angular": {
+      "tags": [],
+      "implicitDependencies": ["kissingbug-sass"]
+    },
+    "kissingbug-angular-e2e": {
+      "tags": [],
+      "implicitDependencies": ["kissingbug-angular"]
+    },
+    "kissingbug-ngx": {
       "tags": []
     },
-    "kissingbugs-angular": {
-      "tags": [],
-      "implicitDependencies": ["kissingbugs-sass"]
-    },
-    "kissingbugs-angular-e2e": {
-      "tags": [],
-      "implicitDependencies": ["kissingbugs-angular"]
-    },
-    "kissingbugs-ngx": {
-      "tags": []
-    },
-    "kissingbugs-sass": {
+    "kissingbug-sass": {
       "tags": ["type:styles"]
     },
     "mailroom-nest": {
       "tags": []
     },
     "mailroom-common": {
+      "tags": []
+    },
+    "ues-operations-ngx": {
+      "tags": []
+    },
+    "ui-kits-ngx-search": {
+      "tags": []
+    },
+    "oidc-admin-ngx": {
+      "tags": []
+    },
+    "oidc-admin-data-access": {
+      "tags": []
+    },
+    "oidc-admin-data-api": {
+      "tags": []
+    },
+    "oidc-provider": {
+      "tags": []
+    },
+    "covid-ngx": {
+      "tags": []
+    },
+    "geoservices-ngx": {
+      "tags": []
+    },
+    "cpa-ngx-admin": {
+      "tags": []
+    },
+    "cpa-ngx-data-access": {
+      "tags": []
+    },
+    "cpa-ngx-viewer": {
+      "tags": []
+    },
+    "aggiemap-ngx-core": {
+      "tags": []
+    },
+    "aggiemap-ngx-popups": {
+      "tags": []
+    },
+    "aggiemap-ngx-ui-shared": {
+      "tags": []
+    },
+    "aggiemap-ngx-ui-mobile": {
+      "tags": []
+    },
+    "aggiemap-ngx-ui-desktop": {
+      "tags": []
+    },
+    "ui-kits-ngx-charts": {
+      "tags": []
+    },
+    "gisday-platform-ngx-core": {
+      "tags": []
+    },
+    "gisday-platform-ngx-data-access": {
+      "tags": []
+    },
+    "gisday-platform-ngx-common": {
+      "tags": []
+    },
+    "gisday-platform-data-api": {
+      "tags": []
+    },
+    "gisday-competitions-data-api": {
+      "tags": []
+    },
+    "gisday-competitions-ngx-data-access": {
+      "tags": []
+    },
+    "gisday-competitions-ngx-core": {
+      "tags": []
+    },
+    "gisday-competitions-ngx-common": {
       "tags": []
     }
   },

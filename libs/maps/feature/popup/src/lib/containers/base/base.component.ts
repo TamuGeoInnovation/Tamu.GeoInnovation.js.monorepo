@@ -11,7 +11,7 @@ import { Subscription, Observable } from 'rxjs';
 import { withLatestFrom } from 'rxjs/operators';
 
 import { EsriMapService, HitTestSnapshot } from '@tamu-gisc/maps/esri';
-import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout/structural';
+import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { PopupService } from '../../services/popup.service';
 import { BasePopupComponent } from '../../components/base/base.component';

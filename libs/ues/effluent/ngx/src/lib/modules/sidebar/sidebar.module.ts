@@ -4,13 +4,13 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { UITamuBrandingModule } from '@tamu-gisc/ui-kits/ngx/branding';
 import { MapPopupModule } from '@tamu-gisc/maps/feature/popup';
-import { SearchModule } from '@tamu-gisc/search';
+import { SearchModule } from '@tamu-gisc/ui-kits/ngx/search';
 import { MapsFeatureTripPlannerModule } from '@tamu-gisc/maps/feature/trip-planner';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { UESCoreUIModule } from '@tamu-gisc/ues/common/ngx';
-import { ChartsModule } from '@tamu-gisc/charts';
+import { UiKitsNgxChartsModule } from '@tamu-gisc/ui-kits/ngx/charts';
 
 import { UESEffluentCoreModule } from '../core/core.module';
 import { SidebarComponent } from './sidebar.component';
@@ -30,7 +30,7 @@ import { SidebarOverviewComponent } from './components/sidebar-overview/sidebar-
     LayerListModule,
     LegendModule,
     UESCoreUIModule,
-    ChartsModule,
+    UiKitsNgxChartsModule,
     UESEffluentCoreModule
   ],
   declarations: [SidebarComponent, SidebarReferenceComponent, SidebarRelationshipsComponent, SidebarOverviewComponent],

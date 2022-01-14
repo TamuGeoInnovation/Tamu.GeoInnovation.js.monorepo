@@ -1,0 +1,21 @@
+<tamu-gisc-kissingbug-nav></tamu-gisc-kissingbug-nav>
+<tamu-gisc-kissingbug-hero [dataSource]="(pageContents | async)?.hero"></tamu-gisc-kissingbug-hero>
+
+<article class="container12 container">
+  <div class="styleForm">
+    <div *ngFor="let item of (pageContents | async)?.section">
+      <div [ngSwitch]="item.__component">
+        <tamu-gisc-kissingbug-section *ngSwitchCase="'page.section'" [dataSource]="item"></tamu-gisc-kissingbug-section>
+        <tamu-gisc-kissingbug-info-block *ngSwitchCase="'page.section-block'" [dataSource]="item"></tamu-gisc-kissingbug-info-block>
+        <tamu-gisc-kissingbug-figure *ngSwitchCase="'page.figure'" [dataSource]="item"></tamu-gisc-kissingbug-figure>
+        <p *ngSwitchCase="'page.paragraph'">{{ item.text }}</p>
+        <ul>
+          <tamu-gisc-kissingbug-list *ngSwitchCase="'page.list'" [dataSource]="item"></tamu-gisc-kissingbug-list>
+        </ul>
+        <tamu-gisc-kissingbug-info-alert *ngSwitchCase="'page.info-alert'" [dataSource]="item"></tamu-gisc-kissingbug-info-alert>
+        <tamu-gisc-kissingbug-gallery *ngSwitchCase="'page.gallery'" [dataSource]="item"></tamu-gisc-kissingbug-gallery>
+        <p *ngSwitchDefault>Unsupported component detected: {{ item.__component }}</p>
+      </div>
+    </div>
+  </div>
+</article>
