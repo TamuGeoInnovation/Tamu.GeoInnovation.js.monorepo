@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/geoservices/data-access",
+  "sourceRoot": "libs/geoservices/data-access/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/geoservices/data-access/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/geoservices/data-access"]
+    }
+  },
+  "tags": []
+}

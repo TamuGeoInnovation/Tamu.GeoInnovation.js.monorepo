@@ -1,0 +1,16 @@
+{
+  "projectType": "library",
+  "root": "libs/common/utils/geometry/generic",
+  "sourceRoot": "libs/common/utils/geometry/generic/src",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/common/utils/geometry/generic/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/common/utils/geometry/generic"]
+    }
+  },
+  "tags": []
+}

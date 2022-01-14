@@ -1,0 +1,22 @@
+{
+  "root": "libs/mailroom/common",
+  "sourceRoot": "libs/mailroom/common/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/mailroom/common/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/mailroom/common"],
+      "options": {
+        "jestConfig": "libs/mailroom/common/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

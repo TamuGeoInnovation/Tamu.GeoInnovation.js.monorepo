@@ -1,0 +1,22 @@
+{
+  "root": "apps/geoservices-angular-e2e",
+  "sourceRoot": "apps/geoservices-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/geoservices-angular-e2e/cypress.json",
+        "tsConfig": "apps/geoservices-angular-e2e/tsconfig.e2e.json",
+        "devServerTarget": "geoservices-angular:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "geoservices-angular:serve:production"
+        }
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["geoservices-angular"]
+}

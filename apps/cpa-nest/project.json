@@ -1,0 +1,73 @@
+{
+  "root": "apps/cpa-nest",
+  "sourceRoot": "apps/cpa-nest/src",
+  "projectType": "application",
+  "prefix": "cpa-nest",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "options": {
+        "outputPath": "dist/apps/cpa-nest",
+        "main": "apps/cpa-nest/src/main.ts",
+        "tsConfig": "apps/cpa-nest/tsconfig.app.json",
+        "assets": [
+          "apps/cpa-nest/src/assets",
+          "apps/cpa-nest/src/package.json",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/powershell",
+            "output": "./assets/powershell"
+          }
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/cpa-nest/src/environments/environment.ts",
+              "with": "apps/cpa-nest/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/cpa-nest/src/environments/environment.ts",
+              "with": "apps/cpa-nest/src/environments/environment.dev.ts"
+            }
+          ]
+        }
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "cpa-nest:build",
+        "port": 7777
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/cpa-nest/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/cpa-nest"],
+      "options": {
+        "jestConfig": "apps/cpa-nest/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["assets"]
+}

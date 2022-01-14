@@ -1,0 +1,17 @@
+{
+  "prefix": "tamu-gisc",
+  "projectType": "library",
+  "root": "libs/maps/feature/legend",
+  "sourceRoot": "libs/maps/feature/legend/src",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/maps/feature/legend/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/maps/feature/legend"]
+    }
+  },
+  "tags": []
+}

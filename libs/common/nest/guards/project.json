@@ -1,0 +1,22 @@
+{
+  "root": "libs/common/nest/guards",
+  "sourceRoot": "libs/common/nest/guards/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/common/nest/guards/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/common/nest/guards"],
+      "options": {
+        "jestConfig": "libs/common/nest/guards/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

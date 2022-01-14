@@ -1,0 +1,16 @@
+{
+  "projectType": "library",
+  "root": "libs/common/utils/string",
+  "sourceRoot": "libs/common/utils/string/src",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/common/utils/string/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/common/utils/string"]
+    }
+  },
+  "tags": []
+}

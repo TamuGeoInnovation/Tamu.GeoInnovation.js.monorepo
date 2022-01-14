@@ -1,0 +1,128 @@
+{
+  "projectType": "application",
+  "root": "apps/oidc-admin-angular",
+  "sourceRoot": "apps/oidc-admin-angular/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "outputPath": "dist/apps/oidc-admin-angular",
+        "index": "apps/oidc-admin-angular/src/index.html",
+        "main": "apps/oidc-admin-angular/src/main.ts",
+        "polyfills": "apps/oidc-admin-angular/src/polyfills.ts",
+        "tsConfig": "apps/oidc-admin-angular/tsconfig.app.json",
+        "aot": false,
+        "assets": [
+          "apps/oidc-admin-angular/src/favicon.ico",
+          "apps/oidc-admin-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/powershell",
+            "output": "./assets/powershell"
+          }
+        ],
+        "styles": ["apps/oidc-admin-angular/src/styles.scss"],
+        "scripts": [],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/oidc-admin-angular/src/environments/environment.ts",
+              "with": "apps/oidc-admin-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "aot": true,
+          "baseHref": "/admin/",
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        },
+        "development": {
+          "fileReplacements": [
+            {
+              "replace": "apps/oidc-admin-angular/src/environments/environment.ts",
+              "with": "apps/oidc-admin-angular/src/environments/environment.dev.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "aot": true,
+          "baseHref": "/admin/",
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        }
+      },
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": ""
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "browserTarget": "oidc-admin-angular:build"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "oidc-admin-angular:build:production"
+        },
+        "development": {
+          "browserTarget": "oidc-admin-angular:build:development"
+        }
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "oidc-admin-angular:build"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/oidc-admin-angular/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/oidc-admin-angular"]
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["assets", "sass"]
+}

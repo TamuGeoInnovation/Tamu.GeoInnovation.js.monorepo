@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/kissingbug/ngx",
+  "sourceRoot": "libs/kissingbug/ngx/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/kissingbug/ngx"],
+      "options": {
+        "jestConfig": "libs/kissingbug/ngx/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

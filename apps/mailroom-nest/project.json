@@ -1,0 +1,52 @@
+{
+  "root": "apps/mailroom-nest",
+  "sourceRoot": "apps/mailroom-nest/src",
+  "projectType": "application",
+  "prefix": "mailroom-nest",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/mailroom-nest",
+        "main": "apps/mailroom-nest/src/main.ts",
+        "tsConfig": "apps/mailroom-nest/tsconfig.app.json",
+        "assets": ["apps/mailroom-nest/src/assets"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/mailroom-nest/src/environments/environment.ts",
+              "with": "apps/mailroom-nest/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "mailroom-nest:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/mailroom-nest/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/mailroom-nest"],
+      "options": {
+        "jestConfig": "apps/mailroom-nest/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,22 @@
+{
+  "root": "libs/gisday/competitions/data-api",
+  "sourceRoot": "libs/gisday/competitions/data-api/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/gisday/competitions/data-api/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/gisday/competitions/data-api"],
+      "options": {
+        "jestConfig": "libs/gisday/competitions/data-api/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

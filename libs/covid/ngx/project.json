@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/covid/ngx",
+  "sourceRoot": "libs/covid/ngx/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/covid/ngx"],
+      "options": {
+        "jestConfig": "libs/covid/ngx/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

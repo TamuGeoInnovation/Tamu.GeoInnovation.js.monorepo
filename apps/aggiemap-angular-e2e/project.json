@@ -1,0 +1,22 @@
+{
+  "projectType": "application",
+  "root": "apps/aggiemap-angular-e2e",
+  "sourceRoot": "apps/aggiemap-angular-e2e/src",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "configurations": {
+        "production": {
+          "devServerTarget": "aggiemap-angular:serve:production"
+        }
+      },
+      "options": {
+        "cypressConfig": "apps/aggiemap-angular-e2e/cypress.json",
+        "devServerTarget": "aggiemap-angular:serve",
+        "tsConfig": "apps/aggiemap-angular-e2e/tsconfig.e2e.json"
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["aggiemap-angular"]
+}

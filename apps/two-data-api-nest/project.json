@@ -1,0 +1,71 @@
+{
+  "prefix": "two-data-api-nest",
+  "projectType": "application",
+  "root": "apps/two-data-api-nest",
+  "sourceRoot": "apps/two-data-api-nest/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/two-data-api-nest/src/environments/environment.ts",
+              "with": "apps/two-data-api-nest/src/environments/environment.prod.ts"
+            }
+          ],
+          "extractLicenses": false,
+          "inspect": false,
+          "optimization": true
+        },
+        "development": {
+          "fileReplacements": [
+            {
+              "replace": "apps/two-data-api-nest/src/environments/environment.ts",
+              "with": "apps/two-data-api-nest/src/environments/environment.dev.ts"
+            }
+          ],
+          "extractLicenses": false,
+          "inspect": false,
+          "optimization": true
+        }
+      },
+      "options": {
+        "main": "apps/two-data-api-nest/src/main.ts",
+        "outputPath": "dist/apps/two-data-api-nest",
+        "tsConfig": "apps/two-data-api-nest/tsconfig.app.json",
+        "assets": ["apps/two-data-api-nest/src/assets", "apps/two-data-api-nest/src/package.json"]
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/two-data-api-nest/**/*.ts"]
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "two-data-api-nest:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "two-data-api-nest:build:production"
+        },
+        "development": {
+          "buildTarget": "two-data-api-nest:build:development"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/two-data-api-nest/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/two-data-api-nest"]
+    }
+  },
+  "tags": ["assets"]
+}

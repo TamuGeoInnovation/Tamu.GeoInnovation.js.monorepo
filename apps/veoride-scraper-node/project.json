@@ -1,0 +1,71 @@
+{
+  "root": "apps/veoride-scraper-node",
+  "sourceRoot": "apps/veoride-scraper-node/src",
+  "projectType": "application",
+  "prefix": "veoride-scraper-node",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/veoride-scraper-node",
+        "main": "apps/veoride-scraper-node/src/main.ts",
+        "tsConfig": "apps/veoride-scraper-node/tsconfig.app.json",
+        "assets": [
+          "apps/veoride-scraper-node/src/assets",
+          "apps/veoride-scraper-node/src/package.json",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/powershell",
+            "output": "./assets/powershell"
+          }
+        ]
+      },
+      "configurations": {
+        "development": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/veoride-scraper-node/src/environments/environment.ts",
+              "with": "apps/veoride-scraper-node/src/environments/environment.dev.ts"
+            }
+          ]
+        },
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/veoride-scraper-node/src/environments/environment.ts",
+              "with": "apps/veoride-scraper-node/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "veoride-scraper-node:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/veoride-scraper-node/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/veoride-scraper-node"],
+      "options": {
+        "jestConfig": "apps/veoride-scraper-node/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,80 @@
+{
+  "root": "apps/ues-valves-nest",
+  "sourceRoot": "apps/ues-valves-nest/src",
+  "projectType": "application",
+  "prefix": "ues-valves-nest",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/ues-valves-nest",
+        "main": "apps/ues-valves-nest/src/main.ts",
+        "tsConfig": "apps/ues-valves-nest/tsconfig.app.json",
+        "assets": [
+          "apps/ues-valves-nest/src/assets",
+          "apps/ues-valves-nest/src/package.json",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/powershell",
+            "output": "./assets/powershell"
+          }
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-valves-nest/src/environments/environment.ts",
+              "with": "apps/ues-valves-nest/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-valves-nest/src/environments/environment.ts",
+              "with": "apps/ues-valves-nest/src/environments/environment.dev.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "ues-valves-nest:build",
+        "port": 7777
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "ues-valves-nest:build:production"
+        },
+        "development": {
+          "buildTarget": "ues-valves-nest:build:development"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/ues-valves-nest/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/ues-valves-nest"],
+      "options": {
+        "jestConfig": "apps/ues-valves-nest/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["assets"]
+}

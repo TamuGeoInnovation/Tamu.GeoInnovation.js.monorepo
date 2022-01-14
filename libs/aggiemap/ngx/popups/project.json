@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/aggiemap/ngx/popups",
+  "sourceRoot": "libs/aggiemap/ngx/popups/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/aggiemap/ngx/popups"],
+      "options": {
+        "jestConfig": "libs/aggiemap/ngx/popups/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

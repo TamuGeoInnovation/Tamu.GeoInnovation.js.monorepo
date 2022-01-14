@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/ues/effluent/ngx",
+  "sourceRoot": "libs/ues/effluent/ngx/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/ues/effluent/ngx/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/ues/effluent/ngx"]
+    }
+  },
+  "tags": []
+}

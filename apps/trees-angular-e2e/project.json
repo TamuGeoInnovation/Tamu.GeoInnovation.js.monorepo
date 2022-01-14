@@ -1,0 +1,22 @@
+{
+  "projectType": "application",
+  "root": "apps/trees-angular-e2e",
+  "sourceRoot": "apps/trees-angular-e2e/src",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "configurations": {
+        "production": {
+          "devServerTarget": "trees-angular:serve:production"
+        }
+      },
+      "options": {
+        "cypressConfig": "apps/trees-angular-e2e/cypress.json",
+        "devServerTarget": "trees-angular:serve",
+        "tsConfig": "apps/trees-angular-e2e/tsconfig.e2e.json"
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["trees-angular"]
+}

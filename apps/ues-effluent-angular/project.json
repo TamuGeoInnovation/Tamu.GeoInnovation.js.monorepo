@@ -1,0 +1,130 @@
+{
+  "projectType": "application",
+  "root": "apps/ues-effluent-angular",
+  "sourceRoot": "apps/ues-effluent-angular/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "outputPath": "dist/apps/ues-effluent-angular",
+        "index": "apps/ues-effluent-angular/src/index.html",
+        "main": "apps/ues-effluent-angular/src/main.ts",
+        "polyfills": "apps/ues-effluent-angular/src/polyfills.ts",
+        "tsConfig": "apps/ues-effluent-angular/tsconfig.app.json",
+        "assets": [
+          "apps/ues-effluent-angular/src/favicon.ico",
+          "apps/ues-effluent-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/ues/assets/",
+            "output": "./assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
+        "styles": ["apps/ues-effluent-angular/src/styles.scss"],
+        "scripts": [],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-effluent-angular/src/environments/environment.ts",
+              "with": "apps/ues-effluent-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "baseHref": "/effluent/",
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        },
+        "development": {
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-effluent-angular/src/environments/environment.ts",
+              "with": "apps/ues-effluent-angular/src/environments/environment.dev.ts"
+            }
+          ],
+          "baseHref": "/effluent/",
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        }
+      },
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": ""
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "browserTarget": "ues-effluent-angular:build"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "ues-effluent-angular:build:production"
+        },
+        "development": {
+          "browserTarget": "ues-effluent-angular:build:development"
+        }
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "ues-effluent-angular:build"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/ues-effluent-angular/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/ues-effluent-angular"]
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["assets", "sass", "ues-sass"]
+}

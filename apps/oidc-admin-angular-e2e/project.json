@@ -1,0 +1,22 @@
+{
+  "root": "apps/oidc-admin-angular-e2e",
+  "sourceRoot": "apps/oidc-admin-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/oidc-admin-angular-e2e/cypress.json",
+        "tsConfig": "apps/oidc-admin-angular-e2e/tsconfig.e2e.json",
+        "devServerTarget": "oidc-admin-angular:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "oidc-admin-angular:serve:production"
+        }
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["oidc-admin-angular"]
+}

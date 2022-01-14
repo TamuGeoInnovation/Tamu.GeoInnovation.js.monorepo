@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/maps/mapbox",
+  "sourceRoot": "libs/maps/mapbox/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/maps/mapbox/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/maps/mapbox"]
+    }
+  },
+  "tags": []
+}

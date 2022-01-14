@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/maps/feature/trip-planner",
+  "sourceRoot": "libs/maps/feature/trip-planner/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/maps/feature/trip-planner/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/maps/feature/trip-planner"]
+    }
+  },
+  "tags": []
+}

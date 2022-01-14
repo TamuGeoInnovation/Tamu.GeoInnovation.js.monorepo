@@ -1,0 +1,22 @@
+{
+  "root": "libs/oidc/provider",
+  "sourceRoot": "libs/oidc/provider/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/oidc/provider/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/oidc/provider"],
+      "options": {
+        "jestConfig": "libs/oidc/provider/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

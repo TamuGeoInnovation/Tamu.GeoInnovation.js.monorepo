@@ -1,0 +1,22 @@
+{
+  "root": "apps/ues-recycling-angular-e2e",
+  "sourceRoot": "apps/ues-recycling-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/ues-recycling-angular-e2e/cypress.json",
+        "tsConfig": "apps/ues-recycling-angular-e2e/tsconfig.e2e.json",
+        "devServerTarget": "ues-recycling-angular:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "ues-recycling-angular:serve:production"
+        }
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["ues-recycling-angular"]
+}

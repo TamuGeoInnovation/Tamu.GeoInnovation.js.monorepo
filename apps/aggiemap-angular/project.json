@@ -1,0 +1,116 @@
+{
+  "prefix": "tamu-gisc",
+  "projectType": "application",
+  "root": "apps/aggiemap-angular",
+  "sourceRoot": "apps/aggiemap-angular/src",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "configurations": {
+        "production": {
+          "outputHashing": "all",
+          "budgets": [
+            {
+              "maximumError": "5mb",
+              "maximumWarning": "2mb",
+              "type": "initial"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/aggiemap-angular/src/environments/environment.ts",
+              "with": "apps/aggiemap-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "aot": true,
+          "buildOptimizer": true,
+          "extractLicenses": true,
+          "namedChunks": false,
+          "optimization": true,
+          "sourceMap": false,
+          "vendorChunk": false
+        },
+        "development": {
+          "outputHashing": "all",
+          "budgets": [
+            {
+              "maximumError": "5mb",
+              "maximumWarning": "2mb",
+              "type": "initial"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/aggiemap-angular/src/environments/environment.ts",
+              "with": "apps/aggiemap-angular/src/environments/environment.dev.ts"
+            }
+          ],
+          "aot": true,
+          "buildOptimizer": true,
+          "extractLicenses": true,
+          "namedChunks": false,
+          "optimization": true,
+          "sourceMap": false,
+          "vendorChunk": false
+        }
+      },
+      "options": {
+        "index": "apps/aggiemap-angular/src/index.html",
+        "main": "apps/aggiemap-angular/src/main.ts",
+        "outputPath": "dist/apps/aggiemap-angular",
+        "polyfills": "apps/aggiemap-angular/src/polyfills.ts",
+        "tsConfig": "apps/aggiemap-angular/tsconfig.app.json",
+        "assets": [
+          "apps/aggiemap-angular/src/favicon.ico",
+          "apps/aggiemap-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
+        "scripts": [],
+        "styles": ["apps/aggiemap-angular/src/styles.scss"],
+        "aot": false,
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": ""
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "aggiemap-angular:build"
+      }
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "aggiemap-angular:build:production"
+        },
+        "development": {
+          "browserTarget": "aggiemap-angular:build:development"
+        }
+      },
+      "options": {
+        "browserTarget": "aggiemap-angular:build"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/aggiemap-angular/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/aggiemap-angular"]
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["assets", "sass"]
+}

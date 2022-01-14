@@ -1,0 +1,22 @@
+{
+  "root": "libs/veoride/scraper",
+  "sourceRoot": "libs/veoride/scraper/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/veoride/scraper/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/veoride/scraper"],
+      "options": {
+        "jestConfig": "libs/veoride/scraper/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,79 @@
+{
+  "root": "apps/ues-operations-nest",
+  "sourceRoot": "apps/ues-operations-nest/src",
+  "projectType": "application",
+  "prefix": "ues-operations-nest",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/ues-operations-nest",
+        "main": "apps/ues-operations-nest/src/main.ts",
+        "tsConfig": "apps/ues-operations-nest/tsconfig.app.json",
+        "assets": [
+          "apps/ues-operations-nest/src/assets",
+          "apps/ues-operations-nest/src/package.json",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/powershell",
+            "output": "./assets/powershell"
+          }
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-operations-nest/src/environments/environment.ts",
+              "with": "apps/ues-operations-nest/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-operations-nest/src/environments/environment.ts",
+              "with": "apps/ues-operations-nest/src/environments/environment.dev.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "ues-operations-nest:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "ues-operations-nest:build:production"
+        },
+        "development": {
+          "buildTarget": "ues-operations-nest:build:development"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/ues-operations-nest/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/ues-operations-nest"],
+      "options": {
+        "jestConfig": "apps/ues-operations-nest/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["assets"]
+}

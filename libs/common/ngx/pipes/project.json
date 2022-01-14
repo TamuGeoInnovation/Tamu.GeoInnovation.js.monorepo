@@ -1,0 +1,17 @@
+{
+  "prefix": "tamu-gisc",
+  "projectType": "library",
+  "root": "libs/common/ngx/pipes",
+  "sourceRoot": "libs/common/ngx/pipes/src",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/common/ngx/pipes/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/common/ngx/pipes"]
+    }
+  },
+  "tags": []
+}

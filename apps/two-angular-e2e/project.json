@@ -1,0 +1,22 @@
+{
+  "projectType": "application",
+  "root": "apps/two-angular-e2e",
+  "sourceRoot": "apps/two-angular-e2e/src",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "configurations": {
+        "production": {
+          "devServerTarget": "two-angular:serve:production"
+        }
+      },
+      "options": {
+        "cypressConfig": "apps/two-angular-e2e/cypress.json",
+        "devServerTarget": "two-angular:serve",
+        "tsConfig": "apps/two-angular-e2e/tsconfig.e2e.json"
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["two-angular"]
+}

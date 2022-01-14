@@ -1,0 +1,22 @@
+{
+  "root": "libs/ues/effluent/data-api",
+  "sourceRoot": "libs/ues/effluent/data-api/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/ues/effluent/data-api/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/ues/effluent/data-api/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/ues/effluent/data-api"]
+    }
+  },
+  "tags": []
+}

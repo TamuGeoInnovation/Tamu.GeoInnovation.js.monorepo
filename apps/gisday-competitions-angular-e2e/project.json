@@ -1,0 +1,22 @@
+{
+  "projectType": "application",
+  "root": "apps/gisday-competitions-angular-e2e",
+  "sourceRoot": "apps/gisday-competitions-angular-e2e/src",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "configurations": {
+        "production": {
+          "devServerTarget": "gisday-competitions-angular:serve:production"
+        }
+      },
+      "options": {
+        "cypressConfig": "apps/gisday-competitions-angular-e2e/cypress.json",
+        "devServerTarget": "gisday-competitions-angular:serve",
+        "tsConfig": "apps/gisday-competitions-angular-e2e/tsconfig.e2e.json"
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["gisday-competitions-angular"]
+}
