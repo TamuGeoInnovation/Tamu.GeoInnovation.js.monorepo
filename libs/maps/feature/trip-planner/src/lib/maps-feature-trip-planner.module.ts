@@ -29,52 +29,52 @@ import { PipesModule } from '@tamu-gisc/common/ngx/pipes';
 import { RouteDirectionTransformerPipe } from './core/route-direction-transformer.pipe';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        FormsModule,
-        DlDateTimePickerModule,
-        DlDateTimePickerDateModule,
-        UIFormsModule,
-        UILayoutModule,
-        UIClipboardModule,
-        PipesModule
-    ],
-    declarations: [
-        TripPlannerConnectionsSelectComponent,
-        TripPlannerDirectionsComponent,
-        TripPlannerDirectionsMobileComponent,
-        TripPlannerDirectionsActions,
-        TripPlannerDirectionsActionsMobile,
-        TripPlannerModePickerComponent,
-        TripPlannerModePickerMobileComponent,
-        TripPlannerModeSwitchComponent,
-        TripPlannerBusModeSwitchComponent,
-        TripPlannerModeToggleComponent,
-        TripPlannerOptionsBaseComponent,
-        TripPlannerBikingOptionsComponent,
-        TripPlannerParkingOptionsComponent,
-        TripPlannerOptionsComponent,
-        TripPlannerTimePickerComponent,
-        RouteDirectionTransformerPipe
-    ],
-    exports: [
-        TripPlannerConnectionsSelectComponent,
-        TripPlannerDirectionsComponent,
-        TripPlannerDirectionsMobileComponent,
-        TripPlannerDirectionsActions,
-        TripPlannerDirectionsActionsMobile,
-        TripPlannerModePickerComponent,
-        TripPlannerModePickerMobileComponent,
-        TripPlannerModeSwitchComponent,
-        TripPlannerBusModeSwitchComponent,
-        TripPlannerModeToggleComponent,
-        TripPlannerOptionsBaseComponent,
-        TripPlannerBikingOptionsComponent,
-        TripPlannerParkingOptionsComponent,
-        TripPlannerOptionsComponent,
-        TripPlannerTimePickerComponent,
-        RouteDirectionTransformerPipe
-    ]
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    DlDateTimePickerModule,
+    DlDateTimePickerDateModule,
+    UIFormsModule,
+    UILayoutModule,
+    UIClipboardModule,
+    PipesModule
+  ],
+  declarations: [
+    TripPlannerConnectionsSelectComponent,
+    TripPlannerDirectionsComponent,
+    TripPlannerDirectionsMobileComponent,
+    TripPlannerDirectionsActions,
+    TripPlannerDirectionsActionsMobile,
+    TripPlannerModePickerComponent,
+    TripPlannerModePickerMobileComponent,
+    TripPlannerModeSwitchComponent,
+    TripPlannerBusModeSwitchComponent,
+    TripPlannerModeToggleComponent,
+    TripPlannerOptionsBaseComponent,
+    TripPlannerBikingOptionsComponent,
+    TripPlannerParkingOptionsComponent,
+    TripPlannerOptionsComponent,
+    TripPlannerTimePickerComponent,
+    RouteDirectionTransformerPipe
+  ],
+  exports: [
+    TripPlannerConnectionsSelectComponent,
+    TripPlannerDirectionsComponent,
+    TripPlannerDirectionsMobileComponent,
+    TripPlannerDirectionsActions,
+    TripPlannerDirectionsActionsMobile,
+    TripPlannerModePickerComponent,
+    TripPlannerModePickerMobileComponent,
+    TripPlannerModeSwitchComponent,
+    TripPlannerBusModeSwitchComponent,
+    TripPlannerModeToggleComponent,
+    TripPlannerOptionsBaseComponent,
+    TripPlannerBikingOptionsComponent,
+    TripPlannerParkingOptionsComponent,
+    TripPlannerOptionsComponent,
+    TripPlannerTimePickerComponent,
+    RouteDirectionTransformerPipe
+  ]
 })
 export class MapsFeatureTripPlannerModule {}

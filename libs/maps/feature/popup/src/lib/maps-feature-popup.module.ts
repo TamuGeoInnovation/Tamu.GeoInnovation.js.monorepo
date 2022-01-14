@@ -9,8 +9,8 @@ import { PopupMobileComponent } from './containers/mobile/mobile.component';
 import { BasePopupComponent } from './components/base/base.component';
 
 @NgModule({
-    imports: [CommonModule, UIDragModule, UILayoutModule],
-    declarations: [PopupComponent, PopupMobileComponent, BasePopupComponent],
-    exports: [PopupComponent, PopupMobileComponent]
+  imports: [CommonModule, UIDragModule, UILayoutModule],
+  declarations: [PopupComponent, PopupMobileComponent, BasePopupComponent],
+  exports: [PopupComponent, PopupMobileComponent]
 })
 export class MapPopupModule {}

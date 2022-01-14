@@ -1,14 +1,14 @@
 {
-  "version": 1,
+  "version": 2,
   "projects": {
     "aggiemap-angular": {
       "prefix": "tamu-gisc",
       "projectType": "application",
       "root": "apps/aggiemap-angular",
       "sourceRoot": "apps/aggiemap-angular/src",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "configurations": {
             "production": {
               "outputHashing": "all",
@@ -86,13 +86,13 @@
           "defaultConfiguration": ""
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "aggiemap-angular:build"
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
               "browserTarget": "aggiemap-angular:build:production"
@@ -106,7 +106,7 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/aggiemap-angular/jest.config.js",
             "passWithNoTests": true
@@ -121,9 +121,9 @@
       "projectType": "application",
       "root": "apps/aggiemap-angular-e2e",
       "sourceRoot": "apps/aggiemap-angular-e2e/src",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "configurations": {
             "production": {
               "devServerTarget": "aggiemap-angular:serve:production"
@@ -144,9 +144,9 @@
       "root": "libs/aggiemap/ngx/core",
       "sourceRoot": "libs/aggiemap/ngx/core/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/aggiemap/ngx/core"],
           "options": {
             "jestConfig": "libs/aggiemap/ngx/core/jest.config.js",
@@ -161,9 +161,9 @@
       "root": "libs/aggiemap/ngx/popups",
       "sourceRoot": "libs/aggiemap/ngx/popups/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/aggiemap/ngx/popups"],
           "options": {
             "jestConfig": "libs/aggiemap/ngx/popups/jest.config.js",
@@ -178,9 +178,9 @@
       "root": "libs/aggiemap/ngx/ui/desktop",
       "sourceRoot": "libs/aggiemap/ngx/ui/desktop/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/aggiemap/ngx/ui/desktop"],
           "options": {
             "jestConfig": "libs/aggiemap/ngx/ui/desktop/jest.config.js",
@@ -195,9 +195,9 @@
       "root": "libs/aggiemap/ngx/ui/mobile",
       "sourceRoot": "libs/aggiemap/ngx/ui/mobile/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/aggiemap/ngx/ui/mobile"],
           "options": {
             "jestConfig": "libs/aggiemap/ngx/ui/mobile/jest.config.js",
@@ -212,9 +212,9 @@
       "root": "libs/aggiemap/ngx/ui/shared",
       "sourceRoot": "libs/aggiemap/ngx/ui/shared/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/aggiemap/ngx/ui/shared"],
           "options": {
             "jestConfig": "libs/aggiemap/ngx/ui/shared/jest.config.js",
@@ -233,15 +233,15 @@
       "root": "libs/common/nest/guards",
       "sourceRoot": "libs/common/nest/guards/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/common/nest/guards/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/common/nest/guards"],
           "options": {
             "jestConfig": "libs/common/nest/guards/jest.config.js",
@@ -256,9 +256,9 @@
       "root": "libs/common/ngx/auth",
       "sourceRoot": "libs/common/ngx/auth/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/common/ngx/auth"],
           "options": {
             "jestConfig": "libs/common/ngx/auth/jest.config.js",
@@ -273,9 +273,9 @@
       "projectType": "library",
       "root": "libs/common/ngx/environment",
       "sourceRoot": "libs/common/ngx/environment/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/environment/jest.config.js",
             "passWithNoTests": true
@@ -290,9 +290,9 @@
       "projectType": "library",
       "root": "libs/common/ngx/local-store",
       "sourceRoot": "libs/common/ngx/local-store/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/local-store/jest.config.js",
             "passWithNoTests": true
@@ -307,9 +307,9 @@
       "projectType": "library",
       "root": "libs/common/ngx/pipes",
       "sourceRoot": "libs/common/ngx/pipes/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/pipes/jest.config.js",
             "passWithNoTests": true
@@ -324,9 +324,9 @@
       "projectType": "library",
       "root": "libs/common/ngx/router",
       "sourceRoot": "libs/common/ngx/router/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/router/jest.config.js",
             "passWithNoTests": true
@@ -341,9 +341,9 @@
       "projectType": "library",
       "root": "libs/common/ngx/settings",
       "sourceRoot": "libs/common/ngx/settings/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/settings/jest.config.js",
             "passWithNoTests": true
@@ -358,9 +358,9 @@
       "projectType": "library",
       "root": "libs/common/ngx/ui/notification",
       "sourceRoot": "libs/common/ngx/ui/notification/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/ui/notification/jest.config.js",
             "passWithNoTests": true
@@ -375,9 +375,9 @@
       "projectType": "library",
       "root": "libs/common/ngx/ui/sidebar",
       "sourceRoot": "libs/common/ngx/ui/sidebar/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/ngx/ui/sidebar/jest.config.js",
             "passWithNoTests": true
@@ -391,9 +391,9 @@
       "projectType": "library",
       "root": "libs/common/types",
       "sourceRoot": "libs/common/types/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/types/jest.config.js",
             "passWithNoTests": true
@@ -407,9 +407,9 @@
       "projectType": "library",
       "root": "libs/common/utils/collection",
       "sourceRoot": "libs/common/utils/collection/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/collection/jest.config.js",
             "passWithNoTests": true
@@ -423,9 +423,9 @@
       "projectType": "library",
       "root": "libs/common/utils/database",
       "sourceRoot": "libs/common/utils/database/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/database/jest.config.js",
             "passWithNoTests": true
@@ -439,9 +439,9 @@
       "projectType": "library",
       "root": "libs/common/utils/date",
       "sourceRoot": "libs/common/utils/date/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/date/jest.config.js",
             "passWithNoTests": true
@@ -455,9 +455,9 @@
       "projectType": "library",
       "root": "libs/common/utils/device",
       "sourceRoot": "libs/common/utils/device/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/device/jest.config.js",
             "passWithNoTests": true
@@ -472,9 +472,9 @@
       "root": "libs/common/utils/device/guards",
       "sourceRoot": "libs/common/utils/device/guards/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/device/guards/jest.config.js",
             "passWithNoTests": true
@@ -488,9 +488,9 @@
       "projectType": "library",
       "root": "libs/common/utils/geometry",
       "sourceRoot": "libs/common/utils/geometry/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/geometry/jest.config.js",
             "passWithNoTests": true
@@ -504,9 +504,9 @@
       "projectType": "library",
       "root": "libs/common/utils/geometry/esri",
       "sourceRoot": "libs/common/utils/geometry/esri/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/geometry/esri/jest.config.js",
             "passWithNoTests": true
@@ -520,9 +520,9 @@
       "projectType": "library",
       "root": "libs/common/utils/geometry/generic",
       "sourceRoot": "libs/common/utils/geometry/generic/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/geometry/generic/jest.config.js",
             "passWithNoTests": true
@@ -536,9 +536,9 @@
       "root": "libs/common/utils/geometry/geoprocessing",
       "sourceRoot": "libs/common/utils/geometry/geoprocessing/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/geometry/geoprocessing/jest.config.js",
             "passWithNoTests": true
@@ -552,9 +552,9 @@
       "projectType": "library",
       "root": "libs/common/utils/number",
       "sourceRoot": "libs/common/utils/number/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/number/jest.config.js",
             "passWithNoTests": true
@@ -568,9 +568,9 @@
       "projectType": "library",
       "root": "libs/common/utils/object",
       "sourceRoot": "libs/common/utils/object/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/object/jest.config.js",
             "passWithNoTests": true
@@ -584,9 +584,9 @@
       "projectType": "library",
       "root": "libs/common/utils/routing",
       "sourceRoot": "libs/common/utils/routing/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/routing/jest.config.js",
             "passWithNoTests": true
@@ -600,9 +600,9 @@
       "projectType": "library",
       "root": "libs/common/utils/string",
       "sourceRoot": "libs/common/utils/string/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/string/jest.config.js",
             "passWithNoTests": true
@@ -616,9 +616,9 @@
       "projectType": "library",
       "root": "libs/common/utils/ui",
       "sourceRoot": "libs/common/utils/ui/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/common/utils/ui/jest.config.js",
             "passWithNoTests": true
@@ -632,15 +632,15 @@
       "root": "libs/covid/common/entities",
       "sourceRoot": "libs/covid/common/entities/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/covid/common/entities/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/covid/common/entities/jest.config.js",
             "passWithNoTests": true
@@ -654,15 +654,15 @@
       "root": "libs/covid/common/enums",
       "sourceRoot": "libs/covid/common/enums/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/covid/common/enums/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/covid/common/enums/jest.config.js",
             "passWithNoTests": true
@@ -676,15 +676,15 @@
       "root": "libs/covid/data-api",
       "sourceRoot": "libs/covid/data-api/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/covid/data-api/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/covid/data-api/jest.config.js",
             "passWithNoTests": true
@@ -699,9 +699,9 @@
       "sourceRoot": "apps/covid-data-api-nest/src",
       "projectType": "application",
       "prefix": "covid-data-api-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "options": {
             "outputPath": "dist/apps/covid-data-api-nest",
             "main": "apps/covid-data-api-nest/src/main.ts",
@@ -735,7 +735,7 @@
           "outputs": ["{options.outputPath}"]
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "covid-data-api-nest:build"
           },
@@ -749,13 +749,13 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/covid-data-api-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/covid-data-api-nest/jest.config.js",
             "passWithNoTests": true
@@ -770,9 +770,9 @@
       "root": "libs/covid/ngx",
       "sourceRoot": "libs/covid/ngx/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/covid/ngx"],
           "options": {
             "jestConfig": "libs/covid/ngx/jest.config.js",
@@ -787,9 +787,9 @@
       "root": "apps/cpa-angular",
       "sourceRoot": "apps/cpa-angular/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/apps/cpa-angular",
             "index": "apps/cpa-angular/src/index.html",
@@ -877,7 +877,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "cpa-angular:build"
           },
@@ -891,13 +891,13 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "cpa-angular:build"
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/cpa-angular/jest.config.js",
             "passWithNoTests": true
@@ -912,9 +912,9 @@
       "root": "apps/cpa-angular-e2e",
       "sourceRoot": "apps/cpa-angular-e2e/src",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/cpa-angular-e2e/cypress.json",
             "tsConfig": "apps/cpa-angular-e2e/tsconfig.e2e.json",
@@ -934,15 +934,15 @@
       "root": "libs/cpa/common/entities",
       "sourceRoot": "libs/cpa/common/entities/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/cpa/common/entities/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/cpa/common/entities/jest.config.js",
             "passWithNoTests": true
@@ -956,15 +956,15 @@
       "root": "libs/cpa/data-api",
       "sourceRoot": "libs/cpa/data-api/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/cpa/data-api/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/cpa/data-api/jest.config.js",
             "passWithNoTests": true
@@ -979,9 +979,9 @@
       "sourceRoot": "apps/cpa-nest/src",
       "projectType": "application",
       "prefix": "cpa-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "options": {
             "outputPath": "dist/apps/cpa-nest",
             "main": "apps/cpa-nest/src/main.ts",
@@ -1023,20 +1023,20 @@
           "outputs": ["{options.outputPath}"]
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "cpa-nest:build",
             "port": 7777
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/cpa-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/cpa-nest"],
           "options": {
             "jestConfig": "apps/cpa-nest/jest.config.js",
@@ -1052,9 +1052,9 @@
       "root": "libs/cpa/ngx/admin",
       "sourceRoot": "libs/cpa/ngx/admin/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/cpa/ngx/admin"],
           "options": {
             "jestConfig": "libs/cpa/ngx/admin/jest.config.js",
@@ -1069,9 +1069,9 @@
       "root": "libs/cpa/ngx/data-access",
       "sourceRoot": "libs/cpa/ngx/data-access/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/cpa/ngx/data-access"],
           "options": {
             "jestConfig": "libs/cpa/ngx/data-access/jest.config.js",
@@ -1086,9 +1086,9 @@
       "root": "libs/cpa/ngx/viewer",
       "sourceRoot": "libs/cpa/ngx/viewer/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/cpa/ngx/viewer"],
           "options": {
             "jestConfig": "libs/cpa/ngx/viewer/jest.config.js",
@@ -1108,9 +1108,9 @@
       "projectType": "library",
       "root": "libs/dev-tools/application-testing",
       "sourceRoot": "libs/dev-tools/application-testing/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/dev-tools/application-testing/jest.config.js",
             "passWithNoTests": true
@@ -1125,9 +1125,9 @@
       "projectType": "library",
       "root": "libs/dev-tools/responsive",
       "sourceRoot": "libs/dev-tools/responsive/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/dev-tools/responsive/jest.config.js",
             "passWithNoTests": true
@@ -1142,9 +1142,9 @@
       "root": "apps/geoservices-angular",
       "sourceRoot": "apps/geoservices-angular/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/apps/geoservices-angular",
             "index": "apps/geoservices-angular/src/index.html",
@@ -1232,7 +1232,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "geoservices-angular:build"
           },
@@ -1246,13 +1246,13 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "geoservices-angular:build"
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/geoservices-angular/jest.config.js",
             "passWithNoTests": true
@@ -1267,9 +1267,9 @@
       "root": "apps/geoservices-angular-e2e",
       "sourceRoot": "apps/geoservices-angular-e2e/src",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/geoservices-angular-e2e/cypress.json",
             "tsConfig": "apps/geoservices-angular-e2e/tsconfig.e2e.json",
@@ -1290,9 +1290,9 @@
       "root": "libs/geoservices/data-access",
       "sourceRoot": "libs/geoservices/data-access/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/geoservices/data-access/jest.config.js",
             "passWithNoTests": true
@@ -1307,9 +1307,9 @@
       "root": "libs/geoservices/ngx",
       "sourceRoot": "libs/geoservices/ngx/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/geoservices/ngx"],
           "options": {
             "jestConfig": "libs/geoservices/ngx/jest.config.js",
@@ -1324,9 +1324,9 @@
       "root": "apps/gisday-angular",
       "sourceRoot": "apps/gisday-angular/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "options": {
             "crossOrigin": "anonymous",
             "outputPath": "dist/apps/gisday-angular",
@@ -1411,7 +1411,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "gisday-angular:build"
           },
@@ -1425,13 +1425,13 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "gisday-angular:build"
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/gisday-angular/jest.config.js",
             "passWithNoTests": true
@@ -1446,9 +1446,9 @@
       "root": "apps/gisday-angular-e2e",
       "sourceRoot": "apps/gisday-angular-e2e/src",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/gisday-angular-e2e/cypress.json",
             "tsConfig": "apps/gisday-angular-e2e/tsconfig.e2e.json",
@@ -1469,9 +1469,9 @@
       "projectType": "application",
       "root": "apps/gisday-competitions-angular",
       "sourceRoot": "apps/gisday-competitions-angular/src",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "configurations": {
             "production": {
               "ngswConfigPath": "apps/gisday-competitions-angular/ngsw-config.json",
@@ -1556,13 +1556,13 @@
           "defaultConfiguration": ""
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "gisday-competitions-angular:build"
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
               "browserTarget": "gisday-competitions-angular:build:production"
@@ -1576,7 +1576,7 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/gisday-competitions-angular/jest.config.js",
             "passWithNoTests": true
@@ -1591,9 +1591,9 @@
       "projectType": "application",
       "root": "apps/gisday-competitions-angular-e2e",
       "sourceRoot": "apps/gisday-competitions-angular-e2e/src",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "configurations": {
             "production": {
               "devServerTarget": "gisday-competitions-angular:serve:production"
@@ -1613,15 +1613,15 @@
       "root": "libs/gisday/competitions/data-api",
       "sourceRoot": "libs/gisday/competitions/data-api/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/gisday/competitions/data-api/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/gisday/competitions/data-api"],
           "options": {
             "jestConfig": "libs/gisday/competitions/data-api/jest.config.js",
@@ -1636,9 +1636,9 @@
       "sourceRoot": "apps/gisday-competitions-nest/src",
       "projectType": "application",
       "prefix": "gisday-competitions-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/gisday-competitions-nest",
@@ -1669,19 +1669,19 @@
           }
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "gisday-competitions-nest:build"
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/gisday-competitions-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/gisday-competitions-nest"],
           "options": {
             "jestConfig": "apps/gisday-competitions-nest/jest.config.js",
@@ -1696,9 +1696,9 @@
       "root": "libs/gisday/competitions/ngx/common",
       "sourceRoot": "libs/gisday/competitions/ngx/common/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/gisday/competitions/ngx/common"],
           "options": {
             "jestConfig": "libs/gisday/competitions/ngx/common/jest.config.js",
@@ -1713,9 +1713,9 @@
       "root": "libs/gisday/competitions/ngx/core",
       "sourceRoot": "libs/gisday/competitions/ngx/core/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/gisday/competitions/ngx/core"],
           "options": {
             "jestConfig": "libs/gisday/competitions/ngx/core/jest.config.js",
@@ -1730,9 +1730,9 @@
       "root": "libs/gisday/competitions/ngx/data-access",
       "sourceRoot": "libs/gisday/competitions/ngx/data-access/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/gisday/competitions/ngx/data-access"],
           "options": {
             "jestConfig": "libs/gisday/competitions/ngx/data-access/jest.config.js",
@@ -1747,9 +1747,9 @@
       "sourceRoot": "apps/gisday-nest/src",
       "projectType": "application",
       "prefix": "gisday-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/gisday-nest",
@@ -1783,7 +1783,7 @@
           }
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "gisday-nest:build",
             "port": 7777
@@ -1798,13 +1798,13 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/gisday-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/gisday-nest"],
           "options": {
             "jestConfig": "apps/gisday-nest/jest.config.js",
@@ -1818,15 +1818,15 @@
       "root": "libs/gisday/platform/data-api",
       "sourceRoot": "libs/gisday/platform/data-api/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/gisday/platform/data-api/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/gisday/platform/data-api"],
           "options": {
             "jestConfig": "libs/gisday/platform/data-api/jest.config.js",
@@ -1841,9 +1841,9 @@
       "root": "libs/gisday/platform/ngx/common",
       "sourceRoot": "libs/gisday/platform/ngx/common/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/gisday/platform/ngx/common"],
           "options": {
             "jestConfig": "libs/gisday/platform/ngx/common/jest.config.js",
@@ -1858,9 +1858,9 @@
       "root": "libs/gisday/platform/ngx/core",
       "sourceRoot": "libs/gisday/platform/ngx/core/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/gisday/platform/ngx/core"],
           "options": {
             "jestConfig": "libs/gisday/platform/ngx/core/jest.config.js",
@@ -1875,9 +1875,9 @@
       "root": "libs/gisday/platform/ngx/data-access",
       "sourceRoot": "libs/gisday/platform/ngx/data-access/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/gisday/platform/ngx/data-access"],
           "options": {
             "jestConfig": "libs/gisday/platform/ngx/data-access/jest.config.js",
@@ -1897,9 +1897,9 @@
       "root": "apps/kissingbug-angular",
       "sourceRoot": "apps/kissingbug-angular/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/apps/kissingbug-angular",
             "index": "apps/kissingbug-angular/src/index.html",
@@ -2014,7 +2014,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "kissingbug-angular:build"
           },
@@ -2025,13 +2025,13 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "kissingbug-angular:build"
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/kissingbug-angular"],
           "options": {
             "jestConfig": "apps/kissingbug-angular/jest.config.js",
@@ -2046,9 +2046,9 @@
       "root": "apps/kissingbug-angular-e2e",
       "sourceRoot": "apps/kissingbug-angular-e2e/src",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/kissingbug-angular-e2e/cypress.json",
             "tsConfig": "apps/kissingbug-angular-e2e/tsconfig.e2e.json",
@@ -2069,9 +2069,9 @@
       "root": "libs/kissingbug/ngx",
       "sourceRoot": "libs/kissingbug/ngx/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/kissingbug/ngx"],
           "options": {
             "jestConfig": "libs/kissingbug/ngx/jest.config.js",
@@ -2090,15 +2090,15 @@
       "root": "libs/mailroom/common",
       "sourceRoot": "libs/mailroom/common/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/mailroom/common/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/mailroom/common"],
           "options": {
             "jestConfig": "libs/mailroom/common/jest.config.js",
@@ -2113,9 +2113,9 @@
       "sourceRoot": "apps/mailroom-nest/src",
       "projectType": "application",
       "prefix": "mailroom-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/mailroom-nest",
@@ -2138,19 +2138,19 @@
           }
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "mailroom-nest:build"
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/mailroom-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/mailroom-nest"],
           "options": {
             "jestConfig": "apps/mailroom-nest/jest.config.js",
@@ -2165,9 +2165,9 @@
       "projectType": "library",
       "root": "libs/maps/esri",
       "sourceRoot": "libs/maps/esri/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/esri/jest.config.js",
             "passWithNoTests": true
@@ -2182,9 +2182,9 @@
       "root": "libs/maps/feature/accessibility",
       "sourceRoot": "libs/maps/feature/accessibility/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/accessibility/jest.config.js",
             "passWithNoTests": true
@@ -2199,9 +2199,9 @@
       "root": "libs/maps/feature/coordinates",
       "sourceRoot": "libs/maps/feature/coordinates/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/coordinates/jest.config.js",
             "passWithNoTests": true
@@ -2216,9 +2216,9 @@
       "root": "libs/maps/feature/data",
       "sourceRoot": "libs/maps/feature/data/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/maps/feature/data"],
           "options": {
             "jestConfig": "libs/maps/feature/data/jest.config.js",
@@ -2233,9 +2233,9 @@
       "projectType": "library",
       "root": "libs/maps/feature/draw",
       "sourceRoot": "libs/maps/feature/draw/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/draw/jest.config.js",
             "passWithNoTests": true
@@ -2250,9 +2250,9 @@
       "root": "libs/maps/feature/feature-highlight",
       "sourceRoot": "libs/maps/feature/feature-highlight/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/feature-highlight/jest.config.js",
             "passWithNoTests": true
@@ -2267,9 +2267,9 @@
       "projectType": "library",
       "root": "libs/maps/feature/feature-selector",
       "sourceRoot": "libs/maps/feature/feature-selector/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/feature-selector/jest.config.js",
             "passWithNoTests": true
@@ -2284,9 +2284,9 @@
       "root": "libs/maps/feature/forms",
       "sourceRoot": "libs/maps/feature/forms/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/forms/jest.config.js",
             "passWithNoTests": true
@@ -2301,9 +2301,9 @@
       "projectType": "library",
       "root": "libs/maps/feature/layer-filter",
       "sourceRoot": "libs/maps/feature/layer-filter/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/layer-filter/jest.config.js",
             "passWithNoTests": true
@@ -2318,9 +2318,9 @@
       "projectType": "library",
       "root": "libs/maps/feature/layer-list",
       "sourceRoot": "libs/maps/feature/layer-list/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/layer-list/jest.config.js",
             "passWithNoTests": true
@@ -2335,9 +2335,9 @@
       "projectType": "library",
       "root": "libs/maps/feature/legend",
       "sourceRoot": "libs/maps/feature/legend/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/legend/jest.config.js",
             "passWithNoTests": true
@@ -2352,9 +2352,9 @@
       "root": "libs/maps/feature/popup",
       "sourceRoot": "libs/maps/feature/popup/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/popup/jest.config.js",
             "passWithNoTests": true
@@ -2369,9 +2369,9 @@
       "root": "libs/maps/feature/trip-planner",
       "sourceRoot": "libs/maps/feature/trip-planner/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/feature/trip-planner/jest.config.js",
             "passWithNoTests": true
@@ -2386,9 +2386,9 @@
       "root": "libs/maps/mapbox",
       "sourceRoot": "libs/maps/mapbox/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/maps/mapbox/jest.config.js",
             "passWithNoTests": true
@@ -2403,9 +2403,9 @@
       "root": "apps/oidc-admin-angular",
       "sourceRoot": "apps/oidc-admin-angular/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/apps/oidc-admin-angular",
             "index": "apps/oidc-admin-angular/src/index.html",
@@ -2495,7 +2495,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "oidc-admin-angular:build"
           },
@@ -2509,13 +2509,13 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "oidc-admin-angular:build"
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/oidc-admin-angular/jest.config.js",
             "passWithNoTests": true
@@ -2530,9 +2530,9 @@
       "root": "apps/oidc-admin-angular-e2e",
       "sourceRoot": "apps/oidc-admin-angular-e2e/src",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/oidc-admin-angular-e2e/cypress.json",
             "tsConfig": "apps/oidc-admin-angular-e2e/tsconfig.e2e.json",
@@ -2553,9 +2553,9 @@
       "root": "libs/oidc/admin/data-access",
       "sourceRoot": "libs/oidc/admin/data-access/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/oidc/admin/data-access"],
           "options": {
             "jestConfig": "libs/oidc/admin/data-access/jest.config.js",
@@ -2569,15 +2569,15 @@
       "root": "libs/oidc/admin/data-api",
       "sourceRoot": "libs/oidc/admin/data-api/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/oidc/admin/data-api/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/oidc/admin/data-api"],
           "options": {
             "jestConfig": "libs/oidc/admin/data-api/jest.config.js",
@@ -2592,9 +2592,9 @@
       "sourceRoot": "apps/oidc-admin-nest/src",
       "projectType": "application",
       "prefix": "oidc-admin-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "configurations": {
             "production": {
               "fileReplacements": [
@@ -2636,7 +2636,7 @@
           "outputs": ["{options.outputPath}"]
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "oidc-admin-nest:build",
             "port": 7771
@@ -2651,13 +2651,13 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/oidc-admin-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/oidc-admin-nest/jest.config.js",
             "passWithNoTests": true
@@ -2672,9 +2672,9 @@
       "root": "libs/oidc/admin/ngx",
       "sourceRoot": "libs/oidc/admin/ngx/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/oidc/admin/ngx"],
           "options": {
             "jestConfig": "libs/oidc/admin/ngx/jest.config.js",
@@ -2688,15 +2688,15 @@
       "root": "libs/oidc/client",
       "sourceRoot": "libs/oidc/client/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/oidc/client/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/oidc/client/jest.config.js",
             "passWithNoTests": true
@@ -2710,15 +2710,15 @@
       "root": "libs/oidc/common",
       "sourceRoot": "libs/oidc/common/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/oidc/common/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/oidc/common/jest.config.js",
             "passWithNoTests": true
@@ -2732,15 +2732,15 @@
       "root": "libs/oidc/provider",
       "sourceRoot": "libs/oidc/provider/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/oidc/provider/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/oidc/provider"],
           "options": {
             "jestConfig": "libs/oidc/provider/jest.config.js",
@@ -2755,9 +2755,9 @@
       "sourceRoot": "apps/oidc-provider-nest/src",
       "projectType": "application",
       "prefix": "oidc-provider-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "options": {
             "main": "apps/oidc-provider-nest/src/main.ts",
             "outputPath": "dist/apps/oidc-provider-nest",
@@ -2799,7 +2799,7 @@
           "outputs": ["{options.outputPath}"]
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "oidc-provider-nest:build",
             "port": 7777
@@ -2814,13 +2814,13 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/oidc-provider-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/oidc-provider-nest/jest.config.js",
             "passWithNoTests": true
@@ -2840,9 +2840,9 @@
       "root": "libs/signage",
       "sourceRoot": "libs/signage/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/signage/jest.config.js",
             "passWithNoTests": true
@@ -2857,9 +2857,9 @@
       "root": "apps/signage-angular",
       "sourceRoot": "apps/signage-angular/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/apps/signage-angular",
             "index": "apps/signage-angular/src/index.html",
@@ -2947,7 +2947,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "signage-angular:build"
           },
@@ -2961,13 +2961,13 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "signage-angular:build"
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/signage-angular/jest.config.js",
             "passWithNoTests": true
@@ -2982,9 +2982,9 @@
       "root": "apps/signage-angular-e2e",
       "sourceRoot": "apps/signage-angular-e2e/src",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/signage-angular-e2e/cypress.json",
             "tsConfig": "apps/signage-angular-e2e/tsconfig.e2e.json",
@@ -3005,9 +3005,9 @@
       "projectType": "application",
       "root": "apps/trees-angular",
       "sourceRoot": "apps/trees-angular/src",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "configurations": {
             "production": {
               "outputHashing": "all",
@@ -3085,13 +3085,13 @@
           "defaultConfiguration": ""
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "trees-angular:build"
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
               "browserTarget": "trees-angular:build:production"
@@ -3105,7 +3105,7 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/trees-angular/jest.config.js",
             "passWithNoTests": true
@@ -3120,9 +3120,9 @@
       "projectType": "application",
       "root": "apps/trees-angular-e2e",
       "sourceRoot": "apps/trees-angular-e2e/src",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "configurations": {
             "production": {
               "devServerTarget": "trees-angular:serve:production"
@@ -3143,9 +3143,9 @@
       "projectType": "application",
       "root": "apps/two-angular",
       "sourceRoot": "apps/two-angular/src",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "configurations": {
             "production": {
               "outputHashing": "all",
@@ -3233,13 +3233,13 @@
           "defaultConfiguration": ""
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "two-angular:build"
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
               "browserTarget": "two-angular:build:production"
@@ -3253,7 +3253,7 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/two-angular/jest.config.js",
             "passWithNoTests": true
@@ -3268,9 +3268,9 @@
       "projectType": "application",
       "root": "apps/two-angular-e2e",
       "sourceRoot": "apps/two-angular-e2e/src",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "configurations": {
             "production": {
               "devServerTarget": "two-angular:serve:production"
@@ -3290,15 +3290,15 @@
       "projectType": "library",
       "root": "libs/two/common",
       "sourceRoot": "libs/two/common/src",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/two/common/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/two/common/jest.config.js",
             "passWithNoTests": true
@@ -3312,9 +3312,9 @@
       "root": "libs/two/dashboard",
       "sourceRoot": "libs/two/dashboard/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/two/dashboard/jest.config.js",
             "passWithNoTests": true
@@ -3329,9 +3329,9 @@
       "root": "apps/two-dashboard-angular",
       "sourceRoot": "apps/two-dashboard-angular/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/apps/two-dashboard-angular",
             "index": "apps/two-dashboard-angular/src/index.html",
@@ -3411,7 +3411,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "two-dashboard-angular:build",
             "port": 0
@@ -3426,13 +3426,13 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "two-dashboard-angular:build"
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/two-dashboard-angular/jest.config.js",
             "passWithNoTests": true
@@ -3447,9 +3447,9 @@
       "root": "apps/two-dashboard-angular-e2e",
       "sourceRoot": "apps/two-dashboard-angular-e2e/src",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/two-dashboard-angular-e2e/cypress.json",
             "tsConfig": "apps/two-dashboard-angular-e2e/tsconfig.e2e.json",
@@ -3469,9 +3469,9 @@
       "root": "libs/two/data-access",
       "sourceRoot": "libs/two/data-access/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/two/data-access/jest.config.js",
             "passWithNoTests": true
@@ -3485,15 +3485,15 @@
       "projectType": "library",
       "root": "libs/two/data-api",
       "sourceRoot": "libs/two/data-api/src",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/two/data-api/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/two/data-api/jest.config.js",
             "passWithNoTests": true
@@ -3508,9 +3508,9 @@
       "projectType": "application",
       "root": "apps/two-data-api-nest",
       "sourceRoot": "apps/two-data-api-nest/src",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "configurations": {
             "production": {
               "fileReplacements": [
@@ -3544,13 +3544,13 @@
           "outputs": ["{options.outputPath}"]
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/two-data-api-nest/**/*.ts"]
           }
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "two-data-api-nest:build"
           },
@@ -3564,7 +3564,7 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/two-data-api-nest/jest.config.js",
             "passWithNoTests": true
@@ -3578,15 +3578,15 @@
       "root": "libs/two/directory",
       "sourceRoot": "libs/two/directory/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/two/directory/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/two/directory/jest.config.js",
             "passWithNoTests": true
@@ -3601,9 +3601,9 @@
       "sourceRoot": "apps/two-directory-nest/src",
       "projectType": "application",
       "prefix": "two-directory-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "options": {
             "outputPath": "dist/apps/two-directory-nest",
             "main": "apps/two-directory-nest/src/main.ts",
@@ -3637,7 +3637,7 @@
           "outputs": ["{options.outputPath}"]
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "two-directory-nest:build"
           },
@@ -3651,13 +3651,13 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/two-directory-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/two-directory-nest/jest.config.js",
             "passWithNoTests": true
@@ -3671,15 +3671,15 @@
       "root": "libs/two/valup",
       "sourceRoot": "libs/two/valup/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/two/valup/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/two/valup/jest.config.js",
             "passWithNoTests": true
@@ -3694,9 +3694,9 @@
       "sourceRoot": "apps/two-valup-nest/src",
       "projectType": "application",
       "prefix": "two-valup-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "options": {
             "outputPath": "dist/apps/two-valup-nest",
             "main": "apps/two-valup-nest/src/main.ts",
@@ -3730,7 +3730,7 @@
           "outputs": ["{options.outputPath}"]
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "two-valup-nest:build"
           },
@@ -3744,13 +3744,13 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/two-valup-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/two-valup-nest/jest.config.js",
             "passWithNoTests": true
@@ -3764,15 +3764,15 @@
       "root": "libs/ues/cold-water/data-api",
       "sourceRoot": "libs/ues/cold-water/data-api/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/ues/cold-water/data-api/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/ues/cold-water/data-api"],
           "options": {
             "jestConfig": "libs/ues/cold-water/data-api/jest.config.js",
@@ -3787,9 +3787,9 @@
       "root": "libs/ues/cold-water/ngx",
       "sourceRoot": "libs/ues/cold-water/ngx/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/ues/cold-water/ngx"],
           "options": {
             "jestConfig": "libs/ues/cold-water/ngx/jest.config.js",
@@ -3803,15 +3803,15 @@
       "root": "libs/ues/common/nest",
       "sourceRoot": "libs/ues/common/nest/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/ues/common/nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/ues/common/nest"],
           "options": {
             "jestConfig": "libs/ues/common/nest/jest.config.js",
@@ -3826,9 +3826,9 @@
       "root": "libs/ues/common/ngx",
       "sourceRoot": "libs/ues/common/ngx/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ues/common/ngx/jest.config.js",
             "passWithNoTests": true
@@ -3843,9 +3843,9 @@
       "root": "apps/ues-effluent-angular",
       "sourceRoot": "apps/ues-effluent-angular/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/apps/ues-effluent-angular",
             "index": "apps/ues-effluent-angular/src/index.html",
@@ -3937,7 +3937,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "ues-effluent-angular:build"
           },
@@ -3951,13 +3951,13 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "ues-effluent-angular:build"
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/ues-effluent-angular/jest.config.js",
             "passWithNoTests": true
@@ -3972,9 +3972,9 @@
       "root": "apps/ues-effluent-angular-e2e",
       "sourceRoot": "apps/ues-effluent-angular-e2e/src",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/ues-effluent-angular-e2e/cypress.json",
             "tsConfig": "apps/ues-effluent-angular-e2e/tsconfig.e2e.json",
@@ -3994,15 +3994,15 @@
       "root": "libs/ues/effluent/common/entities",
       "sourceRoot": "libs/ues/effluent/common/entities/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/ues/effluent/common/entities/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ues/effluent/common/entities/jest.config.js",
             "passWithNoTests": true
@@ -4016,15 +4016,15 @@
       "root": "libs/ues/effluent/data-api",
       "sourceRoot": "libs/ues/effluent/data-api/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/ues/effluent/data-api/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ues/effluent/data-api/jest.config.js",
             "passWithNoTests": true
@@ -4039,9 +4039,9 @@
       "sourceRoot": "apps/ues-effluent-data-api-nest/src",
       "projectType": "application",
       "prefix": "ues-effluent-data-api-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "options": {
             "outputPath": "dist/apps/ues-effluent-data-api-nest",
             "main": "apps/ues-effluent-data-api-nest/src/main.ts",
@@ -4083,7 +4083,7 @@
           "outputs": ["{options.outputPath}"]
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "ues-effluent-data-api-nest:build",
             "port": 7777
@@ -4098,13 +4098,13 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/ues-effluent-data-api-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/ues-effluent-data-api-nest/jest.config.js",
             "passWithNoTests": true
@@ -4119,9 +4119,9 @@
       "root": "libs/ues/effluent/ngx",
       "sourceRoot": "libs/ues/effluent/ngx/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ues/effluent/ngx/jest.config.js",
             "passWithNoTests": true
@@ -4136,9 +4136,9 @@
       "root": "apps/ues-operations-angular",
       "sourceRoot": "apps/ues-operations-angular/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "options": {
             "crossOrigin": "anonymous",
             "outputPath": "dist/apps/ues-operations-angular",
@@ -4231,7 +4231,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "ues-operations-angular:build"
           },
@@ -4245,13 +4245,13 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "ues-operations-angular:build"
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/ues-operations-angular/jest.config.js",
             "passWithNoTests": true
@@ -4266,9 +4266,9 @@
       "root": "apps/ues-operations-angular-e2e",
       "sourceRoot": "apps/ues-operations-angular-e2e/src",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/ues-operations-angular-e2e/cypress.json",
             "tsConfig": "apps/ues-operations-angular-e2e/tsconfig.e2e.json",
@@ -4289,9 +4289,9 @@
       "sourceRoot": "apps/ues-operations-nest/src",
       "projectType": "application",
       "prefix": "ues-operations-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/ues-operations-nest",
@@ -4333,7 +4333,7 @@
           }
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "ues-operations-nest:build"
           },
@@ -4347,13 +4347,13 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/ues-operations-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/ues-operations-nest"],
           "options": {
             "jestConfig": "apps/ues-operations-nest/jest.config.js",
@@ -4368,9 +4368,9 @@
       "root": "libs/ues/operations/ngx",
       "sourceRoot": "libs/ues/operations/ngx/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/ues/operations/ngx"],
           "options": {
             "jestConfig": "libs/ues/operations/ngx/jest.config.js",
@@ -4385,9 +4385,9 @@
       "root": "apps/ues-recycling-angular",
       "sourceRoot": "apps/ues-recycling-angular/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/apps/ues-recycling-angular",
             "index": "apps/ues-recycling-angular/src/index.html",
@@ -4478,7 +4478,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "ues-recycling-angular:build"
           },
@@ -4492,13 +4492,13 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "ues-recycling-angular:build"
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/ues-recycling-angular"],
           "options": {
             "jestConfig": "apps/ues-recycling-angular/jest.config.js",
@@ -4513,9 +4513,9 @@
       "root": "apps/ues-recycling-angular-e2e",
       "sourceRoot": "apps/ues-recycling-angular-e2e/src",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/ues-recycling-angular-e2e/cypress.json",
             "tsConfig": "apps/ues-recycling-angular-e2e/tsconfig.e2e.json",
@@ -4535,15 +4535,15 @@
       "root": "libs/ues/recycling/common/entities",
       "sourceRoot": "libs/ues/recycling/common/entities/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/ues/recycling/common/entities/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/ues/recycling/common/entities"],
           "options": {
             "jestConfig": "libs/ues/recycling/common/entities/jest.config.js",
@@ -4557,15 +4557,15 @@
       "root": "libs/ues/recycling/data-api",
       "sourceRoot": "libs/ues/recycling/data-api/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/ues/recycling/data-api/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/ues/recycling/data-api"],
           "options": {
             "jestConfig": "libs/ues/recycling/data-api/jest.config.js",
@@ -4580,9 +4580,9 @@
       "sourceRoot": "apps/ues-recycling-data-api-nest/src",
       "projectType": "application",
       "prefix": "ues-recycling-data-api-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/ues-recycling-data-api-nest",
@@ -4624,7 +4624,7 @@
           }
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "ues-recycling-data-api-nest:build",
             "port": 7777
@@ -4639,13 +4639,13 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/ues-recycling-data-api-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/ues-recycling-data-api-nest"],
           "options": {
             "jestConfig": "apps/ues-recycling-data-api-nest/jest.config.js",
@@ -4660,9 +4660,9 @@
       "root": "libs/ues/recycling/ngx",
       "sourceRoot": "libs/ues/recycling/ngx/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/ues/recycling/ngx"],
           "options": {
             "jestConfig": "libs/ues/recycling/ngx/jest.config.js",
@@ -4682,9 +4682,9 @@
       "root": "apps/ues-valves-angular",
       "sourceRoot": "apps/ues-valves-angular/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/apps/ues-valves-angular",
             "index": "apps/ues-valves-angular/src/index.html",
@@ -4770,7 +4770,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "ues-valves-angular:build"
           },
@@ -4784,13 +4784,13 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "executor": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "ues-valves-angular:build"
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/ues-valves-angular"],
           "options": {
             "jestConfig": "apps/ues-valves-angular/jest.config.js",
@@ -4805,9 +4805,9 @@
       "root": "apps/ues-valves-angular-e2e",
       "sourceRoot": "apps/ues-valves-angular-e2e/src",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "e2e": {
-          "builder": "@nrwl/cypress:cypress",
+          "executor": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/ues-valves-angular-e2e/cypress.json",
             "tsConfig": "apps/ues-valves-angular-e2e/tsconfig.e2e.json",
@@ -4828,9 +4828,9 @@
       "sourceRoot": "apps/ues-valves-nest/src",
       "projectType": "application",
       "prefix": "ues-valves-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/ues-valves-nest",
@@ -4872,7 +4872,7 @@
           }
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "ues-valves-nest:build",
             "port": 7777
@@ -4887,13 +4887,13 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/ues-valves-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/ues-valves-nest"],
           "options": {
             "jestConfig": "apps/ues-valves-nest/jest.config.js",
@@ -4908,9 +4908,9 @@
       "projectType": "library",
       "root": "libs/ui-kits/ngx/branding",
       "sourceRoot": "libs/ui-kits/ngx/branding/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/branding/jest.config.js",
             "passWithNoTests": true
@@ -4925,9 +4925,9 @@
       "root": "libs/ui-kits/ngx/charts",
       "sourceRoot": "libs/ui-kits/ngx/charts/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/ui-kits/ngx/charts"],
           "options": {
             "jestConfig": "libs/ui-kits/ngx/charts/jest.config.js",
@@ -4942,9 +4942,9 @@
       "projectType": "library",
       "root": "libs/ui-kits/ngx/forms",
       "sourceRoot": "libs/ui-kits/ngx/forms/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/forms/jest.config.js",
             "passWithNoTests": true
@@ -4959,9 +4959,9 @@
       "root": "libs/ui-kits/ngx/interactions/clipboard",
       "sourceRoot": "libs/ui-kits/ngx/interactions/clipboard/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/interactions/clipboard/jest.config.js",
             "passWithNoTests": true
@@ -4976,9 +4976,9 @@
       "root": "libs/ui-kits/ngx/interactions/draggable",
       "sourceRoot": "libs/ui-kits/ngx/interactions/draggable/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/interactions/draggable/jest.config.js",
             "passWithNoTests": true
@@ -4993,9 +4993,9 @@
       "root": "libs/ui-kits/ngx/interactions/scroll-to",
       "sourceRoot": "libs/ui-kits/ngx/interactions/scroll-to/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/interactions/scroll-to/jest.config.js",
             "passWithNoTests": true
@@ -5010,9 +5010,9 @@
       "projectType": "library",
       "root": "libs/ui-kits/ngx/layout",
       "sourceRoot": "libs/ui-kits/ngx/layout/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/layout/jest.config.js",
             "passWithNoTests": true
@@ -5027,9 +5027,9 @@
       "root": "libs/ui-kits/ngx/layout/code",
       "sourceRoot": "libs/ui-kits/ngx/layout/code/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/layout/code/jest.config.js",
             "passWithNoTests": true
@@ -5044,9 +5044,9 @@
       "root": "libs/ui-kits/ngx/navigation/breadcrumb",
       "sourceRoot": "libs/ui-kits/ngx/navigation/breadcrumb/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/navigation/breadcrumb/jest.config.js",
             "passWithNoTests": true
@@ -5061,9 +5061,9 @@
       "projectType": "library",
       "root": "libs/ui-kits/ngx/navigation/mobile-tab",
       "sourceRoot": "libs/ui-kits/ngx/navigation/mobile-tab/src",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tab/jest.config.js",
             "passWithNoTests": true
@@ -5078,9 +5078,9 @@
       "root": "libs/ui-kits/ngx/navigation/mobile-tile",
       "sourceRoot": "libs/ui-kits/ngx/navigation/mobile-tile/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/navigation/mobile-tile/jest.config.js",
             "passWithNoTests": true
@@ -5095,9 +5095,9 @@
       "root": "libs/ui-kits/ngx/navigation/triggers",
       "sourceRoot": "libs/ui-kits/ngx/navigation/triggers/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/ui-kits/ngx/navigation/triggers/jest.config.js",
             "passWithNoTests": true
@@ -5112,9 +5112,9 @@
       "root": "libs/ui-kits/ngx/search",
       "sourceRoot": "libs/ui-kits/ngx/search/src",
       "prefix": "tamu-gisc",
-      "architect": {
+      "targets": {
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/ui-kits/ngx/search"],
           "options": {
             "jestConfig": "libs/ui-kits/ngx/search/jest.config.js",
@@ -5128,15 +5128,15 @@
       "root": "libs/veoride/common/entities",
       "sourceRoot": "libs/veoride/common/entities/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/veoride/common/entities/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/veoride/common/entities"],
           "options": {
             "jestConfig": "libs/veoride/common/entities/jest.config.js",
@@ -5150,15 +5150,15 @@
       "root": "libs/veoride/data-api",
       "sourceRoot": "libs/veoride/data-api/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/veoride/data-api/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/veoride/data-api"],
           "options": {
             "jestConfig": "libs/veoride/data-api/jest.config.js",
@@ -5173,9 +5173,9 @@
       "sourceRoot": "apps/veoride-data-api-nest/src",
       "projectType": "application",
       "prefix": "veoride-data-api-nest",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/veoride-data-api-nest",
@@ -5217,19 +5217,19 @@
           }
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "veoride-data-api-nest:build"
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/veoride-data-api-nest/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/veoride-data-api-nest"],
           "options": {
             "jestConfig": "apps/veoride-data-api-nest/jest.config.js",
@@ -5243,15 +5243,15 @@
       "root": "libs/veoride/data-compiler",
       "sourceRoot": "libs/veoride/data-compiler/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/veoride/data-compiler/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/veoride/data-compiler"],
           "options": {
             "jestConfig": "libs/veoride/data-compiler/jest.config.js",
@@ -5266,9 +5266,9 @@
       "sourceRoot": "apps/veoride-data-compiler-node/src",
       "projectType": "application",
       "prefix": "veoride-data-compiler-node",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/veoride-data-compiler-node",
@@ -5310,19 +5310,19 @@
           }
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "veoride-data-compiler-node:build"
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/veoride-data-compiler-node/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/veoride-data-compiler-node"],
           "options": {
             "jestConfig": "apps/veoride-data-compiler-node/jest.config.js",
@@ -5336,15 +5336,15 @@
       "root": "libs/veoride/scraper",
       "sourceRoot": "libs/veoride/scraper/src",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/veoride/scraper/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/veoride/scraper"],
           "options": {
             "jestConfig": "libs/veoride/scraper/jest.config.js",
@@ -5359,9 +5359,9 @@
       "sourceRoot": "apps/veoride-scraper-node/src",
       "projectType": "application",
       "prefix": "veoride-scraper-node",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/node:build",
+          "executor": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/veoride-scraper-node",
@@ -5403,19 +5403,19 @@
           }
         },
         "serve": {
-          "builder": "@nrwl/node:execute",
+          "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "veoride-scraper-node:build"
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/veoride-scraper-node/**/*.ts"]
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/veoride-scraper-node"],
           "options": {
             "jestConfig": "apps/veoride-scraper-node/jest.config.js",

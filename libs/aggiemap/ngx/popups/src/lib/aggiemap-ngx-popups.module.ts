@@ -42,8 +42,8 @@ const PopsObj = {
 };
 
 @NgModule({
-    imports: [CommonModule, UIClipboardModule, ReferenceModule],
-    declarations: PopsArr
+  imports: [CommonModule, UIClipboardModule, ReferenceModule],
+  declarations: PopsArr
 })
 export class AggiemapNgxPopupsModule {}
 
