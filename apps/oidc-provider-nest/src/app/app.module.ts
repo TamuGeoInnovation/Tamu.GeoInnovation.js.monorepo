@@ -34,7 +34,13 @@ import {
   SecretQuestionController,
   BackchannelLogoutUri
 } from '@tamu-gisc/oidc/common';
-import { AccessTokenModule, InteractionModule, UserLoginModule } from '@tamu-gisc/oidc/provider';
+import {
+  AccessTokenModule,
+  InteractionModule,
+  UserLoginModule,
+  OidcProviderService,
+  OidcModule
+} from '@tamu-gisc/oidc/provider';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -45,44 +51,46 @@ import { dbConfig } from '../environments/environment';
     TypeOrmModule.forRoot({
       ...dbConfig,
       entities: [
-        TokenEndpointAuthMethod,
-        Account,
+        // TokenEndpointAuthMethod,
+        // Account,
         AccessToken,
         AuthorizationCode,
-        BackchannelLogoutUri,
+        // BackchannelLogoutUri,
         Client,
         ClientCredential,
-        ClientMetadata,
+        // ClientMetadata,
         DeviceCode,
-        GrantType,
+        // GrantType,
         InitialAccessToken,
         Interaction,
-        RedirectUri,
+        // RedirectUri,
         RefreshToken,
         RegistrationAccessToken,
-        ResponseType,
-        Role,
+        // ResponseType,
+        // Role,
         Session,
-        User,
-        UserRole,
-        UserLogin,
-        SecretQuestion,
-        SecretAnswer,
-        UserPasswordReset,
-        UserPasswordHistory,
+        // User,
+        // UserRole,
+        // UserLogin,
+        // SecretQuestion,
+        // SecretAnswer,
+        // UserPasswordReset,
+        // UserPasswordHistory,
         PushedAuthorizationRequest,
         ReplayDetection
       ],
       autoLoadEntities: true
     }),
-    AccessTokenModule,
+    // AccessTokenModule,
     InteractionModule,
-    ClientMetadataModule,
-    RoleModule,
-    UserModule,
-    UserLoginModule
+    OidcModule
+    // ClientMetadataModule,
+    // RoleModule,
+    // UserModule
+    // UserLoginModule
   ],
-  controllers: [AppController, SecretQuestionController],
+  // controllers: [AppController, SecretQuestionController],
+  controllers: [AppController],
   providers: [AppService]
 })
 export class AppModule {}

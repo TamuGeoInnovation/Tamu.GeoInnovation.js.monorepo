@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
 
-import { UserModule } from '@tamu-gisc/oidc/common';
+import { UserModule, UserService } from '@tamu-gisc/oidc/common';
 
-import { InteractionController } from '../../controllers/interaction/interaction.controller';
+import { InteractionController } from '../../controllers/interaction/interaction.new.controller';
 import { UserLoginModule } from '../user-login/user-login.module';
+import { OidcProviderService } from '../../services/provider/provider.service';
 
 @Module({
-  imports: [UserModule, UserLoginModule],
+  // imports: [UserModule],
+  imports: [],
   controllers: [InteractionController],
-  providers: [],
+  providers: [OidcProviderService],
   exports: []
 })
 export class InteractionModule {}
