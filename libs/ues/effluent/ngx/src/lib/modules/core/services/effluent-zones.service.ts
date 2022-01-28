@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, from, of } from 'rxjs';
-import { shareReplay, switchMap, pluck } from 'rxjs/operators';
+import { shareReplay, switchMap, map } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
@@ -50,7 +50,7 @@ export class EffluentZonesService {
 
         return from(task.execute(q));
       }),
-      pluck<esri.FeatureSet, Array<esri.Graphic>>('features')
+      map((featureSet) => featureSet?.features)
     );
   }
 }
