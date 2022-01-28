@@ -37,7 +37,7 @@ export abstract class AbstractVeorideDataCompiler<T extends BaseEntity> {
   // tslint:disable-next-line: no-any
   public abstract select(builder: SelectQueryBuilder<T>, resourceQueryParameters: any): SelectQueryBuilder<T>;
 
-  public writeTo(path: string) {
+  public writeTo(path: string): Promise<void> {
     return new Promise(async (r, rj) => {
       try {
         // Remove the file name and extension from the provided path.
