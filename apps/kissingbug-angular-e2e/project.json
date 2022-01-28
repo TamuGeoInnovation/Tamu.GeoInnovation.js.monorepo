@@ -1,0 +1,22 @@
+{
+  "root": "apps/kissingbug-angular-e2e",
+  "sourceRoot": "apps/kissingbug-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/kissingbug-angular-e2e/cypress.json",
+        "tsConfig": "apps/kissingbug-angular-e2e/tsconfig.e2e.json",
+        "devServerTarget": "kissingbug-angular:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "kissingbug-angular:serve:production"
+        }
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["kissingbug-angular"]
+}

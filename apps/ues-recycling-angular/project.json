@@ -1,0 +1,129 @@
+{
+  "projectType": "application",
+  "root": "apps/ues-recycling-angular",
+  "sourceRoot": "apps/ues-recycling-angular/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "outputPath": "dist/apps/ues-recycling-angular",
+        "index": "apps/ues-recycling-angular/src/index.html",
+        "main": "apps/ues-recycling-angular/src/main.ts",
+        "polyfills": "apps/ues-recycling-angular/src/polyfills.ts",
+        "tsConfig": "apps/ues-recycling-angular/tsconfig.app.json",
+        "assets": [
+          "apps/ues-recycling-angular/src/favicon.ico",
+          "apps/ues-recycling-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/ues/assets/",
+            "output": "./assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
+        "styles": ["apps/ues-recycling-angular/src/styles.scss"],
+        "scripts": [],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-recycling-angular/src/environments/environment.ts",
+              "with": "apps/ues-recycling-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "baseHref": "/recycling/",
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        },
+        "development": {
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-recycling-angular/src/environments/environment.ts",
+              "with": "apps/ues-recycling-angular/src/environments/environment.dev.ts"
+            }
+          ],
+          "baseHref": "/recycling/",
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        }
+      },
+      "defaultConfiguration": ""
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "browserTarget": "ues-recycling-angular:build"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "ues-recycling-angular:build:production"
+        },
+        "development": {
+          "browserTarget": "ues-recycling-angular:build:development"
+        }
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "ues-recycling-angular:build"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/ues-recycling-angular"],
+      "options": {
+        "jestConfig": "apps/ues-recycling-angular/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["assets", "sass", "ues-sass"]
+}

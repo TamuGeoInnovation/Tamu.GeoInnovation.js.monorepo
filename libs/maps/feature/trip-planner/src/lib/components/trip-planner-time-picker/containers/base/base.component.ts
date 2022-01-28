@@ -15,16 +15,13 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   /**
    * Trip time mode that determines how the trip results are modified.
    */
-  public timeMode: Observable<TimeModeOption> = this.plannerService.TravelOptions.pipe(
-    pluck('time_mode'),
-    shareReplay(1)
-  );
+  public timeMode: Observable<TimeModeOption> = this.plannerService.TravelOptions.pipe(pluck('time_mode'), shareReplay(1));
 
   /**
    * Date in milliseconds. If a date is set in the trip planner service, it will be converted to milliseconds.
    */
-  public requestedTime: Date;
-  public oldTime: Date;
+  public requestedTime: number;
+  public oldTime: number;
 
   public dateTimePickerVisible = false;
 
@@ -36,17 +33,14 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   constructor(private plannerService: TripPlannerService) {}
 
   public ngOnInit(): void {
-    this.plannerService.TravelOptions.pipe(
-      pluck('requested_time'),
-      takeUntil(this.destroy$)
-    ).subscribe((date) => {
-      this.requestedTime = date ? date : undefined;
-      this.oldTime = this.requestedTime ? new Date(this.requestedTime.getTime()) : undefined;
+    this.plannerService.TravelOptions.pipe(pluck('requested_time'), takeUntil(this.destroy$)).subscribe((date) => {
+      this.requestedTime = date ? date.getTime() : undefined;
+      this.oldTime = this.requestedTime ? this.requestedTime : undefined;
     });
   }
 
   public ngOnDestroy(): void {
-    this.destroy$.next();
+    this.destroy$.next(undefined);
     this.destroy$.complete();
   }
 
@@ -55,7 +49,9 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
    *
    * Arrival and Departure time modes enable the time picker.
    */
-  public setTimeMode(newTimeMode: TimeModeOption): void {
+  public setTimeMode(event: Event): void {
+    const newTimeMode = (event.target as HTMLInputElement).value as TimeModeOption;
+
     this.plannerService.updateTravelOptions({ time_mode: newTimeMode });
 
     if (newTimeMode === 'now') {
@@ -81,7 +77,7 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
    */
   public setRequestedTime(newRequestedTime: DlDateTimePickerChange<Date> | Date): void {
     if (newRequestedTime instanceof DlDateTimePickerChange) {
-      if (newRequestedTime.value && this.oldTime.getTime() !== newRequestedTime.value.getTime()) {
+      if (newRequestedTime.value && this.oldTime !== newRequestedTime.value.getTime()) {
         this.plannerService.updateTravelOptions({ requested_time: new Date(newRequestedTime.value.getTime()) });
         this.dateTimePickerVisible = false;
       }

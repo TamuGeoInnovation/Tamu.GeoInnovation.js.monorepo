@@ -1,0 +1,22 @@
+{
+  "root": "apps/ues-operations-angular-e2e",
+  "sourceRoot": "apps/ues-operations-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/ues-operations-angular-e2e/cypress.json",
+        "tsConfig": "apps/ues-operations-angular-e2e/tsconfig.e2e.json",
+        "devServerTarget": "ues-operations-angular:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "ues-operations-angular:serve:production"
+        }
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["ues-operations-angular"]
+}

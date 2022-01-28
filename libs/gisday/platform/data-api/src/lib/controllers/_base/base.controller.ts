@@ -1,7 +1,6 @@
 import { Controller, Delete, Get, Param, Patch, Post, Request } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
-import { GuidIdentity } from '../../gisday-data-api';
 import { BaseProvider } from '../../providers/_base/base-provider';
 
 @Controller()

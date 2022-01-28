@@ -1,0 +1,150 @@
+{
+  "projectType": "application",
+  "root": "apps/kissingbug-angular",
+  "sourceRoot": "apps/kissingbug-angular/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "outputPath": "dist/apps/kissingbug-angular",
+        "index": "apps/kissingbug-angular/src/index.html",
+        "main": "apps/kissingbug-angular/src/main.ts",
+        "polyfills": "apps/kissingbug-angular/src/polyfills.ts",
+        "tsConfig": "apps/kissingbug-angular/tsconfig.app.json",
+        "assets": [
+          "apps/kissingbug-angular/src/favicon.ico",
+          "apps/kissingbug-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/powershell",
+            "output": "./assets/powershell"
+          }
+        ],
+        "styles": [
+          "node_modules/ngx-lightbox/lightbox.css",
+          "node_modules/font-awesome/css/font-awesome.css",
+          "apps/kissingbug-angular/src/styles.scss"
+        ],
+        "scripts": [],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/kissingbug-angular/src/environments/environment.ts",
+              "with": "apps/kissingbug-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        },
+        "development": {
+          "fileReplacements": [
+            {
+              "replace": "apps/kissingbug-angular/src/environments/environment.ts",
+              "with": "apps/kissingbug-angular/src/environments/environment.dev.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        },
+        "staging": {
+          "fileReplacements": [
+            {
+              "replace": "apps/kissingbug-angular/src/environments/environment.ts",
+              "with": "apps/kissingbug-angular/src/environments/environment.staging.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        }
+      },
+      "defaultConfiguration": ""
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "browserTarget": "kissingbug-angular:build"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "kissingbug-angular:build:production"
+        }
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "kissingbug-angular:build"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/kissingbug-angular"],
+      "options": {
+        "jestConfig": "apps/kissingbug-angular/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["kissingbug-sass"]
+}

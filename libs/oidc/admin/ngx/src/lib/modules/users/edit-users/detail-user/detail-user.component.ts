@@ -37,7 +37,7 @@ export class DetailUserComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnDestroy() {
-    this._$destroy.next();
+    this._$destroy.next(undefined);
     this._$destroy.complete();
   }
 

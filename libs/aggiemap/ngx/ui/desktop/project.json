@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/aggiemap/ngx/ui/desktop",
+  "sourceRoot": "libs/aggiemap/ngx/ui/desktop/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/aggiemap/ngx/ui/desktop"],
+      "options": {
+        "jestConfig": "libs/aggiemap/ngx/ui/desktop/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

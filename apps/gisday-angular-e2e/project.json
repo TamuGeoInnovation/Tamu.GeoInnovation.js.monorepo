@@ -1,0 +1,22 @@
+{
+  "root": "apps/gisday-angular-e2e",
+  "sourceRoot": "apps/gisday-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/gisday-angular-e2e/cypress.json",
+        "tsConfig": "apps/gisday-angular-e2e/tsconfig.e2e.json",
+        "devServerTarget": "gisday-angular:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "gisday-angular:serve:production"
+        }
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["gisday-angular"]
+}

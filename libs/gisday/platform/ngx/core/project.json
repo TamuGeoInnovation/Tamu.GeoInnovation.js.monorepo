@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/gisday/platform/ngx/core",
+  "sourceRoot": "libs/gisday/platform/ngx/core/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/gisday/platform/ngx/core"],
+      "options": {
+        "jestConfig": "libs/gisday/platform/ngx/core/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

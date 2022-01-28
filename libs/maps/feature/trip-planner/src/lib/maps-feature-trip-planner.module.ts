@@ -75,7 +75,6 @@ import { RouteDirectionTransformerPipe } from './core/route-direction-transforme
     TripPlannerOptionsComponent,
     TripPlannerTimePickerComponent,
     RouteDirectionTransformerPipe
-  ],
-  entryComponents: [TripPlannerParkingOptionsComponent, TripPlannerBikingOptionsComponent]
+  ]
 })
 export class MapsFeatureTripPlannerModule {}

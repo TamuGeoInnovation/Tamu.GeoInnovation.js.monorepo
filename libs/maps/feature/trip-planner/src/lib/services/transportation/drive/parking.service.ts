@@ -17,7 +17,7 @@ const allParking = ['all-parking'];
 let oneParking: SearchSource;
 
 @Injectable({ providedIn: 'root' })
-export class ParkingService<T> {
+export class ParkingService {
   private _ParkingOptions = new BehaviorSubject<ParkingOptions>({});
   public ParkingOptions = this._ParkingOptions.asObservable();
 
@@ -87,7 +87,7 @@ export class ParkingService<T> {
 
   constructor(
     private moduleProvider: EsriModuleProviderService,
-    private search: SearchService<esri.Graphic>,
+    private search: SearchService,
     private settings: SettingsService,
     private environment: EnvironmentService
   ) {
@@ -99,12 +99,12 @@ export class ParkingService<T> {
   }
 
   /**
-   * Retrieves a list of all parking lots and garages, filters duplciates, groups and orders
+   * Retrieves a list of all parking lots and garages, filters duplicates, groups and orders
    * alphabetics and numerics.
    */
   public getParkingPermits(): Observable<ParkingFeature[]> {
     return this.search
-      .search({
+      .search<ParkingFeature>({
         sources: allParking,
         values: [1],
         stateful: false
@@ -120,13 +120,11 @@ export class ParkingService<T> {
             })
           );
         }),
-        switchMap(
-          (results): Observable<ParkingFeature> => {
-            // Return only the features in the search result.
-            // Breadcrumming, source data, etc, are not needed from this point on.
-            return from(results.results.map((r) => r.features as ParkingFeature[]).flat());
-          }
-        ),
+        switchMap((results): Observable<ParkingFeature> => {
+          // Return only the features in the search result.
+          // Breadcrumbing, source data, etc, are not needed from this point on.
+          return from(results.results.map((r) => r.features as ParkingFeature[]).flat());
+        }),
         filter((lot) => {
           // Return the features that have a valid FAC_CODE.
           // Non-valid include null, blank, undefined;
@@ -202,7 +200,7 @@ export class ParkingService<T> {
     //
     // In any query, any one parking lot must satisfy at least one of the expressions. In the above case, two required expressions would be:
     // 1) A parking lot must match a FAC_Code (User has lot 55 permit. This will ensure at least one lot will always be returned in the query.)
-    // 2) Parking lots that are marked as not having visitor parking (To avoid selecing lots with visitor parking);
+    // 2) Parking lots that are marked as not having visitor parking (To avoid selecting lots with visitor parking);
     //
     // The second expression matches **ALL** lots that require a parking permit, because they have to be restricted to only people with permits
     // for those lots. This however implies that any parking permit is valid in any of the parking lots, which is not true. Lot 55 permit does not grant
@@ -241,7 +239,7 @@ export class ParkingService<T> {
       {
         sqlColumn: 'GIS.TS.SpacePnt_Count.H_C',
         // Assume if user has parking permit, they've already pre-determined whether that permit suits their needs.
-        // This will remain the case until the search service is updated to allow more flexibiliy in composing SQL queries.
+        // This will remain the case until the search service is updated to allow more flexibility in composing SQL queries.
         include: false,
         // include: parkingOptions.H_C > 0 && parkingOptions.Use_Permit && parkingOptions.Permit !== undefined,
         value: parkingOptions.H_C > 0 ? 1 : 0,
@@ -273,7 +271,7 @@ export class ParkingService<T> {
     };
 
     return this.search
-      .search({
+      .search<ParkingFeature>({
         sources: [composedSource],
         values: [includedParkingOptions.map((po) => po.value)],
         stateful: false
@@ -284,7 +282,7 @@ export class ParkingService<T> {
 
           return from(
             this.moduleProvider.require(['Graphic']).then(([Graphic]: [esri.GraphicConstructor]): ParkingFeature[] => {
-              // Parking lots/decks can be multipolygon features. Our utilities only support basic polygons, so
+              // Parking lots/decks can be multi-polygon features. Our utilities only support basic polygons, so
               // this set of features must be converted into Esri Graphics that will calculate the centroid of each.
               const flattened = normalized.map((f) => {
                 return new Graphic({ attributes: f.attributes, geometry: { type: 'polygon', ...f.geometry } });
@@ -305,7 +303,7 @@ export class ParkingService<T> {
    * Feature keys from the TS Main parking service layer contain many periods in their naming scheme.
    *
    * This makes it difficult to work with them in JS without resorting to bracket string references,
-   * which are more likely to be mispelled without typing enforcement.
+   * which are more likely to be misspelled without typing enforcement.
    *
    * This method separates the key by the periods, and uses the last index of the result.
    *
@@ -331,7 +329,7 @@ export class ParkingService<T> {
           attributes: {
             ...normalized
           }
-        };
+        } as ParkingFeature;
       } else {
         return feature;
       }

@@ -1,0 +1,126 @@
+{
+  "projectType": "application",
+  "root": "apps/signage-angular",
+  "sourceRoot": "apps/signage-angular/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "outputPath": "dist/apps/signage-angular",
+        "index": "apps/signage-angular/src/index.html",
+        "main": "apps/signage-angular/src/main.ts",
+        "polyfills": "apps/signage-angular/src/polyfills.ts",
+        "tsConfig": "apps/signage-angular/tsconfig.app.json",
+        "aot": false,
+        "assets": [
+          "apps/signage-angular/src/favicon.ico",
+          "apps/signage-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
+        "styles": ["apps/signage-angular/src/styles.scss"],
+        "scripts": [],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/signage-angular/src/environments/environment.ts",
+              "with": "apps/signage-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "aot": true,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        },
+        "development": {
+          "fileReplacements": [
+            {
+              "replace": "apps/signage-angular/src/environments/environment.ts",
+              "with": "apps/signage-angular/src/environments/environment.dev.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "aot": true,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        }
+      },
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": ""
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "browserTarget": "signage-angular:build"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "signage-angular:build:production"
+        },
+        "development": {
+          "browserTarget": "signage-angular:build:development"
+        }
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "signage-angular:build"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/signage-angular/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/signage-angular"]
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["assets", "sass"]
+}

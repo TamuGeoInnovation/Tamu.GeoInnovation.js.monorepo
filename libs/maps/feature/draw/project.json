@@ -1,0 +1,17 @@
+{
+  "prefix": "tamu-gisc",
+  "projectType": "library",
+  "root": "libs/maps/feature/draw",
+  "sourceRoot": "libs/maps/feature/draw/src",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/maps/feature/draw/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/maps/feature/draw"]
+    }
+  },
+  "tags": []
+}

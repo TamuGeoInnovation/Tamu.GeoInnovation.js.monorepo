@@ -23,7 +23,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SelectComponent<T> implements ControlValueAccessor {
+export class SelectComponent<T extends object> implements ControlValueAccessor {
   /**
    * Functions as the initial/default or state value of the select element.
    *

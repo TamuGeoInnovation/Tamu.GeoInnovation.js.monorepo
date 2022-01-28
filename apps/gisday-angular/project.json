@@ -1,0 +1,123 @@
+{
+  "projectType": "application",
+  "root": "apps/gisday-angular",
+  "sourceRoot": "apps/gisday-angular/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "crossOrigin": "anonymous",
+        "outputPath": "dist/apps/gisday-angular",
+        "index": "apps/gisday-angular/src/index.html",
+        "main": "apps/gisday-angular/src/main.ts",
+        "polyfills": "apps/gisday-angular/src/polyfills.ts",
+        "tsConfig": "apps/gisday-angular/tsconfig.app.json",
+        "assets": [
+          "apps/gisday-angular/src/favicon.ico",
+          "apps/gisday-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
+        "styles": ["apps/gisday-angular/src/styles.scss"],
+        "scripts": [],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/gisday-angular/src/environments/environment.ts",
+              "with": "apps/gisday-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        },
+        "development": {
+          "fileReplacements": [
+            {
+              "replace": "apps/gisday-angular/src/environments/environment.ts",
+              "with": "apps/gisday-angular/src/environments/environment.dev.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        }
+      },
+      "defaultConfiguration": ""
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "browserTarget": "gisday-angular:build"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "gisday-angular:build:production"
+        },
+        "development": {
+          "browserTarget": "gisday-angular:build:development"
+        }
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "gisday-angular:build"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/gisday-angular/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/gisday-angular"]
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["assets", "sass", "gisday-sass"]
+}

@@ -46,7 +46,7 @@ export class EsriMapService {
   constructor(
     private moduleProvider: EsriModuleProviderService,
     private router: Router,
-    private searchService: SearchService<esri.Graphic>,
+    private searchService: SearchService,
     private environment: EnvironmentService,
     private http: HttpClient
   ) {}
@@ -412,14 +412,14 @@ export class EsriMapService {
           }
         }
 
-        return this.generateLayer(({ ...cleaned, ...args.source.native } as unknown) as AutocastableLayer);
+        return this.generateLayer({ ...cleaned, ...args.source.native } as unknown as AutocastableLayer);
       })
     );
 
     // Merge the resolved layer inside the typed layer definitions. The grouping will be done against the typed object properties
     // to avoid having to deal with needing to resolve nested promises.
     const merged = typed.map((t, index) => {
-      return ({ ...t, resolvedLayer: casted[index] } as unknown) as IPortalLayer;
+      return { ...t, resolvedLayer: casted[index] } as unknown as IPortalLayer;
     });
 
     const rootParents = merged.filter((p) => p.parentLayerId === -1);
@@ -441,7 +441,7 @@ export class EsriMapService {
 
       const inverted = parent.resolvedLayer;
 
-      ((inverted as unknown) as esri.GroupLayerProperties).layers = layers;
+      (inverted as unknown as esri.GroupLayerProperties).layers = layers;
 
       return inverted;
     }
@@ -512,7 +512,7 @@ export class EsriMapService {
     if (list.length > 0) {
       // Submit request to the search service for all key values (feature references).
       this.searchService
-        .search({
+        .search<esri.Graphic>({
           returnObservable: true,
           sources: Array(list.length).fill('building'),
           values: list

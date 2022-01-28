@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/oidc/admin/ngx",
+  "sourceRoot": "libs/oidc/admin/ngx/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/oidc/admin/ngx"],
+      "options": {
+        "jestConfig": "libs/oidc/admin/ngx/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

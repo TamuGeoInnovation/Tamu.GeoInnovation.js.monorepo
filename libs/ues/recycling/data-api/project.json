@@ -1,0 +1,22 @@
+{
+  "root": "libs/ues/recycling/data-api",
+  "sourceRoot": "libs/ues/recycling/data-api/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/ues/recycling/data-api/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ues/recycling/data-api"],
+      "options": {
+        "jestConfig": "libs/ues/recycling/data-api/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

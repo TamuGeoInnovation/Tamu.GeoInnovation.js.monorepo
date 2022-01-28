@@ -9,11 +9,11 @@ import { CompoundOperator, makeWhere } from '@tamu-gisc/common/utils/database';
 import { makeUrlParams } from '@tamu-gisc/common/utils/routing';
 
 @Injectable({ providedIn: 'root' })
-export class SearchService<T> {
+export class SearchService {
   private _sources: SearchSource[];
 
-  private _store: ReplaySubject<SearchResult<T>> = new ReplaySubject(1);
-  public store: Observable<SearchResult<T>> = this._store.asObservable();
+  private _store: ReplaySubject<SearchResult<any>> = new ReplaySubject(1);
+  public store: Observable<SearchResult<any>> = this._store.asObservable();
 
   private _searching: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public searching: Observable<boolean> = this._searching.asObservable();
@@ -30,10 +30,10 @@ export class SearchService<T> {
    * Sets service state to a single instance of SearchResult, containing
    * the results of all source queries, which notifies all subscribers.
    */
-  public search(options: SearchPropertiesObservable): Observable<SearchResult<T>>;
-  public search(options: SearchPropertiesPromise): Promise<SearchResult<T>>;
-  public search(options: SearchProperties): SearchResult<T>;
-  public search(
+  public search<T>(options: SearchPropertiesObservable): Observable<SearchResult<T>>;
+  public search<T>(options: SearchPropertiesPromise): Promise<SearchResult<T>>;
+  public search<T>(options: SearchProperties): SearchResult<T>;
+  public search<T>(
     options: SearchPropertiesObservable | SearchPropertiesPromise | SearchProperties
   ): SearchResult<T> | Promise<SearchResult<T>> | Observable<SearchResult<T>> {
     // Check we don't have an array for sources
@@ -103,7 +103,7 @@ export class SearchService<T> {
           where: source.queryParams.scoringWhere
         };
 
-        // Search source with a modified query params that has the nested socring where `queryParams`.
+        // Search source with a modified query params that has the nested scoring where `queryParams`.
         const modifiedScoringSource: SearchSource = { ...source, queryParams: modifiedQueryParams };
 
         // Remove the excess identical scoringWhere clause for the same of cleanliness.
@@ -120,7 +120,7 @@ export class SearchService<T> {
 
     const requestStream = from([forkJoin(requests), forkJoin(scoringRequests)]).pipe(
       concatMap((o) => {
-        // Resolve and return the forkJoin observable resposne.
+        // Resolve and return the forkJoin observable response.
         return o;
       }),
       // Collect all forkJoin responses, and emit a single array observable
@@ -136,7 +136,7 @@ export class SearchService<T> {
         //
         // If not, return back the base responses.
         //
-        // If there are any, find to which base reponse they belong to and
+        // If there are any, find to which base response they belong to and
         // prepend the features.
         if (responses.scoring && responses.scoring.length === 0) {
           return of(responses.base);
@@ -157,7 +157,7 @@ export class SearchService<T> {
               // For each source that has scoring where properties, get the index for the
               // string in original sources that is equal to the source identifier.
               //
-              // This index will be representative of the array location for a given base reponse
+              // This index will be representative of the array location for a given base response
               // and consequently which scoring response belongs to what base response.
               return sources.findIndex((source) => source.source === s.source);
             });
@@ -199,7 +199,7 @@ export class SearchService<T> {
           return of(baseScoringMerged);
         }
       }),
-      switchMap((result: Array<unknown>) => {
+      switchMap((result: Array<T>) => {
         // Create a single SearchResult class instance, where the results of all http results will be placed in
         // the results property.
         return of(
@@ -253,7 +253,7 @@ export class SearchService<T> {
       // If method call was not stateful, return the request stream and let callee handle response.
 
       if (!('returnAsPromise' in options) || options.returnAsPromise !== true) {
-        // Handle default obserfable return type.
+        // Handle default observable return type.
         return requestStream;
       } else if (options.returnAsPromise !== undefined && options.returnAsPromise === true) {
         // Handle promise return type
@@ -410,7 +410,7 @@ export class SearchResult<T> {
   /**
    * Extracts and flattens feature results from every search item in the SearchResult.
    */
-  public features(): T[] {
+  public features() {
     return this.results
       .map((resultItem, arr, ind) => {
         return resultItem.features;
@@ -429,7 +429,7 @@ export class SearchResult<T> {
  */
 export interface SearchSource {
   /**
-   * Value that is used to reference a search source, when specififying an array of search sources.
+   * Value that is used to reference a search source, when specifying an array of search sources.
    *
    * Used in SearchService
    */
@@ -459,7 +459,7 @@ export interface SearchSource {
   where?: string;
 
   /**
-   * Used in conjuction with the `where` property. This is the search query minus the where clause.
+   * Used in conjunction with the `where` property. This is the search query minus the where clause.
    * Once generated, the `where` clause will be appended to the base query.
    */
   baseQuery?: string;
@@ -480,7 +480,7 @@ export interface SearchSource {
    * Example:
    *
    * - Primary Search contains no geometry, but contains attributes
-   * - Secondary search constains geometry, matched by a key in the primary search result attributes
+   * - Secondary search contains geometry, matched by a key in the primary search result attributes
    */
   altLookup?: CrossSearchQueryProperties;
 
@@ -506,7 +506,7 @@ export interface SearchSource {
   /**
    * Use ONLY if displayFields is not provided.
    *
-   * A string with valid dot nodation property path expressions.
+   * A string with valid dot notation property path expressions.
    *
    * All expressions in template are evaluated. More flexible than displayFields if as it preserves
    * white space and allows the addition of formatting characters.
@@ -782,7 +782,7 @@ export interface SearchResultItem<T> {
   /**
    * Use ONLY if displayFields is not provided.
    *
-   * A string with valid dot nodation property path expressions.
+   * A string with valid dot notation property path expressions.
    *
    * All expressions in template are evaluated. More flexible than displayFields as it preserves
    * white space and allows the addition of formatting characters.
@@ -831,4 +831,8 @@ export interface SearchResultBreadcrumbSummary {
    * Term used to perform the search query or a value representation of the result from an inherited event.
    */
   value: string | unknown;
+}
+
+export interface SearchResultFeature {
+  [key: string]: string | number | boolean | object;
 }

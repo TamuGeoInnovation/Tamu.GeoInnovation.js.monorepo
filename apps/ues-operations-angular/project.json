@@ -1,0 +1,131 @@
+{
+  "projectType": "application",
+  "root": "apps/ues-operations-angular",
+  "sourceRoot": "apps/ues-operations-angular/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "crossOrigin": "anonymous",
+        "outputPath": "dist/apps/ues-operations-angular",
+        "index": "apps/ues-operations-angular/src/index.html",
+        "main": "apps/ues-operations-angular/src/main.ts",
+        "polyfills": "apps/ues-operations-angular/src/polyfills.ts",
+        "tsConfig": "apps/ues-operations-angular/tsconfig.app.json",
+        "assets": [
+          "apps/ues-operations-angular/src/favicon.ico",
+          "apps/ues-operations-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/ues/assets/",
+            "output": "./assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
+        "styles": ["apps/ues-operations-angular/src/styles.scss"],
+        "scripts": [],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-operations-angular/src/environments/environment.ts",
+              "with": "apps/ues-operations-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "baseHref": "/operations/",
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        },
+        "development": {
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-operations-angular/src/environments/environment.ts",
+              "with": "apps/ues-operations-angular/src/environments/environment.dev.ts"
+            }
+          ],
+          "baseHref": "/operations/",
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        }
+      },
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": ""
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "browserTarget": "ues-operations-angular:build"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "ues-operations-angular:build:production"
+        },
+        "development": {
+          "browserTarget": "ues-operations-angular:build:development"
+        }
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "ues-operations-angular:build"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/ues-operations-angular/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/ues-operations-angular"]
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["assets", "sass", "ues-sass"]
+}

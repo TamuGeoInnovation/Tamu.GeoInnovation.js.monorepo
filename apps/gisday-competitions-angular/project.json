@@ -1,0 +1,123 @@
+{
+  "prefix": "tamu-gisc",
+  "projectType": "application",
+  "root": "apps/gisday-competitions-angular",
+  "sourceRoot": "apps/gisday-competitions-angular/src",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "configurations": {
+        "production": {
+          "ngswConfigPath": "apps/gisday-competitions-angular/ngsw-config.json",
+          "outputHashing": "all",
+          "budgets": [
+            {
+              "maximumError": "5mb",
+              "maximumWarning": "2mb",
+              "type": "initial"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/gisday-competitions-angular/src/environments/environment.ts",
+              "with": "apps/gisday-competitions-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "baseHref": "/competitions/app/",
+          "aot": true,
+          "buildOptimizer": true,
+          "extractLicenses": true,
+          "namedChunks": false,
+          "optimization": true,
+          "serviceWorker": true,
+          "sourceMap": false,
+          "vendorChunk": false
+        },
+        "development": {
+          "ngswConfigPath": "apps/gisday-competitions-angular/ngsw-config.json",
+          "outputHashing": "all",
+          "budgets": [
+            {
+              "maximumError": "5mb",
+              "maximumWarning": "2mb",
+              "type": "initial"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/gisday-competitions-angular/src/environments/environment.ts",
+              "with": "apps/gisday-competitions-angular/src/environments/environment.dev.ts"
+            }
+          ],
+          "baseHref": "/competitions/app/",
+          "aot": true,
+          "buildOptimizer": true,
+          "extractLicenses": true,
+          "namedChunks": false,
+          "optimization": true,
+          "serviceWorker": true,
+          "sourceMap": false,
+          "vendorChunk": false
+        }
+      },
+      "options": {
+        "index": "apps/gisday-competitions-angular/src/index.html",
+        "main": "apps/gisday-competitions-angular/src/main.ts",
+        "outputPath": "dist/apps/gisday-competitions-angular",
+        "polyfills": "apps/gisday-competitions-angular/src/polyfills.ts",
+        "tsConfig": "apps/gisday-competitions-angular/tsconfig.app.json",
+        "assets": [
+          "apps/gisday-competitions-angular/src/favicon.ico",
+          "apps/gisday-competitions-angular/src/assets",
+          "apps/gisday-competitions-angular/src/manifest.webmanifest",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
+        "scripts": [],
+        "styles": ["apps/gisday-competitions-angular/src/styles.scss"],
+        "aot": false,
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": ""
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "gisday-competitions-angular:build"
+      }
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "gisday-competitions-angular:build:production"
+        },
+        "development": {
+          "browserTarget": "gisday-competitions-angular:build:development"
+        }
+      },
+      "options": {
+        "browserTarget": "gisday-competitions-angular:build"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/gisday-competitions-angular/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/gisday-competitions-angular"]
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["assets", "sass"]
+}

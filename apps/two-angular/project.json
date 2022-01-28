@@ -1,0 +1,126 @@
+{
+  "prefix": "tamu-gisc",
+  "projectType": "application",
+  "root": "apps/two-angular",
+  "sourceRoot": "apps/two-angular/src",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "configurations": {
+        "production": {
+          "outputHashing": "all",
+          "budgets": [
+            {
+              "maximumError": "5mb",
+              "maximumWarning": "2mb",
+              "type": "initial"
+            },
+            {
+              "maximumError": "10kb",
+              "maximumWarning": "6kb",
+              "type": "anyComponentStyle"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/two-angular/src/environments/environment.ts",
+              "with": "apps/two-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "aot": true,
+          "buildOptimizer": true,
+          "extractLicenses": true,
+          "namedChunks": false,
+          "optimization": true,
+          "sourceMap": false,
+          "vendorChunk": false
+        },
+        "development": {
+          "outputHashing": "all",
+          "budgets": [
+            {
+              "maximumError": "5mb",
+              "maximumWarning": "2mb",
+              "type": "initial"
+            },
+            {
+              "maximumError": "10kb",
+              "maximumWarning": "6kb",
+              "type": "anyComponentStyle"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/two-angular/src/environments/environment.ts",
+              "with": "apps/two-angular/src/environments/environment.dev.ts"
+            }
+          ],
+          "aot": true,
+          "buildOptimizer": true,
+          "extractLicenses": true,
+          "namedChunks": false,
+          "optimization": true,
+          "sourceMap": false,
+          "vendorChunk": false
+        }
+      },
+      "options": {
+        "index": "apps/two-angular/src/index.html",
+        "main": "apps/two-angular/src/main.ts",
+        "outputPath": "dist/apps/two-angular",
+        "polyfills": "apps/two-angular/src/polyfills.ts",
+        "tsConfig": "apps/two-angular/tsconfig.app.json",
+        "assets": [
+          "apps/two-angular/src/favicon.ico",
+          "apps/two-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
+        "scripts": [],
+        "styles": ["apps/two-angular/src/styles.scss"],
+        "aot": false,
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": ""
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "two-angular:build"
+      }
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "two-angular:build:production"
+        },
+        "development": {
+          "browserTarget": "two-angular:build:development"
+        }
+      },
+      "options": {
+        "browserTarget": "two-angular:build"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/two-angular/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/two-angular"]
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["assets", "sass"]
+}

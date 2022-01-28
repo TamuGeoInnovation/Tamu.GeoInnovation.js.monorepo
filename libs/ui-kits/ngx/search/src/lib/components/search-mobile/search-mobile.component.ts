@@ -15,12 +15,12 @@ import { SearchComponent } from '../search/search.component';
   providers: [SearchService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchMobileComponent<T extends object> extends SearchComponent<T> {
+export class SearchMobileComponent extends SearchComponent {
   constructor(
     private cdr: ChangeDetectorRef,
     private anltcs: Angulartics2,
     private nss: NotificationService,
-    private ss: SearchService<T>,
+    private ss: SearchService,
     private env: EnvironmentService
   ) {
     super(cdr, anltcs, nss, ss, env);

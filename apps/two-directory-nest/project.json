@@ -1,0 +1,71 @@
+{
+  "root": "apps/two-directory-nest",
+  "sourceRoot": "apps/two-directory-nest/src",
+  "projectType": "application",
+  "prefix": "two-directory-nest",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "options": {
+        "outputPath": "dist/apps/two-directory-nest",
+        "main": "apps/two-directory-nest/src/main.ts",
+        "tsConfig": "apps/two-directory-nest/tsconfig.app.json",
+        "assets": ["apps/two-directory-nest/src/assets"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": false,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/two-directory-nest/src/environments/environment.ts",
+              "with": "apps/two-directory-nest/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "optimization": true,
+          "extractLicenses": false,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/two-directory-nest/src/environments/environment.ts",
+              "with": "apps/two-directory-nest/src/environments/environment.dev.ts"
+            }
+          ]
+        }
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "two-directory-nest:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "two-directory-nest:build:production"
+        },
+        "development": {
+          "buildTarget": "two-directory-nest:build:development"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/two-directory-nest/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/two-directory-nest/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/two-directory-nest"]
+    }
+  },
+  "tags": ["assets"]
+}

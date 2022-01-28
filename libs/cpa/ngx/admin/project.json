@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/cpa/ngx/admin",
+  "sourceRoot": "libs/cpa/ngx/admin/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/cpa/ngx/admin"],
+      "options": {
+        "jestConfig": "libs/cpa/ngx/admin/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,71 @@
+{
+  "root": "apps/covid-data-api-nest",
+  "sourceRoot": "apps/covid-data-api-nest/src",
+  "projectType": "application",
+  "prefix": "covid-data-api-nest",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "options": {
+        "outputPath": "dist/apps/covid-data-api-nest",
+        "main": "apps/covid-data-api-nest/src/main.ts",
+        "tsConfig": "apps/covid-data-api-nest/tsconfig.app.json",
+        "assets": ["apps/covid-data-api-nest/src/assets", "apps/covid-data-api-nest/src/package.json"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": false,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/covid-data-api-nest/src/environments/environment.ts",
+              "with": "apps/covid-data-api-nest/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "optimization": true,
+          "extractLicenses": false,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/covid-data-api-nest/src/environments/environment.ts",
+              "with": "apps/covid-data-api-nest/src/environments/environment.dev.ts"
+            }
+          ]
+        }
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "covid-data-api-nest:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "covid-data-api-nest:build:production"
+        },
+        "development": {
+          "buildTarget": "covid-data-api-nest:build:development"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/covid-data-api-nest/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/covid-data-api-nest/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/covid-data-api-nest"]
+    }
+  },
+  "tags": ["assets"]
+}

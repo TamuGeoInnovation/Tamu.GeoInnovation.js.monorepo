@@ -1,0 +1,16 @@
+{
+  "projectType": "library",
+  "root": "libs/common/utils/geometry/esri",
+  "sourceRoot": "libs/common/utils/geometry/esri/src",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/common/utils/geometry/esri/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/common/utils/geometry/esri"]
+    }
+  },
+  "tags": []
+}

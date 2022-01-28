@@ -36,7 +36,7 @@ export class UploadSubmissionComponent implements OnDestroy, OnInit {
   public ngOnInit(): void {}
 
   public ngOnDestroy(): void {
-    this._$destroy.next();
+    this._$destroy.next(undefined);
     this._$destroy.complete();
   }
 

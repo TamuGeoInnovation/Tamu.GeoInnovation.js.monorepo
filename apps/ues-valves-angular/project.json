@@ -1,0 +1,124 @@
+{
+  "projectType": "application",
+  "root": "apps/ues-valves-angular",
+  "sourceRoot": "apps/ues-valves-angular/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "outputPath": "dist/apps/ues-valves-angular",
+        "index": "apps/ues-valves-angular/src/index.html",
+        "main": "apps/ues-valves-angular/src/main.ts",
+        "polyfills": "apps/ues-valves-angular/src/polyfills.ts",
+        "tsConfig": "apps/ues-valves-angular/tsconfig.app.json",
+        "assets": [
+          "apps/ues-valves-angular/src/favicon.ico",
+          "apps/ues-valves-angular/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ],
+        "styles": ["apps/ues-valves-angular/src/styles.scss"],
+        "scripts": [],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-valves-angular/src/environments/environment.ts",
+              "with": "apps/ues-valves-angular/src/environments/environment.prod.ts"
+            }
+          ],
+          "baseHref": "/dispatch/",
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        },
+        "development": {
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-valves-angular/src/environments/environment.ts",
+              "with": "apps/ues-valves-angular/src/environments/environment.dev.ts"
+            }
+          ],
+          "baseHref": "/dispatch/",
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ]
+        }
+      },
+      "defaultConfiguration": ""
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "browserTarget": "ues-valves-angular:build"
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "ues-valves-angular:build:production"
+        },
+        "development": {
+          "browserTarget": "ues-valves-angular:build:development"
+        }
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "ues-valves-angular:build"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/ues-valves-angular"],
+      "options": {
+        "jestConfig": "apps/ues-valves-angular/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["assets", "sass", "ues-sass"]
+}

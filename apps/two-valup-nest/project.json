@@ -1,0 +1,71 @@
+{
+  "root": "apps/two-valup-nest",
+  "sourceRoot": "apps/two-valup-nest/src",
+  "projectType": "application",
+  "prefix": "two-valup-nest",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "options": {
+        "outputPath": "dist/apps/two-valup-nest",
+        "main": "apps/two-valup-nest/src/main.ts",
+        "tsConfig": "apps/two-valup-nest/tsconfig.app.json",
+        "assets": ["apps/two-valup-nest/src/assets", "apps/two-valup-nest/src/package.json"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": false,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/two-valup-nest/src/environments/environment.ts",
+              "with": "apps/two-valup-nest/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "optimization": true,
+          "extractLicenses": false,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/two-valup-nest/src/environments/environment.ts",
+              "with": "apps/two-valup-nest/src/environments/environment.dev.ts"
+            }
+          ]
+        }
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "two-valup-nest:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "two-valup-nest:build:production"
+        },
+        "development": {
+          "buildTarget": "two-valup-nest:build:development"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/two-valup-nest/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/two-valup-nest/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/two-valup-nest"]
+    }
+  },
+  "tags": ["assets"]
+}

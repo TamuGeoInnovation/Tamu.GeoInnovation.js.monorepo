@@ -11,7 +11,12 @@
           {
             "enforceBuildableLibDependency": true,
             "allow": [],
-            "depConstraints": [{ "sourceTag": "*", "onlyDependOnLibsWithTags": ["*"] }]
+            "depConstraints": [
+              {
+                "sourceTag": "*",
+                "onlyDependOnLibsWithTags": ["*"]
+              }
+            ]
           }
         ]
       }
@@ -19,9 +24,12 @@
     {
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nrwl/nx/typescript"],
-      "parserOptions": { "project": "./tsconfig.*?.json" },
       "rules": {}
     },
-    { "files": ["*.js", "*.jsx"], "extends": ["plugin:@nrwl/nx/javascript"], "rules": {} }
+    {
+      "files": ["*.js", "*.jsx"],
+      "extends": ["plugin:@nrwl/nx/javascript"],
+      "rules": {}
+    }
   ]
 }

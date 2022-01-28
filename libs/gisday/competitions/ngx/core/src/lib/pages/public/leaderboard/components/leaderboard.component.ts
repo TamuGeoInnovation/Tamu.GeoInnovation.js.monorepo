@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { pluck, shareReplay } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
 
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -23,8 +23,9 @@ export class LeaderboardComponent implements OnInit {
 
   public ngOnInit() {
     this.leaders$ = this.leaderboardService.getScores();
-    this.me$ = this.settings
-      .getSimpleSettingsBranch(this.environment.value('LocalStoreSettings').subKey)
-      .pipe(pluck<object, string>('guid'), shareReplay(1));
+    this.me$ = this.settings.getSimpleSettingsBranch(this.environment.value('LocalStoreSettings').subKey).pipe(
+      map((branch) => branch?.guid as string),
+      shareReplay(1)
+    );
   }
 }

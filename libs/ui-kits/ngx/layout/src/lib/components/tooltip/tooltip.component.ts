@@ -22,7 +22,7 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   private _isVisible: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   @Input()
-  public width: number;
+  public width: string;
 
   @Input()
   public height: number;
@@ -245,7 +245,7 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public ngOnDestroy() {
-    this._$destroy.next();
+    this._$destroy.next(undefined);
     this._$destroy.complete();
   }
 }

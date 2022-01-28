@@ -1,0 +1,80 @@
+{
+  "root": "apps/oidc-provider-nest",
+  "sourceRoot": "apps/oidc-provider-nest/src",
+  "projectType": "application",
+  "prefix": "oidc-provider-nest",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "options": {
+        "main": "apps/oidc-provider-nest/src/main.ts",
+        "outputPath": "dist/apps/oidc-provider-nest",
+        "tsConfig": "apps/oidc-provider-nest/tsconfig.app.json",
+        "assets": [
+          "apps/oidc-provider-nest/src/assets",
+          "apps/oidc-provider-nest/src/package.json",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/powershell",
+            "output": "./assets/powershell"
+          }
+        ]
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/oidc-provider-nest/src/environments/environment.ts",
+              "with": "apps/oidc-provider-nest/src/environments/environment.prod.ts"
+            }
+          ],
+          "extractLicenses": false,
+          "inspect": false,
+          "optimization": true
+        },
+        "development": {
+          "fileReplacements": [
+            {
+              "replace": "apps/oidc-provider-nest/src/environments/environment.ts",
+              "with": "apps/oidc-provider-nest/src/environments/environment.dev.ts"
+            }
+          ],
+          "extractLicenses": false,
+          "inspect": false,
+          "optimization": true
+        }
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "oidc-provider-nest:build",
+        "port": 7777
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "oidc-provider-nest:build:production"
+        },
+        "development": {
+          "buildTarget": "oidc-provider-nest:build:development"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/oidc-provider-nest/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/oidc-provider-nest/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/oidc-provider-nest"]
+    }
+  },
+  "tags": ["assets"]
+}

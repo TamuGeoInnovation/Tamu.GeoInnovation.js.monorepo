@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/gisday/competitions/ngx/common",
+  "sourceRoot": "libs/gisday/competitions/ngx/common/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/gisday/competitions/ngx/common"],
+      "options": {
+        "jestConfig": "libs/gisday/competitions/ngx/common/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

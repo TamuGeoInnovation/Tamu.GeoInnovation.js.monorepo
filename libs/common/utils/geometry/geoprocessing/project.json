@@ -1,0 +1,16 @@
+{
+  "root": "libs/common/utils/geometry/geoprocessing",
+  "sourceRoot": "libs/common/utils/geometry/geoprocessing/src",
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/common/utils/geometry/geoprocessing/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/common/utils/geometry/geoprocessing"]
+    }
+  },
+  "tags": []
+}

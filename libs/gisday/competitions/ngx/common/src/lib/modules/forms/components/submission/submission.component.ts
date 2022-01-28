@@ -37,7 +37,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
     })
   );
 
-  public location: Position;
+  public location: GeolocationPosition;
 
   public formValid: Observable<boolean>;
 
@@ -100,7 +100,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   public ngOnDestroy() {
     this._trackLocation.dispose();
-    this._destroy$.next();
+    this._destroy$.next(undefined);
     this._destroy$.complete();
   }
 

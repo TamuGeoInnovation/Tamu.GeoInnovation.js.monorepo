@@ -19,7 +19,7 @@ export abstract class BaseAdminViewComponent<T> implements IBaseAdminViewCompone
   public ngOnInit(): void {}
 
   public ngOnDestroy(): void {
-    this._$destroy.next();
+    this._$destroy.next(undefined);
     this._$destroy.complete();
   }
 

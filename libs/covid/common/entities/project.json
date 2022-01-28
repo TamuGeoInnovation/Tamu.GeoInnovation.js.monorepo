@@ -1,0 +1,22 @@
+{
+  "root": "libs/covid/common/entities",
+  "sourceRoot": "libs/covid/common/entities/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/covid/common/entities/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/covid/common/entities/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/covid/common/entities"]
+    }
+  },
+  "tags": []
+}

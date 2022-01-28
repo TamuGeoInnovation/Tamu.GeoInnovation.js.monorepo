@@ -6,6 +6,6 @@
     "declaration": true,
     "types": ["node", "@types/luxon"]
   },
-  "exclude": ["**/*.spec.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"],
   "include": ["**/*.ts"]
 }

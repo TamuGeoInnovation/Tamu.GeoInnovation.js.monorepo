@@ -1,5 +1,8 @@
+const { getJestProjects } = require('@nrwl/jest');
+
 module.exports = {
   projects: [
+    ...getJestProjects(),
     '<rootDir>/apps/aggiemap-angular',
     '<rootDir>/apps/trees-angular',
     '<rootDir>/libs/common/ngx/environment',

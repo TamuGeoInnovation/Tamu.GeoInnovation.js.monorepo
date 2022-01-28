@@ -5,8 +5,7 @@ import { SignPopupComponent } from './sign/sign.component';
 
 @NgModule({
   declarations: [SignPopupComponent],
-  imports: [CommonModule],
-  entryComponents: [SignPopupComponent]
+  imports: [CommonModule]
 })
 export class PopupsModule {}
 

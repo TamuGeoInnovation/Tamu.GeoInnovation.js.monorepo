@@ -1,0 +1,80 @@
+{
+  "root": "apps/ues-effluent-data-api-nest",
+  "sourceRoot": "apps/ues-effluent-data-api-nest/src",
+  "projectType": "application",
+  "prefix": "ues-effluent-data-api-nest",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "options": {
+        "outputPath": "dist/apps/ues-effluent-data-api-nest",
+        "main": "apps/ues-effluent-data-api-nest/src/main.ts",
+        "tsConfig": "apps/ues-effluent-data-api-nest/tsconfig.app.json",
+        "assets": [
+          "apps/ues-effluent-data-api-nest/src/assets",
+          "apps/ues-effluent-data-api-nest/src/package.json",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/powershell",
+            "output": "./assets/powershell"
+          }
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": false,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-effluent-data-api-nest/src/environments/environment.ts",
+              "with": "apps/ues-effluent-data-api-nest/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "optimization": true,
+          "extractLicenses": false,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/ues-effluent-data-api-nest/src/environments/environment.ts",
+              "with": "apps/ues-effluent-data-api-nest/src/environments/environment.dev.ts"
+            }
+          ]
+        }
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "ues-effluent-data-api-nest:build",
+        "port": 7777
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "ues-effluent-data-api-nest:build:production"
+        },
+        "development": {
+          "buildTarget": "ues-effluent-data-api-nest:build:development"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/ues-effluent-data-api-nest/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/ues-effluent-data-api-nest/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/ues-effluent-data-api-nest"]
+    }
+  },
+  "tags": ["assets"]
+}

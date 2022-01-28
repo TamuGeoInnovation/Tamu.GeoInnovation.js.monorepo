@@ -1,0 +1,80 @@
+{
+  "root": "apps/oidc-admin-nest",
+  "sourceRoot": "apps/oidc-admin-nest/src",
+  "projectType": "application",
+  "prefix": "oidc-admin-nest",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/oidc-admin-nest/src/environments/environment.ts",
+              "with": "apps/oidc-admin-nest/src/environments/environment.prod.ts"
+            }
+          ],
+          "extractLicenses": false,
+          "inspect": false,
+          "optimization": true
+        },
+        "development": {
+          "fileReplacements": [
+            {
+              "replace": "apps/oidc-admin-nest/src/environments/environment.ts",
+              "with": "apps/oidc-admin-nest/src/environments/environment.dev.ts"
+            }
+          ],
+          "extractLicenses": false,
+          "inspect": false,
+          "optimization": true
+        }
+      },
+      "options": {
+        "main": "apps/oidc-admin-nest/src/main.ts",
+        "outputPath": "dist/apps/oidc-admin-nest",
+        "tsConfig": "apps/oidc-admin-nest/tsconfig.app.json",
+        "assets": [
+          "apps/oidc-admin-nest/src/assets",
+          "apps/oidc-admin-nest/src/package.json",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/powershell",
+            "output": "./assets/powershell"
+          }
+        ]
+      },
+      "outputs": ["{options.outputPath}"]
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "oidc-admin-nest:build",
+        "port": 7771
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "oidc-admin-nest:build:production"
+        },
+        "development": {
+          "buildTarget": "oidc-admin-nest:build:development"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/oidc-admin-nest/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/oidc-admin-nest/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/apps/oidc-admin-nest"]
+    }
+  },
+  "tags": ["assets"]
+}

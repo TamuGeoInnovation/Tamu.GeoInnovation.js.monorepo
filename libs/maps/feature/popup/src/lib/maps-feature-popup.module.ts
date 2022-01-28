@@ -11,7 +11,6 @@ import { BasePopupComponent } from './components/base/base.component';
 @NgModule({
   imports: [CommonModule, UIDragModule, UILayoutModule],
   declarations: [PopupComponent, PopupMobileComponent, BasePopupComponent],
-  exports: [PopupComponent, PopupMobileComponent],
-  entryComponents: [BasePopupComponent]
+  exports: [PopupComponent, PopupMobileComponent]
 })
 export class MapPopupModule {}

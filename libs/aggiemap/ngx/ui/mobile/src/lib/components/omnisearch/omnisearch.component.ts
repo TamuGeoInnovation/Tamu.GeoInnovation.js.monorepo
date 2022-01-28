@@ -61,7 +61,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
     private mapService: EsriMapService,
     private plannerService: TripPlannerService,
     private dragService: DragService,
-    private helper: AltSearchHelper<esri.Graphic>
+    private helper: AltSearchHelper
   ) {
     // Set default search icon on search component on omnisearch initialize.
     this.searchComponentLeftAction = 'menu';
@@ -95,7 +95,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this._destroy$.next();
+    this._destroy$.next(undefined);
     this._destroy$.complete();
   }
 

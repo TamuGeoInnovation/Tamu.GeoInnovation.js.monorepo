@@ -5,12 +5,7 @@ import { filter, map, pluck, shareReplay, startWith, switchMap, take, takeUntil,
 import { DeepPartial } from 'typeorm';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import {
-  CompetitionForm,
-  CompetitionSubmission,
-  ICompetitionSeasonFormQuestion,
-  VALIDATION_STATUS
-} from '@tamu-gisc/gisday/competitions/data-api';
+import { CompetitionForm, CompetitionSubmission, VALIDATION_STATUS } from '@tamu-gisc/gisday/competitions/data-api';
 import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
 import { SettingsService } from '@tamu-gisc/common/ngx/settings';
 import { SubmissionService } from '@tamu-gisc/gisday/competitions/ngx/data-access';
@@ -98,7 +93,7 @@ export class SubmissionReviewComponent implements OnInit, OnDestroy {
         // The second is the actual image blob.
         return this.ss.getImage(guid).pipe(startWith(false));
       }),
-      map((blob) => {
+      map((blob: Blob) => {
         if (blob) {
           const urlCreator = window.URL || window.webkitURL;
           const imageUrl = urlCreator.createObjectURL(blob);
@@ -112,7 +107,7 @@ export class SubmissionReviewComponent implements OnInit, OnDestroy {
     );
 
     this.mergedSubmission = combineLatest([
-      this.vs.seasonForm.pipe(pluck<CompetitionForm, Array<ICompetitionSeasonFormQuestion>>('model')),
+      this.vs.seasonForm.pipe(pluck('model')),
       this.submissionDetails.pipe(pluck('value'))
     ]).pipe(
       map(([formQuestions, formResponses]) => {
@@ -156,7 +151,7 @@ export class SubmissionReviewComponent implements OnInit, OnDestroy {
           return this.ss.validateSubmission({ guid: details.guid, status, userGuid: userGuid as string });
         }),
         tap((res) => {
-          this.$_refresh.next();
+          this.$_refresh.next(undefined);
         })
       )
       .subscribe((status) => {
@@ -165,7 +160,7 @@ export class SubmissionReviewComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._$destroy.next();
+    this._$destroy.next(undefined);
     this._$destroy.complete();
   }
 }

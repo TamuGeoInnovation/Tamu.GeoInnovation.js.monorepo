@@ -1,0 +1,16 @@
+{
+  "projectType": "library",
+  "root": "libs/common/utils/device",
+  "sourceRoot": "libs/common/utils/device/src",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/common/utils/device/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/common/utils/device"]
+    }
+  },
+  "tags": []
+}

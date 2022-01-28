@@ -242,7 +242,7 @@ export class ViewerService {
    * Used to remotely trigger a response submission
    */
   public forceSave() {
-    this.save.next();
+    this.save.next(undefined);
   }
   /**
    * Manages the history of the SnapshotHistory behavior subject, to only keep a maximum of 2 entires (curr and prev).

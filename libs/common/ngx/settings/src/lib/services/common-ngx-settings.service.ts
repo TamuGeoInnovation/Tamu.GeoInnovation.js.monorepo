@@ -25,13 +25,10 @@ export class SettingsService {
    */
   public init(config: SettingsInitializationConfig): Observable<CompoundSettings> {
     // Stored settings will be a flat
-    const storageInjected: CompoundSettings = Object.keys(config.settings).reduce(
-      (acc, curr) => {
-        acc[curr] = { ...config.settings[curr], storage: config.storage };
-        return acc;
-      },
-      {} as CompoundSettings
-    );
+    const storageInjected: CompoundSettings = Object.keys(config.settings).reduce((acc, curr) => {
+      acc[curr] = { ...config.settings[curr], storage: config.storage };
+      return acc;
+    }, {} as CompoundSettings);
 
     // Get full local storage from storage confiration. Provided config can override storage `primaryKey`
     const storage = this.getStorage({ ...this._localStorageSettings, ...config.storage });
@@ -108,63 +105,60 @@ export class SettingsService {
 
     // Filter the provided settings keys if it already exists in the service store,
     // with newly assigned values.
-    const providedMatching = Object.keys(settingsToUpdate).reduce(
-      (acc, curr) => {
-        // If the setting to be updated does exist in service state, ignore it because it
-        // lack information build a `CompoundSettings`.
-        if (!storeSettings.hasOwnProperty(curr)) {
-          return acc;
-        }
-
-        // If the setting to be updated exists in service state, there is `CompoundSettings`
-        // information that describes how the property was being used. If it has a `get` effect,
-        // don't update the service value for the setting key currently being iterated.
-        //
-        // If a property has a `get` effect, it's a reference to another setting value with some
-        // potential transformation applied to it. Because of this, if we update the current setting
-        // with the value received, any other services subscribing to the service state will not be
-        // notified of changes.
-        if (!storeSettings[curr].effects || !storeSettings[curr].effects.get) {
-          acc[curr] = { ...storeSettings[curr], value: settingsToUpdate[curr] };
-          return acc;
-        }
-
-        // At this point it has been determined that the setting to be changed DOES exist in service state
-        // as a compound setting, has effects, and at least a `get` effect.
-        //
-        // If the service setting does not have a `set` effect, ignore the setting. This will later result
-        // in the existing service value to be inherited.
-        if (!storeSettings[curr].effects.set) {
-          console.warn(`${curr} does not have a 'set' effect. Ignoring setting update.`);
-          return acc;
-        }
-
-        // If the compound setting referece to the current setting to be changed DOES HAVE a `set` effect,
-        // make final check to make sure the `set` effect has a target and a evaluating function..
-        if (!storeSettings[curr].effects.set.target || !storeSettings[curr].effects.set.fn) {
-          console.warn(`${curr} does not have 'set' target or function. Ignoring setting update.`);
-          return acc;
-        }
-
-        // Check that the comound effect target exists in the store settings. If it doesn't the process will throw an error.
-        if (!storeSettings[storeSettings[curr].effects.set.target]) {
-          console.warn(`${storeSettings[curr].effects.set.target} setting does not exist. Ignoring setting update.`);
-          return acc;
-        }
-
-        // Execute the effect `set` function to calculate the value. Use the value of the current provided setting-to-change
-        // as the parameter.
-        const value = storeSettings[curr].effects.set.fn(settingsToUpdate[curr]);
-
-        // Update the value of the target setting.
-        acc[storeSettings[curr].effects.set.target] = {
-          ...storeSettings[storeSettings[curr].effects.set.target],
-          value
-        };
+    const providedMatching = Object.keys(settingsToUpdate).reduce((acc, curr) => {
+      // If the setting to be updated does exist in service state, ignore it because it
+      // lack information build a `CompoundSettings`.
+      if (!storeSettings.hasOwnProperty(curr)) {
         return acc;
-      },
-      {} as CompoundSettings
-    );
+      }
+
+      // If the setting to be updated exists in service state, there is `CompoundSettings`
+      // information that describes how the property was being used. If it has a `get` effect,
+      // don't update the service value for the setting key currently being iterated.
+      //
+      // If a property has a `get` effect, it's a reference to another setting value with some
+      // potential transformation applied to it. Because of this, if we update the current setting
+      // with the value received, any other services subscribing to the service state will not be
+      // notified of changes.
+      if (!storeSettings[curr].effects || !storeSettings[curr].effects.get) {
+        acc[curr] = { ...storeSettings[curr], value: settingsToUpdate[curr] };
+        return acc;
+      }
+
+      // At this point it has been determined that the setting to be changed DOES exist in service state
+      // as a compound setting, has effects, and at least a `get` effect.
+      //
+      // If the service setting does not have a `set` effect, ignore the setting. This will later result
+      // in the existing service value to be inherited.
+      if (!storeSettings[curr].effects.set) {
+        console.warn(`${curr} does not have a 'set' effect. Ignoring setting update.`);
+        return acc;
+      }
+
+      // If the compound setting referece to the current setting to be changed DOES HAVE a `set` effect,
+      // make final check to make sure the `set` effect has a target and a evaluating function..
+      if (!storeSettings[curr].effects.set.target || !storeSettings[curr].effects.set.fn) {
+        console.warn(`${curr} does not have 'set' target or function. Ignoring setting update.`);
+        return acc;
+      }
+
+      // Check that the comound effect target exists in the store settings. If it doesn't the process will throw an error.
+      if (!storeSettings[storeSettings[curr].effects.set.target]) {
+        console.warn(`${storeSettings[curr].effects.set.target} setting does not exist. Ignoring setting update.`);
+        return acc;
+      }
+
+      // Execute the effect `set` function to calculate the value. Use the value of the current provided setting-to-change
+      // as the parameter.
+      const value = storeSettings[curr].effects.set.fn(settingsToUpdate[curr]);
+
+      // Update the value of the target setting.
+      acc[storeSettings[curr].effects.set.target] = {
+        ...storeSettings[storeSettings[curr].effects.set.target],
+        value
+      };
+      return acc;
+    }, {} as CompoundSettings);
 
     // If any of the provided settings matched existing settings in the service store,
     // proceed to update the values.
@@ -192,51 +186,48 @@ export class SettingsService {
   private calculateReturnValues(returnSettings: Settings): Observable<CompoundSettings> {
     return this._Store.asObservable().pipe(
       switchMap((settings) => {
-        const calculated = Object.keys(settings).reduce(
-          (acc, setting, index) => {
-            // Skip properties not included in the initialization configuration.
-            // This is effectively in the same reducing step.
-            if (!returnSettings.hasOwnProperty(setting)) {
-              return acc;
-            }
-
-            // Check if the setting has a return getter effect. If it doesn't return early.
-            if (!settings[setting].effects || !settings[setting].effects.get) {
-              acc[setting] = { ...settings[setting], value: settings[setting].value };
-              return acc;
-            }
-
-            // Convert the target to an array if it's not. This facilitates support for both strings and arrays
-            // if we only have to worry about one type.
-            const targets: string[] =
-              settings[setting].effects.get.target instanceof Array
-                ? (settings[setting].effects.get.target as string[])
-                : [settings[setting].effects.get.target as string];
-
-            // Checks that all targets exist in settings store.
-            const allTargetsExist = targets.every((target) => {
-              return settings.hasOwnProperty(target);
-            });
-
-            // If at least one of the targets does not exist, return early
-            if (!allTargetsExist) {
-              acc[setting] = { ...settings[setting], value: settings[setting].value };
-              return acc;
-            }
-
-            // Get values of all targets
-            const values = targets.map((target) => {
-              return settings[target].value;
-            });
-
-            // Get value of setting effect getter function
-            const value = settings[setting].effects.get.fn(...values);
-
-            acc[setting] = { ...settings[setting], value };
+        const calculated = Object.keys(settings).reduce((acc, setting, index) => {
+          // Skip properties not included in the initialization configuration.
+          // This is effectively in the same reducing step.
+          if (!returnSettings.hasOwnProperty(setting)) {
             return acc;
-          },
-          {} as CompoundSettings
-        );
+          }
+
+          // Check if the setting has a return getter effect. If it doesn't return early.
+          if (!settings[setting].effects || !settings[setting].effects.get) {
+            acc[setting] = { ...settings[setting], value: settings[setting].value };
+            return acc;
+          }
+
+          // Convert the target to an array if it's not. This facilitates support for both strings and arrays
+          // if we only have to worry about one type.
+          const targets: string[] =
+            settings[setting].effects.get.target instanceof Array
+              ? (settings[setting].effects.get.target as string[])
+              : [settings[setting].effects.get.target as string];
+
+          // Checks that all targets exist in settings store.
+          const allTargetsExist = targets.every((target) => {
+            return settings.hasOwnProperty(target);
+          });
+
+          // If at least one of the targets does not exist, return early
+          if (!allTargetsExist) {
+            acc[setting] = { ...settings[setting], value: settings[setting].value };
+            return acc;
+          }
+
+          // Get values of all targets
+          const values = targets.map((target) => {
+            return settings[target].value;
+          });
+
+          // Get value of setting effect getter function
+          const value = settings[setting].effects.get.fn(...values);
+
+          acc[setting] = { ...settings[setting], value };
+          return acc;
+        }, {} as CompoundSettings);
 
         return of(calculated);
       })
@@ -290,31 +281,25 @@ export class SettingsService {
   }
 
   private simpleSettingsTreeToCompoundSettings(tree: SimpleSettingTree): CompoundSettings {
-    return Object.keys(tree).reduce(
-      (settings, branch) => {
-        // All settings branches should be flat simple settings collections.
-        if (typeof tree[branch] === 'object') {
-          const branchSettings = Object.keys(tree[branch]).reduce(
-            (compound, key) => {
-              compound[key] = {
-                storage: {
-                  subKey: branch
-                },
-                value: tree[branch][key]
-              };
-
-              return compound;
+    return Object.keys(tree).reduce((settings, branch) => {
+      // All settings branches should be flat simple settings collections.
+      if (typeof tree[branch] === 'object') {
+        const branchSettings = Object.keys(tree[branch]).reduce((compound, key) => {
+          compound[key] = {
+            storage: {
+              subKey: branch
             },
-            {} as CompoundSettings
-          );
+            value: tree[branch][key]
+          };
 
-          return { ...settings, ...branchSettings };
-        } else {
-          throw new Error(`Settings branch is not simple.`);
-        }
-      },
-      {} as CompoundSettings
-    );
+          return compound;
+        }, {} as CompoundSettings);
+
+        return { ...settings, ...branchSettings };
+      } else {
+        throw new Error(`Settings branch is not simple.`);
+      }
+    }, {} as CompoundSettings);
   }
 
   /**
@@ -419,17 +404,14 @@ export class SettingsService {
       keys = this.getPersistentCompoundSettingsKeys(compoundSourceOrKeys);
     }
 
-    return Object.keys(simpleSettings).reduce(
-      (acc, curr) => {
-        if (keys.includes(curr)) {
-          acc[curr] = simpleSettings[curr];
-          return acc;
-        } else {
-          return acc;
-        }
-      },
-      {} as SimpleSettingBranch
-    );
+    return Object.keys(simpleSettings).reduce((acc, curr) => {
+      if (keys.includes(curr)) {
+        acc[curr] = simpleSettings[curr];
+        return acc;
+      } else {
+        return acc;
+      }
+    }, {} as SimpleSettingBranch);
   }
 
   /**

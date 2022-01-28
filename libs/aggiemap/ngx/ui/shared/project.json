@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/aggiemap/ngx/ui/shared",
+  "sourceRoot": "libs/aggiemap/ngx/ui/shared/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/aggiemap/ngx/ui/shared"],
+      "options": {
+        "jestConfig": "libs/aggiemap/ngx/ui/shared/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

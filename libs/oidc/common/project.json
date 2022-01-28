@@ -1,0 +1,22 @@
+{
+  "root": "libs/oidc/common",
+  "sourceRoot": "libs/oidc/common/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/oidc/common/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "libs/oidc/common/jest.config.js",
+        "passWithNoTests": true
+      },
+      "outputs": ["coverage/libs/oidc/common"]
+    }
+  },
+  "tags": []
+}

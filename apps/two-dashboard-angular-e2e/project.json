@@ -1,0 +1,22 @@
+{
+  "root": "apps/two-dashboard-angular-e2e",
+  "sourceRoot": "apps/two-dashboard-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/two-dashboard-angular-e2e/cypress.json",
+        "tsConfig": "apps/two-dashboard-angular-e2e/tsconfig.e2e.json",
+        "devServerTarget": "two-dashboard-angular:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "two-dashboard-angular:serve:production"
+        }
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["two-dashboard-angular"]
+}

@@ -1,0 +1,22 @@
+{
+  "root": "apps/signage-angular-e2e",
+  "sourceRoot": "apps/signage-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/signage-angular-e2e/cypress.json",
+        "tsConfig": "apps/signage-angular-e2e/tsconfig.e2e.json",
+        "devServerTarget": "signage-angular:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "signage-angular:serve:production"
+        }
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["signage-angular"]
+}

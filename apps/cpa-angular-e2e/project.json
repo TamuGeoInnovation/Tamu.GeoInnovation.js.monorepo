@@ -1,0 +1,22 @@
+{
+  "root": "apps/cpa-angular-e2e",
+  "sourceRoot": "apps/cpa-angular-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/cpa-angular-e2e/cypress.json",
+        "tsConfig": "apps/cpa-angular-e2e/tsconfig.e2e.json",
+        "devServerTarget": "cpa-angular:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "cpa-angular:serve:production"
+        }
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["cpa-angular"]
+}

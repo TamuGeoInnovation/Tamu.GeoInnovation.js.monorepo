@@ -1,0 +1,72 @@
+{
+  "root": "apps/gisday-nest",
+  "sourceRoot": "apps/gisday-nest/src",
+  "projectType": "application",
+  "prefix": "gisday-nest",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/gisday-nest",
+        "main": "apps/gisday-nest/src/main.ts",
+        "tsConfig": "apps/gisday-nest/tsconfig.app.json",
+        "assets": ["apps/gisday-nest/src/assets"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/gisday-nest/src/environments/environment.ts",
+              "with": "apps/gisday-nest/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/gisday-nest/src/environments/environment.ts",
+              "with": "apps/gisday-nest/src/environments/environment.dev.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "gisday-nest:build",
+        "port": 7777
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "gisday-nest:build:production"
+        },
+        "development": {
+          "buildTarget": "gisday-nest:build:development"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/gisday-nest/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/gisday-nest"],
+      "options": {
+        "jestConfig": "apps/gisday-nest/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["assets"]
+}

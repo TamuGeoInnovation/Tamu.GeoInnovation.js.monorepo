@@ -58,7 +58,7 @@ export class SidebarRelationshipsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._destroy.next();
+    this._destroy.next(undefined);
     this._destroy.complete();
     this.popupService.enablePopups();
   }

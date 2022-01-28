@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/common/ngx/auth",
+  "sourceRoot": "libs/common/ngx/auth/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/common/ngx/auth"],
+      "options": {
+        "jestConfig": "libs/common/ngx/auth/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

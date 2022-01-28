@@ -2,8 +2,9 @@ import { Controller, Post, Req } from '@nestjs/common';
 
 import { Request } from 'express';
 
+import { SpeakerRole } from '@tamu-gisc/gisday/platform/data-api';
+
 import { BaseController } from '../../controllers/_base/base.controller';
-import { SpeakerRole } from '../../gisday-data-api';
 import { SpeakerRoleProvider } from '../../providers/speaker-role/speaker-role.provider';
 
 @Controller('speaker-role')

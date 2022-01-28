@@ -1,0 +1,17 @@
+{
+  "projectType": "library",
+  "root": "libs/ues/cold-water/ngx",
+  "sourceRoot": "libs/ues/cold-water/ngx/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ues/cold-water/ngx"],
+      "options": {
+        "jestConfig": "libs/ues/cold-water/ngx/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

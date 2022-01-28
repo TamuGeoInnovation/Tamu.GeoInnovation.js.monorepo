@@ -134,11 +134,13 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
     switchMap((field) => {
       return this.layer.pipe(
         switchMap((layer) => {
-          return from((layer.queryFeatures({
-            returnDistinctValues: true,
-            outFields: [field.name],
-            where: '1=1'
-          }) as unknown) as Promise<esri.FeatureSet>);
+          return from(
+            layer.queryFeatures({
+              returnDistinctValues: true,
+              outFields: [field.name],
+              where: '1=1'
+            }) as unknown as Promise<esri.FeatureSet>
+          );
         }),
         pluck('features'),
         take(1),
@@ -184,7 +186,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
     // Once the map view and layer are loaded, get the layerview for the feature layer.
     this.layerView = combineLatest([this.mapView, this.layer]).pipe(
       switchMap(([view, layer]) => {
-        return from((view.whenLayerView(layer) as unknown) as Promise<esri.FeatureLayerView>);
+        return from(view.whenLayerView(layer) as unknown as Promise<esri.FeatureLayerView>);
       })
     );
 
@@ -214,7 +216,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
                   const query = featureFilter.createQuery();
                   query.outFields = ['*'];
 
-                  return from((layer.queryFeatures(query) as unknown) as Promise<esri.FeatureSet>);
+                  return from(layer.queryFeatures(query) as unknown as Promise<esri.FeatureSet>);
                 })
               ),
               of(false)
@@ -236,7 +238,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._$destroy.next();
+    this._$destroy.next(undefined);
     this._$destroy.complete();
   }
 }

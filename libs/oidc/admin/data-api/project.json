@@ -1,0 +1,22 @@
+{
+  "root": "libs/oidc/admin/data-api",
+  "sourceRoot": "libs/oidc/admin/data-api/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/oidc/admin/data-api/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/oidc/admin/data-api"],
+      "options": {
+        "jestConfig": "libs/oidc/admin/data-api/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

@@ -408,10 +408,10 @@ export class TripPlannerService implements OnDestroy {
     private analytics: Angulartics2,
     private ns: NotificationService,
     private url: ActivatedRoute,
-    private search: SearchService<esri.Graphic>,
+    private search: SearchService,
     private busService: BusService,
     private bikeService: BikeService,
-    private parkingService: ParkingService<esri.Graphic>,
+    private parkingService: ParkingService,
     private inrixService: InrixService,
     private settings: SettingsService,
     private environment: EnvironmentService
@@ -1032,11 +1032,11 @@ export class TripPlannerService implements OnDestroy {
                         stopName: feature.attributes.name
                         // stopName: feature.attributes.name
                       },
-                      geometry: ({
+                      geometry: {
                         type: 'point',
                         latitude: feature.geometry.latitude,
                         longitude: feature.geometry.longitude
-                      } as unknown) as esri.GeometryProperties
+                      } as unknown as esri.GeometryProperties
                     });
                   })
                 }),
@@ -1069,11 +1069,11 @@ export class TripPlannerService implements OnDestroy {
                             routeName: trip.modeSource.mode,
                             stopName: feature.attributes.name
                           },
-                          geometry: ({
+                          geometry: {
                             type: 'point',
                             latitude: feature.geometry.latitude,
                             longitude: feature.geometry.longitude
-                          } as unknown) as esri.GeometryProperties
+                          } as unknown as esri.GeometryProperties
                         });
                       })
                     }),
@@ -1114,11 +1114,11 @@ export class TripPlannerService implements OnDestroy {
                             routeName: trip.modeSource.mode,
                             stopName: feature.attributes.name
                           },
-                          geometry: ({
+                          geometry: {
                             type: 'point',
                             latitude: feature.geometry.latitude,
                             longitude: feature.geometry.longitude
-                          } as unknown) as esri.GeometryProperties
+                          } as unknown as esri.GeometryProperties
                         });
                       })
                     }),
@@ -1166,7 +1166,7 @@ export class TripPlannerService implements OnDestroy {
                 from(rq.tasks).pipe(
                   concatMap((t) => {
                     // Execute inner trip task with own trip params
-                    return from((t.task.solve(t.params) as undefined) as Promise<esri.RouteResult>).pipe(
+                    return from(t.task.solve(t.params) as undefined as Promise<esri.RouteResult>).pipe(
                       catchError((err) => {
                         // Get the travel mode for the failed request found in the error object.
                         const responseTravelMode = err.details.requestOptions.query.travelMode;
@@ -1191,7 +1191,7 @@ export class TripPlannerService implements OnDestroy {
               ]);
             }),
             mergeMap((responses) => {
-              const results = (responses.flat() as unknown[]) as RouteResult[];
+              const results = responses.flat() as unknown[] as RouteResult[];
 
               // If any one of the route result responses at this stage is of type TripResult, it is a result an error condition.
               const anyError = results.find((r) => r instanceof TripResult);
@@ -1200,7 +1200,7 @@ export class TripPlannerService implements OnDestroy {
               if (anyError) {
                 // Make shallow copy of response trip result.
                 // This already contains the trip result error.
-                const failedResult = new TripResult((results[0] as unknown) as TripResultProperties);
+                const failedResult = new TripResult(results[0] as unknown as TripResultProperties);
 
                 // Report failed trip result.
                 this.tripTaskFail(failedResult);
@@ -1246,60 +1246,55 @@ export class TripPlannerService implements OnDestroy {
                 );
 
                 return of(true).pipe(
-                  switchMap(
-                    (): Observable<TripModeSwitch[]> => {
-                      return of(
-                        (response as RouteResult).routeResults[0].directions.features.reduce(
-                          (acc, curr): TripModeSwitch[] => {
-                            // Determine the speed category for the current feature.
-                            const currFeatureSpeedCategory = this.speed(curr);
+                  switchMap((): Observable<TripModeSwitch[]> => {
+                    return of(
+                      (response as RouteResult).routeResults[0].directions.features.reduce((acc, curr): TripModeSwitch[] => {
+                        // Determine the speed category for the current feature.
+                        const currFeatureSpeedCategory = this.speed(curr);
 
-                            // Stores a index reference to the most recently modified accumulated mode switch array, if any.
-                            // This is used to test against current feature speed categories and appending.
-                            const newestAccumulatedIndex = acc.length > 0 ? acc.length - 1 : 0;
+                        // Stores a index reference to the most recently modified accumulated mode switch array, if any.
+                        // This is used to test against current feature speed categories and appending.
+                        const newestAccumulatedIndex = acc.length > 0 ? acc.length - 1 : 0;
 
-                            // Using newestAccumulatedIndex, stores reference to the actual array object.
-                            const newestAccumulated: TripModeSwitch = acc[newestAccumulatedIndex];
+                        // Using newestAccumulatedIndex, stores reference to the actual array object.
+                        const newestAccumulated: TripModeSwitch = acc[newestAccumulatedIndex];
 
-                            // If the current graphic has the same speed category as the last accumulated mode switch
-                            // keep adding graphics to that object's `graphics` array.
-                            if (newestAccumulated && newestAccumulated.type === currFeatureSpeedCategory) {
-                              acc[newestAccumulatedIndex] = {
-                                type: newestAccumulated.type,
-                                graphics: [...newestAccumulated.graphics, curr]
-                              } as TripModeSwitch;
+                        // If the current graphic has the same speed category as the last accumulated mode switch
+                        // keep adding graphics to that object's `graphics` array.
+                        if (newestAccumulated && newestAccumulated.type === currFeatureSpeedCategory) {
+                          acc[newestAccumulatedIndex] = {
+                            type: newestAccumulated.type,
+                            graphics: [...newestAccumulated.graphics, curr]
+                          } as TripModeSwitch;
 
-                              // For the current mode switch, insert the current feature graphic into the graphics object.
-                              return acc;
-                            } else {
-                              // If this block was entered, it means the current feature does not have the same speed category as the
-                              // `newestAccumulatedIndex` (the last item in the accumulated array).
-                              //
-                              // This is either because `newestAccumulatedIndex` is an array with zero mode switch objects and as such the `mode` (first route results feature being iterated)
-                              // for the non-existent object is `undefined`. If this is the case, then the switch index should be zero, to add the first mode switch to the accumulated array.
-                              //
-                              // Alternatively, the current feature is of the opposing speed category (e.g. previous was walking, and is now not_walking).
-                              // If this is the case, we want to add another mode switch on the index after the last mode switch. A simple n + 1. In this way, it will not overwrite the
-                              // last mode switch.
-                              const switchIndex =
-                                newestAccumulated && newestAccumulated.type
-                                  ? newestAccumulatedIndex + 1
-                                  : newestAccumulatedIndex;
+                          // For the current mode switch, insert the current feature graphic into the graphics object.
+                          return acc;
+                        } else {
+                          // If this block was entered, it means the current feature does not have the same speed category as the
+                          // `newestAccumulatedIndex` (the last item in the accumulated array).
+                          //
+                          // This is either because `newestAccumulatedIndex` is an array with zero mode switch objects and as such the `mode` (first route results feature being iterated)
+                          // for the non-existent object is `undefined`. If this is the case, then the switch index should be zero, to add the first mode switch to the accumulated array.
+                          //
+                          // Alternatively, the current feature is of the opposing speed category (e.g. previous was walking, and is now not_walking).
+                          // If this is the case, we want to add another mode switch on the index after the last mode switch. A simple n + 1. In this way, it will not overwrite the
+                          // last mode switch.
+                          const switchIndex =
+                            newestAccumulated && newestAccumulated.type
+                              ? newestAccumulatedIndex + 1
+                              : newestAccumulatedIndex;
 
-                              acc[switchIndex] = {
-                                type: currFeatureSpeedCategory,
-                                graphics: [curr]
-                              } as TripModeSwitch;
+                          acc[switchIndex] = {
+                            type: currFeatureSpeedCategory,
+                            graphics: [curr]
+                          } as TripModeSwitch;
 
-                              // Return the mode switches array with a new mode switch object.
-                              return acc;
-                            }
-                          },
-                          []
-                        )
-                      );
-                    }
-                  ),
+                          // Return the mode switches array with a new mode switch object.
+                          return acc;
+                        }
+                      }, [])
+                    );
+                  }),
                   switchMap((modeSwitches: TripModeSwitch[]) => {
                     const baseDate =
                       this._TravelOptions.getValue().requested_time != null
@@ -1700,8 +1695,7 @@ export class TripPlannerService implements OnDestroy {
               style: 'circle',
               size: 15,
               color: '#500000',
-              path:
-                'M38.9,5.3L38.9,5.3c-7.1-7.1-18.6-7.1-25.7,0l0,0C6.8,11.7,6,23.8,11.5,31L26,52l14.5-21C46,23.8,45.2,11.7,38.9,5.3z M26.2,24c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S29.5,24,26.2,24z'
+              path: 'M38.9,5.3L38.9,5.3c-7.1-7.1-18.6-7.1-25.7,0l0,0C6.8,11.7,6,23.8,11.5,31L26,52l14.5-21C46,23.8,45.2,11.7,38.9,5.3z M26.2,24c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S29.5,24,26.2,24z'
             }
           };
 
@@ -2065,59 +2059,57 @@ export class TripPlannerService implements OnDestroy {
     }
 
     try {
-      const aggregatedSwitches = result.modeSwitches.map(
-        (modeSwitch): TripModeSwitch => {
-          const route = [];
-          const directions = [];
+      const aggregatedSwitches = result.modeSwitches.map((modeSwitch): TripModeSwitch => {
+        const route = [];
+        const directions = [];
 
-          // Create an array of cloned features from the modeSwitch array.
+        // Create an array of cloned features from the modeSwitch array.
 
-          // From this point on, graphic features will not be references to the `results` object in the trip result.
-          const modeSwitchFeatures = modeSwitch.graphics.map((g) => g.clone());
+        // From this point on, graphic features will not be references to the `results` object in the trip result.
+        const modeSwitchFeatures = modeSwitch.graphics.map((g) => g.clone());
 
-          modeSwitchFeatures.forEach((feature, index, features) => {
-            // Generate a potential guid that will be assigned to route segments and written directions items.
-            const potentialGuid = guid();
+        modeSwitchFeatures.forEach((feature, index, features) => {
+          // Generate a potential guid that will be assigned to route segments and written directions items.
+          const potentialGuid = guid();
 
-            if (index === 0 || index === features.length - 1) {
+          if (index === 0 || index === features.length - 1) {
+            feature.attributes.guid = potentialGuid;
+
+            route.push(feature);
+            directions.push(feature);
+          } else {
+            // If current feature maneuver is of same type as last feature's,
+            // combine their time and distance values.
+            if (feature.attributes.maneuverType === directions[directions.length - 1].attributes.maneuverType) {
+              const prev = directions[directions.length - 1];
+
+              prev.attributes.length += feature.attributes.length;
+              prev.attributes.time += feature.attributes.time;
+
+              // Assign the current features guid to be the same as the last feature's.
+              feature.attributes.guid = prev.attributes.guid;
+
+              // Add the current feature to the route. We don't want to exclude any graphic items from the original route,
+              // even if they are of the same maneuver type because we want to be able to draw the feature fully without gaps.
+              //
+              // However, this feature will have a binding guid to the matching directions item. This will allow future feature such as
+              // segment highlighting on direction mouse hover.
+              route.push(feature);
+            } else {
               feature.attributes.guid = potentialGuid;
 
               route.push(feature);
               directions.push(feature);
-            } else {
-              // If current feature maneuver is of same type as last feature's,
-              // combine their time and distance values.
-              if (feature.attributes.maneuverType === directions[directions.length - 1].attributes.maneuverType) {
-                const prev = directions[directions.length - 1];
-
-                prev.attributes.length += feature.attributes.length;
-                prev.attributes.time += feature.attributes.time;
-
-                // Assign the current features guid to be the same as the last feature's.
-                feature.attributes.guid = prev.attributes.guid;
-
-                // Add the current feature to the route. We don't want to exclude any graphic items from the original route,
-                // even if they are of the same maneuver type because we want to be able to draw the feature fully without gaps.
-                //
-                // However, this feature will have a binding guid to the matching directions item. This will allow future feature such as
-                // segment highlighting on direction mouse hover.
-                route.push(feature);
-              } else {
-                feature.attributes.guid = potentialGuid;
-
-                route.push(feature);
-                directions.push(feature);
-              }
             }
-          });
+          }
+        });
 
-          return {
-            ...modeSwitch,
-            route,
-            directions
-          };
-        }
-      );
+        return {
+          ...modeSwitch,
+          route,
+          directions
+        };
+      });
 
       return new TripResult({ ...result, modeSwitches: aggregatedSwitches });
     } catch (err) {
@@ -2216,9 +2208,9 @@ export class TripPlannerService implements OnDestroy {
             return new TripPoint({
               index: categorizedQueryBlocks[index].index,
               source: categorizedQueryBlocks[index].category,
-              originAttributes: result.features[0].attributes,
+              originAttributes: result.features[0].attributes as TripPointAttributes,
               originGeometry: {
-                raw: result.features[0].geometry
+                raw: result.features[0].geometry as esri.Geometry
               },
               originParameters: {
                 type: 'url-query',
@@ -2242,7 +2234,7 @@ export class TripPlannerService implements OnDestroy {
             throwError('No geolocation categories.');
           }
         }),
-        map((coords: Coordinates) => {
+        map((coords: GeolocationCoordinates) => {
           return categorizedGeolocationBlocks.map((block) => {
             return new TripPoint({
               index: block.index,
@@ -2483,99 +2475,97 @@ export class TripPlannerService implements OnDestroy {
     return new Promise((resolve) => {
       try {
         const buildingNumber = (stop.attributes as TripPointAttributesWithBldgNumber).Bldg_Number;
-        return this.mapService.findLayerOrCreateFromSource(source).then(
-          (layer: esri.FeatureLayer): Promise<TripPoint> => {
-            return (layer
-              .queryFeatures({
-                where: `BldgNumber = '${buildingNumber}'`,
-                returnGeometry: true,
-                outSpatialReference: {
-                  wkid: 4326
-                },
-                outFields: ['*']
-              })
-              .then((res) => {
-                // Filter out the doors that are suitable for routing depending on ADA routing mode
-                return res.features.filter((door) => {
-                  // Door classifications
-                  //
-                  // 0= Non-Routable Entrance (Restricted, Courtyard)
-                  // 1= Non-ADA Entrance
-                  // 2= ADA Manual Entrance
-                  // 3= ADA Assisted/Automatic
-                  if (this._TravelOptions.value.accessible) {
-                    return door.attributes.Routing_Class === 2 || door.attributes.Routing_Class === 3;
-                  } else {
-                    return (
-                      door.attributes.Routing_Class === 1 ||
-                      door.attributes.Routing_Class === 2 ||
-                      door.attributes.Routing_Class === 3
-                    );
-                  }
-                });
-              })
-              .then((doors) => {
-                if (doors.length > 0) {
-                  // If doors found, find the one with shortest straight line distance from the provided point
-                  const distanceRef = [];
-                  const distanceValue = [];
-
-                  this.moduleProvider.require(['Point'], true).then((modules: { Point: esri.PointConstructor }) => {
-                    doors.forEach((door) => {
-                      // Point used to calculate euclidian distance between it and the reference point
-                      const currentPoint = new modules.Point({
-                        latitude: door.geometry['latitude'],
-                        longitude: door.geometry['longitude']
-                      });
-
-                      const relativePoint = new modules.Point({
-                        latitude: relativeTo.geometry.latitude,
-                        longitude: relativeTo.geometry.longitude
-                      });
-
-                      distanceRef.push({
-                        distance: currentPoint.distance(relativePoint),
-                        fid: door.attributes['GIS.FCOR.Bldg_Entrance.FID']
-                      });
-
-                      distanceValue.push(currentPoint.distance(relativePoint));
-                    });
-
-                    // Get the index of the smallest value in the distances array
-                    const min = minBy(distanceRef, (o) => {
-                      return o.distance;
-                    });
-
-                    const ret: esri.Graphic = doors.find((feature) => {
-                      return feature.attributes['GIS.FCOR.Bldg_Entrance.FID'] === min.fid;
-                    });
-
-                    const transformationDefinition: TripPointOriginTransformationsParams = {
-                      type: 'nearest-door',
-                      value: {
-                        latitude: (<TripPointGeometry>ret.geometry).latitude,
-                        longitude: (<TripPointGeometry>ret.geometry).longitude
-                      }
-                    };
-
-                    // Return the door with the shortest calculated shortest distance
-                    const transformed = stop;
-
-                    transformed.addTransformation(transformationDefinition);
-                    transformed.geometry.latitude = (<TripPointGeometry>ret.geometry).latitude;
-                    transformed.geometry.longitude = (<TripPointGeometry>ret.geometry).longitude;
-
-                    resolve(transformed);
-                  });
+        return this.mapService.findLayerOrCreateFromSource(source).then((layer: esri.FeatureLayer): Promise<TripPoint> => {
+          return layer
+            .queryFeatures({
+              where: `BldgNumber = '${buildingNumber}'`,
+              returnGeometry: true,
+              outSpatialReference: {
+                wkid: 4326
+              },
+              outFields: ['*']
+            })
+            .then((res) => {
+              // Filter out the doors that are suitable for routing depending on ADA routing mode
+              return res.features.filter((door) => {
+                // Door classifications
+                //
+                // 0= Non-Routable Entrance (Restricted, Courtyard)
+                // 1= Non-ADA Entrance
+                // 2= ADA Manual Entrance
+                // 3= ADA Assisted/Automatic
+                if (this._TravelOptions.value.accessible) {
+                  return door.attributes.Routing_Class === 2 || door.attributes.Routing_Class === 3;
                 } else {
-                  resolve(stop);
+                  return (
+                    door.attributes.Routing_Class === 1 ||
+                    door.attributes.Routing_Class === 2 ||
+                    door.attributes.Routing_Class === 3
+                  );
                 }
-              })
-              .catch(() => {
+              });
+            })
+            .then((doors) => {
+              if (doors.length > 0) {
+                // If doors found, find the one with shortest straight line distance from the provided point
+                const distanceRef = [];
+                const distanceValue = [];
+
+                this.moduleProvider.require(['Point'], true).then((modules: { Point: esri.PointConstructor }) => {
+                  doors.forEach((door) => {
+                    // Point used to calculate euclidian distance between it and the reference point
+                    const currentPoint = new modules.Point({
+                      latitude: door.geometry['latitude'],
+                      longitude: door.geometry['longitude']
+                    });
+
+                    const relativePoint = new modules.Point({
+                      latitude: relativeTo.geometry.latitude,
+                      longitude: relativeTo.geometry.longitude
+                    });
+
+                    distanceRef.push({
+                      distance: currentPoint.distance(relativePoint),
+                      fid: door.attributes['GIS.FCOR.Bldg_Entrance.FID']
+                    });
+
+                    distanceValue.push(currentPoint.distance(relativePoint));
+                  });
+
+                  // Get the index of the smallest value in the distances array
+                  const min = minBy(distanceRef, (o) => {
+                    return o.distance;
+                  });
+
+                  const ret: esri.Graphic = doors.find((feature) => {
+                    return feature.attributes['GIS.FCOR.Bldg_Entrance.FID'] === min.fid;
+                  });
+
+                  const transformationDefinition: TripPointOriginTransformationsParams = {
+                    type: 'nearest-door',
+                    value: {
+                      latitude: (<TripPointGeometry>ret.geometry).latitude,
+                      longitude: (<TripPointGeometry>ret.geometry).longitude
+                    }
+                  };
+
+                  // Return the door with the shortest calculated shortest distance
+                  const transformed = stop;
+
+                  transformed.addTransformation(transformationDefinition);
+                  transformed.geometry.latitude = (<TripPointGeometry>ret.geometry).latitude;
+                  transformed.geometry.longitude = (<TripPointGeometry>ret.geometry).longitude;
+
+                  resolve(transformed);
+                });
+              } else {
                 resolve(stop);
-              }) as unknown) as Promise<TripPoint>;
-          }
-        );
+              }
+            })
+            .catch(() => {
+              resolve(stop);
+            }) as unknown as Promise<TripPoint>;
+        });
       } catch (err) {
         console.warn(`Potential error in nearest door: `, err.message);
         // If any error in the chain, resolve with the original stop;
