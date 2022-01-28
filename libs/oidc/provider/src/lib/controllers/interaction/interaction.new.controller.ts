@@ -42,7 +42,7 @@ export class InteractionController {
         }
 
         case 'consent': {
-          console.log('consent');
+          console.log('consent', uid);
           return res.render('interaction', {
             client,
             uid,
@@ -187,8 +187,57 @@ export class InteractionController {
   }
 
   @Post(':uid/confirm')
-  public confirmPost(@Param() params) {
+  public async confirmPost(@Param() params, @Req() req: Request, @Res() res: Response) {
     console.log(':uid/confirm', 'confirmPost', params);
+    try {
+      const interactionDetails = await this.providerService.provider.interactionDetails(req, res);
+      const {
+        prompt: { name, details },
+        params,
+        session: { accountId }
+      } = interactionDetails;
+      // assert.equal(name, 'consent');
+
+      let { grantId } = interactionDetails;
+      let grant;
+
+      if (grantId) {
+        // we'll be modifying existing grant in existing session
+        grant = await this.providerService.provider.Grant.find(grantId);
+      } else {
+        // we're establishing a new grant
+        grant = new this.providerService.provider.Grant({
+          accountId,
+          clientId: params.client_id
+        });
+      }
+
+      if (details.missingOIDCScope) {
+        grant.addOIDCScope(details.missingOIDCScope.join(' '));
+      }
+      if (details.missingOIDCClaims) {
+        grant.addOIDCClaims(details.missingOIDCClaims);
+      }
+      if (details.missingResourceScopes) {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const [indicator, scopes] of Object.entries(details.missingResourceScopes)) {
+          grant.addResourceScope(indicator, scopes.join(' '));
+        }
+      }
+
+      grantId = await grant.save();
+
+      const consent = {};
+      if (!interactionDetails.grantId) {
+        // we don't have to pass grantId to consent, we're just modifying existing one
+        consent['grantId'] = grantId;
+      }
+
+      const result = { consent };
+      await this.providerService.provider.interactionFinished(req, res, result, { mergeWithLastSubmission: true });
+    } catch (err) {
+      return err;
+    }
   }
 
   @Post(':uid/abort')

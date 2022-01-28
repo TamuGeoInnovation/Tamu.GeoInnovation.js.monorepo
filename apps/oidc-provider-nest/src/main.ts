@@ -137,10 +137,13 @@ async function bootstrap() {
   // TwoFactorAuthUtils.build();
 
   // app.use(helmet());
-  app.set('view engine', 'ejs');
+  app.setViewEngine('ejs');
   app.set('views', dir);
+  // app.set('view engine', 'ejs');
+  // app.set('views', dir);
   app.set('x-powered-by', false);
   // TODO: Replace these express.static calls with Nest's ServeStaticModule?
+  app.use(express.static(join(__dirname, 'assets', 'views')));
   app.use(express.static(join(__dirname, 'assets', 'styles')));
   app.use(express.static(join(__dirname, 'assets', 'scripts')));
   app.use(express.static(join(__dirname, 'assets', 'images')));
@@ -205,138 +208,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-
-function enableOIDCDebug(idp: Provider): void {
-  idp.addListener('server_error', (ctx, error) => {
-    console.error(error.message);
-    throw error;
-  });
-  idp.addListener('authorization.accepted', (ctx) => {
-    console.log('authorization.accepted');
-  });
-  idp.addListener('interaction.started', (detail, ctx) => {
-    console.log('interaction.started');
-  });
-  idp.addListener('interaction.ended', (ctx) => {
-    console.log('interaction.ended');
-  });
-  idp.addListener('authorization.success', (ctx) => {
-    console.log('authorization.success');
-  });
-  idp.addListener('authorization.error', (error, ctx) => {
-    console.log('authorization.error');
-    console.error(error);
-  });
-
-  idp.addListener('grant.success', (ctx) => {
-    console.log('grant.success');
-  });
-
-  idp.addListener('grant.error', (error, ctx) => {
-    console.log('grant.error');
-    console.error(ctx);
-  });
-
-  idp.addListener('certificates.error', (error, ctx) => {
-    console.log('certificates.error');
-    console.error(error);
-  });
-
-  idp.addListener('discovery.error', (error, ctx) => {
-    console.log('discovery.error');
-    console.error(error);
-  });
-
-  idp.addListener('introspection.error', (error, ctx) => {
-    console.log('introspection.error');
-    console.error(error);
-  });
-
-  idp.addListener('revocation.error', (error, ctx) => {
-    console.log('revocation.error');
-    console.error(error);
-  });
-
-  idp.addListener('registration_create.success', (client, ctx) => {
-    console.log('registration_create.success');
-  });
-
-  idp.addListener('registration_create.error', (error, ctx) => {
-    console.log('registration_create.error');
-    console.error(error);
-  });
-
-  idp.addListener('registration_read.error', (error, ctx) => {
-    console.log('registration_read.error');
-    console.error(error);
-  });
-
-  idp.addListener('registration_update.success', (client, ctx) => {
-    console.log('registration_update.success');
-  });
-
-  idp.addListener('registration_update.error', (error, ctx) => {
-    console.log('registration_update.error');
-    console.error(error);
-  });
-
-  idp.addListener('registration_delete.success', (client, ctx) => {
-    console.log('registration_delete.success');
-  });
-
-  idp.addListener('registration_delete.error', (error, ctx) => {
-    console.log('registration_delete.error');
-    console.error(error);
-  });
-
-  idp.addListener('userinfo.error', (error, ctx) => {
-    console.log('userinfo.error');
-    console.error(error);
-  });
-
-  idp.addListener('check_session.error', (error, ctx) => {
-    console.log('check_session.error');
-    console.error(error);
-  });
-
-  idp.addListener('check_session_origin.error', (error, ctx) => {
-    console.log('check_session_origin.error');
-    console.error(error);
-  });
-
-  idp.addListener('webfinger.error', (error, ctx) => {
-    console.log('webfinger.error');
-    console.error(error);
-  });
-
-  idp.addListener('token.issued', (token) => {
-    console.log('token.issued');
-  });
-
-  idp.addListener('token.consumed', (token) => {
-    console.log('token.consumed');
-  });
-
-  idp.addListener('token.revoked', (token) => {
-    console.log('token.revoked');
-  });
-
-  idp.addListener('grant.revoked', (grantId) => {
-    console.log('grant.revoked');
-  });
-
-  idp.addListener('end_session.success', (ctx) => {
-    console.log('end_session.success');
-  });
-  idp.addListener('end_session.error', (error, ctx) => {
-    console.log('end_session.error');
-    console.error(error);
-  });
-  idp.addListener('backchannel.success', (client: Provider, accoundId: string, sid: string, ctx) => {
-    console.log('backchannel.success');
-  });
-  idp.addListener('backchannel.error', (error, client: Provider, accoundId: string, sid: string, ctx) => {
-    console.log('backchannel.error');
-    console.error(error);
-  });
-}
