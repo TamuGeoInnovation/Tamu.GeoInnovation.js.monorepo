@@ -37,7 +37,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
     })
   );
 
-  public location: Position;
+  public location: GeolocationPosition;
 
   public formValid: Observable<boolean>;
 
