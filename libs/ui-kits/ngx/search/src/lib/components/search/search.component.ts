@@ -165,7 +165,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * Search results list
    */
-  public searchResults: SearchResult<unknown>;
+  public searchResults: SearchResult<any>;
 
   /**
    * Resolved search status, indicates if the resolved search result includes at least one feature.
