@@ -22,7 +22,13 @@ import { arrowKeyControl } from '@tamu-gisc/common/utils/ui';
 import { getGeolocation, isCoordinatePair } from '@tamu-gisc/common/utils/geometry/generic';
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 
-import { SearchService, SearchResult, SearchResultItem, SearchSource } from '../../services/search.service';
+import {
+  SearchService,
+  SearchResult,
+  SearchResultItem,
+  SearchSource,
+  SearchResultFeature
+} from '../../services/search.service';
 
 import esri = __esri;
 
@@ -33,7 +39,7 @@ import esri = __esri;
   providers: [SearchService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchComponent<T extends object> implements OnInit, OnDestroy {
+export class SearchComponent implements OnInit, OnDestroy {
   /**
    * Placeholder text for the input.
    *
@@ -100,7 +106,7 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
    * Event emitter that will emit to parent component, the value of the selected item
    */
   @Output()
-  public result: EventEmitter<SearchSelection<T>> = new EventEmitter();
+  public result: EventEmitter<SearchSelection<unknown>> = new EventEmitter();
 
   /**
    * Event emitter that will emit when the value has changed and is no longer the same as initial.
@@ -192,7 +198,7 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
     private cd: ChangeDetectorRef,
     private analytics: Angulartics2,
     private ns: NotificationService,
-    private searchService: SearchService<T>,
+    private searchService: SearchService,
     private environment: EnvironmentService
   ) {
     if (this.environment.value('SearchSources')) {
@@ -234,7 +240,8 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
       .subscribe((value) => {
         if (value && value.length > 0) {
           if (isCoordinatePair(value)) {
-            this.setSelected(value as unknown as T, {
+            // TODO: no any
+            this.setSelected(value as any, {
               name: value,
               breadcrumbs: {
                 source: undefined,
@@ -343,7 +350,7 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
    * Sets the input value to be the result text, and updates the Subject value to prevent stale
    * suggestions when component is focused on again.
    */
-  public setSelected(feature: T, parentResult: SearchResultItem<T>) {
+  public setSelected<T>(feature: T, parentResult: SearchResultItem<T>) {
     const isString = typeof feature === 'string';
 
     const selection = new SearchSelection<T>({
@@ -355,7 +362,7 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
 
     if (feature && !isString) {
       // Update the DOM model value
-      this.value = this.evaluateDisplayTemplate(feature, parentResult.displayTemplate);
+      this.value = this.evaluateDisplayTemplate(feature as unknown as object, parentResult.displayTemplate);
 
       // De-focus the component
       this.loseFocus();
@@ -398,7 +405,7 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
               name: 'Current Location',
               latitude: res.latitude,
               longitude: res.longitude
-            } as T,
+            },
             result: {
               breadcrumbs: {
                 source: {
@@ -446,7 +453,7 @@ export class SearchComponent<T extends object> implements OnInit, OnDestroy {
               latitude: defaultLatitude,
               longitude: defaultLongitude,
               name: 'Trigon (Default'
-            } as T
+            }
           })
         );
 
@@ -561,7 +568,7 @@ export class SearchEvent {
   }
 }
 
-export class SearchSelection<T extends object> {
+export class SearchSelection<T> {
   public type: ISearchSelection<T>['type'];
   public selection: ISearchSelection<T>['selection'];
   public result: ISearchSelection<T>['result'];
@@ -575,7 +582,7 @@ export class SearchSelection<T extends object> {
   }
 }
 
-export interface ISearchSelection<T extends object> {
+export interface ISearchSelection<T> {
   /**
    * Index of the input element, if part of a collection.
    */

@@ -126,5 +126,8 @@
       "@tamu-gisc/veoride/scraper": ["libs/veoride/scraper/src/index.ts"]
     }
   },
+  "angularCompilerOptions": {
+    "strictTemplates": true
+  },
   "exclude": ["node_modules", "tmp"]
 }

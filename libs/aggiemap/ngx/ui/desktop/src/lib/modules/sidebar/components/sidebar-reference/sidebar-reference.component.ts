@@ -12,7 +12,7 @@ import esri = __esri;
   styleUrls: ['./sidebar-reference.component.scss']
 })
 export class SidebarReferenceComponent<T extends esri.Graphic> implements OnInit {
-  constructor(private helper: AltSearchHelper<T>, private mapService: EsriMapService) {}
+  constructor(private helper: AltSearchHelper, private mapService: EsriMapService) {}
 
   public onSearchResult(result: SearchSelection<T>) {
     this.helper.handleSearchResultFeatureSelection(result).subscribe((res) => {

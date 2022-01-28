@@ -1,12 +1,4 @@
-interface Event {
-  title: string;
-  date: number;
-  description: string;
-  keywords: Array<string>;
-  media?: Array<object>;
-}
-
-export const events: Array<Event> = [
+export const events: Array<ChangelogEvent> = [
   {
     title: 'Graduation Parking Maps',
     date: 1557144000000,
@@ -291,3 +283,11 @@ export const events: Array<Event> = [
     ]
   }
 ];
+
+export interface ChangelogEvent {
+  title: string;
+  date: number;
+  description: string;
+  keywords: Array<string>;
+  media?: Array<{ url: string; title: string }>;
+}

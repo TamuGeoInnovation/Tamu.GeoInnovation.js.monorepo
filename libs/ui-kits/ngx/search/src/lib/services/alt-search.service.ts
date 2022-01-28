@@ -7,6 +7,8 @@ import { getObjectPropertyValues } from '@tamu-gisc/common/utils/object';
 import { SearchService, SearchSource, SearchResult } from '../services/search.service';
 import { SearchSelection } from '../components/search/search.component';
 
+import esri = __esri;
+
 /**
  *
  * This service is used for making subsequent search queries using the key-value results from the first to determine geometry,
@@ -18,10 +20,10 @@ import { SearchSelection } from '../components/search/search.component';
  *  - The feature items contain property values that can be related in another table/service that does contain geometry data.
  */
 @Injectable({ providedIn: 'root' })
-export class AltSearchHelper<T extends object> {
+export class AltSearchHelper {
   private _sources: SearchSource[];
 
-  constructor(private searchService: SearchService<T>, private environment: EnvironmentService) {
+  constructor(private searchService: SearchService, private environment: EnvironmentService) {
     if (this.environment.value('SearchSources')) {
       this._sources = this.environment.value('SearchSources');
     }
@@ -34,7 +36,7 @@ export class AltSearchHelper<T extends object> {
    *
    * If the alt lookup definition does not exist, use the result of the original query to map/highlight, and invoke popup.
    */
-  public handleSearchResultFeatureSelection(incoming: SearchSelection<T>) {
+  public handleSearchResultFeatureSelection<T extends object>(incoming: SearchSelection<T>) {
     const source = incoming.result.breadcrumbs.source;
 
     if (source && source.altLookup) {
@@ -49,7 +51,7 @@ export class AltSearchHelper<T extends object> {
           stateful: false,
           returnAsPromise: true
         })
-        .then((res: SearchResult<T>) => {
+        .then((res: SearchResult<esri.Graphic>) => {
           if (res.results && res.results[0].features.length > 0) {
             return new SearchSelection({
               type: 'search',

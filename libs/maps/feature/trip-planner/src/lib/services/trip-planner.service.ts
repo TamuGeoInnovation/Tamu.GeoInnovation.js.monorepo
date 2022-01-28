@@ -408,10 +408,10 @@ export class TripPlannerService implements OnDestroy {
     private analytics: Angulartics2,
     private ns: NotificationService,
     private url: ActivatedRoute,
-    private search: SearchService<esri.Graphic>,
+    private search: SearchService,
     private busService: BusService,
     private bikeService: BikeService,
-    private parkingService: ParkingService<esri.Graphic>,
+    private parkingService: ParkingService,
     private inrixService: InrixService,
     private settings: SettingsService,
     private environment: EnvironmentService
@@ -2208,9 +2208,9 @@ export class TripPlannerService implements OnDestroy {
             return new TripPoint({
               index: categorizedQueryBlocks[index].index,
               source: categorizedQueryBlocks[index].category,
-              originAttributes: result.features[0].attributes,
+              originAttributes: result.features[0].attributes as TripPointAttributes,
               originGeometry: {
-                raw: result.features[0].geometry
+                raw: result.features[0].geometry as esri.Geometry
               },
               originParameters: {
                 type: 'url-query',

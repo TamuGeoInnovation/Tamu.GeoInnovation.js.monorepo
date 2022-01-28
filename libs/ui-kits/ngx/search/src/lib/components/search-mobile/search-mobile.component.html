@@ -27,9 +27,7 @@
           <p class="category-name">{{ result.name }}</p>
           <div>
             <div class="result-item" *ngFor="let feature of result.features">
-              <p (mousedown)="setSelected(feature, result)" (keydown.space)="setSelected(feature, result)" (keydown.enter)="setSelected(feature, result)" (keydown.esc)="loseFocus()" (focus)="setFocus()" class="focusable" tabindex="-1" role="option">
-                {{ evaluateDisplayTemplate(feature, result.displayTemplate) | titlecase }}
-              </p>
+              <p (mousedown)="setSelected(feature, result)" (keydown.space)="setSelected(feature, result)" (keydown.enter)="setSelected(feature, result)" (keydown.esc)="loseFocus()" (focus)="setFocus()" class="focusable" tabindex="-1" role="option">{{ evaluateDisplayTemplate(feature, result.displayTemplate) | titlecase }}</p>
             </div>
           </div>
         </div>

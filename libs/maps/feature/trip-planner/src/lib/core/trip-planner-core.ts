@@ -104,14 +104,17 @@ export class TripPoint {
   public static from<T extends esri.Graphic>(input: SearchSelection<T>): TripPoint {
     const isString = typeof input.selection === 'string';
 
+    const attr = { ...(input.selection.attributes as object) } as TripPointAttributes;
+    const selection = { ...(input.selection as object) } as TripPointAttributes;
+
     const result = new TripPoint({
       source: input.type,
       index: input.index,
-      originAttributes: input.selection.attributes ? { ...input.selection.attributes } : { ...input.selection },
+      originAttributes: input.selection.attributes ? attr : selection,
       originGeometry:
         !isString && input.selection && input.selection.geometry
           ? {
-              raw: Object.assign({}, input.selection.geometry)
+              raw: Object.assign({}, input.selection.geometry as esri.Geometry)
             }
           : (input.selection as TripPointGeometry).latitude && (input.selection as TripPointGeometry).longitude
           ? {
@@ -140,7 +143,7 @@ export class TripPoint {
     if (!this.normalized) {
       if (this.originAttributes || this.originGeometry || this.source) {
         // The stop instance would not ideally be mutated. Standardized properties will be copies
-        // of data instead of data by reference, which should elminate unexpected mutation by
+        // of data instead of data by reference, which should eliminate unexpected mutation by
         // reference on the origin properties.
 
         if (
@@ -318,7 +321,7 @@ export class TripPoint {
     const attributes = this.attributes ? { ...this.attributes } : { ...this.originAttributes };
     const geometry: Partial<esri.Geometry> = { ...this.originGeometry.raw };
 
-    ((geometry as unknown) as { type: string }).type = getGeometryType(geometry);
+    (geometry as unknown as { type: string }).type = getGeometryType(geometry);
 
     return <esri.Graphic>{
       geometry: geometry,
@@ -331,7 +334,7 @@ export class TripPoint {
    * and aliases (building name, building number).
    */
   public getIdentifier(): string {
-    const attr = (this.attributes as unknown) as TripPointAttributesMaybeIdentifiable;
+    const attr = this.attributes as unknown as TripPointAttributesMaybeIdentifiable;
     if (attr.Number && attr.Number !== '') {
       // Test building number
       return attr.Number;

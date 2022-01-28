@@ -10,7 +10,7 @@ import { events } from '../changelog-events';
 export class ChangelogComponent implements OnInit {
   constructor() {}
 
-  public events = events;
+  public changelogEvents = events;
 
   public ngOnInit() {}
 }
