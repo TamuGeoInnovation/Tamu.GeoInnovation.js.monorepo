@@ -210,6 +210,15 @@ export class OidcProviderService {
           response_types: ['code'],
           token_endpoint_auth_method: 'none',
           post_logout_redirect_uris: ['http://localhost:4204'] // cannot log out if you don't set this. Note uri(s) is plural and takes an array
+        },
+        {
+          client_id: 'gisday',
+          client_secret: '...',
+          grant_types: ['refresh_token', 'authorization_code'],
+          redirect_uris: ['http://localhost:4200'],
+          response_types: ['code'],
+          token_endpoint_auth_method: 'none',
+          post_logout_redirect_uris: ['http://localhost:4200'] // cannot log out if you don't set this. Note uri(s) is plural and takes an array
         }
       ],
       cookies: {

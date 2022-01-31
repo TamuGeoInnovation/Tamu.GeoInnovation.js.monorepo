@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 
+import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
 import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
@@ -95,6 +96,20 @@ const routeOptions: ExtraOptions = {
 
 @NgModule({
   imports: [
+    AuthModule.forRoot({
+      config: {
+        authority: 'http://localhost:4001/oidc',
+        redirectUrl: window.location.origin,
+        postLogoutRedirectUri: window.location.origin,
+        clientId: 'gisday',
+        scope: 'openid offline_access profile email',
+        responseType: 'code',
+        silentRenew: true,
+        useRefreshToken: true,
+        logLevel: LogLevel.Debug,
+        autoUserInfo: false
+      }
+    }),
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, routeOptions),
