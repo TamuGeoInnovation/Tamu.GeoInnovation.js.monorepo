@@ -11,6 +11,12 @@
         "jestConfig": "libs/ues/operations/ngx/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/ues/operations/ngx/src/**/*.ts", "libs/ues/operations/ngx/src/**/*.html"]
+      }
     }
   },
   "tags": []
