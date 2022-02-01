@@ -10,6 +10,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/common/types"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/common/types/src/**/*.ts", "libs/common/types/src/**/*.html"]
+      }
     }
   },
   "tags": []
