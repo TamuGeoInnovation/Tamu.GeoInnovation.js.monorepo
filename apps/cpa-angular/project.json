@@ -119,6 +119,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/cpa-angular"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/cpa-angular/src/**/*.ts", "apps/cpa-angular/src/**/*.html"]
+      }
     }
   },
   "tags": [],

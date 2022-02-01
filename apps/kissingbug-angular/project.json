@@ -143,6 +143,12 @@
         "jestConfig": "apps/kissingbug-angular/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/kissingbug-angular/src/**/*.ts", "apps/kissingbug-angular/src/**/*.html"]
+      }
     }
   },
   "tags": [],

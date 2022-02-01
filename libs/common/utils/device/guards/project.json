@@ -11,6 +11,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/common/utils/device/guards"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/common/utils/device/guards/src/**/*.ts", "libs/common/utils/device/guards/src/**/*.html"]
+      }
     }
   },
   "tags": []

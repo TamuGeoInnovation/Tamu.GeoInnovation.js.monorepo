@@ -119,6 +119,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/signage-angular"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/signage-angular/src/**/*.ts", "apps/signage-angular/src/**/*.html"]
+      }
     }
   },
   "tags": [],

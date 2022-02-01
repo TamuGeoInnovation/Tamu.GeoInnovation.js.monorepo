@@ -119,6 +119,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/geoservices-angular"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/geoservices-angular/src/**/*.ts", "apps/geoservices-angular/src/**/*.html"]
+      }
     }
   },
   "tags": [],

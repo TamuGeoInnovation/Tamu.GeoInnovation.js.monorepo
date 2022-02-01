@@ -15,6 +15,13 @@
           "devServerTarget": "ues-valves-angular:serve:production"
         }
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/ues-valves-angular-e2e/**/*.{js,ts}"]
+      }
     }
   },
   "tags": [],

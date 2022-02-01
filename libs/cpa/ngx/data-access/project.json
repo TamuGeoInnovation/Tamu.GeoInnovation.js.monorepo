@@ -11,6 +11,12 @@
         "jestConfig": "libs/cpa/ngx/data-access/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/cpa/ngx/data-access/src/**/*.ts", "libs/cpa/ngx/data-access/src/**/*.html"]
+      }
     }
   },
   "tags": []

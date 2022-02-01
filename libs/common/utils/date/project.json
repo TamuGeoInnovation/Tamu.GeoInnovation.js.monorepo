@@ -10,6 +10,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/common/utils/date"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/common/utils/date/src/**/*.ts", "libs/common/utils/date/src/**/*.html"]
+      }
     }
   },
   "tags": []

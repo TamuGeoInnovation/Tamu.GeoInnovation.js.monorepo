@@ -11,6 +11,12 @@
         "jestConfig": "libs/oidc/admin/ngx/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/oidc/admin/ngx/src/**/*.ts", "libs/oidc/admin/ngx/src/**/*.html"]
+      }
     }
   },
   "tags": []

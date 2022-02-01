@@ -11,6 +11,12 @@
         "jestConfig": "libs/ui-kits/ngx/search/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/ui-kits/ngx/search/src/**/*.ts", "libs/ui-kits/ngx/search/src/**/*.html"]
+      }
     }
   },
   "tags": []

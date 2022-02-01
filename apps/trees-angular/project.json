@@ -109,6 +109,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/trees-angular"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/trees-angular/src/**/*.ts", "apps/trees-angular/src/**/*.html"]
+      }
     }
   },
   "tags": [],

@@ -122,6 +122,12 @@
         "jestConfig": "apps/ues-recycling-angular/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/ues-recycling-angular/src/**/*.ts", "apps/ues-recycling-angular/src/**/*.html"]
+      }
     }
   },
   "tags": [],

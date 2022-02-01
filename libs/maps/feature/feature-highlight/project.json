@@ -11,6 +11,15 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/maps/feature/feature-highlight"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/maps/feature/feature-highlight/src/**/*.ts",
+          "libs/maps/feature/feature-highlight/src/**/*.html"
+        ]
+      }
     }
   },
   "tags": []

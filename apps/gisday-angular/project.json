@@ -116,6 +116,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/gisday-angular"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/gisday-angular/src/**/*.ts", "apps/gisday-angular/src/**/*.html"]
+      }
     }
   },
   "tags": [],

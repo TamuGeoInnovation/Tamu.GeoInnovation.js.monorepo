@@ -11,6 +11,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/maps/feature/coordinates"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/maps/feature/coordinates/src/**/*.ts", "libs/maps/feature/coordinates/src/**/*.html"]
+      }
     }
   },
   "tags": []

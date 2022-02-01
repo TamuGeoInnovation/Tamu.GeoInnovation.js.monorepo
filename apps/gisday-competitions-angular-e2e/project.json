@@ -15,6 +15,13 @@
         "devServerTarget": "gisday-competitions-angular:serve",
         "tsConfig": "apps/gisday-competitions-angular-e2e/tsconfig.e2e.json"
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/gisday-competitions-angular-e2e/**/*.{js,ts}"]
+      }
     }
   },
   "tags": [],

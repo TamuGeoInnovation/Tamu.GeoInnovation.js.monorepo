@@ -10,6 +10,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/common/utils/geometry/esri"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/common/utils/geometry/esri/src/**/*.ts", "libs/common/utils/geometry/esri/src/**/*.html"]
+      }
     }
   },
   "tags": []

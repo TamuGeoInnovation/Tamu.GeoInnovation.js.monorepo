@@ -11,6 +11,12 @@
         "jestConfig": "libs/geoservices/ngx/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/geoservices/ngx/src/**/*.ts", "libs/geoservices/ngx/src/**/*.html"]
+      }
     }
   },
   "tags": []

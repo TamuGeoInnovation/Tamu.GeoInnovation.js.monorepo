@@ -15,6 +15,13 @@
           "devServerTarget": "kissingbug-angular:serve:production"
         }
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/kissingbug-angular-e2e/**/*.{js,ts}"]
+      }
     }
   },
   "tags": [],

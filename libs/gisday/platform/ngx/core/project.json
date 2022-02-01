@@ -11,6 +11,12 @@
         "jestConfig": "libs/gisday/platform/ngx/core/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/gisday/platform/ngx/core/src/**/*.ts", "libs/gisday/platform/ngx/core/src/**/*.html"]
+      }
     }
   },
   "tags": []

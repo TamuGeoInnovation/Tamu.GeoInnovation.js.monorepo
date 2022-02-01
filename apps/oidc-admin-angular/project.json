@@ -121,6 +121,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/oidc-admin-angular"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/oidc-admin-angular/src/**/*.ts", "apps/oidc-admin-angular/src/**/*.html"]
+      }
     }
   },
   "tags": [],

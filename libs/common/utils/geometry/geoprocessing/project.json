@@ -10,6 +10,15 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/common/utils/geometry/geoprocessing"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/common/utils/geometry/geoprocessing/src/**/*.ts",
+          "libs/common/utils/geometry/geoprocessing/src/**/*.html"
+        ]
+      }
     }
   },
   "tags": []

@@ -11,6 +11,15 @@
         "jestConfig": "libs/gisday/competitions/ngx/common/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/gisday/competitions/ngx/common/src/**/*.ts",
+          "libs/gisday/competitions/ngx/common/src/**/*.html"
+        ]
+      }
     }
   },
   "tags": []

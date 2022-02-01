@@ -11,6 +11,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/ues/effluent/ngx"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/ues/effluent/ngx/src/**/*.ts", "libs/ues/effluent/ngx/src/**/*.html"]
+      }
     }
   },
   "tags": []
