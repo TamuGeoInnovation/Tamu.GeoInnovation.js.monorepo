@@ -11,6 +11,12 @@
         "jestConfig": "libs/aggiemap/ngx/popups/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/aggiemap/ngx/popups/src/**/*.ts", "libs/aggiemap/ngx/popups/src/**/*.html"]
+      }
     }
   },
   "tags": []
