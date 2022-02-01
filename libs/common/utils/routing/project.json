@@ -10,6 +10,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/common/utils/routing"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/common/utils/routing/src/**/*.ts", "libs/common/utils/routing/src/**/*.html"]
+      }
     }
   },
   "tags": []
