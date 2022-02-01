@@ -44,20 +44,6 @@
     },
     "@nrwl/angular:component": {
       "style": "scss"
-    },
-    "@nrwl/angular": {
-      "convert-tslint-to-eslint": {
-        "skipFormat": false,
-        "ignoreExistingTslintConfig": true,
-        "removeTSLintIfNoMoreTSLintTargets": false
-      }
-    },
-    "@nrwl/cypress": {
-      "convert-tslint-to-eslint": {
-        "ignoreExistingTslintConfig": true,
-        "removeTSLintIfNoMoreTSLintTargets": false,
-        "skipFormat": false
-      }
     }
   }
 }
