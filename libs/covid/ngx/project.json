@@ -11,6 +11,12 @@
         "jestConfig": "libs/covid/ngx/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/covid/ngx/src/**/*.ts", "libs/covid/ngx/src/**/*.html"]
+      }
     }
   },
   "tags": []
