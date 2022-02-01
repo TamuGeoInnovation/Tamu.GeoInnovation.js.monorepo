@@ -10,6 +10,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/two/dashboard"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/two/dashboard/src/**/*.ts", "libs/two/dashboard/src/**/*.html"]
+      }
     }
   },
   "tags": []
