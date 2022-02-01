@@ -4,7 +4,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
 import { Angulartics2Module } from 'angulartics2';
-import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
 import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { AggiemapNgxCoreModule } from '@tamu-gisc/aggiemap/ngx/core';
