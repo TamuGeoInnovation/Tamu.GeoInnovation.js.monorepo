@@ -13,12 +13,7 @@
     "default": {
       "runner": "@nrwl/workspace/tasks-runners/default",
       "options": {
-        "cacheableOperations": [
-          "build",
-          "lint",
-          "test",
-          "e2e"
-        ],
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
         "parallel": 1
       }
     }
@@ -49,6 +44,20 @@
     },
     "@nrwl/angular:component": {
       "style": "scss"
+    },
+    "@nrwl/angular": {
+      "convert-tslint-to-eslint": {
+        "skipFormat": false,
+        "ignoreExistingTslintConfig": true,
+        "removeTSLintIfNoMoreTSLintTargets": true
+      }
+    },
+    "@nrwl/cypress": {
+      "convert-tslint-to-eslint": {
+        "skipFormat": false,
+        "ignoreExistingTslintConfig": true,
+        "removeTSLintIfNoMoreTSLintTargets": true
+      }
     }
   }
 }

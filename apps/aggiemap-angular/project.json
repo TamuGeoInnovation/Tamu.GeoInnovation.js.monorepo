@@ -109,6 +109,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/aggiemap-angular"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/aggiemap-angular/src/**/*.ts", "apps/aggiemap-angular/src/**/*.html"]
+      }
     }
   },
   "tags": [],

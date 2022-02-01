@@ -15,6 +15,13 @@
         "devServerTarget": "aggiemap-angular:serve",
         "tsConfig": "apps/aggiemap-angular-e2e/tsconfig.e2e.json"
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/aggiemap-angular-e2e/**/*.{js,ts}"]
+      }
     }
   },
   "tags": [],
