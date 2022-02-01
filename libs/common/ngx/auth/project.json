@@ -11,6 +11,12 @@
         "jestConfig": "libs/common/ngx/auth/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/common/ngx/auth/src/**/*.ts", "libs/common/ngx/auth/src/**/*.html"]
+      }
     }
   },
   "tags": []
