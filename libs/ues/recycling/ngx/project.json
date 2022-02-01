@@ -11,6 +11,12 @@
         "jestConfig": "libs/ues/recycling/ngx/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/ues/recycling/ngx/src/**/*.ts", "libs/ues/recycling/ngx/src/**/*.html"]
+      }
     }
   },
   "tags": []
