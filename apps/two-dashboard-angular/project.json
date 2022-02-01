@@ -112,6 +112,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/two-dashboard-angular"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/two-dashboard-angular/src/**/*.ts", "apps/two-dashboard-angular/src/**/*.html"]
+      }
     }
   },
   "tags": [],
