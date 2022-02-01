@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
+import { Angulartics2GoogleAnalytics } from 'angulartics2';
 
 @Component({
   selector: 'tamu-gisc-root',
