@@ -11,6 +11,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/common/ngx/ui/notification"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/common/ngx/ui/notification/src/**/*.ts", "libs/common/ngx/ui/notification/src/**/*.html"]
+      }
     }
   },
   "tags": []
