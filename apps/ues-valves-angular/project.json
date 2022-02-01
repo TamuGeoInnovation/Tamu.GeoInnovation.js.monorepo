@@ -117,6 +117,12 @@
         "jestConfig": "apps/ues-valves-angular/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/ues-valves-angular/src/**/*.ts", "apps/ues-valves-angular/src/**/*.html"]
+      }
     }
   },
   "tags": [],
