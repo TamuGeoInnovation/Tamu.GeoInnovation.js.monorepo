@@ -11,6 +11,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/maps/feature/accessibility"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/maps/feature/accessibility/src/**/*.ts", "libs/maps/feature/accessibility/src/**/*.html"]
+      }
     }
   },
   "tags": []
