@@ -11,6 +11,12 @@
         "jestConfig": "libs/oidc/admin/data-access/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/oidc/admin/data-access/src/**/*.ts", "libs/oidc/admin/data-access/src/**/*.html"]
+      }
     }
   },
   "tags": []
