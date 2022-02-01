@@ -123,6 +123,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/apps/ues-effluent-angular"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/ues-effluent-angular/src/**/*.ts", "apps/ues-effluent-angular/src/**/*.html"]
+      }
     }
   },
   "tags": [],
