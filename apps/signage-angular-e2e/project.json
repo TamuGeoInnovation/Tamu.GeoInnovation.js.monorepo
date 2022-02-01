@@ -15,6 +15,13 @@
           "devServerTarget": "signage-angular:serve:production"
         }
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/signage-angular-e2e/**/*.{js,ts}"]
+      }
     }
   },
   "tags": [],
