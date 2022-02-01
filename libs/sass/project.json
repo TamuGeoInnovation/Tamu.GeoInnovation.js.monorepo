@@ -1,5 +1,6 @@
 {
   "projectType": "library",
   "root": "libs/sass",
-  "tags": ["scope:shared", "type:styles"]
+  "tags": ["scope:shared", "type:styles"],
+  "targets": {}
 }

@@ -1,5 +1,6 @@
 {
   "projectType": "library",
   "root": "libs/cpa/sass",
-  "tags": ["type:styles", "scope:cpa"]
+  "tags": ["type:styles", "scope:cpa"],
+  "targets": {}
 }
