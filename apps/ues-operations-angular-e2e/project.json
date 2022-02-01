@@ -15,6 +15,13 @@
           "devServerTarget": "ues-operations-angular:serve:production"
         }
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/ues-operations-angular-e2e/**/*.{js,ts}"]
+      }
     }
   },
   "tags": [],
