@@ -11,6 +11,12 @@
         "jestConfig": "libs/aggiemap/ngx/ui/desktop/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/aggiemap/ngx/ui/desktop/src/**/*.ts", "libs/aggiemap/ngx/ui/desktop/src/**/*.html"]
+      }
     }
   },
   "tags": []
