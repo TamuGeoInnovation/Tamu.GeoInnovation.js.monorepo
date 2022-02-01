@@ -49,14 +49,14 @@
       "convert-tslint-to-eslint": {
         "skipFormat": false,
         "ignoreExistingTslintConfig": true,
-        "removeTSLintIfNoMoreTSLintTargets": true
+        "removeTSLintIfNoMoreTSLintTargets": false
       }
     },
     "@nrwl/cypress": {
       "convert-tslint-to-eslint": {
-        "skipFormat": false,
         "ignoreExistingTslintConfig": true,
-        "removeTSLintIfNoMoreTSLintTargets": true
+        "removeTSLintIfNoMoreTSLintTargets": false,
+        "skipFormat": false
       }
     }
   }
