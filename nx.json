@@ -5,8 +5,6 @@
       "dependencies": "*",
       "devDependencies": "*"
     },
-    "package-lock.json": "*",
-    "tslint.json": "*",
     ".eslintrc.json": "*"
   },
   "tasksRunnerOptions": {
