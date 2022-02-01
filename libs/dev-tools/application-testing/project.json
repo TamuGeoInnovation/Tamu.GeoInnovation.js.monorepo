@@ -11,6 +11,15 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/dev-tools/application-testing"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/dev-tools/application-testing/src/**/*.ts",
+          "libs/dev-tools/application-testing/src/**/*.html"
+        ]
+      }
     }
   },
   "tags": []
