@@ -11,6 +11,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/dev-tools/responsive"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/dev-tools/responsive/src/**/*.ts", "libs/dev-tools/responsive/src/**/*.html"]
+      }
     }
   },
   "tags": []
