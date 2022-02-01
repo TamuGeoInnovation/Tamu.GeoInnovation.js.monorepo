@@ -15,6 +15,13 @@
           "devServerTarget": "oidc-admin-angular:serve:production"
         }
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/oidc-admin-angular-e2e/**/*.{js,ts}"]
+      }
     }
   },
   "tags": [],
