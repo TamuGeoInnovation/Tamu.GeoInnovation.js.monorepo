@@ -11,6 +11,12 @@
         "jestConfig": "libs/maps/feature/data/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/maps/feature/data/src/**/*.ts", "libs/maps/feature/data/src/**/*.html"]
+      }
     }
   },
   "tags": []
