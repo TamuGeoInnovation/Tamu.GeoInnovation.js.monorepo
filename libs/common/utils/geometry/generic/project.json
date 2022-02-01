@@ -10,6 +10,15 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/common/utils/geometry/generic"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/common/utils/geometry/generic/src/**/*.ts",
+          "libs/common/utils/geometry/generic/src/**/*.html"
+        ]
+      }
     }
   },
   "tags": []
