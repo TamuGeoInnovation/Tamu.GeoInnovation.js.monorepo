@@ -11,6 +11,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/maps/mapbox"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/maps/mapbox/src/**/*.ts", "libs/maps/mapbox/src/**/*.html"]
+      }
     }
   },
   "tags": []
