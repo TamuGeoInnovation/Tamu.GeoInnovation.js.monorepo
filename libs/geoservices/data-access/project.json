@@ -11,6 +11,12 @@
         "passWithNoTests": true
       },
       "outputs": ["coverage/libs/geoservices/data-access"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/geoservices/data-access/src/**/*.ts", "libs/geoservices/data-access/src/**/*.html"]
+      }
     }
   },
   "tags": []
