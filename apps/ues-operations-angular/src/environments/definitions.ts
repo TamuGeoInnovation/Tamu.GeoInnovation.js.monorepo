@@ -145,22 +145,22 @@ export const LayerSources: LayerSource[] = [
       legendEnabled: false
     }
   },
-  {
-    type: 'feature',
-    id: 'fiber-paths-layer',
-    title: 'Fiber Paths',
-    url: 'https://arcfiber-2p-app.customers.ads.tamu.edu/server/rest/services/FiberInfrastructure/MapServer/2',
-    listMode: 'show',
-    visible: false,
-    native: {
-      outFields: ['*'],
-      minScale: 100000,
-      maxScale: 0,
-      elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerElevationInfo,
-      popupEnabled: false,
-      legendEnabled: false
-    }
-  },
+  // {
+  //   type: 'feature',
+  //   id: 'fiber-paths-layer',
+  //   title: 'Fiber Paths',
+  //   url: 'https://arcfiber-2p-app.customers.ads.tamu.edu/server/rest/services/FiberInfrastructure/MapServer/2',
+  //   listMode: 'show',
+  //   visible: false,
+  //   native: {
+  //     outFields: ['*'],
+  //     minScale: 100000,
+  //     maxScale: 0,
+  //     elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerElevationInfo,
+  //     popupEnabled: false,
+  //     legendEnabled: false
+  //   }
+  // },
   {
     type: 'group',
     id: 'aggiemap-layers',

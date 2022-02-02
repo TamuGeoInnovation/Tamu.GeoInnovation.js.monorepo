@@ -148,6 +148,9 @@ export class MapComponent implements OnInit, OnDestroy {
         throw new Error(err);
       });
 
+    // This returns a collection of layer sources with  an apiKey attribute so that the API can request protected resources.
+    // This is not supported in current v4.19
+    //
     // this.sl.getLayers().subscribe((res) => {
     //   this.ms.loadLayers([res]);
     // });
@@ -157,7 +160,7 @@ export class MapComponent implements OnInit, OnDestroy {
         MapServiceInstance,
         [esri.IdentityManager, esri.OAuthInfoConstructor]
       ]) => {
-        const UESOAuthInfo = new OAuthInfo({
+        const UesOAuthInfo = new OAuthInfo({
           appId: 'pijbJycQQiA7IQqY',
           popup: false,
           portalUrl: 'https://ues-arc-test.apogee.tamu.edu/arcgis',
@@ -165,7 +168,7 @@ export class MapComponent implements OnInit, OnDestroy {
           authNamespace: 'tamu'
         });
 
-        const ITOAuthInfo = new OAuthInfo({
+        const ItOAuthInfo = new OAuthInfo({
           appId: '8l92BfKYXJK7GOIm',
           popup: false,
           portalUrl: 'https://arcfiber-2p-app.customers.ads.tamu.edu/portal',
@@ -173,8 +176,8 @@ export class MapComponent implements OnInit, OnDestroy {
           authNamespace: 'tamu'
         });
 
-        IdentityManager.registerOAuthInfos([UESOAuthInfo, ITOAuthInfo]);
-        IdentityManager.getCredential(UESOAuthInfo.portalUrl + '/sharing');
+        IdentityManager.registerOAuthInfos([UesOAuthInfo, ItOAuthInfo]);
+        IdentityManager.getCredential(UesOAuthInfo.portalUrl + '/sharing');
       }
     );
   }
