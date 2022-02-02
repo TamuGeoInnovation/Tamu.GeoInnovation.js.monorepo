@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { forkJoin, from, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
-import { MapServiceInstance, MapConfig, EsriMapService } from '@tamu-gisc/maps/esri';
+import { MapServiceInstance, MapConfig, EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -29,7 +29,8 @@ export class MapComponent implements OnInit, OnDestroy {
     private responsiveService: ResponsiveService,
     private environment: EnvironmentService,
     private readonly sl: SecureLayersService,
-    private readonly ms: EsriMapService
+    private readonly ms: EsriMapService,
+    private readonly mp: EsriModuleProviderService
   ) {}
 
   public ngOnInit() {
@@ -147,9 +148,36 @@ export class MapComponent implements OnInit, OnDestroy {
         throw new Error(err);
       });
 
-    this.sl.getLayers().subscribe((res) => {
-      this.ms.loadLayers([res]);
-    });
+    // this.sl.getLayers().subscribe((res) => {
+    //   this.ms.loadLayers([res]);
+    // });
+
+    forkJoin([this.ms.store, from(this.mp.require(['IdentityManager', 'OAuthInfo']))]).subscribe(
+      ([instances, [IdentityManager, OAuthInfo]]: [
+        MapServiceInstance,
+        [esri.IdentityManager, esri.OAuthInfoConstructor]
+      ]) => {
+        const UESOAuthInfo = new OAuthInfo({
+          appId: 'pijbJycQQiA7IQqY',
+          popup: false,
+          portalUrl: 'https://ues-arc-test.apogee.tamu.edu/arcgis',
+          preserveUrlHash: true,
+          authNamespace: 'tamu'
+        });
+
+        const ITOAuthInfo = new OAuthInfo({
+          appId: '',
+          popup: false,
+          portalUrl: 'https://arcfiber-2p-app.customers.ads.tamu.edu/portal',
+          preserveUrlHash: true,
+          authNamespace: 'tamu'
+        });
+
+        IdentityManager.registerOAuthInfos([UESOAuthInfo, ITOAuthInfo]);
+
+        IdentityManager.getCredential(UESOAuthInfo.portalUrl + '/sharing');
+      }
+    );
   }
 
   /**

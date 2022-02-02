@@ -247,6 +247,14 @@ export class EsriModuleProviderService {
     {
       class: 'esri/core/Collection',
       name: 'Collection'
+    },
+    {
+      class: 'esri/identity/IdentityManager',
+      name: 'IdentityManager'
+    },
+    {
+      class: 'esri/identity/OAuthInfo',
+      name: 'OAuthInfo'
     }
   ];
 

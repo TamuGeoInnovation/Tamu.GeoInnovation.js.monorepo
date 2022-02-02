@@ -116,18 +116,50 @@ const commonLayerProps = {
 };
 
 export const LayerSources: LayerSource[] = [
+  // {
+  //   type: 'map-server',
+  //   url: 'https://ues-arc-test.apogee.tamu.edu/arcgis/rest/services/Test/UES_Operations/MapServer',
+  //   id: 'ues-map-server',
+  //   native: {
+  //     defaultFeatureLayerProperties: {
+  //       visible: false,
+  //       popupComponent: Popups.BaseDirectionsComponent,
+  //       outFields: ['*']
+  //     }
+  //   },
+  //   title: 'UES Operations'
+  // },
   {
-    type: 'map-server',
-    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer',
-    id: 'ues-map-server',
+    type: 'feature',
+    id: 'domestic-cold-water-layer',
+    title: 'Domestic Cold Water',
+    url: 'https://ues-arc-test.apogee.tamu.edu/arcgis/rest/services/Test/UES_Operations/MapServer/1',
+    listMode: 'show',
+    visible: false,
     native: {
-      defaultFeatureLayerProperties: {
-        visible: false,
-        popupComponent: Popups.BaseDirectionsComponent,
-        outFields: ['*']
-      }
-    },
-    title: 'UES Operations'
+      outFields: ['*'],
+      minScale: 100000,
+      maxScale: 0,
+      elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerElevationInfo,
+      popupEnabled: false,
+      legendEnabled: false
+    }
+  },
+  {
+    type: 'feature',
+    id: 'fiber-paths-layer',
+    title: 'Fiber Paths',
+    url: 'https://arcfiber-2p-app.customers.ads.tamu.edu/server/rest/services/FiberInfrastructure/MapServer/2',
+    listMode: 'show',
+    visible: false,
+    native: {
+      outFields: ['*'],
+      minScale: 100000,
+      maxScale: 0,
+      elevationInfo: { mode: 'relative-to-ground', offset: 1 } as esri.FeatureLayerElevationInfo,
+      popupEnabled: false,
+      legendEnabled: false
+    }
   },
   {
     type: 'group',
