@@ -8,8 +8,6 @@ import { MapServiceInstance, MapConfig, EsriMapService, EsriModuleProviderServic
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import { SecureLayersService } from '../data-access/secure-layers/secure-layers.service';
-
 import esri = __esri;
 
 @Component({
@@ -28,7 +26,6 @@ export class MapComponent implements OnInit, OnDestroy {
   constructor(
     private responsiveService: ResponsiveService,
     private environment: EnvironmentService,
-    private readonly sl: SecureLayersService,
     private readonly ms: EsriMapService,
     private readonly mp: EsriModuleProviderService
   ) {}
@@ -93,6 +90,39 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     };
 
+    forkJoin([this.ms.store, from(this.mp.require(['IdentityManager', 'OAuthInfo', 'MapImageLayer']))]).subscribe(
+      ([instances, [IdentityManager, OAuthInfo, MapImageLayer]]: [
+        MapServiceInstance,
+        [esri.IdentityManager, esri.OAuthInfoConstructor, esri.MapImageLayerConstructor]
+      ]) => {
+        const item = new MapImageLayer({
+          url: 'https://ues-arc-test.apogee.tamu.edu/arcgis/rest/services/Test/UES_Operations/MapServer',
+          listMode: 'show'
+        });
+
+        const UesOAuthInfo = new OAuthInfo({
+          appId: 'pijbJycQQiA7IQqY',
+          popup: false,
+          portalUrl: 'https://ues-arc-test.apogee.tamu.edu/arcgis',
+          preserveUrlHash: true,
+          authNamespace: 'tamu'
+        });
+
+        const ItOAuthInfo = new OAuthInfo({
+          appId: '8l92BfKYXJK7GOIm',
+          popup: false,
+          portalUrl: 'https://arcfiber-2p-app.customers.ads.tamu.edu/portal',
+          preserveUrlHash: true,
+          authNamespace: 'tamu'
+        });
+
+        IdentityManager.registerOAuthInfos([UesOAuthInfo, ItOAuthInfo]);
+        IdentityManager.getCredential(UesOAuthInfo.portalUrl + '/sharing');
+
+        instances.map.add(item);
+      }
+    );
+
     // Set loader phrases and display a random one.
     const phrases = [
       'An Aggie does not lie, cheat or steal or tolerate those who do.',
@@ -147,39 +177,6 @@ export class MapComponent implements OnInit, OnDestroy {
       .catch((err) => {
         throw new Error(err);
       });
-
-    // This returns a collection of layer sources with  an apiKey attribute so that the API can request protected resources.
-    // This is not supported in current v4.19
-    //
-    // this.sl.getLayers().subscribe((res) => {
-    //   this.ms.loadLayers([res]);
-    // });
-
-    forkJoin([this.ms.store, from(this.mp.require(['IdentityManager', 'OAuthInfo']))]).subscribe(
-      ([instances, [IdentityManager, OAuthInfo]]: [
-        MapServiceInstance,
-        [esri.IdentityManager, esri.OAuthInfoConstructor]
-      ]) => {
-        const UesOAuthInfo = new OAuthInfo({
-          appId: 'pijbJycQQiA7IQqY',
-          popup: false,
-          portalUrl: 'https://ues-arc-test.apogee.tamu.edu/arcgis',
-          preserveUrlHash: true,
-          authNamespace: 'tamu'
-        });
-
-        const ItOAuthInfo = new OAuthInfo({
-          appId: '8l92BfKYXJK7GOIm',
-          popup: false,
-          portalUrl: 'https://arcfiber-2p-app.customers.ads.tamu.edu/portal',
-          preserveUrlHash: true,
-          authNamespace: 'tamu'
-        });
-
-        IdentityManager.registerOAuthInfos([UesOAuthInfo, ItOAuthInfo]);
-        IdentityManager.getCredential(UesOAuthInfo.portalUrl + '/sharing');
-      }
-    );
   }
 
   /**

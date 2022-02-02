@@ -255,6 +255,10 @@ export class EsriModuleProviderService {
     {
       class: 'esri/identity/OAuthInfo',
       name: 'OAuthInfo'
+    },
+    {
+      class: 'esri/layers/MapImageLayer',
+      name: 'MapImageLayer'
     }
   ];
 
