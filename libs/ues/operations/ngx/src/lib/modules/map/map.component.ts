@@ -166,7 +166,7 @@ export class MapComponent implements OnInit, OnDestroy {
         });
 
         const ITOAuthInfo = new OAuthInfo({
-          appId: '',
+          appId: '8l92BfKYXJK7GOIm',
           popup: false,
           portalUrl: 'https://arcfiber-2p-app.customers.ads.tamu.edu/portal',
           preserveUrlHash: true,
@@ -174,7 +174,6 @@ export class MapComponent implements OnInit, OnDestroy {
         });
 
         IdentityManager.registerOAuthInfos([UESOAuthInfo, ITOAuthInfo]);
-
         IdentityManager.getCredential(UESOAuthInfo.portalUrl + '/sharing');
       }
     );
