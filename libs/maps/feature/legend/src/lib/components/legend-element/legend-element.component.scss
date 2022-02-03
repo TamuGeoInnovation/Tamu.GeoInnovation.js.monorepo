@@ -1,12 +1,21 @@
 @import 'libs/sass/mixins';
 
 .element-parent-name {
-  font-weight: 500;
-  margin-bottom: 0.5rem;
+  @include flexbox();
+  @include flex-direction(row);
+  @include align-items(center);
+  font-weight: 600;
+  margin-bottom: 0.9rem;
 
   // Add a left margin to any subsequent info group
   & ~ div {
     margin-left: 0.75rem;
+  }
+
+  .material-icons {
+    font-size: 1.1rem;
+    color: inherit;
+    margin-right: .25rem;
   }
 }
 
