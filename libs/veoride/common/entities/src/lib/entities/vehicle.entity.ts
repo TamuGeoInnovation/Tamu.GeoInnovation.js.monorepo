@@ -44,7 +44,7 @@ export class Vehicle extends ProviderBase {
     v.last_event_types = dto.last_event_types.toString();
     v.last_event_time = dto.last_event_time.toString();
     v.last_event_location = dto.last_event_location;
-    v.current_location = dto.current_location;
+    v.current_location = dto.current_location as unknown as string;
     v.battery_pct = dto.battery_pct;
 
     return v;
@@ -62,16 +62,39 @@ export class Vehicle extends ProviderBase {
       last_event_types: vehicle.last_event_types.split(','),
       last_event_time: parseInt(vehicle.last_event_time, 10),
       last_event_location: vehicle.last_event_location,
-      current_location: vehicle.current_location,
+      current_location: vehicle.current_location as unknown as MSDVehicleCurrentLocation,
       battery_pct: vehicle.battery_pct
     };
 
     return dto;
   }
+
+  public static toGeoJSONBasicDto(vehicle: Vehicle): Partial<MSDVehicleCurrentLocation> {
+    const dto = {
+      type: 'Feature',
+      properties: {},
+      geometry: (vehicle.current_location as unknown as MSDVehicleCurrentLocation).geometry
+    } as Partial<MSDVehicleCurrentLocation>;
+
+    return dto;
+  }
 }
 
-export interface MDSVehicleDto extends Omit<Vehicle, 'propulsion_types' | 'last_event_types' | 'last_event_time'> {
+export interface MDSVehicleDto
+  extends Omit<Vehicle, 'propulsion_types' | 'last_event_types' | 'last_event_time' | 'current_location'> {
+  current_location: MSDVehicleCurrentLocation;
   propulsion_types: Array<string>;
   last_event_types: Array<string>;
   last_event_time: number;
+}
+
+export interface MSDVehicleCurrentLocation {
+  type: 'Feature';
+  properties: {
+    [key: string]: unknown;
+  };
+  geometry: {
+    type: 'Point';
+    coordinates: [latitude: number, longitude: number];
+  };
 }

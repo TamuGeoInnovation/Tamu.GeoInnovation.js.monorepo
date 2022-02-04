@@ -18,6 +18,8 @@ export interface VeorideModuleRegistrationOptions {
    * reverse proxied through another web server.
    */
   baseUrl: string;
+
+  origin: Array<string | RegExp> | string | RegExp;
 }
 
 // Injection token for datasets storage provider

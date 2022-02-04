@@ -10,5 +10,3 @@ export const environment = {
 export * from './definitions';
 export * from './notification-events';
 export * from './polygons';
-
-export * from './definitions';
