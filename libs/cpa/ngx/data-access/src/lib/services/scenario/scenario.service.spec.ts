@@ -1,25 +1,36 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { ScenarioService } from './scenario.service';
 
+const spyEnvironment = {
+  value: jest.fn()
+};
+
 describe('ScenarioService', () => {
-  beforeEach(() =>
+  let service: ScenarioService;
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, EnvironmentModule],
+      imports: [HttpClientTestingModule],
       providers: [
+        ScenarioService,
         {
-          provide: env,
-          useValue: { api_url: 'https://' }
+          provide: EnvironmentService,
+          useValue: spyEnvironment
         }
       ]
-    })
-  );
+    });
+    httpTestingController = TestBed.inject(HttpTestingController);
+  });
 
+  afterEach(() => {
+    httpTestingController.verify();
+  });
   it('should be created', () => {
-    const service: ScenarioService = TestBed.get(ScenarioService);
+    service = TestBed.inject(ScenarioService);
     expect(service).toBeTruthy();
   });
 });

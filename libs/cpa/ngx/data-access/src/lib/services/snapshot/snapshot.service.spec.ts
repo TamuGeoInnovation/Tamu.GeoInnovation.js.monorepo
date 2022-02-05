@@ -1,25 +1,37 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { SnapshotService } from './snapshot.service';
 
+const spyEnvironment = {
+  value: jest.fn()
+};
+
 describe('SnapshotService', () => {
-  beforeEach(() =>
+  let service: SnapshotService;
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, EnvironmentModule],
+      imports: [HttpClientTestingModule],
       providers: [
+        SnapshotService,
         {
-          provide: env,
-          useValue: { api_url: 'https://' }
+          provide: EnvironmentService,
+          useValue: spyEnvironment
         }
       ]
-    })
-  );
+    });
+    httpTestingController = TestBed.inject(HttpTestingController);
+  });
 
+  afterEach(() => {
+    httpTestingController.verify();
+    jest.resetAllMocks();
+  });
   it('should be created', () => {
-    const service: SnapshotService = TestBed.get(SnapshotService);
+    service = TestBed.inject(SnapshotService);
     expect(service).toBeTruthy();
   });
 });
