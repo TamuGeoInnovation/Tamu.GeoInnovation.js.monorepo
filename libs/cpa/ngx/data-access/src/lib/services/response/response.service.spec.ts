@@ -30,8 +30,24 @@ describe('ResponseService', () => {
     httpTestingController.verify();
   });
 
-  it('should be created', () => {
+  it('createResponse()', () => {
+    const dummyStringValue = 'Foo';
+    const dummyResponse = [
+      {
+        name: 'Foo',
+        workshops: []
+      }
+    ];
+
+    spyEnvironment.value.mockReturnValue(dummyStringValue);
     service = TestBed.inject(ResponseService);
-    expect(service).toBeTruthy();
+
+    service.createResponse({ shapes: { Foo: 'Foo' } }).subscribe((response) => {
+      expect(response[0].name).toBe('Foo');
+    });
+
+    const req = httpTestingController.expectOne(`${service.resource}`);
+    expect(req.request.method).toEqual('POST');
+    req.flush(dummyResponse);
   });
 });

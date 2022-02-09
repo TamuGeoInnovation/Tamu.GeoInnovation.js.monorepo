@@ -30,7 +30,7 @@ describe('ParticipantService', () => {
     httpTestingController.verify();
   });
 
-  it('createParticipantForWorkshop()', fakeAsync(() => {
+  it('createParticipantForWorkshop()', () => {
     const dummyStringValue = 'Foo';
     const dummyResponse = [
       {
@@ -46,12 +46,12 @@ describe('ParticipantService', () => {
       expect(participants[0].name).toBe('Foo');
     });
 
-    const req = httpTestingController.expectOne(`${service.resource}/workshop`, 'reee');
+    const req = httpTestingController.expectOne(`${service.resource}/workshop`);
     expect(req.request.method).toEqual('POST');
     req.flush(dummyResponse);
-  }));
+  });
 
-  it('getParticipantsForWorkshop()', fakeAsync(() => {
+  it('getParticipantsForWorkshop()', () => {
     const dummyStringValue = 'Foo';
     const dummyResponse = [
       {
@@ -71,5 +71,5 @@ describe('ParticipantService', () => {
     const req = httpTestingController.expectOne(`${service.resource}/workshop/${dummyStringValue}`);
     expect(req.request.method).toEqual('GET');
     req.flush(dummyResponse);
-  }));
+  });
 });

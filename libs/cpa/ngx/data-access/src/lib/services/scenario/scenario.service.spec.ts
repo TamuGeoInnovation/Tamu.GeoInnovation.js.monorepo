@@ -29,8 +29,24 @@ describe('ScenarioService', () => {
   afterEach(() => {
     httpTestingController.verify();
   });
-  it('should be created', () => {
+  it('create()', () => {
+    const dummyStringValue = 'Foo';
+    const dummyResponse = [
+      {
+        name: 'Foo',
+        workshops: []
+      }
+    ];
+
+    spyEnvironment.value.mockReturnValue(dummyStringValue);
     service = TestBed.inject(ScenarioService);
-    expect(service).toBeTruthy();
+
+    service.create({}).subscribe((response) => {
+      expect(response[0].name).toBe('Foo');
+    });
+
+    const req = httpTestingController.expectOne(`${'Fooscenarios'}`);
+    expect(req.request.method).toEqual('POST');
+    req.flush(dummyResponse);
   });
 });

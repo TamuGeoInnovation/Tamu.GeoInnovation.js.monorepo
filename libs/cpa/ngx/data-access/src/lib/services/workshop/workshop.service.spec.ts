@@ -30,8 +30,24 @@ describe('WorkshopService', () => {
     httpTestingController.verify();
   });
 
-  it('should be created', () => {
+  it('createWorkshop()', () => {
+    const dummyStringValue = 'Foo';
+    const dummyResponse = [
+      {
+        name: 'Foo',
+        workshops: []
+      }
+    ];
+
+    spyEnvironment.value.mockReturnValue(dummyStringValue);
     service = TestBed.inject(WorkshopService);
-    expect(service).toBeTruthy();
+
+    service.createWorkshop({ guid: 'bruh' }).subscribe((response) => {
+      expect(response[0].name).toBe('Foo');
+    });
+
+    const req = httpTestingController.expectOne('Fooworkshops');
+    expect(req.request.method).toEqual('POST');
+    req.flush(dummyResponse);
   });
 });
