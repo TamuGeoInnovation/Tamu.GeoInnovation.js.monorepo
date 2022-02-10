@@ -56,3 +56,5 @@ oidc.db
 
 #Angular private configs
 secrets.ts
+
+.angular

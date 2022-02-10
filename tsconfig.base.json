@@ -70,6 +70,7 @@
       "@tamu-gisc/kissingbug/ngx": ["libs/kissingbug/ngx/src/index.ts"],
       "@tamu-gisc/mailroom/common": ["libs/mailroom/common/src/index.ts"],
       "@tamu-gisc/maps/esri": ["libs/maps/esri/src/index.ts"],
+      "@tamu-gisc/maps/esri/feature/perspective": ["libs/maps/esri/feature/perspective/src/index.ts"],
       "@tamu-gisc/maps/feature/accessibility": ["libs/maps/feature/accessibility/src/index.ts"],
       "@tamu-gisc/maps/feature/coordinates": ["libs/maps/feature/coordinates/src/index.ts"],
       "@tamu-gisc/maps/feature/data": ["libs/maps/feature/data/src/index.ts"],

@@ -75,6 +75,7 @@
     "mailroom-common": "libs/mailroom/common",
     "mailroom-nest": "apps/mailroom-nest",
     "maps-esri": "libs/maps/esri",
+    "maps-esri-feature-perspective": "libs/maps/esri/feature/perspective",
     "maps-feature-accessibility": "libs/maps/feature/accessibility",
     "maps-feature-coordinates": "libs/maps/feature/coordinates",
     "maps-feature-data": "libs/maps/feature/data",
