@@ -42,7 +42,7 @@
       "executor": "@nrwl/node:execute",
       "options": {
         "buildTarget": "gisday-nest:build",
-        "port": 7777
+        "port": 7778
       },
       "configurations": {
         "production": {

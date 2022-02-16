@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 
-import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
+import { AuthModule, EventTypes, LogLevel, PublicEventsService } from 'angular-auth-oidc-client';
 import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
@@ -12,7 +12,8 @@ import { LoginGuard, LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/platform/
 import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { AppComponent } from './app.component';
-import * as environment from '../environments/environment';
+import * as environment from '../environments/environment.dev';
+import { filter } from 'rxjs';
 
 WebFont.load({
   google: {
@@ -76,7 +77,7 @@ const routes: Routes = [
     canActivate: [LoginGuard],
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LoginModule),
     data: {
-      externalUrl: 'http://localhost:3333/oidc/login'
+      externalUrl: `${environment.api_url}/oidc/login`
     }
   },
   {
@@ -84,7 +85,7 @@ const routes: Routes = [
     canActivate: [LogoutGuard],
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LogoutModule),
     data: {
-      externalUrl: 'http://localhost:3333/oidc/logout'
+      externalUrl: `${environment.api_url}/oidc/login`
     }
   }
 ];
@@ -127,4 +128,13 @@ const routeOptions: ExtraOptions = {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly eventService: PublicEventsService) {
+    this.eventService
+      .registerForEvents()
+      .pipe(filter((notification) => notification.type === EventTypes.ConfigLoaded))
+      .subscribe((config) => {
+        console.log('ConfigLoaded', config);
+      });
+  }
+}
