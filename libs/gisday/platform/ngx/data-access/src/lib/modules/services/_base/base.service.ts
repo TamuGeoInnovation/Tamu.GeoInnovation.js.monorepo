@@ -1,17 +1,30 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 export abstract class BaseService<T> {
   public withCredentials = false;
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient, private route: string, withCreds?: boolean) {
+  constructor(
+    private env: EnvironmentService,
+    private http: HttpClient,
+    public oidcSecurityService: OidcSecurityService,
+    private route: string,
+    withCreds?: boolean
+  ) {
     this.resource = this.env.value('api_url') + `/${route}`;
     this.withCredentials = withCreds;
   }
 
   public getEntity(guid: string) {
+    const accessToken = this.oidcSecurityService.getAccessToken();
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + accessToken
+      })
+    };
     return this.http.get<Partial<T>>(`${this.resource}/${guid}`, {
       withCredentials: this.withCredentials
     });
