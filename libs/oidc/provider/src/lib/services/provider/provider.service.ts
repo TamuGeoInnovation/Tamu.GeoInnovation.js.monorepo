@@ -4,6 +4,8 @@ import { Request } from 'express';
 import { JWK } from 'node-jose';
 import { Configuration, JWKS, Provider, ResourceServer } from 'oidc-provider';
 
+import { AccountService } from '../account/account.service';
+
 @Injectable()
 export class OidcProviderService {
   private devInteractions = false;
@@ -11,7 +13,7 @@ export class OidcProviderService {
   public provider: Provider;
   public issuerUrl = 'http://localhost:4001';
 
-  constructor() {
+  constructor(private readonly accountService: AccountService) {
     this.generateProviderConfiguration().then((providerConfig) => {
       this.provider = new Provider(this.issuerUrl, providerConfig);
       if (this.enableDevLogs) {
@@ -21,6 +23,7 @@ export class OidcProviderService {
   }
 
   public async generateProviderConfiguration(): Promise<Configuration> {
+    const accountService = this.accountService;
     const baseProviderConfig: Configuration = {
       claims: {
         address: ['address'],
@@ -97,16 +100,50 @@ export class OidcProviderService {
             } as ResourceServer;
           },
           defaultResource: (ctx) => {
-            return 'http://localhost:4204';
+            // console.log('defaultResource', ctx);
+            // return 'http://localhost:4204';
+            return ctx.request.header.referer;
           }
         },
 
         revocation: { enabled: true } // defaults to false
       },
+      findAccount(ctx, sub, token) {
+        // @param ctx - koa request context
+        // @param sub {string} - account identifier (subject)
+        // @param token - is a reference to the token used for which a given account is being loaded,
+        //   is undefined in scenarios where claims are returned from authorization endpoint
+        return {
+          accountId: sub,
+          // @param use {string} - can either be "id_token" or "userinfo", depending on
+          //   where the specific claims are intended to be put in
+          // @param scope {string} - the intended scope, while oidc-provider will mask
+          //   claims depending on the scope automatically you might want to skip
+          //   loading some claims from external resources or through db projection etc. based on this
+          //   detail or not return them in ID Tokens but only UserInfo and so on
+          // @param claims {object} - the part of the claims authorization parameter for either
+          //   "id_token" or "userinfo" (depends on the "use" param)
+          // @param rejected {Array[String]} - claim names that were rejected by the end-user, you might
+          //   want to skip loading some claims from external resources or through db projection
+          async claims(use, scope, claims, rejected) {
+            return { sub };
+          }
+        };
+      },
       formats: {
         customizers: {
           async jwt(ctx, token, jwt) {
             //jwt.header = { foo: 'bar' }; // Can set header claims
+            // jwt.payload.foo = 'bar'; // Can set payload claims
+
+            // jwt.payload.sub is the Account guid for the user.
+            // Can we use dependecy injection to then query user_roles and append said role?
+            // If no role / client combination is found we default to a plain 'user' role
+            // TODO: If we enable dynamic client registration, how do we maintain a list of role / client guids that isn't changing everytime a site has to register?
+            // TODO: Maybe we just use the client_id attribute instead of a guid, since the client_id is a name that wouldn't change between registrations
+            console.log(ctx, token, jwt);
+            const account = await accountService.get(jwt.payload.sub);
+            jwt.payload.role = 'user';
             return jwt;
           }
         }

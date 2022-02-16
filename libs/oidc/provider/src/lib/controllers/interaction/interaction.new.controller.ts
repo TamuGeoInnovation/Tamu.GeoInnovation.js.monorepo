@@ -9,12 +9,11 @@ import { OidcProviderService } from '../../services/provider/provider.service';
 
 @Controller('interaction')
 export class InteractionController {
-  constructor(private providerService: OidcProviderService) {}
+  constructor(private providerService: OidcProviderService, private userService: UserService) {}
 
   @Get(':uid')
   public async interactionGet(@Req() req: Request, @Res() res: Response) {
     try {
-      const provider = await this.providerService.provider;
       const { uid, prompt, params, session } = await this.providerService.provider.interactionDetails(req, res);
       const client = await this.providerService.provider.Client.find(params.client_id);
 
@@ -22,7 +21,6 @@ export class InteractionController {
 
       switch (name) {
         case 'login': {
-          console.log('login');
           const locals = {
             params,
             details: prompt.details,
@@ -42,7 +40,6 @@ export class InteractionController {
         }
 
         case 'consent': {
-          console.log('consent', uid);
           return res.render('interaction', {
             client,
             uid,
@@ -64,20 +61,52 @@ export class InteractionController {
 
   @Post(':uid')
   public async loginPost(@Body() body, @Req() req, @Res() res) {
+    const details = await this.providerService.provider.interactionDetails(req, res);
+    const { prompt, params } = details;
+
+    const client = await this.providerService.provider.Client.find(params.client_id);
+
     try {
       const {
         prompt: { name }
-      } = await this.providerService.provider.interactionDetails(req, res);
-      const result = {
-        login: {
-          accountId: 'atharmon@tamu.edu',
-          name
-        }
-      };
+      } = details;
+
+      const user = await this.userService.userLogin(body.email, body.password);
+
+      let result: InteractionResults = {};
+
+      if (user) {
+        result = {
+          login: {
+            accountId: user.account.guid,
+            remember: body.remember,
+            name
+          }
+        };
+      } else {
+        throw new HttpException('Email / password combination unknown', HttpStatus.BAD_REQUEST);
+      }
 
       await this.providerService.provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
     } catch (err) {
-      throw err;
+      const locals = {
+        params,
+        details: prompt.details,
+        error: true,
+        message: err.message,
+        interaction: true,
+        devMode: urlHas(req.path, 'dev', true),
+        requestingHost: urlFragment(client.redirectUris[0], 'hostname')
+      };
+
+      return res.render('user-info', locals, (err, html) => {
+        if (err) throw new HttpException(err, HttpStatus.BAD_REQUEST);
+
+        res.render('_layout', {
+          ...locals,
+          body: html
+        });
+      });
     }
   }
 
@@ -89,7 +118,7 @@ export class InteractionController {
 
     const details = await this.providerService.provider.interactionDetails(req, res);
     const { prompt, params } = details;
-    const client = await this.providerService.provider.Client.find(params.client_id);
+    const client = await this.providerService.provider.Client.find(params.client_id as string);
 
     try {
       const email = body.email;
@@ -98,7 +127,7 @@ export class InteractionController {
       const result: InteractionResults = {
         select_account: {},
         login: {
-          account: 'CHANGEME', // TODO: Make this the acutal account guid
+          accountId: 'CHANGEME', // TODO: Make this the acutal account guid
           acr: 'urn:mace:incommon:iap:bronze',
           amr: ['pwd'],
           remember: true,
