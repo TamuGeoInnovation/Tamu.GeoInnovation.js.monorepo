@@ -1,6 +1,17 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, Observable, ReplaySubject, Subject } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import {
+  BehaviorSubject,
+  combineLatest,
+  firstValueFrom,
+  forkJoin,
+  from,
+  Observable,
+  of,
+  ReplaySubject,
+  Subject
+} from 'rxjs';
+import { concatMap, distinctUntilChanged, map, shareReplay, switchMap, tap, filter } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
 import * as md5 from 'md5';
@@ -9,10 +20,12 @@ import { CPALayer } from '@tamu-gisc/cpa/common/entities';
 import { IScenarioResolved, ISnapshotPartial, IWorkshopRequestPayload } from '@tamu-gisc/cpa/data-api';
 import { WorkshopService, SnapshotService, ScenarioService } from '@tamu-gisc/cpa/ngx/data-access';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { PortalLayerJSON } from '@tamu-gisc/maps/feature/forms';
 
 import { ViewerBasePopupComponent } from '../components/viewer-base-popup/viewer-base-popup.component';
 
 import esri = __esri;
+import * as FeatureLayer from 'esri/layers/FeatureLayer';
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +69,7 @@ export class ViewerService {
   };
 
   constructor(
+    private http: HttpClient,
     private ws: WorkshopService,
     private sss: SnapshotService,
     private sns: ScenarioService,
@@ -188,7 +202,6 @@ export class ViewerService {
 
         if (currSnapshot.extent !== undefined || currSnapshot !== null) {
           const ext = Extent.fromJSON(currSnapshot.extent);
-
           this._view.goTo(ext);
         } else if (currSnapshot.mapCenter !== undefined || currSnapshot.zoom !== undefined) {
           this._view.goTo({
@@ -227,9 +240,9 @@ export class ViewerService {
       ([instances, [Extent]]: [MapServiceInstance, [esri.ExtentConstructor]]) => {
         // Get workshop contexts
         this.workshopContexts.subscribe((contexts) => {
-          contexts.forEach(async (val) => {
+          contexts.forEach(async (val, index) => {
             const contextLayer = await this._generateGroupLayers(val.layers, 'Context');
-            instances.map.add(contextLayer);
+            instances.map.add(contextLayer, index);
             const extent = Extent.fromJSON(val.extent);
             this._view.goTo(extent);
           });
@@ -267,7 +280,59 @@ export class ViewerService {
     const layers = await Promise.all(
       reversedLayers
         .map(async (l) => {
-          if (l.info.type === 'feature') {
+          if (l.url && l.info.type) {
+            return await firstValueFrom(
+              forkJoin([
+                from(this.mp.require(['Layer'])).pipe(
+                  switchMap(([Layer]: [esri.LayerConstructor]) => {
+                    return Layer.fromArcGISServerUrl({
+                      url: l.url
+                    });
+                  })
+                ),
+                this.http.get<PortalLayerJSON>(l.url + '?f=pjson')
+              ]).pipe(
+                switchMap(([serverLayer, metadata]) => {
+                  if (metadata.type === 'Raster Layer') {
+                    const rasterLayer = serverLayer as FeatureLayer;
+                    return from(
+                      this.ms.findLayerOrCreateFromSource({
+                        type: 'map-image',
+                        id: l.info.layerId,
+                        title: rasterLayer.title,
+                        url: rasterLayer.url,
+                        native: {
+                          sublayers: [{ id: metadata.id, listMode: 'hide' }]
+                        }
+                      })
+                    ).pipe(
+                      map((mil) => {
+                        if (mil instanceof Array) {
+                          // No-op
+                          console.warn('Multiple map image sub layers unsupported');
+                          return undefined;
+                        } else {
+                          return mil;
+                        }
+                      })
+                    );
+                  }
+
+                  if (serverLayer) {
+                    return of(serverLayer);
+                  }
+                }),
+                map((layer) => {
+                  layer.id = l.info.layerId;
+                  (layer as unknown as any).description = l.info.description;
+                  layer.opacity = l.info.drawingInfo.opacity;
+                  layer.title = l.info.name;
+
+                  return layer;
+                })
+              )
+            );
+          } else if (l.info.type === 'feature') {
             return await new this._modules.featureLayer({
               id: l.info.layerId,
               url: l.url,

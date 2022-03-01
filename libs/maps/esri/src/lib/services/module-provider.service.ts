@@ -234,8 +234,6 @@ export class EsriModuleProviderService {
     }
   ];
 
-  constructor() {}
-
   /**
    * Resolves provided simple module names to class paths, and returns an array of esri class constructors.
    *
