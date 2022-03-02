@@ -19,7 +19,7 @@ export class ParticipantResponsePopupComponent extends BasePopupComponent implem
 
   public ngOnInit(): void {
     this.form = this.fb.group({
-      notes: [this.data.attributes.notes !== undefined ? this.data.attributes.notes : '', Validators.required]
+      notes: [this.data?.attributes?.notes !== undefined ? this.data.attributes.notes : '', Validators.required]
     });
 
     this.form
