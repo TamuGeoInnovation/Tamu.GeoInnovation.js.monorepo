@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { from, Subject, combineLatest, ReplaySubject } from 'rxjs';
-import { takeUntil, filter, switchMap, take } from 'rxjs/operators';
+import { takeUntil, filter, switchMap, take, map } from 'rxjs/operators';
 
 import { EsriModuleProviderService, EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { FeatureSelectorService } from '@tamu-gisc/maps/feature/feature-selector';
@@ -81,6 +81,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
   private _$destroy: Subject<boolean> = new Subject();
   private _$loaded: ReplaySubject<boolean> = new ReplaySubject();
   private _activeToolWatchHandle: esri.WatchHandle;
+  private _layersAddWatchHandle: esri.WatchHandle;
 
   constructor(
     private mapService: EsriMapService,
@@ -132,6 +133,10 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
             this.onDelete(event);
           });
 
+          this._layersAddWatchHandle = mapInstance.map.allLayers.on('after-add', (event) => {
+            this.reorder(mapInstance.map);
+          });
+
           this._activeToolWatchHandle = this.model.watch('activeTool', (tool) => {
             if (tool === null) {
               this.activeUpdateTool = this.defaultUpdateTool;
@@ -141,6 +146,10 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
           });
 
           this._$loaded.next(true);
+
+          setTimeout(() => {
+            this.reorder(mapInstance.map);
+          }, 1000);
         });
 
       // If our update tools are disabled, default to the default model updating implementation.
@@ -170,9 +179,11 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
 
     // Possible for the watch handle to not exist on component destroy.
     // Calling undefined method will throw error if that's the case.
-    if (Boolean(this._activeToolWatchHandle)) {
+    if (this._activeToolWatchHandle !== undefined) {
       this._activeToolWatchHandle.remove();
     }
+
+    this._layersAddWatchHandle.remove();
   }
 
   public onCreate(event?: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) {
@@ -226,7 +237,7 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
    * Handles undo/redo actions.
    */
   public versionAction(action: string) {
-    if (Boolean(this.model[action])) {
+    if (action in this.model) {
       this.model[action]();
     }
   }
@@ -250,13 +261,13 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
           let geometryProp;
 
           // TODO: rings and paths should work fine. Multi point and point will need tweaking.
-          if (cloned.geometry.hasOwnProperty('rings')) {
+          if ('rings' in cloned.geometry) {
             geometryProp = 'rings';
-          } else if (cloned.geometry.hasOwnProperty('paths')) {
+          } else if ('paths' in cloned.geometry) {
             geometryProp = 'paths';
-          } else if (cloned.geometry.hasOwnProperty('multipoint')) {
+          } else if ('multipoint' in cloned.geometry) {
             geometryProp = 'multipoint';
-          } else if (cloned.geometry.hasOwnProperty('point')) {
+          } else if ('point' in cloned.geometry) {
             geometryProp = 'point';
           }
 
@@ -301,13 +312,28 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
     });
   }
 
+  public repositionLayer(position: 'beginning' | 'end') {
+    this.mapService.store
+      .pipe(
+        take(1),
+        map((instance) => instance.map)
+      )
+      .subscribe((esriMapInstance) => {
+        if (position === 'beginning') {
+          esriMapInstance.reorder(this.model.layer, 0);
+        } else if (position === 'end') {
+          esriMapInstance.reorder(this.model.layer, 99);
+        }
+      });
+  }
+
   /**
    * Clears the target draw layer
    *
    * Emits a 'delete' event.
    */
   public reset() {
-    this._$loaded.pipe(take(1)).subscribe((res) => {
+    this._$loaded.pipe(take(1)).subscribe(() => {
       this.model.layer.removeAll();
       this.model.emit('delete', {
         graphics: this.model.layer.graphics,
@@ -315,12 +341,16 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
       });
     });
   }
+
+  private reorder(map: esri.Map) {
+    map.reorder(this.model.layer, map.allLayers.length - 1);
+  }
 }
 
 export interface ISketchViewModel extends esri.SketchViewModel {
-  toggleUpdateTool?: () => {};
-  canUndo?: () => {};
-  canRedo?: () => {};
+  toggleUpdateTool?: () => unknown;
+  canUndo?: () => unknown;
+  canRedo?: () => unknown;
 }
 
 export interface ISketchViewModelEvent {
