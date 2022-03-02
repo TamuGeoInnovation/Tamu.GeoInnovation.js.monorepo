@@ -12,7 +12,8 @@ import {
   skip,
   shareReplay,
   tap,
-  withLatestFrom
+  withLatestFrom,
+  startWith
 } from 'rxjs/operators';
 
 import { IResponseRequestDto, IResponseDto } from '@tamu-gisc/cpa/data-api';
@@ -59,6 +60,7 @@ export class ParticipantComponent implements OnInit, OnDestroy {
   @ViewChild(MapDrawAdvancedComponent, { static: false })
   private drawComponent: MapDrawAdvancedComponent;
 
+  private $refreshResponses: Subject<boolean> = new Subject();
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
@@ -74,13 +76,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     });
 
     // On snapshot change, reset the workspace
-    this.event.pipe(skip(1), takeUntil(this._$destroy)).subscribe((res) => {
+    this.event.pipe(skip(1), takeUntil(this._$destroy)).subscribe(() => {
       this.resetWorkspace();
     });
 
     // Fetch new responses from server whenever snapshot/scenario event or participantGuid emit
     // but only after both have emitted at least once
-    this.responses = combineLatest([this.event, this.participantGuid]).pipe(
+    this.responses = combineLatest([this.event, this.participantGuid, this.$refreshResponses.pipe(startWith(true))]).pipe(
       switchMap(() => {
         return forkJoin([this.workshop.pipe(take(1)), this.event.pipe(take(1))]);
       }),
@@ -130,10 +132,10 @@ export class ParticipantComponent implements OnInit, OnDestroy {
     // the update method when not necessary.
     this.form.statusChanges
       .pipe(
-        // Ignore the form value patch event. 500ms should always be a long
+        // Ignore the form value patch event. 300ms should always be a long
         // enough interval to ignore, after which we want to capture and debounce
         // all form value changes.
-        throttle(() => interval(500)),
+        throttle(() => interval(250)),
         tap((s) => {
           // If the form is invalid the it is due to the a form value patch
           // from a submission change.
@@ -141,16 +143,16 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             this.saveStatus.next(SAVE_STATUS.Pending);
           }
         }),
-        debounceTime(1000),
+        debounceTime(500),
         filter((status) => {
           return status === 'VALID';
         }),
-        tap((s) => {
+        tap(() => {
           this.saveStatus.next(SAVE_STATUS.Saving);
         }),
         takeUntil(this._$destroy)
       )
-      .subscribe((status) => {
+      .subscribe(() => {
         this._updateOrCreateSubmission();
       });
 
@@ -192,10 +194,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
       if (this.drawComponent) {
         this.drawComponent.reset();
       }
+
       this.form.reset();
     } else {
       this.mp.require(['Graphic', 'Symbol', 'Geometry']).then(([Graphic]: [esri.GraphicConstructor]) => {
         this.drawComponent.reset();
+
         // Create an auto-castable graphic.
         const graphics = submission.shapes.map((s) => {
           return Graphic.fromJSON(s);
@@ -211,8 +215,13 @@ export class ParticipantComponent implements OnInit, OnDestroy {
    * Updates the entry value of the current participant guid with the provided geometry.
    */
   private _updateOrCreateSubmission() {
-    forkJoin([this.event.pipe(take(1)), this.responses.pipe(take(1)), this.vs.participantGuid.pipe(take(1))]).subscribe(
-      ([snapshot, responses, participantGuid]) => {
+    forkJoin([this.event.pipe(take(1)), this.responses.pipe(take(1)), this.vs.participantGuid.pipe(take(1))])
+      .pipe(
+        tap(() => {
+          this.saveStatus.next(SAVE_STATUS.Pending);
+        })
+      )
+      .subscribe(([snapshot, responses, participantGuid]) => {
         const parsed = (this.form.controls.drawn.value as Array<esri.Graphic>).map((graphic) => {
           return graphic.toJSON();
         });
@@ -228,12 +237,12 @@ export class ParticipantComponent implements OnInit, OnDestroy {
           };
 
           this.rs.updateResponse(submission.guid, submission).subscribe(
-            (updateStatus) => {
+            () => {
               this.responseSave.emit();
               this.saveStatus.next(SAVE_STATUS.Complete);
               console.log('Updated response');
             },
-            (err) => {
+            () => {
               this.saveStatus.next(SAVE_STATUS.Error);
             }
           );
@@ -253,19 +262,19 @@ export class ParticipantComponent implements OnInit, OnDestroy {
             submission.workshopGuid = workshop.guid;
 
             this.rs.createResponse(submission).subscribe(
-              (submissionStatus) => {
+              () => {
                 this.responseSave.emit();
                 this.saveStatus.next(SAVE_STATUS.Complete);
+                this.$refreshResponses.next(true);
                 console.log('Created response');
               },
-              (err) => {
+              () => {
                 this.saveStatus.next(SAVE_STATUS.Error);
               }
             );
           });
         }
-      }
-    );
+      });
   }
 }
 
