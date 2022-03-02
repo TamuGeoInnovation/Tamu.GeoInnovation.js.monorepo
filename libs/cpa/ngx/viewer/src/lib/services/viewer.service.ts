@@ -11,7 +11,7 @@ import {
   ReplaySubject,
   Subject
 } from 'rxjs';
-import { concatMap, distinctUntilChanged, map, shareReplay, switchMap, tap, filter } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { DeepPartial } from 'typeorm';
 
 import * as md5 from 'md5';
@@ -272,7 +272,7 @@ export class ViewerService {
 
   private async _generateGroupLayers(
     definitions: Array<DeepPartial<CPALayer>>,
-    snapOrScenTitle: string
+    snapshotOrScenarioTitle: string
   ): Promise<esri.Layer> {
     const reversedLayers = [...definitions].reverse();
     const idHash = this._generateGroupLayerId(reversedLayers);
@@ -324,6 +324,7 @@ export class ViewerService {
                 }),
                 map((layer) => {
                   layer.id = l.info.layerId;
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   (layer as unknown as any).description = l.info.description;
                   layer.opacity = l.info.drawingInfo.opacity;
                   layer.title = l.info.name;
@@ -332,6 +333,7 @@ export class ViewerService {
                 })
               )
             );
+            // TODO: Remove many of the below cases since the above one generates a layer directly from the GIS Server JSON
           } else if (l.info.type === 'feature') {
             return await new this._modules.featureLayer({
               id: l.info.layerId,
@@ -404,7 +406,7 @@ export class ViewerService {
 
     const groupLayer = new this._modules.groupLayer({
       id: idHash,
-      title: snapOrScenTitle,
+      title: snapshotOrScenarioTitle,
       visibilityMode: 'independent',
       layers: layers
     });
@@ -421,7 +423,7 @@ export class ViewerService {
     const idHash = this._generateGroupLayerId(reversedLayers);
 
     const prevLayers = event.layers
-      .map((l) => {
+      .map(() => {
         return this._map.layers.find((ml) => {
           // Find layer ID from either a snapshot guid array, or the actual layer object id
 
