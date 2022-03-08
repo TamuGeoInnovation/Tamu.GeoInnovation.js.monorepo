@@ -23,6 +23,7 @@ import { v4 as guid } from 'uuid';
 
 export type TypeORMEntities = string | Function | (new () => unknown) | EntitySchema<unknown>;
 export type KindOfId = number | string;
+export type OidcEntity = IRequiredEntityAttrs;
 
 export interface IRequiredEntityAttrs {
   id: string;
@@ -377,6 +378,44 @@ export class AuthorizationCode implements IRequiredEntityAttrs {
 }
 
 @Entity({
+  name: 'backchannel_authentication_request'
+})
+export class BackchannelAuthenticationRequest implements IRequiredEntityAttrs {
+  @PrimaryColumn({
+    type: 'varchar',
+    nullable: false
+  })
+  public id: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public grantId: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    length: 'max'
+  })
+  public data: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public expiresAt: Date;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public consumedAt: Date;
+
+  constructor() {}
+}
+
+@Entity({
   name: 'client_credentials'
 })
 export class ClientCredential implements IRequiredEntityAttrs {
@@ -461,6 +500,44 @@ export class DeviceCode implements IRequiredEntityAttrs {
     nullable: true
   })
   public userCode: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    length: 'max'
+  })
+  public data: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public expiresAt: Date;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public consumedAt: Date;
+
+  constructor() {}
+}
+
+@Entity({
+  name: 'grants'
+})
+export class Grant implements IRequiredEntityAttrs {
+  @PrimaryColumn({
+    type: 'varchar',
+    nullable: false
+  })
+  public id: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public grantId: string;
 
   @Column({
     type: 'varchar',
@@ -697,6 +774,12 @@ export class Session implements IRequiredEntityAttrs {
     nullable: false
   })
   public id: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public uid: string;
 
   @Column({
     type: 'varchar',
