@@ -5,6 +5,7 @@ import { JWK } from 'node-jose';
 import { Configuration, JWKS, Provider, ResourceServer } from 'oidc-provider';
 
 import { AccountService } from '../account/account.service';
+import { OidcAdapter } from '../../adapters/oidc.adapter.new';
 
 @Injectable()
 export class OidcProviderService {
@@ -25,6 +26,7 @@ export class OidcProviderService {
   public async generateProviderConfiguration(): Promise<Configuration> {
     const accountService = this.accountService;
     const baseProviderConfig: Configuration = {
+      adapter: OidcAdapter,
       claims: {
         address: ['address'],
         email: ['email', 'email_verified'],
@@ -49,6 +51,8 @@ export class OidcProviderService {
       clientBasedCORS(ctx, origin, client) {
         return true; // Must be set to true or angular-auth-oidc-client wont work right
       },
+      clockTolerance: 5, // In seconds
+      conformIdTokenClaims: true, // defaults to true
       enabledJWA: {
         authorizationEncryptionAlgValues: ['RSA-OAEP-256'], // Is this what we want?
         authorizationEncryptionEncValues: ['A128CBC-HS256', 'A128GCM', 'A256CBC-HS512', 'A256GCM'], // Defaults
@@ -67,6 +71,11 @@ export class OidcProviderService {
         userinfoEncryptionAlgValues: ['RSA-OAEP'], // Is this what we want?
         userinfoEncryptionEncValues: ['A128CBC-HS256', 'A128GCM', 'A256CBC-HS512', 'A256GCM'], // Defaults
         userinfoSigningAlgValues: ['RS256']
+      },
+      extraTokenClaims(ctx, token) {
+        return {
+          'urn:oidc-provider:example:foo': 'bar'
+        };
       },
       features: {
         backchannelLogout: {
@@ -108,11 +117,12 @@ export class OidcProviderService {
 
         revocation: { enabled: true } // defaults to false
       },
-      findAccount(ctx, sub, token) {
+      async findAccount(ctx, sub, token) {
         // @param ctx - koa request context
         // @param sub {string} - account identifier (subject)
         // @param token - is a reference to the token used for which a given account is being loaded,
         //   is undefined in scenarios where claims are returned from authorization endpoint
+
         return {
           accountId: sub,
           // @param use {string} - can either be "id_token" or "userinfo", depending on
@@ -126,7 +136,14 @@ export class OidcProviderService {
           // @param rejected {Array[String]} - claim names that were rejected by the end-user, you might
           //   want to skip loading some claims from external resources or through db projection
           async claims(use, scope, claims, rejected) {
-            return { sub };
+            console.warn(use, scope, claims, rejected);
+            const account = await accountService.accountRepo.findOne({
+              where: {
+                guid: sub
+              }
+            });
+            // return { use, scope, claims, sub: sub, ...account };
+            return { sub: account.guid, name: account.name };
           }
         };
       },
