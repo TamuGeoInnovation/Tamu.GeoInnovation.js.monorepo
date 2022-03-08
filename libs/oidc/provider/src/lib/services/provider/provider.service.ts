@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import { JWK } from 'node-jose';
 import { Configuration, JWKS, Provider, ResourceServer } from 'oidc-provider';
+import { readFile, readFileSync, writeFile } from 'fs';
 
 import { AccountService } from '../account/account.service';
 import { OidcAdapter } from '../../adapters/oidc.adapter.new';
@@ -13,18 +14,77 @@ export class OidcProviderService {
   private enableDevLogs = true;
   public provider: Provider;
   public issuerUrl = 'http://localhost:4001';
+  private pathToJWKS = 'idp_keystore.json';
 
   constructor(private readonly accountService: AccountService) {
-    this.generateProviderConfiguration().then((providerConfig) => {
-      this.provider = new Provider(this.issuerUrl, providerConfig);
-      if (this.enableDevLogs) {
-        this.enableOIDCDebug();
-      }
+    this.getJWKSFromFile().then((jwks) => {
+      this.generateProviderConfiguration(jwks).then((providerConfig) => {
+        this.provider = new Provider(this.issuerUrl, providerConfig);
+        if (this.enableDevLogs) {
+          this.enableOIDCDebug();
+        }
+      });
     });
   }
 
-  public async generateProviderConfiguration(): Promise<Configuration> {
+  private async getJWKSFromFile() {
+    try {
+      const contents = readFileSync(this.pathToJWKS, 'utf8');
+      return contents;
+    } catch (err) {
+      console.log('no file, generate keystore and write it', err);
+
+      const keystore = JWK.createKeyStore();
+
+      await keystore.generate('RSA', 2048, {
+        alg: 'RS256',
+        use: 'sig'
+      });
+
+      const jwks = keystore.toJSON(true) as JWKS;
+
+      writeFile('idp_keystore.json', JSON.stringify(jwks), (err) => {
+        if (err) {
+          console.warn(err);
+          return;
+        }
+      });
+
+      return JSON.stringify(jwks);
+    }
+
+    // readFile(this.pathToJWKS, 'utf8', async (err, data) => {
+    //   if (err) {
+    //     // no file, generate keystore and write it
+    //     console.log('no file, generate keystore and write it');
+    //     const keystore = JWK.createKeyStore();
+
+    //     await keystore.generate('RSA', 2048, {
+    //       alg: 'RS256',
+    //       use: 'sig'
+    //     });
+
+    //     jwks = keystore.toJSON(true) as JWKS;
+
+    //     writeFile('idp_keystore.json', JSON.stringify(jwks), (err) => {
+    //       if (err) {
+    //         console.warn(err);
+    //         return;
+    //       }
+    //     });
+    //   } else {
+    //     // file exists, set jwks to contents of file
+    //     console.log('file exists, set jwks to contents of file', data);
+    //     jwks = data;
+    //   }
+
+    //   return jwks;
+    // });
+  }
+
+  public async generateProviderConfiguration(jwks): Promise<Configuration> {
     const accountService = this.accountService;
+
     const baseProviderConfig: Configuration = {
       adapter: OidcAdapter,
       claims: {
@@ -182,19 +242,20 @@ export class OidcProviderService {
       }
     };
 
-    const keystore = JWK.createKeyStore();
+    // Code block not really needed anymore now that we put it in the getJWKSFromFile() method
+    // const keystore = JWK.createKeyStore();
 
-    await keystore.generate('RSA', 2048, {
-      alg: 'RS256',
-      use: 'sig'
-    });
+    // await keystore.generate('RSA', 2048, {
+    //   alg: 'RS256',
+    //   use: 'sig'
+    // });
 
-    const jwks: JWKS = keystore.toJSON(true) as JWKS;
+    // const jwks: JWKS = keystore.toJSON(true) as JWKS;
 
     // Some properties shouldn't be stored in git such as the keys and clients, cookies, etc
     return {
       ...baseProviderConfig,
-      jwks: jwks,
+      jwks: JSON.parse(jwks),
       clients: [
         {
           client_id: 'angularCodeRefreshTokens',

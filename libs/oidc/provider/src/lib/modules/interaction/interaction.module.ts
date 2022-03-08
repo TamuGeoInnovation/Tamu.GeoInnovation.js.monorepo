@@ -12,7 +12,7 @@ import { OidcModule } from '../oidc/oidc.module';
 @Module({
   imports: [OidcModule, UserModule],
   controllers: [InteractionController],
-  providers: [OidcProviderService],
+  providers: [],
   exports: []
 })
 export class InteractionModule {}

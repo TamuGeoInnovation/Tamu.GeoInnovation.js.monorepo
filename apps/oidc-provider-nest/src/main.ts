@@ -29,7 +29,10 @@ import { environment } from './environments/environment';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    cors: true
+    cors: {
+      origin: ['http://localhost:4200', 'http://localhost:4204'],
+      credentials: true
+    }
   });
 
   // Sets up various parameters used during deployment
@@ -155,10 +158,10 @@ async function bootstrap() {
   //   })
   // );
   // app.use(urlencoded({ extended: true }));
-  // app.use(cookieParser());
+  app.use(cookieParser());
 
   // const service = app.get(OidcProviderService, { strict: false });
-  const issuer = `http://localhost:${environment.port}`;
+  // const issuer = `http://localhost:${environment.port}`;
 
   // service.init(issuer);
 
