@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
-import { Request } from 'express';
 import { JWK } from 'node-jose';
 import { Configuration, JWKS, Provider, ResourceServer } from 'oidc-provider';
-import { readFile, readFileSync, writeFile } from 'fs';
+import { readFileSync, writeFile } from 'fs';
 
 import { AccountService } from '../account/account.service';
 import { OidcAdapter } from '../../adapters/oidc.adapter.new';
@@ -52,34 +51,6 @@ export class OidcProviderService {
 
       return JSON.stringify(jwks);
     }
-
-    // readFile(this.pathToJWKS, 'utf8', async (err, data) => {
-    //   if (err) {
-    //     // no file, generate keystore and write it
-    //     console.log('no file, generate keystore and write it');
-    //     const keystore = JWK.createKeyStore();
-
-    //     await keystore.generate('RSA', 2048, {
-    //       alg: 'RS256',
-    //       use: 'sig'
-    //     });
-
-    //     jwks = keystore.toJSON(true) as JWKS;
-
-    //     writeFile('idp_keystore.json', JSON.stringify(jwks), (err) => {
-    //       if (err) {
-    //         console.warn(err);
-    //         return;
-    //       }
-    //     });
-    //   } else {
-    //     // file exists, set jwks to contents of file
-    //     console.log('file exists, set jwks to contents of file', data);
-    //     jwks = data;
-    //   }
-
-    //   return jwks;
-    // });
   }
 
   public async generateProviderConfiguration(jwks): Promise<Configuration> {
@@ -133,6 +104,7 @@ export class OidcProviderService {
         userinfoSigningAlgValues: ['RS256']
       },
       extraTokenClaims(ctx, token) {
+        console.log('extraTokenClaims', token);
         return {
           'urn:oidc-provider:example:foo': 'bar'
         };
@@ -196,7 +168,7 @@ export class OidcProviderService {
           // @param rejected {Array[String]} - claim names that were rejected by the end-user, you might
           //   want to skip loading some claims from external resources or through db projection
           async claims(use, scope, claims, rejected) {
-            console.warn(use, scope, claims, rejected);
+            console.log('findAccount -> claims', use, scope, claims, rejected);
             const account = await accountService.accountRepo.findOne({
               where: {
                 guid: sub

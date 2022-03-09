@@ -249,9 +249,10 @@ export class InteractionController {
       }
       if (details.missingResourceScopes) {
         // eslint-disable-next-line no-restricted-syntax
-        for (const [indicator, scopes] of Object.entries(details.missingResourceScopes)) {
-          grant.addResourceScope(indicator, scopes.join(' '));
-        }
+        // TODO: Enable this again
+        // for (const [indicator, scopes] of Object.entries(details.missingResourceScopes)) {
+        //   grant.addResourceScope(indicator, scopes.join(' '));
+        // }
       }
 
       grantId = await grant.save();
