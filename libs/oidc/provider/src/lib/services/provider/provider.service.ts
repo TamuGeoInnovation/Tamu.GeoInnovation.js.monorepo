@@ -190,9 +190,9 @@ export class OidcProviderService {
             // If no role / client combination is found we default to a plain 'user' role
             // TODO: If we enable dynamic client registration, how do we maintain a list of role / client guids that isn't changing everytime a site has to register?
             // TODO: Maybe we just use the client_id attribute instead of a guid, since the client_id is a name that wouldn't change between registrations
-            console.log(ctx, token, jwt);
-            const account = await accountService.get(jwt.payload.sub);
-            jwt.payload.role = 'user';
+            // console.log(ctx, token, jwt);
+            // const account = await accountService.get(jwt.payload.sub);
+            // jwt.payload.role = 'user';
             return jwt;
           }
         }

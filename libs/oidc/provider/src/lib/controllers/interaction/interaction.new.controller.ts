@@ -1,11 +1,12 @@
 import { Body, Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus } from '@nestjs/common';
 
 import { Request, Response } from 'express';
-import { InteractionResults, Provider } from 'oidc-provider';
+import { InteractionResults } from 'oidc-provider';
 
 import { urlHas, urlFragment, UserService } from '@tamu-gisc/oidc/common';
 
 import { OidcProviderService } from '../../services/provider/provider.service';
+import { OidcProvider } from '../../types/oidc-provider.type';
 
 @Controller('interaction')
 export class InteractionController {
@@ -15,7 +16,7 @@ export class InteractionController {
   public async interactionGet(@Req() req: Request, @Res() res: Response) {
     try {
       const { uid, prompt, params, session } = await this.providerService.provider.interactionDetails(req, res);
-      const client = await this.providerService.provider.Client.find(params.client_id);
+      const client = await this.providerService.provider.Client.find(params.client_id as string);
 
       const name = prompt.name;
 
@@ -64,7 +65,7 @@ export class InteractionController {
     const details = await this.providerService.provider.interactionDetails(req, res);
     const { prompt, params } = details;
 
-    const client = await this.providerService.provider.Client.find(params.client_id);
+    const client = await this.providerService.provider.Client.find(params.client_id as string);
 
     try {
       const {
@@ -112,7 +113,7 @@ export class InteractionController {
 
   @Post(':uid/login')
   public async interactionLoginPost(@Body() body, @Req() req: Request, @Res() res: Response) {
-    await this.providerService.provider.setProviderSession(req, res, {
+    await (this.providerService.provider as OidcProvider).setProviderSession(req, res, {
       account: 'accountId'
     });
 
@@ -237,12 +238,12 @@ export class InteractionController {
         // we're establishing a new grant
         grant = new this.providerService.provider.Grant({
           accountId,
-          clientId: params.client_id
+          clientId: params.client_id as string
         });
       }
 
       if (details.missingOIDCScope) {
-        grant.addOIDCScope(details.missingOIDCScope.join(' '));
+        grant.addOIDCScope((details.missingOIDCScope as string[]).join(' '));
       }
       if (details.missingOIDCClaims) {
         grant.addOIDCClaims(details.missingOIDCClaims);
@@ -250,9 +251,9 @@ export class InteractionController {
       if (details.missingResourceScopes) {
         // eslint-disable-next-line no-restricted-syntax
         // TODO: Enable this again
-        // for (const [indicator, scopes] of Object.entries(details.missingResourceScopes)) {
-        //   grant.addResourceScope(indicator, scopes.join(' '));
-        // }
+        for (const [indicator, scopes] of Object.entries(details.missingResourceScopes)) {
+          grant.addResourceScope(indicator, scopes.join(' '));
+        }
       }
 
       grantId = await grant.save();
