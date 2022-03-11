@@ -54,7 +54,7 @@ import { dbConfig } from '../environments/environment';
       ...dbConfig,
       entities: [
         // TokenEndpointAuthMethod,
-        // Account,
+        Account,
         AccessToken,
         AuthorizationCode,
         // BackchannelLogoutUri,
@@ -73,7 +73,7 @@ import { dbConfig } from '../environments/environment';
         Session,
         Grant,
         BackchannelAuthenticationRequest,
-        // User,
+        User,
         // UserRole,
         // UserLogin,
         // SecretQuestion,
