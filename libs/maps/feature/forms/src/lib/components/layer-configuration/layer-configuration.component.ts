@@ -101,7 +101,7 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
             // Tests if string is URL
             // FROM: https://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
             const test = RegExp(
-              /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
+              /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[\w]*))?)/
             );
 
             return test.test(url);
@@ -206,7 +206,7 @@ export class LayerConfiguration {
         // Check if the info property exists in the form.
         // If it has, it has been casted as a type of AbstractControl, but
         // info needs to be a FormGroup.
-        if (this.form.controls.hasOwnProperty('info')) {
+        if ('info' in this.form.controls) {
           // Normalize the input args
           const values = LayerConfiguration.normalizeOptions(this.form.controls.info.value);
 
@@ -320,9 +320,9 @@ export class LayerConfiguration {
     if (this.form) {
       const controls = (this.form.controls.info as FormGroup).controls;
       const update = (props, cls) => {
-        Object.keys(props).forEach((key, index) => {
+        Object.keys(props).forEach((key) => {
           // If the config property exists as a name of a control
-          if (cls.hasOwnProperty(key)) {
+          if (key in cls) {
             // If the property key value is an object, it will be an object in the control as well.
             // Call self function again to target those.
             if (props[key] instanceof Object) {

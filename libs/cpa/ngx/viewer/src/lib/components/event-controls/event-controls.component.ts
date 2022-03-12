@@ -45,7 +45,7 @@ export class EventControlsComponent implements OnInit {
   public updateParticipantName(participant: IParticipant, updatedParticipantName: string): void {
     if (participant.name !== updatedParticipantName) {
       this.ps.updateParticipant(participant.guid, updatedParticipantName).subscribe(
-        (res) => {
+        () => {
           // Change was successful. Show notification
           this.ns.toast({
             id: 'participant-update-success',
@@ -53,7 +53,7 @@ export class EventControlsComponent implements OnInit {
             title: 'Updated participant'
           });
         },
-        (err) => {
+        () => {
           // On participant update, refresh the existing participant list to effectively reset changes
           // done to the participant
           this._$refresh.next(undefined);
@@ -79,7 +79,7 @@ export class EventControlsComponent implements OnInit {
 
         this._$refresh.next(undefined);
       },
-      (err) => {
+      () => {
         this.ns.toast({
           id: 'participant-delete-error',
           message: 'There was an error deleting participant.',
@@ -97,7 +97,7 @@ export class EventControlsComponent implements OnInit {
           return this.ps.createParticipantForWorkshop(guidOrAlias, 'New participant');
         })
       )
-      .subscribe((createStatus) => {
+      .subscribe(() => {
         this._$refresh.next(undefined);
       });
   }

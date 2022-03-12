@@ -178,7 +178,7 @@ export class Participant extends CPABaseEntity {
 
 @Entity()
 export class Response extends CPABaseEntity {
-  @ManyToOne((type) => Participant)
+  @ManyToOne((type) => Participant, { onDelete: 'CASCADE' })
   public participant: Participant;
 
   /**

@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, getRepository } from 'typeorm';
@@ -104,7 +104,7 @@ export class ResponsesService extends BaseService<Response> {
         throw new HttpException('Missing resource.', 404);
       }
     } else {
-      throw new HttpException('Internal server error.', 500);
+      throw new ConflictException();
     }
   }
 }
