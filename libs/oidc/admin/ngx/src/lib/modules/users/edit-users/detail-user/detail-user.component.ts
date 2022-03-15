@@ -92,12 +92,13 @@ export class DetailUserComponent implements OnInit, OnDestroy {
         userGuid: [user.guid]
       });
 
-      clients.forEach((client) => {
-        const value = user.userRoles.find((role) => {
-          return role.client.guid === client.guid;
-        });
-        group.addControl(`${client.clientName}`, this.fb.control(value !== undefined ? value.role.guid : 'undefined'));
-      });
+      // TODO: This was disabled temporarily so we can build the project and use CI/CD for oidc-provider-nest  - Aaron H (3/15/22)
+      // clients.forEach((client) => {
+      //   const value = user.userRoles.find((role) => {
+      //     return role.client.guid === client.guid;
+      //   });
+      //   group.addControl(`${client.clientName}`, this.fb.control(value !== undefined ? value.role.guid : 'undefined'));
+      // });
 
       this.roleForm = group;
 
