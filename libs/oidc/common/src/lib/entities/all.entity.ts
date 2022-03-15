@@ -193,9 +193,9 @@ export class User extends GuidIdentity {
   @JoinColumn()
   public account: Account;
 
-  @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true, onDelete: 'CASCADE', eager: true })
-  @JoinColumn()
-  public userRoles: UserRole[];
+  // @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true, onDelete: 'CASCADE', eager: true })
+  // @JoinColumn()
+  // public userRoles: UserRole[];
 
   @Column({
     type: 'varchar',
