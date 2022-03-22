@@ -234,8 +234,6 @@ export class EsriModuleProviderService {
     }
   ];
 
-  constructor() {}
-
   /**
    * Resolves provided simple module names to class paths, and returns an array of esri class constructors.
    *
@@ -243,9 +241,9 @@ export class EsriModuleProviderService {
    * @param {boolean} asObject Will return modules as named objects instead of an array of anonymous functions.
    * @returns
    */
-  public require(modules: string[]): Promise<object[]>;
-  public require(modules: string[], asObject: true): Promise<object>;
-  public require(modules: string[], asObject?: boolean): Promise<object[] | object> {
+  public require(modules: string[]): Promise<any>;
+  public require(modules: string[], asObject: true): Promise<any>;
+  public require(modules: string[], asObject?: boolean): Promise<any> {
     // n is an alias for module name
     const classNames = modules.map((n) => {
       if (n === undefined || n === '') {

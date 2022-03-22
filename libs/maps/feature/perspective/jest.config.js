@@ -1,6 +1,6 @@
 module.exports = {
-  displayName: 'maps-esri-feature-perspective',
-  preset: '../../../../../jest.preset.js',
+  displayName: 'maps-feature-perspective',
+  preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {
@@ -8,7 +8,7 @@ module.exports = {
       stringifyContentPathRegex: '\\.(html|svg)$'
     }
   },
-  coverageDirectory: '../../../../../coverage/libs/maps/esri/feature/perspective',
+  coverageDirectory: '../../../../coverage/libs/maps/feature/perspective',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular'
   },

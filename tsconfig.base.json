@@ -15,6 +15,7 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "strictPropertyInitialization": false,
     "paths": {
       "@tamu-gisc/aggiemap/ngx/core": ["libs/aggiemap/ngx/core/src/index.ts"],
       "@tamu-gisc/aggiemap/ngx/popups": ["libs/aggiemap/ngx/popups/src/index.ts"],
@@ -70,7 +71,6 @@
       "@tamu-gisc/kissingbug/ngx": ["libs/kissingbug/ngx/src/index.ts"],
       "@tamu-gisc/mailroom/common": ["libs/mailroom/common/src/index.ts"],
       "@tamu-gisc/maps/esri": ["libs/maps/esri/src/index.ts"],
-      "@tamu-gisc/maps/esri/feature/perspective": ["libs/maps/esri/feature/perspective/src/index.ts"],
       "@tamu-gisc/maps/feature/accessibility": ["libs/maps/feature/accessibility/src/index.ts"],
       "@tamu-gisc/maps/feature/coordinates": ["libs/maps/feature/coordinates/src/index.ts"],
       "@tamu-gisc/maps/feature/data": ["libs/maps/feature/data/src/index.ts"],
@@ -81,6 +81,7 @@
       "@tamu-gisc/maps/feature/layer-filter": ["libs/maps/feature/layer-filter/src/index.ts"],
       "@tamu-gisc/maps/feature/layer-list": ["libs/maps/feature/layer-list/src/index.ts"],
       "@tamu-gisc/maps/feature/legend": ["libs/maps/feature/legend/src/index.ts"],
+      "@tamu-gisc/maps/feature/perspective": ["libs/maps/feature/perspective/src/index.ts"],
       "@tamu-gisc/maps/feature/popup": ["libs/maps/feature/popup/src/index.ts"],
       "@tamu-gisc/maps/feature/trip-planner": ["libs/maps/feature/trip-planner/src/index.ts"],
       "@tamu-gisc/maps/mapbox": ["libs/maps/mapbox/src/index.ts"],

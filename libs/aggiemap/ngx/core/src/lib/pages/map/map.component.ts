@@ -10,7 +10,7 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 
 import esri = __esri;
 @Component({
-  selector: 'app-map',
+  selector: 'tamu-gisc-aggiemap-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
@@ -37,7 +37,7 @@ export class MapComponent implements OnInit, OnDestroy {
             baseLayers: [
               {
                 type: 'TileLayer',
-                url: this._connections.basemapUrl,
+                url: this._connections['basemapUrl'],
                 spatialReference: {
                   wkid: 102100
                 },
@@ -97,7 +97,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._destroy$.next(undefined);
+    this._destroy$.next(true);
     this._destroy$.complete();
   }
 
@@ -108,10 +108,10 @@ export class MapComponent implements OnInit, OnDestroy {
           //
           // Loader disable
           //
-          document.querySelector('.loader .progress-bar').classList.remove('anim');
+          document.querySelector('.loader .progress-bar')?.classList.remove('anim');
 
           setTimeout(() => {
-            document.querySelector('.loader').classList.add('fade-out');
+            document.querySelector('.loader')?.classList.add('fade-out');
 
             setTimeout(() => {
               (<HTMLElement>document.querySelector('.loader')).style.display = 'none';
@@ -145,7 +145,7 @@ export class MapComponent implements OnInit, OnDestroy {
    * Toggles a class on a DOM Element. While the .toggle() method can be used in code,
    * it cannot be used in HTML templates
    */
-  public toggleClass = (event: KeyboardEvent | MouseEvent, className: string) => {
+  public toggleClass = (event: Event, className: string) => {
     if ((<HTMLElement>event.currentTarget).classList) {
       if ((<HTMLElement>event.currentTarget).classList.contains(className)) {
         (<HTMLElement>event.currentTarget).classList.remove(className);

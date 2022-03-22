@@ -35,6 +35,8 @@ export class EsriMapService {
 
   private _hitTest: BehaviorSubject<HitTestSnapshot> = new BehaviorSubject({ graphics: [] });
 
+  private _mapContainer: HTMLDivElement;
+
   public hitTest: Observable<HitTestSnapshot> = this._hitTest.asObservable();
 
   // Exposed observable that will be responsible for emitting values to subscribers
@@ -103,6 +105,9 @@ export class EsriMapService {
   ): void {
     const basemap = this.makeBasemap(Properties, TileLayer, Basemap);
     this._modules.map = new Map(basemap);
+
+    this._mapContainer = ViewProps.properties.container as HTMLDivElement;
+
     const props = this.makeMapView(ViewProps.properties, this._modules.map);
     this._modules.view = new MapView(props as esri.MapViewProperties & esri.SceneViewProperties);
 
@@ -159,6 +164,15 @@ export class EsriMapService {
 
     return vProps;
   }
+
+  public setView(view: esri.SceneView | esri.MapView) {
+    this._modules.view = null;
+    this._modules.view = view;
+
+    this._modules.view.container = this._mapContainer;
+  }
+
+  // }
 
   /**
    * Makes a basemap using custom basemap options or a simple basemap string id name.
@@ -253,14 +267,14 @@ export class EsriMapService {
     let props;
 
     // Check if the incoming source has the native property because Autocastable layers do not.
-    if (source.hasOwnProperty('native')) {
+    if ('native' in source) {
       props = { ...source, ...(source as LayerSource).native };
     } else {
       props = { ...source };
     }
 
     // Remove the 'native' property from the object since it's not needed in the layer creation.
-    if (props.hasOwnProperty('native')) {
+    if ('native' in props) {
       delete props.native;
     }
 
@@ -560,7 +574,7 @@ export class EsriMapService {
     const tree = this.router.parseUrl(this.router.url);
 
     // Check for matching dictionary keys in the parsed url tree
-    const keyExists = buildingParameterDictionary.find((key) => tree.queryParams.hasOwnProperty(key));
+    const keyExists = buildingParameterDictionary.find((key) => key in tree.queryParams);
 
     // If there is a matching key in the dictionary and the current url tree,
     // then proceed submit queries to the search sources for matches.
@@ -753,7 +767,8 @@ export interface MapServiceInstance {
   map: esri.Map;
   view: esri.MapView | esri.SceneView;
 }
-interface NullableMapServiceInstance extends Partial<MapServiceInstance> {}
+
+type NullableMapServiceInstance = Partial<MapServiceInstance>;
 
 /**
  * Defines a graphics collection and any additional options that should be used in the selection.
