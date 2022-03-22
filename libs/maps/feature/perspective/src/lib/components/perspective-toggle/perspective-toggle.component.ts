@@ -1,7 +1,7 @@
 import { Component, HostBinding, HostListener, Input } from '@angular/core';
-import { forkJoin, map, take } from 'rxjs';
+import { forkJoin, map, Observable, take } from 'rxjs';
 
-import { EsriMapService, EsriModuleProviderService, MapServiceInstance, ViewProperties } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 
@@ -22,15 +22,28 @@ export class PerspectiveToggleComponent {
     return ['esri-component', 'esri-widget--button', 'esri-widget'];
   }
 
-  public activeMode: '2D' | '3D' = '2D';
-
-  private previousView: ViewProperties;
-  private currentView: ViewProperties;
+  public activeMode: PerspectiveType = '2D';
 
   @HostListener('click')
   public hostClick() {
-    forkJoin([this.mp.require(['SceneView']), this.ms.store.pipe(take(1))])
-      .pipe(
+    const nextViewType = this.oppositeViewType();
+    this.makeView(nextViewType).subscribe((view) => {
+      this.ms.setView(view);
+      this.activeMode = nextViewType;
+    });
+  }
+
+  private oppositeViewType(): PerspectiveType {
+    if (this.activeMode === '2D') {
+      return '3D';
+    } else {
+      return '2D';
+    }
+  }
+
+  private makeView(type: PerspectiveType): Observable<esri.SceneView | esri.MapView> {
+    if (type === '3D') {
+      return forkJoin([this.mp.require(['SceneView']), this.ms.store.pipe(take(1))]).pipe(
         map(([[SceneView], instance]: [[esri.SceneViewConstructor], MapServiceInstance]) => {
           return new SceneView({
             map: instance.map,
@@ -38,12 +51,21 @@ export class PerspectiveToggleComponent {
             container: undefined
           });
         })
-      )
-      .subscribe((sceneview) => {
-        this.ms.setView(sceneview);
-        this.activeMode = '3D';
-      });
+      );
+    } else {
+      return forkJoin([this.mp.require(['MapView']), this.ms.store.pipe(take(1))]).pipe(
+        map(([[MapView], instance]: [[esri.MapViewConstructor], MapServiceInstance]) => {
+          return new MapView({
+            map: instance.map,
+            viewpoint: instance.view.viewpoint.clone(),
+            container: undefined
+          });
+        })
+      );
+    }
   }
 
   constructor(private ms: EsriMapService, private mp: EsriModuleProviderService) {}
 }
+
+type PerspectiveType = '2D' | '3D';
