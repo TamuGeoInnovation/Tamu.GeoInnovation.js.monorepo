@@ -1,4 +1,4 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostBinding, HostListener, Input } from '@angular/core';
 import { forkJoin, map, take } from 'rxjs';
 
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance, ViewProperties } from '@tamu-gisc/maps/esri';
@@ -16,6 +16,11 @@ export class PerspectiveToggleComponent {
 
   @Input()
   public twoDLayers: Array<esri.Layer>;
+
+  @HostBinding('class')
+  public get componentDisplayClasses() {
+    return ['esri-component', 'esri-widget--button', 'esri-widget'];
+  }
 
   public activeMode: '2D' | '3D' = '2D';
 
@@ -36,6 +41,7 @@ export class PerspectiveToggleComponent {
       )
       .subscribe((sceneview) => {
         this.ms.setView(sceneview);
+        this.activeMode = '3D';
       });
   }
 

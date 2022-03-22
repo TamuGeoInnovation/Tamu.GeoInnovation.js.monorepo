@@ -1,0 +1,14 @@
+@import 'libs/sass/mixins';
+@import 'libs/sass/variables';
+
+:host {
+  font-weight: 600;
+}
+
+.mode-label {
+  @include transition(color 0.3s);
+
+  &.active {
+    color: $main-blue;
+  }
+}
