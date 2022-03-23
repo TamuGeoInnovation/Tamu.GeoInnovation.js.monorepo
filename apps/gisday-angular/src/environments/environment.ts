@@ -15,4 +15,7 @@ export const environment = {
  */
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
 
-export const api_url = 'http://localhost:3333'; // This is just some bs URL for now
+export const api_url = 'http://localhost:3333/api'; // This is just some bs URL for now
+
+// export const idp_url = 'https://idp-dev.geoservices.tamu.edu/oidc';
+export const idp_url = 'http://localhost:4001/oidc';

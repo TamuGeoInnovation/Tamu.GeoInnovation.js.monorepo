@@ -15,5 +15,5 @@ export const environment = {
  */
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
 
-export const api_url = 'http://localhost:3333';
-export const idp_url = 'http://localhost:4001';
+export const api_url = 'http://localhost:3333/api';
+export const idp_url = 'http://localhost:4001/oidc';

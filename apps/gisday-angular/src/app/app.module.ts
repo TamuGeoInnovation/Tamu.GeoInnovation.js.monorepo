@@ -99,7 +99,7 @@ const routeOptions: ExtraOptions = {
   imports: [
     AuthModule.forRoot({
       config: {
-        authority: 'http://localhost:4001/oidc',
+        authority: environment.idp_url,
         redirectUrl: window.location.origin,
         postLogoutRedirectUri: window.location.origin,
         clientId: 'gisday',

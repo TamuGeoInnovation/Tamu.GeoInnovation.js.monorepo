@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 
@@ -14,20 +14,29 @@ import { BaseService } from '../_base/base.service';
 export class SpeakerService extends BaseService<Speaker> {
   public withCredentials = false;
   public resource: string;
+  private accessToken;
+  private headers: HttpHeaders;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient, public oidcSecurityService: OidcSecurityService) {
     super(env1, http1, oidcSecurityService, 'speaker');
+
+    this.accessToken = this.oidcSecurityService.getAccessToken();
+    this.headers = new HttpHeaders({
+      Authorization: 'Bearer ' + this.accessToken
+    });
   }
 
   public getPresenter(guid: string) {
     return this.http1.get<Partial<Speaker>>(`${this.resource}/presenter/${guid}`, {
-      withCredentials: false
+      withCredentials: this.withCredentials,
+      headers: this.headers
     });
   }
 
   public getPresenters() {
     return this.http1.get<Array<Partial<Speaker>>>(`${this.resource}/presenters`, {
-      withCredentials: false
+      withCredentials: false,
+      headers: this.headers
     });
   }
 
