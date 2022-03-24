@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { from, fromEventPattern, forkJoin } from 'rxjs';
+import { from, fromEventPattern, combineLatest } from 'rxjs';
 import { switchMap, startWith, map } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
@@ -13,7 +13,7 @@ export class LayerListService {
   constructor(private moduleProvider: EsriModuleProviderService, private mapService: EsriMapService) {}
 
   public layers() {
-    return forkJoin([from(this.moduleProvider.require(['LayerListViewModel'])), this.mapService.store]).pipe(
+    return combineLatest([from(this.moduleProvider.require(['LayerListViewModel'])), this.mapService.store]).pipe(
       switchMap(([[LayerListViewModel], instance]: [[esri.LayerListViewModelConstructor], MapServiceInstance]) => {
         this._model = new LayerListViewModel({
           view: instance.view

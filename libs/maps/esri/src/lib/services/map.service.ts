@@ -2,7 +2,7 @@ import { Injectable, Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 import {
@@ -37,13 +37,12 @@ export class EsriMapService {
 
   private _mapContainer: HTMLDivElement;
 
+  private _viewClickHandle: IHandle;
+
   public hitTest: Observable<HitTestSnapshot> = this._hitTest.asObservable();
 
   // Exposed observable that will be responsible for emitting values to subscribers
-  public readonly store: Observable<MapServiceInstance> = this._store.asObservable().pipe(
-    filter((s) => s !== undefined),
-    take(1)
-  );
+  public readonly store: Observable<MapServiceInstance> = this._store.asObservable().pipe(filter((s) => s !== undefined));
 
   constructor(
     private moduleProvider: EsriModuleProviderService,
@@ -123,20 +122,7 @@ export class EsriMapService {
     // Load feature list from url (e.g. howdy links)
     this.selectFeaturesFromUrl();
 
-    // Set up a hit test wrapper that can be subscribed to anywhere in the application.
-    this._modules.view.on('click', (e) => {
-      this._modules.view.hitTest(e).then((res: esri.HitTestResult) => {
-        // Clear the hit test object regardless of router state
-        this.clearHitTest();
-
-        // Only set the hit test value if the current app route is not trip.
-        // This is because we don't want to shop popup when trying to click
-        // on map to set route which will overlay on top of trip planner controls
-        if (!this.router.url.includes('trip')) {
-          this._hitTest.next({ graphics: res.results.map((r) => r.graphic) });
-        }
-      });
-    });
+    this.registerViewClickEventHandler();
   }
 
   public destroy() {
@@ -166,13 +152,41 @@ export class EsriMapService {
   }
 
   public setView(view: esri.SceneView | esri.MapView) {
+    // this.destroyViewClickEventHandler();
+
+    this._modules.view.container = null;
     this._modules.view = null;
     this._modules.view = view;
 
     this._modules.view.container = this._mapContainer;
+
+    this._store.next({ ...this._store.getValue(), view: this._modules.view });
+
+    // this.registerViewClickEventHandler();
   }
 
-  // }
+  private registerViewClickEventHandler() {
+    // Set up a hit test wrapper that can be subscribed to anywhere in the application.
+    this._viewClickHandle = this._modules.view.on('click', (e) => {
+      this._modules.view.hitTest(e).then((res: esri.HitTestResult) => {
+        // Clear the hit test object regardless of router state
+        this.clearHitTest();
+
+        // Only set the hit test value if the current app route is not trip.
+        // This is because we don't want to shop popup when trying to click
+        // on map to set route which will overlay on top of trip planner controls
+        if (!this.router.url.includes('trip')) {
+          this._hitTest.next({ graphics: res.results.map((r) => r.graphic) });
+        }
+      });
+    });
+  }
+
+  private destroyViewClickEventHandler() {
+    if ('remove' in this._viewClickHandle) {
+      this._viewClickHandle.remove();
+    }
+  }
 
   /**
    * Makes a basemap using custom basemap options or a simple basemap string id name.

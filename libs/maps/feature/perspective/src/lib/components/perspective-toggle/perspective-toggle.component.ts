@@ -1,4 +1,4 @@
-import { Component, HostBinding, HostListener, Input } from '@angular/core';
+import { Component, HostBinding, HostListener, Input, OnInit } from '@angular/core';
 import { forkJoin, map, Observable, take } from 'rxjs';
 
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
@@ -10,7 +10,7 @@ import esri = __esri;
   templateUrl: './perspective-toggle.component.html',
   styleUrls: ['./perspective-toggle.component.scss']
 })
-export class PerspectiveToggleComponent {
+export class PerspectiveToggleComponent implements OnInit {
   @Input()
   public threeDLayers: Array<esri.Layer>;
 
@@ -24,6 +24,11 @@ export class PerspectiveToggleComponent {
 
   public activeMode: PerspectiveType = '2D';
 
+  private perspectives: {
+    threeD: esri.SceneView | undefined;
+    twoD: esri.MapView | undefined;
+  } = { threeD: undefined, twoD: undefined };
+
   @HostListener('click')
   public hostClick() {
     const nextViewType = this.oppositeViewType();
@@ -31,6 +36,21 @@ export class PerspectiveToggleComponent {
       this.ms.setView(view);
       this.activeMode = nextViewType;
     });
+  }
+
+  public ngOnInit(): void {
+    this.ms.store
+      .pipe(
+        take(1),
+        map((instance) => instance.view)
+      )
+      .subscribe((view) => {
+        if (view.type === '2d') {
+          this.perspectives.twoD = view;
+        } else if (view.type === '3d') {
+          this.perspectives.threeD = view;
+        }
+      });
   }
 
   private oppositeViewType(): PerspectiveType {
@@ -45,21 +65,33 @@ export class PerspectiveToggleComponent {
     if (type === '3D') {
       return forkJoin([this.mp.require(['SceneView']), this.ms.store.pipe(take(1))]).pipe(
         map(([[SceneView], instance]: [[esri.SceneViewConstructor], MapServiceInstance]) => {
-          return new SceneView({
-            map: instance.map,
-            viewpoint: instance.view.viewpoint.clone(),
-            container: undefined
-          });
+          if (this.perspectives.threeD === undefined) {
+            this.perspectives.threeD = new SceneView({
+              map: instance.map,
+              viewpoint: instance.view.viewpoint.clone(),
+              container: undefined
+            });
+
+            return this.perspectives.threeD;
+          } else {
+            return this.perspectives.threeD;
+          }
         })
       );
     } else {
       return forkJoin([this.mp.require(['MapView']), this.ms.store.pipe(take(1))]).pipe(
         map(([[MapView], instance]: [[esri.MapViewConstructor], MapServiceInstance]) => {
-          return new MapView({
-            map: instance.map,
-            viewpoint: instance.view.viewpoint.clone(),
-            container: undefined
-          });
+          if (this.perspectives.twoD === undefined) {
+            this.perspectives.twoD = new MapView({
+              map: instance.map,
+              viewpoint: instance.view.viewpoint.clone(),
+              container: undefined
+            });
+
+            return this.perspectives.twoD;
+          } else {
+            return this.perspectives.twoD;
+          }
         })
       );
     }
