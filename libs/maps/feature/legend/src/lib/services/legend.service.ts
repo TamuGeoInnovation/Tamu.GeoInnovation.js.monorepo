@@ -41,7 +41,7 @@ export class LegendService {
           handle = model.activeLayerInfos.on('change', handler);
         };
 
-        const remove = (handler): void => {
+        const remove = (): void => {
           handle.remove();
         };
 
