@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { fromEventPattern, Observable, Subject } from 'rxjs';
+import { map, mapTo, shareReplay, switchMap, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { EsriModuleProviderService } from '@tamu-gisc/maps/esri';
-import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { EsriModuleProviderService, MapServiceInstance, EsriMapService } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 
@@ -46,7 +45,9 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
   /**
    * Determines when the view finder is visible.
    */
-  public accessibleNavigation = false;
+  public $accessibleNavigation: Subject<boolean> = new Subject();
+
+  private $mapView: Observable<MapServiceInstance['view']>;
 
   /**
    * Map view DOM reference
@@ -72,13 +73,36 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
 
     const source = sources.find((s) => s.id === this.layer);
 
-    this.mapService.store.pipe(takeUntil(this._$destroy)).subscribe((instance) => {
-      this._mapViewEl = instance.view.container;
+    // Isolate the map view for easier access
+    this.$mapView = this.mapService.store.pipe(
+      map((instances) => instances.view),
+      shareReplay()
+    );
 
-      instance.view.on('key-up', (e: esri.MapViewKeyDownEvent) => {
+    // Setup the key up event handler on the view with resubscription on view swap
+    this.$mapView
+      .pipe(
+        switchMap((view) => {
+          let handle: esri.Handle;
+
+          const add = (handler) => {
+            handle = view.on('key-up', handler);
+          };
+
+          const remove = () => {
+            handle.remove();
+          };
+
+          return fromEventPattern<esri.MapViewKeyUpEvent>(add, remove).pipe(withLatestFrom(this.$mapView));
+        }),
+        takeUntil(this._$destroy)
+      )
+      .subscribe(([event, view]) => {
+        const viewContainer = view.container;
+
         // Catch a select few keys to query buildings feature layer
-        if (['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft', '-', '=', '+'].includes(e.key)) {
-          this.accessibleNavigation = true;
+        if (['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft', '-', '=', '+'].includes(event.key)) {
+          this.$accessibleNavigation.next(true);
 
           // Set timeout required to allow the state variables to reflect in the UI.
           // Else, the feature intersection calculation does not work as there is no pause for rendering
@@ -90,30 +114,30 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
             const screenCoords = [
               [
                 viewfinder.offsetLeft - viewfinder.offsetWidth / 2,
-                viewfinder.offsetTop - viewfinder.offsetHeight / 2 - this._mapViewEl.offsetTop
+                viewfinder.offsetTop - viewfinder.offsetHeight / 2 - viewContainer.offsetTop
               ], // First vertex
               [
                 viewfinder.offsetLeft + viewfinder.offsetWidth / 2,
-                viewfinder.offsetTop - viewfinder.offsetHeight / 2 - this._mapViewEl.offsetTop
+                viewfinder.offsetTop - viewfinder.offsetHeight / 2 - viewContainer.offsetTop
               ],
               [
                 viewfinder.offsetLeft + viewfinder.offsetWidth / 2,
-                viewfinder.offsetTop + viewfinder.offsetHeight / 2 - this._mapViewEl.offsetTop
+                viewfinder.offsetTop + viewfinder.offsetHeight / 2 - viewContainer.offsetTop
               ],
               [
                 viewfinder.offsetLeft - viewfinder.offsetWidth / 2,
-                viewfinder.offsetTop + viewfinder.offsetHeight / 2 - this._mapViewEl.offsetTop
+                viewfinder.offsetTop + viewfinder.offsetHeight / 2 - viewContainer.offsetTop
               ],
               [
                 viewfinder.offsetLeft - viewfinder.offsetWidth / 2,
-                viewfinder.offsetTop - viewfinder.offsetHeight / 2 - this._mapViewEl.offsetTop
+                viewfinder.offsetTop - viewfinder.offsetHeight / 2 - viewContainer.offsetTop
               ] // Closing vertex, same as first
             ];
 
             // Transform screen point coordinates to map point coordinates
             const mapCoords: number[][] = screenCoords
               .map((point) => {
-                return instance.view.toMap({
+                return view.toMap({
                   x: point[0],
                   y: point[1]
                 });
@@ -154,24 +178,38 @@ export class MapViewfinderComponent implements OnInit, OnDestroy {
         if (
           this.viewFinderFeatures &&
           this.viewFinderFeatures.length > 0 &&
-          ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].includes(e.key)
+          ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].includes(event.key)
         ) {
-          if (this.viewFinderFeatures[parseInt(e.key, 10) - 1]) {
+          if (this.viewFinderFeatures[parseInt(event.key, 10) - 1]) {
             // Clear the results layer
 
             this.mapService.selectFeatures({
-              graphics: [this.viewFinderFeatures[parseInt(e.key, 10) - 1].graphic.clone()],
+              graphics: [this.viewFinderFeatures[parseInt(event.key, 10) - 1].graphic.clone()],
               shouldShowPopup: true
             });
           }
         }
       });
 
-      // On any map view click, disable the keyboard accessible navigation overlay
-      instance.view.on('click', (e) => {
-        this.accessibleNavigation = false;
-      });
-    });
+    this.$mapView
+      .pipe(
+        switchMap((view) => {
+          let handle: esri.Handle;
+
+          const addHandler = (handler) => {
+            handle = view.on('click', handler);
+          };
+
+          const removeHandler = () => {
+            handle.remove();
+          };
+
+          return fromEventPattern<esri.ViewClickEvent>(addHandler, removeHandler);
+        }),
+        mapTo(false),
+        takeUntil(this._$destroy)
+      )
+      .subscribe(this.$accessibleNavigation);
   }
 
   public ngOnDestroy() {

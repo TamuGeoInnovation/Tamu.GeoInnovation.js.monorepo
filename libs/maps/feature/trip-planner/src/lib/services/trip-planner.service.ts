@@ -336,6 +336,7 @@ export class TripPlannerService implements OnDestroy {
   public initializeHandlers() {
     this._view.on('click', (e: esri.MapViewClickEvent) => {
       const layer = this._map.findLayerById('buildings-layer') as esri.FeatureLayer;
+
       // Allow click coordinates only when on the trip planner route
       if (this.router.url.includes('trip')) {
         this.mapService.featuresIntersectingPoint(layer, e.mapPoint).then((res) => {
