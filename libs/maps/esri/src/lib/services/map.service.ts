@@ -152,7 +152,7 @@ export class EsriMapService {
   }
 
   public setView(view: esri.SceneView | esri.MapView) {
-    // this.destroyViewClickEventHandler();
+    this.destroyViewClickEventHandler();
 
     this._modules.view.container = null;
     this._modules.view = null;
@@ -162,7 +162,7 @@ export class EsriMapService {
 
     this._store.next({ ...this._store.getValue(), view: this._modules.view });
 
-    // this.registerViewClickEventHandler();
+    this.registerViewClickEventHandler();
   }
 
   private registerViewClickEventHandler() {
