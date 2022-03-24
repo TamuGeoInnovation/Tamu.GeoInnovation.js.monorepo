@@ -1,14 +1,14 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import { of, fromEventPattern, Observable, from } from 'rxjs';
-import { switchMap, shareReplay } from 'rxjs/operators';
+import { switchMap, shareReplay, map } from 'rxjs/operators';
 
 import { EsriMapService } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 
 @Injectable()
-export class FeatureSelectorService implements OnDestroy {
+export class FeatureSelectorService {
   /**
    * Observable that emits the selected map feature.
    */
@@ -21,28 +21,26 @@ export class FeatureSelectorService implements OnDestroy {
    */
   public snapshot: Observable<esri.Graphic[]>;
 
-  /**
-   * Holds the map view click handler, to dispose of it on service destruction.
-   */
-  private _listener: esri.Handle;
-
   constructor(private esriMapService: EsriMapService) {
     this.feature = this.esriMapService.store.pipe(
-      switchMap((instances) => {
-        return of(instances.view);
-      }),
+      map((instances) => instances?.view),
       switchMap((view) => {
+        /**
+         * Holds the map view click handler, to dispose of it on service destruction.
+         */
+        let handle: esri.Handle;
+
         const create = (handler) => {
-          this._listener = view.on('click', handler);
+          handle = view.on('click', handler);
         };
 
-        const remove = (handler) => {
-          this._listener.remove();
+        const remove = () => {
+          handle.remove();
         };
 
         return fromEventPattern(create, remove).pipe(
           switchMap((event: MouseEvent) => {
-            return from((view.hitTest(event) as unknown) as Promise<esri.HitTestResult>);
+            return from(view.hitTest(event) as unknown as Promise<esri.HitTestResult>);
           }),
           switchMap((hitTestResult: esri.HitTestResult) => {
             return of(hitTestResult.results.map((v) => v.graphic));
@@ -52,11 +50,5 @@ export class FeatureSelectorService implements OnDestroy {
     );
 
     this.snapshot = this.feature.pipe(shareReplay(1));
-  }
-
-  public ngOnDestroy() {
-    if (this._listener !== undefined) {
-      this._listener.remove();
-    }
   }
 }
