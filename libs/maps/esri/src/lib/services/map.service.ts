@@ -493,6 +493,17 @@ export class EsriMapService {
     return layer;
   }
 
+  /**
+   * Removes a list of layers by ID. Ignores invalid layer ID's.
+   */
+  public removeLayersById(ids: Array<string>): void {
+    const map = this._modules.map;
+
+    const layers = ids.map((lid) => map.findLayerById(lid)).filter((layer) => layer !== undefined);
+
+    map.removeMany(layers);
+  }
+
   public removeLayerById(id: string): void {
     const map: esri.Map = this._modules.map;
     const layer = map.findLayerById(id);

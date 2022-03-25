@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 
+import { LayerSource } from '@tamu-gisc/common/types';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { MapServiceInstance, MapConfig } from '@tamu-gisc/maps/esri';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
@@ -19,6 +20,8 @@ export class MapComponent implements OnInit, OnDestroy {
   public view: esri.MapView;
   public isMobile: boolean;
   public config: ReplaySubject<MapConfig> = new ReplaySubject(undefined);
+
+  public threeDLayers: Array<LayerSource>;
 
   private _destroy$: Subject<boolean> = new Subject();
   private _connections: { [key: string]: string };
@@ -83,6 +86,8 @@ export class MapComponent implements OnInit, OnDestroy {
           }
         }
       });
+
+      this.threeDLayers = this.env.value('ThreeDLayers', true);
     });
 
     // Set loader phrases and display a random one.

@@ -26,7 +26,7 @@
   <tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }">
     <div class="map-overlay-ui">
       <div class="overlay-zone top left">
-        <tamu-gisc-perspective-toggle></tamu-gisc-perspective-toggle>
+        <tamu-gisc-perspective-toggle [threeDLayers]="threeDLayers"></tamu-gisc-perspective-toggle>
       </div>
     </div>
   </tamu-gisc-esri-map>

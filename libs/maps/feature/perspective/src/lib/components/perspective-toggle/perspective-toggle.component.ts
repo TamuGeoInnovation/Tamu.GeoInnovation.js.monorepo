@@ -1,6 +1,7 @@
 import { Component, HostBinding, HostListener, Input, OnInit } from '@angular/core';
 import { forkJoin, map, Observable, take } from 'rxjs';
 
+import { LayerSource } from '@tamu-gisc/common/types';
 import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
@@ -11,11 +12,17 @@ import esri = __esri;
   styleUrls: ['./perspective-toggle.component.scss']
 })
 export class PerspectiveToggleComponent implements OnInit {
+  /**
+   * Layers that should be applied when the perspective is changed to 3D
+   */
   @Input()
-  public threeDLayers: Array<esri.Layer>;
+  public threeDLayers: Array<LayerSource>;
 
+  /**
+   * Layers that should be applied when the perspective is changed to 2D
+   */
   @Input()
-  public twoDLayers: Array<esri.Layer>;
+  public twoDLayers: Array<LayerSource>;
 
   @HostBinding('class')
   public get componentDisplayClasses() {
@@ -29,12 +36,19 @@ export class PerspectiveToggleComponent implements OnInit {
     twoD: esri.MapView | undefined;
   } = { threeD: undefined, twoD: undefined };
 
+  private mapInstance: Observable<esri.Map>;
+
   @HostListener('click')
   public hostClick() {
     const nextViewType = this.oppositeViewType();
+
     this.makeView(nextViewType).subscribe((view) => {
+      this.removePerspectiveLayers();
+
       this.ms.setView(view);
       this.activeMode = nextViewType;
+
+      this.addPerspectiveLayers();
     });
   }
 
@@ -51,6 +65,8 @@ export class PerspectiveToggleComponent implements OnInit {
           this.perspectives.threeD = view;
         }
       });
+
+    this.mapInstance = this.ms.store.pipe(map((instances) => instances?.map));
   }
 
   private oppositeViewType(): PerspectiveType {
@@ -94,6 +110,26 @@ export class PerspectiveToggleComponent implements OnInit {
           }
         })
       );
+    }
+  }
+
+  private removePerspectiveLayers() {
+    if (this.activeMode === '3D' && this.threeDLayers !== undefined) {
+      const layerIdsToRemove = this.threeDLayers.map((source) => source.id);
+
+      this.ms.removeLayersById(layerIdsToRemove);
+    } else if (this.activeMode === '2D' && this.twoDLayers !== undefined) {
+      const layerIdsToRemove = this.twoDLayers.map((source) => source.id);
+
+      this.ms.removeLayersById(layerIdsToRemove);
+    }
+  }
+
+  public addPerspectiveLayers() {
+    if (this.activeMode === '3D' && this.threeDLayers !== undefined) {
+      this.ms.loadLayers(this.threeDLayers);
+    } else if (this.activeMode === '2D' && this.twoDLayers !== undefined) {
+      this.ms.loadLayers(this.twoDLayers);
     }
   }
 
