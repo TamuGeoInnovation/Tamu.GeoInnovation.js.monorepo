@@ -117,6 +117,7 @@ nav#off-canvas-menu .nav-divider:hover {
 }
 
 .desktop-menu {
+  flex: initial;
   @include flexbox();
   @include flex-direction(column);
 
