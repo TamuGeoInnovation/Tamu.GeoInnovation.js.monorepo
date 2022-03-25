@@ -40,9 +40,5 @@ export class HeaderNewComponent implements OnInit {
       }),
       shareReplay()
     );
-
-    this.$logoVisible.subscribe((isVisible) => {
-      console.log('logoVisible', isVisible);
-    });
   }
 }
