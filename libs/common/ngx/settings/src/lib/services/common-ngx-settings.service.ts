@@ -30,17 +30,17 @@ export class SettingsService {
       return acc;
     }, {} as CompoundSettings);
 
-    // Get full local storage from storage confiration. Provided config can override storage `primaryKey`
+    // Get full local storage from storage configuration. Provided config can override storage `primaryKey`
     const storage = this.getStorage({ ...this._localStorageSettings, ...config.storage });
 
     // Local storage returns a simple settings tree. This needs to be converted to a compound settings collection
-    // in order to incorporate existing peristent values that will be merged with matching initialized settings
+    // in order to incorporate existing persistent values that will be merged with matching initialized settings
     // from the provided configuration.
     const compoundsFromStorageTree = this.simpleSettingsTreeToCompoundSettings(storage);
 
     // Override any settings with locally stored setting values (if any).
-    const merged: CompoundSettings = Object.keys(storageInjected).reduce((acc, curr, index, arr) => {
-      if (compoundsFromStorageTree.hasOwnProperty(curr)) {
+    const merged: CompoundSettings = Object.keys(storageInjected).reduce((acc, curr) => {
+      if (curr in compoundsFromStorageTree) {
         acc[curr] = { ...storageInjected[curr], value: compoundsFromStorageTree[curr].value };
         return acc;
       } else {
@@ -108,7 +108,7 @@ export class SettingsService {
     const providedMatching = Object.keys(settingsToUpdate).reduce((acc, curr) => {
       // If the setting to be updated does exist in service state, ignore it because it
       // lack information build a `CompoundSettings`.
-      if (!storeSettings.hasOwnProperty(curr)) {
+      if (curr in storeSettings) {
         return acc;
       }
 
@@ -135,14 +135,14 @@ export class SettingsService {
         return acc;
       }
 
-      // If the compound setting referece to the current setting to be changed DOES HAVE a `set` effect,
+      // If the compound setting reference to the current setting to be changed DOES HAVE a `set` effect,
       // make final check to make sure the `set` effect has a target and a evaluating function..
       if (!storeSettings[curr].effects.set.target || !storeSettings[curr].effects.set.fn) {
         console.warn(`${curr} does not have 'set' target or function. Ignoring setting update.`);
         return acc;
       }
 
-      // Check that the comound effect target exists in the store settings. If it doesn't the process will throw an error.
+      // Check that the compound effect target exists in the store settings. If it doesn't the process will throw an error.
       if (!storeSettings[storeSettings[curr].effects.set.target]) {
         console.warn(`${storeSettings[curr].effects.set.target} setting does not exist. Ignoring setting update.`);
         return acc;
@@ -186,10 +186,10 @@ export class SettingsService {
   private calculateReturnValues(returnSettings: Settings): Observable<CompoundSettings> {
     return this._Store.asObservable().pipe(
       switchMap((settings) => {
-        const calculated = Object.keys(settings).reduce((acc, setting, index) => {
+        const calculated = Object.keys(settings).reduce((acc, setting) => {
           // Skip properties not included in the initialization configuration.
           // This is effectively in the same reducing step.
-          if (!returnSettings.hasOwnProperty(setting)) {
+          if (setting in returnSettings === false) {
             return acc;
           }
 
@@ -208,7 +208,7 @@ export class SettingsService {
 
           // Checks that all targets exist in settings store.
           const allTargetsExist = targets.every((target) => {
-            return settings.hasOwnProperty(target);
+            return target in settings;
           });
 
           // If at least one of the targets does not exist, return early
@@ -237,14 +237,14 @@ export class SettingsService {
   /**
    * Compare function used to check the keys and values of two flat simple setting collections.
    *
-   * Used as the compare function in the intialization return observable to prevent any service
+   * Used as the compare function in the initialization return observable to prevent any service
    * value update from notifying subscribers that are not concerned with setting value changes other
    * than the ones they have initialized their subscription with.
    *
    */
   private checkSimpleSettingsEquality(previous, current): boolean {
     return Object.keys(current).every((key) => {
-      if (previous.hasOwnProperty(key)) {
+      if (key in previous) {
         return previous[key] === current[key];
       } else {
         return false;
@@ -470,7 +470,7 @@ export interface Settings {
     persistent?: boolean;
 
     /**
-     * Initial setting value. If an existing persitent value exists, it will be updated
+     * Initial setting value. If an existing persistent value exists, it will be updated
      * at initialization.
      */
     value: boolean | string | number;
@@ -526,7 +526,7 @@ interface SettingEffectsGetFunction {
    * @param valueOrValues A single value if the target setting is a string. An array of
    * values if the target is an array of strings.
    */
-  fn(...valueOrValues: (string | number | boolean)[]): string | number | boolean;
+  fn(...valueOrValues: SettingValue[]): SettingValue;
 }
 
 interface SettingEffectsSetFunction {
@@ -547,24 +547,26 @@ interface SettingEffectsSetFunction {
    *
    * @param [value] Value of the target setting.
    */
-  fn(value?): string | number | boolean;
+  fn(value?): SettingValue;
 }
 
 export interface CompoundSettings {
   [key: string]: {
     storage: StorageConfig;
     persistent?: boolean;
-    value?: boolean | string | number;
+    value?: SettingValue;
     effects?: SettingEffects;
   };
 }
 
 interface SimpleSettingTree {
   [key: string]: {
-    [key: string]: boolean | string | number;
+    [key: string]: SettingValue;
   };
 }
 
 interface SimpleSettingBranch {
-  [key: string]: boolean | string | number;
+  [key: string]: SettingValue;
 }
+
+type SettingValue = boolean | string | number | Date;
