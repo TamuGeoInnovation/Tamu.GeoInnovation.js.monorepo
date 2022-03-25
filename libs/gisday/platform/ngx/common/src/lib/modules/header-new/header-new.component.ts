@@ -17,10 +17,10 @@ import { IUserInfoResponse } from '@tamu-gisc/gisday/platform/ngx/data-access';
 })
 export class HeaderNewComponent implements OnInit {
   public $loggedIn: Observable<AuthenticatedResult>;
-  public userRole: Observable<IUserInfoResponse>;
+  public $userRole: Observable<IUserInfoResponse>;
 
   public isActive = new Subject();
-  public logoVisible: Observable<boolean>;
+  public $logoVisible: Observable<boolean>;
   public isMobile = this.rp.isMobile.pipe(shareReplay(1));
 
   constructor(
@@ -32,18 +32,17 @@ export class HeaderNewComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    // this.loggedIn = this.authService.getHeaderState().pipe(shareReplay(1));
     this.$loggedIn = this.oidcSecurityService.isAuthenticated$;
-    // this.oidcSecurityService.isAuthenticated$.subscribe(({ isAuthenticated }) => {
-    //   console.warn('authenticated: ', isAuthenticated);
-    //   console.log('Access token: ', this.oidcSecurityService.getAccessToken());
-    // });
 
-    // this.logoVisible = this.routerHistory.history.pipe(
-    //   map(() => {
-    //     return this.location.path() !== '';
-    //   }),
-    //   shareReplay()
-    // );
+    this.$logoVisible = this.routerHistory.history.pipe(
+      map(() => {
+        return this.location.path() !== '';
+      }),
+      shareReplay()
+    );
+
+    this.$logoVisible.subscribe((isVisible) => {
+      console.log('logoVisible', isVisible);
+    });
   }
 }
