@@ -11,7 +11,8 @@ import {
   Subscription,
   throwError,
   zip,
-  Subject
+  Subject,
+  fromEventPattern
 } from 'rxjs';
 import {
   catchError,
@@ -334,47 +335,64 @@ export class TripPlannerService implements OnDestroy {
   private $destroy: Subject<boolean> = new Subject();
 
   public initializeHandlers() {
-    this._view.on('click', (e: esri.MapViewClickEvent) => {
-      const layer = this._map.findLayerById('buildings-layer') as esri.FeatureLayer;
+    this.mapService.store
+      .pipe(
+        map((instances) => instances?.view),
+        switchMap((view) => {
+          let handle: esri.Handle;
 
-      // Allow click coordinates only when on the trip planner route
-      if (this.router.url.includes('trip')) {
-        this.mapService.featuresIntersectingPoint(layer, e.mapPoint).then((res) => {
-          // If the query returns a feature in the value use the first item in that list
-          if (res.features.length > 0) {
-            this.setStops([
-              new TripPoint({
-                source: 'map-event',
-                originAttributes: res.features[0].attributes,
-                originGeometry: { latitude: e.mapPoint.latitude, longitude: e.mapPoint.longitude },
-                originParameters: {
-                  type: 'map-event',
-                  value: {
-                    latitude: e.mapPoint.latitude,
-                    longitude: e.mapPoint.longitude
+          const add = (handler) => {
+            handle = view.on('click', handler);
+          };
+
+          const remove = () => {
+            return handle.remove();
+          };
+
+          return fromEventPattern(add, remove);
+        })
+      )
+      .subscribe((event: esri.MapViewClickEvent) => {
+        const layer = this._map.findLayerById('buildings-layer') as esri.FeatureLayer;
+
+        // Allow click coordinates only when on the trip planner route
+        if (this.router.url.includes('trip')) {
+          this.mapService.featuresIntersectingPoint(layer, event.mapPoint).then((res) => {
+            // If the query returns a feature in the value use the first item in that list
+            if (res.features.length > 0) {
+              this.setStops([
+                new TripPoint({
+                  source: 'map-event',
+                  originAttributes: res.features[0].attributes,
+                  originGeometry: { latitude: event.mapPoint.latitude, longitude: event.mapPoint.longitude },
+                  originParameters: {
+                    type: 'map-event',
+                    value: {
+                      latitude: event.mapPoint.latitude,
+                      longitude: event.mapPoint.longitude
+                    }
                   }
-                }
-              })
-            ]);
-          } else {
-            // If the query does not return a feature in the value, use the event coordinates.
-            this.setStops([
-              new TripPoint({
-                source: 'map-event',
-                originGeometry: { latitude: e.mapPoint.latitude, longitude: e.mapPoint.longitude },
-                originParameters: {
-                  type: 'map-event',
-                  value: {
-                    latitude: e.mapPoint.latitude,
-                    longitude: e.mapPoint.longitude
+                })
+              ]);
+            } else {
+              // If the query does not return a feature in the value, use the event coordinates.
+              this.setStops([
+                new TripPoint({
+                  source: 'map-event',
+                  originGeometry: { latitude: event.mapPoint.latitude, longitude: event.mapPoint.longitude },
+                  originParameters: {
+                    type: 'map-event',
+                    value: {
+                      latitude: event.mapPoint.latitude,
+                      longitude: event.mapPoint.longitude
+                    }
                   }
-                }
-              })
-            ]);
-          }
-        });
-      }
-    });
+                })
+              ]);
+            }
+          });
+        }
+      });
   }
 
   /**
@@ -394,8 +412,9 @@ export class TripPlannerService implements OnDestroy {
    *
    * @param {{}} options
    */
-  public updateTravelOptions(options: {}) {
+  public updateTravelOptions(options: { [key: string]: string | number | boolean | Date }) {
     this.settings.updateSettings(options);
+
     if (!Object.keys(options).includes('travel_mode')) {
       this.calculateTravelMode([this._TravelOptions.getValue().travel_mode], true);
     }
