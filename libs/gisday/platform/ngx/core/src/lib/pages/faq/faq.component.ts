@@ -8,7 +8,7 @@ import { Title } from '@angular/platform-browser';
 })
 export class FaqComponent implements OnInit {
   constructor(private titleService: Title) {
-    this.titleService.setTitle('FAQ | TxGIS Day 2020');
+    this.titleService.setTitle('FAQ | TxGIS Day 2022');
   }
 
   public ngOnInit(): void {}

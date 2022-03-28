@@ -10,6 +10,6 @@ export class HighschoolComponent implements OnInit {
   constructor(private titleService: Title) {}
 
   public ngOnInit(): void {
-    this.titleService.setTitle('High School | TxGIS Day 2020');
+    this.titleService.setTitle('High School | TxGIS Day 2022');
   }
 }

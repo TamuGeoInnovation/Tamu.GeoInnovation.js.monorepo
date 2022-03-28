@@ -8,7 +8,7 @@ import { Title } from '@angular/platform-browser';
 })
 export class EventComponent implements OnInit {
   constructor(private titleService: Title) {
-    this.titleService.setTitle('Sessions | TxGIS Day 2021');
+    this.titleService.setTitle('Sessions | TxGIS Day 2022');
   }
 
   public ngOnInit() {}

@@ -258,7 +258,7 @@ nav#off-canvas-menu .nav-divider:hover {
 
   @include flexbox();
   @include flex-direction(row);
-  @include justify-content(flex-end);
+  @include justify-content(space-between);
   @include align-items(center);
 
   a,

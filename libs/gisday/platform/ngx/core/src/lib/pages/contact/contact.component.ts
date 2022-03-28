@@ -11,7 +11,7 @@ export class ContactComponent implements OnInit {
   public form: FormGroup;
 
   constructor(private titleService: Title, private fb: FormBuilder) {
-    this.titleService.setTitle('Contact | TxGIS Day 2020');
+    this.titleService.setTitle('Contact | TxGIS Day 2022');
   }
 
   public ngOnInit(): void {
