@@ -5,18 +5,18 @@ import { Routes, RouterModule } from '@angular/router';
 import { MapsMapboxModule } from '@tamu-gisc/maps/mapbox';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
-import { SignageComponent } from './signage.component';
+import { LightPoleComponent } from './light-pole.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: SignageComponent
+    component: LightPoleComponent
   }
 ];
 
 @NgModule({
-  declarations: [SignageComponent],
+  declarations: [LightPoleComponent],
   imports: [CommonModule, RouterModule.forChild(routes), MapsMapboxModule, UILayoutModule],
   exports: [RouterModule]
 })
-export class SignageModule {}
+export class LightPoleModule {}
