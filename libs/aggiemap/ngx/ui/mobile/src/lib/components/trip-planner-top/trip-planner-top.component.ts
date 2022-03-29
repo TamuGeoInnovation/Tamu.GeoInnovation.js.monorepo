@@ -1,13 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
-import { switchMap, takeUntil, pluck } from 'rxjs/operators';
+import { fromEventPattern, Observable, pipe, Subject } from 'rxjs';
+import { switchMap, takeUntil, pluck, map } from 'rxjs/operators';
 
-import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { TripPlannerService, TripResult, TripPoint } from '@tamu-gisc/maps/feature/trip-planner';
 import { DragService, UIDragState } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
 import { offCanvasSlideUpFromTop } from '../../animations/elements';
+
+import esri = __esri;
 
 @Component({
   selector: 'tamu-gisc-trip-planner-top',
@@ -51,6 +53,7 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
     private dragService: DragService
   ) {}
 
+  // TODO: There are a lot of internal subscriptions in here. Make more reactive.
   public ngOnInit(): void {
     this.stops = this.tripPlanner.Stops;
 
@@ -73,15 +76,23 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
       this.hideOverride = this.hide;
     });
 
-    this.mapService.store.pipe(takeUntil(this._destroy$)).subscribe((store) => {
-      store.view.on('immediate-click', (event) => {
+    // Slides component in/out of view if there is a trip drawn on the map.
+    // This allows the user to maximize the amount of map real estate on their screen
+    this.mapService.store
+      .pipe(
+        map((instances) => {
+          return instances.view;
+        }),
+        this.$immediateClickHandler(),
+        takeUntil(this._destroy$)
+      )
+      .subscribe((event) => {
         if (this.result && this.result.isFulfilled && !this.result.isError) {
           // Set the override value
           this.hideOverride = !this.hideOverride;
           this.hide = this.hideOverride;
         }
       });
-    });
   }
 
   public ngOnDestroy(): void {
@@ -107,5 +118,23 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
   public returnBaseRoute() {
     this.tripPlanner.clearAll();
     this.router.navigate(['/']);
+  }
+
+  private $immediateClickHandler() {
+    return pipe(
+      switchMap((view: MapServiceInstance['view']) => {
+        let handle: esri.Handle;
+
+        const addHandler = (handler) => {
+          handle = view.on('immediate-click', handler);
+        };
+
+        const removeHandler = () => {
+          handle.remove();
+        };
+
+        return fromEventPattern<esri.ViewImmediateClickEvent>(addHandler, removeHandler);
+      })
+    );
   }
 }

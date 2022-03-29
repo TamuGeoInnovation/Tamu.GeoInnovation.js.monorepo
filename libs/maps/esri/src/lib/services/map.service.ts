@@ -2,7 +2,7 @@ import { Injectable, Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 import { SearchService } from '@tamu-gisc/ui-kits/ngx/search';
 import {
@@ -35,13 +35,14 @@ export class EsriMapService {
 
   private _hitTest: BehaviorSubject<HitTestSnapshot> = new BehaviorSubject({ graphics: [] });
 
+  private _mapContainer: HTMLDivElement;
+
+  private _viewClickHandle: IHandle;
+
   public hitTest: Observable<HitTestSnapshot> = this._hitTest.asObservable();
 
   // Exposed observable that will be responsible for emitting values to subscribers
-  public readonly store: Observable<MapServiceInstance> = this._store.asObservable().pipe(
-    filter((s) => s !== undefined),
-    take(1)
-  );
+  public readonly store: Observable<MapServiceInstance> = this._store.asObservable().pipe(filter((s) => s !== undefined));
 
   constructor(
     private moduleProvider: EsriModuleProviderService,
@@ -103,6 +104,9 @@ export class EsriMapService {
   ): void {
     const basemap = this.makeBasemap(Properties, TileLayer, Basemap);
     this._modules.map = new Map(basemap);
+
+    this._mapContainer = ViewProps.properties.container as HTMLDivElement;
+
     const props = this.makeMapView(ViewProps.properties, this._modules.map);
     this._modules.view = new MapView(props as esri.MapViewProperties & esri.SceneViewProperties);
 
@@ -118,20 +122,7 @@ export class EsriMapService {
     // Load feature list from url (e.g. howdy links)
     this.selectFeaturesFromUrl();
 
-    // Set up a hit test wrapper that can be subscribed to anywhere in the application.
-    this._modules.view.on('click', (e) => {
-      this._modules.view.hitTest(e).then((res: esri.HitTestResult) => {
-        // Clear the hit test object regardless of router state
-        this.clearHitTest();
-
-        // Only set the hit test value if the current app route is not trip.
-        // This is because we don't want to shop popup when trying to click
-        // on map to set route which will overlay on top of trip planner controls
-        if (!this.router.url.includes('trip')) {
-          this._hitTest.next({ graphics: res.results.map((r) => r.graphic) });
-        }
-      });
-    });
+    this.registerViewClickEventHandler();
   }
 
   public destroy() {
@@ -158,6 +149,43 @@ export class EsriMapService {
     }
 
     return vProps;
+  }
+
+  public setView(view: esri.SceneView | esri.MapView) {
+    this.destroyViewClickEventHandler();
+
+    this._modules.view.container = null;
+    this._modules.view = null;
+    this._modules.view = view;
+
+    this._modules.view.container = this._mapContainer;
+
+    this._store.next({ ...this._store.getValue(), view: this._modules.view });
+
+    this.registerViewClickEventHandler();
+  }
+
+  private registerViewClickEventHandler() {
+    // Set up a hit test wrapper that can be subscribed to anywhere in the application.
+    this._viewClickHandle = this._modules.view.on('click', (e) => {
+      this._modules.view.hitTest(e).then((res: esri.HitTestResult) => {
+        // Clear the hit test object regardless of router state
+        this.clearHitTest();
+
+        // Only set the hit test value if the current app route is not trip.
+        // This is because we don't want to shop popup when trying to click
+        // on map to set route which will overlay on top of trip planner controls
+        if (!this.router.url.includes('trip')) {
+          this._hitTest.next({ graphics: res.results.map((r) => r.graphic) });
+        }
+      });
+    });
+  }
+
+  private destroyViewClickEventHandler() {
+    if ('remove' in this._viewClickHandle) {
+      this._viewClickHandle.remove();
+    }
   }
 
   /**
@@ -253,14 +281,14 @@ export class EsriMapService {
     let props;
 
     // Check if the incoming source has the native property because Autocastable layers do not.
-    if (source.hasOwnProperty('native')) {
+    if ('native' in source) {
       props = { ...source, ...(source as LayerSource).native };
     } else {
       props = { ...source };
     }
 
     // Remove the 'native' property from the object since it's not needed in the layer creation.
-    if (props.hasOwnProperty('native')) {
+    if ('native' in props) {
       delete props.native;
     }
 
@@ -465,6 +493,17 @@ export class EsriMapService {
     return layer;
   }
 
+  /**
+   * Removes a list of layers by ID. Ignores invalid layer ID's.
+   */
+  public removeLayersById(ids: Array<string>): void {
+    const map = this._modules.map;
+
+    const layers = ids.map((lid) => map.findLayerById(lid)).filter((layer) => layer !== undefined);
+
+    map.removeMany(layers);
+  }
+
   public removeLayerById(id: string): void {
     const map: esri.Map = this._modules.map;
     const layer = map.findLayerById(id);
@@ -560,7 +599,7 @@ export class EsriMapService {
     const tree = this.router.parseUrl(this.router.url);
 
     // Check for matching dictionary keys in the parsed url tree
-    const keyExists = buildingParameterDictionary.find((key) => tree.queryParams.hasOwnProperty(key));
+    const keyExists = buildingParameterDictionary.find((key) => key in tree.queryParams);
 
     // If there is a matching key in the dictionary and the current url tree,
     // then proceed submit queries to the search sources for matches.
@@ -753,7 +792,8 @@ export interface MapServiceInstance {
   map: esri.Map;
   view: esri.MapView | esri.SceneView;
 }
-interface NullableMapServiceInstance extends Partial<MapServiceInstance> {}
+
+type NullableMapServiceInstance = Partial<MapServiceInstance>;
 
 /**
  * Defines a graphics collection and any additional options that should be used in the selection.

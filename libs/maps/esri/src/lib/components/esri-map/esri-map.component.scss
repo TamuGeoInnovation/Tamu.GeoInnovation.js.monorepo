@@ -13,6 +13,32 @@
   }
 }
 
+::ng-deep {
+  .map-overlay-ui {
+    position: fixed;
+
+    .overlay-zone {
+      position: fixed;
+
+      &.top {
+        top: 15px; // This value is the same as the esri ui "inset" top value
+      }
+
+      &.bottom {
+        top: 15px; // This value is the same as the esri ui "inset" bottom value
+      }
+
+      &.left {
+        left: 3.75rem;
+      }
+
+      &.right {
+        left: 3.75rem;
+      }
+    }
+  }
+}
+
 @media only screen and (max-width: 768px) {
   :host {
     height: 100%; // Needed for iOS Safari

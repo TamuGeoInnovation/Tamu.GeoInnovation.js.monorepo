@@ -1,0 +1,23 @@
+{
+  "projectType": "library",
+  "root": "libs/maps/feature/perspective",
+  "sourceRoot": "libs/maps/feature/perspective/src",
+  "prefix": "tamu-gisc",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/maps/feature/perspective"],
+      "options": {
+        "jestConfig": "libs/maps/feature/perspective/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/maps/feature/perspective/src/**/*.ts", "libs/maps/feature/perspective/src/**/*.html"]
+      }
+    }
+  },
+  "tags": []
+}

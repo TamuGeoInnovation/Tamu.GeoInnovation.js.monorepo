@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-import { pluck, takeUntil } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { Observable, pipe, fromEventPattern } from 'rxjs';
+import { map, pluck, shareReplay, switchMap } from 'rxjs/operators';
 
-import { EsriMapService } from '@tamu-gisc/maps/esri';
+import { EsriMapService, MapServiceInstance } from '@tamu-gisc/maps/esri';
 
 import esri = __esri;
 
@@ -11,43 +11,53 @@ import esri = __esri;
   templateUrl: './click-coordinates.component.html',
   styleUrls: ['./click-coordinates.component.scss']
 })
-export class ClickCoordinatesComponent implements OnInit, OnDestroy {
-  private destroy$: Subject<boolean> = new Subject();
-  public view: esri.MapView;
-
-  public coords: { latitude: string; longitude: string };
-  public coordText: string;
+export class ClickCoordinatesComponent implements OnInit {
+  public coords: Observable<ClickCoordinates>;
+  public coordText: Observable<string>;
   public copying: Observable<boolean>;
 
   constructor(private mapService: EsriMapService) {}
 
   public ngOnInit(): void {
-    this.mapService.store
-      .pipe(
-        pluck('view'),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((view: esri.MapView) => {
-        this.view = view;
-        this.immediateClickHandler();
-      });
-  }
+    this.coords = this.mapService.store.pipe(pluck('view'), this.$immediateClickHandler(), shareReplay());
 
-  public ngOnDestroy(): void {
-    this.destroy$.next(true);
+    this.coordText = this.coords.pipe(
+      map((coords) => {
+        return `${coords.latitude}, ${coords.longitude}`;
+      })
+    );
   }
 
   /**
    * Set up a coordinate stream with a view immediate-click handler.
    */
-  public immediateClickHandler() {
-    this.view.on('immediate-click', (event: esri.MapViewImmediateClickEvent) => {
-      this.coords = {
-        latitude: event.mapPoint.latitude.toFixed(5),
-        longitude: event.mapPoint.longitude.toFixed(5)
-      };
+  private $immediateClickHandler() {
+    return pipe(
+      switchMap((view: MapServiceInstance['view']) => {
+        let immediateClickHandle: esri.Handle;
 
-      this.coordText = `${this.coords.latitude}, ${this.coords.longitude}`;
-    });
+        const addHandler = (handler) => {
+          immediateClickHandle = view.on('immediate-click', handler);
+        };
+
+        const removeHandler = () => {
+          immediateClickHandle.remove();
+        };
+
+        return fromEventPattern(addHandler, removeHandler).pipe(
+          map((event: esri.MapViewImmediateClickEvent) => {
+            return {
+              latitude: event.mapPoint.latitude.toFixed(5),
+              longitude: event.mapPoint.longitude.toFixed(5)
+            };
+          })
+        );
+      })
+    );
   }
+}
+
+interface ClickCoordinates {
+  latitude: string;
+  longitude: string;
 }

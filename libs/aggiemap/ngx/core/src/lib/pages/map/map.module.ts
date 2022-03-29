@@ -25,6 +25,7 @@ import { MapsFeatureTripPlannerModule, TripPlannerOptionsComponent } from '@tamu
 import { MapPopupModule, PopupMobileComponent } from '@tamu-gisc/maps/feature/popup';
 import { UIClipboardModule } from '@tamu-gisc/ui-kits/ngx/interactions/clipboard';
 import { MapsFeatureCoordinatesModule } from '@tamu-gisc/maps/feature/coordinates';
+import { MapsFeaturePerspectiveModule } from '@tamu-gisc/maps/feature/perspective';
 
 import {
   AggiemapNgxSharedUiStructuralModule,
@@ -148,7 +149,8 @@ const routes: Routes = [
     AggiemapNgxSharedUiStructuralModule,
     AggiemapNgxUiMobileModule,
     MapsFeatureCoordinatesModule,
-    AggiemapFormsModule
+    AggiemapFormsModule,
+    MapsFeaturePerspectiveModule
   ],
   declarations: [MapComponent]
 })

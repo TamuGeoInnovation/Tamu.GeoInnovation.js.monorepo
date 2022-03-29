@@ -23,7 +23,13 @@
 
 <!-- Map component -->
 <ng-container *ngIf="(config | async) as c">
-  <tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }"></tamu-gisc-esri-map>
+  <tamu-gisc-esri-map [config]="c" (loaded)="continue($event)" [ngClass]="{ mobile: isMobile }">
+    <div class="map-overlay-ui">
+      <div class="overlay-zone top left">
+        <tamu-gisc-perspective-toggle [threeDLayers]="threeDLayers"></tamu-gisc-perspective-toggle>
+      </div>
+    </div>
+  </tamu-gisc-esri-map>
 </ng-container>
 
 <!-- Router outlet where desktop and mobile controls are rendered -->

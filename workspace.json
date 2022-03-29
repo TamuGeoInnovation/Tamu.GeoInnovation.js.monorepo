@@ -85,6 +85,7 @@
     "maps-feature-layer-filter": "libs/maps/feature/layer-filter",
     "maps-feature-layer-list": "libs/maps/feature/layer-list",
     "maps-feature-legend": "libs/maps/feature/legend",
+    "maps-feature-perspective": "libs/maps/feature/perspective",
     "maps-feature-popup": "libs/maps/feature/popup",
     "maps-feature-trip-planner": "libs/maps/feature/trip-planner",
     "maps-mapbox": "libs/maps/mapbox",
