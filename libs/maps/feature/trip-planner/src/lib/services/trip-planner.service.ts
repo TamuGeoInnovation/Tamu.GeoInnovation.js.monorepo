@@ -415,7 +415,7 @@ export class TripPlannerService implements OnDestroy {
   public updateTravelOptions(options: { [key: string]: string | number | boolean | Date }) {
     this.settings.updateSettings(options);
 
-    if (!Object.keys(options).includes('travel_mode')) {
+    if ('travel_mode' in options === false) {
       this.calculateTravelMode([this._TravelOptions.getValue().travel_mode], true);
     }
   }

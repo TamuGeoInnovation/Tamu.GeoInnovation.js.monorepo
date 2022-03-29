@@ -108,7 +108,7 @@ export class SettingsService {
     const providedMatching = Object.keys(settingsToUpdate).reduce((acc, curr) => {
       // If the setting to be updated does exist in service state, ignore it because it
       // lack information build a `CompoundSettings`.
-      if (curr in storeSettings) {
+      if (curr in storeSettings === false) {
         return acc;
       }
 
