@@ -2,21 +2,22 @@ import { NestFactory } from '@nestjs/core';
 
 import passport from 'passport';
 import session from 'express-session';
-const SQLiteStore = require('connect-sqlite3')(session);
+
+import Database from 'better-sqlite3';
+import createSqliteStore from 'better-sqlite3-session-store';
 
 import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
 import { AppModule } from './app/app.module';
 import { environment, origins } from './environments/environment';
-import { OIDC_IDP_ISSUER_URL, OIDC_CLIENT_PARAMS, OIDC_CLIENT_METADATA_BASIC } from './environments/environment';
+import * as env from './environments/environment';
+
+const SQLiteStore = createSqliteStore(session);
+const db = new Database(env?.sessionStore?.db || 'sessions.db', {
+  verbose: env.environment.production === false ? console.log : undefined
+});
 
 async function bootstrap() {
-  const sqlStore = new SQLiteStore({
-    db: 'gisday_nest.db',
-    concurrentDB: true,
-    table: 'sessions',
-    dir: __dirname
-  });
   const app = await NestFactory.create(AppModule, {
     cors: {
       origin: origins,
@@ -26,14 +27,17 @@ async function bootstrap() {
   });
   app.use(
     session({
-      name: 'geoinnovation',
+      name: 'gisday-nest',
       resave: false,
       saveUninitialized: false,
-      secret: 'GEOINNOVATIONSERVICECENTER',
-      store: sqlStore,
-      cookie: {
-        maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
-      }
+      secret: env?.sessionStore?.secret || 'localSecret',
+      store: new SQLiteStore({
+        client: db,
+        expired: {
+          clear: true,
+          intervalMs: 900000
+        }
+      })
     })
   );
   app.use(passport.initialize());
@@ -44,7 +48,7 @@ async function bootstrap() {
   });
 }
 
-OpenIdClient.build(OIDC_CLIENT_METADATA_BASIC, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL)
+OpenIdClient.build(env.OIDC_CLIENT_METADATA_BASIC, env.OIDC_CLIENT_PARAMS, env.OIDC_IDP_ISSUER_URL)
   .then(() => bootstrap())
   .catch((err) => {
     console.warn(err);
