@@ -8,6 +8,8 @@ import {
   Class,
   CourseCredit,
   Event,
+  EventBroadcast,
+  EventLocation,
   RsvpType,
   Speaker,
   SpeakerInfo,
@@ -48,9 +50,9 @@ import { localDbConfig } from '../environments/ormconfig';
 
 @Module({
   imports: [
-    OidcClientModule.forRoot({
-      host: 'http://localhost:4200'
-    }),
+    // OidcClientModule.forRoot({
+    //   host: 'http://localhost:4200'
+    // }),
     TypeOrmModule.forRoot({
       ...localDbConfig,
       entities: [
@@ -58,6 +60,8 @@ import { localDbConfig } from '../environments/ormconfig';
         Class,
         CourseCredit,
         Event,
+        EventBroadcast,
+        EventLocation,
         InitialSurveyQuestion,
         InitialSurveyResponse,
         QuestionType,
@@ -93,7 +97,7 @@ import { localDbConfig } from '../environments/ormconfig';
     UserRsvpModule,
     UserSubmissionModule
   ],
-  controllers: [AppController, UserController],
+  controllers: [UserController],
   providers: [AppService]
 })
 export class AppModule implements NestModule {

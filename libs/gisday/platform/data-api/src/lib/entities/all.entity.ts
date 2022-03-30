@@ -128,7 +128,7 @@ export class GISDayEntity extends GuidIdentity {
 
   @BeforeUpdate()
   @BeforeInsert()
-  private setSeason(): void {
+  private setSeason() {
     if (this.season === undefined) {
       this.season = new Date().getFullYear().toString();
     }
@@ -136,24 +136,24 @@ export class GISDayEntity extends GuidIdentity {
 }
 
 @Entity({
-  name: 'events'
+  name: 'events_old'
 })
-export class Event extends GISDayEntity {
-  @ManyToMany((type) => Speaker, { cascade: true })
-  @JoinTable({ name: 'event_speakers' })
-  public speakers?: Speaker[];
+export class OldEvent extends GISDayEntity {
+  // @ManyToMany((type) => Speaker, { cascade: true })
+  // @JoinTable({ name: 'event_speakers' })
+  // public speakers?: Speaker[];
 
-  @ManyToMany((type) => Sponsor, { cascade: true })
-  @JoinTable({ name: 'event_sponsors' })
-  public sponsors?: Sponsor[];
+  // @ManyToMany((type) => Sponsor, { cascade: true })
+  // @JoinTable({ name: 'event_sponsors' })
+  // public sponsors?: Sponsor[];
 
-  @ManyToMany((type) => Tag, { cascade: true })
-  @JoinTable({ name: 'event_tags' })
-  public tags?: Tag[];
+  // @ManyToMany((type) => Tag, { cascade: true })
+  // @JoinTable({ name: 'event_tags' })
+  // public tags?: Tag[];
 
-  @ManyToMany((type) => CourseCredit, { cascade: true })
-  @JoinTable({ name: 'event_course_credits' })
-  public courseCredit?: CourseCredit[]; // CourseCredit[]
+  // @ManyToMany((type) => CourseCredit, { cascade: true })
+  // @JoinTable({ name: 'event_course_credits' })
+  // public courseCredit?: CourseCredit[]; // CourseCredit[]
 
   @Column({ nullable: true })
   public observedAttendeeStart: number;
@@ -217,6 +217,126 @@ export class Event extends GISDayEntity {
 
   @Column({ nullable: true })
   public duration: number;
+
+  public hasRsvp = false;
+
+  constructor() {
+    super();
+  }
+}
+
+@Entity({
+  name: 'event_broadcast'
+})
+export class EventBroadcast extends GuidIdentity {
+  @Column({ nullable: false })
+  public presenterUrl: string;
+
+  @Column({ nullable: false })
+  public password: string;
+
+  @Column({ nullable: false })
+  public phoneNumber: string;
+
+  @Column({ nullable: false })
+  public meetingId: string;
+
+  @Column({ nullable: false })
+  public publicUrl: string;
+}
+
+@Entity({
+  name: 'event_location'
+})
+export class EventLocation extends GuidIdentity {
+  @Column({ nullable: true })
+  public locationRoom: string;
+
+  @Column({ nullable: true })
+  public locationBuilding: string;
+
+  @Column({ nullable: true })
+  public capacity: number;
+
+  @Column({ nullable: true })
+  public locationLink: string;
+}
+
+@Entity({
+  name: 'events'
+})
+export class Event extends GISDayEntity {
+  // @ManyToMany((type) => Speaker, { cascade: true })
+  // @JoinTable({ name: 'event_speakers' })
+  // public speakers?: Speaker[];
+
+  // @ManyToMany((type) => Sponsor, { cascade: true })
+  // @JoinTable({ name: 'event_sponsors' })
+  // public sponsors?: Sponsor[];
+
+  @ManyToMany((type) => Tag, { cascade: true })
+  @JoinTable({ name: 'event_tags' })
+  public tags?: Tag[];
+
+  // @ManyToMany((type) => CourseCredit, { cascade: true })
+  // @JoinTable({ name: 'event_course_credits' })
+  // public courseCredit?: CourseCredit[]; // CourseCredit[]
+
+  @OneToOne(() => EventBroadcast, { cascade: true, nullable: true })
+  @JoinColumn()
+  public broadcast?: EventBroadcast;
+
+  @OneToOne(() => EventLocation, { cascade: true, nullable: true })
+  @JoinColumn()
+  public location?: EventLocation;
+
+  @Column({ nullable: true })
+  public name: string;
+
+  @Column({ nullable: true })
+  public abstract: string;
+
+  @Column({ nullable: true })
+  public startTime: Date; // Use Angular pipes to format on frontend
+
+  @Column({ nullable: true })
+  public endTime: Date;
+
+  @Column({ nullable: true })
+  public date: Date;
+
+  // @Column({ nullable: true })
+  // public duration: number; // TODO: Can we remove this? If we need it in the future maybe replace with a computed property of endTime - startTime - Aaron H. (3/30/2022)
+
+  @Column({ nullable: true })
+  public observedAttendeeStart: number;
+
+  @Column({ nullable: true })
+  public observedAttendeeEnd: number;
+
+  @Column({ nullable: true })
+  public googleDriveUrl: string;
+
+  @Column({ nullable: true })
+  public requiresRsvp: boolean;
+
+  @Column({ nullable: true })
+  public qrCode: string;
+
+  @Column({ nullable: true })
+  public type: string;
+
+  @Column({ nullable: true })
+  public presentationType: string;
+
+  @Column({ nullable: false })
+  public isAcceptingRsvps: boolean = true;
+
+  @Column({ nullable: false })
+  public isBringYourOwnDevice: boolean = false;
+
+  @Column({ nullable: true })
+  public requirements: string;
 
   public hasRsvp = false;
 
@@ -771,7 +891,7 @@ export class EventRepo extends CommonRepo<Event> {
       .leftJoinAndSelect('events.speakers', 'speakers')
       .orderBy('startTime', 'ASC')
       .where(`events.season = :season`, {
-        season: '2020'
+        season: '2019'
       })
       .getMany();
   }
