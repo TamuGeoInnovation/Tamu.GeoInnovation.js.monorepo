@@ -5,3 +5,5 @@ export const environment = {
 };
 
 export { devDbConfig as dbConfig } from './ormconfig';
+export * from './oidcconfig';
+export * from './secrets';

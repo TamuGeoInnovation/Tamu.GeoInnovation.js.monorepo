@@ -11,3 +11,4 @@ export const environment = {
 
 export { devDbConfig as dbConfig } from './ormconfig';
 export { devClientConfig as idpConfig } from './oidc-client-config';
+export * from './secrets';
