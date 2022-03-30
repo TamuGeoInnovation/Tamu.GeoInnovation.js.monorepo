@@ -1,45 +1,49 @@
 import { NestFactory } from '@nestjs/core';
+
 import passport from 'passport';
 import session from 'express-session';
-const SQLiteStore = require('connect-sqlite3')(session);
+
+import Database from 'better-sqlite3';
+import createSqliteStore from 'better-sqlite3-session-store';
 
 import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
 import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
-import { idpConfig } from './environments/environment';
+import * as env from './environments/environment';
+
+const SQLiteStore = createSqliteStore(session);
+const db = new Database(env?.sessionStore?.db || 'sessions.db', {
+  verbose: env.environment.production === false ? console.log : undefined
+});
 
 async function bootstrap() {
-  const sqlStore = new SQLiteStore({
-    db: 'covid_sessions.db',
-    concurrentDB: true,
-    table: 'sessions',
-    dir: __dirname
-  });
-
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
     credentials: true,
-    origin: environment.allowedOrigins
+    origin: env.environment.allowedOrigins
   });
 
-  const globalPrefix = environment.globalPrefix;
+  const globalPrefix = env.environment.globalPrefix;
   app.setGlobalPrefix(globalPrefix);
-  const port = environment.port || 3333;
+  const port = env.environment.port || 3333;
 
   app.use(
     session({
-      name: 'geoinnovation',
+      name: 'ues-dispatch',
       resave: false,
       saveUninitialized: false,
-      secret: 'GEOINNOVATIONSERVICECENTER',
-      store: sqlStore,
-      cookie: {
-        maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
-      }
+      secret: env?.sessionStore?.secret || 'localSecret',
+      store: new SQLiteStore({
+        client: db,
+        expired: {
+          clear: true,
+          intervalMs: 900000
+        }
+      })
     })
   );
+
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -48,7 +52,7 @@ async function bootstrap() {
   });
 }
 
-OpenIdClient.build(idpConfig.metadata, idpConfig.parameters, idpConfig.issuer_url)
+OpenIdClient.build(env.idpConfig.metadata, env.idpConfig.parameters, env.idpConfig.issuer_url)
   .then(() => bootstrap())
   .catch((err) => {
     console.warn(err);
