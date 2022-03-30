@@ -1,6 +1,7 @@
 parameters:
   buildType: ''
   DependsOn: []
+  excludedProjects: ''
 
 jobs:
   - job: ${{ parameters.buildType }}
@@ -105,7 +106,7 @@ jobs:
         displayName: 'Copying environment files to gisday-competitions-nest'
 
       - bash: |
-          npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildType }} --exclude="signage-angular,trees-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,mailroom-nest"
+          npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildType }} --exclude=${{ parameters.excludedProjects }}
         displayName: 'Running build'
 
       - task: CopyFiles@2
