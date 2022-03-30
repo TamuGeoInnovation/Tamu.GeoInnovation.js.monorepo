@@ -11,5 +11,5 @@ steps:
       cacheHitVar: 'CacheHit'
 
   - script: npm ci
-    displayName: 'npm dep clean install'
+    displayName: 'NPM Clean Dependency Install'
     condition: ne(variables.CacheHit, 'true')

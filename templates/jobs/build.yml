@@ -1,18 +1,12 @@
 parameters:
-  buildtype: ''
+  buildType: ''
   DependsOn: []
 
 jobs:
-  - job: build_${{ parameters.buildtype }}
+  - job: build_${{ parameters.buildType }}
     dependsOn: ${{ parameters.DependsOn }}
     steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: '16.x'
-        displayName: 'Install Node.js 16.x'
-
-      - script: npm install
-        displayName: 'npm install'
+      - template: ../tasks/cacheOrRestoreDependencies.yml
 
       - task: DownloadSecureFile@1
         inputs:
@@ -111,7 +105,7 @@ jobs:
         displayName: 'Copying environment files to gisday-competitions-nest'
 
       - bash: |
-          npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildtype }} --exclude="signage-angular,trees-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,mailroom-nest"
+          npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildType }} --exclude="signage-angular,trees-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,mailroom-nest"
         displayName: 'Running build'
 
       - task: CopyFiles@2
@@ -123,5 +117,5 @@ jobs:
       - task: PublishBuildArtifacts@1
         inputs:
           pathtoPublish: $(Build.ArtifactStagingDirectory) # dist or build files
-          ArtifactName: 'js-monorepo-${{ parameters.buildtype }}'
+          ArtifactName: 'js-monorepo-${{ parameters.buildType }}'
         displayName: 'Publish Artifacts'

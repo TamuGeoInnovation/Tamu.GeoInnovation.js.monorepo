@@ -24,14 +24,14 @@ stages:
     jobs:
       - template: templates/jobs/buildTags.yml
 
-      # - template: jobs/build.yml
-      #   parameters:
-      #     buildtype: development
+      - template: templates/jobs/build.yml
+        parameters:
+          buildType: development
 
-      # - template: jobs/build.yml
-      #   parameters:
-      #     buildtype: staging
+      - template: templates/jobs/build.yml
+        parameters:
+          buildType: staging
 
-      # - template: jobs/build.yml
-      #   parameters:
-      #     buildtype: production
+      - template: templates/jobs/build.yml
+        parameters:
+          buildType: production
