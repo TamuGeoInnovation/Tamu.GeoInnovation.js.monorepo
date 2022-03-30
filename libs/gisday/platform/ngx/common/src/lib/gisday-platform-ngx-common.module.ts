@@ -9,13 +9,12 @@ import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/tr
 import { FooterComponent } from './modules/footer/footer.component';
 import { HeaderComponent } from './modules/header/header.component';
 import { HeaderNewComponent } from './modules/header-new/header-new.component';
-import { CountDownComponent } from './modules/count-down/count-down.component';
 import { DetailViewComponent } from './modules/detail-view/detail-view.component';
 
 @NgModule({
   imports: [CommonModule, RouterModule, UITileNavigationModule, UINavigationTriggersModule],
-  declarations: [FooterComponent, HeaderComponent, HeaderNewComponent, CountDownComponent, DetailViewComponent],
+  declarations: [FooterComponent, HeaderComponent, HeaderNewComponent, DetailViewComponent],
   providers: [AuthService],
-  exports: [FooterComponent, HeaderComponent, HeaderNewComponent, CountDownComponent, DetailViewComponent]
+  exports: [FooterComponent, HeaderComponent, HeaderNewComponent, DetailViewComponent]
 })
 export class GisdayPlatformNgxCommonModule {}
