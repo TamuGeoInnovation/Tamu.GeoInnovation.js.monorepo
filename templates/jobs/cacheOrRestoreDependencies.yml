@@ -1,0 +1,5 @@
+jobs:
+  - job:
+    displayName: 'Cache or Restore'
+    steps:
+      - template: ../tasks/cacheOrRestoreDependencies.yml
