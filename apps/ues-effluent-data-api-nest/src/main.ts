@@ -12,7 +12,7 @@ import { AppModule } from './app/app.module';
 import * as env from './environments/environment';
 
 const SQLiteStore = createSqliteStore(session);
-const db = new Database(env?.sessionStore?.db || 'sessions.db', {
+const db = new Database(env.environment.production === true ? env?.sessionStore?.db : 'sessions.db', {
   verbose: env.environment.production === false ? console.log : undefined
 });
 
@@ -33,7 +33,7 @@ async function bootstrap() {
       name: 'ues-dispatch',
       resave: false,
       saveUninitialized: false,
-      secret: env?.sessionStore?.secret || 'localSecret',
+      secret: env.environment.production === true ? env?.sessionStore?.secret : 'localSecret',
       store: new SQLiteStore({
         client: db,
         expired: {
