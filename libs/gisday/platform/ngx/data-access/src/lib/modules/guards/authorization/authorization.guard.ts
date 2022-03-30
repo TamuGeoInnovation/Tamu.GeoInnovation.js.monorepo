@@ -17,7 +17,7 @@ export class AuthorizationGuard implements CanActivate {
         }
 
         // redirect if not authenticated
-        return this.router.parseUrl('/');
+        return this.router.parseUrl('/login');
       })
     );
   }
