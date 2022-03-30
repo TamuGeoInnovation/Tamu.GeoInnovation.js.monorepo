@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { forkJoin, Observable } from 'rxjs';
+import { tap, map, shareReplay, take } from 'rxjs/operators';
 
 import { DragulaService } from 'ng2-dragula';
 
-import { forkJoin, Observable } from 'rxjs';
-import { tap, map, shareReplay } from 'rxjs/operators';
-
-import { EsriMapService, MapConfig } from '@tamu-gisc/maps/esri';
+import { EsriMapService, MapConfig, MapServiceInstance } from '@tamu-gisc/maps/esri';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { SnapshotService } from '@tamu-gisc/cpa/ngx/data-access';
 
@@ -21,9 +20,6 @@ import esri = __esri;
 })
 export class SnapshotBuilderComponent implements OnInit, OnDestroy {
   public builderForm: FormGroup;
-
-  public view: esri.MapView;
-  public map: esri.Map;
 
   public isExisting: Observable<boolean>;
 
@@ -39,6 +35,8 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
       }
     }
   };
+
+  private $view: Observable<MapServiceInstance['view']>;
 
   constructor(
     private fb: FormBuilder,
@@ -63,10 +61,10 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
       shareReplay(1)
     );
 
-    this.mapService.store.subscribe((instances) => {
-      this.view = instances.view as esri.MapView;
-      this.map = instances.map;
-    });
+    this.$view = this.mapService.store.pipe(
+      map((instances) => instances.view),
+      take(1)
+    );
 
     // Instantiate builder form
     this.builderForm = this.fb.group({
@@ -80,7 +78,7 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
     });
 
     if (this.route.snapshot.params.guid) {
-      forkJoin([this.snapshot.getOne(this.route.snapshot.params.guid), this.mapService.store]).subscribe(
+      forkJoin([this.snapshot.getOne(this.route.snapshot.params.guid), this.mapService.store.pipe(take(1))]).subscribe(
         ([snapshot, instances]) => {
           this.builderForm.patchValue(snapshot);
 
@@ -118,18 +116,20 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
    * Gets map service instance map center and sets the center control value using lat, lon format.
    */
   public setMapCenter(): void {
-    const center = this.view.center;
-
-    this.builderForm.controls.mapCenter.setValue(`${center.longitude.toFixed(4)}, ${center.latitude.toFixed(4)}`);
+    this.$view.subscribe((view) => {
+      this.builderForm.controls.mapCenter.setValue(
+        `${view.center.longitude.toFixed(4)}, ${view.center.latitude.toFixed(4)}`
+      );
+    });
   }
 
   /**
    * Gets map service instance current zoom level and sets the zoon control value.
    */
   public setMapZoom(): void {
-    const zoom = this.view.zoom;
-
-    this.builderForm.controls.zoom.setValue(zoom);
+    this.$view.subscribe((view) => {
+      this.builderForm.controls.zoom.setValue(view.zoom);
+    });
   }
 
   /**
@@ -209,8 +209,10 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
   }
 
   public recordExtent() {
-    const extent = this.view.extent.toJSON();
+    this.$view.subscribe((view) => {
+      const extent = view.extent.toJSON();
 
-    this.builderForm.patchValue({ extent });
+      this.builderForm.patchValue({ extent });
+    });
   }
 }
