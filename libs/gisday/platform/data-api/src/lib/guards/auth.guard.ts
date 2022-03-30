@@ -5,7 +5,7 @@ import { JwksClient } from 'jwks-rsa';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class NestAuthGuard implements CanActivate {
   public async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
 
@@ -19,12 +19,16 @@ export class AuthGuard implements CanActivate {
     const signingKey = await client.getSigningKey();
     const key = signingKey.getPublicKey();
 
-    const encodedToken = request.get('Authorization').split(' ')[1];
+    if (request.get('Authorization')) {
+      const encodedToken = request.get('Authorization').split(' ')[1];
 
-    if (encodedToken) {
-      const decodedToken = await jwt.verify(encodedToken, key);
-      if (decodedToken) {
-        return true;
+      if (encodedToken) {
+        const decodedToken = await jwt.verify(encodedToken, key);
+        if (decodedToken) {
+          return true;
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
