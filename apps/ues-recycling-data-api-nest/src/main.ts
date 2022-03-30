@@ -2,28 +2,26 @@ import { NestFactory } from '@nestjs/core';
 
 import passport from 'passport';
 import session from 'express-session';
-import * as sqliteStore from 'connect-sqlite3';
+
+import Database from 'better-sqlite3';
+import createSqliteStore from 'better-sqlite3-session-store';
 
 import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
 import { AppModule } from './app/app.module';
-import { environment, idpConfig } from './environments/environment';
+import * as env from './environments/environment';
 
-const SQLiteStore = sqliteStore(session);
+const SQLiteStore = createSqliteStore(session);
+const db = new Database(env?.sessionStore?.db || 'sessions.db', {
+  verbose: env.environment.production === false ? console.log : undefined
+});
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
       credentials: true,
-      origin: environment.allowedOrigins
+      origin: env.environment.allowedOrigins
     }
-  });
-
-  const sqlStore = new SQLiteStore({
-    db: 'sessions.db',
-    concurrentDB: true,
-    table: 'sessions',
-    dir: __dirname
   });
 
   app.use(
@@ -31,26 +29,29 @@ async function bootstrap() {
       name: 'ues-recycling',
       resave: false,
       saveUninitialized: false,
-      secret: 'GEOINNOVATIONSERVICECENTER',
-      store: sqlStore,
-      cookie: {
-        maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
-      }
+      secret: env?.sessionStore?.secret || 'localSecret',
+      store: new SQLiteStore({
+        client: db,
+        expired: {
+          clear: true,
+          intervalMs: 900000
+        }
+      })
     })
   );
 
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.setGlobalPrefix(environment.globalPrefix);
-  const port = environment.port || process.env.port || 3333;
+  app.setGlobalPrefix(env.environment.globalPrefix);
+  const port = env.environment.port || process.env.port || 3333;
 
   await app.listen(port, () => {
-    console.log('Listening at http://localhost:' + port + '/' + environment.globalPrefix);
+    console.log('Listening at http://localhost:' + port + '/' + env.environment.globalPrefix);
   });
 }
 
-OpenIdClient.build(idpConfig.metadata, idpConfig.parameters, idpConfig.issuer_url)
+OpenIdClient.build(env.idpConfig.metadata, env.idpConfig.parameters, env.idpConfig.issuer_url)
   .then(() => bootstrap())
   .catch((err) => {
     console.warn(err);
