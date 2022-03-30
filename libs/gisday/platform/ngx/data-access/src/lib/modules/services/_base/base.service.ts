@@ -43,13 +43,9 @@ export abstract class BaseService<T> {
   }
 
   public createEntity(newEntity: Partial<T>) {
-    return this.http
-      .post<Partial<T>>(this.resource, newEntity, {
-        withCredentials: this.withCredentials
-      })
-      .subscribe((response) => {
-        console.log('Added entity', response);
-      });
+    return this.http.post<Partial<T>>(this.resource, newEntity, {
+      withCredentials: this.withCredentials
+    });
   }
 
   public deleteEntity(entityGuid: string) {

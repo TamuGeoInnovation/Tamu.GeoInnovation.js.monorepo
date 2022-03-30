@@ -15,15 +15,15 @@ export abstract class BaseAdminDetailComponent<T> implements IBaseAdminAddCompon
   public entityGuid: string;
   public entity: Partial<T>;
 
-  public formGroup: {};
+  public formGroup = {};
   public form: FormGroup;
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private entityService: BaseService<T>) {
-    this.form = this.fb.group(this.formGroup);
-  }
+  constructor(private fb: FormBuilder, private route: ActivatedRoute, private entityService: BaseService<T>) {}
 
   public ngOnInit() {
+    this.form = this.fb.group(this.formGroup);
+
     if (this.route.snapshot.params.guid) {
       this.entityGuid = this.route.snapshot.params.guid;
       this.entityService.getEntity(this.entityGuid).subscribe((entity) => {

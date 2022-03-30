@@ -27,7 +27,9 @@ export abstract class BaseAdminAddComponent<T> implements IBaseAdminAddComponent
   }
 
   public submitNewEntity() {
-    this.entityService.createEntity(this.form.value);
+    this.entityService.createEntity(this.form.value).subscribe((result) => {
+      console.log(result);
+    });
   }
 }
 
