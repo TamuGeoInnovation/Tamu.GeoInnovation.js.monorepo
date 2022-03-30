@@ -40,7 +40,6 @@ libs/coverage
 
 # System Files
 .DS_Store
-Thumbs.db
 
 # NodeMailer Configurations
 mailerconfig.*
@@ -52,7 +51,9 @@ ormconfig.*
 oidcconfig.*
 oidc-client-config.*
 oidc-provider-config.*
-oidc.db
+
+# All SQLite databases
+*.db
 
 #Angular private configs
 secrets.ts
