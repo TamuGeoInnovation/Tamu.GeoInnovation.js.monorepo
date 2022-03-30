@@ -4,5 +4,7 @@ export const environment = {
   globalPrefix: ''
 };
 
+export * from './secrets';
+
 export { productionDbConfig as dbConfig } from './ormconfig';
 export { productionClientConfig as idpConfig } from './oidc-client-config';
