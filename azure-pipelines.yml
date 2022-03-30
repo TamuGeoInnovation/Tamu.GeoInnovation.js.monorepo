@@ -17,21 +17,12 @@ pool:
 stages:
   - stage: Dependencies
     jobs:
-      - job: Cache
-        steps:
-          - task: Cache@2
-            inputs:
-              key: 'npm | "$(Agent.OS)" | $(System.DefaultWorkingDirectory)/package-lock.json'
-              path: '$(System.DefaultWorkingDirectory)/node_modules'
-              cacheHitVar: 'CacheHit'
-          - script: npm ci
-            displayName: 'npm dep clean install'
-            condition: ne(variables.CacheHit, 'true')
+      - template: templates/jobs/cacheOrRestoreDependencies.yml
 
   - stage: Build
     dependsOn: Dependencies
     jobs:
-      - template: jobs/buildTags.yml
+      - template: templates/jobs/buildTags.yml
 
       # - template: jobs/build.yml
       #   parameters:

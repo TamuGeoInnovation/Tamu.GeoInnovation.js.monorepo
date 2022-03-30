@@ -1,0 +1,15 @@
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '16.x'
+    displayName: 'Install Node.js 16.x'
+
+  - task: Cache@2
+    inputs:
+      key: 'npm | "$(Agent.OS)" | $(System.DefaultWorkingDirectory)/package-lock.json'
+      path: '$(System.DefaultWorkingDirectory)/node_modules'
+      cacheHitVar: 'CacheHit'
+
+  - script: npm ci
+    displayName: 'npm dep clean install'
+    condition: ne(variables.CacheHit, 'true')
