@@ -2,15 +2,19 @@ import { NestFactory } from '@nestjs/core';
 
 import passport from 'passport';
 import session from 'express-session';
-import * as sqliteStore from 'connect-sqlite3';
+
+import Database from 'better-sqlite3';
+import createSqliteStore from 'better-sqlite3-session-store';
 
 import { OpenIdClient } from '@tamu-gisc/oidc/client';
 
 import { AppModule } from './app/app.module';
-import { OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL } from './environments/oidcconfig';
-import { environment } from './environments/environment';
+import * as env from './environments/environment';
 
-const SQLiteStore = sqliteStore(session);
+const SQLiteStore = createSqliteStore(session);
+const db = new Database(env?.sessionStore?.db || 'sessions.db', {
+  verbose: env.environment.production === false ? console.log : undefined
+});
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -20,34 +24,31 @@ async function bootstrap() {
       credentials: true
     }
   });
-  const sqlStore = new SQLiteStore({
-    db: 'sessions_admin_nest.db',
-    concurrentDB: true,
-    table: 'sessions',
-    dir: __dirname // WIN,
-  });
 
   app.use(
     session({
-      name: 'idp',
+      name: 'oidc-admin',
       resave: false,
       saveUninitialized: false,
-      secret: 'GEOINNOVATIONSERVICECENTER',
-      store: sqlStore,
-      cookie: {
-        maxAge: 14 * 24 * 60 * 60 * 1000 // 2 weeks
-      }
+      secret: env?.sessionStore?.secret || 'localSecret',
+      store: new SQLiteStore({
+        client: db,
+        expired: {
+          clear: true,
+          intervalMs: 900000
+        }
+      })
     })
   );
 
   app.use(passport.initialize());
   app.use(passport.session());
-  await app.listen(environment.port, () => {
-    console.log('Listening at http://localhost:' + environment.port + '/' + environment.globalPrefix);
+  await app.listen(env.environment.port, () => {
+    console.log('Listening at http://localhost:' + env.environment.port + '/' + env.environment.globalPrefix);
   });
 }
 
-OpenIdClient.build(OIDC_CLIENT_METADATA, OIDC_CLIENT_PARAMS, OIDC_IDP_ISSUER_URL)
+OpenIdClient.build(env.OIDC_CLIENT_METADATA, env.OIDC_CLIENT_PARAMS, env.OIDC_IDP_ISSUER_URL)
   .then(() => bootstrap())
   .catch((err) => {
     console.warn(err);
