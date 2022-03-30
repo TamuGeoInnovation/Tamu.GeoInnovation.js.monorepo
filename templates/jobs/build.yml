@@ -3,7 +3,7 @@ parameters:
   DependsOn: []
 
 jobs:
-  - job: build_${{ parameters.buildType }}
+  - job: ${{ parameters.buildType }}
     dependsOn: ${{ parameters.DependsOn }}
     steps:
       - template: ../tasks/cacheOrRestoreDependencies.yml
