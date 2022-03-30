@@ -34,7 +34,7 @@ async function bootstrap() {
         client: db,
         expired: {
           clear: true,
-          intervalMs: 900000
+          intervalMs: 1000 * 60 * 60 * 24 * 5
         }
       })
     })
