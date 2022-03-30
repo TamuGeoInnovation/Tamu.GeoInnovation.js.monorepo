@@ -15,18 +15,32 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
+  - stage: Dependencies
+    jobs:
+      - job: Cache
+        steps:
+          - task: Cache@2
+            inputs:
+              key: 'npm | "$(Agent.OS)" | $(System.DefaultWorkingDirectory)/package-lock.json'
+              path: '$(System.DefaultWorkingDirectory)/node_modules'
+              cacheHitVar: 'CacheHit'
+          - script: npm ci
+            displayName: 'npm dep clean install'
+            condition: ne(variables.CacheHit, 'true')
+
   - stage: Build
+    dependsOn: Dependencies
     jobs:
       - template: jobs/buildTags.yml
 
-      - template: jobs/build.yml
-        parameters:
-          buildtype: development
+      # - template: jobs/build.yml
+      #   parameters:
+      #     buildtype: development
 
-      - template: jobs/build.yml
-        parameters:
-          buildtype: staging
+      # - template: jobs/build.yml
+      #   parameters:
+      #     buildtype: staging
 
-      - template: jobs/build.yml
-        parameters:
-          buildtype: production
+      # - template: jobs/build.yml
+      #   parameters:
+      #     buildtype: production
