@@ -4,16 +4,15 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 
-import { AuthModule, EventTypes, LogLevel, PublicEventsService } from 'angular-auth-oidc-client';
+import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
 import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { LoginGuard, LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { LoginGuard, LogoutGuard, AdminGuard, AuthorizationGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { AppComponent } from './app.component';
 import * as environment from '../environments/environment.dev';
-import { filter } from 'rxjs';
 
 WebFont.load({
   google: {
@@ -69,7 +68,7 @@ const routes: Routes = [
   },
   {
     path: 'account',
-    canActivate: [LoginGuard],
+    canActivate: [AuthorizationGuard],
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AccountModule)
   },
   {
@@ -87,6 +86,10 @@ const routes: Routes = [
     data: {
       externalUrl: `${environment.api_url}/oidc/login`
     }
+  },
+  {
+    path: 'forbidden',
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.NotAuthedModule)
   }
 ];
 
@@ -129,12 +132,5 @@ const routeOptions: ExtraOptions = {
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(private readonly eventService: PublicEventsService) {
-    this.eventService
-      .registerForEvents()
-      .pipe(filter((notification) => notification.type === EventTypes.ConfigLoaded))
-      .subscribe((config) => {
-        console.log('ConfigLoaded', config);
-      });
-  }
+  constructor() {}
 }
