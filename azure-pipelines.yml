@@ -10,6 +10,8 @@ variables:
       value: origin/development~ # Affected base if build branch name is development
     ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
       value: origin/maser~ # Affected base if build branch name is master
+  - name: excludedProjects
+      value: 'signage-angular,trees-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,mailroom-nest'
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -23,15 +25,17 @@ stages:
     dependsOn: Dependencies
     jobs:
       - template: templates/jobs/buildTags.yml
-
+        parameters: 
+          excludedProjects: ${{variables.excludedProjects}}
       - template: templates/jobs/build.yml
         parameters:
           buildType: development
-
+          excludedProjects: ${{variables.excludedProjects}}
       - template: templates/jobs/build.yml
         parameters:
           buildType: staging
-
+          excludedProjects: ${{variables.excludedProjects}}
       - template: templates/jobs/build.yml
         parameters:
           buildType: production
+          excludedProjects: ${{variables.excludedProjects}}

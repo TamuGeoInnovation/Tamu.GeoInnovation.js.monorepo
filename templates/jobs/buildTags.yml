@@ -1,8 +1,10 @@
+parameters:
+  excludedProjects: ''
+
 jobs:
   - job: Tag
     steps:
       - template: ../tasks/cacheOrRestoreDependencies.yml
-
       - bash: |
-          npm run nx affected:apps -- --base=$(affectedBase) --head=HEAD --exclude="signage-angular,trees-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,mailroom-nest" | grep -E '( - )(\w|-|\d|_)+' | sed -E 's/ - /##vso[build.addbuildtag]/g'
+          npm run nx affected:apps -- --base=$(affectedBase) --head=HEAD --exclude=${{ parameters.excludedProjects }} | grep -E '( - )(\w|-|\d|_)+' | sed -E 's/ - /##vso[build.addbuildtag]/g'
         displayName: 'Add Build Tags for Affected Projects'
