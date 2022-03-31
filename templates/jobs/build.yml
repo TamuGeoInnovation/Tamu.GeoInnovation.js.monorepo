@@ -1,11 +1,11 @@
 parameters:
   buildType: ''
-  DependsOn: []
+  dependsOn: []
   excludedProjects: ''
 
 jobs:
   - job: ${{ parameters.buildType }}
-    dependsOn: ${{ parameters.DependsOn }}
+    dependsOn: ${{ parameters.dependsOn }}
     steps:
       - template: ../tasks/cacheOrRestoreDependencies.yml
 
@@ -23,87 +23,10 @@ jobs:
 
       - task: CopyFiles@2
         inputs:
-          SourceFolder: $(Agent.TempDirectory)/app_configs/ues-effluent-data-api-nest
-          Contents: '*'
-          TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-effluent-data-api-nest/src/environments
-        displayName: 'Copying environment files to ues-effluent-data-api-nest'
-
-      - task: CopyFiles@2
-        inputs:
-          SourceFolder: $(Agent.TempDirectory)/app_configs/ues-valves-nest
-          Contents: '*'
-          TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-valves-nest/src/environments
-        displayName: 'Copying environment files to ues-valves-nest'
-
-      - task: CopyFiles@2
-        inputs:
-          SourceFolder: $(Agent.TempDirectory)/app_configs/ues-recycling-data-api-nest
-          Contents: '*'
-          TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-recycling-data-api-nest/src/environments
-        displayName: 'Copying environment files to ues-recycling-data-api-nest'
-
-      - task: CopyFiles@2
-        inputs:
-          SourceFolder: $(Agent.TempDirectory)/app_configs/ues-operations-nest
-          Contents: '*'
-          TargetFolder: $(System.DefaultWorkingDirectory)/apps/ues-operations-nest/src/environments
-        displayName: 'Copying environment files to ues-operations-nest'
-
-      - task: CopyFiles@2
-        inputs:
-          SourceFolder: $(Agent.TempDirectory)/app_configs/cpa-nest
-          Contents: '*'
-          TargetFolder: $(System.DefaultWorkingDirectory)/apps/cpa-nest/src/environments
-        displayName: 'Copying environment files to cpa-nest'
-
-      - task: CopyFiles@2
-        inputs:
-          SourceFolder: $(Agent.TempDirectory)/app_configs/oidc-admin-nest
-          Contents: '*'
-          TargetFolder: $(System.DefaultWorkingDirectory)/apps/oidc-admin-nest/src/environments
-        displayName: 'Copying environment files to oidc-admin-nest'
-
-      - task: CopyFiles@2
-        inputs:
-          SourceFolder: $(Agent.TempDirectory)/app_configs/oidc-provider-nest
-          Contents: 'ormconfig.ts'
-          TargetFolder: $(System.DefaultWorkingDirectory)/apps/oidc-provider-nest/src/environments
-        displayName: 'Copying environment files to oidc-provider-nest'
-
-      - task: CopyFiles@2
-        inputs:
-          SourceFolder: $(Agent.TempDirectory)/app_configs/oidc-provider-nest
-          Contents: 'oidc-provider-config.ts'
-          TargetFolder: $(System.DefaultWorkingDirectory)/libs/oidc/provider/src/lib/configs
-        displayName: 'Copying oidc-provider-config file to oidc-provider-nest lib'
-
-      - task: CopyFiles@2
-        inputs:
-          SourceFolder: $(Agent.TempDirectory)/app_configs/veoride-data-api-nest
-          Contents: '*'
-          TargetFolder: $(System.DefaultWorkingDirectory)/apps/veoride-data-api-nest/src/environments
-          displayName: 'Copying environment files to veoride-data-api-nest'
-
-      - task: CopyFiles@2
-        inputs:
-          SourceFolder: $(Agent.TempDirectory)/app_configs/veoride-data-compiler-node
-          Contents: '*'
-          TargetFolder: $(System.DefaultWorkingDirectory)/apps/veoride-data-compiler-node/src/environments
-        displayName: 'Copying environment files to veoride-data-compiler-node'
-
-      - task: CopyFiles@2
-        inputs:
-          SourceFolder: $(Agent.TempDirectory)/app_configs/veoride-scraper-node
-          Contents: '*'
-          TargetFolder: $(System.DefaultWorkingDirectory)/apps/veoride-scraper-node/src/environments
-        displayName: 'Copying environment files to veoride-scraper-node'
-
-      - task: CopyFiles@2
-        inputs:
-          SourceFolder: $(Agent.TempDirectory)/app_configs/gisday-competitions-nest
-          Contents: '*'
-          TargetFolder: $(System.DefaultWorkingDirectory)/apps/gisday-competitions-nest/src/environments
-        displayName: 'Copying environment files to gisday-competitions-nest'
+          SourceFolder: $(Agent.TempDirectory)/app_configs
+          Contents: '**'
+          TargetFolder: $(System.DefaultWorkingDirectory)
+        displayName: 'Copy secrets'
 
       - bash: |
           npm run nx affected:build -- --base=$(affectedBase) --head=HEAD --configuration=${{ parameters.buildType }} --exclude=${{ parameters.excludedProjects }}
@@ -117,6 +40,6 @@ jobs:
 
       - task: PublishBuildArtifacts@1
         inputs:
-          pathtoPublish: $(Build.ArtifactStagingDirectory) # dist or build files
-          ArtifactName: 'js-monorepo-${{ parameters.buildType }}'
+          pathToPublish: $(Build.ArtifactStagingDirectory) # dist or build files
+          artifactName: 'js-monorepo-${{ parameters.buildType }}'
         displayName: 'Publish Artifacts'
