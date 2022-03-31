@@ -351,7 +351,7 @@ export class TripPlannerService implements OnDestroy {
           return fromEventPattern(add, remove);
         })
       )
-      .subscribe((event: esri.MapViewClickEvent) => {
+      .subscribe((event: esri.ViewClickEvent) => {
         const layer = this._map.findLayerById('buildings-layer') as esri.FeatureLayer;
 
         // Allow click coordinates only when on the trip planner route

@@ -45,7 +45,7 @@ export class ClickCoordinatesComponent implements OnInit {
         };
 
         return fromEventPattern(addHandler, removeHandler).pipe(
-          map((event: esri.MapViewImmediateClickEvent) => {
+          map((event: esri.ViewImmediateClickEvent) => {
             return {
               latitude: event.mapPoint.latitude.toFixed(5),
               longitude: event.mapPoint.longitude.toFixed(5)
