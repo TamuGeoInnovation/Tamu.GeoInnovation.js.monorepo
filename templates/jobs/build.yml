@@ -18,8 +18,15 @@ jobs:
         inputs:
           archiveFilePatterns: $(Agent.TempDirectory)/app_configs.zip
           cleanDestinationFolder: false
-          destinationFolder:
+          destinationFolder: $(Agent.TempDirectory)
         displayName: 'Extracting'
+
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)/app_configs
+          Contents: '**'
+          TargetFolder: $(System.DefaultWorkingDirectory)
+        displayName: 'Copy secrets'
 
       # - task: CopyFiles@2
       #   inputs:
