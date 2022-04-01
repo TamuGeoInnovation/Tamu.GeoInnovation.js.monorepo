@@ -19,13 +19,13 @@ export abstract class BaseService<T> {
   }
 
   public getEntity(guid: string) {
-    const accessToken = this.oidcSecurityService.getAccessToken();
-    const httpOptions = {
-      headers: new HttpHeaders({
-        Authorization: 'Bearer ' + accessToken
-      })
-    };
     return this.http.get<Partial<T>>(`${this.resource}/${guid}`, {
+      withCredentials: this.withCredentials
+    });
+  }
+
+  public getEntityWithRelations(guid: string) {
+    return this.http.get<Partial<T>>(`${this.resource}/${guid}/deep`, {
       withCredentials: this.withCredentials
     });
   }

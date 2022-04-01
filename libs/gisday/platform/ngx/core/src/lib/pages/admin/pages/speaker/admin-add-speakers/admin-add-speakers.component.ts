@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import { Observable } from 'rxjs';
 
@@ -8,20 +8,24 @@ import { Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
-export const formConfig = {
-  guid: [''],
-  firstName: [''],
-  lastName: [''],
-  email: [''],
-  organization: [''],
-  graduationYear: [''],
-  degree: [''],
-  program: [''],
-  affiliation: [''],
-  description: [''],
-  socialMedia: [''],
-  university: [''],
-  file: ['']
+export const formExporter = () => {
+  return new FormGroup({
+    guid: new FormControl(''),
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+    email: new FormControl(''),
+    organization: new FormControl(''),
+    speakerInfo: new FormGroup({
+      graduationYear: new FormControl(''),
+      degree: new FormControl(''),
+      program: new FormControl(''),
+      affiliation: new FormControl(''),
+      description: new FormControl(''),
+      socialMedia: new FormControl(''),
+      file: new FormControl(''),
+      university: new FormControl('')
+    })
+  });
 };
 
 @Component({
@@ -31,23 +35,44 @@ export const formConfig = {
 })
 export class AdminAddSpeakersComponent extends BaseAdminAddComponent<Speaker> {
   public $universities: Observable<Array<Partial<University>>>;
+
   constructor(
     private fb1: FormBuilder,
     private speakerService: SpeakerService,
     private universityService: UniversityService
   ) {
     super(fb1, speakerService);
+
     this.$universities = this.universityService.getEntities();
-    this.formGroup = formConfig;
+
+    this.form = formExporter();
   }
 
   public submitNewEntity() {
     const form = this.form.getRawValue();
     const data: FormData = new FormData();
-    const formKeys = Object.keys(form);
-    formKeys.forEach((key) => {
-      data.append(key, form[key]);
-    });
+    const parentFormKeys = Object.keys(form);
+
+    const appendValuesToFormData = (keys, childProp?: string) => {
+      keys.forEach((key) => {
+        if (form[key]) {
+          if (typeof form[key] == 'object') {
+            appendValuesToFormData(Object.keys(form[key]), key);
+          } else {
+            data.append(key, form[key]);
+          }
+        } else if (childProp) {
+          if (form[childProp][key]) {
+            if (typeof form[key] == 'object') {
+              appendValuesToFormData(Object.keys(form[key]), key);
+            } else {
+              data.append(key, form[childProp][key]);
+            }
+          }
+        }
+      });
+    };
+    appendValuesToFormData(parentFormKeys);
 
     this.speakerService.insertSpeakerInfo(data);
   }

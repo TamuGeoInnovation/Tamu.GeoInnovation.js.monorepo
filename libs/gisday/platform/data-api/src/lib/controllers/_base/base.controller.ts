@@ -5,7 +5,12 @@ import { BaseProvider } from '../../providers/_base/base-provider';
 
 @Controller()
 export abstract class BaseController<T> implements IBaseController<T> {
-  constructor(private readonly provider: BaseProvider<T>) {}
+  private entityName: string;
+
+  constructor(private readonly provider: BaseProvider<T>, entityName?: string) {
+    this.entityName = entityName;
+  }
+
   @Get('/all')
   public async getEntities() {
     return this.provider.getEntities();
@@ -14,6 +19,11 @@ export abstract class BaseController<T> implements IBaseController<T> {
   @Get(':guid')
   public async getEntity(@Param() params) {
     return this.provider.getEntity(params.guid);
+  }
+
+  @Get(':guid/deep')
+  public async getEntityWithRelations(@Param() params) {
+    return this.provider.getEntityWithRelations(params.guid, this.entityName);
   }
 
   @Post()

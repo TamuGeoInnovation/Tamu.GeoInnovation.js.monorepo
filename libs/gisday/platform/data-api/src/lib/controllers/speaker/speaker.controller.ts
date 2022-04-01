@@ -11,7 +11,7 @@ import { BaseController } from '../../controllers/_base/base.controller';
 @Controller('speaker')
 export class SpeakerController extends BaseController<Speaker> {
   constructor(private readonly speakerProvider: SpeakerProvider) {
-    super(speakerProvider);
+    super(speakerProvider, 'Speaker');
   }
 
   @Get('/presenter/:guid')
@@ -27,7 +27,6 @@ export class SpeakerController extends BaseController<Speaker> {
   @Post('')
   @UseInterceptors(FileInterceptor('file'))
   public async speakerAndInfo(@Req() req: Request, @UploadedFile() file) {
-    // TODO: Fix this, its a pain-in-the-ass -Aaron (1/5/2021)
     const _speaker: DeepPartial<Speaker> = req.body;
     return this.speakerProvider.insertWithInfo(_speaker, file);
   }

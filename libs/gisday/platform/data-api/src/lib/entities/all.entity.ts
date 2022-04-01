@@ -481,9 +481,9 @@ export class Speaker extends GISDayEntity {
   @JoinColumn()
   public speakerInfo: SpeakerInfo;
 
-  @ManyToMany((type) => SpeakerRole)
-  @JoinTable({ name: 'speaker_speaker_roles' })
-  public speakerRole: SpeakerRole;
+  // @ManyToMany((type) => SpeakerRole)
+  // @JoinTable({ name: 'speaker_speaker_roles' })
+  // public speakerRole: SpeakerRole;
 
   constructor() {
     super();
@@ -869,6 +869,18 @@ export class ManholeSubmission {
   })
   public fixTime: string;
 }
+
+export const EntityRelationsLUT = {
+  event: ['tags', 'broadcast', 'location'],
+  speaker: ['speakerInfo', 'speakerInfo.university'],
+  getRelation: (entity?: string) => {
+    if (!entity) {
+      return undefined;
+    } else {
+      return EntityRelationsLUT[entity.toLowerCase()];
+    }
+  }
+};
 
 export class CommonRepo<T> extends Repository<T> {}
 

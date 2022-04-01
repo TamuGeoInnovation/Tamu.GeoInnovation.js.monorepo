@@ -1,0 +1,7 @@
+@import 'libs/sass/mixins';
+
+label {
+  &.float {
+    transform: translate3d(0, -2rem, 0);
+  }
+}

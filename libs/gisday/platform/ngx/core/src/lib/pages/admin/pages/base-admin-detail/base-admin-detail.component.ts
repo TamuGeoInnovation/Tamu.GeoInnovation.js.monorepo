@@ -22,11 +22,9 @@ export abstract class BaseAdminDetailComponent<T> implements IBaseAdminAddCompon
   constructor(private fb: FormBuilder, private route: ActivatedRoute, private entityService: BaseService<T>) {}
 
   public ngOnInit() {
-    this.form = this.fb.group(this.formGroup);
-
     if (this.route.snapshot.params.guid) {
       this.entityGuid = this.route.snapshot.params.guid;
-      this.entityService.getEntity(this.entityGuid).subscribe((entity) => {
+      this.entityService.getEntityWithRelations(this.entityGuid).subscribe((entity) => {
         this.entity = entity;
         this.form.patchValue(this.entity);
         this.form.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
@@ -44,7 +42,9 @@ export abstract class BaseAdminDetailComponent<T> implements IBaseAdminAddCompon
   }
 
   public submitNewEntity() {
-    this.entityService.createEntity(this.form.value);
+    this.entityService.createEntity(this.form.value).subscribe((result) => {
+      console.log(result);
+    });
   }
 }
 
