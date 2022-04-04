@@ -2202,11 +2202,11 @@ export class TripPlannerService implements OnDestroy {
       // For any query blocks, collect them together and perform a search many sources with the same search term.
       // Generate a trip point array from the search results.
       const queryCategory = of(categorizedQueryBlocks).pipe(
-        switchMap((blks) => {
-          if (blks.length > 0) {
+        switchMap((blocks) => {
+          if (blocks.length > 0) {
             return this.search.search({
-              sources: Array(blks.length).fill('building'),
-              values: blks.map((unit) => unit.value),
+              sources: Array(blocks.length).fill('building'),
+              values: blocks.map((unit) => unit.value),
               returnObservable: true
             });
           } else {
@@ -2237,11 +2237,11 @@ export class TripPlannerService implements OnDestroy {
       // For any query blocks, geolocation blocks perform a single geolocation check and generate trip points
       // using the same returned geolocation API response.
       const geolocationCategory = of(categorizedGeolocationBlocks).pipe(
-        switchMap((blks) => {
-          if (blks.length > 0) {
+        switchMap((blocks) => {
+          if (blocks.length > 0) {
             return getGeolocation(true);
           } else {
-            throwError('No geolocation categories.');
+            return throwError(() => new Error('No geolocation categories.'));
           }
         }),
         map((coords: GeolocationCoordinates) => {
@@ -2273,11 +2273,11 @@ export class TripPlannerService implements OnDestroy {
 
       // For any coordinate blocks, generate trip points from the input values
       const coordinateCategory = of(categorizedCoordinateBlocks).pipe(
-        map((blks) => {
-          if (blks.length > 0) {
-            return blks;
+        map((blocks) => {
+          if (blocks.length > 0) {
+            return blocks;
           } else {
-            throwError('No coordinate categories.');
+            return throwError(() => new Error('No coordinate categories.'));
           }
         }),
         flatMap((block) => block),
