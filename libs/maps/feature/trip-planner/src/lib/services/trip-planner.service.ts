@@ -460,13 +460,18 @@ export class TripPlannerService implements OnDestroy {
 
     // Combine module provider require and map service store to keep a reference and execute
     // additional methods when both streams complete.
-    zip(moduleProvider.require(['RouteTask', 'RouteParameters', 'FeatureSet', 'Graphic'], true), mapService.store)
+    zip(
+      moduleProvider.require(['route', 'RouteParameters', 'FeatureSet', 'Graphic', 'networkService', 'Stop'], true),
+      mapService.store
+    )
       .pipe(takeUntil(this.$destroy))
       .subscribe(([modules, instance]: [TripPlannerModules, MapServiceInstance]) => {
-        this._Modules.TripTask = modules.RouteTask;
-        this._Modules.TripParameters = modules.RouteParameters;
+        this._Modules.route = modules.route;
+        this._Modules.RouteParameters = modules.RouteParameters;
         this._Modules.FeatureSet = modules.FeatureSet;
         this._Modules.Graphic = modules.Graphic;
+        this._Modules.networkService = modules.networkService;
+        this._Modules.Stop = modules.Stop;
 
         // Locally store instance of map and view, allowing direct map and view manipulation
         this._map = instance.map;
@@ -734,6 +739,14 @@ export class TripPlannerService implements OnDestroy {
     }
   }
 
+  private getTravelModeById(supportedTravelModes: esri.TravelMode[], id: string | number) {
+    const parsedId = typeof id === 'number' ? id.toString() : id;
+
+    return supportedTravelModes.find((mode) => {
+      return mode.id === parsedId;
+    });
+  }
+
   /**
    * Verifies if selected travel mode is accessible capable (e.g. There is no biking ADA mode)
    *
@@ -849,7 +862,7 @@ export class TripPlannerService implements OnDestroy {
    *
    * If at least one of the stop instances has not been normalized, do not run the trip task.
    */
-  private executeTripTask() {
+  private async executeTripTask() {
     try {
       if (this._Stops && this._Stops.getValue() && this._Stops.getValue().every((stop) => stop.normalized)) {
         // Get qualifying travel modes based on state settings.
@@ -869,7 +882,7 @@ export class TripPlannerService implements OnDestroy {
           this._Result.value.length > 0
             ? this._Result.value.every((r) => {
                 return r && r.params && r.params.travelMode
-                  ? modeNumbers.includes(parseInt(r.params.travelMode, 10))
+                  ? modeNumbers.includes(parseInt(r.params.travelMode.id, 10))
                   : false;
               })
             : false;
@@ -886,17 +899,22 @@ export class TripPlannerService implements OnDestroy {
             stops: undefined,
             isProcessing: true,
             isError: false,
-            params: new this._Modules.TripParameters({
+            params: new this._Modules.RouteParameters({
               outSpatialReference: {
                 wkid: 4326
               },
               stops: undefined,
-              travelMode: result.mode.toString()
+              travelMode: {
+                id: result.mode.toString()
+              }
             })
           });
         });
 
         let previousState;
+
+        const serviceInfo = await this._Modules.networkService.fetchServiceDescription(this.connection.url());
+        const { supportedTravelModes } = serviceInfo;
 
         const tasks = from(modes).pipe(
           mergeMap((mode) => {
@@ -1034,20 +1052,14 @@ export class TripPlannerService implements OnDestroy {
               stops: stopsAndMode.stops.map((stop) => stop),
               isProcessing: true,
               isError: false,
-              params: new this._Modules.TripParameters({
+              params: new this._Modules.RouteParameters({
                 outSpatialReference: {
                   wkid: 4326
                 },
                 stops: new this._Modules.FeatureSet({
                   features: stopsAndMode.stops.map((feature) => {
-                    return new this._Modules.Graphic({
-                      attributes: {
-                        // This attribute is used to identify which result belongs to each class once requests
-                        // are resolved
-                        routeName: stopsAndMode.mode.mode,
-                        stopName: feature.attributes.name
-                        // stopName: feature.attributes.name
-                      },
+                    return new this._Modules.Stop({
+                      name: feature.attributes.name,
                       geometry: {
                         type: 'point',
                         latitude: feature.geometry.latitude,
@@ -1056,7 +1068,7 @@ export class TripPlannerService implements OnDestroy {
                     });
                   })
                 }),
-                travelMode: stopsAndMode.mode.mode.toString(),
+                travelMode: this.getTravelModeById(supportedTravelModes, stopsAndMode.mode.mode),
                 returnDirections: true,
                 returnZ: false
               }),
@@ -1071,20 +1083,14 @@ export class TripPlannerService implements OnDestroy {
             if (!trip.modeSource || !trip.modeSource.split) {
               const t = [
                 {
-                  task: new this._Modules.TripTask({
-                    url: this.connection.url()
-                  }),
-                  params: new this._Modules.TripParameters({
+                  params: new this._Modules.RouteParameters({
                     outSpatialReference: {
                       wkid: 4326
                     },
                     stops: new this._Modules.FeatureSet({
                       features: trip.stops.map((feature) => {
-                        return new this._Modules.Graphic({
-                          attributes: {
-                            routeName: trip.modeSource.mode,
-                            stopName: feature.attributes.name
-                          },
+                        return new this._Modules.Stop({
+                          name: feature.attributes.name,
                           geometry: {
                             type: 'point',
                             latitude: feature.geometry.latitude,
@@ -1093,7 +1099,7 @@ export class TripPlannerService implements OnDestroy {
                         });
                       })
                     }),
-                    travelMode: trip.params.travelMode,
+                    travelMode: this.getTravelModeById(supportedTravelModes, trip.params.travelMode.id),
                     returnDirections: true,
                     returnZ: false
                   })
@@ -1116,20 +1122,14 @@ export class TripPlannerService implements OnDestroy {
                 const travelMode = index === 0 ? trip.modeSource.mode : trip.modeSource.split.default;
 
                 return {
-                  task: new this._Modules.TripTask({
-                    url: this.connection.url()
-                  }),
-                  params: new this._Modules.TripParameters({
+                  params: new this._Modules.RouteParameters({
                     outSpatialReference: {
                       wkid: 4326
                     },
                     stops: new this._Modules.FeatureSet({
                       features: stops.map((feature) => {
-                        return new this._Modules.Graphic({
-                          attributes: {
-                            routeName: trip.modeSource.mode,
-                            stopName: feature.attributes.name
-                          },
+                        return new this._Modules.Stop({
+                          name: feature.attributes.name,
                           geometry: {
                             type: 'point',
                             latitude: feature.geometry.latitude,
@@ -1138,7 +1138,7 @@ export class TripPlannerService implements OnDestroy {
                         });
                       })
                     }),
-                    travelMode: travelMode.toString(),
+                    travelMode: this.getTravelModeById(supportedTravelModes, travelMode),
                     returnDirections: true,
                     returnZ: false
                   })
@@ -1182,7 +1182,7 @@ export class TripPlannerService implements OnDestroy {
                 from(rq.tasks).pipe(
                   concatMap((t) => {
                     // Execute inner trip task with own trip params
-                    return from(t.task.solve(t.params) as undefined as Promise<esri.RouteResult>).pipe(
+                    return from(this._Modules.route.solve(this.connection.url(), t.params as esri.RouteParameters)).pipe(
                       catchError((err) => {
                         // Get the travel mode for the failed request found in the error object.
                         const responseTravelMode = err.details.requestOptions.query.travelMode;
@@ -2597,17 +2597,6 @@ export interface RouteResult extends esri.RouteResult {
 }
 
 /**
- * Interface extending esri's RouteParameters, that includes travelMode used in routing.
- *
- * @export
- * @interface RouteParameters
- * @extends {esri.RouteParameters}
- */
-export interface RouteParameters extends esri.RouteParameters {
-  travelMode: string;
-}
-
-/**
  * Trip result directions categorization based on speed used to bin segments to make determinations
  * based on the requested travel mode. The results of those determinations, if any, are stored in
  * the `results` object.
@@ -2706,7 +2695,7 @@ export interface TripResultProperties {
   /**
    * Original route parameters used in the trip request.
    */
-  params?: RouteParameters;
+  params?: esri.supportRouteParameters;
 
   /**
    * If trip request succeeded, property will be populated with aggregated directions.
@@ -2898,9 +2887,10 @@ interface TripPointAttributesWithBldgNumber extends TripPointAttributes {
 
 interface TripPlannerModules {
   TripTask: esri.RouteTaskConstructor;
-  TripParameters: esri.RouteParametersConstructor;
+  RouteParameters: esri.supportRouteParametersConstructor;
   FeatureSet: esri.FeatureSetConstructor;
   Graphic: esri.GraphicConstructor;
-  RouteTask: esri.RouteTaskConstructor;
-  RouteParameters: esri.RouteParametersConstructor;
+  route: esri.route;
+  networkService: esri.networkService;
+  Stop: esri.StopConstructor;
 }

@@ -105,7 +105,7 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
             () => {
               const index =
                 results.findIndex((r) => {
-                  return !r.params || parseInt(r.params.travelMode, 10) === this.travelMode;
+                  return !r.params || parseInt(r.params.travelMode.id, 10) === this.travelMode;
                 }) > -1;
 
               return index;
@@ -130,7 +130,7 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
         //
         // If the latest result has params travel mode, compare it to the toggle travel mode. If they match,
         // resolve truthy for the trip result.
-        return !latest.result.params || parseInt(latest.result.params.travelMode, 10) === this.travelMode;
+        return !latest.result.params || parseInt(latest.result.params.travelMode.id, 10) === this.travelMode;
       }),
       map((latest) => {
         // Return only the trip result.
@@ -164,7 +164,11 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
               newAccumulated.allPristine = false;
             }
 
-            if (curr.params && curr.params.travelMode && this.activeModes.includes(parseInt(curr.params.travelMode, 10))) {
+            if (
+              curr.params &&
+              curr.params.travelMode &&
+              this.activeModes.includes(parseInt(curr.params.travelMode.id, 10))
+            ) {
               // Current result has params, travel mode, and travel mode is in the toggle modes array.
               newAccumulated.toggleHasResult = true;
             }

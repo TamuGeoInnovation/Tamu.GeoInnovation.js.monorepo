@@ -53,11 +53,11 @@ export class EsriModuleProviderService {
       name: 'RouteTask'
     },
     {
-      class: 'esri/tasks/support/RouteParameters',
+      class: 'esri/rest/support/RouteParameters',
       name: 'RouteParameters'
     },
     {
-      class: 'esri/tasks/support/FeatureSet',
+      class: 'esri/rest/support/FeatureSet',
       name: 'FeatureSet'
     },
     {
@@ -231,6 +231,18 @@ export class EsriModuleProviderService {
     {
       class: 'esri/layers/support/Field',
       name: 'Field'
+    },
+    {
+      class: 'esri/rest/route',
+      name: 'route'
+    },
+    {
+      class: 'esri/rest/networkService',
+      name: 'networkService'
+    },
+    {
+      class: 'esri/rest/support/Stop',
+      name: 'Stop'
     }
   ];
 
