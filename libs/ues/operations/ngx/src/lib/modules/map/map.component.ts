@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { forkJoin, from, Subject } from 'rxjs';
+import { from, Subject, zip } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
@@ -90,7 +90,7 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     };
 
-    forkJoin([this.ms.store, from(this.mp.require(['IdentityManager', 'OAuthInfo', 'MapImageLayer']))]).subscribe(
+    zip([this.ms.store, from(this.mp.require(['IdentityManager', 'OAuthInfo', 'MapImageLayer']))]).subscribe(
       ([instances, [IdentityManager, OAuthInfo, MapImageLayer]]: [
         MapServiceInstance,
         [esri.IdentityManager, esri.OAuthInfoConstructor, esri.MapImageLayerConstructor]
