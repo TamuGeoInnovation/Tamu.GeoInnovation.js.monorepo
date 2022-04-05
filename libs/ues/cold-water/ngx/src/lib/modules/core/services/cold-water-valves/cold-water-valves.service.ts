@@ -93,9 +93,9 @@ export class ColdWaterValvesService {
 
   private processStats(featureSets: Observable<Array<esri.FeatureSet>>): Observable<IValveStats> {
     return featureSets.pipe(
-      // Break up the results into individual featuresets
+      // Break up the results into individual feature sets
       switchMap((results) => from(results)),
-      // Pluck the inner attributes property from each featureset
+      // Pluck the inner attributes property from each feature set
       pluck('features', '0', 'attributes'),
       // // Merge both attribute objects
       reduce((acc, curr: { [property: string]: string | number }) => {
@@ -122,7 +122,7 @@ export class ColdWaterValvesService {
     );
   }
 
-  public updateValveState(valve: MappedValve, state: string | IValvePositionState): Observable<IFeatureLayerEditResults> {
+  public updateValveState(valve: MappedValve, state: string | IValvePositionState) {
     return this.getLayerInstance().pipe(
       withLatestFrom(this.usr.user),
       switchMap(([layer, user]) => {
@@ -135,7 +135,7 @@ export class ColdWaterValvesService {
         return from(
           layer.applyEdits({
             updateFeatures: [cloned]
-          }) as Promise<IFeatureLayerEditResults>
+          })
         ).pipe(
           tap(() => {
             layer.refresh();
@@ -189,7 +189,7 @@ export class ColdWaterValvesService {
     return this.mapService.store.pipe(
       take(1),
       switchMap((instance) => {
-        return from(instance.view.when() as Promise<esri.View>).pipe(switchMap(() => this.mapService.store));
+        return from(instance.view.when() as Promise<esri.View>).pipe(switchMap(() => this.mapService.store.pipe(take(1))));
       }),
       switchMap((instance) => {
         const l = instance.map.findLayerById('cold-water-valves-layer') as esri.FeatureLayer;
@@ -292,13 +292,4 @@ export interface IValveStats {
 
 export interface MappedValve extends IValve {
   attributes: IValve['attributes'];
-}
-
-export interface IFeatureLayerEditResults {
-  addAttachmentResults: Array<esri.FeatureEditResult>;
-  addFeatureResults: Array<esri.FeatureEditResult>;
-  deleteAttachmentResults: Array<esri.FeatureEditResult>;
-  deleteFeatureResults: Array<esri.FeatureEditResult>;
-  updateAttachmentResults: Array<esri.FeatureEditResult>;
-  updateFeatureResults: Array<esri.FeatureEditResult>;
 }
