@@ -1,5 +1,5 @@
-import { Popups } from '@tamu-gisc/aggiemap';
-import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/search';
+import { Popups } from '@tamu-gisc/aggiemap/ngx/popups';
+import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 import { LayerSource } from '@tamu-gisc/common/types';
 
 import esri = __esri;
@@ -12,8 +12,7 @@ export const Connections = {
   departmentUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
   tsMainUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Main/MapServer',
   bikeRacksUrl: 'https://gis.tamu.edu/arcgis/rest/services/TS/TS_Bicycles/MapServer/3',
-  bikeLocationsUrl: 'http://nodes.geoservices.tamu.edu/api/veoride/bikes/?format=geojson&metadata=false&fields=lat,lon',
-  distancedStudyAreasUrl: 'https://gis.tamu.edu/arcgis/rest/services/FCOR/Physical_Distancing_Tents/MapServer/706'
+  bikeLocationsUrl: 'http://nodes.geoservices.tamu.edu/api/veoride/bikes/?format=geojson&metadata=false&fields=lat,lon'
 };
 
 export const Definitions = {
@@ -98,12 +97,6 @@ export const Definitions = {
     layerId: 'emergency-phones-layer',
     name: 'Emergency Phones',
     url: `${Connections.inforUrl}/4`
-  },
-  DISTANCED_STUDY_AREAS: {
-    id: 'distanced-study-area',
-    layerId: 'distanced-study-area-layer',
-    name: 'Physical Distance Study Area',
-    url: Connections.distancedStudyAreasUrl
   }
 };
 
@@ -239,18 +232,6 @@ export const LayerSources: LayerSource[] = [
         url: Definitions.EMERGENCY_PHONES.url,
         listMode: 'show',
         visible: false,
-        native: {
-          ...commonLayerProps
-        }
-      },
-      {
-        type: 'feature',
-        id: Definitions.DISTANCED_STUDY_AREAS.layerId,
-        title: Definitions.DISTANCED_STUDY_AREAS.name,
-        url: Definitions.DISTANCED_STUDY_AREAS.url,
-        listMode: 'show',
-        visible: false,
-        popupComponent: Popups.TentZonePopupComponent,
         native: {
           ...commonLayerProps
         }
