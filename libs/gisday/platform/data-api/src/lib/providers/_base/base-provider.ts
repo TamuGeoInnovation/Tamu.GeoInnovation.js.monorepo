@@ -42,11 +42,12 @@ export abstract class BaseProvider<T> implements IBaseProvider<T> {
     return this.repo.save(entity);
   }
 
-  public async updateEntity(_entity: DeepPartial<T>) {
+  public async updateEntity(_entity: DeepPartial<T>, entityName: string) {
     const entity = await this.repo.findOne({
       where: {
-        guid: _entity
-      }
+        guid: _entity['guid']
+      },
+      relations: EntityRelationsLUT.getRelation(entityName)
     });
     if (entity) {
       const merged = deepmerge<DeepPartial<T>>(entity, _entity);
@@ -74,6 +75,6 @@ export interface IBaseProvider<T> {
   getEntity(guid: string);
   getEntities();
   insertEntity(req: DeepPartial<T>);
-  updateEntity(req: DeepPartial<T>);
+  updateEntity(req: DeepPartial<T>, entityName: string);
   deleteEntity(guid: string);
 }

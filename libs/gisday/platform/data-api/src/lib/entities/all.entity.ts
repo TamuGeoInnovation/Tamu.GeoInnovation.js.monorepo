@@ -422,6 +422,11 @@ export class SpeakerRole extends GuidIdentity {
   }
 }
 
+export class MSSQLImage {
+  public type: '' | '';
+  public data: Uint8Array;
+}
+
 @Entity({
   name: 'speaker_info'
 })
@@ -449,7 +454,7 @@ export class SpeakerInfo extends GuidIdentity {
   public socialMedia: string;
 
   @Column({ nullable: true, type: 'image' })
-  public blob: Buffer;
+  public blob: MSSQLImage;
 
   public base64representation: string;
 

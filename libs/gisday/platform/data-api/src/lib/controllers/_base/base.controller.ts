@@ -38,12 +38,12 @@ export abstract class BaseController<T> implements IBaseController<T> {
 
   @Patch()
   public async updateEntity(@Request() req) {
-    if (req.user) {
-      req.body.accountGuid = req.user.sub;
-    }
+    // if (req.user) {
+    //   req.body.accountGuid = req.user.sub;
+    // }
     const _entity: DeepPartial<T> = req.body;
 
-    return this.provider.updateEntity(_entity);
+    return this.provider.updateEntity(_entity, this.entityName);
   }
 
   @Delete(':guid')

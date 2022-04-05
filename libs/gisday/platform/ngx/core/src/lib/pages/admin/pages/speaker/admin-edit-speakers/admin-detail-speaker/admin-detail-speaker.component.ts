@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { Buffer } from 'buffer';
 
 import { SpeakerService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
@@ -17,6 +18,7 @@ import { formExporter } from '../../admin-add-speakers/admin-add-speakers.compon
 })
 export class AdminDetailSpeakerComponent extends BaseAdminDetailComponent<Speaker> {
   public $universities: Observable<Array<Partial<University>>>;
+  public $speakerPhoto: Observable<string>;
 
   constructor(
     private fb1: FormBuilder,
@@ -28,6 +30,17 @@ export class AdminDetailSpeakerComponent extends BaseAdminDetailComponent<Speake
 
     this.$universities = this.universityService.getEntities();
     this.form = formExporter();
+
+    this.$speakerPhoto = this.$formSubject.pipe(
+      map((entity) => {
+        if (!entity.speakerInfo.blob) {
+          throw new Error('Entity does not contain blob data');
+        }
+        const byteArray = entity.speakerInfo.blob.data;
+        const buffer = Buffer.from(byteArray).toString('base64');
+        return `data:image/png;base64,${buffer}`;
+      })
+    );
   }
 
   public submitNewEntity() {

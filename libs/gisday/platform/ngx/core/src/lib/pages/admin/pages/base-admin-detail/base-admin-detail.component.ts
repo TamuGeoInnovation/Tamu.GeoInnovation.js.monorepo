@@ -17,22 +17,31 @@ export abstract class BaseAdminDetailComponent<T> implements IBaseAdminAddCompon
 
   public formGroup = {};
   public form: FormGroup;
-  private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private entityService: BaseService<T>) {}
+  private _$destroy: Subject<boolean> = new Subject();
+  public $formSubject: Subject<T>;
+
+  constructor(private fb: FormBuilder, private route: ActivatedRoute, private entityService: BaseService<T>) {
+    this.$formSubject = new Subject<T>();
+
+    this.$formSubject.subscribe((entity) => {
+      this.entity = entity;
+      this.form.patchValue(this.entity);
+      this.form.valueChanges
+        .pipe(debounceTime(1000))
+        .subscribe((res) => {
+          this.entityService
+            .updateEntity(this.form.getRawValue())
+            .subscribe((result) => [console.log('Updated entity', this.entity, result)]);
+        })
+        .add(this._$destroy);
+    });
+  }
 
   public ngOnInit() {
     if (this.route.snapshot.params.guid) {
       this.entityGuid = this.route.snapshot.params.guid;
-      this.entityService.getEntityWithRelations(this.entityGuid).subscribe((entity) => {
-        this.entity = entity;
-        this.form.patchValue(this.entity);
-        this.form.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
-          this.entityService
-            .updateEntity(this.form.getRawValue())
-            .subscribe((result) => [console.log('Updated entity', this.entity)]);
-        });
-      });
+      this.entityService.getEntityWithRelations(this.entityGuid).subscribe(this.$formSubject);
     }
   }
 
