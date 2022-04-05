@@ -352,8 +352,6 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
 
 export interface ISketchViewModel extends esri.SketchViewModel {
   toggleUpdateTool?: () => unknown;
-  canUndo?: () => unknown;
-  canRedo?: () => unknown;
 }
 
 export interface ISketchViewModelEvent {
