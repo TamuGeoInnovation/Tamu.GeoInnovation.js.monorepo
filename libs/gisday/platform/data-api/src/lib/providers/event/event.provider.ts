@@ -1,26 +1,51 @@
-import { HttpException, HttpService, HttpStatus, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { DeepPartial, In } from 'typeorm';
 
-import { Event, EventRepo, Sponsor, SponsorRepo, Tag, TagRepo, UserRsvpRepo } from '../../entities/all.entity';
+import {
+  Event,
+  EventBroadcastRepo,
+  EventLocationRepo,
+  EventRepo,
+  Sponsor,
+  SponsorRepo,
+  Tag,
+  TagRepo,
+  UserRsvpRepo
+} from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
 
 @Injectable()
 export class EventProvider extends BaseProvider<Event> {
   constructor(
     private readonly eventRepo: EventRepo,
+    private readonly eventLocationRepo: EventLocationRepo,
+    private readonly eventBroadcastRepo: EventBroadcastRepo,
     private readonly tagRepo: TagRepo,
     private readonly sponsorRepo: SponsorRepo,
     private readonly userRsvpRepo: UserRsvpRepo
   ) {
-    super(eventRepo);
+    super(eventRepo, 'event');
   }
 
-  public async insertEvent(_newEvent: Partial<Event>) {
+  public async getEvents() {
+    return await this.getEntitiesWithRelations('event');
+  }
+
+  public async insertEvent(_newEvent: DeepPartial<Event>) {
     try {
-      const newEvent = await this.eventRepo.create(_newEvent);
-      return this.eventRepo.save(newEvent);
+      const eventBroadcastEnt = this.eventBroadcastRepo.create(_newEvent);
+      const eventLocationEnt = this.eventLocationRepo.create(_newEvent);
+
+      _newEvent.broadcast = eventBroadcastEnt;
+      _newEvent.location = eventLocationEnt;
+
+      const eventEnt = this.eventRepo.create(_newEvent);
+
+      if (eventEnt) {
+        return eventEnt.save();
+      }
     } catch (error) {
-      throw new HttpException('Could not insert new Event', HttpStatus.PARTIAL_CONTENT);
+      throw new Error('Could not insert new Event');
     }
   }
 
@@ -58,8 +83,8 @@ export class EventProvider extends BaseProvider<Event> {
       });
       days.forEach((day, index) => {
         const dayEvents = entities.filter((event) => {
-          const dateString = event.date.toISOString();
-          return dateString.indexOf(day) !== -1;
+          // const dateString = event.date.toISOString();
+          // return dateString.indexOf(day) !== -1;
         });
         newEntities[`day${index}`] = dayEvents;
       });
@@ -67,8 +92,8 @@ export class EventProvider extends BaseProvider<Event> {
     } else {
       days.forEach((day, index) => {
         const dayEvents = entities.filter((event) => {
-          const dateString = event.date.toISOString();
-          return dateString.indexOf(day) !== -1;
+          // const dateString = event.date.toISOString();
+          // return dateString.indexOf(day) !== -1;
         });
         newEntities[index] = dayEvents;
       });

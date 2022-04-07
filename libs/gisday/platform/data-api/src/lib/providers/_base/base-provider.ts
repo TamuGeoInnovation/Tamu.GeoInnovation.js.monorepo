@@ -3,10 +3,10 @@ import { DeepPartial } from 'typeorm';
 import { Request } from 'express';
 import * as deepmerge from 'deepmerge';
 
-import { CommonRepo, EntityRelationsLUT } from '../../entities/all.entity';
+import { CommonRepo, EntityName, EntityRelationsLUT } from '../../entities/all.entity';
 
 export abstract class BaseProvider<T> implements IBaseProvider<T> {
-  constructor(private readonly repo: CommonRepo<T>) {}
+  constructor(private readonly repo: CommonRepo<T>, entityName?: EntityName) {}
 
   public async getEntity(guid: string) {
     return this.repo.findOne({
@@ -16,7 +16,13 @@ export abstract class BaseProvider<T> implements IBaseProvider<T> {
     });
   }
 
-  public async getEntityWithRelations(guid: string, entityName: string) {
+  public async getEntitiesWithRelations(entityName: EntityName) {
+    return this.repo.find({
+      relations: EntityRelationsLUT.getRelation(entityName)
+    });
+  }
+
+  public async getEntityWithRelations(guid: string, entityName: EntityName) {
     return this.repo.findOne({
       where: {
         guid: guid

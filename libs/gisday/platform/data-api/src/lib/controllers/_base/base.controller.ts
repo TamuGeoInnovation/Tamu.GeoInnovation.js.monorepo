@@ -1,13 +1,14 @@
 import { Controller, Delete, Get, Param, Patch, Post, Request } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
+import { EntityName } from '../../entities/all.entity';
 
 import { BaseProvider } from '../../providers/_base/base-provider';
 
 @Controller()
 export abstract class BaseController<T> implements IBaseController<T> {
-  private entityName: string;
+  private entityName: EntityName;
 
-  constructor(private readonly provider: BaseProvider<T>, entityName?: string) {
+  constructor(private readonly provider: BaseProvider<T>, entityName?: EntityName) {
     this.entityName = entityName;
   }
 

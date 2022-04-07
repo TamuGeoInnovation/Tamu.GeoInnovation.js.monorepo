@@ -34,6 +34,16 @@ export class EventService extends BaseService<Event> {
     };
     return this.http1.get<Partial<EventResponse>>(`${this.resource}/by-day`, httpOptions);
   }
+
+  public createEventFromFormData(data: FormData) {
+    return this.http1
+      .post(`${this.resource}`, data, {
+        withCredentials: false
+      })
+      .subscribe((result) => {
+        console.log(result);
+      });
+  }
 }
 
 export interface EventResponse {

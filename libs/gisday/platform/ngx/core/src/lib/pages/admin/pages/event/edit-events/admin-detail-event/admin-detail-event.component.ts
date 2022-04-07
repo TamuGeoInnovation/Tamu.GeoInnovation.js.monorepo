@@ -6,7 +6,7 @@ import { EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Event } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-detail.component';
-import { formConfig } from '../../add-events/admin-add-events.component';
+import { formExporter } from '../../add-events/admin-add-events.component';
 
 @Component({
   selector: 'tamu-gisc-admin-detail-event',
@@ -16,6 +16,6 @@ import { formConfig } from '../../add-events/admin-add-events.component';
 export class AdminDetailEventComponent extends BaseAdminDetailComponent<Event> {
   constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private eventService: EventService) {
     super(fb1, route1, eventService);
-    this.formGroup = formConfig;
+    this.form = formExporter();
   }
 }

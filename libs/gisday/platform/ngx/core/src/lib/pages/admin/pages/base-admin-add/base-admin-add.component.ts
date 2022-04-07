@@ -10,7 +10,7 @@ import { BaseService } from '@tamu-gisc/gisday/platform/ngx/data-access';
   template: ''
 })
 export abstract class BaseAdminAddComponent<T> implements IBaseAdminAddComponent, OnInit, OnDestroy {
-  public formGroup: {};
+  // public formGroup: {};
 
   public form: FormGroup;
   private _$destroy: Subject<boolean> = new Subject();
@@ -18,7 +18,8 @@ export abstract class BaseAdminAddComponent<T> implements IBaseAdminAddComponent
   constructor(private fb: FormBuilder, private entityService: BaseService<T>) {}
 
   public ngOnInit() {
-    this.form = this.fb.group(this.formGroup);
+    // this.form = this.fb.group(this.formGroup);
+    // this.form = this.formGroup;
   }
 
   public ngOnDestroy(): void {

@@ -250,16 +250,16 @@ export class EventBroadcast extends GuidIdentity {
 })
 export class EventLocation extends GuidIdentity {
   @Column({ nullable: true })
-  public locationRoom: string;
+  public room: string;
 
   @Column({ nullable: true })
-  public locationBuilding: string;
+  public building: string;
 
   @Column({ nullable: true })
   public capacity: number;
 
   @Column({ nullable: true })
-  public locationLink: string;
+  public link: string;
 }
 
 @Entity({
@@ -297,13 +297,10 @@ export class Event extends GISDayEntity {
   public abstract: string;
 
   @Column({ nullable: true })
-  public startTime: Date; // Use Angular pipes to format on frontend
+  public startTime: string; // Use Angular pipes to format on frontend
 
   @Column({ nullable: true })
-  public endTime: Date;
-
-  @Column({ nullable: true })
-  public date: Date;
+  public endTime: string;
 
   // @Column({ nullable: true })
   // public duration: number; // TODO: Can we remove this? If we need it in the future maybe replace with a computed property of endTime - startTime - Aaron H. (3/30/2022)
@@ -876,7 +873,7 @@ export class ManholeSubmission {
 }
 
 export const EntityRelationsLUT = {
-  event: ['tags', 'broadcast', 'location'],
+  event: ['broadcast', 'location'],
   speaker: ['speakerInfo', 'speakerInfo.university'],
   getRelation: (entity?: string) => {
     if (!entity) {
@@ -886,6 +883,8 @@ export const EntityRelationsLUT = {
     }
   }
 };
+
+export type EntityName = 'event' | 'speaker';
 
 export class CommonRepo<T> extends Repository<T> {}
 
@@ -913,6 +912,12 @@ export class EventRepo extends CommonRepo<Event> {
       .getMany();
   }
 }
+
+@EntityRepository(EventLocation)
+export class EventLocationRepo extends CommonRepo<EventLocation> {}
+
+@EntityRepository(EventBroadcast)
+export class EventBroadcastRepo extends CommonRepo<EventBroadcast> {}
 
 @EntityRepository(InitialSurveyQuestion)
 export class InitialSurveyQuestionRepo extends CommonRepo<InitialSurveyQuestion> {}

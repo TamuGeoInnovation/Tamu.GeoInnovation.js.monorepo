@@ -76,4 +76,6 @@ export class AdminAddSpeakersComponent extends BaseAdminAddComponent<Speaker> {
 
     this.speakerService.insertSpeakerInfo(data);
   }
+
+  public onFileSelected($event: File) {}
 }
