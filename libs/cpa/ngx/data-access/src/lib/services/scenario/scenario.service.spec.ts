@@ -30,7 +30,7 @@ describe('ScenarioService', () => {
   afterEach(() => {
     httpTestingController.verify();
   });
-  it('create()', () => {
+  it('should call create() and return a new scenario', () => {
     const dummyStringValue = 'Foo';
     const dummyResponse = [
       {

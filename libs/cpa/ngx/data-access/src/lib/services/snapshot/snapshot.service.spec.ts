@@ -31,7 +31,7 @@ describe('SnapshotService', () => {
     httpTestingController.verify();
     jest.resetAllMocks();
   });
-  it('create()', () => {
+  it('should call create() and return a new snapshot', () => {
     const dummyStringValue = 'Foo';
     const dummyResponse = [
       {

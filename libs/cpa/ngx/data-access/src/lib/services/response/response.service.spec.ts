@@ -31,7 +31,7 @@ describe('ResponseService', () => {
     httpTestingController.verify();
   });
 
-  it('createResponse()', () => {
+  it('should call createResponse() and return a new response', () => {
     const dummyStringValue = 'Foo';
     const dummyResponse = [
       {

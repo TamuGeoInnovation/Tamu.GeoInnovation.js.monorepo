@@ -31,7 +31,7 @@ describe('ParticipantService', () => {
     httpTestingController.verify();
   });
 
-  it('createParticipantForWorkshop()', () => {
+  it('should call createParticipantForWorkshop() and return a new participant', () => {
     const dummyStringValue = 'Foo';
     const dummyResponse = [
       {
@@ -52,7 +52,7 @@ describe('ParticipantService', () => {
     req.flush(dummyResponse);
   });
 
-  it('getParticipantsForWorkshop()', () => {
+  it('should call getParticipantsForWorkshop() and return a list of participants', () => {
     const dummyStringValue = 'Foo';
     const dummyResponse = [
       {

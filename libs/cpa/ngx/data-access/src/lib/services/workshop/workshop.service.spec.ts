@@ -31,7 +31,7 @@ describe('WorkshopService', () => {
     httpTestingController.verify();
   });
 
-  it('createWorkshop()', () => {
+  it('should call createWorkshop() and return a new workshop', () => {
     const dummyStringValue = 'Foo';
     const dummyResponse = [
       {
