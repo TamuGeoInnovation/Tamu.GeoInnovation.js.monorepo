@@ -2,9 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+
 import { ParticipantService } from './participants.service';
 
-const spyEnvironment = {
+const mockEnvironment = {
   value: jest.fn()
 };
 
@@ -19,7 +20,7 @@ describe('ParticipantService', () => {
         ParticipantService,
         {
           provide: EnvironmentService,
-          useValue: spyEnvironment
+          useValue: mockEnvironment
         }
       ]
     });
@@ -39,7 +40,7 @@ describe('ParticipantService', () => {
       }
     ];
 
-    spyEnvironment.value.mockReturnValue(dummyStringValue);
+    mockEnvironment.value.mockReturnValue(dummyStringValue);
     service = TestBed.inject(ParticipantService);
 
     service.createParticipantForWorkshop(dummyStringValue, dummyStringValue).subscribe((participants) => {
@@ -60,7 +61,7 @@ describe('ParticipantService', () => {
       }
     ];
 
-    spyEnvironment.value.mockReturnValue(dummyStringValue);
+    mockEnvironment.value.mockReturnValue(dummyStringValue);
     service = TestBed.inject(ParticipantService);
 
     service.getParticipantsForWorkshop(dummyStringValue).subscribe((participants) => {

@@ -2,9 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
+
 import { SnapshotService } from './snapshot.service';
 
-const spyEnvironment = {
+const mockEnvironment = {
   value: jest.fn()
 };
 
@@ -19,7 +20,7 @@ describe('SnapshotService', () => {
         SnapshotService,
         {
           provide: EnvironmentService,
-          useValue: spyEnvironment
+          useValue: mockEnvironment
         }
       ]
     });
@@ -39,7 +40,7 @@ describe('SnapshotService', () => {
       }
     ];
 
-    spyEnvironment.value.mockReturnValue(dummyStringValue);
+    mockEnvironment.value.mockReturnValue(dummyStringValue);
     service = TestBed.inject(SnapshotService);
 
     service.create({}).subscribe((response) => {
