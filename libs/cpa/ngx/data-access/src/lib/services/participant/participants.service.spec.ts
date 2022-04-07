@@ -47,8 +47,7 @@ describe('ParticipantService', () => {
       expect(participants[0].name).toBe('Foo');
     });
 
-    const req = httpTestingController.expectOne(`${service.resource}/workshop`);
-    expect(req.request.method).toEqual('POST');
+    const req = httpTestingController.expectOne({ method: 'POST', url: `${service.resource}/workshop` });
     req.flush(dummyResponse);
   });
 
@@ -69,8 +68,7 @@ describe('ParticipantService', () => {
       expect(participants.length).toBe(1);
     });
 
-    const req = httpTestingController.expectOne(`${service.resource}/workshop/${dummyStringValue}`);
-    expect(req.request.method).toEqual('GET');
+    const req = httpTestingController.expectOne({ method: 'GET', url: `${service.resource}/workshop/${dummyStringValue}` });
     req.flush(dummyResponse);
   });
 });

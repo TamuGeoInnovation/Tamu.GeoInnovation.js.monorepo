@@ -47,8 +47,7 @@ describe('SnapshotService', () => {
       expect(response[0].name).toBe('Foo');
     });
 
-    const req = httpTestingController.expectOne('Foosnapshots');
-    expect(req.request.method).toEqual('POST');
+    const req = httpTestingController.expectOne({ method: 'POST', url: 'Foosnapshots' });
     req.flush(dummyResponse);
   });
 });

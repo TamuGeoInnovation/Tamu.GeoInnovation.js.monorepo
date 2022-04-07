@@ -46,8 +46,7 @@ describe('ScenarioService', () => {
       expect(response[0].name).toBe('Foo');
     });
 
-    const req = httpTestingController.expectOne(`${'Fooscenarios'}`);
-    expect(req.request.method).toEqual('POST');
+    const req = httpTestingController.expectOne({ method: 'POST', url: `${'Fooscenarios'}` });
     req.flush(dummyResponse);
   });
 });

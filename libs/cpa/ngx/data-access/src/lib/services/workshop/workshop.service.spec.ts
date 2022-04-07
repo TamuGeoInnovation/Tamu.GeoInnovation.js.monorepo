@@ -47,8 +47,7 @@ describe('WorkshopService', () => {
       expect(response[0].name).toBe('Foo');
     });
 
-    const req = httpTestingController.expectOne('Fooworkshops');
-    expect(req.request.method).toEqual('POST');
+    const req = httpTestingController.expectOne({ method: 'POST', url: 'Fooworkshops' });
     req.flush(dummyResponse);
   });
 });
