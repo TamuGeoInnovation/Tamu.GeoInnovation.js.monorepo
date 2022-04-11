@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
-import { EventService } from '@tamu-gisc/gisday/platform/ngx/data-access';
-import { Event } from '@tamu-gisc/gisday/platform/data-api';
+import { EventService, SpeakerService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { Event, Speaker, Tag } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
-import { FormToFormData } from '../../../../../../../../common/src/lib/utils/form-to-form-data';
+import { Observable, shareReplay } from 'rxjs';
 
 export const formExporter = () => {
   return new FormGroup({
@@ -34,9 +34,11 @@ export const formExporter = () => {
     location: new FormGroup({
       room: new FormControl(''),
       building: new FormControl(''),
-      capacity: new FormControl(0),
+      capacity: new FormControl(''),
       link: new FormControl('')
-    })
+    }),
+    tagsGroup$: new FormGroup({}),
+    speakersGroup$: new FormGroup({})
   });
 };
 
@@ -46,10 +48,39 @@ export const formExporter = () => {
   styleUrls: ['./admin-add-events.component.scss']
 })
 export class AdminAddEventsComponent extends BaseAdminAddComponent<Event> {
-  constructor(private fb1: FormBuilder, private eventService: EventService) {
+  public $tags: Observable<Array<Partial<Tag>>>;
+  public $speakers: Observable<Array<Partial<Speaker>>>;
+
+  constructor(
+    private fb1: FormBuilder,
+    private eventService: EventService,
+    private speakerService: SpeakerService,
+    private tagService: TagService
+  ) {
     super(fb1, eventService);
 
     this.form = formExporter();
+
+    this.$tags = this.tagService.getEntities().pipe(shareReplay(1));
+    this.$speakers = this.speakerService.getEntities().pipe(shareReplay(1));
+
+    this.$tags.subscribe((tags: Partial<Array<Tag>>) => {
+      const tagsGroup: FormGroup = new FormGroup({});
+      tags.forEach((tag) => {
+        tagsGroup.addControl(tag.guid, new FormControl(''));
+      });
+
+      this.form.controls.tagsGroup$ = tagsGroup;
+    });
+
+    this.$speakers.subscribe((speakers: Partial<Array<Speaker>>) => {
+      const speakersGroup: FormGroup = new FormGroup({});
+      speakers.forEach((speaker) => {
+        speakersGroup.addControl(speaker.guid, new FormControl(''));
+      });
+
+      this.form.controls.speakersGroup$ = speakersGroup;
+    });
   }
 
   public submitNewEntity() {
@@ -59,7 +90,17 @@ export class AdminAddEventsComponent extends BaseAdminAddComponent<Event> {
     // toUTCString() Wed, 06 Apr 2022 22:28:36 GMT
     // toTimeString() 17:29:25 GMT-0500 (Central Daylight Time)
 
-    const data: FormData = FormToFormData(this.form);
-    this.eventService.createEventFromFormData(data);
+    const tags = this.form.controls.tagsGroup$.value;
+    const speakers = this.form.controls.speakersGroup$.value;
+
+    const checkedTags = Object.keys(tags).filter((key) => tags[key]);
+    const checkedSpeakers = Object.keys(speakers).filter((key) => speakers[key]);
+
+    this.form.addControl('tags', new FormControl(checkedTags));
+    this.form.addControl('speakers', new FormControl(checkedSpeakers));
+
+    this.eventService.createEntity(this.form.value).subscribe((result) => {
+      console.log(result);
+    });
   }
 }

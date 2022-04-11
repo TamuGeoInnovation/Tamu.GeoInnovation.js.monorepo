@@ -7,14 +7,23 @@ import {
   TagRepo,
   UserRsvpRepo,
   EventBroadcastRepo,
-  EventLocationRepo
+  EventLocationRepo,
+  SpeakerRepo
 } from '../../entities/all.entity';
 import { EventController } from '../../controllers/event/event.controller';
 import { EventProvider } from '../../providers/event/event.provider';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([EventRepo, EventLocationRepo, EventBroadcastRepo, TagRepo, SponsorRepo, UserRsvpRepo])
+    TypeOrmModule.forFeature([
+      EventRepo,
+      EventLocationRepo,
+      EventBroadcastRepo,
+      SpeakerRepo,
+      TagRepo,
+      SponsorRepo,
+      UserRsvpRepo
+    ])
   ],
   controllers: [EventController],
   providers: [EventProvider],

@@ -266,9 +266,9 @@ export class EventLocation extends GuidIdentity {
   name: 'events'
 })
 export class Event extends GISDayEntity {
-  // @ManyToMany((type) => Speaker, { cascade: true })
-  // @JoinTable({ name: 'event_speakers' })
-  // public speakers?: Speaker[];
+  @ManyToMany((type) => Speaker, { cascade: true })
+  @JoinTable({ name: 'event_speakers' })
+  public speakers?: Speaker[];
 
   // @ManyToMany((type) => Sponsor, { cascade: true })
   // @JoinTable({ name: 'event_sponsors' })

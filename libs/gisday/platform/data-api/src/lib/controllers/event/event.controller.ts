@@ -38,7 +38,6 @@ export class EventController extends BaseController<Event> {
   }
 
   @Post()
-  @UseInterceptors(FileInterceptor(''))
   public async insertEvent(@Body() body) {
     const _newEvent: DeepPartial<Event> = body;
     return this.eventProvider.insertEvent(_newEvent);

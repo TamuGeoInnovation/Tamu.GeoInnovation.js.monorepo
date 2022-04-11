@@ -18,12 +18,12 @@
         <tamu-gisc-textbox formControlName="observedAttendeeStart" placeholder="Observed attendee start" type="text" floatLabel="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="observedAttendeeEnd" placeholder="Observed attendee end" type="text" floatLabel="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="googleDriveUrl" placeholder="Google Drive URL" type="text" floatLabel="true"> </tamu-gisc-textbox>
-        <tamu-gisc-checkbox formControlName="requiresRsvp" type="text" floatLabel="true" label="Requires RSVP?" [data]=""> </tamu-gisc-checkbox>
+        <tamu-gisc-checkbox class="form-checkbox-item" formControlName="requiresRsvp" type="text" floatLabel="true" label="Requires RSVP?" [data]=""> </tamu-gisc-checkbox>
         <tamu-gisc-textbox formControlName="qrCode" placeholder="QR code" type="text" floatLabel="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="type" placeholder="Event type" type="text" floatLabel="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="presentationType" placeholder="Presentation type" type="text" floatLabel="true"> </tamu-gisc-textbox>
-        <tamu-gisc-checkbox formControlName="isAcceptingRsvps" type="text" floatLabel="true" label="Is accepting RSVPs?" [data]=""> </tamu-gisc-checkbox>
-        <tamu-gisc-checkbox formControlName="isBringYourOwnDevice" type="text" floatLabel="true" label="Is bring your own device?" [data]=""> </tamu-gisc-checkbox>
+        <tamu-gisc-checkbox class="form-checkbox-item" formControlName="isAcceptingRsvps" type="text" floatLabel="true" label="Is accepting RSVPs?" [data]=""> </tamu-gisc-checkbox>
+        <tamu-gisc-checkbox class="form-checkbox-item" formControlName="isBringYourOwnDevice" type="text" floatLabel="true" label="Is bring your own device?" [data]=""> </tamu-gisc-checkbox>
         <tamu-gisc-textbox formControlName="requirements" placeholder="Requirements" type="text" floatLabel="true"> </tamu-gisc-textbox>
         <div formGroupName="location" class="form-collection column">
           <p>Location</p>
@@ -40,16 +40,22 @@
           <tamu-gisc-textbox formControlName="meetingId" placeholder="Meeting ID" type="text" floatLabel="true"> </tamu-gisc-textbox>
           <tamu-gisc-textbox formControlName="publicUrl" placeholder="Public URL" type="text" floatLabel="true"> </tamu-gisc-textbox>
         </div>
+        <table formGroupName="tagsGroup$" class="form-collection column">
+          <p>Tags</p>
+            <tr *ngFor="let tag of $tags | async">
+              <tamu-gisc-checkbox [formControlName]="tag.guid" class="td-checkbox-item" [label]="tag.name" [data]="tag.guid"></tamu-gisc-checkbox>
+            </tr>  
+        </table>
+        <table formGroupName="speakersGroup$" class="form-collection column">
+          <p>Speakers</p>
+            <tr *ngFor="let speaker of $speakers | async">
+              <tamu-gisc-checkbox [formControlName]="speaker.guid" class="td-checkbox-item" [label]="speaker.lastName" [data]="speaker.guid"></tamu-gisc-checkbox>
+            </tr>  
+        </table>
       </div>
       
     </div>
   </div>
-  <!-- <div formGroupName="tags" class="form-section">
-    <div class="form-section-toolbar">
-      <div class="form-section-name">
-        <p>Tags</p>
-      </div>
-    </div>
-  </div> -->
+  
   <tamu-gisc-button (click)="submitNewEntity()" [value]="'Add'" type="submit"></tamu-gisc-button>
 </form>

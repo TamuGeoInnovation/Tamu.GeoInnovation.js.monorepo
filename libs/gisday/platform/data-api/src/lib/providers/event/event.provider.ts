@@ -6,6 +6,7 @@ import {
   EventBroadcastRepo,
   EventLocationRepo,
   EventRepo,
+  SpeakerRepo,
   Sponsor,
   SponsorRepo,
   Tag,
@@ -20,6 +21,7 @@ export class EventProvider extends BaseProvider<Event> {
     private readonly eventRepo: EventRepo,
     private readonly eventLocationRepo: EventLocationRepo,
     private readonly eventBroadcastRepo: EventBroadcastRepo,
+    private readonly speakerRepo: SpeakerRepo,
     private readonly tagRepo: TagRepo,
     private readonly sponsorRepo: SponsorRepo,
     private readonly userRsvpRepo: UserRsvpRepo
@@ -33,11 +35,25 @@ export class EventProvider extends BaseProvider<Event> {
 
   public async insertEvent(_newEvent: DeepPartial<Event>) {
     try {
-      const eventBroadcastEnt = this.eventBroadcastRepo.create(_newEvent);
-      const eventLocationEnt = this.eventLocationRepo.create(_newEvent);
+      const broadcastEnt = this.eventBroadcastRepo.create(_newEvent.broadcast);
+      const locationEnt = this.eventLocationRepo.create(_newEvent.location);
 
-      _newEvent.broadcast = eventBroadcastEnt;
-      _newEvent.location = eventLocationEnt;
+      const existingSpeakers = await this.speakerRepo.find({
+        where: {
+          guid: In(_newEvent.speakers)
+        }
+      });
+
+      const existingTags = await this.tagRepo.find({
+        where: {
+          guid: In(_newEvent.tags)
+        }
+      });
+
+      _newEvent.broadcast = broadcastEnt;
+      _newEvent.location = locationEnt;
+      _newEvent.speakers = existingSpeakers;
+      _newEvent.tags = existingTags;
 
       const eventEnt = this.eventRepo.create(_newEvent);
 
