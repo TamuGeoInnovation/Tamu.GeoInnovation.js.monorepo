@@ -1,0 +1,29 @@
+:host {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1000;
+}
+
+.modal-overlay {
+  height: inherit;
+  width: inherit;
+  position: absolute;
+  left: inherit;
+  top: inherit;
+  background-color: rgba(0, 0, 0, 0.26);
+}
+
+.modal-card-container {
+  background-color: #fafafa;
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  border-radius: 3pt;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  padding: 2.5rem 2rem;
+}
