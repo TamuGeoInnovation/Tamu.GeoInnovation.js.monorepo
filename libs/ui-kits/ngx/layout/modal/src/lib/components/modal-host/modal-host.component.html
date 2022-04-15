@@ -1,6 +1,14 @@
-<div class="modal-overlay">
-  <div class="modal-card-container">
-    <ng-template #modal></ng-template>
+<div class="modal--overlay">
+  <div class="modal--container">
+    <header>
+      <div class="modal--header-action">
+        <span class="material-icons" title="Close" alt="Close window" (click)="clear()" (keypress.space)="clear()">cancel</span>
+      </div>
+    </header>
+
+    <div class="modal--body">
+      <ng-template #modal></ng-template>
+    </div>
   </div>
 </div>
 

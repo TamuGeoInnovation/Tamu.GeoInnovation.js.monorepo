@@ -7,7 +7,7 @@
   z-index: 1000;
 }
 
-.modal-overlay {
+.modal--overlay {
   height: inherit;
   width: inherit;
   position: absolute;
@@ -16,7 +16,7 @@
   background-color: rgba(0, 0, 0, 0.26);
 }
 
-.modal-card-container {
+.modal--container {
   background-color: #fafafa;
   display: block;
   position: absolute;
@@ -25,5 +25,25 @@
   transform: translateX(-50%) translateY(-50%);
   border-radius: 3pt;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-  padding: 2.5rem 2rem;
+  padding: 1.25rem 2rem 2.5rem 2rem;
+
+  header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+
+    .modal--header-action {
+      cursor: pointer;
+      color: #9e9e9e;
+      transition: color 0.3s;
+
+      .material-icons {
+        font-size: 1.25rem;
+      }
+
+      &:hover {
+        color: #323232;
+      }
+    }
+  }
 }
