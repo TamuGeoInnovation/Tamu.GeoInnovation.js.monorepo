@@ -1,4 +1,5 @@
-import { ComponentRef, Injectable, Type, ViewContainerRef } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { ComponentRef, Inject, Injectable, Type, ViewContainerRef } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ModalHostComponent } from '../../components/modal-host/modal-host.component';
@@ -7,6 +8,8 @@ import { ModalHostComponent } from '../../components/modal-host/modal-host.compo
 export class ModalService {
   private _viewRef: ViewContainerRef;
   private _modalRef: ComponentRef<ModalHostComponent>;
+
+  constructor(@Inject(DOCUMENT) private document: Document) {}
 
   /**
    * Registers the global view container ref that will be used for all modal `open` calls
@@ -31,6 +34,10 @@ export class ModalService {
       throw new Error('No view ref configured for modal. Register a global viewRef or provide one in the open function.');
     }
 
+    // Lock the rest of the page from being able to be scrolled. This class styles are defined in the
+    // modal host component.
+    this.document.body.classList.add('modal-open');
+
     // Pass in provided data to the host component which will pass it down to the actual inner
     // modal component.
     //
@@ -43,6 +50,9 @@ export class ModalService {
     this._modalRef.instance.close.subscribe(() => {
       // Destroy the ModalHostComponent when the inner modal ref instance is destroyed.
       this._modalRef.destroy();
+
+      // Re-enable page scrolling
+      this.document.body.classList.remove('modal-open');
     });
   }
 }

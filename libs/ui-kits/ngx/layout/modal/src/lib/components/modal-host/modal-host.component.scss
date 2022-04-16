@@ -1,3 +1,9 @@
+::ng-deep {
+  body.modal-open {
+    overflow: hidden;
+  }
+}
+
 :host {
   position: fixed;
   top: 0;
