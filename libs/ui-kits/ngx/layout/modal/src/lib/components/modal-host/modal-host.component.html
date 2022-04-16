@@ -1,13 +1,13 @@
-<div class="modal--overlay">
-  <div class="modal--container">
-    <header>
-      <div class="modal--header-action">
-        <span class="material-icons" title="Close" alt="Close window" (click)="cancelModal()" (keypress.space)="cancelModal()">cancel</span>
-      </div>
-    </header>
+<div class="modal--overlay" (click)="cancelModal()"></div>
 
-    <div class="modal--body">
-      <ng-template #modal></ng-template>
+<div class="modal--container">
+  <header>
+    <div class="modal--header-action">
+      <span class="material-icons" title="Close" alt="Close window" (click)="cancelModal()" (keypress.space)="cancelModal()">cancel</span>
     </div>
+  </header>
+
+  <div class="modal--body">
+    <ng-template #modal></ng-template>
   </div>
 </div>
