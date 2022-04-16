@@ -3,7 +3,7 @@
 <div class="modal--container">
   <header>
     <div class="modal--header-action">
-      <span class="material-icons" title="Close" alt="Close window" (click)="cancelModal()" (keypress.space)="cancelModal()">cancel</span>
+      <span class="material-icons" title="Close" alt="Close window" (click)="cancelModal()" (keyup.space)="cancelModal()" (keyup.enter)="cancelModal()" tabindex="0">cancel</span>
     </div>
   </header>
 
