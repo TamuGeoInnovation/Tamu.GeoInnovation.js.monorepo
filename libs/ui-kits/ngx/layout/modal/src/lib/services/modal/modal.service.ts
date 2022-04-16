@@ -1,4 +1,5 @@
 import { ComponentRef, Injectable, Type, ViewContainerRef } from '@angular/core';
+import { Observable } from 'rxjs';
 
 import { ModalHostComponent } from '../../components/modal-host/modal-host.component';
 
@@ -7,11 +8,17 @@ export class ModalService {
   private _viewRef: ViewContainerRef;
   private _modalRef: ComponentRef<ModalHostComponent>;
 
+  /**
+   * Registers the global view container ref that will be used for all modal `open` calls
+   * unless an override is specified in that call.
+   *
+   * Recommendation: Register a global view ref in the root-most component possible.
+   */
   public registerGlobalViewRef(ref: ViewContainerRef) {
     this._viewRef = ref;
   }
 
-  public open<C>(component: Type<C>, options?: ModalOpenOptions) {
+  public open<T>(component: Type<unknown>, options?: ModalOpenOptions): Observable<T> {
     if (options && options.viewRef) {
       this._modalRef = options.viewRef.createComponent(ModalHostComponent);
 
@@ -26,11 +33,15 @@ export class ModalService {
 
     // Pass in provided data to the host component which will pass it down to the actual inner
     // modal component.
-    return this._modalRef.instance.mountModalChild(component, options?.data);
+    //
+    // The return value is an `close` event observable from the ModalHostComponent that
+    // hosts the provided component as a child.
+    return this._modalRef.instance.mountModalChild(component, options?.data) as Observable<T>;
   }
 
   private listenForChildClose() {
-    this._modalRef.instance.close.subscribe((result) => {
+    this._modalRef.instance.close.subscribe(() => {
+      // Destroy the ModalHostComponent when the inner modal ref instance is destroyed.
       this._modalRef.destroy();
     });
   }
