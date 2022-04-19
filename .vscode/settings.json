@@ -34,6 +34,5 @@
   ],
   "jest.autoEnable": false,
   "cSpell.enabled": true,
-  "typescript.tsdk": "node_modules/typescript/lib",
   "angular.enable-strict-mode-prompt": false
 }
