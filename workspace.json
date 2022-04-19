@@ -150,6 +150,7 @@
     "ui-kits-ngx-interactions-scroll-to": "libs/ui-kits/ngx/interactions/scroll-to",
     "ui-kits-ngx-layout": "libs/ui-kits/ngx/layout",
     "ui-kits-ngx-layout-code": "libs/ui-kits/ngx/layout/code",
+    "ui-kits-ngx-layout-modal": "libs/ui-kits/ngx/layout/modal",
     "ui-kits-ngx-navigation-breadcrumb": "libs/ui-kits/ngx/navigation/breadcrumb",
     "ui-kits-ngx-navigation-mobile-tab": "libs/ui-kits/ngx/navigation/mobile-tab",
     "ui-kits-ngx-navigation-mobile-tile": "libs/ui-kits/ngx/navigation/mobile-tile",
