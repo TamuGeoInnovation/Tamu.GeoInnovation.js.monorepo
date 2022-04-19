@@ -59,5 +59,14 @@ export const NotificationEvents: NotificationProperties[] = [
     message: 'Thank you! Your feedback has been submitted successfully and the Aggiemap team notified.',
     imgUrl: './assets/images/like.svg',
     imgAltText: 'Feedback Icon'
+  },
+  {
+    id: 'beta-prompt',
+    title: 'Aggiemap Beta Branch',
+    range: [0, 9999999999999],
+    acknowledge: false,
+    message:
+      'Check out the latest and greatest features coming to Aggiemap @ <a href="https://dev.aggiemap.tamu.edu" target="_blank">dev.aggiemap.tamu.edu</a>.',
+    imgUrl: './assets/images/text-lines.svg'
   }
 ];
