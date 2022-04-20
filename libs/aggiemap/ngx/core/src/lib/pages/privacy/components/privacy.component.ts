@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'gisc-privacy',
+  selector: 'tamu-gisc-aggiemap-privacy',
   templateUrl: './privacy.component.html',
   styleUrls: ['./privacy.component.scss']
 })
-export class PrivacyComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit() {}
-}
+export class PrivacyComponent {}

@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'gisc-instructions',
+  selector: 'tamu-gisc-aggiemap-instructions',
   templateUrl: './instructions.component.html',
   styleUrls: ['./instructions.component.scss']
 })
-export class InstructionsComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit() {}
-}
+export class InstructionsComponent {}

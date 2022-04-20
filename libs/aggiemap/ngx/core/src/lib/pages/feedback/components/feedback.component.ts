@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'gisc-feedback',
+  selector: 'tamu-gisc-aggiemap-feedback',
   templateUrl: './feedback.component.html',
   styleUrls: ['./feedback.component.scss']
 })
-export class FeedbackComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit() {}
-}
+export class FeedbackComponent {}
