@@ -25,7 +25,6 @@ import { PortalLayerJSON } from '@tamu-gisc/maps/feature/forms';
 import { ViewerBasePopupComponent } from '../components/viewer-base-popup/viewer-base-popup.component';
 
 import esri = __esri;
-import * as FeatureLayer from 'esri/layers/FeatureLayer';
 
 @Injectable({
   providedIn: 'root'
@@ -294,7 +293,7 @@ export class ViewerService {
               ]).pipe(
                 switchMap(([serverLayer, metadata]) => {
                   if (metadata.type === 'Raster Layer') {
-                    const rasterLayer = serverLayer as FeatureLayer;
+                    const rasterLayer = serverLayer as esri.FeatureLayer;
                     return from(
                       this.ms.findLayerOrCreateFromSource({
                         type: 'map-image',
