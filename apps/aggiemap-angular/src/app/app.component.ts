@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
 
 @Component({
-  selector: 'app-root',
+  selector: 'tamu-gisc-aggiemap-app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
