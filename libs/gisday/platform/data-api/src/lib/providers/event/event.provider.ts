@@ -65,6 +65,38 @@ export class EventProvider extends BaseProvider<Event> {
     }
   }
 
+  public async updateEvent(_newEvent: DeepPartial<Event>) {
+    try {
+      const broadcastEnt = this.eventBroadcastRepo.create(_newEvent.broadcast);
+      const locationEnt = this.eventLocationRepo.create(_newEvent.location);
+
+      const existingSpeakers = await this.speakerRepo.find({
+        where: {
+          guid: In(_newEvent.speakers)
+        }
+      });
+
+      const existingTags = await this.tagRepo.find({
+        where: {
+          guid: In(_newEvent.tags)
+        }
+      });
+
+      _newEvent.broadcast = broadcastEnt;
+      _newEvent.location = locationEnt;
+      _newEvent.speakers = existingSpeakers;
+      _newEvent.tags = existingTags;
+
+      const eventEnt = this.eventRepo.create(_newEvent);
+
+      if (eventEnt) {
+        return eventEnt.save();
+      }
+    } catch (error) {
+      throw new Error('Could not insert new Event');
+    }
+  }
+
   private async getTags(_tagGuids: string[]): Promise<Tag[]> {
     return this.tagRepo.find({
       guid: In(_tagGuids)

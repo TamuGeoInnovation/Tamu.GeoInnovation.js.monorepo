@@ -46,6 +46,12 @@ export class SpeakerService extends BaseService<Speaker> {
     });
   }
 
+  public updateSpeakerInfo(data: FormData) {
+    return this.http1.patch(`${this.resource}`, data, {
+      withCredentials: true
+    });
+  }
+
   public insertSpeakerInfo(data: FormData) {
     return this.http1
       .post(`${this.resource}`, data, {
