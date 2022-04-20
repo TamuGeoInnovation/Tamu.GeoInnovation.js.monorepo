@@ -36,8 +36,16 @@ export class SpeakerController extends BaseController<Speaker> {
   //   return this.speakerProvider.getSpeakerPhoto(params.guid);
   // }
 
-  @Patch('/info')
-  public async updateSpeakerInfo(@Req() req: Request) {
-    return this.speakerProvider.updateSpeakerInfo(req);
+  // @Patch('/info')
+  // public async updateSpeakerInfo(@Req() req: Request) {
+  //   return this.speakerProvider.updateSpeakerInfo(req);
+  // }
+
+  @Patch()
+  @UseInterceptors(FileInterceptor('file'))
+  public async updateSpeakerInfo(@Body() body: DeepPartial<Speaker>, @UploadedFile() file) {
+    // return this.speakerProvider.updateWithInfo(body, file);
+    return this.speakerProvider.update(body, file);
+    // return this.speakerProvider.updateEntity(body, 'speaker');
   }
 }
