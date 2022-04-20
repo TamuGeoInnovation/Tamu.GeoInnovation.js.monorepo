@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { Class, UserClass } from '../../entities/all.entity';
+import { NestAuthGuard } from '../../guards/auth.guard';
 import { UserClassProvider } from '../../providers/user-class/user-class.provider';
 import { BaseController } from '../_base/base.controller';
 
@@ -11,6 +12,7 @@ export class UserClassController extends BaseController<UserClass> {
     super(userClassProvider);
   }
 
+  @UseGuards(NestAuthGuard)
   @Get()
   public async getClassesAndUserClasses(@Request() req) {
     if (req.user) {
