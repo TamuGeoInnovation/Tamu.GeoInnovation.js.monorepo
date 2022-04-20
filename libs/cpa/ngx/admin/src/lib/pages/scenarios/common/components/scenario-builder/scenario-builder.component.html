@@ -44,8 +44,24 @@
 
         <div class="form-section-body">
           <div class="form-collection column">
-            <p>Adjust the map view using the map preview to the desired area/region and press the button below to record the extent. The recorded bounds will be the same for participants loading the scenario.</p>
-            <tamu-gisc-button [value]="'Record Map Extent'" (go)="recordExtent()"></tamu-gisc-button>
+            <ng-container *ngIf="(mapExtent$ | async) === null">
+              <p>To set the initial map center and zoom adjust the preview map to the desired area and press the button below to record the extent.</p>
+
+              <p>If no extent is recorded for this scenario, the initial map center and zoom will be that of the previous snapshot/scenario in the workshop. <strong>Do not record a map extent if this is the desired effect.</strong></p>
+
+              <tamu-gisc-button [value]="'Record Initial Map Location'" (go)="recordExtent()"></tamu-gisc-button>
+            </ng-container>
+
+            <ng-container *ngIf="(mapExtent$ | async) !== null">
+              <p>An initial map center and zoom have been set. You can adjust the preview map to the desired area/region and update the recorded extent or clear the recorded extent.</p>
+
+              <p>With an extent recorded, the map view will snap to the saved area whenever the user switches to this scenario.</p>
+
+              <div class="form-collection row">
+                <tamu-gisc-button [value]="'Update Initial Map Location'" (go)="recordExtent()" [disabled]="(mapViewExtentChanged$ | async) === false"></tamu-gisc-button>
+                <tamu-gisc-button [value]="'Reset Initial Map Location'" look="secondary" (go)="clearExtent()"></tamu-gisc-button>
+              </div>
+            </ng-container>
           </div>
         </div>
       </div>

@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { forkJoin, Observable } from 'rxjs';
-import { tap, map, shareReplay, take } from 'rxjs/operators';
+import { forkJoin, fromEventPattern, Observable, Subject, merge } from 'rxjs';
+import { tap, map, shareReplay, take, switchMap, mapTo, startWith, skip, distinctUntilChanged } from 'rxjs/operators';
 
 import { DragulaService } from 'ng2-dragula';
 
@@ -31,10 +31,27 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
       mode: '2d',
       properties: {
         center: [-99.20987760767717, 31.225356084754477],
-        zoom: 4
+        zoom: 5
       }
     }
   };
+
+  /**
+   * The snapshot map extent. Is not null when the returned snapshot from server has an
+   * extent defined.
+   */
+  public mapExtent$: Observable<null | esri.ExtentProperties>;
+
+  /**
+   * Listens on the map view extent for changes and emits when the user updates the preview map extent.
+   */
+  public mapViewExtentChanged$: Observable<boolean>;
+
+  /**
+   * Emits when the map view extent has been recorded. Used a signal to disable
+   * the extent save button.
+   */
+  private _mapViewRecorded$: Subject<boolean> = new Subject();
 
   private $view: Observable<MapServiceInstance['view']>;
 
@@ -76,6 +93,38 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
       layers: this.fb.array([]),
       isContextual: ['']
     });
+
+    this.mapExtent$ = this.builderForm.valueChanges.pipe(
+      map((form) => {
+        return form.extent;
+      })
+    );
+
+    this.mapViewExtentChanged$ = merge(
+      this.mapService.store.pipe(
+        take(1),
+        switchMap(({ view }) => {
+          let handle: esri.Handle;
+
+          const add = (handler) => {
+            handle = view.watch('extent', handler);
+          };
+
+          const remove = () => {
+            handle.remove();
+          };
+
+          return fromEventPattern(add, remove).pipe(
+            map<[esri.Extent, esri.Extent], esri.ExtentProperties>(([newExtent]) => {
+              return newExtent.toJSON();
+            }),
+            skip(1) // The initial extent patching from snapshot will emit once. Do not emit this.
+          );
+        }),
+        mapTo(true)
+      ),
+      this._mapViewRecorded$.pipe(mapTo(false))
+    ).pipe(startWith(false), distinctUntilChanged());
 
     if (this.route.snapshot.params.guid) {
       forkJoin([this.snapshot.getOne(this.route.snapshot.params.guid), this.mapService.store.pipe(take(1))]).subscribe(
@@ -213,6 +262,12 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
       const extent = view.extent.toJSON();
 
       this.builderForm.patchValue({ extent });
+
+      this._mapViewRecorded$.next(true);
     });
+  }
+
+  public clearExtent() {
+    this.builderForm.patchValue({ extent: null });
   }
 }
