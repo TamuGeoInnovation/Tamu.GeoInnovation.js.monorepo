@@ -1,16 +1,21 @@
 import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import { SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Sponsor } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
-export const formConfig = {
-  guid: [''],
-  name: [''],
-  website: [''],
-  logoUrl: ['']
+export const formExporter = () => {
+  return new FormGroup({
+    guid: new FormControl(''),
+    name: new FormControl(''),
+    website: new FormControl(''),
+    logoUrl: new FormControl(''),
+    contactEmail: new FormControl(''),
+    description: new FormControl(''),
+    sponsorshipLevel: new FormControl('')
+  });
 };
 
 @Component({
@@ -21,6 +26,6 @@ export const formConfig = {
 export class AdminAddSponsorsComponent extends BaseAdminAddComponent<Sponsor> {
   constructor(private fb1: FormBuilder, private sponsorService: SponsorService) {
     super(fb1, sponsorService);
-    this.formGroup = formConfig;
+    this.form = formExporter();
   }
 }

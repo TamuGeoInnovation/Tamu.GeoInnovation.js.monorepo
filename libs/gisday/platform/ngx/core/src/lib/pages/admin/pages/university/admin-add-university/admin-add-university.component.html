@@ -4,7 +4,10 @@
       <div class="form-collection row pad-top">
         <tamu-gisc-textbox formControlName="name" placeholder="Name" type="text" floatLabel="true"> </tamu-gisc-textbox>
         <tamu-gisc-textbox formControlName="acronym" placeholder="Acronym" type="text" floatLabel="true"> </tamu-gisc-textbox>
-        <tamu-gisc-textbox formControlName="hexTriplet" placeholder="Hex Triplet" type="text" floatLabel="true"> </tamu-gisc-textbox>
+        <div style="display: flex; flex-direction: row; align-items: stretch;">
+          <tamu-gisc-textbox formControlName="hexTriplet" placeholder="Hex Triplet" type="text" floatLabel="true"> </tamu-gisc-textbox>
+          <div id="hex-preview" [style.backgroundColor]="setHexPreview()"></div>
+        </div>
       </div>
       <tamu-gisc-button (click)="submitNewEntity()" [value]="'Add'" type="submit"></tamu-gisc-button>
     </div>

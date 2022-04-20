@@ -1,7 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { DeepPartial } from 'typeorm';
+
+import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 export abstract class BaseService<T> {
   public withCredentials = false;
@@ -25,7 +27,7 @@ export abstract class BaseService<T> {
   }
 
   public getEntityWithRelations(guid: string) {
-    return this.http.get<Partial<T>>(`${this.resource}/${guid}/deep`, {
+    return this.http.get<DeepPartial<T>>(`${this.resource}/${guid}/deep`, {
       withCredentials: this.withCredentials
     });
   }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -13,10 +13,14 @@ import { formExporter } from '../../../tag/admin-add-tags/admin-add-tags.compone
   templateUrl: './admin-detail-tag.component.html',
   styleUrls: ['./admin-detail-tag.component.scss']
 })
-export class AdminDetailTagComponent extends BaseAdminDetailComponent<Tag> {
+export class AdminDetailTagComponent extends BaseAdminDetailComponent<Tag> implements OnInit {
   constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private tagService: TagService) {
     super(fb1, route1, tagService);
 
     this.form = formExporter();
+  }
+
+  public ngOnInit() {
+    super.ngOnInit();
   }
 }

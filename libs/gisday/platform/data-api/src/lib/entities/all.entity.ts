@@ -467,21 +467,23 @@ export class Speaker extends GISDayEntity {
   @Column({ nullable: true })
   public accountGuid: string; // User
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public firstName: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public lastName: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public email: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public organization: string;
 
   @OneToOne((type) => SpeakerInfo, { cascade: true, nullable: true })
   @JoinColumn()
   public speakerInfo: SpeakerInfo;
+
+  public inEvent?: boolean;
 
   // @ManyToMany((type) => SpeakerRole)
   // @JoinTable({ name: 'speaker_speaker_roles' })
@@ -499,6 +501,8 @@ export class Tag extends GuidIdentity {
   @Column({ nullable: false })
   public name: string;
 
+  public inEvent?: boolean;
+
   constructor() {
     super();
   }
@@ -508,19 +512,19 @@ export class Tag extends GuidIdentity {
   name: 'sponsors'
 })
 export class Sponsor extends GISDayEntity {
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public name: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public website: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public logoUrl: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public contactEmail: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public description: string;
 
   @Column({ nullable: true })
@@ -873,7 +877,7 @@ export class ManholeSubmission {
 }
 
 export const EntityRelationsLUT = {
-  event: ['broadcast', 'location'],
+  event: ['broadcast', 'location', 'tags', 'speakers'],
   speaker: ['speakerInfo', 'speakerInfo.university'],
   getRelation: (entity?: string) => {
     if (!entity) {

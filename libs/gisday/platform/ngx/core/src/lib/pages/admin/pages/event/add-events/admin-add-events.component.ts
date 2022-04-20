@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import { EventService, SpeakerService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Event, Speaker, Tag } from '@tamu-gisc/gisday/platform/data-api';
@@ -38,7 +38,9 @@ export const formExporter = () => {
       link: new FormControl('')
     }),
     tagsGroup$: new FormGroup({}),
-    speakersGroup$: new FormGroup({})
+    speakersGroup$: new FormGroup({}),
+    tags: new FormArray([]),
+    speakers: new FormArray([])
   });
 };
 

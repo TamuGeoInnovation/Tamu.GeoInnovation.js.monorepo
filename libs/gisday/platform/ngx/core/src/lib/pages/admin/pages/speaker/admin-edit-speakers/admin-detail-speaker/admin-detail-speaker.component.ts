@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -10,13 +10,14 @@ import { Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-detail.component';
 import { formExporter } from '../../admin-add-speakers/admin-add-speakers.component';
+import { FormToFormData } from '../../../../../../../../../common/src/lib/utils/form-to-form-data';
 
 @Component({
   selector: 'tamu-gisc-admin-detail-speaker',
   templateUrl: './admin-detail-speaker.component.html',
   styleUrls: ['./admin-detail-speaker.component.scss']
 })
-export class AdminDetailSpeakerComponent extends BaseAdminDetailComponent<Speaker> {
+export class AdminDetailSpeakerComponent extends BaseAdminDetailComponent<Speaker> implements OnInit {
   public $universities: Observable<Array<Partial<University>>>;
   public $speakerPhoto: Observable<string>;
 
@@ -30,26 +31,36 @@ export class AdminDetailSpeakerComponent extends BaseAdminDetailComponent<Speake
 
     this.$universities = this.universityService.getEntities();
     this.form = formExporter();
+  }
 
-    this.$speakerPhoto = this.$formSubject.pipe(
+  public ngOnInit() {
+    super.ngOnInit();
+    this.$speakerPhoto = this.entity.pipe(
       map((entity) => {
         if (!entity.speakerInfo.blob) {
           throw new Error('Entity does not contain blob data');
         }
         const byteArray = entity.speakerInfo.blob.data;
-        const buffer = Buffer.from(byteArray).toString('base64');
+        const buffer = Buffer.from(byteArray as Uint8Array).toString('base64');
         return `data:image/png;base64,${buffer}`;
       })
     );
   }
 
-  public submitNewEntity() {
-    const form = this.form.getRawValue();
-    const data: FormData = new FormData();
-    const formKeys = Object.keys(form);
-    formKeys.forEach((key) => {
-      data.append(key, form[key]);
+  public updateEntity() {
+    const data = FormToFormData(this.form);
+    this.speakerService.updateSpeakerInfo(data).subscribe((result) => {
+      console.log(result);
     });
-    this.speakerService.insertSpeakerInfo(data);
   }
+
+  // public submitNewEntity() {
+  //   const form = this.form.getRawValue();
+  //   const data: FormData = new FormData();
+  //   const formKeys = Object.keys(form);
+  //   formKeys.forEach((key) => {
+  //     data.append(key, form[key]);
+  //   });
+  //   this.speakerService.insertSpeakerInfo(data);
+  // }
 }

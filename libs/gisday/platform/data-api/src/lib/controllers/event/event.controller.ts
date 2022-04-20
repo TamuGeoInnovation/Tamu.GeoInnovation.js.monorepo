@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Request, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Request, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 
 import jwtDecode from 'jwt-decode';
@@ -38,8 +38,13 @@ export class EventController extends BaseController<Event> {
   }
 
   @Post()
-  public async insertEvent(@Body() body) {
+  public async insertEvent(@Body() body: DeepPartial<Event>) {
     const _newEvent: DeepPartial<Event> = body;
     return this.eventProvider.insertEvent(_newEvent);
+  }
+
+  @Patch()
+  public async updateEvent(@Body() body: DeepPartial<Event>) {
+    return this.eventProvider.updateEvent(body);
   }
 }
