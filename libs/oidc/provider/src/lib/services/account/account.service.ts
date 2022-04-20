@@ -1,6 +1,6 @@
 import { getConnection } from 'typeorm';
 
-import { AccountRepo, User } from '../../../../../common/src/lib/entities/all.entity';
+import { AccountRepo, User } from '@tamu-gisc/oidc/common';
 
 import { CommonService } from '../common/common.service';
 import { Injectable } from '@nestjs/common';

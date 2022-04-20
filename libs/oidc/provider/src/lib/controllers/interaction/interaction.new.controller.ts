@@ -152,7 +152,7 @@ export class InteractionController {
         // eslint-disable-next-line no-restricted-syntax
         // TODO: Enable this again
         for (const [indicator, scopes] of Object.entries(details.missingResourceScopes)) {
-          grant.addResourceScope(indicator, scopes.join(' '));
+          grant.addResourceScope(indicator, (scopes as Array<string>).join(' '));
         }
       }
 
