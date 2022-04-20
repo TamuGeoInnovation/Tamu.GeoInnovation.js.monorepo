@@ -2,8 +2,23 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { from, Observable, Subject } from 'rxjs';
-import { delay, filter, map, pluck, reduce, shareReplay, skip, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
+import { from, fromEventPattern, merge, Observable, Subject } from 'rxjs';
+import {
+  delay,
+  distinctUntilChanged,
+  filter,
+  map,
+  mapTo,
+  pluck,
+  reduce,
+  shareReplay,
+  skip,
+  startWith,
+  switchMap,
+  take,
+  tap,
+  withLatestFrom
+} from 'rxjs/operators';
 
 import { LayerReference } from '@tamu-gisc/cpa/common/entities';
 import { EsriMapService, EsriModuleProviderService, MapConfig } from '@tamu-gisc/maps/esri';
@@ -84,6 +99,23 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     }
   };
 
+  /**
+   * The snapshot map extent. Is not null when the returned snapshot from server has an
+   * extent defined.
+   */
+  public mapExtent$: Observable<null | esri.ExtentProperties>;
+
+  /**
+   * Listens on the map view extent for changes and emits when the user updates the preview map extent.
+   */
+  public mapViewExtentChanged$: Observable<boolean>;
+
+  /**
+   * Emits when the map view extent has been recorded. Used a signal to disable
+   * the extent save button.
+   */
+  private _mapViewRecorded$: Subject<boolean> = new Subject();
+
   constructor(
     private fb: FormBuilder,
     private mapService: EsriMapService,
@@ -118,6 +150,38 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
       scenarioResponses: [[]],
       snapshotResponses: [[]]
     });
+
+    this.mapExtent$ = this.builderForm.valueChanges.pipe(
+      map((form) => {
+        return form.extent;
+      })
+    );
+
+    this.mapViewExtentChanged$ = merge(
+      this.mapService.store.pipe(
+        take(1),
+        switchMap(({ view }) => {
+          let handle: esri.Handle;
+
+          const add = (handler) => {
+            handle = view.watch('extent', handler);
+          };
+
+          const remove = () => {
+            handle.remove();
+          };
+
+          return fromEventPattern(add, remove).pipe(
+            map<[esri.Extent, esri.Extent], esri.ExtentProperties>(([newExtent]) => {
+              return newExtent.toJSON();
+            }),
+            skip(1) // The initial extent patching from snapshot will emit once. Do not emit this.
+          );
+        }),
+        mapTo(true)
+      ),
+      this._mapViewRecorded$.pipe(mapTo(false))
+    ).pipe(startWith(false), distinctUntilChanged());
 
     // Fetch all Workshops
     this.workshops = this.workshop.getWorkshops().pipe(shareReplay(1));
@@ -543,6 +607,12 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
     const extent = this.view.extent.toJSON();
 
     this.builderForm.patchValue({ extent });
+
+    this._mapViewRecorded$.next(true);
+  }
+
+  public clearExtent() {
+    this.builderForm.patchValue({ extent: null });
   }
 }
 
