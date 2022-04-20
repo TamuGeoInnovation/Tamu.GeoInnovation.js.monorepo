@@ -116,6 +116,8 @@ export class ExportComponent implements OnInit {
             });
 
             this.map.add(previewLayer);
+
+            this.view.goTo(previewLayer.graphics);
           });
       });
     });
