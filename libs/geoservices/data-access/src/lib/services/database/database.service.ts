@@ -5,8 +5,6 @@ import { of, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DatabaseService {
-  constructor() {}
-
   public getExisting() {
     const mock: Array<DatabaseRecord> = [
       {

@@ -19,7 +19,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(req).pipe(
       tap(
-        (event: HttpEvent<unknown>) => {
+        () => {
           // No operation here. Only concerned with authentication errors.
         },
         (err) => {
