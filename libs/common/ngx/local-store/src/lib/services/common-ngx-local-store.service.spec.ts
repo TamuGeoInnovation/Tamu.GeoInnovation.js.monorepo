@@ -1,5 +1,5 @@
 import { async, TestBed } from '@angular/core/testing';
-import { AppStorage, LocalStoreService } from '@tamu-gisc/common/ngx/local-store';
+import { LocalStoreService, AppStorage } from '../services/common-ngx-local-store.service';
 import { CommonModule } from '@angular/common';
 import { LOCAL_STORAGE, StorageServiceModule } from 'ngx-webstorage-service';
 

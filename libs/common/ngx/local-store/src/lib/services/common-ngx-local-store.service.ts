@@ -1,5 +1,5 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
-import { StorageService, localStorageFactory } from 'ngx-webstorage-service';
+import { StorageService } from 'ngx-webstorage-service';
 
 const STORAGE_KEY = 'default';
 
