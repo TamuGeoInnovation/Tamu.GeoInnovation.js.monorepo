@@ -89,7 +89,7 @@ export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnIni
       const graphics = this.model.layer.graphics.filter((layerGraphic) => {
         return (
           this.model.updateGraphics.findIndex(
-            (updateGraphic) => ((updateGraphic as unknown) as IGraphic).uid === ((layerGraphic as unknown) as IGraphic).uid
+            (updateGraphic) => (updateGraphic as unknown as IGraphic).uid === (layerGraphic as unknown as IGraphic).uid
           ) > -1
         );
       });
@@ -139,14 +139,14 @@ export class MapDrawAdvancedComponent extends BaseDrawComponent implements OnIni
     });
   }
 
-  public onCreate(event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) {
+  public override onCreate(event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) {
     if (event.graphic) {
       const g = this.model.layer.graphics.find(
-        (g) => ((g as unknown) as IGraphic).uid === ((event.graphic as unknown) as IGraphic).uid
+        (g) => (g as unknown as IGraphic).uid === (event.graphic as unknown as IGraphic).uid
       );
 
       const jsonedSymbol = g.symbol.toJSON();
-      const unjsonedSymbol = ((g.symbol.constructor as unknown) as SymbolConstructor).fromJSON(jsonedSymbol);
+      const unjsonedSymbol = (g.symbol.constructor as unknown as SymbolConstructor).fromJSON(jsonedSymbol);
 
       g.symbol = unjsonedSymbol;
 
