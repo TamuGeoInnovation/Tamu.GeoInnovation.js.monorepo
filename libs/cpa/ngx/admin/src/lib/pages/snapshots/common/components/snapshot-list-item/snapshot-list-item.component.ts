@@ -16,14 +16,12 @@ export class SnapshotListItemComponent implements OnInit {
   public snapshot: ISnapshotPartial;
 
   @Output()
-  public copy: EventEmitter<string> = new EventEmitter();
+  public copied: EventEmitter<string> = new EventEmitter();
 
   public snapshotWorkshops: Observable<Array<DeepPartial<Workshop>>>;
   public snapshotWorkshopsCount: Observable<number>;
   public firstWorkshop: Observable<DeepPartial<Workshop>>;
   public remainingWorkshops: Observable<Array<DeepPartial<Workshop>>>;
-
-  constructor() {}
 
   public ngOnInit(): void {
     this.snapshotWorkshops = of(this.snapshot).pipe(
@@ -51,6 +49,6 @@ export class SnapshotListItemComponent implements OnInit {
   }
 
   public emitCopy(guid: string) {
-    this.copy.emit(guid);
+    this.copied.emit(guid);
   }
 }

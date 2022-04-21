@@ -26,7 +26,7 @@ export class DeleteComponent implements OnInit {
   public deleteWorkshop() {
     if (this.guid) {
       this.ws.deleteWorkshop(this.guid).subscribe(
-        (res) => {
+        () => {
           this.ns.toast({
             message: 'Workshop was successfully deleted.',
             id: 'workshop-delete',
@@ -35,7 +35,7 @@ export class DeleteComponent implements OnInit {
 
           this.router.navigate(['admin/workshops']);
         },
-        (err) => {
+        () => {
           this.ns.toast({
             message: 'Workshop could not be deleted.',
             id: 'workshop-delete',

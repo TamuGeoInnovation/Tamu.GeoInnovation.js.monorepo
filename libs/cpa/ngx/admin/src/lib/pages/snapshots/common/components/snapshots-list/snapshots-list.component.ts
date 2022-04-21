@@ -37,7 +37,7 @@ export class SnapshotsListComponent implements OnInit {
 
         this.router.navigate(['./edit', status.guid], { relativeTo: this.route });
       },
-      (err) => {
+      () => {
         this.ns.toast({
           message: 'Snapshot could not be copied.',
           id: 'snapshot-copy',
