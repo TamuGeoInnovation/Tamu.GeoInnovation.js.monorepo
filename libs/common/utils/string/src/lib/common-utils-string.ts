@@ -30,12 +30,12 @@ export class TemplateRenderer {
    */
   public render(): string {
     if (this.template && this.replacement) {
-      return this.template.replace(/\{.*?\}/g, (match: string, index: number, orig: string) => {
+      return this.template.replace(/\{.*?\}/g, () => {
         // Replace captured block with the provided replacement string.
         return this.replacement;
       });
     } else if (this.template && this.lookup) {
-      return this.template.replace(/\{.*?\}/g, (match: string, index: number, orig: string) => {
+      return this.template.replace(/\{.*?\}/g, (match: string) => {
         // Remove template braces before setting value from lookup object.
         return getPropertyValue<string>(this.lookup, match.replace('{', '').replace('}', ''));
       });
