@@ -10,6 +10,7 @@ import { BaseController } from '../_base/base.controller';
 import { SubmissionService } from './submission.service';
 import { GetSubmissionDto, ValidateSubmissionDto } from '../dtos/dtos';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Multer } from 'multer';
 
 @Controller('submission')
