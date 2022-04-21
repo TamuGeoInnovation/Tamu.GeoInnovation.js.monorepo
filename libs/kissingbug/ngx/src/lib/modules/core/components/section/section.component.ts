@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { IStrapiPageSection } from '../../types/types';
 
@@ -7,13 +7,7 @@ import { IStrapiPageSection } from '../../types/types';
   templateUrl: './section.component.html',
   styleUrls: ['./section.component.scss']
 })
-export class SectionComponent implements OnInit, OnDestroy {
+export class SectionComponent {
   @Input()
   public dataSource: IStrapiPageSection;
-
-  constructor() {}
-
-  public ngOnInit() {}
-
-  public ngOnDestroy() {}
 }

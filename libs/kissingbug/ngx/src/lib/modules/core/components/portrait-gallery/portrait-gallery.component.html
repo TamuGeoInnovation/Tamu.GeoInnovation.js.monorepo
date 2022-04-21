@@ -7,7 +7,7 @@
       <div class="profileDescription">
         <p>{{item?.name}}</p>
         <p>{{item?.education}}</p>
-        <div *ngIf="item?.site != null">
+        <div *ngIf="item?.site !== null">
           <a href="{{item?.site}}" target="_blank" title="Website"><i class="fa fa-external-link fa-fw"></i>Website</a>
         </div>
         <p>{{item?.bio}}</p>

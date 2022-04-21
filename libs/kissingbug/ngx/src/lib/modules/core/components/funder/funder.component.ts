@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
@@ -12,7 +12,7 @@ import { IStrapiStapleFunder } from '../../types/types';
   templateUrl: './funder.component.html',
   styleUrls: ['./funder.component.scss']
 })
-export class FunderComponent implements OnInit, OnDestroy {
+export class FunderComponent implements OnInit {
   public api_url = this.environment.value('api_url');
   public dataSource: Observable<IStrapiStapleFunder>;
 
@@ -23,6 +23,4 @@ export class FunderComponent implements OnInit, OnDestroy {
 
     this.dataSource = this.ss.getFunder('funder', language).pipe(shareReplay(1));
   }
-
-  public ngOnDestroy() {}
 }

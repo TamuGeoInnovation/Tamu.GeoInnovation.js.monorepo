@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -9,7 +9,7 @@ import { IStrapiPublicationGallery } from '../../types/types';
   templateUrl: './publication-gallery.component.html',
   styleUrls: ['./publication-gallery.component.scss']
 })
-export class PublicationGalleryComponent implements OnInit, OnDestroy {
+export class PublicationGalleryComponent implements OnInit {
   @Input()
   public dataSource: IStrapiPublicationGallery;
 
@@ -20,6 +20,4 @@ export class PublicationGalleryComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     console.log('publication-gallery', this.dataSource);
   }
-
-  public ngOnDestroy() {}
 }

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { Observable } from 'rxjs';
@@ -13,7 +13,7 @@ import { IStrapiPageResponse, StrapiSingleTypes } from '../../types/types';
   styleUrls: ['./resources.component.scss'],
   providers: [StrapiService]
 })
-export class ResourcesComponent implements OnInit, OnDestroy {
+export class ResourcesComponent implements OnInit {
   private title = 'Resources | Kissing Bugs and Chagas Disease in the U.S. | Texas A&M';
   public page: StrapiSingleTypes = 'knowledge';
   public pageContents: Observable<IStrapiPageResponse>;
@@ -27,6 +27,4 @@ export class ResourcesComponent implements OnInit, OnDestroy {
 
     this.pageContents = this.ss.getPage(this.page, language).pipe(shareReplay(1));
   }
-
-  public ngOnDestroy() {}
 }

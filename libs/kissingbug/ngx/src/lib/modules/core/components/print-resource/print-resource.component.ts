@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -9,15 +9,11 @@ import { IStrapiPrintGallery } from '../../types/types';
   templateUrl: './print-resource.component.html',
   styleUrls: ['./print-resource.component.scss']
 })
-export class PrintResourceComponent implements OnInit, OnDestroy {
+export class PrintResourceComponent {
   @Input()
   public dataSource: IStrapiPrintGallery;
 
   public api_url = this.environment.value('api_url');
 
   constructor(private environment: EnvironmentService) {}
-
-  public ngOnInit() {}
-
-  public ngOnDestroy() {}
 }

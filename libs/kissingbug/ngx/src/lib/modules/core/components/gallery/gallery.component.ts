@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { Lightbox, IAlbum } from 'ngx-lightbox';
 
@@ -11,7 +11,7 @@ import { IStrapiPageFeature, IStrapiPageGallery } from '../../types/types';
   templateUrl: './gallery.component.html',
   styleUrls: ['./gallery.component.scss']
 })
-export class GalleryComponent implements OnInit, OnDestroy {
+export class GalleryComponent implements OnInit {
   @Input()
   public dataSource: IStrapiPageGallery;
 
@@ -51,8 +51,6 @@ export class GalleryComponent implements OnInit, OnDestroy {
 
     this.rowItems.push(items);
   }
-
-  public ngOnDestroy() {}
 
   public open(i: number) {
     this._lightbox.open(this.album, i);
