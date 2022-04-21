@@ -49,6 +49,7 @@ export class FeatureHighlightService implements OnDestroy {
    */
   public clearAll() {
     if (Object.keys(this._store).length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       Object.entries(this._store).forEach(([key, handle]) => {
         handle.remove();
       });
