@@ -1,4 +1,4 @@
-import { getRandomNumber, getSmallestIndex, isEven } from '@tamu-gisc/common/utils/number';
+import { getRandomNumber, getSmallestIndex, isEven } from '..';
 
 describe('isEven', () => {
   it('should handle even numbers', () => {
