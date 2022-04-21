@@ -30,8 +30,8 @@ import * as deepmerge from 'deepmerge';
 
 @Injectable()
 export class UserService {
-  private IPSTACK_APIKEY = '1e599a1240ca8f99f0b0d81a08324dbb';
-  private IPSTACK_URL = 'http://api.ipstack.com/';
+  // private IPSTACK_APIKEY = '1e599a1240ca8f99f0b0d81a08324dbb';
+  // private IPSTACK_URL = 'http://api.ipstack.com/';
   constructor(
     public readonly userRepo: UserRepo,
     public readonly accountRepo: AccountRepo,
@@ -182,15 +182,16 @@ export class UserService {
     const resetRequest = await this.passwordResetRepo.create(_resetRequest);
     resetRequest.setToken();
 
-    // TODO: Is this subscribe a potential source of problems later on? Should we have to unsubscribe?
-    this.httpService.get(`${this.IPSTACK_URL}${ip}?access_key=${this.IPSTACK_APIKEY}`).subscribe((observer) => {
-      const location = observer.data.country_name;
+    // TODO: Disabled for now because of too many API calls to ipstack; maybe we investigate other providers or scrap this functionality
+    // Is this subscribe a potential source of problems later on? Should we have to unsubscribe?
+    // this.httpService.get(`${this.IPSTACK_URL}${ip}?access_key=${this.IPSTACK_APIKEY}`).subscribe((observer) => {
+    //   const location = observer.data.country_name;
 
-      Mailer.sendPasswordResetRequestEmail(user, resetRequest, location);
-      this.passwordResetRepo.save(resetRequest).catch((typeOrmErr) => {
-        console.warn(typeOrmErr);
-      });
-    });
+    //   Mailer.sendPasswordResetRequestEmail(user, resetRequest, location);
+    //   this.passwordResetRepo.save(resetRequest).catch((typeOrmErr) => {
+    //     console.warn(typeOrmErr);
+    //   });
+    // });
   }
 
   /**

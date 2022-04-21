@@ -1,9 +1,10 @@
+import { Injectable } from '@nestjs/common';
+
 import { getConnection } from 'typeorm';
 
-import { CommonService } from '../common/common.service';
-import { User } from '../../entities/all.entity';
+import { AccountRepo, RoleRepo, User } from '../../entities/all.entity';
 
-export class StaticAccountService extends CommonService {
+export class StaticAccountService {
   public static async getUserRoles(accountGuid: string, clientName: string) {
     return getConnection()
       .getRepository(User)
@@ -17,5 +18,22 @@ export class StaticAccountService extends CommonService {
         clientName: clientName
       })
       .getOne();
+  }
+}
+
+@Injectable()
+export class AccountService {
+  constructor(public readonly accountRepo: AccountRepo, public readonly roleRepo: RoleRepo) {}
+
+  public default() {
+    return 'AccountService';
+  }
+
+  public get(guid: string) {
+    return this.accountRepo.findOne({
+      where: {
+        guid: guid
+      }
+    });
   }
 }

@@ -1,8 +1,9 @@
-import { getConnection, EntitySchema, FindConditions, BaseEntity } from 'typeorm';
+import { getConnection, EntitySchema, FindConditions } from 'typeorm';
 
-export type TypeORMEntities = string | Function | (new () => unknown) | EntitySchema<unknown>;
+export type TypeORMEntities = string | (new () => unknown) | EntitySchema<unknown>;
 
 export abstract class CommonService {
+  // TODO: Is this even used anymore? Everything looks very shitty - Aaron H (4/21/22)
   public static async findByKey<T extends TypeORMEntities>(entity: T, key: string, value: string) {
     return new Promise((resolve, reject) => {
       const op = {
@@ -22,7 +23,7 @@ export abstract class CommonService {
     });
   }
 
-  public static async findAll<T extends TypeORMEntities>(entity: T, where?: {}) {
+  public static async findAll<T extends TypeORMEntities>(entity: T, where?: FindConditions<T>) {
     const connection = getConnection();
 
     return new Promise((resolve, reject) => {
@@ -46,7 +47,7 @@ export abstract class CommonService {
     });
   }
 
-  public async findOne<T extends TypeORMEntities>(entity: T, where: {}) {
+  public async findOne<T extends TypeORMEntities>(entity: T, where: FindConditions<T>) {
     const connection = getConnection();
 
     return new Promise((resolve, reject) => {

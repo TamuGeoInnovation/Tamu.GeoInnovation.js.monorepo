@@ -1,31 +1,18 @@
+import { join } from 'path';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
-import { Provider } from 'oidc-provider';
 import * as express from 'express';
-import * as rateLimit from 'express-rate-limit';
-import * as yargs from 'yargs';
-import { urlencoded, json } from 'body-parser';
 import cookieParser from 'cookie-parser';
-import helmet from 'helmet';
-import { join } from 'path';
-
-// import { OpenIdProvider } from '@tamu-gisc/oidc/provider-nestjs';
-import {
-  ClientMetadataModule,
-  ClientMetadataService,
-  RoleModule,
-  RoleService,
-  UserModule,
-  UserService,
-  TwoFactorAuthUtils,
-  Mailer
-} from '@tamu-gisc/oidc/common';
-
-import { OidcProviderService } from '@tamu-gisc/oidc/provider';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+
+// TODO: Reimplement these security measures (recommended by NestJS)
+// import * as rateLimit from 'express-rate-limit';
+// import * as yargs from 'yargs';
+// import { urlencoded, json } from 'body-parser';
+// import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -35,6 +22,7 @@ async function bootstrap() {
     }
   });
 
+  // TODO: Reimplement the command line arguements used to setup initial values in the IdP
   // Sets up various parameters used during deployment
   // When passing in multiple args in the monorepo you need to use this format:
   // --args='-h=6','-w=9','-d=3'
@@ -112,15 +100,11 @@ async function bootstrap() {
   //   OpenIdProvider.build(clients);
   // }
 
-  // Only needed during development
-  // if (!environment.production) {
-  //   enableOIDCDebug(OpenIdProvider.provider);
-  // }
-
   // OpenIdProvider.provider.proxy = true;
 
   const dir = join(__dirname, 'assets/views');
 
+  // TODO: Reimplement Mailer settings
   // This will setup the Mailer (gmail, ethereal, or tamu-relay)
   // if (argv.m) {
   //   switch (argv.m) {
@@ -136,14 +120,13 @@ async function bootstrap() {
   //   }
   // }
 
+  // TODO: Reimplement for 2FA
   // This will set the default time step for otplib to 5 minutes
   // TwoFactorAuthUtils.build();
 
   // app.use(helmet());
   app.setViewEngine('ejs');
   app.set('views', dir);
-  // app.set('view engine', 'ejs');
-  // app.set('views', dir);
   app.set('x-powered-by', false);
   // TODO: Replace these express.static calls with Nest's ServeStaticModule?
   app.use(express.static(join(__dirname, 'assets', 'views')));
@@ -160,23 +143,12 @@ async function bootstrap() {
   // app.use(urlencoded({ extended: true }));
   app.use(cookieParser());
 
-  // const service = app.get(OidcProviderService, { strict: false });
-  // const issuer = `http://localhost:${environment.port}`;
-
-  // service.init(issuer);
-
-  // const providerConfig = await service.generateProviderConfiguration();
-  // const provider: Provider = new Provider(issuer, providerConfig);
-
-  // enableOIDCDebug(service.provider);
-
   const providerRoutePrefix = 'oidc';
-
-  // app.use(`/${providerRoutePrefix}`, service.provider.callback());
 
   await app.listen(environment.port, () => {
     console.log(`Running... http://localhost:${environment.port}/${providerRoutePrefix}/.well-known/openid-configuration`);
 
+    // TODO: Sets default client metadata in the database
     // setTimeout(async () => {
     //   if (argv.setup) {
     //     const clientMetadataService = app.select(ClientMetadataModule).get(ClientMetadataService, { strict: true });

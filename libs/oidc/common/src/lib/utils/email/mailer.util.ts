@@ -1,12 +1,12 @@
 import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 
-import { User, UserPasswordReset } from '@tamu-gisc/oidc/common';
+import { User, UserPasswordReset } from '../../entities/all.entity';
 import { IMailroomEmailOutbound } from '@tamu-gisc/mailroom/common';
 
 export type NodeMailerServices = 'ethereal' | 'gmail' | 'tamu-relay';
 
-const fs = require('fs');
+// const fs = require('fs'); TODO: disabled for now, what was this here for anyway?
 export class Mailer {
   private static transporter: Mail;
   private static service: NodeMailerServices;

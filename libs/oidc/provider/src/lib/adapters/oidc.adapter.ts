@@ -4,9 +4,11 @@ import { getConnection, Connection, FindConditions } from 'typeorm';
 import {
   AccessToken,
   AuthorizationCode,
+  BackchannelAuthenticationRequest,
   Client,
   ClientCredential,
   DeviceCode,
+  Grant,
   IRequiredEntityAttrs,
   InitialAccessToken,
   Interaction,
@@ -23,7 +25,7 @@ import {
  * Used for storing issued tokens, codes, user sessions, etc
  * https://github.com/panva/node-oidc-provider/tree/master/docs#adapter
  */
-export class OidcAdapter {
+export class OidcAdapter implements IOidcAdapter {
   public name: string;
   public connection: Connection;
   public repository: TypeORMEntities;
@@ -39,9 +41,17 @@ export class OidcAdapter {
     Interaction,
     RegistrationAccessToken,
     ReplayDetection,
-    PushedAuthorizationRequest
+    PushedAuthorizationRequest,
+    Grant,
+    BackchannelAuthenticationRequest
   };
-  public grantable: Set<string> = new Set(['AccessToken', 'AuthorizationCode', 'RefreshToken', 'DeviceCode']);
+  public grantable: Set<string> = new Set([
+    'AccessToken',
+    'AuthorizationCode',
+    'RefreshToken',
+    'DeviceCode',
+    'BackchannelAuthenticationRequest'
+  ]);
   /**
    * Creates an instance of OidcAdapter.
    */
@@ -51,33 +61,22 @@ export class OidcAdapter {
     this.repository = this.repositories[name];
   }
 
-  public grantKeyFor(id: string) {
-    return `grant:${id}`;
-  }
-
-  public sessionUidKeyFor(id: string) {
-    return `sessionUid:${id}`;
-  }
-
-  public key(id: KindOfId) {
-    return `${this.name}:${id}`;
-  }
-
-  public async upsert(id: KindOfId, payload: OIDCUpsertPayload, expiresIn: number) {
+  public async upsert(id: KindOfId, data: OIDCUpsertPayload, expiresIn: number) {
     const repo = this.connection.getRepository(this.repository);
 
     if (repo) {
+      if (this.name === 'Session') {
+        console.log('Session', id, data.uid);
+        // id = data.uid;
+      }
       await repo
         .save({
-          id,
-          data: JSON.stringify(payload),
-          grantId: payload.grantId ? payload.grantId : undefined,
-          uid: payload.uid ? payload.uid : undefined,
-          added: new Date(),
-          clientId: payload.clientId ? payload.clientId : undefined,
-          accountGuid: payload.accountId ? payload.accountId : undefined,
-          userCode: payload.userCode ? payload.userCode : undefined,
-          expiresAt: expiresIn ? new Date(Date.now() + expiresIn * 1000).toISOString() : undefined
+          id: id,
+          data: JSON.stringify(data),
+          ...(data.grantId ? { grantId: data.grantId } : undefined),
+          ...(data.userCode ? { userCode: data.userCode } : undefined),
+          ...(data.uid ? { uid: data.uid } : undefined),
+          ...(expiresIn ? { expiresAt: new Date(Date.now() + expiresIn * 1000) } : undefined)
         })
         .catch((typeOrmErr) => {
           throw new HttpException(typeOrmErr, HttpStatus.PARTIAL_CONTENT);
@@ -87,26 +86,20 @@ export class OidcAdapter {
 
   public async find(id: string) {
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
-    const found: IRequiredEntityAttrs = await repo.findOne(id);
+    const found: IRequiredEntityAttrs = (await repo.findOne(id)) as IRequiredEntityAttrs;
 
     if (!found) {
       return undefined;
     }
 
-    const data = JSON.parse(found.data);
-    const token = {
-      ...data,
-      ...(found.consumedAt
-        ? {
-            consumed: true
-          }
-        : undefined)
+    return {
+      ...JSON.parse(found.data),
+      ...(found.consumedAt ? { consumed: true } : undefined)
     };
-    return token;
   }
 
   public async findByUserCode(userCode: KindOfId) {
-    const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.name);
+    const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
     const found = await repo.findOne({
       where: {
         userCode
@@ -117,10 +110,8 @@ export class OidcAdapter {
       return undefined;
     }
 
-    const data = JSON.parse(found.data);
-
     return {
-      ...data,
+      ...JSON.parse(found.data),
       ...(found.consumedAt ? { consumed: true } : undefined)
     };
   }
@@ -129,7 +120,7 @@ export class OidcAdapter {
     const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
     const found: IRequiredEntityAttrs = await repo.findOne({
       where: {
-        uid
+        uid: uid
       }
     });
 
@@ -137,22 +128,14 @@ export class OidcAdapter {
       return undefined;
     }
 
-    const data = JSON.parse(found.data);
-
-    if (data) {
-      return {
-        ...data,
-        ...(found.consumedAt ? { consumed: true } : undefined)
-      };
-    } else {
-      return {
-        ...(found.consumedAt ? { consumed: true } : undefined)
-      };
-    }
+    return {
+      ...JSON.parse(found.data),
+      ...(found.consumedAt ? { consumed: true } : undefined)
+    }; // is there ever a time in which data is null? If so how do we return?
   }
 
   public async consume(id: KindOfId) {
-    const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.name);
+    const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
     const findCond: FindConditions<IRequiredEntityAttrs> = {
       id: `${id}`
     };
@@ -163,11 +146,11 @@ export class OidcAdapter {
   }
 
   public async destroy(id: KindOfId) {
-    const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.name);
+    const repo = this.connection.getRepository(this.repository);
 
     await repo
       .delete({
-        grantId: `${id}`
+        id: `${id}` // Old v6 Adapter used grantId: `${id}` instead of id
       })
       .catch((typeOrmErr) => {
         throw typeOrmErr;
@@ -175,12 +158,22 @@ export class OidcAdapter {
   }
 
   public async revokeByGrantId(grantId: KindOfId) {
-    const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.name);
+    const repo = this.connection.getRepository<IRequiredEntityAttrs>(this.repository);
 
     await repo.delete({
       grantId: `${grantId}`
     });
   }
+}
+
+interface IOidcAdapter {
+  upsert(id, payload, expiresIn);
+  find(id);
+  findByUserCode(userCode);
+  findByUid(uid);
+  destroy(id);
+  revokeByGrantId(grantId);
+  consume(id);
 }
 
 interface OIDCUpsertPayload {

@@ -34,6 +34,6 @@ interface IDecoded {
   aud: string;
   iat: string;
   jti: string;
-  events: {};
+  events: object;
   sid: string;
 }

@@ -1,9 +1,11 @@
 import { Module, NestModule, HttpModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { StaticAccountService } from '../../services/account/account.service';
+
 import { UserController } from '../../controllers/user/user.controller';
 import { UserService } from '../../services/user/user.service';
-import { StaticAccountService } from '../../services/account/account.service';
+
 import { UserValidationMiddleware } from '../../middleware/user-validation/user-validation.middleware';
 import { PasswordValidationMiddleware } from '../../middleware/password-validation/password-validation.middleware';
 import {

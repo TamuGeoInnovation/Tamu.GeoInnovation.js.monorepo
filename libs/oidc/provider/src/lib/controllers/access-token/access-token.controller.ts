@@ -1,16 +1,16 @@
 import { Controller, Delete, Param } from '@nestjs/common';
 
-// import { OpenIdProvider } from '../../configs/oidc-provider-config';
-
 @Controller('access-token')
 export class AccessTokenController {
   @Delete(':grantId')
   public async revokeAccessToken(@Param() params) {
-    const grantId = params.grantId;
+    // TODO: Reimplement a means to revoke access. With JWT this would be adding a JWT access token to a black list
+    // const grantId = params.grantId;
+    // OpenIdProvider.provider.AccessToken.revokeByGrantId(grantId);
+
     return {
       status: 200,
       message: 'Not implemented at the moment'
     };
-    // OpenIdProvider.provider.AccessToken.revokeByGrantId(grantId);
   }
 }

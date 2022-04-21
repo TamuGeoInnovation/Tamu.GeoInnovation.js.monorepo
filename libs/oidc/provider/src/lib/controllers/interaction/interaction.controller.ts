@@ -157,7 +157,7 @@ export class InteractionController {
         const result: InteractionResults = {
           select_account: {},
           login: {
-            account: user.account.guid,
+            accountId: user.account.guid,
             acr: 'urn:mace:incommon:iap:bronze',
             amr: ['pwd'],
             remember: true,

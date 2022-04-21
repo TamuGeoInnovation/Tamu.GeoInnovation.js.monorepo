@@ -1,12 +1,8 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { UserModule, UserService } from '@tamu-gisc/oidc/common';
+import { UserModule } from '@tamu-gisc/oidc/common';
 
 import { InteractionController } from '../../controllers/interaction/interaction.controller';
-import { UserLoginModule } from '../user-login/user-login.module';
-import { OidcProviderService } from '../../services/provider/provider.service';
-import { AccountRepo, RoleRepo } from '@tamu-gisc/oidc/common';
 import { OidcModule } from '../oidc/oidc.module';
 
 @Module({
