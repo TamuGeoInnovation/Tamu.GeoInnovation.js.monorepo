@@ -241,8 +241,11 @@ export class EsriModuleProviderService {
    * @param {boolean} asObject Will return modules as named objects instead of an array of anonymous functions.
    * @returns
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public require(modules: string[]): Promise<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public require(modules: string[], asObject: true): Promise<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public require(modules: string[], asObject?: boolean): Promise<any> {
     // n is an alias for module name
     const classNames = modules.map((n) => {
@@ -279,7 +282,7 @@ export class EsriModuleProviderService {
           return resolvedModules;
         }
       })
-      .catch((err) => {
+      .catch(() => {
         throw new Error(
           `Could not resolve at least one module. Ensure specified class reference is declared in the dictionary.`
         );

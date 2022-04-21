@@ -701,11 +701,9 @@ export class EsriMapService {
    *  Zooms to a collection of graphics at a specified zoom.
    */
   public zoomTo(properties: ZoomProperties) {
-    return new Promise((r, rj) => {
-      (<esri.MapView>this._modules.view).goTo({
-        target: properties.graphics,
-        zoom: properties.zoom
-      });
+    return (<esri.MapView>this._modules.view).goTo({
+      target: properties.graphics,
+      zoom: properties.zoom
     });
   }
 

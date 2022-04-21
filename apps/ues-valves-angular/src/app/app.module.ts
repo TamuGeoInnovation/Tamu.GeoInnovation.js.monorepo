@@ -11,6 +11,7 @@ import { NotificationModule, notificationStorage } from '@tamu-gisc/common/ngx/u
 
 import * as environment from '../environments/environment';
 import { AppComponent } from './app.component';
+import { Angulartics2Module } from 'angulartics2';
 
 WebFont.load({
   google: {
@@ -32,6 +33,7 @@ const routes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
+    Angulartics2Module.forRoot(),
     HttpClientModule,
     NotificationModule
   ],

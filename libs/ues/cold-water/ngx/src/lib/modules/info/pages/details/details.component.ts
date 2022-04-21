@@ -53,7 +53,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
         return this.is.getInterventionsForValve(v).pipe(
           // If the request returns with a not found, default to an empty array as a value for each
           // emission of routeValveId
-          catchError((err, caught) => {
+          catchError(() => {
             return of([]);
           })
         );
@@ -129,7 +129,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   }
 
   // Sorting function passed into the keyvalue angular pipe to preserve property order when iterating.
-  public readonly tableSortOrigOrder = (a, b): number => {
+  public readonly tableSortOrigOrder = (): number => {
     return 0;
   };
 }
