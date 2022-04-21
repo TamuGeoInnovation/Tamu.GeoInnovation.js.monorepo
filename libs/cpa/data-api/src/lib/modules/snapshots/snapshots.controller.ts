@@ -65,4 +65,4 @@ export class SnapshotsController extends BaseController<Snapshot> {
   }
 }
 
-export interface ISnapshotPartial extends DeepPartial<Snapshot> {}
+export type ISnapshotPartial = DeepPartial<Snapshot>;

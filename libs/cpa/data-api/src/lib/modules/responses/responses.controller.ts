@@ -73,7 +73,7 @@ export class ResponsesController extends BaseController<Response> {
   }
 }
 
-export interface IResponseDto extends DeepPartial<Response> {}
+export type IResponseDto = DeepPartial<Response>;
 
 export interface IResponseResolved extends Omit<IResponseDto, 'shapes'> {
   shapes: Array<IGraphic>;

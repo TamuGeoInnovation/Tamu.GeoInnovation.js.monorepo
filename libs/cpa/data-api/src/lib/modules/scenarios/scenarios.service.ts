@@ -203,6 +203,7 @@ export class ScenariosService extends BaseService<Scenario> {
       }, {});
 
       const constructedResponseLayers: CPALayer[] = Object.entries(responseGroupLayers).map(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([key, responses]): CPALayer => {
           const entity = responses[0].snapshot ? responses[0].snapshot : responses[0].scenario;
 
@@ -215,7 +216,7 @@ export class ScenariosService extends BaseService<Scenario> {
             },
             layers: responses.map((response) => {
               return {
-                graphics: (response.shapes as unknown) as IGraphic[],
+                graphics: response.shapes as unknown as IGraphic[],
                 info: {
                   name: response.name ?? 'Anonymous',
                   description: response.notes,
@@ -230,7 +231,7 @@ export class ScenariosService extends BaseService<Scenario> {
 
       const constructedSnapshotLayers = groupedLayers.snapshots.map((snap) => {
         return {
-          layers: (snap.layers as unknown) as Array<CPALayer>,
+          layers: snap.layers as unknown as Array<CPALayer>,
           info: {
             name: `${snap.title} (Snapshot)`,
             description: snap.description,
@@ -244,7 +245,7 @@ export class ScenariosService extends BaseService<Scenario> {
         return {
           layers: s.responses.map((response) => {
             return {
-              graphics: (response.shapes as unknown) as IGraphic[],
+              graphics: response.shapes as unknown as IGraphic[],
               info: {
                 name: response.name ?? 'Anonymous',
                 description: response.notes,
@@ -266,7 +267,7 @@ export class ScenariosService extends BaseService<Scenario> {
         return {
           layers: s.responses.map((response) => {
             return {
-              graphics: (response.shapes as unknown) as IGraphic[],
+              graphics: response.shapes as unknown as IGraphic[],
               info: {
                 name: response?.participant?.name ? response?.participant?.name : 'Unknown Participant',
                 type: 'graphics',

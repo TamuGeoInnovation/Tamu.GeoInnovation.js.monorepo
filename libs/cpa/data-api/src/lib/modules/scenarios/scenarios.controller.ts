@@ -76,7 +76,7 @@ export interface IScenarioSimplified extends Omit<DeepPartial<Scenario>, 'layers
 /**
  * A scenario with every property as optional.
  */
-export interface IScenarioPartial extends DeepPartial<Scenario> {}
+export type IScenarioPartial = DeepPartial<Scenario>;
 
 /**
  * A scenario where layers from references have been resolved.
