@@ -36,7 +36,7 @@ export class BusTimetableComponent implements OnInit {
         });
       }),
       toArray(),
-      tap((res) => {
+      tap(() => {
         this.loaded = true;
       }),
       shareReplay(1)

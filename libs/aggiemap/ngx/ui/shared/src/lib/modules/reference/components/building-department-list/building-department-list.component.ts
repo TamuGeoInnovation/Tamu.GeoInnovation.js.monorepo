@@ -5,8 +5,6 @@ import { takeUntil } from 'rxjs/operators';
 import { SearchService, SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
-import esri = __esri;
-
 // Pre-defined search source reference to use in the building department search.
 const searchReference = 'university-departments-exact';
 

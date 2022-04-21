@@ -75,7 +75,7 @@ export class BusRouteComponent implements OnInit, OnDestroy {
           this._timer = timer(0, 15000)
             .pipe(
               takeUntil(this._destroy$),
-              switchMap((v) => {
+              switchMap(() => {
                 return this.isActive ? of(true) : NEVER;
               })
             )

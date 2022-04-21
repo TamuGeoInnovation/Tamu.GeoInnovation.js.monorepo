@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import { async, TestBed, inject } from '@angular/core/testing';
 
 import { BusListHeaderComponent } from './bus-list-header.component';
 import { AccordionService } from '@tamu-gisc/ui-kits/ngx/layout';
