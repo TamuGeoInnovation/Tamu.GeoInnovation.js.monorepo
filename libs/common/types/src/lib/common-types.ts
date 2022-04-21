@@ -41,20 +41,6 @@ type TextSymbol = { type: 'text' } & esri.TextSymbolProperties;
 
 type WebStyleSymbol = { type: 'web-style' } & esri.WebStyleSymbolProperties;
 
-type Symbols =
-  | SimpleFillSymbol
-  | PictureFillSymbol
-  | SimpleLineSymbol
-  | SimpleMarkerSymbol
-  | PictureMarkerSymbol
-  | Point3DSymbol
-  | Line3DSymbol
-  | Polygon3DSymbol
-  | Mesh3DSymbol
-  | Label3DSymbol
-  | TextSymbol
-  | WebStyleSymbol;
-
 //
 // Autocasting Symbol Typings
 //
@@ -241,8 +227,7 @@ interface PortalMapServerLayerSourceProperties {
     /**
      * Default feature layer properties appended to all feature layers found in the service.
      */
-    // tslint:disable-next-line: no-any
-    defaultFeatureLayerProperties?: esri.FeatureLayerProperties & { popupComponent?: any };
+    defaultFeatureLayerProperties?: esri.FeatureLayerProperties & { popupComponent?: unknown };
   };
 }
 
@@ -305,8 +290,7 @@ export type LayerSource = LayerSourceType & {
    */
   popupTemplate?: esri.PopupTemplateProperties;
 
-  // tslint:disable-next-line:no-any
-  popupComponent?: any;
+  popupComponent?: unknown;
 
   /**
    * Legend items that are shown disabled in the legend as the layer visibility is on/off
