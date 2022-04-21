@@ -7,7 +7,7 @@ export class QueryParamGuard implements CanActivate {
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     // tslint:disable-next-line: no-any
-    const decoratorArgs = this.reflector.get<[string[], any]>('RequiredQueryParams', context.getHandler());
+    const decoratorArgs = this.reflector.get<[string[], typeof Error]>('RequiredQueryParams', context.getHandler());
 
     // If there are no params to check, cannot definitively validate request,
     // and should allow a request to proceed.
@@ -20,7 +20,7 @@ export class QueryParamGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     // Pluck parameter tokens from query object
-    const requestQueryParamTokens = Object.entries(request.query).map(([key, value]) => {
+    const requestQueryParamTokens = Object.entries(request.query).map(([key]) => {
       return key;
     });
 
