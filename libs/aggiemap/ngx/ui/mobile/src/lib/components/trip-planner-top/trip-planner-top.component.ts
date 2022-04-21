@@ -86,7 +86,7 @@ export class TripPlannerTopComponent implements OnInit, OnDestroy {
         this.$immediateClickHandler(),
         takeUntil(this._destroy$)
       )
-      .subscribe((event) => {
+      .subscribe(() => {
         if (this.result && this.result.isFulfilled && !this.result.isError) {
           // Set the override value
           this.hideOverride = !this.hideOverride;

@@ -49,7 +49,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
    */
   public geolocation: boolean;
 
-  private _destroy$: Subject<Boolean> = new Subject();
+  private _destroy$: Subject<boolean> = new Subject();
 
   private _lastRoute: string;
 
@@ -69,7 +69,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     // // If the route contains an index, auto-focus component for immediate interaction
-    if (this.route.snapshot.params.hasOwnProperty('id')) {
+    if ('id' in this.route.snapshot.params) {
       this.setFocus();
 
       // If params has an id, we're performing a search result for a trip point for a trip task.
@@ -108,7 +108,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
    * Determination depends on the current url params.
    */
   public handleResult(selected: SearchSelection<esri.Graphic>) {
-    if (this.route.snapshot.params.hasOwnProperty('id')) {
+    if ('id' in this.route.snapshot.params) {
       // Add stop to the trip planner service
 
       const tPoint = new TripPoint({
@@ -183,7 +183,7 @@ export class OmnisearchComponent implements OnInit, OnDestroy {
    *
    */
   public handleLeftAction() {
-    if (this.route.snapshot.params.hasOwnProperty('id')) {
+    if ('id' in this.route.snapshot.params) {
       this.router.navigate(['map/d/trip']);
     } else if (this.searchComponentLeftAction === 'menu') {
       this.router.navigate(['../sidebar'], { relativeTo: this.route });

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 interface MenuItem {
   name: string;
@@ -12,7 +12,7 @@ interface MenuItem {
   templateUrl: './main-mobile-sidebar.component.html',
   styleUrls: ['./main-mobile-sidebar.component.scss']
 })
-export class MainMobileSidebarComponent implements OnInit {
+export class MainMobileSidebarComponent {
   public menu: MenuItem[] = [
     {
       name: 'Legend',
@@ -63,8 +63,4 @@ export class MainMobileSidebarComponent implements OnInit {
       path: '../../../../../changelog'
     }
   ];
-
-  constructor() {}
-
-  public ngOnInit() {}
 }

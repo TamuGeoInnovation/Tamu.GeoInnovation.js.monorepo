@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 
@@ -8,8 +8,4 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
   styleUrls: ['./aggiemap-ngx-ui-mobile.component.scss'],
   providers: [DragService]
 })
-export class AggiemapNgxUiMobileComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit(): void {}
-}
+export class AggiemapNgxUiMobileComponent {}
