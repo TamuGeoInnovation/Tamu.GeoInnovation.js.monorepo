@@ -30,7 +30,7 @@ export class ParticipantResponsePopupComponent extends BasePopupComponent implem
           this.data.setAttribute('notes', v);
         })
       )
-      .subscribe((res) => {
+      .subscribe(() => {
         this.vs.forceSave();
       });
   }

@@ -21,6 +21,7 @@ export class ParticipantGroupListComponent implements OnInit {
     this.participants = interval(3000).pipe(
       startWith(0),
       withLatestFrom(this.vs.workshopGuid),
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       switchMap(([i, wsGuid]) => {
         return this.ps.getParticipantsForWorkshop(wsGuid);
       }),
