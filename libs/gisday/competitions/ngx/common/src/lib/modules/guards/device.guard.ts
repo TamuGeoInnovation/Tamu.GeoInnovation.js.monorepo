@@ -1,13 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  CanActivate,
-  CanActivateChild,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-  UrlTree,
-  Data,
-  Router
-} from '@angular/router';
+import { CanActivate, CanActivateChild, ActivatedRouteSnapshot, UrlTree, Data, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { Device } from '@tamu-gisc/common/utils/device';
@@ -20,8 +12,7 @@ export class DeviceGuard implements CanActivate, CanActivateChild {
   constructor(private router: Router) {}
 
   public canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    next: ActivatedRouteSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const allowed = this.isDeviceAuthorized(next.data);
 
@@ -45,8 +36,7 @@ export class DeviceGuard implements CanActivate, CanActivateChild {
   }
 
   public canActivateChild(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    next: ActivatedRouteSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.isDeviceAuthorized(next.data);
   }

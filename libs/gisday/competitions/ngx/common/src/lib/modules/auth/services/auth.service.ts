@@ -24,7 +24,7 @@ export class AuthService {
           subKey: this.environment.value('LocalStoreSettings').subKey
         }
       })
-      .subscribe((s) => {});
+      .subscribe();
   }
 
   public authenticate(navigate?: string) {

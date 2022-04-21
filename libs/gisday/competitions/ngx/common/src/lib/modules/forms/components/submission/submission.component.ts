@@ -29,7 +29,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
 
   public fileUrl: Observable<string> = this.file.pipe(
     switchMap((f) => {
-      if (Boolean(f)) {
+      if (f !== undefined) {
         return of(URL.createObjectURL(f));
       } else {
         of(undefined);
@@ -68,7 +68,7 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
         (res) => {
           this.location = res;
         },
-        (err) => {
+        () => {
           this.ns.preset('no_gps');
         }
       );
@@ -181,6 +181,6 @@ export class SubmissionComponent implements OnInit, OnChanges, OnDestroy {
           return of(err);
         })
       )
-      .subscribe((res) => {});
+      .subscribe();
   }
 }
