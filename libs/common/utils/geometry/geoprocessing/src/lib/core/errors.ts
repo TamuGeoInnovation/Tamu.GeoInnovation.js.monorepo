@@ -2,7 +2,7 @@ import { throwError, Observable } from 'rxjs';
 
 import { INormalizedGeoservicesJsonError, NormalizedGeoservicesTextError, NormalizedXMLError } from './types';
 
-export class GeoservicesError<T extends unknown> {
+export class GeoservicesError<T> {
   private _code: number | string;
   private _response: T | object | string | XMLDocument;
   private _normalized: INormalizedGeoservicesJsonError<T> | NormalizedGeoservicesTextError | NormalizedXMLError;
@@ -21,7 +21,7 @@ export class GeoservicesError<T extends unknown> {
           : badResponse.QueryStatusCode;
 
       this._normalized = {};
-      this._normalized.response = this._response as T;
+      this._normalized.response = this._response as unknown as T;
       this._normalized.message = '';
 
       this._jsonNormalize();

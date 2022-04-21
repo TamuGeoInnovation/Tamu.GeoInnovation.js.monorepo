@@ -22,19 +22,19 @@ export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, I
       },
       censusYear: {
         value: undefined,
-        fn: function() {
+        fn: function () {
           this.value = this.value instanceof Array ? this.value.join('|') : this.value;
         }
       },
       ratts: {
         value: undefined,
-        fn: function() {
+        fn: function () {
           this.value = this.value instanceof Array ? this.value.join(',') : this.value;
         }
       },
       souatts: {
         value: undefined,
-        fn: function() {
+        fn: function () {
           this.value = this.value instanceof Array ? this.value.join(',') : this.value;
         }
       },
@@ -46,7 +46,7 @@ export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, I
         value: '',
         excludeParams: true,
         target: ['version'],
-        fn: function(v: number) {
+        fn: function (v: number) {
           this.value = `_V0${v.toString().replace('.', '_')}`;
         }
       },
@@ -54,7 +54,7 @@ export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, I
         value: 'GeocoderWebServiceHttpNonParsed',
         excludeParams: true,
         target: 'parsed',
-        fn: function(parsed) {
+        fn: function (parsed) {
           if (parsed) {
             this.value = `GeocoderService`;
           }
@@ -64,7 +64,7 @@ export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, I
         value: '',
         excludeParams: true,
         target: ['r', 'ratts', 'sub', 'sou', 'souatts', 'h', 'refs'],
-        fn: function(...args) {
+        fn: function (...args) {
           // Test if any of advanced geocoding options were provided
           const anyAdvancedOption = args.findIndex((v) => v !== undefined) > -1;
 
@@ -78,7 +78,7 @@ export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, I
         value: 'json',
         excludeParams: true,
         target: 'format',
-        fn: function(f) {
+        fn: function (f) {
           if (f === 'tsv' || f === 'csv') {
             this.value = 'text';
           }
@@ -88,7 +88,7 @@ export class Geocoder extends ApiBase<GeocodingTransformers, IGeocoderOptions, I
         value: 'https://geoservices.tamu.edu/Services/Geocode/WebService/',
         excludeParams: true,
         target: ['urlVersion', 'serviceType', 'parsed', 'advancedQuery'],
-        fn: function(version, type, parsed, advanced) {
+        fn: function (version, type, parsed, advanced) {
           this.value = `${this.value}${type}${advanced}${version}${parsed ? '.asmx' : '.aspx'}?`;
         }
       }
@@ -109,4 +109,4 @@ interface IGeocoderSettings {
   parsed?: boolean;
 }
 
-interface GeocodingTransformers extends TransformersMap<IAdvancedGeocoderFourZeroOneOptions & IGeocoderSettings> {}
+type GeocodingTransformers = TransformersMap<IAdvancedGeocoderFourZeroOneOptions & IGeocoderSettings>;

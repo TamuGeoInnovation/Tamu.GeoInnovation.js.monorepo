@@ -55,9 +55,9 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
       .filter((setting) => {
         // Filter out any setting transformer entries that explicity define exclusion
         // for building the query string.
-        return !Boolean(this.settings[setting].excludeParams) && this.settings[setting].value !== undefined;
+        return this.settings[setting].excludeParams !== false && this.settings[setting].value !== undefined;
       })
-      .map((key, index) => {
+      .map((key) => {
         return `${key}=${this.settings[key].value}`;
       })
       .join('&');
@@ -65,7 +65,7 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
     const request = ajax({
       url: this.settings.serviceUrl.value + this.queryString,
       method: 'GET',
-      responseType: this.settings.format.value
+      responseType: this.settings.format.value as XMLHttpRequestResponseType
     }).pipe(
       switchMap((response) => {
         return this.handleResponse(response);
@@ -73,17 +73,17 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
     );
 
     if (promiseOrCallback === undefined || (typeof promiseOrCallback === 'boolean' && promiseOrCallback === false)) {
-      return (request as unknown) as Observable<Res>;
+      return request as unknown as Observable<Res>;
     }
 
     if (typeof promiseOrCallback === 'boolean' && promiseOrCallback === true) {
-      return (request.toPromise() as unknown) as Promise<Res>;
+      return request.toPromise() as unknown as Promise<Res>;
     }
 
     if (promiseOrCallback instanceof Object) {
       request.subscribe(
         (res) => {
-          promiseOrCallback(undefined, (res as unknown) as Res);
+          promiseOrCallback(undefined, res as unknown as Res);
         },
         (err) => {
           promiseOrCallback(err, undefined);
@@ -96,6 +96,9 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
    *
    */
   private calculateDefaults() {
+    // `key` is unused but is a necessary assignment because of the returned value from `Object.entires`
+    //
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     Object.entries(this.settings).forEach(([key, entry]: [string, Transformer<unknown, never>]) => {
       if (entry.fn) {
         // Get target values
@@ -134,7 +137,11 @@ export abstract class ApiBase<T extends TransformersMap<unknown>, U extends obje
     });
   }
 
-  private handleResponse(response: AjaxResponse): Observable<Res> {
+  // `response` is of type `any` because the API versions handled by this library do not return
+  // consistent responses
+  //
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private handleResponse(response: AjaxResponse<any>): Observable<Res> {
     if (this.responseType === ApiResponseFormat.Text) {
       if (
         (response.response && response.response.QueryStatusCode === 'Success') ||
