@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
   templateUrl: './design-question.component.html',
   styleUrls: ['./design-question.component.scss']
 })
-export class DesignQuestionComponent implements OnInit {
+export class DesignQuestionComponent {
   /**
    * Field attributes
    */
@@ -47,8 +47,4 @@ export class DesignQuestionComponent implements OnInit {
       name: 'checkbox'
     }
   ];
-
-  constructor() {}
-
-  public ngOnInit(): void {}
 }

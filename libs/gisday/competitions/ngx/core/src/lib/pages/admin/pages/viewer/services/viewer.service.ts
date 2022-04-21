@@ -20,7 +20,7 @@ export class ViewerService {
     this.seasonGuid.next(seasonGuid);
 
     this.season = this.seasonGuid.pipe(
-      switchMap((guid) => {
+      switchMap(() => {
         return this.ss.getSeason(seasonGuid).pipe();
       }),
       shareReplay()

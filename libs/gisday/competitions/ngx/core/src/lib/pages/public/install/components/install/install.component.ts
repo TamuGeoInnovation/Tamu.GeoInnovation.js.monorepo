@@ -28,17 +28,17 @@ export class InstallComponent implements OnInit {
     if (this.locationRequested.getValue() === false) {
       this.locationRequested.next(true);
 
-      const l = new TrackLocation({ enableHighAccuracy: true, maximumAge: 10000, timeout: 2500 })
+      new TrackLocation({ enableHighAccuracy: true, maximumAge: 10000, timeout: 2500 })
         .track()
         .pipe(
           take(1),
-          catchError((err) => {
+          catchError(() => {
             this.ns.preset('no_gps');
 
             throw new Error('Location forbidden');
           })
         )
-        .subscribe((res) => {
+        .subscribe(() => {
           this.ns.toast({
             id: 'location-request-success',
             title: 'Location Access Granted',

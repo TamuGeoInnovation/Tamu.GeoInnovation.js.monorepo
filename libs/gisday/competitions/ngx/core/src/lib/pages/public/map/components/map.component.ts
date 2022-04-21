@@ -45,7 +45,7 @@ export class MapComponent implements OnInit {
   };
 
   public ngOnInit() {
-    this.ms.store.subscribe((instance) => {
+    this.ms.store.subscribe(() => {
       const api_url = this.env.value('api_url');
 
       this.ms.loadLayers([

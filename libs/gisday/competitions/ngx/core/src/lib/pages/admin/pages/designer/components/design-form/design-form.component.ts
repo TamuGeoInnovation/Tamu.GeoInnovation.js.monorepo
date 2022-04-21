@@ -111,14 +111,14 @@ export class DesignFormComponent implements OnInit {
     console.log(payload);
 
     this.fs.saveFormModelForSeason(guid, payload).subscribe(
-      (res) => {
+      () => {
         this.ns.toast({
           id: 'designer-form-signed',
           message: 'Form was saved successfully.',
           title: 'Form Saved'
         });
       },
-      (err) => {
+      () => {
         this.ns.toast({
           id: 'designer-form-signed-failed',
           message: 'There was an error saving the form.',
