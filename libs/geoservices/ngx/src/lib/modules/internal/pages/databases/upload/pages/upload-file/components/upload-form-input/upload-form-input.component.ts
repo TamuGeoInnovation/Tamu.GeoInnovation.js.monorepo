@@ -1,4 +1,4 @@
-import { Component, forwardRef, OnInit, ViewChild, ElementRef, Output } from '@angular/core';
+import { Component, forwardRef, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable, fromEvent, of, merge } from 'rxjs';
 import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';

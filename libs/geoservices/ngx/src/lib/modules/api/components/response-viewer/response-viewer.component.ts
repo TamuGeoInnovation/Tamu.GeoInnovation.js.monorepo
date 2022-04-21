@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+
 import { ApiBase, TransformersMap } from '@tamu-gisc/common/utils/geometry/geoprocessing';
 
 @Component({
@@ -14,8 +15,6 @@ export class ResponseViewerComponent<Type extends object, Res extends object> im
   public format;
 
   public result;
-
-  constructor() {}
 
   public ngOnInit() {
     this.runner.patchOptions({ format: this.format });
@@ -41,7 +40,7 @@ export class ResponseViewerComponent<Type extends object, Res extends object> im
     xml = xml.replace(reg, '$1\r\n$2$3');
     let pad = 0;
 
-    xml.split('\r\n').forEach((node, index) => {
+    xml.split('\r\n').forEach((node) => {
       let indent = 0;
       if (node.match(/.+<\/\w[^>]*>$/)) {
         indent = 0;
@@ -49,7 +48,7 @@ export class ResponseViewerComponent<Type extends object, Res extends object> im
         if (pad !== 0) {
           pad -= 1;
         }
-      } else if (node.match(/^<\w[^>]*[^\/]>.*$/)) {
+      } else if (node.match(/^<\w[^>]*[^/]>.*$/)) {
         indent = 1;
       } else {
         indent = 0;

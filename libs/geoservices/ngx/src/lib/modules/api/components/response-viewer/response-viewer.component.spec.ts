@@ -12,7 +12,7 @@ describe('ResponseViewerComponent', () => {
     }).compileComponents();
   }));
 
-  it('should create', inject([ResponseViewerComponent], (component: ResponseViewerComponent<{}, {}>) => {
+  it('should create', inject([ResponseViewerComponent], (component: ResponseViewerComponent<object, object>) => {
     expect(component).toBeTruthy();
   }));
 });

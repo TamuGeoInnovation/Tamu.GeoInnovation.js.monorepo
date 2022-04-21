@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { Geocoder, IGeocoderOptions, ApiBase } from '@tamu-gisc/common/utils/geometry/geoprocessing';
+import { Geocoder } from '@tamu-gisc/common/utils/geometry/geoprocessing';
 
 @Component({
   selector: 'tamu-gisc-geocoding',
   templateUrl: './geocoding.component.html',
   styleUrls: ['./geocoding.component.scss']
 })
-export class GeocodingComponent implements OnInit {
+export class GeocodingComponent {
   // public apiVersion = '5.0';
   // public url = 'https://geoservices.tamu.edu/api/geocode/v5';
 
@@ -29,8 +29,4 @@ export class GeocodingComponent implements OnInit {
     censusYear: 'allAvailable',
     verbose: true
   });
-
-  constructor() {}
-
-  public ngOnInit() {}
 }

@@ -40,8 +40,8 @@ export class DetailsComponent implements OnInit {
     this.service.getDetails().subscribe((details) => {
       this.form.patchValue(details);
 
-      this.form.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
-        this.service.updateDetails(this.form.getRawValue()).subscribe((result) => [console.log('Updated details')]);
+      this.form.valueChanges.pipe(debounceTime(1000)).subscribe(() => {
+        this.service.updateDetails(this.form.getRawValue()).subscribe(() => [console.log('Updated details')]);
       });
     });
   }
