@@ -18,8 +18,11 @@ describe('getGeolocation', () => {
   };
 
   it('should work for successes', (done) => {
-    ((window.navigator as unknown) as { geolocation: {} }).geolocation = {
-      getCurrentPosition: (success, _) => {
+    // TODO: The tests work but the geolocation mock probably needs to be a global
+    //
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    (window.navigator as unknown as { geolocation: {} }).geolocation = {
+      getCurrentPosition: (success) => {
         success({ coords: coords, timestamp: 1 });
       }
     };
@@ -34,7 +37,10 @@ describe('getGeolocation', () => {
   });
 
   it('should throw error on fail', (done) => {
-    ((window.navigator as unknown) as { geolocation: {} }).geolocation = {
+    // TODO: The tests work but the geolocation mock probably needs to be a global
+    //
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    (window.navigator as unknown as { geolocation: {} }).geolocation = {
       getCurrentPosition: (_, fail) => {
         fail(new Error("I just don't feel like it"));
       }
