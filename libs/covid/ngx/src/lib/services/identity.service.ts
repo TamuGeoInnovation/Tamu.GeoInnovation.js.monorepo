@@ -115,7 +115,7 @@ export class IdentityService {
     combineLatest([this._identity.pipe(take(1))]).subscribe(([localIdentity]) => {
       const c = claim && claim.guid ? claim.guid : localIdentity.claim.guid;
 
-      this.claim.closeClaim(c).subscribe((res) => {
+      this.claim.closeClaim(c).subscribe(() => {
         const options: CovidLocalStoreIdentity = this.localStorage.getStorage(storageOptions);
 
         options.claim = {

@@ -13,8 +13,6 @@ import { LockdownsService } from '../../../../data-access/lockdowns/lockdowns.se
 import { PhoneNumberTypesService } from '../../../../data-access/phone-number-types/phone-number-types.service';
 import { ActiveLockdown } from '../../../../data-access/lockdowns/lockdowns.service';
 
-const storageOptions = { primaryKey: 'tamu-covid-vgi' };
-
 @Component({
   selector: 'tamu-gisc-lockdown',
   templateUrl: './lockdown.component.html',

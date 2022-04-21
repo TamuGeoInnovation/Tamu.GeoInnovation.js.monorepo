@@ -170,7 +170,6 @@ export class LockdownDetailsComponent implements OnInit, OnChanges {
   public submitLockdown() {
     const lockdown = this.form.getRawValue();
 
-    lockdown.info.isLockdown = lockdown.info.isLockdown;
     lockdown.info.protocol = lockdown.info.isLockdown === true ? lockdown.info.protocol : undefined;
     lockdown.info.startDate = lockdown.info.isLockdown === true ? lockdown.info.startDate : undefined;
     lockdown.info.endDate =

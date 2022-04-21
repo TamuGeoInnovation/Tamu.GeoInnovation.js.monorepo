@@ -8,7 +8,7 @@ import { LockdownListComponent } from './components/listable/submissions/lockdow
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [, TestingSiteListComponent, CountyListComponent, LockdownListComponent],
+  declarations: [TestingSiteListComponent, CountyListComponent, LockdownListComponent],
   exports: [HeaderCovidComponent, TestingSiteListComponent, CountyListComponent, LockdownListComponent]
 })
 export class CoreModule {}

@@ -7,8 +7,6 @@ import { User } from '@tamu-gisc/covid/common/entities';
 
 import { IdentityService } from '../../../../services/identity.service';
 
-const storageOptions = { primaryKey: 'tamu-covid-vgi' };
-
 @Component({
   selector: 'tamu-gisc-profile',
   templateUrl: './profile.component.html',

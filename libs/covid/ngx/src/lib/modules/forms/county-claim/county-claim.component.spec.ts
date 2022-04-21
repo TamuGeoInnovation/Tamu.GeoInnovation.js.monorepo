@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
