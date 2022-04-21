@@ -36,7 +36,7 @@ export class AuthService {
    */
   public isAuthenticated(): Observable<IIsAuthenticatedResults> {
     return this.http.get(this.cleanUrl(this.authOptions.url) + '/oidc/userinfo', { withCredentials: true }).pipe(
-      map((result) => {
+      map(() => {
         return {
           status: true,
           code: 200
