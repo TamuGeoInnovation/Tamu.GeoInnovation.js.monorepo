@@ -9,7 +9,7 @@ import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { AuthGuard, AuthService, AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
+import { AuthService, AuthInterceptor } from '@tamu-gisc/geoservices/data-access';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 
 import { AppComponent } from './app.component';
