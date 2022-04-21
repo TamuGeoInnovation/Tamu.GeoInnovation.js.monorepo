@@ -58,7 +58,7 @@ export class County extends BaseEntity {
   @PrimaryColumn()
   public countyFips: number;
 
-  @ManyToOne((type) => State)
+  @ManyToOne(() => State)
   @JoinColumn({ name: 'stateFips' })
   public stateFips: State;
 
@@ -71,7 +71,7 @@ export class User extends GuidIdentity {
   @Column({ type: 'varchar', length: 'max', select: false })
   public email: string;
 
-  @OneToMany((type) => CountyClaim, (claim) => claim.user)
+  @OneToMany(() => CountyClaim, (claim) => claim.user)
   public claims: CountyClaim[];
 }
 
@@ -83,11 +83,11 @@ export class FieldCategory extends TimeStampEntity {
   @Column({ nullable: false })
   public name: string;
 
-  @ManyToMany((type) => FieldType, (label) => label.categories, { cascade: true })
+  @ManyToMany(() => FieldType, (label) => label.categories, { cascade: true })
   @JoinTable()
   public types: FieldType[];
 
-  @OneToMany((type) => CategoryValue, (value) => value.category)
+  @OneToMany(() => CategoryValue, (value) => value.category)
   public values: CategoryValue[];
 }
 
@@ -96,10 +96,10 @@ export class FieldType extends GuidIdentity {
   @Column({ nullable: false })
   public name: string;
 
-  @ManyToMany((type) => FieldCategory, (category) => category.types)
+  @ManyToMany(() => FieldCategory, (category) => category.types)
   public categories: FieldCategory[];
 
-  @OneToMany((type) => CategoryValue, (value) => value.type)
+  @OneToMany(() => CategoryValue, (value) => value.type)
   public values: CategoryValue[];
 }
 
@@ -108,70 +108,70 @@ export class CategoryValue extends GuidIdentity {
   @Column({ nullable: false, type: 'varchar', length: 'max' })
   public value: string;
 
-  @ManyToOne((type) => FieldCategory, (category) => category.values)
+  @ManyToOne(() => FieldCategory, (category) => category.values)
   public category: FieldCategory;
 
-  @ManyToOne((type) => FieldType, (type) => type.values)
+  @ManyToOne(() => FieldType, (type) => type.values)
   public type: FieldType;
 }
 
 @Entity({ name: 'entity_values' })
 export class EntityValue extends GuidIdentity {
-  @OneToMany((type) => EntityToValue, (entity) => entity.entityValue)
+  @OneToMany(() => EntityToValue, (entity) => entity.entityValue)
   public entityToValue: EntityToValue[];
 
-  @OneToOne((type) => CategoryValue, { cascade: true })
+  @OneToOne(() => CategoryValue, { cascade: true })
   @JoinColumn()
   public value: CategoryValue;
 }
 
 @Entity({ name: 'county_claims' })
 export class CountyClaim extends GuidIdentity {
-  @ManyToOne((type) => User, (user) => user.claims, { cascade: true })
+  @ManyToOne(() => User, (user) => user.claims, { cascade: true })
   public user: User;
 
-  @ManyToOne((type) => County, { cascade: true })
+  @ManyToOne(() => County, { cascade: true })
   @JoinColumn({ name: 'countyFips', referencedColumnName: 'countyFips' })
   public county: County;
 
-  @OneToMany((type) => EntityStatus, (status) => status.claimStatus, { cascade: true })
+  @OneToMany(() => EntityStatus, (status) => status.claimStatus, { cascade: true })
   public statuses: EntityStatus[];
 
-  @OneToMany((type) => CountyClaimInfo, (info) => info.claim, { cascade: true })
+  @OneToMany(() => CountyClaimInfo, (info) => info.claim, { cascade: true })
   public infos: CountyClaimInfo[];
 
   // Sites and lockdowns were added after schema creation.
   // Should not present a problem since the inverse was already declared
 
-  @OneToMany((type) => TestingSite, (site) => site.claim)
+  @OneToMany(() => TestingSite, (site) => site.claim)
   public sites: TestingSite[];
 
-  @OneToMany((type) => Lockdown, (lockdown) => lockdown.claim)
+  @OneToMany(() => Lockdown, (lockdown) => lockdown.claim)
   public lockdowns: Lockdown[];
 }
 
 @Entity({ name: 'county_claim_infos' })
 export class CountyClaimInfo extends GuidIdentity {
-  @OneToMany((type) => EntityToValue, (entity) => entity.claimInfo, { cascade: true })
+  @OneToMany(() => EntityToValue, (entity) => entity.claimInfo, { cascade: true })
   public responses: EntityToValue[];
 
-  @ManyToOne((type) => CountyClaim, (claim) => claim.infos)
+  @ManyToOne(() => CountyClaim, (claim) => claim.infos)
   @JoinColumn()
   public claim: CountyClaim;
 
-  @OneToMany((type) => EntityStatus, (status) => status.claimInfoStatus, { cascade: true })
+  @OneToMany(() => EntityStatus, (status) => status.claimInfoStatus, { cascade: true })
   public statuses: EntityStatus[];
 }
 
 @Entity({ name: 'lockdowns' })
 export class Lockdown extends GuidIdentity {
-  @ManyToOne((type) => CountyClaim, { cascade: true })
+  @ManyToOne(() => CountyClaim, { cascade: true })
   public claim: CountyClaim;
 
-  @OneToMany((type) => LockdownInfo, (info) => info.lockdown, { cascade: true })
+  @OneToMany(() => LockdownInfo, (info) => info.lockdown, { cascade: true })
   public infos: LockdownInfo[];
 
-  @OneToMany((type) => EntityStatus, (status) => status.lockdownStatus, { cascade: true })
+  @OneToMany(() => EntityStatus, (status) => status.lockdownStatus, { cascade: true })
   public statuses: EntityStatus[];
 }
 
@@ -207,7 +207,7 @@ export class Location extends GuidIdentity {
 
 @Entity({ name: 'lockdown_infos' })
 export class LockdownInfo extends GuidIdentity {
-  @OneToMany((type) => EntityToValue, (entity) => entity.lockdownInfo, { cascade: true })
+  @OneToMany(() => EntityToValue, (entity) => entity.lockdownInfo, { cascade: true })
   public responses: EntityToValue[];
 
   @Column({ nullable: true })
@@ -225,28 +225,28 @@ export class LockdownInfo extends GuidIdentity {
   @Column({ type: 'varchar', length: 'max', nullable: true })
   public notes: string;
 
-  @OneToMany((type) => EntityStatus, (status) => status.lockdownInfoStatus, { cascade: true })
+  @OneToMany(() => EntityStatus, (status) => status.lockdownInfoStatus, { cascade: true })
   public statuses: EntityStatus[];
 
-  @ManyToOne((type) => Lockdown, (lockdown) => lockdown.infos)
+  @ManyToOne(() => Lockdown, (lockdown) => lockdown.infos)
   public lockdown: Lockdown;
 }
 
 @Entity({ name: 'testing_sites' })
 export class TestingSite extends GuidIdentity {
-  @ManyToOne((type) => CountyClaim, { cascade: true })
+  @ManyToOne(() => CountyClaim, { cascade: true })
   public claim: CountyClaim;
 
-  @OneToMany((type) => TestingSiteInfo, (info) => info.testingSite, { cascade: true })
+  @OneToMany(() => TestingSiteInfo, (info) => info.testingSite, { cascade: true })
   public infos: TestingSiteInfo[];
 
-  @OneToMany((type) => EntityStatus, (status) => status.testingSiteStatus, { cascade: true })
+  @OneToMany(() => EntityStatus, (status) => status.testingSiteStatus, { cascade: true })
   public statuses: EntityStatus[];
 }
 
 @Entity({ name: 'testing_site_infos' })
 export class TestingSiteInfo extends GuidIdentity {
-  @OneToMany((type) => EntityToValue, (entity) => entity.testingSiteInfo, { cascade: true })
+  @OneToMany(() => EntityToValue, (entity) => entity.testingSiteInfo, { cascade: true })
   public responses: EntityToValue[];
 
   @Column({ nullable: true })
@@ -255,7 +255,7 @@ export class TestingSiteInfo extends GuidIdentity {
   @Column({ nullable: true })
   public sitesAvailable: boolean;
 
-  @OneToOne((type) => Location, { cascade: true })
+  @OneToOne(() => Location, { cascade: true })
   @JoinColumn()
   public location: Location;
 
@@ -280,25 +280,25 @@ export class TestingSiteInfo extends GuidIdentity {
   @Column({ type: 'varchar', length: 'max', nullable: true })
   public notes: string;
 
-  @OneToMany((type) => EntityStatus, (status) => status.testingSiteInfoStatus, { cascade: true })
+  @OneToMany(() => EntityStatus, (status) => status.testingSiteInfoStatus, { cascade: true })
   public statuses: EntityStatus[];
 
-  @ManyToOne((type) => TestingSite, (testingSite) => testingSite.infos)
+  @ManyToOne(() => TestingSite, (testingSite) => testingSite.infos)
   public testingSite: TestingSite;
 }
 
 @Entity({ name: 'entity_to_values' })
 export class EntityToValue extends GuidIdentity {
-  @ManyToOne((type) => EntityValue, (value) => value.entityToValue, { cascade: true })
+  @ManyToOne(() => EntityValue, (value) => value.entityToValue, { cascade: true })
   public entityValue: EntityValue;
 
-  @ManyToOne((type) => CountyClaimInfo, (value) => value.responses)
+  @ManyToOne(() => CountyClaimInfo, (value) => value.responses)
   public claimInfo: CountyClaimInfo;
 
-  @ManyToOne((type) => LockdownInfo, (value) => value.responses)
+  @ManyToOne(() => LockdownInfo, (value) => value.responses)
   public lockdownInfo: LockdownInfo;
 
-  @ManyToOne((type) => TestingSiteInfo, (value) => value.responses)
+  @ManyToOne(() => TestingSiteInfo, (value) => value.responses)
   public testingSiteInfo: TestingSiteInfo;
 }
 
@@ -313,24 +313,24 @@ export class StatusType extends TimeStampEntity {
 
 @Entity({ name: 'entity_statuses' })
 export class EntityStatus extends GuidIdentity {
-  @ManyToOne((type) => StatusType)
+  @ManyToOne(() => StatusType)
   public type: StatusType;
 
-  @ManyToOne((type) => CountyClaim, (claim) => claim.statuses)
+  @ManyToOne(() => CountyClaim, (claim) => claim.statuses)
   public claimStatus: CountyClaim;
 
-  @ManyToOne((type) => CountyClaimInfo, (info) => info.statuses)
+  @ManyToOne(() => CountyClaimInfo, (info) => info.statuses)
   public claimInfoStatus: CountyClaimInfo;
 
-  @ManyToOne((type) => LockdownInfo, (info) => info.statuses)
+  @ManyToOne(() => LockdownInfo, (info) => info.statuses)
   public lockdownInfoStatus: LockdownInfo;
 
-  @ManyToOne((type) => Lockdown, (info) => info.statuses)
+  @ManyToOne(() => Lockdown, (info) => info.statuses)
   public lockdownStatus: Lockdown;
 
-  @ManyToOne((type) => TestingSiteInfo, (info) => info.statuses)
+  @ManyToOne(() => TestingSiteInfo, (info) => info.statuses)
   public testingSiteInfoStatus: TestingSiteInfo;
 
-  @ManyToOne((type) => TestingSite, (info) => info.statuses)
+  @ManyToOne(() => TestingSite, (info) => info.statuses)
   public testingSiteStatus: Lockdown;
 }
