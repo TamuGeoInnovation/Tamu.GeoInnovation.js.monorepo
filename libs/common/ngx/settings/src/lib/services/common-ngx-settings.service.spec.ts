@@ -1,7 +1,7 @@
 import { async, TestBed } from '@angular/core/testing';
 import { SettingsService } from './common-ngx-settings.service';
 import { CommonModule } from '@angular/common';
-import { SettingsModule } from '@tamu-gisc/common/ngx/settings';
+import { SettingsModule } from '../common-ngx-settings.module';
 
 describe('SettingsService', () => {
   beforeEach(async(async () => {
@@ -18,8 +18,8 @@ describe('SettingsService', () => {
   it('should filter persistent compound settings', () => {
     const service: SettingsService = TestBed.get(SettingsService);
     expect(
-      /* tslint:disable */ (service as any).getPersistentCompoundSettings({
-        /* tslint:enable */
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (service as any).getPersistentCompoundSettings({
         no: {
           storage: {},
           persistent: false
@@ -43,8 +43,8 @@ describe('SettingsService', () => {
   it('should filter persistent compound settings keys', () => {
     const service: SettingsService = TestBed.get(SettingsService);
     expect(
-      /* tslint:disable */ (service as any).getPersistentCompoundSettingsKeys({
-        /* tslint:enable */
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (service as any).getPersistentCompoundSettingsKeys({
         no: {
           storage: {},
           persistent: false
@@ -63,8 +63,8 @@ describe('SettingsService', () => {
   it('should reduce compound to simple settings branch', () => {
     const service: SettingsService = TestBed.get(SettingsService);
     expect(
-      /* tslint:disable */ (service as any).compoundToSimpleSettingsBranch({
-        /* tslint:enable */
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (service as any).compoundToSimpleSettingsBranch({
         bf: {
           storage: {},
           value: false
