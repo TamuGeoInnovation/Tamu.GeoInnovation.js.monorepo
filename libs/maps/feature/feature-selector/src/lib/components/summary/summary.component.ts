@@ -43,7 +43,7 @@ export class SelectionSummaryComponent implements OnInit, AfterContentInit {
    * Set up the SelectionSummaryComponent feature collector.
    */
   public ngOnInit() {
-    if (Boolean(this.selfCollect)) {
+    if (this.selfCollect === true) {
       this.collector.init({
         layers: this.layers,
         deleteDuplicates: this.deleteDuplicates,
