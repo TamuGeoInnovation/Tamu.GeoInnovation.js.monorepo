@@ -9,11 +9,6 @@ import { PhoneNumbersService } from './phone-numbers.service';
 
 describe('PhoneNumbersService', () => {
   let phoneNumbersService: PhoneNumbersService;
-  let fieldCategoryMock: Repository<FieldCategory>;
-  let categoryValueMock: Repository<CategoryValue>;
-  let countyMock: Repository<County>;
-  let countyClaimMock: Repository<CountyClaim>;
-  let countyClaimInfoMock: Repository<CountyClaimInfo>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -28,11 +23,6 @@ describe('PhoneNumbersService', () => {
     }).compile();
 
     phoneNumbersService = module.get<PhoneNumbersService>(PhoneNumbersService);
-    fieldCategoryMock = module.get(getRepositoryToken(FieldCategory));
-    categoryValueMock = module.get(getRepositoryToken(CategoryValue));
-    countyMock = module.get(getRepositoryToken(County));
-    countyClaimMock = module.get(getRepositoryToken(CountyClaim));
-    countyClaimInfoMock = module.get(getRepositoryToken(CountyClaimInfo));
   });
   describe('Validation ', () => {
     it('Service should be defined', () => {

@@ -61,7 +61,7 @@ export class LockdownsService extends BaseService<Lockdown> {
         message: 'Must provide lockdown info in body.'
       };
     } else {
-      const phoneNumbers: EntityToValue[] = params.info.phoneNumbers.map((val, index) => {
+      const phoneNumbers: EntityToValue[] = params.info.phoneNumbers.map((val) => {
         return {
           entityValue: {
             value: {
@@ -73,7 +73,7 @@ export class LockdownsService extends BaseService<Lockdown> {
         };
       });
 
-      const websites: EntityToValue[] = params.info.websites.map((val, index) => {
+      const websites: EntityToValue[] = params.info.websites.map((val) => {
         return {
           entityValue: {
             value: {
@@ -93,8 +93,7 @@ export class LockdownsService extends BaseService<Lockdown> {
 
       // If there is an existing lockdown, create only a lockdown info.
       if (existingLockdown) {
-        let lockdownInfo: Partial<LockdownInfo>;
-        lockdownInfo = {
+        const lockdownInfo: Partial<LockdownInfo> = {
           lockdown: existingLockdown,
           responses: [...phoneNumbers, ...websites],
           isLockdown: params.info.isLockdown,
@@ -122,8 +121,7 @@ export class LockdownsService extends BaseService<Lockdown> {
         // If there is no existing lockdown for the active claim, create a new lockdown and associated
         // lockdown info
 
-        let lockdownInfo: Partial<LockdownInfo>;
-        lockdownInfo = {
+        const lockdownInfo: Partial<LockdownInfo> = {
           responses: [...phoneNumbers, ...websites],
           isLockdown: params.info.isLockdown,
           endDate: params.info.endDate,
@@ -228,7 +226,7 @@ export class LockdownsService extends BaseService<Lockdown> {
     });
 
     try {
-      const flattened = joined.map((s) => this.flattenLockdownAndInfo(lockdowns, deferredLatestInfoForLockdowns));
+      const flattened = joined.map(() => this.flattenLockdownAndInfo(lockdowns, deferredLatestInfoForLockdowns));
       return flattened;
     } catch (err) {
       return joined;

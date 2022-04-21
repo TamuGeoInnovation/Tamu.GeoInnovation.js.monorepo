@@ -9,8 +9,6 @@ import { CountiesService } from './counties.service';
 
 describe('CountiesService', () => {
   let countiesService: CountiesService;
-  let countyMockRepo: Repository<County>;
-  let countyClaimMockRepo: Repository<CountyClaim>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,8 +20,6 @@ describe('CountiesService', () => {
     }).compile();
 
     countiesService = module.get<CountiesService>(CountiesService);
-    countyMockRepo = module.get(getRepositoryToken(County));
-    countyClaimMockRepo = module.get(getRepositoryToken(CountyClaim));
   });
 
   describe('Validation ', () => {

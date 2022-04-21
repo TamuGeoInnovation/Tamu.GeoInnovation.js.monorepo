@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { User, TestingSite } from '@tamu-gisc/covid/common/entities';
 
@@ -34,7 +34,7 @@ export class UsersService extends BaseService<User> {
       .orderBy('user.email', 'ASC')
       .getMany();
 
-    const stats = users.map((user, index) => {
+    const stats = users.map((user) => {
       return {
         ...user,
         claimsCount: user.claims.length,

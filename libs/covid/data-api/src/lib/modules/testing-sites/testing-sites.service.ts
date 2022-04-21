@@ -74,7 +74,7 @@ export class TestingSitesService extends BaseService<TestingSite> {
         message: 'Must provide site info in body.'
       };
     } else {
-      const phoneNumbers: EntityToValue[] = params.info.phoneNumbers.map((val, index) => {
+      const phoneNumbers: EntityToValue[] = params.info.phoneNumbers.map((val) => {
         return {
           entityValue: {
             value: {
@@ -86,7 +86,7 @@ export class TestingSitesService extends BaseService<TestingSite> {
         };
       });
 
-      const websites: EntityToValue[] = params.info.websites.map((val, index) => {
+      const websites: EntityToValue[] = params.info.websites.map((val) => {
         return {
           entityValue: {
             value: {
@@ -112,7 +112,7 @@ export class TestingSitesService extends BaseService<TestingSite> {
 
       const owners: EntityToValue[] =
         params.info.owners.length > 0
-          ? params.info.owners.split(',').map((val, index) => {
+          ? params.info.owners.split(',').map((val) => {
               return {
                 entityValue: {
                   value: {
@@ -127,7 +127,7 @@ export class TestingSitesService extends BaseService<TestingSite> {
 
       const restrictions: EntityToValue[] =
         params.info.restrictions.length > 0
-          ? params.info.restrictions.split(',').map((val, index) => {
+          ? params.info.restrictions.split(',').map((val) => {
               return {
                 entityValue: {
                   value: {
@@ -142,7 +142,7 @@ export class TestingSitesService extends BaseService<TestingSite> {
 
       const services: EntityToValue[] =
         params.info.services.length > 0
-          ? params.info.services.split(',').map((val, index) => {
+          ? params.info.services.split(',').map((val) => {
               return {
                 entityValue: {
                   value: {
@@ -179,7 +179,7 @@ export class TestingSitesService extends BaseService<TestingSite> {
         ...owners,
         ...restrictions,
         ...services,
-        (operationState as unknown) as EntityToValue
+        operationState as unknown as EntityToValue
       ].filter((response) => {
         return response !== undefined;
       });
@@ -403,8 +403,7 @@ export class TestingSitesService extends BaseService<TestingSite> {
   }
 
   private flattenTestSiteAndInfo(site: Partial<TestingSite>) {
-    const siteInfo =
-      site.infos && site.infos.length > 0 ? site.infos[0] : (({ responses: [] } as unknown) as TestingSiteInfo);
+    const siteInfo = site.infos && site.infos.length > 0 ? site.infos[0] : ({ responses: [] } as unknown as TestingSiteInfo);
 
     const categorized = siteInfo.responses.reduce(
       (acc, curr) => {
@@ -533,8 +532,6 @@ export class TestingSitesService extends BaseService<TestingSite> {
   }
 
   public async getTestingSitesAdmin(stateFips?: number | string, countyFips?: number | string, email?: string) {
-    let innerSelect = this.testingSiteInfoRepo.createQueryBuilder('info').orderBy('info.created', 'DESC').limit(1);
-
     const builder = this.repo
       .createQueryBuilder('site')
       .innerJoinAndSelect('site.claim', 'claim')

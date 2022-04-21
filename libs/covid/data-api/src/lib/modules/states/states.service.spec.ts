@@ -9,14 +9,12 @@ import { StatesService } from './states.service';
 
 describe('StatesService', () => {
   let statesService: StatesService;
-  let stateMockRepo: Repository<State>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [StatesService, { provide: getRepositoryToken(State), useClass: Repository }]
     }).compile();
     statesService = module.get<StatesService>(StatesService);
-    stateMockRepo = module.get(getRepositoryToken(State));
   });
 
   describe('Validation ', () => {

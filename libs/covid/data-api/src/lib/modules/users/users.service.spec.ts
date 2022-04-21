@@ -9,8 +9,6 @@ import { UsersService } from './users.service';
 
 describe('UsersService', () => {
   let usersService: UsersService;
-  let userMockRepo: Repository<User>;
-  let testingSiteMockRepo: Repository<TestingSite>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,8 +20,6 @@ describe('UsersService', () => {
     }).compile();
 
     usersService = module.get<UsersService>(UsersService);
-    userMockRepo = module.get(getRepositoryToken(User));
-    testingSiteMockRepo = module.get(getRepositoryToken(TestingSite));
   });
 
   describe('Validation ', () => {

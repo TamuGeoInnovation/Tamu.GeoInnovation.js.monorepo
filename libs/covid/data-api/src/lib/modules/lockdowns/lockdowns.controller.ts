@@ -1,4 +1,15 @@
-import { Controller, Post, Param, Delete, Get, Body, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Param,
+  Delete,
+  Get,
+  Body,
+  UseGuards,
+  HttpException,
+  HttpStatus,
+  NotImplementedException
+} from '@nestjs/common';
 
 import { Lockdown } from '@tamu-gisc/covid/common/entities';
 
@@ -102,26 +113,12 @@ export class LockdownsController extends BaseController<Lockdown> {
   }
 
   @Post('/validate/:lockdownId')
-  public async validateLockdown(@Param() params) {
-    // const lockdown = await this.service.repo.findOne({ guid: params.lockdownId });
-    // lockdown.validated = true;
-    // return lockdown.save();
-    return {
-      status: 501,
-      success: false,
-      message: 'Not implemented.'
-    };
+  public async validateLockdown() {
+    return new NotImplementedException();
   }
 
   @Delete('/validate/:lockdownId')
-  public async deleteValidatedLockdown(@Param() params) {
-    // const lockdown = await this.service.repo.findOne({ guid: params.lockdownId });
-    // lockdown.validated = false;
-    // return lockdown.save();
-    return {
-      status: 501,
-      success: false,
-      message: 'Not implemented.'
-    };
+  public async deleteValidatedLockdown() {
+    return new NotImplementedException();
   }
 }

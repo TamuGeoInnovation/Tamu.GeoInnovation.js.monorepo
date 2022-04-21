@@ -9,11 +9,6 @@ import { WebsitesService } from './websites.service';
 
 describe('WebsitesService', () => {
   let websitesService: WebsitesService;
-  let categoryValueMockRepo: Repository<CategoryValue>;
-  let countyMockRepo: Repository<County>;
-  let countyClaimMockRepo: Repository<CountyClaim>;
-  let countyClaimInfoMockRepo: Repository<CountyClaimInfo>;
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -26,10 +21,6 @@ describe('WebsitesService', () => {
     }).compile();
 
     websitesService = module.get<WebsitesService>(WebsitesService);
-    categoryValueMockRepo = module.get(getRepositoryToken(CategoryValue));
-    countyMockRepo = module.get(getRepositoryToken(County));
-    countyClaimMockRepo = module.get(getRepositoryToken(CountyClaim));
-    countyClaimInfoMockRepo = module.get(getRepositoryToken(CountyClaimInfo));
   });
 
   describe('Validation ', () => {
