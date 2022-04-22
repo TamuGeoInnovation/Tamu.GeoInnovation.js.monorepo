@@ -22,8 +22,6 @@ export class TileService {
    */
   public activeSubMenu: BehaviorSubject<IActiveSubmenu> = new BehaviorSubject(undefined);
 
-  constructor() {}
-
   /**
    * Toggle the tile navigation state. If a state value is provided, it will
    * be used instead of flipping the current state value.

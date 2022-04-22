@@ -32,7 +32,7 @@ export class TileNavigationComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     if (this.toggle !== undefined) {
-      this.toggle.subscribe((res) => {
+      this.toggle.subscribe(() => {
         this.switchState();
       });
     } else {
@@ -53,7 +53,7 @@ export class TileNavigationComponent implements OnInit, OnDestroy {
     this._$destroy.complete();
   }
 
-  public switchState(state?: boolean) {
+  public switchState() {
     this.service.toggleMenu();
   }
 }
