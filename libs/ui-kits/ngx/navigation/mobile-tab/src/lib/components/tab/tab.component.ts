@@ -8,7 +8,7 @@ import { switchMap, distinctUntilChanged, shareReplay } from 'rxjs/operators';
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.scss']
 })
-export class MobileTabNavigationTab implements OnInit {
+export class MobileTabNavigationTabComponent implements OnInit {
   @Input()
   public route: string;
 
@@ -21,7 +21,7 @@ export class MobileTabNavigationTab implements OnInit {
   public activeTab: Observable<boolean>;
 
   @HostListener('click', ['$event'])
-  public navigate(event: MouseEvent) {
+  public navigate() {
     this.router.navigate([this.route]);
   }
 
@@ -29,7 +29,7 @@ export class MobileTabNavigationTab implements OnInit {
 
   public ngOnInit() {
     this.activeTab = this.router.events.pipe(
-      switchMap((e) => {
+      switchMap(() => {
         return of(this.router.isActive(this.route, false));
       }),
       distinctUntilChanged(),
