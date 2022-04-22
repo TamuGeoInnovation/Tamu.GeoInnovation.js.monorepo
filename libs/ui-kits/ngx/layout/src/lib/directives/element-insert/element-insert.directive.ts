@@ -1,7 +1,7 @@
 import { AfterContentInit, Directive, ElementRef, Input, Renderer2 } from '@angular/core';
 
 @Directive({
-  // tslint:disable-next-line: directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[elementInsert]'
 })
 export class ElementInsertDirective implements AfterContentInit {

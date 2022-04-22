@@ -9,9 +9,7 @@ export class TooltipTriggerComponent {
   public triggerActivate: EventEmitter<boolean> = new EventEmitter();
 
   @HostListener('click', ['$event'])
-  public click(event) {
+  public click() {
     this.triggerActivate.emit();
   }
-
-  constructor() {}
 }

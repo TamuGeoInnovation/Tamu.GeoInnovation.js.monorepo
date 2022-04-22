@@ -1,14 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ElementRef,
-  Input,
-  SimpleChanges,
-  OnChanges,
-  OnDestroy,
-  AfterViewInit,
-  ViewChild
-} from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
 
 import { AccordionService } from '../services/accordion.service';
 import { IAccordionModel } from '../services/accordion.service';
@@ -18,7 +8,7 @@ import { IAccordionModel } from '../services/accordion.service';
   templateUrl: './accordion-content.component.html',
   styleUrls: ['./accordion-content.component.scss']
 })
-export class AccordionContentComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+export class AccordionContentComponent implements OnChanges, OnDestroy, AfterViewInit {
   @Input()
   public model: IAccordionModel = {
     animate: false,
@@ -39,13 +29,11 @@ export class AccordionContentComponent implements OnInit, OnChanges, OnDestroy, 
 
   constructor(private comm: AccordionService) {}
 
-  public ngOnInit() {}
-
   public ngAfterViewInit(): void {
     // If resize is set to `true`, initialize a mutation observer on the host element. The callback will trigger an
     // accordion height set.
     if (this.model.resize) {
-      this.mutationObserver = new MutationObserver((mutations: MutationRecord[]) => {
+      this.mutationObserver = new MutationObserver(() => {
         this.setAccordionHeight();
       });
 
@@ -58,7 +46,7 @@ export class AccordionContentComponent implements OnInit, OnChanges, OnDestroy, 
   }
 
   // On Input model value changes, re-calculate the target accordion class activated state
-  public ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(): void {
     this.setAccordionHeight();
   }
 

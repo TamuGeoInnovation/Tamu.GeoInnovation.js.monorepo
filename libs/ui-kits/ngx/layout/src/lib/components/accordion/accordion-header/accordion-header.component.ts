@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 
 import { AccordionService } from '../services/accordion.service';
 
@@ -7,7 +7,7 @@ import { AccordionService } from '../services/accordion.service';
   templateUrl: './accordion-header.component.html',
   styleUrls: ['./accordion-header.component.scss']
 })
-export class AccordionHeaderComponent implements OnInit {
+export class AccordionHeaderComponent {
   public state = this.comm.state;
 
   @HostListener('click', ['$event'])
@@ -16,6 +16,4 @@ export class AccordionHeaderComponent implements OnInit {
   }
 
   constructor(private comm: AccordionService) {}
-
-  public ngOnInit() {}
 }
