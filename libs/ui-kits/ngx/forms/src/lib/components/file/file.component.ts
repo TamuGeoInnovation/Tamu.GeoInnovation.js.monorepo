@@ -19,7 +19,7 @@ export class FileComponent implements ControlValueAccessor {
    *
    * Defaults to `false`.
    */
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
   private _value = false;
 
@@ -77,8 +77,12 @@ export class FileComponent implements ControlValueAccessor {
     }
   }
 
-  private _onChange = (v) => {};
-  private _onTouch = () => {};
+  private _onChange = (v) => {
+    return v;
+  };
+  private _onTouch = () => {
+    return;
+  };
 
   public registerOnChange(fn) {
     this._onChange = fn;
