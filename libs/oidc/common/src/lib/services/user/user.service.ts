@@ -30,8 +30,6 @@ import * as deepmerge from 'deepmerge';
 
 @Injectable()
 export class UserService {
-  // private IPSTACK_APIKEY = '1e599a1240ca8f99f0b0d81a08324dbb';
-  // private IPSTACK_URL = 'http://api.ipstack.com/';
   constructor(
     public readonly userRepo: UserRepo,
     public readonly accountRepo: AccountRepo,
