@@ -59,19 +59,17 @@ export abstract class AbstractMdsCollector<S extends AbstractCollectorConstructo
     }
   }
 
-  // tslint:disable-next-line: no-any
-  public abstract scrape(params?: any): AnyPromise;
+  public abstract scrape(params?: unknown): AnyPromise;
 
   public async saveEntities<C extends BaseEntity>(entity: EntityAlias, entities: Array<C>): Promise<Array<C>> {
     // Parameter limit per query is ~2000. Batch the entry submissions to not exceed that parameter limit.
     const chunk = 1500 / Object.entries(entities[0]).length;
     const savedRecords = await entity.save(entities, { chunk });
 
-    return (savedRecords as unknown) as Array<C>;
+    return savedRecords as unknown as Array<C>;
   }
 }
 
-// tslint:disable-next-line: no-any
-export type AnyPromise = Promise<void> | Promise<unknown> | Promise<any>;
+export type AnyPromise = Promise<void> | Promise<unknown> | Promise<unknown>;
 
 export type EntityAlias = typeof BaseEntity;

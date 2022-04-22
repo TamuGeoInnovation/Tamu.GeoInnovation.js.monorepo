@@ -3,7 +3,7 @@ import { Log, LogType, MDSVehicleDto, Vehicle } from '@tamu-gisc/veoride/common/
 import { AbstractCollectorConstructorProperties, MDSResponse, MDSVehiclesPayloadDto } from '../types/types';
 import { AbstractMdsCollector } from './abstract-mds.collector';
 
-export class VehicleCollector extends AbstractMdsCollector<VehicleCollectorConstructorProperties, {}> {
+export class VehicleCollector extends AbstractMdsCollector<VehicleCollectorConstructorProperties, undefined> {
   constructor(params: VehicleCollectorConstructorProperties) {
     super(params);
   }
@@ -73,4 +73,4 @@ export class VehicleCollector extends AbstractMdsCollector<VehicleCollectorConst
   }
 }
 
-export interface VehicleCollectorConstructorProperties extends AbstractCollectorConstructorProperties {}
+export type VehicleCollectorConstructorProperties = AbstractCollectorConstructorProperties;
