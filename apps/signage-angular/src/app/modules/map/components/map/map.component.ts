@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { MapConfig } from '@tamu-gisc/maps/esri';
+import { Component } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import esri = __esri;
@@ -9,7 +8,7 @@ import esri = __esri;
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit {
+export class MapComponent {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
 
   public spatialFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
@@ -63,8 +62,4 @@ export class MapComponent implements OnInit {
       }
     }
   };
-
-  constructor() {}
-
-  public ngOnInit() {}
 }
