@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, EventEmitter, Output, Input } from '@angular/core';
+import { Component, HostListener, EventEmitter, Output } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BehaviorSubject, of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -55,7 +55,7 @@ import { switchMap } from 'rxjs/operators';
     ])
   ]
 })
-export class HamburgerTriggerComponent implements OnInit {
+export class HamburgerTriggerComponent {
   // Internal trigger state
   private _state: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -70,8 +70,4 @@ export class HamburgerTriggerComponent implements OnInit {
     this._state.next(!this._state.getValue());
     this.poked.emit(this._state.getValue());
   }
-
-  constructor() {}
-
-  public ngOnInit() {}
 }
