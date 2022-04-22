@@ -18,7 +18,6 @@ export class DragService {
    */
   public states: Observable<Array<UIDragState>> = this._states.asObservable();
 
-  constructor() {}
   /**
    * Registers the class component with the ui drag service
    *
