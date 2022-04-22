@@ -10,8 +10,8 @@ import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 import { SearchComponent } from './search.component';
 
 describe('SearchComponent', () => {
-  let component: SearchComponent<{}>;
-  let fixture: ComponentFixture<SearchComponent<{}>>;
+  let component: SearchComponent;
+  let fixture: ComponentFixture<SearchComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
