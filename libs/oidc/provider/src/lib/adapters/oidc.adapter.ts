@@ -25,7 +25,7 @@ import {
  * Used for storing issued tokens, codes, user sessions, etc
  * https://github.com/panva/node-oidc-provider/tree/master/docs#adapter
  */
-export class OidcAdapter implements IOidcAdapter {
+export class OidcAdapter {
   public name: string;
   public connection: Connection;
   public repository: TypeORMEntities;
@@ -131,7 +131,7 @@ export class OidcAdapter implements IOidcAdapter {
     return {
       ...JSON.parse(found.data),
       ...(found.consumedAt ? { consumed: true } : undefined)
-    }; // is there ever a time in which data is null? If so how do we return?
+    };
   }
 
   public async consume(id: KindOfId) {
@@ -150,7 +150,7 @@ export class OidcAdapter implements IOidcAdapter {
 
     await repo
       .delete({
-        id: `${id}` // Old v6 Adapter used grantId: `${id}` instead of id
+        id: `${id}` // Old v6 Adapter used grantId: `${id}` instead of id: `${id}`
       })
       .catch((typeOrmErr) => {
         throw typeOrmErr;
@@ -164,16 +164,6 @@ export class OidcAdapter implements IOidcAdapter {
       grantId: `${grantId}`
     });
   }
-}
-
-interface IOidcAdapter {
-  upsert(id, payload, expiresIn);
-  find(id);
-  findByUserCode(userCode);
-  findByUid(uid);
-  destroy(id);
-  revokeByGrantId(grantId);
-  consume(id);
 }
 
 interface OIDCUpsertPayload {

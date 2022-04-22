@@ -25,10 +25,6 @@ export class StaticAccountService {
 export class AccountService {
   constructor(public readonly accountRepo: AccountRepo, public readonly roleRepo: RoleRepo) {}
 
-  public default() {
-    return 'AccountService';
-  }
-
   public get(guid: string) {
     return this.accountRepo.findOne({
       where: {

@@ -206,7 +206,6 @@ export class InteractionController {
 
   @Post(':uid/confirm')
   public async confirmPost(@Param() params, @Req() req: Request, @Res() res: Response) {
-    console.log(':uid/confirm', 'confirmPost', params);
     try {
       const interactionDetails = await this.providerService.provider.interactionDetails(req, res);
       const {
@@ -237,8 +236,6 @@ export class InteractionController {
         grant.addOIDCClaims(details.missingOIDCClaims);
       }
       if (details.missingResourceScopes) {
-        // eslint-disable-next-line no-restricted-syntax
-        // TODO: Enable this again
         for (const [indicator, scopes] of Object.entries(details.missingResourceScopes)) {
           grant.addResourceScope(indicator, (scopes as Array<string>).join(' '));
         }

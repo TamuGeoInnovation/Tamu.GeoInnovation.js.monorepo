@@ -1,4 +1,4 @@
-import { Controller, Delete, Param } from '@nestjs/common';
+import { Controller, Delete, NotImplementedException, Param } from '@nestjs/common';
 
 @Controller('access-token')
 export class AccessTokenController {
@@ -8,9 +8,6 @@ export class AccessTokenController {
     // const grantId = params.grantId;
     // OpenIdProvider.provider.AccessToken.revokeByGrantId(grantId);
 
-    return {
-      status: 200,
-      message: 'Not implemented at the moment'
-    };
+    return new NotImplementedException();
   }
 }

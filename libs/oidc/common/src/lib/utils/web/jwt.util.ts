@@ -34,6 +34,10 @@ interface IDecoded {
   aud: string;
   iat: string;
   jti: string;
-  events: object;
+  events: ValidObject;
   sid: string;
+}
+
+interface ValidObject {
+  [key: string]: boolean | string | number | ValidObject;
 }
