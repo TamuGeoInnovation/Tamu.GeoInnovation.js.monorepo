@@ -35,10 +35,10 @@ export abstract class AbstractVeorideDataCompiler<T extends BaseEntity> {
    * @param {*} resourceQueryParameters Serialized query parameters from the data task parameters column
    */
   // tslint:disable-next-line: no-any
-  public abstract select(builder: SelectQueryBuilder<T>, resourceQueryParameters: any): SelectQueryBuilder<T>;
+  public abstract select(builder: SelectQueryBuilder<T>, resourceQueryParameters: unknown): SelectQueryBuilder<T>;
 
   public writeTo(path: string): Promise<void> {
-    return new Promise(async (r, rj) => {
+    return new Promise((r, rj) => {
       try {
         // Remove the file name and extension from the provided path.
         const directoryParts = path.split('/');
@@ -46,22 +46,25 @@ export abstract class AbstractVeorideDataCompiler<T extends BaseEntity> {
         directoryParts.join('/');
         const directory = directoryParts.join('/');
 
-        await this.verifyWritePath(directory);
+        this.verifyWritePath(directory)
+          .then(() => {
+            return this.getStream();
+          })
+          .then((readStream) => {
+            const writeStream = createWriteStream(path, { encoding: 'utf8' });
+            const stringify = new Stringify('json');
+            const dtoer = new RawDataRowToDto(this.entity);
 
-        const readStream = await await this.getStream();
-        const writeStream = createWriteStream(path, { encoding: 'utf8' });
-        const stringify = new Stringify('json');
-        const dtoer = new RawDataRowToDto(this.entity);
+            readStream.pipe(dtoer).pipe(stringify).pipe(writeStream);
 
-        readStream.pipe(dtoer).pipe(stringify).pipe(writeStream);
+            writeStream.on('error', (err) => {
+              throw new Error(err.message);
+            });
 
-        writeStream.on('error', (err) => {
-          throw new Error(err.message);
-        });
-
-        writeStream.on('close', (err) => {
-          r();
-        });
+            writeStream.on('close', () => {
+              r();
+            });
+          });
       } catch (err) {
         rj(err.message);
       }
