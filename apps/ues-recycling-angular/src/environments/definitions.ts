@@ -1,5 +1,5 @@
-import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
-import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
+import { SearchSource } from '@tamu-gisc/ui-kits/ngx/search';
+import { LayerSource } from '@tamu-gisc/common/types';
 
 import esri = __esri;
 
@@ -58,15 +58,6 @@ export const LayerSources: LayerSource[] = [
     visible: true
   }
 ];
-
-const commonQueryParams: Partial<SearchSourceQueryParamsProperties> = {
-  f: 'json',
-  resultRecordCount: 5,
-  outFields: '*',
-  outSR: 4326,
-  returnGeometry: true,
-  spatialRel: 'esriSpatialRelIntersects'
-};
 
 // Search sources used for querying features.
 export const SearchSources: SearchSource[] = [];
