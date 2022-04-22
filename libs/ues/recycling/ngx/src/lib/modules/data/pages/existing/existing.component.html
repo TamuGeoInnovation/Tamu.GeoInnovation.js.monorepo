@@ -1,4 +1,4 @@
-<div class="spinning-loader" *ngIf="! (tableData | async); else dataAvailability;"></div>
+<div class="spinning-loader" *ngIf="(tableData | async) === null; else dataAvailability;"></div>
 
 <ng-template #dataAvailability>
   <ng-container *ngIf="(tableData | async)?.days.length > 0; else noData">

@@ -33,7 +33,7 @@ export class UploadComponent implements OnInit {
         console.log('Updated data', res);
         this.success = true;
       },
-      (err) => {
+      () => {
         this.error = true;
       }
     );

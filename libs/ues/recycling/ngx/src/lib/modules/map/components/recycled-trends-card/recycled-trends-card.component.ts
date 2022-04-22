@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
 import { Observable } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { IChartConfiguration } from '@tamu-gisc/ui-kits/ngx/charts';
 
@@ -50,7 +49,7 @@ export class RecycledTrendsCardComponent implements OnInit {
 
     this.chartData = this.selectedLocation.pipe(
       map((locs) => {
-        const data = locs.results.map((loc, index) => {
+        const data = locs.results.map((loc) => {
           return loc.value;
         });
 
