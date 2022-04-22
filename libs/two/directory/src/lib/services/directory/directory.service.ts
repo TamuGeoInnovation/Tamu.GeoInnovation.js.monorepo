@@ -1,6 +1,5 @@
-import { HttpService, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
-import { Stats } from 'fs';
 import * as chokidar from 'chokidar';
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -8,7 +7,7 @@ import * as path from 'path';
 @Injectable()
 export class DirectoryService {
   private ACCEPTABLE_EXTS = ['.csv', '.tsv'];
-  private FILENAME_REGEXP = /^\d{6,8}\_(SFPr|RFTA|RFAA|RFPr|TFPr|SUSM|DAFo|LCSh|LCGr)\S*(CSIFormat.csv)$/;
+  private FILENAME_REGEXP = /^\d{6,8}_(SFPr|RFTA|RFAA|RFPr|TFPr|SUSM|DAFo|LCSh|LCGr)\S*(CSIFormat.csv)$/;
   private VALIDATION_SERVICE = {
     protocol: 'http://',
     host: 'localhost',
@@ -24,7 +23,7 @@ export class DirectoryService {
     'DAFo_Flux_CSIFormat.dat,SUSm_Flux_CSIFormat.dat,RFPr_Flux_CSIFormat.dat,RFTA_Flux_CSIFormat.dat,TFPr_Flux_CSIFormat.dat,RFAA_Flux_CSIFormat.dat,SFPr_Flux_CSIFormat.dat,LCGr_Flux_CSIFormat.dat';
   private files: string[];
 
-  constructor(private httpService: HttpService) {
+  constructor() {
     this.files = this.FILES_LIST.split(',');
     this.watchFilesForChange();
   }
@@ -47,7 +46,7 @@ export class DirectoryService {
           depth: 0,
           awaitWriteFinish: true
         })
-        .on('change', (filePath: string, stats: Stats) => {
+        .on('change', (filePath: string) => {
           fs.copyFile(filePath, workFile, (chokidarErr) => {
             if (chokidarErr) {
               throw chokidarErr;
@@ -64,7 +63,7 @@ export class DirectoryService {
     fs.access(this.SOURCE_DIRECTORY, fs.constants.F_OK, (err) => {
       if (!err) {
         console.log('Got access');
-        chokidar.watch(this.SOURCE_DIRECTORY).on('add', (filePath, fileStats) => {
+        chokidar.watch(this.SOURCE_DIRECTORY).on('add', (filePath) => {
           const filename = path.basename(filePath);
           if (filename) {
             const ext = path.extname(filename);
@@ -118,28 +117,25 @@ export class DirectoryService {
       if (err) {
         throw err;
       }
-      try {
-        chokidar
-          .watch(filePaths, {
-            atomic: true,
-            depth: 0,
-            awaitWriteFinish: true
-          })
-          .on('change', (filePath: string, stats: Stats) => {
-            console.log(filePath);
-            const tokens = filePath.split('\\');
-            const fileName = tokens[tokens.length - 1];
-            const workFile = `${this.WORK_DIRECTORY}\\${fileName}`;
-            fs.copyFile(filePath, workFile, (copyErr) => {
-              if (copyErr) {
-                throw copyErr;
-              }
-              this.notifyValidationService(workFile);
-            });
+
+      chokidar
+        .watch(filePaths, {
+          atomic: true,
+          depth: 0,
+          awaitWriteFinish: true
+        })
+        .on('change', (filePath: string) => {
+          console.log(filePath);
+          const tokens = filePath.split('\\');
+          const fileName = tokens[tokens.length - 1];
+          const workFile = `${this.WORK_DIRECTORY}\\${fileName}`;
+          fs.copyFile(filePath, workFile, (copyErr) => {
+            if (copyErr) {
+              throw copyErr;
+            }
+            this.notifyValidationService(workFile);
           });
-      } catch (error) {
-        throw error;
-      }
+        });
     });
   }
 
@@ -163,13 +159,7 @@ export class DirectoryService {
    */
   private notifyValidationService(filepath: string): void {
     const route = `${this.VALIDATION_SERVICE.protocol}${this.VALIDATION_SERVICE.host}:${this.VALIDATION_SERVICE.port}/${this.VALIDATION_SERVICE.globalPrefix}/${this.VALIDATION_SERVICE.validation_route}`;
-    try {
-      console.log(route, filepath);
-      // this.httpService.post(route, {
-      //   path: filepath
-      // });
-    } catch (err) {
-      throw err;
-    }
+
+    console.log(route, filepath);
   }
 }
