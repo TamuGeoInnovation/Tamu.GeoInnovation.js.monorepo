@@ -6,7 +6,7 @@ import { mapTo, startWith } from 'rxjs/operators';
 import * as Clipboard from 'clipboard';
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[clipboard-copy]'
 })
 export class ClipboardCopyDirective implements OnChanges, OnDestroy {
@@ -20,7 +20,7 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
   public copying: EventEmitter<Observable<boolean>> = new EventEmitter();
 
   @Output()
-  public error: EventEmitter<boolean> = new EventEmitter();
+  public err: EventEmitter<boolean> = new EventEmitter();
 
   /**
    * Clipboard JS class container.
@@ -63,16 +63,16 @@ export class ClipboardCopyDirective implements OnChanges, OnDestroy {
 
   private _initializeHandler() {
     this._clipboard = new Clipboard(this.el.nativeElement, {
-      text: (trigger) => {
+      text: () => {
         return this.text;
       }
     })
-      .on('success', (e) => {
+      .on('success', () => {
         // On clipboard copy success, emit timer stream that can be used to display UI effects.
         this.copying.emit(timer(750).pipe(mapTo(false), startWith(true)));
       })
-      .on('error', (e) => {
-        this.error.emit(true);
+      .on('error', () => {
+        this.err.emit(true);
       });
   }
 }
