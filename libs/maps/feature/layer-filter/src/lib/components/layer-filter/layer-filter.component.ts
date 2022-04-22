@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { Observable, Subject, from, combineLatest, of, iif, forkJoin } from 'rxjs';
+import { Observable, Subject, from, combineLatest, of, iif, forkJoin, zip } from 'rxjs';
 import {
   pluck,
   shareReplay,
@@ -15,7 +15,7 @@ import {
 } from 'rxjs/operators';
 
 import { EsriMapService, EsriModuleProviderService } from '@tamu-gisc/maps/esri';
-import { LayerListService, LayerListItem } from '@tamu-gisc/maps/feature/layer-list';
+import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 import { makeWhere } from '@tamu-gisc/common/utils/database';
 
 import esri = __esri;
@@ -176,9 +176,13 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
 
     // Initial subscription to the layer list service that will retrieve the referenced layer id
     // and watch provided layer primitive properties.
-    this.layer = this.layerList.layers({ layers: this.reference, watchProperties: 'loaded' }).pipe(
-      pluck<LayerListItem<esri.Layer>[], esri.FeatureLayer>('0', 'layer'),
+    this.layer = this.layerList.layers().pipe(
       filter((l) => l !== undefined),
+      map((listItem) => {
+        const layerView = listItem.find((l) => l.layer.id === this.reference);
+
+        return layerView.layer as esri.FeatureLayer;
+      }),
       take(1),
       shareReplay(1)
     );
@@ -193,7 +197,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
     combineLatest([this.filterExpression, this.featureFilterModule, this.filterGeometry])
       .pipe(
         switchMap(([where, FeatureFilter, graphic]) => {
-          return forkJoin([
+          return zip([
             of(
               new FeatureFilter({
                 where: where,
@@ -234,7 +238,7 @@ export class LayerFilterComponent implements OnInit, OnDestroy {
         }),
         takeUntil(this._$destroy)
       )
-      .subscribe(([featureFilter, layerView, queryResults]) => {});
+      .subscribe();
   }
 
   public ngOnDestroy() {
