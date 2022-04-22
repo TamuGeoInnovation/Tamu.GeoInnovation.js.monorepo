@@ -1,4 +1,4 @@
-import { Injectable, Component } from '@angular/core';
+import { Injectable, Component, Type } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -819,7 +819,7 @@ interface SelectFeaturesProperties {
    * in the environments file. In those cases, specifying a popup component allows proper
    * or conditional rendering.
    */
-  popupComponent?: Component;
+  popupComponent?: Type<Component>;
 }
 
 interface ZoomProperties {
@@ -836,7 +836,7 @@ export interface HitTestSnapshot {
    * in the environments file. In those cases, specifying a popup component allows proper or
    *  conditional rendering.
    */
-  popupComponent?: Component;
+  popupComponent?: Type<Component>;
 }
 
 export interface MapViewProperties {

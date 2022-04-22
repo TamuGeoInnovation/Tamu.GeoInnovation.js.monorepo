@@ -16,8 +16,6 @@ import { RenderHostDirective } from '@tamu-gisc/ui-kits/ngx/layout';
 import { PopupService } from '../../services/popup.service';
 import { BasePopupComponent } from '../../components/base/base.component';
 
-import esri = __esri;
-
 @Component({
   selector: 'tamu-gisc-feature-popup',
   templateUrl: './base.component.html',
@@ -54,7 +52,7 @@ export class PopupComponent implements OnInit, OnDestroy {
    * Allows closing the popup with the keyboard `esc` key.
    */
   @HostListener('window:keyup.esc', ['$event'])
-  public escapeKeydown(event: KeyboardEvent) {
+  public escapeKeydown() {
     this.close();
   }
 

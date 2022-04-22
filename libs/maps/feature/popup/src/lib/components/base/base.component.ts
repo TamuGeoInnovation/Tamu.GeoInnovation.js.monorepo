@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import esri = __esri;
 
@@ -7,14 +7,10 @@ import esri = __esri;
   templateUrl: './base.component.html',
   styleUrls: ['../../containers/base/base.component.scss']
 })
-export class BasePopupComponent implements OnInit {
+export class BasePopupComponent {
   /**
    * Data set by the parent popup component.
    *
    */
   public data: esri.Graphic;
-
-  constructor() {}
-
-  public ngOnInit() {}
 }
