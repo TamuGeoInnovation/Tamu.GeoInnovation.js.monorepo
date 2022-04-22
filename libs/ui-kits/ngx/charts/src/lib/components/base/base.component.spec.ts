@@ -32,7 +32,7 @@ describe('BaseChartComponent', () => {
       baseChartComponent.labels = ['Count'];
       baseChartComponent.baseConfig = new ChartConfiguration();
       baseChartComponent.source = fake_sources.asObservable();
-      baseChartComponent.chart = ({
+      baseChartComponent.chart = {
         create: (config: Observable<ChartConfiguration> | ChartConfiguration) => {
           expect(config).toBeInstanceOf(Observable);
 
@@ -41,8 +41,6 @@ describe('BaseChartComponent', () => {
           }
 
           config.subscribe((chart_config: ChartConfiguration) => {
-            const val = chart_config;
-
             expect(chart_config).toEqual({
               ...new ChartConfiguration(),
               data: {
@@ -58,7 +56,7 @@ describe('BaseChartComponent', () => {
             done();
           });
         }
-      } as unknown) as ChartContainerComponent;
+      } as unknown as ChartContainerComponent;
 
       baseChartComponent.ngAfterViewInit();
     })();
@@ -66,7 +64,11 @@ describe('BaseChartComponent', () => {
 
   it('should error with invalid transformation', inject([BaseChartComponent], (baseChartComponent: BaseChartComponent) => {
     expect(() =>
-      ((baseChartComponent as unknown) as { evaluateTransformSet: Function }).evaluateTransformSet('invalid')
-    ).toThrowError(new Error('Invalid chart operator: invalid'));
+      (baseChartComponent as unknown as { evaluateTransformSet: (set, paths, collection) => [] }).evaluateTransformSet(
+        'invalidSet',
+        'invalidPath',
+        'invalidCollection'
+      )
+    ).toThrowError(new Error('Invalid chart operator: invalidSet'));
   }));
 });

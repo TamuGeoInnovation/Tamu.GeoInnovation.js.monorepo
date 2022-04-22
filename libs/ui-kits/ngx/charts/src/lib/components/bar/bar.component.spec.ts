@@ -15,7 +15,13 @@ describe('BarChartComponent', () => {
 
   it('should set baseConfig', inject([BarChartComponent], (component: BarChartComponent) => {
     component.source = new Observable<unknown[]>();
-    ((component as unknown) as { chart: Partial<ChartContainerComponent> }).chart = { create: () => {} };
+    (component as unknown as { chart: Partial<ChartContainerComponent> }).chart = {
+      create: () => {
+        return {
+          type: 'bar'
+        };
+      }
+    };
     component.ngAfterViewInit();
     expect(component.baseConfig).toEqual(new BarChartConfiguration());
   }));

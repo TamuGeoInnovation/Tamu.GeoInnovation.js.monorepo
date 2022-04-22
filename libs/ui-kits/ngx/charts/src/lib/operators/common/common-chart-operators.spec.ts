@@ -1,6 +1,11 @@
 import { average, categorize, count } from './common-chart-operators';
 
-const input = [{ test: '1', key: 1 }, { test: '1', key: 2 }, { test: '2', key: 3 }, { test: '3', key: 4 }];
+const input = [
+  { test: '1', key: 1 },
+  { test: '1', key: 2 },
+  { test: '2', key: 3 },
+  { test: '3', key: 4 }
+];
 const categorized = [
   {
     identity: '1',
@@ -76,7 +81,6 @@ describe('common-chart-operators.average', () => {
   });
 
   it('should throw an error for non-averagable values', () => {
-    console.warn = () => {}; // Hide error messages
     expect(() =>
       average(
         [
