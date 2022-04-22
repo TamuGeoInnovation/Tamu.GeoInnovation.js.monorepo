@@ -32,14 +32,14 @@ export class BreadcrumbComponent implements OnInit {
       })
     );
 
-    merge(routerNavigationTrigger, of(true)).subscribe((res) => {
+    merge(routerNavigationTrigger, of(true)).subscribe(() => {
       this.cleanCrumbs();
 
       this.matchRoutes(this.routes, this.router.url);
     });
   }
 
-  public follow(path, index) {
+  public follow(path) {
     this.router.navigate([path]);
   }
 
@@ -70,7 +70,7 @@ export class BreadcrumbComponent implements OnInit {
 
       return Array(1)
         .fill(undefined)
-        .map((i) => {
+        .map(() => {
           if (rt.parent) {
             return extract(rt.parent, [...p, rt.routeConfig]);
           } else {
@@ -335,7 +335,7 @@ export interface Crumb {
   path: string;
 }
 
-export interface Crumbs extends Array<Crumb> {}
+export type Crumbs = Array<Crumb>;
 
 export interface IModuleResult {
   code?: number;
