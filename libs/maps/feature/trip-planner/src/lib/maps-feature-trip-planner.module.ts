@@ -10,8 +10,8 @@ import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { TripPlannerConnectionsSelectComponent } from './components/trip-planner-connection-select/containers/base/base.component';
 import { TripPlannerDirectionsComponent } from './components/trip-planner-directions/containers/base/base.component';
 import { TripPlannerDirectionsMobileComponent } from './components/trip-planner-directions/containers/mobile/mobile.component';
-import { TripPlannerDirectionsActions } from './components/trip-planner-directions-actions/containers/base/base.component';
-import { TripPlannerDirectionsActionsMobile } from './components/trip-planner-directions-actions/containers/mobile/mobile.component';
+import { TripPlannerDirectionsActionsComponent } from './components/trip-planner-directions-actions/containers/base/base.component';
+import { TripPlannerDirectionsActionsMobileComponent } from './components/trip-planner-directions-actions/containers/mobile/mobile.component';
 import { TripPlannerModePickerComponent } from './components/trip-planner-mode-picker/containers/base/base.component';
 import { TripPlannerModePickerMobileComponent } from './components/trip-planner-mode-picker/containers/mobile/mobile.component';
 import { TripPlannerModeSwitchComponent } from './components/trip-planner-mode-switch/containers/base/base.component';
@@ -44,8 +44,8 @@ import { RouteDirectionTransformerPipe } from './core/route-direction-transforme
     TripPlannerConnectionsSelectComponent,
     TripPlannerDirectionsComponent,
     TripPlannerDirectionsMobileComponent,
-    TripPlannerDirectionsActions,
-    TripPlannerDirectionsActionsMobile,
+    TripPlannerDirectionsActionsComponent,
+    TripPlannerDirectionsActionsMobileComponent,
     TripPlannerModePickerComponent,
     TripPlannerModePickerMobileComponent,
     TripPlannerModeSwitchComponent,
@@ -62,8 +62,8 @@ import { RouteDirectionTransformerPipe } from './core/route-direction-transforme
     TripPlannerConnectionsSelectComponent,
     TripPlannerDirectionsComponent,
     TripPlannerDirectionsMobileComponent,
-    TripPlannerDirectionsActions,
-    TripPlannerDirectionsActionsMobile,
+    TripPlannerDirectionsActionsComponent,
+    TripPlannerDirectionsActionsMobileComponent,
     TripPlannerModePickerComponent,
     TripPlannerModePickerMobileComponent,
     TripPlannerModeSwitchComponent,

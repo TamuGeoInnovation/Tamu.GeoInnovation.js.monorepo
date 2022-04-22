@@ -177,14 +177,10 @@ export class ParkingService {
   }
 
   /**
-   * Based on the user permit selection, retrieve the location of parking location
+   * Based on the user permit selection, retrieve parking locations
    * authorized by a permit.
-   *
-   * @param {string} id Parking permit number (FAC_CODE).
-   * @param {TripPoint[]} stops Trip stops. Used to identify the nearest qualifying parking feature.
-   * @returns Parking feature nearest to the provided reference trip point.
    */
-  public getAuthorizedParkingLocations(id: string): Observable<ParkingFeature[]> {
+  public getAuthorizedParkingLocations(): Observable<ParkingFeature[]> {
     // Parking options snapshot.
     const parkingOptions = this._ParkingOptions.getValue();
 

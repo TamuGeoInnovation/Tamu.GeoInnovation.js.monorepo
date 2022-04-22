@@ -85,7 +85,7 @@ export class TripPlannerOptionsComponent implements OnInit {
     // Create options object to be passed into planner service.
     const opt = Array(1)
       .fill(null)
-      .reduce((acc, curr, index) => {
+      .reduce((acc) => {
         acc[option] = value;
 
         return acc;

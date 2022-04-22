@@ -1,4 +1,4 @@
-<div [title]="name" [attr.alt]="label" type="domElement" [ngClass]="{ active: active | async, error: (status | async)?.isError, disabled: (meta_status | async).isModeRestricted || (!(meta_status | async).allPristine && !(meta_status | async).toggleHasResult) }" (click)="setTravelMode(name)" tabindex="0">
+<div [title]="name" [attr.alt]="label" type="domElement" [ngClass]="{ active: active | async, error: (status | async)?.isError, disabled: (meta_status | async).isModeRestricted || (!(meta_status | async).allPristine && !(meta_status | async).toggleHasResult) }" (click)="setTravelMode()" tabindex="0">
   <i class="material-icons">{{ iconName }}</i>
 
   <!-- If trip result error, show ETA placeholder and apply error class. -->

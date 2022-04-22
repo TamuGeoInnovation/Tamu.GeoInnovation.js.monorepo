@@ -112,7 +112,7 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
             },
             // If it does, return the trip result a pristine collection.
             from(results),
-            // If it does not, return a placehodler trip result followed by the rest of the trip results.
+            // If it does not, return a placeholder trip result followed by the rest of the trip results.
             //
             // The placeholder trip result MUST be first as subsequent source emissions may contain
             // the trip result of interest as requests are resolved.
@@ -154,9 +154,9 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
       map((results) => {
         const def = { allPristine: true, toggleHasResult: false, isModeRestricted: false };
 
-        // Perofrm all tests in a reducing function to reduce the number of iterative calculations.
+        // Perform all tests in a reducing function to reduce the number of iterative calculations.
         const meta =
-          results.reduce((acc, curr, index) => {
+          results.reduce((acc, curr) => {
             const newAccumulated = { ...acc };
 
             if (curr.isError || curr.isFulfilled || curr.isProcessing) {
@@ -197,7 +197,10 @@ export class TripPlannerModeToggleComponent implements OnInit, OnDestroy {
   /**
    * Calculate the travel mode from string reference and update call the trip planner service to update it.
    */
-  public setTravelMode = (modeName: string) => {
-    this.tripPlanner.calculateTravelMode(this.activeModes.map((mode) => mode), true);
+  public setTravelMode = () => {
+    this.tripPlanner.calculateTravelMode(
+      this.activeModes.map((mode) => mode),
+      true
+    );
   };
 }

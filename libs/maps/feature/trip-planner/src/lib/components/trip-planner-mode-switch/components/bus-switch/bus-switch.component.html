@@ -1,13 +1,13 @@
 <div class="directions-container">
   <div class="direction-embed" *ngIf="busStopsList.length > 0">
-    <div [ngClass]="{ 'has-misc': lingerMinutes != null || timetable.length > 0 }">
+    <div [ngClass]="{ 'has-misc': lingerMinutes !== null || timetable.length > 0 }">
       <p>Ride <strong>Aggie Spirit</strong> route <strong>{{ routeNumber }}</strong> from <strong>{{ now.stops[now.first].name }}</strong> at <strong>{{ getDateString(now.stops[now.first].time) }}</strong>.</p>
 
-      <p *ngIf="lingerMinutes != null">Estimated {{ lingerMinutes }} minute wait at bus stop.</p>
+      <p *ngIf="lingerMinutes !== null">Estimated {{ lingerMinutes }} minute wait at bus stop.</p>
 
       <p *ngIf="timetable.length > 1">
         Also departs at
-        <span *ngFor="let block of timetable.slice(1, 3); let i = index"><strong>{{ getDateString(block.stops[block.first].time) }}</strong> {{ i == timetable.slice(1, 3).length - 2 ? 'and ' : '' }}</span>
+        <span *ngFor="let block of timetable.slice(1, 3); let i = index"><strong>{{ getDateString(block.stops[block.first].time) }}</strong> {{ i === timetable.slice(1, 3).length - 2 ? 'and ' : '' }}</span>
       </p>
     </div>
 
