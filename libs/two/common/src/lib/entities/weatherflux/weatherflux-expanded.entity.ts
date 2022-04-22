@@ -465,8 +465,8 @@ export class WeatherfluxExpanded {
 
   constructor(row) {
     if (row) {
-      Object.keys(row).forEach((key, index) => {
-        if (this.hasOwnProperty(key)) {
+      Object.keys(row).forEach((key) => {
+        if (key in this) {
           if (row[key]) {
             this[key] = Number(row[key]) || String(row[key]) || null;
           }

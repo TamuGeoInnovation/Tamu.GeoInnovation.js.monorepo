@@ -51,7 +51,7 @@ export class CS655 extends StationInfo {
   constructor(row?: WeatherFlux) {
     super();
     if (row) {
-      Object.keys(row).forEach((key, index) => {
+      Object.keys(row).forEach((key) => {
         const key_lowercase = key.toLowerCase();
         if (key_lowercase in this) {
           if (row[key]) {

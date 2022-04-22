@@ -30,7 +30,7 @@ export class EntryFailure {
 
   constructor(row) {
     if (row) {
-      Object.keys(row).forEach((key, index) => {
+      Object.keys(row).forEach((key) => {
         if (key in this) {
           if (row[key]) {
             this[key] = Number(row[key]) || String(row[key]) || null;
