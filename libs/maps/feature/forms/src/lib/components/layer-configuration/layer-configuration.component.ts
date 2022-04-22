@@ -72,10 +72,6 @@ export class LayerConfigurationComponent implements OnInit, OnDestroy, OnChanges
   @Input()
   public index = 0;
 
-  public get configOptions() {
-    return this.config.form.getRawValue();
-  }
-
   private layer: LayerConfigLayer;
 
   /**
