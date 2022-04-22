@@ -1,11 +1,11 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, Input } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-lockup',
   templateUrl: './lockup.component.html',
   styleUrls: ['./lockup.component.scss']
 })
-export class LockupComponent implements OnInit {
+export class LockupComponent {
   @Input()
   public theme: 'light' | 'dark' = 'light';
 
@@ -16,8 +16,4 @@ export class LockupComponent implements OnInit {
   public get componentDecoration() {
     return [this.type, this.theme];
   }
-
-  constructor() {}
-
-  public ngOnInit(): void {}
 }
