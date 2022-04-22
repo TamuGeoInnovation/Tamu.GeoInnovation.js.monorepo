@@ -1,7 +1,7 @@
-import { Directive, HostListener, Input, HostBinding, Host } from '@angular/core';
+import { Directive, HostListener, Input, HostBinding } from '@angular/core';
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[scrollTo]'
 })
 export class ScrollToDirective {
@@ -14,7 +14,7 @@ export class ScrollToDirective {
   }
 
   @HostListener('click')
-  private onClick(e: MouseEvent) {
+  private onClick() {
     this.scroll();
   }
 
@@ -26,11 +26,9 @@ export class ScrollToDirective {
 
   @HostListener('keyup.enter')
   @HostListener('keyup.space')
-  private onKeyup(e: KeyboardEvent) {
+  private onKeyup() {
     this.scroll();
   }
-
-  constructor() {}
 
   private scroll() {
     if (this.scrollTo !== undefined) {
