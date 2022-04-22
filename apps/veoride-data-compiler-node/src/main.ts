@@ -7,7 +7,7 @@ import { VeorideDataCompilerManager } from '@tamu-gisc/veoride/data-compiler';
 import { dbConfig, managerConfig } from './environments/environment';
 
 connect()
-  .then((connection) => {
+  .then(() => {
     console.log('Database connection successful!');
     new VeorideDataCompilerManager(managerConfig).initialize();
   })
