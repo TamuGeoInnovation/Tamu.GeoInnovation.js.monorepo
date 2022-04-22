@@ -21,8 +21,6 @@ export class BuildingTypeChartComponent implements OnInit {
     }
   };
 
-  constructor() {}
-
   public ngOnInit(): void {
     this.source = this.buildings.pipe(
       map((buildings) => {
@@ -46,7 +44,8 @@ export class BuildingTypeChartComponent implements OnInit {
         return {
           datasets: [
             {
-              data: Object.entries(counts).map(([key, value], index, arr) => {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              data: Object.entries(counts).map(([key, value]) => {
                 return value;
               })
             }

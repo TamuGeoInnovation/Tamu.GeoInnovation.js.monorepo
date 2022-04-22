@@ -79,8 +79,8 @@ export class SamplingLocationsService {
     dates: Array<Date>;
   }): Observable<IChartConfiguration['data']> {
     return of(factors).pipe(
-      map((f) => {
-        return factors.dates.map((d, i, a) => {
+      map(() => {
+        return factors.dates.map((d, i) => {
           return {
             x: d,
             y: factors.values[i]
