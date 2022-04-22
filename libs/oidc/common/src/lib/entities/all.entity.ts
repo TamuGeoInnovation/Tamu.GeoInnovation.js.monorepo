@@ -1,4 +1,5 @@
 import { Req } from '@nestjs/common';
+
 import {
   getConnection,
   BeforeUpdate,
@@ -17,12 +18,12 @@ import {
   Repository,
   EntityRepository
 } from 'typeorm';
-
 import { Request } from 'express';
 import { v4 as guid } from 'uuid';
 
-export type TypeORMEntities = string | Function | (new () => unknown) | EntitySchema<unknown>;
+export type TypeORMEntities = string | (new () => unknown) | EntitySchema<unknown>;
 export type KindOfId = number | string;
+export type OidcEntity = IRequiredEntityAttrs;
 
 export interface IRequiredEntityAttrs {
   id: string;
@@ -164,20 +165,16 @@ export class Account extends GuidIdentity {
 
   constructor(fullName: string, email: string) {
     super();
-    try {
-      if (fullName) {
-        this.name = fullName;
-        if (fullName.includes(' ')) {
-          const names: string[] = fullName.split(' ');
-          this.given_name = names[0];
-          this.family_name = names[1];
-        }
+    if (fullName) {
+      this.name = fullName;
+      if (fullName.includes(' ')) {
+        const names: string[] = fullName.split(' ');
+        this.given_name = names[0];
+        this.family_name = names[1];
       }
-      this.updated_at = new Date();
-      this.added = new Date();
-    } catch (error) {
-      throw error;
     }
+    this.updated_at = new Date();
+    this.added = new Date();
   }
 }
 
@@ -188,13 +185,13 @@ export class User extends GuidIdentity {
   @Column()
   public added: Date;
 
-  @OneToOne((type) => Account, { cascade: true, onDelete: 'CASCADE' })
+  @OneToOne(() => Account, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   public account: Account;
 
-  @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true, onDelete: 'CASCADE', eager: true })
-  @JoinColumn()
-  public userRoles: UserRole[];
+  // @OneToMany((type) => UserRole, (userRole) => userRole.user, { cascade: true, onDelete: 'CASCADE', eager: true })
+  // @JoinColumn()
+  // public userRoles: UserRole[];
 
   @Column({
     type: 'varchar',
@@ -256,26 +253,22 @@ export class User extends GuidIdentity {
 
   constructor(@Req() request: Request) {
     super();
-    try {
-      if (request) {
-        if (request.body) {
-          const body = request.body;
-          if (body.email) {
-            this.email = body.email;
-          }
-          if (body.password) {
-            this.password = body.password;
-          }
-          if (body.ip) {
-            this.signup_ip_address = body.ip;
-            this.last_used_ip_address = body.ip;
-          }
-          this.updatedAt = new Date();
-          this.added = new Date();
+    if (request) {
+      if (request.body) {
+        const body = request.body;
+        if (body.email) {
+          this.email = body.email;
         }
+        if (body.password) {
+          this.password = body.password;
+        }
+        if (body.ip) {
+          this.signup_ip_address = body.ip;
+          this.last_used_ip_address = body.ip;
+        }
+        this.updatedAt = new Date();
+        this.added = new Date();
       }
-    } catch (err) {
-      throw err;
     }
   }
 }
@@ -334,8 +327,6 @@ export class AccessToken implements IRequiredEntityAttrs {
     nullable: true
   })
   public added: Date;
-
-  constructor() {}
 }
 
 @Entity({
@@ -372,8 +363,42 @@ export class AuthorizationCode implements IRequiredEntityAttrs {
     nullable: true
   })
   public consumedAt: Date;
+}
 
-  constructor() {}
+@Entity({
+  name: 'backchannel_authentication_request'
+})
+export class BackchannelAuthenticationRequest implements IRequiredEntityAttrs {
+  @PrimaryColumn({
+    type: 'varchar',
+    nullable: false
+  })
+  public id: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public grantId: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    length: 'max'
+  })
+  public data: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public expiresAt: Date;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public consumedAt: Date;
 }
 
 @Entity({
@@ -404,8 +429,6 @@ export class ClientCredential implements IRequiredEntityAttrs {
     nullable: true
   })
   public consumedAt: Date;
-
-  constructor() {}
 }
 
 @Entity({
@@ -436,8 +459,6 @@ export class Client implements IRequiredEntityAttrs {
     nullable: true
   })
   public consumedAt: Date;
-
-  constructor() {}
 }
 
 @Entity({
@@ -480,8 +501,42 @@ export class DeviceCode implements IRequiredEntityAttrs {
     nullable: true
   })
   public consumedAt: Date;
+}
 
-  constructor() {}
+@Entity({
+  name: 'grants'
+})
+export class Grant implements IRequiredEntityAttrs {
+  @PrimaryColumn({
+    type: 'varchar',
+    nullable: false
+  })
+  public id: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public grantId: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    length: 'max'
+  })
+  public data: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public expiresAt: Date;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public consumedAt: Date;
 }
 
 @Entity({
@@ -512,8 +567,6 @@ export class InitialAccessToken implements IRequiredEntityAttrs {
     nullable: true
   })
   public consumedAt: Date;
-
-  constructor() {}
 }
 
 @Entity({
@@ -525,6 +578,12 @@ export class Interaction implements IRequiredEntityAttrs {
     nullable: false
   })
   public id: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public grantId?: string;
 
   @Column({
     type: 'varchar',
@@ -544,8 +603,6 @@ export class Interaction implements IRequiredEntityAttrs {
     nullable: true
   })
   public consumedAt: Date;
-
-  constructor() {}
 }
 
 @Entity({
@@ -582,8 +639,6 @@ export class RefreshToken implements IRequiredEntityAttrs {
     nullable: true
   })
   public consumedAt: Date;
-
-  constructor() {}
 }
 
 @Entity({
@@ -614,8 +669,6 @@ export class RegistrationAccessToken implements IRequiredEntityAttrs {
     nullable: true
   })
   public consumedAt: Date;
-
-  constructor() {}
 }
 
 @Entity({
@@ -646,8 +699,6 @@ export class ReplayDetection implements IRequiredEntityAttrs {
     nullable: true
   })
   public consumedAt: Date;
-
-  constructor() {}
 }
 
 @Entity({
@@ -678,8 +729,6 @@ export class PushedAuthorizationRequest implements IRequiredEntityAttrs {
     nullable: true
   })
   public consumedAt: Date;
-
-  constructor() {}
 }
 
 @Entity({
@@ -691,6 +740,12 @@ export class Session implements IRequiredEntityAttrs {
     nullable: false
   })
   public id: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  public uid: string;
 
   @Column({
     type: 'varchar',
@@ -716,8 +771,6 @@ export class Session implements IRequiredEntityAttrs {
     nullable: true
   })
   public consumedAt: Date;
-
-  constructor() {}
 }
 
 @Entity({
@@ -756,7 +809,7 @@ export class ClientMetadata extends GuidIdentity {
   })
   public clientSecret: string;
 
-  @ManyToMany((type) => GrantType, {
+  @ManyToMany(() => GrantType, {
     cascade: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
@@ -766,13 +819,13 @@ export class ClientMetadata extends GuidIdentity {
   })
   public grantTypes: GrantType[];
 
-  @OneToMany((type) => RedirectUri, (redirectUri) => redirectUri.clientMetadata)
+  @OneToMany(() => RedirectUri, (redirectUri) => redirectUri.clientMetadata)
   public redirectUris: RedirectUri[];
 
-  @OneToMany((type) => BackchannelLogoutUri, (backchannelLogoutUri) => backchannelLogoutUri.clientMetadata)
+  @OneToMany(() => BackchannelLogoutUri, (backchannelLogoutUri) => backchannelLogoutUri.clientMetadata)
   public backchannelLogoutUris: BackchannelLogoutUri[];
 
-  @ManyToMany((type) => ResponseType, {
+  @ManyToMany(() => ResponseType, {
     cascade: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
@@ -782,7 +835,7 @@ export class ClientMetadata extends GuidIdentity {
   })
   public responseTypes: ResponseType[];
 
-  @ManyToOne((type) => TokenEndpointAuthMethod, (token) => token.clientMetadatas)
+  @ManyToOne(() => TokenEndpointAuthMethod, (token) => token.clientMetadatas)
   public tokenEndpointAuthMethod: TokenEndpointAuthMethod;
 }
 
@@ -814,7 +867,7 @@ export class GrantType extends GuidIdentity {
   name: 'redirect_uris'
 })
 export class RedirectUri extends GuidIdentity {
-  @ManyToOne((type) => ClientMetadata, (client) => client.redirectUris, {
+  @ManyToOne(() => ClientMetadata, (client) => client.redirectUris, {
     cascade: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
@@ -832,7 +885,7 @@ export class RedirectUri extends GuidIdentity {
   name: 'back_channel_logout_uris'
 })
 export class BackchannelLogoutUri extends GuidIdentity {
-  @ManyToOne((type) => ClientMetadata, (client) => client.backchannelLogoutUris, {
+  @ManyToOne(() => ClientMetadata, (client) => client.backchannelLogoutUris, {
     cascade: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
@@ -885,13 +938,13 @@ export class Role extends GuidIdentity {
   name: 'user_roles'
 })
 export class UserRole extends GuidIdentity {
-  @ManyToOne((type) => Role, { eager: true })
+  @ManyToOne(() => Role, { eager: true })
   public role: Role;
 
-  @ManyToOne((type) => ClientMetadata, { eager: true })
+  @ManyToOne(() => ClientMetadata, { eager: true })
   public client: ClientMetadata;
 
-  @ManyToOne((type) => User)
+  @ManyToOne(() => User)
   public user: User;
 }
 
@@ -939,10 +992,10 @@ export class SecretQuestion extends GuidIdentity {
   name: 'secret_answers'
 })
 export class SecretAnswer extends GuidIdentity {
-  @ManyToOne((type) => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   public user: User;
 
-  @ManyToOne((type) => SecretQuestion)
+  @ManyToOne(() => SecretQuestion)
   public secretQuestion: SecretQuestion;
 
   @Column({
@@ -1016,7 +1069,7 @@ export class UserPasswordReset extends GuidIdentity {
   name: 'password_history'
 })
 export class UserPasswordHistory extends GuidIdentity {
-  @ManyToOne((type) => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   public user: User;
 
   @Column({
@@ -1095,7 +1148,7 @@ export class CommonRepo<T> extends Repository<T> {
   private getRelatedProps() {
     const relations = this.metadata.ownRelations;
     const propNames: string[] = [];
-    relations.map((value, i) => {
+    relations.map((value) => {
       propNames.push(value.propertyName);
     });
     return propNames;

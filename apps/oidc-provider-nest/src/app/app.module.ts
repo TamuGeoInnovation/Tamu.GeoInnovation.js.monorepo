@@ -13,6 +13,8 @@ import {
   RefreshToken,
   RegistrationAccessToken,
   Session,
+  Grant,
+  BackchannelAuthenticationRequest,
   User,
   ClientMetadata,
   GrantType,
@@ -28,16 +30,10 @@ import {
   UserPasswordHistory,
   PushedAuthorizationRequest,
   ReplayDetection,
-  ClientMetadataModule,
-  UserModule,
-  RoleModule,
-  SecretQuestionController,
   BackchannelLogoutUri
 } from '@tamu-gisc/oidc/common';
-import { AccessTokenModule, InteractionModule, UserLoginModule } from '@tamu-gisc/oidc/provider';
+import { InteractionModule, OidcModule } from '@tamu-gisc/oidc/provider';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { dbConfig } from '../environments/environment';
 
 @Module({
@@ -63,6 +59,8 @@ import { dbConfig } from '../environments/environment';
         ResponseType,
         Role,
         Session,
+        Grant,
+        BackchannelAuthenticationRequest,
         User,
         UserRole,
         UserLogin,
@@ -75,14 +73,10 @@ import { dbConfig } from '../environments/environment';
       ],
       autoLoadEntities: true
     }),
-    AccessTokenModule,
     InteractionModule,
-    ClientMetadataModule,
-    RoleModule,
-    UserModule,
-    UserLoginModule
+    OidcModule
   ],
-  controllers: [AppController, SecretQuestionController],
-  providers: [AppService]
+  controllers: [],
+  providers: []
 })
 export class AppModule {}

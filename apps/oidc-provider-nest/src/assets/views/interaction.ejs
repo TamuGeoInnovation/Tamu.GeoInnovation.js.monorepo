@@ -1,4 +1,30 @@
-<form autocomplete="off" action="/interaction/<%= details.uuid %>/confirm" method="post">
-  <input type="hidden" name="uuid" value="<%= details.uuid %>"/>
+<form autocomplete="off" action="/interaction/<%= uid %>/confirm" method="post">
+  <input type="hidden" name="uuid" value="<%= uid %>"/>
+  
+  <% if ([details.missingOIDCScope, details.missingOIDCClaims, details.missingResourceScopes].filter(Boolean).length === 0) { %>
+    <li>the client is asking you to confirm previously given authorization</li>
+  <% } %>
+
+  <% missingOIDCScope = new Set(details.missingOIDCScope); missingOIDCScope.delete('openid'); missingOIDCScope.delete('offline_access') %>
+<% if (missingOIDCScope.size) { %>
+  <li>scopes:</li>
+  <ul>
+    <% missingOIDCScope.forEach((scope) => { %>
+      <li><%= scope %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<% missingOIDCClaims = new Set(details.missingOIDCClaims); ['sub', 'sid', 'auth_time', 'acr', 'amr', 'iss'].forEach(Set.prototype.delete.bind(missingOIDCClaims)) %>
+<% if (missingOIDCClaims.size) { %>
+  <li>claims:</li>
+  <ul>
+    <% missingOIDCClaims.forEach((claim) => { %>
+      <li><%= claim %></li>
+    <% }) %>
+  </ul>
+<% } %>
+<p><%= uid  %></p>
+
   <button autofocus type="submit" class="login login-submit">Continue</button>
 </form>

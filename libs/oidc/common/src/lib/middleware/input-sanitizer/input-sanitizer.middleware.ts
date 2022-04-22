@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 // TODO: Incomplete
-export function InputSanitizerMiddleware(req: Request, res: Response, next: Function) {
+export function InputSanitizerMiddleware(req: Request, res: Response, next) {
   if (isEmptyObject(req.body)) {
     next();
   } else {

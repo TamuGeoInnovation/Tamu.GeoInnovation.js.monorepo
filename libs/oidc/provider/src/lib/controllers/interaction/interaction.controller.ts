@@ -1,25 +1,22 @@
 import { Body, Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus } from '@nestjs/common';
 
 import { Request, Response } from 'express';
-import got from 'got';
 import { InteractionResults } from 'oidc-provider';
 import * as otplib from 'otplib';
 
-import { UserService } from '@tamu-gisc/oidc/common';
-import { urlHas, urlFragment, TwoFactorAuthUtils, Mailer } from '@tamu-gisc/oidc/common';
+import { urlHas, urlFragment, UserService, Mailer, TwoFactorAuthUtils } from '@tamu-gisc/oidc/common';
 
-import { OpenIdProvider } from '../../configs/oidc-provider-config';
-import { UserLoginService } from '../../services/user-login/user-login.service';
+import { OidcProviderService } from '../../services/provider/provider.service';
 
 @Controller('interaction')
 export class InteractionController {
-  constructor(private readonly userService: UserService, private readonly loginService: UserLoginService) {}
+  constructor(private providerService: OidcProviderService, private userService: UserService) {}
 
   @Get(':uid')
   public async interactionGet(@Req() req: Request, @Res() res: Response) {
     try {
-      const { uid, prompt, params, session } = await OpenIdProvider.provider.interactionDetails(req, res);
-      const client = await OpenIdProvider.provider.Client.find(params.client_id);
+      const { uid, prompt, params, session } = await this.providerService.provider.interactionDetails(req, res);
+      const client = await this.providerService.provider.Client.find(params.client_id as string);
 
       const name = prompt.name;
 
@@ -64,63 +61,34 @@ export class InteractionController {
   }
 
   @Post(':uid')
-  public async interactionLoginPost(@Body() body, @Req() req: Request, @Res() res: Response) {
-    await OpenIdProvider.provider.setProviderSession(req, res, {
-      account: 'accountId'
-    });
-
-    const details = await OpenIdProvider.provider.interactionDetails(req, res);
+  public async loginPost(@Body() body, @Req() req, @Res() res) {
+    const details = await this.providerService.provider.interactionDetails(req, res);
     const { prompt, params } = details;
-    const client = await OpenIdProvider.provider.Client.find(params.client_id);
+
+    const client = await this.providerService.provider.Client.find(params.client_id as string);
 
     try {
-      const email = body.email;
-      const password = body.password;
-      const user = await this.userService.userLogin(email, password);
+      const {
+        prompt: { name }
+      } = details;
+
+      const user = await this.userService.userLogin(body.email, body.password);
+
+      let result: InteractionResults = {};
 
       if (user) {
-        if (user.enabled2fa) {
-          const locals = {
-            title: 'Sign-in',
-            details: details,
-            email: user.email,
-            guid: user.guid,
-            error: false
-          };
-
-          return res.render('2fa-choose', locals, (err, html) => {
-            if (err) throw new HttpException(err, HttpStatus.BAD_REQUEST);
-
-            res.render('_layout-simple', {
-              ...locals,
-              body: html
-            });
-          });
-        } else {
-          const result: InteractionResults = {
-            select_account: {},
-            login: {
-              account: user.account.guid,
-              acr: 'urn:mace:incommon:iap:bronze',
-              amr: ['pwd'],
-              remember: true,
-              ts: Math.floor(Date.now() / 1000)
-            },
-            // consent was given by the user to the client for this session
-            consent: {
-              rejectedScopes: ['profile'], // array of strings, scope names the end-user has not granted
-              rejectedClaims: [] // array of strings, claim names the end-user has not granted
-            },
-            meta: {}
-          };
-
-          this.loginService.insertUserLogin(req);
-          await OpenIdProvider.provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
-        }
+        result = {
+          login: {
+            accountId: user.account.guid,
+            remember: body.remember,
+            name
+          }
+        };
       } else {
-        // could not get user; render some error page or redirect to registration
         throw new HttpException('Email / password combination unknown', HttpStatus.BAD_REQUEST);
       }
+
+      await this.providerService.provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
     } catch (err) {
       const locals = {
         params,
@@ -145,7 +113,7 @@ export class InteractionController {
 
   @Post(':uid/2fa/method')
   public async interaction2faMethod(@Body() body, @Req() req: Request, @Res() res: Response) {
-    const details = await OpenIdProvider.provider.interactionDetails(req, res);
+    const details = await this.providerService.provider.interactionDetails(req, res);
     const user = await this.userService.userRepo.findByKeyDeep('guid', body.guid);
 
     // body.method is returned as an array for some reason
@@ -177,7 +145,7 @@ export class InteractionController {
 
   @Post(':uid/2fa')
   public async interaction2faPost(@Body() body, @Req() req: Request, @Res() res: Response) {
-    const details = await OpenIdProvider.provider.interactionDetails(req, res);
+    const details = await this.providerService.provider.interactionDetails(req, res);
     const user = await this.userService.userRepo.findByKeyDeep('guid', body.guid);
 
     try {
@@ -189,7 +157,7 @@ export class InteractionController {
         const result: InteractionResults = {
           select_account: {},
           login: {
-            account: user.account.guid,
+            accountId: user.account.guid,
             acr: 'urn:mace:incommon:iap:bronze',
             amr: ['pwd'],
             remember: true,
@@ -203,7 +171,7 @@ export class InteractionController {
           meta: {}
         };
 
-        await OpenIdProvider.provider.interactionFinished(req, res, result);
+        await this.providerService.provider.interactionFinished(req, res, result);
       } else {
         // Incorrect code provided
         throw new HttpException('Token provided was incorrect; please try again', HttpStatus.BAD_REQUEST);
@@ -237,8 +205,55 @@ export class InteractionController {
   }
 
   @Post(':uid/confirm')
-  public confirmPost(@Param() params) {
-    console.log(':uid/confirm', 'confirmPost', params);
+  public async confirmPost(@Param() params, @Req() req: Request, @Res() res: Response) {
+    try {
+      const interactionDetails = await this.providerService.provider.interactionDetails(req, res);
+      const {
+        prompt: { name, details },
+        params,
+        session: { accountId }
+      } = interactionDetails;
+      // assert.equal(name, 'consent');
+
+      let { grantId } = interactionDetails;
+      let grant;
+
+      if (grantId) {
+        // we'll be modifying existing grant in existing session
+        grant = await this.providerService.provider.Grant.find(grantId);
+      } else {
+        // we're establishing a new grant
+        grant = new this.providerService.provider.Grant({
+          accountId,
+          clientId: params.client_id as string
+        });
+      }
+
+      if (details.missingOIDCScope) {
+        grant.addOIDCScope((details.missingOIDCScope as string[]).join(' '));
+      }
+      if (details.missingOIDCClaims) {
+        grant.addOIDCClaims(details.missingOIDCClaims);
+      }
+      if (details.missingResourceScopes) {
+        for (const [indicator, scopes] of Object.entries(details.missingResourceScopes)) {
+          grant.addResourceScope(indicator, (scopes as Array<string>).join(' '));
+        }
+      }
+
+      grantId = await grant.save();
+
+      const consent = {};
+      if (!interactionDetails.grantId) {
+        // we don't have to pass grantId to consent, we're just modifying existing one
+        consent['grantId'] = grantId;
+      }
+
+      const result = { consent };
+      await this.providerService.provider.interactionFinished(req, res, result, { mergeWithLastSubmission: true });
+    } catch (err) {
+      return err;
+    }
   }
 
   @Post(':uid/abort')
@@ -252,13 +267,7 @@ export class InteractionController {
       if (body.id_token_hint) {
         const { post_logout_redirect_uris } = body;
 
-        got(post_logout_redirect_uris)
-          .then((result) => {
-            console.log(result);
-          })
-          .catch((err) => {
-            throw new HttpException(err, HttpStatus.BAD_REQUEST);
-          });
+        console.warn('interaction/logout', post_logout_redirect_uris);
       }
     }
   }

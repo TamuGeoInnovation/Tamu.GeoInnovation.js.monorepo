@@ -14,7 +14,7 @@ import {
 import { User, Role, INewRole } from '@tamu-gisc/oidc/common';
 
 @Component({
-  selector: 'detail-user',
+  selector: 'tamu-gisc-detail-user',
   templateUrl: './detail-user.component.html',
   styleUrls: ['./detail-user.component.scss']
 })
@@ -25,7 +25,6 @@ export class DetailUserComponent implements OnInit, OnDestroy {
   public userForm: FormGroup;
   public $clients: Observable<Array<Partial<IClientMetadataResponse>>>;
   public $roles: Observable<Array<Partial<Role>>>;
-
   private _$destroy: Subject<boolean> = new Subject();
 
   constructor(
@@ -92,12 +91,13 @@ export class DetailUserComponent implements OnInit, OnDestroy {
         userGuid: [user.guid]
       });
 
-      clients.forEach((client) => {
-        const value = user.userRoles.find((role) => {
-          return role.client.guid === client.guid;
-        });
-        group.addControl(`${client.clientName}`, this.fb.control(value !== undefined ? value.role.guid : 'undefined'));
-      });
+      // TODO: This was disabled temporarily so we can build the project and use CI/CD for oidc-provider-nest  - Aaron H (3/15/22)
+      // clients.forEach((client) => {
+      //   const value = user.userRoles.find((role) => {
+      //     return role.client.guid === client.guid;
+      //   });
+      //   group.addControl(`${client.clientName}`, this.fb.control(value !== undefined ? value.role.guid : 'undefined'));
+      // });
 
       this.roleForm = group;
 
@@ -110,12 +110,14 @@ export class DetailUserComponent implements OnInit, OnDestroy {
           ...user,
           account: user.account
         });
+
         this.userForm.valueChanges.pipe(debounceTime(1000), takeUntil(this._$destroy)).subscribe((res) => {
           console.log('User', this.userForm.getRawValue());
 
           const updatedUser: Partial<User> = {
             ...this.userForm.getRawValue()
           };
+
           this.userService.updateUser(updatedUser).subscribe((result) => [console.log('Updated details')]);
         });
       });
