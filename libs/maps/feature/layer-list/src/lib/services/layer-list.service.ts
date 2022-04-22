@@ -25,7 +25,7 @@ export class LayerListService {
           handle = this._model.operationalItems.watch('length', handler);
         };
 
-        const remove = (handler): void => {
+        const remove = (): void => {
           handle.remove();
         };
 

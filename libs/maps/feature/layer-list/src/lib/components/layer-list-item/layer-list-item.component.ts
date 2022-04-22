@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import esri = __esri;
 
@@ -7,16 +7,12 @@ import esri = __esri;
   templateUrl: './layer-list-item.component.html',
   styleUrls: ['./layer-list-item.component.scss']
 })
-export class LayerListItemComponent implements OnInit {
+export class LayerListItemComponent {
   @Input()
   public listItem: IListItem;
 
   @Input()
   public expanded = true;
-
-  constructor() {}
-
-  public ngOnInit(): void {}
 
   public toggleLayer(): void {
     // If the list item contains an initialized layer, flip the visible value.
