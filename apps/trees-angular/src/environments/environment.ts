@@ -6,7 +6,7 @@ export const environment = {
   production: false
 };
 
-import { LayerSource, LegendItem } from '@tamu-gisc/common/types';
+import { LayerSource } from '@tamu-gisc/common/types';
 import { SearchSource, SearchSourceQueryParamsProperties } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { Connections, Definitions as d } from './definitions';

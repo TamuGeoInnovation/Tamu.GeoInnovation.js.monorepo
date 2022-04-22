@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import esri = __esri;
 import { BehaviorSubject } from 'rxjs';
@@ -7,12 +7,10 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit {
+export class MapComponent {
   public filterFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
 
   public spatialFeatures: BehaviorSubject<esri.Graphic[]> = new BehaviorSubject([]);
-
-  constructor() {}
 
   public config = {
     basemap: {
@@ -63,6 +61,4 @@ export class MapComponent implements OnInit {
       }
     }
   };
-
-  public ngOnInit() {}
 }
