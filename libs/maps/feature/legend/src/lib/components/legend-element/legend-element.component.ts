@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import esri = __esri;
 
@@ -7,16 +7,12 @@ import esri = __esri;
   templateUrl: './legend-element.component.html',
   styleUrls: ['./legend-element.component.scss']
 })
-export class LegendElementComponent implements OnInit {
+export class LegendElementComponent {
   @Input()
   public element: ILegendElement;
 
   @Input()
   public groupTitle: string;
-
-  constructor() {}
-
-  public ngOnInit(): void {}
 }
 
 // Browser doesn't like direct esri types for inputs.
