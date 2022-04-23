@@ -14,7 +14,9 @@ export class OidcProviderService {
   private enableDevLogs = true;
   public provider: Provider;
   public issuerUrl = 'http://localhost:4001';
-  private pathToJWKS = 'idp_keystore.json'; // TODO: Get file name / path from environment
+
+  // TODO: Get file name / path from environment
+  private pathToJWKS = 'idp_keystore.json';
 
   constructor(private readonly accountService: AccountService) {
     this.getJWKSFromFile().then((jwks) => {
@@ -80,7 +82,7 @@ export class OidcProviderService {
           'zoneinfo'
         ]
       },
-      clientBasedCORS(ctx, origin, client) {
+      clientBasedCORS() {
         return true; // Must be set to true or angular-auth-oidc-client wont work right
       },
       clockTolerance: 5, // In seconds
@@ -129,10 +131,10 @@ export class OidcProviderService {
         },
         resourceIndicators: {
           enabled: true,
-          useGrantedResource: (ctx, model) => {
+          useGrantedResource: () => {
             return true;
           },
-          getResourceServerInfo: (ctx, resourceIndicator, client) => {
+          getResourceServerInfo: () => {
             return {
               accessTokenTTL: 2 * 60 * 60, // 2 hours
               accessTokenFormat: 'jwt',
@@ -147,7 +149,7 @@ export class OidcProviderService {
         },
         revocation: { enabled: true } // defaults to false
       },
-      async findAccount(ctx, sub, token) {
+      async findAccount(ctx, sub) {
         return {
           accountId: sub,
           async claims(use, scope, claims, rejected) {
@@ -168,9 +170,9 @@ export class OidcProviderService {
             // jwt.payload.foo = 'bar'; // Can set payload claims
 
             // jwt.payload.sub is the Account guid for the user.
-            // Can we use dependecy injection to then query user_roles and append said role?
+            // Can we use dependency injection to then query user_roles and append said role?
             // If no role / client combination is found we default to a plain 'user' role
-            // TODO: If we enable dynamic client registration, how do we maintain a list of role / client guids that isn't changing everytime a site has to register?
+            // TODO: If we enable dynamic client registration, how do we maintain a list of role / client guid's that isn't changing every time a site has to register?
             // TODO: Maybe we just use the client_id attribute instead of a guid, since the client_id is a name that wouldn't change between registrations
             // console.log(ctx, token, jwt);
             // const account = await accountService.get(jwt.payload.sub);
@@ -222,131 +224,138 @@ export class OidcProviderService {
       console.error(error.message);
       throw error;
     });
-    idp.addListener('authorization.accepted', (ctx) => {
+
+    idp.addListener('authorization.accepted', () => {
       console.log('authorization.accepted');
     });
-    idp.addListener('interaction.started', (detail, ctx) => {
+
+    idp.addListener('interaction.started', () => {
       console.log('interaction.started');
     });
-    idp.addListener('interaction.ended', (ctx) => {
+
+    idp.addListener('interaction.ended', () => {
       console.log('interaction.ended');
     });
-    idp.addListener('authorization.success', (ctx) => {
+
+    idp.addListener('authorization.success', () => {
       console.log('authorization.success');
     });
-    idp.addListener('authorization.error', (error, ctx) => {
+
+    idp.addListener('authorization.error', (error) => {
       console.log('authorization.error');
       console.error(error);
     });
 
-    idp.addListener('grant.success', (ctx) => {
+    idp.addListener('grant.success', () => {
       console.log('grant.success');
     });
 
-    idp.addListener('grant.error', (error, ctx) => {
+    idp.addListener('grant.error', (ctx) => {
       console.log('grant.error');
       console.error(ctx);
     });
 
-    idp.addListener('certificates.error', (error, ctx) => {
+    idp.addListener('certificates.error', (error) => {
       console.log('certificates.error');
       console.error(error);
     });
 
-    idp.addListener('discovery.error', (error, ctx) => {
+    idp.addListener('discovery.error', (error) => {
       console.log('discovery.error');
       console.error(error);
     });
 
-    idp.addListener('introspection.error', (error, ctx) => {
+    idp.addListener('introspection.error', (error) => {
       console.log('introspection.error');
       console.error(error);
     });
 
-    idp.addListener('revocation.error', (error, ctx) => {
+    idp.addListener('revocation.error', (error) => {
       console.log('revocation.error');
       console.error(error);
     });
 
-    idp.addListener('registration_create.success', (client, ctx) => {
+    idp.addListener('registration_create.success', () => {
       console.log('registration_create.success');
     });
 
-    idp.addListener('registration_create.error', (error, ctx) => {
+    idp.addListener('registration_create.error', (error) => {
       console.log('registration_create.error');
       console.error(error);
     });
 
-    idp.addListener('registration_read.error', (error, ctx) => {
+    idp.addListener('registration_read.error', (error) => {
       console.log('registration_read.error');
       console.error(error);
     });
 
-    idp.addListener('registration_update.success', (client, ctx) => {
+    idp.addListener('registration_update.success', () => {
       console.log('registration_update.success');
     });
 
-    idp.addListener('registration_update.error', (error, ctx) => {
+    idp.addListener('registration_update.error', (error) => {
       console.log('registration_update.error');
       console.error(error);
     });
 
-    idp.addListener('registration_delete.success', (client, ctx) => {
+    idp.addListener('registration_delete.success', () => {
       console.log('registration_delete.success');
     });
 
-    idp.addListener('registration_delete.error', (error, ctx) => {
+    idp.addListener('registration_delete.error', (error) => {
       console.log('registration_delete.error');
       console.error(error);
     });
 
-    idp.addListener('userinfo.error', (error, ctx) => {
+    idp.addListener('userinfo.error', (error) => {
       console.log('userinfo.error');
       console.error(error);
     });
 
-    idp.addListener('check_session.error', (error, ctx) => {
+    idp.addListener('check_session.error', (error) => {
       console.log('check_session.error');
       console.error(error);
     });
 
-    idp.addListener('check_session_origin.error', (error, ctx) => {
+    idp.addListener('check_session_origin.error', (error) => {
       console.log('check_session_origin.error');
       console.error(error);
     });
 
-    idp.addListener('webfinger.error', (error, ctx) => {
+    idp.addListener('webfinger.error', (error) => {
       console.log('webfinger.error');
       console.error(error);
     });
 
-    idp.addListener('token.issued', (token) => {
+    idp.addListener('token.issued', () => {
       console.log('token.issued');
     });
 
-    idp.addListener('token.consumed', (token) => {
+    idp.addListener('token.consumed', () => {
       console.log('token.consumed');
     });
 
-    idp.addListener('token.revoked', (token) => {
+    idp.addListener('token.revoked', () => {
       console.log('token.revoked');
     });
 
-    idp.addListener('grant.revoked', (grantId) => {
+    idp.addListener('grant.revoked', () => {
       console.log('grant.revoked');
     });
 
-    idp.addListener('end_session.success', (ctx) => {
+    idp.addListener('end_session.success', () => {
       console.log('end_session.success');
     });
-    idp.addListener('end_session.error', (error, ctx) => {
+    idp.addListener('end_session.error', (error) => {
       console.log('end_session.error');
       console.error(error);
     });
-    idp.addListener('backchannel.success', (client: Provider, accoundId: string, sid: string, ctx) => {
+
+    idp.addListener('backchannel.success', () => {
       console.log('backchannel.success');
     });
-    idp.addListener('backchannel.error', (error, client: Provider, accoundId: string, sid: string, ctx) => {
+
+    idp.addListener('backchannel.error', (error) => {
       console.log('backchannel.error');
       console.error(error);
     });
