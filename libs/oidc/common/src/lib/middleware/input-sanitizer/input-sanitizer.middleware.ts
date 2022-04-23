@@ -5,8 +5,6 @@ export function InputSanitizerMiddleware(req: Request, res: Response, next) {
   if (isEmptyObject(req.body)) {
     next();
   } else {
-    const propNames: string[] = [];
-
     if (req.body && req.body !== {}) {
       const keys = Object.keys(req.body);
 

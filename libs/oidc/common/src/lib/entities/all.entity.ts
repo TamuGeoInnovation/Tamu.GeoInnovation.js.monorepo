@@ -163,7 +163,7 @@ export class Account extends GuidIdentity {
   })
   public added: Date;
 
-  constructor(fullName: string, email: string) {
+  constructor(fullName: string) {
     super();
     if (fullName) {
       this.name = fullName;

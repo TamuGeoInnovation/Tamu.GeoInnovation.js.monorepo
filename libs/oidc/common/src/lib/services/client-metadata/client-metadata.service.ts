@@ -246,7 +246,7 @@ export class ClientMetadataService {
   public createRedirectUriEntities(_redirectUris: string[]) {
     const redirectUris: RedirectUri[] = [];
 
-    _redirectUris.forEach((value, i) => {
+    _redirectUris.forEach((value) => {
       const redirectUriPartial: Partial<RedirectUri> = {
         url: value
       };
@@ -261,7 +261,7 @@ export class ClientMetadataService {
   public createBackchannelLogoutUri(_backchannelLogoutUris: string[]) {
     const backchannelLogoutUris: BackchannelLogoutUri[] = [];
 
-    _backchannelLogoutUris.forEach((value, i) => {
+    _backchannelLogoutUris.forEach((value) => {
       const backchannelLogoutUri: Partial<BackchannelLogoutUri> = {
         url: value
       };

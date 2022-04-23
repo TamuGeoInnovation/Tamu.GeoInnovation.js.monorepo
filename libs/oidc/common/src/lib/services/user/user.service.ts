@@ -98,7 +98,7 @@ export class UserService {
    * Function used to insert a new user given an Express Request.
    */
   public async insertUser(user: User, name: string) {
-    const newAccount: Account = new Account(name, user.email);
+    const newAccount: Account = new Account(name);
     user.account = newAccount;
 
     const existingUser = await this.userRepo.findOne({
@@ -247,7 +247,7 @@ export class UserService {
   public async insertUserRole(user: User, role: Role, clientName: string) {
     const clients = await this.clientMetadataRepo.findAllShallow();
 
-    const requestedClient = clients.find((value, index) => {
+    const requestedClient = clients.find((value) => {
       if (clientName === value.clientName) {
         return value;
       }
