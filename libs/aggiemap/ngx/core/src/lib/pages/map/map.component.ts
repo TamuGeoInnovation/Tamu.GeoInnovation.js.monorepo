@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, ReplaySubject, of } from 'rxjs';
-import { mapTo, takeUntil, tap } from 'rxjs/operators';
+import { Subject, ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { loadModules } from 'esri-loader';
 

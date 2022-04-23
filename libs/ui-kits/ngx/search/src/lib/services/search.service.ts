@@ -1,4 +1,4 @@
-import { Component, Injectable, Type } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ReplaySubject, Observable, BehaviorSubject, forkJoin, of, from } from 'rxjs';
 import { toArray, concatMap, switchMap } from 'rxjs/operators';
