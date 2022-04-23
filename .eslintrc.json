@@ -27,6 +27,13 @@
       "rules": {}
     },
     {
+      "files": ["src/**/**.ts"],
+      "extends": ["plugin:@nrwl/nx/typescript"],
+      "rules": {
+        "@typescript-eslint/triple-slash-reference": "off"
+      }
+    },
+    {
       "files": ["*.js", "*.jsx"],
       "extends": ["plugin:@nrwl/nx/javascript"],
       "rules": {}
