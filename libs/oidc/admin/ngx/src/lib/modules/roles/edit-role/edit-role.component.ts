@@ -7,7 +7,7 @@ import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 import { Role } from '@tamu-gisc/oidc/common';
 
 @Component({
-  selector: 'edit-role',
+  selector: 'tamu-gisc-edit-role',
   templateUrl: './edit-role.component.html',
   styleUrls: ['./edit-role.component.scss']
 })
@@ -22,7 +22,7 @@ export class EditRoleComponent implements OnInit {
 
   public deleteRole(role: Role) {
     console.log('deleteRole', role);
-    this.rolesService.deleteRole(role).subscribe((deleteStatus) => {
+    this.rolesService.deleteRole(role).subscribe(() => {
       console.log('Deleted ', role.guid);
       this.fetchRoles();
     });

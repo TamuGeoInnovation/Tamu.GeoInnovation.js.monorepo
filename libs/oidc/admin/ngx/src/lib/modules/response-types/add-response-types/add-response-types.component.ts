@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ResponseTypesService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
-  selector: 'add-response-types',
+  selector: 'tamu-gisc-add-response-types',
   templateUrl: './add-response-types.component.html',
   styleUrls: ['./add-response-types.component.scss']
 })

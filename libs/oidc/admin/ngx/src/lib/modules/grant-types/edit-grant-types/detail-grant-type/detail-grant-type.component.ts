@@ -8,7 +8,7 @@ import { GrantTypesService } from '@tamu-gisc/oidc/admin/data-access';
 import { GrantType } from '@tamu-gisc/oidc/common';
 
 @Component({
-  selector: 'detail-grant-type',
+  selector: 'tamu-gisc-detail-grant-type',
   templateUrl: './detail-grant-type.component.html',
   styleUrls: ['./detail-grant-type.component.scss']
 })
@@ -31,10 +31,10 @@ export class DetailGrantTypeComponent implements OnInit {
       this.grantTypeService.getGrantType(this.grantTypeGuid).subscribe((grantType) => {
         this.grantType = grantType;
         this.form.patchValue(this.grantType);
-        this.form.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
+        this.form.valueChanges.pipe(debounceTime(1000)).subscribe(() => {
           this.grantTypeService
             .updateGrantType(this.form.getRawValue())
-            .subscribe((result) => [console.log('Updated grant type')]);
+            .subscribe(() => [console.log('Updated grant type')]);
         });
       });
     }

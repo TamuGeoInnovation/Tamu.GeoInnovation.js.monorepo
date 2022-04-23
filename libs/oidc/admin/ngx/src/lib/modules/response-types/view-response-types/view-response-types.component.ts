@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -6,16 +6,14 @@ import { ResponseTypesService } from '@tamu-gisc/oidc/admin/data-access';
 import { ResponseType } from '@tamu-gisc/oidc/common';
 
 @Component({
-  selector: 'view-response-types',
+  selector: 'tamu-gisc-view-response-types',
   templateUrl: './view-response-types.component.html',
   styleUrls: ['./view-response-types.component.scss']
 })
-export class ViewResponseTypesComponent implements OnInit {
+export class ViewResponseTypesComponent {
   public $responseTypes: Observable<Array<Partial<ResponseType>>>;
 
   constructor(private readonly responseService: ResponseTypesService) {
     this.$responseTypes = this.responseService.getResponseTypes();
   }
-
-  public ngOnInit(): void {}
 }

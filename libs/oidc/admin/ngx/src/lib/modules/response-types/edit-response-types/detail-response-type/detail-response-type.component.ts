@@ -8,7 +8,7 @@ import { ResponseTypesService } from '@tamu-gisc/oidc/admin/data-access';
 import { ResponseType } from '@tamu-gisc/oidc/common';
 
 @Component({
-  selector: 'detail-response-type',
+  selector: 'tamu-gisc-detail-response-type',
   templateUrl: './detail-response-type.component.html',
   styleUrls: ['./detail-response-type.component.scss']
 })
@@ -30,10 +30,10 @@ export class DetailResponseTypeComponent implements OnInit {
       this.responseService.getResponseType(this.responseTypeGuid).subscribe((responseType) => {
         this.responseType = responseType;
         this.form.patchValue(this.responseType);
-        this.form.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
+        this.form.valueChanges.pipe(debounceTime(1000)).subscribe(() => {
           this.responseService
             .updateResponseType(this.form.getRawValue())
-            .subscribe((result) => [console.log('Updated response type')]);
+            .subscribe(() => [console.log('Updated response type')]);
         });
       });
     }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
 import { Observable } from 'rxjs';
@@ -12,11 +12,11 @@ import {
 } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
-  selector: 'add-client-metadata',
+  selector: 'tamu-gisc-add-client-metadata',
   templateUrl: './add-client-metadata.component.html',
   styleUrls: ['./add-client-metadata.component.scss']
 })
-export class AddClientMetadataComponent implements OnInit {
+export class AddClientMetadataComponent {
   public clientForm: FormGroup;
   public $grantTypes: Observable<Array<Partial<GrantType>>>;
   public $responseTypes: Observable<Array<Partial<ResponseType>>>;
@@ -53,6 +53,4 @@ export class AddClientMetadataComponent implements OnInit {
     console.log('ClientMetadata...', val);
     this.clientService.createClientMetadata(val);
   }
-
-  public ngOnInit(): void {}
 }

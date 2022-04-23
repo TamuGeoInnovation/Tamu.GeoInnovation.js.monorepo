@@ -7,7 +7,7 @@ import { User } from '@tamu-gisc/oidc/common';
 import { UsersService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
-  selector: 'view-users',
+  selector: 'tamu-gisc-view-users',
   templateUrl: './view-users.component.html',
   styleUrls: ['./view-users.component.scss']
 })

@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { GrantTypesService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
-  selector: 'add-grant-types',
+  selector: 'tamu-gisc-add-grant-types',
   templateUrl: './add-grant-types.component.html',
   styleUrls: ['./add-grant-types.component.scss']
 })

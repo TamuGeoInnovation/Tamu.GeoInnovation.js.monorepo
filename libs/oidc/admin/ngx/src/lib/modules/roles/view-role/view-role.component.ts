@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -6,16 +6,14 @@ import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 import { Role } from '@tamu-gisc/oidc/common';
 
 @Component({
-  selector: 'view',
+  selector: 'tamu-gisc-view',
   templateUrl: './view-role.component.html',
   styleUrls: ['./view-role.component.scss']
 })
-export class ViewRoleComponent implements OnInit {
+export class ViewRoleComponent {
   public $roles: Observable<Array<Partial<Role>>>;
 
   constructor(private readonly rolesService: RolesService) {
     this.$roles = this.rolesService.getRoles();
   }
-
-  public ngOnInit(): void {}
 }

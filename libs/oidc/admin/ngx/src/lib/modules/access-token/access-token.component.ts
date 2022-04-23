@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'access-token',
+  selector: 'tamu-gisc-access-token',
   templateUrl: './access-token.component.html',
   styleUrls: ['./access-token.component.scss']
 })
-export class AccessTokenComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit(): void {}
-}
+export class AccessTokenComponent {}

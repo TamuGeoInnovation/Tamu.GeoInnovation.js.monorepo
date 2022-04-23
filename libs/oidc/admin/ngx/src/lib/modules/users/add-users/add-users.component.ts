@@ -7,7 +7,7 @@ import { SecretQuestion } from '@tamu-gisc/oidc/common';
 import { UsersService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
-  selector: 'add-users',
+  selector: 'tamu-gisc-add-users',
   templateUrl: './add-users.component.html',
   styleUrls: ['./add-users.component.scss']
 })

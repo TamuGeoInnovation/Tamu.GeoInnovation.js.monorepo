@@ -8,7 +8,7 @@ import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/common';
 import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
-  selector: 'detail-token-auth-method',
+  selector: 'tamu-gisc-detail-token-auth-method',
   templateUrl: './detail-token-auth-method.component.html',
   styleUrls: ['./detail-token-auth-method.component.scss']
 })
@@ -31,10 +31,10 @@ export class DetailTokenAuthMethodComponent implements OnInit {
       this.tokenService.getTokenAuthMethod(this.tokenAuthMethodGuid).subscribe((tokenAuthMethod) => {
         this.tokenAuthMethod = tokenAuthMethod;
         this.form.patchValue(this.tokenAuthMethod);
-        this.form.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
+        this.form.valueChanges.pipe(debounceTime(1000)).subscribe(() => {
           this.tokenService
             .updateTokenEndpointAuthMethod(this.form.getRawValue())
-            .subscribe((result) => [console.log('Updated details')]);
+            .subscribe(() => [console.log('Updated details')]);
         });
       });
     }
