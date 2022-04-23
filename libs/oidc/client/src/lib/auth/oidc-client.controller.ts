@@ -32,7 +32,7 @@ export class OidcClientController {
 
   @UseGuards(AdminRoleGuard)
   @Get('/admin')
-  public admin(@Request() req) {
+  public admin() {
     return {
       greeting: 'Hello admin'
     };
@@ -40,7 +40,7 @@ export class OidcClientController {
 
   @UseGuards(ManagerRoleGuard)
   @Get('/manager')
-  public manager(@Request() req) {
+  public manager() {
     return {
       greeting: 'Hello manager or admin'
     };
@@ -48,7 +48,7 @@ export class OidcClientController {
 
   @UseGuards(UserRoleGuard)
   @Get('/user')
-  public user(@Request() req) {
+  public user() {
     return {
       greeting: 'Hello user, manager, or admin'
     };

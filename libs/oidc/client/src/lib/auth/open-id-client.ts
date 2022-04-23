@@ -25,11 +25,15 @@ export class OpenIdClient {
   /**
    * Used to initialize our static client; discovers all the endpoints from discovery doc on IdP
    */
-  public static async build(clientMetadata: ClientMetadata, clientParams: {}, issuerUrl: string): Promise<OidcClient> {
+  public static async build(
+    clientMetadata: ClientMetadata,
+    clientParams: { [key: string]: string | number | boolean },
+    issuerUrl: string
+  ): Promise<OidcClient> {
     this.params = clientParams;
     const { Client } = await Issuer.discover(issuerUrl);
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       OpenIdClient.client = new Client(clientMetadata);
       OpenIdClient.code_verifier = generators.codeVerifier();
       OpenIdClient.code_challenge = generators.codeChallenge(OpenIdClient.code_verifier);
@@ -65,7 +69,7 @@ export class AuthStrategy extends PassportStrategy(Strategy, OpenIdClient.strate
    * @returns
    * @memberof AuthStrategy
    */
-  public async validate(tokenset, userinfo, done) {
+  public async validate(tokenset, userinfo) {
     if (!userinfo) {
       throw new UnauthorizedException();
     }
