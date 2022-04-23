@@ -2,7 +2,8 @@ parameters:
   excludedProjects: ''
 
 jobs:
-  - job: Tag
+  - job:
+    displayName: Add Build Tags
     steps:
       - template: ../tasks/cacheOrRestoreDependencies.yml
       - bash: |

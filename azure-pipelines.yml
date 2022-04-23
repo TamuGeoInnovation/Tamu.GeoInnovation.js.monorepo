@@ -11,7 +11,7 @@ variables:
     ${{ if eq(variables['Build.SourceBranchName'], 'development') }}:
       value: origin/development~ # Affected base if build branch name is development
     ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
-      value: origin/maser~ # Affected base if build branch name is master
+      value: origin/master~ # Affected base if build branch name is master
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -21,12 +21,14 @@ stages:
     jobs:
       - template: templates/jobs/cacheOrRestoreDependencies.yml
 
+  - stage: Lint
+    dependsOn: Dependencies
+    jobs:
+      - template: templates/jobs/lintProjects.yml
+
   - stage: Build
     dependsOn: Dependencies
     jobs:
-      - template: templates/jobs/buildTags.yml
-        parameters:
-          excludedProjects: $(excludedProjects)
       - template: templates/jobs/build.yml
         parameters:
           buildType: development
@@ -38,4 +40,11 @@ stages:
       - template: templates/jobs/build.yml
         parameters:
           buildType: production
+          excludedProjects: $(excludedProjects)
+
+  - stage: Tag
+    dependsOn: Build
+    jobs:
+      - template: templates/jobs/buildTags.yml
+        parameters:
           excludedProjects: $(excludedProjects)
