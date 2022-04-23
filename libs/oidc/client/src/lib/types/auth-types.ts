@@ -19,6 +19,6 @@ export type AuthUrl = string;
 
 export interface ClientConfiguration {
   metadata: ClientMetadata;
-  parameters: object;
+  parameters: { [key: string]: string | boolean | number };
   issuer_url: string;
 }
