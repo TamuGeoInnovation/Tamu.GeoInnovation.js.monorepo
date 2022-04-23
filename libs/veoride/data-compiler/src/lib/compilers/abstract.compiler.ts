@@ -34,7 +34,6 @@ export abstract class AbstractVeorideDataCompiler<T extends BaseEntity> {
    * @param {SelectQueryBuilder<T>} builder Constructed resource query builder
    * @param {*} resourceQueryParameters Serialized query parameters from the data task parameters column
    */
-  // tslint:disable-next-line: no-any
   public abstract select(builder: SelectQueryBuilder<T>, resourceQueryParameters: unknown): SelectQueryBuilder<T>;
 
   public writeTo(path: string): Promise<void> {

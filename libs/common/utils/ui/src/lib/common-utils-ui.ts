@@ -7,7 +7,7 @@
  */
 export function arrowKeyControl(event: KeyboardEvent, action: string, target: string): void {
   // Catch up and down arrow keys
-  // tslint:disable-next-line
+
   if ([38, 40].includes(event.keyCode)) {
     if (action === 'focus') {
       const elementList = Array.from((event.currentTarget as HTMLElement).parentElement.querySelectorAll(target));
@@ -17,22 +17,21 @@ export function arrowKeyControl(event: KeyboardEvent, action: string, target: st
       });
 
       if (indexOfFocused > -1) {
-        // tslint:disable-next-line
         if (event.keyCode === 40) {
           if (indexOfFocused < elementList.length - 1) {
             (elementList[indexOfFocused + 1] as HTMLElement).focus({ preventScroll: false });
           }
-          // tslint:disable-next-line
         } else if (event.keyCode === 38) {
           if (indexOfFocused > 0) {
             (elementList[indexOfFocused - 1] as HTMLElement).focus({ preventScroll: false });
           } else {
-            ((event.currentTarget as HTMLElement).parentElement.querySelector(
-              '.input-action-container input'
-            ) as HTMLElement).focus({ preventScroll: false });
+            (
+              (event.currentTarget as HTMLElement).parentElement.querySelector(
+                '.input-action-container input'
+              ) as HTMLElement
+            ).focus({ preventScroll: false });
           }
         }
-        // tslint:disable-next-line
       } else if (elementList.length > 0 && event.keyCode === 40) {
         (elementList[0] as HTMLElement).focus({ preventScroll: false });
       }

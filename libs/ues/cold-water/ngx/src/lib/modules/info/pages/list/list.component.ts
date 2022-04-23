@@ -61,7 +61,6 @@ export class ListComponent implements OnInit, OnDestroy {
         return term;
       }),
       // The below use case is NOT actually deprecated. IDE is wrong.
-      // tslint:disable-next-line: deprecation
       startWith(undefined),
       shareReplay()
     );

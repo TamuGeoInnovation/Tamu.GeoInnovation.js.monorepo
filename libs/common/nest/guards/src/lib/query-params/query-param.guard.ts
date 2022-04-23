@@ -6,7 +6,6 @@ export class QueryParamGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
-    // tslint:disable-next-line: no-any
     const decoratorArgs = this.reflector.get<[string[], typeof Error]>('RequiredQueryParams', context.getHandler());
 
     // If there are no params to check, cannot definitively validate request,

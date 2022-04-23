@@ -48,7 +48,6 @@ export class GeoJSONPoint {
   public geometry = { type: 'Point', coordinates: [0, 0] };
   public properties = {};
 
-  // tslint:disable-next-line: no-any
   constructor(properties: {
     latitude: number;
     longitude: number;
