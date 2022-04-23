@@ -1,10 +1,10 @@
-import { ArgumentMetadata, HttpException, Injectable, PipeTransform } from '@nestjs/common';
+import { HttpException, Injectable, PipeTransform } from '@nestjs/common';
 
-import { MailroomOutbound } from '@tamu-gisc/mailroom/common';
+import { MailroomOutbound } from '../types/mail.types';
 
 @Injectable()
 export class OutboundPipe implements PipeTransform {
-  public transform(value, metadata: ArgumentMetadata) {
+  public transform(value) {
     const keys = Object.keys(value);
 
     const ret: Partial<MailroomOutbound> = {};
