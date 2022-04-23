@@ -18,7 +18,8 @@
         "lintFilePatterns": [
           "libs/gisday/platform/ngx/data-access/src/**/*.ts",
           "libs/gisday/platform/ngx/data-access/src/**/*.html"
-        ]
+        ],
+        "force": true
       }
     }
   },

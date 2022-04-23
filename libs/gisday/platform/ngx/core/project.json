@@ -15,7 +15,8 @@
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "options": {
-        "lintFilePatterns": ["libs/gisday/platform/ngx/core/src/**/*.ts", "libs/gisday/platform/ngx/core/src/**/*.html"]
+        "lintFilePatterns": ["libs/gisday/platform/ngx/core/src/**/*.ts", "libs/gisday/platform/ngx/core/src/**/*.html"],
+        "force": true
       }
     }
   },
