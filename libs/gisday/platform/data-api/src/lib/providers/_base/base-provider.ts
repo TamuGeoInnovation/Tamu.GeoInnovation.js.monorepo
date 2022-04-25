@@ -1,11 +1,11 @@
-import { DeepPartial } from 'typeorm';
+import { InternalServerErrorException } from '@nestjs/common';
 
-import { Request } from 'express';
+import { DeepPartial } from 'typeorm';
 import * as deepmerge from 'deepmerge';
 
 import { CommonRepo, EntityName, EntityRelationsLUT } from '../../entities/all.entity';
 
-export abstract class BaseProvider<T> implements IBaseProvider<T> {
+export abstract class BaseProvider<T> {
   constructor(private readonly repo: CommonRepo<T>, entityName?: EntityName) {}
 
   public async getEntity(guid: string) {
@@ -72,15 +72,7 @@ export abstract class BaseProvider<T> implements IBaseProvider<T> {
     if (entity) {
       return this.repo.remove(entity);
     } else {
-      throw new Error('Could not find entity to delete');
+      throw new InternalServerErrorException();
     }
   }
-}
-
-export interface IBaseProvider<T> {
-  getEntity(guid: string);
-  getEntities();
-  insertEntity(req: DeepPartial<T>);
-  updateEntity(req: DeepPartial<T>, entityName: string);
-  deleteEntity(guid: string);
 }

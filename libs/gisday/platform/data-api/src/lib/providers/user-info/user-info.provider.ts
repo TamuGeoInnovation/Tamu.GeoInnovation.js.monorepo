@@ -17,6 +17,7 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
         accountGuid: accountGuid
       }
     });
+
     return userInfo;
   }
 
@@ -26,8 +27,10 @@ export class UserInfoProvider extends BaseProvider<UserInfo> {
         accountGuid: accountGuid
       }
     });
+
     if (entity) {
       const merged = deepmerge(entity as Partial<UserInfo>, _updatedUserInfo);
+
       return this.userInfoRepo.save(merged);
     } else {
       // throw new Error('Could not find entity to update');

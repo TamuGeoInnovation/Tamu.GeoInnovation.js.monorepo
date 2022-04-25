@@ -112,6 +112,7 @@ export class EventProvider extends BaseProvider<Event> {
   public async getEntitiesByDay(accountGuid?: string) {
     const entities = await this.eventRepo.getAllCurrentSeasonByStartTime();
     // TODO: Update days to reflect those days that GIS Day is held
+    // TODO: This whole function needs to be redone probably
     const days = ['15', '16', '17'];
     const newEntities = {};
 
@@ -130,8 +131,8 @@ export class EventProvider extends BaseProvider<Event> {
         }
       });
       days.forEach((day, index) => {
-        const dayEvents = entities.filter((event) => {
-          // const dateString = event.date.toISOString();
+        const dayEvents = entities.filter(() => {
+          // const dateString = event.startTime.toISOString();
           // return dateString.indexOf(day) !== -1;
         });
         newEntities[`day${index}`] = dayEvents;
@@ -139,7 +140,7 @@ export class EventProvider extends BaseProvider<Event> {
       return newEntities;
     } else {
       days.forEach((day, index) => {
-        const dayEvents = entities.filter((event) => {
+        const dayEvents = entities.filter(() => {
           // const dateString = event.date.toISOString();
           // return dateString.indexOf(day) !== -1;
         });
@@ -155,6 +156,7 @@ export class EventProvider extends BaseProvider<Event> {
         guid: eventGuid
       }
     });
+
     if (event) {
       return this.userRsvpRepo.count({
         where: {

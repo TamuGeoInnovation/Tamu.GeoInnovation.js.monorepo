@@ -16,8 +16,9 @@ import {
   JoinTable,
   Repository
 } from 'typeorm';
-
 import { v4 as guid } from 'uuid';
+
+import { ValidObject } from '@tamu-gisc/oidc/common';
 
 @Entity()
 export class OldCompetitionEntity extends BaseEntity {
@@ -92,7 +93,14 @@ export class OldCompetitionEntity extends BaseEntity {
         coordinates: [this.longitude, this.latitude]
       },
       properties: {
-        ...this
+        latitude: this.latitude,
+        longitude: this.longitude,
+        accuracy: this.accuracy,
+        fixTime: this.fixTime,
+        heading: this.heading,
+        altitude: this.altitude,
+        altitudeAccuracy: this.altitudeAccuracy,
+        speed: this.speed
       }
     };
   }
@@ -138,22 +146,23 @@ export class GISDayEntity extends GuidIdentity {
 @Entity({
   name: 'events_old'
 })
+// Keeping OldEvent for if we need to use the old format due new site not working with new format
 export class OldEvent extends GISDayEntity {
-  // @ManyToMany((type) => Speaker, { cascade: true })
-  // @JoinTable({ name: 'event_speakers' })
-  // public speakers?: Speaker[];
+  @ManyToMany(() => Speaker, { cascade: true })
+  @JoinTable({ name: 'event_speakers' })
+  public speakers?: Speaker[];
 
-  // @ManyToMany((type) => Sponsor, { cascade: true })
-  // @JoinTable({ name: 'event_sponsors' })
-  // public sponsors?: Sponsor[];
+  @ManyToMany(() => Sponsor, { cascade: true })
+  @JoinTable({ name: 'event_sponsors' })
+  public sponsors?: Sponsor[];
 
-  // @ManyToMany((type) => Tag, { cascade: true })
-  // @JoinTable({ name: 'event_tags' })
-  // public tags?: Tag[];
+  @ManyToMany(() => Tag, { cascade: true })
+  @JoinTable({ name: 'event_tags' })
+  public tags?: Tag[];
 
-  // @ManyToMany((type) => CourseCredit, { cascade: true })
-  // @JoinTable({ name: 'event_course_credits' })
-  // public courseCredit?: CourseCredit[]; // CourseCredit[]
+  @ManyToMany(() => CourseCredit, { cascade: true })
+  @JoinTable({ name: 'event_course_credits' })
+  public courseCredit?: CourseCredit[];
 
   @Column({ nullable: true })
   public observedAttendeeStart: number;
@@ -266,21 +275,21 @@ export class EventLocation extends GuidIdentity {
   name: 'events'
 })
 export class Event extends GISDayEntity {
-  @ManyToMany((type) => Speaker, { cascade: true })
+  @ManyToMany(() => Speaker, { cascade: true })
   @JoinTable({ name: 'event_speakers' })
   public speakers?: Speaker[];
 
-  // @ManyToMany((type) => Sponsor, { cascade: true })
-  // @JoinTable({ name: 'event_sponsors' })
-  // public sponsors?: Sponsor[];
+  @ManyToMany(() => Sponsor, { cascade: true })
+  @JoinTable({ name: 'event_sponsors' })
+  public sponsors?: Sponsor[];
 
-  @ManyToMany((type) => Tag, { cascade: true })
+  @ManyToMany(() => Tag, { cascade: true })
   @JoinTable({ name: 'event_tags' })
   public tags?: Tag[];
 
-  // @ManyToMany((type) => CourseCredit, { cascade: true })
-  // @JoinTable({ name: 'event_course_credits' })
-  // public courseCredit?: CourseCredit[]; // CourseCredit[]
+  @ManyToMany(() => CourseCredit, { cascade: true })
+  @JoinTable({ name: 'event_course_credits' })
+  public courseCredit?: CourseCredit[];
 
   @OneToOne(() => EventBroadcast, { cascade: true, nullable: true })
   @JoinColumn()
@@ -326,11 +335,11 @@ export class Event extends GISDayEntity {
   @Column({ nullable: true })
   public presentationType: string;
 
-  @Column({ nullable: false })
-  public isAcceptingRsvps: boolean = true;
+  @Column({ nullable: false, default: true })
+  public isAcceptingRsvps: boolean;
 
-  @Column({ nullable: false })
-  public isBringYourOwnDevice: boolean = false;
+  @Column({ nullable: false, default: false })
+  public isBringYourOwnDevice: boolean;
 
   @Column({ nullable: true })
   public requirements: string;
@@ -360,7 +369,7 @@ export class QuestionType extends GuidIdentity {
   name: 'initial_survey_questions'
 })
 export class InitialSurveyQuestion extends GuidIdentity {
-  @ManyToOne((type) => QuestionType, (token) => token.question, { eager: true })
+  @ManyToOne(() => QuestionType, (token) => token.question, { eager: true })
   public questionType: QuestionType;
 
   @Column({ nullable: true })
@@ -381,7 +390,7 @@ export class InitialSurveyResponse extends GISDayEntity {
   @Column({ nullable: false })
   public accountGuid: string; // User
 
-  @ManyToOne((type) => InitialSurveyQuestion, { cascade: true, eager: true })
+  @ManyToOne(() => InitialSurveyQuestion, { cascade: true, eager: true })
   @JoinColumn()
   public question: InitialSurveyQuestion;
 
@@ -420,7 +429,7 @@ export class SpeakerRole extends GuidIdentity {
 }
 
 export class MSSQLImage {
-  public type: '' | '';
+  public type: 'jpg' | 'png';
   public data: Uint8Array;
 }
 
@@ -431,7 +440,7 @@ export class SpeakerInfo extends GuidIdentity {
   @Column({ nullable: true })
   public graduationYear: string;
 
-  @ManyToOne((type) => University, { cascade: true, nullable: true })
+  @ManyToOne(() => University, { cascade: true, nullable: true })
   @JoinColumn()
   public university?: University;
 
@@ -479,15 +488,11 @@ export class Speaker extends GISDayEntity {
   @Column({ nullable: true })
   public organization: string;
 
-  @OneToOne((type) => SpeakerInfo, { cascade: true, nullable: true })
+  @OneToOne(() => SpeakerInfo, { cascade: true, nullable: true })
   @JoinColumn()
   public speakerInfo: SpeakerInfo;
 
   public inEvent?: boolean;
-
-  // @ManyToMany((type) => SpeakerRole)
-  // @JoinTable({ name: 'speaker_speaker_roles' })
-  // public speakerRole: SpeakerRole;
 
   constructor() {
     super();
@@ -539,7 +544,7 @@ export class Sponsor extends GISDayEntity {
   name: 'checkins'
 })
 export class CheckIn extends GISDayEntity {
-  @OneToOne((type) => Event, { cascade: true, eager: true })
+  @OneToOne(() => Event, { cascade: true, eager: true })
   @JoinColumn()
   public event: Event;
 
@@ -578,7 +583,7 @@ export class Class extends GISDayEntity {
   name: 'course_credits'
 })
 export class CourseCredit extends GISDayEntity {
-  @ManyToOne((type) => Class, { cascade: true })
+  @ManyToOne(() => Class, { cascade: true })
   @JoinColumn()
   public class: Class;
 
@@ -642,7 +647,7 @@ export class UserInfo extends GuidIdentity {
   name: 'user_classes'
 })
 export class UserClass extends GISDayEntity {
-  @OneToOne((type) => Class, { cascade: true, eager: true })
+  @OneToOne(() => Class, { cascade: true, eager: true })
   @JoinColumn()
   public class: Class;
 
@@ -661,11 +666,11 @@ export class UserRsvp extends GISDayEntity {
   @Column({ nullable: false })
   public accountGuid: string; // User
 
-  @OneToOne((type) => Event, { cascade: true, eager: true })
+  @OneToOne(() => Event, { cascade: true, eager: true })
   @JoinColumn()
   public event: Event;
 
-  @OneToOne((type) => RsvpType, { cascade: true, eager: true })
+  @OneToOne(() => RsvpType, { cascade: true, eager: true })
   @JoinColumn()
   public rsvpType: RsvpType;
 
@@ -693,7 +698,7 @@ export class UserSubmission extends GISDayEntity {
   @Column({ nullable: false })
   public link: string;
 
-  @OneToOne((type) => SubmissionType, { cascade: true, eager: true })
+  @OneToOne(() => SubmissionType, { cascade: true, eager: true })
   @JoinColumn()
   public submissionType: SubmissionType; // Submission Type?
 
@@ -911,7 +916,7 @@ export class EventRepo extends CommonRepo<Event> {
       .leftJoinAndSelect('events.speakers', 'speakers')
       .orderBy('startTime', 'ASC')
       .where(`events.season = :season`, {
-        season: '2019'
+        season: '2022'
       })
       .getMany();
   }
@@ -1035,5 +1040,5 @@ export interface IGeoJsonFeature {
     type: string;
     coordinates: number[];
   };
-  properties: {};
+  properties: ValidObject;
 }

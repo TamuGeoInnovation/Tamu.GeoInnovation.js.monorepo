@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
+import { DeepPartial } from 'typeorm';
 import { Request } from 'express';
-import * as deepmerge from 'deepmerge';
 
 import {
   Speaker,
@@ -31,95 +30,61 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       },
       relations: ['speakerInfo']
     });
-    // speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.toString('base64');
+
     return speaker;
   }
 
   public async getPresenters() {
     const speakers = await this.speakerRepo.getPresenters();
+
     speakers.forEach((speaker) => {
-      // if (speaker.speakerInfo.blob) {
-      //   speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.toString('base64');
-      // }
+      if (speaker.speakerInfo.blob) {
+        speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.data.toString();
+      }
     });
+
     return speakers;
   }
 
-  // public async getSpeakerPhoto(guid: string) {
-  //   const speakerInfo = await this.speakerInfoRepo.findOne({
-  //     where: {
-  //       guid: guid
-  //     }
-  //   });
-  //   if (speakerInfo) {
-  //     return speakerInfo.blob.toString('base64');
-  //   } else {
-  //     throw new Error('Could not find speakerInfo with provided guid');
-  //   }
-  // }
-
-  // public async updateWithInfo(incoming: DeepPartial<Speaker>, file?) {
-  //   const existing = await this.speakerRepo.findOne({
-  //     where: {
-  //       guid: incoming.guid
-  //     },
-  //     relations: EntityRelationsLUT.getRelation('speaker')
-  //   });
-
-  //   if (file != null || file != undefined) {
-  //     existing.speakerInfo.blob = file.buffer;
-  //   }
-
-  //   const incomingKeys = Object.keys(existing);
-  //   incomingKeys.forEach((key) => {
-  //     // if key exists in existing, set existings value to whatever incomings is
-  //     if (existing[key]) {
-  //       existing[key] = incoming[key] ? incoming[key] : null;
-  //     } else if (existing.speakerInfo[key]) {
-  //       existing.speakerInfo[key] = incoming[key] ? incoming[key] : null;
-  //     }
-  //   });
-
-  //   // const speakerKeys = Object.keys(existing);
-  //   // speakerKeys.forEach((key) => {
-  //   //   // if key exists in incoming, set existings value to whatever incomings is
-  //   //   if (incoming[key]) {
-  //   //     existing[key] = incoming[key] ? incoming[key] : null;
-  //   //   }
-  //   // });
-
-  //   // const infoKeys = Object.keys(existing.speakerInfo);
-  //   // infoKeys.forEach((key) => {
-  //   //   if (incoming[key] && key !== 'guid') {
-  //   //     existing.speakerInfo[key] = incoming[key] ? incoming[key] : null;
-  //   //   }
-  //   // });
-
-  //   existing.updated = new Date(Date.now());
-
-  //   existing.save();
-  // }
-
-  public async update(incoming: DeepPartial<Speaker>, file?) {
-    try {
-      const info = this.speakerInfoRepo.create(incoming.speakerInfo);
-
-      const existingSpeaker = await this.speakerRepo.findOne({
-        where: {
-          guid: incoming.guid
-        }
-      });
-
-      incoming.speakerInfo = info;
-
-      const updatedSpeaker = this.speakerRepo.create(incoming);
-
-      if (updatedSpeaker) {
-        return updatedSpeaker.save();
+  public async getSpeakerPhoto(guid: string) {
+    const speakerInfo = await this.speakerInfoRepo.findOne({
+      where: {
+        guid: guid
       }
-    } catch (error) {
-      throw new Error('Could not update speaker');
+    });
+
+    if (speakerInfo) {
+      return speakerInfo.blob.data.toString();
+    } else {
+      throw new InternalServerErrorException(null, 'Could not find speakerInfo with provided guid');
     }
+  }
+
+  public async updateWithInfo(incoming: DeepPartial<Speaker>, file?) {
+    const existing = await this.speakerRepo.findOne({
+      where: {
+        guid: incoming.guid
+      },
+      relations: EntityRelationsLUT.getRelation('speaker')
+    });
+
+    if (file != null || file != undefined) {
+      existing.speakerInfo.blob = file.buffer;
+    }
+
+    const incomingKeys = Object.keys(existing);
+    incomingKeys.forEach((key) => {
+      // if key exists in existing, set existings value to whatever incomings is
+      if (existing[key]) {
+        existing[key] = incoming[key] ? incoming[key] : null;
+      } else if (existing.speakerInfo[key]) {
+        existing.speakerInfo[key] = incoming[key] ? incoming[key] : null;
+      }
+    });
+
+    existing.updated = new Date(Date.now());
+
+    existing.save();
   }
 
   public async insertWithInfo(_speaker: DeepPartial<Speaker>, file?) {
@@ -130,10 +95,8 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     }
 
     _speaker.speakerInfo = speakerInfoEnt;
-    // speakerInfoEnt.save();
-    const speakerEnt = this.speakerRepo.create(_speaker);
 
-    // const speaker = await this.speakerRepo.save(speakerEnt);
+    const speakerEnt = this.speakerRepo.create(_speaker);
 
     if (speakerEnt) {
       const university = await this.uniRepo.findOne({
@@ -141,21 +104,14 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
           guid: _speaker.speakerInfo.university ? _speaker.speakerInfo.university : ''
         }
       });
-      // const _photo: DeepPartial<SpeakerInfo> = {
-      //   ..._speaker.speakerInfo,
-      //   university: university,
-      //   blob: file.buffer
-      // };
-      // const photo = await this.speakerInfoRepo.create(_photo);
+
       if (university) {
         speakerInfoEnt.university = university;
       }
-      // const speakerInfo = await this.speakerInfoRepo.save(photo);
-      // speakerEnt.speakerInfo = speakerInfo;
-      // speakerInfoEnt.save();
+
       return speakerEnt.save();
     } else {
-      throw new Error(`Could not create speaker`);
+      throw new InternalServerErrorException(null, 'Could not create speaker');
     }
   }
 
@@ -165,18 +121,21 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         guid: speakerGuid
       }
     });
+
     if (speaker) {
       const _photo: Partial<SpeakerInfo> = {
         ...req.body,
         speaker: speaker,
         blob: file.buffer
       };
+
       const photo = await this.speakerInfoRepo.create(_photo);
       const speakerInfo = await this.speakerInfoRepo.save(photo);
       speaker.speakerInfo = speakerInfo;
+
       return speaker.save();
     } else {
-      throw new Error(`Speaker ${speakerGuid} not found`);
+      throw new InternalServerErrorException(null, `Speaker could not be found`);
     }
   }
 }

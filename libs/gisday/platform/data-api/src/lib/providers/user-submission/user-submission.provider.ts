@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { SubmissionTypeRepo, UserSubmission, UserSubmissionRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
@@ -18,13 +18,16 @@ export class UserSubmissionProvider extends BaseProvider<UserSubmission> {
         guid: _userSubmission.submissionType
       }
     });
+
     if (submissionType) {
       _userSubmission.accountGuid = accountGuid;
       _userSubmission.submissionType = submissionType;
+
       const userSubmission = this.userSubmissionRepo.create(_userSubmission);
+
       return this.userSubmissionRepo.save(userSubmission);
     } else {
-      throw new HttpException('Could not find submission type', HttpStatus.PARTIAL_CONTENT);
+      throw new InternalServerErrorException(null, 'Could not find submission type');
     }
   }
 }

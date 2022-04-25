@@ -1,12 +1,10 @@
-import { Body, Controller, Get, Param, Patch, Post, Request, UseGuards, UseInterceptors } from '@nestjs/common';
-import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 
-import jwtDecode from 'jwt-decode';
+import { DeepPartial } from 'typeorm';
 
 import { Event } from '../../entities/all.entity';
 import { EventProvider } from '../../providers/event/event.provider';
 import { BaseController } from '../../controllers/_base/base.controller';
-import { DeepPartial } from 'typeorm';
 
 @Controller('event')
 export class EventController extends BaseController<Event> {
@@ -25,22 +23,13 @@ export class EventController extends BaseController<Event> {
   }
 
   @Get('by-day')
-  public async getEntitiesByDay(@Request() req) {
-    // const accountGuid = req.user.sub;
-    // const jwt = req.headers['authorization'];
-    // need to make a check here or somewhere for 'Bearer null'
-    // const accessToken: {
-    //   sub: string;
-    // } = jwtDecode(jwt);
-    // const joe = req;
-    // return;
+  public async getEntitiesByDay() {
     return this.eventProvider.getEntitiesByDay();
   }
 
   @Post()
   public async insertEvent(@Body() body: DeepPartial<Event>) {
-    const _newEvent: DeepPartial<Event> = body;
-    return this.eventProvider.insertEvent(_newEvent);
+    return this.eventProvider.insertEvent(body);
   }
 
   @Patch()

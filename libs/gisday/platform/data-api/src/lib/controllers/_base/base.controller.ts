@@ -1,11 +1,12 @@
-import { Controller, Delete, Get, Param, Patch, Post, Request } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
-import { EntityName } from '../../entities/all.entity';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 
+import { DeepPartial } from 'typeorm';
+
+import { EntityName } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
 
 @Controller()
-export abstract class BaseController<T> implements IBaseController<T> {
+export abstract class BaseController<T> {
   private entityName: EntityName;
 
   constructor(private readonly provider: BaseProvider<T>, entityName?: EntityName) {
@@ -28,35 +29,20 @@ export abstract class BaseController<T> implements IBaseController<T> {
   }
 
   @Post()
-  public async insertEntity(@Request() req) {
-    if (req.user) {
-      req.body.accountGuid = req.user.sub;
-    }
-    const _entity: DeepPartial<T> = req.body;
-
-    return this.provider.insertEntity(_entity);
+  public async insertEntity(@Body() body: DeepPartial<T>) {
+    // TODO: Add AuthGuard here: libs\gisday\platform\data-api\src\lib\guards\auth.guard.ts
+    return this.provider.insertEntity(body);
   }
 
   @Patch()
-  public async updateEntity(@Request() req) {
-    // if (req.user) {
-    //   req.body.accountGuid = req.user.sub;
-    // }
-    const _entity: DeepPartial<T> = req.body;
-
-    return this.provider.updateEntity(_entity, this.entityName);
+  public async updateEntity(@Body() body: DeepPartial<T>) {
+    // TODO: Add AuthGuard here: libs\gisday\platform\data-api\src\lib\guards\auth.guard.ts
+    return this.provider.updateEntity(body, this.entityName);
   }
 
   @Delete(':guid')
   public async deleteEntity(@Param() params) {
+    // TODO: Add AuthGuard here: libs\gisday\platform\data-api\src\lib\guards\auth.guard.ts
     return this.provider.deleteEntity(params.guid);
   }
-}
-
-export interface IBaseController<T> {
-  getEntity(guid: string);
-  getEntities();
-  insertEntity(req: DeepPartial<T>);
-  updateEntity(req: DeepPartial<T>);
-  deleteEntity(guid: string);
 }

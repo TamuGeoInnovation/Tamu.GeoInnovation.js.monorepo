@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc/client';
+import { OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc/client';
 
 import {
   CheckIn,
@@ -44,15 +44,11 @@ import {
   SpeakerRoleModule
 } from '@tamu-gisc/gisday/platform/data-api';
 
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { localDbConfig } from '../environments/ormconfig';
 
 @Module({
   imports: [
-    // OidcClientModule.forRoot({
-    //   host: 'http://localhost:4200'
-    // }),
     TypeOrmModule.forRoot({
       ...localDbConfig,
       entities: [
@@ -66,7 +62,6 @@ import { localDbConfig } from '../environments/ormconfig';
         InitialSurveyResponse,
         QuestionType,
         RsvpType,
-        // Session,
         Speaker,
         SpeakerInfo,
         SpeakerRole,

@@ -38,6 +38,6 @@ interface IDecoded {
   sid: string;
 }
 
-interface ValidObject {
+export interface ValidObject {
   [key: string]: boolean | string | number | ValidObject;
 }

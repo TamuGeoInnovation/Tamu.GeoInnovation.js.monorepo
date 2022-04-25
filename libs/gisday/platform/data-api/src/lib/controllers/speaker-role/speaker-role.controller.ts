@@ -1,9 +1,6 @@
-import { Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 
-import { Request } from 'express';
-
-import { SpeakerRole } from '@tamu-gisc/gisday/platform/data-api';
-
+import { SpeakerRole } from '../../entities/all.entity';
 import { BaseController } from '../../controllers/_base/base.controller';
 import { SpeakerRoleProvider } from '../../providers/speaker-role/speaker-role.provider';
 
@@ -14,13 +11,14 @@ export class SpeakerRoleController extends BaseController<SpeakerRole> {
   }
 
   @Post('/all')
-  public async insertSpeakerRoles(@Req() req: Request) {
-    const _roles: Partial<SpeakerRole>[] = req.body.roles.map((value: SpeakerRole) => {
+  public async insertSpeakerRoles(@Body() body) {
+    const _roles: Partial<SpeakerRole>[] = body.roles.map((value: SpeakerRole) => {
       const tag: Partial<SpeakerRole> = {
         name: value.name
       };
       return tag;
     });
+
     return this.speakerRoleProvider.insertRoles(_roles);
   }
 }
