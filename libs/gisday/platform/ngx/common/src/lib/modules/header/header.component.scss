@@ -3,7 +3,6 @@
 
 .logo-container {
   font-size: 3.5rem;
-  display: none !important;
 
   &.opaque {
     display: initial !important;
@@ -118,6 +117,7 @@ nav#off-canvas-menu .nav-divider:hover {
 }
 
 .desktop-menu {
+  flex: initial;
   @include flexbox();
   @include flex-direction(column);
 
@@ -133,6 +133,7 @@ nav#off-canvas-menu .nav-divider:hover {
 
     & > ul {
       @include flexbox();
+      flex-grow: 0;
       position: relative;
       padding-left: 0;
       margin-bottom: 0;
@@ -254,6 +255,7 @@ nav#off-canvas-menu .nav-divider:hover {
 #main-menu {
   position: relative;
   padding: 0 7.5rem;
+
   @include flexbox();
   @include flex-direction(row);
   @include justify-content(space-between);
@@ -295,5 +297,24 @@ nav#off-canvas-menu .nav-divider:hover {
     padding-left: 0;
     padding-bottom: 0;
     padding-top: 0;
+  }
+}
+
+@media only screen and (max-width: 1450px) {
+  nav#main-menu {
+    padding: 0.5rem 1.5rem;
+  }
+}
+
+@media only screen and (max-width: 1150px) {
+  nav#main-menu {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media only screen and (max-width: 1140px) {
+  nav#main-menu .desktop-menu {
+    align-items: flex-start;
   }
 }

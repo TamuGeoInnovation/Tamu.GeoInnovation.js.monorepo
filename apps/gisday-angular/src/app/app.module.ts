@@ -102,7 +102,7 @@ const routeOptions: ExtraOptions = {
   imports: [
     AuthModule.forRoot({
       config: {
-        authority: environment.idp_url,
+        authority: environment.idp_dev_url,
         redirectUrl: window.location.origin,
         postLogoutRedirectUri: window.location.origin,
         clientId: 'gisday',
@@ -131,6 +131,4 @@ const routeOptions: ExtraOptions = {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  constructor() {}
-}
+export class AppModule {}

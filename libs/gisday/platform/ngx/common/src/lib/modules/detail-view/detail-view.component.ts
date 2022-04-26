@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-detail-view',
   templateUrl: './detail-view.component.html',
   styleUrls: ['./detail-view.component.scss']
 })
-export class DetailViewComponent implements OnInit {
+export class DetailViewComponent {
   @Input()
   public viewTitle: string;
 
@@ -32,8 +32,4 @@ export class DetailViewComponent implements OnInit {
 
   @Input()
   public website?: string;
-
-  constructor() {}
-
-  public ngOnInit(): void {}
 }

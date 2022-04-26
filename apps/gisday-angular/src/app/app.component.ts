@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 
+import { environment } from '../environments/environment.dev';
+
 @Component({
   selector: 'tamu-gisc-root',
   templateUrl: './app.component.html',
@@ -13,9 +15,11 @@ export class AppComponent implements OnInit {
 
   public ngOnInit() {
     this.oidcSecurityService.checkAuth().subscribe(({ isAuthenticated, userData, accessToken }) => {
-      console.log('app authenticated', isAuthenticated);
-      console.log('User data', userData);
-      console.log(`Current access token is ${accessToken}`);
+      if (environment.production !== true) {
+        console.log('app authenticated', isAuthenticated);
+        console.log('User data', userData);
+        console.log(`Current access token is ${accessToken}`);
+      }
     });
   }
 }
