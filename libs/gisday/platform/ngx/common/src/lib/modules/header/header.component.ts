@@ -5,7 +5,6 @@ import { Observable, Subject } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { AuthenticatedResult, OidcSecurityService } from 'angular-auth-oidc-client';
 
-import { AuthService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 import { IUserInfoResponse } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -24,7 +23,6 @@ export class HeaderComponent implements OnInit {
   public isMobile = this.rp.isMobile.pipe(shareReplay(1));
 
   constructor(
-    private authService: AuthService,
     private location: Location,
     private routerHistory: RouterHistoryService,
     private rp: ResponsiveService,

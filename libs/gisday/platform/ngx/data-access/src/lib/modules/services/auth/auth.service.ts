@@ -6,7 +6,8 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthDataAccessService {
+  // TODO: Should be able to remove this I believe - Aaron H (4/26/22)
   public resource: string;
 
   constructor(private env: EnvironmentService, private http: HttpClient) {}

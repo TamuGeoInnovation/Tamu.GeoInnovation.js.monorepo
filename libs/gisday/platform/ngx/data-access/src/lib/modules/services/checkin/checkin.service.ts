@@ -12,7 +12,6 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class CheckinService extends BaseService<CheckIn> {
-  public withCredentials = true;
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient, public oidcSecurityService: OidcSecurityService) {
@@ -27,7 +26,7 @@ export class CheckinService extends BaseService<CheckIn> {
           eventGuid: eventGuid
         },
         {
-          withCredentials: this.withCredentials
+          headers: this.headers
         }
       )
       .subscribe((result) => {

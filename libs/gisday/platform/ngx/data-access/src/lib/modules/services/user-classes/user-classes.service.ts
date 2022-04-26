@@ -12,12 +12,10 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class UserClassesService extends BaseService<UserClass> {
-  public withCredentials = true;
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient, public oidcSecurityService: OidcSecurityService) {
     super(env1, http1, oidcSecurityService, 'user-class');
-    // TODO: Need to make sure this is using the Authorization header so we have the userGuid
   }
 
   public deleteEntityWithClassGuid(classGuid: string) {
@@ -26,7 +24,7 @@ export class UserClassesService extends BaseService<UserClass> {
         body: {
           classGuid: classGuid
         },
-        withCredentials: this.withCredentials
+        headers: this.headers
       })
       .subscribe((result) => {
         console.log(result);
@@ -35,7 +33,7 @@ export class UserClassesService extends BaseService<UserClass> {
 
   public getClassesAndUserClasses() {
     return this.http1.get<Array<Partial<Class>>>(`${this.resource}`, {
-      withCredentials: this.withCredentials
+      headers: this.headers
     });
   }
 }

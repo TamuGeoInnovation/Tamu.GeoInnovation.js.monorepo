@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 
@@ -12,7 +12,6 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class EventService extends BaseService<Event> {
-  public withCredentials = false;
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient, public oidcSecurityService: OidcSecurityService) {
@@ -21,24 +20,20 @@ export class EventService extends BaseService<Event> {
 
   public getNumberOfRsvps(eventGuid: string) {
     return this.http1.get<number>(`${this.resource}/${eventGuid}/rsvps`, {
-      withCredentials: false
+      headers: this.headers
     });
   }
 
   public getEventsByDay() {
-    const accessToken = this.oidcSecurityService.getAccessToken();
-    const httpOptions = {
-      headers: new HttpHeaders({
-        Authorization: 'Bearer ' + accessToken
-      })
-    };
-    return this.http1.get<Partial<EventResponse>>(`${this.resource}/by-day`, httpOptions);
+    return this.http1.get<Partial<EventResponse>>(`${this.resource}/by-day`, {
+      headers: this.headers
+    });
   }
 
   public createEventFromFormData(data: FormData) {
     return this.http1
       .post(`${this.resource}`, data, {
-        withCredentials: false
+        headers: this.headers
       })
       .subscribe((result) => {
         console.log(result);

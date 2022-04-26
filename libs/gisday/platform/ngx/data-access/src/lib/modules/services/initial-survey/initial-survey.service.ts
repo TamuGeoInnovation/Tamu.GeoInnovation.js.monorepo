@@ -12,23 +12,21 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class InitialSurveyService extends BaseService<InitialSurveyResponse> {
-  public withCredentials = true;
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient, public oidcSecurityService: OidcSecurityService) {
     super(env1, http1, oidcSecurityService, 'initial-survey');
-    // TODO: Need to make sure this is using the Authorization header so we have the userGuid
   }
 
   public seeIfUserTookSurvey() {
     return this.http1.get<boolean>(`${this.resource}`, {
-      withCredentials: true
+      headers: this.headers
     });
   }
 
   public getInitialSurveyQuestions() {
     return this.http1.get<Array<Partial<InitialSurveyQuestion>>>(`${this.resource}/questions/all`, {
-      withCredentials: true
+      headers: this.headers
     });
   }
 }

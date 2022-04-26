@@ -12,7 +12,6 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class UniversityService extends BaseService<University> {
-  public withCredentials = false;
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient, public oidcSecurityService: OidcSecurityService) {
