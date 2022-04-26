@@ -29,8 +29,6 @@ export class PageLoaderComponent implements OnInit, OnChanges {
 
   public phrase: string;
 
-  constructor() {}
-
   public ngOnInit(): void {
     this.selectPhrase();
   }

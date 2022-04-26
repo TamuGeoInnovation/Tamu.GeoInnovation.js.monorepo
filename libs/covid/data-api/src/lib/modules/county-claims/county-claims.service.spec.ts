@@ -9,12 +9,6 @@ import { CountyClaimsService } from './county-claims.service';
 
 describe('CountyClaims Controller', () => {
   let countyClaimsService: CountyClaimsService;
-  let countyClaimRepo: Repository<CountyClaim>;
-  let userRepo: Repository<User>;
-  let countyRepo: Repository<County>;
-  let countyClaimInfoRepo: Repository<CountyClaimInfo>;
-  let entityToValueRepo: Repository<EntityToValue>;
-  let entityStatusRepo: Repository<EntityStatus>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -29,12 +23,6 @@ describe('CountyClaims Controller', () => {
       ]
     }).compile();
     countyClaimsService = module.get<CountyClaimsService>(CountyClaimsService);
-    countyClaimRepo = module.get<Repository<CountyClaim>>(getRepositoryToken(CountyClaim));
-    userRepo = module.get<Repository<User>>(getRepositoryToken(User));
-    countyRepo = module.get<Repository<County>>(getRepositoryToken(County));
-    countyClaimInfoRepo = module.get<Repository<CountyClaimInfo>>(getRepositoryToken(CountyClaimInfo));
-    entityToValueRepo = module.get<Repository<EntityToValue>>(getRepositoryToken(EntityToValue));
-    entityStatusRepo = module.get<Repository<EntityStatus>>(getRepositoryToken(EntityStatus));
   });
 
   describe('getWebsitesForClaimInfo', () => {

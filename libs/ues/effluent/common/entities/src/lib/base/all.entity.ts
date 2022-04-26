@@ -44,7 +44,7 @@ export class Location extends GuidIdentity {
   @Column()
   public sample: number;
 
-  @OneToMany((type) => Result, (result) => result.location)
+  @OneToMany(() => Result, (result) => result.location)
   public results: Result[];
 }
 
@@ -56,6 +56,6 @@ export class Result extends GuidIdentity {
   @Column({ nullable: false })
   public date: Date;
 
-  @ManyToOne((type) => Location, { cascade: true })
+  @ManyToOne(() => Location, { cascade: true })
   public location: Location;
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -9,7 +9,7 @@ import { IStrapiPagePortrait, IStrapiPagePortraitGallery } from '../../types/typ
   templateUrl: './portrait-gallery.component.html',
   styleUrls: ['./portrait-gallery.component.scss']
 })
-export class PortraitGalleryComponent implements OnInit, OnDestroy {
+export class PortraitGalleryComponent implements OnInit {
   @Input()
   public dataSource: IStrapiPagePortraitGallery;
 
@@ -41,6 +41,4 @@ export class PortraitGalleryComponent implements OnInit, OnDestroy {
 
     console.log('rowItems', this.rowItems);
   }
-
-  public ngOnDestroy() {}
 }

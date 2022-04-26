@@ -1,10 +1,9 @@
-import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { async, inject, TestBed } from '@angular/core/testing';
 
 import {
   BarChartConfiguration,
   ChartConfiguration,
   ChartContainerComponent,
-  IChartConfiguration,
   LineChartConfiguration
 } from './chart-container.component';
 

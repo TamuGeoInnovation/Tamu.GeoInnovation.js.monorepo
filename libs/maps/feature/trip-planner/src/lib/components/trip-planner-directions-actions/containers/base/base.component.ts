@@ -14,7 +14,7 @@ import { TripPlannerService } from '../../../../services/trip-planner.service';
   styleUrls: ['./base.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TripPlannerDirectionsActions implements OnInit, OnDestroy {
+export class TripPlannerDirectionsActionsComponent implements OnInit, OnDestroy {
   /**
    * Constructed share URL based on planner service stops parameters.
    *

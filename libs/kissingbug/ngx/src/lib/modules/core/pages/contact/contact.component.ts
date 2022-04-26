@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 
@@ -14,7 +14,7 @@ import { IStrapiPageResponse, StrapiSingleTypes } from '../../types/types';
   styleUrls: ['./contact.component.scss'],
   providers: [StrapiService]
 })
-export class ContactComponent implements OnInit, OnDestroy {
+export class ContactComponent implements OnInit {
   private title = 'Contact | Kissing Bugs and Chagas Disease in the U.S. | Texas A&M';
   public page: StrapiSingleTypes = 'contact';
   public pageContents: Observable<IStrapiPageResponse>;
@@ -54,8 +54,6 @@ export class ContactComponent implements OnInit, OnDestroy {
 
     this.pageContents = this.ss.getPage(this.page, language).pipe(shareReplay(1));
   }
-
-  public ngOnDestroy() {}
 
   public validate() {
     if (

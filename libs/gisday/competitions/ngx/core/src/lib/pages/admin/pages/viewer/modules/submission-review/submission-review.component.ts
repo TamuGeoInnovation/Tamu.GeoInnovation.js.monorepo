@@ -150,7 +150,7 @@ export class SubmissionReviewComponent implements OnInit, OnDestroy {
         switchMap(([details, userGuid]) => {
           return this.ss.validateSubmission({ guid: details.guid, status, userGuid: userGuid as string });
         }),
-        tap((res) => {
+        tap(() => {
           this.$_refresh.next(undefined);
         })
       )

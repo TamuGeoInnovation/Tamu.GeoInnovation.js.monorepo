@@ -26,5 +26,9 @@ describe('CategoryValues Controller', () => {
     it('controller should be defined', () => {
       expect(categoryValuesController).toBeDefined();
     });
+
+    it('service should be defined', () => {
+      expect(categoryValuesService).toBeDefined();
+    });
   });
 });

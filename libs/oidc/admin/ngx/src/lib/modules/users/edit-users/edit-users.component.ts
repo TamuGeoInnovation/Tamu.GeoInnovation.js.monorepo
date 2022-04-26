@@ -7,7 +7,7 @@ import { User } from '@tamu-gisc/oidc/common';
 import { UsersService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
-  selector: 'edit-users',
+  selector: 'tamu-gisc-edit-users',
   templateUrl: './edit-users.component.html',
   styleUrls: ['./edit-users.component.scss']
 })
@@ -22,7 +22,7 @@ export class EditUsersComponent implements OnInit {
 
   public deleteUser(user: User) {
     console.log('deleteUser', user);
-    this.userService.deleteUser(user).subscribe((deleteStatus) => {
+    this.userService.deleteUser(user).subscribe(() => {
       console.log('Deleted ', user.guid);
       this.fetchUsers();
     });

@@ -6,7 +6,6 @@ import { StatusTypesService } from './status-types.service';
 jest.mock('./status-types.service');
 
 describe('StatusTypes Controller', () => {
-  let statusTypesService: StatusTypesService;
   let statusTypesController: StatusTypesController;
 
   beforeEach(async () => {
@@ -14,7 +13,6 @@ describe('StatusTypes Controller', () => {
       providers: [StatusTypesService],
       controllers: [StatusTypesController]
     }).compile();
-    statusTypesService = module.get<StatusTypesService>(StatusTypesService);
     statusTypesController = module.get<StatusTypesController>(StatusTypesController);
   });
 

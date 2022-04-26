@@ -1,12 +1,12 @@
-<select id="timeModeSelector" (change)="setTimeMode($event)" [ngClass]="requestedTime == null ? '' : 'requestedTimeVisible'">
-  <option value="now" [selected]="(timeMode | async) == 'now'">Leave now</option>
-  <option value="depart" [selected]="(timeMode | async) == 'leave'">Leave at</option>
+<select id="timeModeSelector" (change)="setTimeMode($event)" [ngClass]="requestedTime === null ? '' : 'requestedTimeVisible'">
+  <option value="now" [selected]="(timeMode | async) === 'now'">Leave now</option>
+  <option value="depart" [selected]="(timeMode | async) === 'leave'">Leave at</option>
   <!-- <option value="arrive" [selected]="(timeMode | async) == 'arrive'">Arrive by</option> -->
 </select>
 
-<tamu-gisc-tooltip [position]="'bottom'" [width]="'20rem'" [isVisible]="dateTimePickerVisible" *ngIf="(timeMode | async) == 'leave' && requestedTime !== null">
+<tamu-gisc-tooltip [position]="'bottom'" [width]="'20rem'" [isVisible]="dateTimePickerVisible" *ngIf="(timeMode | async) === 'leave' && requestedTime !== null">
   <tamu-gisc-tooltip-trigger>
-    <div class="date-time-display" *ngIf="requestedTime != null && ((timeMode | async) == 'leave' || (timeMode | async) == 'arrive')">{{ requestedTime | date: 'short' }}</div>
+    <div class="date-time-display" *ngIf="requestedTime !== null && ((timeMode | async) === 'leave' || (timeMode | async) === 'arrive')">{{ requestedTime | date: 'short' }}</div>
   </tamu-gisc-tooltip-trigger>
 
   <dl-date-time-picker maxView="month" minView="minute" startView="day" [minuteStep]="5" (change)="setRequestedTime($event)" [startDate]="requestedTime"></dl-date-time-picker>

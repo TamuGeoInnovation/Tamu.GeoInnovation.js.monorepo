@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'token-auth-method',
+  selector: 'tamu-gisc-token-auth-method',
   templateUrl: './token-auth-methods.component.html',
   styleUrls: ['./token-auth-methods.component.scss']
 })
-export class TokenAuthMethodsComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit(): void {}
-}
+export class TokenAuthMethodsComponent {}

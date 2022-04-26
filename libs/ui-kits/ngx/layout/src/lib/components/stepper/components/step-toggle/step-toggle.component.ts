@@ -11,6 +11,4 @@ export class StepToggleComponent {
 
   @Output()
   public stepToggleClicked: EventEmitter<boolean> = new EventEmitter();
-
-  constructor() {}
 }

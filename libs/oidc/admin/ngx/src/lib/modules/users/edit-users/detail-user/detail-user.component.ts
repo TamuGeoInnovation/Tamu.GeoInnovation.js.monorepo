@@ -84,6 +84,8 @@ export class DetailUserComponent implements OnInit, OnDestroy {
     this.$clients = this.clientMetadataService.getClientMetadatas();
     this.$user = this.userService.getUser(this.userGuid).pipe(shareReplay(1));
 
+    // TOD: Remove eslint disable when the below TODO is completed.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     forkJoin([this.$clients, this.$user]).subscribe(([clients, user]) => {
       // Setup a scoped group, to which we'll append the roles to. Once all controls are added to this
       // scoped group, we'll initialize this.roleForm.
@@ -111,14 +113,14 @@ export class DetailUserComponent implements OnInit, OnDestroy {
           account: user.account
         });
 
-        this.userForm.valueChanges.pipe(debounceTime(1000), takeUntil(this._$destroy)).subscribe((res) => {
+        this.userForm.valueChanges.pipe(debounceTime(1000), takeUntil(this._$destroy)).subscribe(() => {
           console.log('User', this.userForm.getRawValue());
 
           const updatedUser: Partial<User> = {
             ...this.userForm.getRawValue()
           };
 
-          this.userService.updateUser(updatedUser).subscribe((result) => [console.log('Updated details')]);
+          this.userService.updateUser(updatedUser).subscribe(() => [console.log('Updated details')]);
         });
       });
     }
@@ -126,7 +128,7 @@ export class DetailUserComponent implements OnInit, OnDestroy {
 
   private registerRoleChanges() {
     // We need to call this function separately because this.roleForm.valueChanges will be undefined
-    // when its hit inside ngOninit, because clients and users are an async operation. Gotta make sure
+    // when its hit inside ngOnInit, because clients and users are an async operation. Gotta make sure
     // it's not undefined.
     this.roleForm.valueChanges
       .pipe(

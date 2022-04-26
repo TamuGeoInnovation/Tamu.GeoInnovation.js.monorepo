@@ -43,7 +43,7 @@ export class ClientMetadataService {
         withCredentials: true
       })
       .pipe(
-        map<Partial<ClientMetadata[]>, IClientMetadataResponse[]>((clientResponse: ClientMetadata[], index: number) => {
+        map<Partial<ClientMetadata[]>, IClientMetadataResponse[]>((clientResponse: ClientMetadata[]) => {
           const clients: IClientMetadataResponse[] = [];
           clientResponse.forEach((client: ClientMetadata) => {
             const newClientResponse: IClientMetadataResponse = {

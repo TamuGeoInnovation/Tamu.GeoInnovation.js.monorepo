@@ -5,7 +5,7 @@ import { TestingService } from '@tamu-gisc/dev-tools/application-testing';
 import { of } from 'rxjs';
 
 class TestingMock {
-  public get(prop: string) {
+  public get() {
     return of(false);
   }
 }

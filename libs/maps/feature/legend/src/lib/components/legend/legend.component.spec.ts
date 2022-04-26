@@ -1,7 +1,5 @@
 import { async, inject, TestBed } from '@angular/core/testing';
 
-import { LegendComponent } from './legend.component';
-import { LegendModule } from '@tamu-gisc/maps/feature/legend';
 import { LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
 import { EsriMapModule } from '@tamu-gisc/maps/esri';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,6 +9,9 @@ import { env, EnvironmentModule } from '@tamu-gisc/common/ngx/environment';
 import { Angulartics2Module } from 'angulartics2';
 import { ResponsiveModule } from '@tamu-gisc/dev-tools/responsive';
 import { CommonNgxRouterModule } from '@tamu-gisc/common/ngx/router';
+
+import { LegendModule } from '../../maps-feature-legend.module';
+import { LegendComponent } from './legend.component';
 
 describe('LegendComponent', () => {
   beforeEach(async(() => {

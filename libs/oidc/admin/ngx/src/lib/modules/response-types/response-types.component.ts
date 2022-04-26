@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'response-types',
+  selector: 'tamu-gisc-response-types',
   templateUrl: './response-types.component.html',
   styleUrls: ['./response-types.component.scss']
 })
-export class ResponseTypesComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit(): void {}
-}
+export class ResponseTypesComponent {}

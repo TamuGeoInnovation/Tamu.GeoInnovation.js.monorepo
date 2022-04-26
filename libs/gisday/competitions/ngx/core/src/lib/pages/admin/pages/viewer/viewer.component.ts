@@ -47,7 +47,7 @@ export class ViewerComponent implements OnInit, OnDestroy {
         }),
         takeUntil(this._$destroy)
       )
-      .subscribe((seasonGuid) => {
+      .subscribe(() => {
         this.loadSeasonLayer();
       });
   }
@@ -58,7 +58,7 @@ export class ViewerComponent implements OnInit, OnDestroy {
   }
 
   public loadSeasonLayer() {
-    this.ms.store.pipe(take(1)).subscribe((instance) => {
+    this.ms.store.pipe(take(1)).subscribe(() => {
       const layerId = 'submissions-layer';
 
       const layer = this.ms.findLayerById(layerId);

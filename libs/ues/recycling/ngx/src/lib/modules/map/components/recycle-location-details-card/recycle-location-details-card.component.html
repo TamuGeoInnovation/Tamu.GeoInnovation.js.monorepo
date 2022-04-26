@@ -1,5 +1,5 @@
 <div class="card">
-  <p *ngIf="!(selectedMetadata | async); else locationDetails;">Showing historical data for all recycling locations. Select a location to show its respective data.</p>
+  <p *ngIf="(selectedMetadata | async) !== null; else locationDetails;">Showing historical data for all recycling locations. Select a location to show its respective data.</p>
 
   <ng-template #locationDetails>
     <p><strong>Name</strong>: {{(selectedMetadata | async)?.Name}}</p>

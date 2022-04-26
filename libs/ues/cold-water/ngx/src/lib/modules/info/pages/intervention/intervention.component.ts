@@ -292,7 +292,7 @@ export class InterventionComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(
-        ([interventionResults, valveStateResults]) => {
+        () => {
           if (type === 'create') {
             if (formValue.OBJECTID === '') {
               this.ns.toast({
@@ -317,7 +317,7 @@ export class InterventionComponent implements OnInit, OnDestroy {
 
           this.router.navigate(['details', formValue.ValveNumber]);
         },
-        (err) => {
+        () => {
           if (type === 'create') {
             if (formValue.OBJECTID === '') {
               this.ns.toast({

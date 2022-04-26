@@ -1,4 +1,4 @@
-import { Controller, Post, Param, Body } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 
 import { FieldType } from '@tamu-gisc/covid/common/entities';
 

@@ -56,7 +56,6 @@ import {
 } from '../core/trip-planner-core';
 
 import { BusService, TimetableRow } from '../services/transportation/bus/bus.service';
-import { InrixService } from '../services/transportation/drive/inrix.service';
 import { BikeService } from '../services/transportation/bike/bike.service';
 import { ParkingService } from '../services/transportation/drive/parking.service';
 
@@ -432,7 +431,6 @@ export class TripPlannerService implements OnDestroy {
     private busService: BusService,
     private bikeService: BikeService,
     private parkingService: ParkingService,
-    private inrixService: InrixService,
     private settings: SettingsService,
     private environment: EnvironmentService
   ) {
@@ -456,7 +454,7 @@ export class TripPlannerService implements OnDestroy {
     this.settings
       .init(this.settingsConfig)
       .pipe(take(1))
-      .subscribe((res) => {
+      .subscribe(() => {
         this.calculateTravelMode([this._TravelOptions.getValue().travel_mode], true);
       });
 
@@ -541,7 +539,7 @@ export class TripPlannerService implements OnDestroy {
 
     // If current unit has modes and contains further children modes, do recursive fn until end is reached.
     if (currModes && childrenModes) {
-      return rule.modes.reduce((acc, curr, index) => {
+      return rule.modes.reduce((acc, curr) => {
         const cM = curr.modes;
 
         if (cM) {
@@ -660,7 +658,7 @@ export class TripPlannerService implements OnDestroy {
     //
     // Condition is set in the travel mode (e.g. accessible = true). That condition must be met in state
     // value to be eligible to become a potential mode result. If the state condition is not met, it is rejected.
-    const rootConditions = Object.keys(this._TravelOptions.value).reduce((acc, curr, index) => {
+    const rootConditions = Object.keys(this._TravelOptions.value).reduce((acc, curr) => {
       if (rule.constraints.includes(curr)) {
         acc[curr] = this._TravelOptions.value[curr];
 
@@ -967,63 +965,61 @@ export class TripPlannerService implements OnDestroy {
               // based on their set parking permit preferences.
               //
               // If no parking permit preferences have been set, do not calculate the location of the parking lot/deck
-              return this.parkingService
-                .getAuthorizedParkingLocations(this._TravelOptions.getValue().parking_pass_permit)
-                .pipe(
-                  switchMap((result) => {
-                    const stops = this._Stops.getValue().map((stop) => stop);
+              return this.parkingService.getAuthorizedParkingLocations().pipe(
+                switchMap((result) => {
+                  const stops = this._Stops.getValue().map((stop) => stop);
 
-                    // If no result, return with existing stops
-                    if (!result) {
-                      return of({
-                        mode,
-                        stops
-                      });
-                    }
-
-                    const centroids = result.map((f) => {
-                      return {
-                        geometry: {
-                          latitude: (<esri.geometryPolygon>f.geometry).centroid.latitude,
-                          longitude: (<esri.geometryPolygon>f.geometry).centroid.longitude
-                        }
-                      };
-                    });
-
-                    const nearest = findNearestIndex(
-                      {
-                        latitude: stops[stops.length - 1].geometry.latitude,
-                        longitude: stops[stops.length - 1].geometry.longitude
-                      },
-                      centroids
-                    );
-
-                    const nearestGeometry = {
-                      latitude: (<esri.geometryPolygon>result[nearest].geometry).centroid.latitude,
-                      longitude: (<esri.geometryPolygon>result[nearest].geometry).centroid.longitude
-                    };
-
-                    // If nearby bike returns a result, compose a trip point with its location
-                    // and splice it into the other stops.
-                    const parkingStop = new TripPoint({
-                      source: 'coordinates',
-                      originAttributes: result[nearest].attributes as TripPointAttributes,
-                      originGeometry: { ...nearestGeometry },
-                      originParameters: {
-                        type: 'coordinates',
-                        value: { ...nearestGeometry }
-                      },
-                      exportable: false
-                    }).normalize();
-
-                    stops.splice(1, 0, parkingStop);
-
+                  // If no result, return with existing stops
+                  if (!result) {
                     return of({
                       mode,
                       stops
                     });
-                  })
-                );
+                  }
+
+                  const centroids = result.map((f) => {
+                    return {
+                      geometry: {
+                        latitude: (<esri.geometryPolygon>f.geometry).centroid.latitude,
+                        longitude: (<esri.geometryPolygon>f.geometry).centroid.longitude
+                      }
+                    };
+                  });
+
+                  const nearest = findNearestIndex(
+                    {
+                      latitude: stops[stops.length - 1].geometry.latitude,
+                      longitude: stops[stops.length - 1].geometry.longitude
+                    },
+                    centroids
+                  );
+
+                  const nearestGeometry = {
+                    latitude: (<esri.geometryPolygon>result[nearest].geometry).centroid.latitude,
+                    longitude: (<esri.geometryPolygon>result[nearest].geometry).centroid.longitude
+                  };
+
+                  // If nearby bike returns a result, compose a trip point with its location
+                  // and splice it into the other stops.
+                  const parkingStop = new TripPoint({
+                    source: 'coordinates',
+                    originAttributes: result[nearest].attributes as TripPointAttributes,
+                    originGeometry: { ...nearestGeometry },
+                    originParameters: {
+                      type: 'coordinates',
+                      value: { ...nearestGeometry }
+                    },
+                    exportable: false
+                  }).normalize();
+
+                  stops.splice(1, 0, parkingStop);
+
+                  return of({
+                    mode,
+                    stops
+                  });
+                })
+              );
             } else {
               return of({
                 mode,
@@ -1337,10 +1333,9 @@ export class TripPlannerService implements OnDestroy {
 
                           if (modeSwitch.type === 'not_walking') {
                             switch (this.getRuleForModes([parseInt(travelMode, 10)])) {
+                              // TODO: This is BETA.
                               // case this.rule_bus:
                               //   return this.busService.annotateBusGraphic(modeSwitch);
-                              // case this.rule_drive:
-                              // TODO this.inrixService.annotateDriveFeature(graphic, modeSwitch, dateToHere).subscribe((f_new: esri.Graphic) => res(f_new)); break;
                               default:
                                 return of(modeSwitch);
                             }
@@ -1629,10 +1624,6 @@ export class TripPlannerService implements OnDestroy {
    * At the end of the transformation pipeline, draws the trip result route.
    */
   public getTripResultForTravelMode() {
-    const qualifying = this.getQualifyingTravelModes();
-
-    // const calculatedMode = this.calculateScoredTravelMode(qualifying);
-
     return this._Result.pipe(
       map((results) => {
         // Filter out only the trip result for the current state travel mode.
@@ -1814,12 +1805,11 @@ export class TripPlannerService implements OnDestroy {
     });
 
     this.moduleProvider
-      .require(['GraphicsLayer', 'Graphic', 'SimpleLineSymbol', 'Polyline', 'Point'])
+      .require(['GraphicsLayer', 'Graphic', 'Polyline', 'Point'])
       .then(
-        ([GraphicsLayer, Graphic, SimpleLineSymbol, Polyline]: [
+        ([GraphicsLayer, Graphic, Polyline]: [
           esri.GraphicsLayerConstructor,
           esri.GraphicConstructor,
-          esri.SimpleLineSymbolConstructor,
           esri.PolylineConstructor,
           esri.PointConstructor
         ]) => {
@@ -2533,7 +2523,7 @@ export class TripPlannerService implements OnDestroy {
 
                 this.moduleProvider.require(['Point'], true).then((modules: { Point: esri.PointConstructor }) => {
                   doors.forEach((door) => {
-                    // Point used to calculate euclidian distance between it and the reference point
+                    // Point used to calculate euclidean distance between it and the reference point
                     const currentPoint = new modules.Point({
                       latitude: door.geometry['latitude'],
                       longitude: door.geometry['longitude']

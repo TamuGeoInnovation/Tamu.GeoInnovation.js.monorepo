@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { IStrapiPageInfoBlock } from '../../types/types';
 
@@ -7,13 +7,7 @@ import { IStrapiPageInfoBlock } from '../../types/types';
   templateUrl: './info-block.component.html',
   styleUrls: ['./info-block.component.scss']
 })
-export class InfoBlockComponent implements OnInit, OnDestroy {
+export class InfoBlockComponent {
   @Input()
   public dataSource: IStrapiPageInfoBlock;
-
-  constructor() {}
-
-  public ngOnInit() {}
-
-  public ngOnDestroy() {}
 }

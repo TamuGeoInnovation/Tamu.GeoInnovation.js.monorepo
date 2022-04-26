@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -9,7 +9,7 @@ import { Geocoder } from '@tamu-gisc/common/utils/geometry/geoprocessing';
   templateUrl: './geocoding.component.html',
   styleUrls: ['./geocoding.component.scss']
 })
-export class GeocodingComponent implements OnInit {
+export class GeocodingComponent {
   private geocode: Geocoder;
   public result: Observable<string>;
 
@@ -25,6 +25,4 @@ export class GeocodingComponent implements OnInit {
 
     this.result = this.geocode.execute().pipe(switchMap((r) => of(JSON.stringify(r, null, '   '))));
   }
-
-  public ngOnInit() {}
 }

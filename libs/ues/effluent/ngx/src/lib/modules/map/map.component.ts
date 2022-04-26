@@ -191,7 +191,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private generateUniqueValueRenderer() {
     return this.resultsService.getLatestResults().pipe(
       map((results) => {
-        const infos = results.map((result, index) => {
+        const infos = results.map((result) => {
           // Pluck the top result from the result array for this sampling location
 
           const baseColor = this.getSymbolColorForValue(result.value);

@@ -26,7 +26,7 @@ export class DeleteComponent implements OnInit {
   public deleteScenario() {
     if (this.guid) {
       this.ss.delete(this.guid).subscribe(
-        (res) => {
+        () => {
           this.ns.toast({
             message: 'Scenario was successfully deleted.',
             id: 'scenario-delete',
@@ -35,7 +35,7 @@ export class DeleteComponent implements OnInit {
 
           this.router.navigate(['admin/scenarios']);
         },
-        (err) => {
+        () => {
           this.ns.toast({
             message: 'An error ocurred. Scenario could not be deleted.',
             id: 'scenario-delete',

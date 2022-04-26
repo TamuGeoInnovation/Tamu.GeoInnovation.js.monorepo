@@ -1,12 +1,13 @@
-import { getPathFromRouteSnapshot, makeUrlParams, routeSubstitute } from '@tamu-gisc/common/utils/routing';
 import { ActivatedRouteSnapshot } from '@angular/router';
+
+import { getPathFromRouteSnapshot, makeUrlParams, routeSubstitute } from '..';
 
 describe('getPathFromRouteSnapshot', () => {
   it('should work', () => {
     expect(
-      getPathFromRouteSnapshot(({
+      getPathFromRouteSnapshot({
         pathFromRoot: [{ routeConfig: { path: 'test' } }]
-      } as unknown) as ActivatedRouteSnapshot)
+      } as unknown as ActivatedRouteSnapshot)
     ).toEqual(['test']);
   });
 });

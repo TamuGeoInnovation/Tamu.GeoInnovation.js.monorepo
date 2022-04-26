@@ -12,7 +12,9 @@ import { makeUrlParams } from '@tamu-gisc/common/utils/routing';
 export class SearchService {
   private _sources: SearchSource[];
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _store: ReplaySubject<SearchResult<any>> = new ReplaySubject(1);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public store: Observable<SearchResult<any>> = this._store.asObservable();
 
   private _searching: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -77,7 +79,7 @@ export class SearchService {
     // Create an array of http get observables for those search sources
     // that contain a scoring where property
     const scoringRequests = sources
-      .filter((source, index) => {
+      .filter((source) => {
         return source.queryParams && source.queryParams.scoringWhere;
       })
       .map((source, index) => {
@@ -162,7 +164,7 @@ export class SearchService {
               return sources.findIndex((source) => source.source === s.source);
             });
 
-          const baseScoringMerged = responses.base.map((r, i, a) => {
+          const baseScoringMerged = responses.base.map((r, i) => {
             if (baseIndexes.includes(i)) {
               // This index will correspond to the array location of scoring responses.
               const indexOfScoringResponse = baseIndexes.indexOf(i);
@@ -294,7 +296,7 @@ export class SearchService {
       // If instead we have query params object which needs to be converted to a url query string.
 
       // If no where clause exists in the object, throw error. Any query will fail without it.
-      if (!source.queryParams.hasOwnProperty('where')) {
+      if ('where' in source.queryParams === false) {
         throw new Error('No where property provided.');
       }
 
@@ -412,10 +414,10 @@ export class SearchResult<T> {
    */
   public features() {
     return this.results
-      .map((resultItem, arr, ind) => {
+      .map((resultItem) => {
         return resultItem.features;
       })
-      .reduce((prev, curr, index) => {
+      .reduce((prev, curr) => {
         return [...prev, ...curr];
       }, []);
   }
@@ -522,7 +524,7 @@ export interface SearchSource {
    *
    * Default set by selection-layer
    */
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   popupComponent?: any;
 
   /**

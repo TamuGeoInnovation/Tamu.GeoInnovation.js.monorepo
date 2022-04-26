@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
@@ -12,7 +12,7 @@ import { IStrapiPageResponse, StrapiSingleTypes } from '../../types/types';
   styleUrls: ['./found-a-bug.component.scss'],
   providers: [StrapiService]
 })
-export class FoundABugComponent implements OnInit, OnDestroy {
+export class FoundABugComponent implements OnInit {
   private title = 'Found a Bug? | Kissing Bugs and Chagas Disease in the U.S. | Texas A&M';
   public page: StrapiSingleTypes = 'found-a-bug';
   public pageContents: Observable<IStrapiPageResponse>;
@@ -26,6 +26,4 @@ export class FoundABugComponent implements OnInit, OnDestroy {
 
     this.pageContents = this.ss.getPage(this.page, language).pipe(shareReplay(1));
   }
-
-  public ngOnDestroy() {}
 }

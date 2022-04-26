@@ -56,7 +56,8 @@
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "options": {
-        "lintFilePatterns": ["apps/gisday-nest/**/*.ts"]
+        "lintFilePatterns": ["apps/gisday-nest/**/*.ts"],
+        "force": true
       }
     },
     "test": {

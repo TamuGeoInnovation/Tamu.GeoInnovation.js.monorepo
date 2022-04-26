@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 @Component({
@@ -6,7 +6,7 @@ import { Observable, Subject } from 'rxjs';
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.scss']
 })
-export class SidebarTabComponent implements OnInit {
+export class SidebarTabComponent {
   /**
    * Valid material design icon name.
    *
@@ -22,7 +22,7 @@ export class SidebarTabComponent implements OnInit {
   public title = 'Tab';
 
   /**
-   * Metadata label that is used in aria-tags for accessbility purposes.
+  //  * Metadata label that is used in aria-tags for accessibility purposes.
    */
   @Input()
   public description = 'Sidebar tab';
@@ -50,10 +50,6 @@ export class SidebarTabComponent implements OnInit {
   private clicked(event: MouseEvent) {
     this._$clicked.next({ event: event, native: this });
   }
-
-  constructor() {}
-
-  public ngOnInit() {}
 }
 
 export interface TabHostClick {

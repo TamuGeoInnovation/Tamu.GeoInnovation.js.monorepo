@@ -1,11 +1,9 @@
-import { Directive, OnInit, TemplateRef } from '@angular/core';
+import { Directive, TemplateRef } from '@angular/core';
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[giscTileSubmenu]'
 })
-export class TileSubmenuDirective implements OnInit {
+export class TileSubmenuDirective {
   constructor(public template: TemplateRef<unknown>) {}
-
-  public ngOnInit() {}
 }

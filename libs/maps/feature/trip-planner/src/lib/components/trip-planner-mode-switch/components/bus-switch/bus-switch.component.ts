@@ -41,9 +41,6 @@ export class TripPlannerBusModeSwitchComponent implements OnInit, OnDestroy {
 
       this.now = this.timetable[0];
 
-      const first = this.now.stops[this.now.first];
-      const last = this.now.stops[this.now.last];
-
       this.busStopsList = this.now.stops.slice(this.now.first + 1, this.now.last);
 
       if (this.now.first > this.now.last) {

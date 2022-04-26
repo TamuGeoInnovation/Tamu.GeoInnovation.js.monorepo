@@ -78,7 +78,7 @@ export class WorkshopBuilderComponent implements OnInit {
     }
   }
 
-  public submitWorkshop(snapshot?: Partial<Snapshot>) {
+  public submitWorkshop() {
     // If there is a guid in the URL, update the workshop guid, otherwise attempt an insertion.
     if (this.route.snapshot.params['guid']) {
       const payload = this.form.getRawValue();
@@ -97,7 +97,7 @@ export class WorkshopBuilderComponent implements OnInit {
       const scUpdate = this.ws.setScenarios(this.route.snapshot.params['guid'], scenarios);
 
       forkJoin([wsUpdate, snUpdate, scUpdate]).subscribe(
-        (status) => {
+        () => {
           this.ns.toast({
             message: 'Workshop was successfully updated.',
             id: 'workshop-update',
@@ -118,7 +118,7 @@ export class WorkshopBuilderComponent implements OnInit {
       );
     } else {
       this.ws.createWorkshop(this.form.getRawValue()).subscribe(
-        (createStatus) => {
+        () => {
           this.ns.toast({
             message: 'Workshop was successfully created.',
             id: 'workshop-create',
@@ -127,7 +127,7 @@ export class WorkshopBuilderComponent implements OnInit {
 
           this.router.navigate(['../'], { relativeTo: this.route });
         },
-        (err) => {
+        () => {
           this.ns.toast({
             message: 'Workshop could not be created.',
             id: 'workshop-create',

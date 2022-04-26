@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Post, UsePipes } from '@nestjs/common';
 
 import { FileAccessPipe, IrgasonValidationService } from '@tamu-gisc/two/valup';
 

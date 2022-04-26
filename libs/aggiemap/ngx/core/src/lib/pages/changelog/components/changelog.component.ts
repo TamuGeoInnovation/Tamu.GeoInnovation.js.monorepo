@@ -1,16 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { events } from '../changelog-events';
 
 @Component({
-  selector: 'gisc-changelog',
+  selector: 'tamu-gisc-aggiemap-changelog',
   templateUrl: './changelog.component.html',
   styleUrls: ['./changelog.component.scss']
 })
-export class ChangelogComponent implements OnInit {
-  constructor() {}
-
+export class ChangelogComponent {
   public changelogEvents = events;
-
-  public ngOnInit() {}
 }

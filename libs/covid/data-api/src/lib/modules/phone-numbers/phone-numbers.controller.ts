@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Param, HttpException, HttpStatus } from '@nestjs/common';
 import { FieldCategory } from '@tamu-gisc/covid/common/entities';
 
 import { BaseController } from '../base/base.controller';
@@ -26,7 +26,7 @@ export class PhoneNumbersController extends BaseController<FieldCategory> {
   }
 
   @Post('')
-  public async storePhoneNumber(@Body() body) {
+  public async storePhoneNumber() {
     throw new HttpException('Not implemented.', HttpStatus.NOT_IMPLEMENTED);
   }
 }

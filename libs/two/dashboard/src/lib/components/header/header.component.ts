@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'two-header',
+  selector: 'app-two-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class TWOHeaderComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit() {}
-}
+export class TWOHeaderComponent {}

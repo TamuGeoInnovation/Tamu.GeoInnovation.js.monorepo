@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { IStrapiComponent } from '../../types/types';
 
@@ -7,13 +7,7 @@ import { IStrapiComponent } from '../../types/types';
   templateUrl: './dynamic-zone.component.html',
   styleUrls: ['./dynamic-zone.component.scss']
 })
-export class DynamicZoneComponent implements OnInit, OnDestroy {
+export class DynamicZoneComponent {
   @Input()
   public dataSource: IStrapiComponent;
-
-  constructor() {}
-
-  public ngOnInit() {}
-
-  public ngOnDestroy() {}
 }

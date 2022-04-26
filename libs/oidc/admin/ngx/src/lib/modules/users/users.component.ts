@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'users',
+  selector: 'tamu-gisc-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
 })
-export class UsersComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit(): void {}
-}
+export class UsersComponent {}

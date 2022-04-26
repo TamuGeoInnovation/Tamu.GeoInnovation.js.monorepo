@@ -106,7 +106,7 @@ export class LockdownMapComponent implements OnInit {
         });
       });
 
-      map.on('mouseleave', 'counties-lockdowns', (e) => {
+      map.on('mouseleave', 'counties-lockdowns', () => {
         this.infoBoxModel.next(null);
       });
 

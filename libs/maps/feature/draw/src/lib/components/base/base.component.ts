@@ -125,15 +125,15 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
               (event.toolEventInfo && event.toolEventInfo.type === 'rotate-stop') ||
               (event.toolEventInfo && event.toolEventInfo.type === 'scale-stop')
             ) {
-              this.onUpdate(event);
+              this.onUpdate();
             }
           });
 
-          this.model.on('delete', (event: Partial<ISketchViewModelEvent & esri.SketchViewModelDeleteEvent>) => {
-            this.onDelete(event);
+          this.model.on('delete', () => {
+            this.onDelete();
           });
 
-          this._layersAddWatchHandle = mapInstance.map.allLayers.on('after-add', (event) => {
+          this._layersAddWatchHandle = mapInstance.map.allLayers.on('after-add', () => {
             this.reorder(mapInstance.map);
           });
 
@@ -186,15 +186,18 @@ export class BaseDrawComponent implements OnInit, OnDestroy {
     this._layersAddWatchHandle.remove();
   }
 
-  public onCreate(event?: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public onCreate(event: Partial<ISketchViewModelEvent & esri.SketchViewModelCreateEvent>) {
+    // While event is not used in this class, it is used by superclasses and cannot be removed
+    // otherwise signatures will not be the same.
     this.emitDrawn(this.model.layer.graphics);
   }
 
-  public onUpdate(event?: Partial<ISketchViewModelEvent & esri.SketchViewModelUpdateEvent>) {
+  public onUpdate() {
     this.emitDrawn(this.model.layer.graphics);
   }
 
-  public onDelete(event?: Partial<ISketchViewModelEvent & esri.SketchViewModelDeleteEvent>) {
+  public onDelete() {
     this.emitDrawn(this.model.layer.graphics);
   }
 

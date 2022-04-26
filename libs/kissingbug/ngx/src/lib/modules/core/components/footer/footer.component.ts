@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { IStrapiStapleFooter } from '../../types/types';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss']
 })
-export class FooterComponent implements OnInit, OnDestroy {
+export class FooterComponent implements OnInit {
   public api_url = this.environment.value('api_url');
   public dataSource: Observable<IStrapiStapleFooter>;
 
@@ -24,6 +24,4 @@ export class FooterComponent implements OnInit, OnDestroy {
 
     this.dataSource = this.ss.getFooter('footer', language).pipe(shareReplay(1));
   }
-
-  public ngOnDestroy() {}
 }

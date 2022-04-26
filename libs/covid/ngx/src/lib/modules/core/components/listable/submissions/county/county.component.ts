@@ -26,7 +26,7 @@ export class CountyListComponent implements OnInit {
       map((sites) => {
         sites.forEach((val) => {
           const responses = val.info.responses;
-          responses.forEach((response, i) => {
+          responses.forEach((response) => {
             if (response.entityValue.value.category.id === CATEGORY.WEBSITES) {
               val.info.notes = response.entityValue.value.value;
             }

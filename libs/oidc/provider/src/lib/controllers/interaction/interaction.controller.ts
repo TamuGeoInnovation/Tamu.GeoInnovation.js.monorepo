@@ -209,6 +209,7 @@ export class InteractionController {
     try {
       const interactionDetails = await this.providerService.provider.interactionDetails(req, res);
       const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         prompt: { name, details },
         params,
         session: { accountId }

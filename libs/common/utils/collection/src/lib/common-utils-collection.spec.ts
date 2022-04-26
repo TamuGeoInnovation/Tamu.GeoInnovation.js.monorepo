@@ -1,6 +1,6 @@
-import { groupBy, pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
+import { groupBy, pairwiseOverlap } from './common-utils-collection';
 
-describe('pairwiseOverlap', function() {
+describe('pairwiseOverlap', function () {
   it('should handle the base case', () => {
     expect(pairwiseOverlap([])).toEqual([]);
   });
@@ -10,18 +10,22 @@ describe('pairwiseOverlap', function() {
   });
 
   it('should handle correct input', () => {
-    expect(pairwiseOverlap(['a', 'b', 'c', 'd'])).toEqual([['a', 'b'], ['b', 'c'], ['c', 'd']]);
+    expect(pairwiseOverlap(['a', 'b', 'c', 'd'])).toEqual([
+      ['a', 'b'],
+      ['b', 'c'],
+      ['c', 'd']
+    ]);
   });
 });
 
-describe('groupBy', function() {
-  it('should return the original collection on invalid input', function() {
+describe('groupBy', function () {
+  it('should return the original collection on invalid input', function () {
     expect(groupBy(undefined, 'n/a')).toBeUndefined();
     expect(groupBy(null, 'n/a')).toBeNull();
     expect(groupBy([], 'n/a')).toEqual([]);
   });
 
-  it('should use default return if there is no identity', function() {
+  it('should use default return if there is no identity', function () {
     expect(groupBy([{ test: '1' }], 'test')).toEqual([{ items: [{ test: '1' }] }]);
   });
 });

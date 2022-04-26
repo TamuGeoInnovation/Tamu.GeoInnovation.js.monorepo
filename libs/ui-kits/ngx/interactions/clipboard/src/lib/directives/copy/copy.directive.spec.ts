@@ -7,7 +7,7 @@ import { ClipboardCopyDirective } from './copy.directive';
 
 @Component({
   template: `
-    <div clipboard-copy [text]="'text to copy'" (error)="copyEvent.next($event)" (copying)="copyEvent.next($event)"></div>
+    <div clipboard-copy [text]="'text to copy'" (err)="copyEvent.next($event)" (copying)="copyEvent.next($event)"></div>
   `
 })
 class MockCopyDirectiveComponent {

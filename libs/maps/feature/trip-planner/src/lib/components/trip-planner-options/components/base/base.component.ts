@@ -39,8 +39,8 @@ export class TripPlannerOptionsBaseComponent implements OnInit {
      * Creates a flat object with keys derived from the provided string array,
      * and value with the scoped parent function value.
      */
-    const createOptionsObject = (e: string[]): {} => {
-      return e.reduce((acc, curr, index) => {
+    const createOptionsObject = (e: string[]) => {
+      return e.reduce((acc, curr) => {
         acc[curr] = value;
         return acc;
       }, {});

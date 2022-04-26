@@ -25,8 +25,6 @@ import { CountyClaimsService } from '../../../../data-access/county-claims/count
 import { WebsiteTypesService } from '../../../../data-access/website-types/website-types.service';
 import { WebsitesService } from '../../../../data-access/websites/websites.service';
 
-const storageOptions = { primaryKey: 'tamu-covid-vgi' };
-
 @Component({
   selector: 'tamu-gisc-county',
   templateUrl: './county.component.html',
@@ -210,7 +208,7 @@ export class CountyComponent implements OnInit, OnDestroy {
     );
 
     this.countyContributedByOther = combineLatest([this.formCounty, this.localIdentity]).pipe(
-      switchMap(([countyFips, user]) => {
+      switchMap(([countyFips]) => {
         return this.cl.getHistoricClaimsForCounty(countyFips);
       }),
       switchMap((historicClaims) => {

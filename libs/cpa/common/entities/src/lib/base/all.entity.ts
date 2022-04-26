@@ -58,19 +58,19 @@ export class Workshop extends CPABaseEntity implements IWorkshop {
   @Column({ nullable: true })
   public date: Date;
 
-  @OneToMany((type) => WorkshopSnapshot, (s) => s.workshop, { cascade: true })
+  @OneToMany(() => WorkshopSnapshot, (s) => s.workshop, { cascade: true })
   public snapshots: WorkshopSnapshot[];
 
-  @OneToMany((type) => WorkshopScenario, (s) => s.workshop)
+  @OneToMany(() => WorkshopScenario, (s) => s.workshop)
   public scenarios: WorkshopScenario[];
 
-  @OneToMany((type) => WorkshopContext, (s) => s.workshop)
+  @OneToMany(() => WorkshopContext, (s) => s.workshop)
   public contexts: WorkshopContext[];
 
-  @OneToMany((type) => Response, (r) => r.workshop)
+  @OneToMany(() => Response, (r) => r.workshop)
   public responses: Response[];
 
-  @ManyToMany((type) => Participant)
+  @ManyToMany(() => Participant)
   public participants: Participant[];
 }
 
@@ -97,19 +97,19 @@ export class Snapshot extends CPABaseEntity {
   @Column({ type: 'bit', nullable: false })
   public isContextual = false;
 
-  @OneToMany((type) => WorkshopSnapshot, (w) => w.snapshot, { onDelete: 'CASCADE' })
+  @OneToMany(() => WorkshopSnapshot, (w) => w.snapshot, { onDelete: 'CASCADE' })
   public workshops: WorkshopSnapshot[];
 
-  @OneToMany((type) => Response, (r) => r.snapshot)
+  @OneToMany(() => Response, (r) => r.snapshot)
   public responses: Response[];
 }
 
 @Entity({ name: 'workshop_snapshots' })
 export class WorkshopSnapshot extends CPABaseEntity {
-  @ManyToOne((type) => Workshop, (w) => w.snapshots, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Workshop, (w) => w.snapshots, { onDelete: 'CASCADE' })
   public workshop: Workshop;
 
-  @ManyToOne((type) => Snapshot, (s) => s.workshops, {
+  @ManyToOne(() => Snapshot, (s) => s.workshops, {
     onDelete: 'CASCADE'
   })
   public snapshot: Snapshot;
@@ -135,19 +135,19 @@ export class Scenario extends CPABaseEntity implements IScenario {
   @Column({ type: 'simple-json', nullable: true })
   public layers: Array<LayerReference>;
 
-  @OneToOne((type) => WorkshopScenario, (w) => w.scenario)
+  @OneToOne(() => WorkshopScenario, (w) => w.scenario)
   public workshopScenario: IWorkshopScenario;
 
-  @OneToMany((type) => Response, (r) => r.scenario)
+  @OneToMany(() => Response, (r) => r.scenario)
   public responses: Response[];
 }
 
 @Entity({ name: 'workshop_scenarios' })
 export class WorkshopScenario extends CPABaseEntity implements IWorkshopScenario {
-  @ManyToOne((type) => Workshop, (w) => w.scenarios, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Workshop, (w) => w.scenarios, { onDelete: 'CASCADE' })
   public workshop: IWorkshop;
 
-  @OneToOne((type) => Scenario, (s) => s.workshopScenario, {
+  @OneToOne(() => Scenario, (s) => s.workshopScenario, {
     onDelete: 'CASCADE'
   })
   @JoinColumn()
@@ -156,10 +156,10 @@ export class WorkshopScenario extends CPABaseEntity implements IWorkshopScenario
 
 @Entity({ name: 'workshop_contexts' })
 export class WorkshopContext extends CPABaseEntity {
-  @ManyToOne((type) => Workshop, (w) => w.contexts, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Workshop, (w) => w.contexts, { onDelete: 'CASCADE' })
   public workshop: IWorkshop;
 
-  @ManyToOne((type) => Snapshot, (s) => s.workshops, {
+  @ManyToOne(() => Snapshot, (s) => s.workshops, {
     onDelete: 'CASCADE'
   })
   @JoinColumn()
@@ -171,14 +171,14 @@ export class Participant extends CPABaseEntity {
   @Column()
   public name: string;
 
-  @ManyToMany((type) => Workshop)
+  @ManyToMany(() => Workshop)
   @JoinTable()
   public workshops: Workshop[];
 }
 
 @Entity()
 export class Response extends CPABaseEntity {
-  @ManyToOne((type) => Participant, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Participant, { onDelete: 'CASCADE' })
   public participant: Participant;
 
   /**
@@ -196,13 +196,13 @@ export class Response extends CPABaseEntity {
   @Column({ type: 'simple-json', nullable: true })
   public shapes: string | object;
 
-  @ManyToOne((type) => Snapshot, (s) => s.responses, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Snapshot, (s) => s.responses, { onDelete: 'CASCADE' })
   public snapshot: Snapshot;
 
-  @ManyToOne((type) => Scenario, (s) => s.responses, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Scenario, (s) => s.responses, { onDelete: 'CASCADE' })
   public scenario: Scenario;
 
-  @ManyToOne((type) => Workshop, (w) => w.responses, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Workshop, (w) => w.responses, { onDelete: 'CASCADE' })
   public workshop: Workshop;
 }
 

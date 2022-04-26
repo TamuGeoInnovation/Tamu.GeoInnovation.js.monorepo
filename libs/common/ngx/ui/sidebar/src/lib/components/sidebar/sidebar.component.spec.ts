@@ -1,9 +1,9 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
+import { QueryList } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { SidebarComponent } from './sidebar.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { SidebarTabComponent } from '@tamu-gisc/common/ngx/ui/sidebar';
-import { QueryList } from '@angular/core';
+import { SidebarTabComponent } from '../tab/tab.component';
 
 describe('SidebarComponent', () => {
   beforeEach(async(() => {
@@ -17,7 +17,7 @@ describe('SidebarComponent', () => {
     const sidebarComponent = TestBed.createComponent(SidebarComponent).componentInstance;
 
     const sidebarTab = new SidebarTabComponent();
-    const mouseEvent: MouseEvent = ({} as unknown) as MouseEvent;
+    const mouseEvent: MouseEvent = {} as unknown as MouseEvent;
     sidebarTab.route = 'test';
 
     expect(sidebarComponent).toBeTruthy();
@@ -25,13 +25,11 @@ describe('SidebarComponent', () => {
     sidebarComponent.tabs.reset([sidebarTab]);
     expect(sidebarComponent.ngAfterContentInit()).toBeUndefined();
 
-    console.warn = () => {}; // Hide ngZone warning
-
-    ((sidebarTab as unknown) as { clicked: (MouseEvent) => unknown }).clicked(mouseEvent);
+    (sidebarTab as unknown as { clicked: (MouseEvent) => unknown }).clicked(mouseEvent);
     expect(sidebarComponent.currentView).toEqual(sidebarTab.route);
     expect(sidebarComponent.visible).toBeTruthy();
 
-    ((sidebarTab as unknown) as { clicked: (MouseEvent) => unknown }).clicked(mouseEvent);
+    (sidebarTab as unknown as { clicked: (MouseEvent) => unknown }).clicked(mouseEvent);
     expect(sidebarComponent.currentView).toEqual(sidebarTab.route);
     expect(sidebarComponent.visible).toBeFalsy();
 

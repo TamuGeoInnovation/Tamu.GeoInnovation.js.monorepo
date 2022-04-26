@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Angulartics2 } from 'angulartics2';
 
 import { TestingService } from '@tamu-gisc/dev-tools/application-testing';

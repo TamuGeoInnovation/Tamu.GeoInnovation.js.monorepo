@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
@@ -10,7 +10,7 @@ import { IStrapiStapleNavigation } from '../../types/types';
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss']
 })
-export class NavComponent implements OnInit, OnDestroy {
+export class NavComponent implements OnInit {
   @Input()
   public activePage: string;
 
@@ -23,6 +23,4 @@ export class NavComponent implements OnInit, OnDestroy {
 
     this.contents = this.ss.getNavigation('navigation', language).pipe(shareReplay(1));
   }
-
-  public ngOnDestroy() {}
 }

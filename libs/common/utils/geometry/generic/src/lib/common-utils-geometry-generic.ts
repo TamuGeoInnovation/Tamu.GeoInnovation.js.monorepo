@@ -1,4 +1,4 @@
-import { Observable, from, of, BehaviorSubject } from 'rxjs';
+import { Observable, from, BehaviorSubject } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
 import { Point } from '@tamu-gisc/common/types';

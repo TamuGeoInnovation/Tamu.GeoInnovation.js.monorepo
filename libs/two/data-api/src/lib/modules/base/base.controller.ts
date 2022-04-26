@@ -55,7 +55,11 @@ export abstract class BaseController<Entity extends BaseEntity> {
   private overrideOptions(
     options: FindManyOptions<Entity>,
     definitions: BaseActions<BaseController<Entity>, Entity>,
-    ref: Function
+    // TODO: Don't have a runtime to figure out exactly what this type is supposed to be
+    // Remove eslint-disable when that's sorted out
+    //
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ref: { [key: string]: any }
   ): FindManyOptions<Entity> {
     const targetCollection = definitions[ref.name];
 
@@ -66,7 +70,7 @@ export abstract class BaseController<Entity extends BaseEntity> {
         if (typeof currentObject[curr] === 'object') {
           acc[curr] = process(currentObject[curr]);
         } else {
-          if (targetCollection.hasOwnProperty(curr)) {
+          if (curr in targetCollection) {
             acc[targetCollection[curr]] = currentObject[curr];
           } else {
             acc[curr] = currentObject[curr];

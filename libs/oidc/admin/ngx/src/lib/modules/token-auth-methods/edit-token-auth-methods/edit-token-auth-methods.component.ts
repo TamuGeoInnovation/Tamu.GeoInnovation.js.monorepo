@@ -7,7 +7,7 @@ import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin/data-access';
 import { TokenEndpointAuthMethod } from '@tamu-gisc/oidc/common';
 
 @Component({
-  selector: 'edit-token-auth-methods',
+  selector: 'tamu-gisc-edit-token-auth-methods',
   templateUrl: './edit-token-auth-methods.component.html',
   styleUrls: ['./edit-token-auth-methods.component.scss']
 })
@@ -26,7 +26,7 @@ export class EditTokenAuthMethodsComponent implements OnInit {
 
   public deleteTokenAuthMethod(tokenAuthMethod: TokenEndpointAuthMethod) {
     console.log('deleteTokenAuthMethod', tokenAuthMethod);
-    this.tokenAuthService.deleteTokenEndpointAuthMethod(tokenAuthMethod).subscribe((deleteStatus) => {
+    this.tokenAuthService.deleteTokenEndpointAuthMethod(tokenAuthMethod).subscribe(() => {
       console.log('Deleted ', tokenAuthMethod.guid);
       this.fetchTokenAuthMethods();
     });

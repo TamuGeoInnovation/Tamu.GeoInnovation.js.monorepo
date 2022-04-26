@@ -10,7 +10,7 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
   @Input()
   public disabled = false;
 
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
   private _value: T = undefined;
 
@@ -22,15 +22,17 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
     this._value = v === null ? undefined : v;
 
     this.cd.markForCheck();
-
-    this._onChange(v === null ? undefined : v);
-    this._onTouched();
   }
 
   constructor(private cd: ChangeDetectorRef) {}
 
-  private _onChange = (v: T) => {};
-  private _onTouched = () => {};
+  private _onChange = (v: T) => {
+    return v;
+  };
+
+  private _onTouched = () => {
+    return;
+  };
 
   public writeValue(v: T) {
     this.value = v;

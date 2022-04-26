@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, from, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { switchMap, pluck, filter, shareReplay, take } from 'rxjs/operators';
 
 import { County, User } from '@tamu-gisc/covid/common/entities';
@@ -66,7 +66,7 @@ export class TestingSitesComponent implements OnInit {
 
   public markAsSiteLes() {
     this.localCounty.pipe(take(1)).subscribe((county) => {
-      this.ts.registerCountyAsTestingSiteLess(county).subscribe((res) => {
+      this.ts.registerCountyAsTestingSiteLess(county).subscribe(() => {
         this.is.refresh();
       });
     });

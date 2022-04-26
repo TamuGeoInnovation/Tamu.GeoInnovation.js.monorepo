@@ -1,4 +1,4 @@
-import { Injectable, Component } from '@angular/core';
+import { Injectable, Component, Type } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -701,11 +701,9 @@ export class EsriMapService {
    *  Zooms to a collection of graphics at a specified zoom.
    */
   public zoomTo(properties: ZoomProperties) {
-    return new Promise((r, rj) => {
-      (<esri.MapView>this._modules.view).goTo({
-        target: properties.graphics,
-        zoom: properties.zoom
-      });
+    return (<esri.MapView>this._modules.view).goTo({
+      target: properties.graphics,
+      zoom: properties.zoom
     });
   }
 
@@ -821,7 +819,7 @@ interface SelectFeaturesProperties {
    * in the environments file. In those cases, specifying a popup component allows proper
    * or conditional rendering.
    */
-  popupComponent?: Component;
+  popupComponent?: Type<Component>;
 }
 
 interface ZoomProperties {
@@ -838,7 +836,7 @@ export interface HitTestSnapshot {
    * in the environments file. In those cases, specifying a popup component allows proper or
    *  conditional rendering.
    */
-  popupComponent?: Component;
+  popupComponent?: Type<Component>;
 }
 
 export interface MapViewProperties {

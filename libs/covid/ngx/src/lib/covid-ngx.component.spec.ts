@@ -8,8 +8,8 @@ import { UINavigationTriggersModule } from '@tamu-gisc/ui-kits/ngx/navigation/tr
 import { UITileNavigationModule } from '@tamu-gisc/ui-kits/ngx/navigation/mobile-tile';
 import { AppStorage } from '@tamu-gisc/common/ngx/local-store';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-
 import { GeoservicesCoreNgxModule } from '@tamu-gisc/geoservices/ngx';
+
 import { CovidNgxComponent } from './covid-ngx.component';
 
 describe('GeoservicesCovidComponent', () => {

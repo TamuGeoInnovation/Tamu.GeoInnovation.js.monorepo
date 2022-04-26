@@ -91,6 +91,4 @@ export class ButtonComponent {
   private get _styleWarning() {
     return this.look === 'warning';
   }
-
-  constructor() {}
 }

@@ -42,7 +42,7 @@ export class SeasonService extends BaseService<CompetitionSeason> {
 
         // Check if the inner question object has an entry for the current question value.
         // If it does, increase the tally, otherwise create the entry.
-        if (acc[key].hasOwnProperty(value)) {
+        if (value in acc[key]) {
           acc[key][value]++;
         } else {
           acc[key][value] = 1;

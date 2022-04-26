@@ -16,7 +16,6 @@ export interface AbstractCollectorConstructorProperties {
   resourceName: ResourceType;
 }
 
-// tslint:disable-next-line: no-empty-interface
 export interface BaseRequestParams {
   [key: string]: string;
 }

@@ -16,6 +16,6 @@ export class DataGroupFlds extends BaseEntity {
   @JoinColumn({
     name: 'fieldID'
   })
-  @OneToOne((type) => Fields, (f) => f.fieldID)
+  @OneToOne(() => Fields, (f) => f.fieldID)
   public field: Fields;
 }

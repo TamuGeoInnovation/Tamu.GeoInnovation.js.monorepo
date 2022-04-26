@@ -197,7 +197,8 @@ export class DataViewerComponent implements OnInit {
           return {
             data: {
               datasets: [
-                ...Object.entries(dataset).map(([k, series], index) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                ...Object.entries(dataset).map(([k, series]) => {
                   return { ...series, ...this.datasetChartOptions };
                 })
               ]

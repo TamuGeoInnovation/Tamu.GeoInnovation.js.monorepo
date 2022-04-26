@@ -111,7 +111,7 @@ export class SnapshotNavigatorComponent implements OnInit {
   }
 
   public navigate(guid: string): void {
-    this.vs.workshop.pipe(take(1)).subscribe((ws) => {
+    this.vs.workshop.pipe(take(1)).subscribe(() => {
       this.router.navigate(['/viewer/'], { queryParamsHandling: 'merge', queryParams: { event: guid } });
     });
   }

@@ -21,7 +21,8 @@ export class CheckboxComponent implements ControlValueAccessor {
    *
    * Defaults to `false`.
    */
-  // tslint:disable-next-line:no-input-rename
+
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('checked')
   private _checked = false;
 
@@ -87,10 +88,13 @@ export class CheckboxComponent implements ControlValueAccessor {
   @Output()
   public changed: EventEmitter<boolean> = new EventEmitter();
 
-  constructor() {}
+  private _onChange = (v) => {
+    return v;
+  };
 
-  private _onChange = (v) => {};
-  private _onTouch = () => {};
+  private _onTouch = () => {
+    return;
+  };
 
   /**
    * Mouse event handler, emitting the raw checked value of the reference checkbox

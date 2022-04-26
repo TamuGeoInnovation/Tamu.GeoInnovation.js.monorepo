@@ -26,6 +26,9 @@ export class AdminCountiesComponent implements OnInit {
     this.summary = this.stats.pipe(
       map((v) => {
         return Object.entries(v).reduce(
+          // Array destructure assignment requires unused `fips`
+          //
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           (acc, [fips, county], index, arr) => {
             acc.total++;
 

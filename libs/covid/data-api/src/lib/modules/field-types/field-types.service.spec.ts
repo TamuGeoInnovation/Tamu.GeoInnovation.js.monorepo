@@ -9,7 +9,6 @@ import { FieldTypesService } from './field-types.service';
 
 describe('FieldTypesService', () => {
   let fieldTypesService: FieldTypesService;
-  let fieldTypesMockRepository: Repository<FieldType>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,7 +16,6 @@ describe('FieldTypesService', () => {
     }).compile();
 
     fieldTypesService = module.get<FieldTypesService>(FieldTypesService);
-    fieldTypesMockRepository = module.get(getRepositoryToken(FieldType));
   });
 
   describe('Validation ', () => {

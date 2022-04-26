@@ -48,8 +48,11 @@ export class GeoJSONPoint {
   public geometry = { type: 'Point', coordinates: [0, 0] };
   public properties = {};
 
-  // tslint:disable-next-line: no-any
-  constructor(properties: { latitude: number; longitude: number; properties: any }) {
+  constructor(properties: {
+    latitude: number;
+    longitude: number;
+    properties: { [key: string]: string | boolean | number };
+  }) {
     this.latitude = properties.latitude;
     this.longitude = properties.longitude;
     this.properties = { ...this.properties, ...properties.properties };
@@ -62,6 +65,16 @@ export class GeoJSONPoint {
    */
   public set latitude(latitude: number) {
     this.geometry.coordinates[1] = latitude;
+  }
+
+  /**
+   * Gets the latitude value for the point feature
+   *
+   * @type {number}
+   * @memberof PointFeature
+   */
+  public get latitude(): number {
+    return this.geometry.coordinates[1];
   }
 
   /**
@@ -82,18 +95,8 @@ export class GeoJSONPoint {
     return this.geometry.coordinates[0];
   }
 
-  /**
-   * Gets the latitude value for the point feature
-   *
-   * @type {number}
-   * @memberof PointFeature
-   */
-  public get latitude(): number {
-    return this.geometry.coordinates[1];
-  }
-
   public removeProperty(property: string) {
-    if (this.properties.hasOwnProperty(property)) {
+    if (property in this.properties) {
       delete this.properties[property];
     }
   }

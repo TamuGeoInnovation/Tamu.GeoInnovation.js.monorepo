@@ -7,7 +7,7 @@ import { IChartConfiguration } from '@tamu-gisc/ui-kits/ngx/charts';
 import { StatusService } from '@tamu-gisc/two/data-access';
 
 @Component({
-  selector: 'site',
+  selector: 'app-site',
   templateUrl: './site.component.html',
   styleUrls: ['./site.component.scss']
 })

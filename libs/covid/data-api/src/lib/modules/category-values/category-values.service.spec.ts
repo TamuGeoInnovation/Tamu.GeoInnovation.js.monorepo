@@ -9,7 +9,6 @@ import { CategoryValuesService } from './category-values.service';
 
 describe('CategoryValuesService', () => {
   let categoryValuesService: CategoryValuesService;
-  let categoryValueRepo: Repository<CategoryValue>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,7 +16,6 @@ describe('CategoryValuesService', () => {
     }).compile();
 
     categoryValuesService = module.get<CategoryValuesService>(CategoryValuesService);
-    categoryValueRepo = module.get(getRepositoryToken(CategoryValue));
   });
 
   describe('Validation ', () => {

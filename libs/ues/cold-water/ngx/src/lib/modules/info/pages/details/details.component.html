@@ -62,7 +62,7 @@
   </table>
 
   <div class="content-status">
-    <div class="spinning-loader" *ngIf="!(interventions | async)"></div>
+    <div class="spinning-loader" *ngIf="(interventions | async) === null"></div>
     <p *ngIf="(interventions | async)?.length === 0">There are no intervention events for this valve.</p>
   </div>
 </div>

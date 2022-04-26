@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
-  selector: 'add',
+  selector: 'tamu-gisc-add',
   templateUrl: './add-role.component.html',
   styleUrls: ['./add-role.component.scss']
 })

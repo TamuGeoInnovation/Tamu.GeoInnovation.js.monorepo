@@ -42,7 +42,8 @@ export abstract class BaseMdsCollector<
    * @return {*}  Resource entity
    * @memberof BaseMdsCollector
    */
-  // tslint:disable-next-line: no-any
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
   public dtoToEntity<D>(dto: D): any {
     throw new Error(`${this.headingResourceName}: Method not implemented.`);
   }

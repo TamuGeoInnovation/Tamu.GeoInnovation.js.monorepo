@@ -24,7 +24,7 @@ export class StatusChangesController {
   }
 
   @Get(':id')
-  public getCompiledStusChangesDataset(@Param('id') id: string, @Req() req) {
+  public getCompiledStusChangesDataset(@Param('id') id: string) {
     return this.service.retrieveDataRequestDetails(id);
   }
 

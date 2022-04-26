@@ -28,7 +28,7 @@ describe('ParkingService', () => {
     }).compileComponents();
   }));
 
-  it('should be created', inject([ParkingService], (component: ParkingService<{}>) => {
+  it('should be created', inject([ParkingService], (component: ParkingService) => {
     expect(component).toBeTruthy();
   }));
 });

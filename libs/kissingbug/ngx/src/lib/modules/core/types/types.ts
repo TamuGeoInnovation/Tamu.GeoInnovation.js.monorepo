@@ -293,7 +293,7 @@ export interface GeoJSONFeatureCollection {
 
 export interface GeoJSONFeature {
   type: string;
-  properties: Object;
+  properties: { [key: string]: string | boolean | number };
   geometry: GeoJSONPolygonFeature | GeoJSONMultiPolygonFeature;
 }
 

@@ -57,7 +57,7 @@ describe('ResponsesService', () => {
         workshopGuid: '',
         shapes: {}
       };
-      const cat = await responsesService.updateExisting(mockparameter, mockparameter);
+      await responsesService.updateExisting(mockparameter, mockparameter);
       expect(responsesRepository.update).toHaveBeenCalled();
     });
   });
@@ -69,7 +69,8 @@ describe('ResponsesService', () => {
         workshopGuid: '',
         shapes: {}
       };
-      const cat = await responsesService.deleteExisting(mockparameter);
+
+      await responsesService.deleteExisting(mockparameter);
       expect(responsesRepository.delete).toHaveBeenCalled();
     });
   });
@@ -81,7 +82,8 @@ describe('ResponsesService', () => {
         workshopGuid: '',
         shapes: {}
       };
-      const jestSpy = jest.spyOn(responsesService, 'getOne').mockResolvedValue(new Response());
+
+      jest.spyOn(responsesService, 'getOne').mockResolvedValue(new Response());
       await expect(responsesService.insertNew(mockparameter)).rejects.toThrowError();
     });
   });

@@ -7,10 +7,7 @@ import { SearchService, SearchResult } from '@tamu-gisc/ui-kits/ngx/search';
 
 import { relativeDistance, RelativeDistancePoint } from '@tamu-gisc/common/utils/geometry/generic';
 import { centroidFromGeometry } from '@tamu-gisc/common/utils/geometry/esri';
-
 import { Point } from '@tamu-gisc/common/types';
-
-import esri = __esri;
 
 @Injectable({ providedIn: 'root' })
 export class BikeService {

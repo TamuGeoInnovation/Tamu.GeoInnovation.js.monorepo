@@ -15,8 +15,6 @@ export class CodeRunnerComponent implements OnInit {
 
   public renderable = false;
 
-  constructor() {}
-
   public ngOnInit() {
     if (this.code === undefined) {
       console.warn('Code runner did does not have code to render.');

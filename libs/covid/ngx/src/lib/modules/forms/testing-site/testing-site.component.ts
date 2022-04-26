@@ -16,8 +16,6 @@ import { SiteServicesService } from '../../../data-access/site-services/site-ser
 import { SiteStatusesService } from '../../../data-access/site-statuses/site-statuses.service';
 import { PhoneNumberTypesService } from '../../../data-access/phone-number-types/phone-number-types.service';
 
-const storageOptions = { primaryKey: 'tamu-covid-vgi' };
-
 @Component({
   selector: 'tamu-gisc-testing-site',
   templateUrl: './testing-site.component.html',
@@ -188,7 +186,6 @@ export class TestingSiteComponent implements OnInit, OnChanges {
       const patch = JSON.parse(JSON.stringify(this.formData));
 
       patch.info.undisclosed = !patch.info.undisclosed;
-      patch.info.driveThrough = patch.info.driveThrough;
       patch.info.status = patch.info.status[0] && patch.info.status ? patch.info.status : undefined;
       patch.info.owners = patch.info.owners.length > 0 ? patch.info.owners.split(',') : [];
       patch.info.restrictions = patch.info.restrictions.length > 0 ? patch.info.restrictions.split(',') : [];

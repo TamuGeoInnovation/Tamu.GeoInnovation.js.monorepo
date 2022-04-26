@@ -1,10 +1,11 @@
-import { Controller, Delete, Post, Get, Param, Body, UseGuards } from '@nestjs/common';
-import { BaseController } from '../base/base.controller';
+import { Controller, Delete, Post, Get, Param, Body, UseGuards, NotImplementedException } from '@nestjs/common';
 
 import { TestingSite } from '@tamu-gisc/covid/common/entities';
+import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
+
 import { TestingSitesService } from './testing-sites.service';
 import { CountyClaimsService } from '../county-claims/county-claims.service';
-import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
+import { BaseController } from '../base/base.controller';
 
 @Controller('sites')
 export class TestingSitesController extends BaseController<TestingSite> {
@@ -70,24 +71,12 @@ export class TestingSitesController extends BaseController<TestingSite> {
   }
 
   @Post('/validate/:siteId')
-  public async validateLockdown(@Param() params) {
-    // const site = await this.service.repo.findOne({ guid: params.siteId });
-    // if (site) {
-    //   site.validated = true;
-    //   return site.save();
-    // } else {
-    //   return {
-    //     status: 500,
-    //     success: false,
-    //     message: 'Site ID not found.'
-    //   };
-    // }
+  public async validateLockdown() {
+    return new NotImplementedException();
   }
 
   @Delete('/validate/:siteId')
-  public async deleteValidatedLockdown(@Param() params) {
-    // const site = await this.service.repo.findOne({ guid: params.siteId });
-    // site.validated = false;
-    // return site.save();
+  public async deleteValidatedLockdown() {
+    return new NotImplementedException();
   }
 }

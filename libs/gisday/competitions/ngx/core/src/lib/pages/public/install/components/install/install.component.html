@@ -8,7 +8,7 @@
   Device
 </h1>
 
-<div [ngSwitch]="device.identity.code" class="app-install" [ngClass]="{'mobile': device.identity.code == 1 || device.identity.code == 2}">
+<div [ngSwitch]="device.identity.code" class="app-install" [ngClass]="{'mobile': device.identity.code === 1 || device.identity.code === 2}">
   <!-- Android Instructions -->
   <div *ngSwitchCase="1">
     <tamu-gisc-accordion [expanded]="true">

@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TokenAuthMethodsService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
-  selector: 'add-token-auth-methods',
+  selector: 'tamu-gisc-add-token-auth-methods',
   templateUrl: './add-token-auth-methods.component.html',
   styleUrls: ['./add-token-auth-methods.component.scss']
 })

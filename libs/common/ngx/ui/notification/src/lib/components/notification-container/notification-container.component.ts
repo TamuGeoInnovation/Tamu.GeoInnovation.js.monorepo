@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Optional } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { v4 as guid } from 'uuid';
+import { Angulartics2 } from 'angulartics2';
 
 import { Notification, NotificationService } from '../../services/notification.service';
 
@@ -16,7 +17,7 @@ export class NotificationContainerComponent implements OnInit {
 
   public notifications: Observable<Notification[]>;
 
-  constructor(private service: NotificationService) {}
+  constructor(@Optional() private analytics: Angulartics2, private service: NotificationService) {}
 
   public ngOnInit() {
     this.notifications = this.service.notifications;
@@ -32,17 +33,20 @@ export class NotificationContainerComponent implements OnInit {
   }
 
   public action(event: Notification): void {
-    // const label = {
-    //   guid: guid(),
-    //   date: Date.now(),
-    //   value: event.id
-    // };
-    // this.analytics.eventTrack.next({
-    //   action: 'Notification Action',
-    //   properties: {
-    //     category: 'UI Interaction',
-    //     label: JSON.stringify(label)
-    //   }
-    // });
+    if (this.analytics !== null) {
+      const label = {
+        guid: guid(),
+        date: Date.now(),
+        value: event.id
+      };
+
+      this.analytics.eventTrack.next({
+        action: 'Notification Action',
+        properties: {
+          category: 'UI Interaction',
+          label: JSON.stringify(label)
+        }
+      });
+    }
   }
 }

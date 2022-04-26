@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'gisc-directory',
+  selector: 'tamu-gisc-aggiemap-directory',
   templateUrl: './directory.component.html',
   styleUrls: ['./directory.component.scss']
 })
-export class DirectoryComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit() {}
-}
+export class DirectoryComponent {}

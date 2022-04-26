@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'roles',
+  selector: 'tamu-gisc-roles',
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.scss']
 })
-export class RolesComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit(): void {}
-}
+export class RolesComponent {}

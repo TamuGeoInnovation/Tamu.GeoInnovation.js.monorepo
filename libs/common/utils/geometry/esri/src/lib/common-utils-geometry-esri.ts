@@ -158,7 +158,7 @@ export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): Autocast
   } else if (layer.type === API_LAYER_TYPES.GROUP_LAYER) {
     return {
       type: 'group',
-      layers: (((layer as IPortalGroupLayer).layers as unknown) as Array<AutocastableLayer>) || [],
+      layers: ((layer as IPortalGroupLayer).layers as unknown as Array<AutocastableLayer>) || [],
       title: layer.name
     };
   }
@@ -178,7 +178,7 @@ export class CoordinateConverter {
         this.modules.spatialReference = s;
         this.modules.webMercatorUtils = u;
       })
-      .catch((err) => {
+      .catch(() => {
         throw new Error('Could not load CoordinateConverter modules.');
       });
   }
@@ -271,8 +271,7 @@ export interface IGraphic {
     style: string;
   };
   attributes: {
-    // tslint:disable-next-line: no-any
-    [property: string]: any;
+    [property: string]: string | boolean | number;
   };
-  popupTemplate: {};
+  popupTemplate: esri.PopupTemplate;
 }

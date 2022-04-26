@@ -17,7 +17,7 @@ export function makeUrlParams(params: object, encode: boolean, prefix?: string):
   }
 
   const segments = Object.keys(params)
-    .map((k, i, a): string => {
+    .map((k): string => {
       // Return a simple "key=value" string
       return `${k}=${params[k]}`;
     })

@@ -107,11 +107,11 @@ export class TimeMapComponent implements OnInit {
         });
       });
 
-      map.on('mouseleave', 'covid-county', (e) => {
+      map.on('mouseleave', 'covid-county', () => {
         this.infoBoxModel.next(null);
       });
 
-      map.on('mouseleave', 'covid-state', (e) => {
+      map.on('mouseleave', 'covid-state', () => {
         this.infoBoxModel.next(null);
       });
 

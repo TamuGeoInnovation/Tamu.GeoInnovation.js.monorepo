@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { Observable } from 'rxjs';
@@ -18,7 +18,7 @@ import {
   styleUrls: ['./faq.component.scss'],
   providers: [StrapiService]
 })
-export class FaqComponent implements OnInit, OnDestroy {
+export class FaqComponent implements OnInit {
   private title = 'FAQ | Kissing Bugs and Chagas Disease in the U.S. | Texas A&M';
   public page: StrapiSingleTypes = 'faq';
   public pageContents: Observable<IStrapiPageResponse>;
@@ -62,8 +62,6 @@ export class FaqComponent implements OnInit, OnDestroy {
       })
     );
   }
-
-  public ngOnDestroy() {}
 
   public expandContainer(question) {
     question.expanded = !question.expanded;

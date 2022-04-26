@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MobileTabNavigation } from './container.component';
+import { MobileTabNavigationComponent } from './container.component';
 
-describe('MobileTabNavigation', () => {
-  let component: MobileTabNavigation;
-  let fixture: ComponentFixture<MobileTabNavigation>;
+describe('MobileTabNavigationComponent', () => {
+  let component: MobileTabNavigationComponent;
+  let fixture: ComponentFixture<MobileTabNavigationComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MobileTabNavigation]
+      declarations: [MobileTabNavigationComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MobileTabNavigation);
+    fixture = TestBed.createComponent(MobileTabNavigationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

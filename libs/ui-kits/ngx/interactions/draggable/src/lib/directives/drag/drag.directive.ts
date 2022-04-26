@@ -5,7 +5,7 @@ import { DragService, UIDragState } from '../../services/drag/drag.service';
 import interact from 'interactjs';
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[draggable]'
 })
 export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy {
@@ -49,9 +49,9 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
 
     this.draggable.on('dragmove', (event) => this._dragMoveListener(event));
 
-    this.draggable.on('dragstart', (event) => this._dragStartListener(event));
+    this.draggable.on('dragstart', () => this._dragStartListener());
 
-    this.draggable.on('dragend', (event) => this._dragEndListener(event));
+    this.draggable.on('dragend', () => this._dragEndListener());
 
     this.draggable.on('tap', (event) => {
       event.interaction.stop();
@@ -104,7 +104,7 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
 
       // Get dragged values from attributes
       const target = event.target,
-        x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+        // x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
         y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
       const position = this.draggable.getRect(this.el.nativeElement);
@@ -136,7 +136,7 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
         // Limit has not been reached, continue to scroll until the limit is reached
         const target = event.target,
           // Get dragged values from attributes
-          x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+          // x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
           y =
             (parseFloat(target.getAttribute('data-y')) || 0) + event.dy <=
             -(this.draggable.getRect(this.el.nativeElement).height - this.initialOffset)
@@ -150,7 +150,7 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
     }
   }
 
-  private _dragStartListener(event) {
+  private _dragStartListener() {
     this.dragService.state = new UIDragState({
       guid: this.identifier,
       dragState: 'drag-start',
@@ -158,7 +158,7 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
     });
   }
 
-  private _dragEndListener(event) {
+  private _dragEndListener() {
     this.dragService.state = new UIDragState({
       guid: this.identifier,
       dragState: 'drag-end',
@@ -170,9 +170,3 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
     return 100 - (this.draggable.getRect(this.el.nativeElement).top / (this.deviceHeight - this.initialOffset)) * 100;
   }
 }
-
-// As far as I can tell, in the version of interactjs we're using the TypeScript bindings are wrong
-// interface FixedInteractable extends interact {
-//   getRect(): interact.Rect & interact.Rect2;
-//   unset(): FixedInteractable;
-// }

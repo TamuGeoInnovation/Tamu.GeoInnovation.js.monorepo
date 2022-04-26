@@ -52,7 +52,10 @@ describe('NotificationItemComponent', () => {
       jest.advanceTimersByTime(500);
 
       notificationItemComponent.animateStatus = true;
-      console.warn = () => {}; // Disable ngZone warning
+      // TODO: The tests for this component are currently not working.
+      // The following lines throws eslint errors but might be necessary when tests are fixed
+      //
+      // console.warn = () => {}; // Disable ngZone warning
       notificationItemComponent.action();
       expect(notificationItemComponent.animateStatus).toBeFalsy();
     })();

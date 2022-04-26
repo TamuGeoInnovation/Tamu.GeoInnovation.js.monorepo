@@ -25,4 +25,4 @@ export class ReverseGeocoder extends ApiBase<IReverseGeocoderTransformers, IReve
   }
 }
 
-interface IReverseGeocoderTransformers extends TransformersMap<IReverseGeocoderOptions> {}
+type IReverseGeocoderTransformers = TransformersMap<IReverseGeocoderOptions>;

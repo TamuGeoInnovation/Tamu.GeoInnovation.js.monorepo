@@ -68,11 +68,11 @@ export function dateDifferenceGreaterThan(
 ) {
   let difference = newest.getTime() - oldest.getTime();
 
-  if (unit === 'seconds' || 'minutes' || 'hours') {
+  if (unit === 'seconds' || unit === 'minutes' || unit === 'hours') {
     difference = difference / 1000;
   }
 
-  if (unit === 'minutes' || 'hours') {
+  if (unit === 'minutes' || unit === 'hours') {
     difference = difference / 60;
   }
 

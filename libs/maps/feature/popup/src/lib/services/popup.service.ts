@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Component, Injectable, Type } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { HitTestSnapshot } from '@tamu-gisc/maps/esri';
@@ -47,7 +47,7 @@ export class PopupService {
 
       // Layer source ID for the first graphic in the collection
       const [topGraphic] = validGraphics;
-      const graphicLayer = (topGraphic.layer as unknown) as ILayerWithPopupComponent;
+      const graphicLayer = topGraphic.layer as ILayerWithPopupComponent;
 
       // Check if the source has a component declaration
       if (!graphicLayer.popupComponent) {
@@ -79,6 +79,5 @@ export class PopupService {
 }
 
 interface ILayerWithPopupComponent extends esri.Layer {
-  // tslint:disable-next-line: no-any
-  popupComponent: any;
+  popupComponent: Type<Component>;
 }

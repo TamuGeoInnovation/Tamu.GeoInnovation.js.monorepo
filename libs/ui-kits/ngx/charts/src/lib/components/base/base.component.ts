@@ -185,8 +185,6 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
   @ViewChild(ChartContainerComponent, { static: true })
   public chart: ChartContainerComponent;
 
-  constructor() {}
-
   /**
    * `ChartContainerComponent`'s inside template sub-class will be available here.
    *
@@ -213,7 +211,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
     //
     // Generated config is returned by the scan operator which will trigger chart container to
     // create/update chart data.
-    this.chartData = iif(() => 'subscribe' in this.source, this.source, of((this.source as unknown) as unknown[])).pipe(
+    this.chartData = iif(() => 'subscribe' in this.source, this.source, of(this.source as unknown as unknown[])).pipe(
       scan((acc, curr) => {
         let p;
         // Asserting transformations as an `any` array, otherwise compiler does not like its original
@@ -289,7 +287,7 @@ export class BaseChartComponent implements OnInit, AfterViewInit {
       );
     } else {
       // If the transformation provided is a primitive (string), then execute the named function providing the paths as parameters.
-      if (op.hasOwnProperty(set)) {
+      if (set in op) {
         // Parameters can be single primitive values or multiple. Normalize before named function call.
         const params = paths instanceof Array ? paths : [paths];
 

@@ -137,7 +137,7 @@ export class ColdWaterValvesService {
             updateFeatures: [cloned]
           }) as Promise<IFeatureLayerEditResults>
         ).pipe(
-          tap((results) => {
+          tap(() => {
             layer.refresh();
           })
         );
@@ -189,7 +189,7 @@ export class ColdWaterValvesService {
     return this.mapService.store.pipe(
       take(1),
       switchMap((instance) => {
-        return from(instance.view.when() as Promise<esri.View>).pipe(switchMap((view) => this.mapService.store));
+        return from(instance.view.when() as Promise<esri.View>).pipe(switchMap(() => this.mapService.store));
       }),
       switchMap((instance) => {
         const l = instance.map.findLayerById('cold-water-valves-layer') as esri.FeatureLayer;

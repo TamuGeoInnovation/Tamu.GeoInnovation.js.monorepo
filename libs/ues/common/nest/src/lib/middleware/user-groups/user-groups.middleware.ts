@@ -35,7 +35,7 @@ export class UserGroupsMiddleware implements NestMiddleware {
                   return name;
                 }
               })
-              .map(([name, id]) => {
+              .map(([name]) => {
                 return name;
               });
 

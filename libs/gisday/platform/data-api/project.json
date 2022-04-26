@@ -6,7 +6,8 @@
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "options": {
-        "lintFilePatterns": ["libs/gisday/platform/data-api/**/*.ts"]
+        "lintFilePatterns": ["libs/gisday/platform/data-api/**/*.ts"],
+        "force": true
       }
     },
     "test": {

@@ -3,19 +3,16 @@ import {
   BaseEntity,
   PrimaryGeneratedColumn,
   PrimaryColumn,
-  UpdateDateColumn,
   CreateDateColumn,
   BeforeUpdate,
   BeforeInsert,
   Column,
   OneToMany,
-  ManyToOne,
-  OneToOne,
-  JoinColumn,
-  ManyToMany
+  ManyToOne
 } from 'typeorm';
 
 import { Express } from 'express';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Multer } from 'multer';
 
 import { EmailStatus } from '../types/mail.types';

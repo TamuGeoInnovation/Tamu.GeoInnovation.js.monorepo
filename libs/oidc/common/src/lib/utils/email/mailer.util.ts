@@ -76,8 +76,12 @@ export class Mailer {
     }
   }
 
-  public static sendEmailWithAttachments(info: IMailroomEmailOutbound, attachments: any[], toConsole?: boolean) {
-    const embeddedImages = attachments.map((file, i) => {
+  public static sendEmailWithAttachments(
+    info: IMailroomEmailOutbound,
+    attachments: Array<{ originalname: string; buffer: string }>,
+    toConsole?: boolean
+  ) {
+    const embeddedImages = attachments.map((file) => {
       return {
         filename: file.originalname,
         content: file.buffer

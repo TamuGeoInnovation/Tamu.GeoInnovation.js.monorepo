@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { SelectComponent } from './select.component';
 
 describe('SelectComponent', () => {
-  let component: SelectComponent<{}>;
-  let fixture: ComponentFixture<SelectComponent<{}>>;
+  let component: SelectComponent<{ test: 'value' }>;
+  let fixture: ComponentFixture<SelectComponent<{ test: 'value' }>>;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule],
@@ -14,7 +14,7 @@ describe('SelectComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SelectComponent);
+    fixture = TestBed.createComponent<SelectComponent<{ test: 'value' }>>(SelectComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -25,11 +25,12 @@ describe('SelectComponent', () => {
 
   it('should respond to keyboard events', (done) => {
     component.changed.subscribe((event) => {
-      expect(event).toEqual('test');
+      expect(event).toEqual({ test: 'value' });
       done();
     });
-    component.value = 'test';
-    component.changeEvent(new Event('test'));
+
+    component.value = { test: 'value' };
+    component.changeEvent();
   });
 
   it('getDataItemValue should handle template being undefined', () => {

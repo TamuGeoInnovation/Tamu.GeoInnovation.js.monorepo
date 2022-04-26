@@ -20,17 +20,6 @@ import { CountyClaimsService } from '../county-claims/county-claims.service';
 
 describe('LockdownsService', () => {
   let lockdownsService: LockdownsService;
-  let countyClaimsService: CountyClaimsService;
-
-  let lockdownMock: Repository<Lockdown>;
-  let lockdownInfoMock: Repository<LockdownInfo>;
-  let userMock: Repository<User>;
-  let entityStatusMock: Repository<EntityStatus>;
-  let countyMock: Repository<County>;
-  let countyClaimMock: Repository<CountyClaim>;
-  let countyClaimInfoMock: Repository<CountyClaimInfo>;
-  let entityValueMock: Repository<EntityValue>;
-  let entityToValueMock: Repository<EntityToValue>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -49,16 +38,6 @@ describe('LockdownsService', () => {
       ]
     }).compile();
     lockdownsService = module.get<LockdownsService>(LockdownsService);
-    countyClaimsService = module.get<CountyClaimsService>(CountyClaimsService);
-    lockdownMock = module.get(getRepositoryToken(Lockdown));
-    lockdownInfoMock = module.get(getRepositoryToken(LockdownInfo));
-    userMock = module.get(getRepositoryToken(User));
-    entityStatusMock = module.get(getRepositoryToken(EntityStatus));
-    countyMock = module.get(getRepositoryToken(County));
-    countyClaimMock = module.get(getRepositoryToken(CountyClaim));
-    countyClaimInfoMock = module.get(getRepositoryToken(CountyClaimInfo));
-    entityValueMock = module.get(getRepositoryToken(EntityValue));
-    entityToValueMock = module.get(getRepositoryToken(EntityToValue));
   });
   describe('Validation ', () => {
     it('Service should be defined', () => {

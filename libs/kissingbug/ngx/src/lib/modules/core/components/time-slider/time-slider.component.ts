@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
@@ -7,10 +7,6 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   templateUrl: './time-slider.component.html',
   styleUrls: ['./time-slider.component.scss']
 })
-export class TimeSliderComponent implements OnInit, OnDestroy {
+export class TimeSliderComponent {
   constructor(private environment: EnvironmentService) {}
-
-  public ngOnInit() {}
-
-  public ngOnDestroy() {}
 }

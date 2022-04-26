@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'grant-types',
+  selector: 'tamu-gisc-grant-types',
   templateUrl: './grant-types.component.html',
   styleUrls: ['./grant-types.component.scss']
 })
-export class GrantTypesComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit(): void {}
-}
+export class GrantTypesComponent {}

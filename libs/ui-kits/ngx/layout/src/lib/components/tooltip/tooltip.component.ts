@@ -116,7 +116,7 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
         return [containerRects, triggerRects];
       }),
       map(([cr, tr]) => {
-        return this.calculateOffset(tr, cr, { left: 0, top: 0, height: window.innerHeight, width: window.innerWidth }, 10);
+        return this.calculateOffset(tr, cr, { left: 0, top: 0, height: window.innerHeight, width: window.innerWidth });
       }),
       shareReplay()
     );
@@ -141,16 +141,8 @@ export class TooltipComponent implements OnInit, OnDestroy, AfterContentInit {
   /**
    * Performs a search in a clockwise manner around a `reference` to place an `element` relative to it without
    * exceeding the `boundary`.
-   *
-   * When `referenceBuffer` is provided, the offset will consider a minimum distance from the `reference` block,
-   * because the buffer itself might be just enough to push an offset past the containing boundary.
    */
-  private calculateOffset(
-    reference: PartialDomRect,
-    element: PartialDomRect,
-    boundary: PartialDomRect,
-    referenceBuffer?: number
-  ): IOffsetCoordinates {
+  private calculateOffset(reference: PartialDomRect, element: PartialDomRect, boundary: PartialDomRect): IOffsetCoordinates {
     let x, y;
 
     // Dictionary of 4 locations, in a clockwise direction

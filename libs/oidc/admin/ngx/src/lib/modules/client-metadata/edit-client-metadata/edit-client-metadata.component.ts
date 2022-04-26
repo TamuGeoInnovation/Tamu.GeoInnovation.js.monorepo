@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
@@ -7,25 +7,23 @@ import { ClientMetadataService, IClientMetadataResponse } from '@tamu-gisc/oidc/
 import { ClientMetadata } from '@tamu-gisc/oidc/common';
 
 @Component({
-  selector: 'edit-client-metadata',
+  selector: 'tamu-gisc-edit-client-metadata',
   templateUrl: './edit-client-metadata.component.html',
   styleUrls: ['./edit-client-metadata.component.scss']
 })
-export class EditClientMetadataComponent implements OnInit {
+export class EditClientMetadataComponent {
   public $clients: Observable<Array<Partial<IClientMetadataResponse>>>;
 
   constructor(private readonly clientService: ClientMetadataService) {
     this.fetchClientMetadata();
   }
 
-  public ngOnInit(): void {}
-
   public fetchClientMetadata() {
     this.$clients = this.clientService.getClientMetadatas().pipe(shareReplay(1));
   }
 
   public deleteClientMetadata(client: ClientMetadata) {
-    this.clientService.deleteClientMetadata(client).subscribe((deleteStatus) => {
+    this.clientService.deleteClientMetadata(client).subscribe(() => {
       this.fetchClientMetadata();
     });
   }

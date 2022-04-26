@@ -39,16 +39,16 @@ describe('SnapshotsService', () => {
 
   describe('updateExisting', () => {
     it('should return call repo.update, and should accept IResponseRequestPayload type as mock parameters ', async () => {
-      const mockparameter = { layers: '' };
-      const cat = await scenariosService.updateSnapshot(mockparameter, mockparameter);
+      const mockparameter = { layers: [] };
+      await scenariosService.updateSnapshot(mockparameter, mockparameter);
       expect(scenarioRepository.update).toHaveBeenCalled();
     });
   });
 
   describe('deleteExisting', () => {
     it('should return call repo.delete, and should accept IResponseRequestPayload type as mock parameter ', async () => {
-      const mockparameter = { layers: '' };
-      const cat = await scenariosService.deleteSnapshot(mockparameter);
+      const mockparameter = { layers: [] };
+      await scenariosService.deleteSnapshot(mockparameter);
       expect(scenarioRepository.delete).toHaveBeenCalled();
     });
   });

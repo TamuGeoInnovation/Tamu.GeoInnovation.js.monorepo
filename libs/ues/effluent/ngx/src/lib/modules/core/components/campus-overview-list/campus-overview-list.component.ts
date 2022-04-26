@@ -22,20 +22,6 @@ export class CampusOverviewListComponent implements OnInit {
   public ngOnInit(): void {
     this.zones = forkJoin([this.ez.getZonesForTier(undefined, 3), this.rs.getLatestResults()]).pipe(
       map(([zones, results]) => {
-        const sorted = zones.sort((a, b) => {
-          // Parse out the zone into a number so the sorting works correctly.
-          const aZone = parseInt(a.attributes.SampleNumber.split('-').pop(), 10);
-          const bZone = parseInt(b.attributes.SampleNumber.split('-').pop(), 10);
-
-          if (aZone < bZone) {
-            return -1;
-          } else if (aZone > bZone) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
-
         return zones.map((zone) => {
           const matching = results.find((r) => {
             return `${r.location.tier}-${r.location.sample}` === zone.attributes.SampleNumber;

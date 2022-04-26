@@ -10,8 +10,8 @@ import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 import { SearchMobileComponent } from './search-mobile.component';
 
 describe('SearchMobileComponent (shallow)', () => {
-  let component: SearchMobileComponent<{}>;
-  let fixture: ComponentFixture<SearchMobileComponent<{}>>;
+  let component: SearchMobileComponent;
+  let fixture: ComponentFixture<SearchMobileComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

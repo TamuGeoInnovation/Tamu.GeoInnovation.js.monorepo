@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Patch, Param, Delete, Get } from '@nestjs/common';
+import { Controller, Post, Patch, Param, Delete, Get } from '@nestjs/common';
 
 import { State } from '@tamu-gisc/covid/common/entities';
 

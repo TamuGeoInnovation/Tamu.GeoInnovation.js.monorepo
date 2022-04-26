@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { Observable, of } from 'rxjs';
-import { pluck } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ export class AccountSecurityService {
   public getSecretQuestions(): Observable<Array<ISecretQuestion>> {
     return this.http
       .get<ISecretQuestions>(`${this.resource}getSecretQuestions`, { withCredentials: true })
-      .pipe(pluck<ISecretQuestions, Array<ISecretQuestion>>('items'));
+      .pipe(map((questions) => questions.items));
   }
 
   /**

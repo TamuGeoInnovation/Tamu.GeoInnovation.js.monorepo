@@ -2,7 +2,7 @@ import { Directive, Input, HostBinding, TemplateRef, ViewContainerRef } from '@a
 import { Subject } from 'rxjs';
 
 @Directive({
-  // tslint:disable-next-line: directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[giscAccordion]'
 })
 export class AccordionDirective {
@@ -16,7 +16,7 @@ export class AccordionDirective {
 
   @Input()
   public set giscAccordion(v) {
-    const view = this.viewContainer.createEmbeddedView(this.templateRef, {
+    this.viewContainer.createEmbeddedView(this.templateRef, {
       $implicit: this
     });
   }

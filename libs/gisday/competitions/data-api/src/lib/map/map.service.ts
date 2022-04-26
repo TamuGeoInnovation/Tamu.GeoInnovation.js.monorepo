@@ -11,7 +11,7 @@ export class MapService extends BaseService<CompetitionSubmission> {
     super(submissionRepo);
   }
 
-  public async getLocations(geoJson: boolean = false) {
+  public async getLocations(geoJson = false) {
     const submissions = await this.submissionRepo
       .createQueryBuilder('submissions')
       .leftJoinAndSelect('submissions.location', 'location')

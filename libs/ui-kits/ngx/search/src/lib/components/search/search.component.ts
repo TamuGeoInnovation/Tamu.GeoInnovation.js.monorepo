@@ -22,15 +22,7 @@ import { arrowKeyControl } from '@tamu-gisc/common/utils/ui';
 import { getGeolocation, isCoordinatePair } from '@tamu-gisc/common/utils/geometry/generic';
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 
-import {
-  SearchService,
-  SearchResult,
-  SearchResultItem,
-  SearchSource,
-  SearchResultFeature
-} from '../../services/search.service';
-
-import esri = __esri;
+import { SearchService, SearchResult, SearchResultItem, SearchSource } from '../../services/search.service';
 
 @Component({
   selector: 'tamu-gisc-search',
@@ -106,6 +98,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Event emitter that will emit to parent component, the value of the selected item
    */
   @Output()
+  // eslint-disable-next-line @angular-eslint/no-output-native
   public result: EventEmitter<SearchSelection<unknown>> = new EventEmitter();
 
   /**
@@ -118,12 +111,14 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Event emitter that will emit when the input box in the template is set focus
    */
   @Output()
+  // eslint-disable-next-line @angular-eslint/no-output-native
   public focus: EventEmitter<boolean> = new EventEmitter();
 
   /**
    * Event emitter that will emit when the input box in the template loses focus
    */
   @Output()
+  // eslint-disable-next-line @angular-eslint/no-output-native
   public blur: EventEmitter<boolean> = new EventEmitter();
 
   /**
@@ -165,7 +160,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * Search results list
    */
-  public searchResults: SearchResult<any>;
+  public searchResults: SearchResult<unknown>;
 
   /**
    * Resolved search status, indicates if the resolved search result includes at least one feature.
@@ -219,7 +214,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       if (res.results.length > 0) {
         this.searchResultStatus = res.results.some((result) => result.features.length > 0);
       } else {
-        // Prevent the "no features found" suggestion on an emtpy search result.
+        // Prevent the "no features found" suggestion on an empty search result.
         this.searchResultStatus = true;
       }
 
@@ -241,7 +236,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         if (value && value.length > 0) {
           if (isCoordinatePair(value)) {
             // TODO: no any
-            this.setSelected(value as any, {
+            this.setSelected(value, {
               name: value,
               breadcrumbs: {
                 source: undefined,
@@ -326,7 +321,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Event fired on input keyup thatthen sets the next Subject value. Also displays the search results
+   * Event fired on input keyup that then sets the next Subject value. Also displays the search results
    *
    * @param {*} event
    */
@@ -335,7 +330,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     // Limit the execution of the process chain only if event key code is not in the not allowed list
     const keysNotAllowed = [9, 18, 16];
 
-    // tslint:disable-next-line
     if (!keysNotAllowed.includes(event.which)) {
       const value = (<HTMLInputElement>event.target).value;
       // this.searchResultsStatus = undefined;

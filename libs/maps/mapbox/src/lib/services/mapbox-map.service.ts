@@ -10,8 +10,6 @@ export class MapboxMapService {
 
   public loaded: ReplaySubject<Map> = new ReplaySubject(1);
 
-  constructor() {}
-
   public createMap(properties?: MapboxOptions) {
     const defaultsUnlessProvided: Partial<MapboxOptions> = {
       ...properties,

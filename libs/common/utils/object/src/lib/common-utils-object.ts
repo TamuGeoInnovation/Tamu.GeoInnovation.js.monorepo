@@ -20,7 +20,7 @@ export function getPropertyValue<T>(lookup: object, property: string): T {
   // Recursively test if the next item in the properties array exists in the lookup object.
   // If the property exists, replace the current value and repeat until all path keys are
   // exhausted or until the key no longer exists.
-  path.forEach((prop, index) => {
+  path.forEach((prop) => {
     if (!value) {
       return value;
     }

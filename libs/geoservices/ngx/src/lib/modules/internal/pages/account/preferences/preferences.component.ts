@@ -23,10 +23,10 @@ export class PreferencesComponent implements OnInit {
     this.service.getNotificationPreferences().subscribe((res) => {
       this.form.patchValue(res);
 
-      this.form.valueChanges.subscribe((changes) => {
+      this.form.valueChanges.subscribe(() => {
         const prefs = this.form.getRawValue();
 
-        this.service.updateNotificationPreferences(prefs).subscribe((result) => {
+        this.service.updateNotificationPreferences(prefs).subscribe(() => {
           console.log('Updated preferences.');
         });
       });

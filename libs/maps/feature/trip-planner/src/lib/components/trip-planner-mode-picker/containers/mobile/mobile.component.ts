@@ -26,7 +26,7 @@ export class TripPlannerModePickerMobileComponent extends TripPlannerModePickerC
     this.accessible = this.tps.TravelOptions.pipe(pluck('accessible'));
     this.isAccessibleMode = this.tps.TravelOptions.pipe(
       pluck('travel_mode'),
-      map((mode) => {
+      map(() => {
         return this.tps.verifyRuleAccessibility();
       })
     );

@@ -278,7 +278,7 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
       claimInfo.responses.push(...webs);
     }
 
-    const res = await claimInfo.save();
+    await claimInfo.save();
 
     // Return the saved claim with websites and phone number submissions
     const [t] = await this.getActiveClaimsForEmail(claim.user.email);
@@ -408,7 +408,7 @@ export class CountyClaimsService extends BaseService<CountyClaim> {
     }
 
     const random = new Array(adjustedCount).fill(undefined).reduce(
-      (acc, curr) => {
+      (acc) => {
         const selectedIndex = getRandomNumber(0, acc.eligible.length);
         const selected = acc.eligible[selectedIndex];
 

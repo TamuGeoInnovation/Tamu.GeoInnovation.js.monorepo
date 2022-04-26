@@ -28,7 +28,7 @@ export class StatsService {
         withCredentials: true
       })
       .pipe(
-        map<ICountOfUsersByClient, IChartConfiguration[]>((value: Partial<ICountOfUsersByClient>, index: number) => {
+        map<ICountOfUsersByClient, IChartConfiguration[]>((value: Partial<ICountOfUsersByClient>) => {
           const configs: IChartConfiguration[] = [];
           const config: IChartConfiguration = {
             data: {
@@ -59,13 +59,9 @@ export class StatsService {
         withCredentials: true
       })
       .pipe(
-        map<IStatResponse[], IChartConfiguration[]>((value: Partial<IStatResponse[]>, index: number) => {
+        map<IStatResponse[], IChartConfiguration[]>(() => {
           const configs: IChartConfiguration[] = [];
-          const config: IChartConfiguration = {
-            data: {
-              datasets: [{}]
-            }
-          };
+
           return configs;
         })
       );
@@ -77,13 +73,9 @@ export class StatsService {
         withCredentials: true
       })
       .pipe(
-        map<IStatResponse[], IChartConfiguration[]>((value: Partial<IStatResponse[]>, index: number) => {
+        map<IStatResponse[], IChartConfiguration[]>(() => {
           const configs: IChartConfiguration[] = [];
-          const config: IChartConfiguration = {
-            data: {
-              datasets: [{}]
-            }
-          };
+
           return configs;
         })
       );
@@ -95,7 +87,7 @@ export class StatsService {
         withCredentials: true
       })
       .pipe(
-        map<IStatResponse[], IChartConfiguration[]>((value: Partial<IStatResponse[]>, index: number) => {
+        map<IStatResponse[], IChartConfiguration[]>(() => {
           return this.chartConfigurationMap();
         })
       );
@@ -103,11 +95,7 @@ export class StatsService {
 
   private chartConfigurationMap() {
     const configs: IChartConfiguration[] = [];
-    const config: IChartConfiguration = {
-      data: {
-        datasets: [{}]
-      }
-    };
+
     return configs;
   }
 }

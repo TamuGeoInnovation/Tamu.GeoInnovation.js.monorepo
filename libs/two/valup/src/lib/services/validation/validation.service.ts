@@ -12,8 +12,6 @@ export class IrgasonValidationService {
   public currentSiteCode: string;
   public numOfFailures = 0;
 
-  constructor() {}
-
   public validateAndUpload(path: string) {
     const pathTokens = path.split('\\');
     const fileName = pathTokens[pathTokens.length - 1];
@@ -37,7 +35,7 @@ export class IrgasonValidationService {
         weatherFlux.sitecode = this.currentSiteCode;
 
         validateOrReject(weatherFlux)
-          .then((value) => {
+          .then(() => {
             getConnection()
               .getRepository(WeatherfluxExpanded)
               .insert(weatherFlux)
@@ -55,11 +53,11 @@ export class IrgasonValidationService {
               let timestamp: string = null;
               let record: string = null;
 
-              if (propValErr.target.hasOwnProperty('timestamp')) {
+              if ('timestamp' in propValErr.target) {
                 timestamp = propValErr.target['timestamp'];
               }
 
-              if (propValErr.target.hasOwnProperty('record')) {
+              if ('record' in propValErr.target) {
                 record = propValErr.target['record'];
               }
 

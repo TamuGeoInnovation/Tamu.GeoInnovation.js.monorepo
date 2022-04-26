@@ -217,7 +217,7 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
           })
         )
         .subscribe(
-          (updateStatus) => {
+          () => {
             // Re-enable the form
             this.builderForm.enable();
 
@@ -227,7 +227,7 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
               title: 'Snapshot Updated'
             });
           },
-          (err) => {
+          () => {
             this.ns.toast({
               message: 'Snapshot could not be updated.',
               id: 'snapshot-update',
@@ -246,7 +246,7 @@ export class SnapshotBuilderComponent implements OnInit, OnDestroy {
             title: 'Snapshot Created'
           });
         },
-        (err) => {
+        () => {
           this.ns.toast({
             message: 'Snapshot could not be created.',
             id: 'snapshot-create',

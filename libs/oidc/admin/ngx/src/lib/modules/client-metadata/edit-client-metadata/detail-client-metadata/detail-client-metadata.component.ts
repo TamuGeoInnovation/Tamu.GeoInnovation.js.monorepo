@@ -14,7 +14,7 @@ import {
 import { GrantType, TokenEndpointAuthMethod, ResponseType } from '@tamu-gisc/oidc/common';
 
 @Component({
-  selector: 'detail-client-metadata',
+  selector: 'tamu-gisc-detail-client-metadata',
   templateUrl: './detail-client-metadata.component.html',
   styleUrls: ['./detail-client-metadata.component.scss']
 })
@@ -65,6 +65,6 @@ export class DetailClientMetadataComponent implements OnInit {
     const val = this.clientForm.value;
     const redirectUris: string[] = [this.clientForm.controls.redirectUris.value];
     val.redirectUris = redirectUris;
-    this.clientService.updateClientMetadata(val).subscribe((result) => [console.log('Updated client metadata')]);
+    this.clientService.updateClientMetadata(val).subscribe(() => [console.log('Updated client metadata')]);
   }
 }

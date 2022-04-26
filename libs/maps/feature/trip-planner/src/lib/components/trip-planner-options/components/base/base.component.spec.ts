@@ -15,7 +15,6 @@ import { TripPlannerService } from '../../../../services/trip-planner.service';
 import { TripPlannerConnectionService } from '../../../../services/trip-planner-connection.service';
 import { BusService } from '../../../../services/transportation/bus/bus.service';
 import { BikeService } from '../../../../services/transportation/bike/bike.service';
-import { InrixService } from '../../../../services/transportation/drive/inrix.service';
 
 describe('TripPlannerParkingOptionsBaseComponent', () => {
   beforeEach(async(() => {
@@ -35,7 +34,6 @@ describe('TripPlannerParkingOptionsBaseComponent', () => {
         TripPlannerConnectionService,
         BusService,
         BikeService,
-        InrixService,
         {
           provide: env,
           useValue: { SearchSources: [], NotificationEvents: [], LayerSources: [], RegionalBoundary: {} }

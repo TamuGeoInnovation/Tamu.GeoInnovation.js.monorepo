@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { StatusService, IStatusResponse } from '@tamu-gisc/two/data-access';
 
 @Component({
-  selector: 'two-status',
+  selector: 'app-two-status',
   templateUrl: './status.component.html',
   styleUrls: ['./status.component.scss']
 })

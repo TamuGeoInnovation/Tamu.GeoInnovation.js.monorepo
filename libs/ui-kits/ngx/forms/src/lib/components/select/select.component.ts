@@ -29,7 +29,7 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
    *
    * If no `model` is provided from the parent, the placeholder is automatically selected.
    */
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
   private _value: T = undefined;
 
@@ -39,8 +39,6 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
 
   public set value(value: T) {
     this._value = value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value;
-    this._onChange(value === null || value === undefined || value === ('undefined' as unknown) ? undefined : value);
-    this._onTouched();
     this.cd.markForCheck();
   }
 
@@ -84,13 +82,17 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
 
   constructor(private cd: ChangeDetectorRef) {}
 
-  private _onChange = (value: T) => {};
-  private _onTouched = () => {};
+  private _onChange = (value: T) => {
+    return value;
+  };
+  private _onTouched = () => {
+    return;
+  };
 
   /**
    * Responsible for emitting the model changed event to the parent component.
    */
-  public changeEvent(event: Event) {
+  public changeEvent() {
     this.changed.next(this.value);
   }
 

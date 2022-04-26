@@ -24,7 +24,7 @@ export class DateTimePickerComponent implements ControlValueAccessor {
   @ViewChild(TooltipComponent, { static: true })
   private tooltipComponent: TooltipComponent;
 
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
   private _value: Date = new Date();
 
@@ -38,10 +38,13 @@ export class DateTimePickerComponent implements ControlValueAccessor {
     this._onTouched();
   }
 
-  constructor() {}
+  private _onChange = (v) => {
+    return v;
+  };
 
-  private _onChange = (v) => {};
-  private _onTouched = () => {};
+  private _onTouched = () => {
+    return;
+  };
 
   public handleDlTimePickerChange(event: DlDateTimePickerChange<Date>) {
     this.value = event.value;

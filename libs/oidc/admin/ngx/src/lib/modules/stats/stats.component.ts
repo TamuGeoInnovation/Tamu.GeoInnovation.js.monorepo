@@ -7,7 +7,7 @@ import { IChartConfiguration } from '@tamu-gisc/ui-kits/ngx/charts';
 import { StatsService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
-  selector: 'stats',
+  selector: 'tamu-gisc-stats',
   templateUrl: './stats.component.html',
   styleUrls: ['./stats.component.scss']
 })

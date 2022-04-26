@@ -19,4 +19,4 @@ export enum EmailStatus {
   Rejected
 }
 
-export type MailroomOutbound = IMailroomEmailOutbound & Object;
+export type MailroomOutbound = IMailroomEmailOutbound & { [key: string]: string | boolean | number };

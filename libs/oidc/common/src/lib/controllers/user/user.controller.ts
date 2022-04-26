@@ -252,7 +252,7 @@ export class UserController {
     if (existingUser) {
       const roles = await this.userService.roleRepo.find();
 
-      const requestedRole = roles.find((value, index) => {
+      const requestedRole = roles.find((value) => {
         if (req.body.role.level === Number(value.level)) {
           return value;
         }

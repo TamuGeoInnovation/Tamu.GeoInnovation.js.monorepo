@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { IStrapiPageList } from '../../types/types';
 
@@ -7,13 +7,7 @@ import { IStrapiPageList } from '../../types/types';
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
-export class ListComponent implements OnInit, OnDestroy {
+export class ListComponent {
   @Input()
   public dataSource: IStrapiPageList;
-
-  constructor() {}
-
-  public ngOnInit(): void {}
-
-  public ngOnDestroy(): void {}
 }

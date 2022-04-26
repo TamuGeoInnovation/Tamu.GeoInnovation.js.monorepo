@@ -144,7 +144,7 @@ export class EffluentService {
     this.affectedBuildings = this.sampleLocationsInZone.pipe(
       withLatestFrom(this.tier, this.sample),
       switchMap(([locations, tier, sample]) => {
-        const filtered = locations.reduce((acc, curr) => {
+        const filtered = locations.reduce((acc) => {
           const buildingsForLocation = this.effluentBuildingsService.getBuildingsIn({
             tier: tier,
             zone: sample
@@ -170,6 +170,7 @@ export class EffluentService {
 
     this.sampleBuildings = this.affectedBuildings.pipe(
       withLatestFrom(this.isHitGraphicZone, this.tier, this.sample),
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       switchMap(([v, is, tier, sample]) => {
         if (is === false) {
           const filtered = this.effluentBuildingsService.getBuildingsIn({
@@ -200,6 +201,7 @@ export class EffluentService {
 
     this.uncoveredBuildings = this.affectedBuildings.pipe(
       withLatestFrom(this.tier, this.sample, this.hitGraphic),
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       switchMap(([buildings, tier, sample, graphic]) => {
         const bldgs = buildings.map((b) => `'${b.attributes.Number}'`);
 

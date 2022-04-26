@@ -229,20 +229,6 @@ export class BusService {
         const maxDate = new Date(minDate);
         maxDate.setHours(maxDate.getHours() + 1);
 
-        /**
-         * Determines the index of of a primary timetable stop
-         * that is equal to the input name, if any.
-         *
-         * Since the primary timetable does not include "waypoints", the provided input name
-         * is more often times than not, not included in the primary timetable. In this case,
-         * the return value will be `-1`, for "not found";
-         */
-        const timetableColumnIndex = (name: string): number => {
-          return timetable[0].findIndex((record, i, arr) => {
-            return name === record.stop_name;
-          });
-        };
-
         // Condition for no bus service on requested date, if time table has no rows.
         if (timetable.length === 1 && timetable[0].length === 1) {
           return of({
@@ -268,10 +254,10 @@ export class BusService {
         //
         // If the start point is not in the time table, determine the matching bus stop bracket for which the selected stop must be within
         // and estimate the estimated travel time as a function of the time difference of the time bracket and the index of the selected
-        // bus stop wihitn the bracket, over the total number of bus stops in the bracket.
+        // bus stop within the bracket, over the total number of bus stops in the bracket.
 
         for (const i in timetable) {
-          if (!timetable.hasOwnProperty(i)) {
+          if (i in timetable === false) {
             continue;
           }
 
@@ -287,23 +273,21 @@ export class BusService {
           }
 
           // Clone the stops to avoid changing source values by reference which causes issues in each time table row iteration.
-          const clonedStops = stops.map(
-            (stop): BusStop => {
-              return { name: stop.name, point: stop.point };
-            }
-          );
+          const clonedStops = stops.map((stop): BusStop => {
+            return { name: stop.name, point: stop.point };
+          });
 
           // Map the time table stops to the complete stop list for this route.
           // This will give the time table stops in the full stops list a time, from
           // which the rest of the stops can be assigned an approximate time.
           const mappedTimeTableStops: BusStop[] = clonedStops.reduce(
-            (acc: { stops: BusStop[]; timetable: TimetableEntry[] }, stop: BusStop, index, arr) => {
+            (acc: { stops: BusStop[]; timetable: TimetableEntry[] }, stop: BusStop, index) => {
               if (stop.name === acc.timetable[0].stop_name) {
                 stop.time = acc.timetable[0].datetime;
 
                 acc.stops.splice(index, 1, stop);
 
-                // Remove the current time table row freom the object so that the same index 0 is never re-assigned to
+                // Remove the current time table row from the object so that the same index 0 is never re-assigned to
                 // a stop. If this was allowed, multiple stops would share the same date time, which is not allowed.
                 return {
                   stops: acc.stops,
@@ -317,11 +301,11 @@ export class BusService {
           ).stops;
 
           // Check if the departure or arrival points in the mapped time table do not have a time. If this is the case
-          // a time bracket has to be determined in odre to estimate the times between the points with no official
+          // a time bracket has to be determined in order to estimate the times between the points with no official
           // defined times.
           if (!mappedTimeTableStops[first.index].time || !mappedTimeTableStops[last.index].time) {
             // If departure index has no time associated with it, determine the index offset, relative to the departure index.
-            // This offset is the number of rows before the departure index, that has an associated time. Depature time index minus the offset
+            // This offset is the number of rows before the departure index, that has an associated time. Departure time index minus the offset
             // will be the lower boundary of a time bracket.
             const lowerLimitOffset =
               mappedTimeTableStops[first.index].time === undefined
@@ -335,7 +319,7 @@ export class BusService {
             const lowerLimitIndex = first.index - lowerLimitOffset;
 
             // If arrival index has no time associated with it, determine the index offset, relative to the arrival index.
-            // This offset is the number of rows after the arrvail index, that has an associated time. Arrival time index plus the offset
+            // This offset is the number of rows after the arrival index, that has an associated time. Arrival time index plus the offset
             // will be the upper boundary of a time bracket.
             const upperLimitOffset =
               mappedTimeTableStops[last.index].time === undefined
@@ -346,7 +330,7 @@ export class BusService {
             const upperLimitIndex = last.index + upperLimitOffset;
 
             // We now have two points with known times and the number of stops between them.
-            // Continue to associate estimated times for the provided poitns that did not have an associate time (arrival, departure, or both).
+            // Continue to associate estimated times for the provided points that did not have an associate time (arrival, departure, or both).
 
             const timeBracketTime =
               mappedTimeTableStops[upperLimitIndex].time.getTime() - mappedTimeTableStops[lowerLimitIndex].time.getTime();
@@ -479,7 +463,7 @@ export class BusService {
   /**
    * Determine the departure and arrival bus stops and points from full route stops list and determined geographic departure and arrival stops.
    *
-   * Since the bus stops list and official time table loop, to where the first tand last stop are the same by name (e.g. Trigon, off campus route),
+   * Since the bus stops list and official time table loop, to where the first and last stop are the same by name (e.g. Trigon, off campus route),
    * this method performs a check and correction, assigning the correct bus stop if either the departure of arrival points are one of the bus stop extremes.
    *
    * @param {BusStop[]} stops Complete bus stops list
@@ -586,15 +570,7 @@ export class BusService {
       forkJoin([
         this.getRoutes(),
         this.waypointsForRoute(short_name),
-        this.moduleProvider.require([
-          'Graphic',
-          'SimpleLineSymbol',
-          'SimpleMarkerSymbol',
-          'Polyline',
-          'PictureMarkerSymbol',
-          'FeatureLayer',
-          'Point'
-        ])
+        this.moduleProvider.require(['Graphic', 'SimpleLineSymbol', 'SimpleMarkerSymbol', 'Polyline'])
       ]).subscribe(
         (
           argument: [
@@ -604,18 +580,11 @@ export class BusService {
               esri.GraphicConstructor,
               esri.SimpleLineSymbolConstructor,
               esri.SimpleMarkerSymbolConstructor,
-              esri.PolylineConstructor,
-              esri.PictureMarkerSymbolConstructor,
-              esri.FeatureLayerConstructor,
-              esri.PointConstructor
+              esri.PolylineConstructor
             ]
           ]
         ) => {
-          const [
-            routes,
-            waypoints,
-            [Graphic, SimpleLineSymbol, SimpleMarkerSymbol, Polyline, PictureMarkerSymbol, FeatureLayer, Point]
-          ] = argument;
+          const [routes, waypoints, [Graphic, SimpleLineSymbol, SimpleMarkerSymbol, Polyline]] = argument;
 
           this.removeAllFromMap();
           const route = routes.find((r) => r.ShortName === short_name);
@@ -715,7 +684,7 @@ export class BusService {
       Promise.all([
         this.moduleProvider.require(['Point', 'Graphic', 'FeatureLayer', 'PictureMarkerSymbol']),
         this.busesForRoute(short_name).toPromise(),
-        (getFeatures() as unknown) as Promise<esri.Graphic[]>
+        getFeatures() as unknown as Promise<esri.Graphic[]>
       ]).then(
         (
           result: [
@@ -733,11 +702,11 @@ export class BusService {
 
           const makeBusGraphic = (bus) => {
             return new Graphic({
-              geometry: ({
+              geometry: {
                 type: 'point',
                 latitude: bus.point.latitude,
                 longitude: bus.point.longitude
-              } as unknown) as esri.GeometryProperties,
+              } as unknown as esri.GeometryProperties,
               attributes: {
                 name: bus.name,
                 route: short_name,

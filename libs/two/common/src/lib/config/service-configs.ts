@@ -25,4 +25,4 @@ const EXTENSIONS = {
 
 export const ACCEPTABLE_EXTS: string[] = [EXTENSIONS.CSV, EXTENSIONS.TSV];
 export const LIST_OF_SITE_CODES = 'SFPr|RFTA|RFAA|RFPr|TFPr|SUSM|DAFo|LCSh|LCGr';
-export const FILENAME_REGEXP: RegExp = /^\d{6,8}\_(SFPr|RFTA|RFAA|RFPr|TFPr|SUSM|DAFo|LCSh|LCGr)\S*(CSIFormat.csv)$/;
+export const FILENAME_REGEXP = /^\d{6,8}_(SFPr|RFTA|RFAA|RFPr|TFPr|SUSM|DAFo|LCSh|LCGr)\S*(CSIFormat.csv)$/;

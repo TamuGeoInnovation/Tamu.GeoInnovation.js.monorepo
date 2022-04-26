@@ -115,14 +115,14 @@ export class ResultsService extends BaseService<Result> {
         Papa.parse(readStream, {
           header: true,
           encoding: 'utf8',
-          step: async (results, parser, c) => {
+          step: async (results, parser) => {
             parser.pause();
 
             if (rowIndex === 0) {
               rowIndex++;
 
               try {
-                locations = await this.synchronizeLocations(results.meta.fields, parser);
+                locations = await this.synchronizeLocations(results.meta.fields);
               } catch (err) {
                 isError = true;
                 rj(err);
@@ -141,10 +141,10 @@ export class ResultsService extends BaseService<Result> {
               }
             }
           },
-          error: async (error, file) => {
+          error: async (error) => {
             rj(error);
           },
-          complete: async (results, file) => {
+          complete: async () => {
             r({ status: HttpStatus.OK, message: 'File processed successfully' });
           }
         });
@@ -188,7 +188,7 @@ export class ResultsService extends BaseService<Result> {
     }
   }
 
-  private async synchronizeLocations(locations: Array<string>, parser) {
+  private async synchronizeLocations(locations: Array<string>) {
     try {
       // Remove the first field. It is the date column.
       //
@@ -257,7 +257,7 @@ export class ResultsService extends BaseService<Result> {
 
   private async addValuesForDate(date: Date, results: IParsedResultRow, locations: Array<Location>) {
     const resultEntities = Object.entries(results)
-      .map(([key, value], index, arr) => {
+      .map(([key, value]) => {
         if (key === 'weeks') {
           return undefined;
         }

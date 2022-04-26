@@ -53,7 +53,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
   @Input()
   public referenceId: string;
 
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
   private _value: Array<string | number> = [];
 
@@ -69,10 +69,13 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
 
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor() {}
+  private _onChange = (values: Array<string | number>) => {
+    return values;
+  };
 
-  private _onChange = (values: Array<string | number>) => {};
-  private _onTouched = () => {};
+  private _onTouched = () => {
+    return;
+  };
 
   public ngOnInit() {
     if (this.referenceId === undefined) {
@@ -86,7 +89,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
   }
 
   public ngAfterContentInit() {
-    this.checkboxes.changes.subscribe((checkboxes) => {
+    this.checkboxes.changes.subscribe(() => {
       this.setChildrenValue();
     });
 
@@ -101,7 +104,7 @@ export class CheckboxGroupComponent implements OnInit, OnDestroy, AfterContentIn
           return from(checkboxes.toArray()).pipe(
             mergeMap((checkbox) => {
               return checkbox.changed.pipe(
-                switchMap((value) => {
+                switchMap(() => {
                   return of(getPropertyValue<string>(checkbox.data, this.referenceId));
                 })
               );

@@ -1,5 +1,4 @@
 import { Component, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-
 import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -18,8 +17,6 @@ export class ChartContainerComponent implements OnDestroy {
 
   private _chart: Chart;
   private _$destroy: Subject<boolean> = new Subject();
-
-  constructor() {}
 
   public ngOnDestroy() {
     this._$destroy.next(undefined);

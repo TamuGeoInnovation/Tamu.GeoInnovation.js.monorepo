@@ -520,7 +520,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
           })
         )
         .subscribe(
-          (updateStatus) => {
+          () => {
             // Re-enable the form
             this.builderForm.enable();
 
@@ -530,7 +530,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
               title: 'Scenario Updated'
             });
           },
-          (err) => {
+          () => {
             this.ns.toast({
               message: 'Scenario could not be updated.',
               id: 'scenario-update',
@@ -547,7 +547,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
 
       this.scenario.create(scenario).subscribe((res) => {
         this.workshop.addScenario(this.selectedWorkshop, res.guid).subscribe(
-          (addScenarioStatus) => {
+          () => {
             this.router.navigate([`../edit/${res.guid}`], { relativeTo: this.route });
 
             this.ns.toast({
@@ -556,7 +556,7 @@ export class ScenarioBuilderComponent implements OnInit, OnDestroy {
               title: 'Scenario Created'
             });
           },
-          (err) => {
+          () => {
             this.ns.toast({
               message: 'Scenario could not be created.',
               id: 'scenario-create',

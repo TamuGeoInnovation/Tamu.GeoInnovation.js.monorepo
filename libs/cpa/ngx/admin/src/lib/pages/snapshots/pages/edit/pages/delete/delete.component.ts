@@ -26,7 +26,7 @@ export class DeleteComponent implements OnInit {
   public deleteSnapshot() {
     if (this.guid) {
       this.ss.delete(this.guid).subscribe(
-        (res) => {
+        () => {
           this.ns.toast({
             message: 'Snapshot was successfully deleted.',
             id: 'snapshot-delete',
@@ -35,7 +35,7 @@ export class DeleteComponent implements OnInit {
 
           this.router.navigate(['admin/snapshots']);
         },
-        (err) => {
+        () => {
           this.ns.toast({
             message: 'Could not delete snapshot.',
             id: 'snapshot-delete',

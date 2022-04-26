@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map, pluck, switchMap } from 'rxjs/operators';
 
 import { RecyclingService, RecyclingResultsStatistics } from '../../../core/services/recycling.service';

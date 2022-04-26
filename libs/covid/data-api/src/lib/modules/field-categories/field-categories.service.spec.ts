@@ -9,9 +9,6 @@ import { FieldCategoriesService } from './field-categories.service';
 
 describe('FieldCategoriesService', () => {
   let fieldCategoriesService: FieldCategoriesService;
-  let fieldCategoryMockRepo: Repository<FieldCategory>;
-  let fieldTypeMockRepo: Repository<FieldType>;
-  let categoryValueMockRepo: Repository<CategoryValue>;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -23,9 +20,6 @@ describe('FieldCategoriesService', () => {
     }).compile();
 
     fieldCategoriesService = module.get<FieldCategoriesService>(FieldCategoriesService);
-    fieldCategoryMockRepo = module.get(getRepositoryToken(FieldCategory));
-    fieldTypeMockRepo = module.get(getRepositoryToken(FieldType));
-    categoryValueMockRepo = module.get(getRepositoryToken(CategoryValue));
   });
   describe('Validation ', () => {
     it('service should be defined', () => {

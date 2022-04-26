@@ -8,7 +8,7 @@ import { Role } from '@tamu-gisc/oidc/common';
 import { RolesService } from '@tamu-gisc/oidc/admin/data-access';
 
 @Component({
-  selector: 'detail-role',
+  selector: 'tamu-gisc-detail-role',
   templateUrl: './detail-role.component.html',
   styleUrls: ['./detail-role.component.scss']
 })
@@ -31,8 +31,8 @@ export class DetailRoleComponent implements OnInit {
       this.roleService.getRole(this.roleGuid).subscribe((role) => {
         this.role = role;
         this.form.patchValue(this.role);
-        this.form.valueChanges.pipe(debounceTime(1000)).subscribe((res) => {
-          this.roleService.updateRole(this.form.getRawValue()).subscribe((result) => [console.log('Updated details')]);
+        this.form.valueChanges.pipe(debounceTime(1000)).subscribe(() => {
+          this.roleService.updateRole(this.form.getRawValue()).subscribe(() => [console.log('Updated details')]);
         });
       });
     }

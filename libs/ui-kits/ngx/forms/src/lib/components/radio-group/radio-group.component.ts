@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 import { getPropertyValue } from '@tamu-gisc/common/utils/object';
@@ -15,11 +15,11 @@ import { getPropertyValue } from '@tamu-gisc/common/utils/object';
     }
   ]
 })
-export class RadioGroupComponent<T extends object, V> implements ControlValueAccessor, OnInit {
+export class RadioGroupComponent<Option extends object, Value> implements ControlValueAccessor {
   @Input()
-  public options: Array<T>;
+  public options: Array<Option>;
 
-  // tslint:disable-next-line: no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value')
   private _value = undefined;
 
@@ -42,12 +42,13 @@ export class RadioGroupComponent<T extends object, V> implements ControlValueAcc
   @Input()
   public valuePath: string;
 
-  constructor() {}
+  private _onChange = (v) => {
+    return v;
+  };
 
-  private _onChange = (v) => {};
-  private _onTouch = () => {};
-
-  public ngOnInit() {}
+  private _onTouch = () => {
+    return;
+  };
 
   public registerOnChange(fn) {
     this._onChange = fn;
@@ -61,11 +62,11 @@ export class RadioGroupComponent<T extends object, V> implements ControlValueAcc
     this.disabled = disabled;
   }
 
-  public writeValue(value: V) {
+  public writeValue(value: Value) {
     this.value = value;
   }
 
-  public renderTemplate(option: T, path: string) {
+  public renderTemplate(option: Option, path: string) {
     if (path) {
       return getPropertyValue(option, path);
     } else {
@@ -73,7 +74,7 @@ export class RadioGroupComponent<T extends object, V> implements ControlValueAcc
     }
   }
 
-  public evaluateSetValue(option: T) {
+  public evaluateSetValue(option: Option) {
     if (this.disabled === false) {
       const value = this.renderTemplate(option, this.valuePath);
 

@@ -24,8 +24,6 @@ export class CoverageChartComponent implements OnInit {
     }
   };
 
-  constructor() {}
-
   public ngOnInit(): void {
     this.totalFocusArea = this.zones.pipe(
       map((zones) => {
