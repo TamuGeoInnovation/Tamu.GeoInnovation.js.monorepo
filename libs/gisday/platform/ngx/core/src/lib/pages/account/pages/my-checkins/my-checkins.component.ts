@@ -14,7 +14,7 @@ export class MyCheckinsComponent implements OnInit {
   public $checkins: Observable<Array<Partial<CheckIn>>>;
   constructor(private readonly checkinService: CheckinService) {}
 
-  public ngOnInit(): void {
+  public ngOnInit() {
     this.fetchCheckins();
   }
 

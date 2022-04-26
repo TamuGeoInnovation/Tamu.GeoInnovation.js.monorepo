@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -6,10 +6,8 @@ import { Title } from '@angular/platform-browser';
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.scss']
 })
-export class AccountComponent implements OnInit {
+export class AccountComponent {
   constructor(private titleService: Title) {
     this.titleService.setTitle('Account | TxGIS Day 2022');
   }
-
-  public ngOnInit(): void {}
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -6,12 +6,10 @@ import { Title } from '@angular/platform-browser';
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.scss']
 })
-export class FaqComponent implements OnInit {
+export class FaqComponent {
   constructor(private titleService: Title) {
     this.titleService.setTitle('FAQ | TxGIS Day 2022');
   }
-
-  public ngOnInit(): void {}
 
   public onFaqItemClick(event) {
     const faqItem: HTMLElement = event.srcElement;

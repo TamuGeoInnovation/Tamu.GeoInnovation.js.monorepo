@@ -13,11 +13,9 @@ export abstract class BaseService<T> {
     private env: EnvironmentService,
     private http: HttpClient,
     public oidcSecurityService: OidcSecurityService,
-    private route: string,
-    withCreds?: boolean
+    private route: string
   ) {
     this.resource = this.env.value('api_url') + `/${route}`;
-    this.withCredentials = withCreds;
   }
 
   public getEntity(guid: string) {

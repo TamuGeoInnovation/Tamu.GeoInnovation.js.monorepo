@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { debounceTime, forkJoin, map, Observable, share, shareReplay, skip, Subject, switchMap, tap, zip } from 'rxjs';
+import { map, Observable, shareReplay, zip } from 'rxjs';
 
 import { EventService, SpeakerService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Event, Speaker, Tag } from '@tamu-gisc/gisday/platform/data-api';

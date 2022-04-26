@@ -14,10 +14,9 @@
           <tamu-gisc-textbox formControlName="description" placeholder="Description" type="text" floatLabel="true"> </tamu-gisc-textbox>
           <tamu-gisc-textbox formControlName="socialMedia" placeholder="Social Media Link" type="text" floatLabel="true"> </tamu-gisc-textbox>
           <tamu-gisc-select formControlName="university" [data]="$universities | async" [displayTemplate]="'name'" [valueTemplate]="'guid'"></tamu-gisc-select>
-          <tamu-gisc-file formControlName="file" (fileSelected)="onFileSelected($event)">
+          <tamu-gisc-file formControlName="file">
             <p class="placeholder">Select File</p>
           </tamu-gisc-file>
-          <img [src]="" />
         </div>
         
 

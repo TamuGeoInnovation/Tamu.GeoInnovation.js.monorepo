@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-papers',
   templateUrl: './papers.component.html',
   styleUrls: ['./papers.component.scss']
 })
-export class PapersComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit(): void {}
-}
+export class PapersComponent {}

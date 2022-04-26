@@ -86,12 +86,6 @@ export class AdminAddEventsComponent extends BaseAdminAddComponent<Event> {
   }
 
   public submitNewEntity() {
-    // Wed Apr 06 2022 17:24:54 GMT-0500 (Central Daylight Time)
-    // toDateString() Wed Apr 06 2022
-    // toISOString() 2022-04-06T22:26:44.116Z
-    // toUTCString() Wed, 06 Apr 2022 22:28:36 GMT
-    // toTimeString() 17:29:25 GMT-0500 (Central Daylight Time)
-
     const tags = this.form.controls.tagsGroup$.value;
     const speakers = this.form.controls.speakersGroup$.value;
 

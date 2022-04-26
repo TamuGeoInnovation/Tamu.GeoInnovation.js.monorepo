@@ -25,6 +25,7 @@ export class ContactComponent implements OnInit {
   }
 
   public sendEmail() {
+    // TODO: Link with Mailroom - Aaron H (4/26/22)
     console.log(this.form.getRawValue());
   }
 }

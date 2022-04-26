@@ -16,7 +16,8 @@ export class UserClassesService extends BaseService<UserClass> {
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient, public oidcSecurityService: OidcSecurityService) {
-    super(env1, http1, oidcSecurityService, 'user-class', true);
+    super(env1, http1, oidcSecurityService, 'user-class');
+    // TODO: Need to make sure this is using the Authorization header so we have the userGuid
   }
 
   public deleteEntityWithClassGuid(classGuid: string) {

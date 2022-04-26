@@ -6,11 +6,6 @@ import { SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
-export const formConfig = {
-  guid: [''],
-  type: ['']
-};
-
 export const formExporter = () => {
   return new FormGroup({
     guid: new FormControl(''),

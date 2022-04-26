@@ -16,7 +16,8 @@ export class InitialSurveyService extends BaseService<InitialSurveyResponse> {
   public resource: string;
 
   constructor(private env1: EnvironmentService, private http1: HttpClient, public oidcSecurityService: OidcSecurityService) {
-    super(env1, http1, oidcSecurityService, 'initial-survey', true);
+    super(env1, http1, oidcSecurityService, 'initial-survey');
+    // TODO: Need to make sure this is using the Authorization header so we have the userGuid
   }
 
   public seeIfUserTookSurvey() {

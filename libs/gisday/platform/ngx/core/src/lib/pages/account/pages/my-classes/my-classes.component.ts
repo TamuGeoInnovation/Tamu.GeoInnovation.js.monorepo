@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -11,13 +11,11 @@ import { ClassService, UserClassesService } from '@tamu-gisc/gisday/platform/ngx
   templateUrl: './my-classes.component.html',
   styleUrls: ['./my-classes.component.scss']
 })
-export class MyClassesComponent implements OnInit {
+export class MyClassesComponent {
   public $userClasses: Observable<Array<Partial<Class>>>;
   constructor(private readonly classService: ClassService, private readonly userService: UserClassesService) {
     this.fetchEntities();
   }
-
-  public ngOnInit(): void {}
 
   public fetchEntities() {
     this.$userClasses = this.userService.getClassesAndUserClasses().pipe(shareReplay(1));

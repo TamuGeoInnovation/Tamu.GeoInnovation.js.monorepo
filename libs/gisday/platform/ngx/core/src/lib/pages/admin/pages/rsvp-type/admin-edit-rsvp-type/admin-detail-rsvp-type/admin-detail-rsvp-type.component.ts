@@ -7,7 +7,6 @@ import { RsvpType } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-detail.component';
 import { formExporter } from '../../admin-add-rsvp-type/admin-add-rsvp-type.component';
-import { skip } from 'rxjs';
 
 @Component({
   selector: 'tamu-gisc-admin-detail-rsvp-type',

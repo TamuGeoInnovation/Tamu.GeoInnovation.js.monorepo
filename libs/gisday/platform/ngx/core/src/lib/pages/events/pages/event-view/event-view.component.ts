@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
 import { shareReplay, takeUntil } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { EventResponse, EventService, TagService } from '@tamu-gisc/gisday/platf
   templateUrl: './event-view.component.html',
   styleUrls: ['./event-view.component.scss']
 })
-export class EventViewComponent implements OnInit, OnDestroy {
+export class EventViewComponent implements OnDestroy {
   public $events: Observable<Partial<EventResponse>>;
   public $tags: Observable<Array<Partial<Tag>>>;
   private _$destroy: Subject<boolean> = new Subject();
@@ -21,8 +21,6 @@ export class EventViewComponent implements OnInit, OnDestroy {
     this.fetchEvents();
     this.fetchTags();
   }
-
-  public ngOnInit() {}
 
   public ngOnDestroy() {
     this._$destroy.next(undefined);
@@ -43,7 +41,7 @@ export class EventViewComponent implements OnInit, OnDestroy {
       this.filterTags.push(tag.name);
     } else {
       // remove from filterTags
-      this.filterTags = this.filterTags.filter((value, index) => {
+      this.filterTags = this.filterTags.filter((value) => {
         if (value !== tag.name) {
           return value;
         }

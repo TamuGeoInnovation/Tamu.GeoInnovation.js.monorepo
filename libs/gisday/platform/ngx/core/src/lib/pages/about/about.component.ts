@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -6,12 +6,10 @@ import { Title } from '@angular/platform-browser';
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss']
 })
-export class AboutComponent implements OnInit {
+export class AboutComponent {
   constructor(private titleService: Title) {
     this.titleService.setTitle('About | TxGIS Day 2022');
   }
-
-  public ngOnInit(): void {}
 
   public makeActive(rank: string) {
     this.clearAllOtherPlaques();

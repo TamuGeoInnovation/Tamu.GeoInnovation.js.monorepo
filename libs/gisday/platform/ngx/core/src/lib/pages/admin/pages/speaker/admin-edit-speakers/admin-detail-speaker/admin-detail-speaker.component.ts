@@ -10,7 +10,7 @@ import { Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-detail.component';
 import { formExporter } from '../../admin-add-speakers/admin-add-speakers.component';
-import { FormToFormData } from '../../../../../../../../../common/src/lib/utils/form-to-form-data';
+import { FormToFormData } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-admin-detail-speaker',
@@ -53,14 +53,4 @@ export class AdminDetailSpeakerComponent extends BaseAdminDetailComponent<Speake
       console.log(result);
     });
   }
-
-  // public submitNewEntity() {
-  //   const form = this.form.getRawValue();
-  //   const data: FormData = new FormData();
-  //   const formKeys = Object.keys(form);
-  //   formKeys.forEach((key) => {
-  //     data.append(key, form[key]);
-  //   });
-  //   this.speakerService.insertSpeakerInfo(data);
-  // }
 }
