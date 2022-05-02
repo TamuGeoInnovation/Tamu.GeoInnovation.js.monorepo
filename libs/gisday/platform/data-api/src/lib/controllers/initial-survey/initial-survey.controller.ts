@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request } from '@nestjs/common';
+import { Body, Controller, Get, NotImplementedException, Post, Request } from '@nestjs/common';
 
 import { InitialSurveyQuestion, InitialSurveyResponse } from '../../entities/all.entity';
 import { BaseController } from '../_base/base.controller';
@@ -43,11 +43,9 @@ export class InitialSurveyController extends BaseController<InitialSurveyRespons
 
   @Post()
   public async insertInitialSurveyResponse() {
-    //  TODO: Add middleware for appending userGuid to request
-    // const questionGuids = Object.keys(body);
-    // const questionGuidsObj = body;
+    //  TODO: Add httpintercept to append userGuid to body
 
-    // return this.initialSurveyProvider.insertInitialSurveyResponse(questionGuids, questionGuidsObj, req.user.sub);
-    return;
+    // return this.initialSurveyProvider.insertInitialSurveyResponse(questionGuids, questionGuidsObj, body.sub);
+    return new NotImplementedException();
   }
 }

@@ -40,13 +40,13 @@
           <tamu-gisc-textbox formControlName="meetingId" placeholder="Meeting ID" type="text" floatLabel="true"> </tamu-gisc-textbox>
           <tamu-gisc-textbox formControlName="publicUrl" placeholder="Public URL" type="text" floatLabel="true"> </tamu-gisc-textbox>
         </div>
-        <table formGroupName="tagsGroup$" class="form-collection column">
+        <table formGroupName="_tagsGroup" class="form-collection column">
           <p>Tags</p>
             <tr *ngFor="let tag of $tags | async">
               <tamu-gisc-checkbox [formControlName]="tag.guid" class="td-checkbox-item" [label]="tag.name" [data]="tag.guid"></tamu-gisc-checkbox>
             </tr>  
         </table>
-        <table formGroupName="speakersGroup$" class="form-collection column">
+        <table formGroupName="_speakersGroup" class="form-collection column">
           <p>Speakers</p>
             <tr *ngFor="let speaker of $speakers | async">
               <tamu-gisc-checkbox [formControlName]="speaker.guid" class="td-checkbox-item" [label]="speaker.lastName" [data]="speaker.guid"></tamu-gisc-checkbox>

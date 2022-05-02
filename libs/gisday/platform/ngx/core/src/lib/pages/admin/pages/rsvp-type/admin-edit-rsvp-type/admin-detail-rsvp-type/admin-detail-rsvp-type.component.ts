@@ -16,10 +16,11 @@ import { formExporter } from '../../admin-add-rsvp-type/admin-add-rsvp-type.comp
 export class AdminDetailRsvpTypeComponent extends BaseAdminDetailComponent<RsvpType> implements OnInit {
   constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private rsvpTypeService: RsvpTypeService) {
     super(fb1, route1, rsvpTypeService);
-    this.form = formExporter();
   }
 
   public ngOnInit() {
     super.ngOnInit();
+
+    this.form = formExporter();
   }
 }

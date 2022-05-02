@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+
 import { DeepPartial, In } from 'typeorm';
 
 import {
@@ -35,6 +36,10 @@ export class EventProvider extends BaseProvider<Event> {
 
   public async insertEvent(_newEvent: DeepPartial<Event>) {
     try {
+      const newEvent: DeepPartial<Event> = {
+        ..._newEvent
+      };
+
       const broadcastEnt = this.eventBroadcastRepo.create(_newEvent.broadcast);
       const locationEnt = this.eventLocationRepo.create(_newEvent.location);
 
@@ -50,23 +55,27 @@ export class EventProvider extends BaseProvider<Event> {
         }
       });
 
-      _newEvent.broadcast = broadcastEnt;
-      _newEvent.location = locationEnt;
-      _newEvent.speakers = existingSpeakers;
-      _newEvent.tags = existingTags;
+      newEvent.broadcast = broadcastEnt;
+      newEvent.location = locationEnt;
+      newEvent.speakers = existingSpeakers;
+      newEvent.tags = existingTags;
 
-      const eventEnt = this.eventRepo.create(_newEvent);
+      const eventEnt = this.eventRepo.create(newEvent);
 
       if (eventEnt) {
         return eventEnt.save();
       }
     } catch (error) {
-      throw new Error('Could not insert new Event');
+      throw new UnprocessableEntityException(null, 'Could not insert new Event');
     }
   }
 
   public async updateEvent(_newEvent: DeepPartial<Event>) {
     try {
+      const newEvent: DeepPartial<Event> = {
+        ..._newEvent
+      };
+
       const broadcastEnt = this.eventBroadcastRepo.create(_newEvent.broadcast);
       const locationEnt = this.eventLocationRepo.create(_newEvent.location);
 
@@ -82,18 +91,18 @@ export class EventProvider extends BaseProvider<Event> {
         }
       });
 
-      _newEvent.broadcast = broadcastEnt;
-      _newEvent.location = locationEnt;
-      _newEvent.speakers = existingSpeakers;
-      _newEvent.tags = existingTags;
+      newEvent.broadcast = broadcastEnt;
+      newEvent.location = locationEnt;
+      newEvent.speakers = existingSpeakers;
+      newEvent.tags = existingTags;
 
-      const eventEnt = this.eventRepo.create(_newEvent);
+      const eventEnt = this.eventRepo.create(newEvent);
 
       if (eventEnt) {
         return eventEnt.save();
       }
     } catch (error) {
-      throw new Error('Could not insert new Event');
+      throw new UnprocessableEntityException(null, 'Could not insert new Event');
     }
   }
 

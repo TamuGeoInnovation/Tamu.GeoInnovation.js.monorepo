@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+
+import { Observable, shareReplay } from 'rxjs';
 
 import { EventService, SpeakerService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Event, Speaker, Tag } from '@tamu-gisc/gisday/platform/data-api';
 
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
-import { Observable, shareReplay } from 'rxjs';
 
 export const formExporter = () => {
   return new FormGroup({
@@ -37,8 +38,8 @@ export const formExporter = () => {
       capacity: new FormControl(''),
       link: new FormControl('')
     }),
-    tagsGroup$: new FormGroup({}),
-    speakersGroup$: new FormGroup({}),
+    _tagsGroup: new FormGroup({}),
+    _speakersGroup: new FormGroup({}),
     tags: new FormArray([]),
     speakers: new FormArray([])
   });
@@ -49,7 +50,7 @@ export const formExporter = () => {
   templateUrl: './admin-add-events.component.html',
   styleUrls: ['./admin-add-events.component.scss']
 })
-export class AdminAddEventsComponent extends BaseAdminAddComponent<Event> {
+export class AdminAddEventsComponent extends BaseAdminAddComponent<Event> implements OnInit {
   public $tags: Observable<Array<Partial<Tag>>>;
   public $speakers: Observable<Array<Partial<Speaker>>>;
 
@@ -60,7 +61,9 @@ export class AdminAddEventsComponent extends BaseAdminAddComponent<Event> {
     private tagService: TagService
   ) {
     super(fb1, eventService);
+  }
 
+  public ngOnInit() {
     this.form = formExporter();
 
     this.$tags = this.tagService.getEntities().pipe(shareReplay(1));
@@ -72,7 +75,7 @@ export class AdminAddEventsComponent extends BaseAdminAddComponent<Event> {
         tagsGroup.addControl(tag.guid, new FormControl(''));
       });
 
-      this.form.controls.tagsGroup$ = tagsGroup;
+      this.form.controls._tagsGroup = tagsGroup;
     });
 
     this.$speakers.subscribe((speakers: Partial<Array<Speaker>>) => {
@@ -81,13 +84,13 @@ export class AdminAddEventsComponent extends BaseAdminAddComponent<Event> {
         speakersGroup.addControl(speaker.guid, new FormControl(''));
       });
 
-      this.form.controls.speakersGroup$ = speakersGroup;
+      this.form.controls._speakersGroup = speakersGroup;
     });
   }
 
   public submitNewEntity() {
-    const tags = this.form.controls.tagsGroup$.value;
-    const speakers = this.form.controls.speakersGroup$.value;
+    const tags = this.form.controls._tagsGroup.value;
+    const speakers = this.form.controls._speakersGroup.value;
 
     const checkedTags = Object.keys(tags).filter((key) => tags[key]);
     const checkedSpeakers = Object.keys(speakers).filter((key) => speakers[key]);

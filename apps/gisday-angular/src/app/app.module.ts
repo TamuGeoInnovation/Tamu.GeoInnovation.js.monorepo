@@ -8,7 +8,7 @@ import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
 import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { LoginGuard, LogoutGuard, AdminGuard, AuthorizationGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { LoginGuard, LogoutGuard, AdminGuard, AuthenticationGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { AppComponent } from './app.component';
@@ -63,29 +63,23 @@ const routes: Routes = [
   },
   {
     path: 'admin',
-    // canActivate: [AdminGuard],
+    canActivate: [AdminGuard],
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AdminModule)
   },
   {
     path: 'account',
-    canActivate: [AuthorizationGuard],
+    canActivate: [AuthenticationGuard],
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AccountModule)
   },
   {
     path: 'login',
     canActivate: [LoginGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LoginModule),
-    data: {
-      externalUrl: `${environment.api_url}/oidc/login`
-    }
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LoginModule)
   },
   {
     path: 'logout',
     canActivate: [LogoutGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LogoutModule),
-    data: {
-      externalUrl: `${environment.api_url}/oidc/login`
-    }
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LogoutModule)
   },
   {
     path: 'forbidden',
@@ -105,12 +99,12 @@ const routeOptions: ExtraOptions = {
         authority: environment.idp_dev_url,
         redirectUrl: window.location.origin,
         postLogoutRedirectUri: window.location.origin,
-        clientId: 'gisday',
+        clientId: environment.client_id,
         scope: 'openid offline_access profile email',
         responseType: 'code',
         silentRenew: true,
         useRefreshToken: true,
-        logLevel: LogLevel.Debug,
+        logLevel: environment.environment.production ? LogLevel.None : LogLevel.Debug,
         autoUserInfo: false
       }
     }),

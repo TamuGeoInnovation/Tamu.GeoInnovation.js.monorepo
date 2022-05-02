@@ -16,10 +16,11 @@ import { formExporter } from '../../admin-add-sponsors/admin-add-sponsors.compon
 export class AdminDetailSponsorComponent extends BaseAdminDetailComponent<Sponsor> implements OnInit {
   constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private sponsorService: SponsorService) {
     super(fb1, route1, sponsorService);
-    this.form = formExporter();
   }
 
   public ngOnInit() {
     super.ngOnInit();
+
+    this.form = formExporter();
   }
 }

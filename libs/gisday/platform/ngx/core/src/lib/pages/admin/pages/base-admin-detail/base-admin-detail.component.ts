@@ -16,7 +16,6 @@ export abstract class BaseAdminDetailComponent<T> implements OnInit, OnDestroy {
   public entity: Observable<DeepPartial<T>>;
   public $formChange: Observable<Partial<T>>;
 
-  public formGroup = {};
   public form: FormGroup;
 
   private _$destroy: Subject<boolean> = new Subject();

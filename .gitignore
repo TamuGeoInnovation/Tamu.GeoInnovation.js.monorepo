@@ -55,7 +55,7 @@ idp_keystore.json
 
 # All SQLite databases
 *.db
-oidc.db
+
 
 
 #Angular private configs

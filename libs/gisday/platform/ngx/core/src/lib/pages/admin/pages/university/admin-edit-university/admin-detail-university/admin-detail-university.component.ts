@@ -16,11 +16,12 @@ import { formExporter } from '../../admin-add-university/admin-add-university.co
 export class AdminDetailUniversityComponent extends BaseAdminDetailComponent<University> implements OnInit {
   constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private universityService: UniversityService) {
     super(fb1, route1, universityService);
-    this.form = formExporter();
   }
 
   public ngOnInit() {
     super.ngOnInit();
+
+    this.form = formExporter();
   }
 
   public setHexPreview() {

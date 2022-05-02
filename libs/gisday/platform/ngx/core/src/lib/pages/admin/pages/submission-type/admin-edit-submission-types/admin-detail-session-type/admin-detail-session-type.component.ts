@@ -20,10 +20,11 @@ export class AdminDetailSessionTypeComponent extends BaseAdminDetailComponent<Su
     private submissionTypeService: SubmissionTypeService
   ) {
     super(fb1, route1, submissionTypeService);
-    this.form = formExporter();
   }
 
   public ngOnInit() {
     super.ngOnInit();
+
+    this.form = formExporter();
   }
 }

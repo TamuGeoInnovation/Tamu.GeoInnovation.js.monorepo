@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 
 import { DeepPartial } from 'typeorm';
 import { Request } from 'express';
@@ -56,7 +56,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
     if (speakerInfo) {
       return speakerInfo.blob.data.toString();
     } else {
-      throw new InternalServerErrorException(null, 'Could not find speakerInfo with provided guid');
+      throw new UnprocessableEntityException(null, 'Could not find speakerInfo with provided guid');
     }
   }
 
@@ -68,7 +68,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
       relations: EntityRelationsLUT.getRelation('speaker')
     });
 
-    if (file != null || file != undefined) {
+    if (file !== null || file !== undefined) {
       existing.speakerInfo.blob = file.buffer;
     }
 
@@ -111,7 +111,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
       return speakerEnt.save();
     } else {
-      throw new InternalServerErrorException(null, 'Could not create speaker');
+      throw new UnprocessableEntityException(null, 'Could not create speaker');
     }
   }
 
@@ -135,7 +135,7 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
 
       return speaker.save();
     } else {
-      throw new InternalServerErrorException(null, `Speaker could not be found`);
+      throw new UnprocessableEntityException(null, `Speaker could not be found`);
     }
   }
 }

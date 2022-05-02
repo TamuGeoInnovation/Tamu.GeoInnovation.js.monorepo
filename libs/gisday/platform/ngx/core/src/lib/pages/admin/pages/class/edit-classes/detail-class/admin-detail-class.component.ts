@@ -16,10 +16,9 @@ import { formExporter } from '../../add-classes/admin-add-classes.component';
 export class AdminDetailClassComponent extends BaseAdminDetailComponent<Class> implements OnInit {
   constructor(private fb1: FormBuilder, private route1: ActivatedRoute, private classService: ClassService) {
     super(fb1, route1, classService);
-    this.form = formExporter();
   }
 
   public ngOnInit() {
-    super.ngOnInit();
+    this.form = formExporter();
   }
 }

@@ -7,7 +7,6 @@ import { AuthenticatedResult, OidcSecurityService } from 'angular-auth-oidc-clie
 
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
-import { IUserInfoResponse } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-app-header',
@@ -16,7 +15,6 @@ import { IUserInfoResponse } from '@tamu-gisc/gisday/platform/ngx/data-access';
 })
 export class HeaderComponent implements OnInit {
   public $loggedIn: Observable<AuthenticatedResult>;
-  public $userRole: Observable<IUserInfoResponse>;
 
   public isActive = new Subject();
   public $logoVisible: Observable<boolean>;

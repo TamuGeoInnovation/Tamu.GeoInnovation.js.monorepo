@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 
 import { SubmissionTypeRepo, UserSubmission, UserSubmissionRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
@@ -27,7 +27,7 @@ export class UserSubmissionProvider extends BaseProvider<UserSubmission> {
 
       return this.userSubmissionRepo.save(userSubmission);
     } else {
-      throw new InternalServerErrorException(null, 'Could not find submission type');
+      throw new UnprocessableEntityException(null, 'Could not find submission type');
     }
   }
 }

@@ -5,7 +5,7 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
-export class AuthorizationGuard implements CanActivate {
+export class AuthenticationGuard implements CanActivate {
   constructor(private oidcSecurityService: OidcSecurityService, private router: Router) {}
 
   public canActivate() {

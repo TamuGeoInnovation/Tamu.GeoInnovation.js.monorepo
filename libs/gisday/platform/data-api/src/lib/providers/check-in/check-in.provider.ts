@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 
 import { CheckIn, CheckInRepo, EventRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../_base/base-provider';
@@ -26,7 +26,7 @@ export class CheckInProvider extends BaseProvider<CheckIn> {
 
       return checkin.save();
     } else {
-      throw new InternalServerErrorException(null, 'Event could not be found');
+      throw new UnprocessableEntityException(null, 'Event could not be found');
     }
   }
 }

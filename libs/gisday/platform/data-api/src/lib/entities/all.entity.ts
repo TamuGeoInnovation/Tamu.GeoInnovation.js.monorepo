@@ -311,9 +311,6 @@ export class Event extends GISDayEntity {
   @Column({ nullable: true })
   public endTime: string;
 
-  // @Column({ nullable: true })
-  // public duration: number; // TODO: Can we remove this? If we need it in the future maybe replace with a computed property of endTime - startTime - Aaron H. (3/30/2022)
-
   @Column({ nullable: true })
   public observedAttendeeStart: number;
 

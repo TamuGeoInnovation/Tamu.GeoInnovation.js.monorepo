@@ -1,13 +1,13 @@
 @import 'libs/sass/mixins';
 
-label {
-  &.float {
-    transform: translate3d(0, -2rem, 0);
-  }
-}
+#hex-preview { 
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
 
-#hex-preview {
-  margin-bottom: 2rem;
+  div {
+    margin-bottom: 2rem;
   margin-left: 0.5rem;
   width: 2rem;
+  }
 }

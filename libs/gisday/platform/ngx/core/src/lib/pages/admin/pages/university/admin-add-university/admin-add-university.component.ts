@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import { UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -19,9 +19,12 @@ export const formExporter = () => {
   templateUrl: './admin-add-university.component.html',
   styleUrls: ['./admin-add-university.component.scss']
 })
-export class AdminAddUniversityComponent extends BaseAdminAddComponent<University> {
+export class AdminAddUniversityComponent extends BaseAdminAddComponent<University> implements OnInit {
   constructor(private fb1: FormBuilder, private universityService: UniversityService) {
     super(fb1, universityService);
+  }
+
+  public ngOnInit() {
     this.form = formExporter();
   }
 

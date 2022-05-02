@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import { SponsorService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -23,9 +23,12 @@ export const formExporter = () => {
   templateUrl: './admin-add-sponsors.component.html',
   styleUrls: ['./admin-add-sponsors.component.scss']
 })
-export class AdminAddSponsorsComponent extends BaseAdminAddComponent<Sponsor> {
+export class AdminAddSponsorsComponent extends BaseAdminAddComponent<Sponsor> implements OnInit {
   constructor(private fb1: FormBuilder, private sponsorService: SponsorService) {
     super(fb1, sponsorService);
+  }
+
+  public ngOnInit() {
     this.form = formExporter();
   }
 }

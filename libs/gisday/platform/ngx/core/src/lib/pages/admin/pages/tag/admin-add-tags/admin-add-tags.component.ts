@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import { TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
@@ -18,10 +18,12 @@ export const formExporter = () => {
   templateUrl: './admin-add-tags.component.html',
   styleUrls: ['./admin-add-tags.component.scss']
 })
-export class AdminAddTagsComponent extends BaseAdminAddComponent<Tag> {
+export class AdminAddTagsComponent extends BaseAdminAddComponent<Tag> implements OnInit {
   constructor(private fb1: FormBuilder, private tagService: TagService) {
     super(fb1, tagService);
+  }
 
+  public ngOnInit() {
     this.form = formExporter();
   }
 }

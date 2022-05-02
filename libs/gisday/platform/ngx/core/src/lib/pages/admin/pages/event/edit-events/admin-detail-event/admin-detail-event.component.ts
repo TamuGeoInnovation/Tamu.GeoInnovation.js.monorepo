@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { map, Observable, shareReplay, zip } from 'rxjs';
+import { map, Observable, shareReplay, tap, zip } from 'rxjs';
 
 import { EventService, SpeakerService, TagService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Event, Speaker, Tag } from '@tamu-gisc/gisday/platform/data-api';
@@ -19,8 +19,6 @@ export class AdminDetailEventComponent extends BaseAdminDetailComponent<Event> i
   public $tags: Observable<Array<Partial<Tag>>>;
   public $speakers: Observable<Array<Partial<Speaker>>>;
 
-  public $zip;
-
   constructor(
     private fb1: FormBuilder,
     private route1: ActivatedRoute,
@@ -29,11 +27,12 @@ export class AdminDetailEventComponent extends BaseAdminDetailComponent<Event> i
     private tagService: TagService
   ) {
     super(fb1, route1, eventService);
-    this.form = formExporter();
   }
 
   public ngOnInit() {
     super.ngOnInit();
+
+    this.form = formExporter();
 
     this.$tags = zip([this.entity, this.tagService.getEntities()]).pipe(
       map(([event, tags]) => {
@@ -45,15 +44,15 @@ export class AdminDetailEventComponent extends BaseAdminDetailComponent<Event> i
           return tag;
         });
       }),
-      map((tags) => {
+      tap((tags) => {
         // Get the tags from the data-api and setup the child FormGroup tagsGroup$
         const tagGroup: FormGroup = new FormGroup({});
         tags.forEach((tag) => {
           tagGroup.addControl(tag.guid, new FormControl(tag.inEvent));
         });
 
-        // Set value of tagsGroup$ to the newly created tagsGroup
-        this.form.controls.tagsGroup$ = tagGroup;
+        // Set value of _tagsGroup to the newly created tagsGroup
+        this.form.controls._tagsGroup = tagGroup;
 
         return tags;
       }),
@@ -70,15 +69,15 @@ export class AdminDetailEventComponent extends BaseAdminDetailComponent<Event> i
           return speaker;
         });
       }),
-      map((speakers) => {
+      tap((speakers) => {
         // Get the speakers from the data-api and setup the child FormGroup speakersGroup$
         const speakerGroup: FormGroup = new FormGroup({});
         speakers.forEach((speaker) => {
           speakerGroup.addControl(speaker.guid, new FormControl(speaker.inEvent));
         });
 
-        // Set value of tagsGroup$ to the newly created tagsGroup
-        this.form.controls.speakersGroup$ = speakerGroup;
+        // Set value of _speakersGroup to the newly created tagsGroup
+        this.form.controls._speakersGroup = speakerGroup;
 
         return speakers;
       }),
@@ -87,8 +86,8 @@ export class AdminDetailEventComponent extends BaseAdminDetailComponent<Event> i
   }
 
   public updateEntity() {
-    const tags = this.form.controls.tagsGroup$.value;
-    const speakers = this.form.controls.speakersGroup$.value;
+    const tags = this.form.controls._tagsGroup.value;
+    const speakers = this.form.controls._speakersGroup.value;
 
     // Get those values that are true (checked) from the formGroups (tagsGroup$ / speakersGroup$)
     const checkedTags = Object.keys(tags).filter((key) => tags[key]);

@@ -7,10 +7,10 @@ import { Buffer } from 'buffer';
 
 import { SpeakerService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
+import { formToFormData } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminDetailComponent } from '../../../base-admin-detail/base-admin-detail.component';
 import { formExporter } from '../../admin-add-speakers/admin-add-speakers.component';
-import { FormToFormData } from '@tamu-gisc/gisday/platform/ngx/common';
 
 @Component({
   selector: 'tamu-gisc-admin-detail-speaker',
@@ -28,13 +28,14 @@ export class AdminDetailSpeakerComponent extends BaseAdminDetailComponent<Speake
     private universityService: UniversityService
   ) {
     super(fb1, route1, speakerService);
-
-    this.$universities = this.universityService.getEntities();
-    this.form = formExporter();
   }
 
   public ngOnInit() {
     super.ngOnInit();
+
+    this.$universities = this.universityService.getEntities();
+    this.form = formExporter();
+
     this.$speakerPhoto = this.entity.pipe(
       map((entity) => {
         if (!entity.speakerInfo.blob) {
@@ -48,7 +49,7 @@ export class AdminDetailSpeakerComponent extends BaseAdminDetailComponent<Speake
   }
 
   public updateEntity() {
-    const data = FormToFormData(this.form);
+    const data = formToFormData(this.form);
     this.speakerService.updateSpeakerInfo(data).subscribe((result) => {
       console.log(result);
     });

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import { Observable } from 'rxjs';
 
 import { SpeakerService, UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { Speaker, University } from '@tamu-gisc/gisday/platform/data-api';
+import { formToFormData } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { BaseAdminAddComponent } from '../../base-admin-add/base-admin-add.component';
 
@@ -33,7 +34,7 @@ export const formExporter = () => {
   templateUrl: './admin-add-speakers.component.html',
   styleUrls: ['./admin-add-speakers.component.scss']
 })
-export class AdminAddSpeakersComponent extends BaseAdminAddComponent<Speaker> {
+export class AdminAddSpeakersComponent extends BaseAdminAddComponent<Speaker> implements OnInit {
   public $universities: Observable<Array<Partial<University>>>;
 
   constructor(
@@ -48,32 +49,13 @@ export class AdminAddSpeakersComponent extends BaseAdminAddComponent<Speaker> {
     this.form = formExporter();
   }
 
+  public ngOnInit() {
+    this.form = formExporter();
+  }
+
   public submitNewEntity() {
-    const form = this.form.getRawValue();
-    const data: FormData = new FormData();
-    const parentFormKeys = Object.keys(form);
+    const formData = formToFormData(this.form);
 
-    const appendValuesToFormData = (keys, childProp?: string) => {
-      keys.forEach((key) => {
-        if (form[key]) {
-          if (typeof form[key] == 'object') {
-            appendValuesToFormData(Object.keys(form[key]), key);
-          } else {
-            data.append(key, form[key]);
-          }
-        } else if (childProp) {
-          if (form[childProp][key]) {
-            if (typeof form[key] == 'object') {
-              appendValuesToFormData(Object.keys(form[key]), key);
-            } else {
-              data.append(key, form[childProp][key]);
-            }
-          }
-        }
-      });
-    };
-    appendValuesToFormData(parentFormKeys);
-
-    this.speakerService.insertSpeakerInfo(data);
+    this.speakerService.insertSpeakerInfo(formData);
   }
 }
