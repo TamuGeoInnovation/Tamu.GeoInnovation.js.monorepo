@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
 import { Observable } from 'rxjs';
 
@@ -37,12 +37,8 @@ export const formExporter = () => {
 export class AdminAddSpeakersComponent extends BaseAdminAddComponent<Speaker> implements OnInit {
   public $universities: Observable<Array<Partial<University>>>;
 
-  constructor(
-    private fb1: FormBuilder,
-    private speakerService: SpeakerService,
-    private universityService: UniversityService
-  ) {
-    super(fb1, speakerService);
+  constructor(private speakerService: SpeakerService, private universityService: UniversityService) {
+    super(speakerService);
 
     this.$universities = this.universityService.getEntities();
 

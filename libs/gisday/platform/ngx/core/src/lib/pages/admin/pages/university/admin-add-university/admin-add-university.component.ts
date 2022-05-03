@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
 import { UniversityService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { University } from '@tamu-gisc/gisday/platform/data-api';
@@ -20,8 +20,8 @@ export const formExporter = () => {
   styleUrls: ['./admin-add-university.component.scss']
 })
 export class AdminAddUniversityComponent extends BaseAdminAddComponent<University> implements OnInit {
-  constructor(private fb1: FormBuilder, private universityService: UniversityService) {
-    super(fb1, universityService);
+  constructor(private universityService: UniversityService) {
+    super(universityService);
   }
 
   public ngOnInit() {

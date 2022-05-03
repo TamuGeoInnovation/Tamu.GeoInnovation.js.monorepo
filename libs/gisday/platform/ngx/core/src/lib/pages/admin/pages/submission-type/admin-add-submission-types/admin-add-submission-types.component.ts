@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
 import { SubmissionTypeService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { SubmissionType } from '@tamu-gisc/gisday/platform/data-api';
@@ -19,8 +19,8 @@ export const formExporter = () => {
   styleUrls: ['./admin-add-submission-types.component.scss']
 })
 export class AdminAddSubmissionTypesComponent extends BaseAdminAddComponent<SubmissionType> implements OnInit {
-  constructor(private fb1: FormBuilder, private submissionTypeService: SubmissionTypeService) {
-    super(fb1, submissionTypeService);
+  constructor(private submissionTypeService: SubmissionTypeService) {
+    super(submissionTypeService);
   }
 
   public ngOnInit() {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
 import { Observable, shareReplay } from 'rxjs';
 
@@ -54,17 +54,18 @@ export class AdminAddEventsComponent extends BaseAdminAddComponent<Event> implem
   public $tags: Observable<Array<Partial<Tag>>>;
   public $speakers: Observable<Array<Partial<Speaker>>>;
 
-  constructor(
-    private fb1: FormBuilder,
-    private eventService: EventService,
-    private speakerService: SpeakerService,
-    private tagService: TagService
-  ) {
-    super(fb1, eventService);
+  constructor(private eventService: EventService, private speakerService: SpeakerService, private tagService: TagService) {
+    super(eventService);
+    console.log('constructor admin-add-event');
   }
 
   public ngOnInit() {
+    console.log('admin-add-event ngOnInit');
     this.form = formExporter();
+
+    this.form.valueChanges.subscribe((change) => {
+      console.log(change);
+    });
 
     this.$tags = this.tagService.getEntities().pipe(shareReplay(1));
     this.$speakers = this.speakerService.getEntities().pipe(shareReplay(1));
@@ -98,8 +99,10 @@ export class AdminAddEventsComponent extends BaseAdminAddComponent<Event> implem
     this.form.addControl('tags', new FormControl(checkedTags));
     this.form.addControl('speakers', new FormControl(checkedSpeakers));
 
-    this.eventService.createEntity(this.form.value).subscribe((result) => {
-      console.log(result);
-    });
+    console.log(this.form.getRawValue());
+
+    // this.eventService.createEntity(this.form.value).subscribe((result) => {
+    //   console.log(result);
+    // });
   }
 }

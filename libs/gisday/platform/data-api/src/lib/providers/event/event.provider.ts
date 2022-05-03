@@ -1,4 +1,5 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { from, groupBy, mergeMap, of, reduce, tap, toArray } from 'rxjs';
 
 import { DeepPartial, In } from 'typeorm';
 
@@ -118,7 +119,7 @@ export class EventProvider extends BaseProvider<Event> {
     });
   }
 
-  public async getEntitiesByDay(accountGuid?: string) {
+  public async getEntitiesByDayOld(accountGuid?: string) {
     const entities = await this.eventRepo.getAllCurrentSeasonByStartTime();
     // TODO: Update days to reflect those days that GIS Day is held
     // TODO: This whole function needs to be redone probably
@@ -157,6 +158,75 @@ export class EventProvider extends BaseProvider<Event> {
       });
       return newEntities;
     }
+  }
+
+  public async getEntitiesByDay(accountGuid?: string) {
+    const events = this.eventRepo.find();
+    const entities = from(events).pipe(
+      mergeMap((events) => events),
+      groupBy((event) => event.startTime),
+      tap((event) => console.log(event))
+    );
+
+    // const people = [
+    //   { name: 'Sue', age: 25 },
+    //   { name: 'Joe', age: 30 },
+    //   { name: 'Frank', age: 25 },
+    //   { name: 'Sarah', age: 35 }
+    // ];
+    // //emit each person
+    // const source = from(people);
+    // //group by age
+    // const example = source.pipe(
+    //   groupBy((person) => person.age),
+    //   // return each item in group as array
+    //   mergeMap((group) => group.pipe(toArray())),
+    //   toArray()
+    // );
+
+    return entities;
+
+    // example.subscribe((result) => {
+    //   console.log(result);
+    // });
+
+    // TODO: Update days to reflect those days that GIS Day is held
+    // TODO: This whole function needs to be redone probably
+    // const days = ['15', '16', '17'];
+    // const newEntities = {};
+
+    // if (accountGuid) {
+    //   const usersRsvps = await this.userRsvpRepo.find({
+    //     where: {
+    //       userGuid: accountGuid
+    //     }
+    //   });
+    //   const eventGuids: string[] = await usersRsvps.map((rsvp) => {
+    //     return rsvp.event.guid;
+    //   });
+    //   entities.forEach((entity) => {
+    //     if (eventGuids.includes(entity.guid)) {
+    //       entity.hasRsvp = true;
+    //     }
+    //   });
+    //   days.forEach((day, index) => {
+    //     const dayEvents = entities.filter(() => {
+    //       // const dateString = event.startTime.toISOString();
+    //       // return dateString.indexOf(day) !== -1;
+    //     });
+    //     newEntities[`day${index}`] = dayEvents;
+    //   });
+    //   return newEntities;
+    // } else {
+    //   days.forEach((day, index) => {
+    //     const dayEvents = entities.filter(() => {
+    //       // const dateString = event.date.toISOString();
+    //       // return dateString.indexOf(day) !== -1;
+    //     });
+    //     newEntities[index] = dayEvents;
+    //   });
+    //   return newEntities;
+    // }
   }
 
   public async getNumberOfRsvps(eventGuid: string) {
