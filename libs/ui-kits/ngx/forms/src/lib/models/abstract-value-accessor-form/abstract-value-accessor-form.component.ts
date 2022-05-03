@@ -22,6 +22,9 @@ export class AbstractValueAccessorFormComponent<T> implements ControlValueAccess
     this._value = v === null ? undefined : v;
 
     this.cd.markForCheck();
+
+    this._onChange(v === null ? undefined : v);
+    this._onTouched();
   }
 
   constructor(private cd: ChangeDetectorRef) {}
