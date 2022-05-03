@@ -1,7 +1,5 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc/client';
 
 import {
   CheckIn,
@@ -94,15 +92,4 @@ import { localDbConfig } from '../environments/ormconfig';
   controllers: [],
   providers: [AppService]
 })
-export class AppModule implements NestModule {
-  public configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(ClaimsMiddleware)
-      .exclude(
-        { path: 'oidc/login', method: RequestMethod.GET },
-        { path: 'oidc/logout', method: RequestMethod.GET },
-        { path: 'oidc/auth/callback', method: RequestMethod.GET }
-      )
-      .forRoutes(OidcClientController);
-  }
-}
+export class AppModule {}

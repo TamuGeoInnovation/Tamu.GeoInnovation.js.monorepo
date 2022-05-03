@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
-import { environment, origins } from './environments/environment';
+import { environment } from './environments/environment';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: origins,
+      origin: environment.origins,
       methods: ['GET', 'POST', 'PATCH', 'DELETE'],
       credentials: true
     }
