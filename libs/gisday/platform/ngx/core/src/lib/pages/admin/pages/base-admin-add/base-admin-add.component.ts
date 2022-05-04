@@ -13,9 +13,7 @@ export abstract class BaseAdminAddComponent<T> implements IBaseAdminAddComponent
   public form: FormGroup;
   private _$destroy: Subject<boolean> = new Subject();
 
-  constructor(private entityService: BaseService<T>) {
-    console.log('constructor base-admin-add');
-  }
+  constructor(private entityService: BaseService<T>) {}
 
   public ngOnDestroy() {
     this._$destroy.next(undefined);
