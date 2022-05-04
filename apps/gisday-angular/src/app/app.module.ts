@@ -12,7 +12,7 @@ import { LoginGuard, LogoutGuard, AdminGuard, AuthenticationGuard } from '@tamu-
 import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { AppComponent } from './app.component';
-import * as environment from '../environments/environment.dev';
+import * as environment from '../environments/environment';
 
 WebFont.load({
   google: {
