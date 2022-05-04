@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 
 import { Observable, Subject } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, shareReplay, tap } from 'rxjs/operators';
 import { AuthenticatedResult, OidcSecurityService } from 'angular-auth-oidc-client';
 
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
@@ -15,9 +15,8 @@ import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
 })
 export class HeaderComponent implements OnInit {
   public $loggedIn: Observable<AuthenticatedResult>;
-
   public isActive = new Subject();
-  public $logoVisible: Observable<boolean>;
+  public logoVisible = 'hidden';
   public isMobile = this.rp.isMobile.pipe(shareReplay(1));
 
   constructor(
@@ -30,11 +29,16 @@ export class HeaderComponent implements OnInit {
   public ngOnInit() {
     this.$loggedIn = this.oidcSecurityService.isAuthenticated$;
 
-    this.$logoVisible = this.routerHistory.history.pipe(
-      map(() => {
-        return this.location.path() !== '';
-      }),
-      shareReplay()
-    );
+    this.routerHistory.history
+      .pipe(
+        map(() => {
+          return this.location.path() !== '' ? 'visible' : 'hidden';
+        }),
+        tap((visibility) => {
+          this.logoVisible = visibility;
+        }),
+        shareReplay(1)
+      )
+      .subscribe();
   }
 }
