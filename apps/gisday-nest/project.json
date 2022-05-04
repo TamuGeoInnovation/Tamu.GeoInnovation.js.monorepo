@@ -11,7 +11,14 @@
         "outputPath": "dist/apps/gisday-nest",
         "main": "apps/gisday-nest/src/main.ts",
         "tsConfig": "apps/gisday-nest/tsconfig.app.json",
-        "assets": ["apps/gisday-nest/src/assets"]
+        "assets": [
+          "apps/gisday-nest/src/assets",
+          {
+            "glob": "**/*",
+            "input": "./libs/assets/",
+            "output": "./assets"
+          }
+        ]
       },
       "configurations": {
         "production": {
