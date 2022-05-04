@@ -25,9 +25,11 @@ export class InitialSurveyProvider extends BaseProvider<InitialSurveyResponse> {
         guid: questionTypeGuid
       }
     });
+
     if (questionType) {
       _question.questionType = questionType;
       const question = this.initialSurveyQuestionRepo.create(_question);
+
       return this.initialSurveyQuestionRepo.save(question);
     }
   }
@@ -40,13 +42,16 @@ export class InitialSurveyProvider extends BaseProvider<InitialSurveyResponse> {
           guid: guid
         }
       });
+
       if (questionGuidsObj[guid] !== '' || questionGuidsObj[guid] !== undefined || questionGuidsObj[guid] !== null) {
         const _response: Partial<InitialSurveyResponse> = {
           accountGuid: accountGuid,
           responseValue: questionGuidsObj[guid],
           question: question
         };
+
         const response = await this.initialSurveyRepo.create(_response);
+
         return response.save();
       }
     });

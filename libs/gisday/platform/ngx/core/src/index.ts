@@ -13,3 +13,5 @@ export * from './lib/pages/admin/admin.module';
 export * from './lib/pages/contact/contact.module';
 export * from './lib/pages/highschool/highschool.module';
 export * from './lib/pages/wayback/wayback.module';
+export * from './lib/pages/not-authed/not-authed.module';
+export * from './lib/pages/not-found/not-found.module';

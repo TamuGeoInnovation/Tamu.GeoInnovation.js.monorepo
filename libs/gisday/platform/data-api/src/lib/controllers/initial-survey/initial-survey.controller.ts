@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Request } from '@nestjs/common';
+import { Body, Controller, Get, NotImplementedException, Post, Request } from '@nestjs/common';
 
 import { InitialSurveyQuestion, InitialSurveyResponse } from '../../entities/all.entity';
 import { BaseController } from '../_base/base.controller';
@@ -12,6 +12,7 @@ export class InitialSurveyController extends BaseController<InitialSurveyRespons
 
   @Get()
   public async userTookSurvey(@Request() req) {
+    // TODO: Add middleware for appending userGuid to request
     if (req.user) {
       const tookSurvey = await this.initialSurveyProvider.initialSurveyRepo.count({
         where: {
@@ -34,19 +35,17 @@ export class InitialSurveyController extends BaseController<InitialSurveyRespons
   }
 
   @Post('/questions')
-  public async insertQuestion(@Request() req) {
-    const questionTypeGuid = req.body.questionTypeGuid;
-    const _question: Partial<InitialSurveyQuestion> = {
-      ...req.body
-    };
-    return this.initialSurveyProvider.insertQuestion(questionTypeGuid, _question);
+  public async insertQuestion(@Body() body: Partial<InitialSurveyQuestion>) {
+    const questionTypeGuid = body.questionType.guid;
+
+    return this.initialSurveyProvider.insertQuestion(questionTypeGuid, body);
   }
 
   @Post()
-  public async insertInitialSurveyResponse(@Request() req) {
-    const questionGuids = Object.keys(req.body);
-    const questionGuidsObj = req.body;
+  public async insertInitialSurveyResponse() {
+    //  TODO: Add httpintercept to append userGuid to body
 
-    return this.initialSurveyProvider.insertInitialSurveyResponse(questionGuids, questionGuidsObj, req.user.sub);
+    // return this.initialSurveyProvider.insertInitialSurveyResponse(questionGuids, questionGuidsObj, body.sub);
+    return new NotImplementedException();
   }
 }

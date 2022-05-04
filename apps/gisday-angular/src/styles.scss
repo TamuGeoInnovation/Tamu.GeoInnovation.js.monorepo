@@ -520,7 +520,7 @@ form#aspnetForm {
 
 header .logo-container {
   font-size: 3.5rem;
-  display: none !important;
+  display: initial !important;
 
   &.opaque {
     display: initial !important;
@@ -2860,6 +2860,10 @@ nav#section-nav a:hover {
   }
 }
 
+.form-section-body {
+  margin-top: 2rem;
+}
+
 //  ==========================================================================
 //   Default Input, Button, and Form Styles
 //  ==========================================================================
@@ -4401,4 +4405,12 @@ session-time-table {
   h3 {
     page-break-after: avoid;
   }
+}
+
+//  ==========================================================================
+//   Admin Specific Styles
+//  ==========================================================================
+
+tamu-gisc-textbox {
+  margin-bottom: 2rem;
 }

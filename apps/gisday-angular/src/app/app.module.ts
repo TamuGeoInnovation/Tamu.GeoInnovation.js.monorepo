@@ -4,10 +4,11 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 
+import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
 import * as WebFont from 'webfontloader';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { LoginGuard, LogoutGuard, AdminGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
+import { LoginGuard, LogoutGuard, AdminGuard, AuthenticationGuard } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { GisdayPlatformNgxCommonModule } from '@tamu-gisc/gisday/platform/ngx/common';
 
 import { AppComponent } from './app.component';
@@ -37,7 +38,7 @@ const routes: Routes = [
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.SponsorsModule)
   },
   {
-    path: 'people',
+    path: 'presenters',
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.PeopleModule)
   },
   {
@@ -67,24 +68,22 @@ const routes: Routes = [
   },
   {
     path: 'account',
-    canActivate: [LoginGuard],
+    canActivate: [AuthenticationGuard],
     loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.AccountModule)
   },
   {
     path: 'login',
     canActivate: [LoginGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LoginModule),
-    data: {
-      externalUrl: 'http://localhost:3333/oidc/login'
-    }
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LoginModule)
   },
   {
     path: 'logout',
     canActivate: [LogoutGuard],
-    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LogoutModule),
-    data: {
-      externalUrl: 'http://localhost:3333/oidc/logout'
-    }
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.LogoutModule)
+  },
+  {
+    path: 'forbidden',
+    loadChildren: () => import('@tamu-gisc/gisday/platform/ngx/core').then((m) => m.NotAuthedModule)
   }
 ];
 
@@ -95,6 +94,20 @@ const routeOptions: ExtraOptions = {
 
 @NgModule({
   imports: [
+    AuthModule.forRoot({
+      config: {
+        authority: environment.idp_dev_url,
+        redirectUrl: window.location.origin,
+        postLogoutRedirectUri: window.location.origin,
+        clientId: environment.client_id,
+        scope: 'openid offline_access profile email',
+        responseType: 'code',
+        silentRenew: true,
+        useRefreshToken: true,
+        logLevel: environment.environment.production ? LogLevel.None : LogLevel.Debug,
+        autoUserInfo: false
+      }
+    }),
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, routeOptions),

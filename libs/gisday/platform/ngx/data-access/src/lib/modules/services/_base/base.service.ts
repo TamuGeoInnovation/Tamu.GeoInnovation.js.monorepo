@@ -1,47 +1,86 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { DeepPartial } from 'typeorm';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 export abstract class BaseService<T> {
-  public withCredentials = false;
   public resource: string;
+  public accessToken;
+  public headers: HttpHeaders;
 
-  constructor(private env: EnvironmentService, private http: HttpClient, private route: string, withCreds?: boolean) {
+  constructor(
+    private env: EnvironmentService,
+    private http: HttpClient,
+    public oidcSecurityService: OidcSecurityService,
+    private route: string
+  ) {
     this.resource = this.env.value('api_url') + `/${route}`;
-    this.withCredentials = withCreds;
-  }
 
-  public getEntity(guid: string) {
-    return this.http.get<Partial<T>>(`${this.resource}/${guid}`, {
-      withCredentials: this.withCredentials
+    this.accessToken = this.oidcSecurityService.getAccessToken();
+    this.headers = new HttpHeaders({
+      Authorization: 'Bearer ' + this.accessToken
     });
   }
 
-  public getEntities() {
-    return this.http.get<Array<Partial<T>>>(`${this.resource}/all`, {
-      withCredentials: this.withCredentials
-    });
-  }
-
-  public updateEntity(updatedEntity: Partial<T>) {
-    return this.http.patch<Partial<T>>(`${this.resource}`, updatedEntity, {
-      withCredentials: this.withCredentials
-    });
-  }
-
-  public createEntity(newEntity: Partial<T>) {
-    return this.http
-      .post<Partial<T>>(this.resource, newEntity, {
-        withCredentials: this.withCredentials
-      })
-      .subscribe((response) => {
-        console.log('Added entity', response);
+  public getEntity(guid: string, headers?: HttpHeaders) {
+    if (headers) {
+      return this.http.get<Partial<T>>(`${this.resource}/${guid}`, {
+        headers: headers
       });
+    } else {
+      return this.http.get<Partial<T>>(`${this.resource}/${guid}`);
+    }
   }
 
-  public deleteEntity(entityGuid: string) {
-    return this.http.delete<Partial<T>>(`${this.resource}/${entityGuid}`, {
-      withCredentials: this.withCredentials
-    });
+  public getEntityWithRelations(guid: string, headers?: HttpHeaders) {
+    if (headers) {
+      return this.http.get<DeepPartial<T>>(`${this.resource}/${guid}/deep`, {
+        headers: headers
+      });
+    } else {
+      return this.http.get<DeepPartial<T>>(`${this.resource}/${guid}/deep`);
+    }
+  }
+
+  public getEntities(headers?: HttpHeaders) {
+    if (headers) {
+      return this.http.get<Array<Partial<T>>>(`${this.resource}/all`, {
+        headers: headers
+      });
+    } else {
+      return this.http.get<Array<Partial<T>>>(`${this.resource}/all`);
+    }
+  }
+
+  public updateEntity(updatedEntity: Partial<T>, headers?: HttpHeaders) {
+    if (headers) {
+      return this.http.patch<Partial<T>>(`${this.resource}`, updatedEntity, {
+        headers: headers
+      });
+    } else {
+      return this.http.patch<Partial<T>>(`${this.resource}`, updatedEntity);
+    }
+  }
+
+  public createEntity(newEntity: Partial<T>, headers?: HttpHeaders) {
+    if (headers) {
+      return this.http.post<Partial<T>>(this.resource, newEntity, {
+        headers: headers
+      });
+    } else {
+      return this.http.post<Partial<T>>(this.resource, newEntity);
+    }
+  }
+
+  public deleteEntity(entityGuid: string, headers?: HttpHeaders) {
+    if (headers) {
+      return this.http.delete<Partial<T>>(`${this.resource}/${entityGuid}`, {
+        headers: headers
+      });
+    } else {
+      return this.http.delete<Partial<T>>(`${this.resource}/${entityGuid}`);
+    }
   }
 }

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+import { OidcSecurityService } from 'angular-auth-oidc-client';
+
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { CheckIn } from '@tamu-gisc/gisday/platform/data-api';
 
@@ -10,11 +12,10 @@ import { BaseService } from '../_base/base.service';
   providedIn: 'root'
 })
 export class CheckinService extends BaseService<CheckIn> {
-  public withCredentials = true;
   public resource: string;
 
-  constructor(private env1: EnvironmentService, private http1: HttpClient) {
-    super(env1, http1, 'check-in');
+  constructor(private env1: EnvironmentService, private http1: HttpClient, public oidcSecurityService: OidcSecurityService) {
+    super(env1, http1, oidcSecurityService, 'check-in');
   }
 
   public insertUserCheckin(eventGuid: string) {
@@ -25,7 +26,7 @@ export class CheckinService extends BaseService<CheckIn> {
           eventGuid: eventGuid
         },
         {
-          withCredentials: this.withCredentials
+          headers: this.headers
         }
       )
       .subscribe((result) => {

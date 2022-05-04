@@ -1,9 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 
+import { DeepPartial } from 'typeorm';
 import { Request } from 'express';
 
-import { Speaker, SpeakerInfo, SpeakerRepo, SpeakerInfoRepo, UniversityRepo } from '../../entities/all.entity';
+import {
+  Speaker,
+  SpeakerInfo,
+  SpeakerRepo,
+  SpeakerInfoRepo,
+  UniversityRepo,
+  EntityRelationsLUT
+} from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
 
 @Injectable()
@@ -17,18 +24,25 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
   }
 
   public async getPresenter(guid: string) {
-    const speaker = await this.speakerRepo.getPresenter(guid);
-    speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.toString('base64');
+    const speaker = await this.speakerRepo.findOne({
+      where: {
+        guid: guid
+      },
+      relations: ['speakerInfo']
+    });
+
     return speaker;
   }
 
   public async getPresenters() {
     const speakers = await this.speakerRepo.getPresenters();
+
     speakers.forEach((speaker) => {
       if (speaker.speakerInfo.blob) {
-        speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.toString('base64');
+        speaker.speakerInfo.base64representation = speaker.speakerInfo.blob.data.toString();
       }
     });
+
     return speakers;
   }
 
@@ -38,53 +52,66 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         guid: guid
       }
     });
+
     if (speakerInfo) {
-      return speakerInfo.blob.toString('base64');
+      return speakerInfo.blob.data.toString();
     } else {
-      throw new Error('Could not find speakerInfo with provided guid');
+      throw new UnprocessableEntityException(null, 'Could not find speakerInfo with provided guid');
     }
   }
 
-  public async updateSpeakerInfo(req: Request) {
-    const entity = await this.speakerInfoRepo.findOne({
+  public async updateWithInfo(incoming: DeepPartial<Speaker>, file?) {
+    const existing = await this.speakerRepo.findOne({
       where: {
-        guid: req.body.guid
+        guid: incoming.guid
+      },
+      relations: EntityRelationsLUT.getRelation('speaker')
+    });
+
+    if (file !== null || file !== undefined) {
+      existing.speakerInfo.blob = file.buffer;
+    }
+
+    const incomingKeys = Object.keys(existing);
+    incomingKeys.forEach((key) => {
+      // if key exists in existing, set existings value to whatever incomings is
+      if (existing[key]) {
+        existing[key] = incoming[key] ? incoming[key] : null;
+      } else if (existing.speakerInfo[key]) {
+        existing.speakerInfo[key] = incoming[key] ? incoming[key] : null;
       }
     });
-    if (entity) {
-      if (req.body.description) {
-        entity.description = req.body.description;
-      }
-      if (req.body.affiliation) {
-        entity.affiliation = req.body.affiliation;
-      }
-      return entity.save();
-    } else {
-      throw new Error('Could not find speakerInfo with provided guid');
-    }
+
+    existing.updated = new Date(Date.now());
+
+    existing.save();
   }
 
-  public async insertWithInfo(_speaker: DeepPartial<Speaker>, file) {
-    const speakerEnt = this.speakerRepo.create(_speaker);
-    const speaker = await this.speakerRepo.save(speakerEnt);
+  public async insertWithInfo(_speaker: DeepPartial<Speaker>, file?) {
+    const speakerInfoEnt = this.speakerInfoRepo.create(_speaker);
 
-    if (speaker) {
+    if (file != null || file != undefined) {
+      speakerInfoEnt.blob = file.buffer;
+    }
+
+    _speaker.speakerInfo = speakerInfoEnt;
+
+    const speakerEnt = this.speakerRepo.create(_speaker);
+
+    if (speakerEnt) {
       const university = await this.uniRepo.findOne({
         where: {
           guid: _speaker.speakerInfo.university ? _speaker.speakerInfo.university : ''
         }
       });
-      const _photo: DeepPartial<SpeakerInfo> = {
-        ..._speaker.speakerInfo,
-        university: university,
-        blob: file.buffer
-      };
-      const photo = await this.speakerInfoRepo.create(_photo);
-      const speakerInfo = await this.speakerInfoRepo.save(photo);
-      speaker.speakerInfo = speakerInfo;
-      return speaker.save();
+
+      if (university) {
+        speakerInfoEnt.university = university;
+      }
+
+      return speakerEnt.save();
     } else {
-      throw new Error(`Could not create speaker`);
+      throw new UnprocessableEntityException(null, 'Could not create speaker');
     }
   }
 
@@ -94,18 +121,21 @@ export class SpeakerProvider extends BaseProvider<Speaker> {
         guid: speakerGuid
       }
     });
+
     if (speaker) {
       const _photo: Partial<SpeakerInfo> = {
         ...req.body,
         speaker: speaker,
         blob: file.buffer
       };
+
       const photo = await this.speakerInfoRepo.create(_photo);
       const speakerInfo = await this.speakerInfoRepo.save(photo);
       speaker.speakerInfo = speakerInfo;
+
       return speaker.save();
     } else {
-      throw new Error(`Speaker ${speakerGuid} not found`);
+      throw new UnprocessableEntityException(null, `Speaker could not be found`);
     }
   }
 }

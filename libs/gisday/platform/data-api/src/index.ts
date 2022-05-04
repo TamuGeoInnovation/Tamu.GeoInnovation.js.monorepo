@@ -1,6 +1,3 @@
-// Controllers
-export * from './lib/controllers/user/user.controller';
-
 // Entities
 export * from './lib/entities/all.entity';
 

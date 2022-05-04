@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-admin-rsvp-type',
   templateUrl: './admin-rsvp-type.component.html',
   styleUrls: ['./admin-rsvp-type.component.scss']
 })
-export class AdminRsvpTypeComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit(): void {}
-}
+export class AdminRsvpTypeComponent {}

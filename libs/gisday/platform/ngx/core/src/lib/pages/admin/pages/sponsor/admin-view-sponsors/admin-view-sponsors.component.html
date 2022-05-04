@@ -2,13 +2,13 @@
   <tr>
     <th>Name</th>
     <th>Website</th>
-    <th>Logo Url</th>
+    <th>Contact email</th>
     <th>Updated</th>
   </tr>
   <tr *ngFor="let entity of ($entities | async)">
     <td>{{entity.name}}</td>
     <td>{{entity.website}}</td>
-    <td>{{entity.logoUrl}}</td>
+    <td>{{entity.contactEmail}}</td>
     <td>{{entity.updated | date:'short'}}</td>
   </tr>
 </table>

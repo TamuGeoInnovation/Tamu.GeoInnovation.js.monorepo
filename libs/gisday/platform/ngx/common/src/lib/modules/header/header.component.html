@@ -39,13 +39,14 @@
   </tamu-gisc-tile>
 </tamu-gisc-tile-navigation>
 
-<header [ngClass]="{seamless: (logoVisible | async) === false}">
+<header class="seamless">
   <nav id="main-menu">
-    <div id="site-logo">
-      <a class="logo-container" [routerLink]="['/']" [ngClass]="{opaque: logoVisible | async}">
+    <div [style.visibility]="logoVisible" id="site-logo">
+      <a class="logo-container" [routerLink]="['/']">
+        
         <h1 class="site-logo">
-          <span>
-            <img src="assets/images/TXGISDaySolo.svg" height="50px" width="50px" />
+          <span class="site-logo-image-container">
+            <img src="\assets\images\TXGISDaySolo.svg" height="50px" width="50px" />
           </span>
           TxGIS Day <span>2021</span>
         </h1>
@@ -58,11 +59,11 @@
           <li><a [routerLink]="['/highschool']">High School Portal</a></li>
         </ul>
         <ul>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSdrexFuC3UNjXNJTJf-2BQ9Cp-w5myEcxdJy5htMrUWuQukMg/viewform" target="_blank">Volunteer</a>
+          <a href="https://forms.gle/C4cWVuyGvDCd6wzm6" target="_blank">Volunteer</a>
         </ul>
 
         <ul class="dropdown">
-          <a [routerLink]="['/sponsors']">Sponsor <span class="material-icons">arrow_drop_down</span></a>
+          <a [routerLink]="['/sponsors']" id="linkSponsors">Sponsor <span class="material-icons">arrow_drop_down</span></a>
           <ul>
             <li><a [routerLink]="['/sponsors']" fragment="opportunities">Opportunities</a></li>
             <li><a [routerLink]="['/sponsors']" fragment="current">Current Sponsors</a></li>
@@ -70,12 +71,12 @@
           </ul>
         </ul>
 
-        <ul class="dropdown" *ngIf="(loggedIn | async); else logInPrompt">
-          <a [routerLink]="['/account/my-details']">Account <span class="material-icons">arrow_drop_down</span></a>
+        <ul class="dropdown" *ngIf="($loggedIn | async).isAuthenticated; else logInPrompt">
+          <a [routerLink]="['/account/my-details']" id="linkAccount">Account <span class="material-icons">arrow_drop_down</span></a>
           <ul>
             <li><a [routerLink]="['/account/my-details']">My Details</a></li>
             <li><a [routerLink]="['/account/my-classes']">My Classes</a></li>
-            <li *ngIf="(userRole | async)?.role?.level_role === '99'"><a [routerLink]="['/admin']">Admin</a></li>
+            <li *ngIf="($userRole | async)?.role?.level_role === '99'"><a [routerLink]="['/admin']">Admin</a></li>
             <li><a [routerLink]="['/account/my-checkins']">My Checkins</a></li>
             <li><a [routerLink]="['/account/my-submissions']">My Submissions</a></li>
             <li><a [routerLink]="['/logout']">Logout</a></li>
@@ -83,20 +84,20 @@
         </ul>
 
         <ng-template #logInPrompt>
-          <ul>
-            <li><a [routerLink]="['/login']">Login/Signup</a></li>
+          <ul id="liLogin">
+            <a [routerLink]="['/login']" id="linkLogin">Login/Signup</a>
           </ul>
         </ng-template>
       </div>
 
       <div class="primary">
         <ul>
-          <a [routerLink]="['/sessions']">Sessions</a>
-          <a [routerLink]="['/people']">Presenters</a>
+          <a [routerLink]="['/sessions']" id="linkSessions">Sessions</a>
+          <a [routerLink]="['/presenters']" id="linkPresenters">Presenters</a>
         </ul>
 
         <ul class="dropdown">
-          <a [routerLink]="['/competitions']">Competitions <span class="material-icons">arrow_drop_down</span></a>
+          <a [routerLink]="['/competitions']" id="linkCompetitions">Competitions <span class="material-icons">arrow_drop_down</span></a>
 
           <ul>
             <li><a [routerLink]="['/competitions/highschool']">High School Essay Contest</a></li>
@@ -108,11 +109,11 @@
         </ul>
 
         <ul>
-          <a [routerLink]="['/faq']">FAQ</a>
+          <a [routerLink]="['/faq']" id="linkFAQ">FAQ</a>
         </ul>
 
         <ul class="dropdown">
-          <a [routerLink]="['/about']">About <span class="material-icons">arrow_drop_down</span></a>
+          <a [routerLink]="['/about']" id="linkAbout">About <span class="material-icons">arrow_drop_down</span></a>
           <ul>
             <li><a [routerLink]="['/about']" fragment="committee">Organizing Committee</a></li>
             <li><a [routerLink]="['/about']" fragment="student-volunteer">Volunteer Opportunities</a></li>
@@ -120,7 +121,7 @@
           </ul>
         </ul>
         <ul>
-          <a [routerLink]="['/support/contact']">Contact</a>
+          <a [routerLink]="['/contact']" id="linkContact">Contact</a>
         </ul>
       </div>
     </div>

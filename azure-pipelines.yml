@@ -1,6 +1,6 @@
 variables:
   - name: excludedProjects
-    value: 'signage-angular,trees-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,two-valup-nest,two-directory-nest,gisday-angular,gisday-nest,mailroom-nest'
+    value: 'signage-angular,trees-angular,two-dashboard-angular,two-data-api-nest,two-angular,geoservices-angular,covid-data-api-nest,two-valup-nest,two-directory-nest,mailroom-nest'
   - name: isDevelopment
     value: $[eq(variables['Build.SourceBranchName'], 'development')]
   - name: isMaster

@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 
 import { Observable, Subject } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, shareReplay, tap } from 'rxjs/operators';
+import { AuthenticatedResult, OidcSecurityService } from 'angular-auth-oidc-client';
 
-import { AuthService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
 import { ResponsiveService } from '@tamu-gisc/dev-tools/responsive';
-import { IUserInfoResponse } from '@tamu-gisc/gisday/platform/ngx/data-access';
 
 @Component({
   selector: 'tamu-gisc-app-header',
@@ -15,28 +14,31 @@ import { IUserInfoResponse } from '@tamu-gisc/gisday/platform/ngx/data-access';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  public loggedIn: Observable<boolean>;
-  public userRole: Observable<IUserInfoResponse>;
-
+  public $loggedIn: Observable<AuthenticatedResult>;
   public isActive = new Subject();
-  public logoVisible: Observable<boolean>;
+  public logoVisible = 'hidden';
   public isMobile = this.rp.isMobile.pipe(shareReplay(1));
 
   constructor(
-    private authService: AuthService,
     private location: Location,
     private routerHistory: RouterHistoryService,
-    private rp: ResponsiveService
+    private rp: ResponsiveService,
+    private oidcSecurityService: OidcSecurityService
   ) {}
 
   public ngOnInit() {
-    this.loggedIn = this.authService.getHeaderState().pipe(shareReplay(1));
+    this.$loggedIn = this.oidcSecurityService.isAuthenticated$;
 
-    this.logoVisible = this.routerHistory.history.pipe(
-      map(() => {
-        return this.location.path() !== '';
-      }),
-      shareReplay()
-    );
+    this.routerHistory.history
+      .pipe(
+        map(() => {
+          return this.location.path() !== '' ? 'visible' : 'hidden';
+        }),
+        tap((visibility) => {
+          this.logoVisible = visibility;
+        }),
+        shareReplay(1)
+      )
+      .subscribe();
   }
 }

@@ -1,0 +1,13 @@
+@import 'libs/sass/mixins';
+
+#hex-preview { 
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+
+  div {
+    margin-bottom: 2rem;
+  margin-left: 0.5rem;
+  width: 2rem;
+  }
+}

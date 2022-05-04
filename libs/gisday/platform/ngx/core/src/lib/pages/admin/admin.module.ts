@@ -10,14 +10,6 @@ const routes: Routes = [
     component: AdminComponent,
     children: [
       {
-        path: '',
-        loadChildren: () => import('./pages/checkin/admin-checkins.module').then((m) => m.AdminCheckinsModule)
-      },
-      {
-        path: 'checkins',
-        loadChildren: () => import('./pages/checkin/admin-checkins.module').then((m) => m.AdminCheckinsModule)
-      },
-      {
         path: 'classes',
         loadChildren: () => import('./pages/class/admin-class.module').then((m) => m.AdminClassModule)
       },

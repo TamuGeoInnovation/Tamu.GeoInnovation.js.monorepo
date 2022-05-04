@@ -1,5 +1,5 @@
 <div>
-  <div class="loader" *ngIf="!($userClasses | async)"></div>
+  <div class="loader" *ngIf="($userClasses | async) === false || ($userClasses | async) === null || ($userClasses | async) === undefined"></div>
   <div id="default-content" class="column8" *ngIf="$userClasses">
     <div class="card leader-3 trailer-2">
       <h2>My Classes</h2>

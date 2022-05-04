@@ -2,6 +2,8 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 
 import { map } from 'rxjs/operators';
 
+import { ValidObject } from '@tamu-gisc/oidc/common';
+
 import { OldCompetitionEntity } from '../../entities/all.entity';
 
 @Injectable()
@@ -28,5 +30,5 @@ export interface IGeoJsonFeature {
     type: string;
     coordinates: number[];
   };
-  properties: {};
+  properties: ValidObject;
 }

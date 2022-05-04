@@ -24,7 +24,7 @@ export class PeopleDetailsComponent implements OnInit {
   }
 
   public unwrapPhoto(base64: string) {
-    const ret = `\"data:image/jpg;base64,${base64}\"`;
+    const ret = `"data:image/jpg;base64,${base64}"`;
     return ret;
   }
 }

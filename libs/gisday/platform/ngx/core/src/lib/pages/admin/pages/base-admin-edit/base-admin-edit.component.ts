@@ -31,7 +31,7 @@ export abstract class BaseAdminEditComponent<T extends GuidIdentity> implements 
 
   public deleteEntity(entity: T) {
     console.log('deleteEntity', entity);
-    this.entityService.deleteEntity(entity.guid).subscribe((deleteStatus) => {
+    this.entityService.deleteEntity(entity.guid).subscribe(() => {
       console.log('Deleted ', entity.guid);
       this.fetchEntities();
     });

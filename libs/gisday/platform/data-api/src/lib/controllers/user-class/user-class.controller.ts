@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Request, UnauthorizedException } from '@nestjs/common';
+
 import { DeepPartial } from 'typeorm';
 
 import { Class, UserClass } from '../../entities/all.entity';
@@ -15,9 +16,10 @@ export class UserClassController extends BaseController<UserClass> {
   public async getClassesAndUserClasses(@Request() req) {
     if (req.user) {
       const accountGuid = req.user.sub;
+
       return this.userClassProvider.getClassesAndUserClasses(accountGuid);
     } else {
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException();
     }
   }
 
@@ -26,9 +28,10 @@ export class UserClassController extends BaseController<UserClass> {
     if (req.user) {
       const chosenClass: DeepPartial<Class> = req.body.class;
       const accountGuid = req.user.sub;
+
       return this.userClassProvider.insertUserClass(chosenClass, accountGuid);
     } else {
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException();
     }
   }
 

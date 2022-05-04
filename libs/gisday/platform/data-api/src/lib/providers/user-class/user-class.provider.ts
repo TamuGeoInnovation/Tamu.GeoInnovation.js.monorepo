@@ -4,6 +4,7 @@ import { DeepPartial } from 'typeorm';
 
 import { Class, ClassRepo, UserClass, UserClassRepo } from '../../entities/all.entity';
 import { BaseProvider } from '../../providers/_base/base-provider';
+
 @Injectable()
 export class UserClassProvider extends BaseProvider<UserClass> {
   constructor(public readonly userClassRepo: UserClassRepo, private readonly classRepo: ClassRepo) {
@@ -16,11 +17,14 @@ export class UserClassProvider extends BaseProvider<UserClass> {
         guid: chosenClass.guid
       }
     });
+
     const _newUserClass: Partial<UserClass> = {
       class: _class,
       accountGuid: accountGuid
     };
+
     const newUserClass = await this.userClassRepo.create(_newUserClass);
+
     return this.userClassRepo.save(newUserClass);
   }
 
@@ -49,6 +53,7 @@ export class UserClassProvider extends BaseProvider<UserClass> {
         }
       }
     });
+
     if (foundClass) {
       return this.userClassRepo.remove(foundClass);
     } else {

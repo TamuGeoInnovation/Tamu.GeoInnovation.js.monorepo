@@ -1,4 +1,6 @@
-import { Controller, Get, Param, Post, Request } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+
+import { DeepPartial } from 'typeorm';
 
 import { Event } from '../../entities/all.entity';
 import { EventProvider } from '../../providers/event/event.provider';
@@ -7,7 +9,12 @@ import { BaseController } from '../../controllers/_base/base.controller';
 @Controller('event')
 export class EventController extends BaseController<Event> {
   constructor(private readonly eventProvider: EventProvider) {
-    super(eventProvider);
+    super(eventProvider, 'event');
+  }
+
+  @Get('/all')
+  public async getEvents() {
+    return this.eventProvider.getEntitiesWithRelations('event');
   }
 
   @Get('/:guid/rsvps')
@@ -16,16 +23,17 @@ export class EventController extends BaseController<Event> {
   }
 
   @Get('by-day')
-  public async getEntitiesByDay(@Request() req) {
-    const accountGuid = req.user.sub;
-    return this.eventProvider.getEntitiesByDay(accountGuid);
+  public async getEntitiesByDay() {
+    return this.eventProvider.getEntitiesByDay();
   }
 
   @Post()
-  public async insertEvent(@Request() req) {
-    const _newEvent: Partial<Event> = {
-      ...req.body
-    };
-    return this.eventProvider.insertEvent(_newEvent);
+  public async insertEvent(@Body() body: DeepPartial<Event>) {
+    return this.eventProvider.insertEvent(body);
+  }
+
+  @Patch()
+  public async updateEvent(@Body() body: DeepPartial<Event>) {
+    return this.eventProvider.updateEvent(body);
   }
 }

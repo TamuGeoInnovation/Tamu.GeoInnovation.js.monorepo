@@ -49,6 +49,10 @@ const routes: Routes = [
         loadChildren: () => import('./sidewalk/sidewalk.module').then((m) => m.SidewalkModule)
       },
       {
+        path: 'lightpole',
+        loadChildren: () => import('./light-pole/light-pole.module').then((m) => m.LightPoleModule)
+      },
+      {
         path: 'building-bounty',
         loadChildren: () => import('./building-bounty/building-bounty.module').then((m) => m.BuildingBountyModule)
       },

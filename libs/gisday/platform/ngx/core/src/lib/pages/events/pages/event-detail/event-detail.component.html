@@ -41,12 +41,12 @@
               )
             </h3>
             <p *ngIf="event.requiresRsvp === true || event.requiresRsvp === null">This is a limited-seating event. Register to reserve your seat.</p>
-            <p *ngIf="event.isAcceptingRsvps == undefined || event.isAcceptingRsvps == false">Registration for this event is not open yet.</p>
-            <div class="button primary leader-1 disabled" *ngIf="event.isAcceptingRsvps == undefined || event.isAcceptingRsvps == false">REGISTRATION NOT YET AVAILABLE</div>
+            <p *ngIf="event.isAcceptingRsvps === undefined || event.isAcceptingRsvps === false">Registration for this event is not open yet.</p>
+            <div class="button primary leader-1 disabled" *ngIf="event.isAcceptingRsvps === undefined || event.isAcceptingRsvps === false">REGISTRATION NOT YET AVAILABLE</div>
           </div>
           <div>
             <h3>Checkin</h3>
-            <div *ngIf="isCheckinOpen == true; else showCheckinButton">
+            <div *ngIf="isCheckinOpen === true; else showCheckinButton">
               <p>Checkin will be available at the start of the session.</p>
             </div>
             <ng-template #showCheckinButton>

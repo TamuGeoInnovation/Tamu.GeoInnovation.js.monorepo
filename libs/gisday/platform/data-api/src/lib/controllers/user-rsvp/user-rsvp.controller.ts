@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 import { UserRsvp } from '../../entities/all.entity';
 import { UserRsvpProvider } from '../../providers/user-rsvp/user-rsvp.provider';
@@ -16,8 +16,9 @@ export class UserRsvpController extends BaseController<UserRsvp> {
   }
 
   @Post('/')
-  public async insertUserRsvp(@Req() req) {
-    const { eventGuid, rsvpTypeGuid, userGuid } = req.body;
+  public async insertUserRsvp(@Body() body) {
+    const { eventGuid, rsvpTypeGuid, userGuid } = body;
+
     return this.userRsvpProvider.insertUserRsvp(eventGuid, rsvpTypeGuid, userGuid);
   }
 }

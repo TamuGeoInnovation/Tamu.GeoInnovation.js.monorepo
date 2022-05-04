@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, HttpStatus, Post, Request } from '@nestjs/common';
+import { Controller, Get, Post, Request, UnauthorizedException } from '@nestjs/common';
 
 import { UserSubmission } from '../../entities/all.entity';
 import { UserSubmissionProvider } from '../../providers/user-submission/user-submission.provider';
@@ -15,7 +15,7 @@ export class UserSubmissionController extends BaseController<UserSubmission> {
     if (req.user) {
       return this.userSubmissionProvider.getEntitiesForUser(req.user.sub);
     } else {
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException();
     }
   }
 
@@ -25,7 +25,7 @@ export class UserSubmissionController extends BaseController<UserSubmission> {
       const _userSubmission: Partial<UserSubmission> = req.body;
       return this.userSubmissionProvider.insertUserSubmission(req.user.sub, _userSubmission);
     } else {
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException();
     }
   }
 }

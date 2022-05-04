@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -6,10 +6,8 @@ import { Title } from '@angular/platform-browser';
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent {
   constructor(private titleService: Title) {
-    this.titleService.setTitle('Admin | TxGIS Day 2020');
+    this.titleService.setTitle('Admin | TxGIS Day 2022');
   }
-
-  public ngOnInit(): void {}
 }

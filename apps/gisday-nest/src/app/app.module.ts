@@ -1,13 +1,13 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { OidcClientModule, OidcClientController, ClaimsMiddleware } from '@tamu-gisc/oidc/client';
 
 import {
   CheckIn,
   Class,
   CourseCredit,
   Event,
+  EventBroadcast,
+  EventLocation,
   RsvpType,
   Speaker,
   SpeakerInfo,
@@ -29,7 +29,6 @@ import {
   SponsorModule,
   SubmissionTypeModule,
   TagModule,
-  UserController,
   UserClassModule,
   UserInfoModule,
   UserRsvpModule,
@@ -42,15 +41,11 @@ import {
   SpeakerRoleModule
 } from '@tamu-gisc/gisday/platform/data-api';
 
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { localDbConfig } from '../environments/ormconfig';
 
 @Module({
   imports: [
-    OidcClientModule.forRoot({
-      host: 'http://localhost:4200'
-    }),
     TypeOrmModule.forRoot({
       ...localDbConfig,
       entities: [
@@ -58,11 +53,12 @@ import { localDbConfig } from '../environments/ormconfig';
         Class,
         CourseCredit,
         Event,
+        EventBroadcast,
+        EventLocation,
         InitialSurveyQuestion,
         InitialSurveyResponse,
         QuestionType,
         RsvpType,
-        // Session,
         Speaker,
         SpeakerInfo,
         SpeakerRole,
@@ -93,18 +89,7 @@ import { localDbConfig } from '../environments/ormconfig';
     UserRsvpModule,
     UserSubmissionModule
   ],
-  controllers: [AppController, UserController],
+  controllers: [],
   providers: [AppService]
 })
-export class AppModule implements NestModule {
-  public configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(ClaimsMiddleware)
-      .exclude(
-        { path: 'oidc/login', method: RequestMethod.GET },
-        { path: 'oidc/logout', method: RequestMethod.GET },
-        { path: 'oidc/auth/callback', method: RequestMethod.GET }
-      )
-      .forRoutes(OidcClientController);
-  }
-}
+export class AppModule {}

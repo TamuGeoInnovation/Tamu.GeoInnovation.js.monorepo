@@ -19,17 +19,21 @@ export class UserRsvpProvider extends BaseProvider<UserRsvp> {
         guid: rsvpTypeGuid
       }
     });
+
     const _event = await this.eventRepo.findOne({
       where: {
         guid: eventGuid
       }
     });
+
     const _newUserRsvp: Partial<UserRsvp> = {
       event: _event,
       rsvpType: _rsvpType,
       accountGuid: accountGuid
     };
+
     const newUserRsvp = this.userRsvpRepo.create(_newUserRsvp);
+
     return this.userRsvpRepo.save(newUserRsvp);
   }
 

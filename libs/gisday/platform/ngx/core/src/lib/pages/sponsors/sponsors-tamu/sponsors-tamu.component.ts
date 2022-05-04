@@ -6,8 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sponsors-tamu.component.scss']
 })
 export class SponsorsTamuComponent implements OnInit {
-  constructor() {}
-
   public ngOnInit(): void {
     this.changeRank('point');
   }

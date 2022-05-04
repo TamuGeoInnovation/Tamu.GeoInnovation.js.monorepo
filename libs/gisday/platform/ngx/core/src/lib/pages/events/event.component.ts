@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -6,10 +6,8 @@ import { Title } from '@angular/platform-browser';
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.scss']
 })
-export class EventComponent implements OnInit {
+export class EventComponent {
   constructor(private titleService: Title) {
-    this.titleService.setTitle('Sessions | TxGIS Day 2021');
+    this.titleService.setTitle('Sessions | TxGIS Day 2022');
   }
-
-  public ngOnInit() {}
 }

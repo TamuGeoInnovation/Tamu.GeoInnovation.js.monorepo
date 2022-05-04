@@ -7,12 +7,10 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   providedIn: 'root'
 })
 export class VgiService {
-  public withCredentials = false;
   public resource: string;
 
-  constructor(private env: EnvironmentService, private http: HttpClient, private route: string, withCreds?: boolean) {
+  constructor(private env: EnvironmentService, private http: HttpClient, private route: string) {
     this.resource = this.env.value('api_url') + `/${route}`;
-    this.withCredentials = withCreds;
   }
 
   public getUrl(competition: string) {
@@ -20,26 +18,18 @@ export class VgiService {
   }
 
   public getStormwater() {
-    return this.http.get(this.getUrl('Stormwater'), {
-      withCredentials: this.withCredentials
-    });
+    return this.http.get(this.getUrl('Stormwater'));
   }
 
   public getSignage() {
-    return this.http.get(this.getUrl('Signage'), {
-      withCredentials: this.withCredentials
-    });
+    return this.http.get(this.getUrl('Signage'));
   }
 
   public getSidewalks() {
-    return this.http.get(this.getUrl('Sidewalks'), {
-      withCredentials: this.withCredentials
-    });
+    return this.http.get(this.getUrl('Sidewalks'));
   }
 
   public getManholes() {
-    return this.http.get('https://gisday.tamu.edu/rest/Manhole/Get/?geoJSON=true', {
-      withCredentials: this.withCredentials
-    });
+    return this.http.get('https://gisday.tamu.edu/rest/Manhole/Get/?geoJSON=true');
   }
 }

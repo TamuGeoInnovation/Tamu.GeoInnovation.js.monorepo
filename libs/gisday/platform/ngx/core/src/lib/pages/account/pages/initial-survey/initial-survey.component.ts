@@ -20,7 +20,7 @@ export class InitialSurveyComponent implements OnInit, OnDestroy {
 
   constructor(private fb: FormBuilder, private readonly initialSurveyService: InitialSurveyService) {}
 
-  public ngOnInit(): void {
+  public ngOnInit() {
     this.dataGroup = this.fb.group({});
     this.$tookSurveyAlready = this.initialSurveyService.seeIfUserTookSurvey();
     this.fetchSurveyQuestions();

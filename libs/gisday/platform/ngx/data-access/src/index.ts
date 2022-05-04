@@ -2,13 +2,13 @@
 export * from './lib/modules/guards/login-guard/login-guard.guard';
 export * from './lib/modules/guards/logout-guard/logout-guard.guard';
 export * from './lib/modules/guards/admin-guard/admin.guard';
+export * from './lib/modules/guards/authentication/authentication.guard';
 
 // Interceptors
 export * from './lib/modules/interceptors/auth.interceptor';
 
 // Services
 export * from './lib/modules/services/_base/base.service';
-export * from './lib/modules/services/auth/auth.service';
 export * from './lib/modules/services/checkin/checkin.service';
 export * from './lib/modules/services/class/class.service';
 export * from './lib/modules/services/event/event.service';

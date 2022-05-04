@@ -1,18 +1,33 @@
-import { DeepPartial } from 'typeorm';
+import { InternalServerErrorException } from '@nestjs/common';
 
-import { Request } from 'express';
+import { DeepPartial } from 'typeorm';
 import * as deepmerge from 'deepmerge';
 
-import { CommonRepo, GuidIdentity } from '../../entities/all.entity';
+import { CommonRepo, EntityName, EntityRelationsLUT } from '../../entities/all.entity';
 
-export abstract class BaseProvider<T> implements IBaseProvider<T> {
-  constructor(private readonly repo: CommonRepo<T>) {}
+export abstract class BaseProvider<T> {
+  constructor(private readonly repo: CommonRepo<T>, entityName?: EntityName) {}
 
   public async getEntity(guid: string) {
     return this.repo.findOne({
       where: {
         guid: guid
       }
+    });
+  }
+
+  public async getEntitiesWithRelations(entityName: EntityName) {
+    return this.repo.find({
+      relations: EntityRelationsLUT.getRelation(entityName)
+    });
+  }
+
+  public async getEntityWithRelations(guid: string, entityName: EntityName) {
+    return this.repo.findOne({
+      where: {
+        guid: guid
+      },
+      relations: EntityRelationsLUT.getRelation(entityName)
     });
   }
 
@@ -33,11 +48,12 @@ export abstract class BaseProvider<T> implements IBaseProvider<T> {
     return this.repo.save(entity);
   }
 
-  public async updateEntity(_entity: DeepPartial<T>) {
+  public async updateEntity(_entity: DeepPartial<T>, entityName: string) {
     const entity = await this.repo.findOne({
       where: {
-        guid: _entity
-      }
+        guid: _entity['guid']
+      },
+      relations: EntityRelationsLUT.getRelation(entityName)
     });
     if (entity) {
       const merged = deepmerge<DeepPartial<T>>(entity, _entity);
@@ -56,15 +72,7 @@ export abstract class BaseProvider<T> implements IBaseProvider<T> {
     if (entity) {
       return this.repo.remove(entity);
     } else {
-      throw new Error('Could not find entity to delete');
+      throw new InternalServerErrorException();
     }
   }
-}
-
-export interface IBaseProvider<T> {
-  getEntity(guid: string);
-  getEntities();
-  insertEntity(req: DeepPartial<T>);
-  updateEntity(req: DeepPartial<T>);
-  deleteEntity(guid: string);
 }

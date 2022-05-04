@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'tamu-gisc-not-authed',
   templateUrl: './not-authed.component.html',
   styleUrls: ['./not-authed.component.scss']
 })
-export class NotAuthedComponent implements OnInit {
-  constructor() {}
-
-  public ngOnInit(): void {}
-}
+export class NotAuthedComponent {}
