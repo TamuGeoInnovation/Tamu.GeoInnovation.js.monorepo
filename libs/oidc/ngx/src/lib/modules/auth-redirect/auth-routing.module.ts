@@ -23,4 +23,3 @@ const routes: Routes = [
   declarations: [LoginPostComponent, AuthRoutingComponent]
 })
 export class AuthRoutingModule {}
-

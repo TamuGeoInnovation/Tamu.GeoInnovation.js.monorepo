@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./login-post.component.scss']
 })
 export class LoginPostComponent {}
-

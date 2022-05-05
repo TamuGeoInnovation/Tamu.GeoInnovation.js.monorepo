@@ -22,4 +22,3 @@ describe('AuthRoutingComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-

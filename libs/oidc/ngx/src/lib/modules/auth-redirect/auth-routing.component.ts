@@ -6,4 +6,3 @@ import { Component } from '@angular/core';
   styleUrls: ['./auth-routing.component.scss']
 })
 export class AuthRoutingComponent {}
-
