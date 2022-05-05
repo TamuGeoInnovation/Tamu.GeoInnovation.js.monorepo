@@ -30,7 +30,8 @@
               "replace": "apps/gisday-nest/src/environments/environment.ts",
               "with": "apps/gisday-nest/src/environments/environment.prod.ts"
             }
-          ]
+          ],
+          "generatePackageJson": true
         },
         "development": {
           "optimization": true,
@@ -41,7 +42,8 @@
               "replace": "apps/gisday-nest/src/environments/environment.ts",
               "with": "apps/gisday-nest/src/environments/environment.dev.ts"
             }
-          ]
+          ],
+          "generatePackageJson": true
         }
       }
     },
