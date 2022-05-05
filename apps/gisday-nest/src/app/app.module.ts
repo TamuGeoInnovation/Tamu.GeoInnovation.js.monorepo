@@ -42,12 +42,12 @@ import {
 } from '@tamu-gisc/gisday/platform/data-api';
 
 import { AppService } from './app.service';
-import { localDbConfig } from '../environments/ormconfig';
+import { dbConfig } from '../environments/environment';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      ...localDbConfig,
+      ...dbConfig,
       entities: [
         CheckIn,
         Class,
