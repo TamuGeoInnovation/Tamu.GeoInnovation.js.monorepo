@@ -97,6 +97,7 @@
     "oidc-admin-ngx": "libs/oidc/admin/ngx",
     "oidc-client": "libs/oidc/client",
     "oidc-common": "libs/oidc/common",
+    "oidc-ngx": "libs/oidc/ngx",
     "oidc-provider": "libs/oidc/provider",
     "oidc-provider-nest": "apps/oidc-provider-nest",
     "sass": "libs/sass",
