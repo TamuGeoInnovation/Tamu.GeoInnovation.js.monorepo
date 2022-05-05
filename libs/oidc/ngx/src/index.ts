@@ -1,1 +1,1 @@
-export * from './lib/guards/logged-in/logged-in.guard';
+export * from './lib/modules/auth-redirect/auth-routing.module';
