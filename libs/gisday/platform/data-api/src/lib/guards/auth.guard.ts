@@ -9,11 +9,11 @@ export class NestAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     // TODO: Have this idpUrl come from the environment file
-    // const idpDevUrl = 'https://idp-dev.geoservices.tamu.edu/oidc/jwks';
-    const idpUrl = 'http://localhost:4001/oidc/jwks';
+    const idpDevUrl = 'https://idp-dev.geoservices.tamu.edu/oidc/jwks';
+    // const idpUrl = 'http://localhost:4001/oidc/jwks';
 
     const client = new JwksClient({
-      jwksUri: idpUrl
+      jwksUri: idpDevUrl
     });
 
     const signingKey = await client.getSigningKey();

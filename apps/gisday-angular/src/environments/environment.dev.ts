@@ -16,5 +16,5 @@ export const environment = {
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
 
 export const client_id = 'gisday';
-export const api_url = 'http://localhost:3333/api';
+export const api_url = 'https://gisday-dev.geoservices.tamu.edu/api';
 export const idp_dev_url = 'https://idp-dev.geoservices.tamu.edu/oidc';
