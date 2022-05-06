@@ -3,13 +3,20 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 
+import { OidcSecurityService } from 'angular-auth-oidc-client';
+
 @Component({
   selector: 'tamu-gisc-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  constructor(private title: Title, private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private title: Title,
+    private router: Router,
+    private route: ActivatedRoute,
+    private readonly os: OidcSecurityService
+  ) {}
 
   public ngOnInit(): void {
     this.router.events
@@ -32,6 +39,10 @@ export class AppComponent implements OnInit {
       .subscribe((ttl: string) => {
         this.title.setTitle(this._pageTitle(ttl));
       });
+
+    this.os.checkAuth().subscribe(({ isAuthenticated }) => {
+      console.log('Authenticated', isAuthenticated);
+    });
   }
 
   private _pageTitle(fragment?: string) {

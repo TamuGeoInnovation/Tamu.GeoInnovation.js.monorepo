@@ -18,3 +18,5 @@ export const environment = {
 export * from './common';
 
 export const api_url = 'http://localhost:3333/api/';
+export const idp_url = 'http://localhost:4001/oidc';
+export const idp_client_id = '';
