@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationGuard implements CanActivate {
-  // TODO: Movomg this to oidc-ngx makes more sense to me if we wanna use it in more Angular apps - Aaron H (5/6/22)
   constructor(private oidcSecurityService: OidcSecurityService, private router: Router) {}
 
   public canActivate() {
@@ -23,3 +22,4 @@ export class AuthenticationGuard implements CanActivate {
     );
   }
 }
+

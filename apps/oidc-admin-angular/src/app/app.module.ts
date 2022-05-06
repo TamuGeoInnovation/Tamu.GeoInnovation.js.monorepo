@@ -5,55 +5,61 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
 import * as WebFont from 'webfontloader';
+import { AuthModule, AutoLoginPartialRoutesGuard, LogLevel } from 'angular-auth-oidc-client';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { AuthGuard, AuthInterceptorProvider } from '@tamu-gisc/common/ngx/auth';
+import { AuthenticationGuard, AuthRoutingModule } from '@tamu-gisc/oidc/ngx';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { AppComponent } from './app.component';
-import { environment } from '../environments/environment';
+import * as environment from '../environments/environment';
 
 const routes: Routes = [
   {
     path: 'stats',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.StatsModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthenticationGuard]
   },
   {
     path: 'users',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.UsersModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthenticationGuard]
   },
   {
     path: 'roles',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.RolesModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthenticationGuard]
   },
   {
     path: 'client-metadata',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.ClientMetadataModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthenticationGuard]
   },
   {
     path: 'grant-types',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.GrantTypesModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthenticationGuard]
   },
   {
     path: 'response-types',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.ResponseTypesModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthenticationGuard]
   },
   {
     path: 'token-auth-methods',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.TokenAuthMethodsModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthenticationGuard]
   },
   {
     path: 'access',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.AccessTokenModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthenticationGuard]
+  },
+  {
+    path: 'login',
+    component: AppComponent,
+    canActivate: [AutoLoginPartialRoutesGuard]
   }
 ];
 
@@ -73,21 +79,35 @@ export function getHighlightLanguages() {
 
 @NgModule({
   imports: [
+    AuthModule.forRoot({
+      config: {
+        authority: environment.idp_url,
+        redirectUrl: window.location.origin + '/auth/callback',
+        postLogoutRedirectUri: window.location.origin,
+        clientId: environment.client_id,
+        scope: 'openid offline_access profile email',
+        responseType: 'code',
+        silentRenew: true,
+        useRefreshToken: true,
+        logLevel: environment.environment.production ? LogLevel.None : LogLevel.Debug,
+        autoUserInfo: false
+      }
+    }),
     BrowserModule,
     RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', relativeLinkResolution: 'corrected' }),
     BrowserAnimationsModule,
     EnvironmentModule,
     LocalStoreModule,
     UILayoutModule,
-    HttpClientModule
+    HttpClientModule,
+    AuthRoutingModule
   ],
   declarations: [AppComponent],
   providers: [
     {
       provide: env,
       useValue: environment
-    },
-    AuthInterceptorProvider
+    }
   ],
   bootstrap: [AppComponent]
 })
