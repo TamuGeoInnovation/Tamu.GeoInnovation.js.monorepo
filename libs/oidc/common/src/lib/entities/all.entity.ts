@@ -292,7 +292,7 @@ export class AccessToken implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
@@ -348,7 +348,7 @@ export class AuthorizationCode implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
@@ -384,7 +384,7 @@ export class BackchannelAuthenticationRequest implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
@@ -414,7 +414,7 @@ export class ClientCredential implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
@@ -444,7 +444,7 @@ export class Client implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
@@ -486,7 +486,7 @@ export class DeviceCode implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
@@ -522,7 +522,7 @@ export class Grant implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
@@ -552,7 +552,7 @@ export class InitialAccessToken implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
@@ -588,7 +588,7 @@ export class Interaction implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
@@ -624,7 +624,7 @@ export class RefreshToken implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
@@ -654,7 +654,7 @@ export class RegistrationAccessToken implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
@@ -684,7 +684,7 @@ export class ReplayDetection implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
@@ -714,7 +714,7 @@ export class PushedAuthorizationRequest implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
@@ -756,7 +756,7 @@ export class Session implements IRequiredEntityAttrs {
   @Column({
     type: 'varchar',
     nullable: true,
-    length: 'max'
+    length: 'MAX'
   })
   public data: string;
 
