@@ -1,7 +1,6 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { OidcClientModule, OidcClientController, TokenExchangeMiddleware } from '@tamu-gisc/oidc/client';
 import {
   AccessToken,
   Account,
@@ -25,13 +24,9 @@ import {
 import { AccessTokenModule, StatsModule } from '@tamu-gisc/oidc/admin/data-api';
 
 import { dbConfig } from '../environments/environment';
-import { OIDC_IDP_ISSUER_URL } from '../environments/oidcconfig';
 
 @Module({
   imports: [
-    OidcClientModule.forRoot({
-      host: OIDC_IDP_ISSUER_URL
-    }),
     TypeOrmModule.forRoot({
       ...dbConfig,
       entities: [
@@ -62,15 +57,4 @@ import { OIDC_IDP_ISSUER_URL } from '../environments/oidcconfig';
   controllers: [],
   providers: []
 })
-export class AppModule implements NestModule {
-  public configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(TokenExchangeMiddleware)
-      .exclude(
-        { path: 'oidc/login', method: RequestMethod.GET },
-        { path: 'oidc/logout', method: RequestMethod.GET },
-        { path: 'oidc/auth/callback', method: RequestMethod.GET }
-      )
-      .forRoutes(OidcClientController);
-  }
-}
+export class AppModule {}
