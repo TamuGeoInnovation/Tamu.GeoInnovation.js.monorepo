@@ -2,10 +2,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import * as WebFont from 'webfontloader';
-import { AuthModule, AutoLoginPartialRoutesGuard, LogLevel } from 'angular-auth-oidc-client';
+import { AuthModule, AuthInterceptor, AutoLoginPartialRoutesGuard, LogLevel } from 'angular-auth-oidc-client';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
 import { AuthenticationGuard, AuthRoutingModule } from '@tamu-gisc/oidc/ngx';
@@ -16,6 +16,10 @@ import { AppComponent } from './app.component';
 import * as environment from '../environments/environment';
 
 const routes: Routes = [
+  {
+    path: '',
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.LandingModule)
+  },
   {
     path: 'stats',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.StatsModule),
@@ -32,34 +36,9 @@ const routes: Routes = [
     canActivate: [AuthenticationGuard]
   },
   {
-    path: 'client-metadata',
-    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.ClientMetadataModule),
-    canActivate: [AuthenticationGuard]
-  },
-  {
-    path: 'grant-types',
-    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.GrantTypesModule),
-    canActivate: [AuthenticationGuard]
-  },
-  {
-    path: 'response-types',
-    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.ResponseTypesModule),
-    canActivate: [AuthenticationGuard]
-  },
-  {
-    path: 'token-auth-methods',
-    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.TokenAuthMethodsModule),
-    canActivate: [AuthenticationGuard]
-  },
-  {
-    path: 'access',
-    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.AccessTokenModule),
-    canActivate: [AuthenticationGuard]
-  },
-  {
-    path: 'login',
-    component: AppComponent,
-    canActivate: [AutoLoginPartialRoutesGuard]
+    path: 'clients',
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.ClientsModule),
+    canActivate: [AutoLoginPartialRoutesGuard, AuthenticationGuard]
   }
 ];
 
@@ -83,6 +62,7 @@ export function getHighlightLanguages() {
       config: {
         authority: environment.idp_url,
         redirectUrl: window.location.origin + '/auth/callback',
+        // secureRoutes: ['http://localhost/clients'],
         postLogoutRedirectUri: window.location.origin,
         clientId: environment.client_id,
         scope: 'openid offline_access profile email',
@@ -107,7 +87,8 @@ export function getHighlightLanguages() {
     {
       provide: env,
       useValue: environment
-    }
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

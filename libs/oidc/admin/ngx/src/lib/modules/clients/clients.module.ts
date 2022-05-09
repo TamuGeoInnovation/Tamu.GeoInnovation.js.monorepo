@@ -6,29 +6,33 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UIFormsModule } from '@tamu-gisc/ui-kits/ngx/forms';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
-import { AccessTokenComponent } from './access-token.component';
+import { ClientsComponent } from './clients.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: AccessTokenComponent,
+    component: ClientsComponent,
     children: [
       {
         path: '',
-        loadChildren: () => import('./view-access-token/view-access-token.module').then((m) => m.ViewAccessTokenModule)
-      },
-      {
-        path: 'edit',
-        loadChildren: () => import('./edit-access-token/edit-access-token.module').then((m) => m.EditAccessTokenModule)
+        loadChildren: () => import('./pages/view-client/view-client.module').then((m) => m.ViewClientModule)
       }
+      // {
+      //   path: 'add',
+      //   loadChildren: () => import('./add-role/add-role.module').then((m) => m.AddRoleModule)
+      // },
+      // {
+      //   path: 'edit',
+      //   loadChildren: () => import('./edit-role/edit-role.module').then((m) => m.EditRoleModule)
+      // }
     ]
   }
 ];
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes), FormsModule, ReactiveFormsModule, UIFormsModule, UILayoutModule],
-  declarations: [AccessTokenComponent],
+  declarations: [ClientsComponent],
   exports: [RouterModule]
 })
-export class AccessTokenModule {}
-// TODO: Should we just remove this already? Access tokens no longer stored in IdP
+export class ClientsModule {}
+

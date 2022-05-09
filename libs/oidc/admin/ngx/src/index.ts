@@ -10,8 +10,5 @@ export * from './lib/modules/users/edit-users/detail-user/detail-user.component'
 export * from './lib/modules/stats/stats.module';
 export * from './lib/modules/users/users.module';
 export * from './lib/modules/roles/roles.module';
-export * from './lib/modules/client-metadata/client-metadata.module';
-export * from './lib/modules/grant-types/grant-types.module';
-export * from './lib/modules/response-types/response-types.module';
-export * from './lib/modules/token-auth-methods/token-auth-methods.module';
-export * from './lib/modules/access-token/access-token.module';
+export * from './lib/modules/clients/clients.module';
+export * from './lib/modules/landing/landing.module';

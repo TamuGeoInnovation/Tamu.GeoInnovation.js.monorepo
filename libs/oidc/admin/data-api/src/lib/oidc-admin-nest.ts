@@ -9,3 +9,4 @@ export * from './modules/access-token/access-token.module';
 // Services
 export * from './services/stats/stats.service';
 export * from './services/access-token/access-token.service';
+export * from './services/client/client.service';
