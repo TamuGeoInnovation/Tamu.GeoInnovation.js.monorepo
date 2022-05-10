@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
-import { BearerGuard } from '@tamu-gisc/veoride/data-api';
-
+import { AuthorizationGuard } from '../../guards/authorization.guard';
 import { BaseService } from '../../services/_base/base.service';
 
 @Controller()
+@UseGuards(AuthorizationGuard)
 export abstract class BaseController<T> {
   constructor(private readonly provider: BaseService<T>) {}
 
@@ -37,4 +37,3 @@ export abstract class BaseController<T> {
     return this.provider.deleteEntity(params.guid);
   }
 }
-
