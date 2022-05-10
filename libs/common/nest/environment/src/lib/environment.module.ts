@@ -1,7 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
 
-import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
-
+import { EnvironmentService } from './services/environment/environment.service';
 import { ENVIRONMENT } from './tokens/environment.token';
 
 @Module({})
