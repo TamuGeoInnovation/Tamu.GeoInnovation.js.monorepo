@@ -13,8 +13,13 @@ export class ClientController extends BaseController<Client> {
   }
 
   @Get()
-  @UseGuards(AuthorizationGuard)
   public get() {
+    return this.clientService.getEntities();
+  }
+
+  @Get('/auth')
+  @UseGuards(AuthorizationGuard)
+  public getAuth() {
     return 200;
   }
 }

@@ -23,17 +23,17 @@ const routes: Routes = [
   {
     path: 'stats',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.StatsModule),
-    canActivate: [AuthenticationGuard]
+    canActivate: [AutoLoginPartialRoutesGuard, AuthenticationGuard]
   },
   {
     path: 'users',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.UsersModule),
-    canActivate: [AuthenticationGuard]
+    canActivate: [AutoLoginPartialRoutesGuard, AuthenticationGuard]
   },
   {
     path: 'roles',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.RolesModule),
-    canActivate: [AuthenticationGuard]
+    canActivate: [AutoLoginPartialRoutesGuard, AuthenticationGuard]
   },
   {
     path: 'clients',

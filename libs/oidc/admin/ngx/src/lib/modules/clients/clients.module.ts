@@ -16,15 +16,15 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () => import('./pages/view-client/view-client.module').then((m) => m.ViewClientModule)
+      },
+      {
+        path: 'add',
+        loadChildren: () => import('./pages/add-client/add-client.module').then((m) => m.AddClientModule)
+      },
+      {
+        path: 'edit',
+        loadChildren: () => import('./pages/edit-client/edit-client.module').then((m) => m.EditClientModule)
       }
-      // {
-      //   path: 'add',
-      //   loadChildren: () => import('./add-role/add-role.module').then((m) => m.AddRoleModule)
-      // },
-      // {
-      //   path: 'edit',
-      //   loadChildren: () => import('./edit-role/edit-role.module').then((m) => m.EditRoleModule)
-      // }
     ]
   }
 ];
@@ -35,4 +35,3 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class ClientsModule {}
-

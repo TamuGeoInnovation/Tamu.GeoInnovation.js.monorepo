@@ -1,11 +1,13 @@
 <table>
     <tr>
-      <th>Id</th>
       <th>Name</th>
+      <th>Id</th>
+      <th>Redirect</th>
     </tr>
     <tr *ngFor="let client of ($clients | async)">
-      <td>{{client.client_id}}</td>
       <td>{{client.client_name}}</td>
+      <td>{{client.client_id}}</td>
+      <td>{{client.redirect_uris}}</td>
     </tr>
   </table>
   
