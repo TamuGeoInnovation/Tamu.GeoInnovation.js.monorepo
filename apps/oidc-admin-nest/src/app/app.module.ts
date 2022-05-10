@@ -22,12 +22,14 @@ import {
   BackchannelLogoutUri,
   Client
 } from '@tamu-gisc/oidc/common';
-import { AccessTokenModule, StatsModule } from '@tamu-gisc/oidc/admin/data-api';
+import { ClientModule, StatsModule } from '@tamu-gisc/oidc/admin/data-api';
+import { EnvironmentModule } from '@tamu-gisc/common/nest/environment';
 
 import { dbConfig, environment } from '../environments/environment';
 
 @Module({
   imports: [
+    EnvironmentModule.forRoot(environment),
     TypeOrmModule.forRoot({
       ...dbConfig,
       entities: [
@@ -50,18 +52,13 @@ import { dbConfig, environment } from '../environments/environment';
         UserPasswordHistory
       ]
     }),
-    AccessTokenModule,
     ClientMetadataModule,
     RoleModule,
     StatsModule,
+    ClientModule,
     UserModule
   ],
   controllers: [],
-  providers: [
-    {
-      provide: 'JWKS_URL',
-      useValue: environment.jwksEndpoint
-    }
-  ]
+  providers: []
 })
 export class AppModule {}

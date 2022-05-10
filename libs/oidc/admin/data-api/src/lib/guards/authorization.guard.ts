@@ -1,17 +1,19 @@
-import { Injectable, CanActivate, ExecutionContext, Inject } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 
 import jwt from 'jsonwebtoken';
 import { JwksClient } from 'jwks-rsa';
 
+import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
+
 @Injectable()
 export class AuthorizationGuard implements CanActivate {
-  constructor(@Inject('JWKS_URL') private readonly jwks_url: string) {}
+  constructor(private readonly env: EnvironmentService) {}
 
   public async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
 
     const client = new JwksClient({
-      jwksUri: this.jwks_url
+      jwksUri: this.env.value('jwksEndpoint')
     });
 
     const signingKey = await client.getSigningKey();
@@ -35,4 +37,3 @@ export class AuthorizationGuard implements CanActivate {
     }
   }
 }
-

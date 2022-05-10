@@ -12,4 +12,3 @@ export class ClientService extends BaseService<Client> {
     super(clientRepo);
   }
 }
-

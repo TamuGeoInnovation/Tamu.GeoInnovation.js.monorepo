@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Client } from '@tamu-gisc/oidc/common';
+
 import { ClientController } from '../../controllers/client/client.controller';
-import { ClientService } from '../../oidc-admin-nest';
+import { ClientService } from '../../services/client/client.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Client])],
@@ -11,4 +12,3 @@ import { ClientService } from '../../oidc-admin-nest';
   providers: [ClientService]
 })
 export class ClientModule {}
-

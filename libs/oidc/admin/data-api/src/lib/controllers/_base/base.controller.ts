@@ -1,11 +1,9 @@
-import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
-import { AuthorizationGuard } from '../../guards/authorization.guard';
 import { BaseService } from '../../services/_base/base.service';
 
 @Controller()
-@UseGuards(AuthorizationGuard)
 export abstract class BaseController<T> {
   constructor(private readonly provider: BaseService<T>) {}
 
