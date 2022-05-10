@@ -12,3 +12,4 @@ export * from './lib/modules/users/users.module';
 export * from './lib/modules/roles/roles.module';
 export * from './lib/modules/clients/clients.module';
 export * from './lib/modules/landing/landing.module';
+export * from './lib/modules/authorization/authorization.module';

@@ -39,6 +39,11 @@ const routes: Routes = [
     path: 'clients',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.ClientsModule),
     canActivate: [AutoLoginPartialRoutesGuard, AuthenticationGuard]
+  },
+  {
+    path: 'authorization',
+    loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.AuthorizationModule),
+    canActivate: [AutoLoginPartialRoutesGuard, AuthenticationGuard]
   }
 ];
 
