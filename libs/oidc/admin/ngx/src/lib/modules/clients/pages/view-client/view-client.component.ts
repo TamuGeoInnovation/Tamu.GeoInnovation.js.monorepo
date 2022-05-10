@@ -31,7 +31,7 @@ export class ViewClientComponent implements OnInit {
   }
 }
 
-interface IClientData {
+export interface IClientData {
   application_type: string;
   grant_types: string[];
   id_token_signed_response_alg: string;
@@ -49,4 +49,3 @@ interface IClientData {
   client_name: string;
   redirect_uris: string[];
 }
-
