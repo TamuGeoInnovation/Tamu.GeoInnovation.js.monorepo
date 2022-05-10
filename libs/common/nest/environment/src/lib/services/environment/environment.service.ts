@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import { ENVIRONMENT } from '../../tokens/environment.token';
+
 @Injectable()
 export class EnvironmentService {
-  constructor(@Inject('ENV') private readonly env) {}
+  constructor(@Inject(ENVIRONMENT) private readonly env) {}
 
   /**
    * Returns value of a token in a provided environment value.

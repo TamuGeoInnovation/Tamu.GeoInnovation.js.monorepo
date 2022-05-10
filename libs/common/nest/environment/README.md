@@ -47,7 +47,7 @@ import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
 @Injectable()
 export class SomeService {
   constructor(private readonly env: EnvironmentService) {
-    super(repo);
+    doWork();
   }
 }
 
