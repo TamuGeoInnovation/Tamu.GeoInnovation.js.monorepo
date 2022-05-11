@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { from, groupBy, map, mergeMap, pluck, toArray } from 'rxjs';
+import { from, groupBy, map, mergeMap, toArray } from 'rxjs';
 
 import { NewUserRoleRepo } from '../../oidc-common';
 import { ISimplifiedUserRoleResponse } from '../../types/types';
@@ -8,6 +8,17 @@ import { ISimplifiedUserRoleResponse } from '../../types/types';
 @Injectable()
 export class UserRoleService {
   constructor(private readonly userRoleRepo: NewUserRoleRepo) {}
+
+  public getRoles(accountGuid) {
+    return this.userRoleRepo
+      .createQueryBuilder('user_role')
+      .leftJoinAndSelect('user_role.client', 'client')
+      .leftJoinAndSelect('user_role.role', 'role')
+      .leftJoinAndSelect('user_role.user', 'user')
+      .where('user.account.guid = :accountGuid', { accountGuid })
+      .select(['user_role.guid', 'role.level', 'role.name', 'client.id'])
+      .getMany();
+  }
 
   public getAll() {
     // return this.userRoleRepo.find({

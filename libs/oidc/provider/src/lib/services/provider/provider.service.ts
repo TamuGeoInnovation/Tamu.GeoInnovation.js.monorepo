@@ -5,6 +5,7 @@ import { JWK } from 'node-jose';
 import { Configuration, JWKS, Provider, ResourceServer } from 'oidc-provider';
 
 import { AccountService } from '@tamu-gisc/oidc/common';
+import { UserRoleService } from '@tamu-gisc/oidc/common';
 
 import { OidcAdapter } from '../../adapters/oidc.adapter';
 
@@ -18,7 +19,7 @@ export class OidcProviderService {
   // TODO: Get file name / path from environment
   private pathToJWKS = 'idp_keystore.json';
 
-  constructor(private readonly accountService: AccountService) {
+  constructor(private readonly accountService: AccountService, private readonly userRoleService: UserRoleService) {
     this.getJWKSFromFile().then((jwks) => {
       this.generateProviderConfiguration(jwks).then((providerConfig) => {
         this.provider = new Provider(this.issuerUrl, providerConfig);
@@ -60,6 +61,7 @@ export class OidcProviderService {
 
   public async generateProviderConfiguration(jwks): Promise<Configuration> {
     const accountService = this.accountService;
+    const userRoleService = this.userRoleService;
 
     const baseProviderConfig: Configuration = {
       adapter: OidcAdapter,
@@ -179,6 +181,21 @@ export class OidcProviderService {
             // console.log(ctx, token, jwt);
             // const account = await accountService.get(jwt.payload.sub);
             // jwt.payload.role = 'user'; // TODO: Add back authorization; this is a way to "fudge" it
+
+            // Get all user roles with the accountGuid
+            const userRoles = await userRoleService.getRoles(jwt.payload.sub);
+
+            const roles = userRoles.map((val) => {
+              return {
+                id: val.client.id,
+                level: val.role.level
+              };
+            });
+
+            if (userRoles) {
+              jwt.payload.roles = roles;
+            }
+
             return jwt;
           }
         }

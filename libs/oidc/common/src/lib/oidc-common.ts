@@ -14,6 +14,7 @@ export * from './services/account/account.service';
 export * from './services/client-metadata/client-metadata.service';
 export * from './services/role/role.service';
 export * from './services/user/user.service';
+export * from './services/user-role/user-role.service';
 
 // types
 export * from './types/types';
