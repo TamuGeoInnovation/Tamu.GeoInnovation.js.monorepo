@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import { from, groupBy, map, mergeMap, toArray } from 'rxjs';
+import { from, groupBy, map, mergeMap, pluck, toArray } from 'rxjs';
 
 import { NewUserRoleRepo } from '../../oidc-common';
+import { ISimplifiedUserRoleResponse } from '../../types/types';
 
 @Injectable()
 export class UserRoleService {
@@ -20,7 +21,7 @@ export class UserRoleService {
       mergeMap((userRoles) => userRoles),
       map((userRole) => {
         const clientData = JSON.parse(userRole.client.data);
-        const ret = {
+        const ret: ISimplifiedUserRoleResponse = {
           role: {
             level: userRole.role.level,
             name: userRole.role.name
@@ -30,15 +31,15 @@ export class UserRoleService {
             name: userRole.user.account.name
           },
           client: {
-            client_id: clientData.client_id,
-            client_name: clientData.client_name
+            clientId: clientData.client_id,
+            clientName: clientData.client_name
           }
         };
 
         return ret;
       }),
       groupBy((userRole) => {
-        return userRole.client.client_id;
+        return userRole.client.clientId;
       }),
       mergeMap((group) => group.pipe(toArray())),
       toArray()

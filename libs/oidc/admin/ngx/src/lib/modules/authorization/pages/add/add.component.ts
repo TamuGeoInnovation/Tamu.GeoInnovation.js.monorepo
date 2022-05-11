@@ -3,10 +3,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 import { map, mergeMap, Observable, toArray } from 'rxjs';
 
-import { Role, User } from '@tamu-gisc/oidc/common';
+import { IClientData, Role, User } from '@tamu-gisc/oidc/common';
 import { ClientService, RolesService, UserRoleService, UsersService } from '@tamu-gisc/oidc/admin/data-access';
-
-import { IClientData } from '../../../clients/pages/view-client/view-client.component';
 
 @Component({
   selector: 'tamu-gisc-add',

@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { UserRoleService } from '@tamu-gisc/oidc/admin/data-access';
-import { NewUserRole } from '@tamu-gisc/oidc/common';
+import { ISimplifiedUserRoleResponse } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'tamu-gisc-view',
@@ -11,7 +11,7 @@ import { NewUserRole } from '@tamu-gisc/oidc/common';
   styleUrls: ['./view.component.scss']
 })
 export class ViewComponent implements OnInit {
-  public $userRoles: Observable<Array<Partial<any>>>;
+  public $userRoles: Observable<Array<Partial<ISimplifiedUserRoleResponse>>>;
 
   constructor(private readonly userRoleService: UserRoleService) {}
 

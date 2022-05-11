@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { map, mergeMap, Observable, toArray } from 'rxjs';
 
 import { ClientService } from '@tamu-gisc/oidc/admin/data-access';
+import { IClientData } from '@tamu-gisc/oidc/common';
 
 @Component({
   selector: 'tamu-gisc-view-client',
@@ -29,23 +30,4 @@ export class ViewClientComponent implements OnInit {
       toArray()
     );
   }
-}
-
-export interface IClientData {
-  application_type: string;
-  grant_types: string[];
-  id_token_signed_response_alg: string;
-  post_logoout_redirect_uris: string[];
-  require_auth_time: boolean;
-  response_types: string[];
-  subject_type: string;
-  token_endpoint_auth_method: string;
-  revocation_endpoint_auth_method: string;
-  backchannel_logout_session_required: boolean;
-  require_signed_request_object: boolean;
-  request_uris: string[];
-  client_id_issued_at: number;
-  client_id: string;
-  client_name: string;
-  redirect_uris: string[];
 }

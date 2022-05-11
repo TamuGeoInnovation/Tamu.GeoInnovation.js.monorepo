@@ -15,6 +15,9 @@ export * from './services/client-metadata/client-metadata.service';
 export * from './services/role/role.service';
 export * from './services/user/user.service';
 
+// types
+export * from './types/types';
+
 // utils
 export * from './utils/web/url-utils';
 export * from './utils/web/jwt.util';
