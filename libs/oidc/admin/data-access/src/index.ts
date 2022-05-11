@@ -8,3 +8,4 @@ export * from './lib/modules/response-types/response-types.service';
 export * from './lib/modules/token-auth-methods/token-auth-methods.service';
 export * from './lib/modules/client/client.service';
 export * from './lib/modules/users/users.service';
+export * from './lib/modules/user-role/user-role.service';

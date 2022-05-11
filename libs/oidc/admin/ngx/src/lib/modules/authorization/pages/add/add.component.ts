@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { map, mergeMap, Observable, toArray } from 'rxjs';
 
 import { Role, User } from '@tamu-gisc/oidc/common';
-import { ClientService, RolesService, UsersService } from '@tamu-gisc/oidc/admin/data-access';
+import { ClientService, RolesService, UserRoleService, UsersService } from '@tamu-gisc/oidc/admin/data-access';
 
 import { IClientData } from '../../../clients/pages/view-client/view-client.component';
 
@@ -23,7 +23,8 @@ export class AddComponent implements OnInit {
   constructor(
     private readonly clientService: ClientService,
     private readonly roleService: RolesService,
-    private readonly userService: UsersService
+    private readonly userService: UsersService,
+    private readonly userRoleService: UserRoleService
   ) {}
 
   public ngOnInit() {
@@ -49,7 +50,15 @@ export class AddComponent implements OnInit {
   }
 
   public submit() {
-    console.log('Submitting...', this.form.getRawValue());
+    const ent = {
+      userGuid: this.form.controls.user.value,
+      role_id: this.form.controls.role.value,
+      client_id: this.form.controls.client.value
+    };
+
+    this.userRoleService.insertUserRole(ent).subscribe((result) => {
+      console.log('Updated', result);
+    });
   }
 }
 

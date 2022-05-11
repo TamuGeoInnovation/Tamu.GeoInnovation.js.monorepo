@@ -15,7 +15,9 @@ import {
   SecretQuestionRepo,
   SecretAnswerRepo,
   UserPasswordResetRepo,
-  UserPasswordHistoryRepo
+  UserPasswordHistoryRepo,
+  ClientRepo,
+  NewUserRoleRepo
 } from '../../entities/all.entity';
 
 @Module({
@@ -24,6 +26,8 @@ import {
       AccountRepo,
       UserRepo,
       RoleRepo,
+      ClientRepo,
+      NewUserRoleRepo,
       ClientMetadataRepo,
       SecretQuestionRepo,
       SecretAnswerRepo,

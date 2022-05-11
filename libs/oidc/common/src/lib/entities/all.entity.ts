@@ -937,6 +937,20 @@ export class Role extends GuidIdentity {
 @Entity({
   name: 'user_roles'
 })
+export class NewUserRole extends GuidIdentity {
+  @ManyToOne(() => Role, { eager: true })
+  public role: Role;
+
+  @ManyToOne(() => Client, { eager: true })
+  public client: Client;
+
+  @ManyToOne(() => User)
+  public user: User;
+}
+
+@Entity({
+  name: 'user_roles_old'
+})
 export class UserRole extends GuidIdentity {
   @ManyToOne(() => Role, { eager: true })
   public role: Role;
@@ -1223,9 +1237,14 @@ export class AccountRepo extends CommonRepo<Account> {}
 @EntityRepository(Role)
 export class RoleRepo extends CommonRepo<Role> {}
 
+@EntityRepository(Client)
+export class ClientRepo extends CommonRepo<Client> {}
+
 @EntityRepository(UserRole)
 export class UserRoleRepo extends CommonRepo<UserRole> {}
 
+@EntityRepository(NewUserRole)
+export class NewUserRoleRepo extends CommonRepo<NewUserRole> {}
 @EntityRepository(UserLogin)
 export class UserLoginRepo extends CommonRepo<UserLogin> {}
 

@@ -1,7 +1,9 @@
-import { HttpService } from '@nestjs/common';
+import { HttpService, UnprocessableEntityException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 
+import { DeepPartial } from 'typeorm';
 import { hash, compare } from 'bcrypt';
+import * as deepmerge from 'deepmerge';
 
 import { Mailer } from '../../utils/email/mailer.util';
 import { SHA1HashUtils } from '../../utils/security/sha1hash.util';
@@ -24,9 +26,11 @@ import {
   UserPasswordResetRepo,
   UserPasswordHistoryRepo,
   UserPasswordReset,
-  Role
+  Role,
+  ClientRepo,
+  NewUserRole,
+  NewUserRoleRepo
 } from '../../entities/all.entity';
-import * as deepmerge from 'deepmerge';
 
 @Injectable()
 export class UserService {
@@ -34,6 +38,8 @@ export class UserService {
     public readonly userRepo: UserRepo,
     public readonly accountRepo: AccountRepo,
     public readonly roleRepo: RoleRepo,
+    public readonly clientRepo: ClientRepo,
+    public readonly newUserRoleRepo: NewUserRoleRepo,
     public readonly clientMetadataRepo: ClientMetadataRepo,
     public readonly userRoleRepo: UserRoleRepo,
     public readonly questionRepo: SecretQuestionRepo,
@@ -64,7 +70,7 @@ export class UserService {
     });
 
     console.log('Admin userGuid:', entUser.guid);
-    await this.insertUserRole(entUser, adminRole, 'oidc-idp-admin');
+    await this.insertUserRoleOld(entUser, adminRole, 'oidc-idp-admin');
   }
 
   public async insertDefaultSecretQuestions() {
@@ -244,24 +250,62 @@ export class UserService {
   /**
    * Function that will set a user's role for a given clientId.
    */
-  public async insertUserRole(user: User, role: Role, clientName: string) {
-    const clients = await this.clientMetadataRepo.findAllShallow();
+  public async insertUserRoleOld(user: User, role: Role, clientName: string) {
+    // const clients = await this.clientMetadataRepo.findAllShallow();
+  }
 
-    const requestedClient = clients.find((value) => {
-      if (clientName === value.clientName) {
-        return value;
+  public async insertUserRole(body) {
+    const client = await this.clientRepo.findOne({
+      where: {
+        id: body.client_id
       }
     });
 
-    const newUserRole: Partial<UserRole> = {
-      role: role,
-      client: requestedClient,
-      user: user
+    if (!client) {
+      throw new UnprocessableEntityException('Must have valid client id');
+    }
+
+    const user = await this.userRepo.findOne({
+      where: {
+        guid: body.userGuid
+      }
+    });
+
+    if (!user) {
+      throw new UnprocessableEntityException('Must have valid user guid');
+    }
+
+    const role = await this.roleRepo.findOne({
+      where: {
+        guid: body.role_id
+      }
+    });
+
+    if (!role) {
+      throw new UnprocessableEntityException('Must have valid role guid');
+    }
+
+    // We should check to see if an existing user-role combination exists
+    const existingUserRole = await this.newUserRoleRepo.findOne({
+      where: {
+        client: client,
+        user: user,
+        role: role
+      }
+    });
+
+    if (existingUserRole) {
+      // We have an existing user-role combo
+      return;
+    }
+
+    const _userRole: DeepPartial<NewUserRole> = {
+      client: client,
+      user: user,
+      role: role
     };
 
-    const update = this.userRoleRepo.create(newUserRole);
-
-    return this.userRoleRepo.save(update);
+    return this.newUserRoleRepo.create(_userRole).save();
   }
 
   /**

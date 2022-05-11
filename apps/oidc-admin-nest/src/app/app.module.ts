@@ -20,7 +20,8 @@ import {
   RoleModule,
   UserModule,
   BackchannelLogoutUri,
-  Client
+  Client,
+  NewUserRole
 } from '@tamu-gisc/oidc/common';
 import { ClientModule, StatsModule } from '@tamu-gisc/oidc/admin/data-api';
 import { EnvironmentModule } from '@tamu-gisc/common/nest/environment';
@@ -49,7 +50,8 @@ import { dbConfig, environment } from '../environments/environment';
         User,
         UserModule,
         UserPasswordReset,
-        UserPasswordHistory
+        UserPasswordHistory,
+        NewUserRole
       ]
     }),
     ClientMetadataModule,

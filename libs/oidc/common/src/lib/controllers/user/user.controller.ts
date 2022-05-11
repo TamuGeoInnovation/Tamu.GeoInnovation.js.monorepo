@@ -8,17 +8,19 @@ import { AdminRoleGuard } from '@tamu-gisc/oidc/client';
 import { urlFragment, urlHas } from '../../utils/web/url-utils';
 import { User, UserRole } from '../../entities/all.entity';
 import { UserService } from '../../services/user/user.service';
+import { DeepPartial } from 'typeorm';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(AdminRoleGuard)
+  // @UseGuards()
   @Get('all')
   public async usersAllGet() {
-    return this.userService.userRepo.find({
-      relations: ['account', 'userRoles']
-    });
+    // return this.userService.userRepo.find({
+    //   relations: ['account', 'userRoles']
+    // });
+    return this.userService.userRepo.find();
   }
 
   @UseGuards(AdminRoleGuard)
@@ -239,27 +241,33 @@ export class UserController {
    * Assigns a role to a user for a particular clientId.
    * Will save newly created UserRole entity object
    */
+  // TODO: REMOVE ME - Aaron H (5/10/22)
+  // @Post('role/api')
+  // public async addUserRolePost(@Body() body, @Req() req: Request) {
+  //   const { email } = body;
+
+  //   const existingUser = await this.userService.userRepo.findOne({
+  //     where: {
+  //       email: email
+  //     }
+  //   });
+
+  //   if (existingUser) {
+  //     const roles = await this.userService.roleRepo.find();
+
+  //     const requestedRole = roles.find((value) => {
+  //       if (req.body.role.level === Number(value.level)) {
+  //         return value;
+  //       }
+  //     });
+
+  //     await this.userService.insertUserRole(existingUser, requestedRole, body.client.name);
+  //   }
+  // }
+
   @Post('role/api')
-  public async addUserRolePost(@Body() body, @Req() req: Request) {
-    const { email } = body;
-
-    const existingUser = await this.userService.userRepo.findOne({
-      where: {
-        email: email
-      }
-    });
-
-    if (existingUser) {
-      const roles = await this.userService.roleRepo.find();
-
-      const requestedRole = roles.find((value) => {
-        if (req.body.role.level === Number(value.level)) {
-          return value;
-        }
-      });
-
-      await this.userService.insertUserRole(existingUser, requestedRole, body.client.name);
-    }
+  public async addUserRole(@Body() body) {
+    return this.userService.insertUserRole(body);
   }
 
   @Get('pwr')
