@@ -7,10 +7,14 @@ import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
   providedIn: 'root'
 })
 export class UserRoleService {
-  public resource: string;
+  private resource: string;
 
   constructor(private env: EnvironmentService, private http: HttpClient) {
     this.resource = this.env.value('api_url') + '/user';
+  }
+
+  public getAllUserRoles() {
+    return this.http.get<Array<Partial<any>>>(`${this.resource}/user-role`);
   }
 
   public insertUserRole(entity) {

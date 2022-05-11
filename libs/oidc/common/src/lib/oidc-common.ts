@@ -5,7 +5,7 @@ export * from './entities/all.entity';
 export * from './controllers/secret-question/secret-question.controller';
 
 // modules
-export * from './modules/client-metadata/client-metadata.module';
+export * from './modules/user-role/user-role.module';
 export * from './modules/role/role.module';
 export * from './modules/user/user.module';
 

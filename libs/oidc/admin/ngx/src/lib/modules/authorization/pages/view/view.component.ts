@@ -1,15 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Observable } from 'rxjs';
+
+import { UserRoleService } from '@tamu-gisc/oidc/admin/data-access';
+import { NewUserRole } from '@tamu-gisc/oidc/common';
+
 @Component({
   selector: 'tamu-gisc-view',
   templateUrl: './view.component.html',
   styleUrls: ['./view.component.scss']
 })
 export class ViewComponent implements OnInit {
+  public $userRoles: Observable<Array<Partial<any>>>;
 
-  constructor() { }
+  constructor(private readonly userRoleService: UserRoleService) {}
 
-  ngOnInit(): void {
+  public ngOnInit() {
+    this.$userRoles = this.userRoleService.getAllUserRoles();
   }
-
 }
+

@@ -16,12 +16,12 @@ import {
   SecretAnswer,
   UserPasswordReset,
   UserPasswordHistory,
-  ClientMetadataModule,
   RoleModule,
   UserModule,
   BackchannelLogoutUri,
   Client,
-  NewUserRole
+  NewUserRole,
+  UserRoleModule
 } from '@tamu-gisc/oidc/common';
 import { ClientModule, StatsModule } from '@tamu-gisc/oidc/admin/data-api';
 import { EnvironmentModule } from '@tamu-gisc/common/nest/environment';
@@ -54,11 +54,11 @@ import { dbConfig, environment } from '../environments/environment';
         NewUserRole
       ]
     }),
-    ClientMetadataModule,
     RoleModule,
     StatsModule,
     ClientModule,
-    UserModule
+    UserModule,
+    UserRoleModule
   ],
   controllers: [],
   providers: []
