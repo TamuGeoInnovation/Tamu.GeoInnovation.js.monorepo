@@ -1,8 +1,9 @@
 import { sign, decode, Secret } from 'jsonwebtoken';
 
+// TODO: Can remove this - Aaron H (5/12/22)
 export class JwtUtil {
   public static generateLogoutToken(id_token_hint: string, passphrase: string) {
-    const decoded: IDecoded = decode(id_token_hint);
+    const decoded: IDecoded = decode(id_token_hint) as any;
 
     const logoutTokenUncrypted = {
       iss: decoded.iss,

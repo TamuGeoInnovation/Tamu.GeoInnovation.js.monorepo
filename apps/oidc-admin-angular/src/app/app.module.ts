@@ -8,7 +8,7 @@ import * as WebFont from 'webfontloader';
 import { AuthModule, AuthInterceptor, AutoLoginPartialRoutesGuard, LogLevel } from 'angular-auth-oidc-client';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { AuthenticationGuard, AuthRoutingModule } from '@tamu-gisc/oidc/ngx';
+import { AuthenticationGuard, AuthorizationGuard, AuthRoutingModule } from '@tamu-gisc/oidc/ngx';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
@@ -23,7 +23,7 @@ const routes: Routes = [
   {
     path: 'stats',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.StatsModule),
-    canActivate: [AutoLoginPartialRoutesGuard, AuthenticationGuard]
+    canActivate: [AutoLoginPartialRoutesGuard, AuthorizationGuard]
   },
   {
     path: 'users',
