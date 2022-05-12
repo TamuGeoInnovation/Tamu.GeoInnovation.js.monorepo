@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { JwtGuard } from '@tamu-gisc/oidc/common';
 
 import {
   CreateParticipantForWorkshopDto,
@@ -16,16 +17,19 @@ export class ParticipantsController {
     return this.service.getParticipantsForWorkshop(dto);
   }
 
+  @UseGuards(JwtGuard)
   @Post('workshop')
   public createParticipantForWorkshop(@Body() dto: CreateParticipantForWorkshopDto) {
     return this.service.createParticipantForWorkshop(dto);
   }
 
+  @UseGuards(JwtGuard)
   @Patch()
   public updateParticipantName(@Body() dto: UpdateParticipantDto) {
     return this.service.updateParticipant(dto);
   }
 
+  @UseGuards(JwtGuard)
   @Delete(':participantGuid')
   public deleteParticipant(@Param() dto: DeleteParticipantDto) {
     return this.service.deleteParticipant(dto);

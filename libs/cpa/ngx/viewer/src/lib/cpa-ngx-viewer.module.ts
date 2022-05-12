@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { AutoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
+
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 import { SidebarModule } from '@tamu-gisc/common/ngx/ui/sidebar';
 import { LayerListComponent, LayerListModule } from '@tamu-gisc/maps/feature/layer-list';
@@ -45,7 +47,8 @@ const routes: Routes = [
       },
       {
         path: 'controls',
-        component: EventControlsComponent
+        component: EventControlsComponent,
+        canActivate: [AutoLoginPartialRoutesGuard]
       }
     ]
   }

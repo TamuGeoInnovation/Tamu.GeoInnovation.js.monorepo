@@ -1,7 +1,8 @@
-import { Controller, Patch, Param, Body, Delete, Get, Post } from '@nestjs/common';
+import { Controller, Patch, Param, Body, Delete, Get, Post, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { Snapshot } from '@tamu-gisc/cpa/common/entities';
+import { JwtGuard } from '@tamu-gisc/oidc/common';
 
 import { BaseController } from '../base/base.controller';
 import { SnapshotsService } from './snapshots.service';
@@ -43,6 +44,7 @@ export class SnapshotsController extends BaseController<Snapshot> {
     return this.service.getMany(where);
   }
 
+  @UseGuards(JwtGuard)
   @Post('copy')
   public async createSnapshotCopy(@Body() body: { guid: string }) {
     return await this.service.createSnapshotCopy(body.guid);
@@ -51,6 +53,7 @@ export class SnapshotsController extends BaseController<Snapshot> {
   /**
    * Updates an existing snapshot
    */
+  @UseGuards(JwtGuard)
   @Patch(':guid')
   public async update(@Param() params: ISnapshotPartial, @Body() body: ISnapshotPartial) {
     return await this.service.updateSnapshot(params, body);
@@ -59,6 +62,7 @@ export class SnapshotsController extends BaseController<Snapshot> {
   /**
    * Deletes an existing snapshot
    */
+  @UseGuards(JwtGuard)
   @Delete(':guid')
   public async delete(@Param() params: ISnapshotPartial) {
     return await this.service.deleteSnapshot(params);

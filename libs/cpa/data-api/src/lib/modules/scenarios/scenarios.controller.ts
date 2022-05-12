@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 
 import { Scenario, CPALayer } from '@tamu-gisc/cpa/common/entities';
+import { JwtGuard } from '@tamu-gisc/oidc/common';
 
 import { BaseController } from '../base/base.controller';
 import { ScenariosService } from './scenarios.service';
@@ -49,6 +50,7 @@ export class ScenariosController extends BaseController<Scenario> {
   /**
    * Updates an existing scenario
    */
+  @UseGuards(JwtGuard)
   @Patch(':guid')
   public async update(@Param() params: Scenario, @Body() body: IScenarioPartial) {
     const result = await this.service.updateScenario(params.guid, body);
@@ -59,6 +61,7 @@ export class ScenariosController extends BaseController<Scenario> {
   /**
    * Deletes an existing scenario
    */
+  @UseGuards(JwtGuard)
   @Delete(':guid')
   public async delete(@Param() params: Scenario) {
     return await this.service.repository.delete({ guid: params.guid });
