@@ -18,14 +18,16 @@ import {
   WorkshopContext,
   Participant
 } from '@tamu-gisc/cpa/common/entities';
+import { AuthModule } from '@tamu-gisc/oidc/common';
 
-import { config } from '../environments/environment';
+import * as env from '../environments/environment';
 
 const entities = [Workshop, Snapshot, WorkshopSnapshot, Response, WorkshopScenario, Scenario, WorkshopContext, Participant];
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({ ...config, entities }),
+    TypeOrmModule.forRoot({ ...env.config, entities }),
+    AuthModule.forRoot({ jwksUrl: env.jwksUrl }),
     WorkshopsModule,
     SnapshotsModule,
     ResponsesModule,

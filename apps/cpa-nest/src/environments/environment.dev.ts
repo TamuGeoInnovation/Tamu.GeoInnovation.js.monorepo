@@ -7,3 +7,4 @@ export const environment = {
 };
 
 export const config = c;
+export const jwksUrl = 'https://idp-dev.geoservices.tamu.edu/oidc/jwks';
