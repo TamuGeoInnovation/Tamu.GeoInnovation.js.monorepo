@@ -21,7 +21,7 @@ In a root module of a NestJS application, import the `AuthModule` and provide th
 ```js
 import { Module } from '@nestjs/common';
 
-import { AuthModule } from '@tamu-gisc/common/oidc';
+import { AuthModule } from '@tamu-gisc/oidc/common';
 
 import * as env from '../environments/environment';
 
@@ -35,7 +35,7 @@ This configuration takes care of initializing passport and registering a global 
 
 ## Utilization
 
-Apply the `JwtGuard` to any endpoints that should require a validated against the registered `AuthModule` public keys endpoint.
+Apply the `JwtGuard` to any endpoints that should be validated against the registered `AuthModule` public keys endpoint.
 
 ```js
 import { Controller, Get, UseGuards } from '@nestjs/common';
