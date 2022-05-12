@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 
 import * as WebFont from 'webfontloader';
 import { Angulartics2Module } from 'angulartics2';
-import { AuthModule, AutoLoginPartialRoutesGuard, LogLevel } from 'angular-auth-oidc-client';
+import { AuthInterceptor, AuthModule, AutoLoginPartialRoutesGuard, LogLevel } from 'angular-auth-oidc-client';
 
 import { NotificationModule } from '@tamu-gisc/common/ngx/ui/notification';
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
@@ -55,7 +55,8 @@ const routes: Routes = [
         silentRenew: true,
         useRefreshToken: true,
         logLevel: environment.environment.production ? LogLevel.None : LogLevel.Debug,
-        autoUserInfo: false
+        autoUserInfo: false,
+        secureRoutes: [environment.api_url]
       }
     }),
     RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
@@ -71,6 +72,11 @@ const routes: Routes = [
     {
       provide: env,
       useValue: environment
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
     }
   ],
   bootstrap: [AppComponent]
