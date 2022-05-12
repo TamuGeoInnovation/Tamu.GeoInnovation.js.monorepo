@@ -5,8 +5,6 @@ export * from './lib/modules/clients/pages/view-client/view-client.component';
 export * from './lib/modules/stats/stats.component';
 export * from './lib/modules/users/users.component';
 export * from './lib/modules/roles/roles.component';
-export * from './lib/modules/client-metadata/client-metadata.component';
-export * from './lib/modules/grant-types/grant-types.component';
 export * from './lib/modules/users/edit-users/detail-user/detail-user.component';
 
 // Modules

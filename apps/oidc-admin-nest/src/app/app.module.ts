@@ -25,12 +25,14 @@ import {
 } from '@tamu-gisc/oidc/common';
 import { ClientModule, StatsModule } from '@tamu-gisc/oidc/admin/data-api';
 import { EnvironmentModule } from '@tamu-gisc/common/nest/environment';
+import { AuthModule } from '@tamu-gisc/oidc/common';
 
 import { dbConfig, environment } from '../environments/environment';
 
 @Module({
   imports: [
     EnvironmentModule.forRoot(environment),
+    AuthModule.forRoot({ jwksUrl: environment.jwksUrl }),
     TypeOrmModule.forRoot({
       ...dbConfig,
       entities: [

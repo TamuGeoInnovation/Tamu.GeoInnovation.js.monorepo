@@ -3,8 +3,8 @@ export const environment = {
   port: 27000,
   globalPrefix: '',
   allowedOrigins: ['http://localhost:4200'],
-  // jwksEndpoint: 'https://idp-dev.geoservices.tamu.edu/oidc/jwks'
-  jwksEndpoint: 'http://localhost:4001/oidc/jwks'
+  // jwksUrl: 'https://idp-dev.geoservices.tamu.edu/oidc/jwks'
+  jwksUrl: 'http://localhost:4001/oidc/jwks'
 };
 
 export { localDbConfig as dbConfig } from './ormconfig';
