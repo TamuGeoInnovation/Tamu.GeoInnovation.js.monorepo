@@ -102,6 +102,7 @@
     "papaparse": "^5.3.0",
     "passport": "^0.4.1",
     "passport-http-bearer": "^1.0.1",
+    "passport-jwt": "^4.0.0",
     "qrcode": "^1.4.4",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
