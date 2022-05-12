@@ -1,7 +1,53 @@
-# oidc-common
+# TAMU GISC OIDC Common
 
-This library was generated with [Nx](https://nx.dev).
+This library contains a series of utilities used in the OIDC provider NestJS application and some more generic authentication utilities for use in back-end data NestJS-based data API's .
 
-## Running unit tests
+## Library Scope
 
-Run `ng test oidc-common` to execute the unit tests via [Jest](https://jestjs.io).
+`@tamu-gisc/oidc/common`
+
+### Modules
+
+- AuthModule
+
+### Guards
+
+- JwtGuard
+
+## Setup
+
+In a root module of a NestJS application, import the `AuthModule` and provide the OIDC JWKS endpoint using the `forRoot` static method.
+
+```js
+import { Module } from '@nestjs/common';
+
+import { AuthModule } from '@tamu-gisc/common/oidc';
+
+import * as env from '../environments/environment';
+
+@Module({
+  imports: [AuthModule.forRoot({ jwksUrl: env.jwksUrl })]
+})
+export class AppModule {}
+```
+
+This configuration takes care of initializing passport and registering a global JWT passport strategy that is implemented by the `JwtGuard`.
+
+## Utilization
+
+Apply the `JwtGuard` to any endpoints that should require a validated against the registered `AuthModule` public keys endpoint.
+
+```js
+import { Controller, Get, UseGuards } from '@nestjs/common';
+
+import { JwtGuard } from '@tamu-gisc/oidc/common';
+
+@Controller('puppies')
+export class PuppiesController {
+  @UseGuards(JwtGuard)
+  @Get('')
+  public getAllPuppies() {
+    return [...] // Returns list of adorable puppies
+  }
+}
+```
