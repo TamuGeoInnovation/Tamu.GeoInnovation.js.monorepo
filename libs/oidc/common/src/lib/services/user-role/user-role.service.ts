@@ -27,9 +27,6 @@ export class UserRoleService {
   }
 
   public getAll() {
-    // return this.userRoleRepo.find({
-    //   relations: ['role', 'client', 'user', 'user.account']
-    // });
     return from(
       this.userRoleRepo.find({
         relations: ['role', 'client', 'user', 'user.account']
@@ -98,16 +95,19 @@ export class UserRoleService {
     const existingUserRole = await this.userRoleRepo.findOne({
       where: {
         client: client,
-        user: user,
-        role: role
+        user: user
+        // Don't check for role here so we can update an existing role for a defined user-client combo
       }
     });
 
     if (existingUserRole) {
-      // We have an existing user-role combo
-      return;
+      // We have an existing user-client combo, update the role
+      existingUserRole.role = role;
+
+      return existingUserRole.save();
     }
 
+    // Existing user-combo combo not found, create with role save
     const _userRole: DeepPartial<NewUserRole> = {
       client: client,
       user: user,
