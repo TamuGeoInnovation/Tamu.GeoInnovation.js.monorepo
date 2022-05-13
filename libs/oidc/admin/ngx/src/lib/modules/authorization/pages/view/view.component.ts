@@ -16,7 +16,6 @@ export class ViewComponent implements OnInit {
   constructor(private readonly userRoleService: UserRoleService) {}
 
   public ngOnInit() {
-    this.$userRoles = this.userRoleService.getAllUserRoles();
+    this.$userRoles = this.userRoleService.getAll();
   }
 }
-

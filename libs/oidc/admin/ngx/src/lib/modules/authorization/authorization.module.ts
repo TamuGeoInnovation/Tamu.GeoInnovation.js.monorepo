@@ -20,11 +20,11 @@ const routes: Routes = [
       {
         path: 'add',
         loadChildren: () => import('./pages/add/add.module').then((m) => m.AddModule)
+      },
+      {
+        path: 'edit',
+        loadChildren: () => import('./pages/edit/edit.module').then((m) => m.EditModule)
       }
-      // {
-      //   path: 'edit',
-      //   loadChildren: () => import('./pages/edit-client/edit-client.module').then((m) => m.EditClientModule)
-      // }
     ]
   }
 ];
@@ -35,4 +35,3 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AuthorizationModule {}
-

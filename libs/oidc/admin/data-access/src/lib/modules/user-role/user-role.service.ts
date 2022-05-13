@@ -14,11 +14,15 @@ export class UserRoleService {
     this.resource = this.env.value('api_url') + '/user-role';
   }
 
-  public getAllUserRoles() {
+  public getAll() {
     return this.http.get<Array<Partial<ISimplifiedUserRoleResponse>>>(`${this.resource}`);
   }
 
-  public insertUserRole(entity) {
+  public insert(entity) {
     return this.http.post(`${this.resource}`, entity);
+  }
+
+  public delete(guid) {
+    return this.http.delete(`${this.resource}/${guid}`);
   }
 }

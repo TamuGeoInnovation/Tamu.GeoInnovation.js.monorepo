@@ -36,6 +36,7 @@ export class UserRoleService {
       map((userRole) => {
         const clientData = JSON.parse(userRole.client.data);
         const ret: ISimplifiedUserRoleResponse = {
+          guid: userRole.guid,
           role: {
             level: userRole.role.level,
             name: userRole.role.name
@@ -115,5 +116,15 @@ export class UserRoleService {
     };
 
     return this.userRoleRepo.create(_userRole).save();
+  }
+
+  public async delete(guid) {
+    const userRole = await this.userRoleRepo.findOne({
+      where: {
+        guid
+      }
+    });
+
+    return userRole.remove();
   }
 }

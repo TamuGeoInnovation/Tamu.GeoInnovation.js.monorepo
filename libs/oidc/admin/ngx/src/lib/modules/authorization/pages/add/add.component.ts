@@ -54,9 +54,8 @@ export class AddComponent implements OnInit {
       client_id: this.form.controls.client.value
     };
 
-    this.userRoleService.insertUserRole(ent).subscribe((result) => {
+    this.userRoleService.insert(ent).subscribe((result) => {
       console.log('Updated', result);
     });
   }
 }
-

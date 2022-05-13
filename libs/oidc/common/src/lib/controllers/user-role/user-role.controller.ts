@@ -1,16 +1,12 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 
+import { AdminGuard } from '../../guards/admin/admin.guard';
 import { UserRoleService } from '../../services/user-role/user-role.service';
 
 @Controller('user-role')
+@UseGuards(AdminGuard)
 export class UserRoleController {
   constructor(private readonly userRoleService: UserRoleService) {}
-
-  // TODO: DON'T FORGET TO REMOVE ME - Aaron H (5/11/22)
-  @Get('test')
-  public getOne() {
-    return this.userRoleService.getRoles('eeb5f6b3-417b-4328-a447-41eafadf991f');
-  }
 
   @Get()
   public getAll() {
@@ -20,5 +16,10 @@ export class UserRoleController {
   @Post()
   public postUserRole(@Body() body) {
     return this.userRoleService.insertUserRole(body);
+  }
+
+  @Delete(':guid')
+  public async delete(@Param('guid') guid) {
+    return this.userRoleService.delete(guid);
   }
 }
