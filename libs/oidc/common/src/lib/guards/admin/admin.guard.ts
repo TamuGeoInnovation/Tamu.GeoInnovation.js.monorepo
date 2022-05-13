@@ -6,6 +6,9 @@ import { IAuthorizationGuardUser } from '../../oidc-common';
 
 @Injectable()
 export class AdminGuard extends AuthGuard('jwt') {
+  private ADMIN_LEVEL = '99';
+
+  // TODO: We may not need the EnvironmentService here after all - Aaron H (5/13/22)
   constructor(private readonly env: EnvironmentService) {
     super();
   }
@@ -22,13 +25,13 @@ export class AdminGuard extends AuthGuard('jwt') {
     }
 
     const roles = (user as IAuthorizationGuardUser)?.roles;
-    roles.forEach((role) => {
-      if (role.id !== user.client_id || role.level !== '99') {
-        throw new UnauthorizedException();
-      }
-    });
+    const canProceed = roles.some((role) => role.id === user.client_id && role.level === this.ADMIN_LEVEL);
 
-    return user;
+    if (canProceed) {
+      return user;
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 }
 
