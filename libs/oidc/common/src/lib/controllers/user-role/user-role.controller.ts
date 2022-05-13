@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 
 import { UserRoleService } from '../../services/user-role/user-role.service';
 
@@ -16,5 +16,9 @@ export class UserRoleController {
   public getAll() {
     return this.userRoleService.getAll();
   }
-}
 
+  @Post()
+  public postUserRole(@Body() body) {
+    return this.userRoleService.insertUserRole(body);
+  }
+}

@@ -31,3 +31,17 @@ export interface IClientData {
   client_name: string;
   redirect_uris: string[];
 }
+
+// TODO: Change role type to proper type - Aaron H (5/12/22)
+export interface IAuthorizationGuardUser {
+  jti: string;
+  sub: string;
+  scope: string;
+  client_id: string;
+  iss: string;
+  aud: string;
+  roles: Array<{
+    id: string;
+    level: string;
+  }>;
+}

@@ -6,7 +6,7 @@ import { JwksClient } from 'jwks-rsa';
 import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
 
 @Injectable()
-export class AuthorizationGuard implements CanActivate {
+export class OldAuthorizationGuard implements CanActivate {
   constructor(private readonly env: EnvironmentService) {}
 
   public async canActivate(context: ExecutionContext) {

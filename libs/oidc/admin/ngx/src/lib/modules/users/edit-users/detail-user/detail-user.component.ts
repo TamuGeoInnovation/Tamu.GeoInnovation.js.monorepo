@@ -5,12 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, forkJoin } from 'rxjs';
 import { debounceTime, takeUntil, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
 
-import {
-  UsersService,
-  ClientMetadataService,
-  RolesService,
-  IClientMetadataResponse
-} from '@tamu-gisc/oidc/admin/data-access';
+import { UsersService, RolesService } from '@tamu-gisc/oidc/admin/data-access';
 import { User, Role, INewRole } from '@tamu-gisc/oidc/common';
 
 @Component({
@@ -23,7 +18,7 @@ export class DetailUserComponent implements OnInit, OnDestroy {
   public $user: Observable<Partial<User>>;
   public roleForm: FormGroup;
   public userForm: FormGroup;
-  public $clients: Observable<Array<Partial<IClientMetadataResponse>>>;
+  // public $clients: Observable<Array<Partial<IClientMetadataResponse>>>;
   public $roles: Observable<Array<Partial<Role>>>;
   private _$destroy: Subject<boolean> = new Subject();
 
@@ -31,7 +26,7 @@ export class DetailUserComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private userService: UsersService,
-    private clientMetadataService: ClientMetadataService,
+    // private clientMetadataService: ClientMetadataService,
     private roleService: RolesService
   ) {}
 
@@ -81,30 +76,30 @@ export class DetailUserComponent implements OnInit, OnDestroy {
     // We're gonna initialize this after we have the clients and the user. We'll initialize the form group there
     // with all of the controls pre-prepared, so that it only emits once at most at the beginning.
     this.$roles = this.roleService.getRoles().pipe(shareReplay(1));
-    this.$clients = this.clientMetadataService.getClientMetadatas();
+    // this.$clients = this.clientMetadataService.getClientMetadatas();
     this.$user = this.userService.getUser(this.userGuid).pipe(shareReplay(1));
 
     // TOD: Remove eslint disable when the below TODO is completed.
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    forkJoin([this.$clients, this.$user]).subscribe(([clients, user]) => {
-      // Setup a scoped group, to which we'll append the roles to. Once all controls are added to this
-      // scoped group, we'll initialize this.roleForm.
-      const group = this.fb.group({
-        userGuid: [user.guid]
-      });
+    // forkJoin([this.$clients, this.$user]).subscribe(([clients, user]) => {
+    //   // Setup a scoped group, to which we'll append the roles to. Once all controls are added to this
+    //   // scoped group, we'll initialize this.roleForm.
+    //   const group = this.fb.group({
+    //     userGuid: [user.guid]
+    //   });
 
-      // TODO: This was disabled temporarily so we can build the project and use CI/CD for oidc-provider-nest  - Aaron H (3/15/22)
-      // clients.forEach((client) => {
-      //   const value = user.userRoles.find((role) => {
-      //     return role.client.guid === client.guid;
-      //   });
-      //   group.addControl(`${client.clientName}`, this.fb.control(value !== undefined ? value.role.guid : 'undefined'));
-      // });
+    //   // TODO: This was disabled temporarily so we can build the project and use CI/CD for oidc-provider-nest  - Aaron H (3/15/22)
+    //   // clients.forEach((client) => {
+    //   //   const value = user.userRoles.find((role) => {
+    //   //     return role.client.guid === client.guid;
+    //   //   });
+    //   //   group.addControl(`${client.clientName}`, this.fb.control(value !== undefined ? value.role.guid : 'undefined'));
+    //   // });
 
-      this.roleForm = group;
+    //   this.roleForm = group;
 
-      this.registerRoleChanges();
-    });
+    //   this.registerRoleChanges();
+    // });
 
     if (this.route.snapshot.params.userGuid) {
       this.$user.subscribe((user) => {
@@ -133,7 +128,7 @@ export class DetailUserComponent implements OnInit, OnDestroy {
     this.roleForm.valueChanges
       .pipe(
         debounceTime(500),
-        withLatestFrom(this.$clients),
+        // withLatestFrom(this.$clients),
         switchMap(([formValue, clients]) => {
           const formRoles = this.roleForm.getRawValue();
           const newRoles: INewRole[] = Object.entries(formRoles).reduce((acc, [key, value]) => {

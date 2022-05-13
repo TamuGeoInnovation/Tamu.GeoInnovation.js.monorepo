@@ -1,4 +1,17 @@
-import { Controller, Get, Param, Req, Res, Post, HttpException, HttpStatus, Body, UseGuards, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Req,
+  Res,
+  Post,
+  HttpException,
+  HttpStatus,
+  Body,
+  UseGuards,
+  Delete,
+  UnprocessableEntityException
+} from '@nestjs/common';
 
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
@@ -242,32 +255,28 @@ export class UserController {
    * Will save newly created UserRole entity object
    */
   // TODO: REMOVE ME - Aaron H (5/10/22)
-  // @Post('role/api')
-  // public async addUserRolePost(@Body() body, @Req() req: Request) {
-  //   const { email } = body;
-
-  //   const existingUser = await this.userService.userRepo.findOne({
-  //     where: {
-  //       email: email
-  //     }
-  //   });
-
-  //   if (existingUser) {
-  //     const roles = await this.userService.roleRepo.find();
-
-  //     const requestedRole = roles.find((value) => {
-  //       if (req.body.role.level === Number(value.level)) {
-  //         return value;
-  //       }
-  //     });
-
-  //     await this.userService.insertUserRole(existingUser, requestedRole, body.client.name);
-  //   }
-  // }
-
   @Post('role/api')
-  public async addUserRole(@Body() body) {
-    return this.userService.insertUserRole(body);
+  public async addUserRolePost(@Body() body, @Req() req: Request) {
+    const { email } = body;
+
+    const existingUser = await this.userService.userRepo.findOne({
+      where: {
+        email: email
+      }
+    });
+
+    if (existingUser) {
+      const roles = await this.userService.roleRepo.find();
+
+      const requestedRole = roles.find((value) => {
+        if (req.body.role.level === Number(value.level)) {
+          return value;
+        }
+      });
+
+      // await this.userService.insertUserRole(existingUser, requestedRole, body.client.name);
+      return new UnprocessableEntityException();
+    }
   }
 
   @Get('pwr')

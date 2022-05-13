@@ -254,60 +254,6 @@ export class UserService {
     // const clients = await this.clientMetadataRepo.findAllShallow();
   }
 
-  public async insertUserRole(body) {
-    const client = await this.clientRepo.findOne({
-      where: {
-        id: body.client_id
-      }
-    });
-
-    if (!client) {
-      throw new UnprocessableEntityException('Must have valid client id');
-    }
-
-    const user = await this.userRepo.findOne({
-      where: {
-        guid: body.userGuid
-      }
-    });
-
-    if (!user) {
-      throw new UnprocessableEntityException('Must have valid user guid');
-    }
-
-    const role = await this.roleRepo.findOne({
-      where: {
-        guid: body.role_id
-      }
-    });
-
-    if (!role) {
-      throw new UnprocessableEntityException('Must have valid role guid');
-    }
-
-    // We should check to see if an existing user-role combination exists
-    const existingUserRole = await this.newUserRoleRepo.findOne({
-      where: {
-        client: client,
-        user: user,
-        role: role
-      }
-    });
-
-    if (existingUserRole) {
-      // We have an existing user-role combo
-      return;
-    }
-
-    const _userRole: DeepPartial<NewUserRole> = {
-      client: client,
-      user: user,
-      role: role
-    };
-
-    return this.newUserRoleRepo.create(_userRole).save();
-  }
-
   /**
    * Function used to insert a series of secret questions
    */

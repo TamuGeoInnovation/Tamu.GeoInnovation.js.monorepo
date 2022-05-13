@@ -1,13 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 
 import { from, groupBy, map, mergeMap, toArray } from 'rxjs';
+import { DeepPartial } from 'typeorm';
 
-import { NewUserRoleRepo } from '../../oidc-common';
+import { ClientRepo, NewUserRole, NewUserRoleRepo, RoleRepo, UserRepo } from '../../oidc-common';
 import { ISimplifiedUserRoleResponse } from '../../types/types';
 
 @Injectable()
 export class UserRoleService {
-  constructor(private readonly userRoleRepo: NewUserRoleRepo) {}
+  constructor(
+    private readonly userRoleRepo: NewUserRoleRepo,
+    private readonly clientRepo: ClientRepo,
+    private readonly roleRepo: RoleRepo,
+    private readonly userRepo: UserRepo
+  ) {}
 
   public getRoles(accountGuid) {
     return this.userRoleRepo
@@ -56,5 +62,58 @@ export class UserRoleService {
       toArray()
     );
   }
-}
 
+  public async insertUserRole(body) {
+    const client = await this.clientRepo.findOne({
+      where: {
+        id: body.client_id
+      }
+    });
+
+    if (!client) {
+      throw new UnprocessableEntityException('Must have valid client id');
+    }
+
+    const user = await this.userRepo.findOne({
+      where: {
+        guid: body.userGuid
+      }
+    });
+
+    if (!user) {
+      throw new UnprocessableEntityException('Must have valid user guid');
+    }
+
+    const role = await this.roleRepo.findOne({
+      where: {
+        guid: body.role_id
+      }
+    });
+
+    if (!role) {
+      throw new UnprocessableEntityException('Must have valid role guid');
+    }
+
+    // We should check to see if an existing user-role combination exists
+    const existingUserRole = await this.userRoleRepo.findOne({
+      where: {
+        client: client,
+        user: user,
+        role: role
+      }
+    });
+
+    if (existingUserRole) {
+      // We have an existing user-role combo
+      return;
+    }
+
+    const _userRole: DeepPartial<NewUserRole> = {
+      client: client,
+      user: user,
+      role: role
+    };
+
+    return this.userRoleRepo.create(_userRole).save();
+  }
+}

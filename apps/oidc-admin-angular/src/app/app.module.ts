@@ -8,7 +8,7 @@ import * as WebFont from 'webfontloader';
 import { AuthModule, AuthInterceptor, AutoLoginPartialRoutesGuard, LogLevel } from 'angular-auth-oidc-client';
 
 import { EnvironmentModule, env } from '@tamu-gisc/common/ngx/environment';
-import { AuthenticationGuard, AuthorizationGuard, AuthRoutingModule } from '@tamu-gisc/oidc/ngx';
+import { AuthenticationGuard, AuthRoutingModule } from '@tamu-gisc/oidc/ngx';
 import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
@@ -23,7 +23,7 @@ const routes: Routes = [
   {
     path: 'stats',
     loadChildren: () => import('@tamu-gisc/oidc/admin/ngx').then((m) => m.StatsModule),
-    canActivate: [AutoLoginPartialRoutesGuard, AuthorizationGuard]
+    canActivate: [AutoLoginPartialRoutesGuard]
   },
   {
     path: 'users',
@@ -67,7 +67,7 @@ export function getHighlightLanguages() {
       config: {
         authority: environment.idp_url,
         redirectUrl: window.location.origin + '/auth/callback',
-        // secureRoutes: ['http://localhost/clients'],
+        secureRoutes: [environment.api_url],
         postLogoutRedirectUri: window.location.origin,
         clientId: environment.client_id,
         scope: 'openid offline_access profile email',

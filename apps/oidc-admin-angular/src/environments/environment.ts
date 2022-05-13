@@ -7,7 +7,7 @@ export const environment = {
   api_url: 'http://localhost:27000'
 };
 
-export const client_id = 'xKuUvvUMWiZriHCbWneK6';
+export const client_id = 'zuexi9o0GyCdlyVok9Xp4';
 export const api_url = 'http://localhost:27000';
 // export const idp_url = 'https://idp-dev.geoservices.tamu.edu/oidc';
 export const idp_url = 'http://localhost:4001/oidc';

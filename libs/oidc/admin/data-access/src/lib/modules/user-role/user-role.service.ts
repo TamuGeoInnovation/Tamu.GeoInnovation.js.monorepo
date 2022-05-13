@@ -18,9 +18,7 @@ export class UserRoleService {
     return this.http.get<Array<Partial<ISimplifiedUserRoleResponse>>>(`${this.resource}`);
   }
 
-  // TODO: Move this function on the backend from user/role/api to POST user-role
   public insertUserRole(entity) {
-    return this.http.post(`${this.resource}/role/api`, entity);
+    return this.http.post(`${this.resource}`, entity);
   }
 }
-
