@@ -2,6 +2,7 @@ import { join } from 'path';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
+import 'tslib'; // Required for package.json auto-generation
 import * as express from 'express';
 import cookieParser from 'cookie-parser';
 
