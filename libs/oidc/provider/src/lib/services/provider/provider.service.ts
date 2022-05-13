@@ -25,6 +25,8 @@ export class OidcProviderService {
         if (this.enableDevLogs) {
           this.enableOIDCDebug();
         }
+
+        this.provider.proxy = true;
       });
     });
   }
