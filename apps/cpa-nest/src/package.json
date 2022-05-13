@@ -1,19 +1,30 @@
 {
-  "name": "cpa-nest-deploy",
-  "version": "0.0.0",
-  "license": "MIT",
-  "private": true,
+  "name": "cpa-nest-deply",
+  "version": "0.0.1",
   "dependencies": {
-    "@nestjs/common": "^6.8.3",
-    "@nestjs/core": "^6.8.3",
-    "@nestjs/platform-express": "^6.8.3",
-    "@nestjs/typeorm": "^6.2.0",
+    "@nestjs/common": "^8.0.0",
+    "@nestjs/core": "^8.0.0",
+    "@nestjs/passport": "^8.0.0",
+    "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/typeorm": "^8.0.0",
+    "bcrypt": "^5.0.0",
+    "better-sqlite3": "^7.5.0",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.13.1",
-    "jwt-decode": "^3.1.2",
+    "deepmerge": "^4.2.2",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^2.0.5",
     "mssql": "^6.0.1",
+    "multer": "^1.4.3",
+    "nodemailer": "^6.4.16",
+    "openid-client": "^3.15.3",
+    "otplib": "^10.2.3",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "~6.5.3",
-    "typeorm": "^0.2.38"
-  }
+    "rxjs": "^7.0.0",
+    "typeorm": "^0.2.38",
+    "uuid": "^8.1.0"
+  },
+  "main": "main.js"
 }
