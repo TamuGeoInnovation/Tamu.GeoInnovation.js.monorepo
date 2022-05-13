@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
-import { Client, JwtGuard, AuthorizationGuard } from '@tamu-gisc/oidc/common';
+import { Client, AdminGuard } from '@tamu-gisc/oidc/common';
 
 import { ClientService } from '../../services/client/client.service';
 import { BaseController } from '../_base/base.controller';
@@ -12,7 +12,7 @@ export class ClientController extends BaseController<Client> {
   }
 
   @Get()
-  @UseGuards(AuthorizationGuard)
+  @UseGuards(AdminGuard)
   public get() {
     return this.clientService.getEntities();
   }
