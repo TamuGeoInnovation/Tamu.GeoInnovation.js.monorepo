@@ -1,4 +1,5 @@
 export interface ISimplifiedUserRoleResponse {
+  guid: string;
   role: {
     level: string;
     name: string;

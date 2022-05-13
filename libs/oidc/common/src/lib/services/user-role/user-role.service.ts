@@ -26,6 +26,15 @@ export class UserRoleService {
       .getMany();
   }
 
+  public getRole(userRoleGuid) {
+    return this.userRoleRepo.findOne({
+      where: {
+        guid: userRoleGuid
+      },
+      relations: ['client', 'role', 'user']
+    });
+  }
+
   public getAll() {
     return from(
       this.userRoleRepo.find({

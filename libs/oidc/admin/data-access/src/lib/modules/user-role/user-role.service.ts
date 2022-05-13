@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
-import { ISimplifiedUserRoleResponse } from '@tamu-gisc/oidc/common';
+import { ISimplifiedUserRoleResponse, NewUserRole } from '@tamu-gisc/oidc/common';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,10 @@ export class UserRoleService {
 
   public getAll() {
     return this.http.get<Array<Partial<ISimplifiedUserRoleResponse>>>(`${this.resource}`);
+  }
+
+  public get(guid) {
+    return this.http.get<Partial<NewUserRole>>(`${this.resource}/${guid}`);
   }
 
   public insert(entity) {

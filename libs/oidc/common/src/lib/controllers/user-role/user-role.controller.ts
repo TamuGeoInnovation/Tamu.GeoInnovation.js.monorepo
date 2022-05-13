@@ -8,6 +8,11 @@ import { UserRoleService } from '../../services/user-role/user-role.service';
 export class UserRoleController {
   constructor(private readonly userRoleService: UserRoleService) {}
 
+  @Get(':guid')
+  public get(@Param('guid') guid) {
+    return this.userRoleService.getRole(guid);
+  }
+
   @Get()
   public getAll() {
     return this.userRoleService.getAll();
