@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Observable, shareReplay } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { ISimplifiedUserRoleResponse } from '@tamu-gisc/oidc/common';
 import { UserRoleService } from '@tamu-gisc/oidc/admin/data-access';

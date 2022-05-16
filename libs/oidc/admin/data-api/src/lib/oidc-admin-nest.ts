@@ -1,6 +1,3 @@
-// Guards
-export * from './guards/authorization.guard';
-
 // Controllers
 export * from './controllers/stats/stats.controller';
 

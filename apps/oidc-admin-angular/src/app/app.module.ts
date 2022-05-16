@@ -13,7 +13,7 @@ import { LocalStoreModule } from '@tamu-gisc/common/ngx/local-store';
 import { UILayoutModule } from '@tamu-gisc/ui-kits/ngx/layout';
 
 import { AppComponent } from './app.component';
-import * as environment from '../environments/environment';
+import { environment } from '../environments/environment';
 
 const routes: Routes = [
   {
@@ -74,7 +74,7 @@ export function getHighlightLanguages() {
         responseType: 'code',
         silentRenew: true,
         useRefreshToken: true,
-        logLevel: environment.environment.production ? LogLevel.None : LogLevel.Debug,
+        logLevel: environment.production ? LogLevel.None : LogLevel.Debug,
         autoUserInfo: false
       }
     }),

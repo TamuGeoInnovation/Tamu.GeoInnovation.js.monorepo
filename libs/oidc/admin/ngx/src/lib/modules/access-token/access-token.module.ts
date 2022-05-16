@@ -31,4 +31,4 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AccessTokenModule {}
-// TODO: Should we just remove this already? Access tokens no longer stored in IdP
+// TODO: Should we just remove this already? Access tokens no longer stored in IdP. Maybe we turn into the access-token black list

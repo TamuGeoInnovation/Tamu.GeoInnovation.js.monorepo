@@ -5,10 +5,10 @@
     <th>Account Guid</th>
     <th class="action-row">Actions</th>
   </tr>
-  <tr *ngFor="let accessToken of ($accessTokens | async)">
-    <td>{{accessToken.clientId}}</td>
-    <td>{{accessToken.grantId}}</td>
-    <td>{{accessToken.accountGuid}}</td>
-    <td><span (click)="revokeAccessToken(accessToken)" class="material-icons action alt" title="Revoke access token">delete</span></td>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td><span class="material-icons action alt" title="Revoke access token">delete</span></td>
   </tr>
 </table>

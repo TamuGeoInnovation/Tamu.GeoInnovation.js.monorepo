@@ -1,5 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 
+import 'tslib'; // Required for package.json auto-generation
+
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 

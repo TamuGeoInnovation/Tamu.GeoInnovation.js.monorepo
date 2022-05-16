@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 import { filter, map, mergeMap, Observable, switchMap, tap, toArray } from 'rxjs';
 
 import { IClientData, NewUserRole, Role, User } from '@tamu-gisc/oidc/common';
 import { ClientService, RolesService, UserRoleService, UsersService } from '@tamu-gisc/oidc/admin/data-access';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'tamu-gisc-detail',

@@ -15,10 +15,6 @@ export class ViewClientComponent implements OnInit {
 
   constructor(private readonly clientService: ClientService) {}
 
-  // public ngOnInit(): void {
-  //   this.clientService.baseService.getEntities
-  // }
-
   public ngOnInit() {
     this.$clients = this.clientService.getEntities().pipe(
       mergeMap((clients) => clients),

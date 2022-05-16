@@ -1,15 +1,13 @@
 import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { EnvironmentService } from '@tamu-gisc/common/nest/environment';
 import { IAuthorizationGuardUser } from '../../oidc-common';
 
 @Injectable()
 export class AdminGuard extends AuthGuard('jwt') {
   private ADMIN_LEVEL = '99';
 
-  // TODO: We may not need the EnvironmentService here after all - Aaron H (5/13/22)
-  constructor(private readonly env: EnvironmentService) {
+  constructor() {
     super();
   }
 

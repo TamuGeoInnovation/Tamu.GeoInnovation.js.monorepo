@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Client } from '@tamu-gisc/oidc/common';
+
 import { BaseService } from '../_base/base.service';
 
 @Injectable()

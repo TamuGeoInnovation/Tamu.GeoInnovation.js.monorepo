@@ -1,7 +1,6 @@
-import { HttpService, UnprocessableEntityException } from '@nestjs/common';
+import { HttpService, NotImplementedException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 
-import { DeepPartial } from 'typeorm';
 import { hash, compare } from 'bcrypt';
 import * as deepmerge from 'deepmerge';
 
@@ -14,7 +13,6 @@ import {
   User,
   UserRepo,
   AccountRepo,
-  UserRole,
   RoleRepo,
   ClientMetadataRepo,
   UserRoleRepo,
@@ -26,9 +24,7 @@ import {
   UserPasswordResetRepo,
   UserPasswordHistoryRepo,
   UserPasswordReset,
-  Role,
   ClientRepo,
-  NewUserRole,
   NewUserRoleRepo
 } from '../../entities/all.entity';
 
@@ -49,28 +45,8 @@ export class UserService {
     private readonly httpService: HttpService
   ) {}
 
-  public async insertDefaultAdmin(email: string, password: string) {
-    const _user: Partial<User> = {
-      email: email,
-      password: password,
-      signup_ip_address: '1.1.1.1',
-      last_used_ip_address: '1.1.1.1',
-      updatedAt: new Date(),
-      added: new Date()
-    };
-
-    const user = await this.userRepo.create(_user);
-    const entUser = await this.insertUser(user, 'admin');
-
-    // Set Admin role for admin user
-    const adminRole = await this.roleRepo.findOne({
-      where: {
-        level: '99'
-      }
-    });
-
-    console.log('Admin userGuid:', entUser.guid);
-    await this.insertUserRoleOld(entUser, adminRole, 'oidc-idp-admin');
+  public async insertDefaultAdmin() {
+    throw new NotImplementedException();
   }
 
   public async insertDefaultSecretQuestions() {
@@ -245,13 +221,6 @@ export class UserService {
       user.secret2fa = null;
       return await this.userRepo.save(user);
     }
-  }
-
-  /**
-   * Function that will set a user's role for a given clientId.
-   */
-  public async insertUserRoleOld(user: User, role: Role, clientName: string) {
-    // const clients = await this.clientMetadataRepo.findAllShallow();
   }
 
   /**

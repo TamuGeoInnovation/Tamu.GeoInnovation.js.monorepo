@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post } from '@nestjs/common';
+
 import { DeepPartial } from 'typeorm';
 
 import { BaseService } from '../../services/_base/base.service';
@@ -19,19 +20,19 @@ export abstract class BaseController<T> {
 
   @Post()
   public async insertEntity(@Body() body: DeepPartial<T>) {
-    // TODO: Add AuthGuard here: libs\gisday\platform\data-api\src\lib\guards\auth.guard.ts
+    // TODO: Add AdminGuard here: libs\gisday\platform\data-api\src\lib\guards\auth.guard.ts
     return this.provider.insertEntity(body);
   }
 
   @Patch()
   public async updateEntity() {
-    // TODO: Add AuthGuard here: libs\gisday\platform\data-api\src\lib\guards\auth.guard.ts
+    // TODO: Add AdminGuard here: libs\gisday\platform\data-api\src\lib\guards\auth.guard.ts
     return new NotImplementedException();
   }
 
   @Delete(':guid')
   public async deleteEntity(@Param() params) {
-    // TODO: Add AuthGuard here: libs\gisday\platform\data-api\src\lib\guards\auth.guard.ts
+    // TODO: Add AdminGuard here: libs\gisday\platform\data-api\src\lib\guards\auth.guard.ts
     return this.provider.deleteEntity(params.guid);
   }
 }
