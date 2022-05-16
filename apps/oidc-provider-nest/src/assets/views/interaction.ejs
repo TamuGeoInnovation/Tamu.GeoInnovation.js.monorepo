@@ -7,7 +7,7 @@
 
   <% missingOIDCScope = new Set(details.missingOIDCScope); missingOIDCScope.delete('openid'); missingOIDCScope.delete('offline_access') %>
 <% if (missingOIDCScope.size) { %>
-  <li>scopes:</li>
+  <p><%= client.clientName %> is requesting the following:</p>
   <ul>
     <% missingOIDCScope.forEach((scope) => { %>
       <li><%= scope %></li>
@@ -24,7 +24,6 @@
     <% }) %>
   </ul>
 <% } %>
-<p><%= uid  %></p>
 
   <button autofocus type="submit" class="login login-submit">Continue</button>
 </form>
