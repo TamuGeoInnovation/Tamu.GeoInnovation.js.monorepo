@@ -46,3 +46,7 @@ export interface IAuthorizationGuardUser {
     level: string;
   }>;
 }
+
+export interface ValidObject {
+  [key: string]: boolean | string | number;
+}
