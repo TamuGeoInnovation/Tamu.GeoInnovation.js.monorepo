@@ -17,4 +17,3 @@ export abstract class BaseService<T> {
     return this.http.get<Array<Partial<T>>>(`${this.resource}`);
   }
 }
-

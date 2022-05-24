@@ -1,14 +1,13 @@
 <section class="internal">
-    <h1 class="section-header">Clients</h1>
-    <div class="section-content">
-      <div class="tab-container row">
-        <div class="tabs">
-          <div class="tab" [routerLink]="['./']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">View</div>
-        </div>
-        <div class="tab-content">
-          <router-outlet></router-outlet>
-        </div>
+  <h1 class="section-header">Clients</h1>
+  <div class="section-content">
+    <div class="tab-container row">
+      <div class="tabs">
+        <div class="tab" [routerLink]="['./']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">View</div>
+      </div>
+      <div class="tab-content">
+        <router-outlet></router-outlet>
       </div>
     </div>
-  </section>
-  
+  </div>
+</section>

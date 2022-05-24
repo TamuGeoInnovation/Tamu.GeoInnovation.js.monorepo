@@ -14,4 +14,3 @@ export class ClientService extends BaseService<Client> {
     super(env1, http1, 'clients');
   }
 }
-
